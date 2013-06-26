@@ -4,8 +4,9 @@
 	<groupId>fortscale</groupId>
 	<artifactId>fortscale-utils</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-	<name>fortscale-common</name>
+	<name>fortscale-utils</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
