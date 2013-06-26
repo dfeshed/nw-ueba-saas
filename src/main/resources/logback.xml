@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</layout>
+	</appender>
+	<appender name="TestLog" class="ch.qos.logback.core.FileAppender">
+		<file>testFile.log</file>
+		<append>true</append>
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</encoder>
+	</appender>
+
+	<root level="debug">
+		<appender-ref ref="STDOUT" />
+	</root>
+	<logger name="org.apache.hadoop" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+</configuration>
