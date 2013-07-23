@@ -14,7 +14,16 @@
 		<logback.version>1.0.13</logback.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<jackson.version>2.2.2</jackson.version>
+		<splunk.version>1.0.0</splunk.version>
 	</properties>
+	
+	<repositories>
+		<repository>
+			<id>repo.springsource.org</id>
+			<name>repo.springsource.org-releases</name>
+			<url>http://repo.springsource.org/ext-release-local</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -22,6 +31,16 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.splunk</groupId>
+			<artifactId>splunk</artifactId>
+			<version>${splunk.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
