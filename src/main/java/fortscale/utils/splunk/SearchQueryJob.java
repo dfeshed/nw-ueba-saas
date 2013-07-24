@@ -12,6 +12,8 @@ public class SearchQueryJob extends SearchJob {
 	private static final String EARLIEST_TIME_FIELD_PLACER = "$earliest$";
 	private static final String EARLIEST_TIME_FIELD = "earliest";
 	private static final String LATEST_TIME_FIELD = "latest";
+//	private static final String DISPATCH_MAX_COUNT_FIELD_NAME = "dispatch.max_count";
+	private static final int DEFAULT_DISPATCH_MAX_COUNT = 500000;
 	
 	private String splunkSearchQuery;
 	
@@ -20,7 +22,7 @@ public class SearchQueryJob extends SearchJob {
 	}
 
 	@Override
-	public Job runJob(Service service, String earliestTimeCursor, String latestTimeCursor, int numOfEvents) throws Exception {
+	protected Job runJob(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception {
 		String search = splunkSearchQuery;
 		
         JobArgs jobArgs = new JobArgs();
@@ -60,6 +62,12 @@ public class SearchQueryJob extends SearchJob {
 
 	public void setSplunkSearchQuery(String splunkSearchQuery) {
 		this.splunkSearchQuery = splunkSearchQuery;
+	}
+
+	@Override
+	protected int getDispatchMaxCount(Service service) throws Exception {
+		//TODO: Check from where do I get this default value.
+		return DEFAULT_DISPATCH_MAX_COUNT;
 	}
 
 }

@@ -32,17 +32,14 @@ public class SavedSearchJob extends SearchJob {
 
 
 	@Override
-	public Job runJob(Service service, String earliestTimeCursor, String latestTimeCursor, int numOfEvents) throws Exception{
+	protected Job runJob(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception{
 		SavedSearchCollection savedSearchCollection = service.getSavedSearches();
 		SavedSearch savedSearch = savedSearchCollection.get(savedSearchName);
 		if(savedSearch == null){
+			logger.error("the saved search does not exist: {}", savedSearchName);
 			throw new Exception("the saved search does not exist: " + savedSearchName);
 		}
-		
-		if(numOfEvents != -1 && numOfEvents < savedSearch.getDispatchMaxCount()){
-			return null;
-		}
-				
+						
 		// Set the arguments for dispatching the saved search
 		SavedSearchDispatchArgs dispatchArgs = new SavedSearchDispatchArgs();
 
@@ -87,7 +84,17 @@ public class SavedSearchJob extends SearchJob {
 
 	}
 
-	
+	@Override
+	protected int getDispatchMaxCount(Service service) throws Exception {
+		SavedSearchCollection savedSearchCollection = service.getSavedSearches();
+		SavedSearch savedSearch = savedSearchCollection.get(savedSearchName);
+		if(savedSearch == null){
+			logger.error("the saved search does not exist: {}", savedSearchName);
+			throw new Exception("the saved search does not exist: " + savedSearchName);
+		}
+		
+		return savedSearch.getDispatchMaxCount();
+	}
 	
 	
 	
@@ -116,4 +123,10 @@ public class SavedSearchJob extends SearchJob {
 	public void setArguments(Properties arguments) {
 		this.arguments = arguments;
 	}
+
+
+
+
+
+	
 }

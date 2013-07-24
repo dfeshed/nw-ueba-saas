@@ -15,10 +15,11 @@ public abstract class SearchJob {
 	
 	
 	
-	public abstract Job runJob(Service service, String earliestTimeCursor, String latestTimeCursor, int numOfEvents) throws Exception;
+	protected abstract Job runJob(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception;
+	protected abstract int getDispatchMaxCount(Service service) throws Exception;
 	
-	public Job run(Service service, String earliestTimeCursor, String latestTimeCursor, int numOfEvents) throws Exception{
-		Job ret = runJob(service, earliestTimeCursor, latestTimeCursor, numOfEvents);
+	public Job run(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception{
+		Job ret = runJob(service, earliestTimeCursor, latestTimeCursor);
 		if(ret != null && ret.isFailed()){
 			handleJobFailure(ret);
 		}

@@ -10,7 +10,7 @@ public class SplunkTest {
 	private static final String SPLUNK_SERVER_USER_NAME_PROPERTY = "splunkUser";
 	private static final String SPLUNK_SERVER_USER_PASSWORD_PROPERTY = "splunkPassword";
 	
-	private static String host = "127.0.0.1";
+	private static String host = "192.168.0.135";
 	private static int port = 8089;
 	private static String user = "admin";
 	private static String password = "P@ssw0rd";
@@ -45,4 +45,5 @@ public class SplunkTest {
 		@SuppressWarnings("unused")
 		SplunkApi splunkApi = new SplunkApi(host, port, user, password);
 	}
+	
 }

@@ -63,6 +63,10 @@ public class SplunkApi {
 		splunkService = splunkConnect();
 	}
 	
+	public Service getSplunkService(){
+		return splunkService;
+	}
+	
 	private void loadProperties(Properties properties) throws Exception{
 		if(properties.containsKey(SPLUNK_SERVER_HOST_NAME_PROPERTY_FIELD_NAME)){
 			setSplunkServerHostName((String)properties.get(SPLUNK_SERVER_HOST_NAME_PROPERTY_FIELD_NAME));
@@ -113,7 +117,7 @@ public class SplunkApi {
 	public void deleteIndex(String splunkDataIndex) throws Exception{
 		Index myIndex = splunkService.getIndexes().get(splunkDataIndex);
 		if (myIndex == null) {
-			logger.warn("splunk data index {} does not exist.");
+			logger.warn("splunk data index {} does not exist.", splunkDataIndex);
 			return;
 		}
 		
@@ -145,9 +149,7 @@ public class SplunkApi {
 		}
 
 		//Create a new index
-		myIndexes.create(splunkDataIndex);
-		
-		myIndex = splunkService.getIndexes().get(splunkDataIndex);
+		myIndex = myIndexes.create(splunkDataIndex);
 		if (myIndex == null) {
 			logger.error("Splunk data index {} was not created.",
 					splunkDataIndex);
@@ -200,7 +202,7 @@ public class SplunkApi {
 			logger.debug("Creates a writable socket to the given splunk index.");
 			Socket socket = myIndex.attach(attachedArgs);
 			OutputStream ostream = socket.getOutputStream();
-			out = new OutputStreamWriter(ostream, "UTF8");
+			out = new OutputStreamWriter(ostream, "UTF-8");
 
 			
 
@@ -221,6 +223,10 @@ public class SplunkApi {
 	}
 	
 	
+	
+	/*
+	 * Assumption: 1. the results contain the _time field. 2. the results are sorted from latest to earliest.
+	 */
 	public String getSearchQueryEventsLatestTime(String splunkSearchQuery) throws Exception{
 		logger.info("getting events latest time.");
 		
@@ -241,7 +247,7 @@ public class SplunkApi {
 		    if(event != null){
 			    timestamp = event.get(SPLUNK_TIMESTAMP_FIELD);
 		    	if(timestamp != null){
-		    		logger.info("return cursor: {}", timestamp);
+		    		logger.info("return timestamp: {}", timestamp);
 		    	} else{
 		    		logger.error("event does not contain timestamp. event: {}", event.toString());
 		    	}
@@ -322,7 +328,7 @@ public class SplunkApi {
         Job job = null;
     	do{
     		
-    		job = searchJob.run(splunkService, earliestTimeCursor, cursor, numOfEvents);
+    		job = searchJob.run(splunkService, earliestTimeCursor, cursor);
     		if(job == null){
     			break;
     		}
@@ -390,7 +396,7 @@ public class SplunkApi {
 		        }
 			}
 			eventSum += offset;
-    	} while(numOfEvents > 0 && (maxNumOfEvents < 0 || (eventSum < maxNumOfEvents) ) && (earliestTimeCursor == null || SplunkUtil.compareCursors(earliestTimeCursor, cursor) < 0));
+    	} while(numOfEvents > 0 && (maxNumOfEvents < 0 || (eventSum < maxNumOfEvents) ) && (earliestTimeCursor == null || SplunkUtil.compareCursors(earliestTimeCursor, cursor) < 0) && numOfEvents >= searchJob.getDispatchMaxCount(splunkService));
         
     	logger.info("finished search");
     	if(eventSum == 0){
