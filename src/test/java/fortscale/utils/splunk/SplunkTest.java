@@ -1,7 +1,10 @@
 package fortscale.utils.splunk;
 
-import org.junit.BeforeClass;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import com.splunk.HttpException;
 
 public class SplunkTest {
 	
@@ -10,13 +13,13 @@ public class SplunkTest {
 	private static final String SPLUNK_SERVER_USER_NAME_PROPERTY = "splunkUser";
 	private static final String SPLUNK_SERVER_USER_PASSWORD_PROPERTY = "splunkPassword";
 	
-	private static String host = "192.168.0.135";
-	private static int port = 8089;
-	private static String user = "admin";
-	private static String password = "P@ssw0rd";
+	private String host = "192.168.0.135";
+	private int port = 8089;
+	private String user = "admin";
+	private String password = "P@ssw0rd";
 	
-	@BeforeClass
-	public static void setUpBeforeClass(){
+	@Before
+	public void setUpBeforeClass(){
 		String tmp = null;
 		
 		tmp = System.getProperty(SPLUNK_SERVER_HOST_NAME_PROPERTY);
@@ -46,4 +49,19 @@ public class SplunkTest {
 		SplunkApi splunkApi = new SplunkApi(host, port, user, password);
 	}
 	
+	@Test
+	public void testWrongSplunkLoginParameters(){
+		try{
+			@SuppressWarnings("unused")
+			SplunkApi splunkApi = new SplunkApi(host, port, user, "bala");
+			Assert.fail("SocketException has not been thrown.");
+		} catch(HttpException e){
+			if(!"HTTP 401 -- Login failed".equals(e.getMessage())){
+				Assert.fail("got the right exception but the wrong message: " + e.toString());
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+			Assert.fail("got the wrong exception: " + e.toString());
+		}
+	}
 }

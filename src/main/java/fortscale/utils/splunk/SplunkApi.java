@@ -17,9 +17,12 @@ import com.splunk.Entity;
 import com.splunk.Event;
 import com.splunk.Index;
 import com.splunk.IndexCollection;
+import com.splunk.InputCollection;
+import com.splunk.InputKind;
 import com.splunk.Job;
 import com.splunk.JobArgs;
 import com.splunk.JobResultsArgs;
+import com.splunk.MonitorInput;
 import com.splunk.ResultsReaderCsv;
 import com.splunk.ResultsReaderXml;
 import com.splunk.Service;
@@ -163,7 +166,7 @@ public class SplunkApi {
 		String line = null;
 		BufferedReader buf = null;
 		try{
-			logger.info("Creates the local file input stream.");
+			logger.debug("Creates the local file input stream.");
 			FileInputStream fin = new FileInputStream(new File(fileFullPath));
 			buf = new BufferedReader(new InputStreamReader(fin));
 			line = writeDataToSplunk(buf, splunkDataIndex, splunkSourceType, splunkDataSource);
@@ -413,7 +416,16 @@ public class SplunkApi {
 	}
 	
 	
-	
+	public void createMonitor(String monitorFilePath, String splunkDataIndex, String splunkDataSourceType){
+		// Get the collection of data inputs
+		InputCollection myInputs = splunkService.getInputs();
+		MonitorInput monitorInput= myInputs.create(monitorFilePath, InputKind.Monitor);
+		monitorInput.setIndex(splunkDataIndex);
+		monitorInput.setSourcetype(splunkDataSourceType);
+		monitorInput.update();
+		
+		logger.info("New monitor was created: {}", monitorInput.toString());
+	}
 	
 	
 	
