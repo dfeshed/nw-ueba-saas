@@ -1,0 +1,10 @@
+<div class="widget-buttons-bar" ng-controller="ButtonsBarWidgetController">
+    <a class="btn clickable"
+       ng-repeat="button in view.data"
+       ng-class="{ 'btn-on': button.on }"
+       ng-click="btnClick(button, $event)"
+       title="{{ button.tooltip }}"
+       ng-style="{ width: button.width || ((100 / view.data.length) + '%') }">
+        {{button.text}}
+       </a>
+</div>

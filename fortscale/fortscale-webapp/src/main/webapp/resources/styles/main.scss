@@ -1,0 +1,93 @@
+$headerHeight: 0px;
+$sidebarWidth: 0;
+
+$linkColor: #049cdb;
+$linkColorHover: rgb(218, 218, 213);
+
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+label{ display: inline }
+.clickable{ cursor: pointer; }
+
+.hidden{ visibility: hidden }
+h2, h3, h4, h5{ font-weight: normal; }
+.main-section{
+  position: absolute;
+}
+
+.menu{
+  a{
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+
+    &:hover{
+      background-color: $linkColorHover;
+    }
+  }
+}
+.error{ color: #c00; font-weight: bold; }
+.warning{ color: #f89406; font-weight: bold; }
+.tooltip-icon{
+  font-size: 10pt;
+  color: #777;
+  cursor: help;
+  &:hover{
+    color: Black;
+  }
+}
+.nav-tabs a{ cursor: pointer; }
+#logo{
+  height: 30px;
+}
+
+#main-nav{
+  display: none;
+  left: 0;
+  top: $headerHeight;
+  width: $sidebarWidth;
+  bottom: 0;
+  box-sizing: border-box;
+  padding: 10px;
+
+  a.selected{
+      background: $linkColor;
+      color: White;
+  }
+}
+
+#main-contents{
+  .container-fluid{
+    padding: 0 7px;
+  }
+}
+
+@import "dashboard";
+@import "entity";
+@import "widget";
+@import "popup";
+@import "forms";
+@import "tooltips";
+@import "dialogs";
+@import "splunk_config";
+@import "widgets/table";
+@import "widgets/graph";
+@import "widgets/buttons_bar";
+@import "widgets/text";
+@import "widgets/progressBar";
+@import "widgets/scores";
+@import "widgets/details";
+@import "widgets/slides";
+@import "widgets/eventsList";
+@import "widgets/itemsList";
+@import "widgets/pieChart";
+@import "widgets/numeric";
+@import "controls/notification";
+@import "controls/link";

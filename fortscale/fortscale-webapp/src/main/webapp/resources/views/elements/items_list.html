@@ -1,0 +1,10 @@
+<ul class="widget-items-list unstyled">
+    <li ng-repeat="item in items">
+        <span class="items-list-sidenote" ng-if="item.sideNote" ng-bind-html-unsafe="item.sideNote"></span>
+        <span class="items-list-icon" ng-style="item.icon.style">
+            <i class="icon-{{item.icon.type}}"></i>
+        </span>
+        <a ng-if="item.link" ng-bind-html-unsafe="item.value" href="{{item.link}}"></a>
+        <span ng-if="!item.link" class="items-list-text" ng-bind-html-unsafe="item.value"></span>
+    </li>
+</ul>

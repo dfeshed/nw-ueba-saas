@@ -1,0 +1,19 @@
+<header class="entity-header">
+    <a href="#/d/{{currentDashboardId}}">{{mainDashboard.name}}</a>
+    <i class="icon-caret-right"></i>
+    <span>{{entityId}}</span>
+</header>
+<menu id="entity-menu" class="menu">
+    <a ng-repeat="feature in currentEntity.features"
+       ng-class="{ selected: feature == selectedFeature }"
+       href="#/d/{{currentDashboardId}}/e/{{currentEntityType}}/{{entityId}}/f/{{feature.featureId}}{{tabParams}}">
+        <i class="icon-caret-right"></i>
+        {{feature.name}}
+        <span class="entity-feature-score entity-feature-score-{{featureScores[feature.featureId].severity}}">{{featureScores[feature.featureId].score}}</span>
+       </a>
+    <a ng-repeat="tab in currentEntity.tabs"
+       href="#/d/{{currentDashboard.dashboardId}}/e/{{currentEntity.type}}/{{currentEntity.entityId}}/{{tab.tabId}}{{tabParams}}">{{tab.name}}</a>
+</menu>
+<div id="entity-contents">
+    <ng-include src="'views/pages/dashboard.html'"></ng-include>
+</div>

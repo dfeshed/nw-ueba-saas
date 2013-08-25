@@ -1,0 +1,140 @@
+{
+    "dashboardId": "domain-whitelist",
+    "name": "Domain Whitelist",
+    "description": "Domains explicitly approved by the user, will not be considered suspicious.",
+    "widgets": [
+        {
+            "width": "200",
+            "renderControls": false,
+            "views": [
+                {
+                    "type": "buttonsBar",
+                    "className": "widget-noBorder",
+                    "settings": {
+                        "buttons": [
+                            {
+                                "text": "Add domain",
+                                "events": {
+                                    "onClick": {
+                                        "action": "setGlobalParam",
+                                        "actionOptions": {
+                                            "param": "whitelistAddShowDialog",
+                                            "value": "(Your domain here)"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "widgetId": 10,
+            "reportId": 10,
+            "report": {
+                "reportId": 10,
+                "name": "Get domains whitelist",
+                "description": "",
+                "query": {
+                    "dataSource": "splunk",
+                    "searchId": "Whitelist_Domains_Show",
+                    "fields": {
+                        "domain": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "domainIndex": {
+                            "type": "number"
+                        },
+                        "_time": {
+                            "type": "date"
+                        }
+                    }
+                }
+            },
+            "refreshOn": ["whitelistLastAdd"],
+            "name": "Domains in whitelist",
+            "width": "100%",
+            "views": [
+                {
+                    "type": "table",
+                    "title": "Domains",
+                    "settings": {
+                        "fields": [
+                            {
+                                "name": "Domain",
+                                "value": "{{domain}}",
+                                "sortBy": "domain",
+                                "events": {
+                                    "click": {
+                                        "action": "setGlobalParam",
+                                        "actionOptions": {
+                                            "param": "whitelistAddShowDialog",
+                                            "value": "{{domainIndex}}"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "name": "Comment",
+                                "value": "{{comment}}",
+                                "events": {
+                                    "click": {
+                                        "action": "setGlobalParam",
+                                        "actionOptions": {
+                                            "param": "whitelistAddShowDialog",
+                                            "value": "{{domainIndex}}"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "name": "Last Edited",
+                                "value": "{{_time}}",
+                                "sortable": true,
+                                "sortBy": "_time",
+                                "format": "date",
+                                "formatOptions": {
+                                    "format": "MM/DD/YYYY HH:mm"
+                                }
+                            },
+                            {
+                                "name": "Remove",
+                                "value": "Remove",
+                                "events": {
+                                    "click": {
+                                        "confirm": "Are you sure you wish to remove domain '{{domain}}' from the white list?",
+                                        "action": "runReport",
+                                        "actionOptions": {
+                                            "report": {
+                                                "query": {
+                                                    "dataSource": "splunk",
+                                                    "searchId": "Whitelist_Domains_Remove",
+                                                    "params": [
+                                                        {
+                                                            "field": "domainIndex",
+                                                            "type": "string",
+                                                            "dashboardParam": "domainIndex"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "afterAction": {
+                                            "success": {
+                                                "action": "refreshWidget"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

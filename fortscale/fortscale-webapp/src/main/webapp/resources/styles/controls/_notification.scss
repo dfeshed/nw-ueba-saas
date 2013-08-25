@@ -1,0 +1,27 @@
+$notificationBackground: #ddd;
+$notificationDangerBackground: #c00;
+$notificationDangerColor: White;
+
+.control-notification{
+  background: $notificationBackground;
+  border-radius: 10px;
+  padding: 0 8px;
+  height: 20px;
+  line-height: 20px;
+
+  &.notification-danger{
+    background: $notificationDangerBackground;
+    color: $notificationDangerColor;
+  }
+
+  .control-notification-button{
+    color: inherit;
+    display: inline-block;
+    margin-left: 4px;
+    cursor: pointer;
+
+    &:hover{
+      color: Black;
+    }
+  }
+}

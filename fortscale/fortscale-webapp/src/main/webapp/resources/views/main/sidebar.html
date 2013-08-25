@@ -1,0 +1,24 @@
+<div id="sidebar-nav">
+    <ul id="dashboard-menu">
+        <li ng-repeat="navItem in navigation" ng-class="{ active: navItem.url === currentNav }">
+            <div class="pointer" ng-if="navItem.url === currentNav">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a ng-if="!navItem.children" href="{{navItem.url}}">
+                <i class="icon-{{navItem.icon}}"></i>
+                <span>{{navItem.name}}</span>
+            </a>
+            <a ng-if="navItem.children" class="dropdown-toggle">
+                <i class="icon-{{navItem.icon}}"></i>
+                <span>{{navItem.name}}</span>
+                <i class="icon-chevron-down"></i>
+            </a>
+            <ul ng-if="navItem.children" class="submenu">
+                <li ng-repeat="subNavItem in navItem.children">
+                    <a href="{{subNavItem.url}}">{{subNavItem.name}}</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

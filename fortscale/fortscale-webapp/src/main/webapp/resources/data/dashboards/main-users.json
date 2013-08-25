@@ -1,0 +1,159 @@
+{
+    "dashboardId": "main-users",
+    "params": {
+        "usersSeverity": "Critical"
+    },
+    "className": "inner-dashboard",
+    "columns": [
+        {
+            "className": "span15",
+            "widgets": [
+                {
+                    "renderControls": false,
+                    "renderHeader": false,
+                    "className": "no-border no-margins",
+                    "style": { "margin-bottom": "none" },
+                    "report": {
+                        "query": {
+                            "searchId": "users_severity_distribution",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "value",
+                                    "type": "number"
+                                }
+                            ],
+                            "params": []
+                        }
+                    },
+                    "views": [
+                        {
+                            "type": "percentChart",
+                            "settings": {
+                                "options": {
+                                    "height": "145px",
+                                    "width": "100%",
+                                    "labelsFont": {
+                                        "size": "20px"
+                                    },
+                                    "selectable": true,
+                                    "showSelectionBar": true
+                                },
+                                "selectedIndex": 0,
+                                "series": [{
+                                    "field": "value",
+                                    "label": "{{value}}%",
+                                    "style": "severity",
+                                    "styleParams": {
+                                        "value": "name"
+                                    }
+                                }],
+                                "labels": {
+                                    "field": "value",
+                                    "value": "{{value}}%",
+                                    "styleField": "value"
+                                },
+                                "selectionBar": {
+                                    "styleField": "value"
+                                },
+                                "events": [
+                                    {
+                                        "eventName": "click",
+                                        "action": "setParams",
+                                        "actionOptions": {
+                                            "updateUrl": false,
+                                            "params": {
+                                                "usersSeverity": "{{name}}"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "title": "{{@usersSeverity}} Severity",
+                    "className": "widget-normal-padding",
+                    "report": {
+                        "query": {
+                            "searchId": "users_severity",
+                            "fields": [
+                                {
+                                    "name": "username",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "severity",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "avgSeverity",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "machineCount",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "groups",
+                                    "type": "string"
+                                }
+                            ],
+                            "params": [
+                                {
+                                    "field": "severity",
+                                    "type": "userId",
+                                    "dashboardParam": "usersSeverity",
+                                    "default": "Critical"
+                                }
+                            ]
+                        }
+                    },
+                    "refreshOn": [
+                        "usersSeverity"
+                    ],
+                    "views": [
+                        {
+                            "type": "table",
+                            "settings": {
+                                "fields": [
+                                    {
+                                        "name": "Username",
+                                        "value": "{{username}}",
+                                        "sortBy": "username",
+                                        "link": "#/d/user/{{username}}"
+                                    },
+                                    {
+                                        "name": "Severity",
+                                        "value": "{{severity}}",
+                                        "sortBy": "severity",
+                                        "sortDirection": -1
+                                    },
+                                    {
+                                        "name": "Avg. Severity",
+                                        "value": "{{avgSeverity}}",
+                                        "sortBy": "avgSeverity"
+                                    },
+                                    {
+                                        "name": "Machines",
+                                        "value": "{{machineCount}}",
+                                        "sortBy": "machineCount"
+                                    },
+                                    {
+                                        "name": "Groups",
+                                        "value": "{{groups}}",
+                                        "sortBy": "groups"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

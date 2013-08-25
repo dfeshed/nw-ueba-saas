@@ -1,0 +1,26 @@
+<div class="popup-overlay modal-overlay" ng-click="close($event)" ng-controller="WhitelistAddController">
+    <div class="popup modal whitelist-add-modal form">
+        <h3>Add domains to whitelist</h3>
+        <p>
+            Adding a domain to the whitelist means that the domain will not be displayed in tables, and will not be considered suspicious.<br />
+        </p>
+        <div ng-repeat="field in fields" class="form-field">
+            <label>
+                <span class="label-text">{{field.label}}</span>
+                <input ng-model="field.value"
+                       title="{{field.tooltip}}"
+                       ng-style="{ width: field.width }"
+                       required
+                       ng-change="field.error = null"
+                       type="{{field.type || 'text' }}"/>
+                <span class="error" ng-if="field.error">{{field.error}}</span>
+            </label>
+        </div>
+        <div class="form-buttons">
+            <a class="btn form-submit-btn btn-link btn-cancel" ng-click="close()">Cancel</a>
+            <a class="btn form-submit-btn btn-danger" ng-click="runReport('remove')" ng-if="domainExists"><i class="icon-remove"></i> Remove from whitelist</a>
+            <a class="btn form-submit-btn" ng-click="runReport('edit')" ng-if="domainExists"><i class="icon-ok"></i> Save changes</a>
+            <a class="btn form-submit-btn" ng-click="runReport('add')" ng-if="!domainExists"><i class="icon-ok"></i> Add to whitelist</a>
+        </div>
+    </div>
+</div>

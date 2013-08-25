@@ -1,0 +1,431 @@
+{
+    "dashboardId": "user",
+    "name": "{{@entityId}}",
+    "icon": {
+        "type": "user"
+    },
+    "columns": [
+        {
+            "className": "span3",
+            "widgets": [
+                {
+                    "title": "User Details",
+                    "report": {
+                        "query": {
+                            "searchId": "user_details",
+                            "fields": [
+                                {
+                                    "name": "username",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "name",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "position",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "id",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "groups",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "department",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "manager",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "email",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "phone",
+                                    "type": "string"
+                                }
+                            ],
+                            "params": [
+                                {
+                                    "field": "userId",
+                                    "name": "userId",
+                                    "dashboardParam": "entityId"
+                                }
+                            ]
+                        }
+                    },
+                    "className": "round-items-list",
+                    "views": [
+                        {
+                            "type": "properties",
+                            "settings": {
+                                "properties": [
+                                    {
+                                        "icon": "user",
+                                        "value": "{{username}}"
+                                    },
+                                    {
+                                        "icon": "barcode",
+                                        "value": "{{id}}"
+                                    },
+                                    {
+                                        "icon": "group",
+                                        "value": "{{groups}}"
+                                    },
+                                    {
+                                        "icon": "globe",
+                                        "value": "{{department}}"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "report": {
+                        "query": {
+                            "searchId": "user_contact_info",
+                            "fields": [
+                                {
+                                    "email": "username",
+                                    "type": "string"
+                                },
+                                {
+                                    "mobile": "name",
+                                    "type": "string"
+                                },
+                                {
+                                    "phone": "position",
+                                    "type": "string"
+                                }
+                            ],
+                            "params": [
+                                {
+                                    "field": "userId",
+                                    "name": "userId",
+                                    "dashboardParam": "entityId"
+                                }
+                            ]
+                        }
+                    },
+                    "title": "Contact Info",
+                    "className": "round-items-list",
+                    "views": [
+                        {
+                            "type": "properties",
+                            "settings": {
+                                "properties": [
+                                    {
+                                        "icon": "envelope",
+                                        "value": "{{email}}"
+                                    },
+                                    {
+                                        "icon": "mobile-phone",
+                                        "value": "{{mobile}}"
+                                    },
+                                    {
+                                        "icon": "phone",
+                                        "value": "{{phone}}"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "report": {
+                        "query": {
+                            "searchId": "user_machines",
+                            "fields": [
+                                {
+                                    "name": "machineName",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "ipAddress",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "usage",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "lastSignIn",
+                                    "type": "date"
+                                },
+                                {
+                                    "name": "machineScore",
+                                    "type": "number"
+                                }
+                            ],
+                            "params": [
+                                {
+                                    "field": "userId",
+                                    "name": "userId",
+                                    "dashboardParam": "entityId"
+                                }
+                            ]
+                        }
+                    },
+                    "title": "Related Machines",
+                    "views": [
+                        {
+                            "type": "pieChart",
+                            "settings": {
+                                "height": "150px",
+                                "width": "150px",
+                                "showInfo": true,
+                                "info":{
+                                    "title": "{{machineName}}",
+                                    "properties": [
+                                        {
+                                            "label": "Usage:",
+                                            "value": "{{usage}}%"
+                                        },
+                                        {
+                                            "label": "Last Sign-in:",
+                                            "value": "{{lastSignIn}}",
+                                            "format": "date",
+                                            "formatOptions": {
+                                                "prettyDate": true
+                                            }
+                                        },
+                                        {
+                                            "label": "IP:",
+                                            "value": "{{ipAddress}}"
+                                        },
+                                        {
+                                            "label": "Machine Score:",
+                                            "value": "{{machineScore}}"
+                                        }
+                                    ]
+                                },
+                                "item": {
+                                    "value": "{{usage}}",
+                                    "label": "{{machineName}}"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "className": "span9 column-with-border",
+            "title": "Scores",
+            "widgets": [
+                {
+                    "renderControls": false,
+                    "renderHeader": false,
+                    "className": "no-margins",
+                    "report": {
+                        "query": {
+                            "searchId": "user_scores",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "score",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "averageScore",
+                                    "type": "number"
+                                }
+                            ],
+                            "params": [
+                                {
+                                    "field": "userId",
+                                    "name": "userId",
+                                    "dashboardParam": "entityId"
+                                }
+                            ]
+                        }
+                    },
+                    "views": [
+                        {
+                            "type": "barChart",
+                            "settings": {
+                                "options": {
+                                    "height": "300px",
+                                    "width": "100%",
+                                    "createAxes": false,
+                                    "barLabelsFont": {
+                                        "size": 30,
+                                        "color": "#b7b7b7"
+                                    },
+                                    "labelsFont": {
+                                        "size": "20px"
+                                    },
+                                    "selectable": true,
+                                    "showSelectionBar": true
+                                },
+                                "selectedIndex": 2,
+                                "series": [
+                                    {
+                                        "field": "score",
+                                        "label": "{{@entityId}}'s score",
+                                        "style": "score",
+                                        "styleParams": {
+                                            "value": "score"
+                                        }
+                                    },
+                                    {
+                                        "field": "averageScore",
+                                        "label": "Average user's score",
+                                        "color": "#e7e7e7",
+                                        "barLabelsColor": "#aaaaaa"
+                                    }
+                                ],
+                                "labels": {
+                                    "field": "name",
+                                    "value": "{{name}}",
+                                    "styleField": "score"
+                                },
+                                "selectionBar": {
+                                    "styleField": "score"
+                                },
+                                "events": [
+                                    {
+                                        "eventName": "click",
+                                        "action": "setParams",
+                                        "actionOptions": {
+                                            "updateUrl": false,
+                                            "params": {
+                                                "currentFeature": "{{id}}"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "renderControls": false,
+                    "renderHeader": false,
+                    "className": "widget-no-top-padding",
+                    "views": [
+                        {
+                            "type": "dashboardWidget",
+                            "className": "dashboard-with-border inner-widgets",
+                            "settings": {
+                                "dashboardId": "user_{{@currentFeature}}",
+                                "defaultDashboardId": "user_logins"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "className": "span3",
+            "widgets": [
+                {
+                    "report": {
+                        "query": {
+                            "searchId": "user_notifications",
+                            "fields": [
+                                {
+                                    "name": "text",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "severity",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "explanation",
+                                    "type": "string"
+                                }
+                            ],
+                            "params": [
+                                {
+                                    "field": "userId",
+                                    "name": "userId",
+                                    "dashboardParam": "entityId"
+                                }
+                            ]
+                        }
+                    },
+                    "title": "User Profile",
+                    "views": [
+                        {
+                            "type": "list",
+                            "settings": {
+                                "item": {
+                                    "icon": {
+                                        "type": "stop",
+                                        "style": "score",
+                                        "styleParams": {
+                                            "value": "severity"
+                                        }
+                                    },
+                                    "value": "{{text}}"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "report": {
+                        "query": {
+                            "searchId": "user_events",
+                            "fields": [
+                                {
+                                    "name": "text",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "severity",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "links",
+                                    "type": "array"
+                                },
+                                {
+                                    "name": "timestamp",
+                                    "type": "date"
+                                }
+                            ],
+                            "params": [
+                                {
+                                    "field": "userId",
+                                    "name": "userId",
+                                    "dashboardParam": "entityId"
+                                }
+                            ]
+                        }
+                    },
+                    "title": "Recent Activity",
+                    "views": [
+                        {
+                            "type": "list",
+                            "settings": {
+                                "item": {
+                                    "icon": {
+                                        "type": "stop",
+                                        "style": "score",
+                                        "styleParams": {
+                                            "value": "severity"
+                                        }
+                                    },
+                                    "value": "{{text}}"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

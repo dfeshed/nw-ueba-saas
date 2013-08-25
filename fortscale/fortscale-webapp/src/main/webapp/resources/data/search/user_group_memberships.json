@@ -1,0 +1,34 @@
+{
+    "data": [
+        {
+            "username": "Walter White",
+            "userId": "heisenberg",
+            "group": "Administrators",
+            "score": 82,
+            "time": 1377166566719,
+            "comments": []
+        },{
+            "username": "Contractor-23",
+            "userId": "Contractor-23",
+            "group": "Administrators",
+            "score": 79,
+            "time": 1377166366719,
+            "comments": []
+        },{
+            "username": "Hank Moody",
+            "userId": "hmoody@californication.com",
+            "group": "HR",
+            "score": 65,
+            "time": 1377162166713,
+            "comments": []
+        },{
+            "username": "Dwight Shrute",
+            "userId": "dwights@dundermiflin.com",
+            "group": "Management",
+            "score": 45,
+            "time": 1377026566719,
+            "comments": []
+        }
+    ],
+    "total": 299
+}

@@ -1,0 +1,62 @@
+    <header class="widget-header" ng-if="widget.renderHeader !== false">
+        <div class="widget-controls" ng-if="widget.renderControls !== false && !isPopup || widget.controls.length">
+            <div class="widget-view-control"
+                 ng-repeat="control in widget.controls"
+                 ng-include="'views/controls/' + control.type + '.html'">
+            </div>
+            <div class="widget-view-control widget-control-refresh" ng-if="widget.linkTo">
+                <a href="{{widget.linkTo.url}}" title="{{widget.linkTo.tooltip}}" class="clickable">
+                    <i class="icon-external-link"></i>
+                </a>
+            </div>
+            <div class="widget-view-control widget-control-refresh">
+                <a ng-click="widget.showSettings = !widget.showSettings" title="Widget settings" class="clickable">
+                    <i class="icon-cog"></i>
+                </a>
+                <menu class="widget-control-menu" ng-show="widget.showSettings">
+                    <a ng-repeat="setting in settings"
+                       ng-click="callSetting(setting, widget)"
+                       ng-disabled="setting.disabled">
+                        <i class="icon-{{setting.icon}}"></i> {{setting.display}}
+                    </a>
+                </menu>
+            </div>
+        </div>
+        <h4 class="widget-header-title">{{widget.parsedTitle}}</h4>
+    </header>
+    <div class="widget-contents">
+        <div ng-repeat="view in widget.views"
+             class="widget-view {{view.className}}"
+             ng-style="{ height: widget.height }">
+            <div class="widget-view-controls" ng-if="view.controls">
+                <div class="widget-view-control"
+                     ng-repeat="control in view.controls"
+                     ng-include="'views/controls/' + control.type + '.html'">
+                </div>
+            </div>
+            <ng-include src="'views/widgets/' + view.type + '.html'" ng-show="!widget.showInitMessage"></ng-include>
+            <div class="widget-no-data" ng-show="widget.noData">
+                <i class="icon-warning-sign"></i> No data found. Try to change parameters.
+            </div>
+            <div class="widget-no-data widget-init-message" ng-show="widget.showInitMessage">
+                {{widget.initMessage}}
+            </div>
+            <div class="widget-message widget-loading" ng-show="widget.loading">
+                        <span class="widget-message-contents widget-loading-message">
+                            <i class="icon-spinner icon-spin"></i> Loading...
+                        </span>
+            </div>
+            <div class="widget-message widget-error" ng-show="widget.error">
+                        <span class="widget-message-contents widget-error-message">
+                            <i class="icon-bug"></i> {{widget.error}}
+                            <a ng-click="runWidgetReport(widget, true)">Retry</a>
+                        </span>
+            </div>
+            <div class="widget-message widget-warning" ng-show="widget.warning && !widget.error">
+                        <span class="widget-message-contents widget-warning-message">
+                            <i class="icon-meh"></i> {{widget.warning}}
+                            <a ng-click="runWidgetReport(widget, true)">Reload</a>
+                        </span>
+            </div>
+        </div>
+    </div>

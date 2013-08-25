@@ -1,0 +1,17 @@
+{
+    "data": [
+        {
+            "username": "dwights@dundermiflin.com",
+            "name": "Dwight Shrute",
+            "position": "Sales Rep.",
+            "id": "573763",
+            "groups": [ "Sales" ],
+            "department": "Scranton regional sales",
+            "manager": {
+                "name": "Michael Scott",
+                "id": "82784"
+            }
+        }
+    ],
+    "total": 1
+}

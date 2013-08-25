@@ -1,0 +1,96 @@
+{
+    "data": [
+        {
+            "text": "changed password at 04:00",
+            "type": "user",
+            "name": "Dwight Shrute",
+            "id": "dwights@dundermiflin.com",
+            "explanation": "Suspicious time of day",
+            "severity": 82,
+            "time": 1377179647816
+        },
+        {
+            "text": "failed to access 32 random domains",
+            "explanation": "700% above average",
+            "type": "machine",
+            "name": "192.168.0.104",
+            "id": "192.168.0.104",
+            "severity": 92,
+            "time": 1377143579169
+
+        },
+        {
+            "text": "became an administrator",
+            "name": "Dwight Shrute",
+            "id": "dwights@dundermiflin.com",
+            "type": "user",
+            "explanation": "Unusual for prior permissions",
+            "severity": 38,
+            "time": 1377121979169
+        },
+        {
+            "text": "logged in to SPLUNK-SRV",
+            "explanation": "Unusual for the user's cluster",
+            "type": "user",
+            "name": "Saul Goodman",
+            "id": "sgoodman",
+            "severity": 65,
+            "time": 1377114779169
+        },
+        {
+            "text": "gained membership to group HR",
+            "explanation": "Unusual for the user's cluster",
+            "type": "user",
+            "name": "Walter White",
+            "id": "heisenberg",
+            "severity": 65,
+            "time": 1377078779169
+        },
+        {
+            "text": "was unsuccessfully attempted to be accessed 99 times from 20 machines",
+            "explanation": "Very high number of failures, high number of source machines",
+            "type": "machine",
+            "name": "SPLUNK-SRV",
+            "id": "SPLUNK-SRV",
+            "severity": 93,
+            "time": 1377067979169
+        },
+        {
+            "text": "unsuccessfully attempted to access CEO-PC",
+            "explanation": "High-risk machine",
+            "type": "user",
+            "name": "guest-123",
+            "id": "guest-123",
+            "severity": 88,
+            "time": 1377053579169
+        },
+        {
+            "text": "became an administrator",
+            "name": "Walter White",
+            "id": "heisenberg",
+            "type": "user",
+            "explanation": "Unusual for prior permissions",
+            "severity": 27,
+            "time": 1377035579169
+        },
+        {
+            "text": "password set to never change",
+            "explanation": "Unusual for the user's cluster",
+            "type": "user",
+            "name": "John Smith",
+            "id": "jsmith",
+            "severity": 45,
+            "time": 1377006779169
+        },
+        {
+            "text": "VPN access failed 20 times",
+            "explanation": "High number of failures",
+            "type": "machine",
+            "name": "finance-srv",
+            "id": "finance-srv",
+            "severity": 76,
+            "time": 1376995979169
+        }
+    ],
+    "total": 4
+}

@@ -1,0 +1,393 @@
+{
+    "dashboardId": "auth-investigate",
+    "name": "User authentication investigation",
+    "description": "Find suspicious login attempts",
+    "widgets": [
+        {
+            "requiredParams": {
+                "any": ["authUser", "authSource", "authTarget", "timeStart", "timeEnd"]
+            },
+            "initMessage": "Please enter search parameters above.",
+            "report": {
+                "name": "Get anomalous data",
+                "description": "...",
+                "query": {
+                    "dataSource": "splunk",
+                    "searchId": "Auth_Search",
+                    "options": {
+                        "count": 20
+                    },
+                    "fields": {
+                        "prob": {
+                            "type": "float"
+                        },
+                        "target_name": {
+                            "type": "float"
+                        },
+                        "raw_target_name": {
+                            "type": "string"
+                        },
+                        "source_ip": {
+                            "type": "float"
+                        },
+                        "raw_source_ip": {
+                            "type": "ip"
+                        },
+                        "user_id": {
+                            "type": "float"
+                        },
+                        "raw_user_id": {
+                            "type": "string"
+                        },
+                        "profile": {
+                            "type": "string"
+                        },
+                        "error_code": {
+                            "type": "float"
+                        },
+                        "event_time": {
+                            "type": "float"
+                        },
+                        "raw_event_time": {
+                            "type": "string"
+                        }
+                    },
+                    "params": [
+                        {
+                            "field": "timeStart",
+                            "type": "string",
+                            "dashboardParam": "timeStart",
+                            "default": "-1d"
+                        },
+                        {
+                            "field": "timeEnd",
+                            "type": "string",
+                            "dashboardParam": "timeEnd",
+                            "default": "now"
+                        },
+                        {
+                            "field": "userId",
+                            "type": "string",
+                            "default": "*",
+                            "dashboardParam": "authUser"
+                        },
+                        {
+                            "field": "source",
+                            "type": "string",
+                            "default": "*",
+                            "dashboardParam": "authSource"
+                        },
+                        {
+                            "field": "target",
+                            "type": "string",
+                            "default": "*",
+                            "dashboardParam": "authTarget"
+                        }
+                    ]
+                }
+            },
+            "name": "Suspicious user logins for the specified parameters",
+            "width": "100%",
+            "views": [
+                {
+                    "type": "table",
+                    "title": "Suspicious user logins for the specified parameters",
+                    "controls": [
+                        {
+                            "type": "dateRange",
+                            "label": "For dates:",
+                            "params": {
+                                "timeStart": "now",
+                                "timeEnd": "now"
+                            },
+                            "paramsTransform": {
+                                "timeStart": {
+                                    "type": "stringDate",
+                                    "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                                    "replaceWith": "$2/$3/$1:00:00:00",
+                                    "format": "YYYY-MM-DD"
+                                },
+                                "timeEnd": {
+                                    "type": "stringDate",
+                                    "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                                    "replaceWith": "$2/$3/$1:24:59:59",
+                                    "format": "YYYY-MM-DD"
+                                }
+                            },
+                            "paramsInitTransform": {
+                                "timeStart": {
+                                    "type": "string",
+                                    "regExp": "(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})",
+                                    "replaceWith": "$1-$2-$3",
+                                    "format": "YYYY-MM-DD"
+                                },
+                                "timeEnd": {
+                                    "type": "string",
+                                    "regExp": "(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})",
+                                    "replaceWith": "$1-$2-$3",
+                                    "format": "YYYY-MM-DD"
+                                }
+                            },
+                            "onChange": {
+                                "action": "setParams",
+                                "actionOptions": {
+                                    "updateUrl": false,
+                                    "params": {
+                                        "timeStart": "{{timeStart}}",
+                                        "timeEnd": "{{timeEnd}}"
+                                    },
+                                    "paramsTransform": {
+                                        "timeStart": {
+                                            "type": "stringDate",
+                                            "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                                            "replaceWith": "$2/$3/$1:0:0:0",
+                                            "format": "YYYY-MM-DD"
+                                        },
+                                        "timeEnd": {
+                                            "type": "stringDate",
+                                            "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                                            "replaceWith": "$2/$3/$1:23:59:59",
+                                            "format": "YYYY-MM-DD"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "search",
+                            "label": "User: ",
+                            "params": {
+                                "authUser": ""
+                            },
+                            "settings": {
+                                "allowAllStrings": true,
+                                "dashboardParam": "authUser",
+                                "termTransform": {
+                                    "regExp": "^([^*]+)$",
+                                    "replaceWith": "*$1*"
+                                },
+                                "reports": [
+                                    {
+                                        "query": {
+                                            "searchId": "Auth_Users_Search",
+                                            "dataSource": "splunk",
+                                            "options": {
+                                                "count": 10
+                                            },
+                                            "fields": {
+                                                "Result":{"type":"string"}
+                                            },
+                                            "params": [
+                                                {
+                                                    "field": "userId",
+                                                    "type": "string",
+                                                    "dashboardParam": "term"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "onSelect": {
+                                    "action": "setParams",
+                                    "actionOptions": {
+                                        "updateUrl": false,
+                                        "params": {
+                                            "authUser": "{{value}}"
+                                        }
+                                    }
+                                },
+                                "placeholder": "User name"
+                            }
+                        },
+                        {
+                            "type": "search",
+                            "label": "Source machine: ",
+                            "params": {
+                                "authSource": ""
+                            },
+                            "settings": {
+                                "allowAllStrings": true,
+                                "dashboardParam": "authSource",
+                                "termTransform": {
+                                    "regExp": "^([^*]+)$",
+                                    "replaceWith": "*$1*"
+                                },
+                                "reports": [
+                                    {
+                                        "query": {
+                                            "searchId": "Auth_Source_Search",
+                                            "dataSource": "splunk",
+                                            "options": {
+                                                "count": 10
+                                            },
+                                            "fields": {
+                                                "Result":{"type":"string"}
+                                            },
+                                            "params": [
+                                                {
+                                                    "field": "source",
+                                                    "type": "string",
+                                                    "dashboardParam": "term"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "onSelect": {
+                                    "action": "setParams",
+                                    "actionOptions": {
+                                        "updateUrl": false,
+                                        "params": {
+                                            "authSource": "{{value}}"
+                                        }
+                                    }
+                                },
+                                "placeholder": "IP or machine name"
+                            }
+                        },
+                        {
+                            "type": "search",
+                            "label": "Target machine: ",
+                            "params": {
+                                "authTarget": ""
+                            },
+                            "settings": {
+                                "allowAllStrings": true,
+                                "dashboardParam": "authTarget",
+                                "termTransform": {
+                                    "regExp": "^([^*]+)$",
+                                    "replaceWith": "*$1*"
+                                },
+                                "reports": [
+                                    {
+                                        "query": {
+                                            "searchId": "Auth_Target_Search",
+                                            "dataSource": "splunk",
+                                            "options": {
+                                                "count": 10
+                                            },
+                                            "fields": {
+                                                "Result":{"type":"string"}
+                                            },
+                                            "params": [
+                                                {
+                                                    "field": "target",
+                                                    "type": "string",
+                                                    "dashboardParam": "term"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "onSelect": {
+                                    "action": "setParams",
+                                    "actionOptions": {
+                                        "updateUrl": false,
+                                        "params": {
+                                            "authTarget": "{{value}}"
+                                        }
+                                    }
+                                },
+                                "placeholder": "IP or machine name"
+                            }
+                        },
+                        {
+                            "type": "button",
+                            "text": "Search",
+                            "onClick": {
+                                "action": "setParams",
+                                "actionOptions": {
+
+                                }
+                            }
+                        }
+                    ],
+                    "settings": {
+                        "allowPaging": true,
+                        "useFirstRowAsMessage": true,
+                        "messageType": "warning",
+                        "fields": [
+                            {
+                                "name": "Profile",
+                                "value": "{{profile}}",
+                                "tooltip": "A description of the event"
+                            },
+                            {
+                                "name": "Overall severity",
+                                "tooltip": "How suspicious this event should be considered",
+                                "value": "{{prob}}",
+                                "type": "progressBar",
+                                "progressBarSettings": {
+                                    "width": "120px",
+                                    "min": 0,
+                                    "max": 5
+
+                                }
+                            },
+                            {
+                                "name": "User severity",
+                                "tooltip": "How suspicious is the user ID",
+                                "value": "{{user_id}}",
+                                "type": "progressBar",
+                                "progressBarSettings": {
+                                    "width": "60px",
+                                    "min": 0,
+                                    "max": 5
+                                }
+
+                            },
+                            {
+                                "name": "Source severity",
+                                "tooltip": "How suspicious is the source IP",
+                                "value": "{{source_ip}}",
+                                "type": "progressBar",
+                                "progressBarSettings": {
+                                    "width": "60px",
+                                    "min": 0,
+                                    "max": 5
+                                }
+
+                            },
+                            {
+                                "name": "Time severity",
+                                "tooltip": "How suspicious is the Time",
+                                "value": "{{event_time}}",
+                                "type": "progressBar",
+                                "progressBarSettings": {
+                                    "width": "60px",
+                                    "min": 0,
+                                    "max": 5
+                                }
+
+                            },
+                            {
+                                "name": "Target severity",
+                                "tooltip": "How suspicious is the target machine",
+                                "value": "{{target_name}}",
+                                "type": "progressBar",
+                                "progressBarSettings": {
+                                    "width": "60px",
+                                    "min": 0,
+                                    "max": 5
+                                }
+
+                            },
+                            {
+                                "name": "Error severity",
+                                "tooltip": "How suspicious is the error",
+                                "value": "{{error_code}}",
+                                "type": "progressBar",
+                                "progressBarSettings": {
+                                    "width": "60px",
+                                    "min": 0,
+                                    "max": 5
+                                }
+
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,26 @@
+{
+    "data": [
+        {
+            "username": "dwights@dundermiflin.com",
+            "severity": 88,
+            "avgSeverity": 78,
+            "machineCount": 3,
+            "groups": "QA, IT, Admin, Sales"
+        },
+        {
+            "username": "John Doe",
+            "severity": 83,
+            "avgSeverity": 78,
+            "machineCount": 7,
+            "groups": "IT, Sales"
+        },
+        {
+            "username": "Michael Scott",
+            "severity": 80,
+            "avgSeverity": 78,
+            "machineCount": 4,
+            "groups": "Admin, Sales"
+        }
+    ],
+    "total": 324
+}

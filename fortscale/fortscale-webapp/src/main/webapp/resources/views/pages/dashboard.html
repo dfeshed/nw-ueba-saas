@@ -1,0 +1,36 @@
+<div ng-controller="DashboardController" class="dashboard {{dashboard.className}}">
+    <header class="dashboard-header" ng-show="dashboard.controls.length || dashboard.title || dashboard.description">
+        <div class="dashboard-controls widget-controls" ng-if="!isPopup || dashboard.controls.length">
+            <div class="widget-view-control"
+                 ng-repeat="control in dashboard.controls"
+                 ng-include="'views/controls/' + control.type + '.html'">
+            </div>
+        </div>
+        <h3 class="dashboard-name">
+            <span class="dashboard-icon" ng-if="dashboard.icon" ng-style="{'background-image': 'url(' + dashboard.icon.url + ')'}">
+                <i class="icon-{{dashboard.icon.type}}" ng-if="!dashboard.icon.url && dashboard.icon.type"></i>
+            </span>
+            {{dashboard.title}}
+        </h3>
+        <p ng-if="dashboard.description" class="dashboard-description">{{dashboard.description}}</p>
+    </header>
+    <div class="dashboard-widgets">
+        <div ng-if="dashboard.columns" class="row-fluid">
+            <div ng-repeat="column in dashboard.columns" class="dashboard-column {{column.className}}" ng-class="{'dashboard-with-title': column.title}">
+                <header class="widget-header" ng-if="column.title">
+                    <h4 class="widget-header-title">{{column.title}}</h4>
+                </header>
+                <div class="dashboard-column-contents" ui-sortable="sortableOptions" ng-model="column.widgets" ng-class="{ 'sortable-contents': !isDashboardWidget }">
+                    <div class="widget {{widget.className}}"
+                         ng-repeat="widget in column.widgets"
+                         ng-controller="WidgetController"
+                         ng-init="initWidget(widget)"
+                         ng-style="widget.style">
+                        <ng-include src="'views/widgets/widget.html'"></ng-include>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-include src="'views/widgets/widget.html'" ng-repeat="widget in dashboard.widgets"></ng-include>
+    </div>
+</div>

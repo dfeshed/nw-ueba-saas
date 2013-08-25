@@ -1,0 +1,410 @@
+{
+    "dashboardId": "main",
+    "name": "Overview",
+    "columns": [
+        {
+            "className": "span3",
+            "widgets": [
+                {
+                    "report": {
+                        "query": {
+                            "searchId": "overview",
+                            "fields": [
+                                {
+                                    "name": "title",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "value",
+                                    "type": "float"
+                                },
+                                {
+                                    "name": "trend",
+                                    "type": "float"
+                                }
+                            ],
+                            "params": []
+                        }
+                    },
+                    "title": "Overview",
+                    "views": [
+                        {
+                            "type": "numeric",
+                            "settings": {
+                                "title": "{{title}}",
+                                "tooltip": "A summary of all suspicious activity in the system, compared to yesterday.",
+                                "value": {
+                                    "display": "{{value}}",
+                                    "style": "score",
+                                    "styleParams": {
+                                        "value": "value"
+                                    }
+                                },
+                                "secondaryValue": {
+                                    "display": "{{trend}}%",
+                                    "tagLine": "compared to yesterday",
+                                    "style": "plusMinus",
+                                    "styleParams": {
+                                        "value": "trend"
+                                    },
+                                    "icon": {
+                                        "preset": "plusMinus",
+                                        "presetParams": {
+                                            "value": "trend"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "report": {
+                        "query": {
+                            "searchId": "trending",
+                            "fields": [
+                                {
+                                    "name": "type",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "name",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "id",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "score",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "trend",
+                                    "type": "number"
+                                }
+                            ]
+                        }
+                    },
+                    "title": "Trending",
+                    "views": [
+                        {
+                            "type": "table",
+                            "className": "widget-table-list",
+                            "settings": {
+                                "fields": [
+                                    {
+                                        "name": "Icon",
+                                        "icon": {
+                                            "type": "{{type}}",
+                                            "typeMap": {
+                                                "user": "user",
+                                                "machine": "desktop"
+                                            }
+                                        },
+                                        "style": "score",
+                                        "styleParams": {
+                                            "value": "score"
+                                        }
+                                    },
+                                    {
+                                        "name": "Name",
+                                        "link": "#/d/{{type}}/{{id}}",
+                                        "value": "{{name}}",
+                                        "className": "table-large-cell"
+                                    },
+                                    {
+                                        "name": "Trend",
+                                        "value": "{{trend}}%",
+                                        "icon": "caret-up",
+                                        "className": "sideNote",
+                                        "style": "percentSeverity",
+                                        "styleParams": {
+                                            "value": "trend"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "className": "span9",
+            "widgets": [
+                {
+                    "title": "Severity Distribution",
+                    "tabs": [
+                        {
+                            "name": "Users",
+                            "view": 0
+                        },
+                        {
+                            "name": "Machines",
+                            "view": 1
+                        }
+                    ],
+                    "views": [
+                        {
+                            "type": "dashboardWidget",
+                            "className": "inner-widgets",
+                            "settings": {
+                                "dashboardId": "main-users"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "report": {
+                        "query": {
+                            "searchId": "user_group_memberships",
+                            "fields": [
+                                {
+                                    "name": "username",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "userId",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "group",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "score",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "time",
+                                    "type": "date"
+                                },
+                                {
+                                    "name": "comments",
+                                    "type": "array"
+                                }
+                            ],
+                            "params": []
+                        }
+                    },
+                    "title": "Suspicious Group Memberships",
+                    "linkTo": {
+                        "url": "#/d/user-groups",
+                        "tooltip": "Investigate suspicious group memberships"
+                    },
+                    "views": [
+                        {
+                            "type": "table",
+                            "settings": {
+                                "fields": [
+                                    {
+                                        "name": "User",
+                                        "value": "{{username}}",
+                                        "link": "#/d/user/{{userId}}"
+                                    },
+                                    {
+                                        "name": "Group",
+                                        "value": "{{group}}",
+                                        "link": "#/d/user-group/{{group}}"
+                                    },
+                                    {
+                                        "name": "Score",
+                                        "value": "{{score}}",
+                                        "style": "score",
+                                        "styleParams": {
+                                            "value": "score"
+                                        }
+                                    },
+                                    {
+                                        "name": "Time",
+                                        "value": "{{time}}",
+                                        "format": "date",
+                                        "formatOptions": { "prettyDate": true }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "report": {
+                        "query": {
+                            "searchId": "user_logins",
+                            "fields": [
+                                {
+                                    "name": "username",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "userId",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "sourceLocation",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "sourceIP",
+                                    "type": "ip"
+                                },
+                                {
+                                    "name": "sourceMachine",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "time",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "destinationLocation",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "destinationMachine",
+                                    "type": "string"
+                                }
+                            ],
+                            "params": []
+                        }
+                    },
+                    "title": "Suspicious Administrator Logins",
+                    "linkTo": {
+                        "url": "#/d/user_logins",
+                        "tooltip": "Investigate user logins"
+                    },
+                    "views": [
+                        {
+                            "type": "table",
+                            "settings": {
+                                "fields": [
+                                    {
+                                        "name": "User",
+                                        "value": "{{username}}",
+                                        "link": "#/d/user/{{userId}}",
+                                        "sortBy": "username"
+                                    },
+                                    {
+                                        "name": "Source Location",
+                                        "value": "{{sourceLocation}}",
+                                        "sortBy": "sourceLocation"
+                                    },
+                                    {
+                                        "name": "Source IP",
+                                        "value": "{{sourceIP}}",
+                                        "sortBy": "sourceIP",
+                                        "link": "#/d/malware/e/machine/{{sourceIP}}"
+                                    },
+                                    {
+                                        "name": "Source Machine",
+                                        "value": "{{sourceMachine}}",
+                                        "sortBy": "sourceMachine",
+                                        "link": "#/d/malware/e/machine/{{sourceMachine}}"
+                                    },
+                                    {
+                                        "name": "Time",
+                                        "value": "{{time}}",
+                                        "sortBy": "time",
+                                        "sortDirection": -1
+                                    },
+                                    {
+                                        "name": "Destination Machine",
+                                        "value": "{{destinationMachine}}",
+                                        "sortBy": "destinationMachine",
+                                        "link": "#/d/malware/e/machine/{{destinationMachine}}"
+                                    },
+                                    {
+                                        "name": "Destination Location",
+                                        "value": "{{destinationLocation}}",
+                                        "sortBy": "destinationLocation"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "className": "span3",
+            "widgets": [
+                {
+                    "report": {
+                        "query": {
+                            "searchId": "all_notifications",
+                            "fields": [
+                                {
+                                    "name": "text",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "severity",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "explanation",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "type",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "name",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "time",
+                                    "type": "date"
+                                }
+                            ],
+                            "params": []
+                        }
+                    },
+                    "title": "Recent Events",
+                    "linkTo": {
+                        "url": "#/d/events",
+                        "tooltip": "View all events"
+                    },
+                    "views": [
+                        {
+                            "type": "table",
+                            "className": "widget-table-list",
+                            "settings": {
+                                "fields": [
+                                    {
+                                        "name": "Icon",
+                                        "icon": {
+                                            "type": "{{type}}",
+                                            "typeMap": {
+                                                "user": "user",
+                                                "machine": "desktop"
+                                            }
+                                        },
+                                        "style": "score",
+                                        "styleParams": {
+                                            "value": "severity"
+                                        }
+                                    },
+                                    {
+                                        "name": "Description",
+                                        "value": "<a href='#/d/{{type}}/{{name}}'>{{name}}</a> {{text}}<p class='note'>{{explanation}}</p>",
+                                        "className": "table-large-cell"
+                                    },
+                                    {
+                                        "name": "Time",
+                                        "value": "{{time}}",
+                                        "icon": "time",
+                                        "format": "date",
+                                        "className": "sideNote",
+                                        "formatOptions": { "prettyDate": true, "shortPrettyDate": true }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

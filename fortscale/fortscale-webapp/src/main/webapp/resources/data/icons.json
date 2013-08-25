@@ -1,0 +1,24 @@
+{
+    "plusMinus": [
+        {
+            "type": "chevron-up",
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThan",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "type": "chevron-down",
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "lesserThan",
+                    "value": 0
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,134 @@
+{
+    "score": [
+        {
+            "properties": {
+                "color": "#80BFF0"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "lesserThan",
+                    "value": 30
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#F2CA3A",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEqual",
+                    "value": 30
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEqual",
+                    "value": 60
+                }
+            ]
+        }
+    ],
+    "percentSeverity": [
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEqual",
+                    "value": 250
+                }
+            ]
+        }
+    ],
+    "plusMinus": [
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThan",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#80BFF0"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "lesserThan",
+                    "value": 0
+                }
+            ]
+        }
+    ],
+    "severity": [
+        {
+            "properties": {
+                "color": "#80BFF0"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "Low"
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#EFC739"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "Medium"
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#EF9323"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "High"
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#CE7172"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "Critical"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+<div class="control-notification {{control.className}}" ng-controller="NotificationControlController" ng-show="notificationShow">
+    <span class="control-notification-text" ng-bind-html-unsafe="notificationValue"></span>
+    <a ng-repeat="button in control.buttons"
+       class="control-notification-button"
+        title="{{button.tooltip}}"
+        ng-click="notificationButtonClick(button)">
+        <i ng-if="button.icon" class="icon-{{button.icon}}"></i>
+       </a>
+</div>

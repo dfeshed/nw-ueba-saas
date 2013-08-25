@@ -1,0 +1,534 @@
+{
+    "dashboardId": "machine-score",
+    "name": "{{@entityId}} - Summary",
+    "description": "Risk Score for this machine, as compared to similar machines. The risk score indicates the possibility that an IP address is infected with a malware using DGA mechanism to communicate with its controller.",
+    "controls": [
+        {
+            "type": "dateRange",
+            "label": "For dates: ",
+            "updateDataOnChange": true,
+            "params": {
+                "timeStart": "-1month",
+                "timeEnd": "now"
+            },
+            "paramsTransform": {
+                "timeStart": {
+                    "type": "stringDate",
+                    "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                    "replaceWith": "$1$2$30000",
+                    "format": "YYYY-MM-DD"
+                },
+                "timeEnd": {
+                    "type": "stringDate",
+                    "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                    "replaceWith": "$1$2$32400",
+                    "format": "YYYY-MM-DD"
+                }
+            },
+            "paramsInitTransform": {
+                "timeStart": {
+                    "type": "string",
+                    "regExp": "(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})",
+                    "replaceWith": "$1-$2-$3",
+                    "format": "YYYY-MM-DD"
+                },
+                "timeEnd": {
+                    "type": "string",
+                    "regExp": "(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})",
+                    "replaceWith": "$1-$2-$3",
+                    "format": "YYYY-MM-DD"
+                }
+            },
+            "onChange": {
+                "action": "setParams",
+                "actionOptions": {
+                    "params": {
+                        "timeStart": "{{timeStart}}",
+                        "timeEnd": "{{timeEnd}}"
+                    },
+                    "paramsTransform": {
+                        "timeStart": {
+                            "type": "stringDate",
+                            "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                            "replaceWith": "$1$2$30000",
+                            "format": "YYYY-MM-DD"
+                        },
+                        "timeEnd": {
+                            "type": "stringDate",
+                            "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                            "replaceWith": "$1$2$32400",
+                            "format": "YYYY-MM-DD"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "search",
+            "label": "Search: ",
+            "settings": {
+                "reports": [
+                    {
+                        "query": {
+                            "searchId": "Search_Machines",
+                            "dataSource": "splunk",
+                            "options": {
+                                "count": 10
+                            },
+                            "fields": {
+                                "Result":{"type":"ip"}
+                            },
+                            "params": [
+                                {
+                                    "field": "term",
+                                    "type": "string",
+                                    "dashboardParam": "term"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "onSelect": {
+                    "action": "innerUrl",
+                    "actionOptions": {
+                        "url": "/d/malware/e/machine/{{value}}"
+                    }
+                },
+                "placeholder": "IP or machine name"
+            }
+        }
+    ],
+    "widgets": [
+        {
+            "widgetId": 6,
+            "reportId": 6,
+            "report": {
+                "reportId": 7,
+                "name": "Machine Latest Score",
+                "description": "",
+                "query": {
+                    "dataSource": "splunk",
+                    "searchId": "Machine_Final_Score",
+                    "fields": [
+                        {
+                            "name": "Score",
+                            "type": "float"
+                        }
+                    ],
+                    "params": [
+                        {
+                            "field": "IP",
+                            "type": "string",
+                            "dashboardParam": "entityId"
+                        },
+                        {
+                            "field": "timeStart",
+                            "type": "string",
+                            "dashboardParam": "timeStart",
+                            "default": "-1month"
+                        },
+                        {
+                            "field": "timeEnd",
+                            "type": "string",
+                            "dashboardParam": "timeEnd",
+                            "default": "now"
+                        }
+                    ]
+                }
+            },
+            "name": "Machine Score",
+            "width": "100%",
+            "views": [
+                {
+                    "type": "text",
+                    "title": "",
+                    "className": "widget-noBorder",
+                    "settings": {
+                        "label": "Latest score for this time frame:",
+                        "value": "{{Score}}",
+                        "format": "float",
+                        "formatOptions": { "decimals": 2 },
+                        "style": [
+                            {
+                                "properties": {
+                                    "font-size": "12pt",
+                                    "font-weight": "bold",
+                                    "display": "inline-block",
+                                    "padding": "2px 8px",
+                                    "vertical-align": "middle"
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "color": "#ffffff",
+                                    "background-color": "#c00"
+                                },
+                                "conditions": [
+                                    {
+                                        "field": "Score",
+                                        "operator": "greaterThanOrEqual",
+                                        "value": 4
+                                    }
+                                ]
+                            },
+                            {
+                                "properties": {
+                                    "background-color": "rgb(255, 189, 50)"
+                                },
+                                "conditions": [
+                                    {
+                                        "field": "Score",
+                                        "operator": "greaterThanOrEqual",
+                                        "value": 3
+                                    },
+                                    {
+                                        "field": "Score",
+                                        "operator": "lesserThan",
+                                        "value": 4
+                                    }
+                                ]
+                            },
+                            {
+                                "properties": {
+                                    "background-color": "rgb(150, 255, 100)"
+                                },
+                                "conditions": [
+                                    {
+                                        "field": "Score",
+                                        "operator": "lesserThan",
+                                        "value": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "widgetId": 3,
+            "reportId": 3,
+            "report": {
+                "reportId": 3,
+                "name": "A machine's score graph, over time",
+                "description": "Get score for all buckets in the specified time range, for the specified machine.",
+                "refreshOn": [
+                    "timeStart", "timeEnd"
+                ],
+                "query": {
+                    "dataSource": "splunk",
+                    "searchId": "Machine_Score_Graph",
+                    "fields": [
+                        {
+                            "name": "Bucket",
+                            "type": "number"
+                        },
+                        {
+                            "name": "Score",
+                            "type": "float"
+                        }
+                    ],
+                    "params": [
+                        {
+                            "field": "IP",
+                            "type": "string",
+                            "dashboardParam": "entityId"
+                        },
+                        {
+                            "field": "timeStart",
+                            "type": "string",
+                            "dashboardParam": "timeStart",
+                            "default": "-1month"
+                        },
+                        {
+                            "field": "timeEnd",
+                            "type": "string",
+                            "dashboardParam": "timeEnd",
+                            "default": "now"
+                        }
+                    ]
+                }
+            },
+            "name": "A machine's score, over time",
+            "width": "100%",
+            "height": "220px",
+            "views": [
+                {
+                    "type": "lineGraph",
+                    "title": "Machine score, over time",
+                    "settings": {
+                        "graphType": "ColumnChart",
+                        "graphOptions": {
+                            "vAxis": { "minValue": 0, "maxValue": 10 }
+                        },
+                        "height": 180,
+                        "axes": {
+                            "x": {
+                                "field": "Bucket",
+                                "values": {
+                                    "type": "datetime",
+                                    "startAt": "params.timeStart",
+                                    "endAt": "params.timeEnd",
+                                    "format": "YYYY-MM-DD HH:mm",
+                                    "interval": { "value": 15, "unit": "m" },
+                                    "transform": {
+                                        "regExp": "(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})",
+                                        "replaceWith": "$1-$2-$3 $4:$5:00"
+                                    }
+                                }
+                            },
+                            "y": "Score"
+                        },
+                        "labels": ["Bucket", "Score"],
+                        "decimals": 2,
+                        "events": [
+                            {
+                                "eventName": "select",
+                                "setSelection": "point",
+                                "scope": "point",
+                                "action": "setParams",
+                                "actionOptions": {
+                                    "updateUrl": false,
+                                    "params": {
+                                        "timeStart2": "{{Bucket}}",
+                                        "timeEnd2": "{{Bucket}}"
+                                    },
+                                    "paramsTransform": {
+                                        "timeStart2": {
+                                            "type": "date",
+                                            "format": "YYYYMMDDHHmm"
+                                        },
+                                        "timeEnd2": {
+                                            "type": "date",
+                                            "format": "YYYYMMDDHHmm"
+                                        }
+                                    },
+                                    "paramsOptions": {
+                                        "timeStart2": {
+                                            "persist": false
+                                        },
+                                        "timeEnd2": {
+                                            "persist": false
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "The machine's suspicious domains",
+            "report": {
+                "name": "A machine's score, over time",
+                "description": "Get score for all buckets in the specified time range, for the specified machine.",
+                "query": {
+                    "options": { "count": 20 },
+                    "dataSource": "splunk",
+                    "searchId": "Machine_Domains",
+                    "fields": {
+                        "Domain_Name": {
+                            "type": "string"
+                        },
+                        "Access_Count": {
+                            "type": "string"
+                        },
+                        "Features": {
+                            "type": "string",
+                            "isArray": true
+                        },
+                        "Avg_Score": {
+                            "type": "float"
+                        },
+                        "Max_Score": {
+                            "type": "float"
+                        },
+                        "Last_Access": {
+                            "type": "date"
+                        },
+                        "Number_of_Failures": {
+                            "type": "number"
+                        },
+                        "Number_of_Successes": {
+                            "type": "number"
+                        }
+                    },
+                    "params": [
+                        {
+                            "field": "IP",
+                            "type": "string",
+                            "dashboardParam": "entityId"
+                        },
+                        {
+                            "field": "timeStart",
+                            "type": "string",
+                            "dashboardParam": "timeStart",
+                            "default": "-1month"
+                        },
+                        {
+                            "field": "timeEnd",
+                            "type": "string",
+                            "dashboardParam": "timeEnd",
+                            "default": "now"
+                        },
+                        {
+                            "field": "timeStart",
+                            "type": "string",
+                            "dashboardParam": "timeStart2",
+                            "default": "-1month"
+                        },
+                        {
+                            "field": "timeEnd",
+                            "type": "string",
+                            "dashboardParam": "timeEnd2",
+                            "default": "now"
+                        },
+                        {
+                            "field": "minScore",
+                            "type": "number",
+                            "default": "3",
+                            "dashboardParam": "domainScoreFilter"
+                        },
+                        {
+                            "field": "sort",
+                            "type": "string",
+                            "default": "-Max_Score",
+                            "dashboardParam": "sort"
+                        },
+                        {
+                            "field": "minFailures",
+                            "type": "number",
+                            "default": "1",
+                            "dashboardParam": "domainFailuresFilter"
+                        },
+                        {
+                            "field": "head",
+                            "type": "number",
+                            "default": "1000"
+                        }
+                    ]
+                }
+            },
+            "controls": [
+                {
+                    "type": "notification",
+                    "showIf": "timeStart2",
+                    "value": "<i class='icon-filter'></i> Showing only bucket <strong>{{@timeStart2}}</strong>",
+                    "buttons": [
+                        {
+                            "icon": "remove-sign",
+                            "tooltip": "Discard this filter",
+                            "onClick": {
+                                "action": "removeParams",
+                                "actionOptions": {
+                                    "params": ["timeStart2", "timeEnd2"]
+                                }
+                            }
+                        }
+                    ],
+                    "className": "notification-danger",
+                    "updateDataOnChange": true
+                }
+            ],
+            "refreshOn": [
+                "timeStart2", "timeEnd2"
+            ],
+            "width": "100%",
+            "views": [
+                {
+                    "type": "table",
+                    "title": "Suspected domains this machine accessed at the specified time frame",
+                    "settings": {
+                        "allowPaging": true,
+                        "fields": [
+                            {
+                                "name": "Domain",
+                                "value": "{{Domain_Name}}",
+                                "sortBy": "Domain_Name",
+                                "events": {
+                                    "click": {
+                                        "action": "showPopup",
+                                        "actionOptions": {
+                                            "popupTitle": "Domain - {{Domain_Name}}",
+                                            "width": 400,
+                                            "height": 260,
+                                            "dashboardId": "domain",
+                                            "dashboardParams": {
+                                                "domain": "{{Domain_Name}}"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "name": "Reasons",
+                                "value": "{{Features}}",
+                                "collection": "Features",
+                                "item": {
+                                    "link": "#/d/malware/e/machine/{{@entityId}}/f/{{@item}}",
+                                    "value": "{{@item}}",
+                                    "map": {
+                                        "TOP_FAILED_DNS": "Failures",
+                                        "TOP_RANDOM_DNS": "Random",
+                                        "TOP_UNIQUE_DNS": "Unique",
+                                        "TOP_SEQUENCE_DNS": "Sequences"
+                                    }
+                                },
+                                "tooltip": "The reason(s) the domain is considered suspicious. One or more of the measures used to compute the domain's score."
+                            },
+                            {
+                                "name": "Last access",
+                                "value": "{{Last_Access}}",
+                                "sortable": true,
+                                "sortBy": "Last_Access",
+                                "tooltip": "The last time the domain was accessed by this machine"
+                            },
+                            {
+                                "name": "Score",
+                                "value": "{{Max_Score}}",
+                                "sortBy": "Max_Score",
+                                "format": "float",
+                                "formatOptions": { "decimals": 2 },
+                                "tooltip": "Risk Score that indicates the possibility that a domain serves as a malicious command and control, based on DNS activity analysis of IP addresses. 1 being the lowest possibility and 10 the highest.",
+                                "filter": {
+                                    "type": "number",
+                                    "label": "Higher than:",
+                                    "dashboardParam": "domainScoreFilter",
+                                    "defaultValue": 3,
+                                    "noFilterValue": 0,
+                                    "min": 0,
+                                    "max": 9,
+                                    "maxlength": 5,
+                                    "width": 50
+                                }
+                            },
+                            {
+                                "name": "Failures",
+                                "value": "{{Number_of_Failures}}",
+                                "sortBy": "Number_of_Failures",
+                                "tooltip": "The number of times this machine attempted to access the domain in the specified time frame, but failed",
+                                "filter": {
+                                    "type": "number",
+                                    "label": "At least:",
+                                    "dashboardParam": "domainFailuresFilter",
+                                    "defaultValue": 1,
+                                    "noFilterValue": 0,
+                                    "min": 0,
+                                    "maxlength": 7,
+                                    "width": 50
+                                }
+                            },
+                            {
+                                "name": "Successes",
+                                "value": "{{Number_of_Successes}}",
+                                "sortBy": "Number_of_Successes",
+                                "tooltip": "The number of times this machine successfully attempted to access the domain in the specified time frame"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

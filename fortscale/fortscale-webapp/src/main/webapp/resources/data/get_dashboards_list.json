@@ -1,0 +1,4 @@
+[
+    { "name": "Malware Analysis", "dashboardId": "malware" },
+    { "name": "Domains Whitelist", "dashboardId": "domain-whitelist" }
+]

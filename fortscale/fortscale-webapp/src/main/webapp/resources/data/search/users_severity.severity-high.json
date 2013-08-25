@@ -1,0 +1,26 @@
+{
+    "data": [
+        {
+            "username": "John Smith",
+            "severity": 79,
+            "avgSeverity": 34,
+            "machineCount": 9,
+            "groups": "QA, IT, Admin"
+        },
+        {
+            "username": "Jim Halpert",
+            "severity": 67,
+            "avgSeverity": 34,
+            "machineCount": 2,
+            "groups": "Sales"
+        },
+        {
+            "username": "Pam Bisley",
+            "severity": 62,
+            "avgSeverity": 34,
+            "machineCount": 13,
+            "groups": "Admin"
+        }
+    ],
+    "total": 324
+}

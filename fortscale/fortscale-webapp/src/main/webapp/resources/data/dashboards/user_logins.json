@@ -1,0 +1,120 @@
+{
+    "dashboardId": "user_logins",
+    "columns": [
+        {
+            "className": "span15",
+            "widgets": [
+                {
+                    "report": {
+                        "query": {
+                            "searchId": "user_logins",
+                            "fields": [
+                                {
+                                    "name": "username",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "userId",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "sourceLocation",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "sourceIP",
+                                    "type": "ip"
+                                },
+                                {
+                                    "name": "sourceMachine",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "time",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "destinationLocation",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "destinationMachine",
+                                    "type": "string"
+                                }
+                            ],
+                            "params": [
+                                {
+                                    "field": "userId",
+                                    "name": "userId",
+                                    "dashboardParam": "entityId"
+                                }
+                            ]
+                        }
+                    },
+                    "title": "Suspicious Logins",
+                    "controls": [
+                        {
+                            "type": "link",
+                            "text": "View all suspicious logins for this user",
+                            "href": "#/d/user/{{@entityId}}/logins"
+                        }
+                    ],
+                    "views": [
+                        {
+                            "type": "table",
+                            "settings": {
+                                "fields": [
+                                    {
+                                        "name": "User",
+                                        "value": "{{username}}",
+                                        "link": "#/d/user/{{userId}}",
+                                        "sortBy": "username",
+                                        "filter": {
+                                            "type": "string",
+                                            "label": "Show only",
+                                            "dashboardParam": "username"
+                                        }
+                                    },
+                                    {
+                                        "name": "Source Location",
+                                        "value": "{{sourceLocation}}",
+                                        "sortBy": "sourceLocation"
+                                    },
+                                    {
+                                        "name": "Source IP",
+                                        "value": "{{sourceIP}}",
+                                        "sortBy": "sourceIP",
+                                        "link": "#/d/malware/e/machine/{{sourceIP}}"
+                                    },
+                                    {
+                                        "name": "Source Machine",
+                                        "value": "{{sourceMachine}}",
+                                        "sortBy": "sourceMachine",
+                                        "link": "#/d/malware/e/machine/{{sourceMachine}}"
+                                    },
+                                    {
+                                        "name": "Time",
+                                        "value": "{{time}}",
+                                        "sortBy": "time",
+                                        "sortDirection": -1
+                                    },
+                                    {
+                                        "name": "Destination Machine",
+                                        "value": "{{destinationMachine}}",
+                                        "sortBy": "destinationMachine",
+                                        "link": "#/d/malware/e/machine/{{destinationMachine}}"
+                                    },
+                                    {
+                                        "name": "Destination Location",
+                                        "value": "{{destinationLocation}}",
+                                        "sortBy": "destinationLocation"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

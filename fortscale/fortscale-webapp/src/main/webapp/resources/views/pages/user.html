@@ -1,0 +1,419 @@
+<div class="user-profile" ng-controller="UserController">
+    <div class="row-fluid">
+        <div class="span3">
+            <header class="row-fluid header">
+                <div class="span12">
+                    <img src="images/dwight.jpg" class="avatar">
+                    <h3 class="name">Dwight Shrute</h3>
+                    <span class="area">Sales rep.</span>
+                </div>
+            </header>
+            <div class="details-widget" ng-init="userDetailsOpen=true">
+                <h4>
+                    <a class="details-widget-minimize pull-right" ng-click="userDetailsOpen = !userDetailsOpen" title="Toggle user details">
+                        <i class="icon-double-angle-right" ng-class="{ 'icon-double-angle-down': userDetailsOpen }"></i>
+                    </a>
+                    User Details
+                </h4>
+                <ul class="unstyled details-widget" ng-show="userDetailsOpen">
+                    <li>
+                        <i class="icon-user icon-large" title="User name"></i> <a href="mailto:dwights@dundermiflin.com" title="Send email">dwights@dundermiflin.com</a>
+                    </li>
+                    <li>
+                        <i class="icon-barcode icon-large"></i> 45673
+                    </li>
+                    <li>
+                        <i class="icon-group icon-large" title="Department"></i> Sales
+                    </li>
+                    <li>
+                        <i class="icon-globe icon-large" title="Organization Unit"></i> Scranton regional sales
+                    </li>
+                    <li>
+                        <i class="icon-sitemap icon-large" title="Manager"></i> <a href="#/d/users/e/user/michael%20scott" title="Go to Michael Scott's page">Michael Scott</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="details-widget" ng-init="notificationsOpen=true">
+                <h4>
+                    <a class="details-widget-minimize pull-right" ng-click="notificationsOpen = !notificationsOpen" title="Toggle notifications">
+                        <i class="icon-double-angle-right" ng-class="{ 'icon-double-angle-down': notificationsOpen }"></i>
+                    </a>
+                    Notifications
+                </h4>
+                <ul class="unstyled" ng-show="notificationsOpen">
+                    <li>Has admin rights</li>
+                    <li><span class="error"><i class="icon-key"></i> Password never expires</span></li>
+                    <li>Visits <span class="warning">10% more</span> abnormal domains than average</li>
+                    <li>Uses <span class="warning">10 machines</span> on average</li>
+                </ul>
+            </div>
+            <div class="details-widget">
+                <h4>
+                    <a class="details-widget-minimize pull-right" ng-click="contactDetailsOpen = !contactDetailsOpen" title="Toggle contact details">
+                        <i class="icon-double-angle-right" ng-class="{ 'icon-double-angle-down': contactDetailsOpen }"></i>
+                    </a>
+                    Contact Details
+                </h4>
+                <ul class="unstyled" ng-show="contactDetailsOpen">
+                    <li>
+                        <i class="icon-envelope icon-large" title="Email"></i> <a href="mailto:dwights@dundermiflin.com" title="Email Dwight Shrute">dwights@dundermiflin.com</a>
+                    </li>
+                    <li>
+                        <i class="icon-phone icon-large" title="Phone"></i> <a href="tel:18172742933" title="Call Dwight Shrute">1817 274 2933</a>
+                    </li>
+                    <li>
+                        <i class="icon-mobile-phone icon-large" title="Mobile"></i> <a href="tel:12145745533" title="Call Dwight Shrute">1214 574 5533</a>
+                    </li>
+                    <li>
+                        2301 East Lamar Blvd. Suite 140.<br/>
+                        City, Arlington. United States,<br/>
+                        Zip Code, TX 76006.
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="span9">
+            <ul class="nav nav-tabs">
+                <li ng-class="{ active: currentGraph == 'score' }">
+                    <a ng-click="openGraph('score')">Summary <span class="badge badge-important">82</span></a>
+                </li>
+                <li ng-class="{ active: currentGraph == 'password' }"><a ng-click="openGraph('password')">Password <span class="badge badge-info">23</span></a></li>
+                <li ng-class="{ active: currentGraph == 'group' }"><a ng-click="openGraph('group')">Group <span class="badge badge-info">17</span></a></li>
+                <li ng-class="{ active: currentGraph == 'logins' }"><a ng-click="openGraph('logins')">Logins <span class="badge badge-warning">55</span></a></li>
+                <li ng-class="{ active: currentGraph == 'group-policy' }"><a ng-click="openGraph('group-policy')">Group Policy <span class="badge badge-important">86</span></a></li>
+            </ul>
+            <!--
+            <div class="row-fluid">
+                <div class="span3">
+                    <div class="knob-wrapper">
+                        <input type="text" value="82" class="knob" data-thickness=".3" data-inputColor="#333" data-fgColor="#30a1ec" data-bgColor="#d4ecfd" data-width="150">
+                        <div class="info" ng-class="{selected: currentGraph == 'score'}"><span class="param">Overall Score</span></div>
+                        <div class="know-wrapper-overlay" ng-click="openGraph('score')" title="A summary score of all the user's metrics"></div>
+                    </div>
+                </div>
+                <div class="span9 sub-scores">
+                    <div class="row-fluid">
+                        <div class="span3">
+                            <div class="knob-wrapper">
+                                <input type="text" value="48" class="knob" data-thickness=".3" data-inputColor="#333" data-fgColor="#30a1ec" data-bgColor="#d4ecfd" data-width="100">
+                                <div class="info" ng-class="{selected: currentGraph == 'password'}"><span class="param">Password</span></div>
+                                <div class="know-wrapper-overlay" ng-click="openGraph('password')" title="Suspicious activity in regards to the user's password"></div>
+                            </div>
+                        </div>
+                        <div class="span3">
+                            <div class="knob-wrapper">
+                                <input type="text" value="20" class="knob" data-thickness=".3" data-inputColor="#333" data-fgColor="#30a1ec" data-bgColor="#d4ecfd" data-width="100">
+                                <div class="info" ng-class="{selected: currentGraph == 'group'}"><span class="param">Group</span></div>
+                                <div class="know-wrapper-overlay" ng-click="openGraph('group')" title="Suspicious activity in regards to the user's group"></div>
+                            </div>
+                        </div>
+                        <div class="span3">
+                            <div class="knob-wrapper">
+                                <input type="text" value="44" class="knob" data-thickness=".3" data-inputColor="#333" data-fgColor="#30a1ec" data-bgColor="#d4ecfd" data-width="100">
+                                <div class="info" ng-class="{selected: currentGraph == 'logins'}"><span class="param">Logins</span></div>
+                                <div class="know-wrapper-overlay" ng-click="openGraph('logins')" title="Suspicious activity in regards to the user's logins"></div>
+                            </div>
+                        </div>
+                        <div class="span3">
+                            <div class="knob-wrapper">
+                                <input type="text" value="90" class="knob" data-thickness=".3" data-inputColor="#333" data-fgColor="#c00" data-bgColor="rgba(230,0,0,.5)" data-width="100">
+                                <div class="info"><span class="param">Group Policy</span></div>
+                                <div class="know-wrapper-overlay" ng-click="openGraph('password')" title="Suspicious activity in regards to the user's group policy"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            -->
+            <div class="row-fluid">
+                <div class="slide" ng-show="currentGraph == 'score'">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <h4>
+                                Overall score over time
+                                <div class="btn-group pull-right">
+                                    <button class="glow left">Average Score</button>
+                                    <button class="glow right active">Median Score</button>
+                                </div>
+                            </h4>
+                            <div id="score-chart" style="height: 250px;"></div>
+                        </div>
+                    </div>
+                    <section class="section">
+                        <div class="row-fluid">
+                            <div class="span9">
+                                <h4 class="">
+                                    <div class="pull-right widget-icons">
+                                        <a title="Follow this user's activities"><i class="icon-eye-open"></i></a>
+                                        <a title="Refresh"><i class="icon-refresh"></i></a>
+                                    </div>
+                                    Recent Activities
+                                </h4>
+                                <ul class="unstyled events-list">
+                                    <li class="event-item">
+                                        <i class="icon-key event-icon"></i>
+                                        <p class="event-description">Password changed</p>
+                                        <div class="event-time"><i class="icon-time"></i> 1 hour ago</div>
+                                    </li>
+                                    <li class="event-item">
+                                        <i class="icon-laptop event-icon" style="background: #f89406"></i>
+                                        <p class="event-description">Logged in to <a href="#/d/malware/e/machine/BACKUP-LINUX">BACKUP-LINUX</a> from
+                                            <a href="#/d/malware/e/machine/192.168.0.66">192.168.0.66</a></p>
+                                        <div class="event-time"><i class="icon-time"></i> 3 hours ago</div>
+                                    </li>
+                                    <li class="event-item">
+                                        <i class="icon-unlock-alt event-icon"></i>
+                                        <p class="event-description">Changed job title to <a>Assistant Regional Manager</a></p>
+                                        <div class="event-time"><i class="icon-time"></i> 7 months ago</div>
+                                    </li>
+                                    <li class="event-item">
+                                        <i class="icon-moon event-icon" style="background: #b94a48"></i>
+                                        <p class="event-description">Logged in at night, from 03:00 to 04:00, from <a>167.111.45.98</a></p>
+                                        <div class="event-time"><i class="icon-time"></i> 8 months ago</div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="span3 chart">
+                                <h4>Related Machines</h4>
+                                <div id="hero-donut" style="height: 200px;"></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="slide" ng-show="currentGraph == 'password'">
+                    <h4 class="widget-view-title">
+                        Password score over time
+                        <div class="btn-group pull-right">
+                            <button class="glow left">Average Score</button>
+                            <button class="glow right active">Median Score</button>
+                        </div>
+                    </h4>
+                    <div id="password-chart" style="height: 250px;"></div>
+                </div>
+                <div class="slide" ng-show="currentGraph == 'group'">
+                    <h4 class="widget-view-title">
+                        Group score over time
+                        <div class="btn-group pull-right">
+                            <button class="glow left">Average Score</button>
+                            <button class="glow right active">Median Score</button>
+                        </div>
+                    </h4>
+                    <div id="group-chart" style="height: 250px;"></div>
+                </div>
+                <div class="slide" ng-show="currentGraph == 'logins'">
+                    <div class="row-fluid">
+                        <h4 class="widget-view-title">
+                            Group score over time
+                            <div class="btn-group pull-right">
+                                <button class="glow left">Average Score</button>
+                                <button class="glow right active">Median Score</button>
+                            </div>
+                        </h4>
+                        <div id="logins-chart" style="height: 250px;"></div>
+                    </div>
+                    <section class="section">
+                    <h4 class="widget-view-title">Suspicious Logins</h4>
+                        <table class="table table-hover widget-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Source Location</th>
+                                    <th>Source IP</th>
+                                    <th>Source Machine</th>
+                                    <th>Time</th>
+                                    <th>Destination Machine</th>
+                                    <th>Destination Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>jhons@dundermiflin.com</td>
+                                    <td>London Office</td>
+                                    <td>10.0.12.13</td>
+                                    <td>dwights-pc</td>
+                                    <td>7/15/2013 08:00</td>
+                                    <td>SAP</td>
+                                    <td>Germany (Berlin office)</td>
+                                </tr>
+                                <tr>
+                                    <td>jhons@dundermiflin.com</td>
+                                    <td>London Office</td>
+                                    <td>10.0.12.13</td>
+                                    <td>dwights-pc</td>
+                                    <td>7/15/2013 08:00</td>
+                                    <td>SAP</td>
+                                    <td>Germany (Berlin office)</td>
+                                </tr>
+                                <tr>
+                                    <td>jhons@dundermiflin.com</td>
+                                    <td>London Office</td>
+                                    <td>10.0.12.13</td>
+                                    <td>dwights-pc</td>
+                                    <td>7/15/2013 08:00</td>
+                                    <td>SAP</td>
+                                    <td>Germany (Berlin office)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <script>
+            Morris.Area({
+                element: 'score-chart',
+                data: [
+                    {period: '2013-07-22', iphone: 2.666, ipad: null, itouch: 2.647},
+                    {period: '2013-07-23', iphone: 2.778, ipad: 2.294, itouch: 2.441},
+                    {period: '2013-07-24', iphone: 4.912, ipad: 1.969, itouch: 2.501},
+                    {period: '2013-07-25', iphone: 3.767, ipad: 3.597, itouch: 5.689},
+                    {period: '2013-07-26', iphone: 6.810, ipad: 1.914, itouch: 2.293},
+                    {period: '2013-07-27', iphone: 5.670, ipad: 4.293, itouch: 1.881},
+                    {period: '2013-07-28', iphone: 4.820, ipad: 3.795, itouch: 1.588},
+                    {period: '2013-07-29', iphone: 7.5073, ipad: 5.967, itouch: 5.175}
+                ],
+                xkey: 'period',
+                ykeys: ['iphone', 'ipad', 'itouch'],
+                labels: ['Dwight Shrute', 'Average user', 'Median user'],
+                lineWidth: 2,
+                hideHover: 'auto',
+                lineColors: ["#81d5d9", "#a6e182", "#67bdf8"]
+            });
+
+            Morris.Area({
+                element: 'password-chart',
+                data: [
+                    {period: '2010 Q1', score: 5},
+                    {period: '2010 Q2', score: 4.3},
+                    {period: '2010 Q3', score: 7},
+                    {period: '2010 Q4', score: 5.83763},
+                    {period: '2011 Q1', score: 2.454},
+                    {period: '2011 Q2', score: 5.343},
+                    {period: '2011 Q3', score: 8},
+                    {period: '2011 Q4', score: 7.32476},
+                    {period: '2012 Q1', score: 4.234},
+                    {period: '2012 Q2', score: 3.3},
+                    {period: '2013 Q3', score: 5.2345},
+                    {period: '2013 Q4', score: 6.234},
+                    {period: '2013 Q1', score: 4.34343},
+                    {period: '2013 Q2', score: 6.3443}
+                ],
+                xkey: 'period',
+                ykeys: ['score'],
+                labels: ['Score'],
+                lineWidth: 2,
+                hideHover: 'auto',
+                lineColors: ["#81d5d9", "#a6e182", "#67bdf8"]
+            });
+
+            Morris.Area({
+                element: 'group-chart',
+                data: [
+                    {period: '2010 Q1', score: 3},
+                    {period: '2010 Q2', score: 1.3},
+                    {period: '2010 Q3', score: 4},
+                    {period: '2010 Q4', score: 3.55323},
+                    {period: '2011 Q1', score: 5.23487},
+                    {period: '2011 Q2', score: 2.234},
+                    {period: '2011 Q3', score: 2.3465},
+                    {period: '2011 Q4', score: 6.345},
+                    {period: '2012 Q1', score: 5.5},
+                    {period: '2012 Q2', score: 6.1},
+                    {period: '2013 Q3', score: 5.234},
+                    {period: '2013 Q4', score: 3.345},
+                    {period: '2013 Q1', score: 4.1},
+                    {period: '2013 Q2', score: 4}
+                ],
+                xkey: 'period',
+                ykeys: ['score'],
+                labels: ['Score'],
+                lineWidth: 2,
+                hideHover: 'auto',
+                lineColors: ["#81d5d9", "#a6e182", "#67bdf8"]
+            });
+
+            Morris.Area({
+                element: 'logins-chart',
+                data: [
+                    {period: '2010 Q1', score: 3, avg: 2.4444},
+                    {period: '2010 Q2', score: 1.3, avg: 2.324343},
+                    {period: '2010 Q3', score: 4, avg: 3},
+                    {period: '2010 Q4', score: 3.55323, avg: 3.554 },
+                    {period: '2011 Q1', score: 5.23487, avg: 2.1212},
+                    {period: '2011 Q2', score: 2.234, avg: 3.3232},
+                    {period: '2011 Q3', score: 2.3465, avg: 3.0121},
+                    {period: '2011 Q4', score: 6.345, avg: 3.132},
+                    {period: '2012 Q1', score: 5.5, avg: 2.36676},
+                    {period: '2012 Q2', score: 6.1, avg: 3.45444},
+                    {period: '2013 Q3', score: 5.234, avg: 3.121},
+                    {period: '2013 Q4', score: 3.345, avg: 3.76876},
+                    {period: '2013 Q1', score: 4.1, avg: 4.121214},
+                    {period: '2013 Q2', score: 4, avg: 3.982932}
+                ],
+                xkey: 'period',
+                ykeys: ['score', 'avg'],
+                labels: ['Dwight Shrute', "Average User"],
+                lineWidth: 2,
+                hideHover: 'auto',
+                lineColors: ["#81d5d9", "#a6e182", "#67bdf8"]
+            });
+
+            Morris.Donut({
+                element: 'hero-donut',
+                data: [
+                    {label: 'dwights-pc', value: 76 },
+                    {label: '192.168.0.104', value: 10 },
+                    {label: 'claudera-unix', value: 13 },
+                    {label: 'ori-iphone', value: 1 }
+                ],
+                colors: ["#30a1ec", "#76bdee", "#c00", "Purple"],
+                formatter: function (y) { return y + "%" }
+            });
+        </script>
+
+<script>
+    /*
+    var map = document.getElementById("map");
+
+    var width = 385,
+        height = 250;
+
+    var projection = d3.geo.mercator()
+            .center([150,-30 ])
+            .rotate([100, 0])
+            .scale(100);
+
+    var svg = d3.select("#map").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    var path = d3.geo.path()
+            .projection(projection);
+
+    var g = svg.append("g");
+
+    // load and display the World
+    d3.json("components/d3/world-110m2.json", function(error, topology) {
+        g.selectAll("path")
+                .data(topojson.object(topology, topology.objects.countries)
+                        .geometries)
+                .enter()
+                .append("path")
+                .attr("d", path)
+    });
+
+    // zoom and pan
+    var zoom = d3.behavior.zoom()
+            .on("zoom",function() {
+                g.attr("transform","translate("+
+                        d3.event.translate.join(",")+")scale("+d3.event.scale+")");
+                g.selectAll("path")
+                        .attr("d", path.projection(projection));
+            });
+
+    svg.call(zoom)
+    */
+</script>

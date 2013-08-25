@@ -1,0 +1,35 @@
+{
+    "data": [
+        {
+            "id": "overall",
+            "name": "Summary",
+            "score": 82,
+            "averageScore": 63
+        },
+        {
+            "id": "groupPolicy",
+            "name": "Group Policy",
+            "score": 86,
+            "averageScore": 42
+        },
+        {
+            "id": "logins",
+            "name": "Logins",
+            "score": 55,
+            "averageScore": 16
+        },
+        {
+            "id": "password",
+            "name": "Password",
+            "score": 23,
+            "averageScore": 31
+        },
+        {
+            "id": "groups",
+            "name": "Groups",
+            "score": 17,
+            "averageScore": 26
+        }
+    ],
+    "total": 5
+}

@@ -1,0 +1,21 @@
+{
+    "data": [
+        {
+            "name": "Critical",
+            "value": 7
+        },
+        {
+            "name": "High",
+            "value": 22
+        },
+        {
+            "name": "Medium",
+            "value": 28
+        },
+        {
+            "name": "Low",
+            "value": 43
+        }
+    ],
+    "total": 4
+}

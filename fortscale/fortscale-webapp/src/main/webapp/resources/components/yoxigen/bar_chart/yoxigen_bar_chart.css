@@ -1,0 +1,29 @@
+.yoxigen-chart .axis path,
+.yoxigen-chart .axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges; }
+.yoxigen-chart .axis text {
+  font-family: sans-serif;
+  font-size: 11px; }
+.yoxigen-chart .labels {
+  pointer-events: none; }
+  .yoxigen-chart .labels.selected {
+    color: White; }
+.yoxigen-chart .crisp {
+  shape-rendering: crispEdges; }
+.yoxigen-chart .handle-events {
+  cursor: pointer; }
+.yoxigen-chart .label-box {
+  opacity: 0;
+  -webkit-transition: opacity 300ms ease-out; }
+  .yoxigen-chart .label-box.selected {
+    opacity: 1 !important; }
+  .yoxigen-chart .label-box:hover {
+    opacity: .2; }
+.yoxigen-chart .percent-bars {
+  -webkit-transform: scaleY(1);
+  -webkit-transform-origin: center center;
+  -webkit-transition: all 200ms ease-out; }
+  .yoxigen-chart .percent-bars:hover {
+    -webkit-transform: scaleY(1.1); }
