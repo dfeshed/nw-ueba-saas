@@ -21,6 +21,8 @@ public class AdUser extends AdObject{
 	@Field("mail")
 	private String emailAddress;
 	
+	private String TimeStamp;
+	
 	private String isCriticalSystemObject;
 	
 	private String badPwdCount;
@@ -547,5 +549,13 @@ public class AdUser extends AdObject{
 
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
+	}
+
+	public String getTimeStamp() {
+		return TimeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		TimeStamp = timeStamp;
 	}
 }

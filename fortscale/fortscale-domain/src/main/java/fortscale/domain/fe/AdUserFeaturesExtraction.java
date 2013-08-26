@@ -27,15 +27,15 @@ public class AdUserFeaturesExtraction extends AbstractFEDocument{
 	
 
 	@Transient
-	private List<ADFeature> attrVals;
+	private List<IFeature> attrVals;
 	
 	
-	public List<ADFeature> getAttrVals() {
+	public List<IFeature> getAttrVals() {
 		return attrVals;
 	}
 
 
-	public void setAttrVals(List<ADFeature> attrVals) {
+	public void setAttrVals(List<IFeature> attrVals) {
 		this.attrVals = attrVals;
 	}
 

@@ -21,6 +21,7 @@ import fortscale.domain.core.dao.MongoDbRepositoryUtil;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
+import fortscale.domain.fe.IFeature;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -75,12 +76,12 @@ public class AdUserRepositoryIntegrationTest{
 			}
 			ret.put(user.getId().toString(), adUser.getAttrVals());
 			AdUserFeaturesExtraction adUsersFeaturesExtraction = new AdUserFeaturesExtraction(user.getId().toString());
-			List<ADFeature> features = new ArrayList<ADFeature>();
+			List<IFeature> features = new ArrayList<IFeature>();
 			for(Entry<String, String> ent: adUser.getAttrVals().entrySet()){
 				if(ent.getKey().equalsIgnoreCase("_id")){
 					continue;
 				}
-				ADFeature adFeature = new ADFeature(ent.getKey(), ent.getKey().toString(), 1.0, 2.0);
+				IFeature adFeature = new ADFeature(ent.getKey(), ent.getKey().toString(), 1.0, 2.0);
 				features.add(adFeature);
 			}
 			adUsersFeaturesExtraction.setAttrVals(features);

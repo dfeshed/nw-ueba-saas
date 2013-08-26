@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
+import fortscale.domain.fe.IFeature;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.fe.FeService;
 
@@ -52,7 +52,7 @@ public class FeServiceImpl implements FeService {
 
 	@Override
 	public void setAdUsersScores(Map<String, Double> userScoresMap,
-			Map<String, List<ADFeature>> userFeaturesScoresMap, Date timestamp) {
+			Map<String, List<IFeature>> userFeaturesScoresMap, Date timestamp) {
 		for(Entry<String, Double> ent: userScoresMap.entrySet()){
 			AdUserFeaturesExtraction adUserFeaturesExtraction = new AdUserFeaturesExtraction(ent.getKey());
 			adUserFeaturesExtraction.setScore(ent.getValue());

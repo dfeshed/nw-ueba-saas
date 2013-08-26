@@ -1,29 +1,29 @@
 package fortscale.domain.fe;
 
-public class ADFeature {
+public class ADFeature implements IFeature{
 	
 	public static final String DISPLAY_NAME_FIELD = "displayName";
 	public static final String FEATURE_VALUE_FIELD = "featureValue";
 	public static final String FEATURE_SCORE_FIELD = "featureScore";
 
-	private String uniqueName;
-	private String displayName;
+	private String featureUniqueName;
+	private String featureDisplayName;
 	private Double featureValue;
 	private Double featureScore;
 	
 	public ADFeature(String uniqueName, String displayName, Double featureValue, Double featureScore){
-		this.uniqueName = uniqueName;
-		this.displayName = displayName;
+		this.featureUniqueName = uniqueName;
+		this.featureDisplayName = displayName;
 		this.featureValue = featureValue;
 		this.featureScore = featureScore;
 	}
 
-	public String getUniqueName() {
-		return uniqueName;
+	public String getFeatureUniqueName() {
+		return featureUniqueName;
 	}
 
-	public String getDisplayName() {
-		return displayName;
+	public String getFeatureDisplayName() {
+		return featureDisplayName;
 	}
 
 	public Double getFeatureValue() {

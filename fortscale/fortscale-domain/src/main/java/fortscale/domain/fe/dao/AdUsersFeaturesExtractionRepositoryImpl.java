@@ -10,6 +10,7 @@ import com.mongodb.WriteConcern;
 
 import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
+import fortscale.domain.fe.IFeature;
 
 public class AdUsersFeaturesExtractionRepositoryImpl implements
 		AdUsersFeaturesExtractionRepositoryCustom {
@@ -25,12 +26,12 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements
 		BasicDBObject basicDBObject = new BasicDBObject(AdUserFeaturesExtraction.userIdField, adUsersFeaturesExtraction.getUserId());
 		basicDBObject.append(AdUserFeaturesExtraction.scoreField, adUsersFeaturesExtraction.getScore());
 		basicDBObject.append(AdUserFeaturesExtraction.timestampField, adUsersFeaturesExtraction.getTimestamp());
-		for(ADFeature adFeature: adUsersFeaturesExtraction.getAttrVals()){
+		for(IFeature adFeature: adUsersFeaturesExtraction.getAttrVals()){
 			BasicDBObject featureObject = new BasicDBObject();
-			featureObject.append(ADFeature.DISPLAY_NAME_FIELD, adFeature.getDisplayName());
+			featureObject.append(ADFeature.DISPLAY_NAME_FIELD, adFeature.getFeatureDisplayName());
 			featureObject.append(ADFeature.FEATURE_SCORE_FIELD, adFeature.getFeatureScore());
 			featureObject.append(ADFeature.FEATURE_VALUE_FIELD, adFeature.getFeatureValue());
-			basicDBObject.append(adFeature.getUniqueName(), featureObject);
+			basicDBObject.append(adFeature.getFeatureUniqueName(), featureObject);
 		}
 		
 		collection.insert(basicDBObject, WriteConcern.SAFE);

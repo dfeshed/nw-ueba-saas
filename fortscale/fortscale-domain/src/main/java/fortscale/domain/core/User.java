@@ -1,9 +1,5 @@
 package fortscale.domain.core;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,36 +13,44 @@ import org.springframework.util.Assert;
 
 
 @Document
-public class User extends AbstractDocument {
-	@Indexed(unique = true)
-	private String username;
-	
+public class User extends AbstractDocument {	
 	@Indexed(unique = true)
 	private String adDn;
-	public String getAdDn() {
-		return adDn;
-	}
+	
+	private String employeeID;
+	
+
+	
 
 	private String firstname, lastname;
 
 	@Field("email")
-	@Indexed(unique = true)
+	@Indexed
 	private EmailAddress emailAddress;
-	private Set<Address> addresses = new HashSet<Address>();
+	
+	private String managerDN;
+	@Indexed
+	private String adUserPrincipalName;
+	
+	private String telephoneNumber;
+
+	private String mobile;
 
 	/**
-	 * Creates a new {@link Customer} from the given username.
+	 * Creates a new {@link Customer} from the given adDn.
 	 * 
-	 * @param username must not be {@literal null} or empty.
+	 * @param adDn must not be {@literal null} or empty.
 	 */
 	@PersistenceConstructor
-	public User(String username, String adDn) {
+	public User(String adDn) {
 
-		Assert.hasText(username);
 		Assert.hasText(adDn);
 
-		this.username = username;
 		this.adDn = adDn;
+	}
+	
+	public String getAdDn() {
+		return adDn;
 	}
 
 	public String getFirstname() {
@@ -63,10 +67,6 @@ public class User extends AbstractDocument {
 
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
-	}
-
-	public String getUsername() {
-		return username;
 	}
 	
 	/**
@@ -86,24 +86,46 @@ public class User extends AbstractDocument {
 	public void setEmailAddress(EmailAddress emailAddress) {
 		this.emailAddress = emailAddress;
 	}
+	
+	public String getEmployeeID() {
+		return employeeID;
+	}
 
-	/**
-	 * Return the {@link Customer}'s addresses.
-	 * 
-	 * @return
-	 */
-	public Set<Address> getAddresses() {
-		return Collections.unmodifiableSet(addresses);
+	public void setEmployeeID(String employeeID) {
+		this.employeeID = employeeID;
+	}
+
+	public String getManagerDN() {
+		return managerDN;
+	}
+
+	public void setManagerDN(String managerDN) {
+		this.managerDN = managerDN;
+	}
+
+	public String getAdUserPrincipalName() {
+		return adUserPrincipalName;
+	}
+
+	public void setAdUserPrincipalName(String adUserPrincipalName) {
+		if(adUserPrincipalName != null && adUserPrincipalName.length() > 0){
+			this.adUserPrincipalName = adUserPrincipalName;
+		}
 	}
 	
-	/**
-	 * Adds the given {@link Address} to the {@link Customer}.
-	 * 
-	 * @param address must not be {@literal null}.
-	 */
-	public void add(Address address) {
+	public String getTelephoneNumber() {
+		return telephoneNumber;
+	}
 
-		Assert.notNull(address);
-		this.addresses.add(address);
+	public void setTelephoneNumber(String telephoneNumber) {
+		this.telephoneNumber = telephoneNumber;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 }

@@ -21,9 +21,9 @@ public class UserRepositoryIntegrationTest extends AbstractIntegrationTest {
 
 		EmailAddress email = new EmailAddress("alicia@keys.com");
 
-		User dave = new User("AliciaKeys", "AliciaKeys");
+		User dave = new User("AliciaKeys");
 		dave.setEmailAddress(email);
-		dave.add(new Address("27 Broadway", "New York", "United States"));
+//		dave.add(new Address("27 Broadway", "New York", "United States"));
 
 		User result = repository.save(dave);
 		assertThat(result.getId(), is(notNullValue()));
@@ -33,7 +33,7 @@ public class UserRepositoryIntegrationTest extends AbstractIntegrationTest {
 	public void readsUserByEmail() {
 
 		EmailAddress email = new EmailAddress("alicia@keys.com");
-		User alicia = new User("AliciaKeys", "AliciaKeys");
+		User alicia = new User("AliciaKeys");
 		alicia.setEmailAddress(email);
 
 		repository.save(alicia);
@@ -47,7 +47,7 @@ public class UserRepositoryIntegrationTest extends AbstractIntegrationTest {
 
 		User dave = repository.findByEmailAddress(new EmailAddress("dave@dmband.com"));
 
-		User anotherDave = new User("dkoler", "dkoler");
+		User anotherDave = new User("dkoler");
 		anotherDave.setEmailAddress(dave.getEmailAddress());
 
 		repository.save(anotherDave);
