@@ -21,7 +21,7 @@ public class AdUser extends AdObject{
 	@Field("mail")
 	private String emailAddress;
 	
-	private String TimeStamp;
+	
 	
 	private String isCriticalSystemObject;
 	
@@ -518,9 +518,9 @@ public class AdUser extends AdObject{
 	}
 
 	/**
-	 * Creates a new {@link Customer} from the given username.
+	 * Creates a new {@link Customer} from the given distinguishedName.
 	 * 
-	 * @param username must not be {@literal null} or empty.
+	 * @param distinguishedName must not be {@literal null} or empty.
 	 */
 	@PersistenceConstructor
 	public AdUser(String distinguishedName) {
@@ -549,13 +549,5 @@ public class AdUser extends AdObject{
 
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
-	}
-
-	public String getTimeStamp() {
-		return TimeStamp;
-	}
-
-	public void setTimeStamp(String timeStamp) {
-		TimeStamp = timeStamp;
 	}
 }

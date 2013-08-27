@@ -10,6 +10,8 @@ public interface UserService {
 	
 	public void updateUserWithCurrentADInfo();
 	
+	public void updateUserWithADInfo(String timestamp);
+	
 	public List<User> findBySearchFieldContaining(String prefix);
 	
 	

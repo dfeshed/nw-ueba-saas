@@ -36,6 +36,10 @@ public class User extends AbstractDocument {
 
 	private String mobile;
 	
+	private String position;
+	
+	private String department;
+	
 	@Field("sf")
 	@Indexed
 	private String searchField;
@@ -140,4 +144,22 @@ public class User extends AbstractDocument {
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+	
+	
 }

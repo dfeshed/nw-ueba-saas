@@ -31,7 +31,16 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
-		for(AdUser adUser: adUserRepository.findAll()){
+		updateUserWithADInfo(adUserRepository.findAll());
+	}
+	
+	@Override
+	public void updateUserWithADInfo(String timestamp) {
+		updateUserWithADInfo(adUserRepository.findByTimestamp(timestamp));
+	}
+	
+	private void updateUserWithADInfo(Iterable<AdUser> adUsers) {
+		for(AdUser adUser: adUsers){
 			User user = userRepository.findByAdDn(adUser.getDistinguishedName());
 			if(user == null){
 				user = new User(adUser.getDistinguishedName());
@@ -47,6 +56,8 @@ public class UserServiceImpl implements UserService{
 			user.setMobile(adUser.getMobile());
 			user.setTelephoneNumber(adUser.getTelephoneNumber());
 			user.setSearchField(createSearchField(user));
+			user.setDepartment(adUser.getDepartment());
+			user.setPosition(adUser.getTitle());
 			userRepository.save(user);
 		}
 		
@@ -78,4 +89,6 @@ public class UserServiceImpl implements UserService{
 		
 		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX+prefix.toLowerCase());
 	}
+
+	
 }

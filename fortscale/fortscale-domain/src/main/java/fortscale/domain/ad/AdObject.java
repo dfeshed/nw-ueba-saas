@@ -7,11 +7,13 @@ import org.springframework.util.Assert;
 import fortscale.domain.core.AbstractDocument;
 
 public class AdObject extends AbstractDocument{
-	public static final String dnField = "dn";
+	public static final String dnField = "distinguishedName";
 	
 	@Indexed(unique = true)
 	@Field(dnField)
 	private String distinguishedName;
+	
+	private String timestamp;
 	
 	public AdObject(String distinguishedName){
 		Assert.hasText(distinguishedName);
@@ -24,6 +26,14 @@ public class AdObject extends AbstractDocument{
 
 	public void setDistinguishedName(String distinguishedName) {
 		this.distinguishedName = distinguishedName;
+	}
+	
+	public String getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
 	}
 	
 }

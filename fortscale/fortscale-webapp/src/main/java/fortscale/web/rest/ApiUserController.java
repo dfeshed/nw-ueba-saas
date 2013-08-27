@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.services.UserService;
@@ -18,8 +19,12 @@ public class ApiUserController {
 	
 	@RequestMapping(value="/updateAdInfo", method=RequestMethod.GET)
 	@ResponseBody
-	public String updateAdInfo(Model model){
-		userService.updateUserWithCurrentADInfo();
+	public String updateAdInfo(@RequestParam(required=false) String timestamp, Model model){
+		if(timestamp != null){
+			userService.updateUserWithADInfo(timestamp);
+		} else{
+			userService.updateUserWithCurrentADInfo();
+		}
 		return "";
 	}
 }

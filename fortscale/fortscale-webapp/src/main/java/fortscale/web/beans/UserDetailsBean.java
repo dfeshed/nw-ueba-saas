@@ -34,7 +34,7 @@ public class UserDetailsBean implements Serializable{
 	}
 
 	public String getPosition() {
-		return null;
+		return user.getPosition();
 	}
 
 	public String getId() {
@@ -46,7 +46,7 @@ public class UserDetailsBean implements Serializable{
 	}
 
 	public String getDepartment() {
-		return null;
+		return user.getDepartment();
 	}
 
 	public UserManagerBean getManager() {

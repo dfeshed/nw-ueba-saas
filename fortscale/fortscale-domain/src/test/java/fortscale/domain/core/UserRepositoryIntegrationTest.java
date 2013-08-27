@@ -43,12 +43,11 @@ public class UserRepositoryIntegrationTest extends AbstractIntegrationTest {
 	}
 
 	@Test(expected = DuplicateKeyException.class)
-	public void preventsDuplicateEmail() {
+	public void preventsDuplicateAdDn() {
 
 		User dave = repository.findByEmailAddress(new EmailAddress("dave@dmband.com"));
 
-		User anotherDave = new User("dkoler");
-		anotherDave.setEmailAddress(dave.getEmailAddress());
+		User anotherDave = new User(dave.getAdDn());
 
 		repository.save(anotherDave);
 	}

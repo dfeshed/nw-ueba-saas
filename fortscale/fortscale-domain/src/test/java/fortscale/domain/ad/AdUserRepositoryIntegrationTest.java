@@ -9,9 +9,6 @@ import java.util.Map.Entry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -43,16 +40,16 @@ public class AdUserRepositoryIntegrationTest{
 
 	@Test
 	public void findAllTest(){
-		Pageable pageable = new PageRequest(0, 10, Direction.DESC, "dn");
-		AdUser adUser = repository.findByEmailAddress("ramir@fortscale.dom");
-		System.out.println(adUser.getDistinguishedName() + ", " + adUser.getLastname()  + ", " + adUser.getEmailAddress());
-		for(AdUser adUser1: repository.findAll(pageable)){
-			System.out.println(adUser1.getDistinguishedName() + ", " + adUser1.getLastname() + ", " + adUser1.getEmailAddress());
-		}
-		System.out.println();
+//		Pageable pageable = new PageRequest(0, 10, Direction.DESC, "dn");
+//		AdUser adUser = repository.findByEmailAddress("ramir@fortscale.dom");
+//		System.out.println(adUser.getDistinguishedName() + ", " + adUser.getLastname()  + ", " + adUser.getEmailAddress());
+//		for(AdUser adUser1: repository.findAll(pageable)){
+//			System.out.println(adUser1.getDistinguishedName() + ", " + adUser1.getLastname() + ", " + adUser1.getEmailAddress());
+//		}
+//		System.out.println();
 	}
 	
-	@Test
+//	@Test
 	public void getAdUsersAttrValsTest(){
 //		for(AdUser adUser: repository.findAll()){
 //			User user = userRepository.findByAdDn(adUser.getDistinguishedName());
