@@ -1,6 +1,8 @@
 package fortscale.web.rest;
 
-import org.bson.types.ObjectId;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import fortscale.domain.ad.AdUser;
-import fortscale.domain.ad.dao.AdUserRepository;
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.UserRepository;
+import fortscale.services.UserService;
+import fortscale.web.beans.UserDetailsBean;
+import fortscale.web.beans.UserSearchBean;
 
 
 @Controller
@@ -18,7 +23,10 @@ import fortscale.domain.ad.dao.AdUserRepository;
 public class ApiUserDetailsController {
 
 	@Autowired
-	private AdUserRepository adUserRepository;
+	private UserRepository userRepository;
+	
+	@Autowired
+	private UserService userService;
 	
 //	@RequestMapping(value="/dn={dn}", method=RequestMethod.GET)
 //	@ResponseBody
@@ -29,8 +37,32 @@ public class ApiUserDetailsController {
 	
 	@RequestMapping(value="{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public AdUser user(@PathVariable ObjectId id, Model model){
-		AdUser adUser = adUserRepository.findOne(id);
-		return adUser;
+	public UserDetailsBean user(@PathVariable String id, Model model){
+		User user = userRepository.findOne(id);
+		if(user == null){
+			return null;
+		}
+		UserDetailsBean ret = new UserDetailsBean(user, getManager(user));
+		return ret;
+	}
+	
+	@RequestMapping(value="/search/{prefix}", method=RequestMethod.GET)
+	@ResponseBody
+	public List<UserSearchBean> search(@PathVariable String prefix, Model model){
+		List<User> users = userService.findBySearchFieldContaining(prefix);
+		List<UserSearchBean> ret = new ArrayList<UserSearchBean>();
+		for(User user: users){
+			ret.add(new UserSearchBean(user));
+		}
+//		UserDetailsListBean ret = new UserDetailsListBean(users);
+		return ret;
+	}
+	
+	private User getManager(User user){
+		User manager = null;
+		if(user.getManagerDN() != null && user.getManagerDN().length() > 0){
+			manager = userRepository.findByAdDn(user.getManagerDN());
+		}
+		return manager;
 	}
 }

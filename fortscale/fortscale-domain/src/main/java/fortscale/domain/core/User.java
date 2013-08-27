@@ -35,6 +35,10 @@ public class User extends AbstractDocument {
 	private String telephoneNumber;
 
 	private String mobile;
+	
+	@Field("sf")
+	@Indexed
+	private String searchField;
 
 	/**
 	 * Creates a new {@link Customer} from the given adDn.
@@ -49,6 +53,14 @@ public class User extends AbstractDocument {
 		this.adDn = adDn;
 	}
 	
+	public String getSearchField() {
+		return searchField;
+	}
+
+	public void setSearchField(String searchField) {
+		this.searchField = searchField;
+	}
+
 	public String getAdDn() {
 		return adDn;
 	}

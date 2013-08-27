@@ -4,7 +4,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 
-public interface AdUsersFeaturesExtractionRepository extends PagingAndSortingRepository<AdUserFeaturesExtraction, Long>,
+public interface AdUsersFeaturesExtractionRepository extends PagingAndSortingRepository<AdUserFeaturesExtraction, String>,
 		AdUsersFeaturesExtractionRepositoryCustom {
 
 }

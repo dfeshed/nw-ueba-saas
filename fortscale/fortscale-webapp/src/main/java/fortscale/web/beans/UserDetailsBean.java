@@ -1,74 +1,75 @@
 package fortscale.web.beans;
 
-public class UserDetailsBean {
+import java.io.Serializable;
 
-	private String username;
-	private String name;
-	private String position;
-	private String id;
-	private String groups;
-	private String department;
-	private UserManagerBean manager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.UserRepository;
+
+@Configurable
+public class UserDetailsBean implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	private User user;
+	private User manager;
+	
+	public UserDetailsBean(User user, User manager){
+		this.user = user;
+		this.manager = manager;
+	}
 	
 	public String getUsername() {
-		return username;
+		return user.getAdUserPrincipalName();
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
 
 	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		return user.getFirstname() + " " + user.getLastname();
 	}
 
 	public String getPosition() {
-		return position;
-	}
-
-	public void setPosition(String position) {
-		this.position = position;
+		return null;
 	}
 
 	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+		return user.getEmployeeID();
 	}
 
 	public String getGroups() {
-		return groups;
-	}
-
-	public void setGroups(String groups) {
-		this.groups = groups;
+		return null;
 	}
 
 	public String getDepartment() {
-		return department;
-	}
-
-	public void setDepartment(String department) {
-		this.department = department;
+		return null;
 	}
 
 	public UserManagerBean getManager() {
-		return manager;
-	}
-
-	public void setManager(UserManagerBean manager) {
-		this.manager = manager;
+		UserManagerBean ret = null;
+		if(manager != null){
+			ret = new UserManagerBean();
+			ret.setId(manager.getEmployeeID());
+			ret.setName(manager.getFirstname() + " " + manager.getLastname());
+		}
+//		if(user.getManagerDN() != null){
+//			User manager = userRepository.findByAdDn(user.getManagerDN());
+//			
+//			if(manager != null){
+//				ret.setId(manager.getEmployeeID());
+//				ret.setName(manager.getFirstname() + " " + manager.getLastname());
+//			}
+//		}
+		return ret;
 	}
 
 	public class UserManagerBean{
-		private String name;
-		private String id;
+		private String name = null;
+		private String id = null;
 		
 		
 		

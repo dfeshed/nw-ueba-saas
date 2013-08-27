@@ -1,20 +1,19 @@
 package fortscale.domain.core;
 
-import java.math.BigInteger;
 
 import org.springframework.data.annotation.Id;
 
 public class AbstractDocument {
 
 	@Id
-	private BigInteger id;
+	private String id;
 
 	/**
 	 * Returns the identifier of the document.
 	 * 
 	 * @return the id
 	 */
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 

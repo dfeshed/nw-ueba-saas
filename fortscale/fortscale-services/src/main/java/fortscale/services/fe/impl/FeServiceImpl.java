@@ -58,8 +58,8 @@ public class FeServiceImpl implements FeService {
 			adUserFeaturesExtraction.setScore(ent.getValue());
 			adUserFeaturesExtraction.setTimestamp(timestamp);
 			adUserFeaturesExtraction.setAttrVals(userFeaturesScoresMap.get(ent.getKey()));
+			adUsersFeaturesExtractionRepository.saveMap(adUserFeaturesExtraction);
 		}
-		
 	}
 
 //	@Override
