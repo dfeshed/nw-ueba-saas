@@ -46,8 +46,8 @@ public class FeServiceImpl implements FeService {
 //			}
 //			ret.put(user.getId().toString(), attrValsList);
 //		}
-		
-		return adUserRepository.findAll();
+		String timestamp = adUserRepository.getLatestTimeStamp();
+		return adUserRepository.findByTimestamp(timestamp);
 	}
 
 	@Override
