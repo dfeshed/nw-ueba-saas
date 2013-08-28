@@ -8,11 +8,13 @@ import fortscale.domain.core.AbstractDocument;
 
 public class AdObject extends AbstractDocument{
 	public static final String dnField = "distinguishedName";
+	public static final String timestampField = "timestamp";
 	
-	@Indexed(unique = true)
+	@Indexed
 	@Field(dnField)
 	private String distinguishedName;
-	
+	@Indexed
+	@Field(timestampField)
 	private String timestamp;
 	
 	public AdObject(String distinguishedName){

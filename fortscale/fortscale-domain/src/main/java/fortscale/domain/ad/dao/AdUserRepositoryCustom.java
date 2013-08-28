@@ -7,4 +7,5 @@ import fortscale.domain.ad.AdUser;
 interface AdUserRepositoryCustom {
 
 	public List<AdUser> findAdUsersAttrVals();
+	public String getLatestTimeStamp();
 }

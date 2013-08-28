@@ -9,9 +9,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 
 
-@Document(collection="ad_user")
+@Document(collection=AdUser.COLLECTION_NAME)
 public class AdUser extends AdObject{
-	
+	public static final String COLLECTION_NAME = "ad_user";
 	
 	@Field("sn")
 	private String lastname;

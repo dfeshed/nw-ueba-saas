@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
-		updateUserWithADInfo(adUserRepository.findAll());
+		updateUserWithADInfo(adUserRepository.getLatestTimeStamp());
 	}
 	
 	@Override
