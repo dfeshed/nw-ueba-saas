@@ -1,10 +1,13 @@
 package fortscale.web.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 
@@ -41,8 +44,12 @@ public class UserDetailsBean implements Serializable{
 		return user.getEmployeeID();
 	}
 
-	public String getGroups() {
-		return null;
+	public List<String> getGroups() {
+		List<String> ret = new ArrayList<>();
+		for(AdUserGroup adUserGroup: user.getGroups()){
+			ret.add(adUserGroup.getName());
+		}
+		return ret;
 	}
 
 	public String getDepartment() {
@@ -54,6 +61,9 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public String getEmail(){
+		if(user.getEmailAddress() == null){
+			return null;
+		}
 		return user.getEmailAddress().toString();
 	}
 	

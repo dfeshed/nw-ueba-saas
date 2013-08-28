@@ -5,12 +5,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
+import fortscale.domain.ad.AdUserGroup;
+import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.UserService;
+import fortscale.utils.actdir.ADUserParser;
 
 @Service("userService")
 public class UserServiceImpl implements UserService{
@@ -19,6 +23,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private AdUserRepository adUserRepository;
+	
+	@Autowired
+	private AdGroupRepository adGroupRepository;
 		
 	@Autowired
 	private UserRepository userRepository;
@@ -58,6 +65,18 @@ public class UserServiceImpl implements UserService{
 			user.setSearchField(createSearchField(user));
 			user.setDepartment(adUser.getDepartment());
 			user.setPosition(adUser.getTitle());
+			ADUserParser adUserParser = new ADUserParser();
+			String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
+			if(groups != null){
+				for(String groupDN: groups){
+					AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
+					if(adGroup != null){
+						user.addGroup(new AdUserGroup(groupDN, adGroup.getName()));
+					}else{
+						//TODO: LOG WARNING.
+					}
+				}
+			}
 			userRepository.save(user);
 		}
 		

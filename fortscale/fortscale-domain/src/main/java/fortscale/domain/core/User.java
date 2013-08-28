@@ -1,10 +1,16 @@
 package fortscale.domain.core;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
+
+import fortscale.domain.ad.AdUserGroup;
 
 
 
@@ -39,6 +45,8 @@ public class User extends AbstractDocument {
 	private String position;
 	
 	private String department;
+	
+	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
 	
 	@Field("sf")
 	@Indexed
@@ -161,5 +169,13 @@ public class User extends AbstractDocument {
 		this.department = department;
 	}
 	
+	public void addGroup(AdUserGroup adUserGroup) {
+
+		Assert.notNull(adUserGroup);
+		this.groups.add(adUserGroup);
+	}
 	
+	public Set<AdUserGroup> getGroups() {
+		return Collections.unmodifiableSet(groups);
+	}
 }

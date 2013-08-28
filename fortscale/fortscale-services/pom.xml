@@ -15,5 +15,10 @@
 			<artifactId>fortscale-domain</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-utils</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
