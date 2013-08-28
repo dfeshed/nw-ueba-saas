@@ -48,6 +48,18 @@ public class UserDetailsBean implements Serializable{
 	public String getDepartment() {
 		return user.getDepartment();
 	}
+		
+	public String getMobile(){
+		return user.getMobile();
+	}
+	
+	public String getEmail(){
+		return user.getEmailAddress().toString();
+	}
+	
+	public String getPhone(){
+		return user.getTelephoneNumber();
+	}
 
 	public UserManagerBean getManager() {
 		UserManagerBean ret = null;

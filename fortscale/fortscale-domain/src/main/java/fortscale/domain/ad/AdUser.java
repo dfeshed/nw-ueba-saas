@@ -14,110 +14,110 @@ public class AdUser extends AdObject{
 	public static final String COLLECTION_NAME = "ad_user";
 	
 	@Field("sn")
-	private String lastname;
+	private String lastname  = "";
 	@Field("givenName")
-	private String firstname;
+	private String firstname  = "";
 
 	@Field("mail")
-	private String emailAddress;
+	private String emailAddress  = "";
 	
 	
 	
-	private String isCriticalSystemObject;
+	private String isCriticalSystemObject = "";
 	
-	private String badPwdCount;
+	private String badPwdCount = "";
 	
-	private String logonCount;
+	private String logonCount = "";
 	
-	private String primaryGroupID;
+	private String primaryGroupID = "";
 	
-	private String sAMAccountType;
+	private String sAMAccountType = "";
 	
-	private String userAccountControl;
+	private String userAccountControl = "";
 	
-	private String accountExpires;
+	private String accountExpires = "";
 	
-	private String badPasswordTime;
+	private String badPasswordTime = "";
 	
-	private String lastLogoff;
+	private String lastLogoff = "";
 	
-	private String lockoutTime;
+	private String lockoutTime = "";
 	
-	private String assistant;
+	private String assistant = "";
 	
-	private String memberOf;
+	private String memberOf = "";
 	
-	private String managedObjects;
+	private String managedObjects = "";
 	
-	private String manager;
+	private String manager = "";
 	
-	private String masteredBy;
+	private String masteredBy = "";
 	
-	private String directReports;
+	private String directReports = "";
 	
-	private String secretary;
+	private String secretary = "";
 	
-	private String logonHours;
+	private String logonHours = "";
 	
-	private String whenChanged;
+	private String whenChanged = "";
 	
-	private String streetAddress;
+	private String streetAddress = "";
 	
-	private String cn;
+	private String cn = "";
 	
-	private String company;
+	private String company = "";
 	
-	private String c;
+	private String c = "";
 	
-	private String department;
+	private String department = "";
 	
-	private String description;
+	private String description = "";
 	
-	private String displayName;
+	private String displayName = "";
 	
-	private String division;
+	private String division = "";
 	
-	private String employeeID;
+	private String employeeID = "";
 	
-	private String employeeNumber;
+	private String employeeNumber = "";
 	
-	private String employeeType;
+	private String employeeType = "";
 		
-	private String l;
+	private String l = "";
 	
-	private String o;
+	private String o = "";
 	
-	private String personalTitle;
+	private String personalTitle = "";
 	
-	private String otherFacsimileTelephoneNumber;
+	private String otherFacsimileTelephoneNumber = "";
 	
-	private String otherHomePhone;
+	private String otherHomePhone = "";
 	
-	private String homePhone;
+	private String homePhone = "";
 	
-	private String otherMobile;
+	private String otherMobile = "";
 	
-	private String mobile;
+	private String mobile = "";
 	
-	private String otherTelephone;
+	private String otherTelephone = "";
 	
-	private String roomNumber;
+	private String roomNumber = "";
 	
-	private String userPrincipalName;
+	private String userPrincipalName = "";
 	
-	private String telephoneNumber;
+	private String telephoneNumber = "";
 	
-	private String title;
+	private String title = "";
 	
-	private String userParameters;
+	private String userParameters = "";
 	
-	private String userWorkstations;
+	private String userWorkstations = "";
 	
-	private String lastLogon;
+	private String lastLogon = "";
 	
-	private String pwdLastSet;
+	private String pwdLastSet = "";
 	
-	private String whenCreated;
+	private String whenCreated = "";
 		
 	
 	
