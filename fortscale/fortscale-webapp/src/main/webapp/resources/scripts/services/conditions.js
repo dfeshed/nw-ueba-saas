@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("conditions", [function(){
+angular.module("Fortscale").factory("conditions", ["format", function(format){
 
     var validations = {
         equals: function(val1, val2){
@@ -21,6 +21,12 @@ angular.module("Fortscale").factory("conditions", [function(){
         },
         included: function(val1, arr){
             return !!~arr.indexOf(val1);
+        },
+        hasValue: function(value){
+            return value !== undefined && value !== null;
+        },
+        hasNoValue: function(value){
+            return !validations.hasValue(value);
         }
     };
 
@@ -31,7 +37,9 @@ angular.module("Fortscale").factory("conditions", [function(){
         { name: "greaterThanOrEqual", display: ">=" },
         { name: "lesserThan", display: "<" },
         { name: "lesserThanOrEqual", display: "<=" },
-        { name: "included", display: "IN" }
+        { name: "included", display: "IN" },
+        { name: "hasValue", display: "Has value" },
+        { name: "hasNoValue", display: "Has no value" }
     ];
 
     var methods = {
@@ -41,6 +49,33 @@ angular.module("Fortscale").factory("conditions", [function(){
                 throw new Error("Invalid operator for validation: '" + operator + "'.");
 
             return validation(value1, value2);
+        },
+        validateConditions: function(conditions, data, params){
+            var conditionValue,
+                conditionField,
+                dataValue,
+                paramMatch;
+
+            for(var i= 0, condition; condition = conditions[i]; i++){
+                conditionValue = condition.value;
+                if (conditionValue !== undefined && /^@/.test(condition.value))
+                    conditionValue = data[condition.value];
+
+                conditionField = condition.field;
+
+                if (paramMatch = conditionField.match(/^\{\{([^\}]+)\}\}$/))
+                    dataValue = params[paramMatch[1]];
+                else
+                    dataValue = data[conditionField];
+
+                if (condition.fieldType)
+                    dataValue = format[condition.fieldType](dataValue);
+
+                if (!methods.validateCondition(dataValue, condition.operator, condition.value))
+                    return false;
+            }
+
+            return true;
         }
     };
 

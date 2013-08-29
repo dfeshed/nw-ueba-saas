@@ -4,7 +4,7 @@
             "text": "Changed password",
             "event_type": "password",
             "severity": "43",
-            "timestamp": 1375889537205
+            "time": 1375889537205
         },
         {
             "text": "Logged in to BACKUP_SRV from 192.24.0.201",
@@ -20,7 +20,7 @@
                 }
             ],
             "severity": "76",
-            "timestamp": 1375882337205
+            "time": 1375882337205
         },
         {
             "text": "Joined group Assistant Regional Managers",
@@ -32,13 +32,13 @@
                 }
             ],
             "severity": "12",
-            "timestamp": 1375882107205
+            "time": 1375882107205
         },
         {
             "text": "Logged in at 03:00",
             "type": "login",
             "severity": "90",
-            "timestamp": 1372139537205
+            "time": 1372139537205
         }
     ],
     "total": 100,

@@ -2,9 +2,9 @@
     "data": [
         {
             "id": "overall",
-            "name": "Summary",
+            "name": "User Profile",
             "score": 82,
-            "averageScore": 63
+            "averageScore": 43
         },
         {
             "id": "groupPolicy",

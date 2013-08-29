@@ -2,8 +2,15 @@ angular.module("Fortscale").factory("format", ["utils", function(utils){
     var methods = {
         date: function(value, options){
             var date = moment(value);
-            if (!date.isValid())
-                return "";
+            if (!date.isValid()){
+                var subtractMatch = value.match(/^-(\d+)(\w+)$/);
+                if (subtractMatch){
+                    var now = moment();
+                    date = now.subtract(subtractMatch[2], parseInt(subtractMatch[1]));
+                }
+                else
+                    return "";
+            }
 
             if (options.prettyDate)
                 return utils.date.prettyDate(date.toDate(), options.shortPrettyDate);

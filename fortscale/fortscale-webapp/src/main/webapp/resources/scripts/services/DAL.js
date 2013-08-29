@@ -25,16 +25,12 @@ angular.module("Fortscale").factory("DAL", ["$http", "$q", "splunk", "server", f
                 return $http.get("data/get_all_reports.json");
             },
             runSearch: function(searchId, dataSource, params, options){
-                var deferred = $q.defer();
-
                 if (dataSource === "splunk")
-                    splunk.runSearch(searchId, params, options).then(deferred.resolve, deferred.reject);
+                    return splunk.runSearch(searchId, params, options);
                 else if (dataSource === "api")
-                    server.queryServer(searchId, params, options).success(deferred.resolve).error(deferred.reject);
+                    return server.queryServer(searchId, params, options);
                 else
-                    server.query(searchId, params, options).success(deferred.resolve).error(deferred.reject);
-
-                return deferred.promise;
+                    return server.query(searchId, params, options);
             }
         },
         widgets: {

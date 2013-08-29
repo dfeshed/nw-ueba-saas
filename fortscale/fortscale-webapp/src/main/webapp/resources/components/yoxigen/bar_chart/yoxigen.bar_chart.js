@@ -128,12 +128,15 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
 
             function setLabelFill(labelData, labelIndex){
                 if (labelIndex === selectedBarGroup) return "White";
+                if (!labelData)
+                    return options.labelsFont.color;
+
                 var color = labelData._style && labelData._style[settings.labels.styleField] && labelData._style[settings.labels.styleField].color;
                 return color || options.labelsFont.color;
             }
 
             function getSelectionBarColor(itemData){
-                var color = itemData._style && itemData._style[settings.selectionBar.styleField] && itemData._style[settings.selectionBar.styleField].color;
+                var color = itemData && itemData._style && itemData._style[settings.selectionBar.styleField] && itemData._style[settings.selectionBar.styleField].color;
                 return color || options.selectable.defaultColor;
             }
 
@@ -149,6 +152,9 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
                     .domain([options.values.min, options.values.max]);
 
                 var patterns = {};
+
+                if (selectedBarGroup === "last")
+                    selectedBarGroup = data.length - 1;
 
                 var width = element.width(),
                     height = element.height(),
@@ -193,15 +199,22 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
                     var color = getSelectionBarColor(itemData),
                         previousSelectedIndex = selectedBarGroup;
 
-                    d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", false);
-                    selectedBarGroup = itemIndex;
-                    d3.select(labelTexts[0][selectedBarGroup]).attr("fill", setLabelFill(itemData, selectedBarGroup));
-                    d3.select(labelTexts[0][previousSelectedIndex]).attr("fill", setLabelFill(data[previousSelectedIndex], previousSelectedIndex));
-                    d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", true);
+                    if (labelBoxes)
+                        d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", false);
 
-                    selectionBar.attr("fill", color);
-                    selectionBarArrow.attr("fill", color);
-                    moveSelectionBarArrowTo(itemIndex * totalRectWidth + leftPadding + (totalRectWidth - barsSpacing) / 2)
+                    selectedBarGroup = itemIndex;
+
+                    if (labelBoxes){
+                        d3.select(labelTexts[0][selectedBarGroup]).attr("fill", setLabelFill(itemData, selectedBarGroup));
+                        d3.select(labelTexts[0][previousSelectedIndex]).attr("fill", setLabelFill(data[previousSelectedIndex], previousSelectedIndex));
+                        d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", true);
+                    }
+
+                    if (selectionBar){
+                        selectionBar.attr("fill", color);
+                        selectionBarArrow.attr("fill", color);
+                        moveSelectionBarArrowTo(itemIndex * totalRectWidth + leftPadding + (totalRectWidth - barsSpacing) / 2)
+                    }
                 };
 
                 if (barRemainder){
@@ -379,7 +392,11 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
                 }
 
                 function createLabels(){
-                    var handleEventsClass =  options.labels.handleEvents ? " handle-events" : "";
+                    var handleEventsClass =  options.labels.handleEvents ? " handle-events" : "",
+                        labelWidth = totalRectWidth - barsSpacing;
+
+                    if (labelWidth <= 0)
+                        return;
 
                     labelBoxes = svg.selectAll("rect.label-box" + handleEventsClass)
                         .data(data)
@@ -391,7 +408,7 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
                         .attr("x", function(d, i){
                             return i * totalRectWidth + leftPadding;
                         })
-                        .attr("rx", "16px")
+                        .attr("rx", Math.floor(options.labels.height / 2) + "px")
                         .attr("y", height - options.labels.height - selectionBarTotalHeight)
                         .attr("fill", function(d, i){
                             var color = d._style && d._style[settings.labels.styleField] && d._style[settings.labels.styleField].color;
@@ -404,12 +421,12 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
                         .append("text")
                         .attr("class", "labels" + handleEventsClass)
                         .text(function(d, i) {
-                            return d[settings.labels.field];
+                            return d._label;
                         })
                         .attr("x", function(d, i) {
                             return (i + 0.5) * totalRectWidth + leftPadding  - barsSpacing / 2;
                         })
-                        .attr("y", height - 10 - selectionBarTotalHeight)
+                        .attr("y", height - options.labels.height - selectionBarTotalHeight + parseInt(options.labelsFont.size, 10) + 1)
                         .attr("font-family", options.labelsFont.family)
                         .attr("font-size", options.labelsFont.size)
                         .attr("font-weight", options.labelsFont.weight)

@@ -1,7 +1,18 @@
 package fortscale.domain.fe.dao;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -18,6 +29,8 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements
 	@Autowired
 	private MongoDbFactory mongoDbFactory;
 	
+	@Autowired
+	private MongoTemplate mongoTemplate;
 	
 	@Override
 	public void saveMap(AdUserFeaturesExtraction adUsersFeaturesExtraction) {
@@ -40,5 +53,20 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements
 	private DBCollection getDBCollection(){
 		DB db = mongoDbFactory.getDb();
 		return db.getCollection(AdUserFeaturesExtraction.collectionName);
+	}
+	
+	public Double calculateAvgScore(Date timestamp){
+		Aggregation agg = newAggregation(match(where(AdUserFeaturesExtraction.timestampField).is(timestamp)),
+				project(AdUserFeaturesExtraction.timestampField, AdUserFeaturesExtraction.scoreField),
+				group(AdUserFeaturesExtraction.timestampField).avg(AdUserFeaturesExtraction.scoreField).as("score"));
+	
+		AggregationResults<TimeStampAvgScore> result = mongoTemplate.aggregate(agg, AdUserFeaturesExtraction.collectionName, TimeStampAvgScore.class);
+		TimeStampAvgScore ret = result.getMappedResults().get(0);
+		return ret.score;
+	}
+	
+	class TimeStampAvgScore{
+		String id;
+		Double score;
 	}
 }

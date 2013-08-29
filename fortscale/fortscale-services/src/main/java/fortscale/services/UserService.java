@@ -14,5 +14,6 @@ public interface UserService {
 	
 	public List<User> findBySearchFieldContaining(String prefix);
 	
+	public List<IUserScore> getUserScores(String uid); 
 	
 }

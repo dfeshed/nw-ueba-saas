@@ -1,0 +1,15 @@
+<div class="widget-tabs" ng-controller="TabsWidgetController">
+    <ul>
+        <li ng-repeat="tab in view.data"
+            ng-class="{ selected: tab == currentTab }"
+            ng-click="selectTab(tab, $index)"
+            ng-style="{ width: (100 / view.data.length) + '%' }">
+            <span class="widget-tabs-label" ng-if="tab.label" ng-style="{background: tab.label.style.color}">
+                {{tab.label.value}}
+            </span>
+            {{tab.display}}
+        </li>
+    </ul>
+    <div class="widget-tabs-bottom"></div>
+    <div class="widget-tabs-mask" ng-style="{ width: (100 / view.data.length) + '%', left: (currentTabIndex * 100 / view.data.length) + '%'}"></div>
+</div>

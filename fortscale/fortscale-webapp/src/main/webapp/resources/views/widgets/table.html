@@ -54,7 +54,7 @@
             </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="row in view.data.rows" data-index="{{$index}}">
+        <tr ng-repeat="row in view.data.rows" data-index="{{$index}}" ng-style="row.style">
             <td ng-if="view.settings.showIndex" class="index-cell">{{$index + 1}}</td>
             <td ng-repeat="fieldData in row.display"
                 class="{{fieldData.className}}"

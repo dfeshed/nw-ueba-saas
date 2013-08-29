@@ -39,6 +39,21 @@
             ]
         }
     ],
+    "highScore": [
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEqual",
+                    "value": 60
+                }
+            ]
+        }
+    ],
     "percentSeverity": [
         {
             "properties": {

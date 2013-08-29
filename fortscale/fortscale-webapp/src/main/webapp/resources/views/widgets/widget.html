@@ -27,7 +27,9 @@
     <div class="widget-contents">
         <div ng-repeat="view in widget.views"
              class="widget-view {{view.className}}"
-             ng-style="{ height: widget.height }">
+             ng-show="!view.show || view.show.value"
+             ng-style="{ height: widget.height }"
+            ng-init="initView(view)">
             <div class="widget-view-controls" ng-if="view.controls">
                 <div class="widget-view-control"
                      ng-repeat="control in view.controls"

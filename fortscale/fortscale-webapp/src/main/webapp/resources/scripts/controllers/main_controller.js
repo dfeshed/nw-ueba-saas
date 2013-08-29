@@ -1,4 +1,4 @@
-angular.module("Fortscale").controller("MainController", ["$scope", "$routeParams", "dashboards", "server", function($scope, $routeParams, dashboards, server){
+angular.module("Fortscale").controller("MainController", ["$scope", "$routeParams", "dashboards", "auth", function($scope, $routeParams, dashboards, auth){
     $scope.navigation = [
         {
             name: "Overview",
@@ -27,10 +27,6 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
             ]
         }
     ];
-
-    server.queryServer("user", { userId: "5210da83a7ae7764beeed09e" }, { mainParam: "userId"})
-        .success(function(data){ console.log("GOT DATA: ", data)})
-        .error(function(error){ console.error("BAD DATA: ", error)});
 
     dashboards.getDashboardsList().then(function(dashboardsList){
         if (dashboardsList.length){
@@ -66,6 +62,11 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
                     $scope.currentMainDashboard = $scope.dashboards[dashboardIndex];
             }
         }
+    };
+
+    $scope.logout = function(){
+        auth.logout();
+        window.location.href = "/fortscale-ui-atlantis/app/signin.html";
     };
 
     $scope.sortableOptions = {

@@ -65,6 +65,17 @@
                             "settings": {
                                 "fields": [
                                     {
+                                        "name": "User",
+                                        "value": "{{username}}",
+                                        "link": "#/d/user/{{userId}}",
+                                        "sortBy": "username",
+                                        "filter": {
+                                            "type": "string",
+                                            "label": "Show only",
+                                            "dashboardParam": "username"
+                                        }
+                                    },
+                                    {
                                         "name": "Source Location",
                                         "value": "{{sourceLocation}}",
                                         "sortBy": "sourceLocation"

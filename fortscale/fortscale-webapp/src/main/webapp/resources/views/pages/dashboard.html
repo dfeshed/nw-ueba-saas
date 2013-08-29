@@ -25,6 +25,7 @@
                          ng-repeat="widget in column.widgets"
                          ng-controller="WidgetController"
                          ng-init="initWidget(widget)"
+                         ng-show="!widget.show || widget.show.value"
                          ng-style="widget.style">
                         <ng-include src="'views/widgets/widget.html'"></ng-include>
                     </div>

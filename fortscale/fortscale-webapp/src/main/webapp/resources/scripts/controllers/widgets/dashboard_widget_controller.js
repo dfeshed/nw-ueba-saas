@@ -3,6 +3,7 @@ angular.module("Fortscale").controller("DashboardWidgetController", ["$scope", "
     $scope.isDashboardWidget = true;
 
     var currentDashboardId = $scope.view.settings.defaultDashboardId || $scope.view.settings.dashboardId;
+    currentDashboardId = widgets.parseFieldValue($scope.view.settings, currentDashboardId, {}, 0, $scope.dashboardParams);
 
     if (currentDashboardId)
         setDashboard(currentDashboardId);

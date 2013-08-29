@@ -16,6 +16,8 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
 
         function updateControlParams(){
             var paramsObj = { params: angular.copy($scope.dashboardParams) };
+            delete paramsObj.params.entityId;
+
             for(var paramName in $scope.dashboardParamsOptions){
                 if ($scope.dashboardParamsOptions[paramName] && $scope.dashboardParamsOptions[paramName].persist === false && paramsObj.params[paramName])
                     delete paramsObj.params[paramName];

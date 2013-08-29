@@ -1,8 +1,13 @@
 package fortscale.services.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdGroup;
@@ -13,6 +18,9 @@ import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.fe.AdUserFeaturesExtraction;
+import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
+import fortscale.services.IUserScore;
 import fortscale.services.UserService;
 import fortscale.utils.actdir.ADUserParser;
 
@@ -29,6 +37,9 @@ public class UserServiceImpl implements UserService{
 		
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
 
 	@Override
 	public User getUserById(String uid) {
@@ -107,6 +118,22 @@ public class UserServiceImpl implements UserService{
 	public List<User> findBySearchFieldContaining(String prefix) {
 		
 		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX+prefix.toLowerCase());
+	}
+
+	@Override
+	public List<IUserScore> getUserScores(String uid) {
+		User user = userRepository.findOne(uid);
+		Pageable pageable = new PageRequest(0, 1, Direction.DESC, AdUserFeaturesExtraction.timestampField);
+		List<AdUserFeaturesExtraction> ufeList = adUsersFeaturesExtractionRepository.findByUserId(user.getAdDn(), pageable);
+		if(ufeList == null || ufeList.size() == 0){
+			return Collections.emptyList();
+		}
+		AdUserFeaturesExtraction ufe = ufeList.get(0);
+		Double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(ufe.getTimestamp());
+		List<IUserScore> ret = new ArrayList<>();
+		UserScore score = new UserScore("overall", "User Profile", ufe.getScore(), avgScore);
+		ret.add(score);
+		return ret;
 	}
 
 	

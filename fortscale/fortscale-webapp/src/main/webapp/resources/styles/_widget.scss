@@ -129,6 +129,12 @@ $widgetMarginBottom: 20px;
     padding-top: 0;
   }
 }
+
+.widget-advance-one{
+  top: 1px;
+  z-index: 5;
+}
+
 .widget-view{
   box-sizing: border-box;
   margin-bottom: 20px;

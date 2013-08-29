@@ -12,6 +12,7 @@
                     "title": "User Details",
                     "report": {
                         "query": {
+                            "dataSource": "api",
                             "searchId": "user_details",
                             "fields": [
                                 {
@@ -49,11 +50,23 @@
                                 {
                                     "name": "phone",
                                     "type": "string"
+                                },
+                                {
+                                    "email": "username",
+                                    "type": "string"
+                                },
+                                {
+                                    "mobile": "name",
+                                    "type": "string"
+                                },
+                                {
+                                    "phone": "position",
+                                    "type": "string"
                                 }
                             ],
                             "params": [
                                 {
-                                    "field": "userId",
+                                    "field": "id",
                                     "name": "userId",
                                     "dashboardParam": "entityId"
                                 }
@@ -81,46 +94,7 @@
                                     {
                                         "icon": "globe",
                                         "value": "{{department}}"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                },
-                {
-                    "report": {
-                        "query": {
-                            "searchId": "user_contact_info",
-                            "fields": [
-                                {
-                                    "email": "username",
-                                    "type": "string"
-                                },
-                                {
-                                    "mobile": "name",
-                                    "type": "string"
-                                },
-                                {
-                                    "phone": "position",
-                                    "type": "string"
-                                }
-                            ],
-                            "params": [
-                                {
-                                    "field": "userId",
-                                    "name": "userId",
-                                    "dashboardParam": "entityId"
-                                }
-                            ]
-                        }
-                    },
-                    "title": "Contact Info",
-                    "className": "round-items-list",
-                    "views": [
-                        {
-                            "type": "properties",
-                            "settings": {
-                                "properties": [
+                                    },
                                     {
                                         "icon": "envelope",
                                         "value": "{{email}}"
@@ -217,28 +191,206 @@
             ]
         },
         {
-            "className": "span9 column-with-border",
-            "title": "Scores",
+            "className": "span9",
             "widgets": [
                 {
+                    "title": "Scores",
                     "renderControls": false,
-                    "renderHeader": false,
-                    "className": "no-margins",
+                    "views": [
+                        {
+                            "type": "container",
+                            "widgets": [
+                                {
+                                    "renderControls": false,
+                                    "renderHeader": false,
+                                    "className": "no-margins widget-advance-one",
+                                    "refreshOn": "currentFeature",
+                                    "report": {
+                                        "query": {
+                                            "searchId": "user_scores",
+                                            "fields": [
+                                                {
+                                                    "name": "name",
+                                                    "type": "string"
+                                                },
+                                                {
+                                                    "name": "score",
+                                                    "type": "number"
+                                                },
+                                                {
+                                                    "name": "averageScore",
+                                                    "type": "number"
+                                                }
+                                            ],
+                                            "params": [
+                                                {
+                                                    "field": "userId",
+                                                    "name": "userId",
+                                                    "dashboardParam": "entityId"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "views": [
+                                        {
+                                            "type": "tabs",
+                                            "show": {
+                                                "conditions": [{
+                                                    "field": "{{currentFeature}}",
+                                                    "operator": "hasValue"
+                                                }]
+                                            },
+                                            "settings": {
+                                                "tab": {
+                                                    "display": "{{name}}",
+                                                    "id": "{{id}}",
+                                                    "selected": "@currentFeature"
+                                                },
+                                                "label": {
+                                                    "value": "{{score}}",
+                                                    "style": "score",
+                                                    "styleParams": {
+                                                        "value": "score"
+                                                    }
+                                                },
+                                                "events": [
+                                                    {
+                                                        "eventName": "select",
+                                                        "action": "setParams",
+                                                        "actionOptions": {
+                                                            "updateUrl": false,
+                                                            "params": {
+                                                                "currentFeature": "{{id}}"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "type": "barChart",
+                                            "show": {
+                                                "conditions": [{
+                                                    "field": "{{currentFeature}}",
+                                                    "operator": "hasNoValue"
+                                                }]
+                                            },
+                                            "settings": {
+                                                "options": {
+                                                    "height": "300px",
+                                                    "width": "100%",
+                                                    "createAxes": false,
+                                                    "barLabelsFont": {
+                                                        "size": 30,
+                                                        "color": "#b7b7b7"
+                                                    },
+                                                    "labelsFont": {
+                                                        "size": "20px"
+                                                    },
+                                                    "selectable": true,
+                                                    "showSelectionBar": false
+                                                },
+                                                "series": [
+                                                    {
+                                                        "field": "score",
+                                                        "label": "{{@entityId}}'s score",
+                                                        "style": "score",
+                                                        "styleParams": {
+                                                            "value": "score"
+                                                        }
+                                                    },
+                                                    {
+                                                        "field": "averageScore",
+                                                        "label": "Average user's score",
+                                                        "color": "#e7e7e7",
+                                                        "barLabelsColor": "#aaaaaa"
+                                                    }
+                                                ],
+                                                "labels": {
+                                                    "field": "name",
+                                                    "value": "{{name}}",
+                                                    "styleField": "score"
+                                                },
+                                                "selectionBar": {
+                                                    "styleField": "score"
+                                                },
+                                                "events": [
+                                                    {
+                                                        "eventName": "click",
+                                                        "action": "setParams",
+                                                        "actionOptions": {
+                                                            "updateUrl": false,
+                                                            "params": {
+                                                                "currentFeature": "{{id}}"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "renderControls": false,
+                                    "renderHeader": false,
+                                    "refreshOn": "currentFeature",
+                                    "className": "widget-no-top-padding",
+                                    "show": {
+                                        "conditions": [{
+                                            "field": "{{currentFeature}}",
+                                            "operator": "hasValue"
+                                        }]
+                                    },
+                                    "views": [
+                                        {
+                                            "type": "dashboardWidget",
+                                            "className": "dashboard-with-border inner-widgets",
+                                            "settings": {
+                                                "dashboardId": "user_{{@currentFeature}}"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "report": {
                         "query": {
-                            "searchId": "user_scores",
+                            "searchId": "user_logins",
                             "fields": [
                                 {
-                                    "name": "name",
+                                    "name": "username",
                                     "type": "string"
                                 },
                                 {
-                                    "name": "score",
-                                    "type": "number"
+                                    "name": "userId",
+                                    "type": "string"
                                 },
                                 {
-                                    "name": "averageScore",
-                                    "type": "number"
+                                    "name": "sourceLocation",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "sourceIP",
+                                    "type": "ip"
+                                },
+                                {
+                                    "name": "sourceMachine",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "time",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "destinationLocation",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "destinationMachine",
+                                    "type": "string"
                                 }
                             ],
                             "params": [
@@ -250,76 +402,54 @@
                             ]
                         }
                     },
+                    "title": "Suspicious Logins",
+                    "controls": [
+                        {
+                            "type": "link",
+                            "text": "View all suspicious logins for this user",
+                            "href": "#/d/user/{{@entityId}}/logins"
+                        }
+                    ],
                     "views": [
                         {
-                            "type": "barChart",
+                            "type": "table",
                             "settings": {
-                                "options": {
-                                    "height": "300px",
-                                    "width": "100%",
-                                    "createAxes": false,
-                                    "barLabelsFont": {
-                                        "size": 30,
-                                        "color": "#b7b7b7"
-                                    },
-                                    "labelsFont": {
-                                        "size": "20px"
-                                    },
-                                    "selectable": true,
-                                    "showSelectionBar": true
-                                },
-                                "selectedIndex": 2,
-                                "series": [
+                                "fields": [
                                     {
-                                        "field": "score",
-                                        "label": "{{@entityId}}'s score",
-                                        "style": "score",
-                                        "styleParams": {
-                                            "value": "score"
-                                        }
+                                        "name": "Source Location",
+                                        "value": "{{sourceLocation}}",
+                                        "sortBy": "sourceLocation"
                                     },
                                     {
-                                        "field": "averageScore",
-                                        "label": "Average user's score",
-                                        "color": "#e7e7e7",
-                                        "barLabelsColor": "#aaaaaa"
-                                    }
-                                ],
-                                "labels": {
-                                    "field": "name",
-                                    "value": "{{name}}",
-                                    "styleField": "score"
-                                },
-                                "selectionBar": {
-                                    "styleField": "score"
-                                },
-                                "events": [
+                                        "name": "Source IP",
+                                        "value": "{{sourceIP}}",
+                                        "sortBy": "sourceIP",
+                                        "link": "#/d/malware/e/machine/{{sourceIP}}"
+                                    },
                                     {
-                                        "eventName": "click",
-                                        "action": "setParams",
-                                        "actionOptions": {
-                                            "updateUrl": false,
-                                            "params": {
-                                                "currentFeature": "{{id}}"
-                                            }
-                                        }
+                                        "name": "Source Machine",
+                                        "value": "{{sourceMachine}}",
+                                        "sortBy": "sourceMachine",
+                                        "link": "#/d/malware/e/machine/{{sourceMachine}}"
+                                    },
+                                    {
+                                        "name": "Time",
+                                        "value": "{{time}}",
+                                        "sortBy": "time",
+                                        "sortDirection": -1
+                                    },
+                                    {
+                                        "name": "Destination Machine",
+                                        "value": "{{destinationMachine}}",
+                                        "sortBy": "destinationMachine",
+                                        "link": "#/d/malware/e/machine/{{destinationMachine}}"
+                                    },
+                                    {
+                                        "name": "Destination Location",
+                                        "value": "{{destinationLocation}}",
+                                        "sortBy": "destinationLocation"
                                     }
                                 ]
-                            }
-                        }
-                    ]
-                },
-                {
-                    "renderControls": false,
-                    "renderHeader": false,
-                    "className": "widget-no-top-padding",
-                    "views": [
-                        {
-                            "type": "dashboardWidget",
-                            "className": "dashboard-with-border inner-widgets",
-                            "settings": {
-                                "dashboardId": "user_{{@currentFeature}}",
-                                "defaultDashboardId": "user_logins"
                             }
                         }
                     ]
@@ -409,18 +539,34 @@
                     "title": "Recent Activity",
                     "views": [
                         {
-                            "type": "list",
+                            "type": "table",
+                            "className": "widget-table-list",
                             "settings": {
-                                "item": {
-                                    "icon": {
-                                        "type": "stop",
+                                "fields": [
+                                    {
+                                        "name": "Icon",
+                                        "icon": {
+                                            "type": "stop"
+                                        },
                                         "style": "score",
                                         "styleParams": {
                                             "value": "severity"
                                         }
                                     },
-                                    "value": "{{text}}"
-                                }
+                                    {
+                                        "name": "Description",
+                                        "value": "<a href='#/d/{{type}}/{{name}}'>{{name}}</a> {{text}}<p class='note'>{{explanation}}</p>",
+                                        "className": "table-large-cell"
+                                    },
+                                    {
+                                        "name": "Time",
+                                        "value": "{{time}}",
+                                        "icon": "time",
+                                        "format": "date",
+                                        "className": "sideNote",
+                                        "formatOptions": { "prettyDate": true, "shortPrettyDate": true }
+                                    }
+                                ]
                             }
                         }
                     ]

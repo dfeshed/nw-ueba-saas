@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.services.IUserScore;
 import fortscale.services.UserService;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
@@ -58,6 +59,15 @@ public class ApiUserDetailsController {
 		}
 		UserContactInfoBean ret = new UserContactInfoBean(user);
 		return new DataListWrapperBean<UserContactInfoBean>(ret);
+	}
+	
+	@RequestMapping(value="{id}/scores", method=RequestMethod.GET)
+	@ResponseBody
+	public DataBean<List<IUserScore>> userScores(@PathVariable String id, Model model){
+		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
+		List<IUserScore> userScores = userService.getUserScores(id);
+		ret.setData(userScores);
+		return ret;
 	}
 	
 	@RequestMapping(value="/search/{prefix}", method=RequestMethod.GET)

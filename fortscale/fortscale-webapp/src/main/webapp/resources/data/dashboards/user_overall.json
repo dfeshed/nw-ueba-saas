@@ -3,48 +3,24 @@
     "name": "{{@entityId}}",
     "columns": [
         {
-            "className": "span12",
+            "className": "span15",
             "widgets": [
                 {
                     "report": {
                         "query": {
-                            "searchId": "user_details",
+                            "searchId": "user_score_history",
                             "fields": [
                                 {
-                                    "name": "username",
-                                    "type": "string"
+                                    "name": "date",
+                                    "type": "date"
                                 },
                                 {
-                                    "name": "name",
-                                    "type": "string"
+                                    "name": "score",
+                                    "type": "number"
                                 },
                                 {
-                                    "name": "position",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "id",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "groups",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "department",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "manager",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "email",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "phone",
-                                    "type": "string"
+                                    "name": "averageScore",
+                                    "type": "number"
                                 }
                             ],
                             "params": [
@@ -56,27 +32,154 @@
                             ]
                         }
                     },
-                    "title": "User Details",
+                    "title": "User score for the last 7 days",
                     "views": [
                         {
-                            "type": "properties",
+                            "type": "barChart",
                             "settings": {
-                                "properties": [
+                                "options": {
+                                    "height": "200px",
+                                    "width": "100%",
+                                    "createAxes": false,
+                                    "barLabelsFont": {
+                                        "size": 16,
+                                        "color": "#b7b7b7"
+                                    },
+                                    "labelsFont": {
+                                        "size": "14px"
+                                    },
+                                    "labels": {
+                                        "height": 20,
+                                        "margin": 13,
+                                        "handleEvents": true
+                                    },
+                                    "selectable": true,
+                                    "showSelectionBar": true,
+                                    "padding": { "top": 0, "right": 50, "left": 50, "bottom": 0 }
+                                },
+                                "selectedIndex": "last",
+                                "series": [
                                     {
-                                        "icon": "user",
-                                        "value": "{{username}}"
+                                        "field": "score",
+                                        "label": "{{@entityId}}'s score",
+                                        "style": "score",
+                                        "styleParams": {
+                                            "value": "score"
+                                        }
                                     },
                                     {
-                                        "icon": "barcode",
-                                        "value": "{{id}}"
+                                        "field": "averageScore",
+                                        "label": "Average user's score",
+                                        "color": "#e7e7e7",
+                                        "barLabelsColor": "#aaaaaa"
+                                    }
+                                ],
+                                "labels": {
+                                    "field": "date",
+                                    "value": "{{date}}",
+                                    "styleField": "score",
+                                    "format": "date",
+                                    "formatOptions": { "format": "MM/DD" }
+                                },
+                                "selectionBar": {
+                                    "styleField": "score"
+                                },
+                                "events": [
+                                    {
+                                        "eventName": "click",
+                                        "action": "setParams",
+                                        "actionOptions": {
+                                            "updateUrl": false,
+                                            "params": {
+                                                "currentDate": "{{date}}"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "title": "Breakdown of the user's score",
+                    "report": {
+                        "query": {
+                            "searchId": "user_profile",
+                            "fields": [
+                                {
+                                    "name": "description",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "value",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "featureScore",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "organizational",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "permissions",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "destinations",
+                                    "type": "number"
+                                }
+                            ],
+                            "params": [
+                                {
+                                    "field": "userId",
+                                    "name": "userId",
+                                    "dashboardParam": "entityId"
+                                }
+                            ]
+                        }
+                    },
+                    "views": [
+                        {
+                            "type": "table",
+                            "settings": {
+                                "rows": {
+                                    "style": "highScore",
+                                    "styleParams": {
+                                        "value": "featureScore"
+                                    }
+                                },
+                                "fields": [
+                                    {
+                                        "name": "Description",
+                                        "value": "{{description}}"
                                     },
                                     {
-                                        "icon": "group",
-                                        "value": "{{groups}}"
+                                        "name": "Value",
+                                        "value": "{{value}}",
+                                        "sortBy": "value"
                                     },
                                     {
-                                        "icon": "globe",
-                                        "value": "{{department}}"
+                                        "name": "Feature Score",
+                                        "value": "{{featureScore}}",
+                                        "sortBy": "featureScore",
+                                        "sortDirection": -1
+                                    },
+                                    {
+                                        "name": "Organizational Score",
+                                        "value": "{{organizational}}",
+                                        "sortBy": "organizational"
+                                    },
+                                    {
+                                        "name": "Permissions Score",
+                                        "value": "{{permissions}}",
+                                        "sortBy": "permissions"
+                                    },
+                                    {
+                                        "name": "Destinations Score",
+                                        "value": "{{destinations}}",
+                                        "sortBy": "destinations"
                                     }
                                 ]
                             }

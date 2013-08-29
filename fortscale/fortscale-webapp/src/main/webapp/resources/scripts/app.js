@@ -1,4 +1,4 @@
-angular.module("Fortscale", ["Popup", "Splunk", "Cache", "Utils", "Yoxigen", "ui.sortable"], function($routeProvider, $locationProvider){
+angular.module("Fortscale", ["Popup", "Splunk", "Cache", "Utils", "Yoxigen", "ui.sortable", "ngResource", "FortscaleAuth"], function($routeProvider, $locationProvider){
     $routeProvider
         .when('/d/:dashboardId', {
             templateUrl: 'views/pages/main_dashboard.html',

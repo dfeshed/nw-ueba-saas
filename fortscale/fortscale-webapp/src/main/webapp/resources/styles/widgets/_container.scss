@@ -1,0 +1,23 @@
+.widget-container{
+  background: White;
+  box-sizing: border-box;
+
+  .widget{
+    border: none;
+
+    &:first-child{
+      .widget-contents{
+        padding-top: 0;
+      }
+    }
+  }
+
+  .dashboard-widgets{
+    background: White;
+  }
+
+  .widget-contents{
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

@@ -347,7 +347,15 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
             }
 
             function getRow(row, rowIndex){
-                var viewDataRow = [];
+                var rowData = { display: [] };
+
+                if (view.settings.rows){
+                    if (view.settings.rows.style){
+                        styles.getStyle(view.settings.rows, row).then(function(style){
+                            rowData.style = style;
+                        });
+                    }
+                }
 
                 angular.forEach(view.settings.fields, function(field, fieldIndex){
                     var fieldData;
@@ -373,7 +381,7 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
                         if (fieldSpan === undefined){
                             fieldData.rowSpan = 1;
                             fieldSpans[String(fieldIndex)] = fieldData;
-                            viewDataRow.push(fieldData);
+                            rowData.display.push(fieldData);
                         }
                         else{
                             if (fieldSpan.display === fieldData.display){
@@ -382,19 +390,50 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
                             else{
                                 fieldData.rowSpan = 1;
                                 fieldSpans[String(fieldIndex)] = fieldData;
-                                viewDataRow.push(fieldData);
+                                rowData.display.push(fieldData);
                             }
                         }
                     }
                     else
-                        viewDataRow.push(fieldData);
+                        rowData.display.push(fieldData);
                 });
 
-                return { display: viewDataRow };
+                return rowData;
             }
 
             angular.forEach(data, function(row, rowIndex){
                 viewData.rows.push(getRow(row, rowIndex + 1));
+            });
+
+            return viewData;
+        },
+        tabs: function(view, data, params){
+            var viewData = [];
+
+            angular.forEach(data, function(item, itemIndex){
+                var itemData = {};
+                itemData.display = parseFieldValue(view.settings.tab, view.settings.tab.display, item, itemIndex, params);
+                itemData.id = parseFieldValue(view.settings.tab, view.settings.tab.id, item, itemIndex, params);
+
+                if (view.settings.tab.style){
+                    styles.getStyle(view.settings.tab, item).then(function(style){
+                        itemData.style = style;
+                    });
+                }
+
+                if (view.settings.label){
+                    itemData.label = {
+                        value: parseFieldValue(view.settings.label, view.settings.label.value, item, itemIndex, params)
+                    };
+
+                    if (view.settings.label.style){
+                        styles.getStyle(view.settings.label, item).then(function(style){
+                            itemData.label.style = style;
+                        });
+                    }
+                }
+
+                viewData.push(itemData);
             });
 
             return viewData;
