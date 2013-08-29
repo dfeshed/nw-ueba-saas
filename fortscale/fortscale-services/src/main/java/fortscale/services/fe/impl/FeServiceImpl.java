@@ -1,7 +1,8 @@
 package fortscale.services.fe.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -52,12 +53,12 @@ public class FeServiceImpl implements FeService {
 
 	@Override
 	public void setAdUsersScores(Map<String, Double> userScoresMap,
-			Map<String, List<IFeature>> userFeaturesScoresMap, Date timestamp) {
+			Map<String, Collection<IFeature>> userFeaturesScoresMap, Date timestamp) {
 		for(Entry<String, Double> ent: userScoresMap.entrySet()){
 			AdUserFeaturesExtraction adUserFeaturesExtraction = new AdUserFeaturesExtraction(ent.getKey());
 			adUserFeaturesExtraction.setScore(ent.getValue());
 			adUserFeaturesExtraction.setTimestamp(timestamp);
-			adUserFeaturesExtraction.setAttrVals(userFeaturesScoresMap.get(ent.getKey()));
+			adUserFeaturesExtraction.setAttrVals(new ArrayList<>(userFeaturesScoresMap.get(ent.getKey())));
 			adUsersFeaturesExtractionRepository.saveMap(adUserFeaturesExtraction);
 		}
 	}
