@@ -1,5 +1,6 @@
 package fortscale.domain.ad;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -509,6 +510,124 @@ public class AdUser extends AdObject{
 	@Transient
 	private Map<String, String> attrVals;
 
+	public void fillAttrVals() {
+		this.attrVals = new HashMap<String,String>();
+		
+		this.attrVals.put("accountExpires",accountExpires);
+		this.attrVals.put("assistant",assistant);
+		this.attrVals.put("badPasswordTime",badPasswordTime);
+		this.attrVals.put("badPwdCount",badPwdCount);
+		this.attrVals.put("c",c);
+		this.attrVals.put("cn",cn);
+		this.attrVals.put("company",company);
+		this.attrVals.put("department",department);
+		this.attrVals.put("description",description);
+		this.attrVals.put("directReports",directReports);
+		this.attrVals.put("displayName",displayName);
+		this.attrVals.put("distinguishedName",this.getDistinguishedName());
+		this.attrVals.put("division",division);
+		this.attrVals.put("emailAddress",emailAddress);
+		this.attrVals.put("emailAddress ",emailAddress );
+		this.attrVals.put("employeeID",employeeID);
+		this.attrVals.put("employeeNumber",employeeNumber);
+		this.attrVals.put("employeeType",employeeType);
+		this.attrVals.put("firstname",firstname);
+		this.attrVals.put("homePhone",homePhone);
+		this.attrVals.put("isCriticalSystemObject",isCriticalSystemObject);
+		this.attrVals.put("l",l);
+		this.attrVals.put("lastLogoff",lastLogoff);
+		this.attrVals.put("lastLogon",lastLogon);
+		this.attrVals.put("lastname",lastname);
+		this.attrVals.put("lastname ",lastname );
+		this.attrVals.put("lockoutTime",lockoutTime);
+		this.attrVals.put("logonCount",logonCount);
+		this.attrVals.put("logonHours",logonHours);
+		this.attrVals.put("managedObjects",managedObjects);
+		this.attrVals.put("manager",manager);
+		this.attrVals.put("masteredBy",masteredBy);
+		this.attrVals.put("memberOf",memberOf);
+		this.attrVals.put("mobile",mobile);
+		this.attrVals.put("o",o);
+		this.attrVals.put("otherFacsimileTelephoneNumber",otherFacsimileTelephoneNumber);
+		this.attrVals.put("otherHomePhone",otherHomePhone);
+		this.attrVals.put("otherMobile",otherMobile);
+		this.attrVals.put("otherTelephone",otherTelephone);
+		this.attrVals.put("personalTitle",personalTitle);
+		this.attrVals.put("primaryGroupID",primaryGroupID);
+		this.attrVals.put("pwdLastSet",pwdLastSet);
+		this.attrVals.put("roomNumber",roomNumber);
+		this.attrVals.put("sAMAccountType",sAMAccountType);
+		this.attrVals.put("secretary",secretary);
+		this.attrVals.put("streetAddress",streetAddress);
+		this.attrVals.put("telephoneNumber",telephoneNumber);
+		this.attrVals.put("title",title);
+		this.attrVals.put("userAccountControl",userAccountControl);
+		this.attrVals.put("userParameters",userParameters);
+		this.attrVals.put("userPrincipalName",userPrincipalName);
+		this.attrVals.put("userWorkstations",userWorkstations);
+		this.attrVals.put("whenChanged",whenChanged);
+		this.attrVals.put("whenCreated",whenCreated);
+	}
+	
+	
+	public void updateAttrVals(Map<String, String> AttrVals) {
+		this.setAccountExpires(attrVals.get("accountExpires"));
+		this.setAssistant(attrVals.get("assistant"));
+		this.setBadPasswordTime(attrVals.get("badPasswordTime"));
+		this.setBadPwdCount(attrVals.get("badPwdCount"));
+		this.setC(attrVals.get("c"));
+		this.setCn(attrVals.get("cn"));
+		this.setCompany(attrVals.get("company"));
+		this.setDepartment(attrVals.get("department"));
+		this.setDescription(attrVals.get("description"));
+		this.setDirectReports(attrVals.get("directReports"));
+		this.setDisplayName(attrVals.get("displayName"));
+		this.setDistinguishedName(attrVals.get("distinguishedName"));
+		this.setDivision(attrVals.get("division"));
+		this.setEmailAddress(attrVals.get("emailAddress"));
+		this.setEmailAddress (attrVals.get("emailAddress "));
+		this.setEmployeeID(attrVals.get("employeeID"));
+		this.setEmployeeNumber(attrVals.get("employeeNumber"));
+		this.setEmployeeType(attrVals.get("employeeType"));
+		this.setFirstname (attrVals.get("firstname"));
+		this.setHomePhone(attrVals.get("homePhone"));
+		this.setIsCriticalSystemObject(attrVals.get("isCriticalSystemObject"));
+		this.setL(attrVals.get("l"));
+		this.setLastLogoff(attrVals.get("lastLogoff"));
+		this.setLastLogon(attrVals.get("lastLogon"));
+		this.setLastname(attrVals.get("lastname"));
+		this.setLastname (attrVals.get("lastname "));
+		this.setLockoutTime(attrVals.get("lockoutTime"));
+		this.setLogonCount(attrVals.get("logonCount"));
+		this.setLogonHours(attrVals.get("logonHours"));
+		this.setManagedObjects(attrVals.get("managedObjects"));
+		this.setManager(attrVals.get("manager"));
+		this.setMasteredBy(attrVals.get("masteredBy"));
+		this.setMemberOf(attrVals.get("memberOf"));
+		this.setMobile(attrVals.get("mobile"));
+		this.setO(attrVals.get("o"));
+		this.setOtherFacsimileTelephoneNumber(attrVals.get("otherFacsimileTelephoneNumber"));
+		this.setOtherHomePhone(attrVals.get("otherHomePhone"));
+		this.setOtherMobile(attrVals.get("otherMobile"));
+		this.setOtherTelephone(attrVals.get("otherTelephone"));
+		this.setPersonalTitle(attrVals.get("personalTitle"));
+		this.setPrimaryGroupID(attrVals.get("primaryGroupID"));
+		this.setPwdLastSet(attrVals.get("pwdLastSet"));
+		this.setRoomNumber(attrVals.get("roomNumber"));
+		this.setsAMAccountType(attrVals.get("sAMAccountType"));
+		this.setSecretary(attrVals.get("secretary"));
+		this.setStreetAddress(attrVals.get("streetAddress"));
+		this.setTelephoneNumber(attrVals.get("telephoneNumber"));
+		this.setTitle(attrVals.get("title"));
+		this.setUserAccountControl(attrVals.get("userAccountControl"));
+		this.setUserParameters(attrVals.get("userParameters"));
+		this.setUserPrincipalName(attrVals.get("userPrincipalName"));
+		this.setUserWorkstations(attrVals.get("userWorkstations"));
+		this.setWhenChanged(attrVals.get("whenChanged"));
+		this.setWhenCreated(attrVals.get("whenCreated"));
+	}
+	
+	
 	public Map<String, String> getAttrVals() {
 		return attrVals;
 	}
