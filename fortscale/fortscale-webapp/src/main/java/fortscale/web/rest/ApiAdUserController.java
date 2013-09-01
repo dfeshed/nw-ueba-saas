@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.activedirectory.main.ADManager;
+import fortscale.activedirectory.qos.QoSService;
 import fortscale.services.fe.FeService;
 
 
@@ -19,6 +20,7 @@ public class ApiAdUserController {
 	
 	@Autowired
 	private FeService feService;
+	private QoSService qosService;
 
 //	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/runfe", method=RequestMethod.GET)
@@ -27,7 +29,17 @@ public class ApiAdUserController {
 		ADManager adManager = new ADManager();
 		adManager.run(feService, null);
 		return "";
-//		List<AdUser> ret = IteratorUtils.toList(feService.getAdUsersAttrVals().iterator());
-//		return ret;
 	}
+	
+	
+//	@SuppressWarnings("unchecked")
+	@RequestMapping(value="/runqos", method=RequestMethod.GET)
+	@ResponseBody
+	public String runqos(Model model){
+		qosService = new QoSService(feService);
+		ADManager adManager = new ADManager();
+		adManager.run(qosService, null);
+		return "";
+	}
+
 }
