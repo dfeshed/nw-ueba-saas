@@ -1,9 +1,9 @@
 body {
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Roboto', sans-serif;
 	background-color: #f7f7f7;
 	position: relative;
 	margin: 0px;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 0px;
 	/*-webkit-font-smoothing: antialiased;*/
 }
@@ -18,7 +18,7 @@ h1 small,h2 small,h3 small,h4 small,h5 small {
 }
 
 input.search{
-	background: url("../img/lens.png") #fcfcfc no-repeat 95%;
+	background: url("../img/lens.png") rgba(255,255,255,.86) no-repeat 95%;
 	box-shadow: none;
 	height: 19px;
 	font-size: 13px;
@@ -27,6 +27,11 @@ input.search{
 	margin: 0;
 	border-radius: 2px;
 	top: 11px;
+    font-style: italic;
+}
+input.search:focus{
+    background-color: White;
+    font-style: normal;
 }
 
 .header{

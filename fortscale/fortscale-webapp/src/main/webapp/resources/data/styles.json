@@ -8,7 +8,7 @@
                 {
                     "field": "{{value}}",
                     "operator": "lesserThan",
-                    "value": 30
+                    "value": 40
                 }
             ]
         },
@@ -21,7 +21,7 @@
                 {
                     "field": "{{value}}",
                     "operator": "greaterThanOrEqual",
-                    "value": 30
+                    "value": 40
                 }
             ]
         },
@@ -64,7 +64,7 @@
                 {
                     "field": "{{value}}",
                     "operator": "greaterThanOrEqual",
-                    "value": 250
+                    "value": 200
                 }
             ]
         }

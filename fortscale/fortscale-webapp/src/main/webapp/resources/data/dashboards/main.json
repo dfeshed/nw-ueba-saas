@@ -86,7 +86,7 @@
                             ]
                         }
                     },
-                    "title": "Trending",
+                    "title": "Top Trending",
                     "views": [
                         {
                             "type": "table",
@@ -134,7 +134,7 @@
             "className": "span9",
             "widgets": [
                 {
-                    "title": "Severity Distribution",
+                    "title": "Users Severity Distribution",
                     "tabs": [
                         {
                             "name": "Users",
@@ -191,7 +191,8 @@
                     "title": "Suspicious Group Memberships",
                     "linkTo": {
                         "url": "#/d/user-groups",
-                        "tooltip": "Investigate suspicious group memberships"
+                        "tooltip": "Investigate suspicious group memberships",
+                        "text": "View all"
                     },
                     "views": [
                         {
@@ -271,7 +272,8 @@
                     "title": "Suspicious Administrator Logins",
                     "linkTo": {
                         "url": "#/d/user_logins",
-                        "tooltip": "Investigate user logins"
+                        "tooltip": "Investigate user logins",
+                        "text": "View all"
                     },
                     "views": [
                         {
@@ -363,8 +365,9 @@
                     },
                     "title": "Recent Events",
                     "linkTo": {
-                        "url": "#/d/events",
-                        "tooltip": "View all events"
+                        "url": "#/d/user_logins",
+                        "tooltip": "Investigate user logins",
+                        "text": "View all"
                     },
                     "views": [
                         {

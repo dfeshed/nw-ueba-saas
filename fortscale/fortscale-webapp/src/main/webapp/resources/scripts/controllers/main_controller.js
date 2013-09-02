@@ -69,6 +69,42 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         window.location.href = "/fortscale-ui-atlantis/app/signin.html";
     };
 
+    $scope.searchSettings = {
+        "reports": [
+            {
+                "query": {
+                    "searchId": "search",
+                    "dataSource": "api",
+                    "endpoint": {
+                        "entity": "user",
+                        "method": "search"
+                    },
+                    "options": {
+                        "count": 10
+                    },
+                    "fields": {
+                        "name":{"type":"string"},
+                        "id": {"type": "string"}
+                    },
+                    "params": [
+                        {
+                            "field": "prefix",
+                            "type": "string",
+                            "dashboardParam": "term"
+                        }
+                    ]
+                }
+            }
+        ],
+        "resultField": "name",
+        "value": "#/d/user/{{id}}",
+        "onSelect": {
+            "url": "#/d/user/{{id}}"
+        },
+        "showValueOnSelect": false,
+        "placeholder": "Users search"
+    };
+
     $scope.sortableOptions = {
         update: function(e, ui) {
 

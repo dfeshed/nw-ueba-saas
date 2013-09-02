@@ -90,10 +90,22 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
             },
             setParams: function(options, data){
                 var params = {},
-                    paramValue;
+                    paramValue,
+                    paramData,
+                    paramStrConfig;
 
                 for(var paramName in options.params){
-                    paramValue = widgets.parseFieldValue(options, options.params[paramName], data, undefined, $scope.dashboardParams);
+                    paramStrConfig = options.params[paramName];
+                    if (angular.isArray(data) && angular.isObject(paramStrConfig)){
+                        paramData = data[paramStrConfig.itemIndex || 0];
+                        paramStrConfig = paramStrConfig.value;
+                    }
+                    else
+                        paramData = data;
+
+                    if (paramStrConfig)
+                        paramValue = widgets.parseFieldValue(options, paramStrConfig, paramData, undefined, $scope.dashboardParams);
+
                     params[paramName] = paramValue;
                 }
 
@@ -101,6 +113,7 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                 angular.extend($scope.dashboardParams, params);
                 angular.extend($scope.dashboardParamsOptions, options.paramsOptions);
                 $scope.$broadcast("dashboardParamsChange", params);
+                setDashboardFieldValues($scope.dashboard);
 
                 if (options.updateUrl !== false)
                     updateControlParams();

@@ -170,9 +170,13 @@ h2, h3, h4, h5 {
   position: relative;
   border: solid 1px #cecece;
   margin-bottom: 20px;
-  background: White; }
+  background: White;
+  -webkit-transition: opacity 500ms ease-out;
+  opacity: 1; }
   .widget:last-child {
     margin-bottom: 0; }
+  .widget.widget-loading {
+    opacity: .5; }
   .widget.no-margins {
     margin-bottom: 0; }
     .widget.no-margins .widget-contents {
@@ -198,6 +202,8 @@ h2, h3, h4, h5 {
   border-bottom: solid 2px #cecece;
   cursor: move;
   font-size: 12pt; }
+  .widget-header .widget-link-to {
+    font-size: .9em; }
 
 .widget-dashboard .widget-header {
   cursor: inherit; }
@@ -349,14 +355,27 @@ h2, h3, h4, h5 {
 
 .widget-message {
   position: absolute;
-  top: 10px;
-  left: 13px;
-  right: 13px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   text-align: center; }
   .widget-message.widget-loading {
     cursor: wait;
-    background: rgba(255, 255, 255, 0.5);
-    bottom: 22px; }
+    color: Black; }
+    .widget-message.widget-loading .widget-message-contents {
+      display: block;
+      font-weight: bold;
+      top: 50%;
+      height: 30px;
+      width: 30px;
+      left: 50%;
+      margin-left: -15px;
+      margin-top: -15px;
+      font-size: 2em;
+      box-shadow: none;
+      padding: 0;
+      position: absolute; }
   .widget-message a {
     pointer-events: all; }
   .widget-message .widget-message-contents {
@@ -370,8 +389,6 @@ h2, h3, h4, h5 {
     .widget-message .widget-message-contents a {
       cursor: pointer;
       text-decoration: underline; }
-  .widget-message .widget-loading-message {
-    background: #ffffab; }
   .widget-message .widget-warning-message {
     background: #ffd362; }
   .widget-message .widget-error-message {
@@ -478,62 +495,6 @@ h2, h3, h4, h5 {
   padding: 0 20px;
   cursor: pointer; }
 
-.btn {
-  background: #71a0af;
-  /* Old browsers */
-  background: -moz-linear-gradient(top, #71a0af 0%, #6998a7 50%, #588c9c 51%, #4e8292 100%);
-  /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #71a0af), color-stop(50%, #6998a7), color-stop(51%, #588c9c), color-stop(100%, #4e8292));
-  /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #71a0af 0%, #6998a7 50%, #588c9c 51%, #4e8292 100%);
-  /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #71a0af 0%, #6998a7 50%, #588c9c 51%, #4e8292 100%);
-  /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, #71a0af 0%, #6998a7 50%, #588c9c 51%, #4e8292 100%);
-  /* IE10+ */
-  background: linear-gradient(to bottom, #71a0af 0%, #6998a7 50%, #588c9c 51%, #4e8292 100%);
-  /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#71a0af', endColorstr='#4e8292',GradientType=0 );
-  /* IE6-9 */
-  color: White;
-  display: inline-block;
-  height: 23px;
-  border: 1px solid #498a99;
-  border-radius: 4px;
-  font-size: 12px;
-  padding: 0 5px;
-  line-height: 21px;
-  text-decoration: none;
-  margin-right: 10px;
-  box-sizing: border-box;
-  text-align: center;
-  cursor: pointer; }
-  .btn:hover {
-    background: #498a99;
-    background: -moz-linear-gradient(top, #498a99 0%, #4e7d87 50%, #396e79 51%, #2f646f 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #498a99), color-stop(50%, #4e7d87), color-stop(51%, #396e79), color-stop(100%, #2f646f));
-    background: -webkit-linear-gradient(top, #498a99 0%, #4e7d87 50%, #396e79 51%, #2f646f 100%);
-    background: -o-linear-gradient(top, #498a99 0%, #4e7d87 50%, #396e79 51%, #2f646f 100%);
-    background: -ms-linear-gradient(top, #498a99 0%, #4e7d87 50%, #396e79 51%, #2f646f 100%);
-    background: linear-gradient(to bottom, #498a99 0%, #4e7d87 50%, #396e79 51%, #2f646f 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#498a99', endColorstr='#2f646f',GradientType=0 ); }
-
-.btn-link {
-  background: none;
-  color: #049cdb;
-  border: none;
-  padding: 0;
-  text-decoration: underline; }
-  .btn-link:hover {
-    background: none;
-    color: Black; }
-
-.btn-danger {
-  background: #c00;
-  border-color: #b00; }
-  .btn-danger:hover {
-    background: #b00; }
-
 .ui-tooltip {
   padding: 10px;
   color: white !important;
@@ -592,6 +553,19 @@ body .ui-tooltip {
   top: 50%;
   margin-left: -275px;
   margin-top: -110px; }
+
+.btn {
+  background: -webkit-linear-gradient(top, #999999, #505050);
+  background: -moz-linear-gradient(top, #999999, #505050);
+  background: linear-gradient(top, #999999, #505050);
+  color: white;
+  text-shadow: none;
+  border-color: #666;
+  box-shadow: none;
+  cursor: pointer; }
+  .btn:hover {
+    background: #505050;
+    color: White; }
 
 .splunk-config-modal {
   width: 600px;
