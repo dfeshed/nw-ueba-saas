@@ -21,6 +21,24 @@
 	<root level="debug">
 		<appender-ref ref="STDOUT" />
 	</root>
+	
+	<!-- 3rdparty Loggers -->
+	<logger name="org.springframework.core" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<logger name="org.springframework.beans" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<logger name="org.springframework.context" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+	<logger name="org.springframework.web" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+
 	<logger name="org.apache.hadoop" additivity="false" level="info">
 		<appender-ref ref="STDOUT" />
 	</logger>
