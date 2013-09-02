@@ -6,8 +6,11 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 		
 	<description>domain context for testing.</description>
-
-	<mongo:db-factory id="mongoDbFactory" dbname="test-fortscale" />
+	
+	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
+	
+	
+	<mongo:db-factory id="mongoDbFactory" dbname="fortscale"  host="localhost" port="27017"/>
 	
 	<mongo:mapping-converter id="mongoConverter" base-package="fortscale.domain">
 		<mongo:custom-converters base-package="fortscale.domain" />

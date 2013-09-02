@@ -16,6 +16,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.IUserScore;
 import fortscale.services.UserService;
+import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
 import fortscale.web.beans.UserContactInfoBean;
@@ -45,6 +46,7 @@ public class ApiUserController {
 	
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
+	@LogException
 	public  DataBean<List<UserSearchBean>> search(@RequestParam(required=true) String prefix, Model model){
 		List<User> users = userService.findBySearchFieldContaining(prefix);
 		List<UserSearchBean> data = new ArrayList<UserSearchBean>();
@@ -60,6 +62,7 @@ public class ApiUserController {
 	
 	@RequestMapping(value="{id}/details", method=RequestMethod.GET)
 	@ResponseBody
+	@LogException
 	public DataBean<List<UserDetailsBean>> details(@PathVariable String id, Model model){
 		User user = userRepository.findOne(id);
 		if(user == null){
@@ -71,6 +74,7 @@ public class ApiUserController {
 	
 	@RequestMapping(value="{id}/contactinfo", method=RequestMethod.GET)
 	@ResponseBody
+	@LogException
 	public DataBean<List<UserContactInfoBean>> userContactInfo(@PathVariable String id, Model model){
 		User user = userRepository.findOne(id);
 		if(user == null){
@@ -82,6 +86,7 @@ public class ApiUserController {
 	
 	@RequestMapping(value="{id}/scores", method=RequestMethod.GET)
 	@ResponseBody
+	@LogException
 	public DataBean<List<IUserScore>> userScores(@PathVariable String id, Model model){
 		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
 		List<IUserScore> userScores = userService.getUserScores(id);
