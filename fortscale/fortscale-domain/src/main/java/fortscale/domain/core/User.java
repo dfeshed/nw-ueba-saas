@@ -53,7 +53,7 @@ public class User extends AbstractDocument {
 	private String searchField;
 
 	/**
-	 * Creates a new {@link Customer} from the given adDn.
+	 * Creates a new {@link User} from the given adDn.
 	 * 
 	 * @param adDn must not be {@literal null} or empty.
 	 */
