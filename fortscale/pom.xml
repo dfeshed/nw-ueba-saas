@@ -12,7 +12,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.8.2</junit.version>
-		<spring.version>3.2.0.RELEASE</spring.version>
+		<org.springframework-version>3.2.0.RELEASE</org.springframework-version>
+		<perf4j.version>0.9.16</perf4j.version>
 	</properties>
 
 	<dependencies>
@@ -25,17 +26,17 @@
 		<dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-orm</artifactId>
-    <version>${spring.version}</version>
+    <version>${org.springframework-version}</version>
 </dependency>
 		<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>${spring.version}</version>
+            <version>${org.springframework-version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
-            <version>${spring.version}</version>
+            <version>${org.springframework-version}</version>
         </dependency>
 	</dependencies>
 	
@@ -69,7 +70,7 @@
 	</build>
 	
 	<modules>
-		<!-- <module>fortscale-global-config</module> -->
+		<module>fortscale-global-config</module>
 		<module>fortscale-domain</module>
 		<module>fortscale-webapp</module>
 		<module>fortscale-services</module>

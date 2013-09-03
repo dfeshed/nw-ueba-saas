@@ -27,7 +27,7 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
                 else if (param === "item")
                     return item;
 
-                return params[param];
+                return params[param] || "";
             }
             else{
                 var dataValue = data[variable];
@@ -132,6 +132,11 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
     var viewTypeSetData = {
         barChart: chartSetData,
         percentChart: chartSetData,
+        button: function(view, data, params){
+            return {
+                text: parseFieldValue(view.settings, view.settings.text, data, 0, params)
+            };
+        },
         buttonsBar: function(view, data, params){
             var viewData = [];
 
@@ -283,11 +288,15 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
             angular.forEach(data, function(item, itemIndex){
                 var itemData = [];
                 angular.forEach(view.settings.properties, function(property){
-                    itemData.push({
-                        icon: getIcon(property.icon),
-                        value: format.formatItem(property, parseFieldValue(property, property.value, item, itemIndex, params))
-                    });
+                    var itemValue = parseFieldValue(property, property.value, item, itemIndex, params);
+                    if (itemValue){
+                        itemData.push({
+                            icon: getIcon(property.icon),
+                            value: format.formatItem(property, itemValue)
+                        });
+                    }
                 });
+
                 viewData.push(itemData);
             });
 

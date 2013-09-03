@@ -25,8 +25,8 @@
                             ],
                             "params": [
                                 {
-                                    "field": "userId",
-                                    "name": "userId",
+                                    "field": "id",
+                                    "name": "id",
                                     "dashboardParam": "entityId"
                                 }
                             ]
@@ -133,8 +133,8 @@
                             ],
                             "params": [
                                 {
-                                    "field": "userId",
-                                    "name": "userId",
+                                    "field": "id",
+                                    "name": "id",
                                     "dashboardParam": "entityId"
                                 }
                             ]

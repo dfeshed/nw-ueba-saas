@@ -128,15 +128,15 @@
                                         "link": "#/d/user/{{username}}"
                                     },
                                     {
-                                        "name": "Severity",
+                                        "name": "Score",
                                         "value": "{{severity}}",
                                         "sortBy": "severity",
                                         "sortDirection": -1
                                     },
                                     {
-                                        "name": "Avg. Severity",
-                                        "value": "{{avgSeverity}}",
-                                        "sortBy": "avgSeverity"
+                                        "name": "Trend",
+                                        "value": "{{trend}}",
+                                        "sortBy": "trend"
                                     },
                                     {
                                         "name": "Machines",

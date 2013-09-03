@@ -199,6 +199,13 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                     widget.loading = false;
                     $scope.$broadcast("onWidgetData", { widget: widget });
 
+                    if (widget.onDataEvent){
+                        $scope.dashboardEvent({
+                            event: widget.onDataEvent,
+                            data: results.data
+                        });
+                    }
+
                     if (widget.autoRefresh)
                         $timeout(function(){ $scope.runWidgetReport(widget); }, 15 * 60 * 1000); // Refresh the widget in 15 minutes
 

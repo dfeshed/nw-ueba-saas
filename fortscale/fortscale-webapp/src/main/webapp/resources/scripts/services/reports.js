@@ -64,7 +64,7 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($
                     }
                 }
 
-                DAL.reports.runSearch(report.query.searchId, report.query.dataSource, getSearchParams(report, params), report.query.options)
+                DAL.reports.runSearch(report.query, getSearchParams(report, params))
                     .then(function(results){
                         if (report.transform){
                             var transformedResults = [];

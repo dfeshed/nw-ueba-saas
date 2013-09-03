@@ -4,6 +4,9 @@ angular.module("Fortscale").controller("ButtonsBarWidgetController", ["$scope", 
             button.on = !button.on;
         }
 
-        $scope.fireEvent(button.events.onClick, $event, { on: button.on }, button);
+        angular.forEach($scope.view.settings.events, function(event){
+            if (event.eventName === "click")
+                $scope.dashboardEvent({ event: event }, $event, { on: button.on }, button);
+        });
     };
 }]);

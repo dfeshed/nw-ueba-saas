@@ -1,6 +1,6 @@
 {
     "dashboardId": "user",
-    "name": "{{@entityId}}",
+    "name": "{{@userName}}",
     "icon": {
         "type": "user"
     },
@@ -14,6 +14,10 @@
                         "query": {
                             "dataSource": "api",
                             "searchId": "user_details",
+                            "endpoint": {
+                                "entity": "user",
+                                "method": "details"
+                            },
                             "fields": [
                                 {
                                     "name": "username",
@@ -67,13 +71,22 @@
                             "params": [
                                 {
                                     "field": "id",
-                                    "name": "userId",
+                                    "name": "id",
                                     "dashboardParam": "entityId"
                                 }
                             ]
                         }
                     },
                     "className": "round-items-list",
+                    "onDataEvent": {
+                        "action": "setParams",
+                        "actionOptions": {
+                            "updateUrl": false,
+                            "params": {
+                                "userName": { "itemIndex": 0, "value": "{{name}}" }
+                            }
+                        }
+                    },
                     "views": [
                         {
                             "type": "properties",
@@ -116,6 +129,10 @@
                     "report": {
                         "query": {
                             "searchId": "user_machines",
+                            "endpoint": {
+                                "entity": "user",
+                                "method": "machines"
+                            },
                             "fields": [
                                 {
                                     "name": "machineName",
@@ -140,8 +157,8 @@
                             ],
                             "params": [
                                 {
-                                    "field": "userId",
-                                    "name": "userId",
+                                    "field": "id",
+                                    "name": "id",
                                     "dashboardParam": "entityId"
                                 }
                             ]
@@ -203,11 +220,50 @@
                                 {
                                     "renderControls": false,
                                     "renderHeader": false,
+                                    "refreshOn": "currentFeature",
+                                    "className": "no-margins",
+                                    "show": {
+                                        "conditions": [{
+                                            "field": "{{currentFeature}}",
+                                            "operator": "hasValue"
+                                        }]
+                                    },
+                                    "views": [
+                                        {
+                                            "type": "button",
+                                            "className": "btn-back",
+                                            "settings": {
+                                                "text": "Back",
+                                                "icon": "caret-left",
+                                                "events": [
+                                                    {
+                                                        "eventName": "click",
+                                                        "action": "setParams",
+                                                        "actionOptions": {
+                                                            "updateUrl": false,
+                                                            "params": {
+                                                                "currentFeature": null
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "renderControls": false,
+                                    "renderHeader": false,
                                     "className": "no-margins widget-advance-one",
                                     "refreshOn": "currentFeature",
                                     "report": {
                                         "query": {
+                                            "dataSource": "api",
                                             "searchId": "user_scores",
+                                            "endpoint": {
+                                                "entity": "user",
+                                                "method": "scores"
+                                            },
                                             "fields": [
                                                 {
                                                     "name": "name",
@@ -224,7 +280,7 @@
                                             ],
                                             "params": [
                                                 {
-                                                    "field": "userId",
+                                                    "field": "id",
                                                     "name": "userId",
                                                     "dashboardParam": "entityId"
                                                 }
@@ -288,6 +344,7 @@
                                                         "size": "20px"
                                                     },
                                                     "selectable": true,
+                                                    "selectLabels": false,
                                                     "showSelectionBar": false
                                                 },
                                                 "series": [
@@ -395,8 +452,8 @@
                             ],
                             "params": [
                                 {
-                                    "field": "userId",
-                                    "name": "userId",
+                                    "field": "id",
+                                    "name": "id",
                                     "dashboardParam": "entityId"
                                 }
                             ]
@@ -406,7 +463,7 @@
                     "controls": [
                         {
                             "type": "link",
-                            "text": "View all suspicious logins for this user",
+                            "text": "View all",
                             "href": "#/d/user/{{@entityId}}/logins"
                         }
                     ],
@@ -463,6 +520,10 @@
                     "report": {
                         "query": {
                             "searchId": "user_notifications",
+                            "endpoint": {
+                                "entity": "user",
+                                "method": "notifications"
+                            },
                             "fields": [
                                 {
                                     "name": "text",
@@ -479,8 +540,8 @@
                             ],
                             "params": [
                                 {
-                                    "field": "userId",
-                                    "name": "userId",
+                                    "field": "id",
+                                    "name": "id",
                                     "dashboardParam": "entityId"
                                 }
                             ]
@@ -509,6 +570,10 @@
                     "report": {
                         "query": {
                             "searchId": "user_events",
+                            "endpoint": {
+                                "entity": "user",
+                                "method": "events"
+                            },
                             "fields": [
                                 {
                                     "name": "text",
@@ -529,8 +594,8 @@
                             ],
                             "params": [
                                 {
-                                    "field": "userId",
-                                    "name": "userId",
+                                    "field": "id",
+                                    "name": "id",
                                     "dashboardParam": "entityId"
                                 }
                             ]

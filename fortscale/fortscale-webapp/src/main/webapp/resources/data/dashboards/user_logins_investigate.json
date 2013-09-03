@@ -55,7 +55,7 @@
                     "controls": [
                         {
                             "type": "link",
-                            "text": "View all suspicious logins for this user",
+                            "text": "View all",
                             "href": "#/d/user/{{@entityId}}/logins"
                         }
                     ],

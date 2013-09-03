@@ -1,4 +1,16 @@
-angular.module("Fortscale").factory("DAL", ["$http", "$q", "splunk", "server", function($http, $q, splunk, server){
+angular.module("Fortscale").factory("DAL", ["$http", "$q", "server", function($http, $q, server){
+    function setVariables(str, data){
+        var parsedValue = str.replace(/\{\{([^\}]+)\}\}/g, function(match, variable){
+            var dataValue = data[variable];
+            if (dataValue !== undefined && dataValue !== null){
+                delete data[variable];
+                return dataValue;
+            }
+
+            return "";
+        });
+    }
+
     var methods = {
         dashboards: {
             getDashboardsList: function(){
@@ -24,13 +36,12 @@ angular.module("Fortscale").factory("DAL", ["$http", "$q", "splunk", "server", f
             getAllReports: function(){
                 return $http.get("data/get_all_reports.json");
             },
-            runSearch: function(searchId, dataSource, params, options){
-                if (dataSource === "splunk")
-                    return splunk.runSearch(searchId, params, options);
-                else if (dataSource === "api")
-                    return server.queryServer(searchId, params, options);
+            runSearch: function(query, params){
+                if (query.dataSource === "api"){
+                    return server.queryServer(query, params, query.options);
+                }
                 else
-                    return server.query(searchId, params, options);
+                    return server.query(query.searchId, params, query.options);
             }
         },
         widgets: {

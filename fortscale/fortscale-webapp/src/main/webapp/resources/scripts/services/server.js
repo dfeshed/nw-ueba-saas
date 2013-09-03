@@ -1,6 +1,5 @@
 angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", function ($q, $http, $resource) {
-    var apiResource = $resource("/fortscale-webapp/api/:queryName/:id", {
-        queryName: "@queryName",
+    var apiResource = $resource("/fortscale-webapp/api/:entity/:id/:method", {
         id: "@id"
     });
 
@@ -29,25 +28,24 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", funct
 
             $http.get(("data/search/" + queryName + (paramsQuery ? "." + paramsQuery : "") + ".json?t=" + new Date().valueOf()).toLowerCase())
                 .success(function(data){
-                    console.log("DATA: ", data);
                     deferred.resolve(data);
                 })
                 .error(deferred.reject);
 
             return deferred.promise;
         },
-        queryServer: function (queryName, params, options) {
+        queryServer: function (query, params, options) {
             var deferred = $q.defer();
 
-            var queryResult = apiResource.get(angular.extend({}, options, params, { queryName: queryName }), function(){
+            var queryResult = apiResource.get(angular.extend({}, options, params, query.endpoint), function(){
                 if (queryResult)
                     deferred.resolve(queryResult);
                 else
-                    methods.query(queryName, params, options)
+                    methods.query(query.searchId, params, options)
                         .success(deferred.resolve)
                         .error(deferred.reject);
             }, function(error){
-                methods.query(queryName, params, options).then(deferred.resolve, deferred.reject);
+                methods.query(query.searchId, params, options).then(deferred.resolve, deferred.reject);
             });
 
             return deferred.promise;

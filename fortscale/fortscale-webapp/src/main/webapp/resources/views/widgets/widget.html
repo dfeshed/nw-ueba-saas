@@ -5,8 +5,8 @@
                  ng-include="'views/controls/' + control.type + '.html'">
             </div>
             <div class="widget-view-control widget-control-refresh" ng-if="widget.linkTo">
-                <a href="{{widget.linkTo.url}}" title="{{widget.linkTo.tooltip}}" class="clickable">
-                    <i class="icon-external-link"></i>
+                <a href="{{widget.linkTo.url}}" title="{{widget.linkTo.tooltip}}" class="clickable widget-link-to">
+                    {{widget.linkTo.text}}
                 </a>
             </div>
             <div class="widget-view-control widget-control-refresh">
@@ -44,9 +44,9 @@
                 {{widget.initMessage}}
             </div>
             <div class="widget-message widget-loading" ng-show="widget.loading">
-                        <span class="widget-message-contents widget-loading-message">
-                            <i class="icon-spinner icon-spin"></i> Loading...
-                        </span>
+                <span class="widget-message-contents widget-loading-message">
+                    <i class="icon-spinner icon-spin"></i>
+                </span>
             </div>
             <div class="widget-message widget-error" ng-show="widget.error">
                         <span class="widget-message-contents widget-error-message">

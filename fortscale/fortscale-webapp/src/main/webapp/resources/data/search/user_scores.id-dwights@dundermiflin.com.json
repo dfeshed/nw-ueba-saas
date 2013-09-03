@@ -7,12 +7,6 @@
             "averageScore": 43
         },
         {
-            "id": "groupPolicy",
-            "name": "Group Policy",
-            "score": 86,
-            "averageScore": 42
-        },
-        {
             "id": "logins",
             "name": "Logins",
             "score": 55,

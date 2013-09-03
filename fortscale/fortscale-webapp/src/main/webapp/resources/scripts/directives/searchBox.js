@@ -1,18 +1,19 @@
 'use strict';
 
 angular.module('Fortscale')
-    .directive('searchbox', ["$timeout", "reports", "transforms", function ($timeout, reports, transforms) {
+    .directive('searchbox', ["$timeout", "reports", "transforms", "widgets", function ($timeout, reports, transforms, widgets) {
         return {
-            template: "<span><input type='text' ng-model='searchValue' /><i class='icon-spinner icon-spin' ng-class='{ hidden: !loading }'></i></span>",
+            template: "<span><input type='text' ng-model='searchValue' class='search' /><i class='icon-spinner icon-spin' ng-class='{ hidden: !loading }'></i></span>",
             restrict: 'A',
             replace: true,
             require: "?ngModel",
             link: function postLink(scope, element, attrs, ngModel) {
                 var settings,
                     isInit,
-                    MIN_SEARCH_SIZE = 3,// If the current term is smaller than this, search won't run.
+                    MIN_SEARCH_SIZE = 1,// If the current term is smaller than this, search won't run.
                     onSelect,
-                    onSelectTimeout;
+                    onSelectTimeout,
+                    latestResults;
 
                 scope.$watch(attrs.searchSettings, function(value){
                     if (value && !isInit){
@@ -22,7 +23,10 @@ angular.module('Fortscale')
                                 $timeout.cancel(onSelectTimeout);
                                 onSelectTimeout = $timeout(function(){
                                     scope.$apply(function(){
-                                        scope.$emit("dashboardEvent", { event: settings.onSelect, data: { value: value } });
+                                        if (settings.onSelect.action)
+                                            scope.$emit("dashboardEvent", { event: settings.onSelect, data: { value: value } });
+                                        else if (settings.onSelect.url)
+                                            window.location.hash = value;
                                     });
                                 }, 40);
                             }
@@ -60,6 +64,7 @@ angular.module('Fortscale')
                         .attr("placeholder", settings.placeholder)
                         .autocomplete({
                             delay: 400,
+                            minLength: MIN_SEARCH_SIZE,
                             source: function( request, response ) {
                                 if (!request.term || request.term.length < MIN_SEARCH_SIZE)
                                     return;
@@ -69,19 +74,26 @@ angular.module('Fortscale')
                                 if (settings.termTransform){
                                     searchTerm = transforms.string(searchTerm, settings.termTransform);
                                 }
-                                reports.runReports(settings.reports, { term: searchTerm }, true).then(function(results){
-                                    var resultsArr = [];
-                                    angular.forEach(results, function(reportResults, reportIndex){
-                                        angular.forEach(reportResults.data, function(row){
-                                            resultsArr.push({ label: row[settings.resultField || "Result"], value: row[settings.resultField || "Result"], report: settings.reports[reportIndex] });
+                                scope.safeApply(function(){
+                                    reports.runReports(settings.reports, { term: searchTerm }, true).then(function(results){
+                                        latestResults = results;
+                                        var resultsArr = [];
+                                        angular.forEach(results, function(reportResults, reportIndex){
+                                            angular.forEach(reportResults.data, function(row, rowIndex){
+                                                resultsArr.push({
+                                                    label: row[settings.resultField || "Result"],
+                                                    value: widgets.parseFieldValue(settings, settings.value, row, rowIndex),
+                                                    report: settings.reports[reportIndex]
+                                                });
+                                            });
                                         });
-                                    });
 
-                                    scope.loading = false;
-                                    response(resultsArr);
-                                }, function(error){
-                                    scope.loading = false;
-                                    response([]);
+                                        scope.loading = false;
+                                        response(resultsArr);
+                                    }, function(error){
+                                        scope.loading = false;
+                                        response([]);
+                                    });
                                 });
                             },
                             search: function() {
@@ -96,7 +108,11 @@ angular.module('Fortscale')
                                 return false;
                             },
                             select: function( event, ui ) {
-                                input.val(ui.item.value);
+                                if (settings.showValueOnSelect)
+                                    input.val(ui.item.value);
+                                else
+                                    input.val("");
+
                                 onSelect(ui.item.value);
                                 return false;
                             }

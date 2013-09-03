@@ -26,6 +26,7 @@
                          ng-controller="WidgetController"
                          ng-init="initWidget(widget)"
                          ng-show="!widget.show || widget.show.value"
+                         ng-class="{ 'widget-loading': widget.loading }"
                          ng-style="widget.style">
                         <ng-include src="'views/widgets/widget.html'"></ng-include>
                     </div>

@@ -1,5 +1,5 @@
 {
-    "dashboardId": "user_password",
+    "dashboardId": "user_groups",
     "name": "{{@entityId}}",
     "columns": [
         {
@@ -8,7 +8,7 @@
                 {
                     "report": {
                         "query": {
-                            "searchId": "user_password_history",
+                            "searchId": "user_groups_history",
                             "fields": [
                                 {
                                     "name": "date",
@@ -32,7 +32,7 @@
                             ]
                         }
                     },
-                    "title": "User password score for the last 7 days",
+                    "title": "User groups score for the last 7 days",
                     "views": [
                         {
                             "type": "barChart",

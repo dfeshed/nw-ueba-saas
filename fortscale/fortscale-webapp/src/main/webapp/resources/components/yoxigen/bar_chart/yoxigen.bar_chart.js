@@ -60,6 +60,7 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
                     minHeight: 100,
                     createAxes: true,
                     createLabels: true,
+                    selectLabels: true,
                     showSelectionBar: false,
                     refreshOnResize: true
                 },
@@ -204,7 +205,7 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
 
                     selectedBarGroup = itemIndex;
 
-                    if (labelBoxes){
+                    if (labelBoxes && options.selectLabels){
                         d3.select(labelTexts[0][selectedBarGroup]).attr("fill", setLabelFill(itemData, selectedBarGroup));
                         d3.select(labelTexts[0][previousSelectedIndex]).attr("fill", setLabelFill(data[previousSelectedIndex], previousSelectedIndex));
                         d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", true);

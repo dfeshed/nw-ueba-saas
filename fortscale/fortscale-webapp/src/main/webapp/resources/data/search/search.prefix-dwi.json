@@ -1,0 +1,15 @@
+{
+    "data": [
+        {
+            "name":"Dwight Shrute",
+            "id":"dwights@dundermiflin.com",
+            "type": "user"
+        },
+        {
+            "name":"Walter White",
+            "id":"heisenberg",
+            "type": "user"
+        }
+    ],
+    "total": 10
+}

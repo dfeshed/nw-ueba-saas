@@ -15,6 +15,9 @@ public class UserContactInfoBean {
 	}
 	
 	public String getEmail(){
+		if(user.getEmailAddress() == null){
+			return null;
+		}
 		return user.getEmailAddress().toString();
 	}
 	
