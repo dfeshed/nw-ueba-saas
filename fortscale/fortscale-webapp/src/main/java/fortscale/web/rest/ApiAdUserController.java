@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.activedirectory.main.ADManager;
+import fortscale.activedirectory.qos.QoSBootstrapService;
 import fortscale.activedirectory.qos.QoSService;
 import fortscale.services.fe.FeService;
 
@@ -21,6 +22,7 @@ public class ApiAdUserController {
 	@Autowired
 	private FeService feService;
 	private QoSService qosService;
+	private QoSBootstrapService qosBootstrapService;
 
 //	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/runfe", method=RequestMethod.GET)
@@ -41,5 +43,17 @@ public class ApiAdUserController {
 		adManager.run(qosService, null);
 		return "";
 	}
+	
+
+//	@SuppressWarnings("unchecked")
+	@RequestMapping(value="/runqosbootstrap", method=RequestMethod.GET)
+	@ResponseBody
+	public String runqosbootstrap(Model model){
+		qosBootstrapService = new QoSBootstrapService(feService);
+		ADManager adManager = new ADManager();
+		adManager.run(qosBootstrapService, null);
+		return "";
+	}
+	
 
 }
