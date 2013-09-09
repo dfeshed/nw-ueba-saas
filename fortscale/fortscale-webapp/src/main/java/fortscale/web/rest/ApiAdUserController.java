@@ -41,18 +41,29 @@ public class ApiAdUserController {
 		qosService = new QoSService(feService);
 		ADManager adManager = new ADManager();
 		adManager.run(qosService, null);
-		return "";
+		return qosService.getQosResult();
 	}
 	
 
 //	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/runqosbootstrap", method=RequestMethod.GET)
 	@ResponseBody
-	public String runqosbootstrap(Model model){
-		qosBootstrapService = new QoSBootstrapService(feService);
-		ADManager adManager = new ADManager();
-		adManager.run(qosBootstrapService, null);
-		return "";
+	public String runqosbootstrap(Model model) {
+		String aggregateResult = "";
+		int successRate = 0;
+		int QOS_BOOTSTRAP_ITERATIONS = 100;
+		for (int i=0; i<QOS_BOOTSTRAP_ITERATIONS; i++) {
+			qosBootstrapService = new QoSBootstrapService(feService);
+			ADManager adManager = new ADManager();
+			adManager.run(qosBootstrapService, null);
+			aggregateResult += qosBootstrapService.getQosResult() + "<BR>";
+			successRate += qosBootstrapService.getQosSuccessRate();
+			
+		}
+		successRate = successRate / QOS_BOOTSTRAP_ITERATIONS;
+		
+		aggregateResult += String.format("Bootstrap Test Result: %s%%" , successRate) ;
+		return aggregateResult;
 	}
 	
 
