@@ -22,7 +22,7 @@ public class AdUser extends AdObject{
 	@Field("mail")
 	private String emailAddress  = "";
 	
-	
+	private String objectClass = "";
 	
 	private String isCriticalSystemObject = "";
 	
@@ -122,6 +122,14 @@ public class AdUser extends AdObject{
 		
 	
 	
+	public String getObjectClass() {
+		return objectClass;
+	}
+
+	public void setObjectClass(String objectClass) {
+		this.objectClass = objectClass;
+	}
+
 	public String getWhenChanged() {
 		return whenChanged;
 	}
