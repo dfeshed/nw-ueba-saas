@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -21,6 +22,7 @@ import com.mongodb.WriteConcern;
 
 import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
+import fortscale.domain.fe.FeatureWriteConverter;
 import fortscale.domain.fe.IFeature;
 
 public class AdUsersFeaturesExtractionRepositoryImpl implements
@@ -36,16 +38,21 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements
 	public void saveMap(AdUserFeaturesExtraction adUsersFeaturesExtraction) {
 		DBCollection collection = getDBCollection();
 
-		BasicDBObject basicDBObject = new BasicDBObject(AdUserFeaturesExtraction.userIdField, adUsersFeaturesExtraction.getUserId());
+		BasicDBObject basicDBObject = new BasicDBObject(AdUserFeaturesExtraction.classifierIdField, adUsersFeaturesExtraction.getClassifierId());
+		basicDBObject.append(AdUserFeaturesExtraction.userIdField, adUsersFeaturesExtraction.getUserId());
 		basicDBObject.append(AdUserFeaturesExtraction.scoreField, adUsersFeaturesExtraction.getScore());
 		basicDBObject.append(AdUserFeaturesExtraction.timestampField, adUsersFeaturesExtraction.getTimestamp());
+		BasicDBList basicDBList = new BasicDBList();
+		FeatureWriteConverter converter = new FeatureWriteConverter();
 		for(IFeature adFeature: adUsersFeaturesExtraction.getAttrVals()){
 			BasicDBObject featureObject = new BasicDBObject();
 			featureObject.append(ADFeature.DISPLAY_NAME_FIELD, adFeature.getFeatureDisplayName());
 			featureObject.append(ADFeature.FEATURE_SCORE_FIELD, adFeature.getFeatureScore());
 			featureObject.append(ADFeature.FEATURE_VALUE_FIELD, adFeature.getFeatureValue());
+			basicDBList.add(converter.convert(adFeature));
 			basicDBObject.append(adFeature.getFeatureUniqueName(), featureObject);
 		}
+		basicDBObject.append(AdUserFeaturesExtraction.attrListField, basicDBList);
 		
 		collection.insert(basicDBObject, WriteConcern.SAFE);
 	}
@@ -55,8 +62,8 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements
 		return db.getCollection(AdUserFeaturesExtraction.collectionName);
 	}
 	
-	public Double calculateAvgScore(Date timestamp){
-		Aggregation agg = newAggregation(match(where(AdUserFeaturesExtraction.timestampField).is(timestamp)),
+	public Double calculateAvgScore(String classifierId, Date timestamp){
+		Aggregation agg = newAggregation(match(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).andOperator(where(AdUserFeaturesExtraction.timestampField).is(timestamp))),
 				project(AdUserFeaturesExtraction.timestampField, AdUserFeaturesExtraction.scoreField),
 				group(AdUserFeaturesExtraction.timestampField).avg(AdUserFeaturesExtraction.scoreField).as("score"));
 	

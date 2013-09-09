@@ -72,7 +72,7 @@ public class AdUserRepositoryIntegrationTest{
 				continue;
 			}
 			ret.put(user.getId().toString(), adUser.getAttrVals());
-			AdUserFeaturesExtraction adUsersFeaturesExtraction = new AdUserFeaturesExtraction(user.getId().toString());
+			AdUserFeaturesExtraction adUsersFeaturesExtraction = new AdUserFeaturesExtraction("ad",user.getId().toString(),user.getId().toString());
 			List<IFeature> features = new ArrayList<IFeature>();
 			for(Entry<String, String> ent: adUser.getAttrVals().entrySet()){
 				if(ent.getKey().equalsIgnoreCase("_id")){

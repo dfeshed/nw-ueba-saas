@@ -6,5 +6,5 @@ import fortscale.domain.fe.AdUserFeaturesExtraction;
 
 interface AdUsersFeaturesExtractionRepositoryCustom {
 	public void saveMap(AdUserFeaturesExtraction adUsersFeaturesExtraction);
-	public Double calculateAvgScore(Date timestamp);
+	public Double calculateAvgScore(String classifierId, Date timestamp);
 }

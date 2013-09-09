@@ -1,8 +1,10 @@
 package fortscale.services;
 
+import java.util.Date;
 import java.util.List;
 
 import fortscale.domain.core.User;
+import fortscale.domain.fe.IFeature;
 
 public interface UserService {
 
@@ -15,5 +17,9 @@ public interface UserService {
 	public List<User> findBySearchFieldContaining(String prefix);
 	
 	public List<IUserScore> getUserScores(String uid); 
+	
+	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Date timestamp); 
+	
+	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId); 
 	
 }

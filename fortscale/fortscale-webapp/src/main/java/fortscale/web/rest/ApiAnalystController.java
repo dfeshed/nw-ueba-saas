@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import fortscale.activedirectory.main.ADManager;
-
 
 
 
@@ -19,11 +17,8 @@ public class ApiAnalystController {
 
 	@RequestMapping(value="/addDefUser", method=RequestMethod.GET)
 	@ResponseBody
-	public String runfe(Model model){
-		ADManager adManager = new ADManager();
-		adManager.run(feService, null);
+	public String addDefUser(Model model){
+		
 		return "";
-//		List<AdUser> ret = IteratorUtils.toList(feService.getAdUsersAttrVals().iterator());
-//		return ret;
 	}
 }

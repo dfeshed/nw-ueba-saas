@@ -1,6 +1,7 @@
 package fortscale.domain.core;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,6 +48,9 @@ public class User extends AbstractDocument {
 	private String department;
 	
 	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
+	
+	
+	private HashMap<String, ClassifierScore> scores = new HashMap<String, ClassifierScore>();
 	
 	@Field("sf")
 	@Indexed
@@ -178,4 +182,18 @@ public class User extends AbstractDocument {
 	public Set<AdUserGroup> getGroups() {
 		return Collections.unmodifiableSet(groups);
 	}
+
+	public HashMap<String, ClassifierScore> getScores() {
+		return scores;
+	}
+	
+	public ClassifierScore getScore(String classifierId) {
+		return scores.get(classifierId);
+	}
+
+	public void putClassifierScore(ClassifierScore score) {
+		this.scores.put(score.getClassifierId(), score);
+	}	
+	
+	
 }

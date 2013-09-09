@@ -1,6 +1,5 @@
 package fortscale.services.analyst;
 
-import fortscale.domain.core.EmailAddress;
 
 public interface AnalystService {
 

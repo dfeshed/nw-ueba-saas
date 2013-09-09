@@ -1,7 +1,7 @@
 package fortscale.domain.fe;
 
 public class ADFeature implements IFeature{
-	
+	public static final String UNIQUE_NAME_FIELD = "uniqueName";
 	public static final String DISPLAY_NAME_FIELD = "displayName";
 	public static final String FEATURE_VALUE_FIELD = "featureValue";
 	public static final String FEATURE_SCORE_FIELD = "featureScore";

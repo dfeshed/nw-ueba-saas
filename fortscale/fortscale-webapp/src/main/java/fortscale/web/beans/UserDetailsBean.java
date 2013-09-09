@@ -36,11 +36,11 @@ public class UserDetailsBean implements Serializable{
 		return user.getFirstname() + " " + user.getLastname();
 	}
 
-	public String getPosition() {
+	public String getJobTitle() {
 		return user.getPosition();
 	}
 
-	public String getId() {
+	public String getWorkerId() {
 		return user.getEmployeeID();
 	}
 
@@ -56,7 +56,7 @@ public class UserDetailsBean implements Serializable{
 		return user.getDepartment();
 	}
 		
-	public String getMobile(){
+	public String getMobilePhone(){
 		return user.getMobile();
 	}
 	

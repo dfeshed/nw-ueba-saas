@@ -2,12 +2,10 @@ package fortscale.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdGroup;
@@ -15,13 +13,18 @@ import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
+import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.EmailAddress;
+import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
+import fortscale.domain.fe.IFeature;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.IUserScore;
+import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
+import fortscale.services.fe.ClassifierService;
 import fortscale.utils.actdir.ADUserParser;
 
 @Service("userService")
@@ -40,6 +43,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
+	
+	@Autowired
+	private ClassifierService classifierService;
 
 	@Override
 	public User getUserById(String uid) {
@@ -123,17 +129,67 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<IUserScore> getUserScores(String uid) {
 		User user = userRepository.findOne(uid);
-		Pageable pageable = new PageRequest(0, 1, Direction.DESC, AdUserFeaturesExtraction.timestampField);
-		List<AdUserFeaturesExtraction> ufeList = adUsersFeaturesExtractionRepository.findByUserId(user.getAdDn(), pageable);
-		if(ufeList == null || ufeList.size() == 0){
+		if(user == null){
 			return Collections.emptyList();
 		}
-		AdUserFeaturesExtraction ufe = ufeList.get(0);
-		Double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(ufe.getTimestamp());
-		List<IUserScore> ret = new ArrayList<>();
-		UserScore score = new UserScore("overall", "User Profile", ufe.getScore(), avgScore);
-		ret.add(score);
+		
+		List<IUserScore> ret = new ArrayList<IUserScore>();
+		for(ClassifierScore classifierScore: user.getScores().values()){
+			UserScore score = new UserScore(classifierScore.getClassifierId(), classifierService.getClassifier(classifierScore.getClassifierId()).getDisplayName(),
+					(int)classifierScore.getScore(), (int)classifierScore.getAvgScore());
+			ret.add(score);
+		}
+		
+//		Pageable pageable = new PageRequest(0, 1, Direction.DESC, AdUserFeaturesExtraction.timestampField);
+//		List<AdUserFeaturesExtraction> ufeList = adUsersFeaturesExtractionRepository.findByUserId(user.getAdDn(), pageable);
+//		if(ufeList == null || ufeList.size() == 0){
+//			return Collections.emptyList();
+//		}
+//		AdUserFeaturesExtraction ufe = ufeList.get(0);
+//		Double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(Classifier.getAdClassifierUniqueName(), ufe.getTimestamp());
+//		List<IUserScore> ret = new ArrayList<IUserScore>();
+//		UserScore score = new UserScore("overall", "User Profile", ufe.getScore(), avgScore);
+//		ret.add(score);
 		return ret;
+	}
+	
+	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId){
+		User user = userRepository.findOne(uid);
+		List<IUserScoreHistoryElement> ret = new ArrayList<IUserScoreHistoryElement>();
+		ClassifierScore classifierScore = user.getScore(classifierId);
+		if(classifierScore != null){
+			UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
+			ret.add(userScoreHistoryElement);
+			if(classifierScore.getPrevScores() != null){
+				for(ScoreInfo scoreInfo: classifierScore.getPrevScores()){
+					userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
+					ret.add(userScoreHistoryElement);
+				}
+			}
+		}
+		
+//		Pageable pageable = new PageRequest(0, 14, Direction.DESC, AdUserFeaturesExtraction.timestampField);
+//		List<AdUserFeaturesExtraction> ufeList = adUsersFeaturesExtractionRepository.findByUserIdAndClassifierId(user.getAdDn(), classifierId, pageable);
+//		if(ufeList == null || ufeList.size() == 0){
+//			return Collections.emptyList();
+//		}
+//		
+//		List<IUserScoreHistoryElement> ret = new ArrayList<IUserScoreHistoryElement>();
+//		for(AdUserFeaturesExtraction ufe: ufeList){
+//			Double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(Classifier.getAdClassifierUniqueName(), ufe.getTimestamp());
+//			UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(ufe.getTimestamp(), ufe.getScore(), avgScore);
+//			ret.add(userScoreHistoryElement);
+//		}
+		return ret;
+	}
+
+	@Override
+	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Date timestamp) {
+		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findByUserIdAndClassifierIdAndTimestamp(uid, classifierId, timestamp);
+		if(ufe == null || ufe.getAttributes() == null){
+			return Collections.emptyList();
+		}
+		return ufe.getAttributes();
 	}
 
 	

@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
+import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
+import fortscale.web.beans.FeatureBean;
 import fortscale.web.beans.UserContactInfoBean;
 import fortscale.web.beans.UserDetailsBean;
 import fortscale.web.beans.UserSearchBean;
@@ -91,6 +95,30 @@ public class ApiUserController {
 		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
 		List<IUserScore> userScores = userService.getUserScores(id);
 		ret.setData(userScores);
+		return ret;
+	}
+	
+	@RequestMapping(value="{uid}/classifier/{classifierId}/scorehistory", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId, Model model){
+		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
+		List<IUserScoreHistoryElement> userScores = userService.getUserScoresHistory(uid, classifierId);
+		ret.setData(userScores);
+		return ret;
+	}
+	
+	@RequestMapping(value="{uid}/classifier/{classifierId}/attributes", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<FeatureBean>> userClassifierAttributes(@PathVariable String uid, @PathVariable String classifierId, @RequestParam(required=true) String date, Model model){
+		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
+		List<IFeature> attrs = userService.getUserAttributesScores(uid, classifierId, new Date(Long.parseLong(date)));
+		List<FeatureBean> features = new ArrayList<FeatureBean>();
+		for(IFeature feature: attrs){
+			features.add(new FeatureBean(feature));
+		}
+		ret.setData(features);
 		return ret;
 	}
 	

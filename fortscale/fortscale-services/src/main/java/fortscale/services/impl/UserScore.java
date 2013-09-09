@@ -6,10 +6,10 @@ public class UserScore implements IUserScore {
 	
 	private String id;
 	private String name;
-	private Double score;
-	private Double avgScore;
+	private int score;
+	private int avgScore;
 	
-	public UserScore( String id, String name, Double score, Double avgScore){
+	public UserScore( String id, String name, int score, int avgScore){
 		this.id = id;
 		this.name = name;
 		this.score = score;
@@ -27,12 +27,12 @@ public class UserScore implements IUserScore {
 	}
 
 	@Override
-	public Double getScore() {
+	public int getScore() {
 		return score;
 	}
 
 	@Override
-	public Double getAvgScore() {
+	public int getAvgScore() {
 		return avgScore;
 	}
 
