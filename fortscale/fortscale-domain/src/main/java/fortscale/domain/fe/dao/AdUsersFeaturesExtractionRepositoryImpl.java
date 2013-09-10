@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation.ProjectionOperationBuilder;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -72,8 +73,18 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements
 		return ret.score;
 	}
 	
+	public Double calculateUsersDailyMaxScores(String classifierId, String userId){
+		Aggregation agg = newAggregation(match(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).andOperator(where(AdUserFeaturesExtraction.userIdField).is(userId))),
+				 new ProjectionOperationBuilder(AdUserFeaturesExtraction.timestampField, project(AdUserFeaturesExtraction.scoreField), null).project("dayOfYear"),
+				group(AdUserFeaturesExtraction.timestampField).max(AdUserFeaturesExtraction.scoreField).as("score"));
+	
+		AggregationResults<TimeStampAvgScore> result = mongoTemplate.aggregate(agg, AdUserFeaturesExtraction.collectionName, TimeStampAvgScore.class);
+		TimeStampAvgScore ret = result.getMappedResults().get(0);
+		return ret.score;
+	}
+	
 	class TimeStampAvgScore{
-		String id;
+		Date id;
 		Double score;
 	}
 }

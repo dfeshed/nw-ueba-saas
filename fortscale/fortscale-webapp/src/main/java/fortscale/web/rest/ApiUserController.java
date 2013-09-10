@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.IFeature;
@@ -25,6 +26,7 @@ import fortscale.web.beans.DataListWrapperBean;
 import fortscale.web.beans.FeatureBean;
 import fortscale.web.beans.UserContactInfoBean;
 import fortscale.web.beans.UserDetailsBean;
+import fortscale.web.beans.UserMachineBean;
 import fortscale.web.beans.UserSearchBean;
 
 @Controller
@@ -86,6 +88,21 @@ public class ApiUserController {
 		}
 		UserContactInfoBean ret = new UserContactInfoBean(user);
 		return new DataListWrapperBean<UserContactInfoBean>(ret);
+	}
+	
+	@RequestMapping(value="{id}/machines", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<UserMachineBean>> userMachines(@PathVariable String id, Model model){
+		DataBean<List<UserMachineBean>> ret = new DataBean<List<UserMachineBean>>();
+		List<UserMachine> userMachines = userService.getUserMachines(id);
+		
+		List<UserMachineBean> userMachinesBean = new ArrayList<UserMachineBean>();
+		for(UserMachine userMachine: userMachines){
+			userMachinesBean.add(new UserMachineBean(userMachine));
+		}
+		ret.setData(userMachinesBean);
+		return ret;
 	}
 	
 	@RequestMapping(value="{id}/scores", method=RequestMethod.GET)

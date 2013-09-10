@@ -22,6 +22,7 @@ public class AdUser extends AdObject{
 	@Field("mail")
 	private String emailAddress  = "";
 	
+	//TODO: Remove this field. This is used for test only.
 	private String objectClass = "";
 	
 	private String isCriticalSystemObject = "";

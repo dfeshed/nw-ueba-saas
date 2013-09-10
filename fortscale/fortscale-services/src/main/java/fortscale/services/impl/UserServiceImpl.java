@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
+import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
+import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.ScoreInfo;
@@ -46,6 +48,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private ClassifierService classifierService;
+	
+	@Autowired
+	private UserMachineDAO userMachineDAO;
 
 	@Override
 	public User getUserById(String uid) {
@@ -169,14 +174,13 @@ public class UserServiceImpl implements UserService{
 		}
 		
 //		Pageable pageable = new PageRequest(0, 14, Direction.DESC, AdUserFeaturesExtraction.timestampField);
-//		List<AdUserFeaturesExtraction> ufeList = adUsersFeaturesExtractionRepository.findByUserIdAndClassifierId(user.getAdDn(), classifierId, pageable);
+//		List<AdUserFeaturesExtraction> ufeList = adUsersFeaturesExtractionRepository.findByUserIdAndClassifierId(uid, classifierId, pageable);
 //		if(ufeList == null || ufeList.size() == 0){
 //			return Collections.emptyList();
 //		}
 //		
-//		List<IUserScoreHistoryElement> ret = new ArrayList<IUserScoreHistoryElement>();
 //		for(AdUserFeaturesExtraction ufe: ufeList){
-//			Double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(Classifier.getAdClassifierUniqueName(), ufe.getTimestamp());
+//			Double avgScore = adUsersFeaturesExtractionRepository.calculateUsersDailyMaxScores(classifierId, uid);
 //			UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(ufe.getTimestamp(), ufe.getScore(), avgScore);
 //			ret.add(userScoreHistoryElement);
 //		}
@@ -190,6 +194,13 @@ public class UserServiceImpl implements UserService{
 			return Collections.emptyList();
 		}
 		return ufe.getAttributes();
+	}
+
+	@Override
+	public List<UserMachine> getUserMachines(String uid) {
+		User user = userRepository.findOne(uid);
+		String userName = user.getAdUserPrincipalName().split("@")[0];
+		return userMachineDAO.findByUsername(userName);
 	}
 
 	
