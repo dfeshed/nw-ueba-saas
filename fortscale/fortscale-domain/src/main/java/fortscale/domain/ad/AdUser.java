@@ -518,7 +518,7 @@ public class AdUser extends AdObject{
 	@Transient
 	private Map<String, String> attrVals;
 
-	public void fillAttrVals() {
+	private void fillAttrVals() {
 		this.attrVals = new HashMap<String,String>();
 		
 		this.attrVals.put("accountExpires",accountExpires);
@@ -637,6 +637,8 @@ public class AdUser extends AdObject{
 	
 	
 	public Map<String, String> getAttrVals() {
+		this.fillAttrVals();
+		
 		return attrVals;
 	}
 
