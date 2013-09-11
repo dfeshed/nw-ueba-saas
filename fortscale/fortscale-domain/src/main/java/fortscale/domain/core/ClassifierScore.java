@@ -22,9 +22,10 @@ public class ClassifierScore extends ScoreInfo{
 	}
 	public void setPrevScores(List<ScoreInfo> prevScores) {
 		if(prevScores.size() > MAX_NUM_OF_PREV_SCORES){
-			prevScores.subList(0, MAX_NUM_OF_PREV_SCORES);
+			this.prevScores = prevScores.subList(0, MAX_NUM_OF_PREV_SCORES);
+		} else{
+			this.prevScores = prevScores;
 		}
-		this.prevScores = prevScores;
 	}
 	
 	

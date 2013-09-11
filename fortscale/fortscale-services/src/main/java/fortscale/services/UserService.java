@@ -3,6 +3,7 @@ package fortscale.services;
 import java.util.Date;
 import java.util.List;
 
+import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
 import fortscale.domain.fe.IFeature;
 
@@ -22,4 +23,5 @@ public interface UserService {
 	
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId); 
 	
+	public List<UserMachine> getUserMachines(String uid);
 }
