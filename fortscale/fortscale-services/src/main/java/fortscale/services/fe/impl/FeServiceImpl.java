@@ -1,6 +1,7 @@
 package fortscale.services.fe.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -97,8 +98,18 @@ public class FeServiceImpl implements FeService {
 				List<ScoreInfo> prevScores = cScore.getPrevScores();
 				if(prevScores.isEmpty()){
 					prevScores = new ArrayList<ScoreInfo>();
+					prevScores.add(scoreInfo);
+				} else{
+					Calendar tmp = Calendar.getInstance();
+					tmp.setTime(prevScores.get(0).getTimestamp());
+					Calendar tmp1 = Calendar.getInstance();
+					tmp1.setTime(scoreInfo.getTimestamp());
+					if(tmp.get(Calendar.DAY_OF_YEAR) == tmp1.get(Calendar.DAY_OF_YEAR)){
+						prevScores.set(0, scoreInfo);
+					} else{
+						prevScores.add(0, scoreInfo);
+					}
 				}
-				prevScores.add(0, scoreInfo);
 				cScore.setPrevScores(prevScores);
 			}
 			cScore.setScore(ent.getValue());

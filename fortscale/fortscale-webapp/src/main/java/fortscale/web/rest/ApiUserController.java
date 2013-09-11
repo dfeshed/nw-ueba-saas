@@ -102,6 +102,7 @@ public class ApiUserController {
 			userMachinesBean.add(new UserMachineBean(userMachine));
 		}
 		ret.setData(userMachinesBean);
+		ret.setTotal(userMachinesBean.size());
 		return ret;
 	}
 	
@@ -112,6 +113,7 @@ public class ApiUserController {
 		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
 		List<IUserScore> userScores = userService.getUserScores(id);
 		ret.setData(userScores);
+		ret.setTotal(userScores.size());
 		return ret;
 	}
 	
@@ -122,6 +124,7 @@ public class ApiUserController {
 		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
 		List<IUserScoreHistoryElement> userScores = userService.getUserScoresHistory(uid, classifierId);
 		ret.setData(userScores);
+		ret.setTotal(userScores.size());
 		return ret;
 	}
 	
@@ -136,6 +139,7 @@ public class ApiUserController {
 			features.add(new FeatureBean(feature));
 		}
 		ret.setData(features);
+		ret.setTotal(features.size());
 		return ret;
 	}
 	

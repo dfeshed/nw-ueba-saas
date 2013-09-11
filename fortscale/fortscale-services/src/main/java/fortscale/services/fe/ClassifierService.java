@@ -1,23 +1,11 @@
 package fortscale.services.fe;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import org.springframework.stereotype.Service;
+import fortscale.services.IClassifierScoreDistribution;
 
-@Service
-public class ClassifierService {
-	private Map<String, Classifier> classifiersMap = getClassifiersMap();
-	
-	private static Map<String, Classifier> getClassifiersMap(){
-		Map<String, Classifier> ret = new HashMap<String, Classifier>();
-		for(Classifier classifier: Classifier.values()){
-			ret.put(classifier.getId(), classifier);
-		}
-		return ret;
-	}
-	
-	public Classifier getClassifier(String classifierId){
-		return classifiersMap.get(classifierId);
-	}
+public interface ClassifierService {
+	public Classifier getClassifier(String classifierId);
+	public List<IClassifierScoreDistribution> getScoreDistribution(String classifierId); 
+	public List<ISuspiciousUserInfo> getSuspiciousUsers(String classifierId, String severityId);
 }

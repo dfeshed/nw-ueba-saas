@@ -6,18 +6,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import fortscale.domain.ad.UserMachine;
-import fortscale.utils.actdir.ADUserParser;
 
 
 
 @Component
 public class UserMachineDAO {
+	
+	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.S" ;
 		
 	// set the impalad host
 		private static final String IMPALAD_HOST = "integ-cdh-01.Fortscale.dom";
@@ -45,7 +48,7 @@ public class UserMachineDAO {
 				UserMachine userMachine = new UserMachine();
 				userMachine.setHostname(rs.getString(UserMachine.HOSTNAME_FIELD_NAME));
 				userMachine.setHostnameip(rs.getString(UserMachine.HOSTNAMEIP_FIELD_NAME));
-				userMachine.setLastlogon(new ADUserParser().parseDate(rs.getString(UserMachine.LASTLOGON_FIELD_NAME)));
+				userMachine.setLastlogon(parseDate(rs.getString(UserMachine.LASTLOGON_FIELD_NAME)));
 				userMachine.setLogoncount(Integer.parseInt(rs.getString(UserMachine.LOGONCOUNT_FIELD_NAME)));
 				userMachine.setUsername(rs.getString(UserMachine.USERNAME_FIELD_NAME));
 				ret.add(userMachine);
@@ -69,5 +72,10 @@ public class UserMachineDAO {
 		}
 		
 		return ret;
+	}
+	
+	private Date parseDate(String dateString) throws ParseException {
+		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
+		return pattern.parse(dateString);
 	}
 }
