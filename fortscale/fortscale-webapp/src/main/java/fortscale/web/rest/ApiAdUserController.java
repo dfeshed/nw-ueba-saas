@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.activedirectory.main.ADManager;
-import fortscale.activedirectory.qos.QoSBootstrapService;
+import fortscale.activedirectory.qos.QoSAutoTestService;
 import fortscale.activedirectory.qos.QoSManualTestService;
 import fortscale.activedirectory.qos.QoSSanityService;
 import fortscale.activedirectory.qos.QoSService;
@@ -26,14 +26,16 @@ public class ApiAdUserController {
 	private FeService feService;
 	private QoSService qosService;
 	private QoSSanityService qosSanityService;
-	private QoSBootstrapService qosBootstrapService;
+	private QoSAutoTestService qosBootstrapService;
 	private QoSManualTestService qosManualTestsService;
 
+	private final int QOS_BOOTSTRAP_ITERATIONS = 1;
+	
 	private static final Logger logger = Logger.getLogger(ApiAdUserController.class);
 	
 
 //	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/runfe", method=RequestMethod.GET)
+	@RequestMapping(value="/run_fe", method=RequestMethod.GET)
 	@ResponseBody
 	public String runfe(Model model){
 		ADManager adManager = new ADManager();
@@ -43,12 +45,11 @@ public class ApiAdUserController {
 
 	
 //	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/runsanity", method=RequestMethod.GET)
+	@RequestMapping(value="/run_qos_sanity", method=RequestMethod.GET)
 	@ResponseBody
 	public String runsanity(Model model) {
 		String aggregateResult = "";
 		int successRate = 0;
-		int QOS_BOOTSTRAP_ITERATIONS = 100;
 		for (int i=0; i<QOS_BOOTSTRAP_ITERATIONS; i++) {
 			logger.info("Running Test #{}", i);
 			qosSanityService = new QoSSanityService(feService);
@@ -65,7 +66,7 @@ public class ApiAdUserController {
 	
 	
 //	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/runqos", method=RequestMethod.GET)
+	@RequestMapping(value="/run_qos", method=RequestMethod.GET)
 	@ResponseBody
 	public String runqos(Model model){
 		qosService = new QoSService(feService);
@@ -76,15 +77,14 @@ public class ApiAdUserController {
 	
 
 //	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/runqosbootstrap", method=RequestMethod.GET)
+	@RequestMapping(value="/run_qos_auto_tests", method=RequestMethod.GET)
 	@ResponseBody
 	public String runqosbootstrap(Model model) {
 		String aggregateResult = "";
 		int successRate = 0;
-		int QOS_BOOTSTRAP_ITERATIONS = 100;
 		for (int i=0; i<QOS_BOOTSTRAP_ITERATIONS; i++) {
 			logger.info("Running Test #{}", i);
-			qosBootstrapService = new QoSBootstrapService(feService);
+			qosBootstrapService = new QoSAutoTestService(feService);
 			ADManager adManager = new ADManager();
 			adManager.run(qosBootstrapService, null);
 			aggregateResult += qosBootstrapService.getQosResult() + "<BR>";
@@ -100,12 +100,11 @@ public class ApiAdUserController {
 	
 	
 //	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/runmanualtests", method=RequestMethod.GET)
+	@RequestMapping(value="/run_qos_manual_tests", method=RequestMethod.GET)
 	@ResponseBody
 	public String runmanualtests(Model model) {
 		String aggregateResult = "";
 		int successRate = 0;
-		int QOS_BOOTSTRAP_ITERATIONS = 100;
 		for (int i=0; i<QOS_BOOTSTRAP_ITERATIONS; i++) {
 			logger.info("Running Test #{}", i);
 			qosManualTestsService = new QoSManualTestService(feService);
