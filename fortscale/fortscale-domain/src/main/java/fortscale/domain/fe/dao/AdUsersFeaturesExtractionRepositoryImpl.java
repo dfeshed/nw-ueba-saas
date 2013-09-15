@@ -33,6 +33,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
+import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.FeatureWriteConverter;
@@ -94,15 +95,15 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 		return ret.score;
 	}
 	
-	public Double calculateUsersDailyMaxScores(String classifierId, String userId){
-		Aggregation agg = newAggregation(match(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).andOperator(where(AdUserFeaturesExtraction.userIdField).is(userId))),
-				 new ProjectionOperationBuilder(AdUserFeaturesExtraction.timestampField, project(AdUserFeaturesExtraction.scoreField), null).project("dayOfYear"),
-				group(AdUserFeaturesExtraction.timestampField).max(AdUserFeaturesExtraction.scoreField).as("score"));
-	
-		AggregationResults<TimeStampAvgScore> result = mongoTemplate.aggregate(agg, AdUserFeaturesExtraction.collectionName, TimeStampAvgScore.class);
-		TimeStampAvgScore ret = result.getMappedResults().get(0);
-		return ret.score;
-	}
+//	public Double calculateUsersDailyMaxScores(String classifierId, String userId){
+//		Aggregation agg = newAggregation(match(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).andOperator(where(AdUserFeaturesExtraction.userIdField).is(userId))),
+//				 new ProjectionOperationBuilder(AdUserFeaturesExtraction.timestampField, project(AdUserFeaturesExtraction.scoreField), null).project("dayOfYear"),
+//				group(AdUserFeaturesExtraction.timestampField).max(AdUserFeaturesExtraction.scoreField).as("score"));
+//	
+//		AggregationResults<TimeStampAvgScore> result = mongoTemplate.aggregate(agg, AdUserFeaturesExtraction.collectionName, TimeStampAvgScore.class);
+//		TimeStampAvgScore ret = result.getMappedResults().get(0);
+//		return ret.score;
+//	}
 	
 	class TimeStampAvgScore{
 		Date id;
@@ -110,25 +111,31 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 	}
 	
 	
-	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdSortByTimestamp(String classifierId,List<Threshold> seperators){
+	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdSortByTimestamp(String classifierId,List<Threshold> thresholds){
+		//Defining the projection operation to be the timestamp + conditional expression for each Threshold.
+		//The conditional threshold will help us to count how much rows we that are bigger or equal to the Threshold.
 		List<FIProjectionExpression> expressions = new ArrayList<FIProjectionExpression>();
 		expressions.add(new FProjectionSimpleExpression(AdUserFeaturesExtraction.timestampField));
 		
 		FProjectionConditionalSubExpressionRefValue scoreRef = new FProjectionConditionalSubExpressionRefValue(AdUserFeaturesExtraction.scoreField);
 		FProjectionConditionalSubExpressionSimpleValue trueCase = new FProjectionConditionalSubExpressionSimpleValue(1);
 		FProjectionConditionalSubExpressionSimpleValue falseCase = new FProjectionConditionalSubExpressionSimpleValue(0);
-		for(Threshold seperator: seperators){
-			FProjectionConditionalSubExpressionSimpleValue sepValue = new FProjectionConditionalSubExpressionSimpleValue(seperator.getValue());
+		for(Threshold threshold: thresholds){
+			FProjectionConditionalSubExpressionSimpleValue sepValue = new FProjectionConditionalSubExpressionSimpleValue(threshold.getValue());
 			FIProjectionConditionalSubExpression boolExp = FProjectionConditionalSubExpressionCmp.generateGTECmp(scoreRef, sepValue);
 			FProjectionConditionalExpression condExp = new FProjectionConditionalExpression(boolExp, trueCase, falseCase);
-			expressions.add(new FProjectionSimpleExpression(seperator.getName(), condExp));
+			expressions.add(new FProjectionSimpleExpression(threshold.getName(), condExp));
 		}
 		
 		FProjectionOperation fProjectionOperation = new FProjectionOperation(expressions);
+		
+		//Defining the group operation to be grouped by the time stamp and to count how much rows we have for each threshold.
 		GroupOperation groupOperation = group(AdUserFeaturesExtraction.timestampField);
-		for(Threshold seperator: seperators){
-			groupOperation = groupOperation.sum(seperator.getName()).as(String.format("%s", seperator.getName()));
+		for(Threshold threshold: thresholds){
+			groupOperation = groupOperation.sum(threshold.getName()).as(String.format("%s", threshold.getName()));
 		}
+		
+		//Defining the whole aggregation query.
 		Aggregation agg = newAggregation(
 				match(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId)),
 				fProjectionOperation,
@@ -136,6 +143,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 				sort(DESC,"_id"),
 				limit(1));
 		
+		//Running the query.
 		AggregationOperationContext rootContext = Aggregation.DEFAULT_CONTEXT;
 		DBObject command = agg.toDbObject(AdUserFeaturesExtraction.collectionName, rootContext);
 		logger.debug("Executing aggregation: {}", serializeToJsonSafely(command));
@@ -147,11 +155,11 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 		Iterable<DBObject> resultSet = (Iterable<DBObject>) commandResult.get("result");
 		if(resultSet.iterator().hasNext()){
 			DBObject res = resultSet.iterator().next();
-			for(Threshold seperator: seperators){
+			for(Threshold seperator: thresholds){
 				seperator.setCount(Integer.parseInt(res.get(seperator.getName()).toString()));
 			}
 		}
-		return seperators;
+		return thresholds;
 		
 	}
 	
@@ -175,5 +183,11 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 			throw new InvalidDataAccessApiUsageException("Command execution failed:  Error [" + error + "], Command = "
 					+ source, ex);
 		}
+	}
+
+	@Override
+	public List<ScoreInfo> calculateUserScoreInfo(String classifierId, String userId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
