@@ -16,8 +16,6 @@ import fortscale.services.fe.FeService;
 import fortscale.utils.logging.Logger;
 
 
-
-
 @Controller
 @RequestMapping("/api/aduser/**")
 public class ApiAdUserController {
@@ -45,6 +43,17 @@ public class ApiAdUserController {
 
 	
 //	@SuppressWarnings("unchecked")
+	@RequestMapping(value="/run_qos", method=RequestMethod.GET)
+	@ResponseBody
+	public String runqos(Model model){
+		qosService = new QoSService(feService);
+		ADManager adManager = new ADManager();
+		adManager.run(qosService, null);
+		return qosService.getQosResult();
+	}
+	
+
+//	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/run_qos_sanity", method=RequestMethod.GET)
 	@ResponseBody
 	public String runsanity(Model model) {
@@ -62,17 +71,6 @@ public class ApiAdUserController {
 		
 		aggregateResult += String.format("Sanity Tests Result: %s%%" , successRate) ;
 		return aggregateResult;
-	}
-	
-	
-//	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/run_qos", method=RequestMethod.GET)
-	@ResponseBody
-	public String runqos(Model model){
-		qosService = new QoSService(feService);
-		ADManager adManager = new ADManager();
-		adManager.run(qosService, null);
-		return qosService.getQosResult();
 	}
 	
 
