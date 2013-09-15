@@ -69,7 +69,21 @@ public class InstancesFeatures {
 
 	
 	public void setInstanceFeatures(String instanceName, Map<String, IFeature> instanceFeatureValues) {
-		this.instancesFeaturesMap.put(instanceName, instanceFeatureValues);
+		if (!this.instancesFeaturesMap.containsKey(instanceName)) {
+			this.instancesFeaturesMap.put(instanceName, instanceFeatureValues);
+			return;
+		}
+		
+		int i=1;
+		while (true) {
+			String newInstanceName = instanceName + "_" + i ;
+			if (!this.instancesFeaturesMap.containsKey(newInstanceName)) {
+				this.instancesFeaturesMap.put(newInstanceName, instanceFeatureValues);
+				return;
+			}
+			i++;
+		}
+		
 	}
 	
 	
