@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import ml.algorithms.Algorithm;
 import ml.algorithms.CFA;
 import ml.classifiers.Classifier;
-import ml.classifiers.WekaRandomForest;
+import ml.classifiers.ColumnNaiveBayesClassifier;
 import fortscale.activedirectory.featureextraction.ADFeatureExtractor;
 import fortscale.activedirectory.featureextraction.Feature;
 import fortscale.activedirectory.featureextraction.FeatureVector;
@@ -55,7 +55,7 @@ public class ADManager {
 
 		instances = prepareInstancesMatrix();
 //		this.printInstances();
-		Classifier classifier = new WekaRandomForest(usersFeatures.getNumInstances(), featureVector.numFeatures(), args);
+		Classifier classifier = new ColumnNaiveBayesClassifier(usersFeatures.getNumInstances(), featureVector.numFeatures(), args);
 		CFA algorithm = new CFA(usersFeatures.getNumInstances(), featureVector.numFeatures(), classifier);
 		algorithm.run(instances);
 		
@@ -63,8 +63,8 @@ public class ADManager {
 //		this.printFeatureScores();
 		this.updateUserScores(algorithm);
 //		this.printUserScores();
-		this.debugResults();
-		this.debugResults();
+//		this.debugResults();
+
 		
 		
 		feService.setAdUsersScores(userScores, usersFeatures.getInstancesFeaturesOutput(), timeStamp);
@@ -194,7 +194,7 @@ public class ADManager {
 	}
 
 	
-//	@SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private void debugResults() {
 		String print;
 		print = "Features"  + "\t";
