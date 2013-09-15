@@ -74,6 +74,7 @@
 		<module>fortscale-domain</module>
 		<module>fortscale-webapp</module>
 		<module>fortscale-services</module>
+		<module>fortscale-activedirectory</module>
 		
 		<!-- <module>fortscale-webapp-security</module> -->
 	</modules>
