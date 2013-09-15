@@ -197,14 +197,14 @@ public class ADManager {
 	@SuppressWarnings("unused")
 	private void debugResults() {
 		String print;
-		print = "Features"  + "\t";
+		print = "Features"  + "\t\t";
 		for (Feature f : featureVector.getFeatureVector()) {
 			print += f.getFeatureDisplayName() + "\t";
 		}
 		logger.info(print);
 		
 		for (int ins=0; ins<instances.length; ins++) {
-			print = userIDtoNameMap.get(ins) + "\t";
+			print = userIDtoNameMap.get(ins) + "\t\t";
 			for (Feature f : featureVector.getFeatureVector()) {
 				print += usersFeatures.getInstanceFeatureValue(userIDtoNameMap.get(ins), f.getFeatureUniqueName()) + "\t";
 			}
