@@ -33,7 +33,7 @@ public class ApiAdUserController {
 	
 
 //	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/run_fe", method=RequestMethod.GET)
+	@RequestMapping(value="/runfe", method=RequestMethod.GET)
 	@ResponseBody
 	public String runfe(Model model){
 		ADManager adManager = new ADManager();

@@ -1,0 +1,38 @@
+{
+    "searchId": "user_logins",
+    "fields": [
+        {
+            "name": "username",
+            "type": "string"
+        },
+        {
+            "name": "userId",
+            "type": "string"
+        },
+        {
+            "name": "sourceLocation",
+            "type": "string"
+        },
+        {
+            "name": "sourceIP",
+            "type": "ip"
+        },
+        {
+            "name": "sourceMachine",
+            "type": "string"
+        },
+        {
+            "name": "time",
+            "type": "string"
+        },
+        {
+            "name": "destinationLocation",
+            "type": "string"
+        },
+        {
+            "name": "destinationMachine",
+            "type": "string"
+        }
+    ],
+    "params": []
+}

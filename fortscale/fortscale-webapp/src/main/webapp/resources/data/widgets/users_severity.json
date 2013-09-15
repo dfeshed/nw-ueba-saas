@@ -1,0 +1,75 @@
+{
+    "title": "{{@usersSeverity}} Severity",
+    "className": "widget-normal-padding",
+    "reportId": "users_severity",
+    "refreshOn": [
+        "usersSeverity"
+    ],
+    "controls": [
+        {
+            "type": "link",
+            "text": "View all",
+            "href": "#/d/user/{{@entityId}}/logins"
+        }
+    ],
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{userName}}",
+                        "sortBy": "userName",
+                        "link": "#/d/user/{{userId}}"
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{score}}",
+                        "sortBy": "score",
+                        "sortDirection": -1
+                    },
+                    {
+                        "name": "Trend",
+                        "value": "{{trend}}%",
+                        "sortBy": "trend"
+                    },
+                    {
+                        "name": "Machines",
+                        "field": "machines",
+                        "sortBy": "machines",
+                        "transform": {
+                            "method": "count"
+                        },
+                        "valueTooltip": {
+                            "field": "machines",
+                            "transform": {
+                                "method": "arrayJoin",
+                                "options": {
+                                    "joiner": "\n"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "name": "Groups",
+                        "field": "groups",
+                        "sortBy": "groups",
+                        "transform": {
+                            "method": "count"
+                        },
+                        "valueTooltip": {
+                            "field": "groups",
+                            "transform": {
+                                "method": "arrayJoin",
+                                "options": {
+                                    "joiner": "\n"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

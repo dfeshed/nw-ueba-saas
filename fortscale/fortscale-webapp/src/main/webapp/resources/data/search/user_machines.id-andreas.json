@@ -1,7 +1,7 @@
 {
     "data": [
         {
-            "machineName": "dwight-pc",
+            "machineName": "AndreaS-PC",
             "ipAddress": "192.168.0.65",
             "usage": 75,
             "lastSignIn": 1375888377079,
@@ -15,7 +15,7 @@
             "machineScore": 21
         },
         {
-            "machineName": "Jim's iPhone",
+            "machineName": "BillH-PC",
             "ipAddress": "192.168.0.244",
             "usage": 15,
             "lastSignIn": 1375438377079,

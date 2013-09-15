@@ -1,11 +1,11 @@
 package fortscale.domain.fe.dao;
 
-public class ValueSeperator {
+public class Threshold {
 	private String name;
 	private Object value;
 	private int count;
 	
-	public ValueSeperator(String name, Object value){
+	public Threshold(String name, Object value){
 		this.name = name;
 		this.value = value;
 	}

@@ -25,6 +25,17 @@ $innerDashboardBorderColor: #e7e7e7;
   padding: 0 10px;
   margin-bottom: 20px;
 
+  .dashboard-header-text{
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .dashboard-icon-image{
+    height: $dashboardIconSize;
+    margin-right: 10px;
+    border: solid 1px #aaa;
+  }
+
   .dashboard-icon{
     display: inline-block;
     height: $dashboardIconSize;
@@ -39,6 +50,18 @@ $innerDashboardBorderColor: #e7e7e7;
 
 .dashboard-name{
   margin-bottom: 1em;
+}
+
+.dashboard-title{
+  font-weight: bold;
+}
+
+.dashboard-subtitle{
+  display: block;
+  padding: 0;
+  margin: 10px 0 0 0;
+  font-style: normal;
+  font-size: 16px;
 }
 
 .dashboard-description{

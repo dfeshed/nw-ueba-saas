@@ -1,0 +1,126 @@
+[
+    {
+        "username": "AndreaS",
+        "hostname": "AndreaS-PC",
+        "count": "13018",
+        "ipAddress": "10.12.30.145",
+        "lastSignIn": 1378896881670
+    },
+    {
+        "username": "AndreaS",
+        "hostname": "CRM-SERVER",
+        "count": "27",
+        "ipAddress": "146.10.10.4",
+        "lastSignIn": 1378896283891
+    },
+    {
+        "username": "BillH",
+        "hostname": "BillH-PC",
+        "count": "13018"
+    },
+    {
+        "username": "BobH",
+        "hostname": "BobH-PC",
+        "count": "13018"
+    },
+    {
+        "username": "CathyT",
+        "hostname": "CathyT-PC",
+        "count": "13018"
+    },
+    {
+        "username": "JessF",
+        "hostname": "JessF-PC",
+        "count": "13018"
+    },
+    {
+        "username": "CharlesK",
+        "hostname": "CharlesK-PC",
+        "count": "13018"
+    },
+    {
+        "username": "KateF",
+        "hostname": "KateF-PC",
+        "count": "13018"
+    },
+    {
+        "username": "ClaireA",
+        "hostname": "ClaireA-PC",
+        "count": "13018"
+    },
+    {
+        "username": "Administrator",
+        "hostname": "SRVDC01",
+        "count": "25634"
+    },
+    {
+        "username": "JoeS",
+        "hostname": "SRVDC01",
+        "count": "2509"
+    },
+    {
+        "username": "JoeS",
+        "hostname": "JoeS-PC",
+        "count": "15054"
+    },
+    {
+        "username": "IanC",
+        "hostname": "IanC-PC",
+        "count": "13018"
+    },
+    {
+        "username": "JamesA",
+        "hostname": "JamesA-PC",
+        "count": "13018"
+    },
+    {
+        "username": "JasonC",
+        "hostname": "JasonC-PC",
+        "count": "13018"
+    },
+    {
+        "username": "KellyA",
+        "hostname": "KellyA-PC",
+        "count": "13018"
+    },
+    {
+        "username": "MaryC",
+        "hostname": "MaryC-PC",
+        "count": "13018"
+    },
+    {
+        "username": "JimK",
+        "hostname": "JimK-PC",
+        "count": "13018"
+    },
+    {
+        "username": "ChrisS",
+        "hostname": "ChrisS-PC",
+        "count": "13018"
+    },
+    {
+        "username": "HarryS",
+        "hostname": "HarryS-PC",
+        "count": "13018"
+    },
+    {
+        "username": "JohnS",
+        "hostname": "JohnS-PC",
+        "count": "13018"
+    },
+    {
+        "username": "LucyF",
+        "hostname": "LucyF-PC",
+        "count": "13018"
+    },
+    {
+        "username": "LukeA",
+        "hostname": "LukeA-PC",
+        "count": "13018"
+    },
+    {
+        "username": "MarkK",
+        "hostname": "MarkK-PC",
+        "count": "13018"
+    }
+]

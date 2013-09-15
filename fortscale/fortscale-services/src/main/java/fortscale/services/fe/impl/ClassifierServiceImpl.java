@@ -17,7 +17,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
-import fortscale.domain.fe.dao.ValueSeperator;
+import fortscale.domain.fe.dao.Threshold;
 import fortscale.services.IClassifierScoreDistribution;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
@@ -76,25 +76,28 @@ public class ClassifierServiceImpl implements ClassifierService {
 
 	@Override
 	public List<IClassifierScoreDistribution> getScoreDistribution(String classifierId) {
-		List<ValueSeperator> seperators = new ArrayList<>();
-		seperators.add(new ValueSeperator("All", 0));
+		List<Threshold> seperators = new ArrayList<>();
+		seperators.add(new Threshold("All", 0));
 		for(SeverityElement element: severityOrderedList){
-			seperators.add(new ValueSeperator(element.getName(), element.getValue()));
+			seperators.add(new Threshold(element.getName(), element.getValue()));
 		}
-		seperators = adUsersFeaturesExtractionRepository.calculateNumOfUsersWithScoresGTValueSortByTimestamp(classifierId, seperators);
+		seperators = adUsersFeaturesExtractionRepository.calculateNumOfUsersWithScoresGTThresholdSortByTimestamp(classifierId, seperators);
 		
 		List<IClassifierScoreDistribution> ret = new ArrayList<>();
 		int total = seperators.get(0).getCount();
 		int prevPercent = 0;
+		int prevCount = 0;
 		int i = 0;
-		for(ValueSeperator seperator: seperators){
+		for(Threshold seperator: seperators){
 			if(i == 0){
 				i++;
 				continue;
 			}
 			int percent = (int)((seperator.getCount()/(double)total)*100);
-			ret.add(new ClassifierScoreDistribution(seperator.getName(), seperator.getCount(), percent - prevPercent));
+			int count = seperator.getCount() - prevCount;
+			ret.add(new ClassifierScoreDistribution(seperator.getName(), count, percent - prevPercent));
 			prevPercent = percent;
+			prevCount = seperator.getCount();
 		}
 		return ret;
 	}

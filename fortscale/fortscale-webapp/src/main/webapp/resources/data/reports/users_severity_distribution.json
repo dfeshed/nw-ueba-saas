@@ -1,0 +1,14 @@
+{
+    "searchId": "users_severity_distribution",
+    "fields": [
+        {
+            "name": "name",
+            "type": "string"
+        },
+        {
+            "name": "value",
+            "type": "number"
+        }
+    ],
+    "params": []
+}

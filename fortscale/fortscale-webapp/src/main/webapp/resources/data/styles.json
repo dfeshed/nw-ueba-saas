@@ -34,7 +34,7 @@
                 {
                     "field": "{{value}}",
                     "operator": "greaterThanOrEqual",
-                    "value": 60
+                    "value": 80
                 }
             ]
         }
@@ -64,7 +64,7 @@
                 {
                     "field": "{{value}}",
                     "operator": "greaterThanOrEqual",
-                    "value": 200
+                    "value": 30
                 }
             ]
         }

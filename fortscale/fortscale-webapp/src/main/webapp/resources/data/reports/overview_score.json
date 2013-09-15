@@ -1,0 +1,18 @@
+{
+    "searchId": "overview",
+    "fields": [
+        {
+            "name": "title",
+            "type": "string"
+        },
+        {
+            "name": "value",
+            "type": "float"
+        },
+        {
+            "name": "trend",
+            "type": "float"
+        }
+    ],
+    "params": []
+}

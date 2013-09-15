@@ -38,10 +38,22 @@ angular.module('Fortscale')
 
                     scope.currentItem = data.items[0];
 
+                    if (settings.calculatePercent){
+                        var total = 0;
+
+                        angular.forEach(data.chartValues, function(item){
+                            total += item.value;
+                        });
+
+                        angular.forEach(data.chartValues, function(item){
+                            item.value = Math.round(item.value * 100 / total);
+                        });
+                    }
+
                     var donut = Morris.Donut({
                         element: chart,
                         data: data.chartValues,
-                        formatter: function (y) { return y + "%" }
+                        formatter: function (y) { return y + (settings.calculatePercent ? "%" : "") }
                     });
 
                     if (settings.showInfo){

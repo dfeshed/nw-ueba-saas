@@ -1,6 +1,12 @@
-angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", function ($q, $http, $resource) {
+angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "version", "utils", function ($q, $http, $resource, version, utils) {
     var apiResource = $resource("/fortscale-webapp/api/:entity/:id/:method", {
         id: "@id"
+    });
+
+    var apiWithSubEntityResource = $resource("/fortscale-webapp/api/:entity/:id/:subEntityName/:subEntityId/:method", {
+        id: "@id",
+        subEntityName: "@subEntityName",
+        subEntityId: "@subEntityId"
     });
 
     var methods = {
@@ -11,7 +17,7 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", funct
                 deferred.reject("No dashboard specified.");
             }
             else{
-                $http.get("data/dashboards/" + dashboardName + ".json")
+                $http.get("data/dashboards/" + dashboardName + ".json?v=" + version)
                     .success(function (response) {
                         deferred.resolve(response);
                     }, deferred.reject);
@@ -26,7 +32,7 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", funct
                 paramsQuery += paramName + "-" + params[paramName];
             }
 
-            $http.get(("data/search/" + queryName + (paramsQuery ? "." + paramsQuery : "") + ".json?t=" + new Date().valueOf()).toLowerCase())
+            $http.get(("data/search/" + queryName + (paramsQuery ? "." + paramsQuery : "") + ".json?v=" + version).toLowerCase())
                 .success(function(data){
                     deferred.resolve(data);
                 })
@@ -35,15 +41,21 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", funct
             return deferred.promise;
         },
         queryServer: function (query, params, options) {
-            var deferred = $q.defer();
+            var deferred = $q.defer(),
+                resource = query.endpoint.subEntityName ? apiWithSubEntityResource : apiResource,
+                resourceData = angular.extend({}, options, params, query.endpoint);
 
-            var queryResult = apiResource.get(angular.extend({}, options, params, query.endpoint), function(){
+            for(var property in resourceData){
+                if (angular.isString(resourceData[property])){
+                    resourceData[property] = utils.strings.parseValue(resourceData[property], {}, params);
+                }
+            }
+
+            var queryResult = resource.get(resourceData, function(){
                 if (queryResult)
                     deferred.resolve(queryResult);
                 else
-                    methods.query(query.searchId, params, options)
-                        .success(deferred.resolve)
-                        .error(deferred.reject);
+                    deferred.reject();
             }, function(error){
                 methods.query(query.searchId, params, options).then(deferred.resolve, deferred.reject);
             });

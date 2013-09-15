@@ -1,8 +1,18 @@
 angular.module("Fortscale").factory("conditions", ["format", function(format){
 
     var validations = {
+        contains: function(val1, val2){
+            if (validations.hasNoValue(val1) || validations.hasNoValue(val2))
+                return false;
+
+            var regexp = new RegExp(val2, "i");
+            return regexp.test(val1);
+        },
         equals: function(val1, val2){
-            return val1 === val2;
+            if (angular.isObject(val1) && angular.isObject(val2))
+                return val1 === val2;
+
+            return val1.toString() === val2.toString();
         },
         notEquals: function(val1, val2){
             return val1 !== val2;
@@ -58,8 +68,12 @@ angular.module("Fortscale").factory("conditions", ["format", function(format){
 
             for(var i= 0, condition; condition = conditions[i]; i++){
                 conditionValue = condition.value;
-                if (conditionValue !== undefined && /^@/.test(condition.value))
-                    conditionValue = data[condition.value];
+                if (conditionValue !== undefined){
+                    if (/^@/.test(condition.value))
+                        conditionValue = data[condition.value];
+                    else if (params && (paramMatch = condition.value.match(/^\{\{([^\}]+)\}\}$/)))
+                        conditionValue = params[paramMatch[1]];
+                }
 
                 conditionField = condition.field;
 
@@ -71,7 +85,7 @@ angular.module("Fortscale").factory("conditions", ["format", function(format){
                 if (condition.fieldType)
                     dataValue = format[condition.fieldType](dataValue);
 
-                if (!methods.validateCondition(dataValue, condition.operator, condition.value))
+                if (!methods.validateCondition(dataValue, condition.operator, conditionValue))
                     return false;
             }
 

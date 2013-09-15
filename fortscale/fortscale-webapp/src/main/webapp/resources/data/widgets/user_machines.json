@@ -1,0 +1,40 @@
+{
+    "title": "Related Machines",
+    "reportId": "user_machines",
+    "views": [
+        {
+            "type": "pieChart",
+            "settings": {
+                "height": "150px",
+                "width": "150px",
+                "showInfo": true,
+
+                "info": {
+                    "title": "{{hostname}}",
+                    "properties": [
+                        {
+                            "label": "Usage (minutes):",
+                            "value": "{{count}}"
+                        },
+                        {
+                            "label": "Last Sign-in:",
+                            "value": "{{lastSignIn}}",
+                            "format": "date",
+                            "formatOptions": {
+                                "prettyDate": true
+                            }
+                        },
+                        {
+                            "label": "IP:",
+                            "value": "{{ipAddress}}"
+                        }
+                    ]
+                },
+                "item": {
+                    "value": "{{count}}",
+                    "label": "{{hostname}}"
+                }
+            }
+        }
+    ]
+}

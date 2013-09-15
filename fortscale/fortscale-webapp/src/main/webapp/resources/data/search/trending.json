@@ -2,72 +2,24 @@
     "data": [
         {
             "type": "user",
-            "name": "Dwight Shrute",
-            "id": "dwights@dundermiflin.com",
-            "score": 88,
-            "trend": 349
-        },
-        {
-            "type": "user",
-            "name": "John Doe",
-            "id": "johndoe",
-            "score": 70,
-            "trend": 260
-        },
-        {
-            "type": "machine",
-            "name": "Jim's iPhone",
-            "id": "jim_iphone",
-            "score": 53,
-            "trend": 212
-        },
-        {
-            "type": "machine",
-            "name": "192.168.0.45",
-            "id": "192.168.0.45",
-            "score": 66,
-            "trend": 196
-        },{
-            "type": "user",
-            "name": "Admin-5",
-            "id": "Admin-5",
-            "score": 78,
-            "trend": 180
-        },
-        {
-            "type": "user",
-            "name": "johns",
-            "id": "johns",
+            "name": "Walter White",
+            "id": "heisenberg",
             "score": 56,
-            "trend": 165
-        },
-        {
-            "type": "machine",
-            "name": "Saul's Blueberry",
-            "id": "345867864325423",
-            "score": 34,
-            "trend": 158
+            "trend": 40
         },
         {
             "type": "user",
-            "name": "Jessie Pinkman",
-            "id": "diesel",
-            "score": 67,
-            "trend": 132
+            "name": "Andrea Smith",
+            "id": "AndreaS",
+            "score": 94,
+            "trend": 34
         },
         {
             "type": "user",
-            "name": "Saul Goodman",
-            "id": "saul@sgoodmain.com",
-            "score": 66,
-            "trend": 128
-        },
-        {
-            "type": "machine",
-            "name": "SPLUNK-SRV",
-            "id": "splunk_Srv",
-            "score": 26,
-            "trend": 119
+            "name": "Bill Harris",
+            "id": "BillH",
+            "score": 88,
+            "trend": 19
         }
     ],
     "total": 5

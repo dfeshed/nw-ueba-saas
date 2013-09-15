@@ -1,0 +1,77 @@
+{
+    "searchId": "user_profile_features",
+    "dataSource": "api",
+    "endpoint": {
+        "entity": "user",
+        "subEntityName": "classifier",
+        "subEntityId": "{{@attribute}}",
+        "method": "attributes"
+    },
+    "query": {
+        "entity": "user_profile_features",
+        "conditions": [
+            {
+                "field": "username",
+                "operator": "equals",
+                "value": "{{id}}"
+            },
+            {
+                "field": "date",
+                "operator": "equals",
+                "value": "{{date}}"
+            },
+            {
+                "field": "scoreId",
+                "operator": "equals",
+                "value": "{{attribute}}"
+            }
+        ]
+    },
+    "fields": [
+        {
+            "name": "featureDisplayName",
+            "type": "string"
+        },
+        {
+            "name": "featureUniqueName",
+            "type": "string"
+        },
+        {
+            "name": "featureValue",
+            "type": "string"
+        },
+        {
+            "name": "featureScore",
+            "type": "number"
+        },
+        {
+            "name": "organizational",
+            "type": "number"
+        },
+        {
+            "name": "permissions",
+            "type": "number"
+        },
+        {
+            "name": "destinations",
+            "type": "number"
+        }
+    ],
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "entityId"
+        },
+        {
+            "field": "date",
+            "name": "date",
+            "dashboardParam": "date"
+        },
+        {
+            "field": "attribute",
+            "name": "attribute",
+            "dashboardParam": "currentFeature"
+        }
+    ]
+}

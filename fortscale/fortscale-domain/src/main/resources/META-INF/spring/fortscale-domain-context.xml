@@ -20,5 +20,18 @@
 	</bean>
 	
 	<mongo:repositories base-package="fortscale.domain" />
+	
+	
+	
+	<bean id="impalaDriver" class="org.apache.hive.jdbc.HiveDriver"/>
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+	  <constructor-arg name="driver" ref="impalaDriver"/>
+	  <constructor-arg name="url" value="${impala.url}"/>
+	</bean>
+	
+	<bean id="impalaJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+	  <constructor-arg ref="dataSource"/>
+	</bean>
 
 </beans>

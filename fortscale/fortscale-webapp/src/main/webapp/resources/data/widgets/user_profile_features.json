@@ -1,0 +1,41 @@
+{
+    "title": "Breakdown of the user's score",
+    "reportId": "user_profile_features",
+    "controls": [
+        {
+            "type": "link",
+            "text": "View all",
+            "href": "#/d/user/{{@entityId}}/logins"
+        }
+    ],
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "rows": {
+                    "style": "highScore",
+                    "styleParams": {
+                        "value": "featureScore"
+                    }
+                },
+                "fields": [
+                    {
+                        "name": "Description",
+                        "value": "{{featureDisplayName}}"
+                    },
+                    {
+                        "name": "Value",
+                        "value": "{{featureValue}}",
+                        "sortBy": "value"
+                    },
+                    {
+                        "name": "Feature Score",
+                        "value": "{{featureScore}}",
+                        "sortBy": "featureScore",
+                        "sortDirection": -1
+                    }
+                ]
+            }
+        }
+    ]
+}

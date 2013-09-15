@@ -1,5 +1,5 @@
-angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout", "$rootScope", "$q", "dashboards", "widgets", "reports", "transforms", "conditions",
-    function($scope, $timeout, $rootScope, $q, dashboards, widgets, reports, transforms, conditions){
+angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout", "$rootScope", "$q", "dashboards", "widgets", "reports", "transforms", "conditions", "controls",
+    function($scope, $timeout, $rootScope, $q, dashboards, widgets, reports, transforms, conditions, controls){
         var eventDeregistrationFunctions = [];
 
         $scope.widget.params = $scope.widget.params || {};
@@ -35,7 +35,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
             runReport: function(options, event, data){
                 var deferred = $q.defer();
 
-                reports.runReport(options.report, data, true).then(function(results){
+                reports. runReport(options.report, data, true).then(function(results){
                     deferred.resolve(results);
                 }, deferred.reject);
 
@@ -108,13 +108,28 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
 
         function setWidgetShow(){
             if ($scope.widget.show){
+                var previousValue = !!$scope.widget.show.value;
                 $scope.widget.show.value = conditions.validateConditions($scope.widget.show.conditions, {}, getWidgetParams($scope.widget));
+                if ($scope.widget.show.value !== previousValue){
+                    if ($scope.widget.show.value)
+                        $scope.$broadcast("show");
+                    else
+                        $scope.$broadcast("hide");
+                }
             }
         }
 
         function setViewShow(view){
             if (view.show){
+                var previousValue = !!view.show.value;
                 view.show.value = conditions.validateConditions(view.show.conditions, view.data, getWidgetParams($scope.widget));
+
+                if (view.show.value !== previousValue){
+                    if (view.show.value)
+                        $scope.$broadcast("show");
+                    else
+                        $scope.$broadcast("hide");
+                }
             }
         }
 
@@ -147,6 +162,8 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
         };
 
         $scope.$on("widgetEvent", function(e, data){
+            e.stopPropagation();
+
             if (data.widget)
                 data.params = getWidgetParams(data.widget);
 
@@ -154,14 +171,40 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
         });
 
         $scope.initWidget = function(widget){
-            if (widget.requiredParams){
-                widget.showInitMessage = !widgets.checkRequiredParams(widget, getRecursiveDashboardParams($scope));
-                if (!widget.showInitMessage)
+
+            if (!widget.widgetId)
+                withWidgetData();
+            else if (widget.widgetId){
+                if (widget._ready)
+                    withWidgetData();
+                else{
+                    widgets.getWidget(widget.widgetId).then(function(widgetConfig){
+                        jQuery.extend(widget, widgetConfig);
+                        widget._ready = true;
+                        withWidgetData();
+                    });
+                }
+            }
+            else if (widget.reportId){
+                reports.getReport(widget.reportId).then(function(report){
+                    widget.report = jQuery.extend(true, { query: report }, widget.report);
+                    widget._ready;
+                    withWidgetData();
+                })
+            }
+            function withWidgetData(){
+                if (widget.requiredParams){
+                    widget.showInitMessage = !widgets.checkRequiredParams(widget, getRecursiveDashboardParams($scope));
+                    if (!widget.showInitMessage)
+                        $scope.runWidgetReport(widget);
+                }
+                else
                     $scope.runWidgetReport(widget);
             }
-            else
-                $scope.runWidgetReport(widget);
+        };
 
+        $scope.initControl = function(control){
+            controls.initControl(control, getWidgetParams($scope.widget));
         };
 
         $scope.runWidgetReport = function(widget, forceRefresh){
@@ -172,7 +215,51 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                 });
             }
 
-            if (widget.report){
+            if (widget.report)
+                runReport();
+            else if (widget.reportId){
+                reports.getReport(widget.reportId).then(function(report){
+                    widget.report = { query: report };
+                    runReport();
+                }, function(error){
+                    console.error("Can't get report with ID '%s' for widget.", widget.reportId, widget);
+                });
+            }
+            else{
+                angular.forEach(widget.views, function(view){
+                    view.data = widgets.setViewValues(view, [], widgetParams);
+                });
+            }
+
+            if (widget.refreshOn){
+                if (!angular.isArray(widget.refreshOn))
+                    widget.refreshOn = [widget.refreshOn];
+
+                angular.forEach(widget.refreshOn, function(param){
+                    eventDeregistrationFunctions.push($scope.$on(param, function(value){
+                        if (value)
+                            $scope.runWidgetReport(widget, true);
+                    }));
+                });
+
+                eventDeregistrationFunctions.push($scope.$on("dashboardParamsChange", function(e, changedParams){
+                    setWidgetTitle();
+
+                    for(var i=0; i < widget.refreshOn.length; i++){
+                        if (changedParams[widget.refreshOn[i]] !== undefined){
+                            $scope.runWidgetReport(widget, true);
+                            return;
+                        }
+                    }
+                }));
+            }
+
+            eventDeregistrationFunctions.push($scope.$on("dashboardParamsChange", function(e, changedParams){
+                setWidgetShow();
+                angular.forEach(widget.views, setViewShow);
+            }));
+
+            function runReport(){
                 widget.loading = true;
                 widget.error = false;
                 widget.warning = null;
@@ -221,33 +308,6 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                     });
                     $timeout(function(){ $scope.runWidgetReport(widget); }, 1 * 60 * 1000); // Refresh the widget in 1 minute
                 });
-            }
-            else{
-                angular.forEach(widget.views, function(view){
-                    view.data = widgets.setViewValues(view, [], widgetParams);
-                });
-            }
-
-            if (widget.refreshOn){
-                angular.forEach(widget.refreshOn, function(param){
-                    eventDeregistrationFunctions.push($scope.$on(param, function(value){
-                        if (value)
-                            $scope.runWidgetReport(widget, true);
-                    }));
-                });
-
-                eventDeregistrationFunctions.push($scope.$on("dashboardParamsChange", function(e, changedParams){
-                    setWidgetTitle();
-                    setWidgetShow();
-
-                    angular.forEach(widget.views, setViewShow);
-                    for(var i=0; i < widget.refreshOn.length; i++){
-                        if (changedParams[widget.refreshOn[i]] !== undefined){
-                            $scope.runWidgetReport(widget, true);
-                            return;
-                        }
-                    }
-                }));
             }
         };
 

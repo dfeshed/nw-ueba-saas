@@ -1,0 +1,52 @@
+{
+    "renderControls": false,
+    "renderHeader": false,
+    "className": "no-border no-margins",
+    "style": { "margin-bottom": "none" },
+    "reportId": "users_severity_distribution",
+    "views": [
+        {
+            "type": "percentChart",
+            "settings": {
+                "options": {
+                    "height": "145px",
+                    "width": "100%",
+                    "labelsFont": {
+                        "size": "20px"
+                    },
+                    "selectable": true,
+                    "showSelectionBar": true
+                },
+                "selectedIndex": 0,
+                "series": [{
+                    "field": "value",
+                    "label": "{{value}}%",
+                    "style": "severity",
+                    "styleParams": {
+                        "value": "name"
+                    }
+                }],
+                "labels": {
+                    "field": "value",
+                    "value": "{{value}}%",
+                    "styleField": "value"
+                },
+                "selectionBar": {
+                    "styleField": "value"
+                },
+                "events": [
+                    {
+                        "eventName": "click",
+                        "action": "setParams",
+                        "actionOptions": {
+                            "updateUrl": false,
+                            "params": {
+                                "usersSeverity": "{{name}}"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

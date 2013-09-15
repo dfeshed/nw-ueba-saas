@@ -1,0 +1,32 @@
+{
+    "searchId": "user_events",
+    "endpoint": {
+        "entity": "user",
+        "method": "events"
+    },
+    "fields": [
+        {
+            "name": "text",
+            "type": "string"
+        },
+        {
+            "name": "severity",
+            "type": "number"
+        },
+        {
+            "name": "links",
+            "type": "array"
+        },
+        {
+            "name": "timestamp",
+            "type": "date"
+        }
+    ],
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "entityId"
+        }
+    ]
+}

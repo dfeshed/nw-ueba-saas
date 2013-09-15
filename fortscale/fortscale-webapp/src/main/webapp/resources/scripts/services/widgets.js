@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "format", "transforms", "styles", "icons", function($q, DAL, conditions, format, transforms, styles, icons){
+angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "format", "transforms", "styles", "icons", "reports", function($q, DAL, conditions, format, transforms, styles, icons, reports){
     var typeValueGenerators = {
         date: function(options, params){
             var values = [],
@@ -15,6 +15,8 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
             return values;
         }
     };
+
+    var cachedWidgets = {};
 
     typeValueGenerators.datetime = typeValueGenerators.date;
 
@@ -292,6 +294,7 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
                     if (itemValue){
                         itemData.push({
                             icon: getIcon(property.icon),
+                            tooltip: parseFieldValue(property, property.tooltip, item, itemIndex, params),
                             value: format.formatItem(property, itemValue)
                         });
                     }
@@ -320,6 +323,9 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
                     field: field
                 };
 
+                if (field.transform)
+                    fieldData.display = transforms[field.transform.method](field.field ? row[field.field] : fieldData.display, field.transform.options);
+
                 if (field.link)
                     fieldData.link = parseFieldValue(field, field.link, row, rowIndex, params, item);
 
@@ -346,8 +352,12 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
                 if (field.className)
                     fieldData.className = parseFieldValue(field, field.className, row, rowIndex, params, item);
 
-                if (field.valueTooltip)
-                    fieldData.tooltip = parseFieldValue(field, field.valueTooltip, row, rowIndex, params, item);
+                if (field.valueTooltip){
+                    if (angular.isString(field.valueTooltip))
+                        fieldData.tooltip = parseFieldValue(field, field.valueTooltip, row, rowIndex, params, item);
+                    else if (field.valueTooltip.transform)
+                        fieldData.tooltip = transforms[field.valueTooltip.transform.method](row[field.valueTooltip.field], field.valueTooltip.transform.options);
+                }
 
                 if (field.events)
                     fieldData.id = field.name.replace(/\s/g, "_");
@@ -682,6 +692,31 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
                     deferred.resolve(data);
                 })
                 .error(deferred.reject);
+
+            return deferred.promise;
+        },
+        getWidget: function(widgetId){
+            var deferred = $q.defer();
+
+            if (cachedWidgets[widgetId])
+                deferred.resolve(cachedWidgets[widgetId]);
+            else{
+                DAL.widgets.getWidget(widgetId).then(function(widget){
+                    if (widget.reportId){
+                        reports.getReport(widget.reportId).then(function(report){
+                            widget.report = { query: report };
+                            deferred.resolve(widget);
+                        }, function(error){
+                            console.error("Can't get report with ID '%s' for widget: ", widget.reportId, widget, ", original error: ", error);
+                            deferred.reject(error);
+                        })
+                    }
+                    else
+                        deferred.resolve(widget);
+
+                    cachedWidgets[widgetId] = widget;
+                }, deferred.reject);
+            }
 
             return deferred.promise;
         },

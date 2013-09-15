@@ -1,13 +1,13 @@
 {
     "data": [
         {
-            "name":"Dwight Shrute",
-            "id":"dwights@dundermiflin.com",
+            "name":"Andrea Smith",
+            "id":"AndreaS",
             "type": "user"
         },
         {
-            "name":"Walter White",
-            "id":"heisenberg",
+            "name":"Bob Jones",
+            "id":"BobJ",
             "type": "user"
         }
     ],
