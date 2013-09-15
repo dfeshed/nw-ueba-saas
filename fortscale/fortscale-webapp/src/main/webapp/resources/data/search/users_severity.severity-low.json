@@ -1,0 +1,54 @@
+{
+    "data": [
+        {
+            "userName": "Harry Stone",
+            "userId": "HarryS",
+            "score": 39,
+            "trend": "+2.50",
+            "machines": ["HarryS-PC"],
+            "machineCount": 1
+        },
+        {
+            "userName": "John Steele",
+            "userId": "JohnS",
+            "score": 38,
+            "trend": "-1.25",
+            "machines": ["JohnS-PC"],
+            "machineCount": 1
+        },
+        {
+            "userName": "Lucy Fulsom",
+            "userId": "LucyF",
+            "score": 29,
+            "trend": "+1.65",
+            "machines": ["LucyF-PC"],
+            "machineCount": 1
+        },
+        {
+            "userName": "Mark Kendakk",
+            "userId": "MarkK",
+            "score": 28,
+            "trend": "-1.10",
+            "machines": ["MarkK-PC"],
+            "machineCount": 1
+        },
+        {
+            "userName": "Luke Astor",
+            "userId": "LukeA",
+            "score": 28,
+            "trend": "+1.20",
+            "machines": ["LukeA-PC"],
+            "machineCount": 1
+        },
+        {
+            "userName": "Administrator",
+            "userId": "Administrator",
+            "score": 25,
+            "trend": "0.5",
+            "machines": ["SRVDC01"],
+            "machineCount": 1,
+            "groups": ["Domain Admins", "Domain Users"]
+        }
+    ],
+    "total": 6
+}

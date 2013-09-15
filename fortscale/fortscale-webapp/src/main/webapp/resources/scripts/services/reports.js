@@ -1,5 +1,6 @@
 angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($q, DAL, Cache){
-    var cache = new Cache({ id: "reports" });
+    var cache = new Cache({ id: "reports" }), // this is for data
+        cachedReports = {}; // This one is just for the report definitions
 
     function getSearchParams(report, params){
         var searchParams = {};
@@ -44,6 +45,20 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($
             DAL.reports.getAllReports()
                 .success(deferred.resolve)
                 .error(deferred.reject);
+
+            return deferred.promise;
+        },
+        getReport: function(reportId){
+            var deferred = $q.defer();
+
+            if (cachedReports[reportId])
+                deferred.resolve(cachedReports[reportId]);
+            else{
+                DAL.reports.getReport(reportId).then(function(report){
+                    cachedReports[reportId] = report;
+                    deferred.resolve(report);
+                }, deferred.reject);
+            }
 
             return deferred.promise;
         },
@@ -123,7 +138,7 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($
                 cache.removeItem()
             }
             else{
-                deferred.reject({ errorMessage: "Only searches are supported for reports at the moment." });
+                deferred.reject("Only searches are supported for reports at the moment.");
             }
             return deferred.promise;
         },

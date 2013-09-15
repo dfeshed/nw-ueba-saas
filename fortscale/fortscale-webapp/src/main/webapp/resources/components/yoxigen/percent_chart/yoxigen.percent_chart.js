@@ -261,6 +261,9 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
                 }
 
                 function fitToGrid(size){
+                    if (size < gridSize)
+                        return gridSize;
+
                     var gridRemainder = size % gridSize;
                     if (gridRemainder)
                         return size - gridRemainder;
@@ -345,9 +348,9 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
                         .attr("x", function(d, i){
                             var currentTotalWidth = totalWidth,
                                 itemWidth = getBarWidth(i);
-                            totalWidth += getBarWidth(i) + gridSize;
 
-                            return currentTotalWidth + (itemWidth - this.getBoundingClientRect().width) / 2;
+                            totalWidth += getBarWidth(i) + gridSize;
+                            return Math.max(0, currentTotalWidth + (itemWidth - this.getBoundingClientRect().width) / 2);
                         });
                 }
             }

@@ -3,6 +3,19 @@ angular.module("Fortscale").factory("transforms", [function(){
         splunkBucketRegExp = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})$/;
 
     var methods = {
+        arrayJoin: function(array, options){
+            if (!array)
+                return null;
+
+            options = options || {};
+            return array.join(options.joiner || ", ");
+        },
+        count: function(array){
+            if (!array)
+                return 0;
+
+            return array.length;
+        },
         date: function(date, options){
             var newDate = methods.getDate(date);
             return newDate.format(options.format);

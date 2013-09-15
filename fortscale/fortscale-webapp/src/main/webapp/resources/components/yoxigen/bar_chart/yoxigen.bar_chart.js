@@ -3,7 +3,7 @@
 if(typeof(yoxigen) === "undefined")
     yoxigen = angular.module("Yoxigen", []);
 
-yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
+yoxigen.directive("yoxigenBarChart", ["$parse", "$timeout", function($parse, $timeout){
     return {
         template: "<div class='yoxigen-chart yoxigen-bar-chart' style='width: 100%; height: 100%'></div>",
         restrict: 'E',
@@ -16,6 +16,7 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
             var selectedBarGroup = null;
             var labelTexts, labelBoxes;
             var selectItem;
+            var drawChartTimeoutPromise;
 
             var defaultOptions = {
                     spacing: { min: 0, max: 100 },
@@ -95,7 +96,7 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
                     });
                 }
 
-                if(options.selectable){
+                if(options.selectable && !element.clickHandlerAdded){
                     element.on("click", ".handle-events", function(e){
                         var targetData = e.currentTarget.__data__,
                             targetIndex = data.indexOf(targetData);
@@ -103,6 +104,8 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
                         if (targetIndex !== selectedBarGroup)
                             selectItem && selectItem(targetData, targetIndex);
                     });
+
+                    element.clickHandlerAdded = true;
                 }
             });
 
@@ -140,6 +143,15 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
                 var color = itemData && itemData._style && itemData._style[settings.selectionBar.styleField] && itemData._style[settings.selectionBar.styleField].color;
                 return color || options.selectable.defaultColor;
             }
+
+            var showTimeoutPromise;
+            scope.$on("show", function(){
+                $timeout.cancel(showTimeoutPromise);
+
+                showTimeoutPromise = $timeout(function(){
+                    drawChart();
+                });
+            });
 
             function drawChart(){
                 if (!data || !settings)
@@ -243,197 +255,205 @@ yoxigen.directive("yoxigenBarChart", ["$parse", function($parse){
                 if (options.showSelectionBar)
                     createSelectionBar();
 
-                if (selectedBarGroup !== undefined && selectItem)
+                if (selectedBarGroup !== undefined && selectItem){
                     selectItem(data[selectedBarGroup], selectedBarGroup);
 
-                function createAxes(){
-                    var xAxis = d3.svg.axis()
-                        .scale(xScale)
-                        .orient("bottom");
-
-                    svg.append("g")
-                        .attr("class", "axis")
-                        .attr("transform", "translate(" + leftPadding + "," + (height - options.padding.top) + ")")
-                        .call(xAxis);
-
-                    var yAxis = d3.svg.axis()
-                        .scale(scale)
-                        .orient("left");
-
-                    //Create Y axis
-                    svg.append("g")
-                        .attr("class", "axis")
-                        .attr("transform", "translate(" + options.padding.top + ",0)")
-                        .call(yAxis);
-                }
-
-                function getPatternFill(backgroundColor){
-                    var patternId = "pattern-" + backgroundColor.match(/[^\(\)\.#]/g).join("").replace(/\,/g, "_");
-
-                    if (!patterns[patternId]){
-                        var pattern = defs.append('svg:pattern')
-                            .attr('id', patternId)
-                            .attr('width', gridSize)
-                            .attr('height', gridSize)
-                            .attr('patternUnits', 'userSpaceOnUse');
-
-                        pattern
-                            .append('svg:rect')
-                            .attr('width', gridSize)
-                            .attr('height', gridSize)
-                            .attr('fill', backgroundColor)
-                            .attr("stroke", "rgba(0,0,0,0.2)")
-                            .attr("stroke-dasharray",
-                                (gridSize * 2) + "px, " + (gridSize * 2) + "px");
-
-                        patterns[patternId] = "url(#" + patternId + ")";
+                    if (settings.selectedIndex){
+                        angular.forEach(settings.events, function(eventSettings){
+                            if (eventSettings.eventName === "click")
+                                scope.$emit("widgetEvent", { event: eventSettings, data: data[selectedBarGroup], widget: scope.widget });
+                        });
                     }
-                    return patterns[patternId];
                 }
 
-                function createBackground(){
-                    var backgroundBorder = svg.append("svg:rect")
-                        .attr("width", barsArea.width)
-                        .attr("height", barsArea.height)
-                        .attr("x", 0)
-                        .attr("y", 0)
-                        .attr("fill", "rgba(0,0,0,0)")
-                        .attr("stroke", "#ddd")
-                        .attr("class", "crisp")
-                        .attr("stroke-width", "1px");
+                    function createAxes(){
+                        var xAxis = d3.svg.axis()
+                            .scale(xScale)
+                            .orient("bottom");
 
-                    var background = svg.append("svg:rect")
-                        .attr("width", barsArea.width - options.borderWidth * 2)
-                        .attr("height", barsArea.height)
-                        .attr("x", options.borderWidth)
-                        .attr("y", options.borderWidth)
-                        .attr("fill", getPatternFill("rgba(0,0,0,0)"));
-                }
+                        svg.append("g")
+                            .attr("class", "axis")
+                            .attr("transform", "translate(" + leftPadding + "," + (height - options.padding.top) + ")")
+                            .call(xAxis);
 
-                function moveSelectionBarArrowTo(horizontalPosition){
-                    selectionBarArrow.attr("d", [
-                        "M" + horizontalPosition,
-                        height - options.selectionBar.barHeight - options.selectionBar.arrowHeight,
-                        "L" + (horizontalPosition - options.selectionBar.arrowWidth / 2),
-                        height - options.selectionBar.barHeight,
-                        "L" + (horizontalPosition + options.selectionBar.arrowWidth / 2),
-                        height - options.selectionBar.barHeight,
-                        "Z"
-                    ].join(" "));
-                }
+                        var yAxis = d3.svg.axis()
+                            .scale(scale)
+                            .orient("left");
 
-                function createSelectionBar(){
-                    selectionBar = svg.append("svg:rect")
-                        .attr("width", width)
-                        .attr("height", options.selectionBar.barHeight)
-                        .attr("x", 0)
-                        .attr("y", height - options.selectionBar.barHeight);
-
-                    selectionBarArrow = svg.append("svg:path");
-                }
-
-                function fitToGrid(size){
-                    var gridRemainder = size % gridSize;
-                    if (gridRemainder)
-                        return size - gridRemainder;
-
-                    return size;
-                }
-
-                function createSeries(series, seriesIndex){
-                    var rects = svg.selectAll("rect.series_" + seriesIndex)
-                        .data(data)
-                        .enter()
-                        .append("rect")
-                        .attr("class", "crisp bars vertical-bar series_" + seriesIndex + (options.barsHandleEvents ? " handle-events" : ""));
-
-                    function getDataColor(d){
-                        return d._style && d._style[series.field] && d._style[series.field].color;
+                        //Create Y axis
+                        svg.append("g")
+                            .attr("class", "axis")
+                            .attr("transform", "translate(" + options.padding.top + ",0)")
+                            .call(yAxis);
                     }
 
-                    rects
-                        .attr("width", rectWidth)
-                        .attr("height", function(d){
-                            return fitToGrid(scale(d[series.field]));
-                        })
-                        .attr("x", function(d, i) {
-                            return fitToGrid(i * totalRectWidth + leftPadding + seriesIndex * rectWidth + options.borderWidth);
-                        })
-                        .attr("y", function(d, i){
-                            return barsArea.height + options.borderWidth - fitToGrid(scale(d[series.field]));
-                        })
-                        .attr("fill", function(d){
-                            return getPatternFill(getDataColor(d) || series.color || options.colors[seriesIndex]);
-                        });
+                    function getPatternFill(backgroundColor){
+                        var patternId = "pattern-" + backgroundColor.match(/[^\(\)\.#]/g).join("").replace(/\,/g, "_");
 
-                    var textMargins = 4,
-                        fontSize = Math.max(10, Math.min(rectWidth - textMargins * 2, options.barLabelsFont.size)) + "px";
+                        if (!patterns[patternId]){
+                            var pattern = defs.append('svg:pattern')
+                                .attr('id', patternId)
+                                .attr('width', gridSize)
+                                .attr('height', gridSize)
+                                .attr('patternUnits', 'userSpaceOnUse');
 
-                    svg.selectAll("text.series_" + seriesIndex)
-                        .data(data)
-                        .enter()
-                        .append("text")
-                        .attr("class", "series_" + seriesIndex + (options.barsHandleEvents ? " handle-events" : ""))
-                        .text(function(d, i) {
-                            return d[series.field];
-                        })
-                        .attr("x", function(d, i) {
-                            return fitToGrid(i * totalRectWidth  + leftPadding) + rectWidth / 2 + seriesIndex * rectWidth;
-                        })
-                        .attr("y", function(d) {
-                            return barsArea.height + options.borderWidth - fitToGrid(scale(d[series.field])) - gridSize;
-                        })
-                        .attr("font-family", options.barLabelsFont.family)
-                        .attr("font-size", fontSize)
-                        .attr("font-weight", options.barLabelsFont.weight)
-                        .attr("fill", function(d){
-                            return getDataColor(d) || series.barLabelsColor || options.barLabelsFont.color;
-                        })
-                        .attr("text-anchor", "middle");
-                }
+                            pattern
+                                .append('svg:rect')
+                                .attr('width', gridSize)
+                                .attr('height', gridSize)
+                                .attr('fill', backgroundColor)
+                                .attr("stroke", "rgba(0,0,0,0.2)")
+                                .attr("stroke-dasharray",
+                                    (gridSize * 2) + "px, " + (gridSize * 2) + "px");
 
-                function createLabels(){
-                    var handleEventsClass =  options.labels.handleEvents ? " handle-events" : "",
-                        labelWidth = totalRectWidth - barsSpacing;
+                            patterns[patternId] = "url(#" + patternId + ")";
+                        }
+                        return patterns[patternId];
+                    }
 
-                    if (labelWidth <= 0)
-                        return;
+                    function createBackground(){
+                        var backgroundBorder = svg.append("svg:rect")
+                            .attr("width", barsArea.width)
+                            .attr("height", barsArea.height)
+                            .attr("x", 0)
+                            .attr("y", 0)
+                            .attr("fill", "rgba(0,0,0,0)")
+                            .attr("stroke", "#ddd")
+                            .attr("class", "crisp")
+                            .attr("stroke-width", "1px");
 
-                    labelBoxes = svg.selectAll("rect.label-box" + handleEventsClass)
-                        .data(data)
-                        .enter()
-                        .append("rect")
-                        .attr("class", "label-box" + handleEventsClass)
-                        .attr("width", totalRectWidth - barsSpacing)
-                        .attr("height", options.labels.height)
-                        .attr("x", function(d, i){
-                            return i * totalRectWidth + leftPadding;
-                        })
-                        .attr("rx", Math.floor(options.labels.height / 2) + "px")
-                        .attr("y", height - options.labels.height - selectionBarTotalHeight)
-                        .attr("fill", function(d, i){
-                            var color = d._style && d._style[settings.labels.styleField] && d._style[settings.labels.styleField].color;
-                            return color || options.labelsFont.color;
-                        });
+                        var background = svg.append("svg:rect")
+                            .attr("width", barsArea.width - options.borderWidth * 2)
+                            .attr("height", barsArea.height)
+                            .attr("x", options.borderWidth)
+                            .attr("y", options.borderWidth)
+                            .attr("fill", getPatternFill("rgba(0,0,0,0)"));
+                    }
 
-                    labelTexts = svg.selectAll("text.labels" + handleEventsClass)
-                        .data(data)
-                        .enter()
-                        .append("text")
-                        .attr("class", "labels" + handleEventsClass)
-                        .text(function(d, i) {
-                            return d._label;
-                        })
-                        .attr("x", function(d, i) {
-                            return (i + 0.5) * totalRectWidth + leftPadding  - barsSpacing / 2;
-                        })
-                        .attr("y", height - options.labels.height - selectionBarTotalHeight + parseInt(options.labelsFont.size, 10) + 1)
-                        .attr("font-family", options.labelsFont.family)
-                        .attr("font-size", options.labelsFont.size)
-                        .attr("font-weight", options.labelsFont.weight)
-                        .attr("fill", setLabelFill)
-                        .attr("text-anchor", "middle");
-                }
+                    function moveSelectionBarArrowTo(horizontalPosition){
+                        selectionBarArrow.attr("d", [
+                            "M" + horizontalPosition,
+                            height - options.selectionBar.barHeight - options.selectionBar.arrowHeight,
+                            "L" + (horizontalPosition - options.selectionBar.arrowWidth / 2),
+                            height - options.selectionBar.barHeight,
+                            "L" + (horizontalPosition + options.selectionBar.arrowWidth / 2),
+                            height - options.selectionBar.barHeight,
+                            "Z"
+                        ].join(" "));
+                    }
+
+                    function createSelectionBar(){
+                        selectionBar = svg.append("svg:rect")
+                            .attr("width", width)
+                            .attr("height", options.selectionBar.barHeight)
+                            .attr("x", 0)
+                            .attr("y", height - options.selectionBar.barHeight);
+
+                        selectionBarArrow = svg.append("svg:path");
+                    }
+
+                    function fitToGrid(size){
+                        var gridRemainder = size % gridSize;
+                        if (gridRemainder)
+                            return size - gridRemainder;
+
+                        return size;
+                    }
+
+                    function createSeries(series, seriesIndex){
+                        var rects = svg.selectAll("rect.series_" + seriesIndex)
+                            .data(data)
+                            .enter()
+                            .append("rect")
+                            .attr("class", "crisp bars vertical-bar series_" + seriesIndex + (options.barsHandleEvents ? " handle-events" : ""));
+
+                        function getDataColor(d){
+                            return d._style && d._style[series.field] && d._style[series.field].color;
+                        }
+
+                        rects
+                            .attr("width", rectWidth)
+                            .attr("height", function(d){
+                                return fitToGrid(scale(d[series.field]));
+                            })
+                            .attr("x", function(d, i) {
+                                return fitToGrid(i * totalRectWidth + leftPadding + seriesIndex * rectWidth + options.borderWidth);
+                            })
+                            .attr("y", function(d, i){
+                                return barsArea.height + options.borderWidth - fitToGrid(scale(d[series.field]));
+                            })
+                            .attr("fill", function(d){
+                                return getPatternFill(getDataColor(d) || series.color || options.colors[seriesIndex]);
+                            });
+
+                        var textMargins = 4,
+                            fontSize = Math.max(10, Math.min(rectWidth - textMargins * 2, options.barLabelsFont.size)) + "px";
+
+                        svg.selectAll("text.series_" + seriesIndex)
+                            .data(data)
+                            .enter()
+                            .append("text")
+                            .attr("class", "series_" + seriesIndex + (options.barsHandleEvents ? " handle-events" : ""))
+                            .text(function(d, i) {
+                                return d[series.field];
+                            })
+                            .attr("x", function(d, i) {
+                                return fitToGrid(i * totalRectWidth  + leftPadding) + rectWidth / 2 + seriesIndex * rectWidth;
+                            })
+                            .attr("y", function(d) {
+                                return barsArea.height + options.borderWidth - fitToGrid(scale(d[series.field])) - gridSize;
+                            })
+                            .attr("font-family", options.barLabelsFont.family)
+                            .attr("font-size", fontSize)
+                            .attr("font-weight", options.barLabelsFont.weight)
+                            .attr("fill", function(d){
+                                return getDataColor(d) || series.barLabelsColor || options.barLabelsFont.color;
+                            })
+                            .attr("text-anchor", "middle");
+                    }
+
+                    function createLabels(){
+                        var handleEventsClass =  options.labels.handleEvents ? " handle-events" : "",
+                            labelWidth = totalRectWidth - barsSpacing;
+
+                        if (labelWidth <= 0)
+                            return;
+
+                        labelBoxes = svg.selectAll("rect.label-box" + handleEventsClass)
+                            .data(data)
+                            .enter()
+                            .append("rect")
+                            .attr("class", "label-box" + handleEventsClass)
+                            .attr("width", totalRectWidth - barsSpacing)
+                            .attr("height", options.labels.height)
+                            .attr("x", function(d, i){
+                                return i * totalRectWidth + leftPadding;
+                            })
+                            .attr("rx", Math.floor(options.labels.height / 2) + "px")
+                            .attr("y", height - options.labels.height - selectionBarTotalHeight)
+                            .attr("fill", function(d, i){
+                                var color = d._style && d._style[settings.labels.styleField] && d._style[settings.labels.styleField].color;
+                                return color || options.labelsFont.color;
+                            });
+
+                        labelTexts = svg.selectAll("text.labels" + handleEventsClass)
+                            .data(data)
+                            .enter()
+                            .append("text")
+                            .attr("class", "labels" + handleEventsClass)
+                            .text(function(d, i) {
+                                return d._label;
+                            })
+                            .attr("x", function(d, i) {
+                                return (i + 0.5) * totalRectWidth + leftPadding  - barsSpacing / 2;
+                            })
+                            .attr("y", height - options.labels.height - selectionBarTotalHeight + parseInt(options.labelsFont.size, 10) + 1)
+                            .attr("font-family", options.labelsFont.family)
+                            .attr("font-size", options.labelsFont.size)
+                            .attr("font-weight", options.labelsFont.weight)
+                            .attr("fill", setLabelFill)
+                            .attr("text-anchor", "middle");
+                    }
             }
         }
     };

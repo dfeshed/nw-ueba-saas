@@ -1,0 +1,53 @@
+{
+    "searchId": "user_score_history",
+    "dataSource": "api",
+    "endpoint": {
+        "entity": "user",
+        "subEntityName": "classifier",
+        "subEntityId": "{{@attribute}}",
+        "method": "scorehistory",
+        "id": "{{@username}}"
+    },
+    "query": {
+        "entity": "user_score_history",
+        "conditions": [
+            {
+                "field": "username",
+                "operator": "equals",
+                "value": "{{username}}"
+            },
+            {
+                "field": "attribute",
+                "operator": "equals",
+                "value": "{{attribute}}"
+            }
+        ]
+
+    },
+    "fields": [
+        {
+            "name": "date",
+            "type": "date"
+        },
+        {
+            "name": "score",
+            "type": "number"
+        },
+        {
+            "name": "avgScore",
+            "type": "number"
+        }
+    ],
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "entityId"
+        },
+        {
+            "field": "classifier",
+            "name": "classifier",
+            "dashboardParam": "scoreId"
+        }
+    ]
+}

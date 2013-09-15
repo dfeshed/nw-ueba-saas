@@ -25,6 +25,7 @@
         <h4 class="widget-header-title">{{widget.parsedTitle}}</h4>
     </header>
     <div class="widget-contents">
+        <ng-include ng-if="widget.filters" src="'views/widgets/widget_filters.html'"></ng-include>
         <div ng-repeat="view in widget.views"
              class="widget-view {{view.className}}"
              ng-show="!view.show || view.show.value"
@@ -43,18 +44,18 @@
             <div class="widget-no-data widget-init-message" ng-show="widget.showInitMessage">
                 {{widget.initMessage}}
             </div>
-            <div class="widget-message widget-loading" ng-show="widget.loading">
+            <div class="widget-message widget-loading" ng-if="view.showMessages !== false" ng-show="widget.loading">
                 <span class="widget-message-contents widget-loading-message">
                     <i class="icon-spinner icon-spin"></i>
                 </span>
             </div>
-            <div class="widget-message widget-error" ng-show="widget.error">
+            <div class="widget-message widget-error" ng-if="view.showMessages !== false" ng-show="widget.error">
                         <span class="widget-message-contents widget-error-message">
                             <i class="icon-bug"></i> {{widget.error}}
                             <a ng-click="runWidgetReport(widget, true)">Retry</a>
                         </span>
             </div>
-            <div class="widget-message widget-warning" ng-show="widget.warning && !widget.error">
+            <div class="widget-message widget-warning" ng-if="view.showMessages !== false" ng-show="widget.warning && !widget.error">
                         <span class="widget-message-contents widget-warning-message">
                             <i class="icon-meh"></i> {{widget.warning}}
                             <a ng-click="runWidgetReport(widget, true)">Reload</a>

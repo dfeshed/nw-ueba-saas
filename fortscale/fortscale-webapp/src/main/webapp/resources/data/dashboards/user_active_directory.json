@@ -1,0 +1,32 @@
+{
+    "dashboardId": "user_active_directory",
+    "name": "{{@entityId}}",
+    "columns": [
+        {
+            "className": "span15",
+            "widgets": [
+                {
+                    "widgetId": "user_score_history",
+                    "report": {
+                        "query": {
+                            "params": [
+                                {
+                                    "dashboardParam": "entityId",
+                                    "field": "username"
+                                },
+                                {
+                                    "dashboardParam": "currentFeature",
+                                    "field": "attribute"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "widgetId": "user_profile_features",
+                    "refreshOn": "date"
+                }
+            ]
+        }
+    ]
+}

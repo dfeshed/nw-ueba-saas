@@ -1,0 +1,50 @@
+{
+    "reportId": "all_users_logins",
+    "title": "Suspicious Logins",
+    "linkTo": {
+        "url": "#/d/user_logins",
+        "tooltip": "Investigate user logins",
+        "text": "View all"
+    },
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "User",
+                        "value": "{{username}}",
+                        "link": "#/d/user/{{userId}}",
+                        "sortBy": "username"
+                    },
+                    {
+                        "name": "Source IP",
+                        "value": "{{sourceIP}}",
+                        "sortBy": "sourceIP",
+                        "link": "#/d/malware/e/machine/{{sourceIP}}"
+                    },
+                    {
+                        "name": "Source Hostname",
+                        "value": "{{sourceHostname}}",
+                        "sortBy": "sourceHostname",
+                        "link": "#/d/malware/e/machine/{{sourceHostname}}"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{time}}",
+                        "sortBy": "time",
+                        "sortDirection": -1,
+                        "format": "date",
+                        "formatOptions": { "format": "MM/DD/YY HH:mm:ss" }
+                    },
+                    {
+                        "name": "Destination Hostname",
+                        "value": "{{destinationHostname}}",
+                        "sortBy": "destinationHostname",
+                        "link": "#/d/malware/e/machine/{{destinationHostname}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

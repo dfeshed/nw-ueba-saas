@@ -1,26 +1,62 @@
 {
     "data": [
         {
-            "username": "John Smith",
-            "severity": 79,
-            "avgSeverity": 34,
-            "machineCount": 9,
-            "groups": "QA, IT, Admin"
+            "userName": "Bob Jones",
+            "userId": "BobH",
+            "score": 69,
+            "trend": "+0.55",
+            "machines": ["BobH-PC"],
+            "machineCount": 1
         },
         {
-            "username": "Jim Halpert",
-            "severity": 67,
-            "avgSeverity": 34,
+            "userName": "Kate Frances",
+            "userId": "KateF",
+            "score": 65,
+            "trend": "+0.95",
+            "machines": ["KateF-PC"],
+            "machineCount": 1
+        },
+        {
+            "userName": "Jess Fane",
+            "userId": "JessF",
+            "score": 65,
+            "trend": "+0.25",
+            "machines": ["JessF-PC"],
+            "machineCount": 1
+        },
+        {
+            "userName": "Charles Kavanagh",
+            "userId": "CharlesK",
+            "score": 65,
+            "trend": "+0.30",
+            "machines": ["CharlesK-PC"],
+            "machineCount": 1
+        },
+        {
+            "userName": "Cathy Taylor",
+            "userId": "CathyT",
+            "score": 65,
+            "trend": "-0.95",
+            "machines": ["CathyT-PC"],
+            "machineCount": 1
+        },
+        {
+            "userName": "Claire Anderson",
+            "userId": "ClaireA",
+            "score": 64,
+            "trend": "+1.85",
+            "machines": ["ClaireA-PC"],
+            "machineCount": 1
+        },
+        {
+            "userName": "Joe Swift",
+            "userId": "JoeS",
+            "score": 63,
+            "trend": "-1.15",
+            "machines": ["SRVDC01", "JoeS-PC"],
             "machineCount": 2,
-            "groups": "Sales"
-        },
-        {
-            "username": "Pam Bisley",
-            "severity": 62,
-            "avgSeverity": 34,
-            "machineCount": 13,
-            "groups": "Admin"
+            "groups": ["Domain Users", "Administrators", "Hardening Class A", "Big Mailbox Users"]
         }
     ],
-    "total": 324
+    "total": 7
 }

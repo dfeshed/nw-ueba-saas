@@ -1,0 +1,42 @@
+{
+    "reportId": "all_users_group_memberships",
+    "title": "Suspicious Group Memberships",
+    "linkTo": {
+        "url": "#/d/user-groups",
+        "tooltip": "Investigate suspicious group memberships",
+        "text": "View all"
+    },
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "User",
+                        "value": "{{username}}",
+                        "link": "#/d/user/{{userId}}"
+                    },
+                    {
+                        "name": "Group",
+                        "value": "{{group}}",
+                        "link": "#/d/user-group/{{group}}"
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{score}}",
+                        "style": "score",
+                        "styleParams": {
+                            "value": "score"
+                        }
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{time}}",
+                        "format": "date",
+                        "formatOptions": { "prettyDate": true }
+                    }
+                ]
+            }
+        }
+    ]
+}

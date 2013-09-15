@@ -1,0 +1,41 @@
+{
+    "searchId": "users_severity",
+    "fields": [
+        {
+            "name": "userName",
+            "type": "string"
+        },
+        {
+            "name": "userId",
+            "type": "string"
+        },
+        {
+            "name": "severity",
+            "type": "number"
+        },
+        {
+            "name": "trend",
+            "type": "string"
+        },
+        {
+            "name": "machines",
+            "type": "array"
+        },
+        {
+            "name": "machineCount",
+            "type": "number"
+        },
+        {
+            "name": "groups",
+            "type": "array"
+        }
+    ],
+    "params": [
+        {
+            "field": "severity",
+            "type": "userId",
+            "dashboardParam": "usersSeverity",
+            "default": "Critical"
+        }
+    ]
+}

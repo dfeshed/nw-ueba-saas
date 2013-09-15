@@ -1,0 +1,53 @@
+{
+    "title": "User Details",
+    "className": "round-items-list",
+    "views": [
+        {
+            "type": "properties",
+            "settings": {
+                "properties": [
+                    {
+                        "icon": "user",
+                        "tooltip": "User name",
+                        "value": "{{username}}"
+                    },
+                    {
+                        "icon": "barcode",
+                        "tooltip": "Worker ID",
+                        "value": "{{workerId}}"
+                    },
+                    {
+                        "icon": "group",
+                        "tooltip": "Domain",
+                        "value": "{{domain}}"
+                    },
+                    {
+                        "icon": "globe",
+                        "tooltip": "Department",
+                        "value": "{{department}}"
+                    },
+                    {
+                        "icon": "mobile-phone",
+                        "tooltip": "Mobile phone",
+                        "value": "{{mobilePhone}}"
+                    },
+                    {
+                        "icon": "phone",
+                        "tooltip": "Office phone",
+                        "value": "{{phone}}"
+                    },
+                    {
+                        "icon": "location-arrow",
+                        "tooltip": "Address",
+                        "value": "{{address}}"
+                    },
+                    {
+                        "icon": "sitemap",
+                        "tooltip": "Manager",
+                        "value": "{{manager}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

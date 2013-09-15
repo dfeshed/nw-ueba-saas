@@ -1,0 +1,37 @@
+{
+    "reportId": "user_recent_events",
+    "title": "Recent Alerts",
+    "views": [
+        {
+            "type": "table",
+            "className": "widget-table-list",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Icon",
+                        "icon": {
+                            "type": "stop"
+                        },
+                        "style": "score",
+                        "styleParams": {
+                            "value": "severity"
+                        }
+                    },
+                    {
+                        "name": "Description",
+                        "value": "<a href='#/d/{{type}}/{{name}}'>{{name}}</a> {{text}}<p class='note'>{{explanation}}</p>",
+                        "className": "table-large-cell"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{time}}",
+                        "icon": "time",
+                        "format": "date",
+                        "className": "sideNote",
+                        "formatOptions": { "prettyDate": true, "shortPrettyDate": true }
+                    }
+                ]
+            }
+        }
+    ]
+}

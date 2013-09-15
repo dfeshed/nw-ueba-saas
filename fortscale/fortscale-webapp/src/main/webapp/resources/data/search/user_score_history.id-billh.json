@@ -1,0 +1,32 @@
+{
+    "data": [
+        {
+            "date": "-6d",
+            "score": 66
+        },
+        {
+            "date": "-5d",
+            "score": 66
+        },
+        {
+            "date": "-4d",
+            "score": 65
+        },
+        {
+            "date": "-3d",
+            "score": 72
+        },
+        {
+            "date": "-2d",
+            "score": 86
+        },
+        {
+            "date": "-1d",
+            "score": 93
+        },
+        {
+            "date": "-0d",
+            "score": 88
+        }
+    ]
+}

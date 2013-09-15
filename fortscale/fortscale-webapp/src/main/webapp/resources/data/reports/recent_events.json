@@ -1,0 +1,35 @@
+{
+
+    "searchId": "all_notifications",
+    "fields": [
+        {
+            "name": "text",
+            "type": "string"
+        },
+        {
+            "name": "severity",
+            "type": "number"
+        },
+        {
+            "name": "explanation",
+            "type": "string"
+        },
+        {
+            "name": "type",
+            "type": "string"
+        },
+        {
+            "name": "name",
+            "type": "string"
+        },
+        {
+            "name": "id",
+            "type": "string"
+        },
+        {
+            "name": "time",
+            "type": "date"
+        }
+    ],
+    "params": []
+}

@@ -1,0 +1,28 @@
+{
+    "searchId": "user_status",
+    "endpoint": {
+        "entity": "user",
+        "method": "notifications"
+    },
+    "fields": [
+        {
+            "name": "text",
+            "type": "string"
+        },
+        {
+            "name": "severity",
+            "type": "number"
+        },
+        {
+            "name": "explanation",
+            "type": "string"
+        }
+    ],
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "entityId"
+        }
+    ]
+}

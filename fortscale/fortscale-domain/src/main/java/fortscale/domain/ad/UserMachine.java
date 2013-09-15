@@ -3,7 +3,7 @@ package fortscale.domain.ad;
 import java.util.Date;
 
 public class UserMachine {
-	public static final String TABLE_NAME = "usernametohostname2";
+	public static final String TABLE_NAME = "usernametohostname";
 	public static final String USERNAME_FIELD_NAME = "username";
 	public static final String HOSTNAME_FIELD_NAME = "hostname";
 	public static final String LOGONCOUNT_FIELD_NAME = "logoncount";

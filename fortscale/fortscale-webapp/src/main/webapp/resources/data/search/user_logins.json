@@ -1,54 +1,29 @@
 {
     "data": [
         {
-            "username": "Dwight Shrute",
-            "userId": "dwights@dundermiflin.com",
-            "sourceLocation": "Scranton Office",
+            "username": "Andrea Smith",
+            "userId": "AndreaS",
             "sourceIP": "10.12.0.13",
-            "sourceMachine": "dwight-pc",
-            "time": "Evening",
-            "destinationLocation": "New York Office",
-            "destinationMachine": "SAP"
+            "sourceHostname": "JOE-DESKTOP",
+            "time": 1378896283891,
+            "destinationHostname": "CRM-SERVER",
+            "destinationIP": "146.10.10.4"
         },
         {
-            "username": "Jim Halpert",
-            "userId": "jimh@dundermiflin.com",
-            "sourceLocation": "Tel Aviv HQ",
+            "username": "Bill Harris",
+            "userId": "BillH",
             "sourceIP": "194.20.145.101",
-            "sourceMachine": "Jim's iPhone",
-            "time": "Night",
-            "destinationLocation": "Tel Aviv HQ",
-            "destinationMachine": "hadoop-srv"
-        },
-        {
-            "username": "Dwight Shrute",
-            "userId": "dwights@dundermiflin.com",
-            "sourceLocation": "Scranton Office",
-            "sourceIP": "10.12.0.13",
-            "sourceMachine": "dwight-pc",
-            "time": "Night",
-            "destinationLocation": "New York Office",
-            "destinationMachine": "SAP"
+            "sourceHostname": "BillH-PC",
+            "time": 1378866167891,
+            "destinationHostname": "hadoop-srv"
         },
         {
             "username": "Admin-5",
             "userId": "Admin-5",
-            "sourceLocation": "New York Office",
             "sourceIP": "140.123.45.245",
-            "sourceMachine": "david-pc",
-            "time": "Work hours",
-            "destinationLocation": "Tel Aviv HQ",
-            "destinationMachine": "HR-srv"
-        },
-        {
-            "username": "root",
-            "userId": "root@dundermiflin.com",
-            "sourceLocation": "Scranton Office",
-            "sourceIP": "192.168.0.244",
-            "sourceMachine": "Jim's iPhone",
-            "time": "Night",
-            "destinationLocation": "Nigeria",
-            "destinationMachine": "Prince's server"
+            "sourceHostname": "david-pc",
+            "time": 1378846056491,
+            "destinationHostname": "HR-SRV"
         }
     ],
     "total": 17603,

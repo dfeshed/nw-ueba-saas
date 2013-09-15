@@ -1,0 +1,80 @@
+{
+    "reportId": "user_logins_investigate",
+    "title": "Suspicious Logins",
+    "controls": [
+        {
+            "type": "link",
+            "text": "View all",
+            "href": "#/d/user/{{@entityId}}/logins"
+        }
+    ],
+    "filters": {
+        "entity": "logins",
+        "fields": [
+            {
+                "field": "username",
+                "type": "string",
+                "name": "User"
+            },
+            {
+                "field": "time",
+                "name": "Time",
+                "type": "date"
+            }
+        ]
+    },
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "User",
+                        "value": "{{username}}",
+                        "link": "#/d/user/{{userId}}",
+                        "sortBy": "username",
+                        "filter": {
+                            "type": "string",
+                            "label": "Show only",
+                            "dashboardParam": "username"
+                        }
+                    },
+                    {
+                        "name": "Source Location",
+                        "value": "{{sourceLocation}}",
+                        "sortBy": "sourceLocation"
+                    },
+                    {
+                        "name": "Source IP",
+                        "value": "{{sourceIP}}",
+                        "sortBy": "sourceIP",
+                        "link": "#/d/malware/e/machine/{{sourceIP}}"
+                    },
+                    {
+                        "name": "Source Machine",
+                        "value": "{{sourceMachine}}",
+                        "sortBy": "sourceMachine",
+                        "link": "#/d/malware/e/machine/{{sourceMachine}}"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{time}}",
+                        "sortBy": "time",
+                        "sortDirection": -1
+                    },
+                    {
+                        "name": "Destination Machine",
+                        "value": "{{destinationMachine}}",
+                        "sortBy": "destinationMachine",
+                        "link": "#/d/malware/e/machine/{{destinationMachine}}"
+                    },
+                    {
+                        "name": "Destination Location",
+                        "value": "{{destinationLocation}}",
+                        "sortBy": "destinationLocation"
+                    }
+                ]
+            }
+        }
+    ]
+}

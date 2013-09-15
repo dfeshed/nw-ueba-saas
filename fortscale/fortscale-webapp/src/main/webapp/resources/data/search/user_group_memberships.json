@@ -5,28 +5,28 @@
             "userId": "heisenberg",
             "group": "Administrators",
             "score": 82,
-            "time": 1377166566719,
+            "time": "-3d",
             "comments": []
         },{
             "username": "Contractor-23",
             "userId": "Contractor-23",
             "group": "Administrators",
             "score": 79,
-            "time": 1377166366719,
+            "time": "-3d",
             "comments": []
         },{
-            "username": "Hank Moody",
-            "userId": "hmoody@californication.com",
+            "username": "James Albert",
+            "userId": "JamesA",
             "group": "HR",
             "score": 65,
-            "time": 1377162166713,
+            "time": "-3d",
             "comments": []
         },{
-            "username": "Dwight Shrute",
-            "userId": "dwights@dundermiflin.com",
-            "group": "Management",
-            "score": 45,
-            "time": 1377026566719,
+            "username": "Andrea Smith",
+            "userId": "AndreaS",
+            "group": "CRM-Administrators",
+            "score": 65,
+            "time": "-1d",
             "comments": []
         }
     ],

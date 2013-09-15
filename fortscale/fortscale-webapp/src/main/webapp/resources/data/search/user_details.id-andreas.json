@@ -1,8 +1,8 @@
 {
     "data": [
         {
-            "username": "dwights@dundermiflin.com",
-            "name": "Dwight Shrute",
+            "username": "AndreaS",
+            "name": "Andrea Smith",
             "position": "Sales Rep.",
             "id": "573763",
             "groups": [ "Sales" ],
@@ -11,7 +11,7 @@
                 "name": "Michael Scott",
                 "id": "82784"
             },
-            "email": "dwights@dundermiflin.com",
+            "email": "AndreaS",
             "mobile": "408-876-2316",
             "phone": "408-382-9876"
         }

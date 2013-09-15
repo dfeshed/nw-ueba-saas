@@ -1,209 +1,60 @@
 {
     "dashboardId": "user",
     "name": "{{@userName}}",
+    "subtitle": "{{@jobTitle}}",
     "icon": {
         "type": "user"
     },
+    "iconUrl": "{{@userImage}}",
     "columns": [
         {
             "className": "span3",
             "widgets": [
                 {
-                    "title": "User Details",
+                    "widgetId": "user_details",
+                    "reportId": "user_details",
                     "report": {
                         "query": {
-                            "dataSource": "api",
-                            "searchId": "user_details",
-                            "endpoint": {
-                                "entity": "user",
-                                "method": "details"
-                            },
-                            "fields": [
-                                {
-                                    "name": "username",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "name",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "position",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "id",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "groups",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "department",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "manager",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "email",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "phone",
-                                    "type": "string"
-                                },
-                                {
-                                    "email": "username",
-                                    "type": "string"
-                                },
-                                {
-                                    "mobile": "name",
-                                    "type": "string"
-                                },
-                                {
-                                    "phone": "position",
-                                    "type": "string"
-                                }
-                            ],
                             "params": [
                                 {
-                                    "field": "id",
-                                    "name": "id",
-                                    "dashboardParam": "entityId"
+                                    "dashboardParam": "entityId",
+                                    "field": "username"
+                                },
+                                {
+                                    "dashboardParam": "entityId",
+                                    "field": "id"
                                 }
                             ]
                         }
                     },
-                    "className": "round-items-list",
                     "onDataEvent": {
                         "action": "setParams",
                         "actionOptions": {
                             "updateUrl": false,
                             "params": {
-                                "userName": { "itemIndex": 0, "value": "{{name}}" }
+                                "userName": { "itemIndex": 0, "value": "{{name}}" },
+                                "jobTitle": { "itemIndex": 0, "value": "{{jobTitle}}" },
+                                "userImage": { "itemIndex": 0, "value": "{{image}}" }
                             }
                         }
-                    },
-                    "views": [
-                        {
-                            "type": "properties",
-                            "settings": {
-                                "properties": [
-                                    {
-                                        "icon": "user",
-                                        "value": "{{username}}"
-                                    },
-                                    {
-                                        "icon": "barcode",
-                                        "value": "{{id}}"
-                                    },
-                                    {
-                                        "icon": "group",
-                                        "value": "{{groups}}"
-                                    },
-                                    {
-                                        "icon": "globe",
-                                        "value": "{{department}}"
-                                    },
-                                    {
-                                        "icon": "envelope",
-                                        "value": "{{email}}"
-                                    },
-                                    {
-                                        "icon": "mobile-phone",
-                                        "value": "{{mobile}}"
-                                    },
-                                    {
-                                        "icon": "phone",
-                                        "value": "{{phone}}"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
+                    }
                 },
                 {
+                    "widgetId": "user_machines",
                     "report": {
                         "query": {
-                            "searchId": "user_machines",
-                            "endpoint": {
-                                "entity": "user",
-                                "method": "machines"
-                            },
-                            "fields": [
-                                {
-                                    "name": "machineName",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "ipAddress",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "usage",
-                                    "type": "number"
-                                },
-                                {
-                                    "name": "lastSignIn",
-                                    "type": "date"
-                                },
-                                {
-                                    "name": "machineScore",
-                                    "type": "number"
-                                }
-                            ],
                             "params": [
                                 {
-                                    "field": "id",
-                                    "name": "id",
-                                    "dashboardParam": "entityId"
+                                    "dashboardParam": "entityId",
+                                    "field": "username"
+                                },
+                                {
+                                    "dashboardParam": "entityId",
+                                    "field": "id"
                                 }
                             ]
                         }
-                    },
-                    "title": "Related Machines",
-                    "views": [
-                        {
-                            "type": "pieChart",
-                            "settings": {
-                                "height": "150px",
-                                "width": "150px",
-                                "showInfo": true,
-                                "info":{
-                                    "title": "{{machineName}}",
-                                    "properties": [
-                                        {
-                                            "label": "Usage:",
-                                            "value": "{{usage}}%"
-                                        },
-                                        {
-                                            "label": "Last Sign-in:",
-                                            "value": "{{lastSignIn}}",
-                                            "format": "date",
-                                            "formatOptions": {
-                                                "prettyDate": true
-                                            }
-                                        },
-                                        {
-                                            "label": "IP:",
-                                            "value": "{{ipAddress}}"
-                                        },
-                                        {
-                                            "label": "Machine Score:",
-                                            "value": "{{machineScore}}"
-                                        }
-                                    ]
-                                },
-                                "item": {
-                                    "value": "{{usage}}",
-                                    "label": "{{machineName}}"
-                                }
-                            }
-                        }
-                    ]
+                    }
                 }
             ]
         },
@@ -211,305 +62,10 @@
             "className": "span9",
             "widgets": [
                 {
-                    "title": "Scores",
-                    "renderControls": false,
-                    "views": [
-                        {
-                            "type": "container",
-                            "widgets": [
-                                {
-                                    "renderControls": false,
-                                    "renderHeader": false,
-                                    "refreshOn": "currentFeature",
-                                    "className": "no-margins",
-                                    "show": {
-                                        "conditions": [{
-                                            "field": "{{currentFeature}}",
-                                            "operator": "hasValue"
-                                        }]
-                                    },
-                                    "views": [
-                                        {
-                                            "type": "button",
-                                            "className": "btn-back",
-                                            "settings": {
-                                                "text": "Back",
-                                                "icon": "caret-left",
-                                                "events": [
-                                                    {
-                                                        "eventName": "click",
-                                                        "action": "setParams",
-                                                        "actionOptions": {
-                                                            "updateUrl": false,
-                                                            "params": {
-                                                                "currentFeature": null
-                                                            }
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "renderControls": false,
-                                    "renderHeader": false,
-                                    "className": "no-margins widget-advance-one",
-                                    "refreshOn": "currentFeature",
-                                    "report": {
-                                        "query": {
-                                            "dataSource": "api",
-                                            "searchId": "user_scores",
-                                            "endpoint": {
-                                                "entity": "user",
-                                                "method": "scores"
-                                            },
-                                            "fields": [
-                                                {
-                                                    "name": "name",
-                                                    "type": "string"
-                                                },
-                                                {
-                                                    "name": "score",
-                                                    "type": "number"
-                                                },
-                                                {
-                                                    "name": "averageScore",
-                                                    "type": "number"
-                                                }
-                                            ],
-                                            "params": [
-                                                {
-                                                    "field": "id",
-                                                    "name": "userId",
-                                                    "dashboardParam": "entityId"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    "views": [
-                                        {
-                                            "type": "tabs",
-                                            "show": {
-                                                "conditions": [{
-                                                    "field": "{{currentFeature}}",
-                                                    "operator": "hasValue"
-                                                }]
-                                            },
-                                            "settings": {
-                                                "tab": {
-                                                    "display": "{{name}}",
-                                                    "id": "{{id}}",
-                                                    "selected": "@currentFeature"
-                                                },
-                                                "label": {
-                                                    "value": "{{score}}",
-                                                    "style": "score",
-                                                    "styleParams": {
-                                                        "value": "score"
-                                                    }
-                                                },
-                                                "events": [
-                                                    {
-                                                        "eventName": "select",
-                                                        "action": "setParams",
-                                                        "actionOptions": {
-                                                            "updateUrl": false,
-                                                            "params": {
-                                                                "currentFeature": "{{id}}"
-                                                            }
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        {
-                                            "type": "barChart",
-                                            "show": {
-                                                "conditions": [{
-                                                    "field": "{{currentFeature}}",
-                                                    "operator": "hasNoValue"
-                                                }]
-                                            },
-                                            "settings": {
-                                                "options": {
-                                                    "height": "300px",
-                                                    "width": "100%",
-                                                    "createAxes": false,
-                                                    "barLabelsFont": {
-                                                        "size": 30,
-                                                        "color": "#b7b7b7"
-                                                    },
-                                                    "labelsFont": {
-                                                        "size": "20px"
-                                                    },
-                                                    "selectable": true,
-                                                    "selectLabels": false,
-                                                    "showSelectionBar": false
-                                                },
-                                                "series": [
-                                                    {
-                                                        "field": "score",
-                                                        "label": "{{@entityId}}'s score",
-                                                        "style": "score",
-                                                        "styleParams": {
-                                                            "value": "score"
-                                                        }
-                                                    },
-                                                    {
-                                                        "field": "averageScore",
-                                                        "label": "Average user's score",
-                                                        "color": "#e7e7e7",
-                                                        "barLabelsColor": "#aaaaaa"
-                                                    }
-                                                ],
-                                                "labels": {
-                                                    "field": "name",
-                                                    "value": "{{name}}",
-                                                    "styleField": "score"
-                                                },
-                                                "selectionBar": {
-                                                    "styleField": "score"
-                                                },
-                                                "events": [
-                                                    {
-                                                        "eventName": "click",
-                                                        "action": "setParams",
-                                                        "actionOptions": {
-                                                            "updateUrl": false,
-                                                            "params": {
-                                                                "currentFeature": "{{id}}"
-                                                            }
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "renderControls": false,
-                                    "renderHeader": false,
-                                    "refreshOn": "currentFeature",
-                                    "className": "widget-no-top-padding",
-                                    "show": {
-                                        "conditions": [{
-                                            "field": "{{currentFeature}}",
-                                            "operator": "hasValue"
-                                        }]
-                                    },
-                                    "views": [
-                                        {
-                                            "type": "dashboardWidget",
-                                            "className": "dashboard-with-border inner-widgets",
-                                            "settings": {
-                                                "dashboardId": "user_{{@currentFeature}}"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
+                    "widgetId": "user_scores_container"
                 },
                 {
-                    "report": {
-                        "query": {
-                            "searchId": "user_logins",
-                            "fields": [
-                                {
-                                    "name": "username",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "userId",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "sourceLocation",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "sourceIP",
-                                    "type": "ip"
-                                },
-                                {
-                                    "name": "sourceMachine",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "time",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "destinationLocation",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "destinationMachine",
-                                    "type": "string"
-                                }
-                            ],
-                            "params": [
-                                {
-                                    "field": "id",
-                                    "name": "id",
-                                    "dashboardParam": "entityId"
-                                }
-                            ]
-                        }
-                    },
-                    "title": "Suspicious Logins",
-                    "controls": [
-                        {
-                            "type": "link",
-                            "text": "View all",
-                            "href": "#/d/user/{{@entityId}}/logins"
-                        }
-                    ],
-                    "views": [
-                        {
-                            "type": "table",
-                            "settings": {
-                                "fields": [
-                                    {
-                                        "name": "Source Location",
-                                        "value": "{{sourceLocation}}",
-                                        "sortBy": "sourceLocation"
-                                    },
-                                    {
-                                        "name": "Source IP",
-                                        "value": "{{sourceIP}}",
-                                        "sortBy": "sourceIP",
-                                        "link": "#/d/malware/e/machine/{{sourceIP}}"
-                                    },
-                                    {
-                                        "name": "Source Machine",
-                                        "value": "{{sourceMachine}}",
-                                        "sortBy": "sourceMachine",
-                                        "link": "#/d/malware/e/machine/{{sourceMachine}}"
-                                    },
-                                    {
-                                        "name": "Time",
-                                        "value": "{{time}}",
-                                        "sortBy": "time",
-                                        "sortDirection": -1
-                                    },
-                                    {
-                                        "name": "Destination Machine",
-                                        "value": "{{destinationMachine}}",
-                                        "sortBy": "destinationMachine",
-                                        "link": "#/d/malware/e/machine/{{destinationMachine}}"
-                                    },
-                                    {
-                                        "name": "Destination Location",
-                                        "value": "{{destinationLocation}}",
-                                        "sortBy": "destinationLocation"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
+                    "widgetId": "user_logins"
                 }
             ]
         },
@@ -517,124 +73,7 @@
             "className": "span3",
             "widgets": [
                 {
-                    "report": {
-                        "query": {
-                            "searchId": "user_notifications",
-                            "endpoint": {
-                                "entity": "user",
-                                "method": "notifications"
-                            },
-                            "fields": [
-                                {
-                                    "name": "text",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "severity",
-                                    "type": "number"
-                                },
-                                {
-                                    "name": "explanation",
-                                    "type": "string"
-                                }
-                            ],
-                            "params": [
-                                {
-                                    "field": "id",
-                                    "name": "id",
-                                    "dashboardParam": "entityId"
-                                }
-                            ]
-                        }
-                    },
-                    "title": "User Profile",
-                    "views": [
-                        {
-                            "type": "list",
-                            "settings": {
-                                "item": {
-                                    "icon": {
-                                        "type": "stop",
-                                        "style": "score",
-                                        "styleParams": {
-                                            "value": "severity"
-                                        }
-                                    },
-                                    "value": "{{text}}"
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "report": {
-                        "query": {
-                            "searchId": "user_events",
-                            "endpoint": {
-                                "entity": "user",
-                                "method": "events"
-                            },
-                            "fields": [
-                                {
-                                    "name": "text",
-                                    "type": "string"
-                                },
-                                {
-                                    "name": "severity",
-                                    "type": "number"
-                                },
-                                {
-                                    "name": "links",
-                                    "type": "array"
-                                },
-                                {
-                                    "name": "timestamp",
-                                    "type": "date"
-                                }
-                            ],
-                            "params": [
-                                {
-                                    "field": "id",
-                                    "name": "id",
-                                    "dashboardParam": "entityId"
-                                }
-                            ]
-                        }
-                    },
-                    "title": "Recent Activity",
-                    "views": [
-                        {
-                            "type": "table",
-                            "className": "widget-table-list",
-                            "settings": {
-                                "fields": [
-                                    {
-                                        "name": "Icon",
-                                        "icon": {
-                                            "type": "stop"
-                                        },
-                                        "style": "score",
-                                        "styleParams": {
-                                            "value": "severity"
-                                        }
-                                    },
-                                    {
-                                        "name": "Description",
-                                        "value": "<a href='#/d/{{type}}/{{name}}'>{{name}}</a> {{text}}<p class='note'>{{explanation}}</p>",
-                                        "className": "table-large-cell"
-                                    },
-                                    {
-                                        "name": "Time",
-                                        "value": "{{time}}",
-                                        "icon": "time",
-                                        "format": "date",
-                                        "className": "sideNote",
-                                        "formatOptions": { "prettyDate": true, "shortPrettyDate": true }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
+                    "widgetId": "user_recent_events"
                 }
             ]
         }

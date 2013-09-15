@@ -65,6 +65,32 @@ angular.module("Utils", []).factory("utils", [function(){
                     Math.floor(day_diff / 365) + unitsToUse.years);
             }
         },
+        strings: {
+            parseValue: function(value, data, params, index, format){
+                var parsedValue = value.replace(/\{\{([^\}]+)\}\}/g, function(match, variable){
+                    if (/^@/.test(variable)){
+                        var param = variable.replace("@", "");
+                        if (param === "index")
+                            return index;
+
+                        return params[param] || "";
+                    }
+                    else{
+                        var dataValue = data[variable];
+                        if (dataValue !== undefined && dataValue !== null){
+                            if (format)
+                                return format[format.method](dataValue, format.options);
+
+                            return dataValue;
+                        }
+
+                        return "";
+                    }
+                });
+
+                return parsedValue;
+            }
+        },
         url: {
             getQuery: function(params){
                 var paramValue,

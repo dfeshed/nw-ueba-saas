@@ -1,0 +1,35 @@
+<div class="widget-filters" ng-controller="WidgetFilters">
+    <ul class="widget-filters-list unstyled">
+        <li ng-repeat="filter in currentFilters">
+            <a class="widget-filter-remove" title="Remove filter">
+                <i class="icon-remove"></i>
+            </a>
+            <span class="widget-filter-name">{{filter.name}}</span>
+            <div class="widget-filter-values">
+                <span ng-repeat="filterValue in filter.values">{{filterValue.value}}</span>
+            </div>
+            <span class="widget-filter-value">{{filter.value}}</span>
+        </li>
+        <li>
+            <a ng-click="addFilter()" class="widget-filter-add">Add Filter</a>
+        </li>
+    </ul>
+    <modal ng-model="modalSettings">
+        <div class="widget-filter-modal">
+            <h5>Filter By</h5>
+            <select ng-model="openFilter.field" ng-change="onFilterSelect()" ng-options="filter.field as filter.name for filter in widget.filters.fields"></select>
+            <hr />
+            Show only:
+            <input class="search" searchbox search-settings="filterSearchSettings" />
+            <ul class="unstyled">
+                <li ng-repeat="filterValue in openFilter.values">
+                    {{filterValue.value}} <a ng-click="removeFilterValue($index)" title="Remove"><i class="icon-remove"></i></a>
+                </li>
+            </ul>
+            <div class="widget-filter-footer">
+                <a class="btn-link" ng-click="cancelFilter()">Cancel</a>
+                <a class="btn" ng-click="saveFilter()">Save</a>
+            </div>
+        </div>
+    </modal>
+</div>

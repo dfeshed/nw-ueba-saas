@@ -28,11 +28,27 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
         }
 
         function setDashboardFieldValues(dashboard){
-            if (dashboard && dashboard.name){
-                var dashboardTitle = widgets.parseFieldValue({}, dashboard.name, {}, 0, $scope.dashboardParams);
-                if (dashboardTitle){
-                    dashboard.title = dashboardTitle;
-                    $scope.setPageTitle(dashboardTitle);
+            if (dashboard){
+                if (dashboard.name){
+                    var dashboardTitle = widgets.parseFieldValue({}, dashboard.name, {}, 0, $scope.dashboardParams);
+                    if (dashboardTitle){
+                        dashboard.title = dashboardTitle;
+                        $scope.setPageTitle(dashboardTitle);
+                    }
+                }
+                
+                if (dashboard.subtitle){
+                    var dashboardSubtitle = widgets.parseFieldValue({}, dashboard.subtitle, {}, 0, $scope.dashboardParams);
+                    if (dashboardSubtitle){
+                        dashboard.subtitle = dashboardSubtitle;
+                    }
+                }
+
+                if (dashboard.iconUrl){
+                    var dashboardIconUrl = widgets.parseFieldValue({}, dashboard.iconUrl, {}, 0, $scope.dashboardParams);
+                    if (dashboardIconUrl){
+                        dashboard.iconUrl = dashboardIconUrl;
+                    }
                 }
             }
         }
@@ -104,7 +120,7 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                         paramData = data;
 
                     if (paramStrConfig)
-                        paramValue = widgets.parseFieldValue(options, paramStrConfig, paramData, undefined, $scope.dashboardParams);
+                        paramValue = widgets.parseFieldValue(options, paramStrConfig.value || paramStrConfig, paramData || {}, undefined, $scope.dashboardParams);
 
                     params[paramName] = paramValue;
                 }
