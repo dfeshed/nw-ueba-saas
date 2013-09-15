@@ -86,6 +86,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		List<IClassifierScoreDistribution> ret = new ArrayList<>();
 		int total = seperators.get(0).getCount();
 		int prevPercent = 0;
+		int prevCount = 0;
 		int i = 0;
 		for(Threshold seperator: seperators){
 			if(i == 0){
@@ -93,8 +94,10 @@ public class ClassifierServiceImpl implements ClassifierService {
 				continue;
 			}
 			int percent = (int)((seperator.getCount()/(double)total)*100);
-			ret.add(new ClassifierScoreDistribution(seperator.getName(), seperator.getCount(), percent - prevPercent));
+			int count = seperator.getCount() - prevCount;
+			ret.add(new ClassifierScoreDistribution(seperator.getName(), count, percent - prevPercent));
 			prevPercent = percent;
+			prevCount = seperator.getCount();
 		}
 		return ret;
 	}

@@ -121,7 +121,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 			FProjectionConditionalSubExpressionSimpleValue sepValue = new FProjectionConditionalSubExpressionSimpleValue(seperator.getValue());
 			FIProjectionConditionalSubExpression boolExp = FProjectionConditionalSubExpressionCmp.generateGTECmp(scoreRef, sepValue);
 			FProjectionConditionalExpression condExp = new FProjectionConditionalExpression(boolExp, trueCase, falseCase);
-			expressions.add(new FProjectionSimpleExpression(seperator.getName(), condExp.toDBObject(null)));
+			expressions.add(new FProjectionSimpleExpression(seperator.getName(), condExp));
 		}
 		
 		FProjectionOperation fProjectionOperation = new FProjectionOperation(expressions);
