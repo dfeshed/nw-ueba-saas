@@ -9,5 +9,5 @@ interface AdUsersFeaturesExtractionRepositoryCustom {
 	public void saveMap(AdUserFeaturesExtraction adUsersFeaturesExtraction);
 	public Double calculateAvgScore(String classifierId, Date timestamp);
 	public Double calculateUsersDailyMaxScores(String classifierId, String userId);
-	public List<ValueSeperator> calculateNumOfUsersWithScoresGTValueSortByTimestamp(String classifierId,List<ValueSeperator> seperators);
+	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdSortByTimestamp(String classifierId,List<Threshold> seperators);
 }

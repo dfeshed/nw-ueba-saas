@@ -110,14 +110,14 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 	}
 	
 	
-	public List<ValueSeperator> calculateNumOfUsersWithScoresGTValueSortByTimestamp(String classifierId,List<ValueSeperator> seperators){
+	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdSortByTimestamp(String classifierId,List<Threshold> seperators){
 		List<FIProjectionExpression> expressions = new ArrayList<FIProjectionExpression>();
 		expressions.add(new FProjectionSimpleExpression(AdUserFeaturesExtraction.timestampField));
 		
 		FProjectionConditionalSubExpressionRefValue scoreRef = new FProjectionConditionalSubExpressionRefValue(AdUserFeaturesExtraction.scoreField);
 		FProjectionConditionalSubExpressionSimpleValue trueCase = new FProjectionConditionalSubExpressionSimpleValue(1);
 		FProjectionConditionalSubExpressionSimpleValue falseCase = new FProjectionConditionalSubExpressionSimpleValue(0);
-		for(ValueSeperator seperator: seperators){
+		for(Threshold seperator: seperators){
 			FProjectionConditionalSubExpressionSimpleValue sepValue = new FProjectionConditionalSubExpressionSimpleValue(seperator.getValue());
 			FIProjectionConditionalSubExpression boolExp = FProjectionConditionalSubExpressionCmp.generateGTECmp(scoreRef, sepValue);
 			FProjectionConditionalExpression condExp = new FProjectionConditionalExpression(boolExp, trueCase, falseCase);
@@ -126,7 +126,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 		
 		FProjectionOperation fProjectionOperation = new FProjectionOperation(expressions);
 		GroupOperation groupOperation = group(AdUserFeaturesExtraction.timestampField);
-		for(ValueSeperator seperator: seperators){
+		for(Threshold seperator: seperators){
 			groupOperation = groupOperation.sum(seperator.getName()).as(String.format("%s", seperator.getName()));
 		}
 		Aggregation agg = newAggregation(
@@ -147,7 +147,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 		Iterable<DBObject> resultSet = (Iterable<DBObject>) commandResult.get("result");
 		if(resultSet.iterator().hasNext()){
 			DBObject res = resultSet.iterator().next();
-			for(ValueSeperator seperator: seperators){
+			for(Threshold seperator: seperators){
 				seperator.setCount(Integer.parseInt(res.get(seperator.getName()).toString()));
 			}
 		}
