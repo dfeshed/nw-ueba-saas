@@ -27,7 +27,11 @@ public class FProjectionSimpleExpression extends FIProjectionExpression {
 
 	@Override
 	public DBObject toDBObject(AggregationOperationContext context) {
-		return new BasicDBObject(fieldName, value);
+		if(value instanceof FIProjectionExpression){
+			return new BasicDBObject(fieldName, ((FIProjectionExpression) value).toDBObject(context));
+		} else{
+			return new BasicDBObject(fieldName, value);
+		}
 	}
 
 }
