@@ -7,7 +7,7 @@ import java.util.Map;
 import ml.algorithms.Algorithm;
 import ml.algorithms.CFA;
 import ml.classifiers.Classifier;
-import ml.classifiers.WekaRandomForest;
+import ml.classifiers.ColumnNaiveBayesClassifier;
 import fortscale.activedirectory.featureextraction.ADFeatureExtractor;
 import fortscale.activedirectory.featureextraction.Feature;
 import fortscale.activedirectory.featureextraction.FeatureVector;
@@ -48,10 +48,9 @@ public class ADManager {
 		
 		this.runFeatureExtraction();
 		featureVector = this.buildFeatureVector();
-		this.updateMissingFeatures();
 
 		instances = prepareInstancesMatrix();
-		Classifier classifier = new WekaRandomForest(usersFeatures.getNumInstances(), featureVector.numFeatures(), args);
+		Classifier classifier = new ColumnNaiveBayesClassifier(usersFeatures.getNumInstances(), featureVector.numFeatures(), args);
 		Algorithm algorithm = new CFA(usersFeatures.getNumInstances(), featureVector.numFeatures(), classifier);
 		algorithm.run(instances);
 		
@@ -85,19 +84,6 @@ public class ADManager {
 	}
 
 	
-	private void updateMissingFeatures() {
-        for (String user : usersFeatures.getInstancesNames()) {
-        	for (Feature feature : featureVector.getFeatureVector()) {
-        		if (!usersFeatures.instanceHasFeature(user, feature.getFeatureUniqueName())) {
-        			Double featureValue = feature.getFeatureDefaultValue();
-        			Feature f = new Feature(feature.getFeatureUniqueName(), feature.getFeatureDisplayName(), feature.getFeatureType(), feature.getFeatureDefaultValue(), featureValue);
-        			usersFeatures.setInstanceFeature(user, f.getFeatureUniqueName(), f);
-        		}
-        	}
-        }               
-	}
-	
-	
 	private Double[][] prepareInstancesMatrix() {
 		instances = new Double[usersFeatures.getNumInstances()][featureVector.numFeatures()];
 		userIDtoNameMap = new HashMap<Integer, String>();
@@ -116,7 +102,9 @@ public class ADManager {
 			userIDtoNameMap.put(userId, user);
 			for (Feature feature : featureVector.getFeatureVector()) {
 				featureId = featureNametoIDMap.get(feature.getFeatureUniqueName());
-				Double featureValue = usersFeatures.getInstanceFeatureValue(user, feature.getFeatureUniqueName());
+				Double featureValue =	usersFeatures.instanceHasFeature(user, feature.getFeatureUniqueName()) ?
+											usersFeatures.getInstanceFeatureValue(user, feature.getFeatureUniqueName()) :
+											feature.getFeatureDefaultValue();
 				instances[userId][featureId] = featureValue;
 			}
 			userId++;
