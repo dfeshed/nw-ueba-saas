@@ -1,7 +1,8 @@
 package fortscale.services.fe;
 
 public enum Classifier {
-	ad("active_directory","User Profile");
+	ad("active_directory","User Profile"),
+	auth("auth","Logins");
 	
 	private String id;
 	private String displayName;

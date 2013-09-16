@@ -50,6 +50,13 @@ public class ApiUserController {
 		return "";
 	}
 	
+	@RequestMapping(value="/updateAuthScore", method=RequestMethod.GET)
+	@ResponseBody
+	public String updateAuthScore(Model model){
+		userService.updateUserWithAuthScore();
+		return "";
+	}
+	
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException

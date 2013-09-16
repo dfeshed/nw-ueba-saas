@@ -22,7 +22,6 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperationContext;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
-import org.springframework.data.mongodb.core.aggregation.ProjectionOperation.ProjectionOperationBuilder;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -111,7 +110,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 	}
 	
 	
-	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdSortByTimestamp(String classifierId,List<Threshold> thresholds){
+	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdForLastRun(String classifierId,List<Threshold> thresholds){
 		//Defining the projection operation to be the timestamp + conditional expression for each Threshold.
 		//The conditional threshold will help us to count how much rows we that are bigger or equal to the Threshold.
 		List<FIProjectionExpression> expressions = new ArrayList<FIProjectionExpression>();

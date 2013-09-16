@@ -34,6 +34,18 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>test</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>test</value>
+				</property>
+			</activation>
+			<properties>
+				<env>test</env>
+			</properties>
+		</profile>
+		<profile>
 			<id>prod</id>
 			<activation>
 				<property>

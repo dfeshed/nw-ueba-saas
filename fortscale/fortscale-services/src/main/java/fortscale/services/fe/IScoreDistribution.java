@@ -1,6 +1,6 @@
-package fortscale.services;
+package fortscale.services.fe;
 
-public interface IClassifierScoreDistribution {
+public interface IScoreDistribution {
 	public String getName();
 	public int getCount();
 	public int getPercentage();

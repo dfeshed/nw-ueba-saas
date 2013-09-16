@@ -2,6 +2,7 @@ package fortscale.services.fe.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +18,13 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
+import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.Threshold;
-import fortscale.services.IClassifierScoreDistribution;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
+import fortscale.services.fe.IClassifierScoreDistribution;
+import fortscale.services.fe.IScoreDistribution;
 import fortscale.services.fe.ISuspiciousUserInfo;
-import fortscale.services.impl.ClassifierScoreDistribution;
 import fortscale.services.impl.SeverityElement;
 
 @Service("classifierService")
@@ -68,63 +70,99 @@ public class ClassifierServiceImpl implements ClassifierService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private AuthDAO authDAO;
 
 	
 	public Classifier getClassifier(String classifierId){
 		return classifiersMap.get(classifierId);
 	}
-
-	@Override
-	public List<IClassifierScoreDistribution> getScoreDistribution(String classifierId) {
-		List<Threshold> seperators = new ArrayList<>();
-		seperators.add(new Threshold("All", 0));
-		for(SeverityElement element: severityOrderedList){
-			seperators.add(new Threshold(element.getName(), element.getValue()));
-		}
-		seperators = adUsersFeaturesExtractionRepository.calculateNumOfUsersWithScoresGTThresholdSortByTimestamp(classifierId, seperators);
-		
+	
+	public List<IClassifierScoreDistribution> getScoreDistribution(){
 		List<IClassifierScoreDistribution> ret = new ArrayList<>();
-		int total = seperators.get(0).getCount();
-		int prevPercent = 0;
-		int prevCount = 0;
-		int i = 0;
-		for(Threshold seperator: seperators){
-			if(i == 0){
-				i++;
-				continue;
-			}
-			int percent = (int)((seperator.getCount()/(double)total)*100);
-			int count = seperator.getCount() - prevCount;
-			ret.add(new ClassifierScoreDistribution(seperator.getName(), count, percent - prevPercent));
-			prevPercent = percent;
-			prevCount = seperator.getCount();
+		for(Classifier classifier: Classifier.values()){
+			String classifierId = classifier.getId();
+			List<IScoreDistribution> dists = getScoreDistribution(classifierId);
+			ret.add(new ClassifierScoreDistribution(classifierId, dists));
 		}
 		return ret;
 	}
 
 	@Override
+	public List<IScoreDistribution> getScoreDistribution(String classifierId) {
+		List<Threshold> thresholds = new ArrayList<>();
+		thresholds.add(new Threshold("All", 0));
+		for(SeverityElement element: severityOrderedList){
+			thresholds.add(new Threshold(element.getName(), element.getValue()));
+		}
+		calculateNumOfUsersWithScoresGTThresholdForLastRun(classifierId, thresholds);
+		
+		if(thresholds.get(0).getCount() == 0){
+			return Collections.emptyList();
+		}
+		
+		List<IScoreDistribution> ret = new ArrayList<>();
+		int total = thresholds.get(0).getCount();
+		int prevPercent = 0;
+		int prevCount = 0;
+		int i = 0;
+		for(Threshold threshold: thresholds){
+			if(i == 0){
+				i++;
+				continue;
+			}
+			int percent = (int)((threshold.getCount()/(double)total)*100);
+			int count = threshold.getCount() - prevCount;
+			ret.add(new ScoreDistribution(threshold.getName(), count, percent - prevPercent));
+			prevPercent = percent;
+			prevCount = threshold.getCount();
+		}
+		return ret;
+	}
+	
+	private void calculateNumOfUsersWithScoresGTThresholdForLastRun(String classifierId,List<Threshold> thresholds){
+		if(classifierId.equals(Classifier.ad.getId())){
+			adUsersFeaturesExtractionRepository.calculateNumOfUsersWithScoresGTThresholdForLastRun(classifierId, thresholds);
+		} else if(classifierId.equals(Classifier.auth.getId())){
+			Date lastRun = authDAO.getLastRunDate();
+			for(Threshold threshold: thresholds){
+				threshold.setCount(authDAO.countNumOfUsersAboveThreshold(threshold, lastRun));
+			}
+		}
+	}
+
+	@Override
 	public List<ISuspiciousUserInfo> getSuspiciousUsers(String classifierId, String severityId) {
+		List<ISuspiciousUserInfo> ret = Collections.emptyList();
+		if(classifierId.equals(Classifier.ad.getId())){
+			ret = getAdSuspiciousUsers(classifierId, severityId);
+		} else if(classifierId.equals(Classifier.auth.getId())){
+			//TODO
+		}
+		
+		return ret;
+	}
+	
+	private List<ISuspiciousUserInfo> getAuthSuspiciousUsers(String classifierId, String severityId) {
+		Date lastRun = authDAO.getLastRunDate();
+		Range severityRange = getRange(severityId);
+		
+		return Collections.emptyList();
+	}
+	
+	private List<ISuspiciousUserInfo> getAdSuspiciousUsers(String classifierId, String severityId) {
 		Pageable pageable = new PageRequest(0, 1, Direction.DESC, AdUserFeaturesExtraction.timestampField);
 		List<AdUserFeaturesExtraction> ufeList = adUsersFeaturesExtractionRepository.findByClassifierId(classifierId, pageable);
 		if(ufeList == null || ufeList.size() == 0){
 			return Collections.emptyList();
 		}
 		AdUserFeaturesExtraction ufe = ufeList.get(0);
-		int i = 0;
-		for(SeverityElement element: severityOrderedList){
-			if(element.getName().equals(severityId)){
-				break;
-			}
-			i++;
-		}
-		int lowestVal = severityOrderedList.get(i).getValue();
-		int upperVal = 100;
-		if(i > 0){
-			upperVal = severityOrderedList.get(i-1).getValue();
-		}
+		Date lastRun = ufe.getTimestamp();
+		
+		Range severityRange = getRange(severityId);
 		
 		pageable = new PageRequest(0, 10, Direction.DESC, AdUserFeaturesExtraction.scoreField);
-		ufeList = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestampAndScoreBetween(classifierId, ufe.getTimestamp(), lowestVal, upperVal, pageable);
+		ufeList = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestampAndScoreBetween(classifierId, lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(AdUserFeaturesExtraction adUserFeaturesExtraction: ufeList){
 			User user = userRepository.findOne(adUserFeaturesExtraction.getUserId());
@@ -140,6 +178,40 @@ public class ClassifierServiceImpl implements ClassifierService {
 		}
 		return ret;
 	}
-
 	
+	private Range getRange(String severityId){
+		int i = 0;
+		for(SeverityElement element: severityOrderedList){
+			if(element.getName().equals(severityId)){
+				break;
+			}
+			i++;
+		}
+		int lowestVal = severityOrderedList.get(i).getValue();
+		int upperVal = 100;
+		if(i > 0){
+			upperVal = severityOrderedList.get(i-1).getValue();
+		}
+		
+		return new Range(lowestVal, upperVal);
+	}
+
+	class Range{
+		private int lowestVal;
+		private int upperVal;
+		
+		public Range(int lowestVal, int upperVal){
+			this.lowestVal = lowestVal;
+			this.upperVal = upperVal;
+		}
+
+		public int getLowestVal() {
+			return lowestVal;
+		}
+
+		public int getUpperVal() {
+			return upperVal;
+		}
+		
+	}
 }

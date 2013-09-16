@@ -20,7 +20,7 @@ import fortscale.domain.ad.UserMachine;
 @Repository
 public class UserMachineDAO {
 	
-	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.S" ;
+	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
