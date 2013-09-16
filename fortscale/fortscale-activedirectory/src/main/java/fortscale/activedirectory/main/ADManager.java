@@ -7,7 +7,7 @@ import java.util.Map;
 import ml.algorithms.Algorithm;
 import ml.algorithms.CFA;
 import ml.classifiers.Classifier;
-import ml.classifiers.ColumnNaiveBayesClassifier;
+import ml.classifiers.WekaRandomForest;
 import fortscale.activedirectory.featureextraction.ADFeatureExtractor;
 import fortscale.activedirectory.featureextraction.Feature;
 import fortscale.activedirectory.featureextraction.FeatureVector;
@@ -50,7 +50,7 @@ public class ADManager {
 		featureVector = this.buildFeatureVector();
 
 		instances = prepareInstancesMatrix();
-		Classifier classifier = new ColumnNaiveBayesClassifier(usersFeatures.getNumInstances(), featureVector.numFeatures(), args);
+		Classifier classifier = new WekaRandomForest(usersFeatures.getNumInstances(), featureVector.numFeatures(), args);
 		Algorithm algorithm = new CFA(usersFeatures.getNumInstances(), featureVector.numFeatures(), classifier);
 		algorithm.run(instances);
 		
