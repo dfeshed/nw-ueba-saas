@@ -57,7 +57,7 @@ public class ADManager {
 		
 		this.updateFeatureScores(algorithm);
 		this.updateUserScores(algorithm);
-		this.debugResults();
+//		this.debugResults();
 
 		
 		
