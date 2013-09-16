@@ -1,10 +1,8 @@
 package fortscale.services.fe.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -13,13 +11,12 @@ import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.domain.core.ClassifierScore;
-import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.IFeature;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
+import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.FeService;
 
@@ -35,6 +32,8 @@ public class FeServiceImpl implements FeService {
 	@Autowired
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
 	
+	@Autowired
+	private UserService userService;
 	
 
 	@Override
@@ -86,37 +85,7 @@ public class FeServiceImpl implements FeService {
 			adUsersFeaturesExtractionRepository.saveMap(adUserFeaturesExtraction);
 			
 			//updating the user with the new score.
-			ClassifierScore cScore = user.getScore(Classifier.ad.getId());
-			if(cScore == null){
-				cScore = new ClassifierScore();
-				cScore.setClassifierId(Classifier.ad.getId());
-			}else{
-				ScoreInfo scoreInfo = new ScoreInfo();
-				scoreInfo.setScore(cScore.getScore());
-				scoreInfo.setAvgScore(cScore.getAvgScore());
-				scoreInfo.setTimestamp(cScore.getTimestamp());
-				List<ScoreInfo> prevScores = cScore.getPrevScores();
-				if(prevScores.isEmpty()){
-					prevScores = new ArrayList<ScoreInfo>();
-					prevScores.add(scoreInfo);
-				} else{
-					Calendar tmp = Calendar.getInstance();
-					tmp.setTime(prevScores.get(0).getTimestamp());
-					Calendar tmp1 = Calendar.getInstance();
-					tmp1.setTime(scoreInfo.getTimestamp());
-					if(tmp.get(Calendar.DAY_OF_YEAR) == tmp1.get(Calendar.DAY_OF_YEAR)){
-						prevScores.set(0, scoreInfo);
-					} else{
-						prevScores.add(0, scoreInfo);
-					}
-				}
-				cScore.setPrevScores(prevScores);
-			}
-			cScore.setScore(ent.getValue());
-			cScore.setAvgScore(avgScore);
-			cScore.setTimestamp(timestamp);
-			user.putClassifierScore(cScore);
-			userRepository.save(user);
+			userService.updateUserScore(user, timestamp, Classifier.ad.getId(), ent.getValue(), avgScore);
 		}
 	}
 

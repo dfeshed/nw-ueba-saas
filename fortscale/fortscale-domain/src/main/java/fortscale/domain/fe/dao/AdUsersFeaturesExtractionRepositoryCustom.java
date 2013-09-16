@@ -10,6 +10,6 @@ interface AdUsersFeaturesExtractionRepositoryCustom {
 	public void saveMap(AdUserFeaturesExtraction adUsersFeaturesExtraction);
 	public Double calculateAvgScore(String classifierId, Date timestamp);
 //	public Double calculateUsersDailyMaxScores(String classifierId, String userId);
-	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdSortByTimestamp(String classifierId,List<Threshold> thresholds);
+	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdForLastRun(String classifierId,List<Threshold> thresholds);
 	public List<ScoreInfo> calculateUserScoreInfo(String classifierId, String userId);
 }

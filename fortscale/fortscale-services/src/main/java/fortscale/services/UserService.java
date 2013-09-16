@@ -24,4 +24,8 @@ public interface UserService {
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId); 
 	
 	public List<UserMachine> getUserMachines(String uid);
+	
+	public void updateUserWithAuthScore();
+
+	public void updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore);
 }

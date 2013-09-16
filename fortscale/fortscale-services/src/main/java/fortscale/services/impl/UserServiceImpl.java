@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -21,11 +22,14 @@ import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
+import fortscale.domain.fe.AuthScore;
 import fortscale.domain.fe.IFeature;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
+import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
+import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.utils.actdir.ADUserParser;
 
@@ -51,6 +55,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserMachineDAO userMachineDAO;
+	
+	@Autowired
+	private AuthDAO authDAO;
 
 	@Override
 	public User getUserById(String uid) {
@@ -201,6 +208,58 @@ public class UserServiceImpl implements UserService{
 		User user = userRepository.findOne(uid);
 		String userName = user.getAdUserPrincipalName().split("@")[0];
 		return userMachineDAO.findByUsername(userName);
+	}
+
+	@Override
+	public void updateUserWithAuthScore() {
+		Date lastRun = authDAO.getLastRunDate();
+		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
+			User user = userRepository.findByAdUserPrincipalName(authScore.getUserName());
+			if(user == null){
+				//TODO:	error log message
+				continue;
+			}
+			updateUserScore(user, lastRun, Classifier.auth.getId(), authScore.getGlobalScore(), avg);
+		}
+		
+	}
+	
+	@Override
+	public void updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore){
+		ClassifierScore cScore = user.getScore(Classifier.ad.getId());
+		if(cScore == null){
+			cScore = new ClassifierScore();
+			cScore.setClassifierId(Classifier.ad.getId());
+		}else{
+			ScoreInfo scoreInfo = new ScoreInfo();
+			scoreInfo.setScore(cScore.getScore());
+			scoreInfo.setAvgScore(cScore.getAvgScore());
+			scoreInfo.setTimestamp(cScore.getTimestamp());
+			List<ScoreInfo> prevScores = cScore.getPrevScores();
+			if(prevScores.isEmpty()){
+				prevScores = new ArrayList<ScoreInfo>();
+				prevScores.add(scoreInfo);
+			} else{
+				Calendar tmp = Calendar.getInstance();
+				tmp.setTime(prevScores.get(0).getTimestamp());
+				Calendar tmp1 = Calendar.getInstance();
+				tmp1.setTime(scoreInfo.getTimestamp());
+				int day1 = tmp.get(Calendar.DAY_OF_YEAR);
+				int day2 = tmp1.get(Calendar.DAY_OF_YEAR);
+				if(day1 == day2){
+					prevScores.set(0, scoreInfo);
+				} else{
+					prevScores.add(0, scoreInfo);
+				}
+			}
+			cScore.setPrevScores(prevScores);
+		}
+		cScore.setScore(value);
+		cScore.setAvgScore(avgScore);
+		cScore.setTimestamp(timestamp);
+		user.putClassifierScore(cScore);
+		userRepository.save(user);
 	}
 
 	

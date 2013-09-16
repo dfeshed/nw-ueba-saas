@@ -1,14 +1,14 @@
-package fortscale.services.impl;
+package fortscale.services.fe.impl;
 
-import fortscale.services.IClassifierScoreDistribution;
+import fortscale.services.fe.IScoreDistribution;
 
-public class ClassifierScoreDistribution implements	IClassifierScoreDistribution {
+public class ScoreDistribution implements	IScoreDistribution {
 	
 	private String name;
 	private int count;
 	private int percentage;
 	
-	public ClassifierScoreDistribution(String name, int count, int percentage){
+	public ScoreDistribution(String name, int count, int percentage){
 		this.name = name;
 		this.count = count;
 		this.percentage = percentage;

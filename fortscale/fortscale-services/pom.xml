@@ -12,6 +12,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>fortscale</groupId>
+			<artifactId>fortscale-global-config</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
 			<artifactId>fortscale-domain</artifactId>
 			<version>${project.version}</version>
 		</dependency>

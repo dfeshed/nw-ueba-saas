@@ -2,10 +2,10 @@ package fortscale.domain.fe.dao;
 
 public class Threshold {
 	private String name;
-	private Object value;
+	private Integer value;
 	private int count;
 	
-	public Threshold(String name, Object value){
+	public Threshold(String name, Integer value){
 		this.name = name;
 		this.value = value;
 	}
@@ -18,11 +18,11 @@ public class Threshold {
 		this.name = name;
 	}
 
-	public Object getValue() {
+	public Integer getValue() {
 		return value;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(Integer value) {
 		this.value = value;
 	}
 
