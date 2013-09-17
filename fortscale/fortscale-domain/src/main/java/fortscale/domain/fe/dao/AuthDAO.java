@@ -41,7 +41,7 @@ public class AuthDAO {
 	
 	public List<AuthScore> findEventsByUsername(String username, Pageable pageable){
 		List<AuthScore> ret = new ArrayList<>();
-		String query = String.format("select * from %s where %s=\"%s\"", AuthScore.TABLE_NAME, AuthScore.USERNAME_FIELD_NAME, username);
+		String query = String.format("select * from %s where %s", AuthScore.TABLE_NAME, getUserNameEqualComparison(username));
 		if(pageable != null){
 			query = String.format("%s %s",query, pageable.toString());
 		}
@@ -50,13 +50,36 @@ public class AuthDAO {
 		return ret;
 	}
 	
+	public List<AuthScore> findEventsByUsernameAndTimestamp(String username, Date timestamp, Pageable pageable){
+		List<AuthScore> ret = new ArrayList<>();
+		String query = String.format("select * from %s where %s=%s and %s %s",
+				AuthScore.TABLE_NAME, 
+				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
+				getUserNameEqualComparison(username),
+				pageable.toString());
+		ret.addAll(impalaJdbcTemplate.query(query, new AuthScoreMapper()));
+		
+		return ret;
+	}
+	
+	public List<AuthScore> findEventsByTimestamp(Date timestamp, Pageable pageable){
+		List<AuthScore> ret = new ArrayList<>();
+		String query = String.format("select * from %s where %s=%s %s",
+				AuthScore.TABLE_NAME, 
+				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
+				pageable.toString());
+		ret.addAll(impalaJdbcTemplate.query(query, new AuthScoreMapper()));
+		
+		return ret;
+	}
+	
 	public List<AuthScore> findGlobalScoreByUsername(String username, int limit){
 		List<AuthScore> ret = new ArrayList<>();
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(Direction.DESC, AuthScore.TIMESTAMP_FIELD_NAME));
-		String query = String.format("select %s, %s, %s, max(%s) as %s from %s where%s%s\" group by %s, %s, %s %s", 
+		String query = String.format("select %s, %s, %s, max(%s) as %s from %s where %s group by %s, %s, %s %s", 
 				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME,
 				AuthScore.TABLE_NAME,
-				AuthScore.USERNAME_FIELD_NAME, username,
+				getUserNameEqualComparison(username),
 				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME,
 				pageable.toString());
 		ret.addAll(impalaJdbcTemplate.query(query, new GlobalScoreMapper()));
@@ -190,6 +213,11 @@ public class AuthDAO {
 			
 			return ret;
 		}
+	}
+	
+	private String getUserNameEqualComparison(String username){
+		return String.format("lower(%s) = \"%s\"", AuthScore.USERNAME_FIELD_NAME, username);
+//		return String.format("%s rlike \"(?i)%s\"", AuthScore.USERNAME_FIELD_NAME, username);
 	}
 	
 	private Date parseTimestampDate(Long date){

@@ -34,6 +34,24 @@ public class UserMachineDAO {
 		return ret;
 	}
 	
+	public List<UserMachine> findByHostname(String hostname){
+		List<UserMachine> ret = new ArrayList<UserMachine>();
+
+		String query = String.format("select * from %s  where %s=\"%s\"", UserMachine.TABLE_NAME, UserMachine.HOSTNAME_FIELD_NAME, hostname);
+		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
+		
+		return ret;
+	}
+	
+	public List<UserMachine> findByHostnameip(String hostnameip){
+		List<UserMachine> ret = new ArrayList<UserMachine>();
+
+		String query = String.format("select * from %s  where %s=\"%s\"", UserMachine.TABLE_NAME, UserMachine.HOSTNAMEIP_FIELD_NAME, hostnameip);
+		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
+		
+		return ret;
+	}
+	
 	
 	
 	

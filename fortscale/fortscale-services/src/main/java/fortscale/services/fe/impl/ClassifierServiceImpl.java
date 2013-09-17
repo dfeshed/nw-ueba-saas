@@ -10,9 +10,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import fortscale.domain.ad.UserMachine;
+import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -24,9 +27,11 @@ import fortscale.domain.fe.dao.Threshold;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.IClassifierScoreDistribution;
+import fortscale.services.fe.ILoginEventScoreInfo;
 import fortscale.services.fe.IScoreDistribution;
 import fortscale.services.fe.ISuspiciousUserInfo;
 import fortscale.services.impl.SeverityElement;
+import fortscale.utils.impala.ImpalaPageRequest;
 
 @Service("classifierService")
 public class ClassifierServiceImpl implements ClassifierService {
@@ -73,6 +78,9 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	@Autowired
 	private AuthDAO authDAO;
+	
+	@Autowired
+	private UserMachineDAO userMachineDAO;
 
 	
 	public Classifier getClassifier(String classifierId){
@@ -229,5 +237,72 @@ public class ClassifierServiceImpl implements ClassifierService {
 			return upperVal;
 		}
 		
+	}
+
+	@Override
+	public List<ILoginEventScoreInfo> getUserSuspiciousLoginEvents(String userId, Date timestamp, int offset, int limit) {
+		if(timestamp == null){
+			timestamp = authDAO.getLastRunDate();
+		}
+		User user = userRepository.findOne(userId);
+		if(user == null){
+			return Collections.emptyList();
+		}
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
+		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestamp(user.getAdUserPrincipalName(), timestamp, pageable);
+		List<ILoginEventScoreInfo> ret = new ArrayList<>();
+		for(AuthScore authScore: authScores){
+			ret.add(createLoginEventScoreInfo(user, authScore));
+		}
+		return ret;
+	}
+
+	@Override
+	public List<ILoginEventScoreInfo> getSuspiciousLoginEvents(Date timestamp, int offset, int limit) {
+		if(timestamp == null){
+			timestamp = authDAO.getLastRunDate();
+		}
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
+		List<AuthScore> authScores = authDAO.findEventsByTimestamp(timestamp, pageable);
+		List<ILoginEventScoreInfo> ret = new ArrayList<>();
+		Map<String, User> userMap = new HashMap<>();
+		int skipped = 0;
+		for(AuthScore authScore: authScores){
+			String username = authScore.getUserName().toLowerCase();
+			User user = userMap.get(username);
+			if(user == null){
+				user = userRepository.findByAdUserPrincipalName(username);
+				if(user == null){
+					//TODO: warn message
+					continue;
+				} else{
+					userMap.put(username, user);
+				}
+			}
+			if(skipped >= offset){
+				ret.add(createLoginEventScoreInfo(user, authScore));
+			} else
+				skipped++;
+		}
+		return ret;
+	}
+	
+	private ILoginEventScoreInfo createLoginEventScoreInfo(User user, AuthScore authScore){
+		LoginEventScoreInfo ret = new LoginEventScoreInfo(user, authScore);
+		
+		String sourceHostname = null;
+		List<UserMachine> userMachines = userMachineDAO.findByHostnameip(authScore.getSourceIp());
+		if(userMachines != null && userMachines.size() > 0){
+			sourceHostname = userMachines.get(0).getHostname();
+		}
+		ret.setSourceHostname(sourceHostname);
+		
+		String destinationIp = null;
+		userMachines = userMachineDAO.findByHostname(authScore.getTargetId());
+		if(userMachines != null && userMachines.size() > 0){
+			sourceHostname = userMachines.get(0).getHostname();
+		}
+		ret.setDestinationIp(destinationIp);
+		return ret;
 	}
 }
