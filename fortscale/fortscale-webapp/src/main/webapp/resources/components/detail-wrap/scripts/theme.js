@@ -1,5 +1,5 @@
-$(function () {
-
+window.addEventListener("load", function(){
+    setTimeout(function(){
     // navbar notification popups
     $("body").on("click", ".notification-dropdown .trigger", function(e){
         var $dialog = $(e.currentTarget).siblings(".pop-dialog").eq(0);
@@ -150,5 +150,5 @@ $(function () {
         }
     });
 
-
+    }, 1000);
 });

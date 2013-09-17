@@ -12,6 +12,9 @@ angular.module("Fortscale").controller("TabsWidgetController", ["$scope", functi
                     $scope.$emit("widgetEvent", { event: eventSettings, data: tab, widget: $scope.widget });
             });
         }
+
+        if ($scope.view.settings.onSelect)
+            $scope.view.settings.onSelect(tab);
     };
 
     if ($scope.view.settings.tab.selected){

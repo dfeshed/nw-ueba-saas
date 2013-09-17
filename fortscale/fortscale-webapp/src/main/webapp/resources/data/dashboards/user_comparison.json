@@ -1,0 +1,14 @@
+{
+    "dashboardId": "user_comparison",
+    "name": "User Comparison",
+    "columns": [
+        {
+            "className": "span15",
+            "widgets": [
+                {
+                    "widgetId": "users_comparison"
+                }
+            ]
+        }
+    ]
+}

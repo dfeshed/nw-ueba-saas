@@ -4,6 +4,20 @@ $sidebarWidth: 0;
 $linkColor: #049cdb;
 $linkColorHover: rgb(218, 218, 213);
 
+$widgetTitleColor: #fff;
+$widgetControlButtonColor: #ddd;
+$widgetControlButtonHoverColor: #fff;
+$widgetBorderColor: #cecece;
+$widgetBorder: solid 1px $widgetBorderColor;
+
+$widgetHeaderBackgroundColor: #767676;
+$widgetHorizontalPadding: 15px;
+$widgetBottomPadding: 8px;
+$widgetTopPadding: 8px;
+$widgetHeaderPadding: 0 $widgetHorizontalPadding;
+$widgetHeaderHeight: 32px;
+$widgetMarginBottom: 20px;
+
 html, body{ height: 100%; }
 body{
   margin: 0;
@@ -93,5 +107,6 @@ h2, h3, h4, h5{ font-weight: normal; }
 @import "widgets/numeric";
 @import "widgets/tabs";
 @import "widgets/container";
+@import "widgets/investigator";
 @import "controls/notification";
 @import "controls/link";

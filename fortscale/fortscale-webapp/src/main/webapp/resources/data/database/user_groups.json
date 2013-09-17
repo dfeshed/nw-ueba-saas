@@ -1,0 +1,158 @@
+[
+    {
+        "username": "AndreaS",
+        "group": "CRM-Administrators"
+    },
+    {
+        "username": "AndreaS",
+        "group": "Operations"
+    },
+    {
+        "username": "AndreaS",
+        "group": "Sharepoint"
+    },
+    {
+        "username": "AndreaS",
+        "group": "NY-Office"
+    },
+    {
+        "username": "AndreaS",
+        "group": "Windows"
+    },
+    {
+        "username": "AndreaS",
+        "group": "CRM-Users"
+    },
+    {
+        "username": "AndreaS",
+        "group": "Domain Users"
+    },
+    {
+        "username": "AndreaS",
+        "group": "Operations-Administrators"
+    },
+    {
+        "username": "JamesA",
+        "group": "NY-Office"
+    },
+    {
+        "username": "JamesA",
+        "group": "Hardening Class B"
+    },
+    {
+        "username": "JamesA",
+        "group": "Operations"
+    },
+    {
+        "username": "JamesA",
+        "group": "Accounting"
+    },
+    {
+        "username": "JamesA",
+        "group": "Sharepoint"
+    },
+    {
+        "username": "JamesA",
+        "group": "Domain Users"
+    },
+    {
+        "username": "JamesA",
+        "group": "Windows"
+    },
+    {
+        "username": "JamesA",
+        "group": "CRM-Users"
+    },
+    {
+        "username": "JamesA",
+        "group": "Operations-Administrators"
+    },
+    {
+        "username": "JamesA",
+        "group": "HR"
+    },
+    {
+        "username": "JimK",
+        "group": "NY-Office"
+    },
+    {
+        "username": "JimK",
+        "group": "Domain Users"
+    },
+    {
+        "username": "JimK",
+        "group": "Portal Users"
+    },
+    {
+        "username": "JimK",
+        "group": "Hardening Class B"
+    },
+    {
+        "username": "JimK",
+        "group": "Sharepoint"
+    },
+    {
+        "username": "JimK",
+        "group": "HR"
+    },
+    {
+        "username": "JimK",
+        "group": "Windows"
+    },
+    {
+        "username": "JimK",
+        "group": "CRM-Users"
+    },
+    {
+        "username": "LucyF",
+        "group": "HR"
+    },
+    {
+        "username": "LucyF",
+        "group": "Sharepoint"
+    },
+    {
+        "username": "LucyF",
+        "group": "NY-Office"
+    },
+    {
+        "username": "LucyF",
+        "group": "Accounting"
+    },
+    {
+        "username": "LucyF",
+        "group": "Windows"
+    },
+    {
+        "username": "LucyF",
+        "group": "Hardening Class B"
+    },
+    {
+        "username": "LucyF",
+        "group": "CRM-Users"
+    },
+    {
+        "username": "CharlesK",
+        "group": "CRM-Users"
+    },
+    {
+        "username": "CharlesK",
+        "group": "Domain Users"
+    },
+    {
+        "username": "CharlesK",
+        "group": "Windows"
+    },
+    {
+        "username": "CharlesK",
+        "group": "NY-Office"
+    },
+    {
+        "username": "CharlesK",
+        "group": "Portal Users"
+    },
+    {
+        "username": "CharlesK",
+        "group": "Sharepoint"
+    }
+]

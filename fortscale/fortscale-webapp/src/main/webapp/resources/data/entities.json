@@ -1,0 +1,101 @@
+[
+    {
+        "name": "User Logins",
+        "id": "logins",
+        "fields": [
+            {
+                "name": "Hostname",
+                "id": "hostname",
+                "type": "string"
+            },
+            {
+                "name": "Time",
+                "id": "time",
+                "type": "date"
+            },
+            {
+                "name": "Code",
+                "id": "eventCode",
+                "type": "string"
+            },
+            {
+                "name": "User name",
+                "id": "username",
+                "type": "string",
+                "entity": "user_details",
+                "entityField": "username"
+            },
+            {
+                "name": "IP Address",
+                "id": "ipAddress",
+                "type": "string"
+            }
+        ]
+    },
+    {
+        "name": "User Details",
+        "id": "user_details",
+        "fields": [
+            {
+                "name": "Address",
+                "id": "address",
+                "type": "string"
+            },
+            {
+                "name": "Date Created",
+                "id": "dateCreated",
+                "type": "date"
+            },
+            {
+                "name": "Department",
+                "id": "department",
+                "type": "string"
+            },
+            {
+                "name": "Domain",
+                "id": "domain",
+                "type": "string"
+            },
+            {
+                "name": "Phone",
+                "id": "phone",
+                "type": "string"
+            },
+            {
+                "name": "Job Title",
+                "id": "jobTitle",
+                "type": "string"
+            },
+            {
+                "name": "Manager",
+                "id": "manager",
+                "type": "string"
+            },
+            {
+                "name": "Mobile Phone",
+                "id": "mobilePhone",
+                "type": "string"
+            },
+            {
+                "name": "Name",
+                "id": "name",
+                "type": "string"
+            },
+            {
+                "name": "Username",
+                "id": "username",
+                "type": "string"
+            },
+            {
+                "name": "Worker ID",
+                "id": "workerId",
+                "type": "string"
+            },
+            {
+                "name": "Image",
+                "id": "image",
+                "type": "string"
+            }
+        ]
+    }
+]

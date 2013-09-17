@@ -27,11 +27,11 @@
         "featureDisplayName": "Account Has Description",
         "featureUniqueName": "password_never_expires",
         "featureValue": "No",
-        "featureScore": 73,
+        "featureScore": 20,
         "organizational": 65,
         "permissions": 30,
         "destinations": 70,
-        "username": "AndreaS",
+        "username": "BillH",
         "date": 1378810687016,
         "scoreId": "active_directory"
     },

@@ -84,7 +84,7 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
 
         var dashboardEvents = {
             innerUrl: function(options, data, widgetParams){
-                var hash = "#" + widgets.parseFieldValue(options, options.url, data, widgetParams);
+                var hash = "#" + utils.strings.parseValue(options.url, data, widgetParams || $scope.dashboardParams);
                 if (options.params){
                     var params = {};
                     for(var paramName in options.params){

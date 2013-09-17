@@ -21,13 +21,12 @@
             }
         },
         entities: {
-            getEntity: function(entityType){
+            getEntities: function(){
                 var deferred = $q.defer();
 
-                $http.get("data/get_entity_" + entityType + ".json")
-                    .success(function(response){
-                        deferred.resolve(response);
-                    }, deferred.reject);
+                $http.get("data/entities.json?v=" + version)
+                    .success(deferred.resolve)
+                    .error(deferred.reject);
 
                 return deferred.promise;
             }

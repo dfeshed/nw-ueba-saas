@@ -256,7 +256,7 @@ input.search:focus{
 /* Sidebar */
 #sidebar-nav {
 	position: absolute;
-	width: 218px;
+	width: 223px;
 	float: left;
 	margin: 0em;
 	padding-top: 25px;
@@ -416,7 +416,7 @@ input.search:focus{
 	overflow: hidden;
 	position: relative;
 	background: #fff;
-	margin-left: 215px;
+	margin-left: 220px;
 	border-left: 1px solid #dae3e9;
 	border-bottom: 1px solid #dae3e9;
 	box-shadow: -3px 3px 3px -2px #f1f1f3;

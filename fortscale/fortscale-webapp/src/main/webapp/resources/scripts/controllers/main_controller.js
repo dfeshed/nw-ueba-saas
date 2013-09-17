@@ -8,9 +8,15 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         },
         {
             name: "Login Analysis",
-            url: "#/d/auth-investigate",
+            url: "#/d/investigator?entity=logins",
             dashboardId: "auth-investigate",
             icon: "signin"
+        },
+        {
+            name: "User Comparison",
+            url: "#/d/user_comparison",
+            dashboardId: "user_comparison",
+            icon: "group"
         },
         {
             name: "Malware Discovery",

@@ -1,0 +1,40 @@
+<div class="investigator" ng-controller="InvestigatorController">
+    <div class="row-fluid">
+        <div class="span3 investigator-menu">
+            <section>
+                <h4>Entity</h4>
+                <div class="investigator-menu-section-contents">
+                    <select ng-model="config.entity"
+                            ng-options="entity.id as entity.name for entity in entities"
+                            ng-change="onEntitySelect($event)"></select>
+                </div>
+            </section>
+            <section ng-show="config.entity">
+                <h4>Fields</h4>
+                <div class="investigator-menu-section-contents">
+                    <table class="investigator-fields table table-hover widget-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th>Enabled</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="field in currentEntity.fields">
+                                <td><i class="icon-{{fieldTypeIcons[field.type]}} investigator-field-icon"></i></td>
+                                <td class="investigator-field-name table-large-cell">{{field.name}}</td>
+                                <td>
+                                    <input type="checkbox" ng-model="field.enabled" ng-change="update()" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+        <div class="span12 investigator-display">
+            <ng-include src="'views/widgets/table.html'"></ng-include>
+        </div>
+    </div>
+</div>

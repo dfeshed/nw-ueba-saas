@@ -5,7 +5,7 @@ angular.module("Fortscale").factory("database", ["$q", "$http", "version", "cond
         query: function (query, params) {
             var deferred = $q.defer();
 
-            if (!query.entity) {
+            if (!query || !query.entity) {
                 deferred.reject();
             }
             else {
@@ -31,6 +31,17 @@ angular.module("Fortscale").factory("database", ["$q", "$http", "version", "cond
                     var queryResults = [],
                         groupByIndex = {};
 
+                    var getRow = query.fields
+                        ? function(data){
+                            var row = {};
+                            for(var fieldName in query.fields){
+                                row[fieldName] = data[fieldName];
+                            }
+
+                            return row;
+                        }
+                        : function(data){ return data; };
+
                     try{
                         if (query.conditions) {
                             angular.forEach(data, function (row, rowIndex) {
@@ -38,14 +49,16 @@ angular.module("Fortscale").factory("database", ["$q", "$http", "version", "cond
                                     if (query.groupBy){
                                         if (!groupByIndex[row[query.groupBy]]){
                                             groupByIndex[row[query.groupBy]] = true;
-                                            queryResults.push(row);
+                                            queryResults.push(getRow(row));
                                         }
                                     }
                                     else
-                                        queryResults.push(row);
+                                        queryResults.push(getRow(row));
                                 }
                             });
                         }
+                        else
+                            queryResults = data;
 
                         deferred.resolve({ data: queryResults });
                     } catch(error){

@@ -37,7 +37,17 @@ $indexCellColor: #bbb;
   }
 
   tbody tr:first-child td{ border-top-color: #c4c4c4; }
+  tr{
+    &.highlighted{
+      background: #0C658A;
+      color: white;
 
+      a{ color: White }
+      &:hover td{
+        background: #0c4664;
+      }
+    }
+  }
   th{
     color: $tableHeaderColor;
     white-space: nowrap;

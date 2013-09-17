@@ -6,6 +6,31 @@
         "type": "user"
     },
     "iconUrl": "{{@userImage}}",
+    "controls": [
+        {
+            "type": "button",
+            "text": "Compare to other users",
+            "tooltip": "Compare this user to other users",
+            "onClick": {
+                "action": "innerUrl",
+                "actionOptions": {
+                    "url": "/d/user_comparison?username={{@entityId}}"
+                }
+            }
+        },
+        {
+            "type": "button",
+            "text": "Follow User",
+            "tooltip": "Receive notifications when this user has suspicious activity",
+            "onClick": {
+                "action": "innerUrl",
+                "actionOptions": {
+                    "url": "/d/user_comparison?username={{@entityId}}"
+                }
+            }
+
+        }
+    ],
     "columns": [
         {
             "className": "span3",

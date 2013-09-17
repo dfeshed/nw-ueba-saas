@@ -1,0 +1,14 @@
+{
+    "dashboardId": "investigator",
+    "name": "Investigate",
+    "columns": [
+        {
+            "className": "span15",
+            "widgets": [
+                {
+                    "widgetId": "investigator"
+                }
+            ]
+        }
+    ]
+}
