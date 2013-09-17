@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService{
 			if(adUser.getEmailAddress() != null && adUser.getEmailAddress().length() > 0){
 				user.setEmailAddress(new EmailAddress(adUser.getEmailAddress()));
 			}
-			user.setAdUserPrincipalName(adUser.getUserPrincipalName());
+			user.setAdUserPrincipalName(adUser.getUserPrincipalName().toLowerCase());
 			user.setEmployeeID(adUser.getEmployeeID());
 			user.setManagerDN(adUser.getManager());
 			user.setMobile(adUser.getMobile());
@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService{
 		List<IUserScore> ret = new ArrayList<IUserScore>();
 		for(ClassifierScore classifierScore: user.getScores().values()){
 			UserScore score = new UserScore(classifierScore.getClassifierId(), classifierService.getClassifier(classifierScore.getClassifierId()).getDisplayName(),
-					(int)classifierScore.getScore(), (int)classifierScore.getAvgScore());
+					(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
 			ret.add(score);
 		}
 		
@@ -215,7 +215,7 @@ public class UserServiceImpl implements UserService{
 		Date lastRun = authDAO.getLastRunDate();
 		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
-			User user = userRepository.findByAdUserPrincipalName(authScore.getUserName());
+			User user = userRepository.findByAdUserPrincipalName(authScore.getUserName().toLowerCase());
 			if(user == null){
 				//TODO:	error log message
 				continue;
@@ -227,10 +227,10 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore){
-		ClassifierScore cScore = user.getScore(Classifier.ad.getId());
+		ClassifierScore cScore = user.getScore(classifierId);
 		if(cScore == null){
 			cScore = new ClassifierScore();
-			cScore.setClassifierId(Classifier.ad.getId());
+			cScore.setClassifierId(classifierId);
 		}else{
 			ScoreInfo scoreInfo = new ScoreInfo();
 			scoreInfo.setScore(cScore.getScore());
@@ -248,7 +248,9 @@ public class UserServiceImpl implements UserService{
 				int day1 = tmp.get(Calendar.DAY_OF_YEAR);
 				int day2 = tmp1.get(Calendar.DAY_OF_YEAR);
 				if(day1 == day2){
-					prevScores.set(0, scoreInfo);
+					if(prevScores.get(0).getScore() < scoreInfo.getScore()){
+						prevScores.set(0, scoreInfo);
+					}
 				} else{
 					prevScores.add(0, scoreInfo);
 				}

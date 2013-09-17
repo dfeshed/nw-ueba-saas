@@ -17,6 +17,7 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
+import fortscale.domain.fe.AuthScore;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.Threshold;
@@ -48,7 +49,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		ret.add(new SeverityElement("Critical", 90));
 		ret.add(new SeverityElement("High", 50));
 		ret.add(new SeverityElement("Medium", 10));
-		ret.add(new SeverityElement("Low", 5));
+		ret.add(new SeverityElement("Low", 0));
 		return ret;
 	}
 	
@@ -137,7 +138,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		if(classifierId.equals(Classifier.ad.getId())){
 			ret = getAdSuspiciousUsers(classifierId, severityId);
 		} else if(classifierId.equals(Classifier.auth.getId())){
-			//TODO
+			ret = getAuthSuspiciousUsers(classifierId, severityId);
 		}
 		
 		return ret;
@@ -146,8 +147,17 @@ public class ClassifierServiceImpl implements ClassifierService {
 	private List<ISuspiciousUserInfo> getAuthSuspiciousUsers(String classifierId, String severityId) {
 		Date lastRun = authDAO.getLastRunDate();
 		Range severityRange = getRange(severityId);
-		
-		return Collections.emptyList();
+		List<AuthScore> authScores = authDAO.findByTimestampAndScoreBetweenSortByScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
+		List<ISuspiciousUserInfo> ret = new ArrayList<>();
+		for(AuthScore authScore: authScores){
+			User user = userRepository.findByAdUserPrincipalName(authScore.getUserName().toLowerCase());
+			if(user == null){
+				//TODO: error message.
+				continue;
+			}
+			ret.add(createSuspiciousUserInfo(classifierId, user));
+		}
+		return ret;
 	}
 	
 	private List<ISuspiciousUserInfo> getAdSuspiciousUsers(String classifierId, String severityId) {
@@ -166,17 +176,20 @@ public class ClassifierServiceImpl implements ClassifierService {
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(AdUserFeaturesExtraction adUserFeaturesExtraction: ufeList){
 			User user = userRepository.findOne(adUserFeaturesExtraction.getUserId());
-			ClassifierScore classifierScore = user.getScore(classifierId);
-			double trend = 0;
-			if(!classifierScore.getPrevScores().isEmpty()){
-				double prevScore = classifierScore.getPrevScores().get(0).getScore() + 0.00001;
-				trend = (int)(((classifierScore.getScore() - prevScore) / prevScore) * 10000);
-				trend = trend/100;
-			}
-			SuspiciousUserInfo info = new SuspiciousUserInfo(user.getAdUserPrincipalName(), (int) user.getScore(classifierId).getScore(), trend);
-			ret.add(info);
+			ret.add(createSuspiciousUserInfo(classifierId, user));
 		}
 		return ret;
+	}
+	
+	private SuspiciousUserInfo createSuspiciousUserInfo(String classifierId, User user){
+		ClassifierScore classifierScore = user.getScore(classifierId);
+		double trend = 0;
+		if(!classifierScore.getPrevScores().isEmpty()){
+			double prevScore = classifierScore.getPrevScores().get(0).getScore() + 0.00001;
+			trend = (int)(((classifierScore.getScore() - prevScore) / prevScore) * 10000);
+			trend = trend/100;
+		}
+		return new SuspiciousUserInfo(user.getAdUserPrincipalName(), (int) Math.round(user.getScore(classifierId).getScore()), trend);
 	}
 	
 	private Range getRange(String severityId){
@@ -186,6 +199,9 @@ public class ClassifierServiceImpl implements ClassifierService {
 				break;
 			}
 			i++;
+		}
+		if(severityOrderedList.size() == i){
+			throw new IllegalArgumentException(String.format("no such severity id: %s", severityId));
 		}
 		int lowestVal = severityOrderedList.get(i).getValue();
 		int upperVal = 100;

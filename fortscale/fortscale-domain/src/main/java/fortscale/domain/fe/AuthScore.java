@@ -10,7 +10,8 @@ public class AuthScore {
 	public static final String ERROR_CODE_FIELD_NAME = "errorcode";
 	public static final String EVENT_SCORE_FIELD_NAME = "eventscore";
 	public static final String GLOBAL_SCORE_FIELD_NAME = "globalscore";
-	public static final String TIMESTAMP_FIELD_NAME = "time_stamp";
+	public static final String TIMESTAMP_FIELD_NAME = "runtime";
+	public static final String EVENT_TIME_FIELD_NAME = "time";
 	
 	
 	private String userName;
@@ -20,6 +21,7 @@ public class AuthScore {
 	private double eventScore;
 	private double globalScore;
 	private Date timestamp;
+	private Date eventTime;
 	
 	
 	
@@ -65,5 +67,11 @@ public class AuthScore {
 	}
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
+	}
+	public Date getEventTime() {
+		return eventTime;
+	}
+	public void setEventTime(Date eventTime) {
+		this.eventTime = eventTime;
 	}
 }
