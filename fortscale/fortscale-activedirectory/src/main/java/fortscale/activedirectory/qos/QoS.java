@@ -47,9 +47,7 @@ public class QoS {
 		
 		ArrayList<AdUser> tempUsersList = new ArrayList<AdUser>();
 		for (AdUser adUser : users) {
-			if (adUser.getObjectClass().equals("user")) {
-				tempUsersList.add(adUser);
-			}
+			tempUsersList.add(adUser);
 		}
 
 		Random rand = new Random();
@@ -81,9 +79,7 @@ public class QoS {
 	public Iterable<AdUser> generateAutoTestUsers(Iterable<AdUser> users) {
 		ArrayList<AdUser> tempUsersList = new ArrayList<AdUser>();
 		for (AdUser adUser : users) {
-			if (adUser.getObjectClass().equals("user")) {
-				tempUsersList.add(adUser);
-			}
+			tempUsersList.add(adUser);
 		}
 
 		Random rand = new Random();
@@ -112,9 +108,7 @@ public class QoS {
 	public Iterable<AdUser> generateManualTestUsers(Iterable<AdUser> users) {
 		ArrayList<AdUser> tempUsersList = new ArrayList<AdUser>();
 		for (AdUser adUser : users) {
-			if (adUser.getObjectClass().equals("user")) {
-				tempUsersList.add(adUser);
-			}
+			tempUsersList.add(adUser);
 		}
 
 		Random rand = new Random();
