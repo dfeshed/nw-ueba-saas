@@ -60,7 +60,7 @@ public class ApiAdUserController {
 		String aggregateResult = "";
 		int successRate = 0;
 		for (int i=0; i<QOS_BOOTSTRAP_ITERATIONS; i++) {
-			logger.info("Running Test #{}", i);
+			logger.info("Running Test #{}", i+1);
 			qosSanityService = new QoSSanityService(feService);
 			ADManager adManager = new ADManager();
 			adManager.run(qosSanityService, null);
@@ -81,7 +81,7 @@ public class ApiAdUserController {
 		String aggregateResult = "";
 		int successRate = 0;
 		for (int i=0; i<QOS_BOOTSTRAP_ITERATIONS; i++) {
-			logger.info("Running Test #{}", i);
+			logger.info("Running Test #{}", i+1);
 			qosBootstrapService = new QoSAutoTestService(feService);
 			ADManager adManager = new ADManager();
 			adManager.run(qosBootstrapService, null);
@@ -104,7 +104,7 @@ public class ApiAdUserController {
 		String aggregateResult = "";
 		int successRate = 0;
 		for (int i=0; i<QOS_BOOTSTRAP_ITERATIONS; i++) {
-			logger.info("Running Test #{}", i);
+			logger.info("Running Test #{}", i+1);
 			qosManualTestsService = new QoSManualTestService(feService);
 			ADManager adManager = new ADManager();
 			adManager.run(qosManualTestsService, null);
