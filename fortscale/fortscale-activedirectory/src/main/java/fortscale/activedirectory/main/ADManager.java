@@ -46,8 +46,8 @@ public class ADManager {
 	public void run(FeService feService, String[] args) {
 		userAttributes = feService.getAdUsersAttrVals();
 		
-		this.runFeatureExtraction();
-		featureVector = this.buildFeatureVector();
+		runFeatureExtraction();
+		featureVector = buildFeatureVector();
 
 		instances = prepareInstancesMatrix();
 		Classifier classifier = new WekaRandomForest(usersFeatures.getNumInstances(), featureVector.numFeatures(), args);
@@ -138,14 +138,14 @@ public class ADManager {
 		for (Feature f : featureVector.getFeatureVector()) {
 			print += f.getFeatureDisplayName() + "\t";
 		}
-		logger.info(print);
+		logger.debug(print);
 		
 		for (int ins=0; ins<instances.length; ins++) {
 			print = userIDtoNameMap.get(ins) + "\t\t";
 			for (Feature f : featureVector.getFeatureVector()) {
 				print += usersFeatures.getInstanceFeatureValue(userIDtoNameMap.get(ins), f.getFeatureUniqueName()) + "\t";
 			}
-			logger.info(print);
+			logger.debug(print);
 		}
 
 		  
@@ -153,14 +153,14 @@ public class ADManager {
 		for (Feature f : featureVector.getFeatureVector()) {
 			print += f.getFeatureDisplayName() + "\t";
 		}
-		logger.info(print);
+		logger.debug(print);
 		
 		for (int ins=0; ins<instances.length; ins++) {
 			print = userIDtoNameMap.get(ins) + "\t" + userScores.get(userIDtoNameMap.get(ins)) + "\t";
 			for (Feature f : featureVector.getFeatureVector()) {
 				print += usersFeatures.getInstanceFeatureScore(userIDtoNameMap.get(ins), f.getFeatureUniqueName()) + "\t";
 			}
-			logger.info(print);
+			logger.debug(print);
 		}
 		
 		
