@@ -15,8 +15,15 @@
 	<appender name="TestLog" class="ch.qos.logback.core.FileAppender">
 		<file>testFile.log</file>
 		<append>true</append>
-		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
-			by default -->
+<!-- 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">       -->
+<!--       		<evaluator> defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
+<!--         		<expression>return message.contains("findOne using query") || message.contains("Getting Mongo Database") || message.contains("Created query Query");</expression> -->
+<!--       		</evaluator> -->
+<!--       		<OnMismatch>NEUTRAL</OnMismatch> -->
+<!--       		<OnMatch>DENY</OnMatch> -->
+<!--     	</filter> -->
+		
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
 		<encoder>
 			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
 			</Pattern>
