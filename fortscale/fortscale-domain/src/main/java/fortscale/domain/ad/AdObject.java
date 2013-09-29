@@ -13,7 +13,7 @@ public class AdObject extends AbstractDocument{
 	@Indexed
 	@Field(dnField)
 	private String distinguishedName;
-	@Indexed
+	@Indexed(expireAfterSeconds=60*60*24*4)
 	@Field(timestampField)
 	private String timestamp;
 	

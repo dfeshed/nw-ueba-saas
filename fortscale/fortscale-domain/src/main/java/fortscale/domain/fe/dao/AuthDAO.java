@@ -17,7 +17,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import fortscale.domain.fe.AuthScore;
+import fortscale.utils.impala.ImpalaCriteria;
 import fortscale.utils.impala.ImpalaPageRequest;
+import fortscale.utils.impala.ImpalaQuery;
 
 @Repository
 public class AuthDAO {
@@ -63,12 +65,19 @@ public class AuthDAO {
 	}
 	
 	public List<AuthScore> findEventsByTimestamp(Date timestamp, Pageable pageable){
+		return findEventsByTimestamp(timestamp, pageable, null);
+	}
+	
+	public List<AuthScore> findEventsByTimestamp(Date timestamp, Pageable pageable, String additionalWhereQuery){
 		List<AuthScore> ret = new ArrayList<>();
-		String query = String.format("select * from %s where %s=%s %s",
-				AuthScore.TABLE_NAME, 
-				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
-				pageable.toString());
-		ret.addAll(impalaJdbcTemplate.query(query, new AuthScoreMapper()));
+		ImpalaQuery query = new ImpalaQuery();
+		query.select("*").from(AuthScore.TABLE_NAME).where(ImpalaCriteria.equalsTo(AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp)));
+		if(additionalWhereQuery != null && additionalWhereQuery.length() > 0){
+			query.andWhere(additionalWhereQuery);
+		}
+		query.limitAndSort(pageable);
+		
+		ret.addAll(impalaJdbcTemplate.query(query.toSQL(), new AuthScoreMapper()));
 		
 		return ret;
 	}
