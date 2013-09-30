@@ -170,13 +170,26 @@ public class UserServiceImpl implements UserService{
 		List<IUserScoreHistoryElement> ret = new ArrayList<IUserScoreHistoryElement>();
 		ClassifierScore classifierScore = user.getScore(classifierId);
 		if(classifierScore != null){
-			UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
-			ret.add(userScoreHistoryElement);
+			
 			if(classifierScore.getPrevScores() != null){
-				for(ScoreInfo scoreInfo: classifierScore.getPrevScores()){
-					userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
+				ScoreInfo scoreInfo = null;
+				for(int i = classifierScore.getPrevScores().size() -1; i >= 0; i--){
+					scoreInfo = classifierScore.getPrevScores().get(i);
+					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
 					ret.add(userScoreHistoryElement);
 				}
+				if(isOnSameDay(classifierScore.getTimestamp(), scoreInfo.getTimestamp())){
+					if(classifierScore.getScore() >= scoreInfo.getScore()){
+						UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
+						ret.set(classifierScore.getPrevScores().size() -1, userScoreHistoryElement);
+					}
+				} else{
+					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
+					ret.add(userScoreHistoryElement);
+				}
+			} else{
+				UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
+				ret.add(userScoreHistoryElement);
 			}
 		}
 		
@@ -200,8 +213,11 @@ public class UserServiceImpl implements UserService{
 		if(ufe == null || ufe.getAttributes() == null){
 			return Collections.emptyList();
 		}
+		Collections.sort(ufe.getAttributes(), new IFeature.OrderByScoreDesc());
 		return ufe.getAttributes();
 	}
+	
+	
 
 	@Override
 	public List<UserMachine> getUserMachines(String uid) {
@@ -241,13 +257,7 @@ public class UserServiceImpl implements UserService{
 				prevScores = new ArrayList<ScoreInfo>();
 				prevScores.add(scoreInfo);
 			} else{
-				Calendar tmp = Calendar.getInstance();
-				tmp.setTime(prevScores.get(0).getTimestamp());
-				Calendar tmp1 = Calendar.getInstance();
-				tmp1.setTime(scoreInfo.getTimestamp());
-				int day1 = tmp.get(Calendar.DAY_OF_YEAR);
-				int day2 = tmp1.get(Calendar.DAY_OF_YEAR);
-				if(day1 == day2){
+				if(isOnSameDay(prevScores.get(0).getTimestamp(), scoreInfo.getTimestamp())){
 					if(prevScores.get(0).getScore() < scoreInfo.getScore()){
 						prevScores.set(0, scoreInfo);
 					}
@@ -262,6 +272,17 @@ public class UserServiceImpl implements UserService{
 		cScore.setTimestamp(timestamp);
 		user.putClassifierScore(cScore);
 		userRepository.save(user);
+	}
+	
+	private boolean isOnSameDay(Date date1, Date date2){
+		Calendar tmp = Calendar.getInstance();
+		tmp.setTime(date1);
+		Calendar tmp1 = Calendar.getInstance();
+		tmp1.setTime(date2);
+		int day1 = tmp.get(Calendar.DAY_OF_YEAR);
+		int day2 = tmp1.get(Calendar.DAY_OF_YEAR);
+		
+		return (day1 == day2);
 	}
 
 	

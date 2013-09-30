@@ -47,6 +47,10 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         }
     };
 
+    $scope.toggleSidebar = function(){
+        $scope.sidebarMinimized = !$scope.sidebarMinimized;
+    };
+
     $scope.$on("$routeChangeSuccess", function(){
         if ($routeParams.dashboardId){
             if (!$scope.currentMainDashboard || $routeParams.dashboardId !== $scope.currentMainDashboard.dashboardId)
@@ -84,6 +88,20 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
                     "endpoint": {
                         "entity": "user",
                         "method": "search"
+                    },
+                    "query": {
+                        "entity": "user_details",
+                        "conditions": [
+                            {
+                                "field": "username",
+                                "operator": "contains",
+                                "value": "{{prefix}}"
+                            }
+                        ],
+                        "fields": ["username"],
+                        "fieldsMap": {
+                            "username": "id"
+                        }
                     },
                     "options": {
                         "count": 10

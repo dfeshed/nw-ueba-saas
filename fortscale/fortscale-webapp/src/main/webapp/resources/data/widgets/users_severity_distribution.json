@@ -15,24 +15,24 @@
                         "size": "20px"
                     },
                     "selectable": true,
-                    "showSelectionBar": true
+                    "showSelectionBar": true,
+                    "selectFirstOnLoad": true
                 },
-                "selectedIndex": 0,
                 "series": [{
-                    "field": "value",
-                    "label": "{{value}}%",
+                    "field": "percentage",
+                    "label": "{{percentage}}%",
                     "style": "severity",
                     "styleParams": {
                         "value": "name"
                     }
                 }],
                 "labels": {
-                    "field": "value",
-                    "value": "{{value}}%",
-                    "styleField": "value"
+                    "field": "percentage",
+                    "value": "{{percentage}}",
+                    "styleField": "percentage"
                 },
                 "selectionBar": {
-                    "styleField": "value"
+                    "styleField": "percentage"
                 },
                 "events": [
                     {

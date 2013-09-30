@@ -1,0 +1,22 @@
+[
+    {
+        "username": "AndreaS",
+        "text": "Added to CRM-Administrators",
+        "type": "group",
+        "score": 83,
+        "links": [
+            {
+                "text": "CRM-Administrators",
+                "type": "user_group"
+            }
+        ],
+        "time": "-1d"
+    },
+    {
+        "username": "AndreaS",
+        "text": "Password Never Expires set to ON",
+        "type": "password",
+        "score": 88,
+        "time": "-1d"
+    }
+]

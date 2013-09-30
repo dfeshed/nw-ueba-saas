@@ -1,12 +1,22 @@
 {
+    "dataSource": "api",
     "searchId": "users_severity_distribution",
+    "endpoint": {
+        "entity": "classifier",
+        "method": "dist",
+        "id": "active_directory"
+    },
     "fields": [
         {
             "name": "name",
             "type": "string"
         },
         {
-            "name": "value",
+            "name": "percentage",
+            "type": "number"
+        },
+        {
+            "name": "count",
             "type": "number"
         }
     ],

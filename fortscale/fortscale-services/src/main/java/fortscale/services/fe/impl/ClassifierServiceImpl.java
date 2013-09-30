@@ -197,7 +197,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 			trend = (int)(((classifierScore.getScore() - prevScore) / prevScore) * 10000);
 			trend = trend/100;
 		}
-		return new SuspiciousUserInfo(user.getAdUserPrincipalName(), (int) Math.round(user.getScore(classifierId).getScore()), trend);
+		return new SuspiciousUserInfo(user.getId(), user.getAdUserPrincipalName(), (int) Math.round(user.getScore(classifierId).getScore()), trend);
 	}
 	
 	private Range getRange(String severityId){
@@ -300,7 +300,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		String destinationIp = null;
 		userMachines = userMachineDAO.findByHostname(authScore.getTargetId());
 		if(userMachines != null && userMachines.size() > 0){
-			sourceHostname = userMachines.get(0).getHostname();
+			destinationIp = userMachines.get(0).getHostnameip();
 		}
 		ret.setDestinationIp(destinationIp);
 		return ret;

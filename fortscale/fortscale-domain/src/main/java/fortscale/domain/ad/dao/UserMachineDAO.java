@@ -37,7 +37,7 @@ public class UserMachineDAO {
 	public List<UserMachine> findByHostname(String hostname){
 		List<UserMachine> ret = new ArrayList<UserMachine>();
 
-		String query = String.format("select * from %s  where %s=\"%s\"", UserMachine.TABLE_NAME, UserMachine.HOSTNAME_FIELD_NAME, hostname);
+		String query = String.format("select * from %s  where lower(%s)=\"%s\"", UserMachine.TABLE_NAME, UserMachine.HOSTNAME_FIELD_NAME, hostname);
 		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
 		
 		return ret;

@@ -15,6 +15,54 @@
             "trend": "+19",
             "machines": ["Bill-Desktop"],
             "groups": ["Users", "Finance"]
+        },
+        {
+            "userName": "Doug Wallace",
+            "userId": "DougW",
+            "score": 86,
+            "trend": "+23",
+            "machines": ["Doug-iPhone", "Sharepoint"],
+            "groups": ["Users", "Finance"]
+        },
+        {
+            "userName": "Michael Biggs",
+            "userId": "BillH",
+            "score": 85,
+            "trend": "+10",
+            "machines": ["Bill-Desktop"],
+            "groups": ["Users", "Finance"]
+        },
+        {
+            "userName": "Dorothy Van-Rotten",
+            "userId": "BillH",
+            "score": 82,
+            "trend": "+30",
+            "machines": ["Bill-Desktop"],
+            "groups": ["Users", "Finance"]
+        },
+        {
+            "userName": "Sanjay Gupta",
+            "userId": "BillH",
+            "score": 82,
+            "trend": "+12",
+            "machines": ["Bill-Desktop"],
+            "groups": ["Users", "Finance"]
+        },
+        {
+            "userName": "David Cohen",
+            "userId": "BillH",
+            "score": 81,
+            "trend": "+20",
+            "machines": ["Bill-Desktop"],
+            "groups": ["Users", "Finance"]
+        },
+        {
+            "userName": "Alberto Garcia",
+            "userId": "BillH",
+            "score": 80,
+            "trend": "+34",
+            "machines": ["Bill-Desktop"],
+            "groups": ["Users", "Finance"]
         }
     ],
     "total": 2

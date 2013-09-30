@@ -57,7 +57,7 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
                 else
                     deferred.reject();
             }, function(error){
-                methods.query(query.searchId, params, options).then(deferred.resolve, deferred.reject);
+                deferred.reject();
             });
 
             return deferred.promise;

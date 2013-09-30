@@ -61,12 +61,13 @@
                     },
                     "selectable": true,
                     "selectLabels": false,
-                    "showSelectionBar": false
+                    "showSelectionBar": false,
+                    "tooltip": "{{seriesLabel}}'s {{barLabel}} score: {{barValue}}"
                 },
                 "series": [
                     {
                         "field": "score",
-                        "label": "{{@entityId}}'s score",
+                        "label": "{{@userName}}",
                         "style": "score",
                         "styleParams": {
                             "value": "score"
@@ -74,7 +75,7 @@
                     },
                     {
                         "field": "averageScore",
-                        "label": "Average user's score",
+                        "label": "Average user",
                         "color": "#e7e7e7",
                         "barLabelsColor": "#aaaaaa"
                     }

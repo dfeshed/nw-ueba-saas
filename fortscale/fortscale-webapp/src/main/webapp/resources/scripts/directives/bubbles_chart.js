@@ -95,8 +95,11 @@ angular.module("Fortscale").directive("bubblesChart", ["$parse", "$timeout", fun
                 texts = node.append("text")
                     .attr("dy", ".3em")
                     .style("text-anchor", "middle")
+                    .attr("font-family", "Roboto, sans-serif")
+                    .attr("font-size", "14px")
+                    .attr("font-weight", "bold")
                     .text(function(d) {
-                        return d.name.substring(0, d.r / 3.5);
+                        return d.name.substring(0, d.r / 4.5);
                     });
             }
 

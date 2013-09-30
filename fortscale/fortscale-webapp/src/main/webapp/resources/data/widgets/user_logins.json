@@ -5,7 +5,7 @@
         {
             "type": "link",
             "text": "View all",
-            "href": "#/d/user_logins_investigate?username={{@entityId}}"
+            "href": "#/d/investigator?entity=logins&username={{@entityId}}"
         }
     ],
     "views": [
@@ -15,35 +15,31 @@
                 "fields": [
                     {
                         "name": "Source IP",
-                        "value": "{{sourceIP}}",
-                        "sortBy": "sourceIP",
-                        "link": "#/d/malware/e/machine/{{sourceIP}}"
+                        "value": "{{sourceIp}}",
+                        "sortBy": "sourceIp",
+                        "link": "#/d/investigator?entity=logins&username={{@entityId}}&sourceIp={{sourceIp}}"
                     },
                     {
-                        "name": "Source Hostname",
-                        "value": "{{sourceHostname}}",
-                        "sortBy": "sourceHostname",
-                        "link": "#/d/malware/e/machine/{{sourceHostname}}"
+                        "name": "Destination IP",
+                        "value": "{{destinationIp}}",
+                        "sortBy": "destinationIp",
+                        "link": "#/d/investigator?entity=logins&username={{@entityId}}&destinationIp={{destinationIp}}"
                     },
                     {
                         "name": "Time",
-                        "value": "{{time}}",
-                        "sortBy": "time",
+                        "value": "{{eventTime}}",
+                        "sortBy": "eventTime",
                         "sortDirection": -1,
                         "format": "date",
                         "formatOptions": { "format": "MM/DD/YY HH:mm:ss" }
                     },
                     {
-                        "name": "Destination IP",
-                        "value": "{{destinationIP}}",
-                        "sortBy": "destinationIP",
-                        "link": "#/d/machine/{{destinationIP}}"
-                    },
-                    {
-                        "name": "Destination Hostname",
-                        "value": "{{destinationHostname}}",
-                        "sortBy": "destinationMachine",
-                        "link": "#/d//machine/{{destinationHostname}}"
+                        "name": "Score",
+                        "value": "{{eventScore}}",
+                        "style": "score",
+                        "styleParams": {
+                            "value": "eventScore"
+                        }
                     }
                 ]
             }

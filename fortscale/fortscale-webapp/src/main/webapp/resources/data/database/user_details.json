@@ -10,7 +10,8 @@
         "mobilePhone": null,
         "name": "administrator",
         "username": "Administrator",
-        "workerId": "456873"
+        "workerId": "456873",
+        "location": "NYC"
     },
     {
         "address": "32 Spring St  New York",
@@ -24,7 +25,8 @@
         "name": "Andrea Smith",
         "username": "AndreaS",
         "workerId": "456873",
-        "image": "images/users/andreas.jpg"
+        "image": "images/users/andreas.jpg",
+        "location": "NYC"
     },
     {
         "address": "1 Wall St  New York",
@@ -38,7 +40,8 @@
         "name": "Bill Harris",
         "username": "BillH",
         "workerId": "475864",
-        "image": "images/users/billh.jpg"
+        "image": "images/users/billh.jpg",
+        "location": "NYC"
     },
     {
         "address": "2 Wall St  New York",
@@ -51,7 +54,8 @@
         "mobilePhone": "+1 212-785-6851",
         "name": "Bob Jones",
         "username": "BobH",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "3 Wall St  New York",
@@ -64,7 +68,8 @@
         "mobilePhone": "+1 212-785-6852",
         "name": "Cathy Taylor",
         "username": "CathyT",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "4 Wall St  New York",
@@ -77,7 +82,8 @@
         "mobilePhone": "+1 212-785-6853",
         "name": "Jess Fane",
         "username": "JessF",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "5 Wall St  New York",
@@ -90,7 +96,8 @@
         "mobilePhone": "+1 212-785-6854",
         "name": "Charles Kavanagh",
         "username": "CharlesK",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "6 Wall St  New York",
@@ -103,7 +110,8 @@
         "mobilePhone": "+1 212-785-6855",
         "name": "Kate Frances",
         "username": "KateF",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "7 Wall St  New York",
@@ -116,7 +124,8 @@
         "mobilePhone": "+1 212-785-6856",
         "name": "Claire Anderson",
         "username": "ClaireA",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "8 Wall St  New York",
@@ -130,7 +139,8 @@
         "name": "Joe Swift",
         "username": "JoeS",
         "workerId": "345675",
-        "image": "images/users/joes.jpg"
+        "image": "images/users/joes.jpg",
+        "location": "NYC"
     },
     {
         "address": "9 Wall St  New York",
@@ -143,7 +153,8 @@
         "mobilePhone": "+1 212-785-6858",
         "name": "Ian Case",
         "username": "IanC",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "10 Wall St  New York",
@@ -156,7 +167,8 @@
         "mobilePhone": "+1 212-785-6859",
         "name": "James Albert",
         "username": "JamesA",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "11 Wall St  New York",
@@ -169,7 +181,8 @@
         "mobilePhone": "+1 212-785-6860",
         "name": "Jason Chubb",
         "username": "JasonC",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "12 Wall St  New York",
@@ -182,7 +195,8 @@
         "mobilePhone": "+1 212-785-6861",
         "name": "Kelly Annan",
         "username": "KellyA",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "13 Wall St  New York",
@@ -195,7 +209,8 @@
         "mobilePhone": "+1 212-785-6862",
         "name": "Mary Carter",
         "username": "MaryC",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "14 Wall St  New York",
@@ -208,7 +223,8 @@
         "mobilePhone": "+1 212-785-6863",
         "name": "Jim Knox",
         "username": "JimK",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "15 Wall St  New York",
@@ -221,7 +237,8 @@
         "mobilePhone": "+1 212-785-6864",
         "name": "Chris Shaw",
         "username": "ChrisS",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "16 Wall St  New York",
@@ -234,7 +251,8 @@
         "mobilePhone": "+1 212-785-6865",
         "name": "Harry Stone",
         "username": "HarryS",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "17 Wall St  New York",
@@ -247,7 +265,8 @@
         "mobilePhone": "+1 212-785-6866",
         "name": "John Steele",
         "username": "JohnS",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "18 Wall St  New York",
@@ -260,7 +279,8 @@
         "mobilePhone": "+1 212-785-6867",
         "name": "Lucy Fulsom",
         "username": "LucyF",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "19 Wall St  New York",
@@ -273,7 +293,8 @@
         "mobilePhone": "+1 212-785-6868",
         "name": "Luke Astor",
         "username": "LukeA",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     },
     {
         "address": "20 Wall St  New York",
@@ -286,6 +307,7 @@
         "mobilePhone": "+1 212-785-6869",
         "name": "Mark Kendakk",
         "username": "MarkK",
-        "workerId": "654834"
+        "workerId": "654834",
+        "location": "NYC"
     }
 ]

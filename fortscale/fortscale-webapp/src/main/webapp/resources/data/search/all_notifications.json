@@ -7,7 +7,7 @@
             "id": "AndreaS",
             "explanation": "Unusual membership",
             "severity": 65,
-            "time": 1378896283891
+            "time": "-1d"
         },
         {
             "text": "was added to Administrators",
@@ -18,15 +18,6 @@
             "severity": 80,
             "time": 1378777285691
 
-        },
-        {
-            "text": "Password Never Expires was set to ON",
-            "name": "Andrea Smith",
-            "id": "AndreaS",
-            "type": "user",
-            "explanation": "Unusual for profile",
-            "severity": 38,
-            "time": "-1d"
         }
     ],
     "total": 4

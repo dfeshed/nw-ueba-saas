@@ -48,11 +48,7 @@
                 if (report.dataSource === "api"){
                     var deferred = $q.defer();
 
-                    server.queryServer(report, params, report.options).then(deferred.resolve, function(){
-                        database.query(report.query, params, report.params).then(deferred.resolve, function(){
-                            server.query(report.searchId, params, report.options).then(deferred.resolve, deferred.reject);
-                        });
-                    });
+                    server.queryServer(report, params, report.options).then(deferred.resolve, deferred.reject);
 
                     return deferred.promise;
                 }

@@ -1,0 +1,13 @@
+<script type="text/ng-template" id="investigator_field_objectArray">
+    <ul class="unstyled investigator-field investigator-field-object-array">
+        <li ng-repeat="member in config.view.settings[setting.id]">
+            <div ng-repeat="memberSetting in setting.memberSettings">
+                <label>
+                    {{memberSetting.name}}
+                    <input type="text" ng-model="member[memberSetting.id]" />
+                </label>
+            </div>
+        </li>
+    </ul>
+    <a class="btn" ng-click="fields.objectArray.addMember(setting)">{{setting.addText}}</a>
+</script>

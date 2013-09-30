@@ -1,0 +1,29 @@
+{
+    "name": "Table",
+    "settings": [
+        {
+            "id": "fields",
+            "name": "Fields",
+            "type": "objectArray",
+            "sortable": true,
+            "addText": "Add field",
+            "memberSettings": [
+                {
+                    "id": "name",
+                    "name": "Name",
+                    "type": "string"
+                },
+                {
+                    "id": "value",
+                    "name": "Value",
+                    "type": "parsed"
+                },
+                {
+                    "id": "link",
+                    "name": "Link",
+                    "type": "parsed"
+                }
+            ]
+        }
+    ]
+}

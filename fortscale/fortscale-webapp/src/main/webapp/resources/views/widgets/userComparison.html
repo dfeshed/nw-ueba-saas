@@ -16,8 +16,10 @@
         <table class="table table-hover widget-table">
             <thead>
             <tr>
+                <th>Username</th>
                 <th>Name</th>
                 <th>Title</th>
+                <th>Location</th>
                 <th>Score</th>
                 <th>Trending</th>
                 <th>Remove</th>
@@ -25,8 +27,10 @@
             </thead>
             <tbody>
                 <tr ng-repeat="user in users" ng-class="{highlighted: user.highlighted}" ng-mouseenter="highlight(user.username)" ng-mouseleave="highlight(null)">
+                    <td><a href="#/d/user/{{user.username}}">{{user.username}}</a></td>
                     <td><a href="#/d/user/{{user.username}}">{{user.name}}</a></td>
                     <td>{{user.jobTitle}}</td>
+                    <td>{{user.location}}</td>
                     <td>{{user.score}}</td>
                     <td>{{user.trend}}</td>
                     <td><a title="Remove this user"
@@ -45,6 +49,11 @@
                         <i class="icon-exchange"></i>
                         Switch Fields
                     </a>
+                    <div class="btn-group">
+                        <a class="btn active" title="Circles chart"><i class="icon-circle"></i></a>
+                        <a class="btn" title="Bar chart (not implemented yet)"><i class="icon-bar-chart"></i></a>
+                        <a class="btn" title="Geolocation chart (not implemented yet)"><i class="icon-globe"></i></a>
+                    </div>
                 </div>
                 <bubbles-chart ng-model="chartData" settings="chartSettings" highlighted-member="{{highlightedUser}}"></bubbles-chart>
             </div>

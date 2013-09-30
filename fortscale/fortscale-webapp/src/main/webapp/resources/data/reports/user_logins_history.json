@@ -1,20 +1,28 @@
 {
     "dataSource": "api",
     "endpoint": {
-        "entity": "classifier",
-        "method": "loginsEvents"
+        "entity": "user",
+        "subEntityName": "classifier",
+        "subEntityId": "{{@attribute}}",
+        "method": "scorehistory",
+        "id": "{{@username}}"
     },
     "query": {
         "entity": "logins",
         "conditions": [
             {
-                "field": "eventScore",
+                "field": "username",
+                "operator": "equals",
+                "value": "{{username}}"
+            },
+            {
+                "field": "score",
                 "operator": "greaterThan",
-                "value": 20
+                "value": 30
             }
         ]
     },
-    "searchId": "user_logins",
+    "searchId": "user_logins_history",
     "fields": [
         {
             "name": "score",

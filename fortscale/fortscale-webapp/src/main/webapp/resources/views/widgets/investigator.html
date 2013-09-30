@@ -1,39 +1,94 @@
 <div class="investigator" ng-controller="InvestigatorController">
     <div class="row-fluid">
-        <div class="span3 investigator-menu">
+        <div class="span4 investigator-menu">
             <section>
                 <h4>Entity</h4>
                 <div class="investigator-menu-section-contents">
                     <select ng-model="config.entity"
+                            style="width: 100%; height: 29px"
                             ng-options="entity.id as entity.name for entity in entities"
-                            ng-change="onEntitySelect($event)"></select>
+                            ng-change="onEntitySelect(true)"></select>
                 </div>
             </section>
             <section ng-show="config.entity">
-                <h4>Fields</h4>
+                <h4>Data</h4>
                 <div class="investigator-menu-section-contents">
+                    <a class="btn investigator-fields-update-btn" ng-click="update(true)" ng-show="fieldsChanged">Update</a>
                     <table class="investigator-fields table table-hover widget-table">
                         <thead>
                             <tr>
                                 <th>Type</th>
                                 <th>Name</th>
-                                <th>Enabled</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr ng-repeat="field in currentEntity.fields">
                                 <td><i class="icon-{{fieldTypeIcons[field.type]}} investigator-field-icon"></i></td>
-                                <td class="investigator-field-name table-large-cell">{{field.name}}</td>
-                                <td>
-                                    <input type="checkbox" ng-model="field.enabled" ng-change="update()" />
+                                <td class="investigator-field-name table-large-cell">
+                                    <span style="float: right">
+                                         <input type="checkbox" ng-model="field.enabled" ng-change="onFieldChange()" title="{{field.enabled && 'Disable field' || 'Enable field' }}" />
+                                        <a class="clickable" ng-click="addFilter(field)" title="Add filter"><i class="icon-filter"></i></a>
+                                    </span>
+                                    {{field.name}}
+                                    <div class="investigator-field-filters" ng-show="field.filters.length">
+                                        <ul class="unstyled investigator-field-filters-list">
+                                            <li ng-repeat="filter in field.filters">
+                                                <select ng-model="filter.operator"
+                                                        ng-change="onFieldChange()"
+                                                        ng-options="operator.name as operator.display for operator in operatorsForType[field.type]"
+                                                        ng-class="{ 'investigator-filter-operator-small': operatorsIndex[filter.operator].requiresValue }"></select>
+                                                <input type="text"
+                                                       class="search"
+                                                       ng-model="filter.value"
+                                                       ng-change="onFieldChange()"
+                                                       ng-show="operatorsIndex[filter.operator].requiresValue" />
+                                                <a ng-click="removeFilter(field, $index)" class="clickable" title="Remove filter">
+                                                    <i class="icon-remove"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <a class="clickable"
+                                           ng-click="addFilter(field)"
+                                           ng-show="!operatorsIndex[field.filters[field.filters.length - 1].operator].requiresValue || field.filters[field.filters.length - 1].value"
+                                           title="Add filter"><i class="icon-plus"></i> Add filter</a>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
+            <section ng-show="config.entity">
+                <h4>View</h4>
+                <div class="investigator-menu-section-contents">
+                    <label>
+                        Type: <select ng-model="currentViewType"
+                                      ng-options="viewType as viewType.name for (viewTypeId , viewType) in viewTypes"
+                                      ng-chage="onViewTypeSelect(view.id)"></select>
+                        <hr />
+                        <table class="table investigator-view-settings">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="setting in currentViewType.settings">
+                                    <td>
+                                        <label>{{setting.name}}</label>
+                                    </td>
+                                    <td ng-include="'investigator_field_' + setting.type">
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </label>
+                </div>
+            </section>
         </div>
-        <div class="span12 investigator-display">
+        <div class="span11 investigator-display">
             <ng-include src="'views/widgets/table.html'"></ng-include>
         </div>
     </div>

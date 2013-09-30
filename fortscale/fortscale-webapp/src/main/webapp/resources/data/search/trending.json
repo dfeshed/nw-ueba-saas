@@ -16,6 +16,20 @@
         },
         {
             "type": "user",
+            "name": "Dorothy Van-Rotten",
+            "id": "DorothyVR",
+            "score": 82,
+            "trend": 30
+        },
+        {
+            "type": "user",
+            "name": "Doug Wallace",
+            "id": "DougW",
+            "score": 86,
+            "trend": 23
+        },
+        {
+            "type": "user",
             "name": "Bill Harris",
             "id": "BillH",
             "score": 88,

@@ -3,18 +3,7 @@
     "name": "Overview",
     "columns": [
         {
-            "className": "span3",
-            "widgets": [
-                {
-                    "widgetId": "overview_score"
-                },
-                {
-                    "widgetId": "top_trending"
-                }
-            ]
-        },
-        {
-            "className": "span9",
+            "className": "span7",
             "widgets": [
                 {
                     "title": "Users Severity Distribution",
@@ -37,20 +26,15 @@
                             }
                         }
                     ]
-                },
-                {
-                    "widgetId": "all_users_group_memberships"
-                },
-                {
-                    "widgetId": "all_users_logins"
                 }
             ]
         },
         {
-            "className": "span3",
+            "className": "span8",
             "widgets": [
+
                 {
-                    "widgetId": "all_recent_events"
+                    "widgetId": "all_users_logins"
                 }
             ]
         }

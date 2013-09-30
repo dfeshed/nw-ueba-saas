@@ -3,7 +3,7 @@
 if(typeof(yoxigen) === "undefined")
     yoxigen = angular.module("Yoxigen", []);
 
-yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
+yoxigen.directive("yoxigenPercentChart", ["$timeout", "$rootScope", function($timeout, $rootScope){
     return {
         template: "<div class='yoxigen-chart yoxigen-percent-chart' style='width: 100%; height: 100%'></div>",
         restrict: 'E',
@@ -16,6 +16,7 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
             var selectedBarGroup = null;
             var labelTexts, labelBoxes;
             var selectItem;
+            var rects;
 
             var defaultOptions = {
                     selectable: false,
@@ -71,7 +72,7 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
                 if (settings.events){
                     angular.forEach(settings.events, function(eventSettings){
                         element.on(eventSettings.eventName, ".handle-events", function(e){
-                            scope.$apply(function(){
+                            scope.safeApply(function(){
                                 scope.$emit("widgetEvent", { event: eventSettings, data: e.currentTarget.__data__, widget: scope.widget });
                             });
                         })
@@ -88,6 +89,15 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
                     });
                 }
             });
+
+            function removeEmptyData(data){
+                var copiedData = angular.copy(data);
+                for(var i=copiedData.length - 1; i >= 0; i--){
+                    if (!copiedData[i][settings.series[0].field])
+                        copiedData.splice(i, 1);
+                }
+                return copiedData;
+            }
 
             function setLabelFill(labelData, labelIndex){
                 if (labelIndex === selectedBarGroup) return "White";
@@ -116,8 +126,11 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
                 element[0].style.width = options.width;
                 element[0].style.height = options.height;
 
-                var scale = d3.scale.linear()
-                    .domain([0,  d3.sum(data, function(d) { return d.value; })]);
+                data = removeEmptyData(data);
+
+                var valueField = settings.series[0].field,
+                    scale = d3.scale.linear()
+                    .domain([0,  d3.sum(data, function(d) { return d[valueField]})]);
 
                 var patterns = {};
 
@@ -161,7 +174,9 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
                     d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", false);
                     selectedBarGroup = itemIndex;
                     d3.select(labelTexts[0][selectedBarGroup]).attr("fill", setLabelFill(itemData, selectedBarGroup));
-                    d3.select(labelTexts[0][previousSelectedIndex]).attr("fill", setLabelFill(data[previousSelectedIndex], previousSelectedIndex));
+                    if (previousSelectedIndex !== null)
+                        d3.select(labelTexts[0][previousSelectedIndex]).attr("fill", setLabelFill(data[previousSelectedIndex], previousSelectedIndex));
+
                     d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", true);
 
                     selectionBar.attr("fill", color);
@@ -180,8 +195,16 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
                 if (options.showSelectionBar)
                     createSelectionBar();
 
-                if (selectedBarGroup !== undefined && selectItem)
+                if (selectedBarGroup !== null && selectedBarGroup !== undefined && selectItem)
                     selectItem(data[selectedBarGroup], selectedBarGroup);
+
+                if (options.selectFirstOnLoad && selectItem){
+                    setTimeout(function(){
+                        $rootScope.$apply(function(){
+                            jQuery(rects[0][0]).click();
+                        });
+                    });
+                }
 
                 function getBarWidth(barIndex){
                     var barWidth = barsWidth[barIndex];
@@ -272,7 +295,7 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
                 }
 
                 function createBars(series){
-                    var rects = svg.selectAll("rect.bars")
+                    rects = svg.selectAll("rect.bars")
                         .data(data)
                         .enter()
                         .append("rect")
@@ -323,7 +346,8 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
                         .append("text")
                         .attr("class", "labels" + handleEventsClass)
                         .text(function(d, i) {
-                            return d._label || d[settings.labels.field];
+                            var value = d[settings.labels.field];
+                            return (value < 1 ? "< 1" : value) + "%";
                         })
                         .attr("x", function(d, i) {
                             var currentItemWidth = getBarWidth(i),
@@ -343,7 +367,7 @@ yoxigen.directive("yoxigenPercentChart", ["$parse", function($parse){
 
                     labelBoxes
                         .attr("width", function(d, i){
-                            return labelTexts[0][i].clientWidth + 32;
+                            return labelTexts[0][i].clientWidth + 10;
                         })
                         .attr("x", function(d, i){
                             var currentTotalWidth = totalWidth,

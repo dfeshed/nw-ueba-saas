@@ -4,21 +4,6 @@
         "id": "logins",
         "fields": [
             {
-                "name": "Hostname",
-                "id": "hostname",
-                "type": "string"
-            },
-            {
-                "name": "Time",
-                "id": "time",
-                "type": "date"
-            },
-            {
-                "name": "Code",
-                "id": "eventCode",
-                "type": "string"
-            },
-            {
                 "name": "User name",
                 "id": "username",
                 "type": "string",
@@ -26,9 +11,65 @@
                 "entityField": "username"
             },
             {
-                "name": "IP Address",
-                "id": "ipAddress",
+                "name": "Source IP",
+                "id": "sourceIp",
                 "type": "string"
+            },
+            {
+                "name": "Source Hostname",
+                "id": "sourceHostname",
+                "type": "string"
+            },
+            {
+                "name": "Time",
+                "id": "eventTime",
+                "type": "date"
+            },
+            {
+                "name": "Destination IP",
+                "id": "destinationIp",
+                "type": "string"
+            },
+            {
+                "name": "Destination Hostname",
+                "id": "destinationHostname",
+                "type": "string"
+            },
+            {
+                "name": "Score",
+                "id": "eventScore",
+                "type": "number"
+            }
+        ]
+    },
+    {
+        "name": "User Events",
+        "id": "user_events",
+        "fields": [
+            {
+                "name": "Username",
+                "id": "username",
+                "type": "string"
+            },
+            {
+                "name": "Text",
+                "id": "text",
+                "type": "string"
+            },
+            {
+                "name": "Type",
+                "id": "type",
+                "type": "string"
+            },
+            {
+                "name": "Score",
+                "id": "score",
+                "type": "string"
+            },
+            {
+                "name": "Time",
+                "id": "time",
+                "type": "date"
             }
         ]
     },
@@ -36,6 +77,16 @@
         "name": "User Details",
         "id": "user_details",
         "fields": [
+            {
+                "name": "Name",
+                "id": "name",
+                "type": "string"
+            },
+            {
+                "name": "Username",
+                "id": "username",
+                "type": "string"
+            },
             {
                 "name": "Address",
                 "id": "address",
@@ -77,16 +128,6 @@
                 "type": "string"
             },
             {
-                "name": "Name",
-                "id": "name",
-                "type": "string"
-            },
-            {
-                "name": "Username",
-                "id": "username",
-                "type": "string"
-            },
-            {
                 "name": "Worker ID",
                 "id": "workerId",
                 "type": "string"
@@ -95,6 +136,67 @@
                 "name": "Image",
                 "id": "image",
                 "type": "string"
+            }
+        ]
+    },
+    {
+        "name": "Group Memberships",
+        "id": "user_groups",
+        "fields": [
+            {
+                "name": "User name",
+                "id": "username",
+                "type": "string",
+                "entity": "user_details",
+                "entityField": "username"
+            },
+            {
+                "name": "Group",
+                "id": "group",
+                "type": "string"
+            },
+            {
+                "name": "Time",
+                "id": "time",
+                "type": "date"
+            },
+            {
+                "name": "Score",
+                "id": "score",
+                "type": "number"
+            }
+        ]
+    },
+    {
+        "name": "User Machines",
+        "id": "users_machines",
+        "fields": [
+            {
+                "name": "User name",
+                "id": "username",
+                "type": "string",
+                "entity": "user_details",
+                "entityField": "username"
+            },
+            {
+                "name": "Hostname",
+                "id": "hostname",
+                "type": "string"
+            },
+            {
+                "name": "Usage",
+                "id": "count",
+                "type": "number"
+            },
+            {
+                "name": "IP Address",
+                "id": "ipAddress",
+                "type": "string"
+            },
+            {
+                "name": "Last Signin",
+                "id": "lastSignIn",
+                "type": "date"
             }
         ]
     }

@@ -36,10 +36,6 @@ angular.module("Fortscale").controller("TableWidgetController", ["$scope", "$tim
         if (!field.sortBy)
             return;
 
-        var fieldSettings = $scope.widget.report.query.fields[field.sortBy],
-            parser = sortTypeParsers[fieldSettings.type] || function(value){ return value;},
-            fieldIsArray = fieldSettings.isArray;
-
         if (field.sortBy === currentSortField)
             sortDirection *= -1;
         else{
@@ -53,11 +49,21 @@ angular.module("Fortscale").controller("TableWidgetController", ["$scope", "$tim
 
         field.sortDirection = sortDirection;
 
-        if (view.settings.allowPaging && $scope.tablePagingData.totalCount > $scope.tablePagingData.itemsPerPage){
-            $scope.widget.params.sort = (sortDirection === 1 ? "" : "-") + currentSortField;
-            $scope.runWidgetReport($scope.widget, true);
-        }
+        //if (view.settings.allowPaging && $scope.tablePagingData.totalCount > $scope.tablePagingData.itemsPerPage){
+        /*
+            if ($scope.widget){
+                $scope.widget.params.sort = (sortDirection === 1 ? "" : "-") + currentSortField;
+                $scope.runWidgetReport($scope.widget, true);
+            }
+            */
+            $scope.$emit("tableSort", { direction: sortDirection, field: currentSortField })
+        //}
+        /*
         else{
+            var fieldSettings = $scope.widget.report.query.fields[field.sortBy],
+                parser = sortTypeParsers[fieldSettings.type] || function(value){ return value;},
+                fieldIsArray = fieldSettings.isArray;
+
             view.rawData.sort(function(row1, row2){
                 var sortVal = 0,
                     val1 = row1[field.sortBy], val2 = row2[field.sortBy];
@@ -79,7 +85,7 @@ angular.module("Fortscale").controller("TableWidgetController", ["$scope", "$tim
             });
 
             view.data = widgets.setViewValues(view, view.rawData, widgetParams);
-        }
+        }*/
     };
 
     $scope.initFilter = function(field){
@@ -143,19 +149,25 @@ angular.module("Fortscale").controller("TableWidgetController", ["$scope", "$tim
     };
 
     $scope.pageTable = function(){
-        $scope.widget.report.query.options = $scope.widget.report.query.options || {};
-        $scope.widget.report.query.options.offset = $scope.tablePagingData.itemsPerPage * ($scope.tablePagingData.currentPage - 1);
-        $scope.runWidgetReport($scope.widget, true);
+        /*
+        if ($scope.widget && $scope.widget.report){
+            $scope.widget.report.query.options = $scope.widget.report.query.options || {};
+            $scope.widget.report.query.options.offset = $scope.tablePagingData.itemsPerPage * ($scope.tablePagingData.currentPage - 1);
+            $scope.runWidgetReport($scope.widget, true);
+        }
+          */
+        $scope.$emit("tablePage", { page: $scope.tablePagingData.currentPage, pageSize: $scope.tablePagingData.itemsPerPage });
     };
 
-    if ($scope.view.settings.allowPaging)
+    if ($scope.view.settings.allowPaging){
         $scope.$watch("widget.totalResults", setPaginationData);
-
+        $scope.$watch("view.dataTotalResults", setPaginationData);
+    }
     function setPaginationData(){
-        if ($scope.widget.totalResults){
+        if (($scope.widget && $scope.widget.totalResults) || $scope.view.dataTotalResults){
             $scope.tablePagingData = {
-                itemsPerPage: $scope.widget.report.query.options && $scope.widget.report.query.options.count,
-                totalCount: $scope.widget.totalResults
+                itemsPerPage: $scope.view.settings.pageSize,
+                totalCount: $scope.widget.totalResults || $scope.view.dataTotalResults
             };
         }
     }

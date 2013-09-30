@@ -1,39 +1,15 @@
-angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$http", "database", function($scope, $http, database){
+angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$http", "database", function ($scope, $http, database) {
     var otherUsers = [
-            {
-                "name": "Charles Kavanagh",
-                "username": "CharlesK",
-                "jobTitle": "Operations Specialist",
-                "score": 65,
-                "trend": "+30%"
-            },
-            {
-                "name": "James Albert",
-                "username": "JamesA",
-                "jobTitle": "Operations Specialist",
-                "score": 53,
-                "trend": "+0.8%"
-            },
-            {
-                "name": "Jim Knox",
-                "username": "JimK",
-                "jobTitle": "Operations Specialist",
-                "score": 45,
-                "trend": "+0.7%"
-            },
-            {
-                "name": "Lucy Fulsom",
-                "username": "LucyF",
-                "jobTitle": "Operations Specialist",
-                "score": 29,
-                "trend": "+1.65%"
-            }
-        ];
+        {"name": "Charles Kavanagh", "username": "CharlesK", "jobTitle": "Operations Specialist", "score": 65, "trend": "+30%", "location": "NYC"},
+        {"name": "James Albert", "username": "JamesA", "jobTitle": "Operations Specialist", "score": 53, "trend": "+0.8%", "location": "NYC"},
+        {"name": "Jim Knox", "username": "JimK", "jobTitle": "Operations Specialist", "score": 45, "trend": "+0.7%", "location": "NYC"},
+        {"name": "Lucy Fulsom", "username": "LucyF", "jobTitle": "Operations Specialist", "score": 29, "trend": "+1.65%", "location": "NYC"}
+    ];
 
     var selectTabs = {
-        groups: function() {
+        groups: function () {
             var conditionUsernames = [];
-            angular.forEach($scope.users, function(user){
+            angular.forEach($scope.users, function (user) {
                 conditionUsernames.push(user.username);
             });
 
@@ -46,15 +22,15 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
                         "value": conditionUsernames
                     }
                 ]
-            }).then(function(results){
+            }).then(function (results) {
                     $scope.chartSettings.itemField = switchedFields ? "username" : "group";
                     $scope.chartSettings.childrenField = switchedFields ? "group" : "username";
                     $scope.chartData = results.data;
                 });
         },
-        machines: function(){
+        machines: function () {
             var conditionUsernames = [];
-            angular.forEach($scope.users, function(user){
+            angular.forEach($scope.users, function (user) {
                 conditionUsernames.push(user.username);
             });
 
@@ -67,15 +43,15 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
                         "value": conditionUsernames
                     }
                 ]
-            }).then(function(results){
+            }).then(function (results) {
                     $scope.chartSettings.itemField = switchedFields ? "username" : "hostname";
                     $scope.chartSettings.childrenField = switchedFields ? "hostname" : "username";
-                $scope.chartData = results.data;
-            });
+                    $scope.chartData = results.data;
+                });
         },
-        groupPolicy: function(){
+        groupPolicy: function () {
             var conditionUsernames = [];
-            angular.forEach($scope.users, function(user){
+            angular.forEach($scope.users, function (user) {
                 conditionUsernames.push(user.username);
             });
 
@@ -88,7 +64,7 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
                         "value": conditionUsernames
                     }
                 ]
-            }).then(function(results){
+            }).then(function (results) {
                     $scope.chartSettings.itemField = switchedFields ? "username" : "policy";
                     $scope.chartSettings.childrenField = switchedFields ? "policy" : "username";
                     $scope.chartData = results.data;
@@ -104,6 +80,7 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
             "name": "Andrea Smith",
             "username": "AndreaS",
             "jobTitle": "Operations Specialist",
+            "location": "NYC",
             "score": 94,
             "trend": "+34%",
             "fixed": true
@@ -112,7 +89,7 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
 
     currentTab();
 
-    $scope.searchUsers = function(search){
+    $scope.searchUsers = function (search) {
         if (!search)
             return;
 
@@ -123,17 +100,17 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
         $scope.usersSearch = "";
     };
 
-    $scope.clearUsers = function(){
+    $scope.clearUsers = function () {
         $scope.users = [$scope.users[0]];
         currentTab();
     };
 
-    $scope.removeUser = function(userIndex){
+    $scope.removeUser = function (userIndex) {
         $scope.users.splice(userIndex, 1);
         currentTab();
     };
 
-    $scope.highlight = function(user){
+    $scope.highlight = function (user) {
         $scope.highlightedUser = user;
     };
 
@@ -144,7 +121,7 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
         "valueIsCount": true
     };
 
-    $scope.switchChartFields = function(){
+    $scope.switchChartFields = function () {
         var childrenField = $scope.chartSettings.childrenField;
         $scope.chartSettings.childrenField = $scope.chartSettings.itemField;
         $scope.chartSettings.itemField = childrenField;
@@ -172,7 +149,7 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
                         "value": "score"
                     }
                 },
-                "onSelect": function(tab){
+                "onSelect": function (tab) {
                     currentTab = selectTabs[tab.id];
                     currentTab();
                 }

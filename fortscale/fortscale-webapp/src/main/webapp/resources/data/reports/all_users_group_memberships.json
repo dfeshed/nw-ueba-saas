@@ -1,5 +1,16 @@
 {
+    "dataSource": "database",
     "searchId": "user_group_memberships",
+    "query": {
+        "entity": "user_groups",
+        "conditions": [
+            {
+                "field": "score",
+                "operator": "greaterThanOrEqual",
+                "value": 70
+            }
+        ]
+    },
     "fields": [
         {
             "name": "username",

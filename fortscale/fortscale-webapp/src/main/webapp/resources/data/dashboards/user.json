@@ -33,7 +33,7 @@
     ],
     "columns": [
         {
-            "className": "span3",
+            "className": "span4",
             "widgets": [
                 {
                     "widgetId": "user_details",
@@ -84,21 +84,23 @@
             ]
         },
         {
-            "className": "span9",
+            "className": "span11",
             "widgets": [
                 {
                     "widgetId": "user_scores_container"
                 },
                 {
-                    "widgetId": "user_logins"
-                }
-            ]
-        },
-        {
-            "className": "span3",
-            "widgets": [
-                {
-                    "widgetId": "user_recent_events"
+                    "widgetId": "user_logins",
+                    "report": {
+                        "query": {
+                            "params": [
+                                {
+                                    "dashboardParam": "entityId",
+                                    "field": "username"
+                                }
+                            ]
+                        }
+                    }
                 }
             ]
         }
