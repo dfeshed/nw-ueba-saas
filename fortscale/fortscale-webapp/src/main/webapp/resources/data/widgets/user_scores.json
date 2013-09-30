@@ -74,7 +74,7 @@
                         }
                     },
                     {
-                        "field": "averageScore",
+                        "field": "avgScore",
                         "label": "Average user",
                         "color": "#e7e7e7",
                         "barLabelsColor": "#aaaaaa"

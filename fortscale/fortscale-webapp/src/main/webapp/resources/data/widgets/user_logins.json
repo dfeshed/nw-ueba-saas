@@ -20,10 +20,10 @@
                         "link": "#/d/investigator?entity=logins&username={{@entityId}}&sourceIp={{sourceIp}}"
                     },
                     {
-                        "name": "Destination IP",
-                        "value": "{{destinationIp}}",
-                        "sortBy": "destinationIp",
-                        "link": "#/d/investigator?entity=logins&username={{@entityId}}&destinationIp={{destinationIp}}"
+                        "name": "Destination Hostname",
+                        "value": "{{destinationHostname}}",
+                        "sortBy": "destinationHostname",
+                        "link": "#/d/investigator?entity=logins&username={{@entityId}}&destinationHostname={{destinationHostname}}"
                     },
                     {
                         "name": "Time",

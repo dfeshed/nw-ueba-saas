@@ -14,7 +14,7 @@
                     {
                         "name": "User",
                         "value": "{{username}}",
-                        "link": "#/d/user/{{username}}",
+                        "link": "#/d/user/{{userId}}",
                         "sortBy": "username"
                     },
                     {
@@ -24,10 +24,10 @@
                         "link": "#/d/investigator?entity=logins&sourceIp={{sourceIp}}"
                     },
                     {
-                        "name": "Destination IP",
-                        "value": "{{destinationIp}}",
-                        "sortBy": "destinationIp",
-                        "link": "#/d/investigator?entity=logins&destinationIp={{destinationIp}}"
+                        "name": "Destination Hostname",
+                        "value": "{{destinationHostname}}",
+                        "sortBy": "destinationHostname",
+                        "link": "#/d/investigator?entity=logins&destinationIp={{destinationHostname}}"
                     },
                     {
                         "name": "Time",

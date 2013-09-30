@@ -15,7 +15,7 @@
             "type": "number"
         },
         {
-            "name": "averageScore",
+            "name": "avgScore",
             "type": "number"
         }
     ],

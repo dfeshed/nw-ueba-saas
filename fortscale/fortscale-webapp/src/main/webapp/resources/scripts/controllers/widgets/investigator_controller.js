@@ -31,6 +31,7 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
         if (foundEntity){
             $scope.currentEntity = foundEntity;
             angular.forEach(foundEntity.fields, function(field){
+                field.entity = foundEntity;
                 field.enabled = true;
             });
 
@@ -104,9 +105,13 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
 
     function setUrlParams(){
         var params = {},
-            hasFilters;
+            hasFilters,
+            enabledFields = [];
 
         angular.forEach($scope.currentEntity.fields, function(field){
+            if (field.enabled)
+                enabledFields.push([field.entity.id, field.id].join("."));
+
             if (field.filters && field.filters.length){
                 hasFilters = true;
                 var fieldParams = params[field.id];
@@ -126,6 +131,7 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
         }
 
         $location.search("params", hasFilters ? JSON.stringify(params) : null);
+        $location.search("fields", enabledFields.join(","));
     }
 
     function getEntityTableFields(entity){
@@ -245,7 +251,7 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
     }
     function getFiltersFromUrl(){
         var queryParams = $location.search(),
-            filterParams = $location.search().params ?  JSON.parse(decodeURIComponent($location.search().params)) : {},
+            filterParams = $location.search().params ? JSON.parse(decodeURIComponent($location.search().params)) : {},
             field;
 
         clearFilters();
@@ -272,6 +278,36 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
         }
     }
 
+    function getFieldsFromUrl(){
+        var queryParams = $location.search();
+        if (!queryParams.fields)
+            return;
+
+        var fields = queryParams.fields.split(","),
+            entityFieldsIndex = {};
+
+        angular.forEach(fields, function(field){
+            var fieldParts = field.split("."),
+                entityId = fieldParts[0],
+                fieldId = fieldParts[1],
+                entityFields = entityFieldsIndex[entityId];
+
+            if (!entityFields)
+                entityFields = entityFieldsIndex[entityId] = [];
+
+            entityFields.push(fieldId);
+        });
+
+        for(var entityId in entityFieldsIndex){
+            // TODO: when using multiple entities, change this.
+            if (entityId === $scope.currentEntity.id){
+                angular.forEach($scope.currentEntity.fields, function(entityField){
+                    entityField.enabled = !!~entityFieldsIndex[entityId].indexOf(entityField.id);
+                });
+            }
+        }
+    }
+
     function clearFilters(){
         angular.forEach($scope.currentEntity.fields, function(field){
             if (field.filters)
@@ -288,6 +324,7 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
                 $scope.onEntitySelect();
 
                 getFiltersFromUrl();
+                getFieldsFromUrl();
                 $scope.update();
             }
         });

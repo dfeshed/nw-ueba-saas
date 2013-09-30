@@ -45,6 +45,10 @@
         {
             "name": "destinationIP",
             "type": "string"
+        },
+        {
+            "name": "destinationHostname",
+            "type": "string"
         }
     ],
     "params": [
