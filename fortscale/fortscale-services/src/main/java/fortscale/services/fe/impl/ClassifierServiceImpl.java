@@ -290,19 +290,6 @@ public class ClassifierServiceImpl implements ClassifierService {
 	private ILoginEventScoreInfo createLoginEventScoreInfo(User user, AuthScore authScore){
 		LoginEventScoreInfo ret = new LoginEventScoreInfo(user, authScore);
 		
-		String sourceHostname = null;
-		List<UserMachine> userMachines = userMachineDAO.findByHostnameip(authScore.getSourceIp());
-		if(userMachines != null && userMachines.size() > 0){
-			sourceHostname = userMachines.get(0).getHostname();
-		}
-		ret.setSourceHostname(sourceHostname);
-		
-		String destinationIp = null;
-		userMachines = userMachineDAO.findByHostname(authScore.getTargetId());
-		if(userMachines != null && userMachines.size() > 0){
-			destinationIp = userMachines.get(0).getHostnameip();
-		}
-		ret.setDestinationIp(destinationIp);
 		return ret;
 	}
 }
