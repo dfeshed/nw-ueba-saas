@@ -6,35 +6,21 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fortscale.domain.AbstractTest;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:META-INF/spring/fortscale-domain-context-test.xml" })
-public class UserMachineDAOTest {
+public class UserMachineDAOTest extends AbstractTest{
 	
 	@Autowired
 	AdUserRepository repository;
 
 	@Autowired
 	private UserMachineDAO userMachineDAO;
-	
-	@Test
-	public void thisAlwaysPasses() {
-	}
-
-	@Test
-	@Ignore
-	public void thisIsIgnored() {
-	}
-	
+		
 	@Test
 	public void testFindByUsername(){
 		Assert.assertTrue(findMachines().size() > 0);

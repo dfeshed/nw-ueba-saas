@@ -1,30 +1,16 @@
 package fortscale.domain.ad;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fortscale.domain.AbstractTest;
 import fortscale.domain.ad.dao.AdUserRepository;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:META-INF/spring/fortscale-domain-context-test.xml" })
-public class AdUserRepositoryTest{
+public class AdUserRepositoryTest extends AbstractTest{
 
 	@Autowired
 	AdUserRepository repository;
-	
-	@Test
-	public void thisAlwaysPasses() {
-	}
-
-	@Test
-	@Ignore
-	public void thisIsIgnored() {
-	}
-	
+		
 	@Test
 	public void testCount(){
 		repository.count();

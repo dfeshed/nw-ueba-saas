@@ -114,6 +114,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		int prevPercent = 0;
 		int prevCount = 0;
 		int i = 0;
+		int prevThreshold = 100;
 		for(Threshold threshold: thresholds){
 			if(i == 0){
 				i++;
@@ -121,9 +122,10 @@ public class ClassifierServiceImpl implements ClassifierService {
 			}
 			int percent = (int)((threshold.getCount()/(double)total)*100);
 			int count = threshold.getCount() - prevCount;
-			ret.add(new ScoreDistribution(threshold.getName(), count, percent - prevPercent));
+			ret.add(new ScoreDistribution(threshold.getName(), count, percent - prevPercent,threshold.getValue(), prevThreshold));
 			prevPercent = percent;
 			prevCount = threshold.getCount();
+			prevThreshold = threshold.getValue();
 		}
 		return ret;
 	}
@@ -291,5 +293,10 @@ public class ClassifierServiceImpl implements ClassifierService {
 		LoginEventScoreInfo ret = new LoginEventScoreInfo(user, authScore);
 		
 		return ret;
+	}
+
+	@Override
+	public List<SeverityElement> getSeverityElements() {
+		return severityOrderedList;
 	}
 }

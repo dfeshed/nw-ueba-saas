@@ -16,6 +16,11 @@ public class AbstractDocument {
 	public String getId() {
 		return id;
 	}
+	
+	//Only for testing!!!
+	protected void setId(String id) {
+		this.id = id;
+	}
 
 	/* 
 	 * (non-Javadoc)
