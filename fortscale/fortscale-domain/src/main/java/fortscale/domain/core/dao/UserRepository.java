@@ -26,6 +26,5 @@ public interface UserRepository extends PagingAndSortingRepository<User, String>
 	
 	public User findByAdDn(String adDn);
 	
-	public List<User> findByFirstnameContainingAndLastnameContaining(String firstNamePrefix, String lastNamePrefix);
 	public List<User> findBySearchFieldContaining(String prefix);
 }

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -119,10 +120,15 @@ public class AuthDAO {
 	}
 	
 	public Date getLastRunDate(){
-		Pageable pageable = new ImpalaPageRequest(1, new Sort(Direction.DESC, AuthScore.TIMESTAMP_FIELD_NAME));
-		String query = String.format("select %s from %s %s", AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.TABLE_NAME, pageable.toString());
-		
-		return parseTimestampDate(impalaJdbcTemplate.queryForObject(query, Long.class));
+		Calendar tmp = Calendar.getInstance();
+		tmp.add(Calendar.DAY_OF_MONTH,-1);
+		String query = String.format("select max(%s) from %s", AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.TABLE_NAME);
+		String queryWithHint = String.format("%s where %s > %d", query, AuthScore.TIMESTAMP_FIELD_NAME, tmp.getTimeInMillis());
+		Long lastRun = impalaJdbcTemplate.queryForObject(queryWithHint, Long.class);
+		if(lastRun == null) {
+			lastRun = impalaJdbcTemplate.queryForObject(query, Long.class);
+		}
+		return parseTimestampDate(lastRun);
 	}
 	
 	public double calculateAvgScoreOfGlobalScore(Date timestamp){
@@ -150,9 +156,9 @@ public class AuthDAO {
 		return ret;
 	}
 	
-	public List<AuthScore> findByTimestampAndScoreBetweenSortByScore(Date timestamp, int lowestVal, int upperVal, int limit){
+	public List<AuthScore> findByTimestampAndGlobalScoreBetweenSortByEventScore(Date timestamp, int lowestVal, int upperVal, int limit){
 		List<AuthScore> ret = new ArrayList<>();
-		Pageable pageable = new ImpalaPageRequest(limit, new Sort(Direction.DESC, AuthScore.GLOBAL_SCORE_FIELD_NAME));
+		Pageable pageable = new ImpalaPageRequest(limit, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
 		String query = String.format("select %s, %s, %s, max(%s) as %s from %s where %s=%s and %s >= %d and %s < %d group by %s, %s, %s %s", 
 				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME,
 				AuthScore.TABLE_NAME,
@@ -170,7 +176,6 @@ public class AuthDAO {
 		List<AuthScore> ret = new ArrayList<>();
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(Direction.DESC, AuthScore.TIMESTAMP_FIELD_NAME));
 		String query = String.format("select * from %s where %s=%s and %s > %d %s", 
-				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME,
 				AuthScore.TABLE_NAME,
 				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
 				AuthScore.GLOBAL_SCORE_FIELD_NAME, threshold.getValue(),

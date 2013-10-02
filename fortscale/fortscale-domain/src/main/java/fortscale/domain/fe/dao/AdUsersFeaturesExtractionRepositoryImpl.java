@@ -32,7 +32,6 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
-import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.FeatureWriteConverter;
@@ -182,11 +181,5 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 			throw new InvalidDataAccessApiUsageException("Command execution failed:  Error [" + error + "], Command = "
 					+ source, ex);
 		}
-	}
-
-	@Override
-	public List<ScoreInfo> calculateUserScoreInfo(String classifierId, String userId) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

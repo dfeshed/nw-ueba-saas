@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
@@ -155,7 +154,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 	private List<ISuspiciousUserInfo> getAuthSuspiciousUsers(String classifierId, String severityId) {
 		Date lastRun = authDAO.getLastRunDate();
 		Range severityRange = getRange(severityId);
-		List<AuthScore> authScores = authDAO.findByTimestampAndScoreBetweenSortByScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
+		List<AuthScore> authScores = authDAO.findByTimestampAndGlobalScoreBetweenSortByEventScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(AuthScore authScore: authScores){
 			User user = userRepository.findByAdUserPrincipalName(authScore.getUserName().toLowerCase());
@@ -281,8 +280,9 @@ public class ClassifierServiceImpl implements ClassifierService {
 			}
 			if(skipped >= offset){
 				ret.add(createLoginEventScoreInfo(user, authScore));
-			} else
+			} else {
 				skipped++;
+			}
 		}
 		return ret;
 	}

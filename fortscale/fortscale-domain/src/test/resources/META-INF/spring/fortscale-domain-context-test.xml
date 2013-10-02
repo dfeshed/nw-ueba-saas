@@ -9,7 +9,7 @@
 		
 	<description>domain context for testing.</description>
 	
-<!-- 	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/> -->
+	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 	<context:property-placeholder location="classpath*:META-INF/*.properties"/>
 	<import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
 	
