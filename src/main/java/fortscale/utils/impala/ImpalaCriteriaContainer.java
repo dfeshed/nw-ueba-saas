@@ -20,11 +20,11 @@ public class ImpalaCriteriaContainer implements ImpalaQueryElementInterface{
 	}
 	
 	public static ImpalaCriteriaContainer andWhere(ImpalaQueryElementInterface... elems){
-		return new ImpalaCriteriaContainer("IMPALA_CRITERIA_AND", elems);
+		return new ImpalaCriteriaContainer(IMPALA_CRITERIA_AND, elems);
 	}
 	
 	public static ImpalaCriteriaContainer orWhere(ImpalaQueryElementInterface... elems){
-		return new ImpalaCriteriaContainer("IMPALA_CRITERIA_OR", elems);
+		return new ImpalaCriteriaContainer(IMPALA_CRITERIA_OR, elems);
 	}
 	
 	public ImpalaCriteriaContainer and(ImpalaQueryElementInterface elem){
