@@ -65,7 +65,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 		basicDBObject.append(AdUserFeaturesExtraction.timestampField, adUsersFeaturesExtraction.getTimestamp());
 		BasicDBList basicDBList = new BasicDBList();
 		FeatureWriteConverter converter = new FeatureWriteConverter();
-		for(IFeature adFeature: adUsersFeaturesExtraction.getAttrVals()){
+		for(IFeature adFeature: adUsersFeaturesExtraction.getAttributes()){
 			BasicDBObject featureObject = new BasicDBObject();
 			featureObject.append(ADFeature.DISPLAY_NAME_FIELD, adFeature.getFeatureDisplayName());
 			featureObject.append(ADFeature.FEATURE_SCORE_FIELD, adFeature.getFeatureScore());

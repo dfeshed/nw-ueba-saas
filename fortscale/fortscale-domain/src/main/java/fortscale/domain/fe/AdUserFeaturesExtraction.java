@@ -2,8 +2,9 @@ package fortscale.domain.fe;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.data.annotation.PersistenceConstructor;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -37,30 +38,16 @@ public class AdUserFeaturesExtraction extends AbstractFEDocument{
 	private List<IFeature> attributes;
 	
 
-	@Transient
-	private List<IFeature> attrVals;
-	
-	
-	public List<IFeature> getAttrVals() {
-		return attrVals;
-	}
-
-
-	public void setAttrVals(List<IFeature> attrVals) {
-		this.attrVals = attrVals;
-	}
 
 
 	@PersistenceConstructor
-	public AdUserFeaturesExtraction(String classifierId, String userId, String rawId) {
+	@JsonCreator
+	public AdUserFeaturesExtraction(@JsonProperty("classifierId") String classifierId, @JsonProperty("userId") String userId, @JsonProperty("rawId") String rawId) {
 		this.classifierId = classifierId;
 		this.userId = userId;
 		this.rawId = rawId;
 	}
 	
-	
-	
-
 	public String getClassifierId() {
 		return classifierId;
 	}

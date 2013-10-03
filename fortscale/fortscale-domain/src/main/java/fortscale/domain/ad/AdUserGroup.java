@@ -2,19 +2,26 @@ package fortscale.domain.ad;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.util.Assert;
 
 public class AdUserGroup {
+	@JsonProperty
 	private final String dn;
+	@JsonProperty
 	private final String name;
 	
-	public AdUserGroup(String dn, String name){
+	@JsonCreator
+	public AdUserGroup(@JsonProperty("dn") String dn, @JsonProperty("name") String name){
 		Assert.hasText(dn, "dn must not be null or empty!");
 		Assert.hasText(name, "name must not be null or empty!");
 		this.dn = dn;
 		this.name = name;
 	}
 	
+	@JsonIgnore
 	public AdUserGroup getCopy() {
 		return new AdUserGroup(this.dn, this.name);
 	}

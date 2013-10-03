@@ -49,9 +49,18 @@ public class UserRepositoryTest  extends AbstractTest{
 	
 	@Test
 	public void testFindByEmailAddress() {
-		User user = repository.findAll().iterator().next();
-		User user2 = repository.findByEmailAddress(user.getEmailAddress());
-		Assert.assertEquals(user.getId(), user2.getId());
+		Iterator<User> iterator = repository.findAll().iterator();
+		User user = null;
+		while(iterator.hasNext() ) {
+			user = iterator.next();
+			if(user.getEmailAddress() != null) {
+				break;
+			}
+		}
+		if(user.getEmailAddress() != null) {
+			User user2 = repository.findByEmailAddress(user.getEmailAddress());
+			Assert.assertEquals(user.getId(), user2.getId());
+		}
 	}
 	
 	@Test

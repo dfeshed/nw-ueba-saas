@@ -1,12 +1,15 @@
 package fortscale.domain.ad;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
 
-@Document(collection="ad_group")
+@Document(collection=AdGroup.COLLECTION_NAME)
 public class AdGroup extends AdObject{
+	public static final String COLLECTION_NAME = "ad_group";
 
 	private String name;
 	private String isCriticalSystemObject;
@@ -37,10 +40,11 @@ public class AdGroup extends AdObject{
 	 * @param distinguishedName must not be {@literal null} or empty.
 	 */
 	@PersistenceConstructor
-	public AdGroup(String distinguishedName) {
+	@JsonCreator
+	public AdGroup(@JsonProperty("distinguishedName") String distinguishedName) {
 		super(distinguishedName);
 	}
-
+	
 	public String getName() {
 		return name;
 	}

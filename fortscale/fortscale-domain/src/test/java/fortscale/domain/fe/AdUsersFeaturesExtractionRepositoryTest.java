@@ -73,9 +73,10 @@ public class AdUsersFeaturesExtractionRepositoryTest extends AbstractTest{
 	
 	@Test
 	public void testFindByClassifierIdAndTimestampAndScoreBetween() {
-		AdUserFeaturesExtraction adUserFeaturesExtraction = repository.findAll().iterator().next();
+		AdUserFeaturesExtraction adUserFeaturesExtraction = repository.findAll(new PageRequest(0, 1)).iterator().next();
 		Pageable pageable = new PageRequest(0, 10, Direction.DESC, AdUserFeaturesExtraction.scoreField);
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = repository.findByClassifierIdAndTimestampAndScoreBetween(adUserFeaturesExtraction.getClassifierId(), adUserFeaturesExtraction.getTimestamp(), adUserFeaturesExtraction.getScore().intValue(), 10, pageable);
+		int score = adUserFeaturesExtraction.getScore().intValue();
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = repository.findByClassifierIdAndTimestampAndScoreBetween(adUserFeaturesExtraction.getClassifierId(), adUserFeaturesExtraction.getTimestamp(), score, score + 1, pageable);
 		Assert.assertTrue(adUserFeaturesExtractions.size() > 0);
 	}
 	

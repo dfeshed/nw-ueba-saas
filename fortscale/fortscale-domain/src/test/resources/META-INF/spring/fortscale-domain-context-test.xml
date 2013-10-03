@@ -10,7 +10,8 @@
 	<description>domain context for testing.</description>
 	
 <!-- 	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/> -->
-	<context:property-placeholder location="classpath*:META-INF/*.properties"/>
+	<context:property-placeholder location="classpath*:META-INF/fortscale-domain-context-test-config.properties" order="1" ignore-unresolvable="true"/>
+	<context:property-placeholder location="classpath*:META-INF/*.properties" order="2"/>
 	<import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
 	
 	<context:component-scan base-package="fortscale"/>

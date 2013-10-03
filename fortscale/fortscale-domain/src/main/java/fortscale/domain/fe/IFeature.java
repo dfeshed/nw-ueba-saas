@@ -2,6 +2,9 @@ package fortscale.domain.fe;
 
 import java.util.Comparator;
 
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+
+@JsonDeserialize(as=ADFeature.class)
 public interface IFeature {
 
 	public String getFeatureUniqueName();

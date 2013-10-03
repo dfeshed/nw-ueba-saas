@@ -21,7 +21,7 @@ public class AdObject extends AbstractDocument{
 		Assert.hasText(distinguishedName);
 		this.distinguishedName = distinguishedName;
 	}
-
+	
 	public String getDistinguishedName() {
 		return distinguishedName;
 	}
