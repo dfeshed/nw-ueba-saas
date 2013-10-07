@@ -22,7 +22,6 @@ public class QoS {
 	int numTestUsers;
 	int topUsersThreshold = 5;
 
-	static final String SANITY_TEST_EMPTY_USER_NAME = "Sanity Test Empty User";
 	static final String SANITY_TEST_SUPER_POWER_USER_NAME = "Sanity Test Super Power User";
 	static final String SANITY_TEST_RESULT_FORMAT = "Test Results - Total Number of Users: %s. Number of Test Users: %s. Test Goal: Reach the first %s places. Result: %s" ;	
 	
@@ -43,6 +42,27 @@ public class QoS {
 	}
 
 
+	public Iterable<AdUser> generateQoSTestUsers(Iterable<AdUser> users) {
+		for (AdUser adUser : users) {
+			this.validUsers.add(adUser);
+		}
+
+		numTestUsers = setNumTestUsers();
+		for (int i=0; i<numTestUsers; i++) {
+			AdUser adminUser = pickAdminUser(validUsers);
+			AdUser nonAdminUser = pickNonAdminUser(validUsers);
+			
+			AdUser testUser = createTestUser(String.format(TEST_USER_NAME, i+1), adminUser, nonAdminUser);
+			testUsers.put(testUser.getDistinguishedName(), testUser);
+		}
+
+		
+		allUsers.addAll(validUsers);
+		allUsers.addAll(testUsers.values());
+		return allUsers;
+	}
+	
+	
 	public Iterable<AdUser> generateSanityTestUsers(Iterable<AdUser> users) {
 		
 		ArrayList<AdUser> tempUsersList = new ArrayList<AdUser>();
@@ -58,9 +78,6 @@ public class QoS {
 		}
 
 
-		AdUser sanityEmptyUser = new AdUser(SANITY_TEST_EMPTY_USER_NAME);
-		testUsers.put(SANITY_TEST_EMPTY_USER_NAME, sanityEmptyUser);
-		
 		AdUser sanityPowerUser = new AdUser(SANITY_TEST_SUPER_POWER_USER_NAME);
 		String memberOf = "";
 		for (AdUser adUser : validUsers) {
@@ -139,17 +156,19 @@ public class QoS {
 	public void computeSanityTestResults(Map<String, Double> userScores) {
 		ArrayList<Entry<String,Double>> sortedScoreList = sortScoreMap(userScores) ;
 		
-		topUsersThreshold = 2 ;
+		topUsersThreshold = 1 ;
 		
+		testResults = "";
 		boolean result = true; 
 		for (int i=0; i<topUsersThreshold; i++) {
+			testResults += (i+1) + ". " + sortedScoreList.get(i).getKey() + ", Score: " + sortedScoreList.get(i).getValue() + "<BR>";
 			if (!testUsers.containsKey(sortedScoreList.get(i).getKey())) {
 				result = false;
 			}
 		}
 		
 		testSuccessRate = result ? 100 : 0;
-		testResults = String.format(SANITY_TEST_RESULT_FORMAT, allUsers.size(), testUsers.size(), topUsersThreshold, result) ;
+		testResults += String.format(SANITY_TEST_RESULT_FORMAT, allUsers.size(), testUsers.size(), topUsersThreshold, result) ;
 		logger.info(testResults);		
 	}
 	
@@ -159,15 +178,17 @@ public class QoS {
 		
 		topUsersThreshold = Math.max(5 , testUsers.size() * 2) ;
 		
+		testResults = "";
 		int successes = 0;
 		for (int i=0; i<topUsersThreshold; i++) {
+			testResults += (i+1) + ". " + sortedScoreList.get(i).getKey() + ", Score: " + sortedScoreList.get(i).getValue() + "<BR>";
 			if (testUsers.containsKey(sortedScoreList.get(i).getKey())) {
 				successes++;
 			}
 		}
 		
 		testSuccessRate = (int)Math.round(100.0 * successes / testUsers.size());
-		testResults = String.format(TEST_RESULT_FORMAT, allUsers.size(), testUsers.size(), topUsersThreshold, successes, testUsers.size(), testSuccessRate) ;
+		testResults += String.format(TEST_RESULT_FORMAT, allUsers.size(), testUsers.size(), topUsersThreshold, successes, testUsers.size(), testSuccessRate) ;
 		logger.info(testResults);
 	}
 	
@@ -384,13 +405,13 @@ public class QoS {
 	
 		sortedScoreList.addAll(userScoresMap.entrySet());
 	
-		Comparator<Entry<String,Double>> Scorecomparator = new Comparator<Entry<String,Double>>() {
+		Comparator<Entry<String,Double>> scoreComparator = new Comparator<Entry<String,Double>>() {
 			public int compare(Entry<String,Double> e1, Entry<String,Double> e2) {
 				return e2.getValue().compareTo(e1.getValue());
 			}
 		};
 		
-		Collections.sort(sortedScoreList, Scorecomparator);
+		Collections.sort(sortedScoreList, scoreComparator);
 		
 		return sortedScoreList;
 	}
