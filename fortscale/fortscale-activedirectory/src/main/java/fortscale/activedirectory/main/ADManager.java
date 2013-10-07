@@ -66,10 +66,14 @@ public class ADManager {
 
 	
 	private void runFeatureExtraction() {
-		Map<String, IFeature> userFeatureValues = null;
 		for (AdUser adUser : userAttributes) {
-			userFeatureValues = adFeatureExtractor.parseUserFeatures(adUser);
-			usersFeatures.setInstanceFeatures(adUser.getDistinguishedName(), userFeatureValues);
+			try {
+				Map<String, IFeature> userFeatureValues = adFeatureExtractor.parseUserFeatures(adUser);
+				usersFeatures.setInstanceFeatures(adUser.getDistinguishedName(), userFeatureValues);
+			}
+			catch (Exception e) {
+				logger.error("Feature Extraction Failed on User: {}", adUser.getDistinguishedName());
+			}
 		}
 	}
 
