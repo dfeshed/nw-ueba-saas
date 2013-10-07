@@ -66,16 +66,35 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 		BasicDBList basicDBList = new BasicDBList();
 		FeatureWriteConverter converter = new FeatureWriteConverter();
 		for(IFeature adFeature: adUsersFeaturesExtraction.getAttributes()){
+			try {
 			BasicDBObject featureObject = new BasicDBObject();
 			featureObject.append(ADFeature.DISPLAY_NAME_FIELD, adFeature.getFeatureDisplayName());
 			featureObject.append(ADFeature.FEATURE_SCORE_FIELD, adFeature.getFeatureScore());
 			featureObject.append(ADFeature.FEATURE_VALUE_FIELD, adFeature.getFeatureValue());
-			basicDBList.add(converter.convert(adFeature));
-			basicDBObject.append(adFeature.getFeatureUniqueName(), featureObject);
+			
+			basicDBObject.append(getFeatureDbFieldNameString(adFeature), featureObject);
+			} catch(Exception e) {
+				logger.error("failed to add the attribute as a field to the db" , e);
+				logger.error("the attribute field name was {}", getFeatureDbFieldNameString(adFeature));
+			}
+			try {
+				basicDBList.add(converter.convert(adFeature));
+			} catch (Exception e) {
+				logger.error("failed to add the attribute to the attributes list." , e);
+			}
+			
 		}
 		basicDBObject.append(AdUserFeaturesExtraction.attrListField, basicDBList);
 		
 		collection.insert(basicDBObject, WriteConcern.SAFE);
+	}
+	
+	private String getFeatureDbFieldNameString(IFeature feature) {
+		String retString = feature.getFeatureUniqueName().replace('.', ' ');
+		if(retString.startsWith("$")) {
+			retString = String.format("fortscalestart_%s", retString);
+		}
+		return retString;
 	}
 
 	private DBCollection getDBCollection(){
