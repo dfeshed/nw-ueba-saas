@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("icons", ["$q", "$http", "conditions", "format", function($q, $http, conditions, format){
+angular.module("Icons", ["Conditions", "Format"]).factory("icons", ["$q", "$http", "conditions", "format", function($q, $http, conditions, format){
     var savedIcons;
 
     function getSavedIcon(presetName){

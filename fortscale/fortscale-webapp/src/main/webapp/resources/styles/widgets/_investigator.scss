@@ -6,8 +6,7 @@
       box-sizing: border-box;
 
       select{
-        width: 100%;
-        height: 29px;
+        height: 25px;
       }
 
       h4{
@@ -25,16 +24,45 @@
       width: 100%;
 
       input[type='checkbox']{ margin: 0 }
-      td:last-child{
-        text-align: right;
-      }
     }
   }
 
   .investigator-field-icon{
     color: #aaa;
   }
+
+  .investigator-fields-update-btn{
+    position: absolute;
+    right: 11px;
+    top: 5px;
+    height: 16px;
+    line-height: 16px;
+    z-index: 5;
+  }
+
   .investigator-menu-section-contents{
     padding: 10px;
+    position: relative;
+  }
+
+  .investigator-field-filters-list{
+    li{
+      margin-bottom: 5px;
+    }
+  }
+  .investigator-filter-operator-small{
+    width: 50px;
+  }
+
+  .investigator-display table a{
+    color: $textColor;
+  }
+
+  .section-collapse-btn{
+    color: White;
+    float: right;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 30px;
   }
 }

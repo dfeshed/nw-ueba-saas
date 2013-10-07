@@ -34,22 +34,14 @@ public class ApiClassifierController {
 	
 	
 	
-	@RequestMapping(value="dist", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<IClassifierScoreDistribution>> dist(Model model){
-		DataBean<List<IClassifierScoreDistribution>> ret = new DataBean<List<IClassifierScoreDistribution>>();
-		List<IClassifierScoreDistribution> dists = classifierService.getScoreDistribution();
-		ret.setData(dists);
-		ret.setTotal(dists.size());
-		return ret;
-	}
+	
 	
 	@RequestMapping(value="loginsEvents", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<ILoginEventScoreInfo>> loginsEvents(@RequestParam(required=false) Long date,
 			@RequestParam(required=false) String uid,
+			@RequestParam(required=false) String query,
 			@RequestParam(defaultValue="0") Integer offset,
 			@RequestParam(defaultValue="10") Integer limit,
 			Model model){
@@ -69,7 +61,7 @@ public class ApiClassifierController {
 		return ret;
 	}
 	
-	@RequestMapping(value="{id}/dist", method=RequestMethod.GET)
+	@RequestMapping(value="/{id}/dist", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<IScoreDistribution>> classifierDist(@PathVariable String id, Model model){
@@ -88,6 +80,17 @@ public class ApiClassifierController {
 		List<ISuspiciousUserInfo> users = classifierService.getSuspiciousUsers(id, severityId);
 		ret.setData(users);
 		ret.setTotal(users.size());
+		return ret;
+	}
+	
+	@RequestMapping(value="/all/dist", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<IClassifierScoreDistribution>> dist(Model model){
+		DataBean<List<IClassifierScoreDistribution>> ret = new DataBean<List<IClassifierScoreDistribution>>();
+		List<IClassifierScoreDistribution> dists = classifierService.getScoreDistribution();
+		ret.setData(dists);
+		ret.setTotal(dists.size());
 		return ret;
 	}
 	

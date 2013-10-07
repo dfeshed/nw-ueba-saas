@@ -37,8 +37,8 @@
                      ng-include="'views/controls/' + control.type + '.html'">
                 </div>
             </div>
-            <ng-include src="'views/widgets/' + view.type + '.html'" ng-show="!widget.showInitMessage"></ng-include>
-            <div class="widget-no-data" ng-show="widget.noData">
+            <ng-include src="'widgets/' + view.type + '/' + view.type + '.view.html'" ng-show="!widget.showInitMessage"></ng-include>
+            <div class="widget-no-data" ng-show="false">
                 <i class="icon-warning-sign"></i> No data found. Try to change parameters.
             </div>
             <div class="widget-no-data widget-init-message" ng-show="widget.showInitMessage">

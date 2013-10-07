@@ -8,20 +8,22 @@
         "permissions": 45,
         "destinations": 80,
         "username": "AndreaS",
-        "date": 1378810687016,
-        "scoreId": "active_directory"
+        "date": "-0d",
+        "scoreId": "active_directory",
+        "averageScore": 25
     },
     {
-        "featureDisplayName": "Member of group CRM Managers",
+        "featureDisplayName": "Member of group CRM Administrators",
         "featureUniqueName": "password_never_expires",
         "featureValue": "Yes",
-        "featureScore": 88,
+        "featureScore": 95,
         "organizational": 92,
         "permissions": 23,
         "destinations": 85,
         "username": "AndreaS",
-        "date": 1378810687016,
-        "scoreId": "active_directory"
+        "date": "-0d",
+        "scoreId": "active_directory",
+        "averageScore": 35
     },
     {
         "featureDisplayName": "Account Has Description",
@@ -33,7 +35,8 @@
         "destinations": 70,
         "username": "BillH",
         "date": 1378810687016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 34
     },
     {
         "featureDisplayName": "Password Never Expires",
@@ -44,11 +47,12 @@
         "permissions": 45,
         "destinations": 80,
         "username": "AndreaS",
-        "date": 1378724287016,
-        "scoreId": "active_directory"
+        "date": "-1d",
+        "scoreId": "active_directory",
+        "averageScore": 21
     },
     {
-        "featureDisplayName": "Member of group CRM Managers",
+        "featureDisplayName": "Member of group CRM Administrators",
         "featureUniqueName": "password_never_expires",
         "featureValue": "Yes",
         "featureScore": 83,
@@ -56,8 +60,9 @@
         "permissions": 23,
         "destinations": 85,
         "username": "AndreaS",
-        "date": 1378724287016,
-        "scoreId": "active_directory"
+        "date": "-1d",
+        "scoreId": "active_directory",
+        "averageScore": 17
     },
     {
         "featureDisplayName": "Account Has Description",
@@ -68,8 +73,9 @@
         "permissions": 30,
         "destinations": 70,
         "username": "AndreaS",
-        "date": 1378724287016,
-        "scoreId": "active_directory"
+        "date": "-1d",
+        "scoreId": "active_directory",
+        "averageScore": 23
     },
     {
         "featureDisplayName": "Member of group Hardening Class B",
@@ -81,7 +87,8 @@
         "destinations": 41,
         "username": "AndreaS",
         "date": 1378724287016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 33
     },
     {
         "featureDisplayName": "Member of group Big Mailbox Users",
@@ -93,7 +100,8 @@
         "destinations": 40,
         "username": "AndreaS",
         "date": 1378724287016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 22
     },
     {
         "featureDisplayName": "Member of group Incoming Files Share",
@@ -105,7 +113,8 @@
         "destinations": 55,
         "username": "AndreaS",
         "date": 1378724287016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 23
     },
     {
         "featureDisplayName": "DGA Atom",
@@ -117,7 +126,8 @@
         "destinations": 13,
         "username": "AndreaS",
         "date": 1378724287016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 26
     },
     {
         "featureDisplayName": "Account Never Expires",
@@ -129,7 +139,8 @@
         "destinations": 15,
         "username": "AndreaS",
         "date": 1378724287016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 17
     },
     {
         "featureDisplayName": "Normal User Account",
@@ -141,7 +152,8 @@
         "destinations": 9,
         "username": "AndreaS",
         "date": 1378724287016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 34
     },
     {
         "featureDisplayName": "Member of group Domain Users",
@@ -153,7 +165,8 @@
         "destinations": 6,
         "username": "AndreaS",
         "date": 1378724287016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 27
     },
     {
         "featureDisplayName": "Member of OU Users",
@@ -165,7 +178,8 @@
         "destinations": 7,
         "username": "AndreaS",
         "date": 1378724287016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 16
     },
     {
         "featureDisplayName": "No Password is Required",
@@ -177,7 +191,8 @@
         "destinations": 5,
         "username": "AndreaS",
         "date": 1378724287016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 25
     },
     {
         "featureDisplayName": "Password Never Expires",
@@ -189,19 +204,21 @@
         "destinations": 80,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 19
     },
     {
-        "featureDisplayName": "Member of group CRM Managers",
+        "featureDisplayName": "Member of group CRM Administrators",
         "featureUniqueName": "password_never_expires",
         "featureValue": "Yes",
-        "featureScore": 88,
+        "featureScore": 95,
         "organizational": 92,
         "permissions": 23,
         "destinations": 85,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 17
     },
     {
         "featureDisplayName": "Account Has Description",
@@ -213,7 +230,8 @@
         "destinations": 70,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 23
     },
     {
         "featureDisplayName": "Member of group Hardening Class B",
@@ -225,7 +243,8 @@
         "destinations": 41,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 33
     },
     {
         "featureDisplayName": "Member of group Big Mailbox Users",
@@ -237,7 +256,8 @@
         "destinations": 40,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 22
     },
     {
         "featureDisplayName": "Member of group Incoming Files Share",
@@ -249,7 +269,8 @@
         "destinations": 55,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 21
     },
     {
         "featureDisplayName": "DGA Atom",
@@ -261,7 +282,8 @@
         "destinations": 13,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 34
     },
     {
         "featureDisplayName": "Account Never Expires",
@@ -273,7 +295,8 @@
         "destinations": 15,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 26
     },
     {
         "featureDisplayName": "Normal User Account",
@@ -285,7 +308,8 @@
         "destinations": 9,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 31
     },
     {
         "featureDisplayName": "Member of group Domain Users",
@@ -297,7 +321,8 @@
         "destinations": 6,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 30
     },
     {
         "featureDisplayName": "Member of OU Users",
@@ -309,7 +334,8 @@
         "destinations": 7,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 21
     },
     {
         "featureDisplayName": "No Password is Required",
@@ -321,7 +347,8 @@
         "destinations": 5,
         "username": "AndreaS",
         "date": 1378637887016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 20
     },
     {
         "featureDisplayName": "Password Never Expires",
@@ -333,19 +360,21 @@
         "destinations": 80,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 34
     },
     {
-        "featureDisplayName": "Member of group CRM Managers",
+        "featureDisplayName": "Member of group CRM Administrators",
         "featureUniqueName": "password_never_expires",
         "featureValue": "Yes",
-        "featureScore": 88,
+        "featureScore": 95,
         "organizational": 92,
         "permissions": 23,
         "destinations": 85,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 22
     },
     {
         "featureDisplayName": "Account Has Description",
@@ -357,7 +386,8 @@
         "destinations": 70,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 27
     },
     {
         "featureDisplayName": "Member of group Hardening Class B",
@@ -369,7 +399,8 @@
         "destinations": 41,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 19
     },
     {
         "featureDisplayName": "Member of group Big Mailbox Users",
@@ -381,7 +412,8 @@
         "destinations": 40,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 18
     },
     {
         "featureDisplayName": "Member of group Incoming Files Share",
@@ -393,7 +425,8 @@
         "destinations": 55,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 25
     },
     {
         "featureDisplayName": "DGA Atom",
@@ -405,7 +438,8 @@
         "destinations": 13,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 20
     },
     {
         "featureDisplayName": "Account Never Expires",
@@ -417,7 +451,8 @@
         "destinations": 15,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 25
     },
     {
         "featureDisplayName": "Normal User Account",
@@ -429,7 +464,8 @@
         "destinations": 9,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 23
     },
     {
         "featureDisplayName": "Member of group Domain Users",
@@ -441,7 +477,8 @@
         "destinations": 6,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 17
     },
     {
         "featureDisplayName": "Member of OU Users",
@@ -453,7 +490,8 @@
         "destinations": 7,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 34
     },
     {
         "featureDisplayName": "No Password is Required",
@@ -465,6 +503,7 @@
         "destinations": 5,
         "username": "AndreaS",
         "date": 1378551487016,
-        "scoreId": "active_directory"
+        "scoreId": "active_directory",
+        "averageScore": 30
     }
 ]

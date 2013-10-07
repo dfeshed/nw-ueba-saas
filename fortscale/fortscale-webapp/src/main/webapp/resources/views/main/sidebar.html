@@ -1,4 +1,7 @@
 <div id="sidebar-nav">
+    <a ng-click="toggleSidebar()" title="{{sidebarMinimized && 'Maximize' || 'Minimize'}}" class="sidebar-minimize-btn">
+        <i class="icon-double-angle-{{sidebarMinimized && 'right' || 'left'}}"></i>
+    </a>
     <ul id="dashboard-menu">
         <li ng-repeat="navItem in navigation" ng-class="{ active: navItem.url === currentNav }">
             <div class="pointer" ng-if="navItem.url === currentNav">
@@ -7,11 +10,11 @@
             </div>
             <a ng-if="!navItem.children" href="{{navItem.url}}">
                 <i class="icon-{{navItem.icon}}"></i>
-                <span>{{navItem.name}}</span>
+                <span class="dashboard-menu-item-name">{{navItem.name}}</span>
             </a>
             <a ng-if="navItem.children" class="dropdown-toggle">
                 <i class="icon-{{navItem.icon}}"></i>
-                <span>{{navItem.name}}</span>
+                <span class="dashboard-menu-item-name">{{navItem.name}}</span>
                 <i class="icon-chevron-down"></i>
             </a>
             <ul ng-if="navItem.children" class="submenu">

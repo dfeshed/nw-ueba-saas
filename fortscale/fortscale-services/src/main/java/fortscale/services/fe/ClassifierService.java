@@ -3,6 +3,8 @@ package fortscale.services.fe;
 import java.util.Date;
 import java.util.List;
 
+import fortscale.services.impl.SeverityElement;
+
 
 public interface ClassifierService {
 	public List<IClassifierScoreDistribution> getScoreDistribution(); 
@@ -11,4 +13,5 @@ public interface ClassifierService {
 	public List<ISuspiciousUserInfo> getSuspiciousUsers(String classifierId, String severityId);
 	public List<ILoginEventScoreInfo> getUserSuspiciousLoginEvents(String userId, Date timestamp, int offset, int limit);
 	public List<ILoginEventScoreInfo> getSuspiciousLoginEvents(Date timestamp, int offset, int limit);
+	public List<SeverityElement> getSeverityElements();
 }

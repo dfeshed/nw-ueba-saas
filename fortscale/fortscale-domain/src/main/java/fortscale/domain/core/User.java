@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,6 +24,7 @@ import fortscale.domain.ad.AdUserGroup;
 @Document
 public class User extends AbstractDocument {	
 	@Indexed(unique = true)
+	@JsonProperty
 	private String adDn;
 	
 	private String employeeID;
@@ -47,6 +50,7 @@ public class User extends AbstractDocument {
 	
 	private String department;
 	
+	@JsonProperty
 	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
 	
 	
@@ -62,12 +66,14 @@ public class User extends AbstractDocument {
 	 * @param adDn must not be {@literal null} or empty.
 	 */
 	@PersistenceConstructor
-	public User(String adDn) {
+	@JsonCreator
+	public User(@JsonProperty("adDn") String adDn) {
 
 		Assert.hasText(adDn);
 
 		this.adDn = adDn;
 	}
+	
 	
 	public String getSearchField() {
 		return searchField;

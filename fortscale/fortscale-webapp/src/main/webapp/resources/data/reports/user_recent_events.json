@@ -1,4 +1,15 @@
 {
+    "dataSource": "api",
+    "query": {
+        "entity": "user_events",
+        "conditions": [
+            {
+                "field": "username",
+                "operator": "equals",
+                "value": "{{id}}"
+            }
+        ]
+    },
     "searchId": "user_events",
     "endpoint": {
         "entity": "user",

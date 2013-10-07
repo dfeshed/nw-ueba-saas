@@ -1,0 +1,1 @@
+angular.module("BarsChartWidget", ["Utils", "ChartWidgets"]);

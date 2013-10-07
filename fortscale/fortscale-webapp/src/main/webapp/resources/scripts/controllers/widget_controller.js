@@ -101,9 +101,9 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
             return recursiveParams;
         }
 
-        function setWidgetTitle(){
+        function setWidgetTitle(params){
             if ($scope.widget.title)
-                $scope.widget.parsedTitle = widgets.parseFieldValue($scope.widget, $scope.widget.title, {}, 0, $scope.dashboardParams);
+                $scope.widget.parsedTitle = widgets.parseFieldValue($scope.widget, $scope.widget.title, {}, 0, params || $scope.dashboardParams);
         }
 
         function setWidgetShow(){
@@ -167,7 +167,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
             if (data.widget)
                 data.params = getWidgetParams(data.widget);
 
-            $scope.$emit("dashboardEvent", data);
+            $scope.dashboardEvent(data);
         });
 
         $scope.initWidget = function(widget){
@@ -243,7 +243,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                 });
 
                 eventDeregistrationFunctions.push($scope.$on("dashboardParamsChange", function(e, changedParams){
-                    setWidgetTitle();
+                    setWidgetTitle(changedParams);
 
                     for(var i=0; i < widget.refreshOn.length; i++){
                         if (changedParams[widget.refreshOn[i]] !== undefined){

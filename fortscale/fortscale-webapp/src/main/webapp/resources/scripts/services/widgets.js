@@ -1,4 +1,6 @@
-angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "format", "transforms", "styles", "icons", "reports", function($q, DAL, conditions, format, transforms, styles, icons, reports){
+angular.module("Fortscale").factory("widgets", [
+    "$q", "DAL", "conditions", "format", "transforms", "styles", "icons", "reports", "widgetsData",
+    function($q, DAL, conditions, format, transforms, styles, icons, reports, widgetsData){
     var typeValueGenerators = {
         date: function(options, params){
             var values = [],
@@ -59,6 +61,7 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
         return value;
     }
 
+    /*
     function getIcon(iconSettings, data){
         var deferred = $q.defer(),
             icon = {
@@ -84,7 +87,7 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
 
         return deferred.promise;
     }
-
+*/
     function chartSetData(view, data, params){
         var deferred = $q.defer(),
             styleDeferreds = [],
@@ -132,8 +135,8 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
     }
 
     var viewTypeSetData = {
-        barChart: chartSetData,
-        percentChart: chartSetData,
+        barChart: widgetsData.barsChart,
+        percentChart: widgetsData.percentChart,
         button: function(view, data, params){
             return {
                 text: parseFieldValue(view.settings, view.settings.text, data, 0, params)
@@ -184,7 +187,7 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
                 viewData.push(itemData);
 
                 if (view.settings.item.icon){
-                    getIcon(view.settings.item.icon, item).then(function(icon){
+                    icons.getIcon(view.settings.item.icon, item).then(function(icon){
                         itemData.icon = icon;
                     });
                 }
@@ -249,41 +252,7 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
 
             return viewData;
         },
-        pieChart: function(view, data, params){
-            var viewData = { chartValues: [] };
-
-            for(var i= 0, item; item = data[i]; i++){
-                viewData.chartValues.push({
-                    value: parseFloat(parseFieldValue(view.settings.item, view.settings.item.value, item, i, {}), 10),
-                    label: parseFieldValue(view.settings.item, view.settings.item.label, item, i, {})
-                })
-            }
-
-            if (view.settings.showInfo && view.settings.info && view.settings.info.properties){
-                var getItemInfo = function(item, itemIndex){
-                    var itemInfo = { properties: [] };
-                    if (view.settings.info.title)
-                        itemInfo.title = parseFieldValue(view.settings.info, view.settings.info.title, item, itemIndex, params);
-
-                    for(var i= 0, property; property = view.settings.info.properties[i]; i++){
-                        itemInfo.properties.push({
-                            label: property.label,
-                            value: parseFieldValue(property, property.value, item, itemIndex, params)
-                        });
-                    }
-
-                    return itemInfo;
-                };
-
-                viewData.items = [];
-                var infoItem;
-                for(i= 0; item = data[i]; i++){
-                    viewData.items.push(getItemInfo(item, i));
-                }
-            }
-
-            return viewData;
-        },
+        pieChart: widgetsData.pieChart,
         properties: function(view, data, params){
             var viewData = [];
 
@@ -293,7 +262,7 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
                     var itemValue = parseFieldValue(property, property.value, item, itemIndex, params);
                     if (itemValue){
                         itemData.push({
-                            icon: getIcon(property.icon),
+                            icon: icons.getIcon(property.icon),
                             tooltip: parseFieldValue(property, property.tooltip, item, itemIndex, params),
                             value: format.formatItem(property, itemValue)
                         });
@@ -305,127 +274,7 @@ angular.module("Fortscale").factory("widgets", ["$q", "DAL", "conditions", "form
 
             return viewData;
         },
-        table: function(view, data, params){
-            var viewData = { rows: [] },
-                fieldSpans = {};
-
-            if (view.settings.useFirstRowAsMessage && data.length && data[0].message){
-                viewData.message = {
-                    type: view.settings.messageType || "info",
-                    icon: view.settings.messageType === "warning" ? "warning-sign" : null,
-                    value: data.splice(0, 1)[0].message
-                };
-            }
-
-            function getField(row, rowIndex, field, item){
-                var fieldData = {
-                    display: field.value && parseFieldValue(field, field.value, row, rowIndex, params, item) || "",
-                    field: field
-                };
-
-                if (field.transform)
-                    fieldData.display = transforms[field.transform.method](field.field ? row[field.field] : fieldData.display, field.transform.options);
-
-                if (field.link)
-                    fieldData.link = parseFieldValue(field, field.link, row, rowIndex, params, item);
-
-                if (field.style){
-                    styles.getStyle(field, row).then(function(style){
-                        fieldData.style = style;
-                    }, function(error){
-                        console.error("Can't set style to row: ", error);
-                    });
-                }
-
-                if (field.map){
-                    var mapValue = field.map[fieldData.display];
-                    if (mapValue)
-                        fieldData.display = mapValue;
-                }
-
-                if (field.icon){
-                    getIcon(field.icon, row).then(function(icon){
-                        fieldData.icon = icon;
-                    });
-                }
-
-                if (field.className)
-                    fieldData.className = parseFieldValue(field, field.className, row, rowIndex, params, item);
-
-                if (field.valueTooltip){
-                    if (angular.isString(field.valueTooltip))
-                        fieldData.tooltip = parseFieldValue(field, field.valueTooltip, row, rowIndex, params, item);
-                    else if (field.valueTooltip.transform)
-                        fieldData.tooltip = transforms[field.valueTooltip.transform.method](row[field.valueTooltip.field], field.valueTooltip.transform.options);
-                }
-
-                if (field.events)
-                    fieldData.id = field.name.replace(/\s/g, "_");
-
-                return fieldData;
-            }
-
-            function getRow(row, rowIndex){
-                var rowData = { display: [] };
-
-                if (view.settings.rows){
-                    if (view.settings.rows.style){
-                        styles.getStyle(view.settings.rows, row).then(function(style){
-                            rowData.style = style;
-                        });
-                    }
-                }
-
-                angular.forEach(view.settings.fields, function(field, fieldIndex){
-                    var fieldData;
-
-                    if (field.collection){
-                        fieldData = { items: [], type: "array" };
-
-                        if (angular.isArray(row[field.collection])){
-                            angular.forEach(row[field.collection], function(item){
-                                fieldData.items.push(getField(row, rowIndex, field.item, item));
-                            });
-                        }
-                        else{
-                            fieldData.items.push(getField(row, rowIndex, field.item, row[field.collection]));
-                        }
-                    }
-                    else{
-                        fieldData = getField(row, rowIndex, field);
-                    }
-
-                    if (field.spanRowsIfEqual){
-                        var fieldSpan = fieldSpans[String(fieldIndex)];
-                        if (fieldSpan === undefined){
-                            fieldData.rowSpan = 1;
-                            fieldSpans[String(fieldIndex)] = fieldData;
-                            rowData.display.push(fieldData);
-                        }
-                        else{
-                            if (fieldSpan.display === fieldData.display){
-                                fieldSpan.rowSpan++;
-                            }
-                            else{
-                                fieldData.rowSpan = 1;
-                                fieldSpans[String(fieldIndex)] = fieldData;
-                                rowData.display.push(fieldData);
-                            }
-                        }
-                    }
-                    else
-                        rowData.display.push(fieldData);
-                });
-
-                return rowData;
-            }
-
-            angular.forEach(data, function(row, rowIndex){
-                viewData.rows.push(getRow(row, rowIndex + 1));
-            });
-
-            return viewData;
-        },
+        table: widgetsData.table,
         tabs: function(view, data, params){
             var viewData = [];
 

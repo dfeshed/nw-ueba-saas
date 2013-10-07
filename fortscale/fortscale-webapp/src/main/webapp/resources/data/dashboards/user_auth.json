@@ -1,0 +1,46 @@
+{
+    "dashboardId": "user_auth",
+    "columns": [
+        {
+            "className": "span15",
+            "widgets": [
+                {
+                    "widgetId": "user_score_history",
+                    "report": {
+                        "query": {
+                            "params": [
+                                {
+                                    "dashboardParam": "entityId",
+                                    "field": "username"
+                                },
+                                {
+                                    "dashboardParam": "currentFeature",
+                                    "field": "attribute"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "widgetId": "user_logins",
+                    "report": {
+                        "query": {
+                            "params": [
+                                {
+                                    "field": "date",
+                                    "dashboardParam": "date"
+                                },
+                                {
+                                    "field": "username",
+                                    "name": "id",
+                                    "dashboardParam": "entityId"
+                                }
+                            ]
+                        }
+                    },
+                    "refreshOn": "date"
+                }
+            ]
+        }
+    ]
+}

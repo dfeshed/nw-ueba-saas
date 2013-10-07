@@ -1,0 +1,62 @@
+<div ng-controller="UserComparisonController">
+    <div class="row-fluid">
+        <div class="span5">
+        <form ng-submit="searchUsers(usersSearch)">
+            <input style="width: 75%" placeholder="Add users to compare" ng-model="usersSearch" />
+            <input type="submit" value="Search" />
+        </form>
+        <div ng-if="lastSearch">
+            <div style="float: right">
+                <a class="clickable" ng-click="searchUsers(lastSearch)">Search again</a> |
+                <a class="clickable" ng-click="clearUsers()">Clear</a>
+            </div>
+            <strong>Search:</strong> {{lastSearch}}
+            <br /><br />
+        </div>
+        <table class="table table-hover widget-table">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Title</th>
+                <th>Location</th>
+                <th>Score</th>
+                <th>Trending</th>
+                <th>Remove</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in users" ng-class="{highlighted: user.highlighted}" ng-mouseenter="highlight(user.username)" ng-mouseleave="highlight(null)">
+                    <td><a href="#/d/user/{{user.username}}">{{user.username}}</a></td>
+                    <td><a href="#/d/user/{{user.username}}">{{user.name}}</a></td>
+                    <td>{{user.jobTitle}}</td>
+                    <td>{{user.location}}</td>
+                    <td>{{user.score}}</td>
+                    <td>{{user.trend}}</td>
+                    <td><a title="Remove this user"
+                           class="clickable"
+                           ng-if="!user.fixed"
+                           ng-click="removeUser($index)">Remove</a></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        <div class="span10">
+            <ng-include ng-repeat="view in comparisonViews" src="'views/widgets/tabs.html'"></ng-include>
+            <div class="widget widget-tab">
+                <div style="padding: 10px; text-align: right">
+                    <a class="btn" ng-click="switchChartFields()">
+                        <i class="icon-exchange"></i>
+                        Switch Fields
+                    </a>
+                    <div class="btn-group">
+                        <a class="btn active" title="Circles chart"><i class="icon-circle"></i></a>
+                        <a class="btn" title="Bar chart (not implemented yet)"><i class="icon-bar-chart"></i></a>
+                        <a class="btn" title="Geolocation chart (not implemented yet)"><i class="icon-globe"></i></a>
+                    </div>
+                </div>
+                <bubbles-chart ng-model="chartData" settings="chartSettings" highlighted-member="{{highlightedUser}}"></bubbles-chart>
+            </div>
+        </div>
+    </div>
+</div>

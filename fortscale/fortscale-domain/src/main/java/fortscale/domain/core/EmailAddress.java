@@ -3,6 +3,8 @@ package fortscale.domain.core;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ public final class EmailAddress implements Serializable{
 	private static final Pattern PATTERN = Pattern.compile(EMAIL_REGEX);
 
 	@Field("email")
+	@JsonProperty("email")
 	private final String value;
 
 	/**
@@ -22,7 +25,8 @@ public final class EmailAddress implements Serializable{
 	 * 
 	 * @param emailAddress must not be {@literal null} or empty.
 	 */
-	public EmailAddress(String emailAddress) {
+	@JsonCreator
+	public EmailAddress(@JsonProperty("email") String emailAddress) {
 //		Assert.isTrue(isValid(emailAddress), "Invalid email address!");
 		this.value = emailAddress;
 	}

@@ -39,16 +39,12 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                 
                 if (dashboard.subtitle){
                     var dashboardSubtitle = widgets.parseFieldValue({}, dashboard.subtitle, {}, 0, $scope.dashboardParams);
-                    if (dashboardSubtitle){
-                        dashboard.subtitle = dashboardSubtitle;
-                    }
+                    dashboard.subtitle = dashboardSubtitle || null;
                 }
 
                 if (dashboard.iconUrl){
                     var dashboardIconUrl = widgets.parseFieldValue({}, dashboard.iconUrl, {}, 0, $scope.dashboardParams);
-                    if (dashboardIconUrl){
-                        dashboard.iconUrl = dashboardIconUrl;
-                    }
+                    dashboard.iconUrl = dashboardIconUrl || null;
                 }
             }
         }
@@ -142,7 +138,20 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
             $scope.dashboardEvent(data);
         });
 
-        $scope.dashboardEvent = function(data){
+        function getTopDashboardEvent(){
+            var topDashboardEvent = $scope.callDashboardEvent,
+                scope = $scope.$parent;
+
+            while(scope){
+                if (scope && scope.dashboardEvent)
+                    topDashboardEvent = scope.callDashboardEvent;
+
+                scope = scope.$parent;
+            }
+            return topDashboardEvent;
+        }
+
+        $scope.callDashboardEvent = function(data){
             if (data.event && data.event.action){
                 var event = dashboardEvents[data.event.action];
                 if (event){
@@ -151,7 +160,9 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                 else
                     console.error("Dashboard event not found: ", data.event.action);
             }
-        };
+        }
+
+        $scope.dashboardEvent = getTopDashboardEvent();
 
         function setControlParamsToDashboard(control, useExistingParamsIfAvailable){
             if (control.params){

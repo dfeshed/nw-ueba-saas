@@ -8,14 +8,10 @@
                 "height": "150px",
                 "width": "150px",
                 "showInfo": true,
-
+                "calculatePercent": true,
                 "info": {
                     "title": "{{hostname}}",
                     "properties": [
-                        {
-                            "label": "Usage (minutes):",
-                            "value": "{{count}}"
-                        },
                         {
                             "label": "Last Sign-in:",
                             "value": "{{lastSignIn}}",
@@ -30,10 +26,8 @@
                         }
                     ]
                 },
-                "item": {
-                    "value": "{{count}}",
-                    "label": "{{hostname}}"
-                }
+                "chartValue": "count",
+                "chartLabel": "hostname"
             }
         }
     ]

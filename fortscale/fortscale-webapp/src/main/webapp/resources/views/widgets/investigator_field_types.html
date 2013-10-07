@@ -1,0 +1,45 @@
+<script type="text/ng-template" id="investigator_field_string">
+    <input type="text" ng-model="setting.settingValues[setting.id]" ng-change="onSettingsChange()" />
+</script>
+<script type="text/ng-template" id="investigator_field_parsed">
+    <input type="text" ng-model="setting.settingValues[setting.id]" ng-change="onSettingsChange()" />
+</script>
+<script type="text/ng-template" id="investigator_field_number">
+    <input type="number"
+           value="{{setting.default}}"
+           ng-model="setting.settingValues[setting.id]"
+           ng-change="onSettingsChange()" />
+</script>
+<script type="text/ng-template" id="investigator_field_boolean">
+    <select ng-options="value for value in [true,false]"
+            ng-model="setting.settingValues[setting.id]"
+            ng-change="onSettingsChange()"></select>
+</script>
+<script type="text/ng-template" id="investigator_field_object">
+    <ul class="unstyled">
+        <li ng-repeat="setting in setting.properties">
+            <label>
+                {{setting.name}}
+                <ng-include src="'investigator_field_' + setting.type"></ng-include>
+            </label>
+        </li>
+    </ul>
+</script>
+<script type="text/ng-template" id="investigator_field_objectArray">
+    <ul class="unstyled investigator-field investigator-field-object-array">
+        <li ng-repeat="member in setting.settingValues[setting.id]">
+            <div ng-repeat="setting in member._settings">
+                <label>
+                    {{setting.name}}
+                    <ng-include src="'investigator_field_' + setting.type"></ng-include>
+                </label>
+            </div>
+        </li>
+    </ul>
+    <a class="btn" ng-click="fields.objectArray.addMember(setting)">{{setting.addText}}</a>
+</script>
+<script type="text/ng-template" id="investigator_field_dataField">
+    <select ng-model="setting.settingValues[setting.id]"
+            ng-options="field.id as field.name for field in currentEntity.fields | dataFieldType:setting.dataFieldType"
+            ng-change="onSettingsChange()"></select>
+</script>

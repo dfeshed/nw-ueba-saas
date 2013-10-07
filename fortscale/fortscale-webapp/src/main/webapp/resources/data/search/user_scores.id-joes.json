@@ -1,0 +1,29 @@
+{
+    "data": [
+        {
+            "id": "active_directory",
+            "name": "User Profile",
+            "score": 31,
+            "averageScore": 43
+        },
+        {
+            "id": "groups",
+            "name": "Groups",
+            "score": 23,
+            "averageScore": 26
+        },
+        {
+            "id": "password",
+            "name": "Password",
+            "score": 33,
+            "averageScore": 31
+        },
+        {
+            "id": "logins",
+            "name": "Logins",
+            "score": 21,
+            "averageScore": 16
+        }
+    ],
+    "total": 5
+}

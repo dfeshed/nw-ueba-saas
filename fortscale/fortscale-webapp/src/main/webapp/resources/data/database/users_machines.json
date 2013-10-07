@@ -2,51 +2,58 @@
     {
         "username": "AndreaS",
         "hostname": "AndreaS-PC",
-        "count": "13018",
+        "count": 96,
         "ipAddress": "10.12.30.145",
         "lastSignIn": 1378896881670
     },
     {
         "username": "AndreaS",
         "hostname": "CRM-SERVER",
-        "count": "27",
+        "count": 2,
         "ipAddress": "146.10.10.4",
-        "lastSignIn": 1378896283891
+        "lastSignIn": "-1d"
+    },
+    {
+        "username": "AndreaS",
+        "hostname": "JOE-DESKTOP",
+        "count": 2,
+        "ipAddress": "10.12.0.13",
+        "lastSignIn": "-1d"
     },
     {
         "username": "BillH",
         "hostname": "BillH-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "BobH",
         "hostname": "BobH-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "CathyT",
         "hostname": "CathyT-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "JessF",
         "hostname": "JessF-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "CharlesK",
         "hostname": "CharlesK-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "KateF",
         "hostname": "KateF-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "ClaireA",
         "hostname": "ClaireA-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "Administrator",
@@ -56,71 +63,88 @@
     {
         "username": "JoeS",
         "hostname": "SRVDC01",
-        "count": "2509"
+        "count": "15",
+        "ipAddress": "146.7.12.222",
+        "lastSignIn": "-5d"
     },
     {
         "username": "JoeS",
-        "hostname": "JoeS-PC",
-        "count": "15054"
+        "hostname": "JOE-DESKTOP",
+        "ipAddress": "10.12.0.13",
+        "lastSignIn": "-4h",
+        "count": "85"
     },
     {
         "username": "IanC",
         "hostname": "IanC-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "JamesA",
-        "hostname": "JamesA-PC",
-        "count": "13018"
+        "ipAddress": "10.12.31.33",
+        "hostname": "JAMES-DESKTOP",
+        "count": 67
+    },
+    {
+        "username": "JamesA",
+        "hostname": "CRM-SERVER",
+        "ipAddress": "146.10.10.4",
+        "count": 13
+    },
+    {
+        "username": "JamesA",
+        "hostname": "SHAREPOINT",
+        "ipAddress": "146.66.6.4",
+        "count": 20
     },
     {
         "username": "JasonC",
         "hostname": "JasonC-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "KellyA",
         "hostname": "KellyA-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "MaryC",
         "hostname": "MaryC-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "JimK",
         "hostname": "JimK-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "ChrisS",
         "hostname": "ChrisS-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "HarryS",
         "hostname": "HarryS-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "JohnS",
         "hostname": "JohnS-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "LucyF",
         "hostname": "LucyF-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "LukeA",
         "hostname": "LukeA-PC",
-        "count": "13018"
+        "count": 100
     },
     {
         "username": "MarkK",
         "hostname": "MarkK-PC",
-        "count": "13018"
+        "count": 100
     }
 ]

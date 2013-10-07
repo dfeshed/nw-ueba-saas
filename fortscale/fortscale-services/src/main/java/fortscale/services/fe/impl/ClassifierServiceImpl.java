@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
@@ -115,6 +114,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		int prevPercent = 0;
 		int prevCount = 0;
 		int i = 0;
+		int prevThreshold = 100;
 		for(Threshold threshold: thresholds){
 			if(i == 0){
 				i++;
@@ -122,9 +122,10 @@ public class ClassifierServiceImpl implements ClassifierService {
 			}
 			int percent = (int)((threshold.getCount()/(double)total)*100);
 			int count = threshold.getCount() - prevCount;
-			ret.add(new ScoreDistribution(threshold.getName(), count, percent - prevPercent));
+			ret.add(new ScoreDistribution(threshold.getName(), count, percent - prevPercent,threshold.getValue(), prevThreshold));
 			prevPercent = percent;
 			prevCount = threshold.getCount();
+			prevThreshold = threshold.getValue();
 		}
 		return ret;
 	}
@@ -155,7 +156,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 	private List<ISuspiciousUserInfo> getAuthSuspiciousUsers(String classifierId, String severityId) {
 		Date lastRun = authDAO.getLastRunDate();
 		Range severityRange = getRange(severityId);
-		List<AuthScore> authScores = authDAO.findByTimestampAndScoreBetweenSortByScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
+		List<AuthScore> authScores = authDAO.findByTimestampAndGlobalScoreBetweenSortByEventScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(AuthScore authScore: authScores){
 			User user = userRepository.findByAdUserPrincipalName(authScore.getUserName().toLowerCase());
@@ -197,7 +198,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 			trend = (int)(((classifierScore.getScore() - prevScore) / prevScore) * 10000);
 			trend = trend/100;
 		}
-		return new SuspiciousUserInfo(user.getAdUserPrincipalName(), (int) Math.round(user.getScore(classifierId).getScore()), trend);
+		return new SuspiciousUserInfo(user.getId(), user.getAdUserPrincipalName(), (int) Math.round(user.getScore(classifierId).getScore()), trend);
 	}
 	
 	private Range getRange(String severityId){
@@ -281,8 +282,9 @@ public class ClassifierServiceImpl implements ClassifierService {
 			}
 			if(skipped >= offset){
 				ret.add(createLoginEventScoreInfo(user, authScore));
-			} else
+			} else {
 				skipped++;
+			}
 		}
 		return ret;
 	}
@@ -290,19 +292,11 @@ public class ClassifierServiceImpl implements ClassifierService {
 	private ILoginEventScoreInfo createLoginEventScoreInfo(User user, AuthScore authScore){
 		LoginEventScoreInfo ret = new LoginEventScoreInfo(user, authScore);
 		
-		String sourceHostname = null;
-		List<UserMachine> userMachines = userMachineDAO.findByHostnameip(authScore.getSourceIp());
-		if(userMachines != null && userMachines.size() > 0){
-			sourceHostname = userMachines.get(0).getHostname();
-		}
-		ret.setSourceHostname(sourceHostname);
-		
-		String destinationIp = null;
-		userMachines = userMachineDAO.findByHostname(authScore.getTargetId());
-		if(userMachines != null && userMachines.size() > 0){
-			sourceHostname = userMachines.get(0).getHostname();
-		}
-		ret.setDestinationIp(destinationIp);
 		return ret;
+	}
+
+	@Override
+	public List<SeverityElement> getSeverityElements() {
+		return severityOrderedList;
 	}
 }

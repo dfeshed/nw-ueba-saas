@@ -1,6 +1,31 @@
 {
+    "dataSource": "api",
+    "endpoint": {
+        "entity": "classifier",
+        "method": "loginsEvents",
+        "uid": "{{@username}}"
+    },
+    "query": {
+        "entity": "logins",
+        "conditions": [
+            {
+                "field": "username",
+                "operator": "equals",
+                "value": "{{username}}"
+            },
+            {
+                "field": "score",
+                "operator": "greaterThan",
+                "value": 30
+            }
+        ]
+    },
     "searchId": "user_logins",
     "fields": [
+        {
+            "name": "score",
+            "type": "number"
+        },
         {
             "name": "sourceIP",
             "type": "ip"
@@ -19,6 +44,10 @@
         },
         {
             "name": "destinationIP",
+            "type": "string"
+        },
+        {
+            "name": "destinationHostname",
             "type": "string"
         }
     ],

@@ -1,38 +1,51 @@
 {
+    "dataSource": "api",
+    "endpoint": {
+        "entity": "classifier",
+        "method": "loginsEvents"
+    },
+    "query": {
+        "entity": "logins",
+        "conditions": [
+            {
+                "field": "eventScore",
+                "operator": "greaterThan",
+                "value": 20
+            }
+        ]
+    },
     "searchId": "user_logins",
     "fields": [
         {
-            "name": "username",
-            "type": "string"
-        },
-        {
-            "name": "userId",
-            "type": "string"
-        },
-        {
-            "name": "sourceLocation",
-            "type": "string"
+            "name": "score",
+            "type": "number"
         },
         {
             "name": "sourceIP",
             "type": "ip"
         },
         {
-            "name": "sourceMachine",
+            "name": "sourceHostname",
             "type": "string"
         },
         {
             "name": "time",
+            "type": "date"
+        },
+        {
+            "name": "destinationHostname",
             "type": "string"
         },
         {
-            "name": "destinationLocation",
-            "type": "string"
-        },
-        {
-            "name": "destinationMachine",
+            "name": "destinationIP",
             "type": "string"
         }
     ],
-    "params": []
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "entityId"
+        }
+    ]
 }

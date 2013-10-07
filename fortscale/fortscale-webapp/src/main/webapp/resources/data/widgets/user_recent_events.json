@@ -14,7 +14,7 @@
                         },
                         "style": "score",
                         "styleParams": {
-                            "value": "severity"
+                            "value": "score"
                         }
                     },
                     {

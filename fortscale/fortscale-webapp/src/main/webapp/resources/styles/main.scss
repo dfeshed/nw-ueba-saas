@@ -1,3 +1,4 @@
+$textColor: #333;
 $headerHeight: 0px;
 $sidebarWidth: 0;
 
@@ -77,6 +78,45 @@ h2, h3, h4, h5{ font-weight: normal; }
   }
 }
 
+.sidebar-minimized{
+  .content{
+    margin-left: 65px;
+  }
+  #dashboard-menu{
+    margin-left: 5px;
+
+    li a span{
+      visibility: hidden;
+    }
+  }
+
+  .sidebar-minimize-btn{
+    right: auto;
+    left: 16px;
+  }
+}
+
+.sidebar-minimize-btn{
+  display: block;
+  text-align: right;
+  padding: 0 10px;
+  position: absolute;
+  width: 30px;
+  height: 20px;
+  right: 3px;
+  top: 4px;
+  font-size: 1.2em;
+  color: rgb(110, 130, 155);
+  opacity: .7;
+  cursor: pointer;
+
+  &:hover{
+    opacity: 1;
+    text-decoration: none;
+    color: rgb(110, 130, 155);
+  }
+}
+
 #main-contents{
   .container-fluid{
     padding: 0 7px;
@@ -93,7 +133,6 @@ h2, h3, h4, h5{ font-weight: normal; }
 @import "buttons";
 @import "modal";
 @import "splunk_config";
-@import "widgets/table";
 @import "widgets/graph";
 @import "widgets/buttons_bar";
 @import "widgets/text";
@@ -103,7 +142,10 @@ h2, h3, h4, h5{ font-weight: normal; }
 @import "widgets/slides";
 @import "widgets/eventsList";
 @import "widgets/itemsList";
-@import "widgets/pieChart";
+@import "../widgets/table/table";
+@import "../widgets/pieChart/pieChart";
+@import "../widgets/barsChart/barsChart";
+@import "../widgets/percentChart/percentChart";
 @import "widgets/numeric";
 @import "widgets/tabs";
 @import "widgets/container";

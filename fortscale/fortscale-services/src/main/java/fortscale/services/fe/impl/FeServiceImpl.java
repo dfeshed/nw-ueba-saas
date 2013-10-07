@@ -81,7 +81,7 @@ public class FeServiceImpl implements FeService {
 			AdUserFeaturesExtraction adUserFeaturesExtraction = new AdUserFeaturesExtraction(Classifier.ad.getId(), user.getId(), ent.getKey());
 			adUserFeaturesExtraction.setScore(ent.getValue());
 			adUserFeaturesExtraction.setTimestamp(timestamp);
-			adUserFeaturesExtraction.setAttrVals(new ArrayList<>(userFeaturesScoresMap.get(ent.getKey())));
+			adUserFeaturesExtraction.setAttributes(new ArrayList<>(userFeaturesScoresMap.get(ent.getKey())));
 			adUsersFeaturesExtractionRepository.saveMap(adUserFeaturesExtraction);
 			
 			//updating the user with the new score.

@@ -1,48 +1,48 @@
 [
     {
-        "date": 1378292287016,
+        "date": "-6d",
         "score": 66,
         "avgScore": 30,
         "username": "AndreaS",
         "attribute": "active_directory"
     },
     {
-        "date": 1378378687016,
+        "date": "-5d",
         "score": 70,
         "avgScore": 31,
         "username": "AndreaS",
         "attribute": "active_directory"
     },
     {
-        "date": 1378465087016,
+        "date": "-4d",
         "score": 67,
         "avgScore": 28,
         "username": "AndreaS",
         "attribute": "active_directory"
     },
     {
-        "date": 1378551487016,
+        "date": "-3d",
         "score": 78.2,
         "avgScore": 33,
         "username": "AndreaS",
         "attribute": "active_directory"
     },
     {
-        "date": 1378637887016,
+        "date": "-2d",
         "score": 75,
         "avgScore": 31,
         "username": "AndreaS",
         "attribute": "active_directory"
     },
     {
-        "date": 1378724287016,
-        "score": 70.2,
+        "date": "-1d",
+        "score": 88,
         "avgScore": 30,
         "username": "AndreaS",
         "attribute": "active_directory"
     },
     {
-        "date": 1378810687016,
+        "date": "-0d",
         "score": 94,
         "avgScore": 29,
         "username": "AndreaS",

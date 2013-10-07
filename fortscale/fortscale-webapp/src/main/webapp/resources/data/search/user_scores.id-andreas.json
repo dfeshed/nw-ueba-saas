@@ -19,7 +19,7 @@
             "averageScore": 31
         },
         {
-            "id": "logins",
+            "id": "auth",
             "name": "Logins",
             "score": 55,
             "averageScore": 16

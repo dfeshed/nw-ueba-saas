@@ -33,6 +33,12 @@
                         "value": "{{featureScore}}",
                         "sortBy": "featureScore",
                         "sortDirection": -1
+                    },
+                    {
+                        "name": "Average Score",
+                        "value": "{{averageScore}}",
+                        "sortBy": "averageScore",
+                        "sortDirection": -1
                     }
                 ]
             }

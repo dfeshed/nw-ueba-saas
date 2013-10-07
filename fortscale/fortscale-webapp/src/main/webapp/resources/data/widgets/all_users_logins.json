@@ -2,7 +2,7 @@
     "reportId": "all_users_logins",
     "title": "Suspicious Logins",
     "linkTo": {
-        "url": "#/d/user_logins",
+        "url": "#/d/investigator?entity=logins",
         "tooltip": "Investigate user logins",
         "text": "View all"
     },
@@ -19,29 +19,31 @@
                     },
                     {
                         "name": "Source IP",
-                        "value": "{{sourceIP}}",
-                        "sortBy": "sourceIP",
-                        "link": "#/d/malware/e/machine/{{sourceIP}}"
-                    },
-                    {
-                        "name": "Source Hostname",
-                        "value": "{{sourceHostname}}",
-                        "sortBy": "sourceHostname",
-                        "link": "#/d/malware/e/machine/{{sourceHostname}}"
-                    },
-                    {
-                        "name": "Time",
-                        "value": "{{time}}",
-                        "sortBy": "time",
-                        "sortDirection": -1,
-                        "format": "date",
-                        "formatOptions": { "format": "MM/DD/YY HH:mm:ss" }
+                        "value": "{{sourceIp}}",
+                        "sortBy": "sourceIp",
+                        "link": "#/d/investigator?entity=logins&sourceIp={{sourceIp}}"
                     },
                     {
                         "name": "Destination Hostname",
                         "value": "{{destinationHostname}}",
                         "sortBy": "destinationHostname",
-                        "link": "#/d/malware/e/machine/{{destinationHostname}}"
+                        "link": "#/d/investigator?entity=logins&destinationIp={{destinationHostname}}"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{eventTime}}",
+                        "sortBy": "eventTime",
+                        "sortDirection": -1,
+                        "format": "date",
+                        "formatOptions": { "prettyDate": true }
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{eventScore}}",
+                        "style": "score",
+                        "styleParams": {
+                            "value": "eventScore"
+                        }
                     }
                 ]
             }

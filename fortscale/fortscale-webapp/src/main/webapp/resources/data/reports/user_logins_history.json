@@ -1,0 +1,59 @@
+{
+    "dataSource": "api",
+    "endpoint": {
+        "entity": "user",
+        "subEntityName": "classifier",
+        "subEntityId": "{{@attribute}}",
+        "method": "scorehistory",
+        "id": "{{@username}}"
+    },
+    "query": {
+        "entity": "logins",
+        "conditions": [
+            {
+                "field": "username",
+                "operator": "equals",
+                "value": "{{username}}"
+            },
+            {
+                "field": "score",
+                "operator": "greaterThan",
+                "value": 30
+            }
+        ]
+    },
+    "searchId": "user_logins_history",
+    "fields": [
+        {
+            "name": "score",
+            "type": "number"
+        },
+        {
+            "name": "sourceIP",
+            "type": "ip"
+        },
+        {
+            "name": "sourceHostname",
+            "type": "string"
+        },
+        {
+            "name": "time",
+            "type": "date"
+        },
+        {
+            "name": "destinationHostname",
+            "type": "string"
+        },
+        {
+            "name": "destinationIP",
+            "type": "string"
+        }
+    ],
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "entityId"
+        }
+    ]
+}

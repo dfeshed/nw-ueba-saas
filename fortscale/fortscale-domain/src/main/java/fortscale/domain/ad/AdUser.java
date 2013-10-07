@@ -3,6 +3,9 @@ package fortscale.domain.ad;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -636,7 +639,7 @@ public class AdUser extends AdObject{
 		this.setWhenCreated(attrVals.get("whenCreated"));
 	}
 	
-	
+	@JsonIgnore
 	public Map<String, String> getAttrVals() {
 		this.fillAttrVals();
 		
@@ -653,10 +656,11 @@ public class AdUser extends AdObject{
 	 * @param distinguishedName must not be {@literal null} or empty.
 	 */
 	@PersistenceConstructor
-	public AdUser(String distinguishedName) {
+	@JsonCreator
+	public AdUser(@JsonProperty("distinguishedName") String distinguishedName) {
 		super(distinguishedName);
 	}
-
+	
 	public String getLastname() {
 		return lastname;
 	}

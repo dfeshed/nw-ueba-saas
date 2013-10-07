@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("transforms", [function(){
+    angular.module("Transforms", []).factory("transforms", function(){
     var splunkDateFormatRegExp = /^(\d{2})\/(\d{2})\/(\d{4}):(\d{1,2}):(\d{1,2}):(\d{1,2})$/,
         splunkBucketRegExp = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})$/;
 
@@ -73,4 +73,4 @@ angular.module("Fortscale").factory("transforms", [function(){
     };
 
     return methods;
-}]);
+});
