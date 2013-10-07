@@ -24,7 +24,7 @@ public class QoSService implements FeService {
 	@Override
 	public Iterable<AdUser> getAdUsersAttrVals() {
 		Iterable<AdUser> validUsers = feService.getAdUsersAttrVals(); 
-		return qos.generateAutoTestUsers(validUsers);
+		return qos.generateQoSTestUsers(validUsers);
 	}
 
 	@Override
