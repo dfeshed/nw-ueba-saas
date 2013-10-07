@@ -23,10 +23,11 @@
 		<intercept-url pattern="/data/**" access="permitAll" />
 		<intercept-url pattern="/images/**" access="permitAll" />
 		<intercept-url pattern="/scripts/**" access="permitAll" />
+		<intercept-url pattern="/scripts/services/**" access="permitAll" />
 		<intercept-url pattern="/styles/**" access="permitAll" />
 		<intercept-url pattern="/views/**" access="permitAll" />
 		<intercept-url pattern="/denied" access="hasRole('ROLE_USER')" />
-		<intercept-url pattern="/**" access="isAuthenticated()" />
+<!-- 		<intercept-url pattern="/**" access="isAuthenticated()" /> -->
 
 		<form-login login-page="/signin.html" authentication-failure-url="/404"
 			default-target-url="/" />

@@ -5,7 +5,7 @@ angular.module("Fortscale").factory("widgetTypes", ["$q", "$http", "version", fu
         getWidgetType: function(widgetTypeName){
             var deferred = $q.defer();
 
-            $http.get("data/widget_types/" + widgetTypeName + ".json?v=" + version)
+            $http.get("widgets/" + widgetTypeName + "/" + widgetTypeName + ".definition.json?v=" + version)
                 .success(deferred.resolve)
                 .error(deferred.reject);
 
@@ -15,7 +15,7 @@ angular.module("Fortscale").factory("widgetTypes", ["$q", "$http", "version", fu
             var deferred = $q.defer();
 
             if (widgetTypes)
-                deferred.resolve(widgetTypes);
+                deferred.resolve(angular.copy(widgetTypes));
             else{
                 $http.get("data/widget_types/widget_types.json?v=" + version)
                     .success(function(widgetTypesList){
@@ -33,7 +33,7 @@ angular.module("Fortscale").factory("widgetTypes", ["$q", "$http", "version", fu
                                 typesData[widgetTypesList[i]] = widgetType;
                             });
 
-                            deferred.resolve(typesData);
+                            deferred.resolve(angular.copy(typesData));
                         }, deferred.reject);
                     })
                     .error(deferred.reject);

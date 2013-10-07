@@ -1,4 +1,4 @@
-angular.module("Fortscale").controller("TableWidgetController", ["$scope", "$timeout", "widgets", function($scope, $timeout, widgets){
+angular.module("TableWidget").controller("TableWidgetController", ["$scope", "$timeout", "widgets", function($scope, $timeout, widgets){
     var currentSortField,
         sortDirection = 1,
         sortByField;

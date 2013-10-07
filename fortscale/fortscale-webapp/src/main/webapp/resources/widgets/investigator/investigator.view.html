@@ -2,8 +2,24 @@
     <div class="row-fluid">
         <div class="span4 investigator-menu">
             <section>
-                <h4>Entity</h4>
-                <div class="investigator-menu-section-contents">
+                <h4 class="clickable" ng-click="sections.sql.collapsed = !sections.sql.collapsed">
+                    <i class="icon-{{sections.sql.collapsed && 'plus' || 'minus'}} section-collapse-btn"
+                       title="{{sections.sql.collapsed && 'Expand' || 'Collapse'}}"></i>
+                    SQL
+                </h4>
+                <div class="investigator-menu-section-contents" ng-hide="sections.sql.collapsed">
+                    <form ng-submit="querySql(sqlQuery)" style="margin: 0">
+                        <input type="text" ng-model="sqlQuery" style="width: 95%" placeholder="Enter an SQL query and press Enter" />
+                    </form>
+                </div>
+            </section>
+            <section>
+                <h4 class="clickable" ng-click="sections.entity.collapsed = !sections.entity.collapsed">
+                    <i class="icon-{{sections.entity.collapsed && 'plus' || 'minus'}} section-collapse-btn"
+                       title="{{sections.entity.collapsed && 'Expand' || 'Collapse'}}"></i>
+                    Entity
+                </h4>
+                <div class="investigator-menu-section-contents" ng-hide="sections.entity.collapsed">
                     <select ng-model="config.entity"
                             style="width: 100%; height: 29px"
                             ng-options="entity.id as entity.name for entity in entities"
@@ -11,8 +27,12 @@
                 </div>
             </section>
             <section ng-show="config.entity">
-                <h4>Data</h4>
-                <div class="investigator-menu-section-contents">
+                <h4 class="clickable" ng-click="sections.fields.collapsed = !sections.fields.collapsed">
+                    <i class="icon-{{sections.fields.collapsed && 'plus' || 'minus'}} section-collapse-btn"
+                       title="{{sections.fields.collapsed && 'Expand' || 'Collapse'}}"></i>
+                    Data
+                </h4>
+                <div class="investigator-menu-section-contents" ng-hide="sections.fields.collapsed">
                     <a class="btn investigator-fields-update-btn" ng-click="update(true)" ng-show="fieldsChanged">Update</a>
                     <table class="investigator-fields table table-hover widget-table">
                         <thead>
@@ -59,37 +79,41 @@
                 </div>
             </section>
             <section ng-show="config.entity">
-                <h4>View</h4>
-                <div class="investigator-menu-section-contents">
+                <h4 class="clickable" ng-click="sections.view.collapsed = !sections.view.collapsed">
+                    <i class="icon-{{sections.view.collapsed && 'plus' || 'minus'}} section-collapse-btn"
+                       title="{{sections.view.collapsed && 'Expand' || 'Collapse'}}"></i>
+                    View
+                </h4>
+                <div class="investigator-menu-section-contents" ng-hide="sections.view.collapsed">
                     <label>
                         Type: <select ng-model="currentViewType"
                                       ng-options="viewType as viewType.name for (viewTypeId , viewType) in viewTypes"
-                                      ng-chage="onViewTypeSelect(view.id)"></select>
-                        <hr />
-                        <table class="table investigator-view-settings">
-                            <thead>
-                                <tr>
-                                    <th>Field</th>
-                                    <th>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="setting in currentViewType.settings">
-                                    <td>
-                                        <label>{{setting.name}}</label>
-                                    </td>
-                                    <td ng-include="'investigator_field_' + setting.type">
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                      ng-change="onViewTypeSelect()"></select>
                     </label>
+                    <hr />
+                    <table class="table investigator-view-settings">
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="setting in currentViewType.settings">
+                                <td>
+                                    <label>{{setting.name}}</label>
+                                </td>
+                                <td ng-include="'investigator_field_' + setting.type">
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </div>
         <div class="span11 investigator-display">
-            <ng-include src="'views/widgets/table.html'"></ng-include>
+            <ng-include src="'widgets/' + currentViewType.type + '/' + currentViewType.type + '.view.html'" ng-if="currentViewType"></ng-include>
         </div>
     </div>
 </div>

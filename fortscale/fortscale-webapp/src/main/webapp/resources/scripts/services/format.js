@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("format", ["utils", function(utils){
+angular.module("Format", ["Utils"]).factory("format", ["utils", function(utils){
     var methods = {
         date: function(value, options){
             var date = moment(value);

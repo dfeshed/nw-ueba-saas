@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("styles", ["$q", "$http", "conditions", "format", function($q, $http, conditions, format){
+angular.module("Styles", ["Format", "Conditions"]).factory("styles", ["$q", "$http", "conditions", "format", function($q, $http, conditions, format){
     var savedStyles;
 
     function getColor(r,g,b){

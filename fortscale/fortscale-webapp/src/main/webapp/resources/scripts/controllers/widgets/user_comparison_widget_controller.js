@@ -1,4 +1,4 @@
-angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$http", "database", function ($scope, $http, database) {
+angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$http", "database", "bubblesChartWidgetData", function ($scope, $http, database, bubblesChartWidgetData) {
     var otherUsers = [
         {"name": "Charles Kavanagh", "username": "CharlesK", "jobTitle": "Operations Specialist", "score": 65, "trend": "+30%", "location": "NYC"},
         {"name": "James Albert", "username": "JamesA", "jobTitle": "Operations Specialist", "score": 53, "trend": "+0.8%", "location": "NYC"},
@@ -25,7 +25,7 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
             }).then(function (results) {
                     $scope.chartSettings.itemField = switchedFields ? "username" : "group";
                     $scope.chartSettings.childrenField = switchedFields ? "group" : "username";
-                    $scope.chartData = results.data;
+                    $scope.chartData = bubblesChartWidgetData.getData({ settings: $scope.chartSettings }, results.data);
                 });
         },
         machines: function () {
@@ -46,7 +46,7 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
             }).then(function (results) {
                     $scope.chartSettings.itemField = switchedFields ? "username" : "hostname";
                     $scope.chartSettings.childrenField = switchedFields ? "hostname" : "username";
-                    $scope.chartData = results.data;
+                    $scope.chartData = bubblesChartWidgetData.getData({ settings: $scope.chartSettings }, results.data);
                 });
         },
         groupPolicy: function () {
@@ -67,7 +67,7 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
             }).then(function (results) {
                     $scope.chartSettings.itemField = switchedFields ? "username" : "policy";
                     $scope.chartSettings.childrenField = switchedFields ? "policy" : "username";
-                    $scope.chartData = results.data;
+                    $scope.chartData = bubblesChartWidgetData.getData({ settings: $scope.chartSettings }, results.data);
                 });
         }
     };

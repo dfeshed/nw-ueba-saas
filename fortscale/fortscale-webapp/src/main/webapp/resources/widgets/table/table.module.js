@@ -1,0 +1,1 @@
+angular.module("TableWidget", ["Utils", "Transforms", "Styles", "Icons"]);

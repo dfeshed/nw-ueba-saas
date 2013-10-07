@@ -1,19 +1,15 @@
-angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$location", "$timeout", "entities", "database", "widgets", "conditions", "widgetTypes",
-    function($scope, $location, $timeout, entities, database, widgets, conditions, widgetTypes){
+angular.module("Fortscale").controller("InvestigatorController", [
+    "$scope", "$q", "$location", "$timeout", "entities", "database", "widgets", "conditions", "widgetTypes", "widgetsData", "server",
+    function($scope, $q, $location, $timeout, entities, database, widgets, conditions, widgetTypes, widgetsData, server){
     var paging = {
             pageSize: 20,
             page: 1
         },
-        tableSort;
+        tableSort,
+        rawData,
+        widgetTypesData;
 
     $scope.config = {};
-    $scope.view = {
-        "type": "table",
-        "settings": {
-            "allowPaging": true,
-            "pageSize": paging.pageSize
-        }
-    };
 
     $scope.onEntitySelect = function(update){
         var foundEntity;
@@ -86,19 +82,22 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
             setUrlParams();
         else{
             $scope.fieldsChanged = false;
-            $scope.view.settings.fields = getEntityTableFields($scope.currentEntity);
             getData();
         }
     };
 
     $scope.fields = {
         objectArray: {
-            addMember: function(field){
-                var setting = $scope.config.view.settings[field.id];
-                if (!setting)
-                    setting = $scope.config.view.settings[field.id] = [];
+            addMember: function(setting, memberValues){
+                var member = {
+                    _settings: angular.copy(setting.memberSettings)
+                };
 
-                setting.push({});
+                angular.forEach(member._settings, function(memberSetting){
+                    setSettingValues(member, memberSetting, memberValues);
+                });
+
+                setting.settingValues[setting.id].push(member);
             }
         }
     };
@@ -134,7 +133,7 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
         $location.search("fields", enabledFields.join(","));
     }
 
-    function getEntityTableFields(entity){
+    function getEntityTableFields(entity, fieldsSetting){
         var fields = [];
         angular.forEach(entity.fields, function(field){
             if (field.enabled){
@@ -146,10 +145,12 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
                 };
 
                 if (field.type === "date"){
-                    fieldSetting.format = "date";
-                    fieldSetting.formatOptions = {
-                        format: "MM/DD/YY HH:mm"
-                    }
+                    fieldSetting.transform = {
+                        method: "date",
+                        options: {
+                            format: "MM/DD/YY HH:mm"
+                        }
+                    };
                 }
 
                 if (/score/i.test(field.id)){
@@ -161,7 +162,7 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
                     });
                 }
 
-                fields.push(fieldSetting)
+                $scope.fields.objectArray.addMember(fieldsSetting, fieldSetting);
             }
         });
 
@@ -224,6 +225,57 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
         getData();
     });
 
+    $scope.onViewTypeSelect = function(){
+        $scope.view = $scope.currentViewType;
+        setCurrentView($scope.currentViewType);
+        setViewData();
+    };
+
+    $scope.onSettingsChange = function(){
+        setViewData();
+    };
+
+    $scope.querySql = function(sqlQuery){
+        server.queryServer({
+            endpoint: {
+                entity: "investigate",
+                query: sqlQuery
+            }
+        }).then(function(results){
+            setSqlData(results);
+        }, function(error){
+            console.error("Can't get SQL results.");
+        });
+    };
+
+    function setSqlData(sqlResults){
+        var data = sqlResults.data;
+        rawData = sqlResults;
+
+        if (!data || !data.length){
+            $scope.view.data = null;
+            $scope.currentEntity = null;
+        }
+        else{
+            $scope.currentEntity = { fields: [] };
+            for(var fieldName in data[0]){
+                $scope.currentEntity.fields.push({
+                    id: fieldName,
+                    name: fieldName,
+                    type: typeof(data[0][fieldName]),
+                    entity: $scope.currentEntity,
+                    enabled: true
+                });
+            }
+
+            $scope.view.settings = $scope.currentViewSettings;
+
+            var widgetDataParser = widgetsData[$scope.view.type];
+            $scope.view.data = widgetDataParser ? widgetDataParser($scope.view, sqlResults.data, {}) : sqlResults.data;
+            $scope.view.dataTotalResults = sqlResults.total;
+        }
+    }
+
     function getData(){
         $scope.widget.report = {
             query: {
@@ -235,10 +287,64 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
             }
         };
 
-        database.query($scope.widget.report.query).then(function(results){
-            $scope.view.data = widgets.setViewValues($scope.view, results.data, {});
-            $scope.view.dataTotalResults = results.total
+        database.query($scope.widget.report.query).then(setViewData);
+    }
+
+    function setViewData(results){
+        if (results)
+            rawData = results;
+
+        $scope.view.settings = $scope.currentViewSettings;
+
+        var widgetDataParser = widgetsData[$scope.view.type];
+        $scope.view.data = widgetDataParser ? widgetDataParser($scope.view, rawData.data, {}) : rawData.data;
+        $scope.view.dataTotalResults = rawData.total;
+    }
+
+    function getTypeDefaultValue(type){
+        switch(type){
+            case 'string':
+                return "";
+            case 'number':
+                return 0;
+            case 'boolean':
+                return true;
+            case 'date':
+                return new Date();
+            case 'objectArray':
+                return [];
+            default:
+                return null;
+        }
+    }
+
+    function setSettingValues(parent, settingDefinition, settingValues){
+        settingDefinition.settingValues = parent;
+
+        if (settingDefinition.type === "object"){
+            parent[settingDefinition.id] = {};
+
+            angular.forEach(settingDefinition.properties, function(property){
+                parent[settingDefinition.id][property.id] = settingValues && settingValues[settingDefinition.id] !== undefined ? settingValues[settingDefinition.id][property.id] : setSettingValues(parent[settingDefinition.id], property);
+            });
+        }
+        else{
+            if (settingDefinition.default !== undefined)
+                parent[settingDefinition.id] = settingValues ? settingValues[settingDefinition.id] : settingDefinition.default;
+            else
+                parent[settingDefinition.id] = settingValues ? settingValues[settingDefinition.id] : getTypeDefaultValue(settingDefinition.type);
+        }
+    }
+
+    function setViewSettings(){
+        var currentViewSettingsDefinition = $scope.currentViewType.settings;
+        var settings = {};
+
+        angular.forEach(currentViewSettingsDefinition, function(settingDefinition){
+            setSettingValues(settings, settingDefinition);
         });
+
+        $scope.currentViewSettings = settings;
     }
 
     function getField(fieldId){
@@ -249,6 +355,7 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
 
         return null;
     }
+
     function getFiltersFromUrl(){
         var queryParams = $location.search(),
             filterParams = $location.search().params ? JSON.parse(decodeURIComponent($location.search().params)) : {},
@@ -315,8 +422,59 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
         });
     }
 
+    function findSettingDefinition(viewSettings, settingId){
+        for(var i= 0, settingDefinition; settingDefinition = viewSettings[i]; i++){
+            if (settingDefinition.id === settingId)
+                return settingDefinition;
+        }
+
+        return null;
+    }
+
+    function setCurrentView(viewType){
+        $scope.currentViewType = $scope.config.view = viewType;
+        setViewSettings();
+
+        if (viewType === widgetTypesData.table){
+            getEntityTableFields($scope.currentEntity, findSettingDefinition(viewType.settings, "fields"));
+        }
+        else if (viewType === widgetTypesData.pieChart){
+            var firstNumericField,
+                firstStringField;
+
+            for(var i= 0, field; field = $scope.currentEntity.fields[i]; i++){
+                if (!field.enabled)
+                    continue;
+
+                if (field.type === "number"){
+                    firstNumericField = field;
+                    if (firstStringField)
+                        break;
+                }
+                else if (field.type === "string"){
+                    firstStringField = field;
+                    if (firstNumericField)
+                        break;
+                }
+            }
+
+            if (firstNumericField)
+                $scope.currentViewSettings.chartValue = firstNumericField.id;
+            if (firstStringField)
+                $scope.currentViewSettings.chartLabel = firstStringField.id;
+        }
+
+        $scope.view = {
+            type: $scope.config.view.type,
+            settings: $scope.currentViewSettings
+        };
+    }
+
     function init(){
-        entities.getEntities().then(function(entitiesData){
+        $q.all([ entities.getEntities(), widgetTypes.getWidgetTypes()]).then(function(results){
+            var entitiesData = results[0];
+            widgetTypesData = results[1];
+
             $scope.entities = entitiesData;
 
             if ($location.search().entity){
@@ -325,15 +483,13 @@ angular.module("Fortscale").controller("InvestigatorController", ["$scope", "$lo
 
                 getFiltersFromUrl();
                 getFieldsFromUrl();
+
+                $scope.viewTypes = widgetTypesData;
+
+                setCurrentView(widgetTypesData.table);
+
                 $scope.update();
             }
-        });
-
-        widgetTypes.getWidgetTypes().then(function(widgetTypesData){
-            $scope.viewTypes = widgetTypesData;
-            $scope.currentViewType = widgetTypesData.table;
-
-            $scope.config.view = { type: widgetTypesData.table.type, settings: {} };
         });
     }
 

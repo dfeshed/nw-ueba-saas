@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module("Fortscale").directive("bubblesChart", ["$parse", "$timeout", function($parse, $timeout){
+angular.module("BubblesChartWidget").directive("bubblesChart", ["$parse", "$timeout", function($parse, $timeout){
     return {
         template: "<div class='bubbles-chart' style='width: 100%; height: 100%; margin: 0 auto'></div>",
         restrict: 'E',
@@ -18,6 +18,10 @@ angular.module("Fortscale").directive("bubblesChart", ["$parse", "$timeout", fun
 
             scope.$watch(attrs.settings, function(value){
                 settings = value;
+
+                if (typeof(settings.height) === "number")
+                    settings.height = settings.height + "px";
+
                 drawChart();
 
                 if (settings.refreshOnResize && !resizeEventListenerEnabled)
@@ -59,7 +63,6 @@ angular.module("Fortscale").directive("bubblesChart", ["$parse", "$timeout", fun
                 if (!data || !settings)
                     return;
 
-                var parsedData = parseData();
                 element[0].innerHTML = "";
                 element[0].style.height = settings.height;
 
@@ -78,7 +81,7 @@ angular.module("Fortscale").directive("bubblesChart", ["$parse", "$timeout", fun
                     .attr("class", "bubble");
 
                 var node = svg.selectAll(".node")
-                    .data(bubble.nodes(parsedData).filter(function(d) { return !d.children; }))
+                    .data(bubble.nodes(data).filter(function(d) { return !d.children; }))
                     .enter().append("g")
                     .attr("class", "node")
                     .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
@@ -121,29 +124,6 @@ angular.module("Fortscale").directive("bubblesChart", ["$parse", "$timeout", fun
             function highlightMember(member){
                 highlightMemberOpacity(circles, member);
                 highlightMemberOpacity(texts, member);
-            }
-
-            function parseData(){
-                var parsedData = [],
-                    itemsIndex = {};
-
-                angular.forEach(data, function(item){
-                    var indexedItem = itemsIndex[item[settings.itemField]];
-                    if (!indexedItem)
-                        indexedItem = itemsIndex[item[settings.itemField]] = { name: item[settings.itemField], members: [], value: 0 };
-
-                    indexedItem.members.push(item[settings.childrenField]);
-                    indexedItem.value += settings.valueIsCount ? 1 : item[settings.valueField];
-                });
-
-                var item;
-                for(var itemName in itemsIndex){
-                    item = itemsIndex[itemName];
-                    item.valueNames = item.members.join("\n");
-                    parsedData.push(itemsIndex[itemName]);
-                }
-
-                return { children: parsedData };
             }
         }
     };

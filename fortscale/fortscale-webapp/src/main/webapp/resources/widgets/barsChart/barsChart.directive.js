@@ -1,25 +1,22 @@
 'use strict';
 
-if (typeof(yoxigen) === "undefined")
-    yoxigen = angular.module("Yoxigen", []);
-
-yoxigen.directive("yoxigenBarChart", ["$parse", "$timeout", function ($parse, $timeout) {
+angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$timeout", function ($parse, $timeout) {
     return {
         template: "<div class='yoxigen-chart yoxigen-bar-chart' style='width: 100%; height: 100%'></div>",
         restrict: 'E',
         scope: true,
         replace: true,
-        require: "?ngModel",
-        link: function postLink(scope, element, attrs, ngModel) {
+        link: function postLink(scope, element, attrs) {
             var data, settings;
             var resizeEventListenerEnabled;
             var selectedBarGroup = null;
             var labelTexts, labelBoxes;
             var selectItem;
-            var drawChartTimeoutPromise;
             var tooltip, tooltipText, tooltipColor, tooltipRect;
 
             var defaultOptions = {
+                    height: "200px",
+                    width: "100%",
                     spacing: { min: 0, max: 100 },
                     padding: { top: 10, right: 50, left: 50, bottom: 0 },
                     selectable: false,
@@ -60,7 +57,7 @@ yoxigen.directive("yoxigenBarChart", ["$parse", "$timeout", function ($parse, $t
                     barsHandleEvents: true,
                     colors: ["#0b62a4", "#7a92a3"],
                     minHeight: 100,
-                    createAxes: true,
+                    createAxes: false,
                     createLabels: true,
                     selectLabels: true,
                     showSelectionBar: false,
@@ -128,7 +125,7 @@ yoxigen.directive("yoxigenBarChart", ["$parse", "$timeout", function ($parse, $t
                     barValue = barElement.__data__[series.field];
 
                 return options.tooltip
-                    .replace("{{seriesLabel}}", series.label)
+                    .replace("{{seriesLabel}}", barElement.__data__[series.label])
                     .replace("{{barLabel}}", barLabel)
                     .replace("{{barValue}}", barValue);
             }

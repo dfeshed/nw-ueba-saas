@@ -133,7 +133,6 @@ h2, h3, h4, h5{ font-weight: normal; }
 @import "buttons";
 @import "modal";
 @import "splunk_config";
-@import "widgets/table";
 @import "widgets/graph";
 @import "widgets/buttons_bar";
 @import "widgets/text";
@@ -143,7 +142,10 @@ h2, h3, h4, h5{ font-weight: normal; }
 @import "widgets/slides";
 @import "widgets/eventsList";
 @import "widgets/itemsList";
-@import "widgets/pieChart";
+@import "../widgets/table/table";
+@import "../widgets/pieChart/pieChart";
+@import "../widgets/barsChart/barsChart";
+@import "../widgets/percentChart/percentChart";
 @import "widgets/numeric";
 @import "widgets/tabs";
 @import "widgets/container";

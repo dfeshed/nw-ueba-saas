@@ -26,10 +26,8 @@
                         }
                     ]
                 },
-                "item": {
-                    "value": "{{count}}%",
-                    "label": "{{hostname}}"
-                }
+                "chartValue": "count",
+                "chartLabel": "hostname"
             }
         }
     ]

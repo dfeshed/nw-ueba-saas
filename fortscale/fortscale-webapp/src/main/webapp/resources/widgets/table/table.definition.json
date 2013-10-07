@@ -2,6 +2,18 @@
     "name": "Table",
     "settings": [
         {
+            "id": "pageSize",
+            "name": "Page Size",
+            "type": "number",
+            "default": 20
+        },
+        {
+            "id": "allowPaging",
+            "name": "Paging",
+            "type": "boolean",
+            "default": true
+        },
+        {
             "id": "fields",
             "name": "Fields",
             "type": "objectArray",

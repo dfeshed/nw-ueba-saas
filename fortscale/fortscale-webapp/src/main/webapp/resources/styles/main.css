@@ -673,126 +673,6 @@ body .ui-tooltip {
   margin-left: -300px;
   margin-top: -150px; }
 
-.widget-table-controls {
-  text-align: center;
-  margin-top: .5em;
-  padding-top: .5em;
-  border-top: solid 1px #ddd; }
-
-.widget-table-wrapper {
-  min-height: 100px; }
-
-.widget-table {
-  border-collapse: collapse;
-  border: none;
-  width: 100%; }
-  .widget-table th.index-cell, .widget-table td.index-cell {
-    color: #bbbbbb;
-    border: none;
-    width: 10px; }
-  .widget-table tbody tr:first-child td {
-    border-top-color: #c4c4c4; }
-  .widget-table tr.highlighted {
-    background: #0C658A;
-    color: white; }
-    .widget-table tr.highlighted a {
-      color: white; }
-    .widget-table tr.highlighted:hover td {
-      background: #0c4664; }
-  .widget-table th {
-    color: black;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    cursor: default;
-    position: relative; }
-    .widget-table th.widget-table-header-sortable {
-      cursor: pointer; }
-    .widget-table th .widget-table-sort {
-      margin-left: 5px;
-      display: inline-block;
-      vertical-align: top;
-      height: 10px;
-      position: relative;
-      color: #aaa; }
-      .widget-table th .widget-table-sort.widget-table-sort-enabled {
-        color: black; }
-      .widget-table th .widget-table-sort.widget-table-sort-up {
-        top: 2px; }
-      .widget-table th .widget-table-sort.widget-table-sort-down {
-        top: -3px; }
-      .widget-table th .widget-table-sort i {
-        display: block;
-        height: 5px;
-        font-size: 10px;
-        line-height: 10px;
-        visibility: hidden; }
-        .widget-table th .widget-table-sort i.widget-table-sort-visible {
-          visibility: visible; }
-        .widget-table th .widget-table-sort i.icon-caret-down {
-          margin-top: 1px; }
-    .widget-table th .widget-table-filter .icon-filter {
-      color: #aaa; }
-      .widget-table th .widget-table-filter .icon-filter:hover {
-        color: Black; }
-    .widget-table th .widget-table-filter .widget-table-filter-window {
-      position: absolute;
-      left: 0;
-      top: 100%;
-      border: solid 1px #999999;
-      background: White;
-      padding: 0 7px;
-      border-top-color: White;
-      z-index: 7;
-      box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.3); }
-      .widget-table th .widget-table-filter .widget-table-filter-window i {
-        cursor: pointer;
-        color: #aaa; }
-        .widget-table th .widget-table-filter .widget-table-filter-window i:hover {
-          color: black; }
-    .widget-table th .widget-table-filter.filtered .icon-filter {
-      color: red !important; }
-    .widget-table th .widget-table-filter .widget-table-filter-close {
-      position: relative;
-      left: 4px;
-      margin-left: 5px; }
-    .widget-table th .widget-table-filter-buttons .btn {
-      font-size: .8em;
-      color: White; }
-  .widget-table td {
-    padding: 5px;
-    vertical-align: top; }
-    .widget-table td.table-large-cell {
-      width: 9999px; }
-    .widget-table td.sideNote {
-      color: #999;
-      text-align: right;
-      white-space: nowrap; }
-      .widget-table td.sideNote .widget-table-icon {
-        font-size: 12px; }
-  .widget-table .widget-table-message {
-    color: black;
-    font-weight: bold;
-    padding: 10px 5px; }
-    .widget-table .widget-table-message.widget-table-message-warning {
-      background: -webkit-linear-gradient(top, #ffff1b, #e0da47);
-      background: -moz-linear-gradient(top, #ffff1b, #e0da47);
-      background: -ms-linear-gradient(top, #ffff1b, #e0da47);
-      background: linear-gradient(top, #ffff1b, #e0da47); }
-  .widget-table .widget-table-icon {
-    font-size: 14px; }
-  .widget-table .note {
-    color: #999;
-    font-style: italic;
-    padding: 0;
-    margin: 0; }
-
-.widget-table-list .widget-table thead {
-  display: none; }
-.widget-table-list .widget-table tr:hover td {
-  background: none; }
-.widget-table-list .widget-table tr:first-child td {
-  border-top: none; }
-
 .widget-graph {
   width: 100%;
   height: 100%; }
@@ -952,6 +832,126 @@ body .ui-tooltip {
   margin-right: 5px;
   top: 0; }
 
+.widget-table-controls {
+  text-align: center;
+  margin-top: .5em;
+  padding-top: .5em;
+  border-top: solid 1px #ddd; }
+
+.widget-table-wrapper {
+  min-height: 100px; }
+
+.widget-table {
+  border-collapse: collapse;
+  border: none;
+  width: 100%; }
+  .widget-table th.index-cell, .widget-table td.index-cell {
+    color: #bbbbbb;
+    border: none;
+    width: 10px; }
+  .widget-table tbody tr:first-child td {
+    border-top-color: #c4c4c4; }
+  .widget-table tr.highlighted {
+    background: #0C658A;
+    color: white; }
+    .widget-table tr.highlighted a {
+      color: white; }
+    .widget-table tr.highlighted:hover td {
+      background: #0c4664; }
+  .widget-table th {
+    color: black;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: default;
+    position: relative; }
+    .widget-table th.widget-table-header-sortable {
+      cursor: pointer; }
+    .widget-table th .widget-table-sort {
+      margin-left: 5px;
+      display: inline-block;
+      vertical-align: top;
+      height: 10px;
+      position: relative;
+      color: #aaa; }
+      .widget-table th .widget-table-sort.widget-table-sort-enabled {
+        color: black; }
+      .widget-table th .widget-table-sort.widget-table-sort-up {
+        top: 2px; }
+      .widget-table th .widget-table-sort.widget-table-sort-down {
+        top: -3px; }
+      .widget-table th .widget-table-sort i {
+        display: block;
+        height: 5px;
+        font-size: 10px;
+        line-height: 10px;
+        visibility: hidden; }
+        .widget-table th .widget-table-sort i.widget-table-sort-visible {
+          visibility: visible; }
+        .widget-table th .widget-table-sort i.icon-caret-down {
+          margin-top: 1px; }
+    .widget-table th .widget-table-filter .icon-filter {
+      color: #aaa; }
+      .widget-table th .widget-table-filter .icon-filter:hover {
+        color: Black; }
+    .widget-table th .widget-table-filter .widget-table-filter-window {
+      position: absolute;
+      left: 0;
+      top: 100%;
+      border: solid 1px #999999;
+      background: White;
+      padding: 0 7px;
+      border-top-color: White;
+      z-index: 7;
+      box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.3); }
+      .widget-table th .widget-table-filter .widget-table-filter-window i {
+        cursor: pointer;
+        color: #aaa; }
+        .widget-table th .widget-table-filter .widget-table-filter-window i:hover {
+          color: black; }
+    .widget-table th .widget-table-filter.filtered .icon-filter {
+      color: red !important; }
+    .widget-table th .widget-table-filter .widget-table-filter-close {
+      position: relative;
+      left: 4px;
+      margin-left: 5px; }
+    .widget-table th .widget-table-filter-buttons .btn {
+      font-size: .8em;
+      color: White; }
+  .widget-table td {
+    padding: 5px;
+    vertical-align: top; }
+    .widget-table td.table-large-cell {
+      width: 9999px; }
+    .widget-table td.sideNote {
+      color: #999;
+      text-align: right;
+      white-space: nowrap; }
+      .widget-table td.sideNote .widget-table-icon {
+        font-size: 12px; }
+  .widget-table .widget-table-message {
+    color: black;
+    font-weight: bold;
+    padding: 10px 5px; }
+    .widget-table .widget-table-message.widget-table-message-warning {
+      background: -webkit-linear-gradient(top, #ffff1b, #e0da47);
+      background: -moz-linear-gradient(top, #ffff1b, #e0da47);
+      background: -ms-linear-gradient(top, #ffff1b, #e0da47);
+      background: linear-gradient(top, #ffff1b, #e0da47); }
+  .widget-table .widget-table-icon {
+    font-size: 14px; }
+  .widget-table .note {
+    color: #999;
+    font-style: italic;
+    padding: 0;
+    margin: 0; }
+
+.widget-table-list .widget-table thead {
+  display: none; }
+.widget-table-list .widget-table tr:hover td {
+  background: none; }
+.widget-table-list .widget-table tr:first-child td {
+  border-top: none; }
+
 .widget-pie.with-info .widget-pie-chart {
   float: right; }
 .widget-pie .widget-pie-info {
@@ -962,6 +962,62 @@ body .ui-tooltip {
     margin-bottom: 6px; }
   .widget-pie .widget-pie-info label {
     color: #999999; }
+
+.yoxigen-chart {
+  font-family: Roboto Condensed, sans-serif; }
+  .yoxigen-chart .axis path,
+  .yoxigen-chart .axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges; }
+  .yoxigen-chart .axis text {
+    font-family: sans-serif;
+    font-size: 11px; }
+  .yoxigen-chart .labels {
+    pointer-events: none; }
+    .yoxigen-chart .labels.selected {
+      color: White; }
+  .yoxigen-chart .crisp {
+    shape-rendering: crispEdges; }
+  .yoxigen-chart .handle-events {
+    cursor: pointer; }
+  .yoxigen-chart .label-box {
+    opacity: 0;
+    -webkit-transition: opacity 300ms ease-out; }
+    .yoxigen-chart .label-box.selected {
+      opacity: 1 !important; }
+    .yoxigen-chart .label-box:hover {
+      opacity: .2; }
+  .yoxigen-chart .percent-bars {
+    -webkit-transform: scaleY(1);
+    -webkit-transform-origin: center center;
+    -webkit-transition: all 200ms ease-out; }
+    .yoxigen-chart .percent-bars:hover {
+      -webkit-transform: scaleY(1.1); }
+
+.yoxigen-chart .axis path,
+.yoxigen-chart .axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges; }
+.yoxigen-chart .axis text {
+  font-family: sans-serif;
+  font-size: 11px; }
+.yoxigen-chart .labels {
+  pointer-events: none; }
+  .yoxigen-chart .labels.selected {
+    color: White; }
+.yoxigen-chart .crisp {
+  shape-rendering: crispEdges; }
+.yoxigen-chart .handle-events {
+  cursor: pointer; }
+.yoxigen-chart .label-box {
+  opacity: 0;
+  -webkit-transition: opacity 300ms ease-out; }
+  .yoxigen-chart .label-box.selected {
+    opacity: 1 !important; }
+  .yoxigen-chart .label-box:hover {
+    opacity: .2; }
 
 .widget-numeric h5 {
   margin-bottom: 10px;
@@ -1113,6 +1169,12 @@ body .ui-tooltip {
   width: 50px; }
 .investigator .investigator-display table a {
   color: #333333; }
+.investigator .section-collapse-btn {
+  color: White;
+  float: right;
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 30px; }
 
 .control-notification {
   background: #dddddd;

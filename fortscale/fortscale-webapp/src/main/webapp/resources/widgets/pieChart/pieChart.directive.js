@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('Fortscale')
+angular.module('PieChartWidget')
     .directive('pieChart', function () {
         return {
-            templateUrl: "views/widgets/pieChart_template.html",
+            templateUrl: "widgets/pieChart/pieChart_template.html",
             restrict: 'E',
             replace: true,
             require: "?ngModel",
@@ -22,19 +22,21 @@ angular.module('Fortscale')
 
                 scope.$watch(attrs.graphSettings, function(value){
                     settings = value;
-                    scope.showInfo = settings.showInfo;
-                    drawChart();
+                    if (settings){
+                        scope.showInfo = settings.showInfo;
+                        drawChart();
+                    }
                 });
 
                 function drawChart(){
-                    if (!data || !settings)
+                    if (!data || !settings || !data.chartValues)
                         return;
 
                     if (!dataChanged)
                         return;
 
-                    chart.style.width = settings.width;
-                    chart.style.height = settings.height;
+                    var size = settings.size ? settings.size + "%" : "200px";
+                    chart.style.width = size;
 
                     scope.currentItem = data.items[0];
 

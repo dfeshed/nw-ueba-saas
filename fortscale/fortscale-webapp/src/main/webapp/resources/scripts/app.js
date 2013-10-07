@@ -1,4 +1,22 @@
-angular.module("Fortscale", ["Popup", "Cache", "Utils", "Yoxigen", "ui.sortable", "ngResource", "FortscaleAuth"], function($routeProvider, $locationProvider){
+angular.module("Fortscale", [
+    "Popup",
+    "Cache",
+    "Utils",
+    "Format",
+    "Conditions",
+    "Styles",
+    "Transforms",
+    "Icons",
+    "Yoxigen",
+    "ui.sortable",
+    "ngResource",
+    "FortscaleAuth",
+    "TableWidget",
+    "PieChartWidget",
+    "BubblesChartWidget",
+    "BarsChartWidget",
+    "PercentChartWidget"
+], function($routeProvider, $locationProvider){
     $routeProvider
         .when('/d/:dashboardId', {
             templateUrl: 'views/pages/main_dashboard.html',

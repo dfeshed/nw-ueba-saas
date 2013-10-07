@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Fortscale')
+angular.module('TableWidget')
     .directive('widgetTable', ["widgets", function (widgets) {
         return {
             restrict: 'C',

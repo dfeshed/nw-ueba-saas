@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("conditions", ["format", function(format){
+angular.module("Conditions", ["Format"]).factory("conditions", ["format", function(format){
 
     var validations = {
         contains: function(val1, val2){

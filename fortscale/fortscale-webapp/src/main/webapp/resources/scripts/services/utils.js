@@ -67,6 +67,9 @@ angular.module("Utils", []).factory("utils", [function(){
         },
         strings: {
             parseValue: function(value, data, params, index, format){
+                if (!value)
+                    return "";
+
                 var parsedValue = value.replace(/\{\{([^\}]+)\}\}/g, function(match, variable){
                     if (/^@/.test(variable)){
                         var param = variable.replace("@", "");
