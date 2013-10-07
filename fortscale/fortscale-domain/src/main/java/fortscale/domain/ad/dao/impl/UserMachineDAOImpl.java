@@ -24,13 +24,44 @@ public class UserMachineDAOImpl implements UserMachineDAO{
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
 	
+	private String tableName = UserMachine.TABLE_NAME;
 	
+	
+	
+	public String getTableName() {
+		return tableName;
+	}
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
+	
+	
+	
+	
+	public void createTable(String inputFile) {
+		String sql = String.format("drop table %s",getTableName());
+		impalaJdbcTemplate.execute(sql);
+		sql = String.format("create table if not exists %s (username string, hostname string, logoncount bigint, lastlogon timestamp, hostnameip string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'",getTableName());
+		impalaJdbcTemplate.execute(sql);
+		sql = String.format("load data inpath '%s' into table %s", inputFile, getTableName());
+		impalaJdbcTemplate.execute(sql);
+	}
+	
+	@Override
+	public List<UserMachine> findAll() {
+		List<UserMachine> ret = new ArrayList<UserMachine>();
+
+		String query = String.format("select * from %s", getTableName());
+		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
+		
+		return ret;
+	}
 	
 	@Override
 	public List<UserMachine> findByUsername(String username){
 		List<UserMachine> ret = new ArrayList<UserMachine>();
 
-		String query = String.format("select * from %s  where %s=\"%s\"", UserMachine.TABLE_NAME, UserMachine.USERNAME_FIELD_NAME, username);
+		String query = String.format("select * from %s  where %s=\"%s\"", getTableName(), UserMachine.USERNAME_FIELD_NAME, username);
 		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
 		
 		return ret;
@@ -39,7 +70,7 @@ public class UserMachineDAOImpl implements UserMachineDAO{
 	public List<UserMachine> findByHostname(String hostname){
 		List<UserMachine> ret = new ArrayList<UserMachine>();
 
-		String query = String.format("select * from %s  where lower(%s)=\"%s\"", UserMachine.TABLE_NAME, UserMachine.HOSTNAME_FIELD_NAME, hostname);
+		String query = String.format("select * from %s  where lower(%s)=\"%s\"", getTableName(), UserMachine.HOSTNAME_FIELD_NAME, hostname);
 		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
 		
 		return ret;
@@ -48,7 +79,7 @@ public class UserMachineDAOImpl implements UserMachineDAO{
 	public List<UserMachine> findByHostnameip(String hostnameip){
 		List<UserMachine> ret = new ArrayList<UserMachine>();
 
-		String query = String.format("select * from %s  where %s=\"%s\"", UserMachine.TABLE_NAME, UserMachine.HOSTNAMEIP_FIELD_NAME, hostnameip);
+		String query = String.format("select * from %s  where %s=\"%s\"", getTableName(), UserMachine.HOSTNAMEIP_FIELD_NAME, hostnameip);
 		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
 		
 		return ret;
@@ -77,10 +108,42 @@ public class UserMachineDAOImpl implements UserMachineDAO{
 			return userMachine;
 		}
 		
-		private Date parseDate(String dateString) throws ParseException {
-			SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
-			return pattern.parse(dateString);
-		}
+		
+	}
+
+
+	public static String toCsvLine(UserMachine userMachine) {
+		StringBuilder builder = new StringBuilder();
+		appendValueToCsvLine(builder, userMachine.getUsername(), ",");
+		appendValueToCsvLine(builder, userMachine.getHostname(), ",");
+		appendValueToCsvLine(builder, Integer.toString(userMachine.getLogoncount()), ",");
+		appendValueToCsvLine(builder, fromatDate(userMachine.getLastlogon()), ",");
+		appendValueToCsvLine(builder, userMachine.getHostnameip(), "\n");
+		return builder.toString();
+	}
+	
+	public static String toCsvHeader() {
+		StringBuilder builder = new StringBuilder();
+		appendValueToCsvLine(builder, UserMachine.USERNAME_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, UserMachine.HOSTNAME_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, UserMachine.LOGONCOUNT_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, UserMachine.LASTLOGON_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, UserMachine.HOSTNAMEIP_FIELD_NAME, "\n");
+		return builder.toString();
+	}
+	
+	private static void appendValueToCsvLine(StringBuilder builder, String value, String deleimiter) {
+		builder.append(value).append(deleimiter);
+	}
+
+	private static Date parseDate(String dateString) throws ParseException {
+		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
+		return pattern.parse(dateString);
+	}
+	
+	private static String fromatDate(Date date) {
+		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
+		return pattern.format(date);
 	}
 }
 

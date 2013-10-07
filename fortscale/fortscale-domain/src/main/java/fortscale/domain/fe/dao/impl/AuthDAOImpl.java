@@ -29,6 +29,43 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
 	
+	private String tableName =AuthScore.TABLE_NAME;
+	
+	public String getTableName() {
+		return tableName;
+	}
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
+	
+	
+	
+	public void createTable(String inputFile) {
+		String sql = String.format("drop table %s",getTableName());
+		try {
+			
+			impalaJdbcTemplate.execute(sql);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		sql = String.format("create table if not exists %s (errorcode string, sourceip string, targetid string, userid string, eventscore double, time timestamp, globalscore double, runtime bigint) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'",getTableName());
+		impalaJdbcTemplate.execute(sql);
+		sql = String.format("load data inpath '%s' into table %s", inputFile, getTableName());
+		impalaJdbcTemplate.execute(sql);
+	}
+	
+	@Override
+	public List<AuthScore> findAll(Pageable pageable){
+		List<AuthScore> ret = new ArrayList<>();
+		ImpalaQuery query = new ImpalaQuery();
+		query.select("*").from(getTableName()).limitAndSort(pageable);
+		
+		ret.addAll(impalaJdbcTemplate.query(query.toSQL(), new AuthScoreMapper()));
+		
+		return ret;
+	}
+	
 	@Override
 	public AuthScore findCurrentAuthScoreByUsername(String username){
 		AuthScore ret = null;
@@ -43,7 +80,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	@Override
 	public List<AuthScore> findEventsByUsername(String username, Pageable pageable){
 		List<AuthScore> ret = new ArrayList<>();
-		String query = String.format("select * from %s where %s", AuthScore.TABLE_NAME, getUserNameEqualComparison(username));
+		String query = String.format("select * from %s where %s", getTableName(), getUserNameEqualComparison(username));
 		if(pageable != null){
 			query = String.format("%s %s",query, pageable.toString());
 		}
@@ -55,7 +92,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	public List<AuthScore> findEventsByUsernameAndTimestamp(String username, Date timestamp, Pageable pageable){
 		List<AuthScore> ret = new ArrayList<>();
 		String query = String.format("select * from %s where %s=%s and %s %s",
-				AuthScore.TABLE_NAME, 
+				getTableName(), 
 				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
 				getUserNameEqualComparison(username),
 				pageable.toString());
@@ -71,7 +108,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	public List<AuthScore> findEventsByTimestamp(Date timestamp, Pageable pageable, String additionalWhereQuery){
 		List<AuthScore> ret = new ArrayList<>();
 		ImpalaQuery query = new ImpalaQuery();
-		query.select("*").from(AuthScore.TABLE_NAME).where(ImpalaCriteria.equalsTo(AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp)));
+		query.select("*").from(getTableName()).where(ImpalaCriteria.equalsTo(AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp)));
 		if(additionalWhereQuery != null && additionalWhereQuery.length() > 0){
 			query.andWhere(additionalWhereQuery);
 		}
@@ -87,7 +124,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(Direction.DESC, AuthScore.TIMESTAMP_FIELD_NAME));
 		String query = String.format("select %s, %s, %s, max(%s) as %s from %s where %s group by %s, %s, %s %s", 
 				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME,
-				AuthScore.TABLE_NAME,
+				getTableName(),
 				getUserNameEqualComparison(username),
 				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME,
 				pageable.toString());
@@ -100,7 +137,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 		List<AuthScore> ret = new ArrayList<>();
 		String query = String.format("select %s, %s, %s, max(%s) as %s from %s where %s=%s group by %s, %s, %s", 
 				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME,
-				AuthScore.TABLE_NAME,
+				getTableName(),
 				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
 				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME);
 		ret.addAll(impalaJdbcTemplate.query(query, new GlobalScoreMapper()));
@@ -111,7 +148,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp){
 		String query = String.format("select count(distinct(%s)) from %s where %s=%s and %s > %d",
 				AuthScore.USERNAME_FIELD_NAME,
-				AuthScore.TABLE_NAME,
+				getTableName(),
 				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
 				AuthScore.GLOBAL_SCORE_FIELD_NAME, threshold.getValue());
 		
@@ -121,7 +158,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	public Date getLastRunDate(){
 		Calendar tmp = Calendar.getInstance();
 		tmp.add(Calendar.DAY_OF_MONTH,-1);
-		String query = String.format("select max(%s) from %s", AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.TABLE_NAME);
+		String query = String.format("select max(%s) from %s", AuthScore.TIMESTAMP_FIELD_NAME, getTableName());
 		String queryWithHint = String.format("%s where %s > %d", query, AuthScore.TIMESTAMP_FIELD_NAME, tmp.getTimeInMillis()/1000);
 		Long lastRun = impalaJdbcTemplate.queryForObject(queryWithHint, Long.class);
 		if(lastRun == null) {
@@ -133,7 +170,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	public double calculateAvgScoreOfGlobalScore(Date timestamp){
 		String query = String.format("select avg(tmp.g) from (select %s, max(%s) as g from %s where %s = %s group by %s) as tmp",
 				AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME,
-				AuthScore.TABLE_NAME,
+				getTableName(),
 				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
 				AuthScore.USERNAME_FIELD_NAME);
 		
@@ -145,7 +182,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(Direction.DESC, AuthScore.GLOBAL_SCORE_FIELD_NAME));
 		String query = String.format("select %s, %s, %s, max(%s) as %s from %s where %s=%s and %s > %d group by %s, %s, %s %s", 
 				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME,
-				AuthScore.TABLE_NAME,
+				getTableName(),
 				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
 				AuthScore.GLOBAL_SCORE_FIELD_NAME, threshold.getValue(),
 				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME,
@@ -160,7 +197,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
 		String query = String.format("select %s, %s, %s, max(%s) as %s from %s where %s=%s and %s >= %d and %s < %d group by %s, %s, %s %s", 
 				AuthScore.TIMESTAMP_FIELD_NAME, AuthScore.USERNAME_FIELD_NAME, AuthScore.GLOBAL_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME, AuthScore.EVENT_SCORE_FIELD_NAME,
-				AuthScore.TABLE_NAME,
+				getTableName(),
 				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
 				AuthScore.GLOBAL_SCORE_FIELD_NAME, lowestVal,
 				AuthScore.GLOBAL_SCORE_FIELD_NAME, upperVal,
@@ -175,7 +212,7 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 		List<AuthScore> ret = new ArrayList<>();
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(Direction.DESC, AuthScore.TIMESTAMP_FIELD_NAME));
 		String query = String.format("select * from %s where %s=%s and %s > %d %s", 
-				AuthScore.TABLE_NAME,
+				getTableName(),
 				AuthScore.TIMESTAMP_FIELD_NAME, formatTimestampDate(timestamp),
 				AuthScore.GLOBAL_SCORE_FIELD_NAME, threshold.getValue(),
 				pageable.toString());
@@ -233,23 +270,53 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 //		return String.format("%s rlike \"(?i)%s\"", AuthScore.USERNAME_FIELD_NAME, username);
 	}
 	
-	private Date parseTimestampDate(Long date){
+	private static Date parseTimestampDate(Long date){
 		return new Date(date*1000);
 	}
 	
-	private String formatTimestampDate(Date date){
+	private static String formatTimestampDate(Date date){
 		return Long.toString(date.getTime()/1000);
 		
 	}
 	
-	private Date parseEventTimeDate(String dateString) throws ParseException {
+	private static Date parseEventTimeDate(String dateString) throws ParseException {
 		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
 		return pattern.parse(dateString);
 	}
 	
-//	private String formatEventTimeDate(Date date){
-//		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
-//	return pattern.format(date);
-//	}
+	private static String formatEventTimeDate(Date date){
+		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
+		return pattern.format(date);
+	}
 
+	public static String toCsvLine(AuthScore authScore) {
+		StringBuilder builder = new StringBuilder();
+		appendValueToCsvLine(builder, authScore.getErrorCode(), ",");
+		appendValueToCsvLine(builder, authScore.getSourceIp(), ",");
+		appendValueToCsvLine(builder, authScore.getTargetId(), ",");
+		appendValueToCsvLine(builder, authScore.getUserName(), ",");
+		appendValueToCsvLine(builder, Double.toString(authScore.getEventScore()), ",");
+		appendValueToCsvLine(builder, formatEventTimeDate(authScore.getEventTime()), ",");
+		appendValueToCsvLine(builder, Double.toString(authScore.getGlobalScore()), ",");
+		appendValueToCsvLine(builder, formatTimestampDate(authScore.getTimestamp()), "\n");
+
+		return builder.toString();
+	}
+	
+	public static String toCsvHeader() {
+		StringBuilder builder = new StringBuilder();
+		appendValueToCsvLine(builder, AuthScore.ERROR_CODE_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, AuthScore.SOURCE_IP_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, AuthScore.TARGET_ID_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, AuthScore.USERNAME_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, AuthScore.EVENT_SCORE_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, AuthScore.EVENT_TIME_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, AuthScore.GLOBAL_SCORE_FIELD_NAME, ",");
+		appendValueToCsvLine(builder, AuthScore.TIMESTAMP_FIELD_NAME, "\n");
+		return builder.toString();
+	}
+	
+	private static void appendValueToCsvLine(StringBuilder builder, String value, String deleimiter) {
+		builder.append(value).append(deleimiter);
+	}
 }

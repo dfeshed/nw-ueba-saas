@@ -105,4 +105,10 @@ public class AuthDAOImpl implements AuthDAO {
 		return null;
 	}
 
+	@Override
+	public List<AuthScore> findAll(Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

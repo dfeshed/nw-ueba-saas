@@ -28,4 +28,10 @@ public class UserMachineDAOImpl implements UserMachineDAO{
 		return null;
 	}
 
+	@Override
+	public List<UserMachine> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

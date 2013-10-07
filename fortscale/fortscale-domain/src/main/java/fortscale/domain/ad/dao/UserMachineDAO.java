@@ -13,4 +13,6 @@ public interface UserMachineDAO {
 	public List<UserMachine> findByHostname(String hostname);
 	
 	public List<UserMachine> findByHostnameip(String hostnameip);
+
+	public List<UserMachine> findAll();
 }
