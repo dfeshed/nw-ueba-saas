@@ -12,8 +12,11 @@ import static org.springframework.data.mongodb.core.query.SerializationUtils.ser
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.mongodb.MongoDbFactory;
@@ -58,35 +61,85 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 	@Override
 	public void saveMap(AdUserFeaturesExtraction adUsersFeaturesExtraction) {
 		DBCollection collection = getDBCollection();
-
-		BasicDBObject basicDBObject = new BasicDBObject(AdUserFeaturesExtraction.classifierIdField, adUsersFeaturesExtraction.getClassifierId());
-		basicDBObject.append(AdUserFeaturesExtraction.userIdField, adUsersFeaturesExtraction.getUserId());
-		basicDBObject.append(AdUserFeaturesExtraction.scoreField, adUsersFeaturesExtraction.getScore());
-		basicDBObject.append(AdUserFeaturesExtraction.timestampField, adUsersFeaturesExtraction.getTimestamp());
-		BasicDBList basicDBList = new BasicDBList();
-		FeatureWriteConverter converter = new FeatureWriteConverter();
-		for(IFeature adFeature: adUsersFeaturesExtraction.getAttributes()){
-			try {
-			BasicDBObject featureObject = new BasicDBObject();
-			featureObject.append(ADFeature.DISPLAY_NAME_FIELD, adFeature.getFeatureDisplayName());
-			featureObject.append(ADFeature.FEATURE_SCORE_FIELD, adFeature.getFeatureScore());
-			featureObject.append(ADFeature.FEATURE_VALUE_FIELD, adFeature.getFeatureValue());
-			
-			basicDBObject.append(getFeatureDbFieldNameString(adFeature), featureObject);
-			} catch(Exception e) {
-				logger.error("failed to add the attribute as a field to the db" , e);
-				logger.error("the attribute field name was {}", getFeatureDbFieldNameString(adFeature));
-			}
-			try {
-				basicDBList.add(converter.convert(adFeature));
-			} catch (Exception e) {
-				logger.error("failed to add the attribute to the attributes list." , e);
-			}
-			
-		}
-		basicDBObject.append(AdUserFeaturesExtraction.attrListField, basicDBList);
 		
-		collection.insert(basicDBObject, WriteConcern.SAFE);
+		try {
+
+			BasicDBObject basicDBObject = new BasicDBObject(AdUserFeaturesExtraction.classifierIdField, adUsersFeaturesExtraction.getClassifierId());
+			basicDBObject.append(AdUserFeaturesExtraction.userIdField, adUsersFeaturesExtraction.getUserId());
+			basicDBObject.append(AdUserFeaturesExtraction.scoreField, adUsersFeaturesExtraction.getScore());
+			basicDBObject.append(AdUserFeaturesExtraction.timestampField, adUsersFeaturesExtraction.getTimestamp());
+			BasicDBList basicDBList = new BasicDBList();
+			FeatureWriteConverter converter = new FeatureWriteConverter();
+			for(IFeature adFeature: getValidFeatures(adUsersFeaturesExtraction)){
+				try {
+				BasicDBObject featureObject = new BasicDBObject();
+				featureObject.append(ADFeature.DISPLAY_NAME_FIELD, adFeature.getFeatureDisplayName());
+				featureObject.append(ADFeature.FEATURE_SCORE_FIELD, adFeature.getFeatureScore());
+				featureObject.append(ADFeature.FEATURE_VALUE_FIELD, adFeature.getFeatureValue());
+				
+				basicDBObject.append(getFeatureDbFieldNameString(adFeature), featureObject);
+				} catch(Exception e) {
+					logger.error("failed to add the attribute as a field to the db" , e);
+					logger.error("the attribute field name was {}", getFeatureDbFieldNameString(adFeature));
+				}
+				try {
+					basicDBList.add(converter.convert(adFeature));
+				} catch (Exception e) {
+					logger.error("failed to add the attribute to the attributes list." , e);
+				}
+				
+			}
+			basicDBObject.append(AdUserFeaturesExtraction.attrListField, basicDBList);
+			
+			collection.insert(basicDBObject, WriteConcern.SAFE);
+		
+		} catch (Exception e) {
+			logger.error("Got the following exception when trying to save AdUserFeaturesExtraction",e);
+		}
+	}
+	
+	private List<IFeature> getValidFeatures(AdUserFeaturesExtraction adUsersFeaturesExtraction) {
+		List<IFeature> features = adUsersFeaturesExtraction.getAttributes();
+		List<IFeature> retFeatures = new ArrayList<>();
+		Set<String> uniqueNameSet = new HashSet<>();
+		Set<String> invalidUniqueNameSet = new HashSet<>();
+		for(IFeature feature: features) {
+			if (uniqueNameSet.contains(feature.getFeatureUniqueName())) {
+				invalidUniqueNameSet.add(feature.getFeatureUniqueName());
+				logger.error("The following unique name exist in more than one feature. unique name: {}", feature.getFeatureUniqueName());
+			} else {
+				uniqueNameSet.add(feature.getFeatureUniqueName());
+			}
+		}for(IFeature feature: features) {
+			if(StringUtils.isEmpty(feature.getFeatureUniqueName())) {
+				logError("feature unique name is empty.", adUsersFeaturesExtraction);
+				continue;
+			}
+			if(StringUtils.isEmpty(feature.getFeatureDisplayName())) {
+				logError("feature display name is empty.", adUsersFeaturesExtraction);
+				continue;
+			}
+			if(invalidUniqueNameSet.contains(feature.getFeatureUniqueName())) {
+				continue;
+			}
+			
+			if(feature.getFeatureScore() == null) {
+				logError("feature score is null.", adUsersFeaturesExtraction);
+				continue;
+			}
+			if (feature.getFeatureValue() == null) {
+				logError("feature value is null.", adUsersFeaturesExtraction);
+				continue;
+			}
+			retFeatures.add(feature);
+		}
+		return retFeatures;
+	}
+	
+	private void logError(String msg, AdUserFeaturesExtraction adUsersFeaturesExtraction) {
+		logger.error("{} info: id ({}), classifier id ({}), raw id ({}), user id ({}), timestamp ({})", msg,
+				adUsersFeaturesExtraction.getId(), adUsersFeaturesExtraction.getClassifierId()
+				,adUsersFeaturesExtraction.getRawId(), adUsersFeaturesExtraction.getUserId(), adUsersFeaturesExtraction.getTimestamp());
 	}
 	
 	private String getFeatureDbFieldNameString(IFeature feature) {

@@ -24,6 +24,8 @@ public interface UserRepository extends PagingAndSortingRepository<User, String>
 	
 	public User findByAdUserPrincipalName(String adUserPrincipalName);
 	
+	public List<User> findByAdUserPrincipalNameContaining(String adUserPrincipalNamePrefix);
+	
 	public User findByAdDn(String adDn);
 	
 	public List<User> findBySearchFieldContaining(String prefix);

@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService{
 		ClassifierScore classifierScore = user.getScore(classifierId);
 		if(classifierScore != null){
 			
-			if(classifierScore.getPrevScores() != null){
+			if(!classifierScore.getPrevScores().isEmpty()){
 				ScoreInfo scoreInfo = null;
 				for(int i = classifierScore.getPrevScores().size() -1; i >= 0; i--){
 					scoreInfo = classifierScore.getPrevScores().get(i);
@@ -251,11 +251,12 @@ public class UserServiceImpl implements UserService{
 		Date lastRun = vpnDAO.getLastRunDate();
 		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
-			User user = userRepository.findByAdUserPrincipalName(vpnScore.getUserName().toLowerCase());
-			if(user == null){
+			List<User> users = userRepository.findByAdUserPrincipalNameContaining(vpnScore.getUserName().toLowerCase());
+			if(users == null | users.size() == 0 | users.size() > 1){
 				//TODO:	error log message
 				continue;
 			}
+			User user = users.get(0);
 			updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg);
 		}
 		
