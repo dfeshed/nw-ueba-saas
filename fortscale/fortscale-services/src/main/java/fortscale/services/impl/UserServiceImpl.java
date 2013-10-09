@@ -265,14 +265,23 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore){
 		ClassifierScore cScore = user.getScore(classifierId);
+		boolean isReplaceCurrentScore = true;
 		if(cScore == null){
 			cScore = new ClassifierScore();
 			cScore.setClassifierId(classifierId);
 		}else{
 			ScoreInfo scoreInfo = new ScoreInfo();
-			scoreInfo.setScore(cScore.getScore());
-			scoreInfo.setAvgScore(cScore.getAvgScore());
-			scoreInfo.setTimestamp(cScore.getTimestamp());
+			if (isOnSameDay(timestamp, cScore.getTimestamp()) && value < cScore.getScore()) {
+				isReplaceCurrentScore = false;
+				scoreInfo.setScore(value);
+				scoreInfo.setAvgScore(avgScore);
+				scoreInfo.setTimestamp(timestamp);
+			} else {
+				scoreInfo.setScore(cScore.getScore());
+				scoreInfo.setAvgScore(cScore.getAvgScore());
+				scoreInfo.setTimestamp(cScore.getTimestamp());
+			}
+			
 			List<ScoreInfo> prevScores = cScore.getPrevScores();
 			if(prevScores.isEmpty()){
 				prevScores = new ArrayList<ScoreInfo>();
@@ -288,9 +297,11 @@ public class UserServiceImpl implements UserService{
 			}
 			cScore.setPrevScores(prevScores);
 		}
-		cScore.setScore(value);
-		cScore.setAvgScore(avgScore);
-		cScore.setTimestamp(timestamp);
+		if(isReplaceCurrentScore) {
+			cScore.setScore(value);
+			cScore.setAvgScore(avgScore);
+			cScore.setTimestamp(timestamp);
+		}
 		user.putClassifierScore(cScore);
 		userRepository.save(user);
 	}
