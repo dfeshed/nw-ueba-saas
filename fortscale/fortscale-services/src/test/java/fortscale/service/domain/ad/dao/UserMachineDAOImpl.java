@@ -2,6 +2,7 @@ package fortscale.service.domain.ad.dao;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import fortscale.domain.ad.UserMachine;
@@ -30,6 +31,12 @@ public class UserMachineDAOImpl implements UserMachineDAO{
 
 	@Override
 	public List<UserMachine> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<UserMachine> findAll(Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
 	}

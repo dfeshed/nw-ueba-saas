@@ -24,8 +24,10 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.AuthScore;
 import fortscale.domain.fe.IFeature;
+import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
+import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
@@ -58,6 +60,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private AuthDAO authDAO;
+	
+	@Autowired
+	private VpnDAO vpnDAO;
 
 	@Override
 	public User getUserById(String uid) {
@@ -237,6 +242,21 @@ public class UserServiceImpl implements UserService{
 				continue;
 			}
 			updateUserScore(user, lastRun, Classifier.auth.getId(), authScore.getGlobalScore(), avg);
+		}
+		
+	}
+	
+	@Override
+	public void updateUserWithVpnScore() {
+		Date lastRun = vpnDAO.getLastRunDate();
+		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
+			User user = userRepository.findByAdUserPrincipalName(vpnScore.getUserName().toLowerCase());
+			if(user == null){
+				//TODO:	error log message
+				continue;
+			}
+			updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg);
 		}
 		
 	}

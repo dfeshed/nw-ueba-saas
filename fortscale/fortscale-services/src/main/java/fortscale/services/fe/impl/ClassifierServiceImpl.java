@@ -20,15 +20,18 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.AuthScore;
+import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.Threshold;
+import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.IClassifierScoreDistribution;
 import fortscale.services.fe.ILoginEventScoreInfo;
 import fortscale.services.fe.IScoreDistribution;
 import fortscale.services.fe.ISuspiciousUserInfo;
+import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.services.impl.SeverityElement;
 import fortscale.utils.impala.ImpalaPageRequest;
 
@@ -77,6 +80,9 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	@Autowired
 	private AuthDAO authDAO;
+	
+	@Autowired
+	private VpnDAO vpnDAO;
 	
 	@Autowired
 	private UserMachineDAO userMachineDAO;
@@ -138,6 +144,11 @@ public class ClassifierServiceImpl implements ClassifierService {
 			for(Threshold threshold: thresholds){
 				threshold.setCount(authDAO.countNumOfUsersAboveThreshold(threshold, lastRun));
 			}
+		} else if(classifierId.equals(Classifier.vpn.getId())){
+			Date lastRun = vpnDAO.getLastRunDate();
+			for(Threshold threshold: thresholds){
+				threshold.setCount(vpnDAO.countNumOfUsersAboveThreshold(threshold, lastRun));
+			}
 		}
 	}
 
@@ -148,8 +159,26 @@ public class ClassifierServiceImpl implements ClassifierService {
 			ret = getAdSuspiciousUsers(classifierId, severityId);
 		} else if(classifierId.equals(Classifier.auth.getId())){
 			ret = getAuthSuspiciousUsers(classifierId, severityId);
+		} else if(classifierId.equals(Classifier.vpn.getId())){
+			ret = getVpnSuspiciousUsers(classifierId, severityId);
 		}
 		
+		return ret;
+	}
+	
+	private List<ISuspiciousUserInfo> getVpnSuspiciousUsers(String classifierId, String severityId) {
+		Date lastRun = vpnDAO.getLastRunDate();
+		Range severityRange = getRange(severityId);
+		List<VpnScore> vpnScores = vpnDAO.findByTimestampAndGlobalScoreBetweenSortByEventScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
+		List<ISuspiciousUserInfo> ret = new ArrayList<>();
+		for(VpnScore vpnScore: vpnScores){
+			User user = userRepository.findByAdUserPrincipalName(vpnScore.getUserName().toLowerCase());
+			if(user == null){
+				//TODO: error message.
+				continue;
+			}
+			ret.add(createSuspiciousUserInfo(classifierId, user));
+		}
 		return ret;
 	}
 	
@@ -294,6 +323,79 @@ public class ClassifierServiceImpl implements ClassifierService {
 		
 		return ret;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, Date timestamp, int offset, int limit) {
+		if(timestamp == null){
+			timestamp = vpnDAO.getLastRunDate();
+		}
+		User user = userRepository.findOne(userId);
+		if(user == null){
+			return Collections.emptyList();
+		}
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, VpnScore.EVENT_SCORE_FIELD_NAME));
+		List<VpnScore> vpnScores = vpnDAO.findEventsByUsernameAndTimestamp(user.getAdUserPrincipalName(), timestamp, pageable);
+		List<IVpnEventScoreInfo> ret = new ArrayList<>();
+		for(VpnScore vpnScore: vpnScores){
+			ret.add(createVpnEventScoreInfo(user, vpnScore));
+		}
+		return ret;
+	}
+
+	@Override
+	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit) {
+		if(timestamp == null){
+			timestamp = vpnDAO.getLastRunDate();
+		}
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, VpnScore.EVENT_SCORE_FIELD_NAME));
+		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestamp(timestamp, pageable);
+		List<IVpnEventScoreInfo> ret = new ArrayList<>();
+		Map<String, User> userMap = new HashMap<>();
+		int skipped = 0;
+		for(VpnScore vpnScore: vpnScores){
+			String username = vpnScore.getUserName().toLowerCase();
+			User user = userMap.get(username);
+			if(user == null){
+				user = userRepository.findByAdUserPrincipalName(username);
+				if(user == null){
+					//TODO: warn message
+					continue;
+				} else{
+					userMap.put(username, user);
+				}
+			}
+			if(skipped >= offset){
+				ret.add(createVpnEventScoreInfo(user, vpnScore));
+			} else {
+				skipped++;
+			}
+		}
+		return ret;
+	}
+	
+	private IVpnEventScoreInfo createVpnEventScoreInfo(User user, VpnScore vpnScore){
+		IVpnEventScoreInfo ret = new VpnEventScoreInfo(user, vpnScore);
+		
+		return ret;
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public List<SeverityElement> getSeverityElements() {

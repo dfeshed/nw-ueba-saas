@@ -28,4 +28,6 @@ public interface UserService {
 	public void updateUserWithAuthScore();
 
 	public void updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore);
+
+	public void updateUserWithVpnScore();
 }

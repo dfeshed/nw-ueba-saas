@@ -57,6 +57,13 @@ public class ApiUserController {
 		return "";
 	}
 	
+	@RequestMapping(value="/updateVpnScore", method=RequestMethod.GET)
+	@ResponseBody
+	public String updateVpnScore(Model model){
+		userService.updateUserWithVpnScore();
+		return "";
+	}
+	
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException

@@ -9,28 +9,25 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 
 import fortscale.domain.fe.AuthScore;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.Threshold;
+import fortscale.domain.impala.ImpalaDAO;
 import fortscale.utils.impala.ImpalaCriteria;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaQuery;
 
-public class AuthDAOImpl implements AuthDAO{
-public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
+public class AuthDAOImpl extends ImpalaDAO<AuthScore> implements AuthDAO{
+
+		
+	private String tableName = AuthScore.TABLE_NAME;
 	
-	@Autowired
-	private JdbcOperations impalaJdbcTemplate;
-	
-	private String tableName =AuthScore.TABLE_NAME;
-	
+	@Override
 	public String getTableName() {
 		return tableName;
 	}
@@ -38,32 +35,16 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 		this.tableName = tableName;
 	}
 	
-	
-	
-	public void createTable(String inputFile) {
-		String sql = String.format("drop table %s",getTableName());
-		try {
-			
-			impalaJdbcTemplate.execute(sql);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		
-		sql = String.format("create table if not exists %s (errorcode string, sourceip string, targetid string, userid string, eventscore double, time timestamp, globalscore double, runtime bigint) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'",getTableName());
-		impalaJdbcTemplate.execute(sql);
-		sql = String.format("load data inpath '%s' into table %s", inputFile, getTableName());
-		impalaJdbcTemplate.execute(sql);
+	@Override
+	public String getInputFileHeaderDesc() {
+		return AuthScore.implaValueTypeOrder;
 	}
+	
+	
 	
 	@Override
 	public List<AuthScore> findAll(Pageable pageable){
-		List<AuthScore> ret = new ArrayList<>();
-		ImpalaQuery query = new ImpalaQuery();
-		query.select("*").from(getTableName()).limitAndSort(pageable);
-		
-		ret.addAll(impalaJdbcTemplate.query(query.toSQL(), new AuthScoreMapper()));
-		
-		return ret;
+		return super.findAll(pageable, new AuthScoreMapper());
 	}
 	
 	@Override
@@ -280,12 +261,12 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	}
 	
 	private static Date parseEventTimeDate(String dateString) throws ParseException {
-		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat pattern = new SimpleDateFormat(AuthScore.DATE_FORMAT);
 		return pattern.parse(dateString);
 	}
 	
 	private static String formatEventTimeDate(Date date){
-		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat pattern = new SimpleDateFormat(AuthScore.DATE_FORMAT);
 		return pattern.format(date);
 	}
 
@@ -319,4 +300,5 @@ public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	private static void appendValueToCsvLine(StringBuilder builder, String value, String deleimiter) {
 		builder.append(value).append(deleimiter);
 	}
+	
 }

@@ -2,7 +2,15 @@ package fortscale.domain.fe;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+
+@JsonPropertyOrder({AuthScore.USERNAME_FIELD_NAME,AuthScore.TARGET_ID_FIELD_NAME,AuthScore.SOURCE_IP_FIELD_NAME,AuthScore.ERROR_CODE_FIELD_NAME,AuthScore.EVENT_SCORE_FIELD_NAME,AuthScore.GLOBAL_SCORE_FIELD_NAME,AuthScore.TIMESTAMP_FIELD_NAME,AuthScore.EVENT_TIME_FIELD_NAME})
 public class AuthScore {
+	public static final Object jsonOrder[] = {AuthScore.USERNAME_FIELD_NAME,AuthScore.TARGET_ID_FIELD_NAME,AuthScore.SOURCE_IP_FIELD_NAME,AuthScore.ERROR_CODE_FIELD_NAME,AuthScore.EVENT_SCORE_FIELD_NAME,AuthScore.GLOBAL_SCORE_FIELD_NAME,AuthScore.TIMESTAMP_FIELD_NAME,AuthScore.EVENT_TIME_FIELD_NAME};
+	public static final String implaValueTypeOrder = String.format("%s string, %s string, %s string, %s string, %s double, %s double, %s bigint, %s timestamp", jsonOrder);
+	
 	public static final String TABLE_NAME = "authenticationscores";
 	public static final String USERNAME_FIELD_NAME = "userid";
 	public static final String TARGET_ID_FIELD_NAME = "targetid";
@@ -12,6 +20,7 @@ public class AuthScore {
 	public static final String GLOBAL_SCORE_FIELD_NAME = "globalscore";
 	public static final String TIMESTAMP_FIELD_NAME = "runtime";
 	public static final String EVENT_TIME_FIELD_NAME = "time";
+	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	
 	
 	private String userName;
@@ -68,6 +77,7 @@ public class AuthScore {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern=DATE_FORMAT)
 	public Date getEventTime() {
 		return eventTime;
 	}

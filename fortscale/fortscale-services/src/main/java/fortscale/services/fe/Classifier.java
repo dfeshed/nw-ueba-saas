@@ -2,6 +2,7 @@ package fortscale.services.fe;
 
 public enum Classifier {
 	ad("active_directory","User Profile"),
+	vpn("vpn","vpn"),
 	auth("auth","Logins");
 	
 	private String id;
