@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import ml.algorithms.Algorithm;
 import ml.algorithms.CFA;
 import ml.classifiers.Classifier;
-import ml.classifiers.LibSVM;
+import ml.classifiers.WekaRandomForest;
 import fortscale.activedirectory.featureextraction.ADFeatureExtractor;
 import fortscale.activedirectory.featureextraction.Feature;
 import fortscale.activedirectory.featureextraction.FeatureVector;
@@ -53,7 +53,7 @@ public class ADManager {
 		instances = prepareInstancesMatrix();
 //		this.debugFeatureValues();
 		
-		Classifier classifier = new LibSVM(usersFeatures.getNumInstances(), featureVector.numFeatures(), args);
+		Classifier classifier = new WekaRandomForest(usersFeatures.getNumInstances(), featureVector.numFeatures(), args);
 		Algorithm algorithm = new CFA(usersFeatures.getNumInstances(), featureVector.numFeatures(), classifier);
 		algorithm.run(instances);
 		
