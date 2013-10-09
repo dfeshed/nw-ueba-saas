@@ -18,6 +18,7 @@ import fortscale.services.fe.IClassifierScoreDistribution;
 import fortscale.services.fe.ILoginEventScoreInfo;
 import fortscale.services.fe.IScoreDistribution;
 import fortscale.services.fe.ISuspiciousUserInfo;
+import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 
@@ -55,6 +56,31 @@ public class ApiClassifierController {
 			eventScoreInfos = classifierService.getSuspiciousLoginEvents(timestamp, offset, limit);
 		} else{
 			eventScoreInfos = classifierService.getUserSuspiciousLoginEvents(uid, timestamp, offset, limit);
+		}
+		ret.setData(eventScoreInfos);
+		ret.setTotal(eventScoreInfos.size());
+		return ret;
+	}
+	
+	@RequestMapping(value="vpnEvents", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<IVpnEventScoreInfo>> vpnEvents(@RequestParam(required=false) Long date,
+			@RequestParam(required=false) String uid,
+			@RequestParam(required=false) String query,
+			@RequestParam(defaultValue="0") Integer offset,
+			@RequestParam(defaultValue="10") Integer limit,
+			Model model){
+		DataBean<List<IVpnEventScoreInfo>> ret = new DataBean<List<IVpnEventScoreInfo>>();
+		Date timestamp = null;
+		if(date != null){
+			timestamp = new Date(date);
+		}
+		List<IVpnEventScoreInfo> eventScoreInfos = Collections.emptyList();
+		if(uid == null){
+			eventScoreInfos = classifierService.getSuspiciousVpnEvents(timestamp, offset, limit);
+		} else{
+			eventScoreInfos = classifierService.getUserSuspiciousVpnEvents(uid, timestamp, offset, limit);
 		}
 		ret.setData(eventScoreInfos);
 		ret.setTotal(eventScoreInfos.size());

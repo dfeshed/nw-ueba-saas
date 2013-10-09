@@ -9,17 +9,17 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.UserMachineDAO;
+import fortscale.domain.impala.ImpalaDAO;
 
 
 
-public class UserMachineDAOImpl implements UserMachineDAO{
-	
-	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
+public class UserMachineDAOImpl extends ImpalaDAO<UserMachine> implements UserMachineDAO{
 	
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
@@ -27,7 +27,7 @@ public class UserMachineDAOImpl implements UserMachineDAO{
 	private String tableName = UserMachine.TABLE_NAME;
 	
 	
-	
+	@Override
 	public String getTableName() {
 		return tableName;
 	}
@@ -36,27 +36,22 @@ public class UserMachineDAOImpl implements UserMachineDAO{
 	}
 	
 	
+	@Override
+	public String getInputFileHeaderDesc() {
+		return UserMachine.implaValueTypeOrder;
+	}
 	
 	
-	public void createTable(String inputFile) {
-		String sql = String.format("drop table %s",getTableName());
-		impalaJdbcTemplate.execute(sql);
-		sql = String.format("create table if not exists %s (username string, hostname string, logoncount bigint, lastlogon timestamp, hostnameip string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'",getTableName());
-		impalaJdbcTemplate.execute(sql);
-		sql = String.format("load data inpath '%s' into table %s", inputFile, getTableName());
-		impalaJdbcTemplate.execute(sql);
+	@Override
+	public List<UserMachine> findAll(){
+		return findAll(null);
 	}
 	
 	@Override
-	public List<UserMachine> findAll() {
-		List<UserMachine> ret = new ArrayList<UserMachine>();
-
-		String query = String.format("select * from %s", getTableName());
-		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
-		
-		return ret;
+	public List<UserMachine> findAll(Pageable pageable){
+		return super.findAll(pageable, new UserMachineMapper());
 	}
-	
+		
 	@Override
 	public List<UserMachine> findByUsername(String username){
 		List<UserMachine> ret = new ArrayList<UserMachine>();
@@ -137,12 +132,12 @@ public class UserMachineDAOImpl implements UserMachineDAO{
 	}
 
 	private static Date parseDate(String dateString) throws ParseException {
-		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat pattern = new SimpleDateFormat(UserMachine.DATE_FORMAT);
 		return pattern.parse(dateString);
 	}
 	
 	private static String fromatDate(Date date) {
-		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat pattern = new SimpleDateFormat(UserMachine.DATE_FORMAT);
 		return pattern.format(date);
 	}
 }

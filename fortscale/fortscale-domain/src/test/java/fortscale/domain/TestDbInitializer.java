@@ -20,6 +20,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.impl.AuthDAOImpl;
+import fortscale.domain.fe.dao.impl.VpnDAOImpl;
 
 
 @Component
@@ -31,6 +32,7 @@ public class TestDbInitializer {
 	private static final File USER_COLLECTION_DATA_JSON_FILE = getFile("src/test/data/mongodb/user.json");
 	private static final String USER_TO_HOST_NAME_INPUT_FILE_NAME = "src/test/data/impala/usertohostname.csv";
 	private static final String AUTHENTICATON_SCORE_INPUT_FILE_NAME = "src/test/data/impala/authenticationscores.csv";
+	private static final String VPN_SCORE_INPUT_FILE_NAME = "src/test/data/impala/vpnscores.csv";
 	
 	private static File getFile(String path) {
 		File file = new File(path.replace("/", "\\"));
@@ -55,6 +57,9 @@ public class TestDbInitializer {
 	@Autowired
 	private AuthDAOImpl authDAO;
 	
+	@Autowired
+	private VpnDAOImpl vpnDAO;
+	
 //	@Autowired
 //	private JdbcOperations hiveJdbcTemplate;
 	
@@ -68,6 +73,9 @@ public class TestDbInitializer {
 	@Value("${db.authenticationscores.hadoopInputfile}")
 	private String authenticationscoresHadoopInputFileName;
 	
+	@Value("${db.vpnscores.hadoopInputfile}")
+	private String vpnscoresHadoopInputFileName;
+	
 	private boolean isInit = false;
 
 
@@ -80,6 +88,10 @@ public class TestDbInitializer {
 			copyCsvToHadoop(AUTHENTICATON_SCORE_INPUT_FILE_NAME, authenticationscoresHadoopInputFileName);
 			authDAO.setTableName(String.format("%stest", authDAO.getTableName()));
 			authDAO.createTable(authenticationscoresHadoopInputFileName);
+			
+			copyCsvToHadoop(VPN_SCORE_INPUT_FILE_NAME, vpnscoresHadoopInputFileName);
+			vpnDAO.setTableName(String.format("%stest", vpnDAO.getTableName()));
+			vpnDAO.createTable(vpnscoresHadoopInputFileName);
 			
 			
 			ObjectMapper mapper = new ObjectMapper();

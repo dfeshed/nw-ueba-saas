@@ -32,7 +32,7 @@ public class ApiInvestigateController {
 	@RequestMapping(value="investigate", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Map<String, Object>>> loginsEvents(@RequestParam(required=true) String query,
+	public DataBean<List<Map<String, Object>>> investigate(@RequestParam(required=true) String query,
 			@RequestParam(defaultValue="0") Integer offset,
 			@RequestParam(defaultValue="10") Integer limit,
 			Model model){

@@ -25,6 +25,8 @@
 	
 	<bean id="authDAO" class="fortscale.domain.fe.dao.impl.AuthDAOImpl"/>
 	
+	<bean id="vpnDAO" class="fortscale.domain.fe.dao.impl.VpnDAOImpl"/>
+	
 	
 	
 	<bean id="impalaDriver" class="org.apache.hive.jdbc.HiveDriver"/>
