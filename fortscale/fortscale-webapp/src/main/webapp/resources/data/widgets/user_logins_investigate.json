@@ -5,7 +5,7 @@
         {
             "type": "link",
             "text": "View all",
-            "href": "#/d/investigator?entity=logins"
+            "href": "#/d/investigator?entities=logins"
         }
     ],
     "filters": {

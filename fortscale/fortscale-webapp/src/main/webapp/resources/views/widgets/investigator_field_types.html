@@ -36,10 +36,10 @@
             </div>
         </li>
     </ul>
-    <a class="btn" ng-click="fields.objectArray.addMember(setting)">{{setting.addText}}</a>
+    <a class="btn" ng-click="fieldTypes.objectArray.addMember(setting)">{{setting.addText}}</a>
 </script>
 <script type="text/ng-template" id="investigator_field_dataField">
     <select ng-model="setting.settingValues[setting.id]"
-            ng-options="field.id as field.name for field in currentEntity.fields | dataFieldType:setting.dataFieldType"
+            ng-options="field.id as field.name group by field.entity.name for field in fields | dataFieldType:setting.dataFieldType"
             ng-change="onSettingsChange()"></select>
 </script>

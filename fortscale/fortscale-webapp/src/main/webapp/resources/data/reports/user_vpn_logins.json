@@ -1,0 +1,49 @@
+{
+    "dataSource": "api",
+    "endpoint": {
+        "entity": "classifier",
+        "method": "vpnEvents",
+        "uid": "{{@username}}"
+    },
+    "query": {
+        "entity": "logins",
+        "conditions": [
+            {
+                "field": "username",
+                "operator": "equals",
+                "value": "{{username}}"
+            },
+            {
+                "field": "score",
+                "operator": "greaterThan",
+                "value": 30
+            }
+        ]
+    },
+    "searchId": "user_logins",
+    "fields": [
+        {
+            "name": "score",
+            "type": "number"
+        },
+        {
+            "name": "sourceIP",
+            "type": "ip"
+        },
+        {
+            "name": "time",
+            "type": "date"
+        },
+        {
+            "name": "internalIP",
+            "type": "string"
+        }
+    ],
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "entityId"
+        }
+    ]
+}

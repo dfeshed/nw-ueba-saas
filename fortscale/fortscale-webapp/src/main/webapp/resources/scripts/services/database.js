@@ -1,33 +1,43 @@
 angular.module("Fortscale").factory("database", ["$q", "$http", "version", "conditions", function ($q, $http, version, conditions) {
     var cachedData = {};
 
+    function getDatabaseData(databaseId){
+        var deferred = $q.defer();
+
+        var data = cachedData[databaseId];
+        if (data)
+            deferred.resolve(data);
+        else{
+            if (data === null)
+                deferred.reject();
+            else {
+                $http.get("data/database/" + databaseId + ".json?v=" + version)
+                    .success(function (result) {
+                        data = cachedData[databaseId] = result;
+                        deferred.resolve(data);
+                    }, function (error) {
+                        cachedData[databaseId] = null;
+                        deferred.reject(error);
+                    });
+            }
+        }
+        return deferred.promise;
+    }
+
     var methods = {
         query: function (query, params) {
             var deferred = $q.defer();
 
-            if (!query || !query.entity) {
+            if (!query || (!query.entity && !query.entities)) {
                 deferred.reject();
             }
             else {
-                var data = cachedData[query.entity];
-                if (data)
-                    withData();
-                else {
-                    if (data === null)
-                        deferred.reject();
-                    else {
-                        $http.get("data/database/" + query.entity + ".json?v=" + version)
-                            .success(function (result) {
-                                data = cachedData[query.entity] = result;
-                                withData();
-                            }, function (error) {
-                                cachedData[query.entity] = null;
-                                deferred.reject(error);
-                            });
-                    }
-                }
+                if (query.entities)
+                    query.entity = query.entities[0].id;
 
-                function withData() {
+                getDatabaseData(query.entity).then(withData, deferred.reject);
+
+                function withData(data) {
                     var queryResults = [],
                         groupByIndex = {};
 
@@ -45,7 +55,7 @@ angular.module("Fortscale").factory("database", ["$q", "$http", "version", "cond
                         : function(data){ return data; };
 
                     try{
-                        if (query.conditions) {
+                        if (query.conditions && query.conditions.length) {
                             angular.forEach(data, function (row, rowIndex) {
                                 if (conditions.validateConditions(query.conditions, row, params)){
                                     if (query.groupBy){
@@ -80,7 +90,7 @@ angular.module("Fortscale").factory("database", ["$q", "$http", "version", "cond
                             queryResults.sort(sortFunction);
                         }
 
-                        if (query.paging){
+                        if (query.paging && query.paging.pageSize){
                             if (!query.paging.pageSize)
                                 throw new Error("Paging requires page size.");
 

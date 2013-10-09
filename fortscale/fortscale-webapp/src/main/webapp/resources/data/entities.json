@@ -7,18 +7,19 @@
                 "name": "User name",
                 "id": "username",
                 "type": "string",
-                "entity": "user_details",
-                "entityField": "username"
+                "key": "username"
             },
             {
                 "name": "Source IP",
                 "id": "sourceIp",
-                "type": "string"
+                "type": "string",
+                "key": "ipAddress"
             },
             {
                 "name": "Source Hostname",
                 "id": "sourceHostname",
-                "type": "string"
+                "type": "string",
+                "key": "hostname"
             },
             {
                 "name": "Time",
@@ -28,12 +29,14 @@
             {
                 "name": "Destination IP",
                 "id": "destinationIp",
-                "type": "string"
+                "type": "string",
+                "key": "ipAddress"
             },
             {
                 "name": "Destination Hostname",
                 "id": "destinationHostname",
-                "type": "string"
+                "type": "string",
+                "key": "hostname"
             },
             {
                 "name": "Score",
@@ -49,7 +52,8 @@
             {
                 "name": "Username",
                 "id": "username",
-                "type": "string"
+                "type": "string",
+                "key": "username"
             },
             {
                 "name": "Text",
@@ -62,14 +66,17 @@
                 "type": "string"
             },
             {
-                "name": "Score",
-                "id": "score",
-                "type": "string"
-            },
-            {
                 "name": "Time",
                 "id": "time",
                 "type": "date"
+            }
+        ],
+        "computedFields": [
+            {
+                "name": "Score",
+                "id": "score",
+                "type": "string",
+                "isComputedField": true
             }
         ]
     },
@@ -85,7 +92,8 @@
             {
                 "name": "Username",
                 "id": "username",
-                "type": "string"
+                "type": "string",
+                "key": "username"
             },
             {
                 "name": "Address",
@@ -147,8 +155,7 @@
                 "name": "User name",
                 "id": "username",
                 "type": "string",
-                "entity": "user_details",
-                "entityField": "username"
+                "key": "username"
             },
             {
                 "name": "Group",
@@ -159,11 +166,14 @@
                 "name": "Time",
                 "id": "time",
                 "type": "date"
-            },
+            }
+        ],
+        "computedFields": [
             {
                 "name": "Score",
                 "id": "score",
-                "type": "number"
+                "type": "number",
+                "isComputedField": true
             }
         ]
     },
@@ -175,13 +185,13 @@
                 "name": "User name",
                 "id": "username",
                 "type": "string",
-                "entity": "user_details",
-                "entityField": "username"
+                "key": "username"
             },
             {
                 "name": "Hostname",
                 "id": "hostname",
-                "type": "string"
+                "type": "string",
+                "key": "hostname"
             },
             {
                 "name": "Usage",
@@ -191,7 +201,8 @@
             {
                 "name": "IP Address",
                 "id": "ipAddress",
-                "type": "string"
+                "type": "string",
+                "key": "ipAddress"
             },
             {
                 "name": "Last Signin",

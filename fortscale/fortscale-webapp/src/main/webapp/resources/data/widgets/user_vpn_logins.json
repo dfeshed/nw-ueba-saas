@@ -1,33 +1,29 @@
 {
-    "reportId": "all_users_logins",
-    "title": "Suspicious Logins",
-    "linkTo": {
-        "url": "#/d/investigator?entities=logins",
-        "tooltip": "Investigate user logins",
-        "text": "View all"
-    },
+    "reportId": "user_vpn_logins",
+    "title": "Suspicious VPN Logins",
+    "controls": [
+        {
+            "type": "link",
+            "text": "View all",
+            "href": "#/d/investigator?entities=vpn_logins&username={{@entityId}}"
+        }
+    ],
     "views": [
         {
             "type": "table",
             "settings": {
                 "fields": [
                     {
-                        "name": "User",
-                        "value": "{{username}}",
-                        "link": "#/d/user/{{userId}}",
-                        "sortBy": "username"
-                    },
-                    {
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
                         "sortBy": "sourceIp",
-                        "link": "#/d/investigator?entities=logins&sourceIp={{sourceIp}}"
+                        "link": "#/d/investigator?entities=logins&username={{@entityId}}&sourceIp={{sourceIp}}"
                     },
                     {
-                        "name": "Destination Hostname",
-                        "value": "{{destinationHostname}}",
-                        "sortBy": "destinationHostname",
-                        "link": "#/d/investigator?entities=logins&destinationIp={{destinationHostname}}"
+                        "name": "Internal IP",
+                        "value": "{{internalIP}}",
+                        "sortBy": "internalIP",
+                        "link": "#/d/investigator?entities=vpn_logins&username={{@entityId}}&internalIP={{internalIP}}"
                     },
                     {
                         "name": "Time",
@@ -37,7 +33,7 @@
                         "transform": {
                             "method": "date",
                             "options": {
-                                "prettyDate": true
+                                "format": "MM/DD/YY HH:mm:ss"
                             }
                         }
                     },

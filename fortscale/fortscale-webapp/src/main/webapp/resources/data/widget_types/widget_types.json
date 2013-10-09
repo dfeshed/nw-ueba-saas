@@ -3,5 +3,6 @@
     "pieChart",
     "bubblesChart",
     "barsChart",
-    "percentChart"
+    "percentChart",
+    "forceChart"
 ]

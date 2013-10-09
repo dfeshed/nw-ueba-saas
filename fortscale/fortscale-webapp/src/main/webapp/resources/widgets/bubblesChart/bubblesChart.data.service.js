@@ -9,7 +9,10 @@ angular.module("BubblesChartWidget").factory("bubblesChartWidgetData", ["utils",
                 if (!indexedItem)
                     indexedItem = itemsIndex[item[view.settings.itemField]] = { name: item[view.settings.itemField], members: [], value: 0 };
 
-                indexedItem.members.push(item[view.settings.childrenField]);
+                var itemChildren = item[view.settings.childrenField];
+                if (!~indexedItem.members.indexOf(itemChildren))
+                    indexedItem.members.push(itemChildren);
+
                 indexedItem.value += view.settings.valueIsCount ? 1 : item[view.settings.valueField];
             });
 

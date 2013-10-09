@@ -17,7 +17,8 @@ angular.module("Fortscale", [
     "BarsChartWidget",
     "PercentChartWidget",
     "PropertiesWidget",
-    "TabsWidget"
+    "TabsWidget",
+    "ForceChartWidget"
 ], function($routeProvider, $locationProvider){
     $routeProvider
         .when('/d/:dashboardId', {

@@ -17,16 +17,41 @@
                 <h4 class="clickable" ng-click="sections.entity.collapsed = !sections.entity.collapsed">
                     <i class="icon-{{sections.entity.collapsed && 'plus' || 'minus'}} section-collapse-btn"
                        title="{{sections.entity.collapsed && 'Expand' || 'Collapse'}}"></i>
-                    Entity
+                    Entities
                 </h4>
                 <div class="investigator-menu-section-contents" ng-hide="sections.entity.collapsed">
-                    <select ng-model="config.entity"
-                            style="width: 100%; height: 29px"
-                            ng-options="entity.id as entity.name for entity in entities"
-                            ng-change="onEntitySelect(true)"></select>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Entity Name</th>
+                                <th ng-if="config.entities.length > 1">Connect Field</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="configEntity in config.entities">
+                                <td>{{configEntity.name}}</td>
+                                <td ng-if="config.entities.length > 1">
+                                    <select ng-model="configEntity.connectField"
+                                            ng-options=""></select>
+                                </td>
+                                <td>
+                                    <a class="clickable" ng-click="removeEntity($index)" ng-if="config.entities.length > 1">Remove</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div ng-show="availableEntities.length">
+                        <hr />
+                        <label>Add Entity:
+                            <select ng-model="entityToAdd"
+                                ng-options="entity as entity.name for entity in availableEntities"></select>
+                            </label>
+                        <a class="btn" ng-click="addEntity(entityToAdd, true)">Add</a>
+                    </div>
                 </div>
             </section>
-            <section ng-show="config.entity">
+            <section ng-show="config.entities.length">
                 <h4 class="clickable" ng-click="sections.fields.collapsed = !sections.fields.collapsed">
                     <i class="icon-{{sections.fields.collapsed && 'plus' || 'minus'}} section-collapse-btn"
                        title="{{sections.fields.collapsed && 'Expand' || 'Collapse'}}"></i>
@@ -34,51 +59,66 @@
                 </h4>
                 <div class="investigator-menu-section-contents" ng-hide="sections.fields.collapsed">
                     <a class="btn investigator-fields-update-btn" ng-click="update(true)" ng-show="fieldsChanged">Update</a>
-                    <table class="investigator-fields table table-hover widget-table">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="field in currentEntity.fields">
-                                <td><i class="icon-{{fieldTypeIcons[field.type]}} investigator-field-icon"></i></td>
-                                <td class="investigator-field-name table-large-cell">
-                                    <span style="float: right">
-                                         <input type="checkbox" ng-model="field.enabled" ng-change="onFieldChange()" title="{{field.enabled && 'Disable field' || 'Enable field' }}" />
-                                        <a class="clickable" ng-click="addFilter(field)" title="Add filter"><i class="icon-filter"></i></a>
-                                    </span>
-                                    {{field.name}}
-                                    <div class="investigator-field-filters" ng-show="field.filters.length">
-                                        <ul class="unstyled investigator-field-filters-list">
-                                            <li ng-repeat="filter in field.filters">
-                                                <select ng-model="filter.operator"
-                                                        ng-change="onFieldChange()"
-                                                        ng-options="operator.name as operator.display for operator in operatorsForType[field.type]"
-                                                        ng-class="{ 'investigator-filter-operator-small': operatorsIndex[filter.operator].requiresValue }"></select>
-                                                <input type="text"
-                                                       class="search"
-                                                       ng-model="filter.value"
-                                                       ng-change="onFieldChange()"
-                                                       ng-show="operatorsIndex[filter.operator].requiresValue" />
-                                                <a ng-click="removeFilter(field, $index)" class="clickable" title="Remove filter">
-                                                    <i class="icon-remove"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <a class="clickable"
-                                           ng-click="addFilter(field)"
-                                           ng-show="!operatorsIndex[field.filters[field.filters.length - 1].operator].requiresValue || field.filters[field.filters.length - 1].value"
-                                           title="Add filter"><i class="icon-plus"></i> Add filter</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <label>
+                        Limit
+                        <input type="number" min="0" ng-model="paging.pageSize" ng-change="onFieldChange()" />
+                    </label>
+                    <div ng-repeat="entity in config.entities">
+                        <h5>{{entity.name}}</h5>
+                        <table class="investigator-fields table table-hover widget-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="field in entity.fields" ng-class="{ 'investigator-computed-field': field.isComputedField }">
+                                    <td><i class="icon-{{fieldTypeIcons[field.type]}} investigator-field-icon"></i></td>
+                                    <td class="investigator-field-name table-large-cell">
+                                        <span style="float: right">
+                                             <input type="checkbox" ng-model="field.enabled" ng-change="onFieldChange()" title="{{field.enabled && 'Disable field' || 'Enable field' }}" />
+                                            <a class="clickable" ng-click="addFilter(field)" title="Add filter"><i class="icon-filter"></i></a>
+                                        </span>
+                                        {{field.name}}
+                                        <div class="investigator-field-filters" ng-show="field.filters.length">
+                                            <ul class="unstyled investigator-field-filters-list">
+                                                <li ng-repeat="filter in field.filters">
+                                                    <select ng-model="filter.operator"
+                                                            ng-change="onFieldChange()"
+                                                            ng-options="operator.name as operator.display for operator in operatorsForType[field.type]"
+                                                            ng-class="{ 'investigator-filter-operator-small': operatorsIndex[filter.operator].requiresValue }"></select>
+                                                    <input type="text"
+                                                           class="search"
+                                                           ng-model="filter.value"
+                                                           ng-change="onFieldChange()"
+                                                           ng-show="operatorsIndex[filter.operator].requiresValue" />
+                                                    <a ng-click="removeFilter(field, $index)" class="clickable" title="Remove filter">
+                                                        <i class="icon-remove"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <a class="clickable"
+                                               ng-click="addFilter(field)"
+                                               ng-show="!operatorsIndex[field.filters[field.filters.length - 1].operator].requiresValue || field.filters[field.filters.length - 1].value"
+                                               title="Add filter"><i class="icon-plus"></i> Add filter</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <a class="btn" ng-click="fieldTypes.table.addComputedField(entity)">+ Add Computed Field</a>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </section>
-            <section ng-show="config.entity">
+            <section ng-show="config.entities.length">
                 <h4 class="clickable" ng-click="sections.view.collapsed = !sections.view.collapsed">
                     <i class="icon-{{sections.view.collapsed && 'plus' || 'minus'}} section-collapse-btn"
                        title="{{sections.view.collapsed && 'Expand' || 'Collapse'}}"></i>
