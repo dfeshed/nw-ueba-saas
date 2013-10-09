@@ -70,8 +70,9 @@ public class ImpalaQuery {
 			builder.append(" where ");
 			whereCriteria.appendTo(builder);
 		}
-		
-		builder.append(" ").append(pageable.toString());
+		if(pageable != null) {
+			builder.append(" ").append(pageable.toString());
+		}
 		
 		
 		return builder.toString();
