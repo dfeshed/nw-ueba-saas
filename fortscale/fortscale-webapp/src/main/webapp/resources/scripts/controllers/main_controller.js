@@ -34,6 +34,8 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         }
     ];
 
+    $scope.buildVersion = "Unknown";
+
     dashboards.getDashboardsList().then(function(dashboardsList){
         if (dashboardsList.length){
             $scope.dashboards = dashboardsList;

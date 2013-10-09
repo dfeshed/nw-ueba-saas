@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Fortscale')
-    .directive('barChart', function () {
+    .directive('barsChart', function () {
         return {
             template: "<div></div>",
             restrict: 'E',

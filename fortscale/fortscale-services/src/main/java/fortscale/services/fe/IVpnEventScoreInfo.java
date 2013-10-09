@@ -8,8 +8,8 @@ public interface IVpnEventScoreInfo {
 	public String getSourceIp();
 	public String getSourceHostname();
 	public Date getEventTime();
-	public String getLocalIp();
-	public String getLocalHostname();
+	public String getInternalIP();
+	public String getInternalHostname();
 	public double getEventScore();
 	public double getUserScore();
 }

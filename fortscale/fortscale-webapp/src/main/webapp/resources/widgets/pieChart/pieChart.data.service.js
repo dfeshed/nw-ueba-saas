@@ -1,4 +1,4 @@
-angular.module("PieChartWidget").factory("pieChartWidgetData", ["utils", function(utils){
+angular.module("PieChartWidget").factory("pieChartWidgetData", ["utils", "transforms", function(utils, transforms){
     return {
         getData: function(view, data, params){
             var viewData = { chartValues: [] };
@@ -16,11 +16,17 @@ angular.module("PieChartWidget").factory("pieChartWidgetData", ["utils", functio
                     if (view.settings.info.title)
                         itemInfo.title = utils.strings.parseValue(view.settings.info.title, item, params, itemIndex);
 
-                    for(var i= 0, property; property = view.settings.info.properties[i]; i++){
-                        itemInfo.properties.push({
+                    for(var i= 0, property, propertyData; property = view.settings.info.properties[i]; i++){
+                        propertyData = {
                             label: property.label,
                             value: utils.strings.parseValue(property.value, item, params, itemIndex)
-                        });
+                        };
+
+                        if (property.transform){
+                            propertyData.value = transforms[property.transform.method](propertyData.value, property.transform.options);
+                        }
+
+                        itemInfo.properties.push(propertyData);
                     }
 
                     return itemInfo;

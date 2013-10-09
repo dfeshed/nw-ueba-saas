@@ -1,4 +1,4 @@
-angular.module("ChartWidgets", ["Utils", "Styles"]).factory("chartWidgetsData", ["$q", "utils", "styles", function($q, utils, styles){
+angular.module("ChartWidgets", ["Utils", "Styles", "Transforms"]).factory("chartWidgetsData", ["$q", "utils", "styles", "transforms", function($q, utils, styles, transforms){
     return {
         getData: function(view, data, params){
             var deferred = $q.defer(),
@@ -7,7 +7,7 @@ angular.module("ChartWidgets", ["Utils", "Styles"]).factory("chartWidgetsData", 
 
             var viewData = { chartValues: data };
             angular.forEach(view.settings.series, function(series, i){
-                //series.label = utils.strings.parseValue(series.label, data, params, i);
+                series.label = utils.strings.parseValue(series.label, data, params, i);
 
                 if (series.style){
                     styleDeferredsMapping[String(styleDeferreds.length)] = i;
@@ -16,7 +16,10 @@ angular.module("ChartWidgets", ["Utils", "Styles"]).factory("chartWidgetsData", 
             });
 
             angular.forEach(viewData.chartValues, function(item, itemIndex){
-                item._label = utils.strings.parseValue(view.settings.labels.value, item, params, itemIndex);
+                if (view.settings.labels.transform)
+                    item._label = transforms[view.settings.labels.transform.method](item[view.settings.labels.field], view.settings.labels.transform.options);
+                else
+                    item._label = utils.strings.parseValue(view.settings.labels.value, item, params, itemIndex);
             });
 
             if (styleDeferreds.length){

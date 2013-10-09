@@ -54,9 +54,14 @@ angular.module("Conditions", ["Format"]).factory("conditions", ["format", functi
         { name: "lesserThan", display: "<", requiresValue: true, types: ["number"] },
         { name: "lesserThanOrEqual", display: "<=", requiresValue: true, types: ["number"] },
         { name: "included", display: "IN", requiresValue: true, types: ["number"] },
-        { name: "hasValue", display: "Has value", requiresValue: false, types: ["string", "number"] },
-        { name: "hasNoValue", display: "Has no value", requiresValue: false, types: ["string", "number"] }
+        { name: "hasValue", display: "Has value", sql: "IS NOT NULL", requiresValue: false, types: ["string", "number"] },
+        { name: "hasNoValue", display: "Has no value", sql: "IS NULL", requiresValue: false, types: ["string", "number"] }
     ];
+
+    var operatorsSqlIndex = {};
+    angular.forEach(operators, function(operator){
+        operatorsSqlIndex[operator.name] = operator.sql || operator.display;
+    });
 
     function getOrConditionsIndex(conditions){
         var orConditionsValues = {},
@@ -80,6 +85,18 @@ angular.module("Conditions", ["Format"]).factory("conditions", ["format", functi
     }
 
     var methods = {
+        conditionsToSql: function(conditions){
+            var sql = [];
+            angular.forEach(conditions, function(condition){
+                var conditionValue = condition.value;
+                if (typeof(conditionValue) === "string")
+                    conditionValue = "\"" + conditionValue + "\"";
+
+                sql.push([condition.field, operatorsSqlIndex[condition.operator], conditionValue].join(" "));
+            });
+
+            return sql.join(" AND ");
+        },
         operators: operators,
         validateCondition: function(value1, operator, value2){
             var validation = validations[operator];

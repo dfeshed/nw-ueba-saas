@@ -3,7 +3,7 @@
     "title": "User score for the last 7 days",
     "views": [
         {
-            "type": "barChart",
+            "type": "barsChart",
             "settings": {
                 "options": {
                     "height": "200px",
@@ -47,8 +47,12 @@
                     "field": "date",
                     "value": "{{date}}",
                     "styleField": "score",
-                    "format": "date",
-                    "formatOptions": { "format": "MM/DD" }
+                    "transform": {
+                        "method": "date",
+                        "options": {
+                            "format": "MM/DD"
+                        }
+                    }
                 },
                 "selectionBar": {
                     "styleField": "score"

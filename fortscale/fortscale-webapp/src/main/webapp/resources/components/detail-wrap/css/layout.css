@@ -410,7 +410,6 @@ input.search:focus{
 .content {
 	min-width: 400px;
 	min-height: 620px;
-	margin-bottom: 100px;
 	padding-bottom: 7px;
 	overflow: hidden;
 	position: relative;

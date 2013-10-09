@@ -87,6 +87,13 @@
     <script src="widgets/percentChart/percentChart.module.js"></script>
     <script src="widgets/percentChart/percentChart.directive.js"></script>
     <script src="widgets/percentChart/percentChart.data.service.js"></script>
+
+    <script src="widgets/properties/properties.module.js"></script>
+    <script src="widgets/properties/properties.data.service.js"></script>
+
+    <script src="widgets/tabs/tabs.module.js"></script>
+    <script src="widgets/tabs/tabs.controller.js"></script>
+    <script src="widgets/tabs/tabs.data.service.js"></script>
     
     <script src="scripts/app.js"></script>
 
@@ -116,7 +123,7 @@
     <script src="scripts/controllers/widgets/buttonsBar_controller.js"></script>
     <script src="scripts/controllers/widgets/dashboard_widget_controller.js"></script>
     <script src="scripts/controllers/widgets/list_widget_controller.js"></script>
-    <script src="scripts/controllers/widgets/tabs_widget_controller.js"></script>
+    <script src="widgets/tabs/tabs_widget_controller.js"></script>
     <script src="scripts/controllers/widgets/user_comparison_widget_controller.js"></script>
     <script src="scripts/controllers/widgets/investigator_controller.js"></script>
     <script src="scripts/controllers/popup_controller.js"></script>
@@ -152,6 +159,9 @@
             <div id="pad-wrapper" ng-view></div>
         </div>
     </section>
+    <footer id="main-footer">
+        <span>Version: {{buildVersion}}</span>
+    </footer>
     <popup  ng-controller="PopupController"
             width="popup.width"
            height="popup.height"

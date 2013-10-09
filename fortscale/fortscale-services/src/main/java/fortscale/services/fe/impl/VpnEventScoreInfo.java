@@ -51,7 +51,7 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	}
 
 	@Override
-	public String getLocalIp() {
+	public String getInternalIP() {
 		return vpnScore.getLocalIp();
 	}
 
@@ -66,7 +66,7 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	}
 
 	@Override
-	public String getLocalHostname() {
+	public String getInternalHostname() {
 		return localHostname;
 	}
 

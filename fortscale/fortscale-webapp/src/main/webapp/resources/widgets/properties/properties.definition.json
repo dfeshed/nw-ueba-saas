@@ -1,0 +1,36 @@
+{
+    "name": "Properties List",
+    "settings": [
+        {
+            "id": "size",
+            "name": "Size",
+            "type": "number",
+            "unit": "px",
+            "units": ["px", "%"],
+            "default": 100
+        },
+        {
+            "id": "showInfo",
+            "name": "Show info",
+            "type": "boolean",
+            "default": false
+        },
+        {
+            "id": "calculatePercent",
+            "name": "Calculate percentage",
+            "type": "boolean",
+            "default": true
+        },
+        {
+            "id": "chartValue",
+            "name": "Chart Value",
+            "type": "dataField",
+            "dataFieldType": "number"
+        },
+        {
+            "id": "chartLabel",
+            "name": "Chart Label",
+            "type": "dataField"
+        }
+    ]
+}

@@ -34,7 +34,7 @@
                     "title": "User logins score for the last 7 days",
                     "views": [
                         {
-                            "type": "barChart",
+                            "type": "barsChart",
                             "settings": {
                                 "options": {
                                     "height": "200px",

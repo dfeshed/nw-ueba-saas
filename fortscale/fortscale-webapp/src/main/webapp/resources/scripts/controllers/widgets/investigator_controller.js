@@ -131,6 +131,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
 
         $location.search("params", hasFilters ? JSON.stringify(params) : null);
         $location.search("fields", enabledFields.join(","));
+        $location.search("viewType", $scope.currentViewType.type);
     }
 
     function getEntityTableFields(entity, fieldsSetting){
@@ -225,7 +226,12 @@ angular.module("Fortscale").controller("InvestigatorController", [
         getData();
     });
 
-    $scope.onViewTypeSelect = function(){
+    $scope.onViewTypeSelect = function(setToUrl){
+        if (setToUrl){
+            $location.search("viewType", $scope.currentViewType.type);
+            return;
+        }
+
         $scope.view = $scope.currentViewType;
         setCurrentView($scope.currentViewType);
         setViewData();
@@ -235,7 +241,12 @@ angular.module("Fortscale").controller("InvestigatorController", [
         setViewData();
     };
 
-    $scope.querySql = function(sqlQuery){
+    $scope.querySql = function(sqlQuery, setToUrl){
+        if (setToUrl){
+            $location.search("sql", sqlQuery);
+            return;
+        }
+
         server.queryServer({
             endpoint: {
                 entity: "investigate",
@@ -244,6 +255,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
         }).then(function(results){
             setSqlData(results);
         }, function(error){
+            setSqlData({ data: [], total: 0 });
             console.error("Can't get SQL results.");
         });
     };
@@ -268,11 +280,8 @@ angular.module("Fortscale").controller("InvestigatorController", [
                 });
             }
 
-            $scope.view.settings = $scope.currentViewSettings;
-
-            var widgetDataParser = widgetsData[$scope.view.type];
-            $scope.view.data = widgetDataParser ? widgetDataParser($scope.view, sqlResults.data, {}) : sqlResults.data;
-            $scope.view.dataTotalResults = sqlResults.total;
+            setCurrentView();
+            setViewData(sqlResults);
         }
     }
 
@@ -432,6 +441,9 @@ angular.module("Fortscale").controller("InvestigatorController", [
     }
 
     function setCurrentView(viewType){
+        if (!viewType && $scope.config.view)
+            viewType = $scope.config.view;
+
         $scope.currentViewType = $scope.config.view = viewType;
         setViewSettings();
 
@@ -480,13 +492,17 @@ angular.module("Fortscale").controller("InvestigatorController", [
             if ($location.search().entity){
                 $scope.config.entity = $location.search().entity;
                 $scope.onEntitySelect();
+                if ($location.search().sql){
+                    $scope.sqlQuery = $location.search().sql;
+                    $scope.querySql($location.search().sql);
+                }
 
                 getFiltersFromUrl();
                 getFieldsFromUrl();
 
                 $scope.viewTypes = widgetTypesData;
 
-                setCurrentView(widgetTypesData.table);
+                setCurrentView(widgetTypesData[$location.search().viewType || "table"]);
 
                 $scope.update();
             }

@@ -88,7 +88,7 @@ public final class EmailAddress implements Serializable{
 		 */
 		@Override
 		public String convert(EmailAddress source) {
-			return source == null ? null : source.value;
+			return source == null ? null : source.toString();
 		}
 	}
 

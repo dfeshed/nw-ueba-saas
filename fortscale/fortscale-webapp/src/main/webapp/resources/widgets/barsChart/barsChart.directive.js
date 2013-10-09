@@ -125,7 +125,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     barValue = barElement.__data__[series.field];
 
                 return options.tooltip
-                    .replace("{{seriesLabel}}", barElement.__data__[series.label])
+                    .replace("{{seriesLabel}}", series.label)
                     .replace("{{barLabel}}", barLabel)
                     .replace("{{barValue}}", barValue);
             }

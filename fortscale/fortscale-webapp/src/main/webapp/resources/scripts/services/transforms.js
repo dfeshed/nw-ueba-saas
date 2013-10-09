@@ -1,4 +1,4 @@
-    angular.module("Transforms", []).factory("transforms", function(){
+    angular.module("Transforms", ["Utils"]).factory("transforms", ["utils", function(utils){
     var splunkDateFormatRegExp = /^(\d{2})\/(\d{2})\/(\d{4}):(\d{1,2}):(\d{1,2}):(\d{1,2})$/,
         splunkBucketRegExp = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})$/;
 
@@ -18,9 +18,15 @@
         },
         date: function(date, options){
             var newDate = methods.getDate(date);
+            if (options.prettyDate)
+                return utils.date.prettyDate(newDate.toDate(), options.shortPrettyDate);
+
             return newDate.format(options.format);
         },
         getDate: function(date){
+            if (typeof(date) === "number")
+                return moment(date);
+
             var newDate = moment(),
                 subtractMatch = date.match(/^-(\d+)(\w+)$/);
 
@@ -32,6 +38,8 @@
                 var specifiedDate = moment(date);
                 if (specifiedDate.isValid())
                     newDate = specifiedDate;
+                else if (/^\d+$/.test(date))
+                    newDate = moment(parseInt(date, 10));
                 else if (splunkDateFormatRegExp.test(date)){
                     newDate = moment(date.replace(/^(\d{2})\/(\d{2})\/(\d{4}):(\d{1,2}):(\d{1,2}):(\d{1,2})$/, "$3-$1-$2 $4:$5:$6"));
                 }
@@ -73,4 +81,4 @@
     };
 
     return methods;
-});
+}]);

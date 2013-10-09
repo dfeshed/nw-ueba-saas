@@ -15,9 +15,11 @@
                         {
                             "label": "Last Sign-in:",
                             "value": "{{lastSignIn}}",
-                            "format": "date",
-                            "formatOptions": {
-                                "prettyDate": true
+                            "transform": {
+                                "method": "date",
+                                "options": {
+                                    "prettyDate": true
+                                }
                             }
                         },
                         {

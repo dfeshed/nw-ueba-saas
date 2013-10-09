@@ -1,1 +1,1 @@
-angular.module("PieChartWidget", ["Utils"]);
+angular.module("PieChartWidget", ["Utils", "Transforms"]);

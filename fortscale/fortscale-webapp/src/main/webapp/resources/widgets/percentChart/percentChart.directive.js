@@ -1,13 +1,12 @@
 'use strict';
 
-angular.module("PercentChartWidget").directive("yoxigenPercentChart", ["$parse", "$timeout", function ($parse, $timeout) {
+angular.module("PercentChartWidget").directive("yoxigenPercentChart", ["$rootScope", function ($rootScope) {
     return {
         template: "<div class='yoxigen-chart yoxigen-percent-chart' style='width: 100%; height: 100%'></div>",
         restrict: 'E',
         scope: true,
         replace: true,
-        require: "?ngModel",
-        link: function postLink(scope, element, attrs, ngModel) {
+        link: function postLink(scope, element, attrs) {
             var data, settings;
             var resizeEventListenerEnabled;
             var selectedBarGroup = null;

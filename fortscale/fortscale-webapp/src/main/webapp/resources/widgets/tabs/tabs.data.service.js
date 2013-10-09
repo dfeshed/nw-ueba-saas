@@ -1,0 +1,35 @@
+angular.module("TabsWidget").factory("tabsWidgetData", ["utils", "styles", function(utils, styles){
+    return{
+        getData: function(view, data, params){
+            var viewData = [];
+
+            angular.forEach(data, function(item, itemIndex){
+                var itemData = {};
+                itemData.display = utils.strings.parseValue(view.settings.tab.display, item, params, itemIndex);
+                itemData.id = utils.strings.parseValue(view.settings.tab.id, item, params, itemIndex);
+
+                if (view.settings.tab.style){
+                    styles.getStyle(view.settings.tab, item).then(function(style){
+                        itemData.style = style;
+                    });
+                }
+
+                if (view.settings.label){
+                    itemData.label = {
+                        value: utils.strings.parseValue(view.settings.label.value, item, params, itemIndex)
+                    };
+
+                    if (view.settings.label.style){
+                        styles.getStyle(view.settings.label, item).then(function(style){
+                            itemData.label.style = style;
+                        });
+                    }
+                }
+
+                viewData.push(itemData);
+            });
+
+            return viewData;
+        }
+    };
+}]);

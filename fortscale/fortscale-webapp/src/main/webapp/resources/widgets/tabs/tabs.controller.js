@@ -1,4 +1,4 @@
-angular.module("Fortscale").controller("TabsWidgetController", ["$scope", function($scope){
+angular.module("TabsWidget").controller("TabsWidgetController", ["$scope", function($scope){
     var selectedDashboardParam;
 
     setCurrentTab(0);

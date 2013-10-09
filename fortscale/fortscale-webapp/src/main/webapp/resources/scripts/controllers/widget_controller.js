@@ -275,7 +275,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                         });
                     }
                     else{
-                        widget.totalResults = results.totalResults;
+                        widget.totalResults = results.total;
 
                         angular.forEach(widget.views, function(view){
                             view.data = widgets.setViewValues(view, results.data, widgetParams, results.rawData);

@@ -40,7 +40,7 @@
             }
         },
         {
-            "type": "barChart",
+            "type": "barsChart",
             "show": {
                 "conditions": [{
                     "field": "{{currentFeature}}",

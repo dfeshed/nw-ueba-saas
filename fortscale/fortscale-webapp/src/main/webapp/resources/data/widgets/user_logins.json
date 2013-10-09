@@ -30,8 +30,12 @@
                         "value": "{{eventTime}}",
                         "sortBy": "eventTime",
                         "sortDirection": -1,
-                        "format": "date",
-                        "formatOptions": { "format": "MM/DD/YY HH:mm:ss" }
+                        "transform": {
+                            "method": "date",
+                            "options": {
+                                "format": "MM/DD/YY HH:mm:ss"
+                            }
+                        }
                     },
                     {
                         "name": "Score",

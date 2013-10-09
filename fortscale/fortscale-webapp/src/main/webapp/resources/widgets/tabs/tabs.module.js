@@ -1,0 +1,1 @@
+angular.module("TabsWidget", ["Utils", "Styles"]);

@@ -82,6 +82,11 @@ angular.module("Icons", ["Conditions", "Format"]).factory("icons", ["$q", "$http
         getIcon: function(iconSettings, data){
             var deferred = $q.defer();
 
+            if (typeof(iconSettings) === "string"){
+                deferred.resolve({ type: iconSettings });
+                return deferred.promise;
+            }
+
             if (iconSettings.type)
                 deferred.resolve(iconSettings.type);
             else if (iconSettings.preset){

@@ -78,6 +78,11 @@ h2, h3, h4, h5{ font-weight: normal; }
   }
 }
 
+#main-footer{
+  text-align: right;
+  font-size: .8em;
+  padding: 10px 10px 20px;
+}
 .sidebar-minimized{
   .content{
     margin-left: 65px;
@@ -147,7 +152,7 @@ h2, h3, h4, h5{ font-weight: normal; }
 @import "../widgets/barsChart/barsChart";
 @import "../widgets/percentChart/percentChart";
 @import "widgets/numeric";
-@import "widgets/tabs";
+@import "../widgets/tabs/tabs";
 @import "widgets/container";
 @import "widgets/investigator";
 @import "controls/notification";

@@ -34,8 +34,12 @@
                         "value": "{{eventTime}}",
                         "sortBy": "eventTime",
                         "sortDirection": -1,
-                        "format": "date",
-                        "formatOptions": { "prettyDate": true }
+                        "transform": {
+                            "method": "date",
+                            "options": {
+                                "prettyDate": true
+                            }
+                        }
                     },
                     {
                         "name": "Score",
