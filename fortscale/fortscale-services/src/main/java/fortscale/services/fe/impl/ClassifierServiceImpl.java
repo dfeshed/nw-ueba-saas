@@ -25,6 +25,8 @@ import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.services.UserApplication;
+import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.IClassifierScoreDistribution;
@@ -86,6 +88,9 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	@Autowired
 	private UserMachineDAO userMachineDAO;
+	
+	@Autowired
+	private UserService userService;
 
 	
 	public Classifier getClassifier(String classifierId){
@@ -344,8 +349,13 @@ public class ClassifierServiceImpl implements ClassifierService {
 		if(user == null){
 			return Collections.emptyList();
 		}
+		String vpnUserNameString = userService.getApplicationUserDetails(user, UserApplication.vpn).getUserName();
+		if(vpnUserNameString == null) {
+			return Collections.emptyList();
+		}
+		
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, VpnScore.EVENT_SCORE_FIELD_NAME));
-		List<VpnScore> vpnScores = vpnDAO.findEventsByUsernameAndTimestamp(user.getAdUserPrincipalName(), timestamp, pageable);
+		List<VpnScore> vpnScores = vpnDAO.findEventsByUsernameAndTimestamp(vpnUserNameString, timestamp, pageable);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		for(VpnScore vpnScore: vpnScores){
 			ret.add(createVpnEventScoreInfo(user, vpnScore));
@@ -367,7 +377,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 			String username = vpnScore.getUserName().toLowerCase();
 			User user = userMap.get(username);
 			if(user == null){
-				user = userRepository.findByAdUserPrincipalName(username);
+				user = userRepository.findByApplicationUserName(userService.createApplicationUserDetails(UserApplication.vpn, username));
 				if(user == null){
 					//TODO: warn message
 					continue;
@@ -389,7 +399,6 @@ public class ClassifierServiceImpl implements ClassifierService {
 		
 		return ret;
 	}
-	
 	
 	
 	

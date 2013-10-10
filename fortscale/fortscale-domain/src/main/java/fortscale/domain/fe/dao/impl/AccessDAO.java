@@ -217,7 +217,7 @@ public abstract class AccessDAO<T>  extends ImpalaDAO<T>{
 	}
 	
 	private String getUserNameEqualComparison(String username){
-		return String.format("lower(%s) = \"%s\"", getUsernameFieldName(), username);
+		return String.format("lower(%s) = \"%s\"", getUsernameFieldName(), username.toLowerCase());
 //		return String.format("%s rlike \"(?i)%s\"", getUsernameFieldName(), username);
 	}
 	

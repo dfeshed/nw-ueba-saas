@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -131,6 +132,13 @@ public class UserRepositoryImpl implements UserRepository{
 	@Override
 	public List<User> findByAdUserPrincipalNameContaining(
 			String adUserPrincipalNamePrefix) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User findByApplicationUserName(
+			ApplicationUserDetails applicationUserDetails) {
 		// TODO Auto-generated method stub
 		return null;
 	}
