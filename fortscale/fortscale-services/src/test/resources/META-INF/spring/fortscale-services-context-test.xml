@@ -16,6 +16,8 @@
 	
 	<bean id="authDAO" class="fortscale.service.domain.fe.dao.AuthDAOImpl"/>
 	
+	<bean id="vpnDAO" class="fortscale.service.domain.fe.dao.VpnDAOImpl"/>
+	
 	<context:component-scan base-package="fortscale"/>
 	
 </beans>

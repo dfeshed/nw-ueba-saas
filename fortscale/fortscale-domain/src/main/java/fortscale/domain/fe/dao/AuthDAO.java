@@ -11,7 +11,7 @@ public interface AuthDAO {
 
 	public List<AuthScore> findAll(Pageable pageable);
 	
-	public AuthScore findCurrentAuthScoreByUsername(String username);
+	public AuthScore findCurrentByUsername(String username);
 	
 	public List<AuthScore> findEventsByUsername(String username, Pageable pageable);
 	

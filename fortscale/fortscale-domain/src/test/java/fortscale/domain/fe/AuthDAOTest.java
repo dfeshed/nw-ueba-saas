@@ -76,7 +76,7 @@ public class AuthDAOTest  extends AbstractTest{
 		Date lastRun = authDAO.getLastRunDate();
 		Pageable pageable = new ImpalaPageRequest(1, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
 		AuthScore authScore = authDAO.findEventsByTimestamp(lastRun, pageable).get(0);
-		AuthScore authScore2 = authDAO.findCurrentAuthScoreByUsername(authScore.getUserName().toLowerCase());
+		AuthScore authScore2 = authDAO.findCurrentByUsername(authScore.getUserName().toLowerCase());
 		Assert.assertEquals(authScore.getUserName(), authScore2.getUserName());
 		Assert.assertTrue( authScore.getTimestamp().equals(authScore2.getTimestamp()) || authScore.getTimestamp().before(authScore2.getTimestamp()) );
 	}

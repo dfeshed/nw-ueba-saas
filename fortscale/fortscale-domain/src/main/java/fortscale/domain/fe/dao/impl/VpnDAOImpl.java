@@ -9,6 +9,7 @@ import java.util.Date;
 import org.springframework.jdbc.core.RowMapper;
 
 import fortscale.domain.fe.VpnScore;
+import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.VpnDAO;
 
 public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{

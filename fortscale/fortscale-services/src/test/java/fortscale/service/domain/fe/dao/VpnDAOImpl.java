@@ -5,77 +5,74 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
-import fortscale.domain.fe.AuthScore;
-import fortscale.domain.fe.dao.AuthDAO;
+import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.Threshold;
+import fortscale.domain.fe.dao.VpnDAO;
 
-public class AuthDAOImpl implements AuthDAO {
-	
+public class VpnDAOImpl implements VpnDAO {
+
 	@Override
-	public AuthScore findCurrentByUsername(String username) {
+	public List<VpnScore> findAll(Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<AuthScore> findEventsByUsername(String username,
+	public VpnScore findCurrentByUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<VpnScore> findEventsByUsername(String username,
 			Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<AuthScore> findEventsByUsernameAndTimestamp(String username,
+	public List<VpnScore> findEventsByUsernameAndTimestamp(String username,
 			Date timestamp, Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<AuthScore> findEventsByTimestamp(Date timestamp,
+	public List<VpnScore> findEventsByTimestamp(Date timestamp,
 			Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<AuthScore> findEventsByTimestamp(Date timestamp,
+	public List<VpnScore> findEventsByTimestamp(Date timestamp,
 			Pageable pageable, String additionalWhereQuery) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<AuthScore> findGlobalScoreByUsername(String username, int limit) {
+	public List<VpnScore> findGlobalScoreByUsername(String username, int limit) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<AuthScore> findGlobalScoreByTimestamp(Date timestamp) {
+	public List<VpnScore> findGlobalScoreByTimestamp(Date timestamp) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp) {
-		if(threshold.getValue() == 100) {
-			return 0;
-		}
-		int val = 100 - threshold.getValue();
-		val = val * 10 + val / 10 + 1;
-		if(threshold.getValue() == 0) {
-			val = val * 4;
-		}
-		
-		return val;
+		// TODO Auto-generated method stub
+		return 0;
 	}
-	
-	
 
 	@Override
 	public Date getLastRunDate() {
-		return new Date();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -85,28 +82,22 @@ public class AuthDAOImpl implements AuthDAO {
 	}
 
 	@Override
-	public List<AuthScore> getTopUsersAboveThreshold(Threshold threshold,
+	public List<VpnScore> getTopUsersAboveThreshold(Threshold threshold,
 			Date timestamp, int limit) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<AuthScore> findByTimestampAndGlobalScoreBetweenSortByEventScore(
+	public List<VpnScore> findByTimestampAndGlobalScoreBetweenSortByEventScore(
 			Date timestamp, int lowestVal, int upperVal, int limit) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<AuthScore> getTopEventsAboveThreshold(Threshold threshold,
+	public List<VpnScore> getTopEventsAboveThreshold(Threshold threshold,
 			Date timestamp, int limit) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<AuthScore> findAll(Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
 	}

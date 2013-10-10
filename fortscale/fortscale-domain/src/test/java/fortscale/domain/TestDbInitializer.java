@@ -35,7 +35,11 @@ public class TestDbInitializer {
 	private static final String VPN_SCORE_INPUT_FILE_NAME = "src/test/data/impala/vpnscores.csv";
 	
 	private static File getFile(String path) {
-		File file = new File(path.replace("/", "\\"));
+		String fileSeperator = File.separator;
+		if(fileSeperator == null || fileSeperator.equals("\\")) {
+			path = path.replace("/", "\\");
+		}
+		File file = new File(path);
 		return file;
 	}
 	

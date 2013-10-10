@@ -1,4 +1,4 @@
-package fortscale.domain.fe.dao.impl;
+package fortscale.domain.fe.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.RowMapper;
 
-import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.impala.ImpalaDAO;
 import fortscale.utils.impala.ImpalaCriteria;
 import fortscale.utils.impala.ImpalaPageRequest;
