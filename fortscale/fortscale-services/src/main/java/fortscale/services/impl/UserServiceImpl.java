@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +37,11 @@ import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.utils.actdir.ADUserParser;
+import fortscale.utils.logging.Logger;
 
 @Service("userService")
 public class UserServiceImpl implements UserService{
+	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	
 	private static final String SEARCH_FIELD_PREFIX = "##";
 	
@@ -84,39 +87,57 @@ public class UserServiceImpl implements UserService{
 	
 	private void updateUserWithADInfo(Iterable<AdUser> adUsers) {
 		for(AdUser adUser: adUsers){
-			User user = userRepository.findByAdDn(adUser.getDistinguishedName());
-			if(user == null){
-				user = new User(adUser.getDistinguishedName());
+			try {
+				updateUserWithADInfo(adUser);
+			} catch (Exception e) {
+				logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
 			}
-			user.setFirstname(adUser.getFirstname());
-			user.setLastname(adUser.getLastname());
-			if(adUser.getEmailAddress() != null && adUser.getEmailAddress().length() > 0){
-				user.setEmailAddress(new EmailAddress(adUser.getEmailAddress()));
-			}
-			user.setAdUserPrincipalName(adUser.getUserPrincipalName().toLowerCase());
-			user.setEmployeeID(adUser.getEmployeeID());
-			user.setManagerDN(adUser.getManager());
-			user.setMobile(adUser.getMobile());
-			user.setTelephoneNumber(adUser.getTelephoneNumber());
-			user.setSearchField(createSearchField(user));
-			user.setDepartment(adUser.getDepartment());
-			user.setPosition(adUser.getTitle());
-			ADUserParser adUserParser = new ADUserParser();
-			String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
-			if(groups != null){
-				for(String groupDN: groups){
-					AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
-					if(adGroup != null){
-						user.addGroup(new AdUserGroup(groupDN, adGroup.getName()));
-					}else{
-						//TODO: LOG WARNING.
-					}
-				}
-			}
-			user.addApplicationUserDetails(new ApplicationUserDetails(UserApplication.ad.getId(), user.getAdUserPrincipalName()));
-			userRepository.save(user);
+			
 		}
 		
+	}
+	
+	private void updateUserWithADInfo(AdUser adUser) {
+		if(adUser.getDistinguishedName() == null) {
+			logger.error("got ad user with no distinguished name field.");
+			return;
+		}
+		User user = userRepository.findByAdDn(adUser.getDistinguishedName());
+		if(user == null){
+			user = new User(adUser.getDistinguishedName());
+		}
+		user.setFirstname(adUser.getFirstname());
+		user.setLastname(adUser.getLastname());
+		if(adUser.getEmailAddress() != null && adUser.getEmailAddress().length() > 0){
+			user.setEmailAddress(new EmailAddress(adUser.getEmailAddress()));
+		}
+		if(!StringUtils.isEmpty(adUser.getUserPrincipalName())) {
+			user.setAdUserPrincipalName(adUser.getUserPrincipalName().toLowerCase());
+			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.ad, adUser.getUserPrincipalName()));
+		} else {
+			logger.error("ad user does not have ad user principal name!!! dn: {}", adUser.getDistinguishedName());
+		}
+		user.setEmployeeID(adUser.getEmployeeID());
+		user.setManagerDN(adUser.getManager());
+		user.setMobile(adUser.getMobile());
+		user.setTelephoneNumber(adUser.getTelephoneNumber());
+		user.setSearchField(createSearchField(user));
+		user.setDepartment(adUser.getDepartment());
+		user.setPosition(adUser.getTitle());
+		ADUserParser adUserParser = new ADUserParser();
+		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
+		if(groups != null){
+			for(String groupDN: groups){
+				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
+				if(adGroup != null){
+					user.addGroup(new AdUserGroup(groupDN, adGroup.getName()));
+				}else{
+					//TODO: LOG WARNING.
+				}
+			}
+		}
+		
+		userRepository.save(user);
 	}
 	
 	private String createSearchField(User user){
@@ -324,9 +345,19 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void createApplicationUserDetailsIfNotExist(User user, ApplicationUserDetails applicationUserDetails) {
-		if(user.containsApplicationUserDetails(applicationUserDetails)) {
+		if(!user.containsApplicationUserDetails(applicationUserDetails)) {
 			user.addApplicationUserDetails(applicationUserDetails);
 			userRepository.save(user);
 		}
+	}
+	
+	@Override
+	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username) {
+		return new ApplicationUserDetails(userApplication.getId(), username);
+	}
+	
+	@Override
+	public ApplicationUserDetails getApplicationUserDetails(User user, UserApplication userApplication) {
+		return user.getApplicationUserDetails().get(userApplication.getId());
 	}
 }

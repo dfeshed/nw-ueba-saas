@@ -33,4 +33,8 @@ public interface UserService {
 	public void createApplicationUserDetailsIfNotExist(User user, ApplicationUserDetails applicationUserDetails);
 
 	public void updateUserWithVpnScore();
+	
+	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
+	
+	public ApplicationUserDetails getApplicationUserDetails(User user, UserApplication userApplication);
 }

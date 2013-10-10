@@ -3,12 +3,20 @@ package fortscale.domain.core;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
 public class ApplicationUserDetails {
+	
+	public static final String userNameField = "userName";
+	
+	
+	
 	@JsonProperty
 	private String applicationName;
+	
 	@JsonProperty
+	@Field(userNameField)
 	private String userName;
 	
 	@PersistenceConstructor

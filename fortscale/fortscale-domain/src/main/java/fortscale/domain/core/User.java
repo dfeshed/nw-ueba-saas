@@ -24,6 +24,10 @@ import fortscale.domain.ad.AdUserGroup;
 
 @Document
 public class User extends AbstractDocument {	
+	
+	public static final String appField = "app";
+	
+	
 	@Indexed(unique = true)
 	@JsonProperty
 	private String adDn;
@@ -54,7 +58,7 @@ public class User extends AbstractDocument {
 	@JsonProperty
 	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
 	
-	@Field("app")
+	@Field(appField)
 	@JsonProperty
 	Map<String, ApplicationUserDetails> appUserDetailsMap = new HashMap<>();
 	

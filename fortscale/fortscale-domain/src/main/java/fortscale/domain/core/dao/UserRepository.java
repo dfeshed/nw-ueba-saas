@@ -11,7 +11,7 @@ import fortscale.domain.core.User;
 
 
 
-public interface UserRepository extends PagingAndSortingRepository<User, String>{
+public interface UserRepository extends PagingAndSortingRepository<User, String>, UserRepositoryCustom{
 	/**
 	 * Returns the {@link Customer} with the given {@link EmailAddress}.
 	 * 
