@@ -3,6 +3,7 @@ package fortscale.domain.core;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonCreator;
@@ -52,6 +53,10 @@ public class User extends AbstractDocument {
 	
 	@JsonProperty
 	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
+	
+	@Field("app")
+	@JsonProperty
+	Map<String, ApplicationUserDetails> appUserDetailsMap = new HashMap<>();
 	
 	
 	private HashMap<String, ClassifierScore> scores = new HashMap<String, ClassifierScore>();
@@ -187,6 +192,19 @@ public class User extends AbstractDocument {
 	
 	public Set<AdUserGroup> getGroups() {
 		return Collections.unmodifiableSet(groups);
+	}
+	
+	public boolean containsApplicationUserDetails(ApplicationUserDetails applicationUserDetails) {
+		return appUserDetailsMap.containsKey(applicationUserDetails.getApplicationName());
+	}
+	
+	public void addApplicationUserDetails(ApplicationUserDetails applicationUserDetails) {
+		Assert.notNull(applicationUserDetails);
+		appUserDetailsMap.put(applicationUserDetails.getApplicationName(), applicationUserDetails);
+	}
+	
+	public Map<String, ApplicationUserDetails> getApplicationUserDetails(){
+		return appUserDetailsMap;
 	}
 
 	public HashMap<String, ClassifierScore> getScores() {

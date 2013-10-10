@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import fortscale.domain.ad.UserMachine;
+import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.fe.IFeature;
 
@@ -28,6 +29,8 @@ public interface UserService {
 	public void updateUserWithAuthScore();
 
 	public void updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore);
+	
+	public void createApplicationUserDetailsIfNotExist(User user, ApplicationUserDetails applicationUserDetails);
 
 	public void updateUserWithVpnScore();
 }

@@ -16,6 +16,7 @@ import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
+import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.ScoreInfo;
@@ -30,6 +31,7 @@ import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
+import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
@@ -111,6 +113,7 @@ public class UserServiceImpl implements UserService{
 					}
 				}
 			}
+			user.addApplicationUserDetails(new ApplicationUserDetails(UserApplication.ad.getId(), user.getAdUserPrincipalName()));
 			userRepository.save(user);
 		}
 		
@@ -251,12 +254,14 @@ public class UserServiceImpl implements UserService{
 		Date lastRun = vpnDAO.getLastRunDate();
 		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
-			List<User> users = userRepository.findByAdUserPrincipalNameContaining(vpnScore.getUserName().toLowerCase());
+			String userName = vpnScore.getUserName();
+			List<User> users = userRepository.findByAdUserPrincipalNameContaining(userName.toLowerCase());
 			if(users == null | users.size() == 0 | users.size() > 1){
 				//TODO:	error log message
 				continue;
 			}
 			User user = users.get(0);
+			createApplicationUserDetailsIfNotExist(user, new ApplicationUserDetails(UserApplication.vpn.getId(), userName));
 			updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg);
 		}
 		
@@ -317,5 +322,11 @@ public class UserServiceImpl implements UserService{
 		return (day1 == day2);
 	}
 
-	
+	@Override
+	public void createApplicationUserDetailsIfNotExist(User user, ApplicationUserDetails applicationUserDetails) {
+		if(user.containsApplicationUserDetails(applicationUserDetails)) {
+			user.addApplicationUserDetails(applicationUserDetails);
+			userRepository.save(user);
+		}
+	}
 }
