@@ -229,7 +229,8 @@ public class ClassifierServiceImpl implements ClassifierService {
 		double trend = 0;
 		if(!classifierScore.getPrevScores().isEmpty()){
 			double prevScore = classifierScore.getPrevScores().get(0).getScore() + 0.00001;
-			trend = (int)(((classifierScore.getScore() - prevScore) / prevScore) * 10000);
+			double curScore = classifierScore.getScore() + 0.00001;
+			trend = (int)(((curScore - prevScore) / prevScore) * 10000);
 			trend = trend/100;
 		}
 		return new SuspiciousUserInfo(user.getId(), user.getAdUserPrincipalName(), (int) Math.round(user.getScore(classifierId).getScore()), trend);
