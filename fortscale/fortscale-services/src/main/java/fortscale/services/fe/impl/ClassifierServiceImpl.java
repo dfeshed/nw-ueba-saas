@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.hadoop.hive.ql.parse.HiveParser.nullCondition_return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.dao.UserMachineDAO;
+import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -350,11 +352,12 @@ public class ClassifierServiceImpl implements ClassifierService {
 		if(user == null){
 			return Collections.emptyList();
 		}
-		String vpnUserNameString = userService.getApplicationUserDetails(user, UserApplication.vpn).getUserName();
-		if(vpnUserNameString == null) {
+		ApplicationUserDetails applicationUserDetails = userService.getApplicationUserDetails(user, UserApplication.vpn);
+		userService.getApplicationUserDetails(user, UserApplication.vpn).getUserName();
+		if(applicationUserDetails == null || applicationUserDetails.getUserName() == null) {
 			return Collections.emptyList();
 		}
-		
+		String vpnUserNameString = applicationUserDetails.getUserName();
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, VpnScore.EVENT_SCORE_FIELD_NAME));
 		List<VpnScore> vpnScores = vpnDAO.findEventsByUsernameAndTimestamp(vpnUserNameString, timestamp, pageable);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
