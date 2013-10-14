@@ -123,7 +123,8 @@ public class AdUser extends AdObject{
 	private String pwdLastSet = "";
 	
 	private String whenCreated = "";
-		
+	
+	private String sAMAccountName = "";
 	
 	
 	public String getObjectClass() {
@@ -518,6 +519,16 @@ public class AdUser extends AdObject{
 	public void setPwdLastSet(String pwdLastSet) {
 		this.pwdLastSet = pwdLastSet;
 	}
+
+	public String getsAMAccountName() {
+		return sAMAccountName;
+	}
+
+	public void setsAMAccountName(String sAMAccountName) {
+		this.sAMAccountName = sAMAccountName;
+	}
+
+
 
 	@Transient
 	private Map<String, String> attrVals;

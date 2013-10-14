@@ -114,8 +114,11 @@ public class UserServiceImpl implements UserService{
 		if(!StringUtils.isEmpty(adUser.getUserPrincipalName())) {
 			user.setAdUserPrincipalName(adUser.getUserPrincipalName().toLowerCase());
 			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.ad, adUser.getUserPrincipalName()));
+		} else if (!StringUtils.isEmpty(adUser.getsAMAccountName())) {
+			user.setAdUserPrincipalName(adUser.getsAMAccountName().toLowerCase());
+			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.ad, adUser.getsAMAccountName()));
 		} else {
-			logger.error("ad user does not have ad user principal name!!! dn: {}", adUser.getDistinguishedName());
+			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
 		}
 		user.setEmployeeID(adUser.getEmployeeID());
 		user.setManagerDN(adUser.getManager());
