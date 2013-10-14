@@ -44,7 +44,7 @@
                     {
                         "icon": "sitemap",
                         "tooltip": "Manager",
-                        "value": "{{manager}}"
+                        "value": "{{manager.name}}"
                     }
                 ]
             }

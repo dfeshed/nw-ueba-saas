@@ -11,10 +11,6 @@
     margin-bottom: 0;
   }
 
-  &.widget-loading{
-    opacity: .5;
-  }
-
   &.no-margins{
     margin-bottom: 0;
 
@@ -240,32 +236,41 @@
     }
   }
 }
-.widget-no-data{
-  position: absolute;
-  top: 50%;
-  height: 30px;
-  text-align: center;
-  width: 100%;
-  font-size: 10pt;
-  font-weight: bold;
-  color: #999;
+
+.widget-with-message{
+  min-height: 150px;
 }
+
+.widget-message-link{
+  font-size: 14px;
+}
+
 .widget-init-message{
   padding: 15px 0 30px 0;
   color: black;
   position: static;
 }
 .widget-message{
+  font-family: 'Roboto Condensed', Sans-Serif;
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 0;
-  right: 0;
-  bottom: 0;
+  height: 30px;
   text-align: center;
+  width: 100%;
+  font-size: 18px;
+  color: #767676;
+  line-height: 25px;
+  margin-top: -20px;
 
+  &.widget-no-data{
+    margin-top: -13px;
+  }
+  &.widget-error{
+    margin-top: -34px;
+  }
   &.widget-loading{
     cursor: wait;
-    color: Black;
 
     .widget-message-contents{
       display: block;
@@ -298,12 +303,34 @@
       text-decoration: underline;
     }
   }
+}
 
-  .widget-warning-message{ background: rgb(255, 211, 98) }
-  .widget-error-message{
-    background: #cc0000;
-    color: White;
+.widget-error-icon{
+  width: 26px;
+  height: 26px;
+  margin-bottom: 10px;
+}
+@-webkit-keyframes rotating {
+  from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
 
-    a{ color: White }
-  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+.widget-loader{
+  display: inline-block;
+  width: 37px;
+  height: 37px;
+  -webkit-animation: rotating 2s linear infinite;
+  -moz-animation: rotating 2s linear infinite;
+  animation: rotating 2s linear infinite;
+  background: url(../images/loader.png);
 }

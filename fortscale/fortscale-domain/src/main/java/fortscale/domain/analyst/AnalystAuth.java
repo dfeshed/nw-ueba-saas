@@ -17,12 +17,14 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
+import fortscale.domain.core.AbstractDocument;
+
 /*
  * This class is a copy of the class org.springframework.security.core.userdetails.User with mongodb additions.
  */
 
 @Document
-public class AnalystAuth implements UserDetails, CredentialsContainer {
+public class AnalystAuth extends AbstractDocument implements UserDetails, CredentialsContainer {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 

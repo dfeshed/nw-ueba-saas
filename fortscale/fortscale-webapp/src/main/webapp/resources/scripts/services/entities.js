@@ -1,5 +1,6 @@
 angular.module("Fortscale").factory("entities", ["$q", "DAL", function($q, DAL){
     var cachedEntities;
+    var useServerEntities = true;
 
     var methods = {
         getEntitiesConnections: function(entities){
@@ -81,6 +82,15 @@ angular.module("Fortscale").factory("entities", ["$q", "DAL", function($q, DAL){
                 deferred.resolve(cachedEntities);
             else{
                 DAL.entities.getEntities().then(function(entitiesData){
+                    angular.forEach(entitiesData, function(entity){
+                        angular.forEach(entity.fields, function(field){
+                            field.entity = entity;
+                        });
+                        angular.forEach(entity.computedFields, function(field){
+                            field.entity = entity;
+                        });
+                    });
+
                     cachedEntities = entitiesData;
                     deferred.resolve(entitiesData);
                 }, deferred.reject);

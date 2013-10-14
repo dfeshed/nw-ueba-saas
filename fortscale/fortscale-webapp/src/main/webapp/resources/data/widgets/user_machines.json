@@ -1,6 +1,13 @@
 {
     "title": "Related Machines",
     "reportId": "user_machines",
+    "controls": [
+        {
+            "type": "link",
+            "text": "View all",
+            "href": "#/d/investigator?entities=usernametohostname&username={{@entityId}}"
+        }
+    ],
     "views": [
         {
             "type": "pieChart",

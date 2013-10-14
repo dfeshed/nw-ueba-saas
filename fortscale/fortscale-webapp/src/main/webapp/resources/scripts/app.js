@@ -40,6 +40,10 @@ angular.module("Fortscale", [
         .when('/users', {
             templateUrl: 'views/pages/user.html'
         })
+        .when('/account', {
+            templateUrl: 'views/pages/account.html',
+            controller: "AccountSettingsController"
+        })
         .otherwise(
         {
             redirectTo: "/"

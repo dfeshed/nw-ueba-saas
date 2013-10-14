@@ -1,4 +1,21 @@
 angular.module("Utils", []).factory("utils", [function(){
+    function getObjectProperty(obj, property){
+        var path = property.split(".");
+
+        if (path.length === 1)
+            return obj[property];
+
+        var parentObj = obj;
+        for(var i=0; i < path.length - 1; i++){
+            if (parentObj[path[i]] === null || parentObj[path[i]] === undefined || !angular.isObject(parentObj))
+                return "";
+
+            parentObj = parentObj[path[i]];
+        }
+
+        return parentObj[path[i]];
+    }
+
     var methods = {
         date: {
             prettyDate: function (date, isShort) {
@@ -76,10 +93,10 @@ angular.module("Utils", []).factory("utils", [function(){
                         if (param === "index")
                             return index;
 
-                        return params[param] || "";
+                        return getObjectProperty(params, param) || "";
                     }
                     else{
-                        var dataValue = data[variable];
+                        var dataValue = getObjectProperty(data, variable);
                         if (dataValue !== undefined && dataValue !== null){
                             if (format)
                                 return format[format.method](dataValue, format.options);

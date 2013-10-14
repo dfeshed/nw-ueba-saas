@@ -34,6 +34,28 @@
                     "id": "link",
                     "name": "Link",
                     "type": "parsed"
+                },
+                {
+                    "id": "sortBy",
+                    "name": "SortBy",
+                    "type": "dataField"
+                },
+                {
+                    "id": "sortDirection",
+                    "name": "Sort Direction",
+                    "type": "number"
+                },
+                {
+                    "id": "transform",
+                    "name": "Transform",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "id": "method",
+                            "type": "string",
+                            "name": "Method"
+                        }
+                    ]
                 }
             ]
         }

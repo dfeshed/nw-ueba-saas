@@ -37,11 +37,14 @@
                 "id": "destinationHostname",
                 "type": "string",
                 "key": "hostname"
-            },
+            }
+        ],
+        "computedFields": [
             {
                 "name": "Score",
                 "id": "eventScore",
-                "type": "number"
+                "type": "number",
+                "isComputedField": true
             }
         ]
     },
@@ -75,7 +78,7 @@
             {
                 "name": "Score",
                 "id": "score",
-                "type": "string",
+                "type": "number",
                 "isComputedField": true
             }
         ]

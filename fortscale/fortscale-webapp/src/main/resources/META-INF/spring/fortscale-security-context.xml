@@ -10,12 +10,16 @@
 		http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
 	<http pattern="/resources/**" security="none" />
+	
+	<beans:bean id="noRedirectAuthenticationSuccessHandler" class="fortscale.web.NoRedirectAuthenticationSuccessHandler"/>
 
 	<http auto-config="true" use-expressions="true">
 <!-- 		<intercept-url pattern="/api/**" access="permitAll" /> -->
 <!-- 		<intercept-url pattern="/" access="permitAll" /> -->
 <!-- 		<intercept-url pattern="/index.html" access="permitAll" /> -->
+		<intercept-url pattern="/api/analyst/signup" access="permitAll" />
 		<intercept-url pattern="/404.html" access="permitAll" />
+		<intercept-url pattern="/signup.html" access="permitAll" />
 		<intercept-url pattern="/signin.html" access="permitAll" />
 		<intercept-url pattern="/logout" access="permitAll" />
 		<intercept-url pattern="/users/add" access="permitAll" />
@@ -29,13 +33,14 @@
 		<intercept-url pattern="/denied" access="hasRole('ROLE_USER')" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 
-<!-- 		<form-login login-page="/signin.html" authentication-failure-url="/404" -->
-<!-- 			default-target-url="/" /> -->
+		<form-login login-page="/signin.html" authentication-failure-url="/404"
+		 always-use-default-target="false" authentication-success-handler-ref="noRedirectAuthenticationSuccessHandler" 
+		 login-processing-url="/api/analyst/login"/>
 
 		<access-denied-handler error-page="/404" />
 
-<!-- 		<logout invalidate-session="true" logout-success-url="/" -->
-<!-- 			logout-url="/logout" /> -->
+		<logout invalidate-session="true" logout-success-url="/"
+			logout-url="/logout" />
 	</http>
 
 	<authentication-manager>

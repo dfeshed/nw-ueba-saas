@@ -101,6 +101,32 @@
                             ]
                         }
                     }
+                },
+                {
+                    "widgetId": "user_login_rate",
+                    "report": {
+                        "query": {
+                            "params": [
+                                {
+                                    "dashboardParam": "entityId",
+                                    "field": "username"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "widgetId": "user_vpn_logins",
+                    "report": {
+                        "query": {
+                            "params": [
+                                {
+                                    "dashboardParam": "entityId",
+                                    "field": "username"
+                                }
+                            ]
+                        }
+                    }
                 }
             ]
         }

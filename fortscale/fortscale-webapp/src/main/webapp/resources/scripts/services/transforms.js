@@ -17,6 +17,9 @@
             return array.length;
         },
         date: function(date, options){
+            if (!options)
+                options = { format: "MM/DD/YY HH:mm" };
+
             var newDate = methods.getDate(date);
             if (options.prettyDate)
                 return utils.date.prettyDate(newDate.toDate(), options.shortPrettyDate);

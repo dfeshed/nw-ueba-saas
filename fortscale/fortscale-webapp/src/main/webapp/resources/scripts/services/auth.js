@@ -1,5 +1,5 @@
 angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q, $http){
-    var apiUrl = "/api/",
+    var apiUrl = "/fortscale-webapp/api/analyst/",
         authToken,
         authTokenExpires;
 
@@ -21,24 +21,42 @@ angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q,
 
             return null;
         },
+        getCurrentUser: function(){
+            var deferred = $q.defer();
+
+            $http.get(apiUrl + "me/details")
+                .success(function(result){
+                    if (result && result.data){
+                        var userData = result.data[0];
+                        userData.fullName = [userData.firstName, userData.lastName].join(" ");
+                        deferred.resolve(userData);
+                    }
+                    else
+                        deferred.reject();
+                })
+                .error(deferred.reject);
+
+            return deferred.promise;
+        },
         login: function(username, password, remember){
             var deferred = $q.defer();
 
-            deferred.resolve();
-            return deferred.promise;
-
-            $http.post(apiUrl + "login", { username: username, password: password, remember: remember })
-                .success(function(response){
-                    authToken = response.authToken;
-                    authTokenExpires = response.expires;
-
-                    localStorage.authToken = authToken;
-                    localStorage.authTokenExpires = response.expires;
-
-                    deferred.resolve(authToken);
+            $http({
+                method: "POST",
+                url: apiUrl + "login",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                data: $.param({
+                    j_username: username,
+                    j_password: password,
+                    _spring_security_remember_me: remember ? "yes" : "no"
                 })
-                .error(function(error){
-                    deferred.reject(error);
+            })
+                .success(function(response){
+                    deferred.resolve(response);
+                })
+                .error(function(error, httpCode){
+                    var errorMessage = httpCode === 200 ? error : "Can't access server.";
+                    deferred.reject(errorMessage);
                 });
 
             return deferred.promise;
@@ -46,6 +64,20 @@ angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q,
         logout: function(){
             $http.post(apiUrl + "login", { authToken: authToken });
             authToken = null;
+        },
+        signUp: function(accountData){
+            var deferred = $q.defer();
+
+            $http({
+                method: "POST",
+                url: apiUrl + "signup",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                data: $.param(accountData)
+            })
+                .success(deferred.resolve)
+                .error(deferred.reject);
+
+            return deferred.promise;
         },
         validateUsername: function(username){
             return emailRegExp.test(username);

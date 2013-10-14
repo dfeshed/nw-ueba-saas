@@ -1,0 +1,49 @@
+	<!-- main container .wide-content is used for this layout without sidebar :)  -->
+    <div>
+        <div class="container-fluid">
+            <div class="settings-wrapper" id="pad-wrapper">
+                <!-- edit form column -->
+                <div class="span7 personal-info">
+                    <h5 class="personal-title">Account info</h5>
+
+                    <form>
+                        <div class="field-box">
+                            <label>First name:</label>
+                            <input class="span5 inline-input" type="text" ng-model="account.firstName" />
+                        </div>
+                        <div class="field-box">
+                            <label>Last name:</label>
+                            <input class="span5 inline-input" type="text" ng-model="account.lastName" />
+                        </div>
+                        <div class="field-box">
+                            <label>Email:</label>
+                            <input class="span5 inline-input" type="text" ng-model="account.userName" />
+                        </div>
+                        <div class="field-box" ng-show="!changePassword">
+                            <input type="button" class="btn-glow" value="Change Password" ng-click="changePassword = true">
+                        </div>
+                        <div ng-show="changePassword">
+                            <div class="field-box">
+                                <label>Current password:</label>
+                                <input class="span5 inline-input" type="password" ng-model="currentPassword" />
+                            </div>
+                            <div class="field-box">
+                                <label>Password:</label>
+                                <input class="span5 inline-input" type="password" ng-model="newPassword" />
+                            </div>
+                            <div class="field-box">
+                                <label>Confirm password:</label>
+                                <input class="span5 inline-input" type="password" ng-model="newPasswordConfirm" />
+                            </div>
+                        </div>
+                        <div class="span6 field-box actions">
+                            <input type="button" class="btn-glow primary" value="Save Changes">
+                            <span>OR</span>
+                            <input type="reset" value="Cancel" class="reset">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end main container -->

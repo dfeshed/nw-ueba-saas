@@ -46,27 +46,17 @@
                 </div>
             </li>
             <li class="dropdown">
-                <a class="dropdown-toggle hidden-phone" data-toggle="dropdown">
-                    Your account
+                <a class="clickable dropdown-toggle hidden-phone" data-toggle="dropdown">
+                    {{loggedInUser.fullName}}
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="personal-info.html">Personal info</a></li>
-                    <li><a>Account settings</a></li>
-                    <li><a>Billing</a></li>
-                    <li><a>Export your data</a></li>
+                    <li><a href="#/account">Account settings</a></li>
                     <li><a>Send feedback</a></li>
+                    <li>
+                        <a ng-click="logout()">Sign out</a>
+                    </li>
                 </ul>
-            </li>
-            <li class="settings hidden-phone">
-                <a href="personal-info.html" role="button">
-                    <i class="icon-cog"></i>
-                </a>
-            </li>
-            <li class="settings hidden-phone">
-                <a ng-click="logout()" role="button" class="clickable" title="Sign Out">
-                    <i class="icon-share-alt"></i>
-                </a>
             </li>
         </ul>
     </div>

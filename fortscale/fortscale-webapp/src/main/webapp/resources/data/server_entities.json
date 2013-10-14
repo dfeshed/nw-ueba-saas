@@ -1,0 +1,118 @@
+[
+    {
+        "name": "User Authentication",
+        "id": "authenticationscores",
+        "fields": [
+            {
+                "id": "time",
+                "name": "Time",
+                "type": "date"
+            },
+            {
+                "id": "normalizedtime",
+                "name": "Normalized Time",
+                "type": "string"
+            },
+            {
+                "id": "userid",
+                "name": "Username",
+                "type": "string",
+                "key": "userid"
+            },
+            {
+                "id": "targetid",
+                "name": "Target ID",
+                "type": "string"
+            },
+            {
+                "id": "sourceip",
+                "name": "Source IP",
+                "type": "string",
+                "key": "ip"
+            },
+            {
+                "id": "errorcode",
+                "name": "Error Code",
+                "type": "string"
+            },
+            {
+                "id": "eventscore",
+                "name": "Score",
+                "type": "number",
+                "isComputedField": true
+            }
+        ]
+    },
+    {
+        "name": "VPN Logins",
+        "id": "vpndatares",
+        "fields": [
+            {
+                "id": "date_time",
+                "name": "Time",
+                "type": "date"
+            },
+            {
+                "id": "username",
+                "name": "Username",
+                "type": "string",
+                "key": "userid"
+            },
+            {
+                "id": "source_ip",
+                "name": "Source IP",
+                "type": "string",
+                "key": "ip"
+            },
+            {
+                "id": "local_ip",
+                "name": "Local IP",
+                "type": "string",
+                "key": "ip"
+            },
+            {
+                "id": "status",
+                "name": "Status",
+                "type": "string"
+            },
+            {
+                "id": "eventscore",
+                "name": "Score",
+                "type": "number",
+                "isComputedField": true
+            }
+        ]
+    },
+    {
+        "name": "User Machines",
+        "id": "usernametohostname",
+        "fields": [
+            {
+                "id": "username",
+                "name": "Username",
+                "type": "string",
+                "key": "userid"
+            },
+            {
+                "id": "hostname",
+                "name": "Hostname",
+                "type": "string"
+            },
+            {
+                "id": "hostnameip",
+                "name": "Hostname IP",
+                "type": "string"
+            },
+            {
+                "id": "logoncount",
+                "name": "Logon Count",
+                "type": "number"
+            },
+            {
+                "id": "lastlogon",
+                "name": "Last Logon",
+                "type": "date"
+            }
+        ]
+    }
+]

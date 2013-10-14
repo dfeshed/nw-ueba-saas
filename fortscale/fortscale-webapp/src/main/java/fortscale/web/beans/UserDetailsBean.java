@@ -3,11 +3,13 @@ package fortscale.web.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import fortscale.domain.ad.AdUserGroup;
+import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 
@@ -29,6 +31,10 @@ public class UserDetailsBean implements Serializable{
 	
 	public String getUsername() {
 		return user.getAdUserPrincipalName();
+	}
+	
+	public Map<String, ApplicationUserDetails> getApplicationUserDetails() {
+		return user.getApplicationUserDetails();
 	}
 
 

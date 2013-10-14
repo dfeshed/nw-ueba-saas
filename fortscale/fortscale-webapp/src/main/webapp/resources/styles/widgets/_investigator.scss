@@ -31,6 +31,16 @@
     color: #aaa;
   }
 
+  .investigator-computed-field{
+    font-weight: bold;
+    background: #AAD6E9;
+
+    .investigator-field-icon{ color: Black; }
+    &:hover td{
+      background: #54afe9;
+    }
+  }
+
   .investigator-fields-update-btn{
     position: absolute;
     right: 11px;
@@ -51,9 +61,12 @@
     }
   }
   .investigator-filter-operator-small{
-    width: 50px;
+    width: 110px;
   }
 
+  .investigator-filter-value{
+    width: 183px;
+  }
   .investigator-display table a{
     color: $textColor;
   }

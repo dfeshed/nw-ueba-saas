@@ -78,68 +78,66 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($
                         return deferred.promise;
                     }
                 }
+            }
 
-                DAL.reports.runSearch(report.query, getSearchParams(report, params))
-                    .then(function(results){
-                        if (report.transform){
-                            var transformedResults = [];
+            DAL.reports.runSearch(report.query, getSearchParams(report, params))
+                .then(function(results){
+                    if (report.transform){
+                        var transformedResults = [];
 
-                            try{
-                                if (report.transform.groupBy){
-                                    var groupMap = {},
-                                        groupByField,
-                                        groupByFieldIndex,
-                                        currentTransformedResult;
+                        try{
+                            if (report.transform.groupBy){
+                                var groupMap = {},
+                                    groupByField,
+                                    groupByFieldIndex,
+                                    currentTransformedResult;
 
-                                    angular.forEach(results, function(result){
-                                        var item;
+                                angular.forEach(results, function(result){
+                                    var item;
 
-                                        groupByField = result[report.transform.groupBy];
-                                        if (groupByField !== undefined){
-                                            groupByFieldIndex = groupMap[groupByField];
+                                    groupByField = result[report.transform.groupBy];
+                                    if (groupByField !== undefined){
+                                        groupByFieldIndex = groupMap[groupByField];
 
-                                            if (groupByFieldIndex === undefined){
-                                                groupByFieldIndex = groupMap[groupByField] = transformedResults.length;
+                                        if (groupByFieldIndex === undefined){
+                                            groupByFieldIndex = groupMap[groupByField] = transformedResults.length;
 
-                                                var newTransformedResult = { items: [] };
-                                                newTransformedResult[report.transform.groupBy] = groupByField;
-                                                transformedResults.push(newTransformedResult)
-                                                currentTransformedResult = transformedResults[groupByFieldIndex];
-                                            }
-                                            else{
-                                                currentTransformedResult = transformedResults[groupByFieldIndex];
-                                            }
-
-                                            item = {};
-                                            for(var property in result){
-                                                if (property !== report.transform.groupBy)
-                                                    item[property] = result[property];
-                                            }
-                                            currentTransformedResult.items.push(item);
+                                            var newTransformedResult = { items: [] };
+                                            newTransformedResult[report.transform.groupBy] = groupByField;
+                                            transformedResults.push(newTransformedResult)
+                                            currentTransformedResult = transformedResults[groupByFieldIndex];
                                         }
-                                    });
-                                }
+                                        else{
+                                            currentTransformedResult = transformedResults[groupByFieldIndex];
+                                        }
 
-                                deferred.resolve(transformedResults);
-                                if (report.cache)
-                                    cache.setItem(cacheItemKey, transformedResults, { expiresIn: getInSeconds(report.cache), hold: true });
+                                        item = {};
+                                        for(var property in result){
+                                            if (property !== report.transform.groupBy)
+                                                item[property] = result[property];
+                                        }
+                                        currentTransformedResult.items.push(item);
+                                    }
+                                });
                             }
-                            catch(error){
-                                deferred.reject({ error: "Can't transform data: " + error.message });
-                            }
-                        }
-                        else{
-                            deferred.resolve(results);
+
+                            deferred.resolve(transformedResults);
                             if (report.cache)
-                                cache.setItem(cacheItemKey, results, { expiresIn: getInSeconds(report.cache), hold: true });
+                                cache.setItem(cacheItemKey, transformedResults, { expiresIn: getInSeconds(report.cache), hold: true });
                         }
-                    }, deferred.reject);
+                        catch(error){
+                            deferred.reject({ error: "Can't transform data: " + error.message });
+                        }
+                    }
+                    else{
+                        deferred.resolve(results);
+                        if (report.cache)
+                            cache.setItem(cacheItemKey, results, { expiresIn: getInSeconds(report.cache), hold: true });
+                    }
+                }, deferred.reject);
 
-                cache.removeItem()
-            }
-            else{
-                deferred.reject("Only searches are supported for reports at the moment.");
-            }
+            cache.removeItem()
+
             return deferred.promise;
         },
         runReports: function(reports, params, forceRefresh){

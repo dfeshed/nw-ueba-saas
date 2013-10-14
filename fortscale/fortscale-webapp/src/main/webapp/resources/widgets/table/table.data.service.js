@@ -18,7 +18,7 @@ angular.module("TableWidget").factory("tableWidgetData", ["utils", "transforms",
                     field: field
                 };
 
-                if (field.transform)
+                if (field.transform && field.transform.method)
                     fieldData.display = transforms[field.transform.method](field.field ? row[field.field] : fieldData.display, field.transform.options);
 
                 if (field.link)

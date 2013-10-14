@@ -48,7 +48,8 @@
                     <input id="remember-me" type="checkbox" ng-model="rememberMe">
                     <label for="remember-me">Remember me</label>
                 </div>
-                <div class="error" ng-show="error">
+                <div class="alert alert-error" ng-show="error">
+                    <i class="icon-remove-sign"></i>
                     {{error}}
                 </div>
                 <a class="btn-glow primary login" ng-click="signIn()">Log in</a>

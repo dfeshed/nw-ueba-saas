@@ -298,7 +298,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
 
                     widget.error = null;
                 }, function(error){
-                    widget.error = "Error retrieving data.";
+                    widget.error = "Error loading data";
                     console.error("Error retrieving data for widget: ", error);
                     widget.loading = false;
                     widget.warning = null;

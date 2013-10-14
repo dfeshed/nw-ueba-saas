@@ -20,10 +20,6 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     spacing: { min: 0, max: 100 },
                     padding: { top: 10, right: 50, left: 50, bottom: 0 },
                     selectable: false,
-                    values: {
-                        min: 0,
-                        max: 100
-                    },
                     barLabels: {
                         height: 30,
                         margin: 11
@@ -228,8 +224,14 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                 element[0].style.width = options.width;
                 element[0].style.height = options.height;
 
+                var domainMinMax = options.values || {};
+                if (domainMinMax.min === undefined)
+                    domainMinMax.min = getMinValue();
+                if (domainMinMax.max === undefined)
+                    domainMinMax.max = getMaxValue();
+
                 var scale = d3.scale.linear()
-                    .domain([options.values.min, options.values.max]);
+                    .domain([domainMinMax.min, domainMinMax.max]);
 
                 var patterns = {};
 

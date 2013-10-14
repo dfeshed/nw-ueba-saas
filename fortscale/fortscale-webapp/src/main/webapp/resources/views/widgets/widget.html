@@ -28,6 +28,7 @@
         <ng-include ng-if="widget.filters" src="'views/widgets/widget_filters.html'"></ng-include>
         <div ng-repeat="view in widget.views"
              class="widget-view {{view.className}}"
+             ng-class="{ 'widget-with-message': widget.noData || widget.error || widget.loading }"
              ng-show="!view.show || view.show.value"
              ng-style="{ height: widget.height }"
             ng-init="initView(view)">
@@ -37,29 +38,36 @@
                      ng-include="'views/controls/' + control.type + '.html'">
                 </div>
             </div>
-            <ng-include src="'widgets/' + view.type + '/' + view.type + '.view.html'" ng-show="!widget.showInitMessage"></ng-include>
-            <div class="widget-no-data" ng-show="false">
-                <i class="icon-warning-sign"></i> No data found. Try to change parameters.
+            <div ng-class="{ hidden: widget.noData || widget.error }">
+                <ng-include src="'widgets/' + view.type + '/' + view.type + '.view.html'" ng-show="!widget.showInitMessage"></ng-include>
             </div>
-            <div class="widget-no-data widget-init-message" ng-show="widget.showInitMessage">
+            <div class="widget-message widget-no-data" ng-show="widget.noData">
+                No data found
+                <div>
+                    <a ng-click="runWidgetReport(widget, true)" class="clickable widget-message-link">Refresh</a>
+                </div>
+            </div>
+            <div class="widget-message widget-init-message" ng-show="widget.showInitMessage">
                 {{widget.initMessage}}
             </div>
             <div class="widget-message widget-loading" ng-if="view.showMessages !== false" ng-show="widget.loading">
-                <span class="widget-message-contents widget-loading-message">
-                    <i class="icon-spinner icon-spin"></i>
-                </span>
+                <span class="widget-loader"></span>
+                <div>Loading data</div>
             </div>
             <div class="widget-message widget-error" ng-if="view.showMessages !== false" ng-show="widget.error">
-                        <span class="widget-message-contents widget-error-message">
-                            <i class="icon-bug"></i> {{widget.error}}
-                            <a ng-click="runWidgetReport(widget, true)">Retry</a>
-                        </span>
+                <span class="widget-error-message">
+                    <img src="images/exclamation.png" class="widget-error-icon" /><br />
+                    {{widget.error}}
+                    <div>
+                        <a ng-click="runWidgetReport(widget, true)" class="clickable widget-message-link">Retry</a>
+                    </div>
+                </span>
             </div>
             <div class="widget-message widget-warning" ng-if="view.showMessages !== false" ng-show="widget.warning && !widget.error">
-                        <span class="widget-message-contents widget-warning-message">
-                            <i class="icon-meh"></i> {{widget.warning}}
-                            <a ng-click="runWidgetReport(widget, true)">Reload</a>
-                        </span>
+                <span class="widget-warning-message">
+                    <i class="icon-meh"></i> {{widget.warning}}
+                    <a ng-click="runWidgetReport(widget, true)">Reload</a>
+                </span>
             </div>
         </div>
     </div>

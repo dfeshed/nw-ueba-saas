@@ -8,7 +8,7 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         },
         {
             name: "Login Analysis",
-            url: "#/d/investigator?entities=logins",
+            url: "#/d/investigator?entities=authenticationscores",
             dashboardId: "auth-investigate",
             icon: "signin"
         },
@@ -42,6 +42,10 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         }
     });
 
+    auth.getCurrentUser().then(function(userData){
+        $scope.loggedInUser = userData;
+    });
+
     $scope.report = {
         error: function(error){
             alert("ERROR: " + (typeof(error) === "string") ? error : error.message);
@@ -57,9 +61,6 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         if ($routeParams.dashboardId){
             if (!$scope.currentMainDashboard || $routeParams.dashboardId !== $scope.currentMainDashboard.dashboardId)
                 $scope.setCurrentMainDashboard($routeParams.dashboardId);
-        }
-        else{
-            window.location.hash = "#/d/" + $scope.navigation[0].dashboardId;
         }
 
         $scope.currentNav = document.location.hash.split("?")[0];
@@ -78,7 +79,7 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
 
     $scope.logout = function(){
         auth.logout();
-        window.location.href = "/fortscale-ui-atlantis/app/signin.html";
+        window.location.href = "/fortscale-webapp/signin.html";
     };
 
     $scope.searchSettings = {

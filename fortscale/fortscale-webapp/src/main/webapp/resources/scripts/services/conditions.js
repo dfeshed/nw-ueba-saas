@@ -47,6 +47,7 @@ angular.module("Conditions", ["Format"]).factory("conditions", ["format", functi
     };
 
     var operators = [
+        { name: "contains", display: "Contains", requiresValue: true, types: ["string"] },
         { name: "equals", display: "=", requiresValue: true, types: ["string", "number"] },
         { name: "notEquals", display: "!=", requiresValue: true, types: ["string", "number"] },
         { name: "greaterThan", display: ">", requiresValue: true, types: ["number"] },
@@ -55,8 +56,26 @@ angular.module("Conditions", ["Format"]).factory("conditions", ["format", functi
         { name: "lesserThanOrEqual", display: "<=", requiresValue: true, types: ["number"] },
         { name: "included", display: "IN", requiresValue: true, types: ["number"] },
         { name: "hasValue", display: "Has value", sql: "IS NOT NULL", requiresValue: false, types: ["string", "number"] },
-        { name: "hasNoValue", display: "Has no value", sql: "IS NULL", requiresValue: false, types: ["string", "number"] }
+        { name: "hasNoValue", display: "Has no value", sql: "IS NULL", requiresValue: false, types: ["string", "number"] },
+        { name: "startsWith", display: "Starts With", requiresValue: true, types: ["string"] },
+        { name: "endsWith", display: "Ends With", requiresValue: true, types: ["string"] },
+        { name: "regexp", display: "RegExp", requiresValue: true, types: ["string"] }
     ];
+
+    var operatorsSqlValue = {
+        contains: function(value){
+            return "LIKE '%" + value + "%'";
+        },
+        endsWith: function(value){
+            return "LIKE '%" + value + "'";
+        },
+        regexp: function(value){
+            return "REGEXP '" + value + "'";
+        },
+        startsWith: function(value){
+            return "LIKE '" + value + "%'";
+        }
+    };
 
     var operatorsSqlIndex = {};
     angular.forEach(operators, function(operator){
@@ -89,10 +108,15 @@ angular.module("Conditions", ["Format"]).factory("conditions", ["format", functi
             var sql = [];
             angular.forEach(conditions, function(condition){
                 var conditionValue = condition.value;
-                if (typeof(conditionValue) === "string")
-                    conditionValue = "\"" + conditionValue + "\"";
+                var getValueFunction = operatorsSqlValue[condition.operator];
+                if (getValueFunction)
+                    sql.push([condition.field, getValueFunction(conditionValue)].join(" "));
+                else{
+                    if (typeof(conditionValue) === "string")
+                        conditionValue = "\"" + conditionValue + "\"";
 
-                sql.push([condition.field, operatorsSqlIndex[condition.operator], conditionValue].join(" "));
+                    sql.push([condition.field, operatorsSqlIndex[condition.operator], conditionValue].join(" "));
+                }
             });
 
             return sql.join(" AND ");

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,8 +50,9 @@ public class MongoUserDetailsService implements UserDetailsService{
 		Assert.hasText(lastName);
 		
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-		AnalystAuth analystAuth = new AnalystAuth(username, password, authorities);
+		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+		Md5PasswordEncoder encoder = new Md5PasswordEncoder();
+		AnalystAuth analystAuth = new AnalystAuth(username, encoder.encodePassword(password, null), authorities);
 		analystAuthRepository.save(analystAuth);
 		
 		Analyst analyst = new Analyst(username, new EmailAddress(emailAddress), firstName, lastName);

@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "version", "utils", function ($q, $http, $resource, version, utils) {
+angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "version", "utils", "conditions", function ($q, $http, $resource, version, utils, conditions) {
     var apiResource = $resource("/fortscale-webapp/api/:entity/:id/:method", {
         id: "@id"
     });
@@ -8,6 +8,29 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
         subEntityName: "@subEntityName",
         subEntityId: "@subEntityId"
     });
+
+    function queryToSql(query){
+        var sql = ["SELECT "];
+
+        var tables = [];
+        angular.forEach(query.entities, function(entity){
+            tables.push(entity.id);
+        });
+
+        sql.push(query.fields && query.fields.length ? query.fields.join(", ") : "*");
+        sql.push(" FROM ");
+        sql.push(tables.join(", "));
+        if (query.conditions && query.conditions.length)
+            sql.push(" WHERE ", conditions.conditionsToSql(query.conditions));
+
+        if (query.sort)
+            sql.push(" ORDER BY " + query.sort.field + (query.sort.direction === 1 ? " ASC" : " DESC"));
+
+        if (query.paging)
+            sql.push(" LIMIT " + query.paging.pageSize);
+
+        return sql.join(" ");
+    }
 
     var methods = {
         getDashboard: function (dashboardName) {
@@ -41,8 +64,14 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
             return deferred.promise;
         },
         queryServer: function (query, params, options) {
-            var deferred = $q.defer(),
-                resource = query.endpoint.subEntityName ? apiWithSubEntityResource : apiResource,
+            var deferred = $q.defer();
+
+            if (query.endpoint && query.endpoint.sql){
+                query.endpoint.entity = "investigate";
+                query.endpoint.query = utils.strings.parseValue(query.endpoint.sql, {}, params);
+            }
+
+            var resource = query.endpoint.subEntityName ? apiWithSubEntityResource : apiResource,
                 resourceData = angular.extend({}, options, params, query.endpoint);
 
             for(var property in resourceData){
@@ -61,6 +90,16 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
             });
 
             return deferred.promise;
+        },
+        sqlQuery: function(sqlQuery, params, options){
+            var query = typeof(sqlQuery) === "string" ? sqlQuery : queryToSql(sqlQuery);
+
+            return this.queryServer({
+                endpoint: {
+                    entity: "investigate",
+                    query: query
+                }
+            });
         }
     };
 

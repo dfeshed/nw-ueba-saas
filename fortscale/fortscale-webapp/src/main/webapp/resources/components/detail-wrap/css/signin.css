@@ -26,6 +26,10 @@
 	border-radius: 5px;
 	background: rgba(255, 255, 255, 0.65);
 }
+
+.login-wrapper .alert-error{
+    border-color: #A28D8D;
+}
 .login-wrapper .box .content-wrap{
 	width: 82%;
 	margin: 0 auto;

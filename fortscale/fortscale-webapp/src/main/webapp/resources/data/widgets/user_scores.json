@@ -62,7 +62,11 @@
                     "selectable": true,
                     "selectLabels": false,
                     "showSelectionBar": false,
-                    "tooltip": "{{seriesLabel}}'s {{barLabel}} score: {{barValue}}"
+                    "tooltip": "{{seriesLabel}}'s {{barLabel}} score: {{barValue}}",
+                    "values": {
+                        "min": 0,
+                        "max": 100
+                    }
                 },
                 "series": [
                     {

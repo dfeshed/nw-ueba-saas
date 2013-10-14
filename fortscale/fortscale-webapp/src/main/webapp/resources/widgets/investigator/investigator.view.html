@@ -17,9 +17,22 @@
                 <h4 class="clickable" ng-click="sections.entity.collapsed = !sections.entity.collapsed">
                     <i class="icon-{{sections.entity.collapsed && 'plus' || 'minus'}} section-collapse-btn"
                        title="{{sections.entity.collapsed && 'Expand' || 'Collapse'}}"></i>
-                    Entities
+                    Entity
                 </h4>
                 <div class="investigator-menu-section-contents" ng-hide="sections.entity.collapsed">
+                    <select ng-model="currentEntity"
+                            style="height: 29px; width: 100%;"
+                            ng-options="entity as entity.name for entity in entities"
+                            ng-change="selectEntity(true)"></select>
+                </div>
+            </section>
+            <section ng-show="allowMultipleEntities">
+                <h4 class="clickable" ng-click="sections.entities.collapsed = !sections.entities.collapsed">
+                    <i class="icon-{{sections.entities.collapsed && 'plus' || 'minus'}} section-collapse-btn"
+                       title="{{sections.entities.collapsed && 'Expand' || 'Collapse'}}"></i>
+                    Entities
+                </h4>
+                <div class="investigator-menu-section-contents" ng-hide="sections.entities.collapsed">
                     <table class="table">
                         <thead>
                             <tr>
@@ -64,7 +77,7 @@
                         <input type="number" min="0" ng-model="paging.pageSize" ng-change="onFieldChange()" />
                     </label>
                     <div ng-repeat="entity in config.entities">
-                        <h5>{{entity.name}}</h5>
+                        <h5 ng-if="allowMultipleEntities">{{entity.name}}</h5>
                         <table class="investigator-fields table table-hover widget-table">
                             <thead>
                                 <tr>
@@ -74,9 +87,15 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="field in entity.fields" ng-class="{ 'investigator-computed-field': field.isComputedField }">
-                                    <td><i class="icon-{{fieldTypeIcons[field.type]}} investigator-field-icon"></i></td>
+                                    <td>
+                                        <i class="icon-gears investigator-field-icon" ng-show="field.isComputedField" title="Computed Field"></i>
+                                        <i class="icon-{{fieldTypeIcons[field.type]}} investigator-field-icon" ng-show="!field.isComputedField" title="{{field.type}}"></i>
+                                    </td>
                                     <td class="investigator-field-name table-large-cell">
                                         <span style="float: right">
+                                            <a class="clickable"
+                                               ng-show="field.isComputedField"
+                                               ng-click="fieldTypes.table.removeComputedField(entity, $index)">Remove</a>
                                              <input type="checkbox" ng-model="field.enabled" ng-change="onFieldChange()" title="{{field.enabled && 'Disable field' || 'Enable field' }}" />
                                             <a class="clickable" ng-click="addFilter(field)" title="Add filter"><i class="icon-filter"></i></a>
                                         </span>
@@ -89,7 +108,7 @@
                                                             ng-options="operator.name as operator.display for operator in operatorsForType[field.type]"
                                                             ng-class="{ 'investigator-filter-operator-small': operatorsIndex[filter.operator].requiresValue }"></select>
                                                     <input type="text"
-                                                           class="search"
+                                                           class="search investigator-filter-value"
                                                            ng-model="filter.value"
                                                            ng-change="onFieldChange()"
                                                            ng-show="operatorsIndex[filter.operator].requiresValue" />
@@ -106,7 +125,7 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <tfoot>
+                            <tfoot ng-if="entity.computedFields.length">
                                 <tr>
                                     <td></td>
                                     <td>

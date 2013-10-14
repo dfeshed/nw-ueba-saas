@@ -5,7 +5,7 @@
         {
             "type": "link",
             "text": "View all",
-            "href": "#/d/investigator?entities=logins&username={{@entityId}}"
+            "href": "#/d/investigator?entities=authenticationscores&userid={{@entityId}}"
         }
     ],
     "views": [
@@ -17,13 +17,13 @@
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
                         "sortBy": "sourceIp",
-                        "link": "#/d/investigator?entities=logins&username={{@entityId}}&sourceIp={{sourceIp}}"
+                        "link": "#/d/investigator?entities=authenticationscores&userid={{@entityId}}&sourceip={{sourceIp}}"
                     },
                     {
                         "name": "Destination Hostname",
                         "value": "{{destinationHostname}}",
                         "sortBy": "destinationHostname",
-                        "link": "#/d/investigator?entities=logins&username={{@entityId}}&destinationHostname={{destinationHostname}}"
+                        "link": "#/d/investigator?entities=authenticationscores&userid={{@entityId}}&targetid={{destinationHostname}}"
                     },
                     {
                         "name": "Time",

@@ -22,6 +22,9 @@ h2, h3, h4, h5 {
 .main-section {
   position: absolute; }
 
+a {
+  cursor: pointer; }
+
 .menu a {
   display: block;
   padding: 10px;
@@ -225,8 +228,6 @@ h2, h3, h4, h5 {
   opacity: 1; }
   .widget:last-child {
     margin-bottom: 0; }
-  .widget.widget-loading {
-    opacity: .5; }
   .widget.no-margins {
     margin-bottom: 0; }
     .widget.no-margins .widget-contents {
@@ -391,15 +392,11 @@ h2, h3, h4, h5 {
       color: #333;
       cursor: not-allowed; }
 
-.widget-no-data {
-  position: absolute;
-  top: 50%;
-  height: 30px;
-  text-align: center;
-  width: 100%;
-  font-size: 10pt;
-  font-weight: bold;
-  color: #999; }
+.widget-with-message {
+  min-height: 150px; }
+
+.widget-message-link {
+  font-size: 14px; }
 
 .widget-init-message {
   padding: 15px 0 30px 0;
@@ -407,15 +404,23 @@ h2, h3, h4, h5 {
   position: static; }
 
 .widget-message {
+  font-family: 'Roboto Condensed', Sans-Serif;
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 0;
-  right: 0;
-  bottom: 0;
-  text-align: center; }
+  height: 30px;
+  text-align: center;
+  width: 100%;
+  font-size: 18px;
+  color: #767676;
+  line-height: 25px;
+  margin-top: -20px; }
+  .widget-message.widget-no-data {
+    margin-top: -13px; }
+  .widget-message.widget-error {
+    margin-top: -34px; }
   .widget-message.widget-loading {
-    cursor: wait;
-    color: Black; }
+    cursor: wait; }
     .widget-message.widget-loading .widget-message-contents {
       display: block;
       font-weight: bold;
@@ -442,13 +447,35 @@ h2, h3, h4, h5 {
     .widget-message .widget-message-contents a {
       cursor: pointer;
       text-decoration: underline; }
-  .widget-message .widget-warning-message {
-    background: #ffd362; }
-  .widget-message .widget-error-message {
-    background: #cc0000;
-    color: White; }
-    .widget-message .widget-error-message a {
-      color: white; }
+
+.widget-error-icon {
+  width: 26px;
+  height: 26px;
+  margin-bottom: 10px; }
+
+@-webkit-keyframes rotating {
+  from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg); }
+
+  to {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+.widget-loader {
+  display: inline-block;
+  width: 37px;
+  height: 37px;
+  -webkit-animation: rotating 2s linear infinite;
+  -moz-animation: rotating 2s linear infinite;
+  animation: rotating 2s linear infinite;
+  background: url(../images/loader.png); }
 
 .popup-overlay {
   position: fixed;
@@ -1158,6 +1185,13 @@ body .ui-tooltip {
     margin: 0; }
 .investigator .investigator-field-icon {
   color: #aaa; }
+.investigator .investigator-computed-field {
+  font-weight: bold;
+  background: #AAD6E9; }
+  .investigator .investigator-computed-field .investigator-field-icon {
+    color: Black; }
+  .investigator .investigator-computed-field:hover td {
+    background: #54afe9; }
 .investigator .investigator-fields-update-btn {
   position: absolute;
   right: 11px;
@@ -1171,7 +1205,9 @@ body .ui-tooltip {
 .investigator .investigator-field-filters-list li {
   margin-bottom: 5px; }
 .investigator .investigator-filter-operator-small {
-  width: 50px; }
+  width: 110px; }
+.investigator .investigator-filter-value {
+  width: 183px; }
 .investigator .investigator-display table a {
   color: #333333; }
 .investigator .section-collapse-btn {

@@ -11,6 +11,8 @@
         });
     }
 
+    var useServerEntities = true;
+
     var methods = {
         dashboards: {
             getDashboardsList: function(){
@@ -24,7 +26,7 @@
             getEntities: function(){
                 var deferred = $q.defer();
 
-                $http.get("data/entities.json?v=" + version)
+                $http.get("data/" + (useServerEntities ? "server_" : "") + "entities.json?v=" + version)
                     .success(deferred.resolve)
                     .error(deferred.reject);
 
