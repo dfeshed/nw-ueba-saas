@@ -18,8 +18,8 @@ public class ActionRateImpl  {
 	
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.0" ;
 	private static final String OUTPUT_BUCKET_DATE_FORMAT = "yyyy/MM/dd" ;
-	private static final String OUTPUT_TIME_KEY_NAME  = "Date" ;
-	private static final String OUTPUT_COUNT_KEY_NAME = "EventsCount" ;
+	public static final String OUTPUT_TIME_KEY_NAME  = "Date" ;
+	public static final String OUTPUT_COUNT_KEY_NAME = "EventsCount" ;
 
 	private static final Logger logger = Logger.getLogger(ActionRateImpl.class);
 
