@@ -45,12 +45,25 @@ public class ApiAnalystController {
 	@RequestMapping(value="signup", method=RequestMethod.POST)
 	@ResponseBody
 	@LogException
-	public void signup(@RequestParam(required=true) String username,
+	public String signup(@RequestParam(required=true) String username,
 			@RequestParam(required=true) String password,
 			@RequestParam(required=true) String firstName,
 			@RequestParam(required=true) String lastName,
 			Model model){
-		mongoUserDetailsService.create(username, password, username, firstName, lastName);
+		String ret = "";
+		if(mongoUserDetailsService.userExists(username)) {
+			ret = "User already exist.";
+		} else {
+			try {
+				mongoUserDetailsService.create(username, password, username, firstName, lastName);
+			} catch (Exception e) {
+				//TODO: log
+				ret = e.getMessage();
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 	@RequestMapping(value="{id}/details", method=RequestMethod.GET)

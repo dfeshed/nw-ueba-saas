@@ -88,6 +88,6 @@ public class MongoUserDetailsService implements UserDetailsService{
      * Check if a user with the supplied login name exists in the system.
      */
     public boolean userExists(String username) {
-    	throw new UnsupportedOperationException();
+    	return analystAuthRepository.findByUsername(username) != null ? true : false;
     }
 }
