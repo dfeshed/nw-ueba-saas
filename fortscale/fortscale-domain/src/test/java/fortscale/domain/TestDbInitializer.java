@@ -85,6 +85,7 @@ public class TestDbInitializer {
 
 	public void init() throws IOException, InterruptedException {
 		if(!isInit) {
+			isInit = true;
 			copyCsvToHadoop(USER_TO_HOST_NAME_INPUT_FILE_NAME, userMachineHadoopInputFileName);
 			userMachineDAO.setTableName(String.format("%stest", userMachineDAO.getTableName()));
 			userMachineDAO.createTable(userMachineHadoopInputFileName);
