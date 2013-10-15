@@ -19,6 +19,8 @@ import fortscale.utils.impala.ImpalaQuery;
 
 public abstract class AccessDAO<T>  extends ImpalaDAO<T>{
 	
+	private Date lastRunDate = null;
+	
 	public abstract RowMapper<T> getMapper();
 	
 	public abstract String getTimestampFieldName();
@@ -127,15 +129,20 @@ public abstract class AccessDAO<T>  extends ImpalaDAO<T>{
 
 
 	public Date getLastRunDate(){
-		Calendar tmp = Calendar.getInstance();
-		tmp.add(Calendar.DAY_OF_MONTH,-1);
+		if(lastRunDate == null) {
+			Calendar tmp = Calendar.getInstance();
+			tmp.add(Calendar.DAY_OF_MONTH,-1);
+			lastRunDate = new Date(tmp.getTimeInMillis());
+		}
 		String query = String.format("select max(%s) from %s", getTimestampFieldName(), getTableName());
-		String queryWithHint = String.format("%s where %s > %d", query, getTimestampFieldName(), tmp.getTimeInMillis()/1000);
+		String queryWithHint = String.format("%s where %s >= %d", query, getTimestampFieldName(), lastRunDate.getTime()/1000);
 		Long lastRun = impalaJdbcTemplate.queryForObject(queryWithHint, Long.class);
 		if(lastRun == null) {
 			lastRun = impalaJdbcTemplate.queryForObject(query, Long.class);
 		}
-		return parseTimestampDate(lastRun);
+		Date retDate = parseTimestampDate(lastRun);
+		lastRunDate = retDate;
+		return retDate;
 	}
 
 

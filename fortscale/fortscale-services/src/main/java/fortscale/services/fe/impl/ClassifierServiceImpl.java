@@ -352,7 +352,6 @@ public class ClassifierServiceImpl implements ClassifierService {
 			return Collections.emptyList();
 		}
 		ApplicationUserDetails applicationUserDetails = userService.getApplicationUserDetails(user, UserApplication.vpn);
-		userService.getApplicationUserDetails(user, UserApplication.vpn).getUserName();
 		if(applicationUserDetails == null || applicationUserDetails.getUserName() == null) {
 			return Collections.emptyList();
 		}

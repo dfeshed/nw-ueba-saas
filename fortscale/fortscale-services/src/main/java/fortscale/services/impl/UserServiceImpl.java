@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	
 	private static final String SEARCH_FIELD_PREFIX = "##";
+	private static final int MAX_NUM_OF_HISTORY_DAYS = 21;
 	
 	@Autowired
 	private AdUserRepository adUserRepository;
@@ -179,9 +180,11 @@ public class UserServiceImpl implements UserService{
 		
 		List<IUserScore> ret = new ArrayList<IUserScore>();
 		for(ClassifierScore classifierScore: user.getScores().values()){
-			UserScore score = new UserScore(classifierScore.getClassifierId(), classifierService.getClassifier(classifierScore.getClassifierId()).getDisplayName(),
-					(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
-			ret.add(score);
+			if(isOnSameDay(new Date(), classifierScore.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)) {
+				UserScore score = new UserScore(classifierScore.getClassifierId(), classifierService.getClassifier(classifierScore.getClassifierId()).getDisplayName(),
+						(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
+				ret.add(score);
+			}
 		}
 		
 //		Pageable pageable = new PageRequest(0, 1, Direction.DESC, AdUserFeaturesExtraction.timestampField);
@@ -201,14 +204,17 @@ public class UserServiceImpl implements UserService{
 		User user = userRepository.findOne(uid);
 		List<IUserScoreHistoryElement> ret = new ArrayList<IUserScoreHistoryElement>();
 		ClassifierScore classifierScore = user.getScore(classifierId);
-		if(classifierScore != null){
+		Date currentDate = new Date();
+		if(classifierScore != null && isOnSameDay(currentDate, classifierScore.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)){
 			
 			if(!classifierScore.getPrevScores().isEmpty()){
 				ScoreInfo scoreInfo = null;
 				for(int i = classifierScore.getPrevScores().size() -1; i >= 0; i--){
 					scoreInfo = classifierScore.getPrevScores().get(i);
-					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
-					ret.add(userScoreHistoryElement);
+					if(isOnSameDay(currentDate, scoreInfo.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)) {
+						UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
+						ret.add(userScoreHistoryElement);
+					}
 				}
 				if(isOnSameDay(classifierScore.getTimestamp(), scoreInfo.getTimestamp())){
 					if(classifierScore.getScore() >= scoreInfo.getScore()){
@@ -336,6 +342,10 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private boolean isOnSameDay(Date date1, Date date2){
+		return isOnSameDay(date1, date2, 0);
+	}
+	
+	private boolean isOnSameDay(Date date1, Date date2, int dayThreshold){
 		Calendar tmp = Calendar.getInstance();
 		tmp.setTime(date1);
 		Calendar tmp1 = Calendar.getInstance();
@@ -343,7 +353,7 @@ public class UserServiceImpl implements UserService{
 		int day1 = tmp.get(Calendar.DAY_OF_YEAR);
 		int day2 = tmp1.get(Calendar.DAY_OF_YEAR);
 		
-		return (day1 == day2);
+		return (Math.abs(day1 - day2) < dayThreshold);
 	}
 
 	@Override
