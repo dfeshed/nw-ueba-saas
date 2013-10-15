@@ -2,7 +2,6 @@ package fortscale.web.rest;
 
 import java.util.List;
 
-import org.apache.derby.impl.sql.compile.GetCurrentConnectionNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -30,6 +29,8 @@ import fortscale.web.beans.DataListWrapperBean;
 @Controller
 @RequestMapping("/api/analyst/**")
 public class ApiAnalystController {
+	private static final String ME = "me";
+	
 	@Autowired
 	private MongoUserDetailsService mongoUserDetailsService;
 	@Autowired
@@ -66,6 +67,32 @@ public class ApiAnalystController {
 		return ret;
 	}
 	
+	@RequestMapping(value="update", method=RequestMethod.POST)
+	@ResponseBody
+	@LogException
+	public String update(@RequestParam(required=true) String password,
+			@RequestParam(required=false) String username,
+			@RequestParam(required=false) String firstName,
+			@RequestParam(required=false) String lastName,
+			@RequestParam(required=false) String newPassword,
+			Model model){
+		String ret = "";
+		AnalystAuth analystAuth = getThisAnalystAuth();
+		if(!analystAuth.getPassword().equals(mongoUserDetailsService.encodePassword(password))) {
+			ret = "Wrong password";
+		} else {
+			try {
+				mongoUserDetailsService.updateUser(analystAuth.getUsername(), username, newPassword, username, firstName, lastName);
+			} catch (Exception e) {
+				//TODO: log
+				ret = e.getMessage();
+			}
+			
+		}
+		
+		return ret;
+	}
+	
 	@RequestMapping(value="{id}/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -80,9 +107,13 @@ public class ApiAnalystController {
 		return null;
 	}
 	
+	private AnalystAuth getThisAnalystAuth() {
+		return getAnalystAuth(ME);
+	}
+	
 	private AnalystAuth getAnalystAuth(String id) {
 		AnalystAuth ret = null;
-		if(id.equalsIgnoreCase("me")) {
+		if(id.equalsIgnoreCase(ME)) {
 			if(SecurityContextHolder.getContext().getAuthentication() != null) {
 				ret = (AnalystAuth) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			}

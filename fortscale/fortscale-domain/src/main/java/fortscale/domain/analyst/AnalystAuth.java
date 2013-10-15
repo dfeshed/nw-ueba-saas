@@ -31,12 +31,12 @@ public class AnalystAuth extends AbstractDocument implements UserDetails, Creden
     //~ Instance fields ================================================================================================
     private String password;
     @Indexed(unique=true)
-    private final String username;
-    private final Set<GrantedAuthority> authorities;
-    private final boolean accountNonExpired;
-    private final boolean accountNonLocked;
-    private final boolean credentialsNonExpired;
-    private final boolean enabled;
+    private String username;
+    private Set<GrantedAuthority> authorities;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
+    private boolean enabled;
 
     //~ Constructors ===================================================================================================
 
@@ -116,8 +116,38 @@ public class AnalystAuth extends AbstractDocument implements UserDetails, Creden
     public boolean isCredentialsNonExpired() {
         return credentialsNonExpired;
     }
+    
+    
 
-    public void eraseCredentials() {
+    public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setAuthorities(Set<GrantedAuthority> authorities) {
+		this.authorities = authorities;
+	}
+
+	public void setAccountNonExpired(boolean accountNonExpired) {
+		this.accountNonExpired = accountNonExpired;
+	}
+
+	public void setAccountNonLocked(boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
+	}
+
+	public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+		this.credentialsNonExpired = credentialsNonExpired;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public void eraseCredentials() {
         password = null;
     }
 

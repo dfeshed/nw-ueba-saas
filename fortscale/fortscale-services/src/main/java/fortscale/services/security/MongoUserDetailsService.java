@@ -51,8 +51,7 @@ public class MongoUserDetailsService implements UserDetailsService{
 		
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-		Md5PasswordEncoder encoder = new Md5PasswordEncoder();
-		AnalystAuth analystAuth = new AnalystAuth(username, encoder.encodePassword(password, null), authorities);
+		AnalystAuth analystAuth = new AnalystAuth(username, encodePassword(password), authorities);
 		analystAuthRepository.save(analystAuth);
 		
 		Analyst analyst = new Analyst(username, new EmailAddress(emailAddress), firstName, lastName);
@@ -62,9 +61,43 @@ public class MongoUserDetailsService implements UserDetailsService{
 	/**
      * Update the specified user.
      */
-    public void updateUser(UserDetails user) {
-    	throw new UnsupportedOperationException();
+    public void updateUser(String oldUsername, String newUsername, String newPassword, String newEmailAddress, String newFirstName, String newLastName) {
+    	AnalystAuth analystAuth = analystAuthRepository.findByUsername(oldUsername);
+    	if(newUsername != null || newPassword != null) {
+	    	if(newUsername != null) {
+	    		analystAuth.setUsername(newUsername);
+	    	}
+	    	if(newPassword != null) {
+	    		analystAuth.setPassword(encodePassword(newPassword));
+	    	}
+	    	analystAuthRepository.save(analystAuth);
+    	}
+    	if(newUsername != null || newEmailAddress != null || newFirstName != null || newLastName != null) {
+    		Analyst analyst = analystRepository.findByUserName(oldUsername);
+    		if(newUsername != null) {
+    			analyst.setUserName(newUsername);
+	    	}
+	    	if(newEmailAddress != null) {
+	    		analyst.setEmailAddress(new EmailAddress(newEmailAddress));
+	    	}
+	    	if(newFirstName != null) {
+	    		analyst.setFirstName(newFirstName);
+	    	}
+	    	if(newLastName != null) {
+	    		analyst.setLastName(newLastName);
+	    	}
+	    	analystRepository.save(analyst);
+    	}
     }
+    
+    public String encodePassword(String password) {
+    	String retString = null;
+		if(password != null) {
+			Md5PasswordEncoder encoder = new Md5PasswordEncoder();
+			retString = encoder.encodePassword(password, null);
+		}
+		return retString;
+	}
 
     /**
      * Remove the user with the given login name from the system.
