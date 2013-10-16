@@ -3,7 +3,7 @@
 angular.module('Fortscale')
     .directive('daterange', function ($parse, transforms) {
         return {
-            template: "<input type='text' />",
+            template: "<input type='text' class='daterange-input' />",
             restrict: 'E',
             require: "?ngModel",
             link: function postLink(scope, element, attrs, ngModel) {
@@ -19,9 +19,22 @@ angular.module('Fortscale')
                     if (init || lockUpdate)
                         return;
 
+                    var timeStart, timeEnd;
+                    if (value){
+                        if (angular.isObject(value)){
+                            timeStart = value.timeStart;
+                            timeEnd = value.timeEnd || value.timeStart;
+                        }
+                        else{
+                            timeStart = transforms.getDate(value);
+                            if (timeStart.isValid)
+                                timeEnd = timeStart = timeStart.toDate();
+                        }
+                    }
+
                     params = {
-                        timeStart: transforms.date(value.timeStart, { format: "MM/DD/YYYY" }),
-                        timeEnd: transforms.date(value.timeEnd, { format: "MM/DD/YYYY" })
+                        timeStart: transforms.date(timeStart || new Date(), { format: "MM/DD/YYYY" }),
+                        timeEnd: transforms.date(timeEnd || new Date(), { format: "MM/DD/YYYY" })
                     };
 
                     input.value = params.timeStart === params.timeEnd ? params.timeStart : [params.timeStart, params.timeEnd].join(" - ");

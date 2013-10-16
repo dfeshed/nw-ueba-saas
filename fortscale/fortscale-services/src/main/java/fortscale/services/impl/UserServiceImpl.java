@@ -200,7 +200,7 @@ public class UserServiceImpl implements UserService{
 		return ret;
 	}
 	
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId){
+	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit){
 		User user = userRepository.findOne(uid);
 		List<IUserScoreHistoryElement> ret = new ArrayList<IUserScoreHistoryElement>();
 		ClassifierScore classifierScore = user.getScore(classifierId);
@@ -242,7 +242,14 @@ public class UserServiceImpl implements UserService{
 //			UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(ufe.getTimestamp(), ufe.getScore(), avgScore);
 //			ret.add(userScoreHistoryElement);
 //		}
-		return ret;
+		if(offset >ret.size()) {
+			return Collections.emptyList();
+		}
+		int toIndex = offset + limit;
+		if(toIndex > ret.size()) {
+			toIndex = ret.size();
+		}
+		return ret.subList(offset, toIndex);
 	}
 
 	@Override
@@ -353,7 +360,7 @@ public class UserServiceImpl implements UserService{
 		int day1 = tmp.get(Calendar.DAY_OF_YEAR);
 		int day2 = tmp1.get(Calendar.DAY_OF_YEAR);
 		
-		return (Math.abs(day1 - day2) < dayThreshold);
+		return (Math.abs(day1 - day2) <= dayThreshold);
 	}
 
 	@Override

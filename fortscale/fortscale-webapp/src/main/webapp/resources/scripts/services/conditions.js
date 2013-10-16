@@ -1,4 +1,4 @@
-angular.module("Conditions", ["Format"]).factory("conditions", ["format", function(format){
+angular.module("Conditions", ["Format", "Transforms"]).factory("conditions", ["format", "transforms", function(format, transforms){
 
     var validations = {
         contains: function(val1, val2){
@@ -59,12 +59,21 @@ angular.module("Conditions", ["Format"]).factory("conditions", ["format", functi
         { name: "hasNoValue", display: "Has no value", sql: "IS NULL", requiresValue: false, types: ["string", "number"] },
         { name: "startsWith", display: "Starts With", requiresValue: true, types: ["string"] },
         { name: "endsWith", display: "Ends With", requiresValue: true, types: ["string"] },
-        { name: "regexp", display: "RegExp", requiresValue: true, types: ["string"] }
+        { name: "regexp", display: "RegExp", requiresValue: true, types: ["string"] },
+        { name: "dateRange", display: "Dates", requiresValue: true, types: ["date"] }
     ];
 
     var operatorsSqlValue = {
         contains: function(value){
             return "LIKE '%" + value + "%'";
+        },
+        dateRange: function(value, fieldName){
+            var dateStart = transforms.getDate(angular.isObject(value) ? value.timeStart : value),
+                dateEnd = transforms.getDate(angular.isObject(value) ? value.timeEnd : value);
+
+            dateEnd.add("days", 1);
+
+            return [">", "'" + dateStart.format("YYYY-MM-DD") + "'", "AND", fieldName, "<", "'" + dateEnd.format("YYYY-MM-DD") + "'"].join(" ");
         },
         endsWith: function(value){
             return "LIKE '%" + value + "'";
@@ -110,7 +119,7 @@ angular.module("Conditions", ["Format"]).factory("conditions", ["format", functi
                 var conditionValue = condition.value;
                 var getValueFunction = operatorsSqlValue[condition.operator];
                 if (getValueFunction)
-                    sql.push([condition.field, getValueFunction(conditionValue)].join(" "));
+                    sql.push([condition.field, getValueFunction(conditionValue, condition.field)].join(" "));
                 else{
                     if (typeof(conditionValue) === "string")
                         conditionValue = "\"" + conditionValue + "\"";

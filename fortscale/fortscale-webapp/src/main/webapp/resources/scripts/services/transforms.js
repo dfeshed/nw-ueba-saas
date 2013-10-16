@@ -27,8 +27,14 @@
             return newDate.format(options.format);
         },
         getDate: function(date){
+            if (angular.isDate(date))
+                return moment(date);
+
             if (typeof(date) === "number")
                 return moment(date);
+
+            if (/^\d+$/.test(date))
+                return moment(parseInt(date));
 
             var newDate = moment(),
                 subtractMatch = date.match(/^-(\d+)(\w+)$/);

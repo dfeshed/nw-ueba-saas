@@ -134,9 +134,12 @@ public class ApiUserController {
 	@RequestMapping(value="{uid}/classifier/{classifierId}/scorehistory", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId, Model model){
+	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId,
+			@RequestParam(defaultValue="0") Integer offset,
+			@RequestParam(defaultValue="7") Integer limit,
+			Model model){
 		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
-		List<IUserScoreHistoryElement> userScores = userService.getUserScoresHistory(uid, classifierId);
+		List<IUserScoreHistoryElement> userScores = userService.getUserScoresHistory(uid, classifierId, offset, limit);
 		ret.setData(userScores);
 		ret.setTotal(userScores.size());
 		return ret;
@@ -145,7 +148,8 @@ public class ApiUserController {
 	@RequestMapping(value="{uid}/classifier/{classifierId}/attributes", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<FeatureBean>> userClassifierAttributes(@PathVariable String uid, @PathVariable String classifierId, @RequestParam(required=true) String date, Model model){
+	public DataBean<List<FeatureBean>> userClassifierAttributes(@PathVariable String uid, @PathVariable String classifierId,
+			@RequestParam(required=true) String date, Model model){
 		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
 		List<IFeature> attrs = userService.getUserAttributesScores(uid, classifierId, new Date(Long.parseLong(date)));
 		List<FeatureBean> features = new ArrayList<FeatureBean>();

@@ -12,14 +12,20 @@
 	<http pattern="/resources/**" security="none" />
 	
 	<beans:bean id="noRedirectAuthenticationSuccessHandler" class="fortscale.web.NoRedirectAuthenticationSuccessHandler"/>
+	<beans:bean id="authenticationFailureHandler" class="fortscale.web.AuthenticationFailureHandlerImpl"/>
 
 	<http auto-config="true" use-expressions="true">
 <!-- 		<intercept-url pattern="/api/**" access="permitAll" /> -->
 <!-- 		<intercept-url pattern="/" access="permitAll" /> -->
 <!-- 		<intercept-url pattern="/index.html" access="permitAll" /> -->
-		<intercept-url pattern="/api/analyst/signup" access="permitAll" />
+		<intercept-url pattern="/api/analyst/login" access="permitAll" />
+		<intercept-url pattern="/api/analyst/changePassword" access="permitAll" />
+		<intercept-url pattern="/api/user/updateAuthScore" access="permitAll" />
+		<intercept-url pattern="/api/user/updateVpnScore" access="permitAll" />
+		<intercept-url pattern="/api/aduser/runfe" access="permitAll" />
+		<intercept-url pattern="/api/user/updateAdInfo" access="permitAll" />
 		<intercept-url pattern="/404.html" access="permitAll" />
-		<intercept-url pattern="/signup.html" access="permitAll" />
+		<intercept-url pattern="/change_password.html" access="permitAll" />
 		<intercept-url pattern="/signin.html" access="permitAll" />
 		<intercept-url pattern="/logout" access="permitAll" />
 		<intercept-url pattern="/users/add" access="permitAll" />
@@ -30,17 +36,19 @@
 		<intercept-url pattern="/scripts/services/**" access="permitAll" />
 		<intercept-url pattern="/styles/**" access="permitAll" />
 		<intercept-url pattern="/views/**" access="permitAll" />
-		<intercept-url pattern="/denied" access="hasRole('ROLE_USER')" />
+		<intercept-url pattern="/api/admin/analyst/addAnalyst" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/api/admin/analyst/details" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/api/admin/analyst/" access="hasRole('ROLE_ADMIN')" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 
-		<form-login login-page="/signin.html" authentication-failure-url="/404"
+		<form-login login-page="/signin.html" authentication-failure-url="/change_password.html"
 		 always-use-default-target="false" authentication-success-handler-ref="noRedirectAuthenticationSuccessHandler" 
 		 login-processing-url="/api/analyst/login"/>
 
 		<access-denied-handler error-page="/404" />
 
-		<logout invalidate-session="true" logout-success-url="/"
-			logout-url="/logout" />
+		<logout invalidate-session="true" logout-success-url="/signin.html"
+			logout-url="/api/analyst/logout" />
 	</http>
 
 	<authentication-manager>

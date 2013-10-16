@@ -22,7 +22,7 @@ public interface UserService {
 	
 	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Date timestamp); 
 	
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId); 
+	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit); 
 	
 	public List<UserMachine> getUserMachines(String uid);
 	

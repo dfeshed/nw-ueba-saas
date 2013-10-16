@@ -3,6 +3,7 @@ package fortscale.services.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,15 +44,20 @@ public class MongoUserDetailsService implements UserDetailsService{
 	}
 	
 	public void create(String username, String password,
-			String emailAddress, String firstName, String lastName) {
+			String emailAddress, String firstName, String lastName) throws AlreadyExistsException {
 		Assert.hasText(username);
 		Assert.notNull(emailAddress);
 		Assert.hasText(firstName);
 		Assert.hasText(lastName);
 		
+		if(analystAuthRepository.findByUsername(username) != null || analystRepository.findByUserName(username) != null) {
+			throw new AlreadyExistsException(String.format("analyst with username %s already exist", username));
+		}
+		
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		AnalystAuth analystAuth = new AnalystAuth(username, encodePassword(password), authorities);
+		analystAuth.setCredentialsNonExpired(false);
 		analystAuthRepository.save(analystAuth);
 		
 		Analyst analyst = new Analyst(username, new EmailAddress(emailAddress), firstName, lastName);
@@ -100,10 +106,11 @@ public class MongoUserDetailsService implements UserDetailsService{
 	}
 
     /**
-     * Remove the user with the given login name from the system.
+     * disable the user with the given login name.
      */
-    public void deleteUser(String username) {
-    	throw new UnsupportedOperationException();
+    public void disableUser(String username) {
+    	AnalystAuth analystAuth = analystAuthRepository.findByUsername(username);
+    	analystAuth.setAccountNonExpired(false);
     }
 
     /**
@@ -113,8 +120,14 @@ public class MongoUserDetailsService implements UserDetailsService{
      * @param oldPassword current password (for re-authentication if required)
      * @param newPassword the password to change to
      */
-    public void changePassword(String oldPassword, String newPassword) {
-    	throw new UnsupportedOperationException();
+    public void changePassword(String username, String oldPassword, String newPassword) {
+    	AnalystAuth analystAuth = analystAuthRepository.findByUsername(username);
+    	String encodedPasswordString = encodePassword(newPassword);
+    	if(analystAuth.getPassword().equals(encodePassword(oldPassword)) && !oldPassword.equals(newPassword)) {
+    		analystAuth.setPassword(encodedPasswordString);
+    		analystAuth.setCredentialsNonExpired(true);
+	    	analystAuthRepository.save(analystAuth);
+    	}
     }
 
     /**

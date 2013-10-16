@@ -43,20 +43,43 @@ public class ApiAnalystController {
 		return "";
 	}
 	
-	@RequestMapping(value="signup", method=RequestMethod.POST)
+//	@RequestMapping(value="signup", method=RequestMethod.POST)
+//	@ResponseBody
+//	@LogException
+//	public String signup(@RequestParam(required=true) String username,
+//			@RequestParam(required=true) String password,
+//			@RequestParam(required=true) String firstName,
+//			@RequestParam(required=true) String lastName,
+//			Model model){
+//		String ret = "";
+//		if(mongoUserDetailsService.userExists(username)) {
+//			ret = "User already exist.";
+//		} else {
+//			try {
+//				mongoUserDetailsService.create(username, password, username, firstName, lastName);
+//			} catch (Exception e) {
+//				//TODO: log
+//				ret = e.getMessage();
+//			}
+//			
+//		}
+//		
+//		return ret;
+//	}
+	
+	@RequestMapping(value="changePassword", method=RequestMethod.POST)
 	@ResponseBody
 	@LogException
-	public String signup(@RequestParam(required=true) String username,
+	public String changePassword(@RequestParam(required=true) String username,
 			@RequestParam(required=true) String password,
-			@RequestParam(required=true) String firstName,
-			@RequestParam(required=true) String lastName,
+			@RequestParam(required=true) String newPassword,
 			Model model){
 		String ret = "";
-		if(mongoUserDetailsService.userExists(username)) {
-			ret = "User already exist.";
+		if(!mongoUserDetailsService.userExists(username)) {
+			ret = "User does not exist.";
 		} else {
 			try {
-				mongoUserDetailsService.create(username, password, username, firstName, lastName);
+				mongoUserDetailsService.changePassword(username, password, newPassword);
 			} catch (Exception e) {
 				//TODO: log
 				ret = e.getMessage();

@@ -6,6 +6,13 @@ angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q,
     var emailRegExp = /^(([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+)?$/;
 
     var methods = {
+        changePassword: function(username, currentPassword, newPassword){
+            var deferred = $q.defer();
+
+            deferred.resolve();
+
+            return deferred.promise;
+        },
         getAuthToken: function(){
             if (authToken)
                 return authToken;

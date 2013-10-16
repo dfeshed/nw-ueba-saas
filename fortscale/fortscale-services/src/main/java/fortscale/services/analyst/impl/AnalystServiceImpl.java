@@ -1,5 +1,7 @@
 package fortscale.services.analyst.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,13 @@ public class AnalystServiceImpl implements AnalystService{
 	@Override
 	public Analyst findByUsername(String username) {
 		return analystRepository.findByUserName(username);
+	}
+
+
+
+	@Override
+	public List<Analyst> findAll() {
+		return analystRepository.findAll();
 	}
 
 }

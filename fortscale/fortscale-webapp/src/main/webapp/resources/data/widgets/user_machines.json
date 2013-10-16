@@ -5,7 +5,8 @@
         {
             "type": "link",
             "text": "View all",
-            "href": "#/d/investigator?entities=usernametohostname&username={{@entityId}}"
+            "href": "#/d/investigator?entities=usernametohostname&username={{@vpnUser}}",
+            "refreshOn": ["vpnUser"]
         }
     ],
     "views": [

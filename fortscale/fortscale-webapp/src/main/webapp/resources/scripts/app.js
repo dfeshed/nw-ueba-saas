@@ -64,6 +64,7 @@ angular.module("Fortscale", [
 		};
 	}
 
+        /*
     $( document ).tooltip({
         position: {
             my: "center bottom-20",
@@ -78,4 +79,5 @@ angular.module("Fortscale", [
             }
         }
     });
+    */
 });

@@ -2,6 +2,7 @@ package fortscale.services.fe;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import fortscale.services.impl.SeverityElement;
 
@@ -16,4 +17,6 @@ public interface ClassifierService {
 	public List<SeverityElement> getSeverityElements();
 	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, Date timestamp, int offset, int limit);
 	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit);
+	
+	public List<Map<String, String>> getEBSAlgOnQuery(String query);
 }

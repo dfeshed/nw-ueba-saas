@@ -116,7 +116,7 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                         paramData = data;
 
                     if (paramStrConfig)
-                        paramValue = widgets.parseFieldValue(options, paramStrConfig.value || paramStrConfig, paramData || {}, undefined, $scope.dashboardParams);
+                        paramValue = utils.strings.parseValue(paramStrConfig.value || paramStrConfig, paramData || {}, $scope.dashboardParams);
 
                     params[paramName] = paramValue;
                 }

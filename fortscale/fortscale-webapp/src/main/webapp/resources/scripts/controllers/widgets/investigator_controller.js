@@ -91,7 +91,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
             field.filters = [];
 
         field.filters.push({
-            operator: "equals",
+            operator: field.type === "date" ? "dateRange" : "equals",
             "value": ""
         })
     };
@@ -101,7 +101,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
         $scope.onFieldChange();
     };
 
-    $scope.onFieldChange = function(){
+    $scope.onFieldChange = function(field, value){
         $scope.fieldsChanged = true;
     };
 
@@ -292,10 +292,16 @@ angular.module("Fortscale").controller("InvestigatorController", [
             params = {};
 
         params[field.id] = {
-            operator: "equals",
+            operator: field.type === "date" ? "dateRange" : "equals",
             field: field.id,
             entity: field.entity.id,
-            value: "{{" + field.id + "}}"
+            value: "{{" + field.id + "}}",
+            transform: {
+                method: "date",
+                options: {
+                    format: "MM/DD/YYYY"
+                }
+            }
         };
 
         link += ~link.indexOf("?") ? "&" : "?";

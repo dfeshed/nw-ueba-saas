@@ -1,5 +1,6 @@
 {
     "dataSource": "api",
+    "requiredParams": ["username"],
     "endpoint": {
         "query":  "SELECT timegenerated,eventcode,account_name,client_address,source_network_address,failure_code from wmievents WHERE account_name='{{@username}}' and failure_code='0x0' and datediff(to_date(now()),timegenerated)<7",
         "action": "rate",

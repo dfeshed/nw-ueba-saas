@@ -5,7 +5,8 @@
         {
             "type": "link",
             "text": "View all",
-            "href": "#/d/investigator?entities=authenticationscores&userid={{@entityId}}"
+            "href": "#/d/investigator?entities=authenticationscores&userid={{@loginsUser}}",
+            "refreshOn": ["loginsUser"]
         }
     ],
     "views": [

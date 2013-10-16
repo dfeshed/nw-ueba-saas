@@ -102,16 +102,22 @@
                                         {{field.name}}
                                         <div class="investigator-field-filters" ng-show="field.filters.length">
                                             <ul class="unstyled investigator-field-filters-list">
-                                                <li ng-repeat="filter in field.filters">
+                                                <li ng-repeat="filter in field.filters" ng-switch="field.type">
                                                     <select ng-model="filter.operator"
                                                             ng-change="onFieldChange()"
                                                             ng-options="operator.name as operator.display for operator in operatorsForType[field.type]"
                                                             ng-class="{ 'investigator-filter-operator-small': operatorsIndex[filter.operator].requiresValue }"></select>
-                                                    <input type="text"
-                                                           class="search investigator-filter-value"
-                                                           ng-model="filter.value"
-                                                           ng-change="onFieldChange()"
-                                                           ng-show="operatorsIndex[filter.operator].requiresValue" />
+                                                    <span ng-switch-when="date">
+                                                        <daterange ng-model="filter.value" ng-change="onFieldChange(field, filter)"></daterange>
+                                                    </span>
+                                                    <span ng-switch-default>
+
+                                                        <input type="text"
+                                                               class="search investigator-filter-value"
+                                                               ng-model="filter.value"
+                                                               ng-change="onFieldChange()"
+                                                               ng-show="operatorsIndex[filter.operator].requiresValue" />
+                                                    </span>
                                                     <a ng-click="removeFilter(field, $index)" class="clickable" title="Remove filter">
                                                         <i class="icon-remove"></i>
                                                     </a>

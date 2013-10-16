@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.dao.UserMachineDAO;
@@ -77,6 +78,9 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	@Autowired
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
+	
+	@Autowired
+	private JdbcOperations impalaJdbcTemplate;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -411,5 +415,28 @@ public class ClassifierServiceImpl implements ClassifierService {
 	@Override
 	public List<SeverityElement> getSeverityElements() {
 		return severityOrderedList;
+	}
+	
+	@Override
+	public List<Map<String, String>> getEBSAlgOnQuery(String query){
+//		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
+//
+//		List<List<String>> listResults = new ArrayList<List<String>>((int)resultsMap.size());
+//
+//		for (Map<String, Object> map : resultsMap) {
+//			List<String> result = new ArrayList<String>( map.size() );
+//			for (Object res : map.values()) {
+//				result.add(res.toString());				
+//			}
+//			listResults.add(result);
+//		}
+//
+//		EventBulkScorer ebs = new EventBulkScorer();
+//		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
+//
+//		for (EventBulkScorer.EventScoreStore userScore : ebsresult.event_score_list) {
+//
+//		}
+		return null;
 	}
 }

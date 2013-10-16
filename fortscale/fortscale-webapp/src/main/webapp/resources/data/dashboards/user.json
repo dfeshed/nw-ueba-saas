@@ -59,7 +59,9 @@
                             "params": {
                                 "userName": { "itemIndex": 0, "value": "{{name}}" },
                                 "jobTitle": { "itemIndex": 0, "value": "{{jobTitle}}" },
-                                "userImage": { "itemIndex": 0, "value": "{{image}}" }
+                                "userImage": { "itemIndex": 0, "value": "{{image}}" },
+                                "vpnUser": { "itemIndex": 0, "value": "{{applicationUserDetails.vpn.userName}}" },
+                                "loginsUser": { "itemIndex": 0, "value": "{{applicationUserDetails.active_directory.userName}}" }
                             }
                         }
                     }
@@ -108,7 +110,7 @@
                         "query": {
                             "params": [
                                 {
-                                    "dashboardParam": "entityId",
+                                    "dashboardParam": "loginsUser",
                                     "field": "username"
                                 }
                             ]

@@ -1,6 +1,7 @@
 {
     "reportId": "user_login_rate",
     "title": "Logins Rate",
+    "refreshOn": ["loginsUser"],
     "views": [
         {
             "type": "barsChart",

@@ -50,6 +50,14 @@
                 if (report.dataSource === "api"){
                     var deferred = $q.defer();
 
+                    if (report.requiredParams){
+                        for(var i=0; i < report.requiredParams.length; i++){
+                            if (params[report.requiredParams[i]] === undefined){
+                                deferred.resolve({ data: [], total: 0 });
+                                return deferred.promise;
+                            }
+                        }
+                    }
                     server.queryServer(report, params, report.options).then(deferred.resolve, deferred.reject);
 
                     return deferred.promise;
