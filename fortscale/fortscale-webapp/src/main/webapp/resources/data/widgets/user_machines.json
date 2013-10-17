@@ -18,10 +18,10 @@
                 "showInfo": true,
                 "calculatePercent": true,
                 "info": {
-                    "title": "{{hostname}}",
+                    "labelLink": "#/d/investigator?entities=usernametohostname&hostname={{hostname}}",
                     "properties": [
                         {
-                            "label": "Last Sign-in:",
+                            "label": "Last Sign-in",
                             "value": "{{lastSignIn}}",
                             "transform": {
                                 "method": "date",
@@ -31,8 +31,9 @@
                             }
                         },
                         {
-                            "label": "IP:",
-                            "value": "{{ipAddress}}"
+                            "label": "IP",
+                            "value": "{{ipAddress}}",
+                            "link": "#/d/investigator?entities=usernametohostname&hostnameip={{hostnameip}}"
                         }
                     ]
                 },

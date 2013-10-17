@@ -1,51 +1,62 @@
 angular.module("PieChartWidget").factory("pieChartWidgetData", ["utils", "transforms", function(utils, transforms){
     return {
         getData: function(view, data, params){
-            var viewData = { chartValues: [] };
+            var viewData = { chartValues: [] },
+                labelsIndex = {},
+                itemLabelIndex,
+                setProperties = view.settings.showInfo && view.settings.info && view.settings.info.properties;
 
-            for(var i= 0, item; item = data[i]; i++){
-                viewData.chartValues.push({
-                    value: parseFloat(item[view.settings.chartValue], 10),
-                    label: item[view.settings.chartLabel]
-                })
-            }
+            var getItemProperties = function(item){
+                var itemProperties = {};
 
-            if (view.settings.showInfo && view.settings.info && view.settings.info.properties){
-                var getItemInfo = function(item, itemIndex){
-                    var itemInfo = { properties: [] };
-                    if (view.settings.info.title)
-                        itemInfo.title = utils.strings.parseValue(view.settings.info.title, item, params, itemIndex);
+                for(var i= 0, property, propertyValue; property = view.settings.info.properties[i]; i++){
+                    propertyValue = itemProperties[property.label] = utils.strings.parseValue(property.value, item, params);
 
-                    for(var i= 0, property, propertyData; property = view.settings.info.properties[i]; i++){
-                        propertyData = {
-                            label: property.label,
-                            value: utils.strings.parseValue(property.value, item, params, itemIndex)
-                        };
-
-                        if (property.transform){
-                            propertyData.value = transforms[property.transform.method](propertyData.value, property.transform.options);
-                        }
-
-                        itemInfo.properties.push(propertyData);
+                    if (property.transform){
+                        itemProperties[property.label] = transforms[property.transform.method](propertyValue, property.transform.options);
                     }
+                }
 
-                    return itemInfo;
-                };
+                return itemProperties;
+            };
 
-                viewData.items = [];
-                var infoItem;
-                for(i= 0; item = data[i]; i++){
-                    viewData.items.push(getItemInfo(item, i));
+            for(var i= 0, item, label, itemValue; item = data[i]; i++){
+                label = item[view.settings.chartLabel];
+                itemValue = parseFloat(item[view.settings.chartValue]);
+
+                itemLabelIndex = labelsIndex[label];
+                if (!itemLabelIndex){
+                    itemLabelIndex = labelsIndex[label] = { label: label, value: 0 };
+                    if (setProperties)
+                        itemLabelIndex.properties = {};
+                }
+
+                itemLabelIndex.value += itemValue;
+
+                if (setProperties){
+                    var itemProperties = getItemProperties(item),
+                        itemPropertyValues;
+
+                    for(var propertyName in itemProperties){
+                        itemPropertyValues = itemLabelIndex.properties[propertyName];
+                        if (!itemPropertyValues)
+                            itemPropertyValues = itemLabelIndex.properties[propertyName] = [];
+
+                        if (!~itemPropertyValues.indexOf(itemProperties[propertyName]))
+                            itemPropertyValues.push(itemProperties[propertyName]);
+                    }
                 }
             }
-            else{
-                viewData.items = [];
-                angular.forEach(viewData.chartValues, function(chartValue){
-                    viewData.items.push({
-                        title: chartValue.label
-                    })
-                });
+
+            for(var label in labelsIndex){
+                viewData.chartValues.push(labelsIndex[label]);
             }
+
+            viewData.chartValues.sort(function(a, b){
+                return a.value === b.value ? 0 :
+                    a.value < b.value ? 1 : -1;
+            });
+
             return viewData;
         }
     };

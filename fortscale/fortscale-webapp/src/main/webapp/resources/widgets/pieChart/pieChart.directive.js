@@ -16,7 +16,7 @@ angular.module('PieChartWidget')
                         data = chartData;
                         dataChanged = true;
                         drawChart();
-                        scope.items = data.items;
+                        scope.items = data.chartValues;
                     }
                 });
 
@@ -36,9 +36,9 @@ angular.module('PieChartWidget')
                         return;
 
                     var size = settings.size ? settings.size + "%" : "200px";
-                    chart.style.width = size;
+                    chart.style.height = chart.style.width = size;
 
-                    scope.currentItem = data.items[0];
+                    scope.currentItem = data.chartValues[0];
 
                     if (settings.calculatePercent){
                         var total = 0;
@@ -61,7 +61,7 @@ angular.module('PieChartWidget')
                     if (settings.showInfo){
                         donut.on("hover", function(index){
                             scope.safeApply(function(){
-                                scope.currentItem = data.items[index];
+                                scope.currentItem = data.chartValues[index];
                             });
                         })
                     }

@@ -987,13 +987,23 @@ body .ui-tooltip {
 .widget-pie.with-info .widget-pie-chart {
   float: right; }
 .widget-pie .widget-pie-info {
-  margin-top: 15px; }
+  margin-top: 15px;
+  float: left; }
   .widget-pie .widget-pie-info h5 {
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 6px; }
   .widget-pie .widget-pie-info label {
     color: #999999; }
+.widget-pie .widget-pie-info-list li {
+  margin-bottom: 1em; }
+.widget-pie .widget-pie-info-list label {
+  float: left; }
+.widget-pie .widget-pie-info-list .widget-pie-property-values {
+  float: left;
+  margin-left: 7px; }
+  .widget-pie .widget-pie-info-list .widget-pie-property-values strong {
+    display: block; }
 
 .yoxigen-chart {
   font-family: Roboto Condensed, sans-serif; }
