@@ -98,4 +98,10 @@ public class AnalystRepositoryImpl implements AnalystRepository{
 		return null;
 	}
 
+	@Override
+	public List<Analyst> findByIsDisabled(boolean isDisabled) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

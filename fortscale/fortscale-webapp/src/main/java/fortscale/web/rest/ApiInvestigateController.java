@@ -33,11 +33,13 @@ public class ApiInvestigateController {
 	@ResponseBody
 	@LogException
 	public DataBean<List<Map<String, Object>>> investigate(@RequestParam(required=true) String query,
+			@RequestParam(required=false) String countQuery,
 			Model model){
 		DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
 		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
+		int total = impalaJdbcTemplate.queryForInt(countQuery);
 		retBean.setData(resultsMap);
-		retBean.setTotal(resultsMap.size());
+		retBean.setTotal(total);
 		return retBean;
 	}
 	
