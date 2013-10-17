@@ -20,6 +20,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     spacing: { min: 0, max: 100 },
                     padding: { top: 10, right: 50, left: 50, bottom: 0 },
                     selectable: false,
+                    highlightSelectedItem: true,
                     barLabels: {
                         height: 30,
                         margin: 11
@@ -277,28 +278,29 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     rectWidth = (totalRectWidth - barsSpacing) / settings.series.length,
                     barRemainder = rectWidth % gridSize;
 
-                selectItem = function (itemData, itemIndex) {
-                    var color = getSelectionBarColor(itemData),
-                        previousSelectedIndex = selectedBarGroup;
+                if (options.highlightSelectedItem){
+                    selectItem = function (itemData, itemIndex) {
+                        var color = getSelectionBarColor(itemData),
+                            previousSelectedIndex = selectedBarGroup;
 
-                    if (labelBoxes)
-                        d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", false);
+                        if (labelBoxes)
+                            d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", false);
 
-                    selectedBarGroup = itemIndex;
+                        selectedBarGroup = itemIndex;
 
-                    if (labelBoxes && options.selectLabels) {
-                        d3.select(labelTexts[0][selectedBarGroup]).attr("fill", setLabelFill(itemData, selectedBarGroup));
-                        d3.select(labelTexts[0][previousSelectedIndex]).attr("fill", setLabelFill(data[previousSelectedIndex], previousSelectedIndex));
-                        d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", true);
-                    }
+                        if (labelBoxes && options.selectLabels) {
+                            d3.select(labelTexts[0][selectedBarGroup]).attr("fill", setLabelFill(itemData, selectedBarGroup));
+                            d3.select(labelTexts[0][previousSelectedIndex]).attr("fill", setLabelFill(data[previousSelectedIndex], previousSelectedIndex));
+                            d3.select(labelBoxes[0][selectedBarGroup]).classed("selected", true);
+                        }
 
-                    if (selectionBar) {
-                        selectionBar.attr("fill", color);
-                        selectionBarArrow.attr("fill", color);
-                        moveSelectionBarArrowTo(itemIndex * totalRectWidth + leftPadding + (totalRectWidth - barsSpacing) / 2)
-                    }
-                };
-
+                        if (selectionBar) {
+                            selectionBar.attr("fill", color);
+                            selectionBarArrow.attr("fill", color);
+                            moveSelectionBarArrowTo(itemIndex * totalRectWidth + leftPadding + (totalRectWidth - barsSpacing) / 2)
+                        }
+                    };
+                }
                 if (barRemainder) {
                     var halfGrid = Math.floor(gridSize / 2);
                     if (barRemainder < halfGrid)

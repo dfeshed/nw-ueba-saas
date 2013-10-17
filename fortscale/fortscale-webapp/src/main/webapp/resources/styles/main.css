@@ -1208,8 +1208,11 @@ body .ui-tooltip {
   width: 110px; }
 .investigator .investigator-filter-value, .investigator .daterange-input {
   width: 183px; }
-.investigator .investigator-display table a {
-  color: #333333; }
+.investigator .investigator-display {
+  position: relative;
+  min-height: 400px; }
+  .investigator .investigator-display table a {
+    color: #333333; }
 .investigator .section-collapse-btn {
   color: White;
   float: right;

@@ -374,6 +374,10 @@ angular.module("Fortscale").controller("InvestigatorController", [
     $scope.querySql = function(sqlQuery, setToUrl){
         var deferred = $q.defer();
 
+        $scope.error = null;
+        $scope.noData = false;
+        $scope.loading = true;
+
         if (setToUrl){
             $location.search("sql", sqlQuery);
             $location.search("entities", null);
@@ -386,7 +390,8 @@ angular.module("Fortscale").controller("InvestigatorController", [
             deferred.resolve();
         }, function(error){
             setSqlData({ data: [], total: 0 });
-            console.error("Can't get SQL results.");
+            $scope.error = "Can't get SQL results.";
+            $scope.noData = false;
             deferred.reject();
         });
 
@@ -400,6 +405,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
         if (!data || !data.length){
             $scope.view.data = null;
             $scope.config.entities = [];
+            $scope.noData = true;
         }
         else{
             $scope.config.entities = [{ fields: [] }];
@@ -413,6 +419,8 @@ angular.module("Fortscale").controller("InvestigatorController", [
                 });
             }
         }
+
+        $scope.loading = false;
     }
 
     function getEntityDefaultSort(entity){
@@ -445,8 +453,15 @@ angular.module("Fortscale").controller("InvestigatorController", [
             }
         };
 
+        $scope.error = null;
+        $scope.loading = true;
+        $scope.noData = false;
+
         var dataPromise = getDataFromServer ? server.sqlQuery($scope.widget.report.query) :  database.query($scope.widget.report.query);
-        dataPromise.then(setViewData);
+        dataPromise.then(setViewData, function(error){
+            $scope.error = "Can't get results.";
+            $scope.loading = false;
+        });
     }
 
     function setViewData(results){
@@ -458,6 +473,10 @@ angular.module("Fortscale").controller("InvestigatorController", [
         var widgetDataParser = widgetsData[$scope.view.type];
         $scope.view.data = widgetDataParser ? widgetDataParser($scope.view, rawData.data, {}) : rawData.data;
         $scope.view.dataTotalResults = rawData.total;
+        $scope.loading = false;
+
+        if (!results.data.length)
+            $scope.noData = true;
     }
 
     function getTypeDefaultValue(type){

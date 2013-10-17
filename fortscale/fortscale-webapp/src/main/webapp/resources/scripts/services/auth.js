@@ -1,5 +1,6 @@
 angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q, $http){
     var apiUrl = "/fortscale-webapp/api/analyst/",
+        adminApiUrl = "/fortscale-webapp/api/admin/",
         authToken,
         authTokenExpires;
 
@@ -10,6 +11,45 @@ angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q,
             var deferred = $q.defer();
 
             deferred.resolve();
+
+            return deferred.promise;
+        },
+        createUser: function(accountData){
+            var deferred = $q.defer();
+
+            $http({
+                method: "POST",
+                url: adminApiUrl + "analyst/addAnalyst",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                data: $.param(accountData)
+            })
+                .success(deferred.resolve)
+                .error(deferred.reject);
+
+            return deferred.promise;
+        },
+        deleteUser: function(username){
+            var deferred = $q.defer();
+
+            $http({
+                method: "POST",
+                url: adminApiUrl + "analyst/disableAnalyst",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                data: $.param({ username: username })
+            })
+                .success(deferred.resolve)
+                .error(deferred.reject);
+
+            return deferred.promise;
+        },
+        getAllUsers: function(){
+            var deferred = $q.defer();
+
+            $http.get(adminApiUrl + "analyst/details")
+                .success(function(result){
+                    deferred.resolve(result.data);
+                })
+                .error(deferred.reject);
 
             return deferred.promise;
         },
@@ -69,22 +109,11 @@ angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q,
             return deferred.promise;
         },
         logout: function(){
-            $http.post(apiUrl + "login", { authToken: authToken });
-            authToken = null;
-        },
-        signUp: function(accountData){
-            var deferred = $q.defer();
-
-            $http({
-                method: "POST",
-                url: apiUrl + "signup",
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                data: $.param(accountData)
-            })
-                .success(deferred.resolve)
-                .error(deferred.reject);
-
-            return deferred.promise;
+            $http.post(apiUrl + "logout").then(function(){
+                window.location.href = window.location.href.replace(/fortscale-webapp\/.*/, "fortscale-webapp/signin.html");
+            }, function(error){
+                alert(error);
+            });
         },
         validateUsername: function(username){
             return emailRegExp.test(username);

@@ -67,8 +67,13 @@
   .investigator-filter-value, .daterange-input{
     width: 183px;
   }
-  .investigator-display table a{
-    color: $textColor;
+  .investigator-display{
+    position: relative;
+    min-height: 400px;
+
+    table a{
+      color: $textColor;
+    }
   }
 
   .section-collapse-btn{

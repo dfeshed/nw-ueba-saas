@@ -43,7 +43,13 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
     });
 
     auth.getCurrentUser().then(function(userData){
-        $scope.loggedInUser = userData;
+        if (userData)
+            $scope.loggedInUser = userData;
+        else
+            window.location.href = "/fortscale-webapp/signin.html";
+    }, function(){
+        if (!localStorage.debug)
+            window.location.href = "/fortscale-webapp/signin.html";
     });
 
     $scope.report = {
@@ -79,7 +85,6 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
 
     $scope.logout = function(){
         auth.logout();
-        window.location.href = "/fortscale-webapp/signin.html";
     };
 
     $scope.searchSettings = {

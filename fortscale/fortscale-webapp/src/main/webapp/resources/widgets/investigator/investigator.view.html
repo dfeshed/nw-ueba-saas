@@ -178,7 +178,22 @@
             </section>
         </div>
         <div class="span11 investigator-display">
-            <ng-include src="'widgets/' + currentViewType.type + '/' + currentViewType.type + '.view.html'" ng-if="currentViewType"></ng-include>
+            <div ng-hide="noData || loading || error">
+                <ng-include src="'widgets/' + currentViewType.type + '/' + currentViewType.type + '.view.html'" ng-if="currentViewType"></ng-include>
+            </div>
+            <div class="widget-message widget-no-data" ng-show="noData">
+                No data found
+            </div>
+            <div class="widget-message widget-loading" ng-show="loading">
+                <span class="widget-loader"></span>
+                <div>Loading data</div>
+            </div>
+            <div class="widget-message widget-error" ng-show="error">
+                <span class="widget-error-message">
+                    <img src="images/exclamation.png" class="widget-error-icon" /><br />
+                    {{error}}
+                </span>
+            </div>
         </div>
     </div>
 </div>
