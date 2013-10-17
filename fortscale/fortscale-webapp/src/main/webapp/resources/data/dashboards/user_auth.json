@@ -25,6 +25,7 @@
                     "widgetId": "user_logins",
                     "report": {
                         "query": {
+                            "requiredParams": ["date"],
                             "params": [
                                 {
                                     "field": "date",
@@ -37,6 +38,9 @@
                                 }
                             ]
                         }
+                    },
+                    "params": {
+                        "date": null
                     },
                     "refreshOn": "date"
                 }

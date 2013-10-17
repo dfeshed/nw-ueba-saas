@@ -217,6 +217,8 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
             }
         };
 
+        var runReportTimeoutPromise;
+
         $scope.runWidgetReport = function(widget, forceRefresh){
             var widgetParams = getWidgetParams(widget);
             if (eventDeregistrationFunctions.length){
@@ -254,6 +256,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
 
                 eventDeregistrationFunctions.push($scope.$on("dashboardParamsChange", function(e, changedParams){
                     setWidgetTitle(changedParams);
+                    angular.extend($scope.widget.params, changedParams);
 
                     for(var i=0; i < widget.refreshOn.length; i++){
                         if (changedParams[widget.refreshOn[i]] !== undefined){
@@ -275,6 +278,8 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                 widget.warning = null;
                 widget.noData = false;
                 widget.showInitMessage = false;
+
+                $timeout.cancel(runReportTimeoutPromise);
 
                 reports.runReport(widget.report, widgetParams, forceRefresh).then(function(results){
                     if (!results.data || !results.data.length){
@@ -316,7 +321,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                     angular.forEach(widget.views, function(view){
                         view.data = null;
                     });
-                    $timeout(function(){ $scope.runWidgetReport(widget); }, 1 * 60 * 1000); // Refresh the widget in 1 minute
+                    //$timeout(function(){ $scope.runWidgetReport(widget); }, 1 * 60 * 1000); // Refresh the widget in 1 minute
                 });
             }
         };

@@ -24,7 +24,10 @@
                 },
                 {
                     "widgetId": "user_profile_features",
-                    "refreshOn": "date"
+                    "refreshOn": "date",
+                    "params": {
+                        "date": null
+                    }
                 }
             ]
         }

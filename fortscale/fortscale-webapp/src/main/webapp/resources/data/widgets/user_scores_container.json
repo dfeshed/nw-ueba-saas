@@ -57,7 +57,8 @@
                             "type": "dashboardWidget",
                             "className": "dashboard-with-border inner-widgets",
                             "settings": {
-                                "dashboardId": "user_{{@currentFeature}}"
+                                "dashboardId": "user_{{@currentFeature}}",
+                                "requiredParams": ["currentFeature"]
                             }
                         }
                     ]

@@ -64,8 +64,16 @@ angular.module("Conditions", ["Format", "Transforms"]).factory("conditions", ["f
     ];
 
     var operatorsSqlValue = {
-        contains: function(value){
-            return "LIKE '%" + value + "%'";
+        contains: function(value, fieldName){
+            return "lcase(" + fieldName + ") LIKE '%" + value.toLowerCase() + "%'";
+        },
+        equals: function(value, fieldName){
+            if (typeof(value) === "string"){
+                return "lcase(" + fieldName + ") = \"" + value.toLowerCase() + "\"";
+            }
+            else
+                return [fieldName, value].join(" = ");
+
         },
         dateRange: function(value, fieldName){
             var dateStart = transforms.getDate(angular.isObject(value) ? value.timeStart : value),
@@ -73,16 +81,16 @@ angular.module("Conditions", ["Format", "Transforms"]).factory("conditions", ["f
 
             dateEnd.add("days", 1);
 
-            return [">", "'" + dateStart.format("YYYY-MM-DD") + "'", "AND", fieldName, "<", "'" + dateEnd.format("YYYY-MM-DD") + "'"].join(" ");
+            return [fieldName, ">", "'" + dateStart.format("YYYY-MM-DD") + "'", "AND", fieldName, "<", "'" + dateEnd.format("YYYY-MM-DD") + "'"].join(" ");
         },
-        endsWith: function(value){
-            return "LIKE '%" + value + "'";
+        endsWith: function(value, fieldName){
+            return "lcase(" + fieldName + ") LIKE '%" + value.toLowerCase() + "'";
         },
-        regexp: function(value){
-            return "REGEXP '" + value + "'";
+        regexp: function(value, fieldName){
+            return fieldName + " REGEXP '" + value + "'";
         },
-        startsWith: function(value){
-            return "LIKE '" + value + "%'";
+        startsWith: function(value, fieldName){
+            return "lcase(" + fieldName + ") LIKE '" + value.toLowerCase() + "%'";
         }
     };
 
@@ -119,7 +127,7 @@ angular.module("Conditions", ["Format", "Transforms"]).factory("conditions", ["f
                 var conditionValue = condition.value;
                 var getValueFunction = operatorsSqlValue[condition.operator];
                 if (getValueFunction)
-                    sql.push([condition.field, getValueFunction(conditionValue, condition.field)].join(" "));
+                    sql.push(getValueFunction(conditionValue, condition.field));
                 else{
                     if (typeof(conditionValue) === "string")
                         conditionValue = "\"" + conditionValue + "\"";

@@ -48,11 +48,13 @@
             },
             runSearch: function(report, params){
                 if (report.dataSource === "api"){
-                    var deferred = $q.defer();
+                    var deferred = $q.defer(),
+                        paramValue;
 
                     if (report.requiredParams){
                         for(var i=0; i < report.requiredParams.length; i++){
-                            if (params[report.requiredParams[i]] === undefined){
+                            paramValue = params[report.requiredParams[i]];
+                            if (!paramValue && paramValue !== 0){
                                 deferred.resolve({ data: [], total: 0 });
                                 return deferred.promise;
                             }
