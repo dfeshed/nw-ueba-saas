@@ -26,6 +26,8 @@ public class Analyst extends AbstractDocument{
 	@Field("email")
 	@Indexed(unique=true)
 	private EmailAddress emailAddress;
+	@Indexed
+	private boolean isDisabled;
 	
 	
 	
@@ -74,5 +76,11 @@ public class Analyst extends AbstractDocument{
 	}
 	public void setEmailAddress(EmailAddress emailAddress) {
 		this.emailAddress = emailAddress;
-	}	
+	}
+	public boolean isDisabled() {
+		return isDisabled;
+	}
+	public void setDisabled(boolean isDisabled) {
+		this.isDisabled = isDisabled;
+	}
 }

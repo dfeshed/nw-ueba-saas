@@ -77,7 +77,7 @@ public class ApiAdminAnalystController {
 	@LogException
 	public DataBean<List<AnalystBean>> details(Model model){
 		DataBean<List<AnalystBean>> ret = new DataBean<List<AnalystBean>>();
-		List<Analyst> analysts = analystService.findAll();
+		List<Analyst> analysts = analystService.findAllNonDisabledUsers();
 		List<AnalystBean> analystBeans = new ArrayList<>();
 		for(Analyst analyst: analysts) {
 			analystBeans.add(new AnalystBean(analyst));

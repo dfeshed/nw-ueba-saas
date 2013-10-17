@@ -109,8 +109,13 @@ public class MongoUserDetailsService implements UserDetailsService{
      * disable the user with the given login name.
      */
     public void disableUser(String username) {
+    	Analyst analyst = analystRepository.findByUserName(username);
+		analyst.setDisabled(true);
+		analystRepository.save(analyst);
+		
     	AnalystAuth analystAuth = analystAuthRepository.findByUsername(username);
     	analystAuth.setAccountNonExpired(false);
+    	analystAuthRepository.save(analystAuth);
     }
 
     /**

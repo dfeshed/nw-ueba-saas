@@ -10,4 +10,5 @@ public interface AnalystService {
 	public void replaceEmailAddress(String username, String emailAddress);
 	public Analyst findByUsername(String username);
 	public List<Analyst> findAll();
+	public List<Analyst> findAllNonDisabledUsers();
 }

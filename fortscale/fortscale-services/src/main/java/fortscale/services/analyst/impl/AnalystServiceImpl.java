@@ -52,4 +52,11 @@ public class AnalystServiceImpl implements AnalystService{
 		return analystRepository.findAll();
 	}
 
+
+
+	@Override
+	public List<Analyst> findAllNonDisabledUsers() {
+		return analystRepository.findByIsDisabled(false);
+	}
+
 }
