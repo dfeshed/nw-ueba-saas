@@ -218,7 +218,7 @@
 		<snapshotRepository>
 			<id>mirror.fortscale.dom</id>
 			<name>mirror.fortscale.dom-snapshots</name>
-			<url>http://mirror:8082/artifactory/ext-snapshot-local</url>
+			<url>http://mirror.fortscale.dom:8082/artifactory/ext-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
 
