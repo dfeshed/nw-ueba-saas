@@ -9,25 +9,29 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
         subEntityId: "@subEntityId"
     });
 
-    function queryToSql(query){
-        var sql = ["SELECT "];
+    function queryToSql(query, isCount){
+        var sql = ["SELECT"];
 
         var tables = [];
         angular.forEach(query.entities, function(entity){
             tables.push(entity.id);
         });
 
-        sql.push(query.fields && query.fields.length ? query.fields.join(", ") : "*");
-        sql.push(" FROM ");
+        if (isCount)
+            sql.push("COUNT(*)");
+        else
+            sql.push(query.fields && query.fields.length ? query.fields.join(", ") : "*");
+
+        sql.push("FROM");
         sql.push(tables.join(", "));
         if (query.conditions && query.conditions.length)
-            sql.push(" WHERE ", conditions.conditionsToSql(query.conditions));
+            sql.push("WHERE", conditions.conditionsToSql(query.conditions));
 
         if (query.sort)
-            sql.push(" ORDER BY " + query.sort.field + (query.sort.direction === 1 ? " ASC" : " DESC"));
+            sql.push("ORDER BY " + query.sort.field + (query.sort.direction === 1 ? " ASC" : " DESC"));
 
         if (query.paging)
-            sql.push(" LIMIT " + query.paging.pageSize);
+            sql.push("LIMIT", query.paging.pageSize);
 
         return sql.join(" ");
     }
@@ -69,6 +73,7 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
             if (query.endpoint && query.endpoint.sql){
                 query.endpoint.entity = "investigate";
                 query.endpoint.query = utils.strings.parseValue(query.endpoint.sql, {}, params);
+                query.endpoint.countQuery = query.endpoint.query.replace(/SELECT (.*) FROM/i, "SELECT COUNT(*) FROM");
             }
 
             var resource = query.endpoint.subEntityName ? apiWithSubEntityResource : apiResource,
@@ -92,12 +97,11 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
             return deferred.promise;
         },
         sqlQuery: function(sqlQuery, params, options){
-            var query = typeof(sqlQuery) === "string" ? sqlQuery : queryToSql(sqlQuery);
-
             return this.queryServer({
                 endpoint: {
                     entity: "investigate",
-                    query: query
+                    query: typeof(sqlQuery) === "string" ? sqlQuery : queryToSql(sqlQuery),
+                    countQuery: typeof(sqlQuery) === "string" ? sqlQuery.replace(/SELECT (.*) FROM/i, "SELECT COUNT(*) FROM") : queryToSql(sqlQuery, true)
                 }
             });
         }
