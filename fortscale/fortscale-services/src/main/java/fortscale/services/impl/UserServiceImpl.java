@@ -78,7 +78,13 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
-		updateUserWithADInfo(adUserRepository.getLatestTimeStamp());
+		String timestamp = adUserRepository.getLatestTimeStamp();
+		if(timestamp != null) {
+			updateUserWithADInfo(timestamp);
+		} else {
+			//TODO: log
+		}
+		
 	}
 	
 	@Override

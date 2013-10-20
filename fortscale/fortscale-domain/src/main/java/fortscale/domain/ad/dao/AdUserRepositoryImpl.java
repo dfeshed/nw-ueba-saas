@@ -65,6 +65,9 @@ class AdUserRepositoryImpl implements AdUserRepositoryCustom{
 				limit(1));
 	
 		AggregationResults<AdUserTimeStamp> result = mongoTemplate.aggregate(agg, AdUser.COLLECTION_NAME, AdUserTimeStamp.class);
+		if(result.getMappedResults().isEmpty()) {
+			return null;
+		}
 		AdUserTimeStamp ret = result.getMappedResults().get(0);
 		return ret.id;
 	}

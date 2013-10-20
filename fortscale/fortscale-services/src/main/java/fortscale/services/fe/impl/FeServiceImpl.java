@@ -2,6 +2,7 @@ package fortscale.services.fe.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,6 +56,10 @@ public class FeServiceImpl implements FeService {
 //			ret.put(user.getId().toString(), attrValsList);
 //		}
 		String timestamp = adUserRepository.getLatestTimeStamp();
+		if(timestamp == null) {
+			//TODO: log
+			return Collections.emptyList();
+		}
 		return adUserRepository.findByTimestamp(timestamp);
 	}
 
