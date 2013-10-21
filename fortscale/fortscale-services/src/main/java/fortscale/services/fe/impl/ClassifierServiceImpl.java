@@ -2,6 +2,7 @@ package fortscale.services.fe.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +29,12 @@ import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.ebs.EventBulkScorer;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
+import fortscale.services.fe.EBSResult;
 import fortscale.services.fe.IClassifierScoreDistribution;
 import fortscale.services.fe.ILoginEventScoreInfo;
 import fortscale.services.fe.IScoreDistribution;
@@ -42,6 +46,7 @@ import fortscale.utils.impala.ImpalaPageRequest;
 @Service("classifierService")
 public class ClassifierServiceImpl implements ClassifierService {
 	
+	private static final String EVENT_SCORE = "eventScore";
 	private static List<SeverityElement> severityOrderedList = getSeverityList();
 //	private static Map<String,SeverityElement> severityMap = null;
 	
@@ -418,25 +423,53 @@ public class ClassifierServiceImpl implements ClassifierService {
 	}
 	
 	@Override
-	public List<Map<String, String>> getEBSAlgOnQuery(String query){
-//		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
-//
-//		List<List<String>> listResults = new ArrayList<List<String>>((int)resultsMap.size());
-//
-//		for (Map<String, Object> map : resultsMap) {
-//			List<String> result = new ArrayList<String>( map.size() );
-//			for (Object res : map.values()) {
-//				result.add(res.toString());				
-//			}
-//			listResults.add(result);
-//		}
-//
-//		EventBulkScorer ebs = new EventBulkScorer();
-//		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
-//
-//		for (EventBulkScorer.EventScoreStore userScore : ebsresult.event_score_list) {
-//
-//		}
-		return null;
+	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit){
+		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
+		if(resultsMap.size() == 0) {
+			return new EBSResult(null, null,0, 0);
+		}
+
+		List<List<String>> listResults = new ArrayList<List<String>>((int)resultsMap.size());
+
+		List<String> keys = new ArrayList<>(resultsMap.get(0).keySet());
+		for (Map<String, Object> map : resultsMap) {
+			List<String> result = new ArrayList<String>( map.size() );
+			for (int i = 0; i < map.size(); i++) {
+				result.add(map.get(keys.get(i)).toString());				
+			}
+			listResults.add(result);
+		}
+
+		EventBulkScorer ebs = new EventBulkScorer();
+		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
+		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
+		List<Map<String, Object>> eventResultList = new ArrayList<>();
+		int curOffset = -1;
+		for (EventBulkScorer.EventScoreStore eventScore : ebsresult.event_score_list) {
+			curOffset++;
+			if(curOffset < offset) {
+				continue;
+			}
+			Map<String, Object> eventMap = new HashMap<>();
+			for (int i=0;i<eventScore.event.size();i++) {
+				eventMap.put(keys.get(i), eventScore.event.get(i));
+			}
+			eventMap.put(EVENT_SCORE, eventScore.score);
+			eventResultList.add(eventMap);
+			if(eventResultList.size() >= limit) {
+				break;
+			}
+		}
+		
+		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
+	}
+	
+	public static class OrderByEventScoreDesc implements Comparator<EventBulkScorer.EventScoreStore>{
+
+		@Override
+		public int compare(EventBulkScorer.EventScoreStore o1, EventBulkScorer.EventScoreStore o2) {
+			return o2.score > o1.score ? 1 : (o2.score < o1.score ? -1 : 0);
+		}
+		
 	}
 }

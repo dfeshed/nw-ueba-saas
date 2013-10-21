@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import fortscale.services.fe.ClassifierService;
+import fortscale.services.fe.EBSResult;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 
@@ -27,6 +29,9 @@ public class ApiInvestigateController {
 
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
+	
+	@Autowired
+	private ClassifierService classifierService;
 	
 	
 	@RequestMapping(value="investigate", method=RequestMethod.GET)
@@ -43,6 +48,14 @@ public class ApiInvestigateController {
 		return retBean;
 	}
 	
-	
+	@RequestMapping(value="investigateWithEBS", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public EBSResult investigateWithEBS(@RequestParam(required=true) String query,
+			@RequestParam(defaultValue="0") Integer offset,
+			@RequestParam(defaultValue="50") Integer limit,
+			Model model){
+		return classifierService.getEBSAlgOnQuery(query, offset, limit);
+	}
 	
 }
