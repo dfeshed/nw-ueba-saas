@@ -1,5 +1,6 @@
 {
     "name": "Bars Chart",
+    "icon": "icon-bar-chart",
     "settings": [
         {
             "id": "selectedIndex",

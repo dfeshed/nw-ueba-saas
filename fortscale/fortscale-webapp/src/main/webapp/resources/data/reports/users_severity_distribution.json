@@ -1,6 +1,7 @@
 {
     "dataSource": "api",
     "searchId": "users_severity_distribution",
+    "cache": "300s",
     "endpoint": {
         "entity": "classifier",
         "method": "dist",

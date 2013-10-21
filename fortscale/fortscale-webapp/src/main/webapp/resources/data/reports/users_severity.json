@@ -38,12 +38,12 @@
             "type": "array"
         }
     ],
+    "requiredParams": ["severity"],
     "params": [
         {
             "field": "severity",
             "type": "userId",
-            "dashboardParam": "usersSeverity",
-            "default": "Critical"
+            "dashboardParam": "usersSeverity"
         }
     ]
 }

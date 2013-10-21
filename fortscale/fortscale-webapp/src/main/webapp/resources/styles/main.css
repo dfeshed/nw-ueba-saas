@@ -634,19 +634,6 @@ body .ui-tooltip {
   margin-left: -275px;
   margin-top: -110px; }
 
-.btn {
-  background: -webkit-linear-gradient(top, #999999, #505050);
-  background: -moz-linear-gradient(top, #999999, #505050);
-  background: linear-gradient(top, #999999, #505050);
-  color: white;
-  text-shadow: none;
-  border-color: #666;
-  box-shadow: none;
-  cursor: pointer; }
-  .btn:hover {
-    background: #505050;
-    color: White; }
-
 .modal {
   position: fixed;
   top: 0;
@@ -1089,14 +1076,15 @@ body .ui-tooltip {
 
 .widget-tabs {
   position: relative;
-  top: 5px;
-  z-index: 4; }
+  z-index: 4;
+  overflow: hidden;
+  top: 1px; }
   .widget-tabs ul {
     list-style: none;
     margin: 0;
     padding: 0;
     position: relative;
-    overflow: hidden; }
+    top: 5px; }
   .widget-tabs li {
     display: inline-block;
     padding: 5px 10px;
@@ -1229,6 +1217,10 @@ body .ui-tooltip {
   text-decoration: none;
   cursor: pointer;
   line-height: 30px; }
+.investigator .investigator-widget-header {
+  margin-bottom: 15px; }
+  .investigator .investigator-widget-header .investigator-view-types {
+    float: right; }
 
 .control-notification {
   background: #dddddd;

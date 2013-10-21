@@ -1,17 +1,17 @@
 angular.module("FortscaleSignin").controller("SigninController", ["$scope", "auth", function($scope, auth){
     function validateEmailAndPasswords(){
         if (!$scope.email || !$scope.password){
-            $scope.error = "Please enter email and password";
+            $scope.error = { message: "Please enter email and password" };
             return;
         }
 
         if (!auth.validateUsername($scope.email)){
-            $scope.error = "Invalid email address";
+            $scope.error = { message: "Invalid email address" };
             return;
         }
 
         if (!$scope.password){
-            $scope.error = "Please enter password";
+            $scope.error = { message: "Please enter password" };
             return;
         }
 
@@ -20,33 +20,40 @@ angular.module("FortscaleSignin").controller("SigninController", ["$scope", "aut
 
     function validatePasswordsMatch(){
         if (!$scope.passwordConfirm){
-            $scope.error = "Please enter password confirmation";
+            $scope.error = { message: "Please enter password confirmation" };
             return;
         }
 
         if ($scope.password !== $scope.passwordConfirm){
-            $scope.error = "Passwords don't match";
+            $scope.error = { message: "Passwords don't match" };
             return;
         }
 
         return true;
     }
 
+    $scope.clearError = function(){
+        $scope.error = null;
+    };
+
     $scope.signIn = function(){
         var validated = validateEmailAndPasswords();
         if (!validated)
             return;
 
-        auth.login($scope.email, $scope.password, $scope.rememberMe).then(function(){
-            window.location.href = window.location.href.replace(/signin\.html.*/, "index.html#/d/main");
-        }, function(error){
-            $scope.error = error;
-        })
+        doLogin();
     };
 
+    function doLogin(){
+        auth.login($scope.email, $scope.password, $scope.rememberMe).then(function(){
+            window.location.href = window.location.href.replace(/\/[\w_\-]+\.html.*/, "/index.html#/d/main");
+        }, function(error){
+            $scope.error = error;
+        });
+    }
     $scope.signUp = function(){
         if (!$scope.firstName || !$scope.lastName){
-            $scope.error = "Please enter first name and last name";
+            $scope.error = { message: "Please enter first name and last name" };
             return;
         }
 
@@ -80,7 +87,7 @@ angular.module("FortscaleSignin").controller("SigninController", ["$scope", "aut
             return;
 
         auth.changePassword($scope.email, $scope.currentPassword, $scope.password).then(function(){
-            window.location.href = window.location.href.replace(/change_password\.html.*/, "index.html#/d/main");
+            doLogin();
         }, function(error){
             $scope.error = error;
         });

@@ -83,4 +83,12 @@
     cursor: pointer;
     line-height: 30px;
   }
+
+  .investigator-widget-header{
+    margin-bottom: 15px;
+
+    .investigator-view-types{
+      float: right
+    }
+  }
 }

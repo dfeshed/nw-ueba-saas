@@ -29,42 +29,6 @@
                         "sortBy": "trend"
                     },
                     {
-                        "name": "Machines",
-                        "field": "machines",
-                        "sortBy": "machines",
-                        "link": "#/d/investigator?entity=users_machines&username={{userId}}",
-                        "transform": {
-                            "method": "count"
-                        },
-                        "valueTooltip": {
-                            "field": "machines",
-                            "transform": {
-                                "method": "arrayJoin",
-                                "options": {
-                                    "joiner": "\n"
-                                }
-                            }
-                        }
-                    },
-                    {
-                        "name": "Groups",
-                        "field": "groups",
-                        "sortBy": "groups",
-                        "link": "#/d/investigator?entity=user_groups&username={{userId}}",
-                        "transform": {
-                            "method": "count"
-                        },
-                        "valueTooltip": {
-                            "field": "groups",
-                            "transform": {
-                                "method": "arrayJoin",
-                                "options": {
-                                    "joiner": "\n"
-                                }
-                            }
-                        }
-                    },
-                    {
                         "name": "Score",
                         "value": "{{score}}",
                         "sortBy": "score",

@@ -1,15 +1,15 @@
 .btn{
-  background: -webkit-linear-gradient(top, #999999, #505050);
-  background: -moz-linear-gradient(top, #999999, #505050);
-  background: linear-gradient(top, #999999, #505050);
-  color: white;
-  text-shadow: none;
-  border-color: #666;
-  box-shadow: none;
-  cursor: pointer;
+   background: -webkit-linear-gradient(top, #999999, #505050);
+   background: -moz-linear-gradient(top, #999999, #505050);
+   background: linear-gradient(top, #999999, #505050);
+   color: white;
+   text-shadow: none;
+   border-color: #666;
+   box-shadow: none;
+   cursor: pointer;
 
-  &:hover{
-    background: #505050;
-    color: White;
-  }
-}
+   &:hover{
+     background: #505050;
+     color: White;
+   }
+ }

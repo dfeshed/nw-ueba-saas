@@ -16,6 +16,8 @@ angular.module("Fortscale").controller("InvestigatorController", [
     $scope.paging = paging;
     $scope.allowMultipleEntities = false;
 
+    $scope.isDebug = !!localStorage.debug;
+
     $scope.sections = {
         sql: {
             collapsed: true

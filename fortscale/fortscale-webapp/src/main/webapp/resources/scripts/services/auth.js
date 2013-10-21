@@ -10,7 +10,22 @@ angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q,
         changePassword: function(username, currentPassword, newPassword){
             var deferred = $q.defer();
 
-            deferred.resolve();
+            $http({
+                method: "POST",
+                url: apiUrl + "changePassword",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                data: $.param({
+                    password: currentPassword,
+                    newPassword: newPassword,
+                    username: username
+                })
+            })
+                .success(function(response){
+                    deferred.resolve(response);
+                })
+                .error(function(error, httpCode){
+                    deferred.reject(error);
+                });
 
             return deferred.promise;
         },
@@ -102,7 +117,20 @@ angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q,
                     deferred.resolve(response);
                 })
                 .error(function(error, httpCode){
-                    var errorMessage = httpCode === 200 ? error : "Can't access server.";
+                    var errorMessage = { error: true };
+
+                    switch(httpCode){
+                        case 401:
+                            errorMessage.message = "User and password don't match.";
+                            break;
+                        case 403:
+                            errorMessage.message = "Password has expired.";
+                            errorMessage.expired = true;
+                            break;
+                        default:
+                            errorMessage.message = "Can't access server.";
+                    }
+
                     deferred.reject(errorMessage);
                 });
 

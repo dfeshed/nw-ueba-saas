@@ -1,7 +1,7 @@
 <div class="investigator" ng-controller="InvestigatorController">
     <div class="row-fluid">
         <div class="span4 investigator-menu">
-            <section>
+            <section ng-show="isDebug">
                 <h4 class="clickable" ng-click="sections.sql.collapsed = !sections.sql.collapsed">
                     <i class="icon-{{sections.sql.collapsed && 'plus' || 'minus'}} section-collapse-btn"
                        title="{{sections.sql.collapsed && 'Expand' || 'Collapse'}}"></i>
@@ -150,7 +150,7 @@
                     </div>
                 </div>
             </section>
-            <section ng-show="config.entities.length">
+            <section ng-show="config.entities.length && isDebug">
                 <h4 class="clickable" ng-click="sections.view.collapsed = !sections.view.collapsed">
                     <i class="icon-{{sections.view.collapsed && 'plus' || 'minus'}} section-collapse-btn"
                        title="{{sections.view.collapsed && 'Expand' || 'Collapse'}}"></i>
@@ -185,24 +185,14 @@
             </section>
         </div>
         <div class="span11 investigator-display">
-            <!--
-            <div ng-hide="noData || loading || error">
-                <ng-include src="'widgets/' + currentViewType.type + '/' + currentViewType.type + '.view.html'" ng-if="currentViewType"></ng-include>
-            </div>
-            <div class="widget-message widget-no-data" ng-show="noData">
-                No data found
-            </div>
-            <div class="widget-message widget-loading" ng-show="loading">
-                <span class="widget-loader"></span>
-                <div>Loading data</div>
-            </div>
-            <div class="widget-message widget-error" ng-show="error">
-                <span class="widget-error-message">
-                    <img src="images/exclamation.png" class="widget-error-icon" /><br />
-                    {{error}}
-                </span>
-            </div>
-            -->
+            <header class="investigator-widget-header" ng-show="isDebug">
+                <a class="btn btn-primary" ng-click="saveWidget()">{{newWidget ? "Create Widget" : "Save Widget"}}</a>
+                <div class="btn-group investigator-view-types">
+                    <a class="btn active" title="Circles chart"><i class="icon-circle"></i></a>
+                    <a class="btn" title="Bar chart (not implemented yet)"><i class="icon-bar-chart"></i></a>
+                    <a class="btn" title="Geolocation chart (not implemented yet)"><i class="icon-globe"></i></a>
+                </div>
+            </header>
             <div class="widget"
                  ng-repeat="widget in widgets"
                  ng-controller="WidgetController"

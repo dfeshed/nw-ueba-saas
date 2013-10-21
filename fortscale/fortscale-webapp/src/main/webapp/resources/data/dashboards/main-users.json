@@ -1,8 +1,5 @@
 {
     "dashboardId": "main-users",
-    "params": {
-        "usersSeverity": "Critical"
-    },
     "className": "inner-dashboard",
     "columns": [
         {

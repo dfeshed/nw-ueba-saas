@@ -71,7 +71,7 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($
                 if (forceRefresh)
                     cache.removeItem(cacheItemKey);
 
-                if (report.cache){
+                if (report.query.cache){
                     var cachedData = cache.getItem(cacheItemKey, { hold: true });
                     if (cachedData){
                         deferred.resolve(cachedData);
@@ -122,8 +122,8 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($
                             }
 
                             deferred.resolve(transformedResults);
-                            if (report.cache)
-                                cache.setItem(cacheItemKey, transformedResults, { expiresIn: getInSeconds(report.cache), hold: true });
+                            if (report.query.cache)
+                                cache.setItem(cacheItemKey, transformedResults, { expiresIn: getInSeconds(report.query.cache), hold: true });
                         }
                         catch(error){
                             deferred.reject({ error: "Can't transform data: " + error.message });
@@ -131,8 +131,8 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($
                     }
                     else{
                         deferred.resolve(results);
-                        if (report.cache)
-                            cache.setItem(cacheItemKey, results, { expiresIn: getInSeconds(report.cache), hold: true });
+                        if (report.query.cache)
+                            cache.setItem(cacheItemKey, results, { expiresIn: getInSeconds(report.query.cache), hold: true });
                     }
                 }, deferred.reject);
 

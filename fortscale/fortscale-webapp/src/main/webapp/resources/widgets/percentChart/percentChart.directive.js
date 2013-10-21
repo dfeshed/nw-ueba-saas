@@ -13,6 +13,7 @@ angular.module("PercentChartWidget").directive("yoxigenPercentChart", ["$rootSco
             var labelTexts, labelBoxes;
             var selectItem;
             var rects;
+            var selectedOnLoad;
 
             var defaultOptions = {
                     selectable: false,
@@ -194,12 +195,14 @@ angular.module("PercentChartWidget").directive("yoxigenPercentChart", ["$rootSco
                 if (selectedBarGroup !== null && selectedBarGroup !== undefined && selectItem)
                     selectItem(data[selectedBarGroup], selectedBarGroup);
 
-                if (options.selectFirstOnLoad && selectItem){
+                if (!selectedOnLoad && options.selectFirstOnLoad && selectItem){
                     setTimeout(function(){
                         $rootScope.$apply(function(){
                             jQuery(rects[0][0]).click();
                         });
                     });
+
+                    selectedOnLoad = true;
                 }
 
                 function getBarWidth(barIndex){

@@ -1,5 +1,6 @@
 {
     "dataSource": "api",
+    "cache": "300s",
     "endpoint": {
         "entity": "classifier",
         "method": "loginsEvents"

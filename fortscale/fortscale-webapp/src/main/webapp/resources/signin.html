@@ -42,8 +42,8 @@
             <div class="content-wrap">
                 <h6>Log in</h6>
                 <form ng-submit="signIn()">
-                    <input class="span15" type="text" placeholder="E-mail address" ng-model="email">
-                    <input class="span15" type="password" placeholder="Your password" ng-model="password">
+                    <input class="span15" type="text" placeholder="E-mail address" ng-model="email" ng-focus="clearError()">
+                    <input class="span15" type="password" placeholder="Your password" ng-model="password" ng-focus="clearError()">
                     <a href="#" class="forgot">Forgot password?</a>
                     <div class="remember">
                         <input id="remember-me" type="checkbox" ng-model="rememberMe">
@@ -51,7 +51,8 @@
                     </div>
                     <div class="alert alert-error" ng-show="error">
                         <i class="icon-remove-sign"></i>
-                        {{error}}
+                        {{error.message}}
+                        <a ng-show="error.expired" href="change_password.html">Change password</a>
                     </div>
                     <input type="submit" class="btn-glow primary login" value="Sign In" />
                 </form>

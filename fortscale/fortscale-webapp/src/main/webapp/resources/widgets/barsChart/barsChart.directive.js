@@ -465,7 +465,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     }
 
                     rects
-                        .attr("width", rectWidth)
+                        .attr("width", Math.max(0, rectWidth))
                         .attr("height", function (d) {
                             return fitToGrid(scale(d[series.field]));
                         })
