@@ -7,6 +7,7 @@ import java.util.Date;
 public class ADUserParser {
 
 	public static final String DATE_FORMAT = "yyyy/MM/dd'T'HH:mm:ss" ;
+	public static final String TIMESTAMP_FORMAT = "yyyy/MM/dd'T'HH:mm" ;
 	public static final String ATTRIBUTE_OU_PREFIX = "OU=";
 	
 	
@@ -14,6 +15,12 @@ public class ADUserParser {
 		int ouIndex = dn.indexOf(ATTRIBUTE_OU_PREFIX);
 
 		return (ouIndex==-1) ? null : dn.substring(ouIndex);  
+	}
+	
+	
+	public Date parseTimestamp(String dateString) throws ParseException {
+		SimpleDateFormat pattern = new SimpleDateFormat(TIMESTAMP_FORMAT);
+		return pattern.parse(dateString);
 	}
 	
 	
