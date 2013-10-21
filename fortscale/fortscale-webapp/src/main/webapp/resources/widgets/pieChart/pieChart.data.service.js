@@ -35,14 +35,17 @@ angular.module("PieChartWidget").factory("pieChartWidgetData", ["utils", "transf
 
                 if (setProperties){
                     var itemProperties = getItemProperties(item),
-                        itemPropertyValues;
+                        itemPropertyValues,
+                        propertyValue;
 
                     for(var propertyName in itemProperties){
                         itemPropertyValues = itemLabelIndex.properties[propertyName];
                         if (!itemPropertyValues)
                             itemPropertyValues = itemLabelIndex.properties[propertyName] = [];
 
-                        if (!~itemPropertyValues.indexOf(itemProperties[propertyName]))
+                        propertyValue = itemProperties[propertyName];
+
+                        if (propertyValue && !~itemPropertyValues.indexOf(propertyValue) && propertyValue !== "-")
                             itemPropertyValues.push(itemProperties[propertyName]);
                     }
                 }

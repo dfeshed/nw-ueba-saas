@@ -16,6 +16,15 @@ angular.module("Fortscale").controller("InvestigatorController", [
     $scope.paging = paging;
     $scope.allowMultipleEntities = false;
 
+    $scope.sections = {
+        sql: {
+            collapsed: true
+        },
+        view: {
+            collapsed: false
+        }
+    };
+
     $scope.selectEntity = function(update){
         $scope.config.entities = [$scope.currentEntity];
 
@@ -271,6 +280,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
                         if (!sortField){
                             fieldSetting.sortDirection = -1;
                             tableSort = { field: field.id, direction: -1 };
+                            sortField = field;
                         }
                     }
 
@@ -442,26 +452,44 @@ angular.module("Fortscale").controller("InvestigatorController", [
         return sort;
     }
 
-    function getData(){
-        $scope.widget.report = {
+    function setDisplayWidget(){
+        $scope.widgets = [{
+            title: "[Untitled Widget]",
+            views: [{
+                type: $scope.config.view.type,
+                settings: angular.extend($scope.currentViewSettings, paging)
+            }]
+        }];
+
+        $scope.widgets[0].report = {
             query: {
-                entities: $scope.config.entities,
-                fields: getQueryFields(),
-                conditions: getQueryConditions(),
-                paging: paging,
-                sort: tableSort && tableSort.field ? tableSort : getEntityDefaultSort($scope.config.entities[0])
+                dataSource: "api",
+                sql: true,
+                endpoint: {
+                    entities: $scope.config.entities,
+                    fields: getQueryFields(),
+                    conditions: getQueryConditions(),
+                    paging: paging,
+                    sort: tableSort && tableSort.field ? tableSort : getEntityDefaultSort($scope.config.entities[0])
+                }
             }
         };
+    }
+    function getData(){
+        setDisplayWidget();
 
+        /*
         $scope.error = null;
         $scope.loading = true;
         $scope.noData = false;
 
-        var dataPromise = getDataFromServer ? server.sqlQuery($scope.widget.report.query) :  database.query($scope.widget.report.query);
+
+        var dataPromise = getDataFromServer ? server.sqlQuery($scope.widgets[0].report.query) :  database.query($scope.widgets[0].report.query);
         dataPromise.then(setViewData, function(error){
             $scope.error = "Can't get results.";
             $scope.loading = false;
         });
+        */
     }
 
     function setViewData(results){
@@ -469,7 +497,8 @@ angular.module("Fortscale").controller("InvestigatorController", [
             rawData = results;
 
         $scope.view.settings = $scope.currentViewSettings;
-
+        setDisplayWidget();
+        /*
         var widgetDataParser = widgetsData[$scope.view.type];
         $scope.view.data = widgetDataParser ? widgetDataParser($scope.view, rawData.data, {}) : rawData.data;
         $scope.view.dataTotalResults = rawData.total;
@@ -477,6 +506,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
 
         if (!results.data.length)
             $scope.noData = true;
+            */
     }
 
     function getTypeDefaultValue(type){
@@ -659,30 +689,32 @@ angular.module("Fortscale").controller("InvestigatorController", [
         if (viewType === widgetTypesData.table){
             getEntityTableFields($scope.config.entities, findSettingDefinition(viewType.settings, "fields"));
         }
-        else if (viewType === widgetTypesData.pieChart){
-            var firstNumericField,
-                firstStringField;
+        else{
+            if (viewType === widgetTypesData.pieChart){
+                var firstNumericField,
+                    firstStringField;
 
-            for(var i= 0, field; field = $scope.fields[i]; i++){
-                if (!field.enabled)
-                    continue;
+                for(var i= 0, field; field = $scope.fields[i]; i++){
+                    if (!field.enabled)
+                        continue;
 
-                if (field.type === "number"){
-                    firstNumericField = field;
-                    if (firstStringField)
-                        break;
+                    if (field.type === "number"){
+                        firstNumericField = field;
+                        if (firstStringField)
+                            break;
+                    }
+                    else if (field.type === "string"){
+                        firstStringField = field;
+                        if (firstNumericField)
+                            break;
+                    }
                 }
-                else if (field.type === "string"){
-                    firstStringField = field;
-                    if (firstNumericField)
-                        break;
-                }
+
+                if (firstNumericField)
+                    $scope.currentViewSettings.chartValue = firstNumericField.id;
+                if (firstStringField)
+                    $scope.currentViewSettings.chartLabel = firstStringField.id;
             }
-
-            if (firstNumericField)
-                $scope.currentViewSettings.chartValue = firstNumericField.id;
-            if (firstStringField)
-                $scope.currentViewSettings.chartLabel = firstStringField.id;
         }
 
         if ($scope.config.view){
@@ -707,7 +739,14 @@ angular.module("Fortscale").controller("InvestigatorController", [
                 }
 
                 $scope.viewTypes = widgetTypesData;
-                setCurrentView(widgetTypesData[$location.search().viewType || "table"]);
+
+                var viewType = $location.search().viewType;
+                if (!viewType){
+                    viewType = "table";
+                    $scope.sections.view.collapsed = true;
+                }
+
+                setCurrentView(widgetTypesData[viewType]);
 
                 if ($location.search().sql)
                     setViewData(rawData);

@@ -76,6 +76,13 @@
                         Limit
                         <input type="number" min="0" ng-model="paging.pageSize" ng-change="onFieldChange()" />
                     </label>
+                    <!--
+                    <div ng-show="groupBy">
+                        <label>
+                            Group By: <select ng-model="groupBy" ng-options="field.id as field.name group by field.entity.name for field in fields"></select>
+                        </label>
+                    </div>
+                    -->
                     <div ng-repeat="entity in config.entities">
                         <h5 ng-if="allowMultipleEntities">{{entity.name}}</h5>
                         <table class="investigator-fields table table-hover widget-table">
@@ -178,6 +185,7 @@
             </section>
         </div>
         <div class="span11 investigator-display">
+            <!--
             <div ng-hide="noData || loading || error">
                 <ng-include src="'widgets/' + currentViewType.type + '/' + currentViewType.type + '.view.html'" ng-if="currentViewType"></ng-include>
             </div>
@@ -193,6 +201,14 @@
                     <img src="images/exclamation.png" class="widget-error-icon" /><br />
                     {{error}}
                 </span>
+            </div>
+            -->
+            <div class="widget"
+                 ng-repeat="widget in widgets"
+                 ng-controller="WidgetController"
+                 ng-init="initWidget(widget)"
+                 ng-class="{ 'widget-loading': widget.loading }">
+                <ng-include src="'views/widgets/widget.html'"></ng-include>
             </div>
         </div>
     </div>

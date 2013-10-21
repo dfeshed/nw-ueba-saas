@@ -48,14 +48,25 @@ angular.module('PieChartWidget')
                         });
 
                         angular.forEach(data.chartValues, function(item){
-                            item.value = Math.round(item.value * 100 / total);
+                            item.value = item.value * 100 / total;
                         });
                     }
 
                     var donut = Morris.Donut({
                         element: chart,
                         data: data.chartValues,
-                        formatter: function (y) { return y + (settings.calculatePercent ? "%" : "") }
+                        formatter: function (y) {
+                            var value;
+
+                            if (settings.calculatePercent){
+                                value = y < 1 ? "< 1%" :
+                                    y > 99 && y < 100 ? "> 99%" : Math.round(y) + "%";
+                            }
+                            else
+                                value = y.toFixed(2);
+
+                            return value;
+                        }
                     });
 
                     if (settings.showInfo){

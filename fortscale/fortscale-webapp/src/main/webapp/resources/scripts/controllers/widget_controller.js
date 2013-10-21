@@ -35,7 +35,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
             runReport: function(options, event, data){
                 var deferred = $q.defer();
 
-                reports. runReport(options.report, data, true).then(function(results){
+                reports.runReport(options.report, data, true).then(function(results){
                     deferred.resolve(results);
                 }, deferred.reject);
 

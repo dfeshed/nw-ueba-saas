@@ -10,7 +10,8 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
     });
 
     function queryToSql(query, isCount){
-        var sql = ["SELECT"];
+        var sql = ["SELECT"],
+            sqlStr;
 
         var tables = [];
         angular.forEach(query.entities, function(entity){
@@ -27,13 +28,25 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
         if (query.conditions && query.conditions.length)
             sql.push("WHERE", conditions.conditionsToSql(query.conditions));
 
-        if (query.sort)
-            sql.push("ORDER BY " + query.sort.field + (query.sort.direction === 1 ? " ASC" : " DESC"));
+        if (!isCount){
+            if (query.sort)
+                sql.push("ORDER BY " + query.sort.field + (query.sort.direction === 1 ? " ASC" : " DESC"));
 
-        if (query.paging)
-            sql.push("LIMIT", query.paging.pageSize);
+            if (query.paging)
+                sql.push("LIMIT", query.paging.page ? query.paging.page * query.paging.pageSize : query.paging.pageSize);
 
-        return sql.join(" ");
+            sqlStr = sql.join(" ");
+
+            if (query.paging && query.paging.page && query.paging.page > 1){
+                sqlStr = "SELECT * FROM (" + sqlStr + ") as tmp" + (query.sort ? " ORDER BY tmp." + query.sort.field + " " + (query.sort.direction === 1 ? "DESC" : "ASC") : "") + " LIMIT " + query.paging.pageSize;
+                if (query.sort)
+                    sqlStr = "SELECT * FROM (" + sqlStr + ") as tmpOrder ORDER BY tmpOrder." + query.sort.field + " " + (query.sort.direction === 1 ? "ASC" : "DESC") + " LIMIT " + query.paging.pageSize;
+            }
+        }
+        else
+            sqlStr = sql.join(" ");
+
+        return sqlStr;
     }
 
     var methods = {
@@ -68,12 +81,15 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
             return deferred.promise;
         },
         queryServer: function (query, params, options) {
+            if (query.sql)
+                return methods.sqlQuery(query.endpoint, params, options);
+
             var deferred = $q.defer();
 
             if (query.endpoint && query.endpoint.sql){
                 query.endpoint.entity = "investigate";
                 query.endpoint.query = utils.strings.parseValue(query.endpoint.sql, {}, params);
-                query.endpoint.countQuery = query.endpoint.query.replace(/SELECT (.*) FROM/i, "SELECT COUNT(*) FROM");
+                //query.endpoint.countQuery = query.endpoint.query.replace(/SELECT (.*) FROM/i, "SELECT COUNT(*) FROM");
             }
 
             var resource = query.endpoint.subEntityName ? apiWithSubEntityResource : apiResource,

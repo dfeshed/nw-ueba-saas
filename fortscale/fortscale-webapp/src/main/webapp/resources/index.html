@@ -188,7 +188,7 @@
            ng-style="{ color:fieldData.style.color }"
            ng-class="{ 'event-field-{{fieldData.id}}': fieldData.field.events }"
            href="{{fieldData.link}}"
-            title="{{fieldData.tooltip}}">{{fieldData.display}}</a>
+           title="{{fieldData.tooltip}}">{{fieldData.display}}</a>
         <progress-bar ng-if="fieldData.field.type == 'progressBar'"
                       settings="{{fieldData.field.progressBarSettings}}"
                       ng-model="fieldData.display"

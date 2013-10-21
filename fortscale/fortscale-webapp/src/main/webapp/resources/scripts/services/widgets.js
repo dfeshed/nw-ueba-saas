@@ -117,8 +117,6 @@ angular.module("Fortscale").factory("widgets", [
     }
 
     var viewTypeSetData = {
-        barsChart: widgetsData.barsChart,
-        percentChart: widgetsData.percentChart,
         button: function(view, data, params){
             return {
                 text: parseFieldValue(view.settings, view.settings.text, data, 0, params)
@@ -234,10 +232,6 @@ angular.module("Fortscale").factory("widgets", [
 
             return viewData;
         },
-        pieChart: widgetsData.pieChart,
-        properties: widgetsData.properties,
-        table: widgetsData.table,
-        tabs: widgetsData.tabs,
         text: function(view, data, params){
             var viewData = [];
 
@@ -259,6 +253,8 @@ angular.module("Fortscale").factory("widgets", [
             return viewData;
         }
     };
+
+    angular.extend(viewTypeSetData, widgetsData);
 
     var methods = {
         checkRequiredParams: function(widget, params){

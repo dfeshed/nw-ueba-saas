@@ -167,7 +167,8 @@ angular.module("TableWidget").controller("TableWidgetController", ["$scope", "$t
         if (($scope.widget && $scope.widget.totalResults) || $scope.view.dataTotalResults){
             $scope.tablePagingData = {
                 itemsPerPage: $scope.view.settings.pageSize,
-                totalCount: $scope.widget.totalResults || $scope.view.dataTotalResults
+                totalCount: $scope.widget.totalResults || $scope.view.dataTotalResults,
+                currentPage: $scope.view.settings.page || 1
             };
         }
     }

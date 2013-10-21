@@ -66,8 +66,12 @@
                 }
                 else if (report.dataSource === "database")
                     return database.query(report.query, params, report.params);
-                else
+                else if (report.searchId)
                     return server.query(report.searchId, params, report.options);
+
+                deferred = $q.defer();
+                deferred.reject("Invalid data search.");
+                return deferred.promise;
             }
         },
         widgets: {
