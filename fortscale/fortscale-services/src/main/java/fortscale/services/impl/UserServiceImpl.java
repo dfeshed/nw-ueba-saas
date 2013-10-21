@@ -214,21 +214,24 @@ public class UserServiceImpl implements UserService{
 		if(classifierScore != null && isOnSameDay(currentDate, classifierScore.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)){
 			
 			if(!classifierScore.getPrevScores().isEmpty()){
-				ScoreInfo scoreInfo = null;
-				for(int i = classifierScore.getPrevScores().size() -1; i >= 0; i--){
-					scoreInfo = classifierScore.getPrevScores().get(i);
-					if(isOnSameDay(currentDate, scoreInfo.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)) {
-						UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
-						ret.add(userScoreHistoryElement);
-					}
-				}
+				ScoreInfo scoreInfo = classifierScore.getPrevScores().get(0);
+				int i = 0;
 				if(isOnSameDay(classifierScore.getTimestamp(), scoreInfo.getTimestamp())){
 					if(classifierScore.getScore() >= scoreInfo.getScore()){
 						UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
-						ret.set(classifierScore.getPrevScores().size() -1, userScoreHistoryElement);
+						ret.add(userScoreHistoryElement);
+						i++;
 					}
 				} else{
 					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
+					ret.add(userScoreHistoryElement);
+				}
+				for(; i < classifierScore.getPrevScores().size(); i++){
+					scoreInfo = classifierScore.getPrevScores().get(i);
+					if(!isOnSameDay(currentDate, scoreInfo.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)) {
+						break;
+					}
+					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
 					ret.add(userScoreHistoryElement);
 				}
 			} else{
@@ -255,7 +258,10 @@ public class UserServiceImpl implements UserService{
 		if(toIndex > ret.size()) {
 			toIndex = ret.size();
 		}
-		return ret.subList(offset, toIndex);
+		
+		ret = ret.subList(offset, toIndex);
+		Collections.reverse(ret);
+		return ret;
 	}
 
 	@Override
