@@ -75,7 +75,7 @@ public class ADManager {
 		ADUserParser adUserParser = new ADUserParser();
 		for (AdUser adUser : userAttributes) {
 			try {
-				timeStamp = adUserParser.parseDate(adUser.getTimestamp());
+				timeStamp = adUserParser.parseTimestamp(adUser.getTimestamp());
 				break;
 			}
 			catch (ParseException e) {
