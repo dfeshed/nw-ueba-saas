@@ -29,6 +29,8 @@ public interface AuthDAO {
 	
 	public Date getLastRunDate();
 	
+	public Long getLastRuntime();
+	
 	public double calculateAvgScoreOfGlobalScore(Date timestamp);
 	
 	public List<AuthScore> getTopUsersAboveThreshold(Threshold threshold, Date timestamp, int limit);

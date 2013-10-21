@@ -17,6 +17,7 @@ import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.EBSResult;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.EBSResultBean;
 
 
 
@@ -51,11 +52,23 @@ public class ApiInvestigateController {
 	@RequestMapping(value="investigateWithEBS", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public EBSResult investigateWithEBS(@RequestParam(required=true) String query,
+	public DataBean<EBSResultBean> investigateWithEBS(@RequestParam(required=true) String query,
 			@RequestParam(defaultValue="0") Integer offset,
 			@RequestParam(defaultValue="50") Integer limit,
 			Model model){
-		return classifierService.getEBSAlgOnQuery(query, offset, limit);
+		DataBean<EBSResultBean> retBean = new DataBean<>();
+		EBSResult ebsResult = classifierService.getEBSAlgOnQuery(query, offset, limit);
+		retBean.setData(new EBSResultBean(ebsResult));
+		retBean.setOffset(ebsResult.getOffset());
+		retBean.setTotal(ebsResult.getTotal());
+		return retBean;
+	}
+	
+	@RequestMapping(value="getLatestRuntime", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public Long getLatestRuntime(@RequestParam(required=true) String tableName,	Model model){
+		return classifierService.getLatestRuntime(tableName);
 	}
 	
 }

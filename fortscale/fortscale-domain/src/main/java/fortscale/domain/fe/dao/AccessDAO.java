@@ -129,6 +129,13 @@ public abstract class AccessDAO<T>  extends ImpalaDAO<T>{
 
 
 	public Date getLastRunDate(){
+		Long lastRun = getLastRuntime();
+		Date retDate = parseTimestampDate(lastRun);
+		lastRunDate = retDate;
+		return retDate;
+	}
+	
+	public Long getLastRuntime() {
 		if(lastRunDate == null) {
 			Calendar tmp = Calendar.getInstance();
 			tmp.add(Calendar.DAY_OF_MONTH,-1);
@@ -140,9 +147,8 @@ public abstract class AccessDAO<T>  extends ImpalaDAO<T>{
 		if(lastRun == null) {
 			lastRun = impalaJdbcTemplate.queryForObject(query, Long.class);
 		}
-		Date retDate = parseTimestampDate(lastRun);
-		lastRunDate = retDate;
-		return retDate;
+		
+		return lastRun;
 	}
 
 

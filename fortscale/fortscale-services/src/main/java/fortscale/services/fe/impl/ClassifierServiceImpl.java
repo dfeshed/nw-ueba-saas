@@ -472,4 +472,15 @@ public class ClassifierServiceImpl implements ClassifierService {
 		}
 		
 	}
+	
+	@Override
+	public Long getLatestRuntime(String tableName) {
+		Long retLong = null;
+		if(AuthScore.TABLE_NAME.equals(tableName)) {
+			retLong = authDAO.getLastRuntime();
+		} else if (VpnScore.TABLE_NAME.equals(tableName)) {
+			retLong = vpnDAO.getLastRuntime();
+		}
+		return retLong;
+	}
 }

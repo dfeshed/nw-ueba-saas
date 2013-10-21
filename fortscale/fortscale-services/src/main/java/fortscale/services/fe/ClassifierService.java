@@ -18,4 +18,5 @@ public interface ClassifierService {
 	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit);
 	
 	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit);
+	public Long getLatestRuntime(String tableName);
 }

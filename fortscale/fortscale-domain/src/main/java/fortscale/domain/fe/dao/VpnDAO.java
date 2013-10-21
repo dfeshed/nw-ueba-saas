@@ -28,6 +28,8 @@ public interface VpnDAO {
 	
 	public Date getLastRunDate();
 	
+	public Long getLastRuntime();
+	
 	public double calculateAvgScoreOfGlobalScore(Date timestamp);
 	
 	public List<VpnScore> getTopUsersAboveThreshold(Threshold threshold, Date timestamp, int limit);
