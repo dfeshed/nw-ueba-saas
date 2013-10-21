@@ -81,7 +81,6 @@ public class ADManager {
 			catch (ParseException e) {
 				logger.error("Error while parsing timestamp date: {}", adUser.getTimestamp(), e);
 			}
-			
 		}
 	}
 	
