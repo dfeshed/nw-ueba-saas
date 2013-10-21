@@ -111,4 +111,10 @@ public class AuthDAOImpl implements AuthDAO {
 		return null;
 	}
 
+	@Override
+	public Long getLastRuntime() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -13,6 +13,7 @@
 	
 	<beans:bean id="noRedirectAuthenticationSuccessHandler" class="fortscale.web.NoRedirectAuthenticationSuccessHandler"/>
 	<beans:bean id="authenticationFailureHandler" class="fortscale.web.AuthenticationFailureHandlerImpl"/>
+	<beans:bean id="accessDeniedHandler" class="fortscale.web.AccessDeniedHandlerImpl"/>
 
 	<http auto-config="true" use-expressions="true">
 <!-- 		<intercept-url pattern="/api/**" access="permitAll" /> -->
@@ -36,16 +37,17 @@
 		<intercept-url pattern="/scripts/services/**" access="permitAll" />
 		<intercept-url pattern="/styles/**" access="permitAll" />
 		<intercept-url pattern="/views/**" access="permitAll" />
+		<intercept-url pattern="/admin.html" access="hasRole('ROLE_ADMIN')" />
 		<intercept-url pattern="/api/admin/analyst/addAnalyst" access="hasRole('ROLE_ADMIN')" />
 		<intercept-url pattern="/api/admin/analyst/details" access="hasRole('ROLE_ADMIN')" />
 		<intercept-url pattern="/api/admin/analyst/" access="hasRole('ROLE_ADMIN')" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 
-		<form-login login-page="/signin.html" authentication-failure-url="/change_password.html"
+		<form-login login-page="/signin.html" authentication-failure-handler-ref="authenticationFailureHandler"
 		 always-use-default-target="false" authentication-success-handler-ref="noRedirectAuthenticationSuccessHandler" 
 		 login-processing-url="/api/analyst/login"/>
 
-		<access-denied-handler error-page="/404" />
+		<access-denied-handler ref="accessDeniedHandler"/>
 
 		<logout invalidate-session="true" logout-success-url="/signin.html"
 			logout-url="/api/analyst/logout" />
