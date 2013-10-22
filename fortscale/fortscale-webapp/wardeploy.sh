@@ -10,7 +10,7 @@ dst_dir="/var/lib/tomcat6/webapps/fortscale-webapp"
 dst_file="${dst_dir}.war"
 
 # cleanup old files
-if [ -d ${dst_dir} ];
+if [ -d ${dst_dir} ]; then
     sudo /bin/rm -fr "${dst_dir}"
     res=$?
     if [ $res -ne 0 ]; then
