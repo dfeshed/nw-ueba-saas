@@ -66,6 +66,7 @@
             "type": "number"
         }
     ],
+    "requiredParams": ["date", "attribute"],
     "params": [
         {
             "field": "id",

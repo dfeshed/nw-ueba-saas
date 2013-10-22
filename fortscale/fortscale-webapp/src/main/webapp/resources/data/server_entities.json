@@ -114,5 +114,66 @@
                 "type": "date"
             }
         ]
+    },
+    {
+        "name": "Users",
+        "id": "ldapUsers",
+        "fields": [
+            {
+                "id": "displayname",
+                "name": "Name",
+                "type": "string"
+            },
+            {
+                "id": "primarygroupid",
+                "name": "Primary Group ID",
+                "type": "string"
+            },
+            {
+                "id": "memberof",
+                "name": "Member Of",
+                "type": "string"
+            },
+            {
+                "id": "manager",
+                "name": "Manager",
+                "type": "string"
+            },
+            {
+                "id": "department",
+                "name": "Department",
+                "type": "string"
+            },
+            {
+                "id": "mail",
+                "name": "Mail",
+                "type": "string"
+            },
+            {
+                "id": "homephone",
+                "name": "Home Phone",
+                "type": "string"
+            },
+            {
+                "id": "mobile",
+                "name": "Mobile",
+                "type": "string"
+            },
+            {
+                "id": "title",
+                "name": "Title",
+                "type": "string"
+            },
+            {
+                "id": "pwdlastset",
+                "name": "PWD Last Set",
+                "type": "string"
+            },
+            {
+                "id": "whencreated",
+                "name": "Created",
+                "type": "string"
+            }
+        ]
     }
 ]

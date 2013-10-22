@@ -18,13 +18,13 @@
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
                         "sortBy": "sourceIp",
-                        "link": "#/d/investigator?entities=authenticationscores&userid={{@entityId}}&sourceip={{sourceIp}}"
+                        "link": "#/d/investigator?entities=authenticationscores&userid={{username}}&sourceip={{sourceIp}}"
                     },
                     {
                         "name": "Destination Hostname",
                         "value": "{{destinationHostname}}",
                         "sortBy": "destinationHostname",
-                        "link": "#/d/investigator?entities=authenticationscores&userid={{@entityId}}&targetid={{destinationHostname}}"
+                        "link": "#/d/investigator?entities=authenticationscores&userid={{username}}&targetid={{destinationHostname}}"
                     },
                     {
                         "name": "Time",

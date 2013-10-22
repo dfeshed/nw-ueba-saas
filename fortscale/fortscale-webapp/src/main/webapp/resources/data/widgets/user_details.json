@@ -27,6 +27,11 @@
                         "value": "{{department}}"
                     },
                     {
+                        "icon": "phone",
+                        "tooltip": "Home phone",
+                        "value": "{{homePhone}}"
+                    },
+                    {
                         "icon": "mobile-phone",
                         "tooltip": "Mobile phone",
                         "value": "{{mobilePhone}}"

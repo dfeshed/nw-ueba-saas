@@ -89,7 +89,7 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
             if (query.endpoint && query.endpoint.sql){
                 query.endpoint.entity = "investigate";
                 query.endpoint.query = utils.strings.parseValue(query.endpoint.sql, {}, params);
-                //query.endpoint.countQuery = query.endpoint.query.replace(/SELECT (.*) FROM/i, "SELECT COUNT(*) FROM");
+                query.endpoint.countQuery = query.endpoint.query.replace(/SELECT (.*) FROM/i, "SELECT COUNT(*) FROM").replace(/\slimit\s\d+/i, "");
             }
 
             var resource = query.endpoint.subEntityName ? apiWithSubEntityResource : apiResource,

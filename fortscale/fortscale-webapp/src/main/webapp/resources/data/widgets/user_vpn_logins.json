@@ -18,13 +18,13 @@
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
                         "sortBy": "sourceIp",
-                        "link": "#/d/investigator?entities=vpndatares&username={{@entityId}}&source_ip={{sourceIp}}"
+                        "link": "#/d/investigator?entities=vpndatares&username={{username}}&source_ip={{sourceIp}}"
                     },
                     {
                         "name": "Internal IP",
                         "value": "{{internalIP}}",
                         "sortBy": "internalIP",
-                        "link": "#/d/investigator?entities=vpndatares&username={{@entityId}}&local_ip={{internalIP}}"
+                        "link": "#/d/investigator?entities=vpndatares&username={{username}}&local_ip={{internalIP}}"
                     },
                     {
                         "name": "Time",

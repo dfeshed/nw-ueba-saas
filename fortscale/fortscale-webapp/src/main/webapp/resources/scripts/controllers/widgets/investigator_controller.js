@@ -479,19 +479,6 @@ angular.module("Fortscale").controller("InvestigatorController", [
     }
     function getData(){
         setDisplayWidget();
-
-        /*
-        $scope.error = null;
-        $scope.loading = true;
-        $scope.noData = false;
-
-
-        var dataPromise = getDataFromServer ? server.sqlQuery($scope.widgets[0].report.query) :  database.query($scope.widgets[0].report.query);
-        dataPromise.then(setViewData, function(error){
-            $scope.error = "Can't get results.";
-            $scope.loading = false;
-        });
-        */
     }
 
     function setViewData(results){

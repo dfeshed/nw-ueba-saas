@@ -211,13 +211,12 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
             var showTimeoutPromise;
             scope.$on("show", function () {
                 $timeout.cancel(showTimeoutPromise);
-
                 showTimeoutPromise = $timeout(function () {
-                    drawChart();
+                    drawChart(false);
                 });
             });
 
-            function drawChart() {
+            function drawChart(selectBar) {
                 if (!data || !settings)
                     return;
 
@@ -329,7 +328,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                 if (selectedBarGroup !== undefined && selectItem) {
                     selectItem(data[selectedBarGroup], selectedBarGroup);
 
-                    if (settings.selectedIndex) {
+                    if (settings.selectedIndex && selectBar !== false) {
                         angular.forEach(settings.events, function (eventSettings) {
                             if (eventSettings.eventName === "click")
                                 scope.$emit("widgetEvent", { event: eventSettings, data: data[selectedBarGroup], widget: scope.widget });

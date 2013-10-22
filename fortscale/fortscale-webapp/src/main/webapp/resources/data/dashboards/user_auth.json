@@ -23,6 +23,7 @@
                 },
                 {
                     "widgetId": "user_logins",
+                    "id": "scoreHistoryWidgetLogins",
                     "report": {
                         "query": {
                             "requiredParams": ["date"],

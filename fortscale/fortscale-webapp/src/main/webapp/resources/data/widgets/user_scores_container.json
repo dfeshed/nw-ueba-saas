@@ -29,7 +29,8 @@
                                         "actionOptions": {
                                             "updateUrl": false,
                                             "params": {
-                                                "currentFeature": null
+                                                "currentFeature": null,
+                                                "date": null
                                             }
                                         }
                                     }
@@ -42,6 +43,7 @@
                     "widgetId": "user_scores"
                 },
                 {
+                    "id": "userScores_scoreDashboard",
                     "renderControls": false,
                     "renderHeader": false,
                     "refreshOn": "currentFeature",

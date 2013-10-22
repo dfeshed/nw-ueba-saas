@@ -1,6 +1,7 @@
 angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout", "$rootScope", "$q", "dashboards", "widgets", "reports", "transforms", "conditions", "controls",
     function($scope, $timeout, $rootScope, $q, dashboards, widgets, reports, transforms, conditions, controls){
-        var eventDeregistrationFunctions = [];
+        var eventDeregistrationFunctions = [],
+            createdRefreshOnListeners;
 
         $scope.widget.params = $scope.widget.params || {};
         setWidgetTitle();
@@ -29,7 +30,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
             },
             refreshWidget: function(options, event, data){
                 $scope.safeApply(function(){
-                    $scope.runWidgetReport($scope.widget, true);
+                    $scope.runWidgetReport(true);
                 });
             },
             runReport: function(options, event, data){
@@ -80,7 +81,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
 
         var widgetSettings = {
             refresh: function(widget){
-                $scope.runWidgetReport(widget, true);
+                $scope.runWidgetReport(true);
             }
         };
 
@@ -96,7 +97,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
             }
 
             if (scope.$parent)
-                angular.extend(recursiveParams, getRecursiveDashboardParams(scope.$parent));
+                recursiveParams = angular.extend(getRecursiveDashboardParams(scope.$parent), recursiveParams);
 
             return recursiveParams;
         }
@@ -133,11 +134,11 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
             }
         }
 
-        function getWidgetParams(widget){
-            var widgetParams = angular.extend({}, getRecursiveDashboardParams($scope), widget.params);
+        function getWidgetParams(){
+            var widgetParams = angular.extend({}, getRecursiveDashboardParams($scope), $scope.widget.params);
 
-            if (widget.controls){
-                angular.forEach(widget.controls, function(control){
+            if ($scope.widget.controls){
+                angular.forEach($scope.widget.controls, function(control){
                     angular.extend(widgetParams, transforms.transformParams(control.params, control.paramsTransform));
                 });
             }
@@ -196,10 +197,10 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                 if (widget.requiredParams){
                     widget.showInitMessage = !widgets.checkRequiredParams(widget, getRecursiveDashboardParams($scope));
                     if (!widget.showInitMessage)
-                        $scope.runWidgetReport(widget);
+                        $scope.runWidgetReport();
                 }
                 else
-                    $scope.runWidgetReport(widget);
+                    $scope.runWidgetReport();
             }
         };
 
@@ -219,112 +220,122 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
 
         var runReportTimeoutPromise;
 
-        $scope.runWidgetReport = function(widget, forceRefresh){
-            var widgetParams = getWidgetParams(widget);
+        $scope.runWidgetReport = function(forceRefresh){
+            var widgetParams = getWidgetParams();
+
             if (eventDeregistrationFunctions.length){
                 angular.forEach(eventDeregistrationFunctions, function(deregistrationFunction){
                     deregistrationFunction();
                 });
             }
 
-            if (widget.report)
-                runReport();
-            else if (widget.reportId){
-                reports.getReport(widget.reportId).then(function(report){
-                    widget.report = { query: report };
-                    runReport();
+            if ($scope.widget.report)
+                runReport(forceRefresh);
+            else if ($scope.widget.reportId){
+                reports.getReport($scope.widget.reportId).then(function(report){
+                    $scope.widget.report = { query: report };
+                    runReport(forceRefresh);
                 }, function(error){
-                    console.error("Can't get report with ID '%s' for widget.", widget.reportId, widget);
+                    console.error("Can't get report with ID '%s' for widget.", $scope.widget.reportId, $scope.widget);
                 });
             }
             else{
-                angular.forEach(widget.views, function(view){
+                angular.forEach($scope.widget.views, function(view){
                     view.data = widgets.setViewValues(view, [], widgetParams);
                 });
             }
 
-            if (widget.refreshOn){
-                if (!angular.isArray(widget.refreshOn))
-                    widget.refreshOn = [widget.refreshOn];
+            if ($scope.widget.refreshOn){
+                createdRefreshOnListeners = true;
 
-                angular.forEach(widget.refreshOn, function(param){
+                if (!angular.isArray($scope.widget.refreshOn))
+                    $scope.widget.refreshOn = [$scope.widget.refreshOn];
+
+                angular.forEach($scope.widget.refreshOn, function(param){
                     eventDeregistrationFunctions.push($scope.$on(param, function(value){
                         if (value)
-                            $scope.runWidgetReport(widget, true);
+                            $scope.runWidgetReport(true);
                     }));
                 });
+
+                if (typeof(window.currentDashboardListener) === "undefined")
+                    window.currentDashboardListener = 1;
+                else
+                    window.currentDashboardListener++;
 
                 eventDeregistrationFunctions.push($scope.$on("dashboardParamsChange", function(e, changedParams){
                     setWidgetTitle(changedParams);
                     angular.extend($scope.widget.params, changedParams);
+                    setWidgetShow();
+                    angular.forEach($scope.widget.views, setViewShow);
 
-                    for(var i=0; i < widget.refreshOn.length; i++){
-                        if (changedParams[widget.refreshOn[i]] !== undefined){
-                            $scope.runWidgetReport(widget, true);
+                    for(var i=0; i < $scope.widget.refreshOn.length; i++){
+                        if (changedParams[$scope.widget.refreshOn[i]] !== undefined){
+                            $scope.runWidgetReport(true);
                             return;
                         }
                     }
                 }));
             }
-
-            eventDeregistrationFunctions.push($scope.$on("dashboardParamsChange", function(e, changedParams){
-                setWidgetShow();
-                angular.forEach(widget.views, setViewShow);
-            }));
-
-            function runReport(){
-                widget.loading = true;
-                widget.error = false;
-                widget.warning = null;
-                widget.noData = false;
-                widget.showInitMessage = false;
-
-                $timeout.cancel(runReportTimeoutPromise);
-
-                reports.runReport(widget.report, widgetParams, forceRefresh).then(function(results){
-                    if (!results.data || !results.data.length){
-                        widget.noData = true;
-                        widget.totalResults = 0;
-                        angular.forEach(widget.views, function(view){
-                            view.data = null;
-                        });
-                    }
-                    else{
-                        widget.totalResults = results.total;
-
-                        angular.forEach(widget.views, function(view){
-                            view.data = widgets.setViewValues(view, results.data, widgetParams, results.rawData);
-                            view.rawData = results.data;
-                        });
-                    }
-
-                    widget.loading = false;
-                    $scope.$broadcast("onWidgetData", { widget: widget });
-
-                    if (widget.onDataEvent){
-                        $scope.dashboardEvent({
-                            event: widget.onDataEvent,
-                            data: results.data
-                        });
-                    }
-
-                    if (widget.autoRefresh)
-                        $timeout(function(){ $scope.runWidgetReport(widget); }, 15 * 60 * 1000); // Refresh the widget in 15 minutes
-
-                    widget.error = null;
-                }, function(error){
-                    widget.error = "Error loading data";
-                    console.error("Error retrieving data for widget: ", error);
-                    widget.loading = false;
-                    widget.warning = null;
-                    widget.noData = false;
-                    angular.forEach(widget.views, function(view){
-                        view.data = null;
-                    });
-                    //$timeout(function(){ $scope.runWidgetReport(widget); }, 1 * 60 * 1000); // Refresh the widget in 1 minute
-                });
+            else{
+                eventDeregistrationFunctions.push($scope.$on("dashboardParamsChange", function(e, changedParams){
+                    setWidgetShow();
+                    angular.forEach($scope.widget.views, setViewShow);
+                }));
             }
         };
+
+        function runReport(forceRefresh){
+            $scope.widget.loading = true;
+            $scope.widget.error = false;
+            $scope.widget.warning = null;
+            $scope.widget.noData = false;
+            $scope.widget.showInitMessage = false;
+
+            var widgetParams = getWidgetParams();
+            reports.runReport($scope.widget.report, widgetParams, forceRefresh).then(function(results){
+                if (!results.data || !results.data.length){
+                    $scope.widget.noData = true;
+                    $scope.widget.totalResults = 0;
+                    angular.forEach($scope.widget.views, function(view){
+                        view.data = null;
+                    });
+                }
+                else{
+                    $scope.widget.totalResults = results.total;
+
+                    angular.forEach($scope.widget.views, function(view){
+                        view.data = widgets.setViewValues(view, results.data, widgetParams, results.rawData);
+                        view.rawData = results.data;
+                    });
+                }
+
+                $scope.widget.loading = false;
+                $scope.$broadcast("onWidgetData", { widget: $scope.widget });
+
+                if ($scope.widget.onDataEvent){
+                    $scope.dashboardEvent({
+                        event: $scope.widget.onDataEvent,
+                        data: results.data
+                    });
+                }
+
+                if ($scope.widget.autoRefresh)
+                    $timeout(function(){ $scope.runWidgetReport(); }, 15 * 60 * 1000); // Refresh the widget in 15 minutes
+
+                $scope.widget.error = null;
+            }, function(error){
+                $scope.widget.error = "Error loading data";
+                console.error("Error retrieving data for widget: ", error);
+                $scope.widget.loading = false;
+                $scope.widget.warning = null;
+                $scope.widget.noData = false;
+                angular.forEach($scope.widget.views, function(view){
+                    view.data = null;
+                });
+                //$timeout(function(){ $scope.runWidgetReport(widget); }, 1 * 60 * 1000); // Refresh the widget in 1 minute
+            });
+        }
 
         $scope.fireEvent = function(event, rawEvent, data, field){
             var action = eventActions[event.action];
@@ -350,7 +361,7 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
             if (control.updateDataOnChange){
                 $timeout.cancel(initWidgetTimeout);
                 initWidgetTimeout = $timeout(function(){
-                    $scope.runWidgetReport($scope.widget, true);
+                    $scope.runWidgetReport(true);
                 }, 100);
             }
         }
