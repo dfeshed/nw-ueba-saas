@@ -1,5 +1,6 @@
 #!/bin/bash
 ## Deploys fortscale-webapp.war to tomcat webapps folder
+echo "Starting WAR Deployment script"
 src_file="target/fortscale-webapp-*-SNAPSHOT.war"
 # in jenkins jobs WORKSPACE var is defined as root repository folder
 if [ ! -z "${WORKSPACE}" ]; then
@@ -8,6 +9,7 @@ if [ ! -z "${WORKSPACE}" ]; then
 fi
 dst_dir="/var/lib/tomcat6/webapps/fortscale-webapp"
 dst_file="${dst_dir}.war"
+echo "About to deploy ${src_file} to ${dst_file}"
 
 # cleanup old files
 if [ -d ${dst_dir} ]; then
@@ -33,4 +35,5 @@ if [ $res -ne 0 ]; then
     echo "FATAL: Failed to restart tomcat6 service, exiting"
     exit $res
 fi
+echo "WAR Deployment script completed successfully."
 exit 0
