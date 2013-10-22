@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
+import fortscale.domain.fe.dao.Threshold;
 
 public class UserRepositoryImpl implements UserRepositoryCustom{
 	
@@ -30,6 +31,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lt(upperVal));
 		query.with(pageable);
 		return mongoTemplate.find(query, User.class);
+	}
+
+	@Override
+	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold) {
+		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
+		Query query = new Query(where(classifierCurScoreField).gte(threshold.getValue()));
+		return (int) mongoTemplate.count(query, User.class);
 	}
 	
 }

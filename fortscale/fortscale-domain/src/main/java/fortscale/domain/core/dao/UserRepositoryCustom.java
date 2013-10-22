@@ -6,8 +6,10 @@ import org.springframework.data.domain.Pageable;
 
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
+import fortscale.domain.fe.dao.Threshold;
 
 public interface UserRepositoryCustom {
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails);
 	public List<User> findByClassifierIdAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable);
+	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold);
 }

@@ -151,18 +151,8 @@ public class ClassifierServiceImpl implements ClassifierService {
 	}
 	
 	private void calculateNumOfUsersWithScoresGTThresholdForLastRun(String classifierId,List<Threshold> thresholds){
-		if(classifierId.equals(Classifier.ad.getId())){
-			adUsersFeaturesExtractionRepository.calculateNumOfUsersWithScoresGTThresholdForLastRun(classifierId, thresholds);
-		} else if(classifierId.equals(Classifier.auth.getId())){
-			Date lastRun = authDAO.getLastRunDate();
-			for(Threshold threshold: thresholds){
-				threshold.setCount(authDAO.countNumOfUsersAboveThreshold(threshold, lastRun));
-			}
-		} else if(classifierId.equals(Classifier.vpn.getId())){
-			Date lastRun = vpnDAO.getLastRunDate();
-			for(Threshold threshold: thresholds){
-				threshold.setCount(vpnDAO.countNumOfUsersAboveThreshold(threshold, lastRun));
-			}
+		for(Threshold threshold: thresholds){
+			threshold.setCount(userRepository.countNumOfUsersAboveThreshold(classifierId, threshold));
 		}
 	}
 
