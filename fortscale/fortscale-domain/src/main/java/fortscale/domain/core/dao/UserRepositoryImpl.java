@@ -2,10 +2,12 @@ package fortscale.domain.core.dao;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-
 
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
@@ -17,9 +19,17 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	
 	@Override
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails) {
-		String appUserNameField = String.format("%s.%s.%s", User.appField,applicationUserDetails.getApplicationName(),ApplicationUserDetails.userNameField);
+		String appUserNameField = User.getAppUserNameField(applicationUserDetails.getApplicationName());
 		Query query = new Query(where(appUserNameField).is(applicationUserDetails.getUserName()));
 		return mongoTemplate.findOne(query, User.class);
+	}
+
+	@Override
+	public List<User> findByClassifierIdAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
+		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
+		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lt(upperVal));
+		query.with(pageable);
+		return mongoTemplate.find(query, User.class);
 	}
 	
 }

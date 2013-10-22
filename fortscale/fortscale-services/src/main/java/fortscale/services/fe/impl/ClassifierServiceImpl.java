@@ -22,7 +22,6 @@ import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.AuthScore;
 import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
@@ -214,21 +213,12 @@ public class ClassifierServiceImpl implements ClassifierService {
 	}
 	
 	private List<ISuspiciousUserInfo> getAdSuspiciousUsers(String classifierId, String severityId) {
-		Pageable pageable = new PageRequest(0, 1, Direction.DESC, AdUserFeaturesExtraction.timestampField);
-		List<AdUserFeaturesExtraction> ufeList = adUsersFeaturesExtractionRepository.findByClassifierId(classifierId, pageable);
-		if(ufeList == null || ufeList.size() == 0){
-			return Collections.emptyList();
-		}
-		AdUserFeaturesExtraction ufe = ufeList.get(0);
-		Date lastRun = ufe.getTimestamp();
-		
 		Range severityRange = getRange(severityId);
 		
-		pageable = new PageRequest(0, 10, Direction.DESC, AdUserFeaturesExtraction.scoreField);
-		ufeList = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestampAndScoreBetween(classifierId, lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
+		Pageable pageable = new PageRequest(0, 10, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId));
+		List<User> users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
-		for(AdUserFeaturesExtraction adUserFeaturesExtraction: ufeList){
-			User user = userRepository.findOne(adUserFeaturesExtraction.getUserId());
+		for(User user: users){
 			ret.add(createSuspiciousUserInfo(classifierId, user));
 		}
 		return ret;

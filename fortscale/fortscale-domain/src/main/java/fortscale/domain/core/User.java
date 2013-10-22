@@ -26,6 +26,7 @@ import fortscale.domain.ad.AdUserGroup;
 public class User extends AbstractDocument {	
 	
 	public static final String appField = "app";
+	public static final String classifierScoreField = "scores";
 	
 	
 	@Indexed(unique = true)
@@ -73,7 +74,7 @@ public class User extends AbstractDocument {
 	@JsonProperty
 	Map<String, ApplicationUserDetails> appUserDetailsMap = new HashMap<>();
 	
-	
+	@Field(classifierScoreField)
 	private HashMap<String, ClassifierScore> scores = new HashMap<String, ClassifierScore>();
 	
 	@Field("sf")
@@ -286,4 +287,14 @@ public class User extends AbstractDocument {
 	}	
 	
 	
+	
+	
+	
+	public static String getClassifierScoreCurrentScoreField(String classifierId) {
+		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.scoreField);
+	}
+	
+	public static String getAppUserNameField(String applicationName) {
+		return String.format("%s.%s.%s", User.appField,applicationName,ApplicationUserDetails.userNameField);
+	}
 }

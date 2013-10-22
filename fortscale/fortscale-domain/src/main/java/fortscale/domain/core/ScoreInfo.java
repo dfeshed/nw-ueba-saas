@@ -2,7 +2,12 @@ package fortscale.domain.core;
 
 import java.util.Date;
 
+import org.springframework.data.mongodb.core.mapping.Field;
+
 public class ScoreInfo {
+	public static final String scoreField = "score";
+	
+	@Field(scoreField)
 	private double score;
 	private double avgScore;
 	private Date timestamp;

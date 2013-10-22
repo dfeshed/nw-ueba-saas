@@ -143,4 +143,11 @@ public class UserRepositoryImpl implements UserRepository{
 		return null;
 	}
 
+	@Override
+	public List<User> findByClassifierIdAndScoreBetween(String classifierId,
+			int lowestVal, int upperVal, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
