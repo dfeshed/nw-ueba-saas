@@ -18,8 +18,9 @@
                     },
                     {
                         "icon": "group",
-                        "tooltip": "Domain",
-                        "value": "{{domain}}"
+                        "tooltip": "Groups",
+                        "value": "{{name}}",
+                        "array": "groups"
                     },
                     {
                         "icon": "globe",

@@ -6,7 +6,16 @@ angular.module("PropertiesWidget").factory("propertiesWidgetData", ["utils", "fo
             angular.forEach(data, function(item, itemIndex){
                 var itemData = [];
                 angular.forEach(view.settings.properties, function(property){
-                    var itemValue = utils.strings.parseValue(property.value, item, params, itemIndex);
+                    if (property.array){
+                        var arrayValues = [];
+                        angular.forEach(item[property.array], function(member, memberIndex){
+                            var memberValue = utils.strings.parseValue(property.value, member, params, memberIndex);
+                            if (memberValue)
+                                arrayValues.push(memberValue);
+                        });
+                    }
+
+                    var itemValue = arrayValues && arrayValues.length ? arrayValues.join(", ") : utils.strings.parseValue(property.value, item, params, itemIndex);
                     if (itemValue){
                         itemData.push({
                             icon: icons.getIcon(property.icon),
