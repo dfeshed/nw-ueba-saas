@@ -122,6 +122,9 @@ public class UserDetailsBean implements Serializable{
 			this.managerUser = manager;
 		}
 		
+		public String getId() {
+			return managerUser.getId();
+		}
 		
 		public String getName() {
 			return String.format("%s %s", managerUser.getFirstname(), managerUser.getLastname());

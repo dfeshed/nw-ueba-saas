@@ -13,6 +13,7 @@ import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.fe.dao.Threshold;
 
 
 
@@ -148,6 +149,13 @@ public class UserRepositoryImpl implements UserRepository{
 			int lowestVal, int upperVal, Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int countNumOfUsersAboveThreshold(String classifierId,
+			Threshold threshold) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
