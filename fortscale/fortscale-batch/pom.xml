@@ -38,7 +38,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<mainClass>fortscale.batch.FortscaleBatchMain</mainClass>
-							<classpathPrefix>lib/</classpathPrefix>
+							<classpathPrefix>lib-batch/</classpathPrefix>
 							<useUniqueVersions>false</useUniqueVersions>
 						</manifest>
 					</archive>
@@ -56,7 +56,7 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>target\lib</outputDirectory>
+							<outputDirectory>target\lib-batch</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>
 							<overWriteSnapshots>false</overWriteSnapshots>
 							<overWriteIfNewer>true</overWriteIfNewer>

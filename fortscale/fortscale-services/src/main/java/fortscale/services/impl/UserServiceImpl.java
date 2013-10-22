@@ -131,6 +131,11 @@ public class UserServiceImpl implements UserService{
 		user.setManagerDN(adUser.getManager());
 		user.setMobile(adUser.getMobile());
 		user.setTelephoneNumber(adUser.getTelephoneNumber());
+		user.setOtherFacsimileTelephoneNumber(adUser.getOtherFacsimileTelephoneNumber());
+		user.setOtherHomePhone(adUser.getOtherHomePhone());
+		user.setOtherMobile(adUser.getOtherMobile());
+		user.setOtherTelephone(adUser.getOtherTelephone());
+		user.setHomePhone(adUser.getHomePhone());
 		user.setSearchField(createSearchField(user));
 		user.setDepartment(adUser.getDepartment());
 		user.setPosition(adUser.getTitle());

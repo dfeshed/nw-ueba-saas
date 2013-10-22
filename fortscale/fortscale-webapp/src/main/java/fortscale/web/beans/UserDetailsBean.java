@@ -50,20 +50,16 @@ public class UserDetailsBean implements Serializable{
 		return user.getEmployeeID();
 	}
 
-	public List<String> getGroups() {
-		List<String> ret = new ArrayList<>();
+	public List<UserGroupBean> getGroups() {
+		List<UserGroupBean> ret = new ArrayList<>();
 		for(AdUserGroup adUserGroup: user.getGroups()){
-			ret.add(adUserGroup.getName());
+			ret.add(new UserGroupBean(adUserGroup));
 		}
 		return ret;
 	}
 
 	public String getDepartment() {
 		return user.getDepartment();
-	}
-		
-	public String getMobilePhone(){
-		return user.getMobile();
 	}
 	
 	public String getEmail(){
@@ -76,13 +72,37 @@ public class UserDetailsBean implements Serializable{
 	public String getPhone(){
 		return user.getTelephoneNumber();
 	}
+	
+	public String getMobilePhone(){
+		return user.getMobile();
+	}
+	
+	public String getOtherFacsimileTelephoneNumber() {
+		return user.getOtherFacsimileTelephoneNumber();
+	}
+
+	public String getOtherHomePhone() {
+		return user.getOtherHomePhone();
+	}
+
+
+	public String getHomePhone() {
+		return user.getHomePhone();
+	}
+
+	public String getOtherMobile() {
+		return user.getOtherMobile();
+	}
+
+
+	public String getOtherTelephone() {
+		return user.getOtherTelephone();
+	}
 
 	public UserManagerBean getManager() {
 		UserManagerBean ret = null;
 		if(manager != null){
-			ret = new UserManagerBean();
-			ret.setId(manager.getEmployeeID());
-			ret.setName(manager.getFirstname() + " " + manager.getLastname());
+			ret = new UserManagerBean(manager);
 		}
 //		if(user.getManagerDN() != null){
 //			User manager = userRepository.findByAdDn(user.getManagerDN());
@@ -96,22 +116,36 @@ public class UserDetailsBean implements Serializable{
 	}
 
 	public class UserManagerBean{
-		private String name = null;
-		private String id = null;
+		private User managerUser;
 		
+		public UserManagerBean(User manager) {
+			this.managerUser = manager;
+		}
 		
 		
 		public String getName() {
-			return name;
+			return String.format("%s %s", managerUser.getFirstname(), managerUser.getLastname());
 		}
-		public void setName(String name) {
-			this.name = name;
+		public String getWorkerId() {
+			return managerUser.getEmployeeID();
 		}
-		public String getId() {
-			return id;
+		public String getUsername() {
+			return managerUser.getAdUserPrincipalName();
 		}
-		public void setId(String id) {
-			this.id = id;
+	}
+	
+	public class UserGroupBean{
+		private AdUserGroup adUserGroup;
+		
+		public UserGroupBean(AdUserGroup adUserGroup) {
+			this.adUserGroup = adUserGroup;
+		}
+		
+		public String getDn() {
+			return adUserGroup.getDn();
+		}
+		public String getName() {
+			return adUserGroup.getName();
 		}
 	}
 }

@@ -48,8 +48,19 @@ public class User extends AbstractDocument {
 	private String adUserPrincipalName;
 	
 	private String telephoneNumber;
-
+	
+	private String otherFacsimileTelephoneNumber;
+	
+	private String otherHomePhone;
+	
+	private String homePhone;
+	
+	private String otherMobile;
+	
 	private String mobile;
+	
+	private String otherTelephone;
+
 	
 	private String position;
 	
@@ -171,6 +182,57 @@ public class User extends AbstractDocument {
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
+
+	public String getOtherFacsimileTelephoneNumber() {
+		return otherFacsimileTelephoneNumber;
+	}
+
+
+	public void setOtherFacsimileTelephoneNumber(
+			String otherFacsimileTelephoneNumber) {
+		this.otherFacsimileTelephoneNumber = otherFacsimileTelephoneNumber;
+	}
+
+
+	public String getOtherHomePhone() {
+		return otherHomePhone;
+	}
+
+
+	public void setOtherHomePhone(String otherHomePhone) {
+		this.otherHomePhone = otherHomePhone;
+	}
+
+
+	public String getHomePhone() {
+		return homePhone;
+	}
+
+
+	public void setHomePhone(String homePhone) {
+		this.homePhone = homePhone;
+	}
+
+
+	public String getOtherMobile() {
+		return otherMobile;
+	}
+
+
+	public void setOtherMobile(String otherMobile) {
+		this.otherMobile = otherMobile;
+	}
+
+
+	public String getOtherTelephone() {
+		return otherTelephone;
+	}
+
+
+	public void setOtherTelephone(String otherTelephone) {
+		this.otherTelephone = otherTelephone;
+	}
+
 
 	public String getPosition() {
 		return position;
