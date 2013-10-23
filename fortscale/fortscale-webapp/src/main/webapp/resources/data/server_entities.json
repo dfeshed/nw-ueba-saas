@@ -2,6 +2,7 @@
     {
         "name": "User Authentication",
         "id": "authenticationscores",
+        "useEBS": true,
         "fields": [
             {
                 "id": "time",
@@ -46,6 +47,7 @@
     {
         "name": "VPN Logins",
         "id": "vpndatares",
+        "useEBS": true,
         "fields": [
             {
                 "id": "date_time",

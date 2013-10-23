@@ -117,7 +117,8 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
         sqlQuery: function(sqlQuery, params, options){
             var tableName = sqlQuery.entities[0].id,
                 runtime = runTimeCache.getItem(tableName),
-                deferred = $q.defer();
+                deferred = $q.defer(),
+                useEBS = sqlQuery.entities[0].useEBS;
 
             function withRuntime(){
                 if (runtime){
@@ -129,13 +130,39 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
                     });
                 }
 
+                if (useEBS){
+                    if (sqlQuery.paging){
+                        var paging = {
+                            limit: sqlQuery.paging.pageSize,
+                            offset: ((sqlQuery.paging.page || 1) - 1) * sqlQuery.paging.pageSize
+                        };
+                        delete sqlQuery.paging;
+                    }
+
+                    if (sqlQuery.sort){
+                        var sort = {
+                            orderBy: sqlQuery.sort.field,
+                            orderByDirection: sqlQuery.sort.direction === 1 ? "ASC" : "DESC"
+                        };
+                        delete sqlQuery.sort;
+                    }
+                }
+
                 var query = {
                     endpoint: {
-                        entity: "investigate",
-                        query: typeof(sqlQuery) === "string" ? sqlQuery : queryToSql(sqlQuery),
-                        countQuery: typeof(sqlQuery) === "string" ? sqlQuery.replace(/SELECT (.*) FROM/i, "SELECT COUNT(*) FROM") : queryToSql(sqlQuery, true)
+                        entity: "investigate" + (useEBS ? "WithEBS" : ""),
+                        query: typeof(sqlQuery) === "string" ? sqlQuery : queryToSql(sqlQuery)
                     }
                 };
+
+                if (paging)
+                    angular.extend(query.endpoint, paging);
+
+                if (sort)
+                    angular.extend(query.endpoint, sort);
+
+                if (!useEBS)
+                    query.endpoint.countQuery = typeof(sqlQuery) === "string" ? sqlQuery.replace(/SELECT (.*) FROM/i, "SELECT COUNT(*) FROM") : queryToSql(sqlQuery, true);
 
                 methods.queryServer(query).then(deferred.resolve, deferred.reject);
             }
