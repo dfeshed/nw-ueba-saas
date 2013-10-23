@@ -26,11 +26,17 @@ import fortscale.domain.core.EmailAddress;
 @Service
 public class MongoUserDetailsService implements UserDetailsService{
 	
+	private static final String FIRST_ADMIN_USER_NAME = "admin";
+	
 	@Autowired
 	private AnalystAuthRepository analystAuthRepository;
 	
 	@Autowired
 	private AnalystRepository analystRepository;
+	
+	public MongoUserDetailsService() {
+		
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username)
