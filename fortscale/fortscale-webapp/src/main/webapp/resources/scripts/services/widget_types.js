@@ -1,14 +1,21 @@
 angular.module("Fortscale").factory("widgetTypes", ["$q", "$http", "version", function($q, $http, version){
-    var widgetTypes;
+    var widgetTypes,
+        cachedDefinitions = {};
 
     var methods = {
         getWidgetType: function(widgetTypeName){
             var deferred = $q.defer();
 
-            $http.get("widgets/" + widgetTypeName + "/" + widgetTypeName + ".definition.json?v=" + version)
-                .success(deferred.resolve)
-                .error(deferred.reject);
-
+            if (cachedDefinitions[widgetTypeName])
+                deferred.resolve(cachedDefinitions[widgetTypeName]);
+            else{
+                $http.get("widgets/" + widgetTypeName + "/" + widgetTypeName + ".definition.json?v=" + version)
+                    .success(function(definition){
+                        deferred.resolve(definition);
+                        cachedDefinitions[widgetTypeName] = definition;
+                    })
+                    .error(deferred.reject);
+            }
             return deferred.promise;
         },
         getWidgetTypes: function(){
@@ -27,12 +34,13 @@ angular.module("Fortscale").factory("widgetTypes", ["$q", "$http", "version", fu
                         });
 
 
-                        $q.all(typesPromises).then(function(widgetTypes){
-                            angular.forEach(widgetTypes, function(widgetType, i){
+                        $q.all(typesPromises).then(function(_widgetTypes){
+                            angular.forEach(_widgetTypes, function(widgetType, i){
                                 widgetType.type = widgetTypesList[i];
                                 typesData[widgetTypesList[i]] = widgetType;
                             });
 
+                            widgetTypes = typesData;
                             deferred.resolve(angular.copy(typesData));
                         }, deferred.reject);
                     })

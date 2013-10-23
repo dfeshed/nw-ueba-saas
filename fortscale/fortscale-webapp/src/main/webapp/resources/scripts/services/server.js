@@ -1,4 +1,6 @@
-angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "version", "utils", "conditions", function ($q, $http, $resource, version, utils, conditions) {
+angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "version", "utils", "conditions", "Cache", function ($q, $http, $resource, version, utils, conditions, Cache) {
+    var runTimeCache = new Cache({ id: "runtime", hold: true, itemsExpireIn: 30 * 60 });
+
     var apiResource = $resource("/fortscale-webapp/api/:entity/:id/:method", {
         id: "@id"
     });
@@ -113,13 +115,48 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
             return deferred.promise;
         },
         sqlQuery: function(sqlQuery, params, options){
-            return this.queryServer({
-                endpoint: {
-                    entity: "investigate",
-                    query: typeof(sqlQuery) === "string" ? sqlQuery : queryToSql(sqlQuery),
-                    countQuery: typeof(sqlQuery) === "string" ? sqlQuery.replace(/SELECT (.*) FROM/i, "SELECT COUNT(*) FROM") : queryToSql(sqlQuery, true)
+            var tableName = sqlQuery.entities[0].id,
+                runtime = runTimeCache.getItem(tableName),
+                deferred = $q.defer();
+
+            function withRuntime(){
+                if (runtime){
+                    sqlQuery.conditions = sqlQuery.conditions || [];
+                    sqlQuery.conditions.push({
+                        field: "runtime",
+                        operator: "equals",
+                        value: runtime
+                    });
                 }
-            });
+
+                var query = {
+                    endpoint: {
+                        entity: "investigate",
+                        query: typeof(sqlQuery) === "string" ? sqlQuery : queryToSql(sqlQuery),
+                        countQuery: typeof(sqlQuery) === "string" ? sqlQuery.replace(/SELECT (.*) FROM/i, "SELECT COUNT(*) FROM") : queryToSql(sqlQuery, true)
+                    }
+                };
+
+                methods.queryServer(query).then(deferred.resolve, deferred.reject);
+            }
+
+            if (runtime || runtime === false)
+                withRuntime();
+            else{
+                $http.get("/fortscale-webapp/api/getLatestRuntime?tableName=" + encodeURIComponent(tableName))
+                    .success(function(lastRuntimeResult){
+                        runtime = parseInt(lastRuntimeResult);
+                        withRuntime();
+                        runTimeCache.setItem(tableName, runtime);
+                    })
+                    .error(function(){
+                        withRuntime();
+                        runTimeCache.setItem(tableName, false);
+                    });
+            }
+
+            return deferred.promise;
+
         }
     };
 

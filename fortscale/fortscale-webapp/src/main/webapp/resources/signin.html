@@ -43,11 +43,11 @@
             <div class="content-wrap">
                 <h6>Log in</h6>
                 <form ng-submit="signIn()">
-                    <input class="span15" type="text" placeholder="E-mail address" ng-model="email" ng-focus="clearError()">
-                    <input class="span15" type="password" placeholder="Your password" ng-model="password" ng-focus="clearError()">
-                    <a href="#" class="forgot">Forgot password?</a>
+                    <input class="span15" type="text" placeholder="E-mail address" ng-model="email" tabindex="1" ng-focus="clearError()">
+                    <input class="span15" type="password" placeholder="Your password" ng-model="password" tabindex="2" ng-focus="clearError()">
+                    <a href="#" class="forgot" tabindex="5">Forgot password?</a>
                     <div class="remember">
-                        <input id="remember-me" type="checkbox" ng-model="rememberMe">
+                        <input id="remember-me" type="checkbox" ng-model="rememberMe" tabindex="3">
                         <label for="remember-me">Remember me</label>
                     </div>
                     <div class="alert alert-error" ng-show="error">
@@ -55,7 +55,7 @@
                         {{error.message}}
                         <a ng-show="error.expired" href="change_password.html?username={{email}}">Change password</a>
                     </div>
-                    <input type="submit" class="btn-glow primary login" value="Sign In" />
+                    <input type="submit" class="btn-glow primary login" value="Sign In" tabindex="4" />
                 </form>
             </div>
         </div>
