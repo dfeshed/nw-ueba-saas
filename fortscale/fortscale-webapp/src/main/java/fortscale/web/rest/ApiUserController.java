@@ -92,6 +92,25 @@ public class ApiUserController {
 		return new DataListWrapperBean<UserDetailsBean>(ret);
 	}
 	
+	@RequestMapping(value="usersDetails", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<UserDetailsBean>> usersDetails(@RequestParam(required=true) List<String> ids, Model model){
+		List<UserDetailsBean> userDetailsBeans = new ArrayList<>();
+		for(String id: ids) {
+			User user = userRepository.findOne(id);
+			if(user == null){
+				return null;
+			}
+			UserDetailsBean userDetailsBean = new UserDetailsBean(user, getManager(user));
+			userDetailsBeans.add(userDetailsBean);
+		}
+		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
+		ret.setData(userDetailsBeans);
+		ret.setTotal(userDetailsBeans.size());
+		return ret;
+	}
+	
 	@RequestMapping(value="{id}/contactinfo", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -170,4 +189,6 @@ public class ApiUserController {
 		}
 		return manager;
 	}
+	
+	
 }
