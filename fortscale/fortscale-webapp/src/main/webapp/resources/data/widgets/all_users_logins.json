@@ -21,13 +21,13 @@
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
                         "sortBy": "sourceIp",
-                        "link": "#/d/investigator?entities=authenticationscores&params=%7B%22sourceip%22:%5B%7B%22operator%22:%22equals%22,%22field%22:%22sourceip%22,%22entity%22:%22authenticationscores%22,%22value%22:%22{{sourceIp}}%22%7D%5D,%22eventscore%22:%5B%7B%22operator%22:%22greaterThan%22,%22value%22:%2220%22%7D%5D%7D&computedFields=authenticationscores.eventscore"
+                        "link": "#/d/investigator?entities=authenticationscores&sourceip={{sourceIp}}"
                     },
                     {
                         "name": "Destination Hostname",
                         "value": "{{destinationHostname}}",
                         "sortBy": "destinationHostname",
-                        "link": "#/d/investigator?entities=authenticationscores&params=%7B%22sourceip%22:%5B%7B%22operator%22:%22equals%22,%22field%22:%22targetid%22,%22entity%22:%22authenticationscores%22,%22value%22:%22{{destinationHostname}}%22%7D%5D,%22eventscore%22:%5B%7B%22operator%22:%22greaterThan%22,%22value%22:%2220%22%7D%5D%7D&computedFields=authenticationscores.eventscore"
+                        "link": "#/d/investigator?entities=authenticationscores&targetid={{destinationHostname}}"
                     },
                     {
                         "name": "Time",

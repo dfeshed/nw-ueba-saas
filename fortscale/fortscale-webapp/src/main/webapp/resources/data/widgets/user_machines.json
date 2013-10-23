@@ -23,6 +23,7 @@
                         {
                             "label": "Last Sign-in",
                             "value": "{{lastSignIn}}",
+                            "calc": "max",
                             "transform": {
                                 "method": "date",
                                 "options": {

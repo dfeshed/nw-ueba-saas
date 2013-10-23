@@ -104,7 +104,7 @@
                                                ng-show="field.isComputedField"
                                                ng-click="fieldTypes.table.removeComputedField(entity, $index)">Remove</a>
                                              <input type="checkbox" ng-model="field.enabled" ng-change="onFieldChange()" title="{{field.enabled && 'Disable field' || 'Enable field' }}" />
-                                            <a class="clickable" ng-click="addFilter(field)" title="Add filter"><i class="icon-filter"></i></a>
+                                            <a class="clickable" ng-click="addFilter(field)" title="Add filter" ng-if="!field.isComputedField"><i class="icon-filter"></i></a>
                                         </span>
                                         {{field.name}}
                                         <div class="investigator-field-filters" ng-show="field.filters.length">
@@ -118,7 +118,6 @@
                                                         <daterange ng-model="filter.value" ng-change="onFieldChange(field, filter)"></daterange>
                                                     </span>
                                                     <span ng-switch-default>
-
                                                         <input type="text"
                                                                class="search investigator-filter-value"
                                                                ng-model="filter.value"

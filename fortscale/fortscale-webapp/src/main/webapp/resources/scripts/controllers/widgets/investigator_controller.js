@@ -300,6 +300,9 @@ angular.module("Fortscale").controller("InvestigatorController", [
     }
 
     function getTableFieldLink(field){
+        if (field.isComputedField)
+            return null;
+
         var link = window.location.href,
             params = {};
 
@@ -323,19 +326,16 @@ angular.module("Fortscale").controller("InvestigatorController", [
     }
 
     function getQueryFields(){
-        var fields = [],
-            allFields = true;
+        var fields = [];
 
         angular.forEach($scope.config.entities, function(entity){
             angular.forEach(entity.fields, function(field){
-                if (field.enabled)
-                    fields.push((getDataFromServer ? field.entity.id + "." : "") + field.id);
-                else
-                    allFields = false;
+                if (field.enabled && !field.isComputedField)
+                    fields.push(($scope.allowMultipleEntities ? field.entity.id + "." : "") + field.id);
             });
         });
 
-        return allFields ? undefined : fields;
+        return fields;
     }
 
     function getQueryConditions(){
@@ -456,7 +456,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
 
     function setDisplayWidget(){
         $scope.widgets = [{
-            title: "[Untitled Widget]",
+            title: "Results",
             views: [{
                 type: $scope.config.view.type,
                 settings: angular.extend($scope.currentViewSettings, paging)

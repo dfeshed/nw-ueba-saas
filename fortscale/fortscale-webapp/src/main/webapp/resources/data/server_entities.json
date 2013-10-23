@@ -37,7 +37,7 @@
                 "type": "string"
             },
             {
-                "id": "eventscore",
+                "id": "eventScore",
                 "name": "Score",
                 "type": "number",
                 "isComputedField": true
