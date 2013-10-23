@@ -1,11 +1,11 @@
 #!/bin/bash
 ## Deploys fortscale-webapp.war to tomcat webapps folder
 echo "Starting WAR Deployment script"
-src_file="target/fortscale-webapp-*-SNAPSHOT.war"
+src_file="target/fortscale-webapp-*.war"
 # in jenkins jobs WORKSPACE var is defined as root repository folder
 if [ ! -z "${WORKSPACE}" ]; then
     echo "Running in Jenkins. WORKSPACE=${WORKSPACE}"
-    src_file="${WORKSPACE}/fortscale/fortscale-webapp/target/fortscale-webapp-*-SNAPSHOT.war"
+    src_file="${WORKSPACE}/fortscale/fortscale-webapp/target/fortscale-webapp-*.war"
 fi
 dst_dir="/var/lib/tomcat6/webapps/fortscale-webapp"
 dst_file="${dst_dir}.war"
@@ -21,7 +21,7 @@ if [ -d ${dst_dir} ]; then
     fi
 fi
 # copy new war
-cp -pr ${src_file} ${dst_file}
+cp ${src_file} ${dst_file}
 res=$?
 if [ $res -ne 0 ]; then
     echo "FATAL: Failed to deploy the new war file, exiting"
