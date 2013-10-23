@@ -17,7 +17,6 @@ import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.EBSResult;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
-import fortscale.web.beans.EBSResultBean;
 
 
 
@@ -43,7 +42,10 @@ public class ApiInvestigateController {
 			Model model){
 		DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
 		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
-		int total = impalaJdbcTemplate.queryForInt(countQuery);
+		int total = resultsMap.size();
+		if(countQuery != null) {
+			total = impalaJdbcTemplate.queryForInt(countQuery);
+		}
 		retBean.setData(resultsMap);
 		retBean.setTotal(total);
 		return retBean;
@@ -52,13 +54,13 @@ public class ApiInvestigateController {
 	@RequestMapping(value="investigateWithEBS", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<EBSResultBean> investigateWithEBS(@RequestParam(required=true) String query,
+	public DataBean<List<Map<String, Object>>> investigateWithEBS(@RequestParam(required=true) String query,
 			@RequestParam(defaultValue="0") Integer offset,
 			@RequestParam(defaultValue="50") Integer limit,
 			Model model){
-		DataBean<EBSResultBean> retBean = new DataBean<>();
+		DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
 		EBSResult ebsResult = classifierService.getEBSAlgOnQuery(query, offset, limit);
-		retBean.setData(new EBSResultBean(ebsResult));
+		retBean.setData(ebsResult.getResultsList());
 		retBean.setOffset(ebsResult.getOffset());
 		retBean.setTotal(ebsResult.getTotal());
 		return retBean;
