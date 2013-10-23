@@ -127,6 +127,22 @@ angular.module("Utils", []).factory("utils", [function(){
 
                 return encodedParams.join("&");
             },
+            getQueryParams: function(){
+                var queryParams = window.location.search,
+                    params = {};
+
+                if (queryParams){
+                    var paramKeyValues = queryParams.split(/[\?&]/);
+                    angular.forEach(paramKeyValues, function(keyValue){
+                        if (keyValue){
+                            var parts = keyValue.split("=");
+                            params[parts[0]] = parts[1] || true;
+                        }
+                    });
+                }
+
+                return params;
+            },
             setHashQuery: function(params){
                 var currentHash = document.location.hash,
                     hashMatch = currentHash.match(/^(#[^\?]+)/);

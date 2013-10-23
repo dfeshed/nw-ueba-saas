@@ -17,18 +17,6 @@
                     "url": "/d/user_comparison?username={{@entityId}}"
                 }
             }
-        },
-        {
-            "type": "button",
-            "text": "Follow User",
-            "tooltip": "Receive notifications when this user has suspicious activity",
-            "onClick": {
-                "action": "innerUrl",
-                "actionOptions": {
-                    "url": "/d/user_comparison?username={{@entityId}}"
-                }
-            }
-
         }
     ],
     "columns": [

@@ -1,4 +1,4 @@
-angular.module("FortscaleSignin", ["FortscaleAuth"]).run(function($rootScope){
+angular.module("FortscaleSignin", ["FortscaleAuth", "Utils"]).run(function($rootScope){
     if (!$rootScope.safeApply) {
         $rootScope.safeApply = function(fn) {
             var phase = this.$root.$$phase;

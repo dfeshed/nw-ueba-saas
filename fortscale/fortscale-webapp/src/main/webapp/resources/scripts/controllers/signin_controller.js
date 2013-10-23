@@ -1,4 +1,11 @@
-angular.module("FortscaleSignin").controller("SigninController", ["$scope", "auth", function($scope, auth){
+angular.module("FortscaleSignin").controller("SigninController", ["$scope", "auth", "utils", function($scope, auth, utils){
+    var queryParams = utils.url.getQueryParams();
+    if (queryParams.username){
+        $scope.email = queryParams.username;
+    }
+    else if (/change_password/.test(window.location.href))
+        $scope.error = { message: "No username specified." };
+
     function validateEmailAndPasswords(){
         if (!$scope.email || !$scope.password){
             $scope.error = { message: "Please enter email and password" };

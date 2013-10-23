@@ -38,11 +38,6 @@
                         "value": "{{mobilePhone}}"
                     },
                     {
-                        "icon": "phone",
-                        "tooltip": "Office phone",
-                        "value": "{{phone}}"
-                    },
-                    {
                         "icon": "location-arrow",
                         "tooltip": "Address",
                         "value": "{{address}}"
@@ -50,7 +45,8 @@
                     {
                         "icon": "sitemap",
                         "tooltip": "Manager",
-                        "value": "{{manager.name}}"
+                        "value": "{{manager.name}}",
+                        "link": "#/d/user/{{manager.id}}"
                     }
                 ]
             }

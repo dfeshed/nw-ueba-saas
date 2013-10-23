@@ -175,5 +175,46 @@
                 "type": "string"
             }
         ]
+    },
+    {
+        "name": "Computers",
+        "id": "ldapComputers",
+        "fields": [
+            {
+                "name": "Name",
+                "id": "cn",
+                "type": "string"
+            },
+            {
+                "name": "Last Logon",
+                "id": "lastlogon",
+                "type": "string"
+            },
+            {
+                "name": "Logon Count",
+                "id": "logoncount",
+                "type": "number"
+            },
+            {
+                "name": "OS",
+                "id": "operatingsystem",
+                "type": "string"
+            },
+            {
+                "name": "OS Service Pack",
+                "id": "operatingsystemservicepack",
+                "type": "string"
+            },
+            {
+                "name": "OS Version",
+                "id": "operatingsystemversion",
+                "type": "string"
+            },
+            {
+                "name": "PWD Last Set",
+                "id": "pwdlastset",
+                "type": "string"
+            }
+        ]
     }
 ]

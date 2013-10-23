@@ -17,11 +17,16 @@ angular.module("PropertiesWidget").factory("propertiesWidgetData", ["utils", "fo
 
                     var itemValue = arrayValues && arrayValues.length ? arrayValues.join(", ") : utils.strings.parseValue(property.value, item, params, itemIndex);
                     if (itemValue){
-                        itemData.push({
+                        var itemDataObj = {
                             icon: icons.getIcon(property.icon),
                             tooltip: utils.strings.parseValue(property.tooltip, item, params, itemIndex),
                             value: format.formatItem(property, itemValue)
-                        });
+                        };
+
+                        if (property.link)
+                            itemDataObj.link = utils.strings.parseValue(property.link, item, params, itemIndex);
+
+                        itemData.push(itemDataObj);
                     }
                 });
 
