@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,19 +26,22 @@ import fortscale.domain.core.EmailAddress;
 
 
 @Service
-public class MongoUserDetailsService implements UserDetailsService{
-	
-	private static final String FIRST_ADMIN_USER_NAME = "admin";
+public class MongoUserDetailsService implements UserDetailsService, InitializingBean{
 	
 	@Autowired
 	private AnalystAuthRepository analystAuthRepository;
 	
 	@Autowired
 	private AnalystRepository analystRepository;
+	@Value("${analyst.first.admin.username}" )
+	private String firstAdminUserName;
+	@Value("${analyst.first.admin.password}" )
+	private String firstAdminPassword;
+	@Value("${analyst.first.admin.firstname}" )
+	private String firstAdminFirstName;
+	@Value("${analyst.first.admin.lastname}" )
+	private String firstAdminLastName;
 	
-	public MongoUserDetailsService() {
-		
-	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -52,7 +57,7 @@ public class MongoUserDetailsService implements UserDetailsService{
 	public void create(String username, String password,
 			String emailAddress, String firstName, String lastName) throws AlreadyExistsException {
 		Assert.hasText(username);
-		Assert.notNull(emailAddress);
+		Assert.hasText(emailAddress);
 		Assert.hasText(firstName);
 		Assert.hasText(lastName);
 		
@@ -147,4 +152,15 @@ public class MongoUserDetailsService implements UserDetailsService{
     public boolean userExists(String username) {
     	return analystAuthRepository.findByUsername(username) != null ? true : false;
     }
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		if(analystAuthRepository.count() == 0) {
+			try {
+				create(firstAdminUserName, firstAdminPassword, firstAdminUserName, firstAdminFirstName, firstAdminLastName);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+	}
 }
