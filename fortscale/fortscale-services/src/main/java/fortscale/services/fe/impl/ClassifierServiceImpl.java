@@ -424,21 +424,17 @@ public class ClassifierServiceImpl implements ClassifierService {
 		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
 		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
 		List<Map<String, Object>> eventResultList = new ArrayList<>();
-		int curOffset = -1;
-		for (EventBulkScorer.EventScoreStore eventScore : ebsresult.event_score_list) {
-			curOffset++;
-			if(curOffset < offset) {
-				continue;
-			}
+		int toIndex = offset + limit;
+		if(toIndex > ebsresult.event_score_list.size()) {
+			toIndex = ebsresult.event_score_list.size();
+		}
+		for (EventBulkScorer.EventScoreStore eventScore : ebsresult.event_score_list.subList(offset, toIndex)) {
 			Map<String, Object> eventMap = new HashMap<>();
 			for (int i=0;i<eventScore.event.size();i++) {
 				eventMap.put(keys.get(i), eventScore.event.get(i));
 			}
-			eventMap.put(EVENT_SCORE, eventScore.score);
+			eventMap.put(EVENT_SCORE, (double)Math.round(eventScore.score));
 			eventResultList.add(eventMap);
-			if(eventResultList.size() >= limit) {
-				break;
-			}
 		}
 		
 		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
