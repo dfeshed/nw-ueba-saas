@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		
-		if(sb.length() > 0 && user.getAdUserPrincipalName() != null && user.getAdUserPrincipalName().length() > 0){
+		if(user.getAdUserPrincipalName() != null && user.getAdUserPrincipalName().length() > 0){
 			sb.append(SEARCH_FIELD_PREFIX).append(user.getAdUserPrincipalName().toLowerCase());
 		}
 		return sb.toString();
