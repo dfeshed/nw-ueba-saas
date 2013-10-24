@@ -27,6 +27,7 @@ import fortscale.web.beans.FeatureBean;
 import fortscale.web.beans.UserContactInfoBean;
 import fortscale.web.beans.UserDetailsBean;
 import fortscale.web.beans.UserMachineBean;
+import fortscale.web.beans.UserMachinesBean;
 import fortscale.web.beans.UserSearchBean;
 
 @Controller
@@ -136,6 +137,26 @@ public class ApiUserController {
 		}
 		ret.setData(userMachinesBean);
 		ret.setTotal(userMachinesBean.size());
+		return ret;
+	}
+	
+	@RequestMapping(value="usersMachines", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<UserMachinesBean>> usersMachines(@RequestParam(required=true) List<String> ids, Model model){
+		List<UserMachinesBean> usersMachinesList = new ArrayList<>();
+		for(String id: ids) {
+			List<UserMachine> userMachines = userService.getUserMachines(id);
+			
+			List<UserMachineBean> userMachinesBean = new ArrayList<UserMachineBean>();
+			for(UserMachine userMachine: userMachines){
+				userMachinesBean.add(new UserMachineBean(userMachine));
+			}
+			usersMachinesList.add(new UserMachinesBean(id, userMachinesBean));
+		}
+		DataBean<List<UserMachinesBean>> ret = new DataBean<>();
+		ret.setData(usersMachinesList);
+		ret.setTotal(usersMachinesList.size());
 		return ret;
 	}
 	
