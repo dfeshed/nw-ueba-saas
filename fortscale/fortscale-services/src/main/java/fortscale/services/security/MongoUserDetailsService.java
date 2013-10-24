@@ -3,6 +3,7 @@ package fortscale.services.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.httpclient.auth.InvalidCredentialsException;
 import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,11 +136,15 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
      *
      * @param oldPassword current password (for re-authentication if required)
      * @param newPassword the password to change to
+     * @throws InvalidCredentialsException 
      */
-    public void changePassword(String username, String oldPassword, String newPassword) {
+    public void changePassword(String username, String oldPassword, String newPassword) throws InvalidCredentialsException {
     	AnalystAuth analystAuth = analystAuthRepository.findByUsername(username);
     	String encodedPasswordString = encodePassword(newPassword);
-    	if(analystAuth.getPassword().equals(encodePassword(oldPassword)) && !oldPassword.equals(newPassword)) {
+    	if (!analystAuth.getPassword().equals(encodePassword(oldPassword))) {
+			throw new InvalidCredentialsException("wrong passowrd");
+		}
+    	if(!oldPassword.equals(newPassword)) {
     		analystAuth.setPassword(encodedPasswordString);
     		analystAuth.setCredentialsNonExpired(true);
 	    	analystAuthRepository.save(analystAuth);

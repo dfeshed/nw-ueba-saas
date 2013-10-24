@@ -27,14 +27,15 @@ public class FortscaleBatchMain {
 	
 	
 	public static void main(String[] args) throws Exception {
-		if (args.length != 1) {
-			if(args != null && args.length > 0) {
-				logger.error("wrong number of parameters: {}", StringUtils.join(args, ','));
-			} else {
-				logger.error("no action recieved");
-			}
+		if (args == null || args.length == 0) {
+			logger.error("no action recieved");
 			throw new ParseException("wrong params");
 		}
+		if (args.length > 2) {
+			logger.error("wrong number of parameters: {}", StringUtils.join(args, ','));
+			throw new ParseException("wrong params");
+		}
+		
 		String action = args[0];
 		
 		// create the app context
@@ -43,7 +44,12 @@ public class FortscaleBatchMain {
 		
 		FortscaleBatch fortscaleBatch = (FortscaleBatch) ctx.getBean("fortscaleBatch");
 		if(action.equalsIgnoreCase(RUN_FE)) {
-			fortscaleBatch.runfe();
+			String userAdScoreCsvFileFullPathString=null;
+			if(args.length > 1) {
+				userAdScoreCsvFileFullPathString = args[1];
+			}
+			 
+			fortscaleBatch.runfe(userAdScoreCsvFileFullPathString);
 		} else if(action.equalsIgnoreCase(UPDATE_AD_INFO)) {
 			fortscaleBatch.updateAdInfo();
 		} else if(action.equalsIgnoreCase(UPDATE_AUTH_SCORE)) {

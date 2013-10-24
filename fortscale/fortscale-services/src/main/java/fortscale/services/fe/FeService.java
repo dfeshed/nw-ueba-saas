@@ -10,6 +10,5 @@ import fortscale.domain.fe.IFeature;
 public interface FeService {
 	public Iterable<AdUser> getAdUsersAttrVals();
 	
-	public void setAdUsersScores(Map<String, Double> userScoresMap, Map<String, Collection<IFeature>> userFeaturesScoresMap, Date timeStamp);
-	
+	public void setAdUsersScores(Map<String, Double> userScoresMap, Map<String, Collection<IFeature>> userFeaturesScoresMap, Date timeStamp);	
 }

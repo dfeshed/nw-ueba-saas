@@ -138,7 +138,9 @@ public class ApiAnalystController {
 		AnalystAuth ret = null;
 		if(id.equalsIgnoreCase(ME)) {
 			if(SecurityContextHolder.getContext().getAuthentication() != null) {
-				ret = (AnalystAuth) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof AnalystAuth) {
+					ret = (AnalystAuth) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				}
 			}
 		}
 		return ret;

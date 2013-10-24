@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import fortscale.activedirectory.main.ADManager;
 import fortscale.services.UserService;
-import fortscale.services.fe.FeService;
+import fortscale.services.fe.impl.FeServiceImpl;
 
 
 
@@ -14,13 +14,16 @@ import fortscale.services.fe.FeService;
 public class FortscaleBatch {
 
 	@Autowired
-	private FeService feService;
+	private FeServiceImpl feService;
 	@Autowired
 	private UserService userService;
 	
 	
-	public void runfe() {
+	public void runfe(String userAdScoreCsvFileFullPathString) {
 		ADManager adManager = new ADManager();
+		if(userAdScoreCsvFileFullPathString != null) {
+			feService.setUserAdScoreCsvFileFullPathString(userAdScoreCsvFileFullPathString);
+		}
 		adManager.run(feService, null);
 	}
 	

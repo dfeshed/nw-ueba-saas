@@ -1,5 +1,6 @@
 package fortscale.services.fe.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdUser;
@@ -24,6 +26,18 @@ import fortscale.services.fe.FeService;
 @Service("feService")
 public class FeServiceImpl implements FeService {
 	
+//	private static final File USER_AD_SCORE_CSV_FILE = getFile("U:/dev/ws/git/fortscale-core/fortscale/fortscale-services/src/main/resources/data/impala/userAdScore.csv");
+	
+	
+	private static File getFile(String path) {
+		String fileSeperator = File.separator;
+		if(fileSeperator == null || fileSeperator.equals("\\")) {
+			path = path.replace("/", "\\");
+		}
+		File file = new File(path);
+		return file;
+	}
+	
 	@Autowired
 	private AdUserRepository adUserRepository;
 		
@@ -36,6 +50,13 @@ public class FeServiceImpl implements FeService {
 	@Autowired
 	private UserService userService;
 	
+	@Value("${user.ad.score.csv.file.full.path}")
+	private String userAdScoreCsvFileFullPathString;
+
+	
+	public void setUserAdScoreCsvFileFullPathString(String userAdScoreCsvFileFullPathString) {
+		this.userAdScoreCsvFileFullPathString = userAdScoreCsvFileFullPathString;
+	}
 
 	@Override
 	public Iterable<AdUser> getAdUsersAttrVals() {
@@ -70,11 +91,16 @@ public class FeServiceImpl implements FeService {
 			//TODO: WARN LOG
 			return;
 		}
+		
+		ImpalaWriter writer = new ImpalaWriter(getFile(userAdScoreCsvFileFullPathString));
+		
+		
 		double avgScore = 0;
 		for(Double score: userScoresMap.values()){
 			avgScore += score;
 		}
 		avgScore = avgScore/userScoresMap.size();
+		
 		
 		for(Entry<String, Double> ent: userScoresMap.entrySet()){
 			User user = userRepository.findByAdDn(ent.getKey());
@@ -91,8 +117,13 @@ public class FeServiceImpl implements FeService {
 			
 			//updating the user with the new score.
 			userService.updateUserScore(user, timestamp, Classifier.ad.getId(), ent.getValue(), avgScore);
+			String csvLineString = String.format("%s|%s|%s|%s|%s|%s",timestamp.getTime()/1000,user.getId(),user.getAdDn(), user.getAdUserPrincipalName(), ent.getValue(), avgScore);
+			writer.write(csvLineString);
+			writer.newLine();
 		}
+		writer.close();
 	}
+	
 
 //	@Override
 //	public void setAdUsersFeaturesExtraction(
