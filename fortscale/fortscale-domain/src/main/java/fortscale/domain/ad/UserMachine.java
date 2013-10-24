@@ -9,12 +9,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class UserMachine {
 	public static final Object jsonOrder[] = {UserMachine.USERNAME_FIELD_NAME, UserMachine.HOSTNAME_FIELD_NAME, UserMachine.LOGONCOUNT_FIELD_NAME, UserMachine.LASTLOGON_FIELD_NAME, UserMachine.HOSTNAMEIP_FIELD_NAME};
 	public static final String implaValueTypeOrder = String.format("%s string, %s string, %s bigint, %s timestamp, %s string", jsonOrder);
-	public static final String TABLE_NAME = "usernametohostname";
+	public static final String TABLE_NAME = "lastcomputer";
 	public static final String USERNAME_FIELD_NAME = "username";
-	public static final String HOSTNAME_FIELD_NAME = "hostname";
+	public static final String HOSTNAME_FIELD_NAME = "machinename";
 	public static final String LOGONCOUNT_FIELD_NAME = "logoncount";
-	public static final String LASTLOGON_FIELD_NAME = "lastlogon";
-	public static final String HOSTNAMEIP_FIELD_NAME = "hostnameip";
+	public static final String LASTLOGON_FIELD_NAME = "eventtime";
+	public static final String HOSTNAMEIP_FIELD_NAME = "ip";
 	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	
 	
