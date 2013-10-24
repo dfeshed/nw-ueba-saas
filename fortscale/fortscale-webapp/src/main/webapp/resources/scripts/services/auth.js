@@ -100,6 +100,9 @@ angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q,
 
             return deferred.promise;
         },
+        getLastLoggedInUser: function(){
+            return localStorage.getItem("lastUser");
+        },
         login: function(username, password, remember){
             var deferred = $q.defer();
 
@@ -114,6 +117,7 @@ angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q,
                 })
             })
                 .success(function(response){
+                    localStorage.setItem("lastUser", username);
                     deferred.resolve(response);
                 })
                 .error(function(error, httpCode){
@@ -137,6 +141,7 @@ angular.module("FortscaleAuth", []).factory("auth", ["$q", "$http", function($q,
             return deferred.promise;
         },
         logout: function(){
+            localStorage.removeItem("lastUser");
             $http.post(apiUrl + "logout").then(function(){
                 window.location.href = window.location.href.replace(/fortscale-webapp\/.*/, "fortscale-webapp/signin.html");
             }, function(error){

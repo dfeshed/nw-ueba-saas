@@ -14,7 +14,7 @@
             "onClick": {
                 "action": "innerUrl",
                 "actionOptions": {
-                    "url": "/d/user_comparison?username={{@entityId}}"
+                    "url": "/d/user_comparison?users={{@entityId}}"
                 }
             }
         }

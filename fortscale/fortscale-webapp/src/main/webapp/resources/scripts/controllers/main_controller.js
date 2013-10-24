@@ -1,4 +1,4 @@
-angular.module("Fortscale").controller("MainController", ["$scope", "$routeParams", "dashboards", "auth", function($scope, $routeParams, dashboards, auth){
+angular.module("Fortscale").controller("MainController", ["$scope", "$routeParams", "dashboards", "auth", "users", function($scope, $routeParams, dashboards, auth, users){
     $scope.navigation = [
         {
             name: "Overview",
@@ -87,55 +87,13 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         auth.logout();
     };
 
-    $scope.searchSettings = {
-        "reports": [
-            {
-                "query": {
-                    "searchId": "search",
-                    "dataSource": "api",
-                    "endpoint": {
-                        "entity": "user",
-                        "method": "search"
-                    },
-                    "query": {
-                        "entity": "user_details",
-                        "conditions": [
-                            {
-                                "field": "username",
-                                "operator": "contains",
-                                "value": "{{prefix}}"
-                            }
-                        ],
-                        "fields": ["username"],
-                        "fieldsMap": {
-                            "username": "id"
-                        }
-                    },
-                    "options": {
-                        "count": 10
-                    },
-                    "fields": {
-                        "name":{"type":"string"},
-                        "id": {"type": "string"}
-                    },
-                    "params": [
-                        {
-                            "field": "prefix",
-                            "type": "string",
-                            "dashboardParam": "term"
-                        }
-                    ]
-                }
-            }
-        ],
-        "resultField": "name",
+    $scope.searchSettings = angular.extend(users.getSearchSettings(), {
         "value": "#/d/user/{{id}}",
         "onSelect": {
             "url": "#/d/user/{{id}}"
         },
-        "showValueOnSelect": false,
         "placeholder": "Users search"
-    };
+    });
 
     $scope.sortableOptions = {
         update: function(e, ui) {

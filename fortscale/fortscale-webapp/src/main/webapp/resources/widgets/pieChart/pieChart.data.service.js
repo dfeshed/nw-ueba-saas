@@ -1,10 +1,24 @@
 angular.module("PieChartWidget").factory("pieChartWidgetData", ["utils", "transforms", function(utils, transforms){
+    var propertyCalcFunctions = {
+        max: function(propertyValues, newValue){
+            if (!propertyValues.length)
+                propertyValues.push(newValue);
+            else if (newValue > propertyValues[0])
+                propertyValues[0] = newValue;
+        }
+    };
+
     return {
         getData: function(view, data, params){
             var viewData = { chartValues: [] },
                 labelsIndex = {},
                 itemLabelIndex,
-                setProperties = view.settings.showInfo && view.settings.info && view.settings.info.properties;
+                setProperties = view.settings.showInfo && view.settings.info && view.settings.info.properties,
+                setPropertiesObj = {};
+
+            angular.forEach(setProperties, function(propertySettings){
+                setPropertiesObj[propertySettings.label] = propertySettings;
+            });
 
             var getItemProperties = function(item){
                 var itemProperties = {};
@@ -20,6 +34,7 @@ angular.module("PieChartWidget").factory("pieChartWidgetData", ["utils", "transf
                 return itemProperties;
             };
 
+            var propertyValues;
             for(var i= 0, item, label, itemValue; item = data[i]; i++){
                 label = item[view.settings.chartLabel];
                 itemValue = parseFloat(item[view.settings.chartValue]);
@@ -34,9 +49,14 @@ angular.module("PieChartWidget").factory("pieChartWidgetData", ["utils", "transf
                 itemLabelIndex.value += itemValue;
 
                 if (setProperties){
-                    var itemProperties = getItemProperties(item),
+                    var itemProperties = {},
                         itemPropertyValues,
                         propertyValue;
+
+
+                    for(var propertyIndex = 0, property, propertyValue; property = view.settings.info.properties[propertyIndex]; propertyIndex++){
+                        itemProperties[property.label] = item[property.value];
+                    }
 
                     for(var propertyName in itemProperties){
                         itemPropertyValues = itemLabelIndex.properties[propertyName];
@@ -45,12 +65,31 @@ angular.module("PieChartWidget").factory("pieChartWidgetData", ["utils", "transf
 
                         propertyValue = itemProperties[propertyName];
 
-                        if (propertyValue && !~itemPropertyValues.indexOf(propertyValue) && propertyValue !== "-")
-                            itemPropertyValues.push(itemProperties[propertyName]);
+                        if (propertyValue && !~itemPropertyValues.indexOf(propertyValue) && propertyValue !== "-"){
+                            var propertyCalc = setPropertiesObj[propertyName].calc;
+                            if (!propertyCalc || !propertyCalcFunctions[propertyCalc])
+                                itemPropertyValues.push(itemProperties[propertyName]);
+                            else
+                                propertyCalcFunctions[propertyCalc](itemPropertyValues, itemProperties[propertyName]);
+                        }
                     }
                 }
             }
 
+            if (setProperties){
+                for(var itemName in labelsIndex){
+                    itemLabelIndex = labelsIndex[itemName];
+
+                    for(propertyName in itemLabelIndex.properties){
+                        propertyValues = itemLabelIndex.properties[propertyName];
+                        angular.forEach(propertyValues, function(propertyValue, index){
+                            if (setPropertiesObj[propertyName].transform){
+                                propertyValues[index] = transforms[setPropertiesObj[propertyName].transform.method](propertyValue, setPropertiesObj[propertyName].transform.options);
+                            }
+                        });
+                    }
+                }
+            }
             for(var label in labelsIndex){
                 viewData.chartValues.push(labelsIndex[label]);
             }

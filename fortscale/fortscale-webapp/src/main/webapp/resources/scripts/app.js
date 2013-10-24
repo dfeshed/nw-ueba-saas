@@ -10,6 +10,7 @@ angular.module("Fortscale", [
     "Yoxigen",
     "ui.sortable",
     "ngResource",
+    "FocusWhen",
     "FortscaleAuth",
     "TableWidget",
     "PieChartWidget",

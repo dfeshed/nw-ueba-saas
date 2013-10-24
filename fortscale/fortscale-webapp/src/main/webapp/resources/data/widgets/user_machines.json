@@ -22,7 +22,7 @@
                     "properties": [
                         {
                             "label": "Last Sign-in",
-                            "value": "{{lastSignIn}}",
+                            "value": "lastSignIn",
                             "calc": "max",
                             "transform": {
                                 "method": "date",
@@ -33,7 +33,7 @@
                         },
                         {
                             "label": "IP",
-                            "value": "{{ipAddress}}",
+                            "value": "ipAddress",
                             "link": "#/d/investigator?entities=usernametohostname&hostnameip={{hostnameip}}"
                         }
                     ]

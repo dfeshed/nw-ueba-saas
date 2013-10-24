@@ -5,6 +5,13 @@ angular.module("FortscaleSignin").controller("SigninController", ["$scope", "aut
     }
     else if (/change_password/.test(window.location.href))
         $scope.error = { message: "No username specified." };
+    else
+        $scope.email = auth.getLastLoggedInUser();
+
+    if ($scope.email)
+        $scope.focusOnPassword = true;
+
+    $scope.rememberMe = true;
 
     function validateEmailAndPasswords(){
         if (!$scope.email || !$scope.password){

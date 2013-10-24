@@ -13,7 +13,8 @@ angular.module('Fortscale')
                     MIN_SEARCH_SIZE = 1,// If the current term is smaller than this, search won't run.
                     onSelect,
                     onSelectTimeout,
-                    latestResults;
+                    latestResults,
+                    onSelectFunc = attrs.onSelect ? $parse(attrs.onSelect) : null;
 
                 scope.$watch(attrs.searchSettings, function(value){
                     if (value && !isInit){
@@ -128,7 +129,17 @@ angular.module('Fortscale')
                                 else
                                     input.val("");
 
-                                onSelect(ui.item.value);
+                                if (onSelectFunc){
+                                    $timeout.cancel(onSelectTimeout);
+                                    onSelectTimeout = $timeout(function(){
+                                        scope.$apply(function(){
+                                            onSelectFunc(scope, { $value: ui.item.value });
+                                        });
+                                    }, 40);
+                                }
+                                else if (onSelect)
+                                    onSelect(ui.item.value);
+
                                 return false;
                             }
                         });
