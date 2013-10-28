@@ -37,7 +37,7 @@ public class ApiClassifierController {
 	
 	
 	
-	@RequestMapping(value="loginsEvents", method=RequestMethod.GET)
+	@RequestMapping(value="/loginsEvents", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<ILoginEventScoreInfo>> loginsEvents(@RequestParam(required=false) Long date,
@@ -62,7 +62,7 @@ public class ApiClassifierController {
 		return ret;
 	}
 	
-	@RequestMapping(value="vpnEvents", method=RequestMethod.GET)
+	@RequestMapping(value="/vpnEvents", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<IVpnEventScoreInfo>> vpnEvents(@RequestParam(required=false) Long date,
@@ -98,7 +98,7 @@ public class ApiClassifierController {
 		return ret;
 	}
 	
-	@RequestMapping(value="{id}/severity/{severityId}/users", method=RequestMethod.GET)
+	@RequestMapping(value="/{id}/severity/{severityId}/users", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<ISuspiciousUserInfo>> users(@PathVariable String id, @PathVariable String severityId, Model model){

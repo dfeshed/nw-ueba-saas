@@ -12,13 +12,44 @@
 	<http pattern="/resources/**" security="none" />
 	
 	<beans:bean id="noRedirectAuthenticationSuccessHandler" class="fortscale.web.NoRedirectAuthenticationSuccessHandler"/>
-	<beans:bean id="authenticationFailureHandler" class="fortscale.web.AuthenticationFailureHandlerImpl"/>
-	<beans:bean id="accessDeniedHandler" class="fortscale.web.AccessDeniedHandlerImpl"/>
+	<beans:bean id="authenticationFailureHandler" class="fortscale.web.AuthenticationFailureHandlerImpl">
+		<beans:property name="restExceptionHandler" ref="restExceptionResolver"></beans:property>
+	</beans:bean>
+	<beans:bean id="accessDeniedHandler" class="fortscale.web.AccessDeniedHandlerImpl">
+		<beans:property name="restExceptionHandler" ref="restExceptionResolver"></beans:property>
+	</beans:bean>
+	<beans:bean id="fortscaleFailedEntryPoint" class="fortscale.web.FortscaleFailedEntryPoint">
+		<beans:property name="restExceptionHandler" ref="restExceptionResolver"></beans:property>
+	</beans:bean>
+	<beans:bean id="localeResolver" class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver"/>
+	<beans:bean id="restExceptionResolver" class="fortscale.web.exceptions.handlers.RestExceptionHandler">
+        <beans:property name="order" value="100"/>
+<!--         <beans:property name="messageConverters"> -->
+<!--             <beans:list> -->
+<!--                 <ref bean="jacksonHttpMessageConverter"/> -->
+<!--             </beans:list> -->
+<!--         </beans:property> -->
+        <beans:property name="errorResolver">
+            <beans:bean class="fortscale.web.exceptions.handlers.DefaultRestErrorResolver">
+                <beans:property name="localeResolver" ref="localeResolver"/>
+                <beans:property name="exceptionMappingDefinitions">
+                    <beans:map>
+                        <!-- 404 -->
+                        <beans:entry key="fortscale.web.exceptions.UnknownResourceException" value="#{T(javax.servlet.http.HttpServletResponse).SC_NOT_FOUND}, _exmsg"/>
 
-	<http auto-config="true" use-expressions="true">
+                        <!-- 500 (catch all): -->
+                        <beans:entry key="Throwable" value="500"/>
+                    </beans:map>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+
+	<http auto-config="true" use-expressions="true" entry-point-ref="fortscaleFailedEntryPoint">
 <!-- 		<intercept-url pattern="/api/**" access="permitAll" /> -->
 <!-- 		<intercept-url pattern="/" access="permitAll" /> -->
 <!-- 		<intercept-url pattern="/index.html" access="permitAll" /> -->
+		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/api/analyst/login" access="permitAll" />
 		<intercept-url pattern="/api/analyst/changePassword" access="permitAll" />
 		<intercept-url pattern="/api/user/updateAuthScore" access="permitAll" />
@@ -41,14 +72,14 @@
 		<intercept-url pattern="/api/admin/analyst/addAnalyst" access="hasRole('ROLE_ADMIN')" />
 		<intercept-url pattern="/api/admin/analyst/details" access="hasRole('ROLE_ADMIN')" />
 		<intercept-url pattern="/api/admin/analyst/" access="hasRole('ROLE_ADMIN')" />
-		<intercept-url pattern="/**" access="isAuthenticated()" />
+		<intercept-url pattern="/api/**" access="isAuthenticated()" />
 
 		<form-login login-page="/signin.html" authentication-failure-handler-ref="authenticationFailureHandler"
 		 always-use-default-target="false" authentication-success-handler-ref="noRedirectAuthenticationSuccessHandler" 
 		 login-processing-url="/api/analyst/login"/>
 
 		<access-denied-handler ref="accessDeniedHandler"/>
-
+		
 		<logout invalidate-session="true" logout-success-url="/signin.html"
 			logout-url="/api/analyst/logout" />
 	</http>

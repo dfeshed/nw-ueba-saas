@@ -1,5 +1,11 @@
 package fortscale.web;
 
+import java.io.IOException;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -8,41 +14,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @RequestMapping("/")
 @Controller
-public class HomeController {
+public class HomeController extends BaseController{
 	
 //	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping
-    public String getIndexPage() {
-        return "index";
+	@RequestMapping("/")
+	public void unmappedRequest(HttpServletRequest request,
+			HttpServletResponse response) {
+        try {
+        	if(isThisAnalystAuth()) {
+        		response.sendRedirect("index.html");
+        	} else {
+        		response.sendRedirect("signin.html");
+        	}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
-	
-//	@RequestMapping("/views/main/header")
-//    public String getMainHeaderPartialPage(ModelMap modelMap) {
-//        return "main/header";
-//    }
-//	
-//	@RequestMapping("/views/main/sidebar")
-//    public String getMainSidebarPartialPage(ModelMap modelMap) {
-//        return "main/sidebar";
-//    }
-//	
-//	@RequestMapping("/views/dialogs/splunk_config")
-//    public String getDialogsSplunkPartialPage(ModelMap modelMap) {
-//        return "dialogs/splunk_config";
-//    }
-//	
-//	@RequestMapping("/views/pages/main_dashboard")
-//    public String getPagesMainDashboardPartialPage(ModelMap modelMap) {
-//        return "pages/main_dashboard";
-//    }
-//	
-//	@RequestMapping("/views/pages/dashboard")
-//    public String getPagesDashboardPartialPage(ModelMap modelMap) {
-//        return "pages/dashboard";
-//    }
-	
 }

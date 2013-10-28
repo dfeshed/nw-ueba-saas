@@ -81,7 +81,7 @@ public class ApiUserController {
 		return ret;
 	}
 	
-	@RequestMapping(value="{id}/details", method=RequestMethod.GET)
+	@RequestMapping(value="/{id}/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> details(@PathVariable String id, Model model){
@@ -93,7 +93,7 @@ public class ApiUserController {
 		return new DataListWrapperBean<UserDetailsBean>(ret);
 	}
 	
-	@RequestMapping(value="usersDetails", method=RequestMethod.GET)
+	@RequestMapping(value="/usersDetails", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> usersDetails(@RequestParam(required=true) List<String> ids, Model model){
@@ -112,7 +112,7 @@ public class ApiUserController {
 		return ret;
 	}
 	
-	@RequestMapping(value="{id}/contactinfo", method=RequestMethod.GET)
+	@RequestMapping(value="/{id}/contactinfo", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserContactInfoBean>> userContactInfo(@PathVariable String id, Model model){
@@ -124,7 +124,7 @@ public class ApiUserController {
 		return new DataListWrapperBean<UserContactInfoBean>(ret);
 	}
 	
-	@RequestMapping(value="{id}/machines", method=RequestMethod.GET)
+	@RequestMapping(value="/{id}/machines", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserMachineBean>> userMachines(@PathVariable String id, Model model){
@@ -140,7 +140,7 @@ public class ApiUserController {
 		return ret;
 	}
 	
-	@RequestMapping(value="usersMachines", method=RequestMethod.GET)
+	@RequestMapping(value="/usersMachines", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserMachinesBean>> usersMachines(@RequestParam(required=true) List<String> ids, Model model){
@@ -160,7 +160,7 @@ public class ApiUserController {
 		return ret;
 	}
 	
-	@RequestMapping(value="{id}/scores", method=RequestMethod.GET)
+	@RequestMapping(value="/{id}/scores", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<IUserScore>> userScores(@PathVariable String id, Model model){
@@ -171,7 +171,7 @@ public class ApiUserController {
 		return ret;
 	}
 	
-	@RequestMapping(value="{uid}/classifier/{classifierId}/scorehistory", method=RequestMethod.GET)
+	@RequestMapping(value="/{uid}/classifier/{classifierId}/scorehistory", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId,
@@ -185,7 +185,7 @@ public class ApiUserController {
 		return ret;
 	}
 	
-	@RequestMapping(value="{uid}/classifier/{classifierId}/attributes", method=RequestMethod.GET)
+	@RequestMapping(value="/{uid}/classifier/{classifierId}/attributes", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<FeatureBean>> userClassifierAttributes(@PathVariable String uid, @PathVariable String classifierId,

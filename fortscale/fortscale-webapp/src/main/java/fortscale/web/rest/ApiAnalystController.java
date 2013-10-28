@@ -3,7 +3,6 @@ package fortscale.web.rest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +16,7 @@ import fortscale.domain.analyst.AnalystAuth;
 import fortscale.services.analyst.AnalystService;
 import fortscale.services.security.MongoUserDetailsService;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.BaseController;
 import fortscale.web.beans.AnalystBean;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
@@ -28,8 +28,7 @@ import fortscale.web.beans.DataListWrapperBean;
 
 @Controller
 @RequestMapping("/api/analyst/**")
-public class ApiAnalystController {
-	private static final String ME = "me";
+public class ApiAnalystController extends BaseController{
 	
 	@Autowired
 	private MongoUserDetailsService mongoUserDetailsService;
@@ -67,7 +66,7 @@ public class ApiAnalystController {
 //		return ret;
 //	}
 	
-	@RequestMapping(value="changePassword", method=RequestMethod.POST)
+	@RequestMapping(value="/changePassword", method=RequestMethod.POST)
 	@ResponseBody
 	@LogException
 	public String changePassword(@RequestParam(required=true) String username,
@@ -90,7 +89,7 @@ public class ApiAnalystController {
 		return ret;
 	}
 	
-	@RequestMapping(value="update", method=RequestMethod.POST)
+	@RequestMapping(value="/update", method=RequestMethod.POST)
 	@ResponseBody
 	@LogException
 	public String update(@RequestParam(required=true) String password,
@@ -116,7 +115,7 @@ public class ApiAnalystController {
 		return ret;
 	}
 	
-	@RequestMapping(value="{id}/details", method=RequestMethod.GET)
+	@RequestMapping(value="/{id}/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<AnalystBean>> details(@PathVariable String id, Model model){
@@ -130,19 +129,5 @@ public class ApiAnalystController {
 		return null;
 	}
 	
-	private AnalystAuth getThisAnalystAuth() {
-		return getAnalystAuth(ME);
-	}
 	
-	private AnalystAuth getAnalystAuth(String id) {
-		AnalystAuth ret = null;
-		if(id.equalsIgnoreCase(ME)) {
-			if(SecurityContextHolder.getContext().getAuthentication() != null) {
-				if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof AnalystAuth) {
-					ret = (AnalystAuth) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				}
-			}
-		}
-		return ret;
-	}
 }

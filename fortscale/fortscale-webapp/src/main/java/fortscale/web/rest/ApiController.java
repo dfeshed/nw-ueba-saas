@@ -3,6 +3,8 @@ package fortscale.web.rest;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -17,6 +19,7 @@ import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.EBSResult;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
+import fortscale.web.exceptions.UnknownResourceException;
 
 
 
@@ -25,7 +28,7 @@ import fortscale.web.beans.DataBean;
 
 @Controller
 @RequestMapping("/api/**")
-public class ApiInvestigateController {
+public class ApiController {
 
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
@@ -34,7 +37,13 @@ public class ApiInvestigateController {
 	private ClassifierService classifierService;
 	
 	
-	@RequestMapping(value="investigate", method=RequestMethod.GET)
+	@RequestMapping("/**")
+    public void unmappedRequest(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        throw new UnknownResourceException("There is no resource for path " + uri);
+    }
+	
+	@RequestMapping(value="/investigate", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<Map<String, Object>>> investigate(@RequestParam(required=true) String query,
@@ -51,7 +60,7 @@ public class ApiInvestigateController {
 		return retBean;
 	}
 	
-	@RequestMapping(value="investigateWithEBS", method=RequestMethod.GET)
+	@RequestMapping(value="/investigateWithEBS", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<Map<String, Object>>> investigateWithEBS(@RequestParam(required=true) String query,
@@ -66,7 +75,7 @@ public class ApiInvestigateController {
 		return retBean;
 	}
 	
-	@RequestMapping(value="getLatestRuntime", method=RequestMethod.GET)
+	@RequestMapping(value="/getLatestRuntime", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public Long getLatestRuntime(@RequestParam(required=true) String tableName,	Model model){

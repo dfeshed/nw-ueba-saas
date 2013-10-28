@@ -29,7 +29,7 @@ public class ApiReportsController {
 	private ActionRateImpl actionRateService;
 	
 	
-	@RequestMapping(value="logongraph", method=RequestMethod.GET)
+	@RequestMapping(value="/logongraph", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<Map<String, Object>>> logongraph(@RequestParam(required=true) String query,

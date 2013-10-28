@@ -28,7 +28,7 @@ public class ApiAdminAnalystController {
 	@Autowired
 	private AnalystService analystService;
 
-	@RequestMapping(value="addAnalyst", method=RequestMethod.POST)
+	@RequestMapping(value="/addAnalyst", method=RequestMethod.POST)
 	@ResponseBody
 	@LogException
 	public String addAnalyst(@RequestParam(required=true) String username,
@@ -52,7 +52,7 @@ public class ApiAdminAnalystController {
 		return ret;
 	}
 	
-	@RequestMapping(value="disableAnalyst", method=RequestMethod.POST)
+	@RequestMapping(value="/disableAnalyst", method=RequestMethod.POST)
 	@ResponseBody
 	@LogException
 	public String disableAnalyst(@RequestParam(required=true) String username, Model model){
@@ -72,7 +72,7 @@ public class ApiAdminAnalystController {
 		return ret;
 	}
 	
-	@RequestMapping(value="details", method=RequestMethod.GET)
+	@RequestMapping(value="/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<AnalystBean>> details(Model model){
