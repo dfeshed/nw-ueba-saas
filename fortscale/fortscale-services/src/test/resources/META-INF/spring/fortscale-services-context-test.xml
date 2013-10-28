@@ -18,6 +18,8 @@
 	
 	<bean id="vpnDAO" class="fortscale.service.domain.fe.dao.VpnDAOImpl"/>
 	
+	<bean id="impalaJdbcTemplate" class="fortscale.service.jdbc.JdbcOperationsTest"/>
+	
 	<context:component-scan base-package="fortscale"/>
 	
 </beans>
