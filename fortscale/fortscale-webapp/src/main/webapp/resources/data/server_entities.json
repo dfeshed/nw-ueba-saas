@@ -1,38 +1,33 @@
 [
     {
         "name": "User Authentication",
-        "id": "authenticationscores",
+        "id": "wmievents4769",
         "useEBS": true,
         "fields": [
             {
-                "id": "time",
+                "id": "timegenerated",
                 "name": "Time",
                 "type": "date"
             },
             {
-                "id": "normalizedtime",
-                "name": "Normalized Time",
-                "type": "string"
-            },
-            {
-                "id": "userid",
+                "id": "account_name",
                 "name": "Username",
                 "type": "string",
                 "key": "userid"
             },
             {
-                "id": "targetid",
+                "id": "service_name",
                 "name": "Target ID",
                 "type": "string"
             },
             {
-                "id": "sourceip",
+                "id": "client_address",
                 "name": "Source IP",
                 "type": "string",
                 "key": "ip"
             },
             {
-                "id": "errorcode",
+                "id": "failure_code",
                 "name": "Error Code",
                 "type": "string"
             },
@@ -78,7 +73,7 @@
                 "type": "string"
             },
             {
-                "id": "eventscore",
+                "id": "eventScore",
                 "name": "Score",
                 "type": "number",
                 "isComputedField": true

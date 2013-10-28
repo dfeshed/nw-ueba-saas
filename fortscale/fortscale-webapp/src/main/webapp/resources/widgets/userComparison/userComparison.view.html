@@ -41,7 +41,15 @@
                         Switch Fields
                     </a>
                 </div>
-                <bubbles-chart ng-model="chartData" settings="chartSettings" highlighted-member="{{highlightedUser}}"></bubbles-chart>
+                <div ng-class="{ hiddenVisibility: loading }">
+                    <bubbles-chart ng-model="chartData" settings="chartSettings" highlighted-member="{{highlightedUser}}"></bubbles-chart>
+                </div>
+                <div ng-show="loading">
+                    <div class="widget-message widget-loading">
+                        <span class="widget-loader"></span>
+                        <div>Loading data</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

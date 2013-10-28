@@ -2,7 +2,7 @@
     "reportId": "all_users_logins",
     "title": "Suspicious Logins",
     "linkTo": {
-        "url": "#/d/investigator?entities=authenticationscores",
+        "url": "#/d/investigator?entities=wmievents4769",
         "tooltip": "Investigate user logins",
         "text": "View all"
     },
@@ -14,26 +14,21 @@
                     {
                         "name": "User",
                         "value": "{{username}}",
-                        "link": "#/d/user/{{userId}}",
-                        "sortBy": "username"
+                        "link": "#/d/user/{{userId}}"
                     },
                     {
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
-                        "sortBy": "sourceIp",
-                        "link": "#/d/investigator?entities=authenticationscores&sourceip={{sourceIp}}"
+                        "link": "#/d/investigator?entities=wmievents4769&sourceip={{sourceIp}}"
                     },
                     {
                         "name": "Destination Hostname",
                         "value": "{{destinationHostname}}",
-                        "sortBy": "destinationHostname",
-                        "link": "#/d/investigator?entities=authenticationscores&targetid={{destinationHostname}}"
+                        "link": "#/d/investigator?entities=wmievents4769&targetid={{destinationHostname}}"
                     },
                     {
                         "name": "Time",
                         "value": "{{eventTime}}",
-                        "sortBy": "eventTime",
-                        "sortDirection": -1,
                         "transform": {
                             "method": "date",
                             "options": {

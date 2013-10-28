@@ -47,7 +47,7 @@
                 return deferred.promise;
             },
             runSearch: function(report, params){
-                if (report.dataSource === "api"){
+                if (!report.dataSource || report.dataSource === "api"){
                     var deferred = $q.defer(),
                         paramValue;
 

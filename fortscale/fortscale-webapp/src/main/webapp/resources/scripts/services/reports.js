@@ -122,7 +122,7 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($
                             }
 
                             deferred.resolve(transformedResults);
-                            if (report.query.cache)
+                            if (report.query.cache && transformedResults.length)
                                 cache.setItem(cacheItemKey, transformedResults, { expiresIn: getInSeconds(report.query.cache), hold: true });
                         }
                         catch(error){
@@ -131,12 +131,18 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($
                     }
                     else{
                         deferred.resolve(results);
-                        if (report.query.cache)
+                        if (report.query.cache && results.data.length)
                             cache.setItem(cacheItemKey, results, { expiresIn: getInSeconds(report.query.cache), hold: true });
                     }
-                }, deferred.reject);
 
-            cache.removeItem()
+                    if (!results || !results.data.length)
+                        cache.removeItem(cacheItemKey);
+                }, function(error){
+                    if (report.query.cache)
+                        cache.removeItem(cacheItemKey);
+
+                    deferred.reject(error);
+                });
 
             return deferred.promise;
         },

@@ -29,8 +29,7 @@
                                         "actionOptions": {
                                             "updateUrl": false,
                                             "params": {
-                                                "currentFeature": null,
-                                                "date": null
+                                                "currentFeature": null
                                             }
                                         }
                                     }

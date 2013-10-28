@@ -17,20 +17,16 @@
                     {
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
-                        "sortBy": "sourceIp",
                         "link": "#/d/investigator?entities=vpndatares&username={{username}}&source_ip={{sourceIp}}"
                     },
                     {
                         "name": "Internal IP",
                         "value": "{{internalIP}}",
-                        "sortBy": "internalIP",
                         "link": "#/d/investigator?entities=vpndatares&username={{username}}&local_ip={{internalIP}}"
                     },
                     {
                         "name": "Time",
                         "value": "{{eventTime}}",
-                        "sortBy": "eventTime",
-                        "sortDirection": -1,
                         "transform": {
                             "method": "date",
                             "options": {
@@ -44,6 +40,9 @@
                         "style": "score",
                         "styleParams": {
                             "value": "eventScore"
+                        },
+                        "transform": {
+                            "method": "round"
                         }
                     }
                 ]

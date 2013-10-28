@@ -415,7 +415,14 @@ public class ClassifierServiceImpl implements ClassifierService {
 		for (Map<String, Object> map : resultsMap) {
 			List<String> result = new ArrayList<String>( map.size() );
 			for (int i = 0; i < map.size(); i++) {
-				result.add(map.get(keys.get(i)).toString());				
+				String keyString = keys.get(i);
+				Object tmp = map.get(keyString);
+				if(tmp != null) {
+					result.add(tmp.toString());
+				} else {
+					//TODO: error log.
+					result.add("");
+				}
 			}
 			listResults.add(result);
 		}

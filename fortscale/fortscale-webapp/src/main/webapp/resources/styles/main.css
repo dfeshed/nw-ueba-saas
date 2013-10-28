@@ -13,7 +13,7 @@ label {
 .clickable {
   cursor: pointer; }
 
-.hidden {
+.hiddenVisibility {
   visibility: hidden; }
 
 h2, h3, h4, h5 {

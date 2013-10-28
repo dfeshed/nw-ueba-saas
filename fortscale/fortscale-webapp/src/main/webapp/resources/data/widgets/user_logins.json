@@ -5,7 +5,7 @@
         {
             "type": "link",
             "text": "View all",
-            "href": "#/d/investigator?entities=authenticationscores&userid={{@loginsUser}}",
+            "href": "#/d/investigator?entities=wmievents4769&userid={{@loginsUser}}",
             "refreshOn": ["loginsUser"]
         }
     ],
@@ -17,20 +17,16 @@
                     {
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
-                        "sortBy": "sourceIp",
-                        "link": "#/d/investigator?entities=authenticationscores&sourceip={{sourceIp}}"
+                        "link": "#/d/investigator?entities=wmievents4769&sourceip={{sourceIp}}"
                     },
                     {
                         "name": "Destination Hostname",
                         "value": "{{destinationHostname}}",
-                        "sortBy": "destinationHostname",
-                        "link": "#/d/investigator?entities=authenticationscores&targetid={{destinationHostname}}"
+                        "link": "#/d/investigator?entities=wmievents4769&targetid={{destinationHostname}}"
                     },
                     {
                         "name": "Time",
                         "value": "{{eventTime}}",
-                        "sortBy": "eventTime",
-                        "sortDirection": -1,
                         "transform": {
                             "method": "date",
                             "options": {

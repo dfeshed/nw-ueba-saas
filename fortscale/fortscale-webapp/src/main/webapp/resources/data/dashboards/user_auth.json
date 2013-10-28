@@ -44,6 +44,19 @@
                         "date": null
                     },
                     "refreshOn": "date"
+                },
+                {
+                    "widgetId": "user_login_rate",
+                    "report": {
+                        "query": {
+                            "params": [
+                                {
+                                    "dashboardParam": "loginsUser",
+                                    "field": "username"
+                                }
+                            ]
+                        }
+                    }
                 }
             ]
         }

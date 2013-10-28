@@ -10,6 +10,8 @@
                 </a>
             </div>
             <div class="widget-view-control widget-control-refresh">
+                <a ng-click="runWidgetReport(true)" title="Refresh"><i class="icon-refresh"></i></a>
+                <!--
                 <a ng-click="widget.showSettings = !widget.showSettings" title="Widget settings" class="clickable">
                     <i class="icon-cog"></i>
                 </a>
@@ -20,6 +22,7 @@
                         <i class="icon-{{setting.icon}}"></i> {{setting.display}}
                     </a>
                 </menu>
+                -->
             </div>
         </div>
         <h4 class="widget-header-title">{{widget.parsedTitle}}</h4>

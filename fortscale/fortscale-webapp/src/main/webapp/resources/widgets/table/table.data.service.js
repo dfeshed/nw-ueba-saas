@@ -1,4 +1,4 @@
-angular.module("TableWidget").factory("tableWidgetData", ["utils", "transforms", "styles", "icons", function(utils, transforms, styles, icons){
+angular.module("TableWidget").factory("tableWidgetData", ["utils", "transforms", "styles", "icons", "widgetTypes", function(utils, transforms, styles, icons){
     var methods = {
         getData: function(view, data, params){
             var viewData = { rows: [] },
@@ -20,6 +20,9 @@ angular.module("TableWidget").factory("tableWidgetData", ["utils", "transforms",
 
                 if (field.transform && field.transform.method)
                     fieldData.display = transforms[field.transform.method](field.field ? row[field.field] : fieldData.display, field.transform.options);
+
+                if (typeof(fieldData.display) !== "string")
+                    fieldData.display = String(fieldData.display);
 
                 if (field.link)
                     fieldData.link = utils.strings.parseValue(field.link, row, params, rowIndex);
@@ -120,6 +123,59 @@ angular.module("TableWidget").factory("tableWidgetData", ["utils", "transforms",
             });
 
             return viewData;
+        },
+        getDefaultSettings: function(entities, viewSettings){
+            var fields = [],
+                sortField,
+                dateField;
+
+            angular.forEach(entities, function(entity){
+                angular.forEach(entity.fields, function(field){
+                    if (field.enabled){
+                        var fieldSetting = {
+                            name: field.name,
+                            sortBy: field.id,
+                            value: "{{" + field.id + "}}",
+                            link: getTableFieldLink(field)
+                        };
+
+                        if (field.type === "date" || (field.type === "number" && /time/i.test(field.id))){
+                            fieldSetting.transform = {
+                                method: "date",
+                                options: {
+                                    format: "MM/DD/YY HH:mm"
+                                }
+                            };
+
+                            dateField = fieldSetting;
+                        }
+
+                        if (/score/i.test(field.id)){
+                            fieldSetting = angular.extend(fieldSetting, {
+                                "style": "score",
+                                "styleParams": {
+                                    "value": field.id
+                                }
+                            });
+
+                            if (!sortField){
+                                fieldSetting.sortDirection = -1;
+                                tableSort = { field: field.id, direction: -1 };
+                                sortField = field;
+                            }
+                        }
+
+                        $scope.fieldTypes.objectArray.addMember(fieldsSetting, fieldSetting);
+                    }
+                });
+            });
+
+            if (!sortField && dateField){
+                dateField.sortDirection = -1;
+                tableSort = { field: dateField.sortBy, direction: -1 };
+            }
+
+            viewSettings.fields = fields;
         }
     };
     

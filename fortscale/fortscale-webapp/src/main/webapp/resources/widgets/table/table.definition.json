@@ -56,6 +56,24 @@
                             "name": "Method"
                         }
                     ]
+                },
+                {
+                    "id": "style",
+                    "name": "Style",
+                    "type": "string"
+                },
+                {
+                    "id": "styleParams",
+                    "name": "Style params",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "id": "value",
+                            "name": "Value",
+                            "type": "dataField",
+                            "dataFieldType": "number"
+                        }
+                    ]
                 }
             ]
         }

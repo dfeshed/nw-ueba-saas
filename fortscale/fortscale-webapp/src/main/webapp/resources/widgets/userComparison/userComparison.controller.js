@@ -1,8 +1,56 @@
 angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$http", "$location", "database", "bubblesChartWidgetData", "users", function ($scope, $http, $location, database, bubblesChartWidgetData, users) {
     var userIds,
-        userIdsStorageKey = "userComparisonUserIds";
+        userIdsStorageKey = "userComparisonUserIds",
+        usersIndex;
 
     var selectTabs = {
+        features: function(){
+            var usernames = [];
+
+            $scope.loading = true;
+
+            angular.forEach($scope.users, function(user){
+                usernames.push(user.username);
+            });
+
+            users.getUserFeatures(usernames).then(function(featuresRawData){
+                var featuresData = [];
+                angular.forEach(featuresRawData, function(user){
+                    if (user.accountDisabled){
+                        featuresData.push({
+                            username: user.name,
+                            feature: "Account Disabled"
+                        });
+                    }
+
+                    if (user.noPasswordRequired){
+                        featuresData.push({
+                            username: user.name,
+                            feature: "No Password Required"
+                        });
+                    }
+
+                    if (user.passwordNeverExpires){
+                        featuresData.push({
+                            username: user.name,
+                            feature: "Password Never Expires"
+                        });
+                    }
+
+                });
+
+                if ($scope.chartSettings){
+                    $scope.chartSettings.itemField = switchedFields ? "username" : "feature";
+                    $scope.chartSettings.childrenField = switchedFields ? "feature" : "username";
+                    $scope.chartData = bubblesChartWidgetData.getData({ settings: $scope.chartSettings }, featuresData);
+                }
+
+                $scope.loading = false;
+            }, function(error){
+                $scope.error = error;
+                $scope.loading = false;
+            })
+        },
         groups: function () {
             var groupsData = [];
             angular.forEach($scope.users, function(user){
@@ -21,7 +69,28 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
             }
         },
         machines: function(){
+            $scope.loading = true;
+            users.getUsersMachines(userIds).then(function(data){
+                var userMachinesData = [];
+                angular.forEach(data, function(user){
+                    angular.forEach(user.machines, function(machine){
+                        userMachinesData.push({
+                            username: usersIndex[user.userId].name,
+                            hostname: machine.hostname
+                        })
+                    });
+                });
 
+                $scope.loading = false;
+                if ($scope.chartSettings){
+                    $scope.chartSettings.itemField = switchedFields ? "username" : "hostname";
+                    $scope.chartSettings.childrenField = switchedFields ? "hostname" : "username";
+                    $scope.chartData = bubblesChartWidgetData.getData({ settings: $scope.chartSettings }, userMachinesData);
+                }
+            }, function(error){
+                $scope.error = error;
+                $scope.loading = false;
+            });
         }
     };
 
@@ -37,11 +106,15 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
             saveUsersInStorage();
         }
 
+        $scope.loading = true;
         users.getUsersDetails(userId).then(function(userDetails){
             $scope.users = $scope.users.concat(userDetails);
+            setUsersIndex();
+            $scope.loading = false;
             currentTab();
         }, function(error){
             console.error("Can't get user details: ", error);
+            $scope.loading = false;
         })
     };
 
@@ -52,6 +125,8 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
 
     $scope.clearUsers = function () {
         $scope.users = [];
+        userIds = [];
+        setUsersIndex();
         currentTab();
         localStorage.removeItem(userIdsStorageKey);
         $location.search("users", null);
@@ -59,6 +134,8 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
 
     $scope.removeUser = function (userIndex) {
         $scope.users.splice(userIndex, 1);
+        userIds.splice(userIndex, 1);
+        setUsersIndex();
         currentTab();
         saveUsersInStorage();
     };
@@ -86,6 +163,7 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
         {
             data: [
                 { display: "Groups", id: "groups" },
+                { display: "Features", id: "features" },
                 { display: "Machines", id: "machines" }
             ],
             settings: {
@@ -111,6 +189,13 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
 
     function saveUsersInStorage(){
         localStorage.setItem(userIdsStorageKey, userIds.join(","));
+    }
+
+    function setUsersIndex(){
+        usersIndex = {};
+        angular.forEach($scope.users, function(user, userIndex){
+            usersIndex[userIds[userIndex]] = user;
+        })
     }
 
     function init(){

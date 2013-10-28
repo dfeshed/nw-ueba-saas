@@ -20,19 +20,15 @@
                     {
                         "name": "Username",
                         "value": "{{userName}}",
-                        "sortBy": "userName",
                         "link": "#/d/user/{{userId}}"
                     },
                     {
                         "name": "Trend",
-                        "value": "{{trend}}%",
-                        "sortBy": "trend"
+                        "value": "{{trend}}%"
                     },
                     {
                         "name": "Score",
                         "value": "{{score}}",
-                        "sortBy": "score",
-                        "sortDirection": -1,
                         "style": "score",
                         "styleParams": {
                             "value": "score"

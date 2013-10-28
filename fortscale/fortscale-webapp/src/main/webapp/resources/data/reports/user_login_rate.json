@@ -2,7 +2,7 @@
     "dataSource": "api",
     "requiredParams": ["username"],
     "endpoint": {
-        "query":  "SELECT timegenerated,eventcode,account_name,client_address,source_network_address,failure_code from wmievents WHERE lcase(account_name)=lcase('{{@username}}') and failure_code='0x0' and datediff(to_date(now()),timegenerated)<7",
+        "query":  "SELECT timegenerated,eventcode,account_name,client_address,source_network_address,failure_code from wmievents4769 WHERE lcase(account_name)=lcase('{{@username}}') and failure_code='0x0' and datediff(to_date(now()),timegenerated)<7",
         "action": "rate",
         "rateField": "timegenerated",
         "bucket": "1d",

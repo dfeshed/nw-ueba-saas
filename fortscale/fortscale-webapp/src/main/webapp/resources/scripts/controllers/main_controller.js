@@ -8,7 +8,7 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         },
         {
             name: "Login Analysis",
-            url: "#/d/investigator?entities=authenticationscores",
+            url: "#/d/investigator?entities=wmievents4769",
             dashboardId: "auth-investigate",
             icon: "signin"
         },
@@ -17,20 +17,6 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
             url: "#/d/user_comparison",
             dashboardId: "user_comparison",
             icon: "group"
-        },
-        {
-            name: "Malware Discovery",
-            url: "#/d/malware",
-            dashboardId: "malware",
-            icon: "sitemap"
-        },
-        {
-            name: "Reports",
-            icon: "list-alt",
-            children: [
-                { name: "Hostname to IPs", url: "#/d/hostname-to-ips", icon: "table" },
-                { name: "IP to Hostnames", url: "#/d/ip-to-hostnames", icon: "table" }
-            ]
         }
     ];
 

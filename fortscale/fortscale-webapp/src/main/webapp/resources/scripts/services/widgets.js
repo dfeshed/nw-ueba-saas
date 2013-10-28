@@ -117,12 +117,12 @@ angular.module("Fortscale").factory("widgets", [
     }
 
     var viewTypeSetData = {
-        button: function(view, data, params){
+        button: { getData: function(view, data, params){
             return {
                 text: parseFieldValue(view.settings, view.settings.text, data, 0, params)
             };
-        },
-        buttonsBar: function(view, data, params){
+        }},
+        buttonsBar: { getData: function(view, data, params){
             var viewData = [];
 
             function getButton(button, buttonIndex){
@@ -149,15 +149,8 @@ angular.module("Fortscale").factory("widgets", [
             });
 
             return viewData;
-        },
-        checkbox: function(view, data, params){
-            var viewData = false;
-
-            console.log("check: ", view, data, params);
-
-            return viewData;
-        },
-        list: function(view, data, params){
+        }},
+        list: { getData: function(view, data, params){
             var viewData = [];
 
             angular.forEach(data, function(item, itemIndex){
@@ -180,8 +173,8 @@ angular.module("Fortscale").factory("widgets", [
             });
 
             return viewData;
-        },
-        numeric: function(view, data, params){
+        }},
+        numeric: { getData: function(view, data, params){
             var viewData = [];
 
             angular.forEach(data, function(item, itemIndex){
@@ -231,8 +224,8 @@ angular.module("Fortscale").factory("widgets", [
             });
 
             return viewData;
-        },
-        text: function(view, data, params){
+        }},
+        text: { getData: function(view, data, params){
             var viewData = [];
 
             angular.forEach(data, function(row){
@@ -251,7 +244,7 @@ angular.module("Fortscale").factory("widgets", [
             });
 
             return viewData;
-        }
+        }}
     };
 
     angular.extend(viewTypeSetData, widgetsData);
@@ -317,7 +310,10 @@ angular.module("Fortscale").factory("widgets", [
         },
         parseFieldValue: parseFieldValue,
         setViewValues: function(view, data, params, rawData){
-            var setData = viewTypeSetData[view.type];
+            if (!viewTypeSetData[view.type])
+                return data;
+
+            var setData = viewTypeSetData[view.type].getData;
             if (!setData)
                 return data;
 

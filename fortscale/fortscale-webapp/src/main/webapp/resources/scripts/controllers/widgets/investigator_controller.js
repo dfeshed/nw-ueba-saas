@@ -9,8 +9,6 @@ angular.module("Fortscale").controller("InvestigatorController", [
         rawData,
         widgetTypesData;
 
-    var getDataFromServer = true;
-
     $scope.config = { entities: [] };
     $scope.fields = [];
     $scope.paging = paging;
@@ -276,6 +274,9 @@ angular.module("Fortscale").controller("InvestigatorController", [
                             "style": "score",
                             "styleParams": {
                                 "value": field.id
+                            },
+                            transform: {
+                                method: "round"
                             }
                         });
 
@@ -487,15 +488,6 @@ angular.module("Fortscale").controller("InvestigatorController", [
 
         $scope.view.settings = $scope.currentViewSettings;
         setDisplayWidget();
-        /*
-        var widgetDataParser = widgetsData[$scope.view.type];
-        $scope.view.data = widgetDataParser ? widgetDataParser($scope.view, rawData.data, {}) : rawData.data;
-        $scope.view.dataTotalResults = rawData.total;
-        $scope.loading = false;
-
-        if (!results.data.length)
-            $scope.noData = true;
-            */
     }
 
     function getTypeDefaultValue(type){

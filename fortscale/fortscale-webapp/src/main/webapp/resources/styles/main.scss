@@ -31,7 +31,8 @@ body{
 label{ display: inline }
 .clickable{ cursor: pointer; }
 
-.hidden{ visibility: hidden }
+.hiddenVisibility{ visibility: hidden; }
+
 h2, h3, h4, h5{ font-weight: normal; }
 .main-section{
   position: absolute;

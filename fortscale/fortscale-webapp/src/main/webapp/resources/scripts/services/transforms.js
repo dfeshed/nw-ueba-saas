@@ -59,6 +59,9 @@
 
             return newDate;
         },
+        round: function(number){
+            return parseInt(number, 10);
+        },
         string: function(str, options){
             if (options && options.regExp){
                 return str.replace(new RegExp(options.regExp), options.replaceWith);
