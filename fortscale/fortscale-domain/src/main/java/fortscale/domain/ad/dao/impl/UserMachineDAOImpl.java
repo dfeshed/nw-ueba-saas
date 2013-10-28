@@ -56,7 +56,7 @@ public class UserMachineDAOImpl extends ImpalaDAO<UserMachine> implements UserMa
 	public List<UserMachine> findByUsername(String username){
 		List<UserMachine> ret = new ArrayList<UserMachine>();
 
-		String query = String.format("select * from %s  where %s=\"%s\"", getTableName(), UserMachine.USERNAME_FIELD_NAME, username);
+		String query = String.format("select * from %s  where lower(%s)=\"%s\"", getTableName(), UserMachine.USERNAME_FIELD_NAME, username.toLowerCase());
 		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
 		
 		return ret;
