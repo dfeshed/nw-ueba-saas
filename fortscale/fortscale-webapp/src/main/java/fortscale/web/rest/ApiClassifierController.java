@@ -101,9 +101,20 @@ public class ApiClassifierController {
 	@RequestMapping(value="/{id}/severity/{severityId}/users", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<ISuspiciousUserInfo>> users(@PathVariable String id, @PathVariable String severityId, Model model){
+	public DataBean<List<ISuspiciousUserInfo>> severityUsers(@PathVariable String id, @PathVariable String severityId, Model model){
 		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
 		List<ISuspiciousUserInfo> users = classifierService.getSuspiciousUsers(id, severityId);
+		ret.setData(users);
+		ret.setTotal(users.size());
+		return ret;
+	}
+	
+	@RequestMapping(value="/{id}/suspiciousUser", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<ISuspiciousUserInfo>> users(@PathVariable String id, Model model){
+		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
+		List<ISuspiciousUserInfo> users = classifierService.getSuspiciousUsers(id, null);
 		ret.setData(users);
 		ret.setTotal(users.size());
 		return ret;
