@@ -30,7 +30,7 @@
 <!--             </beans:list> -->
 <!--         </beans:property> -->
         <beans:property name="errorResolver">
-            <beans:bean class="fortscale.web.exceptions.handlers.DefaultRestErrorResolver">
+            <beans:bean class="fortscale.web.exceptions.handlers.FortscaleRestErrorResolver">
                 <beans:property name="localeResolver" ref="localeResolver"/>
                 <beans:property name="exceptionMappingDefinitions">
                     <beans:map>

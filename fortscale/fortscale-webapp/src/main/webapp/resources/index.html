@@ -181,6 +181,9 @@
             popup-title="popup.popupTitle"
             popup-scope="popup.popupScope">
     </popup>
+    <div class="modal-overlay" ng-show="modal.show">
+        <div class="modal" ng-include="modal.src"></div>
+    </div>
     <ng-include src="'views/widgets/investigator_field_types.html'"></ng-include>
     <script type="text/ng-template" id="tableField">
         <span ng-if="fieldData.icon" class="widget-table-icon">

@@ -634,55 +634,31 @@ body .ui-tooltip {
   margin-left: -275px;
   margin-top: -110px; }
 
-.modal {
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  margin-left: 0;
-  border: none;
-  border-radius: 0;
-  z-index: 99;
-  background: none; }
-  .modal > div {
+  background: rgba(255, 255, 255, 0.6);
+  cursor: default; }
+  .modal-overlay .modal {
+    width: 500px;
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%; }
-  .modal .modal-header {
-    height: 50px;
-    line-height: 50px;
-    font-size: 1.3em;
-    background: Transparent;
-    color: black;
-    padding: 0 20px;
-    border-radius: 5px;
-    position: relative;
-    top: 40px;
-    font-weight: normal; }
-  .modal .modal-background {
-    background: rgba(0, 0, 0, 0.7);
-    color: white; }
-  .modal .modal-close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 46px;
-    height: 46px;
-    text-align: center;
-    line-height: 46px;
-    z-index: 10; }
-  .modal .modal-contents {
-    background: #F1F1F1;
-    color: Black;
-    padding: 20px;
-    box-shadow: 3px 7px 18px rgba(0, 0, 0, 0.8);
     top: 50%;
-    left: 50%; }
-    .modal .modal-contents h5 {
-      color: #939393; }
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -250px;
+    background: White;
+    border: solid 1px #ddd;
+    padding: 15px;
+    box-sizing: border-box; }
+    .modal-overlay .modal h2 {
+      font-size: 14pt;
+      margin-bottom: 1em; }
+    .modal-overlay .modal footer {
+      margin-top: 2em;
+      text-align: right; }
 
 .splunk-config-modal {
   width: 600px;

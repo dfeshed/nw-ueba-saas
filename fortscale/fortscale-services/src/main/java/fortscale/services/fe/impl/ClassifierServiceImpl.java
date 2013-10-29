@@ -31,6 +31,7 @@ import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.ebs.EventBulkScorer;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.EBSResult;
@@ -158,18 +159,23 @@ public class ClassifierServiceImpl implements ClassifierService {
 
 	@Override
 	public List<ISuspiciousUserInfo> getSuspiciousUsers(String classifierId, String severityId) {
-		List<ISuspiciousUserInfo> ret = Collections.emptyList();
-		if(classifierId.equals(Classifier.ad.getId())){
-			ret = getAdSuspiciousUsers(classifierId, severityId);
-		} else if(classifierId.equals(Classifier.auth.getId())){
-			ret = getAuthSuspiciousUsers(classifierId, severityId);
-		} else if(classifierId.equals(Classifier.vpn.getId())){
-			ret = getVpnSuspiciousUsers(classifierId, severityId);
-		} else {
-			throw new IllegalArgumentException(String.format("no such classifier id [%s]", classifierId));
+		if(!classifierId.equals(Classifier.ad.getId()) && classifierId.equals(Classifier.auth.getId()) && classifierId.equals(Classifier.vpn.getId())){
+			throw new InvalidValueException(String.format("no such classifier id [%s]", classifierId));
 		}
+		return getAdSuspiciousUsers(classifierId, severityId);
 		
-		return ret;
+//		List<ISuspiciousUserInfo> ret = Collections.emptyList();
+//		if(classifierId.equals(Classifier.ad.getId())){
+//			ret = getAdSuspiciousUsers(classifierId, severityId);
+//		} else if(classifierId.equals(Classifier.auth.getId())){
+//			ret = getAuthSuspiciousUsers(classifierId, severityId);
+//		} else if(classifierId.equals(Classifier.vpn.getId())){
+//			ret = getVpnSuspiciousUsers(classifierId, severityId);
+//		} else {
+//			throw new InvalidValueException(String.format("no such classifier id [%s]", classifierId));
+//		}
+//		
+//		return ret;
 	}
 	
 	private List<ISuspiciousUserInfo> getVpnSuspiciousUsers(String classifierId, String severityId) {
@@ -229,6 +235,9 @@ public class ClassifierServiceImpl implements ClassifierService {
 	}
 	
 	private Range getRange(String severityId){
+		if(severityId == null){
+			return new Range(0, 100);
+		}
 		int i = 0;
 		for(SeverityElement element: severityOrderedList){
 			if(element.getName().equals(severityId)){
@@ -237,7 +246,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 			i++;
 		}
 		if(severityOrderedList.size() == i){
-			throw new IllegalArgumentException(String.format("no such severity id: %s", severityId));
+			throw new InvalidValueException(String.format("no such severity id: %s", severityId));
 		}
 		int lowestVal = severityOrderedList.get(i).getValue();
 		int upperVal = 100;

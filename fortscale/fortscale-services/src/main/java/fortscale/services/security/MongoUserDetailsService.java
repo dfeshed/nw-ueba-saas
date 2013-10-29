@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.httpclient.auth.InvalidCredentialsException;
-import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +21,7 @@ import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.analyst.dao.AnalystAuthRepository;
 import fortscale.domain.analyst.dao.AnalystRepository;
 import fortscale.domain.core.EmailAddress;
+import fortscale.services.exceptions.UserAlreadyExistException;
 
 
 
@@ -56,14 +56,14 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
 	}
 	
 	public void create(String username, String password,
-			String emailAddress, String firstName, String lastName) throws AlreadyExistsException {
+			String emailAddress, String firstName, String lastName) throws UserAlreadyExistException {
 		Assert.hasText(username);
 		Assert.hasText(emailAddress);
 		Assert.hasText(firstName);
 		Assert.hasText(lastName);
 		
 		if(analystAuthRepository.findByUsername(username) != null || analystRepository.findByUserName(username) != null) {
-			throw new AlreadyExistsException(String.format("analyst with username %s already exist", username));
+			throw new UserAlreadyExistException(String.format("analyst with username %s already exist", username));
 		}
 		
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
@@ -122,6 +122,9 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
      */
     public void disableUser(String username) {
     	Analyst analyst = analystRepository.findByUserName(username);
+    	if(analyst == null){
+    		throw new UsernameNotFoundException(username);
+    	}
 		analyst.setDisabled(true);
 		analystRepository.save(analyst);
 		

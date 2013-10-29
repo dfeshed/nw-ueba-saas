@@ -58,6 +58,17 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         $scope.currentNav = document.location.hash.split("?")[0];
     });
 
+    $scope.getCurrentNavRedirect = function(){
+        return encodeURIComponent($scope.currentNav);
+    };
+
+    $scope.$on("authError", function(e, data){
+        $scope.modal = {
+            show: true,
+            src: data.status === 403 ? "views/modals/password_expired.html" : "views/modals/session_expired.html"
+        };
+    });
+
     $scope.setCurrentMainDashboard = function(dashboard){
         $scope.currentMainDashboard = null;
         var dashboardIndex = 0;
