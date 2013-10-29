@@ -21,6 +21,16 @@
 			type="annotation" />
 	</context:component-scan>
 	<mvc:annotation-driven />
+	
+<!-- 	<bean id="conversionService" -->
+<!-- 		class="org.springframework.format.support.FormattingConversionServiceFactoryBean"> -->
+<!--     	<property name="converters"> -->
+<!-- 	   		<list> -->
+<!-- 		  		<bean class="fortscale.web.fields.converter.StringToEmailAddressConverter"/> -->
+<!-- 		  		<bean class="fortscale.web.fields.converter.StringToNotEmptyStringConverter"/> -->
+<!-- 	   		</list> -->
+<!--     	</property> -->
+<!-- 	</bean> -->
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
@@ -72,7 +82,7 @@
 <!--             </list> -->
 <!--         </property> -->
         <property name="errorResolver">
-            <bean class="fortscale.web.exceptions.handlers.DefaultRestErrorResolver">
+            <bean class="fortscale.web.exceptions.handlers.FortscaleRestErrorResolver">
                 <property name="localeResolver" ref="localeResolver"/>
                 <property name="exceptionMappingDefinitions">
                     <map>

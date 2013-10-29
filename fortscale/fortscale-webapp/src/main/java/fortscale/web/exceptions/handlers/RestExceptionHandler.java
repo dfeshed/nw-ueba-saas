@@ -59,7 +59,7 @@ import java.util.List;
  *     </tr>
  *     <tr>
  *         <td>errorResolver</td>
- *         <td>{@link DefaultRestErrorResolver DefaultRestErrorResolver}</td>
+ *         <td>{@link FortscaleRestErrorResolver DefaultRestErrorResolver}</td>
  *         <td>Converts Exceptions to {@link RestError} instances.  Should be suitable for most needs.</td>
  *     </tr>
  *     <tr>
@@ -86,7 +86,7 @@ import java.util.List;
  * {@link #setMessageConverters(org.springframework.http.converter.HttpMessageConverter[]) configure} a different
  * JSON-capable {@link HttpMessageConverter}.
  *
- * @see DefaultRestErrorResolver
+ * @see FortscaleRestErrorResolver
  * @see MapRestErrorConverter
  * @see HttpMessageConverter
  * @see org.springframework.http.converter.json.MappingJacksonHttpMessageConverter MappingJacksonHttpMessageConverter
@@ -105,7 +105,7 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
     private RestErrorConverter<?> errorConverter;
 
     public RestExceptionHandler() {
-        this.errorResolver = new DefaultRestErrorResolver();
+        this.errorResolver = new FortscaleRestErrorResolver();
         this.errorConverter = new MapRestErrorConverter();
     }
 

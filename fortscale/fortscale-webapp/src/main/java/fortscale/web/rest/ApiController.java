@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -40,8 +41,18 @@ public class ApiController {
 	@RequestMapping("/**")
 	@LogException
     public void unmappedRequest(HttpServletRequest request) {
-        String uri = request.getRequestURI();
-        throw new UnknownResourceException("There is no resource for path " + uri);
+		StringBuilder builder = new StringBuilder("There is no resource for path ");
+        builder.append(request.getRequestURI());
+        @SuppressWarnings("unchecked")
+		Map<String, String[]> map = request.getParameterMap();
+        if(map.size() > 0){
+        	builder.append(" parameters: ");
+        
+	        for(Map.Entry<String, String[]> entry: map.entrySet()){
+	        	builder.append(entry.getKey()).append("=").append(StringUtils.join(entry.getValue(), ',')).append(" ");
+	        }
+        }
+        throw new UnknownResourceException(builder.toString());
     }
 	
 	@RequestMapping(value="/investigate", method=RequestMethod.GET)

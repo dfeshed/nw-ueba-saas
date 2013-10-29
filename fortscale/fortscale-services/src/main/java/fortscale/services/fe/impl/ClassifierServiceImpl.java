@@ -31,6 +31,7 @@ import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.ebs.EventBulkScorer;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.EBSResult;
@@ -166,7 +167,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		} else if(classifierId.equals(Classifier.vpn.getId())){
 			ret = getVpnSuspiciousUsers(classifierId, severityId);
 		} else {
-			throw new IllegalArgumentException(String.format("no such classifier id [%s]", classifierId));
+			throw new InvalidValueException(String.format("no such classifier id [%s]", classifierId));
 		}
 		
 		return ret;
@@ -237,7 +238,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 			i++;
 		}
 		if(severityOrderedList.size() == i){
-			throw new IllegalArgumentException(String.format("no such severity id: %s", severityId));
+			throw new InvalidValueException(String.format("no such severity id: %s", severityId));
 		}
 		int lowestVal = severityOrderedList.get(i).getValue();
 		int upperVal = 100;

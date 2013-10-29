@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -26,12 +27,15 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
+import fortscale.services.exceptions.InvalidValueException;
+import fortscale.services.exceptions.UserAlreadyExistException;
+
 /**
  * Default {@code RestErrorResolver} implementation that converts discovered Exceptions to
  * {@link RestError} instances.
  *
  */
-public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourceAware, InitializingBean {
+public class FortscaleRestErrorResolver implements RestErrorResolver, MessageSourceAware, InitializingBean {
 
 	private static final String ERROR_STATUS = "status";
     private static final String ERROR_CODE = "code";
@@ -41,7 +45,7 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
     public static final String DEFAULT_EXCEPTION_MESSAGE_VALUE = "_exmsg";
     public static final String DEFAULT_MESSAGE_VALUE = "_msg";
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultRestErrorResolver.class);
+    private static final Logger log = LoggerFactory.getLogger(FortscaleRestErrorResolver.class);
 
     private Map<String, RestError> exceptionMappings = Collections.emptyMap();
 
@@ -54,7 +58,7 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
     private boolean defaultEmptyCodeToStatus;
     private String defaultDeveloperMessage;
 
-    public DefaultRestErrorResolver() {
+    public FortscaleRestErrorResolver() {
         this.defaultEmptyCodeToStatus = true;
         this.defaultDeveloperMessage = DEFAULT_EXCEPTION_MESSAGE_VALUE;
     }
@@ -106,6 +110,10 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
         applyDef(m, MissingServletRequestParameterException.class, HttpStatus.BAD_REQUEST);
         applyDef(m, TypeMismatchException.class, HttpStatus.BAD_REQUEST);
         applyDef(m, "javax.validation.ValidationException", HttpStatus.BAD_REQUEST);
+        applyDef(m, IllegalArgumentException.class, HttpStatus.BAD_REQUEST);
+        applyDef(m, InvalidValueException.class, HttpStatus.BAD_REQUEST, HttpStatusCode.INVALID_VALUE);
+        applyDef(m, UserAlreadyExistException.class, HttpStatus.BAD_REQUEST, HttpStatusCode.USER_ALREADY_EXIST);
+        applyDef(m, UsernameNotFoundException.class, HttpStatus.BAD_REQUEST, HttpStatusCode.USERNAME_NOT_FOUND);
         
         //401
         applyDef(m, AuthenticationException.class, HttpStatus.UNAUTHORIZED);
