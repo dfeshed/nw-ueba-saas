@@ -165,6 +165,8 @@ public class ClassifierServiceImpl implements ClassifierService {
 			ret = getAuthSuspiciousUsers(classifierId, severityId);
 		} else if(classifierId.equals(Classifier.vpn.getId())){
 			ret = getVpnSuspiciousUsers(classifierId, severityId);
+		} else {
+			throw new IllegalArgumentException(String.format("no such classifier id [%s]", classifierId));
 		}
 		
 		return ret;

@@ -38,6 +38,7 @@ public class ApiController {
 	
 	
 	@RequestMapping("/**")
+	@LogException
     public void unmappedRequest(HttpServletRequest request) {
         String uri = request.getRequestURI();
         throw new UnknownResourceException("There is no resource for path " + uri);
