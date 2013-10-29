@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "version", "utils", "conditions", "Cache", function ($q, $http, $resource, version, utils, conditions, Cache) {
+angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "$rootScope", "version", "utils", "conditions", "Cache", function ($q, $http, $resource, $rootScope, version, utils, conditions, Cache) {
     var runTimeCache = new Cache({ id: "runtime", hold: true, itemsExpireIn: 30 * 60 });
 
     var apiResource = $resource("/fortscale-webapp/api/:entity/:id/:method", {
@@ -109,7 +109,11 @@ angular.module("Fortscale").factory("server", ["$q", "$http", "$resource", "vers
                 else
                     deferred.reject();
             }, function(error){
-                deferred.reject();
+                if (error.status === 401 || error.status === 403){
+                    $rootScope.$broadcast("authError", error.data || { status: error.status });
+                }
+
+                deferred.reject(error.data || error);
             });
 
             return deferred.promise;

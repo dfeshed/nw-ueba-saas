@@ -136,7 +136,7 @@ angular.module("Utils", []).factory("utils", [function(){
                     angular.forEach(paramKeyValues, function(keyValue){
                         if (keyValue){
                             var parts = keyValue.split("=");
-                            params[parts[0]] = parts[1] || true;
+                            params[parts[0]] = decodeURIComponent(parts[1]) || true;
                         }
                     });
                 }

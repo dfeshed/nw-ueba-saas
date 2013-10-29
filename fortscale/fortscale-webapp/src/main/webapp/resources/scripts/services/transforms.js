@@ -17,6 +17,9 @@
             return array.length;
         },
         date: function(date, options){
+            if (!date)
+                return "";
+
             if (!options)
                 options = { format: "MM/DD/YY HH:mm" };
 
@@ -27,6 +30,9 @@
             return newDate.format(options.format);
         },
         getDate: function(date){
+            if (!date)
+                return "";
+
             if (angular.isDate(date))
                 return moment(date);
 

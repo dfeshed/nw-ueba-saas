@@ -60,7 +60,7 @@ angular.module("FortscaleSignin").controller("SigninController", ["$scope", "aut
 
     function doLogin(){
         auth.login($scope.email, $scope.password, $scope.rememberMe).then(function(){
-            window.location.href = window.location.href.replace(/\/[\w_\-]+\.html.*/, "/index.html#/d/main");
+            window.location.href = window.location.href.replace(/\/[\w_\-]+\.html.*/, "/index.html" + (queryParams.redirect || "#/d/main"));
         }, function(error){
             $scope.error = error;
         });
