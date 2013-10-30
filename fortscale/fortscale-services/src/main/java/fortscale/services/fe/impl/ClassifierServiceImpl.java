@@ -159,10 +159,25 @@ public class ClassifierServiceImpl implements ClassifierService {
 
 	@Override
 	public List<ISuspiciousUserInfo> getSuspiciousUsers(String classifierId, String severityId) {
-		if(!classifierId.equals(Classifier.ad.getId()) && classifierId.equals(Classifier.auth.getId()) && classifierId.equals(Classifier.vpn.getId())){
+		boolean isExist = false;
+		for(Classifier classifier: Classifier.values()){
+			if(classifierId.equals(classifier.getId())){
+				isExist = true;
+				break;
+			}
+		}
+		if(!isExist){
 			throw new InvalidValueException(String.format("no such classifier id [%s]", classifierId));
 		}
-		return getAdSuspiciousUsers(classifierId, severityId);
+		Range severityRange = getRange(severityId);
+		
+		Pageable pageable = new PageRequest(0, 10, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId));
+		List<User> users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
+		List<ISuspiciousUserInfo> ret = new ArrayList<>();
+		for(User user: users){
+			ret.add(createSuspiciousUserInfo(classifierId, user));
+		}
+		return ret;
 		
 //		List<ISuspiciousUserInfo> ret = Collections.emptyList();
 //		if(classifierId.equals(Classifier.ad.getId())){
