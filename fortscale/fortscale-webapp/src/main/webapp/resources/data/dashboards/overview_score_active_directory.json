@@ -1,0 +1,18 @@
+{
+    "dashboardId": "overview_score_active_directory",
+    "name": "Active Directory Suspicious Users",
+    "columns": [
+        {
+            "className": "span15",
+            "widgets": [
+                {
+                    "widgetId": "users_severity_distribution"
+                },
+                {
+                    "widgetId": "top_10_users",
+                    "title": "Top Active Directory Suspected Users"
+                }
+            ]
+        }
+    ]
+}

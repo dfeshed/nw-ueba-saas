@@ -1,0 +1,6 @@
+{
+    "endpoint": {
+        "query":  "SELECT source_ip,count(*) as failcount FROM vpndata WHERE status='FAIL' and date_time_unix>(unix_timestamp()-604800) GROUP BY source_ip ORDER BY failcount desc LIMIT 10",
+        "entity": "investigate"
+    }
+}

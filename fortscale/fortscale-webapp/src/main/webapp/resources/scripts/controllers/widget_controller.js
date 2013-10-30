@@ -172,7 +172,6 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
         });
 
         $scope.initWidget = function(widget){
-
             if (!widget.widgetId)
                 withWidgetData();
             else if (widget.widgetId){
@@ -194,6 +193,8 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                 })
             }
             function withWidgetData(){
+                setWidgetTitle();
+
                 if (widget.requiredParams){
                     widget.showInitMessage = !widgets.checkRequiredParams(widget, getRecursiveDashboardParams($scope));
                     if (!widget.showInitMessage)

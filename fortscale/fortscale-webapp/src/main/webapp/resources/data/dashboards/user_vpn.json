@@ -43,6 +43,17 @@
                         "date": null
                     },
                     "refreshOn": "date"
+                },
+                {
+                    "widgetId": "user_vpn_logins_count"
+                },
+                {
+                    "widgetId": "user_vpn_logins_count",
+                    "reportId": "user_vpn_failed_logins_count",
+                    "title": "Failed VPN Logins - Last 7 Days"
+                },
+                {
+                    "widgetId": "user_vpn_activities"
                 }
             ]
         }

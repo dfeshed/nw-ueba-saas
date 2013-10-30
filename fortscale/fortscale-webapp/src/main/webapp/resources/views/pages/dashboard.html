@@ -21,20 +21,7 @@
     <div class="dashboard-widgets">
         <div ng-if="dashboard.columns" class="row-fluid">
             <div ng-repeat="column in dashboard.columns" class="dashboard-column {{column.className}}" ng-class="{'dashboard-with-title': column.title}">
-                <header class="widget-header" ng-if="column.title">
-                    <h4 class="widget-header-title">{{column.title}}</h4>
-                </header>
-                <div class="dashboard-column-contents" ui-sortable="sortableOptions" ng-model="column.widgets" ng-class="{ 'sortable-contents': !isDashboardWidget }">
-                    <div class="widget {{widget.className}}"
-                         ng-repeat="widget in column.widgets"
-                         ng-controller="WidgetController"
-                         ng-init="initWidget(widget)"
-                         ng-show="!widget.show || widget.show.value"
-                         ng-class="{ 'widget-loading': widget.loading }"
-                         ng-style="widget.style">
-                        <ng-include src="'views/widgets/widget.html'"></ng-include>
-                    </div>
-                </div>
+               <ng-include src="'views/pages/column.html'"></ng-include>
             </div>
         </div>
         <ng-include src="'views/widgets/widget.html'" ng-repeat="widget in dashboard.widgets"></ng-include>

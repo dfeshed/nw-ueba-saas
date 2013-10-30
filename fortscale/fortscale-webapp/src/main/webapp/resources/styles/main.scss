@@ -27,7 +27,6 @@ body{
   overflow-x: hidden;
 }
 
-
 label{ display: inline }
 .clickable{ cursor: pointer; }
 
@@ -79,10 +78,21 @@ a{ cursor: pointer }
   }
 }
 
+.navbar{
+  @media print{
+    display: none;
+  }
+}
+
 #main-footer{
   text-align: right;
   font-size: .8em;
   padding: 10px 10px 20px;
+
+  span{
+    display: inline-block;
+    margin-left: 15px;
+  }
 }
 .sidebar-minimized{
   .content{
@@ -158,3 +168,4 @@ a{ cursor: pointer }
 @import "controls/notification";
 @import "controls/link";
 @import "controls/daterange";
+@import "print";

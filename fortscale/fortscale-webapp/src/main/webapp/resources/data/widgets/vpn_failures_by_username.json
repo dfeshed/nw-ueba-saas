@@ -1,0 +1,22 @@
+{
+    "reportId": "vpn_failures_by_username",
+    "title": "Top 10 failed VPN logins by username",
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "User",
+                        "value": "{{username}}",
+                        "link": "#/d/user/{{username}}"
+                    },
+                    {
+                        "name": "Failure Count",
+                        "value": "{{failcount}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

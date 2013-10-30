@@ -168,7 +168,9 @@
         </div>
     </section>
     <footer id="main-footer">
-        <span>Version: {{buildVersion}}</span>
+        <span class="print-only">Analyst: {{loggedInUser.fullName}}</span>
+        <span class="print-only">Date: {{loadDate}}</span>
+        <span class="print-hide">Version: {{buildVersion}}</span>
     </footer>
     <popup  ng-controller="PopupController"
             width="popup.width"

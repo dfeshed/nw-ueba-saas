@@ -14,9 +14,8 @@
                     "labelsFont": {
                         "size": "20px"
                     },
-                    "selectable": true,
-                    "showSelectionBar": true,
-                    "selectFirstOnLoad": true
+                    "selectable": false,
+                    "showSelectionBar": false
                 },
                 "series": [{
                     "field": "percentage",
@@ -30,22 +29,7 @@
                     "field": "percentage",
                     "value": "{{percentage}}",
                     "styleField": "percentage"
-                },
-                "selectionBar": {
-                    "styleField": "percentage"
-                },
-                "events": [
-                    {
-                        "eventName": "click",
-                        "action": "setParams",
-                        "actionOptions": {
-                            "updateUrl": false,
-                            "params": {
-                                "usersSeverity": "{{name}}"
-                            }
-                        }
-                    }
-                ]
+                }
             }
         }
     ]

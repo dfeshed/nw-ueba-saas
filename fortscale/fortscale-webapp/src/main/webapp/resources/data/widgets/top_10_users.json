@@ -1,0 +1,44 @@
+{
+    "reportId": "top_10_users",
+    "title": "Top 10 Suspicious Users",
+    "controls": [
+        {
+            "type": "link",
+            "text": "View all",
+            "href": "#/d/investigator",
+            "refreshOn": ["currentScore"]
+        }
+    ],
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{userName}}",
+                        "link": "#/d/user/{{userId}}"
+                    },
+                    {
+                        "name": "Trend",
+                        "value": "{{trend}}%",
+                        "icon": {
+                            "preset": "plusMinus",
+                            "presetParams": {
+                                "value": "trend"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{score}}",
+                        "style": "score",
+                        "styleParams": {
+                            "value": "score"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

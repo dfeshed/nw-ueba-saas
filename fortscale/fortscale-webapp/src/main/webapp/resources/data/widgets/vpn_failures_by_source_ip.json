@@ -1,0 +1,21 @@
+{
+    "reportId": "vpn_failures_by_source_ip",
+    "title": " Top 10 failed VPN logins by Source IP",
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Source IP",
+                        "value": "{{source_ip}}"
+                    },
+                    {
+                        "name": "Failure Count",
+                        "value": "{{failcount}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

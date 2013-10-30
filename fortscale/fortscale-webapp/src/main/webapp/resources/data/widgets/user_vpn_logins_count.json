@@ -1,7 +1,7 @@
 {
-    "reportId": "user_login_rate",
-    "title": "Logins Rate",
-    "refreshOn": ["loginsUser"],
+    "reportId": "user_vpn_logins_count",
+    "title": "Successful VPN Logins - Last 7 Days",
+    "refreshOn": ["vpnUser"],
     "views": [
         {
             "type": "barsChart",
@@ -32,7 +32,7 @@
                 },
                 "series": [
                     {
-                        "field": "eventscount",
+                        "field": "logincount",
                         "label": "{{@userName}}"
                     }
                 ],

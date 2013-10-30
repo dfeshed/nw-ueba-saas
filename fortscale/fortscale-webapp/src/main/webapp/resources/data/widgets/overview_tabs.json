@@ -1,0 +1,39 @@
+{
+    "widgetId": "overview_tabs",
+    "renderControls": false,
+    "renderHeader": false,
+    "className": "no-margins widget-advance-one",
+    "views": [
+        {
+            "type": "tabs",
+            "settings": {
+                "tabs": [
+                    {
+                        "display": "Active Directory",
+                        "id": "active_directory"
+                    },
+                    {
+                        "display": "Logins",
+                        "id": "auth"
+                    },
+                    {
+                        "display": "VPN",
+                        "id": "vpn"
+                    }
+                ],
+                "events": [
+                    {
+                        "eventName": "select",
+                        "action": "setParams",
+                        "actionOptions": {
+                            "updateUrl": false,
+                            "params": {
+                                "currentScore": "{{id}}"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

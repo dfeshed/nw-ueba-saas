@@ -1,12 +1,7 @@
 {
-    "dataSource": "api",
     "requiredParams": ["username"],
     "endpoint": {
-        "query":  "SELECT timegenerated,eventcode,account_name,client_address,source_network_address,failure_code from wmievents4769 WHERE lcase(account_name)=lcase('{{@username}}') and failure_code='0x0' and datediff(to_date(now()),timegenerated)<7",
-        "action": "rate",
-        "rateField": "timegenerated",
-        "bucket": "1d",
-        "entity": "reports",
-        "id": "logongraph"
+        "query":  "SELECT substr(to_date(timegenerated),1,11) as day, count(*) as EventsCount FROM wmievents4769 WHERE lcase(account_name)=lcase('{{@username}}') and failure_code='0x0' and datediff(to_date(now()),timegenerated)<7 group by day order by day limit 7",
+        "entity": "investigate"
     }
 }

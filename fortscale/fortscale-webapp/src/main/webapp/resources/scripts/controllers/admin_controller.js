@@ -44,7 +44,7 @@ angular.module("FortscaleAdmin").controller("AdminController", ["$scope", "auth"
             return;
 
         auth.login($scope.email, $scope.password, $scope.rememberMe).then(function(){
-            window.location.href = window.location.href.replace(/signin\.html.*/, "index.html#/d/main");
+            window.location.href = window.location.href.replace(/signin\.html.*/, "index.html#/d/overview");
         }, function(error){
             $scope.error = error;
         })
@@ -133,7 +133,7 @@ angular.module("FortscaleAdmin").controller("AdminController", ["$scope", "auth"
             return;
 
         auth.changePassword($scope.email, $scope.currentPassword, $scope.password).then(function(){
-            window.location.href = window.location.href.replace(/change_password\.html.*/, "index.html#/d/main");
+            window.location.href = window.location.href.replace(/change_password\.html.*/, "index.html#/d/overview");
         }, function(error){
             $scope.error = error;
         });

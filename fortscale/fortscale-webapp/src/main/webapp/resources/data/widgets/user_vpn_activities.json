@@ -1,0 +1,39 @@
+{
+    "reportId": "user_vpn_activities",
+    "title": "Last 10 VPN Login Activities",
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Source IP",
+                        "value": "{{source_ip}}"
+                    },
+                    {
+                        "name": "Local IP",
+                        "value": "{{local_ip}}"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{date_time}}",
+                        "transform": {
+                            "method": "date",
+                            "options": {
+                                "format": "MM/DD/YY HH:mm:ss"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Status",
+                        "value": "{{status}}",
+                        "style": "failOrSuccess",
+                        "styleParams": {
+                            "value": "status"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
