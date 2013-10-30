@@ -8,11 +8,13 @@
                 "fields": [
                     {
                         "name": "Source IP",
-                        "value": "{{source_ip}}"
+                        "value": "{{source_ip}}",
+                        "link": "#/d/investigator?entities=vpndata&source_ip={{source_ip}}&username={{@vpnUser}}"
                     },
                     {
                         "name": "Local IP",
-                        "value": "{{local_ip}}"
+                        "value": "{{local_ip}}",
+                        "link": "#/d/investigator?entities=vpndata&local_ip={{local_ip}}&username={{@vpnUser}}"
                     },
                     {
                         "name": "Time",
@@ -30,7 +32,8 @@
                         "style": "failOrSuccess",
                         "styleParams": {
                             "value": "status"
-                        }
+                        },
+                        "link": "#/d/investigator?entities=vpndata&status={{status}}&username={{@vpnUser}}"
                     }
                 ]
             }

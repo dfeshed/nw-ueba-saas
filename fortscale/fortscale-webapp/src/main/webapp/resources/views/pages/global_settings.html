@@ -1,0 +1,9 @@
+<h3>Global Settings</h3>
+<div class="vertical-sliders">
+    <div class="vertical-container" ng-repeat="score in scores">
+        <div ui-slider="{orientation: 'vertical', range: 'min'}"  min="0" max="100" ng-model="score.weight" ng-change="scoreChange(score, $index)"></div>
+        <span class="slider-value">{{score.weight}}%</span>
+        <span class="slider-label">{{score.name}}</span>
+    </div>
+</div>
+<a ng-click="save()" class="btn btn-primary" ng-class="{ disabled: !changed }" ng-disabled="!changed">Save Changes</a>

@@ -287,7 +287,7 @@ angular.module("Fortscale").factory("widgets", [
             var deferred = $q.defer();
 
             if (cachedWidgets[widgetId])
-                deferred.resolve(cachedWidgets[widgetId]);
+                deferred.resolve(angular.copy(cachedWidgets[widgetId]));
             else{
                 DAL.widgets.getWidget(widgetId).then(function(widget){
                     if (widget.reportId){
@@ -300,7 +300,7 @@ angular.module("Fortscale").factory("widgets", [
                         })
                     }
                     else
-                        deferred.resolve(widget);
+                        deferred.resolve(angular.copy(widget));
 
                     cachedWidgets[widgetId] = widget;
                 }, deferred.reject);
