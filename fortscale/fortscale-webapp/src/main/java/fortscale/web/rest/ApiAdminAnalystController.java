@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -68,7 +69,8 @@ public class ApiAdminAnalystController {
 		List<Analyst> analysts = analystService.findAllNonDisabledUsers();
 		List<AnalystBean> analystBeans = new ArrayList<>();
 		for(Analyst analyst: analysts) {
-			analystBeans.add(new AnalystBean(analyst));
+			UserDetails userDetails = mongoUserDetailsService.loadUserByUsername(analyst.getUserName());
+			analystBeans.add(new AnalystBean(analyst, userDetails));
 		}
 		ret.setData(analystBeans);
 		ret.setTotal(analystBeans.size());

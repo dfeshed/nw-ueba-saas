@@ -42,7 +42,6 @@ public class ApiClassifierController {
 	@LogException
 	public DataBean<List<ILoginEventScoreInfo>> loginsEvents(@RequestParam(required=false) Long date,
 			@RequestParam(required=false) String uid,
-			@RequestParam(required=false) String query,
 			@RequestParam(defaultValue="0") Integer offset,
 			@RequestParam(defaultValue="10") Integer limit,
 			Model model){

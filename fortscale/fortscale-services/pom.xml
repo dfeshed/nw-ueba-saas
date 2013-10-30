@@ -15,6 +15,10 @@
             <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
         </repository>
     </repositories>
+    
+    <properties>
+		<hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -46,6 +50,13 @@
 			<groupId>com.fortscale.toolkits</groupId>
 			<artifactId>calibro</artifactId>
 			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		
+		<!-- Hibernate Validator -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator.version}</version>
 		</dependency>
 	</dependencies>
 </project>

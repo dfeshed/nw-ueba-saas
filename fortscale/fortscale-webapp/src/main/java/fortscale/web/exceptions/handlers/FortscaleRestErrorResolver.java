@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.httpclient.auth.InvalidCredentialsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -117,6 +118,8 @@ public class FortscaleRestErrorResolver implements RestErrorResolver, MessageSou
         
         //401
         applyDef(m, AuthenticationException.class, HttpStatus.UNAUTHORIZED);
+        applyDef(m, InvalidCredentialsException.class, HttpStatus.UNAUTHORIZED, HttpStatusCode.WRONG_PASSWORD);
+        
 
         //403
         applyDef(m, CredentialsExpiredException.class, HttpStatus.FORBIDDEN, HttpStatusCode.PASSWORD_EXPIRED);

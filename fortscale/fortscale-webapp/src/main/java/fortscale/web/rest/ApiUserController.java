@@ -41,35 +41,27 @@ public class ApiUserController {
 	private UserRepository userRepository;
 	
 	@RequestMapping(value="/updateAdInfo", method=RequestMethod.GET)
-	@ResponseBody
-	public String updateAdInfo(@RequestParam(required=false) String timestamp, Model model){
+	public void updateAdInfo(@RequestParam(required=false) String timestamp, Model model){
 		if(timestamp != null){
 			userService.updateUserWithADInfo(timestamp);
 		} else{
 			userService.updateUserWithCurrentADInfo();
 		}
-		return "";
 	}
 	
 	@RequestMapping(value="/updateAuthScore", method=RequestMethod.GET)
-	@ResponseBody
-	public String updateAuthScore(Model model){
+	public void updateAuthScore(Model model){
 		userService.updateUserWithAuthScore();
-		return "";
 	}
 	
 	@RequestMapping(value="/updateVpnScore", method=RequestMethod.GET)
-	@ResponseBody
-	public String updateVpnScore(Model model){
+	public void updateVpnScore(Model model){
 		userService.updateUserWithVpnScore();
-		return "";
 	}
 	
 	@RequestMapping(value="/updateGroupsScore", method=RequestMethod.GET)
-	@ResponseBody
-	public String updateGroupsScore(Model model){
+	public void updateGroupsScore(Model model){
 		userService.updateUserWithGroupMembershipScore();
-		return "";
 	}
 	
 	@RequestMapping(value="/search", method=RequestMethod.GET)
