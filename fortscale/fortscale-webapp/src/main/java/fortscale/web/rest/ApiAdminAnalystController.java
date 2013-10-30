@@ -36,7 +36,6 @@ public class ApiAdminAnalystController {
 	private AnalystService analystService;
 
 	@RequestMapping(value="/addAnalyst", method=RequestMethod.POST)
-	@ResponseBody
 	@LogException
 	public void addAnalyst(@Valid Username username,
 			@Valid Password password,
