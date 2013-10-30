@@ -1,0 +1,13 @@
+{
+    "requiredParams": ["vpnUser"],
+    "endpoint": {
+        "query":  "SELECT count(*) as value, status as label FROM vpndata WHERE username='{{@vpnUser}}' and date_time_unix>(unix_timestamp()-604800) GROUP BY status",
+        "entity": "investigate"
+    },
+    "params": [
+        {
+            "dashboardParam": "vpnUser",
+            "field": "vpnUser"
+        }
+    ]
+}

@@ -3,6 +3,7 @@
     "renderHeader": false,
     "className": "no-margins widget-advance-one",
     "reportId": "user_scores",
+    "refreshOn": ["userName"],
     "views": [
         {
             "type": "tabs",

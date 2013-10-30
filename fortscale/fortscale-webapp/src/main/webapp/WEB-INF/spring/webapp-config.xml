@@ -87,7 +87,7 @@
                 <property name="exceptionMappingDefinitions">
                     <map>
                         <!-- 404 -->
-                        <entry key="fortscale.web.exceptions.UnknownResourceException" value="#{T(javax.servlet.http.HttpServletResponse).SC_NOT_FOUND}, _exmsg"/>
+                        <entry key="fortscale.services.exceptions.UnknownResourceException" value="#{T(javax.servlet.http.HttpServletResponse).SC_NOT_FOUND}, _exmsg"/>
 
                         <!-- 500 (catch all): -->
                         <entry key="Throwable" value="500"/>

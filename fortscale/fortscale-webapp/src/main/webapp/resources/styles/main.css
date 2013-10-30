@@ -65,10 +65,17 @@ a {
     background: #049cdb;
     color: White; }
 
+@media print {
+  .navbar {
+    display: none; } }
+
 #main-footer {
   text-align: right;
   font-size: .8em;
   padding: 10px 10px 20px; }
+  #main-footer span {
+    display: inline-block;
+    margin-left: 15px; }
 
 .sidebar-minimized .content {
   margin-left: 65px; }
@@ -946,6 +953,8 @@ body .ui-tooltip {
   background: none; }
 .widget-table-list .widget-table tr:first-child td {
   border-top: none; }
+.widget-table-list .widget-table-wrapper {
+  min-height: 0; }
 
 .widget-pie.with-info .widget-pie-chart {
   float: right; }
@@ -1233,3 +1242,44 @@ daterange .daterange-input {
   daterange .daterange-input:focus {
     background-color: white;
     font-style: normal; }
+
+.vertical-sliders {
+  margin: 20px 0 20px 20px; }
+  .vertical-sliders .vertical-container {
+    display: inline-block;
+    width: 60px;
+    margin-right: 20px;
+    vertical-align: top;
+    text-align: center; }
+    .vertical-sliders .vertical-container .ui-slider {
+      left: 23px;
+      margin-bottom: 5px; }
+  .vertical-sliders .slider-value {
+    font-weight: bold; }
+  .vertical-sliders .slider-label {
+    line-height: 13px;
+    display: block;
+    margin-top: 5px; }
+
+.print-only {
+  visibility: hidden; }
+
+@media print {
+  .print-only {
+    visibility: visible; }
+
+  .print-hide {
+    display: none !important; }
+
+  .navbar, #sidebar-nav, .widget-controls, .btn {
+    display: none; }
+
+  #main-contents {
+    margin-left: 0;
+    border: none;
+    box-shadow: none;
+    border-radius: 0; }
+
+  .dashboard-widgets {
+    background: White;
+    padding: 10px; } }

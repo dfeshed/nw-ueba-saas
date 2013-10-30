@@ -4,6 +4,7 @@ package fortscale.web.exceptions.handlers;
 public enum HttpStatusCode {
 
 	PASSWORD_EXPIRED(40301,"Password expired"),
+	WRONG_PASSWORD(40101,"Wrong password"),
 	USER_ALREADY_EXIST(40001,"User already exist"),
 	USERNAME_NOT_FOUND(40002,"Username not found"),
 	INVALID_VALUE(40003,"Invalid value");

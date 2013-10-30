@@ -67,7 +67,7 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
 		}
 		
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		authorities.add(new SimpleGrantedAuthority(AnalystAuth.ROLE_ADMIN));
 		AnalystAuth analystAuth = new AnalystAuth(username, encodePassword(password), authorities);
 		analystAuth.setCredentialsNonExpired(false);
 		analystAuthRepository.save(analystAuth);
@@ -81,6 +81,10 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
      */
     public void updateUser(String oldUsername, String newUsername, String newPassword, String newEmailAddress, String newFirstName, String newLastName) {
     	AnalystAuth analystAuth = analystAuthRepository.findByUsername(oldUsername);
+    	if(analystAuth == null){
+    		throw new UsernameNotFoundException(oldUsername);
+    	}
+    	
     	if(newUsername != null || newPassword != null) {
 	    	if(newUsername != null) {
 	    		analystAuth.setUsername(newUsername);
@@ -143,15 +147,18 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
      */
     public void changePassword(String username, String oldPassword, String newPassword) throws InvalidCredentialsException {
     	AnalystAuth analystAuth = analystAuthRepository.findByUsername(username);
+    	if(analystAuth == null){
+    		throw new UsernameNotFoundException(username);
+    	}
+    	
     	String encodedPasswordString = encodePassword(newPassword);
     	if (!analystAuth.getPassword().equals(encodePassword(oldPassword))) {
-			throw new InvalidCredentialsException("wrong passowrd");
+			throw new InvalidCredentialsException("wrong password");
 		}
-    	if(!oldPassword.equals(newPassword)) {
-    		analystAuth.setPassword(encodedPasswordString);
-    		analystAuth.setCredentialsNonExpired(true);
-	    	analystAuthRepository.save(analystAuth);
-    	}
+
+    	analystAuth.setPassword(encodedPasswordString);
+		analystAuth.setCredentialsNonExpired(true);
+    	analystAuthRepository.save(analystAuth);
     }
 
     /**

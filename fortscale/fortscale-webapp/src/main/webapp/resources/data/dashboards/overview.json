@@ -1,0 +1,48 @@
+{
+    "dashboardId": "overview",
+    "name": "Overview",
+    "columns": [
+        {
+            "className": "span15",
+            "widgets": [
+                {
+                    "title": "Suspicious Users",
+                    "renderControls": false,
+                    "views": [
+                        {
+                            "type": "container",
+                            "widgets": [
+                                {
+                                    "widgetId": "overview_tabs"
+                                },
+                                {
+                                    "id": "overview_scoreDashboard",
+                                    "renderControls": false,
+                                    "renderHeader": false,
+                                    "refreshOn": "currentScore",
+                                    "className": "widget-no-top-padding",
+                                    "show": {
+                                        "conditions": [{
+                                            "field": "{{currentScore}}",
+                                            "operator": "hasValue"
+                                        }]
+                                    },
+                                    "views": [
+                                        {
+                                            "type": "dashboardWidget",
+                                            "className": "dashboard-with-border inner-widgets",
+                                            "settings": {
+                                                "dashboardId": "overview_score_{{@currentScore}}",
+                                                "requiredParams": ["currentScore"]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

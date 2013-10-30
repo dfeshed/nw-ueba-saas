@@ -50,5 +50,6 @@ public class ImpalaWriter{
 				e.printStackTrace();
 			}
 		}
+		writer = null;
 	}
 }

@@ -1,0 +1,27 @@
+{
+    "reportId": "user_vpn_logins_count_int",
+    "title": "User Activity Summary",
+    "refreshOn": ["vpnUser"],
+    "views": [
+        {
+            "type": "table",
+            "className": "widget-table-list",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Label",
+                        "value": "{{label}}",
+                        "map": {
+                            "SUCCESS": "VPN successful logins, last 7 days",
+                            "FAIL": "VPN failed logins, last 7 days"
+                        }
+                    },
+                    {
+                        "name": "Value",
+                        "value": "{{value}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -32,14 +32,14 @@
                 },
                 "series": [
                     {
-                        "field": "EventsCount",
+                        "field": "eventscount",
                         "label": "{{@userName}}"
                     }
                 ],
                 "labels": {
                     "field": "Date",
-                    "value": "{{Date}}",
-                    "styleField": "Date"
+                    "value": "{{day}}",
+                    "styleField": "day"
                 }
             }
         }

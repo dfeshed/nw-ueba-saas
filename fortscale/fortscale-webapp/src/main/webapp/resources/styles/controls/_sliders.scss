@@ -1,0 +1,26 @@
+.vertical-sliders{
+  margin: 20px 0 20px 20px;
+
+  .vertical-container{
+    display: inline-block;
+    width: 60px;
+    margin-right: 20px;
+    vertical-align: top;
+    text-align: center;
+
+    .ui-slider{
+      left: 23px;
+      margin-bottom: 5px;
+    }
+  }
+
+  .slider-value{
+    font-weight: bold;
+  }
+
+  .slider-label{
+    line-height: 13px;
+    display: block;
+    margin-top: 5px;
+  }
+}

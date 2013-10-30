@@ -1,0 +1,13 @@
+{
+    "requiredParams": ["vpnUser"],
+    "endpoint": {
+        "query":  "SELECT to_date(date_time) as day, count(*) as logincount FROM vpndata WHERE username='{{@vpnUser}}' and status='SUCCESS' and datediff(to_date(now()),to_date(date_time))<7 GROUP BY day ORDER BY day LIMIT 7",
+        "entity": "investigate"
+    },
+    "params": [
+        {
+            "dashboardParam": "vpnUser",
+            "field": "vpnUser"
+        }
+    ]
+}

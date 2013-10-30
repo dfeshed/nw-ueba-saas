@@ -96,6 +96,34 @@
             ]
         }
     ],
+    "failOrSuccess": [
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "FAIL"
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "rgb(105, 184, 94)",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "SUCCESS"
+                }
+            ]
+        }
+    ],
     "severity": [
         {
             "properties": {

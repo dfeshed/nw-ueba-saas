@@ -1,0 +1,47 @@
+{
+    "reportId": "user_vpn_logins_count",
+    "title": "Successful VPN Logins - Last 7 Days",
+    "refreshOn": ["vpnUser"],
+    "views": [
+        {
+            "type": "barsChart",
+            "settings": {
+                "options": {
+                    "height": "200px",
+                    "width": "100%",
+                    "createAxes": false,
+                    "barLabelsFont": {
+                        "size": 16,
+                        "color": "#999999"
+                    },
+                    "labelsFont": {
+                        "size": "14px",
+                        "color": "#999999"
+                    },
+                    "labels": {
+                        "height": 20,
+                        "margin": 13,
+                        "handleEvents": true
+                    },
+                    "selectable": false,
+                    "padding": { "top": 0, "right": 50, "left": 50, "bottom": 0 },
+                    "tooltip": "{{seriesLabel}}'s login attempts for {{barLabel}}: {{barValue}}",
+                    "values": {
+                        "min": 0
+                    }
+                },
+                "series": [
+                    {
+                        "field": "logincount",
+                        "label": "{{@userName}}"
+                    }
+                ],
+                "labels": {
+                    "field": "Date",
+                    "value": "{{day}}",
+                    "styleField": "day"
+                }
+            }
+        }
+    ]
+}

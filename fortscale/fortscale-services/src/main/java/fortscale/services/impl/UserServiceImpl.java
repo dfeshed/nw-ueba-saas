@@ -34,6 +34,7 @@ import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
+import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.utils.actdir.ADUserParser;
@@ -69,6 +70,14 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private VpnDAO vpnDAO;
+	
+	@Autowired
+	private ImpalaGroupsScoreWriterFactory impalaGroupsScoreWriterFactory;
+	
+	
+	
+	
+	
 
 	@Override
 	public User getUserById(String uid) {
@@ -186,7 +195,7 @@ public class UserServiceImpl implements UserService{
 	public List<IUserScore> getUserScores(String uid) {
 		User user = userRepository.findOne(uid);
 		if(user == null){
-			return Collections.emptyList();
+			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
 		}
 		
 		List<IUserScore> ret = new ArrayList<IUserScore>();
@@ -212,7 +221,12 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit){
+		Classifier.validateClassifierId(classifierId);
 		User user = userRepository.findOne(uid);
+		if(user == null){
+			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
+		}
+		
 		List<IUserScoreHistoryElement> ret = new ArrayList<IUserScoreHistoryElement>();
 		ClassifierScore classifierScore = user.getScore(classifierId);
 		Date currentDate = new Date();
@@ -271,6 +285,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Date timestamp) {
+		Classifier.validateClassifierId(classifierId);
 		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findByUserIdAndClassifierIdAndTimestamp(uid, classifierId, timestamp);
 		if(ufe == null || ufe.getAttributes() == null){
 			return Collections.emptyList();
@@ -284,6 +299,10 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<UserMachine> getUserMachines(String uid) {
 		User user = userRepository.findOne(uid);
+		if(user == null){
+			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
+		}
+		
 		String userName = user.getAdUserPrincipalName().split("@")[0];
 		return userMachineDAO.findByUsername(userName);
 	}
@@ -319,6 +338,35 @@ public class UserServiceImpl implements UserService{
 			updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg);
 		}
 		
+	}
+	
+	@Override
+	public void updateUserWithGroupMembershipScore(){
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), null);
+		if(adUserFeaturesExtractions.size() == 0){
+			//TODO: WARN LOG
+			return;
+		}
+		
+		double avgScore = 0;
+		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
+			avgScore += extraction.getScore();
+		}
+		avgScore = avgScore/adUserFeaturesExtractions.size();
+		
+		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaGroupsScoreWriterFactory.createImpalaGroupsScoreWriter();
+		
+		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
+			User user = userRepository.findOne(extraction.getUserId());
+			if(user == null){
+				//TODO: error log.
+				continue;
+			}
+			//updating the user with the new score.
+			updateUserScore(user, extraction.getTimestamp(), Classifier.groups.getId(), extraction.getScore(), avgScore);
+			impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
+		}
+		impalaGroupsScoreWriter.close();
 	}
 	
 	@Override

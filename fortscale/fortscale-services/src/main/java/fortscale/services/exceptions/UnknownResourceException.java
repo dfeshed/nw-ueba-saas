@@ -1,4 +1,4 @@
-package fortscale.web.exceptions;
+package fortscale.services.exceptions;
 
 /**
  * exception indicating a desired business entity or record cannot be found.

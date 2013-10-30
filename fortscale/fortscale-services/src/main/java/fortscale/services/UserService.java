@@ -34,6 +34,8 @@ public interface UserService {
 
 	public void updateUserWithVpnScore();
 	
+	public void updateUserWithGroupMembershipScore();
+	
 	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
 	
 	public ApplicationUserDetails getApplicationUserDetails(User user, UserApplication userApplication);

@@ -213,5 +213,39 @@
                 "type": "string"
             }
         ]
+    },
+    {
+        "name": "VPN Data",
+        "id": "vpndata",
+        "fields": [
+            {
+                "id": "date_time",
+                "name": "Time",
+                "type": "date"
+            },
+            {
+                "id": "username",
+                "name": "Username",
+                "type": "string",
+                "key": "userid"
+            },
+            {
+                "id": "source_ip",
+                "name": "Source IP",
+                "type": "string",
+                "key": "ip"
+            },
+            {
+                "id": "local_ip",
+                "name": "Local IP",
+                "type": "string",
+                "key": "ip"
+            },
+            {
+                "id": "status",
+                "name": "Status",
+                "type": "string"
+            }
+        ]
     }
 ]

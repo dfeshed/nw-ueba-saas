@@ -32,6 +32,7 @@ import fortscale.ebs.EventBulkScorer;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.exceptions.InvalidValueException;
+import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.EBSResult;
@@ -119,6 +120,8 @@ public class ClassifierServiceImpl implements ClassifierService {
 
 	@Override
 	public List<IScoreDistribution> getScoreDistribution(String classifierId) {
+		Classifier.validateClassifierId(classifierId);
+		
 		List<Threshold> thresholds = new ArrayList<>();
 		thresholds.add(new Threshold("All", 0));
 		for(SeverityElement element: severityOrderedList){
@@ -159,10 +162,17 @@ public class ClassifierServiceImpl implements ClassifierService {
 
 	@Override
 	public List<ISuspiciousUserInfo> getSuspiciousUsers(String classifierId, String severityId) {
-		if(!classifierId.equals(Classifier.ad.getId()) && classifierId.equals(Classifier.auth.getId()) && classifierId.equals(Classifier.vpn.getId())){
-			throw new InvalidValueException(String.format("no such classifier id [%s]", classifierId));
+		Classifier.validateClassifierId(classifierId);
+		
+		Range severityRange = getRange(severityId);
+		
+		Pageable pageable = new PageRequest(0, 10, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId));
+		List<User> users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
+		List<ISuspiciousUserInfo> ret = new ArrayList<>();
+		for(User user: users){
+			ret.add(createSuspiciousUserInfo(classifierId, user));
 		}
-		return getAdSuspiciousUsers(classifierId, severityId);
+		return ret;
 		
 //		List<ISuspiciousUserInfo> ret = Collections.emptyList();
 //		if(classifierId.equals(Classifier.ad.getId())){
@@ -177,6 +187,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 //		
 //		return ret;
 	}
+	
 	
 	private List<ISuspiciousUserInfo> getVpnSuspiciousUsers(String classifierId, String severityId) {
 		Date lastRun = vpnDAO.getLastRunDate();
@@ -283,7 +294,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		}
 		User user = userRepository.findOne(userId);
 		if(user == null){
-			return Collections.emptyList();
+			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
 		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestamp(user.getAdUserPrincipalName(), timestamp, pageable);
@@ -349,7 +360,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		}
 		User user = userRepository.findOne(userId);
 		if(user == null){
-			return Collections.emptyList();
+			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
 		ApplicationUserDetails applicationUserDetails = userService.getApplicationUserDetails(user, UserApplication.vpn);
 		if(applicationUserDetails == null || applicationUserDetails.getUserName() == null) {

@@ -1,0 +1,18 @@
+{
+    "dashboardId": "overview_score_auth",
+    "name": "Logins Suspicious Users",
+    "columns": [
+        {
+            "className": "span15",
+            "widgets": [
+                {
+                    "widgetId": "top_10_users",
+                    "title": "Top Logins Suspected Users"
+                },
+                {
+                    "widgetId": "all_users_logins"
+                }
+            ]
+        }
+    ]
+}

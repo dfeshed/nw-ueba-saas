@@ -2,7 +2,7 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
     $scope.navigation = [
         {
             name: "Overview",
-            url: "#/d/main",
+            url: "#/d/overview",
             dashboardId: "main",
             icon: "home"
         },
@@ -56,6 +56,7 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
         }
 
         $scope.currentNav = document.location.hash.split("?")[0];
+        $scope.loadDate = moment().format("MM/DD/YYYY HH:mm");
     });
 
     $scope.getCurrentNavRedirect = function(){

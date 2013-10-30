@@ -2,24 +2,31 @@ package fortscale.web.rest;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.apache.commons.httpclient.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.analyst.Analyst;
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.services.analyst.AnalystService;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.security.MongoUserDetailsService;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.AnalystBean;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
+import fortscale.web.fields.FirstName;
+import fortscale.web.fields.LastName;
+import fortscale.web.fields.Password;
+import fortscale.web.fields.Username;
 
 
 
@@ -35,13 +42,6 @@ public class ApiAnalystController extends BaseController{
 	@Autowired
 	private AnalystService analystService;
 
-	@RequestMapping(value="/addDefUser", method=RequestMethod.GET)
-	@ResponseBody
-	public String addDefUser(Model model){
-		
-		return "";
-	}
-	
 //	@RequestMapping(value="signup", method=RequestMethod.POST)
 //	@ResponseBody
 //	@LogException
@@ -67,63 +67,44 @@ public class ApiAnalystController extends BaseController{
 //	}
 	
 	@RequestMapping(value="/changePassword", method=RequestMethod.POST)
-	@ResponseBody
 	@LogException
-	public String changePassword(@RequestParam(required=true) String username,
-			@RequestParam(required=true) String password,
-			@RequestParam(required=true) String newPassword,
-			Model model){
-		String ret = "";
-		if(!mongoUserDetailsService.userExists(username)) {
-			ret = "User does not exist.";
-		} else {
-			try {
-				mongoUserDetailsService.changePassword(username, password, newPassword);
-			} catch (Exception e) {
-				//TODO: log
-				ret = e.getMessage();
-			}
-			
+	public void changePassword(@Valid Username username,
+			@Valid Password password,
+			@Valid Password newPassword,
+			BindingResult result,
+			Model model) throws InvalidCredentialsException{
+		if (result.hasErrors()) {
+			throw new InvalidValueException(result.toString());
 		}
-		
-		return ret;
+		mongoUserDetailsService.changePassword(username.toString(), password.toString(), newPassword.toString());
 	}
 	
 	@RequestMapping(value="/update", method=RequestMethod.POST)
-	@ResponseBody
 	@LogException
-	public String update(@RequestParam(required=true) String password,
-			@RequestParam(required=false) String username,
-			@RequestParam(required=false) String firstName,
-			@RequestParam(required=false) String lastName,
-			@RequestParam(required=false) String newPassword,
-			Model model){
-		String ret = "";
+	public void update(@Valid Password password,
+			@Valid Username username,
+			@Valid FirstName firstName,
+			@Valid LastName lastName,
+			@Valid Password newPassword,
+			Model model) throws InvalidCredentialsException{
 		AnalystAuth analystAuth = getThisAnalystAuth();
-		if(!analystAuth.getPassword().equals(mongoUserDetailsService.encodePassword(password))) {
-			ret = "Wrong password";
+		if(!analystAuth.getPassword().equals(mongoUserDetailsService.encodePassword(password.toString()))) {
+			throw new InvalidCredentialsException("wrong password");
 		} else {
-			try {
-				mongoUserDetailsService.updateUser(analystAuth.getUsername(), username, newPassword, username, firstName, lastName);
-			} catch (Exception e) {
-				//TODO: log
-				ret = e.getMessage();
-			}
-			
+			mongoUserDetailsService.updateUser(analystAuth.getUsername(), username.toString(), newPassword.toString(), username.toString(), firstName.toString(), lastName.toString());
 		}
 		
-		return ret;
 	}
 	
-	@RequestMapping(value="/{id}/details", method=RequestMethod.GET)
+	@RequestMapping(value="/me/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<AnalystBean>> details(@PathVariable String id, Model model){
-		AnalystAuth analystAuth = getAnalystAuth(id);
+	public DataBean<List<AnalystBean>> details(Model model){
+		AnalystAuth analystAuth = getThisAnalystAuth();
 		if(analystAuth != null) {
 			Analyst analyst = analystService.findByUsername(analystAuth.getUsername());
 			if(analyst != null) {
-				return new DataListWrapperBean<AnalystBean>(new AnalystBean(analyst) );
+				return new DataListWrapperBean<AnalystBean>(new AnalystBean(analyst, analystAuth) );
 			}
 		}
 		return null;

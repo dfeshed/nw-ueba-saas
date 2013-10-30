@@ -27,6 +27,8 @@ import fortscale.domain.core.AbstractDocument;
 public class AnalystAuth extends AbstractDocument implements UserDetails, CredentialsContainer {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
+    
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     //~ Instance fields ================================================================================================
     private String password;

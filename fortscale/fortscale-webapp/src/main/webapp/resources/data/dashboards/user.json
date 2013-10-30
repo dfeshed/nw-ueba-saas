@@ -55,6 +55,9 @@
                     }
                 },
                 {
+                    "widgetId": "user_activity"
+                },
+                {
                     "widgetId": "user_machines",
                     "report": {
                         "query": {

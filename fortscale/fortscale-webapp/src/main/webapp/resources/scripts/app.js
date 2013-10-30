@@ -9,6 +9,7 @@ angular.module("Fortscale", [
     "Icons",
     "Yoxigen",
     "ui.sortable",
+    "ui.slider",
     "ngResource",
     "FocusWhen",
     "FortscaleAuth",
@@ -45,9 +46,13 @@ angular.module("Fortscale", [
             templateUrl: 'views/pages/account.html',
             controller: "AccountSettingsController"
         })
+        .when('/global_settings', {
+            templateUrl: 'views/pages/global_settings.html',
+            controller: "GlobalSettingsController"
+        })
         .otherwise(
         {
-            redirectTo: "/"
+            redirectTo: "/d/overview"
         });
 
     $locationProvider.html5Mode(false);
