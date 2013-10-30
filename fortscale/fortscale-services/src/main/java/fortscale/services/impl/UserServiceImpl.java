@@ -69,6 +69,14 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private VpnDAO vpnDAO;
+	
+	@Autowired
+	private ImpalaGroupsScoreWriterFactory impalaGroupsScoreWriterFactory;
+	
+	
+	
+	
+	
 
 	@Override
 	public User getUserById(String uid) {
@@ -319,6 +327,35 @@ public class UserServiceImpl implements UserService{
 			updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg);
 		}
 		
+	}
+	
+	@Override
+	public void updateUserWithGroupMembershipScore(){
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), null);
+		if(adUserFeaturesExtractions.size() == 0){
+			//TODO: WARN LOG
+			return;
+		}
+		
+		double avgScore = 0;
+		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
+			avgScore += extraction.getScore();
+		}
+		avgScore = avgScore/adUserFeaturesExtractions.size();
+		
+		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaGroupsScoreWriterFactory.createImpalaGroupsScoreWriter();
+		
+		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
+			User user = userRepository.findOne(extraction.getUserId());
+			if(user == null){
+				//TODO: error log.
+				continue;
+			}
+			//updating the user with the new score.
+			updateUserScore(user, extraction.getTimestamp(), Classifier.groups.getId(), extraction.getScore(), avgScore);
+			impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
+		}
+		impalaGroupsScoreWriter.close();
 	}
 	
 	@Override

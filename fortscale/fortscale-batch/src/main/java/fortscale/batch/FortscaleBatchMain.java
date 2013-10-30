@@ -20,6 +20,7 @@ public class FortscaleBatchMain {
 	private static final String UPDATE_AD_INFO = "updateAdInfo";
 	private static final String UPDATE_AUTH_SCORE = "updateAuthScore";
 	private static final String UPDATE_VPN_SCORE = "updateVpnScore";
+	private static final String UPDATE_GROUP_MEMBERSHIP_SCORE = "updateGroupMembershipScore";
 	
 	
 	
@@ -50,6 +51,13 @@ public class FortscaleBatchMain {
 			}
 			 
 			fortscaleBatch.runfe(userAdScoreCsvFileFullPathString);
+		} else if(action.equalsIgnoreCase(UPDATE_GROUP_MEMBERSHIP_SCORE)) {
+			String userAdScoreCsvFileFullPathString=null;
+			if(args.length > 1) {
+				userAdScoreCsvFileFullPathString = args[1];
+			}
+			 
+			fortscaleBatch.updateGroupMembershipScore(userAdScoreCsvFileFullPathString);
 		} else if(action.equalsIgnoreCase(UPDATE_AD_INFO)) {
 			fortscaleBatch.updateAdInfo();
 		} else if(action.equalsIgnoreCase(UPDATE_AUTH_SCORE)) {

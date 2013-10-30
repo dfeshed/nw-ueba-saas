@@ -65,6 +65,13 @@ public class ApiUserController {
 		return "";
 	}
 	
+	@RequestMapping(value="/updateGroupsScore", method=RequestMethod.GET)
+	@ResponseBody
+	public String updateGroupsScore(Model model){
+		userService.updateUserWithGroupMembershipScore();
+		return "";
+	}
+	
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
