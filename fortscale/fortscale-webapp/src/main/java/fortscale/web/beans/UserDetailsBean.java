@@ -98,6 +98,10 @@ public class UserDetailsBean implements Serializable{
 	public String getOtherTelephone() {
 		return user.getOtherTelephone();
 	}
+	
+	public String getImage() {
+		return user.getThumbnailPhoto();
+	}
 
 	public UserManagerBean getManager() {
 		UserManagerBean ret = null;

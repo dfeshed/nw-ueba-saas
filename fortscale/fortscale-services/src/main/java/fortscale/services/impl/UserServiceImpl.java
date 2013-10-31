@@ -148,6 +148,8 @@ public class UserServiceImpl implements UserService{
 		user.setSearchField(createSearchField(user));
 		user.setDepartment(adUser.getDepartment());
 		user.setPosition(adUser.getTitle());
+		user.setThumbnailPhoto(adUser.getThumbnailPhoto());		
+		
 		ADUserParser adUserParser = new ADUserParser();
 		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
 		if(groups != null){
