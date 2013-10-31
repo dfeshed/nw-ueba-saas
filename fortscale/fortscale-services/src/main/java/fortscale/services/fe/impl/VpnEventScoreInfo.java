@@ -32,7 +32,7 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 
 	@Override
 	public String getUsername() {
-		return user.getAdUserPrincipalName();
+		return user.getUsername();
 	}
 
 	@Override
@@ -68,6 +68,11 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	@Override
 	public String getInternalHostname() {
 		return localHostname;
+	}
+
+	@Override
+	public String getStatus() {
+		return vpnScore.getStatus();
 	}
 
 

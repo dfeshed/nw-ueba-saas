@@ -12,4 +12,5 @@ public interface IVpnEventScoreInfo {
 	public String getInternalHostname();
 	public double getEventScore();
 	public double getUserScore();
+	public String getStatus();
 }

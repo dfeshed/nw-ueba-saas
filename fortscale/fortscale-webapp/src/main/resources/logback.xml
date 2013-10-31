@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+      		<level>DEBUG</level>
+      		<onMatch>DENY</onMatch>
+      		<onMismatch>ACCEPT</onMismatch>
+    	</filter>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}%n
+			</Pattern>
+		</layout>
+	</appender>
+	<appender name="TestLog" class="ch.qos.logback.core.FileAppender">
+		<file>testFile.log</file>
+		<append>true</append>
+<!-- 		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">       -->
+<!--       		<evaluator> defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
+<!--         		<expression>return message.contains("findOne using query") || message.contains("Getting Mongo Database") || message.contains("Created query Query");</expression> -->
+<!--       		</evaluator> -->
+<!--       		<OnMismatch>NEUTRAL</OnMismatch> -->
+<!--       		<OnMatch>DENY</OnMatch> -->
+<!--     	</filter> -->
+		
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+		<encoder>
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</encoder>
+	</appender>
+
+	<root level="debug">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="TestLog" />
+	</root>
+	
+	<!-- 3rdparty Loggers -->
+	<logger name="org.springframework.core" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<logger name="org.springframework.data" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<logger name="org.springframework.beans" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<logger name="org.springframework.context" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+	<logger name="org.springframework.web" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+	<logger name="org.apache.hadoop" additivity="false" level="info">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<logger name="com.cloudera.cdk.morphline" additivity="false" level="warn">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="TestLog" />		
+	</logger>
+</configuration>

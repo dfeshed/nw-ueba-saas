@@ -46,7 +46,11 @@ public class User extends AbstractDocument {
 	
 	private String managerDN;
 	@Indexed
+	private String username;
+	@Indexed
 	private String adUserPrincipalName;
+
+	private String adSAMAccountName;
 	
 	private String telephoneNumber;
 	
@@ -169,6 +173,26 @@ public class User extends AbstractDocument {
 		}
 	}
 	
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+	public String getAdSAMAccountName() {
+		return adSAMAccountName;
+	}
+
+
+	public void setAdSAMAccountName(String adSAMAccountName) {
+		this.adSAMAccountName = adSAMAccountName;
+	}
+
+
 	public String getTelephoneNumber() {
 		return telephoneNumber;
 	}
