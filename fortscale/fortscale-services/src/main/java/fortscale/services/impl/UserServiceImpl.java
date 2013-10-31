@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
+import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.EmailAddress;
@@ -74,7 +76,8 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ImpalaGroupsScoreWriterFactory impalaGroupsScoreWriterFactory;
 	
-	
+	@Autowired 
+	private ADUserParser adUserParser; 
 	
 	
 	
@@ -140,7 +143,8 @@ public class UserServiceImpl implements UserService{
 			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
 		}
 		
-		user.setEmployeeID(adUser.getEmployeeID());
+		user.setAdEmployeeID(adUser.getEmployeeID());
+		user.setAdEmployeeNumber(adUser.getEmployeeNumber());
 		user.setManagerDN(adUser.getManager());
 		user.setMobile(adUser.getMobile());
 		user.setTelephoneNumber(adUser.getTelephoneNumber());
@@ -152,7 +156,40 @@ public class UserServiceImpl implements UserService{
 		user.setSearchField(createSearchField(user));
 		user.setDepartment(adUser.getDepartment());
 		user.setPosition(adUser.getTitle());
-		user.setThumbnailPhoto(adUser.getThumbnailPhoto());		
+		user.setThumbnailPhoto(adUser.getThumbnailPhoto());
+		user.setAdDisplayName(adUser.getDisplayName());
+		user.setAdLogonHours(adUser.getLogonHours());
+		try {
+			user.setAdWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			user.setAdWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		user.setAdDescription(adUser.getDescription());
+		user.setAdStreetAddress(adUser.getStreetAddress());
+		user.setAdCompany(adUser.getCompany());
+		user.setAdC(adUser.getC());
+		user.setAdDivision(adUser.getDivision());
+		user.setAdL(adUser.getL());
+		user.setAdO(adUser.getO());
+		user.setAdRoomNumber(adUser.getRoomNumber());
+		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().startsWith("30828")){
+			try {
+				user.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		user.setAdUserAccountControl(adUser.getUserAccountControl());
 		
 		ADUserParser adUserParser = new ADUserParser();
 		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
@@ -161,6 +198,23 @@ public class UserServiceImpl implements UserService{
 				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
 				if(adGroup != null){
 					user.addGroup(new AdUserGroup(groupDN, adGroup.getName()));
+				}else{
+					//TODO: LOG WARNING.
+				}
+			}
+		}
+		
+		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
+		if(directReports != null){
+			for(String directReportsDN: directReports){
+				User userDirectReport = userRepository.findByAdDn(directReportsDN);
+				if(userDirectReport != null){
+					AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, userDirectReport.getAdDisplayName());
+					adUserDirectReport.setUserId(userDirectReport.getId());
+					adUserDirectReport.setFirstname(userDirectReport.getFirstname());
+					adUserDirectReport.setLastname(userDirectReport.getLastname());
+					adUserDirectReport.setUsername(userDirectReport.getUsername());
+					user.addAdDirectReport(adUserDirectReport);
 				}else{
 					//TODO: LOG WARNING.
 				}

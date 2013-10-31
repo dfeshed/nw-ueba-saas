@@ -122,4 +122,10 @@ public class AdUserRepositoryImpl implements AdUserRepository{
 		return null;
 	}
 
+	@Override
+	public AdUser findByDistinguishedName(String distinguishedName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

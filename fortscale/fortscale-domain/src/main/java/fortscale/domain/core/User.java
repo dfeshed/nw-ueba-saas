@@ -1,6 +1,7 @@
 package fortscale.domain.core;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,9 +34,9 @@ public class User extends AbstractDocument {
 	@JsonProperty
 	private String adDn;
 	
-	private String employeeID;
+	private String adEmployeeID;
 	
-
+	private String adEmployeeNumber;
 	
 
 	private String firstname, lastname;
@@ -71,6 +72,46 @@ public class User extends AbstractDocument {
 	private String position;
 	
 	private String department;
+	
+	private String adDisplayName;
+	
+	private Date accountExpires;
+	
+	private String adUserAccountControl;
+	
+	private String adLogonHours;
+	
+	private Date adWhenChanged;
+	
+	private Date adWhenCreated;
+	
+	private String adDescription;
+	
+	private String adStreetAddress;
+		
+	private String adCompany;
+	
+	private String adC;
+				
+	private String adDivision;
+			
+	private String adL;
+	
+	private String adO;
+	
+	private String adRoomNumber;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@JsonProperty
+	private Set<AdUserDirectReport> adDirectReports = new HashSet<AdUserDirectReport>();
 	
 	@JsonProperty
 	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
@@ -147,12 +188,12 @@ public class User extends AbstractDocument {
 		this.emailAddress = emailAddress;
 	}
 	
-	public String getEmployeeID() {
-		return employeeID;
+	public String getAdEmployeeID() {
+		return adEmployeeID;
 	}
 
-	public void setEmployeeID(String employeeID) {
-		this.employeeID = employeeID;
+	public void setAdEmployeeID(String employeeID) {
+		this.adEmployeeID = employeeID;
 	}
 
 	public String getManagerDN() {
@@ -285,6 +326,171 @@ public class User extends AbstractDocument {
 		this.department = department;
 	}
 	
+	public String getAdEmployeeNumber() {
+		return adEmployeeNumber;
+	}
+
+
+	public void setAdEmployeeNumber(String adEmployeeNumber) {
+		this.adEmployeeNumber = adEmployeeNumber;
+	}
+
+
+	public String getAdDisplayName() {
+		return adDisplayName;
+	}
+
+
+	public void setAdDisplayName(String adDisplayName) {
+		this.adDisplayName = adDisplayName;
+	}
+
+
+	public Date getAccountExpires() {
+		return accountExpires;
+	}
+
+
+	public void setAccountExpires(Date accountExpires) {
+		this.accountExpires = accountExpires;
+	}
+
+
+	public String getAdUserAccountControl() {
+		return adUserAccountControl;
+	}
+
+
+	public void setAdUserAccountControl(String adUserAccountControl) {
+		this.adUserAccountControl = adUserAccountControl;
+	}
+
+
+	public String getAdLogonHours() {
+		return adLogonHours;
+	}
+
+
+	public void setAdLogonHours(String adLogonHours) {
+		this.adLogonHours = adLogonHours;
+	}
+
+
+	public Date getAdWhenChanged() {
+		return adWhenChanged;
+	}
+
+
+	public void setAdWhenChanged(Date adWhenChanged) {
+		this.adWhenChanged = adWhenChanged;
+	}
+
+
+	public Date getAdWhenCreated() {
+		return adWhenCreated;
+	}
+
+
+	public void setAdWhenCreated(Date adWhenCreated) {
+		this.adWhenCreated = adWhenCreated;
+	}
+
+
+	public String getAdDescription() {
+		return adDescription;
+	}
+
+
+	public void setAdDescription(String adDescription) {
+		this.adDescription = adDescription;
+	}
+
+
+	public String getAdStreetAddress() {
+		return adStreetAddress;
+	}
+
+
+	public void setAdStreetAddress(String adStreetAddress) {
+		this.adStreetAddress = adStreetAddress;
+	}
+
+
+	public String getAdCompany() {
+		return adCompany;
+	}
+
+
+	public void setAdCompany(String adCompany) {
+		this.adCompany = adCompany;
+	}
+
+
+	public String getAdC() {
+		return adC;
+	}
+
+
+	public void setAdC(String adC) {
+		this.adC = adC;
+	}
+
+
+	public String getAdDivision() {
+		return adDivision;
+	}
+
+
+	public void setAdDivision(String adDivision) {
+		this.adDivision = adDivision;
+	}
+
+
+	public String getAdL() {
+		return adL;
+	}
+
+
+	public void setAdL(String adL) {
+		this.adL = adL;
+	}
+
+
+	public String getAdO() {
+		return adO;
+	}
+
+
+	public void setAdO(String adO) {
+		this.adO = adO;
+	}
+	
+
+	public String getAdRoomNumber() {
+		return adRoomNumber;
+	}
+
+
+	public void setAdRoomNumber(String adRoomNumber) {
+		this.adRoomNumber = adRoomNumber;
+	}
+
+
+	public void setAdDn(String adDn) {
+		this.adDn = adDn;
+	}
+
+
+	public void setAdDirectReports(Set<AdUserDirectReport> adDirectReports) {
+		this.adDirectReports = adDirectReports;
+	}
+
+
+	public void setGroups(Set<AdUserGroup> groups) {
+		this.groups = groups;
+	}
+
+
 	public void addGroup(AdUserGroup adUserGroup) {
 
 		Assert.notNull(adUserGroup);
@@ -293,6 +499,16 @@ public class User extends AbstractDocument {
 	
 	public Set<AdUserGroup> getGroups() {
 		return Collections.unmodifiableSet(groups);
+	}
+	
+	public void addAdDirectReport(AdUserDirectReport adUserDirectReport) {
+
+		Assert.notNull(adUserDirectReport);
+		this.adDirectReports.add(adUserDirectReport);
+	}
+	
+	public Set<AdUserDirectReport> getAdDirectReports() {
+		return Collections.unmodifiableSet(adDirectReports);
 	}
 	
 	public boolean containsApplicationUserDetails(ApplicationUserDetails applicationUserDetails) {
