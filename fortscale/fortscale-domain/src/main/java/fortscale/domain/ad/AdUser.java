@@ -126,6 +126,9 @@ public class AdUser extends AdObject{
 	
 	private String sAMAccountName = "";
 	
+	// Contains the users's photo in Base64 format 
+	private String thumbnailPhoto = "";
+	
 	
 	public String getObjectClass() {
 		return objectClass;
@@ -528,6 +531,16 @@ public class AdUser extends AdObject{
 		this.sAMAccountName = sAMAccountName;
 	}
 
+	
+	public String getThumbnailPhoto() {
+		return thumbnailPhoto;
+	}
+
+	public void setThumbnailPhoto(String tumbnailPhoto) {
+		this.thumbnailPhoto = tumbnailPhoto;
+	}
+
+	
 
 
 	@Transient

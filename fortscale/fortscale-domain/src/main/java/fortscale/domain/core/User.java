@@ -62,6 +62,7 @@ public class User extends AbstractDocument {
 	
 	private String otherTelephone;
 
+	private String thumbnailPhoto;
 	
 	private String position;
 	
@@ -235,6 +236,15 @@ public class User extends AbstractDocument {
 	}
 
 
+	public String getThumbnailPhoto() {
+		return thumbnailPhoto;
+	}
+
+	public void setThumbnailPhoto(String thumbnailPhoto) {
+		this.thumbnailPhoto = thumbnailPhoto;
+	}
+	
+	
 	public String getPosition() {
 		return position;
 	}
