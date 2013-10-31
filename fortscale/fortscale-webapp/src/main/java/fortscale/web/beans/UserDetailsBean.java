@@ -30,7 +30,7 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public String getUsername() {
-		return user.getAdUserPrincipalName();
+		return user.getUsername();
 	}
 	
 	public Map<String, ApplicationUserDetails> getApplicationUserDetails() {
@@ -137,7 +137,7 @@ public class UserDetailsBean implements Serializable{
 			return managerUser.getEmployeeID();
 		}
 		public String getUsername() {
-			return managerUser.getAdUserPrincipalName();
+			return managerUser.getUsername();
 		}
 	}
 	

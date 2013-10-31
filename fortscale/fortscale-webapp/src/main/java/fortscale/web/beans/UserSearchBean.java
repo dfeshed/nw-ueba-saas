@@ -18,7 +18,7 @@ public class UserSearchBean {
 		if(!StringUtils.isEmpty(user.getFirstname()) || !StringUtils.isEmpty(user.getLastname())) {
 			ret = user.getFirstname() + " " + user.getLastname();
 		} else {
-			ret = user.getAdUserPrincipalName();
+			ret = user.getUsername();
 		}
 		return ret;
 	}

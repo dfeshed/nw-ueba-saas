@@ -242,7 +242,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 			trend = (int)(((curScore - prevScore) / prevScore) * 10000);
 			trend = trend/100;
 		}
-		return new SuspiciousUserInfo(user.getId(), user.getAdUserPrincipalName(), (int) Math.round(user.getScore(classifierId).getScore()), trend);
+		return new SuspiciousUserInfo(user.getId(), user.getUsername(), (int) Math.round(user.getScore(classifierId).getScore()), trend);
 	}
 	
 	private Range getRange(String severityId){
@@ -297,7 +297,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
-		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestamp(user.getAdUserPrincipalName(), timestamp, pageable);
+		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestamp(user.getUsername(), timestamp, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		for(AuthScore authScore: authScores){
 			ret.add(createLoginEventScoreInfo(user, authScore));

@@ -127,15 +127,19 @@ public class UserServiceImpl implements UserService{
 		if(adUser.getEmailAddress() != null && adUser.getEmailAddress().length() > 0){
 			user.setEmailAddress(new EmailAddress(adUser.getEmailAddress()));
 		}
-		if(!StringUtils.isEmpty(adUser.getUserPrincipalName())) {
-			user.setAdUserPrincipalName(adUser.getUserPrincipalName().toLowerCase());
-			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.ad, adUser.getUserPrincipalName()));
-		} else if (!StringUtils.isEmpty(adUser.getsAMAccountName())) {
-			user.setAdUserPrincipalName(adUser.getsAMAccountName().toLowerCase());
-			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.ad, adUser.getsAMAccountName()));
-		} else {
+		user.setAdUserPrincipalName(adUser.getUserPrincipalName());
+		user.setAdSAMAccountName(adUser.getsAMAccountName());
+		String username = adUser.getUserPrincipalName();
+		if(StringUtils.isEmpty(username)) {
+			username = adUser.getsAMAccountName();
+		}
+		if(!StringUtils.isEmpty(username)) {
+			user.setUsername(username.toLowerCase());
+			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.ad, user.getUsername()));
+		} else{
 			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
 		}
+		
 		user.setEmployeeID(adUser.getEmployeeID());
 		user.setManagerDN(adUser.getManager());
 		user.setMobile(adUser.getMobile());
@@ -181,8 +185,8 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		
-		if(user.getAdUserPrincipalName() != null && user.getAdUserPrincipalName().length() > 0){
-			sb.append(SEARCH_FIELD_PREFIX).append(user.getAdUserPrincipalName().toLowerCase());
+		if(!StringUtils.isEmpty(user.getUsername())){
+			sb.append(SEARCH_FIELD_PREFIX).append(user.getUsername());
 		}
 		return sb.toString();
 	}
@@ -305,7 +309,7 @@ public class UserServiceImpl implements UserService{
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
 		}
 		
-		String userName = user.getAdUserPrincipalName().split("@")[0];
+		String userName = user.getUsername().split("@")[0];
 		return userMachineDAO.findByUsername(userName);
 	}
 

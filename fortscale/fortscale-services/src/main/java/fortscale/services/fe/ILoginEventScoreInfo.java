@@ -12,4 +12,5 @@ public interface ILoginEventScoreInfo {
 	public String getDestinationHostname();
 	public double getEventScore();
 	public double getUserScore();
+	public String getErrorCode();
 }

@@ -33,7 +33,7 @@ public class LoginEventScoreInfo implements ILoginEventScoreInfo {
 
 	@Override
 	public String getUsername() {
-		return user.getAdUserPrincipalName();
+		return user.getUsername();
 	}
 
 	@Override
@@ -69,6 +69,11 @@ public class LoginEventScoreInfo implements ILoginEventScoreInfo {
 	@Override
 	public double getUserScore() {
 		return authScore.getGlobalScore();
+	}
+
+	@Override
+	public String getErrorCode() {
+		return authScore.getErrorCode();
 	}
 
 }
