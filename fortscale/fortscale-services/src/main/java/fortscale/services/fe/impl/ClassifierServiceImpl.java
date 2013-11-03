@@ -159,14 +159,23 @@ public class ClassifierServiceImpl implements ClassifierService {
 			threshold.setCount(userRepository.countNumOfUsersAboveThreshold(classifierId, threshold));
 		}
 	}
-
+	
 	@Override
-	public List<ISuspiciousUserInfo> getSuspiciousUsers(String classifierId, String severityId) {
+	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId) {
+		return getTopUsers(classifierId, severityId, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendField(classifierId));
+	}
+	
+	@Override
+	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId) {
+		return getTopUsers(classifierId, severityId, User.getClassifierScoreCurrentTrendField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
+	}
+
+	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, String... sortingFieldsName) {
 		Classifier.validateClassifierId(classifierId);
 		
 		Range severityRange = getRange(severityId);
 		
-		Pageable pageable = new PageRequest(0, 10, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId));
+		Pageable pageable = new PageRequest(0, 10, Direction.DESC, sortingFieldsName);
 		List<User> users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(User user: users){

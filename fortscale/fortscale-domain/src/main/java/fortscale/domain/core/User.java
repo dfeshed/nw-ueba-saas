@@ -120,6 +120,7 @@ public class User extends AbstractDocument {
 	@JsonProperty
 	Map<String, ApplicationUserDetails> appUserDetailsMap = new HashMap<>();
 	
+	@Indexed
 	@Field(classifierScoreField)
 	private HashMap<String, ClassifierScore> scores = new HashMap<String, ClassifierScore>();
 	
@@ -546,6 +547,10 @@ public class User extends AbstractDocument {
 	
 	public static String getClassifierScoreCurrentScoreField(String classifierId) {
 		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.scoreField);
+	}
+	
+	public static String getClassifierScoreCurrentTrendField(String classifierId) {
+		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.trendField);
 	}
 	
 	public static String getAppUserNameField(String applicationName) {

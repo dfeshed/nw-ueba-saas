@@ -2,14 +2,19 @@ package fortscale.domain.core;
 
 import java.util.Date;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class ScoreInfo {
 	public static final String scoreField = "score";
+	public static final String trendField = "trend";
 	
+	@Indexed
 	@Field(scoreField)
 	private double score;
 	private double avgScore;
+	@Indexed
+	@Field(trendField)
 	private double trend = 0.0;
 	private Date timestamp;
 	
