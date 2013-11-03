@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
+import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.EmailAddress;
@@ -46,6 +48,7 @@ public class UserServiceImpl implements UserService{
 	
 	private static final String SEARCH_FIELD_PREFIX = "##";
 	private static final int MAX_NUM_OF_HISTORY_DAYS = 21;
+	public static int MAX_NUM_OF_PREV_SCORES = 14;
 	
 	@Autowired
 	private AdUserRepository adUserRepository;
@@ -74,7 +77,8 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ImpalaGroupsScoreWriterFactory impalaGroupsScoreWriterFactory;
 	
-	
+	@Autowired 
+	private ADUserParser adUserParser; 
 	
 	
 	
@@ -140,7 +144,8 @@ public class UserServiceImpl implements UserService{
 			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
 		}
 		
-		user.setEmployeeID(adUser.getEmployeeID());
+		user.setAdEmployeeID(adUser.getEmployeeID());
+		user.setAdEmployeeNumber(adUser.getEmployeeNumber());
 		user.setManagerDN(adUser.getManager());
 		user.setMobile(adUser.getMobile());
 		user.setTelephoneNumber(adUser.getTelephoneNumber());
@@ -152,7 +157,40 @@ public class UserServiceImpl implements UserService{
 		user.setSearchField(createSearchField(user));
 		user.setDepartment(adUser.getDepartment());
 		user.setPosition(adUser.getTitle());
-		user.setThumbnailPhoto(adUser.getThumbnailPhoto());		
+		user.setThumbnailPhoto(adUser.getThumbnailPhoto());
+		user.setAdDisplayName(adUser.getDisplayName());
+		user.setAdLogonHours(adUser.getLogonHours());
+		try {
+			user.setAdWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			user.setAdWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		user.setAdDescription(adUser.getDescription());
+		user.setAdStreetAddress(adUser.getStreetAddress());
+		user.setAdCompany(adUser.getCompany());
+		user.setAdC(adUser.getC());
+		user.setAdDivision(adUser.getDivision());
+		user.setAdL(adUser.getL());
+		user.setAdO(adUser.getO());
+		user.setAdRoomNumber(adUser.getRoomNumber());
+		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().equals("0") && !adUser.getAccountExpires().startsWith("30828")){
+			try {
+				user.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		user.setAdUserAccountControl(adUser.getUserAccountControl());
 		
 		ADUserParser adUserParser = new ADUserParser();
 		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
@@ -161,6 +199,23 @@ public class UserServiceImpl implements UserService{
 				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
 				if(adGroup != null){
 					user.addGroup(new AdUserGroup(groupDN, adGroup.getName()));
+				}else{
+					//TODO: LOG WARNING.
+				}
+			}
+		}
+		
+		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
+		if(directReports != null){
+			for(String directReportsDN: directReports){
+				User userDirectReport = userRepository.findByAdDn(directReportsDN);
+				if(userDirectReport != null){
+					AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, userDirectReport.getAdDisplayName());
+					adUserDirectReport.setUserId(userDirectReport.getId());
+					adUserDirectReport.setFirstname(userDirectReport.getFirstname());
+					adUserDirectReport.setLastname(userDirectReport.getLastname());
+					adUserDirectReport.setUsername(userDirectReport.getUsername());
+					user.addAdDirectReport(adUserDirectReport);
 				}else{
 					//TODO: LOG WARNING.
 				}
@@ -318,7 +373,7 @@ public class UserServiceImpl implements UserService{
 		Date lastRun = authDAO.getLastRunDate();
 		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
-			User user = userRepository.findByAdUserPrincipalName(authScore.getUserName().toLowerCase());
+			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
 			if(user == null){
 				//TODO:	error log message
 				continue;
@@ -348,7 +403,14 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void updateUserWithGroupMembershipScore(){
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), null);
+		Date latestTime = adUsersFeaturesExtractionRepository.getLatestTimeStamp();
+		if(latestTime == null){
+			//TODO: WARN LOG
+			return;
+		}
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), latestTime);
+//		Pageable pageable = new PageRequest(0, 10000, Direction.ASC, AdUserFeaturesExtraction.timestampField);
+//		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), pageable);
 		if(adUserFeaturesExtractions.size() == 0){
 			//TODO: WARN LOG
 			return;
@@ -379,41 +441,46 @@ public class UserServiceImpl implements UserService{
 	public void updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore){
 		ClassifierScore cScore = user.getScore(classifierId);
 		boolean isReplaceCurrentScore = true;
+		double trend = 1;
 		if(cScore == null){
 			cScore = new ClassifierScore();
 			cScore.setClassifierId(classifierId);
+			ScoreInfo scoreInfo = new ScoreInfo();
+			scoreInfo.setScore(value);
+			scoreInfo.setAvgScore(avgScore);
+			scoreInfo.setTimestamp(timestamp);
+			List<ScoreInfo> prevScores = new ArrayList<ScoreInfo>();
+			prevScores.add(scoreInfo);
+			cScore.setPrevScores(prevScores);
 		}else{
 			ScoreInfo scoreInfo = new ScoreInfo();
-			if (isOnSameDay(timestamp, cScore.getTimestamp()) && value < cScore.getScore()) {
-				isReplaceCurrentScore = false;
-				scoreInfo.setScore(value);
-				scoreInfo.setAvgScore(avgScore);
-				scoreInfo.setTimestamp(timestamp);
-			} else {
-				scoreInfo.setScore(cScore.getScore());
-				scoreInfo.setAvgScore(cScore.getAvgScore());
-				scoreInfo.setTimestamp(cScore.getTimestamp());
-			}
-			
-			List<ScoreInfo> prevScores = cScore.getPrevScores();
-			if(prevScores.isEmpty()){
-				prevScores = new ArrayList<ScoreInfo>();
-				prevScores.add(scoreInfo);
+			scoreInfo.setScore(value);
+			scoreInfo.setAvgScore(avgScore);
+			scoreInfo.setTimestamp(timestamp);
+			if (isOnSameDay(timestamp, cScore.getTimestamp())) {
+				if(value < cScore.getScore()){
+					isReplaceCurrentScore = false;
+				}else{
+					cScore.getPrevScores().set(0, scoreInfo);
+				}
 			} else{
-				if(isOnSameDay(prevScores.get(0).getTimestamp(), scoreInfo.getTimestamp())){
-					if(prevScores.get(0).getScore() < scoreInfo.getScore()){
-						prevScores.set(0, scoreInfo);
-					}
-				} else{
-					prevScores.add(0, scoreInfo);
+				List<ScoreInfo> prevScores = cScore.getPrevScores();
+				prevScores.add(0, scoreInfo);
+				if(prevScores.size() > MAX_NUM_OF_PREV_SCORES){
+					cScore.setPrevScores(prevScores.subList(0, MAX_NUM_OF_PREV_SCORES));
 				}
 			}
-			cScore.setPrevScores(prevScores);
 		}
 		if(isReplaceCurrentScore) {
+			if(cScore.getPrevScores().size() > 1){
+				double prevScore = cScore.getPrevScores().get(1).getScore() + 0.00001;
+				double curScore = value + 0.00001;
+				trend = (curScore - prevScore) / prevScore;
+			}
 			cScore.setScore(value);
 			cScore.setAvgScore(avgScore);
 			cScore.setTimestamp(timestamp);
+			cScore.setTrend(trend);
 		}
 		user.putClassifierScore(cScore);
 		userRepository.save(user);

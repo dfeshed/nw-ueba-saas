@@ -50,4 +50,11 @@ public class AbstractDocument {
 	public int hashCode() {
 		return id == null ? 0 : id.hashCode();
 	}
+	
+	@Override
+    public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("id: ").append(getId());
+    return sb.toString();
+    }
 }

@@ -11,7 +11,7 @@ import ml.algorithms.CFA;
 import ml.classifiers.Classifier;
 import ml.classifiers.WekaRandomForest;
 import fortscale.activedirectory.featureextraction.ADFeatureExtractor;
-import fortscale.activedirectory.featureextraction.ADUserParser;
+import fortscale.activedirectory.featureextraction.ADUserFeatureParser;
 import fortscale.activedirectory.featureextraction.Feature;
 import fortscale.activedirectory.featureextraction.FeatureVector;
 import fortscale.activedirectory.featureextraction.InstancesFeatures;
@@ -72,7 +72,7 @@ public class ADManager {
 
 
 	private void retrieveTimestamp() {
-		ADUserParser adUserParser = new ADUserParser();
+		ADUserFeatureParser adUserParser = new ADUserFeatureParser();
 		for (AdUser adUser : userAttributes) {
 			try {
 				timeStamp = adUserParser.parseTimestamp(adUser.getTimestamp());

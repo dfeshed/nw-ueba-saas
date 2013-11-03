@@ -162,5 +162,18 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 			String classifierId, Date timestamp, int lowestVal, int upperVal,
 			Pageable pageable) {
 		return classifierMap.get(classifierId);
+	}
+
+	@Override
+	public Date getLatestTimeStamp() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<AdUserFeaturesExtraction> findByClassifierIdAndTimestamp(
+			String classifierId, Date timestamp) {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 }

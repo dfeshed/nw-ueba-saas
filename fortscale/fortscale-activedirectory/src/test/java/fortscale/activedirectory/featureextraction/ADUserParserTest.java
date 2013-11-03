@@ -9,9 +9,10 @@ import java.util.Date;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+
 public class ADUserParserTest {
 
-	ADUserParser adUserParser = new ADUserParser();
+	ADUserFeatureParser adUserParser = new ADUserFeatureParser();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {

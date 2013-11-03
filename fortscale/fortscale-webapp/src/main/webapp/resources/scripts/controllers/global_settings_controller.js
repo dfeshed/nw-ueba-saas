@@ -1,4 +1,4 @@
-angular.module("Fortscale").controller("GlobalSettingsController", ["$scope", "$timeout", function($scope, $timeout){
+angular.module("Fortscale").controller("GlobalSettingsController", ["$scope", "utils", function($scope, utils){
     $scope.scores = [
         {
             weight: 25,
@@ -14,64 +14,57 @@ angular.module("Fortscale").controller("GlobalSettingsController", ["$scope", "$
         },
         {
             weight: 25,
-            name: "Groups"
+            name: "Group Membership"
         }
     ];
 
-    var slideTimeoutPromise;
+    getScoresWeightDisplay();
 
-    $scope.scoreChange = function(score, scoreIndex){
-        $timeout.cancel(slideTimeoutPromise);
-        slideTimeoutPromise = $timeout(function(){
-            distributeScores(scoreIndex)
-        }, 40);
-    };
+    $scope.distributeScoresEvenly = function(){
+        var total = 0,
+            weight = Math.floor(100 / $scope.scores.length),
+            firstWeight = weight + 100 - weight * $scope.scores.length;
 
-    function distributeScores(scoreIndex){
-        var totalWeights = 0;
-        angular.forEach($scope.scores, function(otherScore, index){
-            totalWeights += otherScore.weight;
+        angular.forEach($scope.scores, function(score, index){
+            var newWeight = index ? weight : firstWeight;
+            if (score.weight !== newWeight){
+                score.weight = newWeight;
+                $scope.changed = true;
+            }
         });
 
-        var totalDelta = 100 - totalWeights,
-            weightToDistribute = Math.abs(totalDelta),
-            direction = weightToDistribute / totalDelta,
-            weightChange = Math.ceil(weightToDistribute / ($scope.scores.length - 1)),
-            lastScoreToChange = scoreIndex === $scope.scores.length - 1 ? $scope.scores.length - 2 : $scope.scores.length - 1;
-             console.log("weight To Dis: ", weightToDistribute, " - ", weightChange, " -- ", totalDelta, " / ", $scope.scores.length - 1)
+        getScoresWeightDisplay();
+    };
 
-        for(var index= 0, otherScore; otherScore = $scope.scores[index]; index++){
-            if (index !== scoreIndex){
-                var newWeight;
+    $scope.scoreChange = function(score, scoreIndex){
+        getScoresWeightDisplay();
+        $scope.changed = true;
+    };
 
-                if (index === lastScoreToChange){
-                    newWeight = otherScore.weight + weightToDistribute * direction;
-                    if (newWeight > 100)
-                        newWeight = 100;
-                    else if (newWeight < 0)
-                        newWeight = 0;
-                }
-                else{
-                    newWeight = otherScore.weight + weightChange * direction;
-                    if (newWeight < 0){
-                        newWeight = 0;
-                        weightToDistribute -= otherScore.weight;
-                    }
-                    else if (newWeight > 100){
-                        newWeight = 100;
-                        weightToDistribute -= 100 - otherScore.weight;
-                    }
-                    else
-                        weightToDistribute -= Math.abs(weightChange);
-                }
+    function sortAscending(a, b){
+        if (a.weight === b.weight)
+            return 0;
 
-                otherScore.weight = newWeight;
-                console.log("LEFT: ", weightToDistribute)
-                if (!weightToDistribute)
-                    break;
-            }
-        }
+        return a.weight > b.weight ? 1 : -1;
+    }
 
-        console.log("------------------------")
+    function sortDescending(a, b){
+        if (a.weight === b.weight)
+            return 0;
+
+        return a.weight > b.weight ? -1 : 1;
+    }
+
+    function getScoresWeightDisplay(){
+        var totalWeights = 0,
+            distributionOrder = [];
+
+        angular.forEach($scope.scores, function(score, index){
+            totalWeights += score.weight;
+        });
+
+        angular.forEach($scope.scores, function(score, index){
+            score.weightDisplay = Math.round((score.weight / totalWeights) * 100) + "%";
+        });
     }
 }]);

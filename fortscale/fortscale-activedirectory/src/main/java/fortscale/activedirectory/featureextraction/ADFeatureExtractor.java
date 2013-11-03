@@ -52,13 +52,13 @@ public class ADFeatureExtractor {
 
 	private static final Logger logger = Logger.getLogger(ADFeatureExtractor.class);
 	private HashMap<String, IFeature> userFeatures = null;
-	private ADUserParser adUserParser = null;
+	private ADUserFeatureParser adUserParser = null;
 	private double activityDays;
 	
 
 	public Map<String, IFeature> parseUserFeatures(AdUser adUser) {
 		userFeatures = new HashMap<String, IFeature>();
-		adUserParser = new ADUserParser();
+		adUserParser = new ADUserFeatureParser();
 
 		try {
 			activityDays = adUserParser.getActivityDays(adUser.getWhenCreated());
