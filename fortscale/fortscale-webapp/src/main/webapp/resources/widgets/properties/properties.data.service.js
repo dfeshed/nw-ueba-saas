@@ -15,18 +15,36 @@ angular.module("PropertiesWidget").factory("propertiesWidgetData", ["utils", "fo
                         });
                     }
 
-                    var itemValue = arrayValues && arrayValues.length ? arrayValues.join(", ") : utils.strings.parseValue(property.value, item, params, itemIndex);
-                    if (itemValue){
-                        var itemDataObj = {
-                            icon: icons.getIcon(property.icon),
-                            tooltip: utils.strings.parseValue(property.tooltip, item, params, itemIndex),
-                            value: format.formatItem(property, itemValue)
-                        };
+                    if (property.value){
+                        var itemValue = arrayValues && arrayValues.length ? arrayValues.join(", ") : utils.strings.parseValue(property.value, item, params, itemIndex);
+                        if (itemValue){
+                            var itemDataObj = {
+                                icon: icons.getIcon(property.icon),
+                                tooltip: utils.strings.parseValue(property.tooltip, item, params, itemIndex),
+                                value: format.formatItem(property, itemValue)
+                            };
 
-                        if (property.link)
-                            itemDataObj.link = utils.strings.parseValue(property.link, item, params, itemIndex);
+                            if (property.link)
+                                itemDataObj.link = utils.strings.parseValue(property.link, item, params, itemIndex);
 
-                        itemData.push(itemDataObj);
+                            itemData.push(itemDataObj);
+                        }
+                    }
+                    else if (property.booleanList){
+                        var listItems = [];
+
+                        angular.forEach(property.booleanList, function(member){
+                            if (item[member.show])
+                                listItems.push({ value: member.label });
+                        });
+
+                        if (listItems.length){
+                            itemData.push({
+                                icon: icons.getIcon(property.icon),
+                                tooltip: utils.strings.parseValue(property.tooltip, item, params, itemIndex),
+                                list: listItems
+                            });
+                        }
                     }
                 });
 

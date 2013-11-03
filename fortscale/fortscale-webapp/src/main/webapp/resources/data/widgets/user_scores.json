@@ -31,7 +31,7 @@
                         "eventName": "select",
                         "action": "setParams",
                         "actionOptions": {
-                            "updateUrl": false,
+                            "updateUrl": true,
                             "params": {
                                 "currentFeature": "{{id}}"
                             }
@@ -99,7 +99,7 @@
                         "eventName": "click",
                         "action": "setParams",
                         "actionOptions": {
-                            "updateUrl": false,
+                            "updateUrl": true,
                             "params": {
                                 "currentFeature": "{{id}}"
                             }

@@ -109,7 +109,7 @@ angular.module("Utils", []).factory("utils", [function(){
                 if (!value)
                     return "";
 
-                var parsedValue = value.replace(/\{\{([^\}]+)\}\}/g, function(match, variable){
+                function getPropertyValue(variable){
                     if (/^@/.test(variable)){
                         var param = variable.replace("@", "");
                         if (param === "index")
@@ -128,6 +128,22 @@ angular.module("Utils", []).factory("utils", [function(){
 
                         return "";
                     }
+                }
+
+                var parsedValue = value.replace(/\{\{([^\}]+)\}\}/g, function(match, variable){
+                    var orValues = variable.split(/\s?\|\|\s?/);
+                    if (orValues.length > 1){
+                        variable = false;
+                        for(var i=0; i < orValues.length; i++){
+                            variable = getPropertyValue(orValues[i]);
+                            if (variable || variable === 0)
+                                return variable;
+                        }
+
+                        return "";
+                    }
+                    else
+                        return getPropertyValue(variable);
                 });
 
                 return parsedValue;

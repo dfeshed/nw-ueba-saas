@@ -9,8 +9,8 @@
             "settings": {
                 "tabs": [
                     {
-                        "display": "Active Directory",
-                        "id": "active_directory"
+                        "display": "Group Membership",
+                        "id": "active_directory_group_membership"
                     },
                     {
                         "display": "Logins",
@@ -21,12 +21,13 @@
                         "id": "vpn"
                     }
                 ],
+                "selectedTabId": "@currentScore",
                 "events": [
                     {
                         "eventName": "select",
                         "action": "setParams",
                         "actionOptions": {
-                            "updateUrl": false,
+                            "updateUrl": true,
                             "params": {
                                 "currentScore": "{{id}}"
                             }

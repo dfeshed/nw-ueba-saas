@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("users", ["$q", "reports", function($q, reports){
+angular.module("Fortscale").factory("users", ["$q", "reports", function ($q, reports) {
     var userReports = {
         details: {
             "query": {
@@ -45,9 +45,24 @@ angular.module("Fortscale").factory("users", ["$q", "reports", function($q, repo
         }
     };
 
-    function convertUserFeatures(rawData){
+    var featuresMap = {
+        "accountIsDisabled": "Account is Disabled",
+        "interdomainTrustAccountValue": "Inter-domain trust account",
+        "lockout": "Locked out",
+        "noPasswordRequiresValue": "No password required",
+        "normalUserAccountValue": "Normal user account",
+        "passwordExpired": "Password expired",
+        "passwordNeverExpiresValue": "Password never expires",
+        "serverTrustAccount": "Server-trusted account",
+        "smartcardRequired": "Smart-card required",
+        "trustedForDelegation": "Trusted for delegation",
+        "trustedToAuthForDelegation": "Trusted to authenticate for delegation",
+        "workstationTrustAccount": "Workstation-trusted account"
+    };
+
+    function convertUserFeatures(rawData) {
         var users = [];
-        angular.forEach(rawData, function(rawUser){
+        angular.forEach(rawData, function (rawUser) {
             var userAccountControl = parseInt(rawUser.useraccountcontrol),
                 convertedFeatures = {
                     badPasswordCount: parseInt(rawUser.badpwdcount),
@@ -70,18 +85,18 @@ angular.module("Fortscale").factory("users", ["$q", "reports", function($q, repo
         return users;
     }
 
-    function prepareGetMethod(reportId){
-        return function(userIds){
+    function prepareGetMethod(reportId) {
+        return function (userIds) {
             var deferred = $q.defer();
 
             if (!angular.isArray(userIds))
                 userIds = [userIds];
 
-            if (reportId === "features"){
+            if (reportId === "features") {
                 var report = userReports.features,
                     usersQuery = [];
 
-                angular.forEach(userIds, function(userName){
+                angular.forEach(userIds, function (userName) {
                     usersQuery.push("lcase(userprincipalname) = '" + userName.toLocaleLowerCase() + "'");
                 });
 
@@ -92,15 +107,15 @@ angular.module("Fortscale").factory("users", ["$q", "reports", function($q, repo
                             entity: "investigate"
                         }
                     }
-                }, {}).then(function(runtimeResult){
-                    report.query.endpoint.query = "SELECT distinguishedname, badpwdcount, logoncount, primarygroupid, useraccountcontrol, memberof, company, department, lastlogon, pwdlastset, whencreated, whencreated, badpasswordtime FROM ldapusers WHERE runtime = '" + runtimeResult.data[0].runtime + "' AND (" + usersQuery.join(" OR ") + ")";
-                    reports.runReport(userReports[reportId], {}).then(function(result){
-                        deferred.resolve(convertUserFeatures(result.data));
+                }, {}).then(function (runtimeResult) {
+                        report.query.endpoint.query = "SELECT distinguishedname, badpwdcount, logoncount, primarygroupid, useraccountcontrol, memberof, company, department, lastlogon, pwdlastset, whencreated, whencreated, badpasswordtime FROM ldapusers WHERE runtime = '" + runtimeResult.data[0].runtime + "' AND (" + usersQuery.join(" OR ") + ")";
+                        reports.runReport(userReports[reportId], {}).then(function (result) {
+                            deferred.resolve(convertUserFeatures(result.data));
+                        }, deferred.reject);
                     }, deferred.reject);
-                }, deferred.reject);
             }
-            else{
-                reports.runReport(userReports[reportId], { userIds: userIds.join(",") }).then(function(result){
+            else {
+                reports.runReport(userReports[reportId], { userIds: userIds.join(",") }).then(function (result) {
                     deferred.resolve(result.data);
                 }, deferred.reject);
             }
@@ -110,32 +125,34 @@ angular.module("Fortscale").factory("users", ["$q", "reports", function($q, repo
     }
 
     var methods = {
-        getSearchSettings: function(){
+        getSearchSettings: function () {
             return {
-                "reports": [{
-                    "query": {
-                        "searchId": "search",
-                        "dataSource": "api",
-                        "endpoint": {
-                            "entity": "user",
-                            "method": "search"
-                        },
-                        "options": {
-                            "count": 10
-                        },
-                        "fields": {
-                            "name":{"type":"string"},
-                            "id": {"type": "string"}
-                        },
-                        "params": [
-                            {
-                                "field": "prefix",
-                                "type": "string",
-                                "dashboardParam": "term"
-                            }
-                        ]
+                "reports": [
+                    {
+                        "query": {
+                            "searchId": "search",
+                            "dataSource": "api",
+                            "endpoint": {
+                                "entity": "user",
+                                "method": "search"
+                            },
+                            "options": {
+                                "count": 10
+                            },
+                            "fields": {
+                                "name": {"type": "string"},
+                                "id": {"type": "string"}
+                            },
+                            "params": [
+                                {
+                                    "field": "prefix",
+                                    "type": "string",
+                                    "dashboardParam": "term"
+                                }
+                            ]
+                        }
                     }
-                }],
+                ],
                 "resultField": "name",
                 "value": "{{id}}",
                 "showValueOnSelect": false,
@@ -144,6 +161,20 @@ angular.module("Fortscale").factory("users", ["$q", "reports", function($q, repo
         },
         getUsersDetails: prepareGetMethod("details"),
         getUserFeatures: prepareGetMethod("features"),
+        getUserFeaturesForComparison: function (user) {
+            var features = [];
+
+            for(var featureName in featuresMap){
+                if (user[featureName]){
+                    features.push({
+                        username: user.name,
+                        feature: featuresMap[featureName]
+                    });
+                }
+            }
+
+            return features;
+        },
         getUsersMachines: prepareGetMethod("machines")
     };
 

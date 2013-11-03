@@ -12,15 +12,96 @@
                         "value": "{{username}}"
                     },
                     {
-                        "icon": "barcode",
-                        "tooltip": "Worker ID",
-                        "value": "{{workerId}}"
-                    },
-                    {
                         "icon": "group",
-                        "tooltip": "Groups",
+                        "tooltip": "Member of",
                         "value": "{{name}}",
                         "array": "groups"
+                    },
+                    {
+                        "icon": "sitemap",
+                        "tooltip": "Manager",
+                        "value": "{{manager.name}}",
+                        "link": "#/d/user/{{manager.id}}"
+                    },
+                    {
+                        "icon": "check",
+                        "tooltip": "Active Directory Flags",
+                        "booleanList": [
+                            {
+                                "label": "Account is Disabled",
+                                "show": "accountIsDisabled"
+                            },
+                            {
+                                "label": "Inter-domain trust account",
+                                "show": "interdomainTrustAccountValue"
+                            },
+                            {
+                                "label": "Locked out",
+                                "show": "lockout"
+                            },
+                            {
+                                "label": "No password required",
+                                "show": "noPasswordRequiresValue"
+                            },
+                            {
+                                "label": "Normal user account",
+                                "show": "normalUserAccountValue"
+                            },
+                            {
+                                "label": "Password expired",
+                                "show": "passwordExpired"
+                            },
+                            {
+                                "label": "Password never expires",
+                                "show": "passwordNeverExpiresValue"
+                            },
+                            {
+                                "label": "Server-trusted account",
+                                "show": "serverTrustAccount"
+                            },
+                            {
+                                "label": "Smart-card required",
+                                "show": "smartcardRequired"
+                            },
+                            {
+                                "label": "Trusted for delegation",
+                                "show": "trustedForDelegation"
+                            },
+                            {
+                                "label": "Trusted to authenticate for delegation",
+                                "show": "trustedToAuthForDelegation"
+                            },
+                            {
+                                "label": "Workstation-trusted account",
+                                "show": "workstationTrustAccount"
+                            }
+                        ]
+                    },
+                    {
+                        "icon": "clock",
+                        "tooltip": "Account Expires",
+                        "value": "{{adAcountExpires}}"
+                    },
+                    {
+                        "icon": "sign-in",
+                        "tooltip": "Logon Hours",
+                        "value": "{{logonHours}}"
+                    },
+                    {
+                        "icon": "info-circle",
+                        "tooltip": "Description",
+                        "value": "{{description}}"
+                    },
+                    {
+                        "icon": "envelope",
+                        "tooltip": "Email",
+                        "value": "{{email}}",
+                        "link": "mailto:{{email}}"
+                    },
+                    {
+                        "icon": "barcode",
+                        "tooltip": "Employee ID",
+                        "value": "{{adEmployeeID || adEmployeeNumber}}"
                     },
                     {
                         "icon": "globe",
@@ -41,12 +122,6 @@
                         "icon": "location-arrow",
                         "tooltip": "Address",
                         "value": "{{address}}"
-                    },
-                    {
-                        "icon": "sitemap",
-                        "tooltip": "Manager",
-                        "value": "{{manager.name}}",
-                        "link": "#/d/user/{{manager.id}}"
                     }
                 ]
             }

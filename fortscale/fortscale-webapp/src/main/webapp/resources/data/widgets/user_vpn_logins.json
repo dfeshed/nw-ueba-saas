@@ -17,12 +17,12 @@
                     {
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
-                        "link": "#/d/investigator?entities=vpndatares&username={{username}}&source_ip={{sourceIp}}"
+                        "link": "#/d/investigator?entities=vpndatares&username={{@vpnUser}}&source_ip={{sourceIp}}"
                     },
                     {
                         "name": "Internal IP",
                         "value": "{{internalIP}}",
-                        "link": "#/d/investigator?entities=vpndatares&username={{username}}&local_ip={{internalIP}}"
+                        "link": "#/d/investigator?entities=vpndatares&username={{@vpnUser}}&local_ip={{internalIP}}"
                     },
                     {
                         "name": "Time",
@@ -33,6 +33,15 @@
                                 "format": "MM/DD/YY HH:mm:ss"
                             }
                         }
+                    },
+                    {
+                        "name": "Status",
+                        "value": "{{status}}",
+                        "style": "failOrSuccess",
+                        "styleParams": {
+                            "value": "status"
+                        },
+                        "link": "#/d/investigator?entities=vpndata&status={{status}}&username={{@vpnUser}}"
                     },
                     {
                         "name": "Score",

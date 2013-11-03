@@ -23,6 +23,19 @@
     float: right;
     color: #999;
   }
+
+  .items-list-inner-list{
+    display: inline-block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
+
+    li{
+      padding: 3px 0 5px;
+      border-bottom: none;
+    }
+  }
 }
 
 $roundIconsSize: 26px;

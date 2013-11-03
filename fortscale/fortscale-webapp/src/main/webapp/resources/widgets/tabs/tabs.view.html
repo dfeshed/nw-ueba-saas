@@ -1,7 +1,7 @@
 <div class="widget-tabs" ng-controller="TabsWidgetController">
-    <ul>
+    <ul ng-if="view.data.length" ng-init="initTabs()">
         <li ng-repeat="tab in view.data"
-            ng-class="{ selected: $index == currentTabIndex }"
+            ng-class="{ selected: $index == currentTabIndex}"
             ng-click="selectTab(tab, $index)"
             ng-style="{ width: (100 / view.data.length) + '%' }">
             <span class="widget-tabs-label" ng-if="tab.label" ng-style="{background: tab.label.style.color}">

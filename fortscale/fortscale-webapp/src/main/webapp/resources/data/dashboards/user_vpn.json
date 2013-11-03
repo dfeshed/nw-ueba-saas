@@ -6,6 +6,7 @@
             "widgets": [
                 {
                     "widgetId": "user_score_history",
+                    "title": "User VPN Logins Score History - Last 7 Days",
                     "report": {
                         "query": {
                             "params": [

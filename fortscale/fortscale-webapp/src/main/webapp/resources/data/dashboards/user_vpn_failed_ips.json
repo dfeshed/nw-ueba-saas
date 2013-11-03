@@ -1,0 +1,13 @@
+{
+    "dashboardId": "user_vpn_failed_ips",
+    "columns": [
+        {
+            "className": "span15",
+            "widgets": [
+                {
+
+                }
+            ]
+        }
+    ]
+}

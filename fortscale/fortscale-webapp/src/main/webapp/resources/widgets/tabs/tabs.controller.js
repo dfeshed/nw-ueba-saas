@@ -15,6 +15,19 @@ angular.module("TabsWidget").controller("TabsWidgetController", ["$scope", funct
             $scope.view.settings.onSelect(tab);
     };
 
+    $scope.initTabs = function(){
+        var currentlySelectedTab = $scope.getWidgetParams()[selectedDashboardParam];
+        if (currentlySelectedTab){
+            var tabToSelect = findTab(currentlySelectedTab);
+            if (tabToSelect)
+                setCurrentTab(tabToSelect.tabIndex);
+            else
+                selectFirstTab();
+        }
+        else
+            selectFirstTab();
+    };
+
     if ($scope.view.settings.tab && $scope.view.settings.tab.selected){
         var selectedMatch = $scope.view.settings.tab.selected.match(/^@(.*)$/);
         if (selectedMatch){
@@ -35,7 +48,13 @@ angular.module("TabsWidget").controller("TabsWidgetController", ["$scope", funct
             console.error("Invalid selected property for tabs - must be a dashboard param and start with '@'.");
         }
     }
-    else if ($scope.view.settings.tabs){
+    else if ($scope.view.settings.tabs && $scope.view.settings.selectedTabId){
+        var selectedMatch = $scope.view.settings.selectedTabId.match(/^@(.*)$/);
+        if (selectedMatch)
+            selectedDashboardParam = selectedMatch[1];
+    }
+
+    function selectFirstTab(){
         $scope.selectTab($scope.view.settings.tabs[0], 0);
     }
 
