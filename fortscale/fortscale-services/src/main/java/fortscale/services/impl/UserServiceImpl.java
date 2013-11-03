@@ -181,7 +181,7 @@ public class UserServiceImpl implements UserService{
 		user.setAdL(adUser.getL());
 		user.setAdO(adUser.getO());
 		user.setAdRoomNumber(adUser.getRoomNumber());
-		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().startsWith("30828")){
+		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().equals("0") && !adUser.getAccountExpires().startsWith("30828")){
 			try {
 				user.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
 			} catch (ParseException e) {
