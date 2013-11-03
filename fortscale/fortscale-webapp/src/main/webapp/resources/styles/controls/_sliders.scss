@@ -1,6 +1,21 @@
-.vertical-sliders{
-  margin: 20px 0 20px 20px;
+.setting-block{
+  h4{
+    margin-bottom: 1em;
+    font-size: 1.1em;
+    font-weight: bold;
+  }
+}
 
+.vertical-sliders{
+  margin-bottom: 20px;
+  background: #f7f7f7;
+  padding: 20px;
+  display: inline-block;
+  border-radius: 4px;
+
+  footer{
+    margin-top: 20px;
+  }
   .vertical-container{
     display: inline-block;
     width: 60px;
