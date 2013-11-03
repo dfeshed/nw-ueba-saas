@@ -409,6 +409,8 @@ public class UserServiceImpl implements UserService{
 			return;
 		}
 		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), latestTime);
+//		Pageable pageable = new PageRequest(0, 10000, Direction.ASC, AdUserFeaturesExtraction.timestampField);
+//		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), pageable);
 		if(adUserFeaturesExtractions.size() == 0){
 			//TODO: WARN LOG
 			return;
