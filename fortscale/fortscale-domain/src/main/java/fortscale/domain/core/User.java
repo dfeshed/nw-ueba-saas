@@ -536,6 +536,10 @@ public class User extends AbstractDocument {
 		this.scores.put(score.getClassifierId(), score);
 	}	
 	
+	public void removeClassifierScore(String classifierId) {
+		this.scores.remove(classifierId);
+	}	
+	
 	
 	
 	

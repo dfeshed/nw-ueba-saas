@@ -195,7 +195,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		List<VpnScore> vpnScores = vpnDAO.findByTimestampAndGlobalScoreBetweenSortByEventScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(VpnScore vpnScore: vpnScores){
-			User user = userRepository.findByAdUserPrincipalName(vpnScore.getUserName().toLowerCase());
+			User user = userRepository.findByUsername(vpnScore.getUserName().toLowerCase());
 			if(user == null){
 				//TODO: error message.
 				continue;
@@ -211,7 +211,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		List<AuthScore> authScores = authDAO.findByTimestampAndGlobalScoreBetweenSortByEventScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(AuthScore authScore: authScores){
-			User user = userRepository.findByAdUserPrincipalName(authScore.getUserName().toLowerCase());
+			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
 			if(user == null){
 				//TODO: error message.
 				continue;
@@ -235,14 +235,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	private SuspiciousUserInfo createSuspiciousUserInfo(String classifierId, User user){
 		ClassifierScore classifierScore = user.getScore(classifierId);
-		double trend = 0;
-		if(!classifierScore.getPrevScores().isEmpty()){
-			double prevScore = classifierScore.getPrevScores().get(0).getScore() + 0.00001;
-			double curScore = classifierScore.getScore() + 0.00001;
-			trend = (int)(((curScore - prevScore) / prevScore) * 10000);
-			trend = trend/100;
-		}
-		return new SuspiciousUserInfo(user.getId(), user.getUsername(), (int) Math.round(user.getScore(classifierId).getScore()), trend);
+		return new SuspiciousUserInfo(user.getId(), user.getUsername(), (int) Math.round(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrend()*10000.0)/100.0);
 	}
 	
 	private Range getRange(String severityId){
@@ -319,7 +312,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 			String username = authScore.getUserName().toLowerCase();
 			User user = userMap.get(username);
 			if(user == null){
-				user = userRepository.findByAdUserPrincipalName(username);
+				user = userRepository.findByUsername(username);
 				if(user == null){
 					//TODO: warn message
 					continue;

@@ -10,6 +10,7 @@ public class ScoreInfo {
 	@Field(scoreField)
 	private double score;
 	private double avgScore;
+	private double trend = 0.0;
 	private Date timestamp;
 	
 	
@@ -33,4 +34,11 @@ public class ScoreInfo {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
+	public double getTrend() {
+		return trend;
+	}
+	public void setTrend(double trend) {
+		this.trend = trend;
+	}
+	
 }

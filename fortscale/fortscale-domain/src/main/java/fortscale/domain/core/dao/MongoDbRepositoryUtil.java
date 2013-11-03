@@ -1,39 +1,60 @@
 package fortscale.domain.core.dao;
 
-import java.util.Map;
+import static org.springframework.data.domain.Sort.Direction.DESC;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
-import org.springframework.data.mongodb.MongoDbFactory;
+import java.util.Date;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.WriteConcern;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.stereotype.Component;
+@Component("mongoDbRepositoryUtil")
 public class MongoDbRepositoryUtil {
 	
-	private MongoDbFactory mongoDbFactory;
+	@Autowired
+	private MongoTemplate mongoTemplate;
 	
-	public MongoDbFactory getMongoDbFactory() {
-		return mongoDbFactory;
-	}
-
-	public void setMongoDbFactory(MongoDbFactory mongoDbFactory) {
-		this.mongoDbFactory = mongoDbFactory;
-	}
+	public String getLatestTimeStampString(String timestampField, String collectionName) {
+		Aggregation agg = newAggregation(project(timestampField),
+				group(timestampField),
+				sort(DESC,"_id"),
+				limit(1));
 	
-	
-	public void saveMap(String collectionName, Map<String, String> attrVals) {
-		DBCollection collection = getDBCollection(collectionName);
-
-		BasicDBObject basicDBObject = new BasicDBObject();
-		basicDBObject.putAll(attrVals);
-		
-		collection.insert(basicDBObject, WriteConcern.SAFE);
-	}
-
-	private DBCollection getDBCollection(String collectionName){
-		DB db = mongoDbFactory.getDb();
-		return db.getCollection(collectionName);
+		AggregationResults<AdUserTimeStampString> result = mongoTemplate.aggregate(agg, collectionName, AdUserTimeStampString.class);
+		if(result.getMappedResults().isEmpty()) {
+			return null;
+		}
+		AdUserTimeStampString ret = result.getMappedResults().get(0);
+		return ret.id;
 	}
 	
+	class AdUserTimeStampString{
+		String id;
+//		String timestamp;
+	}
+	
+	public Date getLatestTimeStampDate(String timestampField, String collectionName) {
+		Aggregation agg = newAggregation(project(timestampField),
+				group(timestampField),
+				sort(DESC,"_id"),
+				limit(1));
+	
+		AggregationResults<AdUserTimeStampDate> result = mongoTemplate.aggregate(agg, collectionName, AdUserTimeStampDate.class);
+		if(result.getMappedResults().isEmpty()) {
+			return null;
+		}
+		AdUserTimeStampDate ret = result.getMappedResults().get(0);
+		return ret.id;
+	}
+	
+	class AdUserTimeStampDate{
+		Date id;
+//		String timestamp;
+	}
 }

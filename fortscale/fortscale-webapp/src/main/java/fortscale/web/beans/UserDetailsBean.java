@@ -123,67 +123,151 @@ public class UserDetailsBean implements Serializable{
 		return user.getAdRoomNumber();
 	}
 		
-	public boolean isAccountIsDisabled() {
-		return adUserParser.isAccountIsDisabled(user.getAdUserAccountControl());
+	public Boolean isAccountIsDisabled() {
+		try {
+			return adUserParser.isAccountIsDisabled(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 	
-	public boolean isLockout() {
-		return adUserParser.isLockout(user.getAdUserAccountControl());
+	public Boolean isLockout() {
+		try{
+			return adUserParser.isLockout(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 	
-	public boolean isWorkstationTrustAccount() {
-		return adUserParser.isWorkstationTrustAccount(user.getAdUserAccountControl());
+	public Boolean isWorkstationTrustAccount() {
+		try{
+			return adUserParser.isWorkstationTrustAccount(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 	
 	
-	public boolean isServerTrustAccount() {
-		return adUserParser.isServerTrustAccount(user.getAdUserAccountControl());
+	public Boolean isServerTrustAccount() {
+		try{
+			return adUserParser.isServerTrustAccount(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 	
-	public boolean isSmartcardRequired() {
-		return adUserParser.isSmartcardRequired(user.getAdUserAccountControl());
+	public Boolean isSmartcardRequired() {
+		try{
+			return adUserParser.isSmartcardRequired(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 	
 	
-	public boolean isTrustedForDelegation() {
-		return adUserParser.isTrustedForDelegation(user.getAdUserAccountControl());
+	public Boolean isTrustedForDelegation() {
+		try{
+			return adUserParser.isTrustedForDelegation(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 	
-	public boolean isNotDelegated() {
-		return adUserParser.isNotDelegated(user.getAdUserAccountControl());
+	public Boolean isNotDelegated() {
+		try{
+			return adUserParser.isNotDelegated(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 	
-	public boolean isPasswordExpired() {
-		return adUserParser.isPasswordExpired(user.getAdUserAccountControl());
+	public Boolean isPasswordExpired() {
+		try{
+			return adUserParser.isPasswordExpired(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 	
-	public boolean isTrustedToAuthForDelegation() {
-		return adUserParser.isTrustedToAuthForDelegation(user.getAdUserAccountControl());
+	public Boolean isTrustedToAuthForDelegation() {
+		try{
+			return adUserParser.isTrustedToAuthForDelegation(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 
 	
-	public boolean isNoPasswordRequiresValue() {
-		return adUserParser.isNoPasswordRequiresValue(user.getAdUserAccountControl());
+	public Boolean isNoPasswordRequiresValue() {
+		try{
+			return adUserParser.isNoPasswordRequiresValue(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 
 	
-	public boolean isNormalUserAccountValue() {
-		return adUserParser.isNormalUserAccountValue(user.getAdUserAccountControl());
+	public Boolean isNormalUserAccountValue() {
+		try{
+			return adUserParser.isNormalUserAccountValue(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	} 
 	
 	
-	public boolean isInterdomainTrustAccountValue() {
-		return adUserParser.isInterdomainTrustAccountValue(user.getAdUserAccountControl());
+	public Boolean isInterdomainTrustAccountValue() {
+		try{
+			return adUserParser.isInterdomainTrustAccountValue(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 
 	
-	public boolean isPasswordNeverExpiresValue() {
-		return adUserParser.isPasswordNeverExpiresValue(user.getAdUserAccountControl());
+	public Boolean isPasswordNeverExpiresValue() {
+		try{
+			return adUserParser.isPasswordNeverExpiresValue(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 	
 	
-	public boolean isDesKeyOnlyValue() {
-		return adUserParser.isDesKeyOnlyValue(user.getAdUserAccountControl());
+	public Boolean isDesKeyOnlyValue() {
+		try{
+			return adUserParser.isDesKeyOnlyValue(user.getAdUserAccountControl());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			
+		return null;
 	}
 	
 	public List<UserDirectReportBean> getUserDirectReports() {

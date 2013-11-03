@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService{
 	
 	private static final String SEARCH_FIELD_PREFIX = "##";
 	private static final int MAX_NUM_OF_HISTORY_DAYS = 21;
+	public static int MAX_NUM_OF_PREV_SCORES = 14;
 	
 	@Autowired
 	private AdUserRepository adUserRepository;
@@ -372,7 +373,7 @@ public class UserServiceImpl implements UserService{
 		Date lastRun = authDAO.getLastRunDate();
 		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
-			User user = userRepository.findByAdUserPrincipalName(authScore.getUserName().toLowerCase());
+			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
 			if(user == null){
 				//TODO:	error log message
 				continue;
@@ -402,7 +403,12 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void updateUserWithGroupMembershipScore(){
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), null);
+		Date latestTime = adUsersFeaturesExtractionRepository.getLatestTimeStamp();
+		if(latestTime == null){
+			//TODO: WARN LOG
+			return;
+		}
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), latestTime);
 		if(adUserFeaturesExtractions.size() == 0){
 			//TODO: WARN LOG
 			return;
@@ -433,41 +439,46 @@ public class UserServiceImpl implements UserService{
 	public void updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore){
 		ClassifierScore cScore = user.getScore(classifierId);
 		boolean isReplaceCurrentScore = true;
+		double trend = 1;
 		if(cScore == null){
 			cScore = new ClassifierScore();
 			cScore.setClassifierId(classifierId);
+			ScoreInfo scoreInfo = new ScoreInfo();
+			scoreInfo.setScore(value);
+			scoreInfo.setAvgScore(avgScore);
+			scoreInfo.setTimestamp(timestamp);
+			List<ScoreInfo> prevScores = new ArrayList<ScoreInfo>();
+			prevScores.add(scoreInfo);
+			cScore.setPrevScores(prevScores);
 		}else{
 			ScoreInfo scoreInfo = new ScoreInfo();
-			if (isOnSameDay(timestamp, cScore.getTimestamp()) && value < cScore.getScore()) {
-				isReplaceCurrentScore = false;
-				scoreInfo.setScore(value);
-				scoreInfo.setAvgScore(avgScore);
-				scoreInfo.setTimestamp(timestamp);
-			} else {
-				scoreInfo.setScore(cScore.getScore());
-				scoreInfo.setAvgScore(cScore.getAvgScore());
-				scoreInfo.setTimestamp(cScore.getTimestamp());
-			}
-			
-			List<ScoreInfo> prevScores = cScore.getPrevScores();
-			if(prevScores.isEmpty()){
-				prevScores = new ArrayList<ScoreInfo>();
-				prevScores.add(scoreInfo);
+			scoreInfo.setScore(value);
+			scoreInfo.setAvgScore(avgScore);
+			scoreInfo.setTimestamp(timestamp);
+			if (isOnSameDay(timestamp, cScore.getTimestamp())) {
+				if(value < cScore.getScore()){
+					isReplaceCurrentScore = false;
+				}else{
+					cScore.getPrevScores().set(0, scoreInfo);
+				}
 			} else{
-				if(isOnSameDay(prevScores.get(0).getTimestamp(), scoreInfo.getTimestamp())){
-					if(prevScores.get(0).getScore() < scoreInfo.getScore()){
-						prevScores.set(0, scoreInfo);
-					}
-				} else{
-					prevScores.add(0, scoreInfo);
+				List<ScoreInfo> prevScores = cScore.getPrevScores();
+				prevScores.add(0, scoreInfo);
+				if(prevScores.size() > MAX_NUM_OF_PREV_SCORES){
+					cScore.setPrevScores(prevScores.subList(0, MAX_NUM_OF_PREV_SCORES));
 				}
 			}
-			cScore.setPrevScores(prevScores);
 		}
 		if(isReplaceCurrentScore) {
+			if(cScore.getPrevScores().size() > 1){
+				double prevScore = cScore.getPrevScores().get(1).getScore() + 0.00001;
+				double curScore = value + 0.00001;
+				trend = (curScore - prevScore) / prevScore;
+			}
 			cScore.setScore(value);
 			cScore.setAvgScore(avgScore);
 			cScore.setTimestamp(timestamp);
+			cScore.setTrend(trend);
 		}
 		user.putClassifierScore(cScore);
 		userRepository.save(user);

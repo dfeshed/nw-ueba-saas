@@ -35,6 +35,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
+import fortscale.domain.core.dao.MongoDbRepositoryUtil;
 import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.FeatureWriteConverter;
@@ -57,6 +58,11 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	
+	@Autowired
+	private MongoDbRepositoryUtil mongoDbRepositoryUtil;
+	
+	
 	
 	@Override
 	public void saveMap(AdUserFeaturesExtraction adUsersFeaturesExtraction) {
@@ -253,5 +259,10 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 			throw new InvalidDataAccessApiUsageException("Command execution failed:  Error [" + error + "], Command = "
 					+ source, ex);
 		}
+	}
+
+	@Override
+	public Date getLatestTimeStamp() {
+		return mongoDbRepositoryUtil.getLatestTimeStampDate(AdUserFeaturesExtraction.timestampField, AdUserFeaturesExtraction.collectionName);
 	}
 }
