@@ -1,0 +1,6 @@
+{
+    "endpoint": {
+        "query":  "SELECT distinct source_ip as failed_sources, username FROM vpndata WHERE username='{{@username{{' and status='FAIL' LIMIT 10",
+        "entity": "investigate"
+    }
+}

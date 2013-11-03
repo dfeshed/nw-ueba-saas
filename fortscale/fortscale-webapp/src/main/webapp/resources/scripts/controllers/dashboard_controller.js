@@ -1,5 +1,5 @@
-angular.module("Fortscale").controller("DashboardController", ["$scope", "$routeParams", "$timeout", "transforms", "widgets", "utils",
-    function($scope, $routeParams, $timeout, transforms, widgets, utils){
+angular.module("Fortscale").controller("DashboardController", ["$scope", "$routeParams", "$timeout", "$location", "transforms", "widgets", "utils",
+    function($scope, $routeParams, $timeout, $location, transforms, widgets, utils){
         if (!$scope.dashboardParams)
             $scope.dashboardParams = $scope.dashboard && $scope.dashboard.params || {};
 
@@ -14,6 +14,9 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
         setDashboardFieldValues($scope.dashboard);
         setDashboardParamsToControls();
 
+        $scope.dashboardSubtitle = null;
+        $scope.dashboardIconUrl = null;
+
         function updateControlParams(){
             var paramsObj = { params: angular.copy($scope.dashboardParams) };
             delete paramsObj.params.entityId;
@@ -23,8 +26,8 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                     delete paramsObj.params[paramName];
             }
 
-            utils.url.setHashQuery(paramsObj);
-            $scope.setTabParams && $scope.setTabParams(paramsObj);
+            $location.search('params', JSON.stringify(paramsObj.params));
+            //utils.url.setHashQuery(paramsObj);
         }
 
         function setDashboardFieldValues(dashboard){
@@ -39,12 +42,12 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                 
                 if (dashboard.subtitle){
                     var dashboardSubtitle = widgets.parseFieldValue({}, dashboard.subtitle, {}, 0, $scope.dashboardParams);
-                    dashboard.subtitle = dashboardSubtitle || null;
+                    $scope.dashboardSubtitle = dashboardSubtitle || null;
                 }
 
                 if (dashboard.iconUrl){
                     var dashboardIconUrl = widgets.parseFieldValue({}, dashboard.iconUrl, {}, 0, $scope.dashboardParams);
-                    dashboard.iconUrl = dashboardIconUrl || null;
+                    $scope.dashboardIconUrl = dashboardIconUrl || null;
                 }
             }
         }
@@ -104,16 +107,27 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                 var params = {},
                     paramValue,
                     paramData,
-                    paramStrConfig;
+                    paramStrConfig,
+                    useParam;
 
                 for(var paramName in options.params){
                     paramStrConfig = options.params[paramName];
+                    useParam = true;
+
                     if (angular.isArray(data) && angular.isObject(paramStrConfig)){
                         paramData = data[paramStrConfig.itemIndex || 0];
-                        paramStrConfig = paramStrConfig.value;
+                        if (paramStrConfig.setIf){
+                            if (!paramData[paramStrConfig.setIf])
+                                useParam = false;
+                        }
+                        else
+                            paramStrConfig = paramStrConfig.value;
                     }
                     else
                         paramData = data;
+
+                    if (!useParam)
+                        continue;
 
                     if (paramStrConfig)
                         paramValue = utils.strings.parseValue(paramStrConfig.value || paramStrConfig, paramData || {}, $scope.dashboardParams);

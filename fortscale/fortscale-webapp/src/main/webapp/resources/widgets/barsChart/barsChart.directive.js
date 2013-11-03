@@ -466,13 +466,13 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     rects
                         .attr("width", Math.max(0, rectWidth))
                         .attr("height", function (d) {
-                            return fitToGrid(scale(d[series.field]));
+                            return Math.max(gridSize, fitToGrid(scale(d[series.field])));
                         })
                         .attr("x", function (d, i) {
                             return fitToGrid(i * totalRectWidth + leftPadding + seriesIndex * rectWidth + options.borderWidth);
                         })
                         .attr("y", function (d, i) {
-                            return barsArea.height + options.borderWidth - fitToGrid(scale(d[series.field]));
+                            return barsArea.height + options.borderWidth - Math.max(gridSize, fitToGrid(scale(d[series.field])));
                         })
                         .attr("fill", function (d) {
                             return getPatternFill(getDataColor(d) || series.color || options.colors[seriesIndex]);
@@ -495,7 +495,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                             return fitToGrid(i * totalRectWidth + leftPadding) + rectWidth / 2 + seriesIndex * rectWidth;
                         })
                         .attr("y", function (d) {
-                            return barsArea.height + options.borderWidth - fitToGrid(scale(d[series.field])) - gridSize;
+                            return barsArea.height + options.borderWidth - Math.max(gridSize, fitToGrid(scale(d[series.field]))) - gridSize;
                         })
                         .attr("font-family", options.barLabelsFont.family)
                         .attr("font-size", fontSize)

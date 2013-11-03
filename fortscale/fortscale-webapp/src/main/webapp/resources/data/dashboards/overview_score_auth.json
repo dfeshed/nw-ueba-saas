@@ -1,6 +1,5 @@
 {
     "dashboardId": "overview_score_auth",
-    "name": "Logins Suspicious Users",
     "columns": [
         {
             "className": "span15",

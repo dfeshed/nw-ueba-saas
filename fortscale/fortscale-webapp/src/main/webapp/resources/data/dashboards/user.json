@@ -46,8 +46,8 @@
                             "updateUrl": false,
                             "params": {
                                 "userName": { "itemIndex": 0, "value": "{{name}}" },
-                                "jobTitle": { "itemIndex": 0, "value": "{{jobTitle}}" },
-                                "userImage": { "itemIndex": 0, "value": "{{image}}" },
+                                "jobTitle": { "itemIndex": 0, "value": "{{jobTitle}}", "setIf": "jobTitle" },
+                                "userImage": { "itemIndex": 0, "value": "data:image/gif;base64,{{image}}", "setIf": "image" },
                                 "vpnUser": { "itemIndex": 0, "value": "{{applicationUserDetails.vpn.userName}}" },
                                 "loginsUser": { "itemIndex": 0, "value": "{{applicationUserDetails.active_directory.userName}}" }
                             }

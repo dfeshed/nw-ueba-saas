@@ -7,13 +7,13 @@
             </div>
         </div>
         <h3 class="dashboard-name">
-            <img class="dashboard-icon-image" ng-src="{{dashboard.iconUrl}}" ng-if="dashboard.iconUrl" />
-            <span class="dashboard-icon" ng-if="dashboard.icon && !dashboard.iconUrl">
-                <i class="icon-{{dashboard.icon.type}}" ng-if="!dashboard.iconUrl && dashboard.icon.type"></i>
+            <img class="dashboard-icon-image" ng-src="{{dashboardIconUrl}}" ng-if="dashboardIconUrl" />
+            <span class="dashboard-icon" ng-if="dashboard.icon && !dashboardIconUrl">
+                <i class="icon-{{dashboard.icon.type}}" ng-if="!dashboardIconUrl && dashboard.icon.type"></i>
             </span>
             <div class="dashboard-header-text">
                 <span class="dashboard-title">{{dashboard.title}}</span>
-                <small ng-if="dashboard.subtitle" ng-bind="dashboard.subtitle" class="dashboard-subtitle"></small>
+                <small ng-if="dashboardSubtitle" ng-bind="dashboardSubtitle" class="dashboard-subtitle"></small>
             </div>
         </h3>
         <p ng-if="dashboard.description" class="dashboard-description">{{dashboard.description}}</p>

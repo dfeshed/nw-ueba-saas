@@ -5,51 +5,18 @@ angular.module("Fortscale").controller("UserComparisonController", ["$scope", "$
 
     var selectTabs = {
         features: function(){
-            var usernames = [];
-
-            $scope.loading = true;
-
+            var featuresData = [];
             angular.forEach($scope.users, function(user){
-                usernames.push(user.username);
+                featuresData = featuresData.concat(users.getUserFeaturesForComparison(user));
             });
 
-            users.getUserFeatures(usernames).then(function(featuresRawData){
-                var featuresData = [];
-                angular.forEach(featuresRawData, function(user){
-                    if (user.accountDisabled){
-                        featuresData.push({
-                            username: user.name,
-                            feature: "Account Disabled"
-                        });
-                    }
+            if ($scope.chartSettings){
+                $scope.chartSettings.itemField = switchedFields ? "username" : "feature";
+                $scope.chartSettings.childrenField = switchedFields ? "feature" : "username";
+                $scope.chartData = bubblesChartWidgetData.getData({ settings: $scope.chartSettings }, featuresData);
+            }
 
-                    if (user.noPasswordRequired){
-                        featuresData.push({
-                            username: user.name,
-                            feature: "No Password Required"
-                        });
-                    }
-
-                    if (user.passwordNeverExpires){
-                        featuresData.push({
-                            username: user.name,
-                            feature: "Password Never Expires"
-                        });
-                    }
-
-                });
-
-                if ($scope.chartSettings){
-                    $scope.chartSettings.itemField = switchedFields ? "username" : "feature";
-                    $scope.chartSettings.childrenField = switchedFields ? "feature" : "username";
-                    $scope.chartData = bubblesChartWidgetData.getData({ settings: $scope.chartSettings }, featuresData);
-                }
-
-                $scope.loading = false;
-            }, function(error){
-                $scope.error = error;
-                $scope.loading = false;
-            })
+            $scope.loading = false;
         },
         groups: function () {
             var groupsData = [];

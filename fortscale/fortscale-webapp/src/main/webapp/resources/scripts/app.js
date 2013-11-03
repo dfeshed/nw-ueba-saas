@@ -25,15 +25,18 @@ angular.module("Fortscale", [
     $routeProvider
         .when('/d/:dashboardId', {
             templateUrl: 'views/pages/main_dashboard.html',
-            controller: "MainDashboardController"
+            controller: "MainDashboardController",
+            reloadOnSearch: false
         })
         .when('/d/:dashboardId/:entityId', {
             templateUrl: 'views/pages/main_dashboard.html',
-            controller: 'MainDashboardController'
+            controller: 'MainDashboardController',
+            reloadOnSearch: false
         })
         .when('/d/:dashboardId/e/:entityType/:entityId', {
             templateUrl: 'views/pages/entity.html',
-            controller: 'EntityController'
+            controller: 'EntityController',
+            reloadOnSearch: false
         })
         .when('/d/:dashboardId/e/:entityType/:entityId/f/:featureId', {
             templateUrl: 'views/pages/entity.html',

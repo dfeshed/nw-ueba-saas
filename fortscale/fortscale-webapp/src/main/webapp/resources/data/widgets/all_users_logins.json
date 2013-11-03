@@ -32,7 +32,7 @@
                         "transform": {
                             "method": "date",
                             "options": {
-                                "prettyDate": true
+                                "format": "MM/DD/YY HH:mm:ss"
                             }
                         }
                     },
