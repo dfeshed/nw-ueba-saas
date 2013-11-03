@@ -84,7 +84,7 @@ public class ClassifierServiceTest extends AbstractTest{
 		user = createUser("test3", 90, 80, 100, 100);
 		userRepository.save(user);
 		adUsersFeaturesExtractionRepository.save(createAdUserFeaturesExtractionDummy(user.getId(), user.getAdDn()));
-		service.getSuspiciousUsers(Classifier.ad.getId(), service.getSeverityElements().get(0).getName());
+		service.getSuspiciousUsersByScore(Classifier.ad.getId(), service.getSeverityElements().get(0).getName());
 		
 	}
 	

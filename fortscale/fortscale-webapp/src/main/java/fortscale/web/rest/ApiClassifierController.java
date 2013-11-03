@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.IClassifierScoreDistribution;
 import fortscale.services.fe.ILoginEventScoreInfo;
@@ -29,6 +30,9 @@ import fortscale.web.beans.DataBean;
 @Controller
 @RequestMapping("/api/classifier/**")
 public class ApiClassifierController {
+	
+	private static final String SUSPICIOUS_USERS_BY_SCORE = "score";
+	private static final String SUSPICIOUS_USERS_BY_TREND = "trend";
 
 	@Autowired
 	private ClassifierService classifierService;
@@ -97,23 +101,33 @@ public class ApiClassifierController {
 		return ret;
 	}
 	
-	@RequestMapping(value="/{id}/severity/{severityId}/users", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<ISuspiciousUserInfo>> severityUsers(@PathVariable String id, @PathVariable String severityId, Model model){
-		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
-		List<ISuspiciousUserInfo> users = classifierService.getSuspiciousUsers(id, severityId);
-		ret.setData(users);
-		ret.setTotal(users.size());
-		return ret;
-	}
+//	@RequestMapping(value="/{id}/severity/{severityId}/users", method=RequestMethod.GET)
+//	@ResponseBody
+//	@LogException
+//	public DataBean<List<ISuspiciousUserInfo>> severityUsers(@PathVariable String id, @PathVariable String severityId, Model model){
+//		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
+//		List<ISuspiciousUserInfo> users = classifierService.getSuspiciousUsers(id, severityId);
+//		ret.setData(users);
+//		ret.setTotal(users.size());
+//		return ret;
+//	}
 	
 	@RequestMapping(value="/{id}/suspiciousUser", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<ISuspiciousUserInfo>> users(@PathVariable String id, Model model){
+	public DataBean<List<ISuspiciousUserInfo>> suspiciousUser(@PathVariable String id, 
+			@RequestParam(defaultValue=SUSPICIOUS_USERS_BY_SCORE) String sortby,
+			Model model){
 		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
-		List<ISuspiciousUserInfo> users = classifierService.getSuspiciousUsers(id, null);
+		List<ISuspiciousUserInfo> users;
+		if(SUSPICIOUS_USERS_BY_SCORE.equals(sortby)){
+			users = classifierService.getSuspiciousUsersByScore(id, null);
+		} else if(SUSPICIOUS_USERS_BY_TREND.equals(sortby)){
+			users = classifierService.getSuspiciousUsersByTrend(id, null);
+		} else{
+			throw new InvalidValueException(String.format("no such sorting field [%s]", sortby));
+		}
+
 		ret.setData(users);
 		ret.setTotal(users.size());
 		return ret;
