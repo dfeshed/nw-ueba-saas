@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.splunk.Event;
 
 public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
+	private static final String QUOTES_REPLACEMENT = "\\\"";
 	private boolean isFirstEvent = true;
 	private String[] searchReturnKeys = null;
 	private boolean isSkipFirstLine = false;
@@ -36,6 +37,8 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
     		String val = event.get(key);
     		if(val == null){
     			val = "";
+    		} else{
+    			val = val.replace("\"", QUOTES_REPLACEMENT);
     		}
     		sbuf.append("\"").append(val).append("\"").append(",");
     	}

@@ -13,7 +13,7 @@ public class SplunkTest {
 	private static final String SPLUNK_SERVER_USER_NAME_PROPERTY = "splunkUser";
 	private static final String SPLUNK_SERVER_USER_PASSWORD_PROPERTY = "splunkPassword";
 	
-	private String host = "192.168.0.135";
+	private String host = "mine.fortscale.dom";
 	private int port = 8089;
 	private String user = "admin";
 	private String password = "P@ssw0rd";
