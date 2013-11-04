@@ -1,6 +1,6 @@
 {
-    "reportId": "top_10_users",
-    "title": "Top 10 Suspicious Users",
+    "reportId": "top_10_trending_users",
+    "title": "Top 10 Trending Users",
     "controls": [
         {
             "type": "link",

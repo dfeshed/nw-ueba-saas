@@ -14,7 +14,7 @@
                     {
                         "name": "User",
                         "value": "{{username}}",
-                        "link": "#/d/user/{{userId}}"
+                        "link": "#/d/user/{{userId}}?currentFeature={{@currentScore}}"
                     },
                     {
                         "name": "Source IP",

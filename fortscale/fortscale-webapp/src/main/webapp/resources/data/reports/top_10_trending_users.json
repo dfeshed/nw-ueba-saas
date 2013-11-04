@@ -1,0 +1,14 @@
+{
+    "endpoint": {
+        "entity": "classifier",
+        "method": "suspiciousUser",
+        "sortby": "trend"
+    },
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "currentScore"
+        }
+    ]
+}

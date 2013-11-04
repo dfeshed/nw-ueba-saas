@@ -1,9 +1,8 @@
 {
-    "renderControls": false,
-    "renderHeader": false,
     "className": "no-border no-margins",
     "style": { "margin-bottom": "none" },
     "reportId": "users_severity_distribution",
+    "refreshOn": "currentScore",
     "views": [
         {
             "type": "percentChart",
