@@ -1,11 +1,10 @@
 {
     "dataSource": "api",
     "searchId": "users_severity_distribution",
-    "cache": "300s",
     "endpoint": {
         "entity": "classifier",
         "method": "dist",
-        "id": "active_directory"
+        "id": "{{@id}}"
     },
     "fields": [
         {
@@ -21,5 +20,11 @@
             "type": "number"
         }
     ],
-    "params": []
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "currentScore"
+        }
+    ]
 }

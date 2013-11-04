@@ -5,11 +5,39 @@
             "className": "span15",
             "widgets": [
                 {
-                    "widgetId": "users_severity_distribution"
+                    "widgetId": "users_severity_distribution",
+                    "title": "Distribution of users for group membership scores"
                 },
                 {
-                    "widgetId": "top_10_users",
-                    "title": "Top Suspicious Group Memberships"
+                    "renderControls": false,
+                    "renderHeader": false,
+                    "views": [
+                        {
+                            "type": "row",
+                            "settings": {
+                                "columns": [
+                                    {
+                                        "className": "span8",
+                                        "widgets": [
+                                            {
+                                                "widgetId": "top_10_users",
+                                                "title": "Top Suspicious Group Memberships"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "className": "span7",
+                                        "widgets": [
+                                            {
+                                                "widgetId": "top_10_trending_users",
+                                                "title": "Top Trending Users in Group Memberships"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
                 }
             ]
         }

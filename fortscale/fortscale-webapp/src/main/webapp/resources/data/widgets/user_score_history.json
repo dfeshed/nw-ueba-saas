@@ -67,7 +67,7 @@
                         "eventName": "click",
                         "action": "setParams",
                         "actionOptions": {
-                            "updateUrl": false,
+                            "updateUrl": true,
                             "params": {
                                 "date": "{{date}}"
                             }

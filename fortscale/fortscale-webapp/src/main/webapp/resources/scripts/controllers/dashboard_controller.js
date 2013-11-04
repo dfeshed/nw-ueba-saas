@@ -8,7 +8,12 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
 
         if ($routeParams.params){
             $scope.dashboardParams = JSON.parse($routeParams.params);
-            $scope.setTabParams && $scope.setTabParams({ params: $scope.dashboardParams });
+        }
+
+        for(var paramName in $routeParams){
+            if (!~["dashboardId", "entityId", "params"].indexOf(paramName)){
+                $scope.dashboardParams[paramName] = $routeParams[paramName];
+            }
         }
 
         setDashboardFieldValues($scope.dashboard);
@@ -16,6 +21,13 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
 
         $scope.dashboardSubtitle = null;
         $scope.dashboardIconUrl = null;
+
+        $scope.$on("dashboardParamsChange", function(e, changedParams){
+            for(var changedParam in changedParams){
+                if ($scope.dashboardParams[changedParam] !== undefined)
+                    $scope.dashboardParams[changedParam] = changedParams[changedParam];
+            }
+        });
 
         function updateControlParams(){
             var paramsObj = { params: angular.copy($scope.dashboardParams) };
@@ -27,7 +39,6 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
             }
 
             $location.search('params', JSON.stringify(paramsObj.params));
-            //utils.url.setHashQuery(paramsObj);
         }
 
         function setDashboardFieldValues(dashboard){
@@ -140,11 +151,12 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                 params = transforms.transformParams(params, options.paramsTransform);
                 angular.extend($scope.dashboardParams, params);
                 angular.extend($scope.dashboardParamsOptions, options.paramsOptions);
-                $scope.$broadcast("dashboardParamsChange", params);
-                setDashboardFieldValues($scope.dashboard);
 
                 if (options.updateUrl !== false)
                     updateControlParams();
+
+                $scope.$broadcast("dashboardParamsChange", params);
+                setDashboardFieldValues($scope.dashboard);
             }
         };
 

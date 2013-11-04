@@ -5,14 +5,45 @@
             "className": "span15",
             "widgets": [
                 {
-                    "widgetId": "top_10_users",
-                    "title": "Top Logins Suspected Users",
-                    "controls": [
+                    "widgetId": "users_severity_distribution",
+                    "title": "Distribution of users for logins scores"
+                },
+                {
+                    "renderControls": false,
+                    "renderHeader": false,
+                    "views": [
                         {
-                            "type": "link",
-                            "text": "View all",
-                            "href": "#/d/investigator?entities=wmievents4769",
-                            "refreshOn": ["currentScore"]
+                            "type": "row",
+                            "settings": {
+                                "columns": [
+                                    {
+                                        "className": "span8",
+                                        "widgets": [
+                                            {
+                                                "widgetId": "top_10_users",
+                                                "title": "Top Logins Suspected Users",
+                                                "controls": [
+                                                    {
+                                                        "type": "link",
+                                                        "text": "View all",
+                                                        "href": "#/d/investigator?entities=wmievents4769",
+                                                        "refreshOn": ["currentScore"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "className": "span7",
+                                        "widgets": [
+                                            {
+                                                "widgetId": "top_10_trending_users",
+                                                "title": "Top Trending Users in Logins"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
                         }
                     ]
                 },
