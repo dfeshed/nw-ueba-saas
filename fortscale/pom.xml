@@ -133,7 +133,8 @@
 		<module>fortscale-webapp</module>
 		<module>fortscale-services</module>
 		<module>fortscale-activedirectory</module>
-		
+		<module>fortscale-batch</module>
+
 		<!-- <module>fortscale-webapp-security</module> -->
 	</modules>
 </project>
