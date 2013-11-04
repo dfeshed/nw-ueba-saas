@@ -19,6 +19,7 @@ public class AdUserFeaturesExtraction extends AbstractFEDocument{
 	public static final String userIdField = "userId";
 	public static final String rawIdField = "rawId";
 	public static final String scoreField = "score";
+	public static final String timestampEpochField = "timestampepoch";
 	public static final String attrListField = "attributes";
 	
 	
@@ -34,6 +35,8 @@ public class AdUserFeaturesExtraction extends AbstractFEDocument{
 	private String rawId;
 	@Field(scoreField)
 	private Double score;
+	@Field(timestampEpochField)
+	private Long timestampepoch;
 	@Field(attrListField)
 	private List<IFeature> attributes;
 	
@@ -94,6 +97,14 @@ public class AdUserFeaturesExtraction extends AbstractFEDocument{
 
 	public void setAttributes(List<IFeature> attributes) {
 		this.attributes = attributes;
+	}
+
+	public Long getTimestampepoch() {
+		return timestampepoch;
+	}
+
+	public void setTimestampepoch(Long timestampepoch) {
+		this.timestampepoch = timestampepoch;
 	}
 	
 	

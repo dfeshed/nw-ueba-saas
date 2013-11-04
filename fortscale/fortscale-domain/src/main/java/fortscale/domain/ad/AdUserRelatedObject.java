@@ -15,7 +15,7 @@ public class AdUserRelatedObject {
 	@JsonCreator
 	public AdUserRelatedObject(@JsonProperty("dn") String dn, @JsonProperty("name") String name){
 		Assert.hasText(dn, "dn must not be null or empty!");
-		Assert.hasText(name, "name must not be null or empty!");
+//		Assert.hasText(name, "name must not be null or empty!");
 		this.dn = dn;
 		this.name = name;
 	}

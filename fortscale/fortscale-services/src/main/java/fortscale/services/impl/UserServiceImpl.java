@@ -345,9 +345,18 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Date timestamp) {
+	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp) {
 		Classifier.validateClassifierId(classifierId);
-		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findByUserIdAndClassifierIdAndTimestamp(uid, classifierId, timestamp);
+//		Long timestampepoch = timestamp/1000;
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(classifierId, new Date(timestamp));
+//		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findClassifierIdAndByUserIdAndTimestamp(classifierId,new ObjectId(uid), new Date(timestamp));
+		AdUserFeaturesExtraction ufe = null;
+		for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
+			if(adUserFeaturesExtraction.getUserId().equals(uid)){
+				ufe = adUserFeaturesExtraction;
+				break;
+			}
+		}
 		if(ufe == null || ufe.getAttributes() == null){
 			return Collections.emptyList();
 		}
@@ -425,13 +434,13 @@ public class UserServiceImpl implements UserService{
 		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaGroupsScoreWriterFactory.createImpalaGroupsScoreWriter();
 		
 		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-			User user = userRepository.findOne(extraction.getUserId());
+			User user = userRepository.findOne(extraction.getUserId().toString());
 			if(user == null){
 				//TODO: error log.
 				continue;
 			}
 			//updating the user with the new score.
-			updateUserScore(user, extraction.getTimestamp(), Classifier.groups.getId(), extraction.getScore(), avgScore);
+			updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore);
 			impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
 		}
 		impalaGroupsScoreWriter.close();
@@ -449,6 +458,7 @@ public class UserServiceImpl implements UserService{
 			scoreInfo.setScore(value);
 			scoreInfo.setAvgScore(avgScore);
 			scoreInfo.setTimestamp(timestamp);
+			scoreInfo.setTimestampEpoc(timestamp.getTime());
 			List<ScoreInfo> prevScores = new ArrayList<ScoreInfo>();
 			prevScores.add(scoreInfo);
 			cScore.setPrevScores(prevScores);
@@ -457,6 +467,7 @@ public class UserServiceImpl implements UserService{
 			scoreInfo.setScore(value);
 			scoreInfo.setAvgScore(avgScore);
 			scoreInfo.setTimestamp(timestamp);
+			scoreInfo.setTimestampEpoc(timestamp.getTime());
 			if (isOnSameDay(timestamp, cScore.getTimestamp())) {
 				if(value < cScore.getScore()){
 					isReplaceCurrentScore = false;
@@ -480,6 +491,7 @@ public class UserServiceImpl implements UserService{
 			cScore.setScore(value);
 			cScore.setAvgScore(avgScore);
 			cScore.setTimestamp(timestamp);
+			cScore.setTimestampEpoc(timestamp.getTime());
 			cScore.setTrend(trend);
 		}
 		user.putClassifierScore(cScore);

@@ -40,9 +40,9 @@ public class AdUsersFeaturesExtractionRepositoryTest extends AbstractTest{
 	}
 	
 	@Test
-	public void testFindByUserIdAndClassifierIdAndTimestamp() {
+	public void testFindClassifierIdAndByUserIdAndTimestamp() {
 		AdUserFeaturesExtraction adUserFeaturesExtraction = repository.findAll().iterator().next();
-		AdUserFeaturesExtraction adUserFeaturesExtraction2 = repository.findByUserIdAndClassifierIdAndTimestamp(adUserFeaturesExtraction.getUserId(), adUserFeaturesExtraction.getClassifierId(), adUserFeaturesExtraction.getTimestamp());
+		AdUserFeaturesExtraction adUserFeaturesExtraction2 = repository.findClassifierIdAndByUserIdAndTimestamp(adUserFeaturesExtraction.getClassifierId(), adUserFeaturesExtraction.getUserId(), adUserFeaturesExtraction.getTimestamp());
 		Assert.assertEquals(adUserFeaturesExtraction.getId(), adUserFeaturesExtraction2.getId());
 	}
 	
@@ -89,10 +89,10 @@ public class AdUsersFeaturesExtractionRepositoryTest extends AbstractTest{
 	}
 	
 	@Test
-	public void testFindByUserIdAndClassifierId() {
+	public void testFindByClassifierIdAndUserId() {
 		AdUserFeaturesExtraction adUserFeaturesExtraction = repository.findAll().iterator().next();
 		Pageable pageable = new PageRequest(0, 1, Direction.DESC, AdUserFeaturesExtraction.timestampField);
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = repository.findByUserIdAndClassifierId(adUserFeaturesExtraction.getUserId(), adUserFeaturesExtraction.getClassifierId(), pageable);
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = repository.findByClassifierIdAndUserId(adUserFeaturesExtraction.getClassifierId(), adUserFeaturesExtraction.getUserId(), pageable);
 		Assert.assertTrue(adUserFeaturesExtractions.size() > 0);
 	}	
 }

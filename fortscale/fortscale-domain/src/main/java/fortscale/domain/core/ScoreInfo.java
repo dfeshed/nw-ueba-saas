@@ -17,6 +17,7 @@ public class ScoreInfo {
 	@Field(trendField)
 	private double trend = 0.0;
 	private Date timestamp;
+	private Long timestampEpoc;
 	
 	
 	
@@ -44,6 +45,12 @@ public class ScoreInfo {
 	}
 	public void setTrend(double trend) {
 		this.trend = trend;
+	}
+	public Long getTimestampEpoc() {
+		return timestampEpoc;
+	}
+	public void setTimestampEpoc(Long timestampEpoc) {
+		this.timestampEpoc = timestampEpoc;
 	}
 	
 }
