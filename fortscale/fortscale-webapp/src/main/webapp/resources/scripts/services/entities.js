@@ -97,6 +97,23 @@ angular.module("Fortscale").factory("entities", ["$q", "DAL", function($q, DAL){
             }
 
             return deferred.promise;
+        },
+        getDefaultFilterValue: function(field){
+            if (field.type === "date"){
+                if (/^last\s/.test(field.defaultFilter.value)){
+                    var filter = {},
+                        days = parseInt(field.defaultFilter.value.match(/\d+/)[0], 10),
+                        now = moment(),
+                        start = moment().subtract("days", days);
+
+                    return {
+                        timeStart: start.format("YYYY-MM-DD"),
+                        timeEnd: now.format("YYYY-MM-DD")
+                    };
+                }
+            }
+            else
+                return field.defaultFilter.value;
         }
     };
 

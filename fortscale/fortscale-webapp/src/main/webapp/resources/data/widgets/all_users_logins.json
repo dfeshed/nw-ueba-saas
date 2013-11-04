@@ -19,12 +19,12 @@
                     {
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
-                        "link": "#/d/investigator?entities=wmievents4769&sourceip={{sourceIp}}"
+                        "link": "#/d/investigator?entities=wmievents4769&client_address={{sourceIp}}"
                     },
                     {
                         "name": "Destination Hostname",
                         "value": "{{destinationHostname}}",
-                        "link": "#/d/investigator?entities=wmievents4769&targetid={{destinationHostname}}"
+                        "link": "#/d/investigator?entities=wmievents4769&service_name={{destinationHostname}}"
                     },
                     {
                         "name": "Time",

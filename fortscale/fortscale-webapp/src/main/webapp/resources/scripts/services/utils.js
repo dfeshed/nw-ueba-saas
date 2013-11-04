@@ -121,7 +121,10 @@ angular.module("Utils", []).factory("utils", [function(){
                         var dataValue = getObjectProperty(data, variable);
                         if (dataValue !== undefined && dataValue !== null){
                             if (format)
-                                return format[format.method](dataValue, format.options);
+                                dataValue = format[format.method](dataValue, format.options);
+
+                            if (/^\s+$/.test(dataValue))
+                                return "";
 
                             return dataValue;
                         }

@@ -5,7 +5,7 @@
         {
             "type": "link",
             "text": "View all",
-            "href": "#/d/investigator?entities=wmievents4769&userid={{@loginsUser}}",
+            "href": "#/d/investigator?entities=wmievents4769&account_name={{@loginsUser}}",
             "refreshOn": ["loginsUser"]
         }
     ],
@@ -17,12 +17,12 @@
                     {
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
-                        "link": "#/d/investigator?entities=wmievents4769&sourceip={{sourceIp}}"
+                        "link": "#/d/investigator?entities=wmievents4769&client_address={{sourceIp}}&account_name={{@loginsUser}}"
                     },
                     {
                         "name": "Destination Hostname",
                         "value": "{{destinationHostname}}",
-                        "link": "#/d/investigator?entities=wmievents4769&targetid={{destinationHostname}}"
+                        "link": "#/d/investigator?entities=wmievents4769&service_name={{destinationHostname}}&account_name={{@loginsUser}}"
                     },
                     {
                         "name": "Time",

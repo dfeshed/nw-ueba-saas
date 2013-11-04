@@ -197,6 +197,7 @@
         <a ng-if="(fieldData.link || fieldData.field.events.click) && !fieldData.field.type"
            ng-style="{ color:fieldData.style.color }"
            ng-class="{ 'event-field-{{fieldData.id}}': fieldData.field.events }"
+           ng-click="tableFieldClick($event, fieldData, field, $index)"
            href="{{fieldData.link}}"
            title="{{fieldData.tooltip}}">{{fieldData.display}}</a>
         <progress-bar ng-if="fieldData.field.type == 'progressBar'"

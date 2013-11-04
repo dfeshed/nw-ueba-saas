@@ -5,7 +5,8 @@ body {
   margin: 0;
   padding: 0;
   overflow-y: auto;
-  overflow-x: hidden; }
+  overflow-x: hidden;
+  -webkit-print-color-adjust: exact; }
 
 label {
   display: inline; }
@@ -1284,6 +1285,9 @@ daterange .daterange-input {
 .print-only {
   visibility: hidden; }
 
+.widget-controls .print-only {
+  display: none; }
+
 @media print {
   .print-only {
     visibility: visible; }
@@ -1291,7 +1295,7 @@ daterange .daterange-input {
   .print-hide {
     display: none !important; }
 
-  .navbar, #sidebar-nav, .widget-controls, .btn {
+  .navbar, #sidebar-nav, .btn {
     display: none; }
 
   #main-contents {
@@ -1302,4 +1306,10 @@ daterange .daterange-input {
 
   .dashboard-widgets {
     background: White;
-    padding: 10px; } }
+    padding: 10px; }
+
+  .widget-tabs li {
+    background: #dedede; }
+
+  .widget-controls .print-only {
+    display: inline-block; } }

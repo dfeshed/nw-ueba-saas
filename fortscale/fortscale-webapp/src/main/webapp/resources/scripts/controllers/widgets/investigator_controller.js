@@ -33,13 +33,24 @@ angular.module("Fortscale").controller("InvestigatorController", [
             $location.search("params", null);
             $location.search("sql", null);
             $location.search("computedFields", null);
-            return;
+            //return;
         }
 
         $scope.fields = $scope.currentEntity.fields;
         angular.forEach($scope.fields, function(field){
             field.enabled = true;
         });
+
+        if (update){
+            clearFilters();
+            setCurrentView(widgetTypesData.table);
+
+            $scope.paging = {
+                pageSize: 20,
+                page: 1
+            };
+            setDisplayWidget();
+        }
     };
 
     $scope.addEntity = function(entity, update){
@@ -117,10 +128,16 @@ angular.module("Fortscale").controller("InvestigatorController", [
     $scope.update = function(updateUrl){
         if (updateUrl)
             setUrlParams();
-        else{
-            $scope.fieldsChanged = false;
-            getData();
-        }
+
+        $scope.fieldsChanged = false;
+
+        setCurrentView(widgetTypesData.table);
+
+        $scope.paging = {
+            pageSize: 20,
+            page: 1
+        };
+        getData();
     };
 
     $scope.fieldTypes = {
@@ -367,6 +384,27 @@ angular.module("Fortscale").controller("InvestigatorController", [
     $scope.$on("tableSort", function(e, data){
         tableSort = data;
         getData();
+    });
+
+    $scope.$on("tableClick", function(e, data){
+        clearFilters();
+
+        var fieldName = data.data.field.value.match(/^\{\{([^\}]+)\}\}$/)[1],
+            field = getField(fieldName);
+        if (field){
+            field.filters = [{
+                field: fieldName,
+                operator: "equals",
+                value: data.data.display,
+                entity: $scope.entities[0]
+            }];
+        }
+
+        $scope.paging = {
+            pageSize: 20,
+            page: 1
+        };
+        setDisplayWidget();
     });
 
     $scope.onViewTypeSelect = function(setToUrl){
@@ -645,8 +683,12 @@ angular.module("Fortscale").controller("InvestigatorController", [
     function clearFilters(){
         angular.forEach($scope.config.entities, function(entity){
             angular.forEach(entity.fields, function(field){
-                if (field.filters)
-                    field.filters = [];
+                field.filters = [];
+                if (field.defaultFilter){
+                    var filter = angular.copy(field.defaultFilter);
+                    filter.value = entities.getDefaultFilterValue(field);
+                    field.filters.push(filter);
+                }
             });
         });
     }

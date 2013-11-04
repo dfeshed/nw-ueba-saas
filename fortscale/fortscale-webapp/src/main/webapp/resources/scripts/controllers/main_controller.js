@@ -22,6 +22,10 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
 
     $scope.buildVersion = "Unknown";
 
+    $scope.printPage = function(){
+        window.print();
+    };
+
     dashboards.getDashboardsList().then(function(dashboardsList){
         if (dashboardsList.length){
             $scope.dashboards = dashboardsList;
@@ -60,7 +64,7 @@ angular.module("Fortscale").controller("MainController", ["$scope", "$routeParam
     });
 
     $scope.getCurrentNavRedirect = function(){
-        return encodeURIComponent($scope.currentNav);
+        return encodeURIComponent(document.location.hash);
     };
 
     $scope.$on("authError", function(e, data){

@@ -6,7 +6,15 @@
             "widgets": [
                 {
                     "widgetId": "top_10_users",
-                    "title": "Top Logins Suspected Users"
+                    "title": "Top Logins Suspected Users",
+                    "controls": [
+                        {
+                            "type": "link",
+                            "text": "View all",
+                            "href": "#/d/investigator?entities=wmievents4769",
+                            "refreshOn": ["currentScore"]
+                        }
+                    ]
                 },
                 {
                     "widgetId": "all_users_logins"
