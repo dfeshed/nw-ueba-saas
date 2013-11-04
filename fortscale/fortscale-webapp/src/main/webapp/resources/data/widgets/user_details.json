@@ -83,12 +83,7 @@
                         "value": "{{adAcountExpires}}"
                     },
                     {
-                        "icon": "sign-in",
-                        "tooltip": "Logon Hours",
-                        "value": "{{logonHours}}"
-                    },
-                    {
-                        "icon": "info-circle",
+                        "icon": "info",
                         "tooltip": "Description",
                         "value": "{{description}}"
                     },

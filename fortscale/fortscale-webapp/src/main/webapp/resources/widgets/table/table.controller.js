@@ -88,6 +88,10 @@ angular.module("TableWidget").controller("TableWidgetController", ["$scope", "$t
         }*/
     };
 
+    $scope.tableFieldClick = function($event, fieldData, field, fieldIndex){
+        $scope.$emit("tableClick", { $event: $event, field: field, data: fieldData, index: fieldIndex });
+    };
+
     $scope.initFilter = function(field){
         if (!field.filter)
             return;

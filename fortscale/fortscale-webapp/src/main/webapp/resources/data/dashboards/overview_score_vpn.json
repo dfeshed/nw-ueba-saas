@@ -6,7 +6,15 @@
             "widgets": [
                 {
                     "widgetId": "top_10_users",
-                    "title": "Top VPN Suspected Users"
+                    "title": "Top VPN Suspected Users",
+                    "controls": [
+                        {
+                            "type": "link",
+                            "text": "View all",
+                            "href": "#/d/investigator?entities=vpndatares",
+                            "refreshOn": ["currentScore"]
+                        }
+                    ]
                 },
                 {
                     "renderControls": false,

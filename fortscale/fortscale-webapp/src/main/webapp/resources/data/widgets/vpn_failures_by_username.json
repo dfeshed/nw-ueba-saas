@@ -1,6 +1,14 @@
 {
     "reportId": "vpn_failures_by_username",
     "title": "Top 10 failed VPN logins by username",
+    "controls": [
+        {
+            "type": "link",
+            "text": "View all",
+            "href": "#/d/investigator?entities=vpndata&status=FAIL",
+            "refreshOn": ["loginsUser"]
+        }
+    ],
     "views": [
         {
             "type": "table",

@@ -1,7 +1,6 @@
 package fortscale.web.rest;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,7 +189,7 @@ public class ApiUserController {
 	public DataBean<List<FeatureBean>> userClassifierAttributes(@PathVariable String uid, @PathVariable String classifierId,
 			@RequestParam(required=true) String date, Model model){
 		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
-		List<IFeature> attrs = userService.getUserAttributesScores(uid, classifierId, new Date(Long.parseLong(date)));
+		List<IFeature> attrs = userService.getUserAttributesScores(uid, classifierId, Long.parseLong(date));
 		List<FeatureBean> features = new ArrayList<FeatureBean>();
 		for(IFeature feature: attrs){
 			features.add(new FeatureBean(feature));

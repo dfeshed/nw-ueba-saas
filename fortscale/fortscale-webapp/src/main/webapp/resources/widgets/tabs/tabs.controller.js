@@ -55,7 +55,8 @@ angular.module("TabsWidget").controller("TabsWidgetController", ["$scope", funct
     }
 
     function selectFirstTab(){
-        $scope.selectTab($scope.view.settings.tabs[0], 0);
+        if ($scope.view.settings.tabs && $scope.view.settings.tabs.length)
+            $scope.selectTab($scope.view.settings.tabs[0], 0);
     }
 
     function setCurrentTab(tabIndex){

@@ -24,7 +24,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 	Map<String, List<AdUserFeaturesExtraction>> classifierMap = new HashMap<String, List<AdUserFeaturesExtraction>>();
 
 	@Override
-	public Iterable<AdUserFeaturesExtraction> findAll(Sort sort) {
+	public List<AdUserFeaturesExtraction> findAll(Sort sort) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -48,7 +48,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 	}
 
 	@Override
-	public <S extends AdUserFeaturesExtraction> Iterable<S> save(
+	public <S extends AdUserFeaturesExtraction> List<S> save(
 			Iterable<S> entities) {
 		// TODO Auto-generated method stub
 		return null;
@@ -67,7 +67,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 	}
 
 	@Override
-	public Iterable<AdUserFeaturesExtraction> findAll() {
+	public List<AdUserFeaturesExtraction> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -136,26 +136,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 		return classifierMap.get(classifierId);
 	}
 
-	@Override
-	public List<AdUserFeaturesExtraction> findByUserId(String userId,
-			Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<AdUserFeaturesExtraction> findByUserIdAndClassifierId(
-			String userId, String classifierId, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public AdUserFeaturesExtraction findByUserIdAndClassifierIdAndTimestamp(
-			String userId, String classifierId, Date timestamp) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	public List<AdUserFeaturesExtraction> findByClassifierIdAndTimestampAndScoreBetween(
@@ -175,5 +156,41 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 			String classifierId, Date timestamp) {
 		// TODO Auto-generated method stub
 		return null;
-	}	
+	}
+
+	@Override
+	public List<AdUserFeaturesExtraction> findByClassifierIdAndUserId(
+			String classifierId, String userId, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AdUserFeaturesExtraction findClassifierIdAndByUserIdAndTimestamp(
+			String classifierId, String userId, Date timestamp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AdUserFeaturesExtraction findClassifierIdAndByUserIdAndTimestampepoch(
+			String classifierId, String userId, Long timestampepoch) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<AdUserFeaturesExtraction> findByUserId(String userId,
+			Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<AdUserFeaturesExtraction> findByUserId(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

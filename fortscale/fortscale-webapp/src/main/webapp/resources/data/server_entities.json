@@ -7,7 +7,11 @@
             {
                 "id": "timegenerated",
                 "name": "Time",
-                "type": "date"
+                "type": "date",
+                "defaultFilter": {
+                    "operator": "dateRange",
+                    "value": "last 14 days"
+                }
             },
             {
                 "id": "account_name",

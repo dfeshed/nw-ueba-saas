@@ -25,6 +25,7 @@ body{
   padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-print-color-adjust: exact;
 }
 
 label{ display: inline }

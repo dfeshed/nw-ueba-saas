@@ -45,7 +45,7 @@
                         "actionOptions": {
                             "updateUrl": false,
                             "params": {
-                                "userName": { "itemIndex": 0, "value": "{{name}}" },
+                                "userName": { "itemIndex": 0, "value": "{{name || adDisplayName || samacountName || username || adUserPrincipalName}}" },
                                 "jobTitle": { "itemIndex": 0, "value": "{{jobTitle}}", "setIf": "jobTitle" },
                                 "userImage": { "itemIndex": 0, "value": "data:image/gif;base64,{{image}}", "setIf": "image" },
                                 "vpnUser": { "itemIndex": 0, "value": "{{applicationUserDetails.vpn.userName}}" },
