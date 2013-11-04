@@ -162,15 +162,15 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	@Override
 	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId) {
-		return getTopUsers(classifierId, severityId, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendField(classifierId));
+		return getTopUsers(classifierId, severityId, new ThresholdNoFilter(), User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendField(classifierId));
 	}
 	
 	@Override
 	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId) {
-		return getTopUsers(classifierId, severityId, User.getClassifierScoreCurrentTrendField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
+		return getTopUsers(classifierId, severityId, new ThresholdTrendFilter(), User.getClassifierScoreCurrentTrendField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
 	}
 
-	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, String... sortingFieldsName) {
+	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, String... sortingFieldsName) {
 		Classifier.validateClassifierId(classifierId);
 		
 		Range severityRange = getRange(severityId);
@@ -179,7 +179,11 @@ public class ClassifierServiceImpl implements ClassifierService {
 		List<User> users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(User user: users){
-			ret.add(createSuspiciousUserInfo(classifierId, user));
+			ISuspiciousUserInfo suspiciousUserInfo = createSuspiciousUserInfo(classifierId, user);
+			if(!thresholdFilter.hasPassed(suspiciousUserInfo)){
+				break;
+			}
+			ret.add(suspiciousUserInfo);
 		}
 		return ret;
 		
@@ -489,5 +493,27 @@ public class ClassifierServiceImpl implements ClassifierService {
 			retLong = vpnDAO.getLastRuntime();
 		}
 		return retLong;
+	}
+	
+	interface ThresholdFilter{
+		public boolean hasPassed(ISuspiciousUserInfo suspiciousUserInfo);
+	}
+	
+	class ThresholdNoFilter implements ThresholdFilter{
+
+		@Override
+		public boolean hasPassed(ISuspiciousUserInfo suspiciousUserInfo) {
+			return true;
+		}
+		
+	}
+	
+	class ThresholdTrendFilter implements ThresholdFilter{
+
+		@Override
+		public boolean hasPassed(ISuspiciousUserInfo suspiciousUserInfo) {
+			return suspiciousUserInfo.getTrend() > 0;
+		}
+		
 	}
 }
