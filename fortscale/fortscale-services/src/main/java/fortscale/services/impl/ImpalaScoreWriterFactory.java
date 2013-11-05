@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ImpalaGroupsScoreWriterFactory {
+public class ImpalaScoreWriterFactory {
 
 	@Value("${user.ad.group.membership.score.csv.file.full.path}")
 	private String userAdScoreCsvFileFullPathString;

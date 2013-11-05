@@ -512,7 +512,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 
 		@Override
 		public boolean hasPassed(ISuspiciousUserInfo suspiciousUserInfo) {
-			return suspiciousUserInfo.getTrend() > 0;
+			return true;//suspiciousUserInfo.getTrend() > 0;
 		}
 		
 	}

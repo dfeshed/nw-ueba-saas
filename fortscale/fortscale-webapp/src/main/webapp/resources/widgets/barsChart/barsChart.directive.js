@@ -116,6 +116,26 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                 }
             });
 
+            function getBarIndexForSelection(dataSelection){
+                for(var i=0; i < data.length; i++){
+                    if (dataMemberMatchesSelection(dataSelection, data[i]))
+                        return i;
+                }
+
+                if (settings.selectedIndex !== undefined)
+                    return settings.selectedIndex;
+
+                return null;
+            }
+
+            function dataMemberMatchesSelection(dataSelection, dataMember){
+                for(var property in dataSelection){
+                    if (String(dataMember[property]) !== dataSelection[property])
+                        return false;
+                }
+
+                return true;
+            }
             function getTooltipText(barElement){
                 var series = settings.series[parseInt(barElement.getAttribute("data-seriesIndex"))],
                     barLabel = data[parseInt(barElement.getAttribute("data-index"))]._label,
@@ -234,6 +254,10 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     .domain([domainMinMax.min, domainMinMax.max]);
 
                 var patterns = {};
+
+                if (settings.selectedData){
+                    selectedBarGroup = getBarIndexForSelection(settings.selectedData);
+                }
 
                 if (selectedBarGroup === "last")
                     selectedBarGroup = data.length - 1;

@@ -1,7 +1,7 @@
 {
     "reportId": "user_score_history",
     "title": "User score for the last 7 days",
-    "params": { "date": null },
+
     "views": [
         {
             "type": "barsChart",
@@ -31,6 +31,7 @@
                         "max": 100
                     }
                 },
+                "selectedData": { "date": "{{@date}}" },
                 "selectedIndex": "last",
                 "series": [
                     {

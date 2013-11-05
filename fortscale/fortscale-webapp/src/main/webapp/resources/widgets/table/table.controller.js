@@ -33,6 +33,7 @@ angular.module("TableWidget").controller("TableWidgetController", ["$scope", "$t
         }
     });
     $scope.sortTable = function(field, view, widgetParams){
+        console.log("start sort");
         if (!field.sortBy)
             return;
 

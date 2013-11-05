@@ -6,12 +6,16 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 		
 	<description>domain context.</description>
+	
+	
 
 	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}"/>
 	
 	<mongo:mapping-converter id="mongoConverter" base-package="fortscale.domain">
 		<mongo:custom-converters base-package="fortscale.domain" />
 	</mongo:mapping-converter>
+	
+	<mongo:auditing />
 	
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg ref="mongoDbFactory" />

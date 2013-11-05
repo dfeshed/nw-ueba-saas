@@ -353,7 +353,8 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                 }
             }
             else{
-                console.error("Action no found: ", event.action);
+                $scope.dashboardEvent({ event: event, data: data});
+                //console.error("Action no found: ", event.action);
             }
         };
 

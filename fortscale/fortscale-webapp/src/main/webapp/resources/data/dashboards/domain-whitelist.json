@@ -6,10 +6,10 @@
         {
             "width": "200",
             "renderControls": false,
+            "className": "widget-noBorder",
             "views": [
                 {
                     "type": "buttonsBar",
-                    "className": "widget-noBorder",
                     "settings": {
                         "buttons": [
                             {

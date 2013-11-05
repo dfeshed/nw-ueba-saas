@@ -6,14 +6,14 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
         if (!$scope.dashboardParamsOptions)
             $scope.dashboardParamsOptions = {};
 
-        if ($routeParams.params){
-            $scope.dashboardParams = JSON.parse($routeParams.params);
-        }
-
         for(var paramName in $routeParams){
             if (!~["dashboardId", "entityId", "params"].indexOf(paramName)){
                 $scope.dashboardParams[paramName] = $routeParams[paramName];
             }
+        }
+
+        if ($routeParams.params){
+            $scope.dashboardParams = angular.extend($scope.dashboardParams, JSON.parse($routeParams.params));
         }
 
         setDashboardFieldValues($scope.dashboard);

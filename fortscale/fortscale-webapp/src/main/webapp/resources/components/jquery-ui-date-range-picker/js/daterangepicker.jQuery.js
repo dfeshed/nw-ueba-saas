@@ -23,10 +23,13 @@
 			presetRanges: [
 				{text: 'Today', dateStart: 'today', dateEnd: 'today' },
 				{text: 'Last 7 days', dateStart: 'today-7days', dateEnd: 'today' },
-				{text: 'Month to date', dateStart: function(){ return Date.parse('today').moveToFirstDayOfMonth();  }, dateEnd: 'today' },
-				{text: 'Year to date', dateStart: function(){ var x= Date.parse('today'); x.setMonth(0); x.setDate(1); return x; }, dateEnd: 'today' },
+				{text: 'Month to date', dateStart: function(){ return moment().startOf('month').toDate()  }, dateEnd: moment().toDate() },
+				{text: 'Year to date', dateStart: function(){ var x= moment.today(); x.setMonth(0); x.setDate(1); return x; }, dateEnd: moment().toDate() },
 				//extras:
-				{text: 'The previous Month', dateStart: function(){ return Date.parse('1 month ago').moveToFirstDayOfMonth();  }, dateEnd: function(){ return Date.parse('1 month ago').moveToLastDayOfMonth();  } }
+				{text: 'The previous Month',
+                    dateStart: function(){ return moment().subtract("months", 1).startOf('month').toDate();  },
+                    dateEnd: function(){ return moment().subtract("months", 1).endOf('month').toDate();  }
+                }
 				//{text: 'Tomorrow', dateStart: 'Tomorrow', dateEnd: 'Tomorrow' },
 				//{text: 'Ad Campaign', dateStart: '03/07/08', dateEnd: 'Today' },
 				//{text: 'Last 30 Days', dateStart: 'Today-30', dateEnd: 'Today' },
@@ -47,8 +50,8 @@
 		prevLinkText: 'Prev',
 		target: rangeInput,
 		doneButtonText: 'Done',
-		earliestDate: Date.parse('-15years'), //earliest date allowed 
-		latestDate: Date.parse('+15years'), //latest date allowed 
+		earliestDate: moment().subtract("years", 15).toDate(), //earliest date allowed
+		latestDate: moment().add("years", 15).toDate(), //latest date allowed
 		constrainDates: false,
 		rangeSplitter: '-', //string to use between dates in single input
 		dateFormat: 'm/d/yy', // date formatting. Available formats: http://docs.jquery.com/UI/Datepicker/%24.datepicker.formatDate
@@ -110,17 +113,17 @@
 		options.datepickerOptions = (settings) ? $.extend(datepickerOptions, settings.datepickerOptions) : datepickerOptions;
 
 		//Capture Dates from input(s)
-		var inputDateA, inputDateB = Date.parse('today');
+		var inputDateA, inputDateB = moment().toDate();
 		var inputDateAtemp, inputDateBtemp;
 		if(rangeInput.size() == 2){
-			inputDateAtemp = Date.parse( rangeInput.eq(0).val() );
-			inputDateBtemp = Date.parse( rangeInput.eq(1).val() );
+			inputDateAtemp = moment( rangeInput.eq(0).val()).toDate();
+			inputDateBtemp = moment( rangeInput.eq(1).val()).toDate();
 			if(inputDateAtemp == null){inputDateAtemp = inputDateBtemp;}
 			if(inputDateBtemp == null){inputDateBtemp = inputDateAtemp;}
 		}
 		else {
-			inputDateAtemp = Date.parse( rangeInput.val().split(options.rangeSplitter)[0] );
-			inputDateBtemp = Date.parse( rangeInput.val().split(options.rangeSplitter)[1] );
+			inputDateAtemp = moment( rangeInput.val().split(options.rangeSplitter)[0] ).toDate();
+			inputDateBtemp = moment( rangeInput.val().split(options.rangeSplitter)[1] ).toDate();
 			if(inputDateBtemp == null){inputDateBtemp = inputDateAtemp;} //if one date, set both
 		}
 		if(inputDateAtemp != null){inputDateA = inputDateAtemp;}
@@ -163,7 +166,7 @@
 
 		//function to format a date string
 		function fDate(date){
-			 if(!date.getDate()){return '';}
+			 if(!date || !date.getDate()){return '';}
 			 var day = date.getDate();
 			 var month = date.getMonth();
 			 var year = date.getFullYear();
@@ -269,8 +272,8 @@
 				rp.find('.range-start, .range-end').css('opacity',0).hide(400, function(){
 					rpPickers.hide();
 				});
-				var dateStart = (typeof el.data('dateStart') == 'string') ? Date.parse(el.data('dateStart')) : el.data('dateStart')();
-				var dateEnd = (typeof el.data('dateEnd') == 'string') ? Date.parse(el.data('dateEnd')) : el.data('dateEnd')();
+				var dateStart = (typeof el.data('dateStart') == 'string') ? moment(el.data('dateStart')).toDate() : el.data('dateStart')();
+				var dateEnd = (typeof el.data('dateEnd') == 'string') ? moment(el.data('dateEnd')).toDate() : el.data('dateEnd')();
 				rp.find('.range-start').datepicker('setDate', dateStart).find('.ui-datepicker-current-day').trigger('click');
 				rp.find('.range-end').datepicker('setDate', dateEnd).find('.ui-datepicker-current-day').trigger('click');
 			}

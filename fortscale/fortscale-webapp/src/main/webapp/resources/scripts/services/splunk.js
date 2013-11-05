@@ -54,23 +54,25 @@ angular.module("Splunk", []).factory("splunk", ["$http", "$q", "$rootScope", fun
 
                 service.savedSearches({ app: APP_NAME }).fetch(function(err, searches) {
                     if (err){
-                        deferred.reject(err.data.messages ? err.data.messages[0].text : err.error);
-                        if (err.status === 401 || err.status === 500)
-                            $rootScope.requireSplunkConfig = true;
-                    }
-                    else{
-                        $rootScope.$apply(function(){
-                            if (searches)
-                                mySavedSearches = searches;
+                        var error = err && err.data.messages ? err.data.messages[0].text : err.error;
 
-                            angular.forEach(onSearches, function(deferred){
-                                if (searches)
-                                    deferred.resolve(mySavedSearches);
-                                else
-                                    deferred.reject("No searches found");
+                        if (err.status === 401 || err.status === 500){
+                            $rootScope.$apply(function(){
+                                $rootScope.requireSplunkConfig = true;
                             });
-                        });
+                        }
                     }
+                    $rootScope.$apply(function(){
+                        if (searches)
+                            mySavedSearches = searches;
+
+                        angular.forEach(onSearches, function(deferred){
+                            if (!err && searches)
+                                deferred.resolve(mySavedSearches);
+                            else
+                                deferred.reject(error);
+                        });
+                    });
                 });
             }
 

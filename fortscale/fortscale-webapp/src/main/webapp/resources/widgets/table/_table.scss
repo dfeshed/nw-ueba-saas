@@ -151,11 +151,16 @@ $indexCellColor: #bbb;
     padding: 10px 5px;
 
     &.widget-table-message-warning{
-      background: -webkit-linear-gradient(top, rgb(255, 255, 27), rgb(224, 218, 71));
-      background: -moz-linear-gradient(top, rgb(255, 255, 27), rgb(224, 218, 71));
-      background: -ms-linear-gradient(top, rgb(255, 255, 27), rgb(224, 218, 71));
-      background: linear-gradient(top, rgb(255, 255, 27), rgb(224, 218, 71));
+      background: #FCF177;
     }
+
+    &.widget-table-message-info{
+      background: -webkit-linear-gradient(top, #E9E9E9, #CCCCCC);
+      background: -moz-linear-gradient(top, #E9E9E9, #CCCCCC);
+      background: -ms-linear-gradient(top, #E9E9E9, #CCCCCC);
+      background: linear-gradient(top, #E9E9E9, #CCCCCC);
+    }
+    &.widget-table-message-error{ background: #c00; color: White; }
   }
   .widget-table-icon{
     font-size: 14px;
@@ -183,4 +188,8 @@ $indexCellColor: #bbb;
   .widget-table-wrapper{
     min-height: 0;
   }
+}
+
+.lightTable .widget-table tbody td, .lightTable .widget-table tbody a{
+  color: #666;
 }

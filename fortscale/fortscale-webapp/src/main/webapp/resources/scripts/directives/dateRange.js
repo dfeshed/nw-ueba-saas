@@ -45,8 +45,8 @@ angular.module('Fortscale')
                         },
                         presetRanges: [
                             {text: 'Today', dateStart: 'today', dateEnd: 'today', closeOnSelect: true },
-                            {text: 'Last week', dateStart: 'today-7days', dateEnd: 'today', closeOnSelect: true },
-                            {text: 'Last month', dateStart: 'today-1months', dateEnd: 'today', closeOnSelect: true }
+                            {text: 'Last week', dateStart: function(){ return moment().subtract("days", 7).toDate() }, dateEnd: function(){ moment().toDate() }, closeOnSelect: true },
+                            {text: 'Last month', dateStart: function(){ return moment().subtract("months", 1).toDate() }, dateEnd: function(){ moment().toDate() }, closeOnSelect: true }
                         ],
                         closeOnSelect: false,
                         doneButtonText: "Apply",
