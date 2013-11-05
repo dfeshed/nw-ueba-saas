@@ -546,6 +546,7 @@ public class UserServiceImpl implements UserService{
 			cScore.setTimestamp(timestamp);
 			cScore.setTimestampEpoc(timestamp.getTime());
 			cScore.setTrend(trend);
+			cScore.setTrendScore(Math.abs(trend));
 		}
 		user.putClassifierScore(cScore);
 		if(isToSave){

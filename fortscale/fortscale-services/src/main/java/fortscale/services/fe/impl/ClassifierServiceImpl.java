@@ -162,12 +162,12 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	@Override
 	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId) {
-		return getTopUsers(classifierId, severityId, new ThresholdNoFilter(), User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendField(classifierId));
+		return getTopUsers(classifierId, severityId, new ThresholdNoFilter(), User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
 	}
 	
 	@Override
 	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId) {
-		return getTopUsers(classifierId, severityId, new ThresholdTrendFilter(), User.getClassifierScoreCurrentTrendField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
+		return getTopUsers(classifierId, severityId, new ThresholdTrendFilter(), User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
 	}
 
 	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, String... sortingFieldsName) {
@@ -253,7 +253,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	private Range getRange(String severityId){
 		if(severityId == null){
-			return new Range(0, 100);
+			return new Range(0, 101);
 		}
 		int i = 0;
 		for(SeverityElement element: severityOrderedList){
