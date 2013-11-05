@@ -1,7 +1,7 @@
 {
     "dataSource": "api",
     "endpoint": {
-        "query":  "SELECT username,count(*) as failCount FROM vpndata WHERE status='FAIL' and date_time_unix>(unix_timestamp()-604800) GROUP BY username ORDER BY failCount  desc LIMIT 10",
+        "query":  "SELECT username, count(distinct source_ip) as failcount FROM vpndata WHERE status='FAIL' GROUP BY username having failcount>1 ORDER BY failcount desc LIMIT 10",
         "entity": "investigate"
     }
 }

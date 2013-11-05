@@ -780,25 +780,26 @@ angular.module("Fortscale").controller("InvestigatorController", [
             $scope.entities = entitiesData;
             $scope.availableEntities = $scope.entities;
 
-            if ($location.search().entities || $location.search().sql){
-                if ($location.search().entities){
-                    var urlEntities = findEntities($location.search().entities.split(","));
-                    if ($scope.allowMultipleEntities){
-                        urlEntities.forEach(function(urlEntity){
-                            $scope.addEntity(urlEntity);
-                        });
-                    }
-                    else{
-                        $scope.currentEntity = urlEntities[0];
-                        $scope.selectEntity();
-                    }
+            if (!$location.search().entities && !$location.search().sql)
+                $location.search("entities", "wmievents4769");
 
-                    withEntity();
+            if ($location.search().entities){
+                var urlEntities = findEntities($location.search().entities.split(","));
+                if ($scope.allowMultipleEntities){
+                    urlEntities.forEach(function(urlEntity){
+                        $scope.addEntity(urlEntity);
+                    });
                 }
-                else if ($location.search().sql){
-                    $scope.sqlQuery = $location.search().sql;
-                    $scope.querySql($location.search().sql).then(withEntity);
+                else{
+                    $scope.currentEntity = urlEntities[0];
+                    $scope.selectEntity();
                 }
+
+                withEntity();
+            }
+            else if ($location.search().sql){
+                $scope.sqlQuery = $location.search().sql;
+                $scope.querySql($location.search().sql).then(withEntity);
             }
         });
     }

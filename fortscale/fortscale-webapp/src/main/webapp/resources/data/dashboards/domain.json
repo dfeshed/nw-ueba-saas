@@ -6,6 +6,7 @@
             "updateFor": ["domain"],
             "widgetId": 6,
             "width": "100%",
+            "className": "widget-noBorder",
             "views": [
                 {
                     "type": "buttonsBar",
@@ -70,6 +71,7 @@
         },
         {
             "width": "100%",
+            "className": "widget-noBorder",
             "widgetId": 7,
             "updateFor": ["domain"],
             "views": [
@@ -118,6 +120,7 @@
         {
             "widgetId": 5,
             "reportId": 5,
+            "className": "widget-noBorder",
             "report": {
                 "reportId": 5,
                 "name": "Get domain accesses",

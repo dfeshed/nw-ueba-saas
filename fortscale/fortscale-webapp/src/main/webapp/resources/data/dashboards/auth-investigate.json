@@ -2,6 +2,225 @@
     "dashboardId": "auth-investigate",
     "name": "User authentication investigation",
     "description": "Find suspicious login attempts",
+    "controls": [
+        {
+            "type": "dateRange",
+            "label": "For dates:",
+            "params": {
+                "timeStart": "now",
+                "timeEnd": "now"
+            },
+            "paramsTransform": {
+                "timeStart": {
+                    "type": "stringDate",
+                    "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                    "replaceWith": "$2/$3/$1:00:00:00",
+                    "format": "YYYY-MM-DD"
+                },
+                "timeEnd": {
+                    "type": "stringDate",
+                    "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                    "replaceWith": "$2/$3/$1:23:59:59",
+                    "format": "YYYY-MM-DD"
+                }
+            },
+            "paramsInitTransform": {
+                "timeStart": {
+                    "type": "string",
+                    "regExp": "(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})",
+                    "replaceWith": "$1-$2-$3",
+                    "format": "YYYY-MM-DD"
+                },
+                "timeEnd": {
+                    "type": "string",
+                    "regExp": "(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})",
+                    "replaceWith": "$1-$2-$3",
+                    "format": "YYYY-MM-DD"
+                }
+            },
+            "onChange": {
+                "action": "setParams",
+                "actionOptions": {
+                    "updateUrl": false,
+                    "params": {
+                        "timeStart": "{{timeStart}}",
+                        "timeEnd": "{{timeEnd}}"
+                    },
+                    "paramsTransform": {
+                        "timeStart": {
+                            "type": "stringDate",
+                            "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                            "replaceWith": "$2/$3/$1:0:0:0",
+                            "format": "YYYY-MM-DD"
+                        },
+                        "timeEnd": {
+                            "type": "stringDate",
+                            "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
+                            "replaceWith": "$2/$3/$1:23:59:59",
+                            "format": "YYYY-MM-DD"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "search",
+            "label": "User: ",
+            "params": {
+                "authUser": ""
+            },
+            "settings": {
+                "allowAllStrings": true,
+                "dashboardParam": "authUser",
+                "selectOnClear": true,
+                "termTransform": {
+                    "regExp": "^([^*]+)$",
+                    "replaceWith": "*$1*"
+                },
+                "reports": [
+                    {
+                        "query": {
+                            "searchId": "Auth_Users_Search",
+                            "dataSource": "splunk",
+                            "options": {
+                                "count": 10
+                            },
+                            "fields": {
+                                "Result": {
+                                    "type": "string"
+                                }
+                            },
+                            "params": [
+                                {
+                                    "field": "userId",
+                                    "type": "string",
+                                    "dashboardParam": "term"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "onSelect": {
+                    "action": "setParams",
+                    "actionOptions": {
+                        "params": {
+                            "authUser": "{{value}}"
+                        }
+                    }
+                },
+                "placeholder": "User name"
+            }
+        },
+        {
+            "type": "search",
+            "label": "Source machine: ",
+            "params": {
+                "authSource": ""
+            },
+            "settings": {
+                "allowAllStrings": true,
+                "dashboardParam": "authSource",
+                "selectOnClear": true,
+                "termTransform": {
+                    "regExp": "^([^*]+)$",
+                    "replaceWith": "*$1*"
+                },
+                "reports": [
+                    {
+                        "query": {
+                            "searchId": "Auth_Source_Search",
+                            "dataSource": "splunk",
+                            "options": {
+                                "count": 10
+                            },
+                            "fields": {
+                                "Result": {
+                                    "type": "string"
+                                }
+                            },
+                            "params": [
+                                {
+                                    "field": "source",
+                                    "type": "string",
+                                    "dashboardParam": "term"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "onSelect": {
+                    "action": "setParams",
+                    "actionOptions": {
+                        "params": {
+                            "authSource": "{{value}}"
+                        }
+                    }
+                },
+                "placeholder": "IP or machine name"
+            }
+        },
+        {
+            "type": "search",
+            "label": "Target machine: ",
+            "params": {
+                "authTarget": ""
+            },
+            "settings": {
+                "allowAllStrings": true,
+                "dashboardParam": "authTarget",
+                "selectOnClear": true,
+                "termTransform": {
+                    "regExp": "^([^*]+)$",
+                    "replaceWith": "*$1*"
+                },
+                "reports": [
+                    {
+                        "query": {
+                            "searchId": "Auth_Target_Search",
+                            "dataSource": "splunk",
+                            "options": {
+                                "count": 10
+                            },
+                            "fields": {
+                                "Result": {
+                                    "type": "string"
+                                }
+                            },
+                            "params": [
+                                {
+                                    "field": "target",
+                                    "type": "string",
+                                    "dashboardParam": "term"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "onSelect": {
+                    "action": "setParams",
+                    "actionOptions": {
+                        "params": {
+                            "authTarget": "{{value}}"
+                        }
+                    }
+                },
+                "placeholder": "IP or machine name"
+            }
+        },
+        {
+            "type": "button",
+            "text": "Search",
+            "style": {
+                "width": "100px"
+            },
+            "onClick": {
+                "action": "setParams",
+                "actionOptions": {
+
+                }
+            }
+        }
+    ],
     "widgets": [
         {
             "requiredParams": {
@@ -15,7 +234,7 @@
                     "dataSource": "splunk",
                     "searchId": "Auth_Search",
                     "options": {
-                        "count": 20
+                        "count": 0
                     },
                     "fields": {
                         "prob": {
@@ -31,7 +250,7 @@
                             "type": "float"
                         },
                         "raw_source_ip": {
-                            "type": "ip"
+                            "type": "string"
                         },
                         "user_id": {
                             "type": "float"
@@ -82,6 +301,12 @@
                             "type": "string",
                             "default": "*",
                             "dashboardParam": "authTarget"
+                        },
+                        {
+                            "field": "sort",
+                            "type": "string",
+                            "default": "-prob",
+                            "dashboardParam": "sort"
                         }
                     ]
                 }
@@ -92,297 +317,426 @@
                 {
                     "type": "table",
                     "title": "Suspicious user logins for the specified parameters",
-                    "controls": [
-                        {
-                            "type": "dateRange",
-                            "label": "For dates:",
-                            "params": {
-                                "timeStart": "now",
-                                "timeEnd": "now"
-                            },
-                            "paramsTransform": {
-                                "timeStart": {
-                                    "type": "stringDate",
-                                    "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
-                                    "replaceWith": "$2/$3/$1:00:00:00",
-                                    "format": "YYYY-MM-DD"
-                                },
-                                "timeEnd": {
-                                    "type": "stringDate",
-                                    "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
-                                    "replaceWith": "$2/$3/$1:24:59:59",
-                                    "format": "YYYY-MM-DD"
-                                }
-                            },
-                            "paramsInitTransform": {
-                                "timeStart": {
-                                    "type": "string",
-                                    "regExp": "(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})",
-                                    "replaceWith": "$1-$2-$3",
-                                    "format": "YYYY-MM-DD"
-                                },
-                                "timeEnd": {
-                                    "type": "string",
-                                    "regExp": "(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})",
-                                    "replaceWith": "$1-$2-$3",
-                                    "format": "YYYY-MM-DD"
-                                }
-                            },
-                            "onChange": {
-                                "action": "setParams",
-                                "actionOptions": {
-                                    "updateUrl": false,
-                                    "params": {
-                                        "timeStart": "{{timeStart}}",
-                                        "timeEnd": "{{timeEnd}}"
-                                    },
-                                    "paramsTransform": {
-                                        "timeStart": {
-                                            "type": "stringDate",
-                                            "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
-                                            "replaceWith": "$2/$3/$1:0:0:0",
-                                            "format": "YYYY-MM-DD"
-                                        },
-                                        "timeEnd": {
-                                            "type": "stringDate",
-                                            "regExp": "(\\d{4})-(\\d{2})-(\\d{2})",
-                                            "replaceWith": "$2/$3/$1:23:59:59",
-                                            "format": "YYYY-MM-DD"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        {
-                            "type": "search",
-                            "label": "User: ",
-                            "params": {
-                                "authUser": ""
-                            },
-                            "settings": {
-                                "allowAllStrings": true,
-                                "dashboardParam": "authUser",
-                                "termTransform": {
-                                    "regExp": "^([^*]+)$",
-                                    "replaceWith": "*$1*"
-                                },
-                                "reports": [
-                                    {
-                                        "query": {
-                                            "searchId": "Auth_Users_Search",
-                                            "dataSource": "splunk",
-                                            "options": {
-                                                "count": 10
-                                            },
-                                            "fields": {
-                                                "Result":{"type":"string"}
-                                            },
-                                            "params": [
-                                                {
-                                                    "field": "userId",
-                                                    "type": "string",
-                                                    "dashboardParam": "term"
-                                                }
-                                            ]
-                                        }
-                                    }
-                                ],
-                                "onSelect": {
-                                    "action": "setParams",
-                                    "actionOptions": {
-                                        "updateUrl": false,
-                                        "params": {
-                                            "authUser": "{{value}}"
-                                        }
-                                    }
-                                },
-                                "placeholder": "User name"
-                            }
-                        },
-                        {
-                            "type": "search",
-                            "label": "Source machine: ",
-                            "params": {
-                                "authSource": ""
-                            },
-                            "settings": {
-                                "allowAllStrings": true,
-                                "dashboardParam": "authSource",
-                                "termTransform": {
-                                    "regExp": "^([^*]+)$",
-                                    "replaceWith": "*$1*"
-                                },
-                                "reports": [
-                                    {
-                                        "query": {
-                                            "searchId": "Auth_Source_Search",
-                                            "dataSource": "splunk",
-                                            "options": {
-                                                "count": 10
-                                            },
-                                            "fields": {
-                                                "Result":{"type":"string"}
-                                            },
-                                            "params": [
-                                                {
-                                                    "field": "source",
-                                                    "type": "string",
-                                                    "dashboardParam": "term"
-                                                }
-                                            ]
-                                        }
-                                    }
-                                ],
-                                "onSelect": {
-                                    "action": "setParams",
-                                    "actionOptions": {
-                                        "updateUrl": false,
-                                        "params": {
-                                            "authSource": "{{value}}"
-                                        }
-                                    }
-                                },
-                                "placeholder": "IP or machine name"
-                            }
-                        },
-                        {
-                            "type": "search",
-                            "label": "Target machine: ",
-                            "params": {
-                                "authTarget": ""
-                            },
-                            "settings": {
-                                "allowAllStrings": true,
-                                "dashboardParam": "authTarget",
-                                "termTransform": {
-                                    "regExp": "^([^*]+)$",
-                                    "replaceWith": "*$1*"
-                                },
-                                "reports": [
-                                    {
-                                        "query": {
-                                            "searchId": "Auth_Target_Search",
-                                            "dataSource": "splunk",
-                                            "options": {
-                                                "count": 10
-                                            },
-                                            "fields": {
-                                                "Result":{"type":"string"}
-                                            },
-                                            "params": [
-                                                {
-                                                    "field": "target",
-                                                    "type": "string",
-                                                    "dashboardParam": "term"
-                                                }
-                                            ]
-                                        }
-                                    }
-                                ],
-                                "onSelect": {
-                                    "action": "setParams",
-                                    "actionOptions": {
-                                        "updateUrl": false,
-                                        "params": {
-                                            "authTarget": "{{value}}"
-                                        }
-                                    }
-                                },
-                                "placeholder": "IP or machine name"
-                            }
-                        },
-                        {
-                            "type": "button",
-                            "text": "Search",
-                            "onClick": {
-                                "action": "setParams",
-                                "actionOptions": {
-
-                                }
-                            }
-                        }
-                    ],
+                    "className": "lightTable",
+                    "style": {
+                        "max-width": "1220px",
+                        "width": "48%",
+                        "float": "left"
+                    },
                     "settings": {
-                        "allowPaging": true,
                         "useFirstRowAsMessage": true,
+                        "allowPaging": false,
                         "messageType": "warning",
                         "fields": [
                             {
-                                "name": "Profile",
-                                "value": "{{profile}}",
-                                "tooltip": "A description of the event"
-                            },
-                            {
-                                "name": "Overall severity",
+                                "name": "Severity",
                                 "tooltip": "How suspicious this event should be considered",
                                 "value": "{{prob}}",
-                                "type": "progressBar",
-                                "progressBarSettings": {
-                                    "width": "120px",
+                                "width": "40px",
+                                "type": "signal",
+                                "signalSettings": {
                                     "min": 0,
                                     "max": 5
-
-                                }
+                                },
+                                "sortBy": "prob",
+                                "sortDirection": -1
                             },
                             {
-                                "name": "User severity",
+                                "name": "User",
                                 "tooltip": "How suspicious is the user ID",
-                                "value": "{{user_id}}",
-                                "type": "progressBar",
-                                "progressBarSettings": {
-                                    "width": "60px",
-                                    "min": 0,
-                                    "max": 5
-                                }
-
+                                "value": "{{raw_user_id}}",
+                                "sortBy": "raw_user_id",
+                                "events": {
+                                    "click": {
+                                        "action": "setParams",
+                                        "actionOptions": {
+                                            "params": {
+                                                "authUser": "{{raw_user_id}}",
+                                                "authSource": null,
+                                                "authTarget": null
+                                            }
+                                        }
+                                    }
+                                },
+                                "label": [
+                                    {
+                                        "type": "warning",
+                                        "text": "Medium",
+                                        "conditions": [
+                                            {
+                                                "field": "user_id",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 2,
+                                                "fieldType": "float"
+                                            },
+                                            {
+                                                "field": "user_id",
+                                                "operator": "lesserThan",
+                                                "value": 3,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "important",
+                                        "text": "High",
+                                        "conditions": [
+                                            {
+                                                "field": "user_id",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 3,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "style": [
+                                    {
+                                        "properties": {
+                                            "font-weight": "bold",
+                                            "color": "#000"
+                                        },
+                                        "conditions": [
+                                            {
+                                                "field": "user_id",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 2,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "properties": {
+                                            "color": "#000"
+                                        },
+                                        "conditions": [
+                                            {
+                                                "field": "user_id",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 4,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    }
+                                ]
                             },
                             {
-                                "name": "Source severity",
+                                "name": "Source",
                                 "tooltip": "How suspicious is the source IP",
-                                "value": "{{source_ip}}",
-                                "type": "progressBar",
-                                "progressBarSettings": {
-                                    "width": "60px",
-                                    "min": 0,
-                                    "max": 5
-                                }
-
+                                "value": "{{raw_source_ip}}",
+                                "sortBy": "raw_source_ip",
+                                "events": {
+                                    "click": {
+                                        "action": "setParams",
+                                        "actionOptions": {
+                                            "updateUrl": true,
+                                            "params": {
+                                                "authSource": "{{raw_source_ip}}",
+                                                "authUser": null,
+                                                "authTarget": null
+                                            }
+                                        }
+                                    }
+                                },
+                                "label": [
+                                    {
+                                        "type": "warning",
+                                        "text": "Medium",
+                                        "conditions": [
+                                            {
+                                                "field": "source_ip",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 2,
+                                                "fieldType": "float"
+                                            },
+                                            {
+                                                "field": "source_ip",
+                                                "operator": "lesserThan",
+                                                "value": 3,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "important",
+                                        "text": "High",
+                                        "conditions": [
+                                            {
+                                                "field": "source_ip",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 3,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "style": [
+                                    {
+                                        "properties": {
+                                            "font-weight": "bold"
+                                        },
+                                        "conditions": [
+                                            {
+                                                "field": "source_ip",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 2,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "properties": {
+                                            "color": "#000000"
+                                        },
+                                        "conditions": [
+                                            {
+                                                "field": "source_ip",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 4,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    }
+                                ]
                             },
                             {
-                                "name": "Time severity",
+                                "name": "Time",
                                 "tooltip": "How suspicious is the Time",
-                                "value": "{{event_time}}",
-                                "type": "progressBar",
-                                "progressBarSettings": {
-                                    "width": "60px",
-                                    "min": 0,
-                                    "max": 5
-                                }
-
+                                "value": "{{raw_event_time}}",
+                                "sortBy": "raw_event_time",
+                                "label": [
+                                    {
+                                        "type": "warning",
+                                        "text": "Medium",
+                                        "conditions": [
+                                            {
+                                                "field": "event_time",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 2,
+                                                "fieldType": "float"
+                                            },
+                                            {
+                                                "field": "event_time",
+                                                "operator": "lesserThan",
+                                                "value": 3,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "important",
+                                        "text": "High",
+                                        "conditions": [
+                                            {
+                                                "field": "event_time",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 3,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "style": [
+                                    {
+                                        "properties": {
+                                            "font-weight": "bold"
+                                        },
+                                        "conditions": [
+                                            {
+                                                "field": "event_time",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 2,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "properties": {
+                                            "color": "#000000"
+                                        },
+                                        "conditions": [
+                                            {
+                                                "field": "event_time",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 4,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    }
+                                ]
                             },
                             {
-                                "name": "Target severity",
+                                "name": "Target",
                                 "tooltip": "How suspicious is the target machine",
-                                "value": "{{target_name}}",
-                                "type": "progressBar",
-                                "progressBarSettings": {
-                                    "width": "60px",
-                                    "min": 0,
-                                    "max": 5
-                                }
-
+                                "value": "{{raw_target_name}}",
+                                "sortBy": "raw_target_name",
+                                "events": {
+                                    "click": {
+                                        "action": "setParams",
+                                        "actionOptions": {
+                                            "updateUrl": true,
+                                            "params": {
+                                                "authTarget": "{{raw_target_name}}",
+                                                "authUser": null,
+                                                "authSource": null
+                                            }
+                                        }
+                                    }
+                                },
+                                "label": [
+                                    {
+                                        "type": "warning",
+                                        "text": "Medium",
+                                        "conditions": [
+                                            {
+                                                "field": "target_name",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 2,
+                                                "fieldType": "float"
+                                            },
+                                            {
+                                                "field": "target_name",
+                                                "operator": "lesserThan",
+                                                "value": 3,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "important",
+                                        "text": "High",
+                                        "conditions": [
+                                            {
+                                                "field": "target_name",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 3,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "style": [
+                                    {
+                                        "properties": {
+                                            "font-weight": "bold"
+                                        },
+                                        "conditions": [
+                                            {
+                                                "field": "target_name",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 2,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "properties": {
+                                            "color": "#000000"
+                                        },
+                                        "conditions": [
+                                            {
+                                                "field": "target_name",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 4,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    }
+                                ]
                             },
                             {
-                                "name": "Error severity",
-                                "tooltip": "How suspicious is the error",
-                                "value": "{{error_code}}",
-                                "type": "progressBar",
-                                "progressBarSettings": {
-                                    "width": "60px",
-                                    "min": 0,
-                                    "max": 5
-                                }
-
+                                "name": "Error Code",
+                                "tooltip": "The error code received for this login",
+                                "value": "{{raw_error_code}}",
+                                "sortBy": "error_code",
+                                "label": [
+                                    {
+                                        "type": "warning",
+                                        "text": "Medium",
+                                        "conditions": [
+                                            {
+                                                "field": "error_code",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 2,
+                                                "fieldType": "float"
+                                            },
+                                            {
+                                                "field": "error_code",
+                                                "operator": "lesserThan",
+                                                "value": 3,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "important",
+                                        "text": "High",
+                                        "conditions": [
+                                            {
+                                                "field": "error_code",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 3,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "style": [
+                                    {
+                                        "properties": {
+                                            "font-weight": "bold"
+                                        },
+                                        "conditions": [
+                                            {
+                                                "field": "error_code",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 2,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "properties": {
+                                            "color": "#000000"
+                                        },
+                                        "conditions": [
+                                            {
+                                                "field": "error_code",
+                                                "operator": "greaterThanOrEqual",
+                                                "value": 4,
+                                                "fieldType": "float"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "linkAnalysis",
+                    "style": {
+                        "width": "48%",
+                        "float": "right",
+                        "height": "900px"
+                    },
+                    "settings": {
+                        "useFirstRowAsMessage": true,
+                        "nodes": [
+                            {
+                                "name": "raw_user_id",
+                                "count": "user_id",
+                                "group": "user"
+                            },
+                            {
+                                "name": "raw_source_ip",
+                                "count": "source_ip",
+                                "group": "source"
+                            },
+                            {
+                                "name": "raw_target_name",
+                                "count": "target_name",
+                                "group": "target"
                             }
                         ]
                     }

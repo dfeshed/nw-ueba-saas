@@ -39,3 +39,12 @@
     }
   }
 }
+
+.chart-legend{
+  text-align: right;
+
+  li{
+    display: inline-block;
+    margin: 0 10px 0 0
+  }
+}

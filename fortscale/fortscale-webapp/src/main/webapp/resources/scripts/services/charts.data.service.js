@@ -15,12 +15,26 @@ angular.module("ChartWidgets", ["Utils", "Styles", "Transforms"]).factory("chart
                 }
             });
 
+            if (view.settings.series.length === 1 && view.settings.series[0].legend){
+                viewData.legend = [];
+                angular.forEach(data, function(item){
+                    viewData.legend.push({ value: utils.strings.parseValue(view.settings.series[0].legend, item, params) });
+                });
+            }
+
             angular.forEach(viewData.chartValues, function(item, itemIndex){
                 if (view.settings.labels.transform)
                     item._label = transforms[view.settings.labels.transform.method](item[view.settings.labels.field], view.settings.labels.transform.options);
                 else
                     item._label = utils.strings.parseValue(view.settings.labels.value, item, params, itemIndex);
+
             });
+
+            if (view.settings.selectedData){
+                for(var property in view.settings.selectedData){
+                    view.settings.selectedData[property] = utils.strings.parseValue(view.settings.selectedData[property], data, params);
+                }
+            }
 
             if (styleDeferreds.length){
                 $q.all(styleDeferreds).then(function(styleParsers){
@@ -33,10 +47,12 @@ angular.module("ChartWidgets", ["Utils", "Styles", "Transforms"]).factory("chart
                         });
                     }
 
-                    angular.forEach(viewData.chartValues, function(item){
+                    angular.forEach(viewData.chartValues, function(item, itemIndex){
                         item._style = {};
                         angular.forEach(colorSeries, function(colorSeriesItem){
                             item._style[colorSeriesItem.series.field] = colorSeriesItem.styleParser(item);
+                            if (viewData.legend)
+                                viewData.legend[itemIndex].color = item._style[colorSeriesItem.series.field].color;
                         })
                     });
 

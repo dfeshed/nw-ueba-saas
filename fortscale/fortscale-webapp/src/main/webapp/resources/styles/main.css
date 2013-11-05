@@ -332,11 +332,18 @@ a {
     border: none;
     box-shadow: none;
     padding: 0;
-    background: none; }
-    .widget-view.widget-noBorder .widget-message, .widget-view.widget-noChrome .widget-message {
+    background: none;
+    margin-bottom: 0; }
+    .widget.widget-noBorder .widget-message, .widget.widget-noChrome .widget-message {
       display: none; }
-  .widget-view.widget-noChrome .widget-controls {
+    .widget.widget-noBorder .widget-view, .widget.widget-noChrome .widget-view {
+      padding: 0; }
+  .widget.widget-noChrome .widget-controls {
     display: none; }
+
+.widget-view {
+  padding: 10px;
+  box-sizing: border-box; }
 
 .widget-view-title {
   font-size: 11pt; }
@@ -450,7 +457,7 @@ a {
     font-weight: bold;
     border-radius: 0 0 4px 5px;
     position: relative;
-    top: -9px;
+    top: -10px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25); }
     .widget-message .widget-message-contents a {
       cursor: pointer;
@@ -1043,6 +1050,12 @@ body .ui-tooltip {
   .yoxigen-chart .label-box:hover {
     opacity: .2; }
 
+.chart-legend {
+  text-align: right; }
+  .chart-legend li {
+    display: inline-block;
+    margin: 0 10px 0 0; }
+
 .widget-numeric h5 {
   margin-bottom: 10px;
   font-size: 11pt;
@@ -1217,6 +1230,74 @@ body .ui-tooltip {
   .investigator .investigator-widget-header .investigator-view-types {
     float: right; }
 
+.widget-link-analysis svg {
+  font: 10px sans-serif; }
+.widget-link-analysis .axis path, .widget-link-analysis .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges; }
+.widget-link-analysis sup, .widget-link-analysis sub {
+  line-height: 0; }
+.widget-link-analysis q:before, .widget-link-analysis blockquote:before {
+  content: "?"; }
+.widget-link-analysis q:after, .widget-link-analysis blockquote:after {
+  content: "?"; }
+.widget-link-analysis blockquote:before {
+  position: absolute;
+  left: 2em; }
+.widget-link-analysis blockquote:after {
+  position: absolute; }
+.widget-link-analysis #chart {
+  height: 600px; }
+.widget-link-analysis .node rect {
+  cursor: move;
+  fill-opacity: .9;
+  shape-rendering: crispEdges; }
+.widget-link-analysis .node text {
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff; }
+.widget-link-analysis .link {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .2; }
+.widget-link-analysis .link:hover {
+  stroke-opacity: .5; }
+.widget-link-analysis circle.node-dot {
+  fill: DarkSlateGray;
+  stroke: SlateGray;
+  stroke-width: 1px; }
+.widget-link-analysis line.link {
+  fill: none;
+  stroke: SlateGray;
+  stroke-width: 1.5px; }
+.widget-link-analysis marker#defaultMarker {
+  fill: SlateGray; }
+.widget-link-analysis line.link.defaultMarker {
+  stroke: SlateGray; }
+.widget-link-analysis circle {
+  fill: #ccc;
+  stroke: #333;
+  stroke-width: 1.5px; }
+.widget-link-analysis text {
+  pointer-events: none; }
+.widget-link-analysis text.shadow {
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-opacity: .8; }
+
+.search-box {
+  position: relative; }
+  .search-box input {
+    padding-right: 15px; }
+  .search-box .search-clear {
+    position: absolute;
+    right: 15px;
+    color: #aaa;
+    padding: 0 5px;
+    cursor: pointer; }
+    .search-box .search-clear:hover {
+      color: #333; }
+
 .control-notification {
   background: #dddddd;
   border-radius: 10px;
@@ -1313,3 +1394,4 @@ daterange .daterange-input {
 
   .widget-controls .print-only {
     display: inline-block; } }
+

@@ -27,6 +27,11 @@
                         "link": "#/d/investigator?entities=wmievents4769&service_name={{destinationHostname}}"
                     },
                     {
+                        "name": "Error Code",
+                        "value": "{{errorCode}}",
+                        "link": "#/d/investigator?entities=wmievents4769&failure_code={{errorCode}}"
+                    },
+                    {
                         "name": "Time",
                         "value": "{{eventTime}}",
                         "transform": {

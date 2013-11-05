@@ -155,13 +155,20 @@
     box-shadow: none;
     padding: 0;
     background: none;
+    margin-bottom: 0;
 
     .widget-message{ display: none }
+    .widget-view{ padding: 0 }
   }
 
   &.widget-noChrome{
     .widget-controls{ display: none }
   }
+}
+
+.widget-view{
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .widget-view-title{
@@ -295,7 +302,7 @@
     font-weight: bold;
     border-radius: 0 0 4px 5px;
     position: relative;
-    top: -9px;
+    top: -10px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
 
     a{

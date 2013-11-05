@@ -142,11 +142,13 @@
             },
             "name": "A machine's score, over time",
             "width": "100%",
-            "height": "220px",
             "views": [
                 {
                     "type": "lineGraph",
                     "title": "Randomness value, over time",
+                    "style": {
+                        "height": "220px"
+                    },
                     "settings": {
                         "graphType": "ColumnChart",
                         "graphOptions": {

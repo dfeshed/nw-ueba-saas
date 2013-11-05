@@ -137,14 +137,15 @@
                 }
             },
             "name": "Machine Score",
+            "hideIfNoData": true,
             "width": "100%",
+            "className": "widget-noBorder",
             "views": [
                 {
                     "type": "text",
                     "title": "",
-                    "className": "widget-noBorder",
                     "settings": {
-                        "label": "Latest score for this time frame:",
+                        "label": "Current Score:",
                         "value": "{{Score}}",
                         "format": "float",
                         "formatOptions": { "decimals": 2 },
@@ -251,11 +252,13 @@
             },
             "name": "A machine's score, over time",
             "width": "100%",
-            "height": "220px",
             "views": [
                 {
                     "type": "lineGraph",
                     "title": "Machine score, over time",
+                    "style": {
+                        "height": "220px"
+                    },
                     "settings": {
                         "graphType": "ColumnChart",
                         "graphOptions": {

@@ -5,6 +5,9 @@ angular.module("Fortscale").factory("widgets", [
     var cachedWidgets = {};
 
     function parseFieldValue(field, value, data, index, params, item){
+        if (!value)
+            return value;
+
         var parsedValue = value.replace(/\{\{([^\}]+)\}\}/g, function(match, variable){
             if (/^@/.test(variable)){
                 var param = variable.replace("@", "");

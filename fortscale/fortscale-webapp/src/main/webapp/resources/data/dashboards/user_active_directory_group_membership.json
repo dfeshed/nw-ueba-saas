@@ -1,6 +1,5 @@
 {
     "dashboardId": "user_active_directory_group_membership",
-    "name": "{{@entityId}}",
     "columns": [
         {
             "className": "span15",

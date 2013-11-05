@@ -19,6 +19,7 @@ angular.module('Fortscale')
                 scope.$watch(attrs.searchSettings, function(value){
                     if (value && !isInit){
                         settings = value;
+
                         if (settings.onSelect){
                             onSelect = function(value){
                                 $timeout.cancel(onSelectTimeout);
@@ -43,6 +44,13 @@ angular.module('Fortscale')
                 scope.$watch(attrs.ngModel, function(value){
                     scope.searchValue = value;
                 });
+
+                scope.clear = function(){
+                    if (onSelect && settings.selectOnClear)
+                        onSelect(null, true);
+
+                    scope.searchValue = "";
+                };
 
                 function split( val ) {
                     return val.split( /,\s*/ );
