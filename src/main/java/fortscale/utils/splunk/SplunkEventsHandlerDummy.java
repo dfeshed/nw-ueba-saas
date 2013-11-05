@@ -17,4 +17,16 @@ public class SplunkEventsHandlerDummy implements ISplunkEventsHandler {
 	@Override
 	public void setSearchReturnKeys(String searchReturnKeys) {}
 
+	@Override
+	public void setDelimiter(String delimiter) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDisableQuotes(boolean isDisableQuotes) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

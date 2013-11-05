@@ -11,6 +11,8 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
 	private boolean isFirstEvent = true;
 	private String[] searchReturnKeys = null;
 	private boolean isSkipFirstLine = false;
+	private String delimiter = ",";
+	private boolean isDisableQuotes = false;
 	
 	
 	public abstract void open() throws IOException;
@@ -38,11 +40,20 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
     		if(val == null){
     			val = "";
     		} else{
-    			val = val.replace("\"", QUOTES_REPLACEMENT);
+    			if(!isDisableQuotes){
+    				val = val.replace("\"", QUOTES_REPLACEMENT);
+    			}
     		}
-    		sbuf.append("\"").append(val).append("\"").append(",");
+    		if(!isDisableQuotes){
+    			sbuf.append("\"");
+    		}
+    		sbuf.append(val);
+    		if(!isDisableQuotes){
+    			sbuf.append("\"");
+    		}
+    		sbuf.append(delimiter);
     	}
-    	write(sbuf.substring(0, sbuf.length()-1));
+    	write(sbuf.substring(0, sbuf.length()-delimiter.length()));
     	newLine();
 	}
 	
@@ -62,5 +73,20 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
 
 	public void setSkipFirstLine(boolean isSkipFirstLine) {
 		this.isSkipFirstLine = isSkipFirstLine;
+	}
+	public String getDelimiter() {
+		return delimiter;
+	}
+	@Override
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
+	}
+	public boolean isDisableQuotes() {
+		return isDisableQuotes;
+	}
+	
+	@Override
+	public void setDisableQuotes(boolean isDisableQuotes) {
+		this.isDisableQuotes = isDisableQuotes;
 	}
 }
