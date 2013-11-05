@@ -553,6 +553,10 @@ public class User extends AbstractDocument {
 		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.trendField);
 	}
 	
+	public static String getClassifierScoreCurrentTrendScoreField(String classifierId) {
+		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.trendScoreField);
+	}
+	
 	public static String getAppUserNameField(String applicationName) {
 		return String.format("%s.%s.%s", User.appField,applicationName,ApplicationUserDetails.userNameField);
 	}
