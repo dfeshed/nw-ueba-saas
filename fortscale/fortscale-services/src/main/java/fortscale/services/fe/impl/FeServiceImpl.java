@@ -20,7 +20,7 @@ import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.FeService;
-import fortscale.services.impl.ImpalaGroupsScoreWriterFactory;
+import fortscale.services.impl.ImpalaScoreWriterFactory;
 
 @Service("feService")
 public class FeServiceImpl implements FeService {
@@ -40,7 +40,7 @@ public class FeServiceImpl implements FeService {
 	private UserService userService;
 	
 	@Autowired
-	private ImpalaGroupsScoreWriterFactory impalaGroupsScoreWriterFactory;
+	private ImpalaScoreWriterFactory impalaGroupsScoreWriterFactory;
 
 
 	@Override
@@ -99,7 +99,7 @@ public class FeServiceImpl implements FeService {
 			adUsersFeaturesExtractionRepository.saveMap(adUserFeaturesExtraction);
 			
 			//updating the user with the new score.
-			userService.updateUserScore(user, timestamp, Classifier.ad.getId(), ent.getValue(), avgScore);
+			userService.updateUserScore(user, timestamp, Classifier.ad.getId(), ent.getValue(), avgScore, true);
 		}
 	}
 	

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import fortscale.activedirectory.main.ADManager;
 import fortscale.services.UserService;
 import fortscale.services.fe.impl.FeServiceImpl;
-import fortscale.services.impl.ImpalaGroupsScoreWriterFactory;
+import fortscale.services.impl.ImpalaScoreWriterFactory;
 
 
 
@@ -19,7 +19,7 @@ public class FortscaleBatch {
 	@Autowired
 	private UserService userService;
 	@Autowired
-	private ImpalaGroupsScoreWriterFactory impalaGroupsScoreWriterFactory;
+	private ImpalaScoreWriterFactory impalaGroupsScoreWriterFactory;
 	
 	
 	public void runfe(String userAdScoreCsvFileFullPathString) {

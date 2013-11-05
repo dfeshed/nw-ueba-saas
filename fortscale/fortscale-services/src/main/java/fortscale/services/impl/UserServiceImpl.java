@@ -18,6 +18,8 @@ import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
+import fortscale.domain.analyst.ScoreConfiguration;
+import fortscale.domain.analyst.ScoreWeight;
 import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.ClassifierScore;
@@ -36,6 +38,7 @@ import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
+import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
@@ -75,7 +78,7 @@ public class UserServiceImpl implements UserService{
 	private VpnDAO vpnDAO;
 	
 	@Autowired
-	private ImpalaGroupsScoreWriterFactory impalaGroupsScoreWriterFactory;
+	private ImpalaScoreWriterFactory impalaGroupsScoreWriterFactory;
 	
 	@Autowired 
 	private ADUserParser adUserParser; 
@@ -262,7 +265,11 @@ public class UserServiceImpl implements UserService{
 		List<IUserScore> ret = new ArrayList<IUserScore>();
 		for(ClassifierScore classifierScore: user.getScores().values()){
 			if(isOnSameDay(new Date(), classifierScore.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)) {
-				UserScore score = new UserScore(classifierScore.getClassifierId(), classifierService.getClassifier(classifierScore.getClassifierId()).getDisplayName(),
+				Classifier classifier = classifierService.getClassifier(classifierScore.getClassifierId());
+				if(classifier == null){
+					continue;
+				}
+				UserScore score = new UserScore(classifierScore.getClassifierId(), classifier.getDisplayName(),
 						(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
 				ret.add(score);
 			}
@@ -349,7 +356,7 @@ public class UserServiceImpl implements UserService{
 		Classifier.validateClassifierId(classifierId);
 //		Long timestampepoch = timestamp/1000;
 		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(classifierId, new Date(timestamp));
-//		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findClassifierIdAndByUserIdAndTimestamp(classifierId,new ObjectId(uid), new Date(timestamp));
+//		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findClassifierIdAndByUserIdAndTimestamp(classifierId,String.format("ObjectId(\"%s\")", uid), new Date(timestamp));
 		AdUserFeaturesExtraction ufe = null;
 		for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
 			if(adUserFeaturesExtraction.getUserId().equals(uid)){
@@ -376,19 +383,54 @@ public class UserServiceImpl implements UserService{
 		String userName = user.getUsername().split("@")[0];
 		return userMachineDAO.findByUsername(userName);
 	}
+	
+	@Autowired
+	private ConfigurationService configurationService; 
+	
+	private void updateUserTotalScore(List<User> users, boolean isToSave){
+		ScoreConfiguration scoreConfiguration = configurationService.getScoreConfiguration();
+		Date timestamp = Calendar.getInstance().getTime();
+		for(User user: users){
+			double totalWeights = 0;
+			double score = 0;
+			double avgScore = 0;
+			
+			for(ScoreWeight scoreWeight: scoreConfiguration.getConfMap().values()){
+				ClassifierScore classifierScore = user.getScore(scoreWeight.getId());
+				if(classifierScore != null){
+					totalWeights += scoreWeight.getWeight();
+					
+					score += classifierScore.getScore() * scoreWeight.getWeight();
+					avgScore += classifierScore.getAvgScore() * scoreWeight.getWeight();					
+				}
+			}
+			
+			updateUserScore(user, timestamp, Classifier.total.getId(), score/totalWeights, avgScore/totalWeights, false);
+		}
+		
+		if(isToSave){
+			userRepository.save(users);
+		}
+	}
 
 	@Override
 	public void updateUserWithAuthScore() {
 		Date lastRun = authDAO.getLastRunDate();
 		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		List<User> users = new ArrayList<>();
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
 			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
 			if(user == null){
 				//TODO:	error log message
 				continue;
 			}
-			updateUserScore(user, lastRun, Classifier.auth.getId(), authScore.getGlobalScore(), avg);
+			user = updateUserScore(user, lastRun, Classifier.auth.getId(), authScore.getGlobalScore(), avg, false);
+			if(user != null){
+				users.add(user);
+			}
 		}
+		updateUserTotalScore(users, false);
+		userRepository.save(users);
 		
 	}
 	
@@ -396,18 +438,23 @@ public class UserServiceImpl implements UserService{
 	public void updateUserWithVpnScore() {
 		Date lastRun = vpnDAO.getLastRunDate();
 		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
 			String userName = vpnScore.getUserName();
-			List<User> users = userRepository.findByAdUserPrincipalNameContaining(userName.toLowerCase());
-			if(users == null | users.size() == 0 | users.size() > 1){
+			List<User> tmpUsers = userRepository.findByAdUserPrincipalNameContaining(userName.toLowerCase());
+			if(tmpUsers == null | tmpUsers.size() == 0 | tmpUsers.size() > 1){
 				//TODO:	error log message
 				continue;
 			}
-			User user = users.get(0);
+			User user = tmpUsers.get(0);
 			createApplicationUserDetailsIfNotExist(user, new ApplicationUserDetails(UserApplication.vpn.getId(), userName));
-			updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg);
+			user = updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg, false);
+			if(user != null){
+				users.add(user);
+			}
 		}
-		
+		updateUserTotalScore(users, false);
+		userRepository.save(users);
 	}
 	
 	@Override
@@ -432,7 +479,7 @@ public class UserServiceImpl implements UserService{
 		avgScore = avgScore/adUserFeaturesExtractions.size();
 		
 		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaGroupsScoreWriterFactory.createImpalaGroupsScoreWriter();
-		
+		List<User> users = new ArrayList<>();
 		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
 			User user = userRepository.findOne(extraction.getUserId().toString());
 			if(user == null){
@@ -440,17 +487,23 @@ public class UserServiceImpl implements UserService{
 				continue;
 			}
 			//updating the user with the new score.
-			updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore);
+			user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false);
+			if(user != null){
+				users.add(user);
+			}
 			impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
 		}
 		impalaGroupsScoreWriter.close();
+		
+		updateUserTotalScore(users, false);
+		userRepository.save(users);
 	}
 	
 	@Override
-	public void updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore){
+	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave){
 		ClassifierScore cScore = user.getScore(classifierId);
 		boolean isReplaceCurrentScore = true;
-		double trend = 1;
+		double trend = 0.0;
 		if(cScore == null){
 			cScore = new ClassifierScore();
 			cScore.setClassifierId(classifierId);
@@ -495,7 +548,10 @@ public class UserServiceImpl implements UserService{
 			cScore.setTrend(trend);
 		}
 		user.putClassifierScore(cScore);
-		userRepository.save(user);
+		if(isToSave){
+			userRepository.save(user);
+		}
+		return user;
 	}
 	
 	private boolean isOnSameDay(Date date1, Date date2){

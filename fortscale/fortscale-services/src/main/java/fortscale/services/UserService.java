@@ -28,7 +28,7 @@ public interface UserService {
 	
 	public void updateUserWithAuthScore();
 
-	public void updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore);
+	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave);
 	
 	public void createApplicationUserDetailsIfNotExist(User user, ApplicationUserDetails applicationUserDetails);
 
