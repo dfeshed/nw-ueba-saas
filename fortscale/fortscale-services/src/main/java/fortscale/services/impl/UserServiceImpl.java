@@ -427,6 +427,10 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateUserWithAuthScore() {
 		Date lastRun = authDAO.getLastRunDate();
+		updateUserWithAuthScore(lastRun);
+	}
+	
+	private void updateUserWithAuthScore(Date lastRun) {
 		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		List<User> users = new ArrayList<>();
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
@@ -446,6 +450,10 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateUserWithVpnScore() {
 		Date lastRun = vpnDAO.getLastRunDate();
+		updateUserWithVpnScore(lastRun);
+	}
+	
+	private void updateUserWithVpnScore(Date lastRun) {
 		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
@@ -472,6 +480,10 @@ public class UserServiceImpl implements UserService{
 			//TODO: WARN LOG
 			return;
 		}
+		updateUserWithGroupMembershipScore(lastRun);
+	}
+	
+	private void updateUserWithGroupMembershipScore(Date lastRun){
 		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun);
 //		Pageable pageable = new PageRequest(0, 10000, Direction.ASC, AdUserFeaturesExtraction.timestampField);
 //		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), pageable);
@@ -598,4 +610,81 @@ public class UserServiceImpl implements UserService{
 	public ApplicationUserDetails getApplicationUserDetails(User user, UserApplication userApplication) {
 		return user.getApplicationUserDetails().get(userApplication.getId());
 	}
+
+	@Override
+	public void recalculateUsersScores() {
+		List<ClassifierRuntime> classifierRuntimes = new ArrayList<>();
+		for(User user: userRepository.findAll()){
+			user.removeAllScores();
+		}
+		
+		List<Date> distinctDates = adUsersFeaturesExtractionRepository.getDistinctRuntime(Classifier.groups.getId());
+		for(Date date: distinctDates){
+			classifierRuntimes.add(new ClassifierRuntime(Classifier.groups, date.getTime()));
+		}
+		
+		List<Long> distinctRuntimes = authDAO.getDistinctRuntime();
+		for(Long runtime: distinctRuntimes){
+			classifierRuntimes.add(new ClassifierRuntime(Classifier.auth, runtime));
+		}
+		
+		distinctRuntimes = vpnDAO.getDistinctRuntime();
+		for(Long runtime: distinctRuntimes){
+			classifierRuntimes.add(new ClassifierRuntime(Classifier.vpn, runtime));
+		}
+		
+		Collections.sort(classifierRuntimes);
+		
+		for(ClassifierRuntime classifierRuntime: classifierRuntimes){
+			switch (classifierRuntime.getClassifier()) {
+			case auth:
+				updateUserWithAuthScore(new Date(classifierRuntime.getRuntime()));
+				break;
+			case vpn:
+				updateUserWithVpnScore(new Date(classifierRuntime.getRuntime()));
+				break;
+			case groups:
+				updateUserWithGroupMembershipScore(new Date(classifierRuntime.getRuntime()));
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	class ClassifierRuntime implements Comparable<ClassifierRuntime>{
+		private Classifier classifier;
+		private long runtime;
+		
+		public ClassifierRuntime(Classifier classifier, long runtime) {
+			this.classifier = classifier;
+			this.runtime = runtime;
+		}
+
+		@Override
+		public int compareTo(ClassifierRuntime o) {
+			int ret = (int)(this.runtime - o.runtime);
+			return ret;
+		}
+
+		public Classifier getClassifier() {
+			return classifier;
+		}
+
+		public void setClassifier(Classifier classifier) {
+			this.classifier = classifier;
+		}
+
+		public long getRuntime() {
+			return runtime;
+		}
+
+		public void setRuntime(long runtime) {
+			this.runtime = runtime;
+		}
+
+		
+	}
+	
+	
 }

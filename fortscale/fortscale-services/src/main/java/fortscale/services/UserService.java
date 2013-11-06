@@ -39,4 +39,6 @@ public interface UserService {
 	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
 	
 	public ApplicationUserDetails getApplicationUserDetails(User user, UserApplication userApplication);
+	
+	public void recalculateUsersScores();
 }

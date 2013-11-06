@@ -150,6 +150,11 @@ public abstract class AccessDAO<T>  extends ImpalaDAO<T>{
 		
 		return lastRun;
 	}
+	
+	public List<Long> getDistinctRuntime(){
+		String query = String.format("select distinct(%s) from %s", getTimestampFieldName(), getTableName());
+		return impalaJdbcTemplate.queryForList(query, Long.class);
+	}
 
 
 	public double calculateAvgScoreOfGlobalScore(Date timestamp){
