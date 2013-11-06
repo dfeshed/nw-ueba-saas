@@ -14,7 +14,8 @@
                         "size": "20px"
                     },
                     "selectable": false,
-                    "showSelectionBar": false
+                    "showSelectionBar": false,
+                    "barsHandleEvents": false
                 },
                 "series": [{
                     "field": "percentage",

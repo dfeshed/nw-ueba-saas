@@ -54,7 +54,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     barsHandleEvents: true,
                     colors: ["#98A3AC", "#7a92a3"],
                     minHeight: 100,
-                    maxWidth: 150,
+                    maxWidth: 200,
                     createAxes: false,
                     createLabels: true,
                     selectLabels: true,

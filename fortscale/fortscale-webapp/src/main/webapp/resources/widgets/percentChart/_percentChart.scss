@@ -25,17 +25,20 @@
 
   .handle-events{
     cursor: pointer;
+
+    .label-box{
+      -webkit-transition: opacity 300ms ease-out;
+      &:hover{
+        opacity: .2;
+      }
+    }
   }
 
   .label-box{
     opacity: 0;
-    -webkit-transition: opacity 300ms ease-out;
 
     &.selected{
       opacity: 1 !important;
-    }
-    &:hover{
-      opacity: .2;
     }
   }
 }

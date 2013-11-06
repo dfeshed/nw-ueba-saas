@@ -1022,12 +1022,16 @@ body .ui-tooltip {
       opacity: 1 !important; }
     .yoxigen-chart .label-box:hover {
       opacity: .2; }
-  .yoxigen-chart .percent-bars {
+  .yoxigen-chart .percent-bars.handle-events {
     -webkit-transform: scaleY(1);
     -webkit-transform-origin: center center;
     -webkit-transition: all 200ms ease-out; }
-    .yoxigen-chart .percent-bars:hover {
+    .yoxigen-chart .percent-bars.handle-events:hover {
       -webkit-transform: scaleY(1.1); }
+
+.chart-description {
+  float: left;
+  font-weight: bold; }
 
 .yoxigen-chart .axis path,
 .yoxigen-chart .axis line {
@@ -1045,13 +1049,14 @@ body .ui-tooltip {
   shape-rendering: crispEdges; }
 .yoxigen-chart .handle-events {
   cursor: pointer; }
+  .yoxigen-chart .handle-events .label-box {
+    -webkit-transition: opacity 300ms ease-out; }
+    .yoxigen-chart .handle-events .label-box:hover {
+      opacity: .2; }
 .yoxigen-chart .label-box {
-  opacity: 0;
-  -webkit-transition: opacity 300ms ease-out; }
+  opacity: 0; }
   .yoxigen-chart .label-box.selected {
     opacity: 1 !important; }
-  .yoxigen-chart .label-box:hover {
-    opacity: .2; }
 
 .chart-legend {
   text-align: right; }

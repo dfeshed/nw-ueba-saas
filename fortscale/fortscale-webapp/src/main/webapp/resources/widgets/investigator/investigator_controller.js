@@ -520,7 +520,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
 
     function setDisplayWidget(){
         $scope.widgets = [{
-            title: "Results",
+            title: "Showing {{@_paging}} results:",
             views: [{
                 type: $scope.config.view.type,
                 settings: angular.extend($scope.currentViewSettings, paging)

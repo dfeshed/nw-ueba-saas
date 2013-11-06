@@ -1,15 +1,15 @@
 <div ng-controller="DashboardController" class="dashboard {{dashboard.className}}">
     <header class="dashboard-header" ng-show="dashboard.controls.length || dashboard.title || dashboard.description">
         <div class="dashboard-controls widget-controls" ng-if="!isPopup || dashboard.controls.length">
+            <div class="widget-view-control"
+                 ng-repeat="control in dashboard.controls"
+                 ng-include="'views/controls/' + control.type + '.html'">
+            </div>
             <div class="widget-view-control">
                 <a class="btn" ng-click="printPage()">
                     <i class="icon-print"></i>
                     Print Report
                 </a>
-            </div>
-            <div class="widget-view-control"
-                 ng-repeat="control in dashboard.controls"
-                 ng-include="'views/controls/' + control.type + '.html'">
             </div>
             <div class="widget-view-control print-only">
                 <span>Analyst: {{loggedInUser.fullName}}</span>

@@ -4,6 +4,7 @@
     "className": "no-margins widget-advance-one",
     "reportId": "user_scores",
     "refreshOn": ["userName"],
+    "requiredParams": ["userName"],
     "views": [
         {
             "type": "tabs",
@@ -92,6 +93,7 @@
                     "value": "{{name}}",
                     "styleField": "score"
                 },
+                "description": "Click on the bars for a drill-down of the score:",
                 "legend": {
                     "items": [
                         {

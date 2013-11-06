@@ -1,3 +1,4 @@
+<div class="chart-description" ng-if="view.settings.description" ng-bind-html-unsafe="view.settings.description"></div>
 <ul class="chart-legend unstyled" ng-if="view.data.legend">
     <li ng-repeat="legend in view.data.legend.items">
         <i class="icon-stop" ng-style="{ color: legend.color }"></i>
