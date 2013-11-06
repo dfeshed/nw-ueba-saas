@@ -52,7 +52,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     },
                     gridSize: 13,
                     barsHandleEvents: true,
-                    colors: ["#0b62a4", "#7a92a3"],
+                    colors: ["#98A3AC", "#7a92a3"],
                     minHeight: 100,
                     createAxes: false,
                     createLabels: true,

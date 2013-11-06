@@ -7,21 +7,34 @@
             "conditions": [
                 {
                     "field": "{{value}}",
-                    "operator": "lesserThan",
-                    "value": 40
+                    "operator": "lesserThanOrEqual",
+                    "value": 10
                 }
             ]
         },
         {
             "properties": {
-                "color": "#F2CA3A",
+                "color": "#F1CC37",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThan",
+                    "value": 10
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#F59925",
                 "font-weight": "bold"
             },
             "conditions": [
                 {
                     "field": "{{value}}",
                     "operator": "greaterThanOrEqual",
-                    "value": 40
+                    "value": 50
                 }
             ]
         },
@@ -34,7 +47,7 @@
                 {
                     "field": "{{value}}",
                     "operator": "greaterThanOrEqual",
-                    "value": 80
+                    "value": 90
                 }
             ]
         }
@@ -139,7 +152,7 @@
         },
         {
             "properties": {
-                "color": "#EFC739"
+                "color": "#F1CC37"
             },
             "conditions": [
                 {
@@ -151,7 +164,7 @@
         },
         {
             "properties": {
-                "color": "#EF9323"
+                "color": "#F59925"
             },
             "conditions": [
                 {
@@ -163,7 +176,7 @@
         },
         {
             "properties": {
-                "color": "#CE7172"
+                "color": "#D77576"
             },
             "conditions": [
                 {

@@ -91,6 +91,26 @@
                     "value": "{{name}}",
                     "styleField": "score"
                 },
+                "legend": {
+                    "items": [
+                        {
+                            "value": "High",
+                            "color": "#D77576"
+                        },
+                        {
+                            "value": "Medium",
+                            "color": "#F2CA3A"
+                        },
+                        {
+                            "value": "Low",
+                            "color": "#80BFF0"
+                        },
+                        {
+                            "value": "Average User",
+                            "color": "#e7e7e7"
+                        }
+                    ]
+                },
                 "selectionBar": {
                     "styleField": "score"
                 },

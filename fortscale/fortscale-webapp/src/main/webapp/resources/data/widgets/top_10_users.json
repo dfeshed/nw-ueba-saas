@@ -15,9 +15,20 @@
             "settings": {
                 "fields": [
                     {
-                        "name": "Username",
+                        "name": "Severity",
+                        "icon": "stop",
+                        "style": "score",
+                        "styleParams": {
+                            "value": "score"
+                        },
+                        "renderHeader": false,
+                        "className": "table-small-cell"
+                    },
+                    {
+                        "name": "User",
                         "value": "{{userName}}",
-                        "link": "#/d/user/{{userId}}?currentFeature={{@currentScore}}"
+                        "link": "#/d/user/{{userId}}?currentFeature={{@currentScore}}",
+                        "headerColspan": 2
                     },
                     {
                         "name": "Trend",
@@ -31,11 +42,7 @@
                     },
                     {
                         "name": "Score",
-                        "value": "{{score}}",
-                        "style": "score",
-                        "styleParams": {
-                            "value": "score"
-                        }
+                        "value": "{{score}}"
                     }
                 ]
             }

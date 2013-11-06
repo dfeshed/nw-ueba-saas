@@ -40,6 +40,14 @@
                     "field": "Date",
                     "value": "{{day}}",
                     "styleField": "day"
+                },
+                "legend": {
+                    "items": [
+                        {
+                            "value": "Number of VPN login attempts",
+                            "color": "#98A3AC"
+                        }
+                    ]
                 }
             }
         }

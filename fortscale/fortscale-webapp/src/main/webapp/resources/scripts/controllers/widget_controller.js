@@ -334,7 +334,6 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                 angular.forEach($scope.widget.views, function(view){
                     view.data = null;
                 });
-                //$timeout(function(){ $scope.runWidgetReport(widget); }, 1 * 60 * 1000); // Refresh the widget in 1 minute
             });
         }
 
@@ -351,10 +350,6 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
                             $scope.fireEvent(event.afterAction.error, error, data, field);
                     });
                 }
-            }
-            else{
-                $scope.dashboardEvent({ event: event, data: data});
-                //console.error("Action no found: ", event.action);
             }
         };
 

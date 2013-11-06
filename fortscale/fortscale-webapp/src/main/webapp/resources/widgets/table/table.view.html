@@ -3,7 +3,11 @@
         <thead>
             <tr>
                 <th ng-if="view.settings.showIndex" class="index-cell"></th>
-                <th ng-repeat="field in view.settings.fields" ng-class="{ 'widget-table-header-sortable': field.sortBy }" ng-style="{width:field.width}">
+                <th ng-repeat="field in view.settings.fields"
+                    ng-class="{ 'widget-table-header-sortable': field.sortBy }"
+                    ng-show="field.renderHeader !== false"
+                    colspan="{{field.headerColspan || 1}}"
+                    ng-style="{width:field.width}">
                     {{field.name}}
                     <i class="icon-question-sign tooltip-icon" ng-if="field.tooltip" title="{{ field.tooltip }}"></i>
                     <span class="widget-table-sort"

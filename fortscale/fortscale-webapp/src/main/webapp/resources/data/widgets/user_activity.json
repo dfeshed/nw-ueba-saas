@@ -12,13 +12,9 @@
                         "name": "Label",
                         "value": "{{label}}",
                         "map": {
-                            "SUCCESS": "VPN successful logins, last 7 days",
-                            "FAIL": "VPN failed logins, last 7 days"
+                            "SUCCESS": "<strong>{{value}}</strong> successful <strong>VPN logins</strong> in the last 7 days",
+                            "FAIL": "<strong>{{value}}</strong> failed <strong>VPN logins</strong> in the last 7 days"
                         }
-                    },
-                    {
-                        "name": "Value",
-                        "value": "{{value}}"
                     }
                 ]
             }

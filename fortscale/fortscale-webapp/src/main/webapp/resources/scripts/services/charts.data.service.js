@@ -15,10 +15,13 @@ angular.module("ChartWidgets", ["Utils", "Styles", "Transforms"]).factory("chart
                 }
             });
 
-            if (view.settings.series.length === 1 && view.settings.series[0].legend){
-                viewData.legend = [];
+            if (view.settings.legend){
+                viewData.legend = view.settings.legend;
+            }
+            else if (view.settings.series.length === 1 && view.settings.series[0].legend){
+                viewData.legend = { items: [] };
                 angular.forEach(data, function(item){
-                    viewData.legend.push({ value: utils.strings.parseValue(view.settings.series[0].legend, item, params) });
+                    viewData.legend.items.push({ value: utils.strings.parseValue(view.settings.series[0].legend, item, params) });
                 });
             }
 
@@ -51,8 +54,8 @@ angular.module("ChartWidgets", ["Utils", "Styles", "Transforms"]).factory("chart
                         item._style = {};
                         angular.forEach(colorSeries, function(colorSeriesItem){
                             item._style[colorSeriesItem.series.field] = colorSeriesItem.styleParser(item);
-                            if (viewData.legend)
-                                viewData.legend[itemIndex].color = item._style[colorSeriesItem.series.field].color;
+                            if (!view.settings.legend && viewData.legend)
+                                viewData.legend.items[itemIndex].color = item._style[colorSeriesItem.series.field].color;
                         })
                     });
 
