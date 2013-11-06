@@ -7,7 +7,7 @@ angular.module("ChartWidgets", ["Utils", "Styles", "Transforms"]).factory("chart
 
             var viewData = { chartValues: data };
             angular.forEach(view.settings.series, function(series, i){
-                series.label = utils.strings.parseValue(series.label, data, params, i);
+                series._label = utils.strings.parseValue(series.label, data, params, i);
 
                 if (series.style){
                     styleDeferredsMapping[String(styleDeferreds.length)] = i;

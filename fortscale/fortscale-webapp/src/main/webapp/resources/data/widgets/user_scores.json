@@ -60,6 +60,7 @@
                     "labelsFont": {
                         "size": "20px"
                     },
+                    "maxWidth": 400,
                     "selectable": true,
                     "highlightSelectedItem": false,
                     "selectLabels": false,

@@ -17,7 +17,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
             var defaultOptions = {
                     height: "200px",
                     width: "100%",
-                    spacing: { min: 0, max: 100 },
+                    spacing: { min: 0, max: 40 },
                     padding: { top: 10, right: 50, left: 50, bottom: 0 },
                     selectable: false,
                     highlightSelectedItem: true,
@@ -54,6 +54,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     barsHandleEvents: true,
                     colors: ["#98A3AC", "#7a92a3"],
                     minHeight: 100,
+                    maxWidth: 150,
                     createAxes: false,
                     createLabels: true,
                     selectLabels: true,
@@ -63,9 +64,15 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                 },
                 options;
 
+            var renderTimeoutPromise;
             scope.$watch(attrs.ngModel, function (chartData) {
-                data = chartData;
-                drawChart();
+                if (chartData){
+                    $timeout.cancel(renderTimeoutPromise);
+                    renderTimeoutPromise = $timeout(function(){
+                        data = chartData;
+                        drawChart();
+                    }, 40);
+                }
             });
 
             scope.$watch(attrs.settings, function (value) {
@@ -142,7 +149,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     barValue = barElement.__data__[series.field];
 
                 return options.tooltip
-                    .replace("{{seriesLabel}}", series.label)
+                    .replace("{{seriesLabel}}", series._label)
                     .replace("{{barLabel}}", barLabel)
                     .replace("{{barValue}}", barValue);
             }
@@ -297,7 +304,7 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
 
                 var defs = svg.append('svg:defs');
 
-                var totalRectWidth = (width - leftPadding - rightPadding + barsSpacing) / data.length,
+                var totalRectWidth = Math.min((width - leftPadding - rightPadding + barsSpacing) / data.length, options.maxWidth * settings.series.length),
                     rectWidth = (totalRectWidth - barsSpacing) / settings.series.length,
                     barRemainder = rectWidth % gridSize;
 
