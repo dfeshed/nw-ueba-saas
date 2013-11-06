@@ -192,5 +192,12 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 		return null;
 	}
 
+	@Override
+	public AdUserFeaturesExtraction getClassifierIdAndByUserIdAndTimestamp(
+			String classifierId, String userId, Date timestamp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

@@ -437,7 +437,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 			return new EBSResult(null, null,0, 0);
 		}
 
-		List<List<String>> listResults = new ArrayList<List<String>>((int)resultsMap.size());
+		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
 		List<String> keys = new ArrayList<>(resultsMap.get(0).keySet());
 		for (Map<String, Object> map : resultsMap) {
@@ -452,7 +452,10 @@ public class ClassifierServiceImpl implements ClassifierService {
 					result.add("");
 				}
 			}
-			listResults.add(result);
+			EventBulkScorer.InputStruct inp = new EventBulkScorer.InputStruct();
+			inp.working_set = result;
+			inp.all_data = result;
+			listResults.add(inp);
 		}
 
 		EventBulkScorer ebs = new EventBulkScorer();

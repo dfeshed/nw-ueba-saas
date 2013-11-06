@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.mongodb.MongoDbFactory;
@@ -25,6 +26,7 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperationContext;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.query.Query;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -35,6 +37,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
+import fortscale.domain.core.User;
 import fortscale.domain.core.dao.MongoDbRepositoryUtil;
 import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
@@ -264,5 +267,11 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 	@Override
 	public Date getLatestTimeStamp() {
 		return mongoDbRepositoryUtil.getLatestTimeStampDate(AdUserFeaturesExtraction.timestampField, AdUserFeaturesExtraction.collectionName);
+	}
+
+	@Override
+	public AdUserFeaturesExtraction getClassifierIdAndByUserIdAndTimestamp(String classifierId, String userId, Date timestamp) {
+		Query query = new Query(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).and(AdUserFeaturesExtraction.userIdField).is(userId).and(AdUserFeaturesExtraction.timestampField).is(timestamp));
+		return mongoTemplate.findOne(query, AdUserFeaturesExtraction.class);
 	}
 }

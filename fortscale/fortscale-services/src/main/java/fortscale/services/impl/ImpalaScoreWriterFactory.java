@@ -10,6 +10,9 @@ public class ImpalaScoreWriterFactory {
 
 	@Value("${user.ad.group.membership.score.csv.file.full.path}")
 	private String userAdScoreCsvFileFullPathString;
+	@Value("${user.ad.total.score.csv.file.full.path}")
+	private String userTotalScoreCsvFileFullPathString;
+	
 	
 	
 	
@@ -26,10 +29,18 @@ public class ImpalaScoreWriterFactory {
 		this.userAdScoreCsvFileFullPathString = userAdScoreCsvFileFullPathString;
 	}
 	
+	public void setUserTotalScoreCsvFileFullPathString(String userTotalScoreCsvFileFullPathString) {
+		this.userTotalScoreCsvFileFullPathString = userTotalScoreCsvFileFullPathString;
+	}
+	
 	
 	public ImpalaGroupsScoreWriter createImpalaGroupsScoreWriter(){
 		ImpalaGroupsScoreWriter writer = new ImpalaGroupsScoreWriter(getFile(userAdScoreCsvFileFullPathString));
 		return writer;
 	}
 	
+	public ImpalaTotalScoreWriter createImpalaTotalScoreWriter(){
+		ImpalaTotalScoreWriter writer = new ImpalaTotalScoreWriter(getFile(userTotalScoreCsvFileFullPathString));
+		return writer;
+	}
 }

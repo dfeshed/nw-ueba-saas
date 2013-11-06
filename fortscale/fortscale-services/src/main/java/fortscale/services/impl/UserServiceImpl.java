@@ -356,7 +356,7 @@ public class UserServiceImpl implements UserService{
 		Classifier.validateClassifierId(classifierId);
 //		Long timestampepoch = timestamp/1000;
 		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(classifierId, new Date(timestamp));
-//		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findClassifierIdAndByUserIdAndTimestamp(classifierId,String.format("ObjectId(\"%s\")", uid), new Date(timestamp));
+//		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.getClassifierIdAndByUserIdAndTimestamp(classifierId,uid, new Date(timestamp));
 		AdUserFeaturesExtraction ufe = null;
 		for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
 			if(adUserFeaturesExtraction.getUserId().equals(uid)){
@@ -391,7 +391,7 @@ public class UserServiceImpl implements UserService{
 		ScoreConfiguration scoreConfiguration = configurationService.getScoreConfiguration();
 		Date timestamp = Calendar.getInstance().getTime();
 		for(User user: users){
-			double totalWeights = 0;
+			double totalWeights = 0.00001;
 			double score = 0;
 			double avgScore = 0;
 			
@@ -410,7 +410,19 @@ public class UserServiceImpl implements UserService{
 		
 		if(isToSave){
 			userRepository.save(users);
+			saveUserTotalScoreToImpala();
 		}
+	}
+	
+	private void saveUserTotalScoreToImpala(){
+		List<User> users = userRepository.findAll();
+		ImpalaTotalScoreWriter writer = impalaGroupsScoreWriterFactory.createImpalaTotalScoreWriter();
+		for(User user: users){
+			if(user.getScore(Classifier.total.getId()) != null){
+				writer.writeScore(user);
+			}
+		}
+		writer.close();
 	}
 
 	@Override
@@ -429,9 +441,7 @@ public class UserServiceImpl implements UserService{
 				users.add(user);
 			}
 		}
-		updateUserTotalScore(users, false);
-		userRepository.save(users);
-		
+		updateUserTotalScore(users, true);		
 	}
 	
 	@Override
@@ -453,8 +463,7 @@ public class UserServiceImpl implements UserService{
 				users.add(user);
 			}
 		}
-		updateUserTotalScore(users, false);
-		userRepository.save(users);
+		updateUserTotalScore(users, true);
 	}
 	
 	@Override
@@ -495,8 +504,7 @@ public class UserServiceImpl implements UserService{
 		}
 		impalaGroupsScoreWriter.close();
 		
-		updateUserTotalScore(users, false);
-		userRepository.save(users);
+		updateUserTotalScore(users, true);
 	}
 	
 	@Override

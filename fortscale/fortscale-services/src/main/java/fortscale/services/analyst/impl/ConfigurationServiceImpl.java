@@ -57,11 +57,11 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.vpn.getId(), 10));
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.groups.getId(), 10));
 			setScoreConfiguration(scoreConfiguration, null, "Server");
-			scoreConfiguration = new ScoreConfiguration();
-			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.auth.getId(), 20));
-			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.vpn.getId(), 10));
-			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.groups.getId(), 10));
-			setScoreConfiguration(scoreConfiguration, null, "Server");
+//			scoreConfiguration = new ScoreConfiguration();
+//			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.auth.getId(), 20));
+//			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.vpn.getId(), 10));
+//			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.groups.getId(), 10));
+//			setScoreConfiguration(scoreConfiguration, null, "Server");
 		}
 		
 	}
