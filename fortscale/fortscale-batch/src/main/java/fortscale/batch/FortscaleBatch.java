@@ -30,9 +30,12 @@ public class FortscaleBatch {
 		adManager.run(feService, null);
 	}
 	
-	public void updateGroupMembershipScore(String userAdScoreCsvFileFullPathString) {
+	public void updateGroupMembershipScore(String userAdScoreCsvFileFullPathString, String userTotalScoreCsvFileFullPathString) {
 		if(userAdScoreCsvFileFullPathString != null) {
 			impalaGroupsScoreWriterFactory.setUserAdScoreCsvFileFullPathString(userAdScoreCsvFileFullPathString);
+		}
+		if(userTotalScoreCsvFileFullPathString != null) {
+			impalaGroupsScoreWriterFactory.setUserTotalScoreCsvFileFullPathString(userTotalScoreCsvFileFullPathString);
 		}
 		userService.updateUserWithGroupMembershipScore();
 	}
@@ -41,11 +44,17 @@ public class FortscaleBatch {
 		userService.updateUserWithCurrentADInfo();
 	}
 	
-	public void updateAuthScore() {
+	public void updateAuthScore(String userTotalScoreCsvFileFullPathString) {
+		if(userTotalScoreCsvFileFullPathString != null) {
+			impalaGroupsScoreWriterFactory.setUserTotalScoreCsvFileFullPathString(userTotalScoreCsvFileFullPathString);
+		}
 		userService.updateUserWithAuthScore();
 	}
 	
-	public void updateVpnScore() {
+	public void updateVpnScore(String userTotalScoreCsvFileFullPathString) {
+		if(userTotalScoreCsvFileFullPathString != null) {
+			impalaGroupsScoreWriterFactory.setUserTotalScoreCsvFileFullPathString(userTotalScoreCsvFileFullPathString);
+		}
 		userService.updateUserWithVpnScore();
 	}
 }

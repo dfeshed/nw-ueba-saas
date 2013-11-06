@@ -19,17 +19,18 @@ public class ImpalaTotalScoreWriter {
 		writer.close();
 	}
 	
-	public void writeScore(User user){
-		writeTotalScore(user);
+	public void writeScore(User user, Date timestamp){
+		writeTotalScore(user, timestamp);
 		writeScore(user, Classifier.groups.getId());
 		writeScore(user, Classifier.auth.getId());
 		writeScore(user, Classifier.vpn.getId());
 		writer.newLine();
 	}
 	
-	private void writeTotalScore(User user){
+	private void writeTotalScore(User user, Date timestamp){
 		ClassifierScore classifierScore = user.getScore(Classifier.total.getId());
-		String csvLineString = String.format("%s|%s|%s|%s|%s|%s",getRuntime(classifierScore.getTimestamp()),user.getId(),user.getAdDn(), user.getUsername(), classifierScore.getScore(), classifierScore.getAvgScore());
+		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp), getRuntime(classifierScore.getTimestamp()),user.getId(),
+				user.getAdDn(), user.getUsername(), classifierScore.getScore(), classifierScore.getAvgScore());
 		writer.write(csvLineString);
 	}
 	

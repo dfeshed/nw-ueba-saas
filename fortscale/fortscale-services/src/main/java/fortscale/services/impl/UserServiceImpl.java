@@ -410,16 +410,16 @@ public class UserServiceImpl implements UserService{
 		
 		if(isToSave){
 			userRepository.save(users);
-			saveUserTotalScoreToImpala();
+			saveUserTotalScoreToImpala(timestamp);
 		}
 	}
 	
-	private void saveUserTotalScoreToImpala(){
+	private void saveUserTotalScoreToImpala(Date timestamp){
 		List<User> users = userRepository.findAll();
 		ImpalaTotalScoreWriter writer = impalaGroupsScoreWriterFactory.createImpalaTotalScoreWriter();
 		for(User user: users){
 			if(user.getScore(Classifier.total.getId()) != null){
-				writer.writeScore(user);
+				writer.writeScore(user, timestamp);
 			}
 		}
 		writer.close();
