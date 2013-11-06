@@ -2,7 +2,7 @@ package fortscale.domain.core.dao;
 
 import java.util.List;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
@@ -11,7 +11,7 @@ import fortscale.domain.core.User;
 
 
 
-public interface UserRepository extends PagingAndSortingRepository<User, String>, UserRepositoryCustom{
+public interface UserRepository extends MongoRepository<User, String>, UserRepositoryCustom{
 	/**
 	 * Returns the {@link Customer} with the given {@link EmailAddress}.
 	 * 

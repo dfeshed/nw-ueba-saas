@@ -11,4 +11,5 @@ interface AdUsersFeaturesExtractionRepositoryCustom {
 //	public Double calculateUsersDailyMaxScores(String classifierId, String userId);
 	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdForLastRun(String classifierId,List<Threshold> thresholds);
 	public Date getLatestTimeStamp();
+	public AdUserFeaturesExtraction getClassifierIdAndByUserIdAndTimestamp(String classifierId, String userId, Date timestamp);
 }

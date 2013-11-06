@@ -22,11 +22,6 @@ public class UserRepositoryImpl implements UserRepository{
 	
 	private Map<String, User> userMap = new HashMap<String, User>();
 
-	@Override
-	public Iterable<User> findAll(Sort sort) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Page<User> findAll(Pageable pageable) {
@@ -41,12 +36,6 @@ public class UserRepositoryImpl implements UserRepository{
 	}
 
 	@Override
-	public <S extends User> Iterable<S> save(Iterable<S> entities) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public User findOne(String id) {
 		return userMap.get(id);
 	}
@@ -56,12 +45,6 @@ public class UserRepositoryImpl implements UserRepository{
 	public boolean exists(String id) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public Iterable<User> findAll() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -160,6 +143,24 @@ public class UserRepositoryImpl implements UserRepository{
 
 	@Override
 	public User findByUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> findAll(Sort arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <S extends User> List<S> save(Iterable<S> arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
