@@ -387,9 +387,8 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ConfigurationService configurationService; 
 	
-	private void updateUserTotalScore(List<User> users, boolean isToSave){
+	private void updateUserTotalScore(List<User> users, boolean isToSave, Date lastRun){
 		ScoreConfiguration scoreConfiguration = configurationService.getScoreConfiguration();
-		Date timestamp = Calendar.getInstance().getTime();
 		for(User user: users){
 			double totalWeights = 0.00001;
 			double score = 0;
@@ -405,12 +404,12 @@ public class UserServiceImpl implements UserService{
 				}
 			}
 			
-			updateUserScore(user, timestamp, Classifier.total.getId(), score/totalWeights, avgScore/totalWeights, false);
+			updateUserScore(user, lastRun, Classifier.total.getId(), score/totalWeights, avgScore/totalWeights, false);
 		}
 		
 		if(isToSave){
 			userRepository.save(users);
-			saveUserTotalScoreToImpala(timestamp);
+			saveUserTotalScoreToImpala(lastRun);
 		}
 	}
 	
@@ -441,7 +440,7 @@ public class UserServiceImpl implements UserService{
 				users.add(user);
 			}
 		}
-		updateUserTotalScore(users, true);		
+		updateUserTotalScore(users, true, lastRun);		
 	}
 	
 	@Override
@@ -463,17 +462,17 @@ public class UserServiceImpl implements UserService{
 				users.add(user);
 			}
 		}
-		updateUserTotalScore(users, true);
+		updateUserTotalScore(users, true, lastRun);
 	}
 	
 	@Override
 	public void updateUserWithGroupMembershipScore(){
-		Date latestTime = adUsersFeaturesExtractionRepository.getLatestTimeStamp();
-		if(latestTime == null){
+		Date lastRun = adUsersFeaturesExtractionRepository.getLatestTimeStamp();
+		if(lastRun == null){
 			//TODO: WARN LOG
 			return;
 		}
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), latestTime);
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun);
 //		Pageable pageable = new PageRequest(0, 10000, Direction.ASC, AdUserFeaturesExtraction.timestampField);
 //		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), pageable);
 		if(adUserFeaturesExtractions.size() == 0){
@@ -504,7 +503,7 @@ public class UserServiceImpl implements UserService{
 		}
 		impalaGroupsScoreWriter.close();
 		
-		updateUserTotalScore(users, true);
+		updateUserTotalScore(users, true, lastRun);
 	}
 	
 	@Override
@@ -524,11 +523,19 @@ public class UserServiceImpl implements UserService{
 			prevScores.add(scoreInfo);
 			cScore.setPrevScores(prevScores);
 		}else{
+			if(cScore.getPrevScores().size() > 1){
+				double prevScore = cScore.getPrevScores().get(1).getScore() + 0.00001;
+				double curScore = value + 0.00001;
+				trend = (curScore - prevScore) / prevScore;
+			}
+			
 			ScoreInfo scoreInfo = new ScoreInfo();
 			scoreInfo.setScore(value);
 			scoreInfo.setAvgScore(avgScore);
 			scoreInfo.setTimestamp(timestamp);
 			scoreInfo.setTimestampEpoc(timestamp.getTime());
+			scoreInfo.setTrend(trend);
+			scoreInfo.setTrendScore(Math.abs(trend));
 			if (isOnSameDay(timestamp, cScore.getTimestamp())) {
 				if(value < cScore.getScore()){
 					isReplaceCurrentScore = false;
@@ -544,11 +551,7 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		if(isReplaceCurrentScore) {
-			if(cScore.getPrevScores().size() > 1){
-				double prevScore = cScore.getPrevScores().get(1).getScore() + 0.00001;
-				double curScore = value + 0.00001;
-				trend = (curScore - prevScore) / prevScore;
-			}
+			
 			cScore.setScore(value);
 			cScore.setAvgScore(avgScore);
 			cScore.setTimestamp(timestamp);
