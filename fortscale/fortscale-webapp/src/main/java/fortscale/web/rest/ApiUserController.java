@@ -63,6 +63,11 @@ public class ApiUserController {
 		userService.updateUserWithGroupMembershipScore();
 	}
 	
+	@RequestMapping(value="/recalculateScores", method=RequestMethod.GET)
+	public void recalculateScores(Model model){
+		userService.recalculateUsersScores();
+	}
+	
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException

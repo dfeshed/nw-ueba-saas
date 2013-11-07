@@ -614,9 +614,11 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void recalculateUsersScores() {
 		List<ClassifierRuntime> classifierRuntimes = new ArrayList<>();
-		for(User user: userRepository.findAll()){
+		List<User> users = userRepository.findAll();
+		for(User user: users){
 			user.removeAllScores();
 		}
+		userRepository.save(users);
 		
 		List<Date> distinctDates = adUsersFeaturesExtractionRepository.getDistinctRuntime(Classifier.groups.getId());
 		for(Date date: distinctDates){
@@ -628,26 +630,31 @@ public class UserServiceImpl implements UserService{
 			classifierRuntimes.add(new ClassifierRuntime(Classifier.auth, runtime));
 		}
 		
-		distinctRuntimes = vpnDAO.getDistinctRuntime();
-		for(Long runtime: distinctRuntimes){
-			classifierRuntimes.add(new ClassifierRuntime(Classifier.vpn, runtime));
-		}
+//		distinctRuntimes = vpnDAO.getDistinctRuntime();
+//		for(Long runtime: distinctRuntimes){
+//			classifierRuntimes.add(new ClassifierRuntime(Classifier.vpn, runtime));
+//		}
 		
 		Collections.sort(classifierRuntimes);
 		
 		for(ClassifierRuntime classifierRuntime: classifierRuntimes){
-			switch (classifierRuntime.getClassifier()) {
-			case auth:
-				updateUserWithAuthScore(new Date(classifierRuntime.getRuntime()));
-				break;
-			case vpn:
-				updateUserWithVpnScore(new Date(classifierRuntime.getRuntime()));
-				break;
-			case groups:
-				updateUserWithGroupMembershipScore(new Date(classifierRuntime.getRuntime()));
-				break;
-			default:
-				break;
+			try{
+				switch (classifierRuntime.getClassifier()) {
+				case auth:
+					updateUserWithAuthScore(new Date(classifierRuntime.getRuntime()));
+					break;
+				case vpn:
+					updateUserWithVpnScore(new Date(classifierRuntime.getRuntime()));
+					break;
+				case groups:
+					updateUserWithGroupMembershipScore(new Date(classifierRuntime.getRuntime()));
+					break;
+				default:
+					break;
+				}
+			} catch(Exception e){
+				logger.error("failed to update classifier {} on runtime{}", classifierRuntime.classifier, classifierRuntime.getRuntime());
+				logger.error(e.getMessage(),e);
 			}
 		}
 	}
