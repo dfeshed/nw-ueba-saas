@@ -36,9 +36,6 @@
                     <beans:map>
                         <!-- 404 -->
                         <beans:entry key="fortscale.web.exceptions.UnknownResourceException" value="#{T(javax.servlet.http.HttpServletResponse).SC_NOT_FOUND}, _exmsg"/>
-
-                        <!-- 500 (catch all): -->
-                        <beans:entry key="Throwable" value="500"/>
                     </beans:map>
                 </beans:property>
             </beans:bean>
