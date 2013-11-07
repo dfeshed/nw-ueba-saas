@@ -1,6 +1,7 @@
 {
     "dashboardId": "overview",
     "name": "Overview",
+    "className": "dashboard-noBackground",
     "columns": [
         {
             "className": "span15",
@@ -8,6 +9,8 @@
                 {
                     "title": "Suspicious Users",
                     "renderControls": false,
+                    "renderHeader": false,
+                    "className": "no-border",
                     "views": [
                         {
                             "type": "container",

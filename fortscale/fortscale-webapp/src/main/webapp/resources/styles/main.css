@@ -123,6 +123,10 @@ a {
   padding: 25px;
   background: #f2f2f2; }
 
+.dashboard-noBackground .dashboard-widgets {
+  background: none;
+  padding: 0; }
+
 .dashboard-header {
   padding: 0 10px;
   margin-bottom: 20px; }
@@ -246,6 +250,11 @@ a {
     border-color: #e7e7e7; }
   .widget.no-border {
     border: none; }
+    .widget.no-border > ng-include > .widget-contents {
+      padding-top: 0; }
+  .widget.inner-widget {
+    border: solid 1px #dfdfdf;
+    padding: 10px 10px 0; }
 
 .column-with-border {
   border: solid 1px #cecece;
@@ -1171,6 +1180,8 @@ body .ui-tooltip {
   box-sizing: border-box; }
   .widget-container .widget {
     border: none; }
+    .widget-container .widget.inner-widget {
+      border: solid 1px #dfdfdf; }
     .widget-container .widget:first-child .widget-contents {
       padding-top: 0; }
   .widget-container .dashboard-widgets {

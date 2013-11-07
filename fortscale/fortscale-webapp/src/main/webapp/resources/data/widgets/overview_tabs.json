@@ -9,6 +9,10 @@
             "settings": {
                 "tabs": [
                     {
+                        "display": "Total Score",
+                        "id": "total"
+                    },
+                    {
                         "display": "Group Membership",
                         "id": "active_directory_group_membership"
                     },

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Fortscale')
-    .directive('daterange', function ($parse, transforms) {
+    .directive('daterange', function ($parse, transforms, utils) {
         return {
             template: "<input type='text' class='daterange-input' />",
             restrict: 'E',
@@ -26,7 +26,7 @@ angular.module('Fortscale')
                             timeEnd = value.timeEnd || value.timeStart;
                         }
                         else{
-                            timeStart = transforms.getDate(value);
+                            timeStart = utils.date.getMoment(value);
                             if (timeStart.isValid)
                                 timeEnd = timeStart = timeStart.toDate();
                         }

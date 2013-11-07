@@ -37,6 +37,7 @@
                 "series": [
                     {
                         "field": "score",
+                        "default": 0,
                         "label": "{{@userName}}",
                         "style": "score",
                         "styleParams": {
@@ -45,6 +46,7 @@
                     },
                     {
                         "field": "avgScore",
+                        "default": 0,
                         "label": "Average user",
                         "color": "#e7e7e7",
                         "barLabelsColor": "#aaaaaa",
@@ -54,11 +56,16 @@
                 "labels": {
                     "field": "date",
                     "value": "{{date}}",
+                    "predefinedValues": {
+                        "type": "date",
+                        "first": "-7 days",
+                        "last": "now"
+                    },
                     "styleField": "score",
                     "transform": {
                         "method": "date",
                         "options": {
-                            "format": "MM/DD"
+                            "format": "MM/DD/YYYY"
                         }
                     }
                 },

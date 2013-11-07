@@ -21,6 +21,13 @@ $innerDashboardBorderColor: #e7e7e7;
   background: #f2f2f2;
 }
 
+.dashboard-noBackground{
+  .dashboard-widgets{
+    background: none;
+    padding: 0;
+  }
+}
+
 .dashboard-header{
   padding: 0 10px;
   margin-bottom: 20px;

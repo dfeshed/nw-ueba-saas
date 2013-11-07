@@ -1,4 +1,67 @@
 angular.module("ChartWidgets", ["Utils", "Styles", "Transforms"]).factory("chartWidgetsData", ["$q", "utils", "styles", "transforms", function($q, utils, styles, transforms){
+    function getPredefinedValues(predefinedValuesSettings){
+        if (predefinedValuesSettings.type === "date"){
+            return utils.date.getDatesSpan(predefinedValuesSettings.first, predefinedValuesSettings.last);
+        }
+
+        return null;
+    }
+
+    function isSameValue(type, val1, val2){
+        if (type === "date"){
+            if (!val1 || !val2)
+                return false;
+
+            var moment1 = utils.date.getMoment(val1),
+                moment2 = utils.date.getMoment(val2);
+
+            return moment1.year() === moment2.year() && moment1.month() === moment2.month() && moment1.date() === moment2.date();
+        }
+
+        return false;
+    }
+
+    function isSmallerValue(type, val1, val2){
+        if (type === "date"){
+            if (!val1 || !val2)
+                return false;
+
+            var moment1 = utils.date.getMoment(val1),
+                moment2 = utils.date.getMoment(val2);
+
+            return moment1 < moment2;
+        }
+
+        return false;
+    }
+
+    function createDefaultValue(seriesSettings, labelSettings, labelValue){
+        var value = {};
+        value[labelSettings.field] = labelValue;
+        angular.forEach(seriesSettings, function(series){
+            value[series.field] = series.default || 0;
+        });
+
+        return value;
+    }
+
+    function setPredefinedValues(data, seriesSettings, labelSettings){
+        var predefinedValuesSettings = labelSettings.predefinedValues,
+            labelValues = getPredefinedValues(predefinedValuesSettings),
+            labelField = labelSettings.field;
+
+        if (predefinedValuesSettings.type === "date"){
+            while(data.length && isSmallerValue("date", data[0][labelField], labelValues[0])){
+                data.splice(0, 1);
+            }
+        }
+
+        for(var i=0; i < labelValues.length; i++){
+            if (!isSameValue(predefinedValuesSettings.type, data[i] && data[i][labelField], labelValues[i]))
+                data.splice(i, 0, createDefaultValue(seriesSettings, labelSettings, labelValues[i]));
+        }
+    }
+
     return {
         getData: function(view, data, params){
             var deferred = $q.defer(),
@@ -6,6 +69,10 @@ angular.module("ChartWidgets", ["Utils", "Styles", "Transforms"]).factory("chart
                 styleDeferredsMapping = {};
 
             var viewData = { chartValues: data };
+            if (view.settings.labels.predefinedValues){
+                setPredefinedValues(viewData.chartValues, view.settings.series, view.settings.labels);
+            }
+
             angular.forEach(view.settings.series, function(series, i){
                 series._label = utils.strings.parseValue(series.label, data, params, i);
 
