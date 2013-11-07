@@ -19,10 +19,11 @@
                             <label>Email:</label>
                             <input class="span5 inline-input" type="text" ng-model="account.userName" />
                         </div>
-                        <div class="field-box" ng-show="!changePassword">
-                            <input type="button" class="btn-glow" value="Change Password" ng-click="changePassword = true">
+                        <div class="field-box" ng-show="!enableChangePassword">
+                            <input type="button" class="btn-glow" value="Change Password" ng-click="enableChangePassword = true">
                         </div>
-                        <div ng-show="changePassword">
+                        <fieldset ng-show="enableChangePassword">
+                            <legend>Change Password</legend>
                             <div class="field-box">
                                 <label>Current password:</label>
                                 <input class="span5 inline-input" type="password" ng-model="currentPassword" />
@@ -35,6 +36,15 @@
                                 <label>Confirm password:</label>
                                 <input class="span5 inline-input" type="password" ng-model="newPasswordConfirm" />
                             </div>
+                            <a class="btn btn-primary" ng-class="{ disabled: !currentPassword || !newPassword || !newPasswordConfirm }" ng-click="changePassword()">Change Password</a>
+                        </fieldset>
+                        <div class="alert alert-error" ng-show="success">
+                            <i class="icon-check"></i>
+                            {{success.message}}
+                        </div>
+                        <div class="alert alert-error" ng-show="error">
+                            <i class="icon-remove-sign"></i>
+                            {{error.message}}
                         </div>
                         <div class="span6 field-box actions">
                             <input type="button" class="btn-glow primary" value="Save Changes">
