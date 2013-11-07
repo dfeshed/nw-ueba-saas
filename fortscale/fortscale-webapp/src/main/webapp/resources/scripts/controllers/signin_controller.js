@@ -4,7 +4,14 @@ angular.module("FortscaleSignin").controller("SigninController", ["$scope", "aut
         $scope.email = queryParams.username;
     }
     else if (/change_password/.test(window.location.href))
-        $scope.error = { message: "No username specified." };
+        auth.getCurrentUser().then(function(user){
+            if (user && user.userName)
+                $scope.email = user.userName;
+            else
+                $scope.error = { message: "No username specified." };
+        }, function(error){
+            $scope.error = { message: "No username specified." };
+        });
     else
         $scope.email = auth.getLastLoggedInUser();
 
@@ -103,7 +110,7 @@ angular.module("FortscaleSignin").controller("SigninController", ["$scope", "aut
         auth.changePassword($scope.email, $scope.currentPassword, $scope.password).then(function(){
             doLogin();
         }, function(error){
-            $scope.error = error;
+            $scope.error = { message: "Failed to change password. (Server error)" };
         });
     };
 }]);

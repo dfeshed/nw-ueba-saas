@@ -677,6 +677,11 @@ body .ui-tooltip {
       margin-top: 2em;
       text-align: right; }
 
+.settings-wrapper .alert {
+  margin: 20px 0 !important; }
+  .settings-wrapper .alert i {
+    float: none !important; }
+
 .splunk-config-modal {
   width: 600px;
   height: 300px;
