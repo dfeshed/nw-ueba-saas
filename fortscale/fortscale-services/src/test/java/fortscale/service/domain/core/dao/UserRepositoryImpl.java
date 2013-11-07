@@ -165,4 +165,11 @@ public class UserRepositoryImpl implements UserRepository{
 		return null;
 	}
 
+	@Override
+	public List<User> findByApplicationUserName(String applicationName,
+			List<String> usernames) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -10,6 +10,7 @@ import fortscale.domain.fe.dao.Threshold;
 
 public interface UserRepositoryCustom {
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails);
+	public List<User> findByApplicationUserName(String applicationName, List<String> usernames);
 	public List<User> findByClassifierIdAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable);
 	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold);
 }

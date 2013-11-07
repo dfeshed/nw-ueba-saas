@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService{
 		}
 		if(!StringUtils.isEmpty(username)) {
 			user.setUsername(username.toLowerCase());
-			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.ad, user.getUsername()));
+			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
 		} else{
 			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
 		}
@@ -691,6 +691,12 @@ public class UserServiceImpl implements UserService{
 		}
 
 		
+	}
+
+	@Override
+	public List<User> findByApplicationUserName(
+			UserApplication userApplication, List<String> usernames) {
+		return userRepository.findByApplicationUserName(userApplication.getId(), usernames);
 	}
 	
 	

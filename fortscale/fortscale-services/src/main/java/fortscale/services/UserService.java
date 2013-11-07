@@ -40,5 +40,7 @@ public interface UserService {
 	
 	public ApplicationUserDetails getApplicationUserDetails(User user, UserApplication userApplication);
 	
+	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
+	
 	public void recalculateUsersScores();
 }
