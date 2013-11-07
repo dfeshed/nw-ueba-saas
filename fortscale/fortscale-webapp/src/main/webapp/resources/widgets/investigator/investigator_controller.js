@@ -142,7 +142,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
 
     $scope.fieldTypes = {
         objectArray: {
-            addMember: function(setting, memberValues){
+            addMember: function(setting, memberValues, index){
                 var member = {
                     _settings: angular.copy(setting.memberSettings)
                 };
@@ -151,7 +151,12 @@ angular.module("Fortscale").controller("InvestigatorController", [
                     setSettingValues(member, memberSetting, memberValues);
                 });
 
-                setting.settingValues[setting.id].push(member);
+                if (index !== undefined)
+                    setting.settingValues[setting.id].splice(index, 0, member);
+                else
+                    setting.settingValues[setting.id].push(member);
+
+                return member;
             }
         },
         table: {
@@ -263,7 +268,10 @@ angular.module("Fortscale").controller("InvestigatorController", [
     function getEntityTableFields(entities, fieldsSetting){
         var fields = [],
             sortField,
-            dateField;
+            dateField,
+            scoreField,
+            scoreFieldId,
+            fieldCount = 0;
 
         angular.forEach(entities, function(entity){
             angular.forEach(entity.fields, function(field){
@@ -287,11 +295,9 @@ angular.module("Fortscale").controller("InvestigatorController", [
                     }
 
                     if (/score/i.test(field.id)){
+                        scoreFieldId = field.id;
+
                         fieldSetting = angular.extend(fieldSetting, {
-                            "style": "score",
-                            "styleParams": {
-                                "value": field.id
-                            },
                             transform: {
                                 method: "round"
                             }
@@ -304,10 +310,29 @@ angular.module("Fortscale").controller("InvestigatorController", [
                         }
                     }
 
-                    $scope.fieldTypes.objectArray.addMember(fieldsSetting, fieldSetting);
+                    var member = $scope.fieldTypes.objectArray.addMember(fieldsSetting, fieldSetting);
+                    if (/score/i.test(field.id)){
+                        scoreField = { member: member, index: fieldCount };
+                        member.headerColspan = 2;
+                    }
+
+                    fieldCount++;
                 }
             });
         });
+
+        if (scoreField){
+            $scope.fieldTypes.objectArray.addMember(fieldsSetting, {
+                "name": "Severity",
+                "icon": "stop",
+                "style": "score",
+                "styleParams": {
+                    "value": scoreFieldId
+                },
+                "className": "table-small-cell",
+                "renderHeader": false
+            }, scoreField.index);
+        }
 
         if (!sortField && dateField){
             dateField.sortDirection = -1;
@@ -495,7 +520,7 @@ angular.module("Fortscale").controller("InvestigatorController", [
 
     function setDisplayWidget(){
         $scope.widgets = [{
-            title: "Results",
+            title: "Showing {{@_paging}} results:",
             views: [{
                 type: $scope.config.view.type,
                 settings: angular.extend($scope.currentViewSettings, paging)

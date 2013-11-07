@@ -541,7 +541,9 @@ public class User extends AbstractDocument {
 		this.scores.remove(classifierId);
 	}	
 	
-	
+	public void removeAllScores(){
+		this.scores.clear();
+	}
 	
 	
 	

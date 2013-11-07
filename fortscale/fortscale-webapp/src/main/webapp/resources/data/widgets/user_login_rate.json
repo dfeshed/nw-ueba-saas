@@ -37,9 +37,28 @@
                     }
                 ],
                 "labels": {
-                    "field": "Date",
+                    "field": "day",
                     "value": "{{day}}",
-                    "styleField": "day"
+                    "styleField": "day",
+                    "predefinedValues": {
+                        "type": "date",
+                        "first": "-7 days",
+                        "last": "now"
+                    },
+                    "transform": {
+                        "method": "date",
+                        "options": {
+                            "format": "MM/DD/YYYY"
+                        }
+                    }
+                },
+                "legend": {
+                    "items": [
+                        {
+                            "value": "Number of login attempts",
+                            "color": "#98A3AC"
+                        }
+                    ]
                 }
             }
         }

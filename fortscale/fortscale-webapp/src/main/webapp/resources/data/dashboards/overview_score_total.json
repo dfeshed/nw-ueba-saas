@@ -6,7 +6,7 @@
             "widgets": [
                 {
                     "widgetId": "users_severity_distribution",
-                    "title": "Distribution of users for logins scores"
+                    "title": "Distribution of users for total scores"
                 },
                 {
                     "renderControls": false,
@@ -21,15 +21,7 @@
                                         "widgets": [
                                             {
                                                 "widgetId": "top_10_users",
-                                                "title": "Top Logins Suspected Users",
-                                                "controls": [
-                                                    {
-                                                        "type": "link",
-                                                        "text": "View all",
-                                                        "href": "#/d/investigator?entities=wmievents4769",
-                                                        "refreshOn": ["currentScore"]
-                                                    }
-                                                ],
+                                                "title": "Top Suspected Users",
                                                 "className": "inner-widget"
                                             }
                                         ]
@@ -39,7 +31,7 @@
                                         "widgets": [
                                             {
                                                 "widgetId": "top_10_trending_users",
-                                                "title": "Top Trending Users in Logins",
+                                                "title": "Top Trending Users",
                                                 "className": "inner-widget"
                                             }
                                         ]
@@ -48,9 +40,6 @@
                             }
                         }
                     ]
-                },
-                {
-                    "widgetId": "all_users_logins"
                 }
             ]
         }

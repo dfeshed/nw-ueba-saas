@@ -7,7 +7,8 @@ import org.apache.commons.httpclient.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.authentication.dao.SaltSource;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +32,10 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
 	
 	@Autowired
 	private AnalystAuthRepository analystAuthRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private SaltSource saltSource;
 	
 	@Autowired
 	private AnalystRepository analystRepository;
@@ -68,8 +73,9 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
 		
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		authorities.add(new SimpleGrantedAuthority(AnalystAuth.ROLE_ADMIN));
-		AnalystAuth analystAuth = new AnalystAuth(username, encodePassword(password), authorities);
+		AnalystAuth analystAuth = new AnalystAuth(username, "", authorities);
 		analystAuth.setCredentialsNonExpired(false);
+		analystAuth.setPassword(encodePassword(analystAuth, password));
 		analystAuthRepository.save(analystAuth);
 		
 		Analyst analyst = new Analyst(username, new EmailAddress(emailAddress), firstName, lastName);
@@ -90,7 +96,7 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
 	    		analystAuth.setUsername(newUsername);
 	    	}
 	    	if(newPassword != null) {
-	    		analystAuth.setPassword(encodePassword(newPassword));
+	    		analystAuth.setPassword(encodePassword(analystAuth, newPassword));
 	    	}
 	    	analystAuthRepository.save(analystAuth);
     	}
@@ -112,13 +118,8 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
     	}
     }
     
-    public String encodePassword(String password) {
-    	String retString = null;
-		if(password != null) {
-			Md5PasswordEncoder encoder = new Md5PasswordEncoder();
-			retString = encoder.encodePassword(password, null);
-		}
-		return retString;
+    public String encodePassword(UserDetails userDetails, String password) {
+    	return passwordEncoder.encodePassword(password, saltSource.getSalt(userDetails));
 	}
 
     /**
@@ -151,12 +152,22 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
     		throw new UsernameNotFoundException(username);
     	}
     	
-    	String encodedPasswordString = encodePassword(newPassword);
-    	if (!analystAuth.getPassword().equals(encodePassword(oldPassword))) {
+    	if (!analystAuth.getPassword().equals(encodePassword(analystAuth, oldPassword))) {
 			throw new InvalidCredentialsException("wrong password");
 		}
 
-    	analystAuth.setPassword(encodedPasswordString);
+    	analystAuth.setPassword(encodePassword(analystAuth, newPassword));
+		analystAuth.setCredentialsNonExpired(true);
+    	analystAuthRepository.save(analystAuth);
+    }
+    
+    public void changePassword(String username, String newPassword) throws InvalidCredentialsException {
+    	AnalystAuth analystAuth = analystAuthRepository.findByUsername(username);
+    	if(analystAuth == null){
+    		throw new UsernameNotFoundException(username);
+    	}
+    	
+    	analystAuth.setPassword(encodePassword(analystAuth, newPassword));
 		analystAuth.setCredentialsNonExpired(true);
     	analystAuthRepository.save(analystAuth);
     }

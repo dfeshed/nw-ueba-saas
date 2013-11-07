@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService{
 	private VpnDAO vpnDAO;
 	
 	@Autowired
-	private ImpalaScoreWriterFactory impalaGroupsScoreWriterFactory;
+	private ImpalaWriterFactory impalaWriterFactory;
 	
 	@Autowired 
 	private ADUserParser adUserParser; 
@@ -117,7 +117,14 @@ public class UserServiceImpl implements UserService{
 			}
 			
 		}
-		
+		saveUserIdUsernamesMapToImpala(new Date());
+	}
+	
+	private void saveUserIdUsernamesMapToImpala(Date timestamp){
+		List<User> users = userRepository.findAll();
+		ImpalaUseridToAppUsernameWriter writer = impalaWriterFactory.createImpalaUseridToAppUsernameWriter();
+		writer.write(users, timestamp);
+		writer.close();
 	}
 	
 	private void updateUserWithADInfo(AdUser adUser) {
@@ -142,7 +149,7 @@ public class UserServiceImpl implements UserService{
 		}
 		if(!StringUtils.isEmpty(username)) {
 			user.setUsername(username.toLowerCase());
-			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.ad, user.getUsername()));
+			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
 		} else{
 			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
 		}
@@ -387,9 +394,8 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ConfigurationService configurationService; 
 	
-	private void updateUserTotalScore(List<User> users, boolean isToSave){
+	private void updateUserTotalScore(List<User> users, boolean isToSave, Date lastRun){
 		ScoreConfiguration scoreConfiguration = configurationService.getScoreConfiguration();
-		Date timestamp = Calendar.getInstance().getTime();
 		for(User user: users){
 			double totalWeights = 0.00001;
 			double score = 0;
@@ -405,21 +411,21 @@ public class UserServiceImpl implements UserService{
 				}
 			}
 			
-			updateUserScore(user, timestamp, Classifier.total.getId(), score/totalWeights, avgScore/totalWeights, false);
+			updateUserScore(user, lastRun, Classifier.total.getId(), score/totalWeights, avgScore/totalWeights, false);
 		}
 		
 		if(isToSave){
 			userRepository.save(users);
-			saveUserTotalScoreToImpala();
+			saveUserTotalScoreToImpala(lastRun);
 		}
 	}
 	
-	private void saveUserTotalScoreToImpala(){
+	private void saveUserTotalScoreToImpala(Date timestamp){
 		List<User> users = userRepository.findAll();
-		ImpalaTotalScoreWriter writer = impalaGroupsScoreWriterFactory.createImpalaTotalScoreWriter();
+		ImpalaTotalScoreWriter writer = impalaWriterFactory.createImpalaTotalScoreWriter();
 		for(User user: users){
 			if(user.getScore(Classifier.total.getId()) != null){
-				writer.writeScore(user);
+				writer.writeScore(user, timestamp);
 			}
 		}
 		writer.close();
@@ -428,6 +434,10 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateUserWithAuthScore() {
 		Date lastRun = authDAO.getLastRunDate();
+		updateUserWithAuthScore(lastRun);
+	}
+	
+	private void updateUserWithAuthScore(Date lastRun) {
 		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		List<User> users = new ArrayList<>();
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
@@ -441,12 +451,16 @@ public class UserServiceImpl implements UserService{
 				users.add(user);
 			}
 		}
-		updateUserTotalScore(users, true);		
+		updateUserTotalScore(users, true, lastRun);		
 	}
 	
 	@Override
 	public void updateUserWithVpnScore() {
 		Date lastRun = vpnDAO.getLastRunDate();
+		updateUserWithVpnScore(lastRun);
+	}
+	
+	private void updateUserWithVpnScore(Date lastRun) {
 		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
@@ -463,17 +477,21 @@ public class UserServiceImpl implements UserService{
 				users.add(user);
 			}
 		}
-		updateUserTotalScore(users, true);
+		updateUserTotalScore(users, true, lastRun);
 	}
 	
 	@Override
 	public void updateUserWithGroupMembershipScore(){
-		Date latestTime = adUsersFeaturesExtractionRepository.getLatestTimeStamp();
-		if(latestTime == null){
+		Date lastRun = adUsersFeaturesExtractionRepository.getLatestTimeStamp();
+		if(lastRun == null){
 			//TODO: WARN LOG
 			return;
 		}
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), latestTime);
+		updateUserWithGroupMembershipScore(lastRun);
+	}
+	
+	private void updateUserWithGroupMembershipScore(Date lastRun){
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun);
 //		Pageable pageable = new PageRequest(0, 10000, Direction.ASC, AdUserFeaturesExtraction.timestampField);
 //		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), pageable);
 		if(adUserFeaturesExtractions.size() == 0){
@@ -487,7 +505,7 @@ public class UserServiceImpl implements UserService{
 		}
 		avgScore = avgScore/adUserFeaturesExtractions.size();
 		
-		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaGroupsScoreWriterFactory.createImpalaGroupsScoreWriter();
+		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
 		List<User> users = new ArrayList<>();
 		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
 			User user = userRepository.findOne(extraction.getUserId().toString());
@@ -504,7 +522,7 @@ public class UserServiceImpl implements UserService{
 		}
 		impalaGroupsScoreWriter.close();
 		
-		updateUserTotalScore(users, true);
+		updateUserTotalScore(users, true, lastRun);
 	}
 	
 	@Override
@@ -524,11 +542,19 @@ public class UserServiceImpl implements UserService{
 			prevScores.add(scoreInfo);
 			cScore.setPrevScores(prevScores);
 		}else{
+			if(cScore.getPrevScores().size() > 1){
+				double prevScore = cScore.getPrevScores().get(1).getScore() + 0.00001;
+				double curScore = value + 0.00001;
+				trend = (curScore - prevScore) / prevScore;
+			}
+			
 			ScoreInfo scoreInfo = new ScoreInfo();
 			scoreInfo.setScore(value);
 			scoreInfo.setAvgScore(avgScore);
 			scoreInfo.setTimestamp(timestamp);
 			scoreInfo.setTimestampEpoc(timestamp.getTime());
+			scoreInfo.setTrend(trend);
+			scoreInfo.setTrendScore(Math.abs(trend));
 			if (isOnSameDay(timestamp, cScore.getTimestamp())) {
 				if(value < cScore.getScore()){
 					isReplaceCurrentScore = false;
@@ -544,11 +570,7 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		if(isReplaceCurrentScore) {
-			if(cScore.getPrevScores().size() > 1){
-				double prevScore = cScore.getPrevScores().get(1).getScore() + 0.00001;
-				double curScore = value + 0.00001;
-				trend = (curScore - prevScore) / prevScore;
-			}
+			
 			cScore.setScore(value);
 			cScore.setAvgScore(avgScore);
 			cScore.setTimestamp(timestamp);
@@ -595,4 +617,94 @@ public class UserServiceImpl implements UserService{
 	public ApplicationUserDetails getApplicationUserDetails(User user, UserApplication userApplication) {
 		return user.getApplicationUserDetails().get(userApplication.getId());
 	}
+
+	@Override
+	public void recalculateUsersScores() {
+		List<ClassifierRuntime> classifierRuntimes = new ArrayList<>();
+		List<User> users = userRepository.findAll();
+		for(User user: users){
+			user.removeAllScores();
+		}
+		userRepository.save(users);
+		
+		List<Date> distinctDates = adUsersFeaturesExtractionRepository.getDistinctRuntime(Classifier.groups.getId());
+		for(Date date: distinctDates){
+			classifierRuntimes.add(new ClassifierRuntime(Classifier.groups, date.getTime()));
+		}
+		
+		List<Long> distinctRuntimes = authDAO.getDistinctRuntime();
+		for(Long runtime: distinctRuntimes){
+			classifierRuntimes.add(new ClassifierRuntime(Classifier.auth, runtime));
+		}
+		
+//		distinctRuntimes = vpnDAO.getDistinctRuntime();
+//		for(Long runtime: distinctRuntimes){
+//			classifierRuntimes.add(new ClassifierRuntime(Classifier.vpn, runtime));
+//		}
+		
+		Collections.sort(classifierRuntimes);
+		
+		for(ClassifierRuntime classifierRuntime: classifierRuntimes){
+			try{
+				switch (classifierRuntime.getClassifier()) {
+				case auth:
+					updateUserWithAuthScore(new Date(classifierRuntime.getRuntime()));
+					break;
+				case vpn:
+					updateUserWithVpnScore(new Date(classifierRuntime.getRuntime()));
+					break;
+				case groups:
+					updateUserWithGroupMembershipScore(new Date(classifierRuntime.getRuntime()));
+					break;
+				default:
+					break;
+				}
+			} catch(Exception e){
+				logger.error("failed to update classifier {} on runtime{}", classifierRuntime.classifier, classifierRuntime.getRuntime());
+				logger.error(e.getMessage(),e);
+			}
+		}
+	}
+	
+	class ClassifierRuntime implements Comparable<ClassifierRuntime>{
+		private Classifier classifier;
+		private long runtime;
+		
+		public ClassifierRuntime(Classifier classifier, long runtime) {
+			this.classifier = classifier;
+			this.runtime = runtime;
+		}
+
+		@Override
+		public int compareTo(ClassifierRuntime o) {
+			int ret = (int)(this.runtime - o.runtime);
+			return ret;
+		}
+
+		public Classifier getClassifier() {
+			return classifier;
+		}
+
+		public void setClassifier(Classifier classifier) {
+			this.classifier = classifier;
+		}
+
+		public long getRuntime() {
+			return runtime;
+		}
+
+		public void setRuntime(long runtime) {
+			this.runtime = runtime;
+		}
+
+		
+	}
+
+	@Override
+	public List<User> findByApplicationUserName(
+			UserApplication userApplication, List<String> usernames) {
+		return userRepository.findByApplicationUserName(userApplication.getId(), usernames);
+	}
+	
+	
 }

@@ -37,4 +37,6 @@ public interface VpnDAO {
 	public List<VpnScore> findByTimestampAndGlobalScoreBetweenSortByEventScore(Date timestamp, int lowestVal, int upperVal, int limit);
 	
 	public List<VpnScore> getTopEventsAboveThreshold(Threshold threshold, Date timestamp, int limit);
+	
+	public List<Long> getDistinctRuntime();
 }

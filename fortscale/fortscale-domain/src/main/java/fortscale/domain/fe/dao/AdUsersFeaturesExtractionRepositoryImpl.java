@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.mongodb.MongoDbFactory;
@@ -37,7 +36,6 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
-import fortscale.domain.core.User;
 import fortscale.domain.core.dao.MongoDbRepositoryUtil;
 import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
@@ -174,6 +172,29 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 		return ret.score;
 	}
 	
+	class TimeStampAvgScore{
+		Date id;
+		Double score;
+	}
+	
+	public List<Date> getDistinctRuntime(String classifierId){
+		Aggregation agg = newAggregation(match(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId)),
+				project(AdUserFeaturesExtraction.timestampField),
+				group(AdUserFeaturesExtraction.timestampField));
+	
+		AggregationResults<Timestamp> result = mongoTemplate.aggregate(agg, AdUserFeaturesExtraction.collectionName, Timestamp.class);
+		
+		List<Date> ret = new ArrayList<>();
+		for(Timestamp timestamp: result.getMappedResults()){
+			ret.add(timestamp.id);
+		}
+		return ret;
+	}
+	
+	class Timestamp{
+		Date id;
+	}
+	
 //	public Double calculateUsersDailyMaxScores(String classifierId, String userId){
 //		Aggregation agg = newAggregation(match(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).andOperator(where(AdUserFeaturesExtraction.userIdField).is(userId))),
 //				 new ProjectionOperationBuilder(AdUserFeaturesExtraction.timestampField, project(AdUserFeaturesExtraction.scoreField), null).project("dayOfYear"),
@@ -184,10 +205,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 //		return ret.score;
 //	}
 	
-	class TimeStampAvgScore{
-		Date id;
-		Double score;
-	}
+	
 	
 	
 	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdForLastRun(String classifierId,List<Threshold> thresholds){

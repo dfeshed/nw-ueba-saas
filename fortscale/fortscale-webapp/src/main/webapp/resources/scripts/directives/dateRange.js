@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Fortscale')
-    .directive('daterange', function ($parse, transforms) {
+    .directive('daterange', function ($parse, transforms, utils) {
         return {
             template: "<input type='text' class='daterange-input' />",
             restrict: 'E',
@@ -26,7 +26,7 @@ angular.module('Fortscale')
                             timeEnd = value.timeEnd || value.timeStart;
                         }
                         else{
-                            timeStart = transforms.getDate(value);
+                            timeStart = utils.date.getMoment(value);
                             if (timeStart.isValid)
                                 timeEnd = timeStart = timeStart.toDate();
                         }
@@ -45,8 +45,8 @@ angular.module('Fortscale')
                         },
                         presetRanges: [
                             {text: 'Today', dateStart: 'today', dateEnd: 'today', closeOnSelect: true },
-                            {text: 'Last week', dateStart: function(){ return moment().subtract("days", 7).toDate() }, dateEnd: function(){ moment().toDate() }, closeOnSelect: true },
-                            {text: 'Last month', dateStart: function(){ return moment().subtract("months", 1).toDate() }, dateEnd: function(){ moment().toDate() }, closeOnSelect: true }
+                            {text: 'Last week', dateStart: 'today-7days', dateEnd: 'today', closeOnSelect: true },
+                            {text: 'Last month', dateStart: 'today-1months', dateEnd: 'today', closeOnSelect: true }
                         ],
                         closeOnSelect: false,
                         doneButtonText: "Apply",

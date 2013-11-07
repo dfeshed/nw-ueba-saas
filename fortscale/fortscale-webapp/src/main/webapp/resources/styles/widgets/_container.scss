@@ -5,6 +5,8 @@
   .widget{
     border: none;
 
+    &.inner-widget{ border: solid 1px #dfdfdf }
+
     &:first-child{
       .widget-contents{
         padding-top: 0;

@@ -108,4 +108,10 @@ public class VpnDAOImpl implements VpnDAO {
 		return null;
 	}
 
+	@Override
+	public List<Long> getDistinctRuntime() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -88,7 +88,7 @@ public class ApiAnalystController extends BaseController{
 			@Valid Password newPassword,
 			Model model) throws InvalidCredentialsException{
 		AnalystAuth analystAuth = getThisAnalystAuth();
-		if(!analystAuth.getPassword().equals(mongoUserDetailsService.encodePassword(password.toString()))) {
+		if(!analystAuth.getPassword().equals(mongoUserDetailsService.encodePassword(analystAuth,password.toString()))) {
 			throw new InvalidCredentialsException("wrong password");
 		} else {
 			mongoUserDetailsService.updateUser(analystAuth.getUsername(), username.toString(), newPassword.toString(), username.toString(), firstName.toString(), lastName.toString());

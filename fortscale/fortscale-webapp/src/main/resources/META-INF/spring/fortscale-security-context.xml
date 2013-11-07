@@ -36,9 +36,6 @@
                     <beans:map>
                         <!-- 404 -->
                         <beans:entry key="fortscale.web.exceptions.UnknownResourceException" value="#{T(javax.servlet.http.HttpServletResponse).SC_NOT_FOUND}, _exmsg"/>
-
-                        <!-- 500 (catch all): -->
-                        <beans:entry key="Throwable" value="500"/>
                     </beans:map>
                 </beans:property>
             </beans:bean>
@@ -84,9 +81,12 @@
 			logout-url="/api/analyst/logout" />
 	</http>
 
+	<beans:bean id="mongoAuthenticationProvider" class="fortscale.services.security.MongoAuthenticationProvider">
+		<beans:property name="passwordEncoder" ref="passwordEncoder"/>
+		<beans:property name="saltSource" ref="saltSource"/>
+		<beans:property name="userDetailsService" ref="mongoUserDetailsService"/>
+	</beans:bean>
 	<authentication-manager>
-		<authentication-provider user-service-ref="mongoUserDetailsService">
-			<password-encoder hash="md5" />
-		</authentication-provider>
+		<authentication-provider ref="mongoAuthenticationProvider"/>
 	</authentication-manager>
 </beans:beans>

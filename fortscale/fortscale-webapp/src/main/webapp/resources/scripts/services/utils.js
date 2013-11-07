@@ -40,6 +40,61 @@ angular.module("Utils", []).factory("utils", [function(){
             }
         },
         date: {
+            getMoment: function(date){
+                if (!date)
+                    return "";
+
+                if (angular.isDate(date))
+                    return moment(date);
+
+                if (typeof(date) === "number")
+                    return moment(date);
+
+                if (date === "now")
+                    return new moment();
+
+                if (/^\d+$/.test(date))
+                    return moment(parseInt(date));
+
+                var newDate = moment(),
+                    subtractMatch = date.match(/^-(\d+)\s?(\w+)$/);
+
+                if (subtractMatch){
+                    var now = moment();
+                    newDate = now.subtract(subtractMatch[2], parseInt(subtractMatch[1]));
+                }
+                else{
+                    var specifiedDate = moment(date);
+                    if (specifiedDate.isValid())
+                        newDate = specifiedDate;
+                    else if (/^\d+$/.test(date))
+                        newDate = moment(parseInt(date, 10));
+                    else if (splunkDateFormatRegExp.test(date)){
+                        newDate = moment(date.replace(/^(\d{2})\/(\d{2})\/(\d{4}):(\d{1,2}):(\d{1,2}):(\d{1,2})$/, "$3-$1-$2 $4:$5:$6"));
+                    }
+                    else if (splunkBucketRegExp.test(date)){
+                        newDate = moment(date.replace(splunkBucketRegExp, "$1-$2-$3 $4:$5"));
+                    }
+                }
+
+                return newDate;
+            },
+            getDatesSpan: function(start, end){
+                var firstDate = this.getMoment(start),
+                    lastDate = this.getMoment(end);
+
+                if (!firstDate.isValid() || !lastDate.isValid())
+                    return null;
+
+                var daysCount = Math.abs(firstDate.diff(lastDate, "days")),
+                    dates = [];
+
+                for(var i = 0; i < daysCount; i++){
+                    dates.push(firstDate.add("days", 1).clone().toDate());
+                }
+
+                return dates;
+            },
             prettyDate: function (date, isShort) {
                 if (!date)
                     return "";

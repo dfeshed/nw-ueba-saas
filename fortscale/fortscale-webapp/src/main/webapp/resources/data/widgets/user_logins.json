@@ -15,9 +15,20 @@
             "settings": {
                 "fields": [
                     {
+                        "name": "Severity",
+                        "icon": "stop",
+                        "style": "score",
+                        "styleParams": {
+                            "value": "eventScore"
+                        },
+                        "renderHeader": false,
+                        "className": "table-small-cell"
+                    },
+                    {
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
-                        "link": "#/d/investigator?entities=wmievents4769&client_address={{sourceIp}}&account_name={{@loginsUser}}"
+                        "link": "#/d/investigator?entities=wmievents4769&client_address={{sourceIp}}&account_name={{@loginsUser}}",
+                        "headerColspan": 2
                     },
                     {
                         "name": "Destination Hostname",
@@ -41,11 +52,7 @@
                     },
                     {
                         "name": "Score",
-                        "value": "{{eventScore}}",
-                        "style": "score",
-                        "styleParams": {
-                            "value": "eventScore"
-                        }
+                        "value": "{{eventScore}}"
                     }
                 ]
             }

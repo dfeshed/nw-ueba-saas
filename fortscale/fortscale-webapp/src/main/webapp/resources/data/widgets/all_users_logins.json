@@ -12,9 +12,20 @@
             "settings": {
                 "fields": [
                     {
+                        "name": "Severity",
+                        "icon": "stop",
+                        "style": "score",
+                        "styleParams": {
+                            "value": "eventScore"
+                        },
+                        "renderHeader": false,
+                        "className": "table-small-cell"
+                    },
+                    {
                         "name": "User",
                         "value": "{{username}}",
-                        "link": "#/d/user/{{userId}}?currentFeature={{@currentScore}}"
+                        "link": "#/d/user/{{userId}}?currentFeature={{@currentScore}}",
+                        "headerColspan": 2
                     },
                     {
                         "name": "Source IP",
@@ -43,11 +54,7 @@
                     },
                     {
                         "name": "Score",
-                        "value": "{{eventScore}}",
-                        "style": "score",
-                        "styleParams": {
-                            "value": "eventScore"
-                        }
+                        "value": "{{eventScore}}"
                     }
                 ]
             }

@@ -38,4 +38,6 @@ public interface AuthDAO {
 	public List<AuthScore> findByTimestampAndGlobalScoreBetweenSortByEventScore(Date timestamp, int lowestVal, int upperVal, int limit);
 	
 	public List<AuthScore> getTopEventsAboveThreshold(Threshold threshold, Date timestamp, int limit);
+	
+	public List<Long> getDistinctRuntime();
 }

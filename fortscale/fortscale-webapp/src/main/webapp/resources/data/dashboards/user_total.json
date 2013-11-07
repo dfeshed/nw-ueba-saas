@@ -1,12 +1,12 @@
 {
-    "dashboardId": "user_active_directory_group_membership",
+    "dashboardId": "user_total",
     "columns": [
         {
             "className": "span15",
             "widgets": [
                 {
                     "widgetId": "user_score_history",
-                    "title": "Group Membership Score History - Last 7 Days",
+                    "title": "Total Score History - Last 7 Days",
                     "report": {
                         "query": {
                             "params": [
@@ -24,7 +24,6 @@
                 },
                 {
                     "widgetId": "user_profile_features",
-                    "title": "Suspicious Group Membership",
                     "refreshOn": "date",
                     "params": {
                         "date": null

@@ -15,9 +15,20 @@
             "settings": {
                 "fields": [
                     {
+                        "name": "Severity",
+                        "icon": "stop",
+                        "style": "score",
+                        "styleParams": {
+                            "value": "eventScore"
+                        },
+                        "renderHeader": false,
+                        "className": "table-small-cell"
+                    },
+                    {
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
-                        "link": "#/d/investigator?entities=vpndatares&username={{@vpnUser}}&source_ip={{sourceIp}}"
+                        "link": "#/d/investigator?entities=vpndatares&username={{@vpnUser}}&source_ip={{sourceIp}}",
+                        "headerColspan": 2
                     },
                     {
                         "name": "Internal IP",
@@ -46,10 +57,6 @@
                     {
                         "name": "Score",
                         "value": "{{eventScore}}",
-                        "style": "score",
-                        "styleParams": {
-                            "value": "eventScore"
-                        },
                         "transform": {
                             "method": "round"
                         }

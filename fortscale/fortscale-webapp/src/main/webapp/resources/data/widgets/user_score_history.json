@@ -1,7 +1,8 @@
 {
     "reportId": "user_score_history",
     "title": "User score for the last 7 days",
-
+    "refreshOn": ["userName"],
+    "requiredParams": ["userName"],
     "views": [
         {
             "type": "barsChart",
@@ -36,6 +37,7 @@
                 "series": [
                     {
                         "field": "score",
+                        "default": 0,
                         "label": "{{@userName}}",
                         "style": "score",
                         "styleParams": {
@@ -44,21 +46,53 @@
                     },
                     {
                         "field": "avgScore",
+                        "default": 0,
                         "label": "Average user",
                         "color": "#e7e7e7",
-                        "barLabelsColor": "#aaaaaa"
+                        "barLabelsColor": "#aaaaaa",
+                        "legend": "Average User"
                     }
                 ],
                 "labels": {
                     "field": "date",
                     "value": "{{date}}",
+                    "predefinedValues": {
+                        "type": "date",
+                        "first": "-7 days",
+                        "last": "now"
+                    },
                     "styleField": "score",
                     "transform": {
                         "method": "date",
                         "options": {
-                            "format": "MM/DD"
+                            "format": "MM/DD/YYYY"
                         }
                     }
+                },
+                "description": "Click on the bars to analyze a date's score:",
+                "legend": {
+                    "items": [
+                        {
+                            "value": "Critical",
+                            "color": "#D77576"
+                        },
+                        {
+                            "value": "High",
+                            "color": "#F59925"
+                        },
+                        {
+                            "value": "Medium",
+                            "color": "#F2CA3A"
+                        },
+                        {
+                            "value": "Low",
+                            "color": "#80BFF0"
+                        },
+                        {
+                            "value": "Average User",
+                            "color": "#e7e7e7"
+                        }
+                    ]
                 },
                 "selectionBar": {
                     "styleField": "score"

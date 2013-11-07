@@ -1,7 +1,7 @@
 package fortscale.services;
 
 public enum UserApplication {
-	ad("active_directory","User Profile"),
+	active_directory("active_directory","User Profile"),
 	vpn("vpn","vpn");
 	
 	private String id;

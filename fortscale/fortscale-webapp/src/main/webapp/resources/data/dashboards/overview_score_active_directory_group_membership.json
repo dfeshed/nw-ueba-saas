@@ -21,7 +21,8 @@
                                         "widgets": [
                                             {
                                                 "widgetId": "top_10_users",
-                                                "title": "Top Suspicious Group Memberships"
+                                                "title": "Top Suspicious Group Memberships",
+                                                "className": "inner-widget"
                                             }
                                         ]
                                     },
@@ -30,7 +31,8 @@
                                         "widgets": [
                                             {
                                                 "widgetId": "top_10_trending_users",
-                                                "title": "Top Trending Users in Group Memberships"
+                                                "title": "Top Trending Users in Group Memberships",
+                                                "className": "inner-widget"
                                             }
                                         ]
                                     }

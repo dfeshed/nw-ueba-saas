@@ -45,13 +45,6 @@ angular.module('Fortscale')
                     scope.searchValue = value;
                 });
 
-                scope.clear = function(){
-                    if (onSelect && settings.selectOnClear)
-                        onSelect(null, true);
-
-                    scope.searchValue = "";
-                };
-
                 function split( val ) {
                     return val.split( /,\s*/ );
                 }

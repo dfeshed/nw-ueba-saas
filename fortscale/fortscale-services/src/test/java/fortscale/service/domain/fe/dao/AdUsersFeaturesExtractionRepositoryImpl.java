@@ -199,5 +199,11 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 		return null;
 	}
 
+	@Override
+	public List<Date> getDistinctRuntime(String classifierId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

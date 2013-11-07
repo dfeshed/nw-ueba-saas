@@ -1,4 +1,4 @@
-angular.module("Conditions", ["Format", "Transforms"]).factory("conditions", ["format", "transforms", function(format, transforms){
+angular.module("Conditions", ["Format", "Transforms"]).factory("conditions", ["format", "utils", function(format, utils){
 
     var validations = {
         contains: function(val1, val2){
@@ -76,8 +76,8 @@ angular.module("Conditions", ["Format", "Transforms"]).factory("conditions", ["f
 
         },
         dateRange: function(value, fieldName){
-            var dateStart = transforms.getDate(angular.isObject(value) ? value.timeStart : value),
-                dateEnd = transforms.getDate(angular.isObject(value) ? value.timeEnd : value);
+            var dateStart = utils.date.getMoment(angular.isObject(value) ? value.timeStart : value),
+                dateEnd = utils.date.getMoment(angular.isObject(value) ? value.timeEnd : value);
 
             dateEnd.add("days", 1);
 

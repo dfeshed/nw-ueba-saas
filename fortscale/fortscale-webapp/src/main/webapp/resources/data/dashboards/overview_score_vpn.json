@@ -29,7 +29,8 @@
                                                         "href": "#/d/investigator?entities=vpndatares",
                                                         "refreshOn": ["currentScore"]
                                                     }
-                                                ]
+                                                ],
+                                                "className": "inner-widget"
                                             }
                                         ]
                                     },
@@ -38,7 +39,8 @@
                                         "widgets": [
                                             {
                                                 "widgetId": "top_10_trending_users",
-                                                "title": "Top Trending Users in VPN"
+                                                "title": "Top Trending Users in VPN",
+                                                "className": "inner-widget"
                                             }
                                         ]
                                     }
@@ -59,7 +61,8 @@
                                         "className": "span8",
                                         "widgets": [
                                             {
-                                                "widgetId": "vpn_failures_by_username"
+                                                "widgetId": "vpn_failures_by_username",
+                                                "className": "inner-widget"
                                             }
                                         ]
                                     },
@@ -67,7 +70,8 @@
                                         "className": "span7",
                                         "widgets": [
                                             {
-                                                "widgetId": "vpn_failures_by_source_ip"
+                                                "widgetId": "vpn_failures_by_source_ip",
+                                                "className": "inner-widget"
                                             }
                                         ]
                                     }

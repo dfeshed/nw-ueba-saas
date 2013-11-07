@@ -74,6 +74,28 @@
                             "dataFieldType": "number"
                         }
                     ]
+                },
+                {
+                    "id": "renderHeader",
+                    "name": "Render Header",
+                    "type": "boolean",
+                    "default": true
+                },
+                {
+                    "id": "headerColspan",
+                    "name": "Header Colspan",
+                    "type": "number",
+                    "default": 1
+                },
+                {
+                    "id": "icon",
+                    "name": "Icon",
+                    "type": "string"
+                },
+                {
+                    "id": "className",
+                    "name": "Class",
+                    "type": "string"
                 }
             ]
         }

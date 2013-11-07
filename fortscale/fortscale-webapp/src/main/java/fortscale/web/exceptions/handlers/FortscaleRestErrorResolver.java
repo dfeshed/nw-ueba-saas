@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.httpclient.auth.InvalidCredentialsException;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -44,6 +45,7 @@ public class FortscaleRestErrorResolver implements RestErrorResolver, MessageSou
     private static final String ERROR_DEV_MSG = "devMsg";
     private static final String ERROR_INFO_URL = "infoUrl";
     public static final String DEFAULT_EXCEPTION_MESSAGE_VALUE = "_exmsg";
+    public static final String DEFAULT_EXCEPTION_FULL_MESSAGE_VALUE = "_exfullmsg";
     public static final String DEFAULT_MESSAGE_VALUE = "_msg";
 
     private static final Logger log = LoggerFactory.getLogger(FortscaleRestErrorResolver.class);
@@ -141,6 +143,9 @@ public class FortscaleRestErrorResolver implements RestErrorResolver, MessageSou
 
         // 415
         applyDef(m, HttpMediaTypeNotSupportedException.class, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        
+        // 500 (catch all)
+        applyDef(m, Throwable.class, HttpStatus.INTERNAL_SERVER_ERROR);
 
         return m;
     }
@@ -168,7 +173,7 @@ public class FortscaleRestErrorResolver implements RestErrorResolver, MessageSou
     		builder.append(", ").append(ERROR_CODE).append("=").append(status.value());
     		builder.append(", ").append(ERROR_MSG).append("=").append(status.getReasonPhrase());
     	}
-    	builder.append(", ").append(ERROR_DEV_MSG).append("=").append(DEFAULT_EXCEPTION_MESSAGE_VALUE);
+    	builder.append(", ").append(ERROR_DEV_MSG).append("=").append(DEFAULT_EXCEPTION_FULL_MESSAGE_VALUE);
         m.put(key, builder.toString());
     }
 
@@ -249,6 +254,8 @@ public class FortscaleRestErrorResolver implements RestErrorResolver, MessageSou
             }
             if (msg.equalsIgnoreCase(DEFAULT_EXCEPTION_MESSAGE_VALUE)) {
                 msg = ex.getMessage();
+            } else if(msg.equalsIgnoreCase(DEFAULT_EXCEPTION_FULL_MESSAGE_VALUE)){
+            	msg = String.format("%s\n%s", ex.toString(), ExceptionUtils.getStackTrace(ex)) ;
             }
             if (messageSource != null) {
                 Locale locale = null;

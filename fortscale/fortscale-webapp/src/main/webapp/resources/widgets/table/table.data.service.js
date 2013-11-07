@@ -38,7 +38,7 @@ angular.module("TableWidget").factory("tableWidgetData", ["utils", "transforms",
                 if (field.map){
                     var mapValue = field.map[fieldData.display];
                     if (mapValue)
-                        fieldData.display = mapValue;
+                        fieldData.display = utils.strings.parseValue(mapValue, row, params, rowIndex);
                 }
 
                 if (field.icon){
@@ -49,6 +49,9 @@ angular.module("TableWidget").factory("tableWidgetData", ["utils", "transforms",
 
                 if (field.className)
                     fieldData.className = utils.strings.parseValue(field.className, row, params, rowIndex);
+
+                if (field.renderHeader === false)
+                    fieldData.renderHeader = false;
 
                 if (field.valueTooltip){
                     if (angular.isString(field.valueTooltip))

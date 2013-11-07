@@ -27,6 +27,15 @@
   }
   &.no-border{
     border: none;
+
+    & > ng-include > .widget-contents{
+      padding-top: 0;
+    }
+  }
+
+  &.inner-widget{
+    border: solid 1px #dfdfdf;
+    padding: 10px 10px 0;
   }
 }
 
@@ -155,20 +164,13 @@
     box-shadow: none;
     padding: 0;
     background: none;
-    margin-bottom: 0;
 
     .widget-message{ display: none }
-    .widget-view{ padding: 0 }
   }
 
   &.widget-noChrome{
     .widget-controls{ display: none }
   }
-}
-
-.widget-view{
-  padding: 10px;
-  box-sizing: border-box;
 }
 
 .widget-view-title{
@@ -302,7 +304,7 @@
     font-weight: bold;
     border-radius: 0 0 4px 5px;
     position: relative;
-    top: -10px;
+    top: -9px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
 
     a{

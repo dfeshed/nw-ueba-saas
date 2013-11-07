@@ -13,7 +13,7 @@
                     },
                     {
                         "icon": "group",
-                        "tooltip": "Member of",
+                        "tooltip": "Group Membership",
                         "value": "{{name}}",
                         "array": "groups"
                     },

@@ -23,47 +23,11 @@
             if (!options)
                 options = { format: "MM/DD/YY HH:mm" };
 
-            var newDate = methods.getDate(date);
+            var newDate = utils.date.getMoment(date);
             if (options.prettyDate)
                 return utils.date.prettyDate(newDate.toDate(), options.shortPrettyDate);
 
             return newDate.format(options.format);
-        },
-        getDate: function(date){
-            if (!date)
-                return "";
-
-            if (angular.isDate(date))
-                return moment(date);
-
-            if (typeof(date) === "number")
-                return moment(date);
-
-            if (/^\d+$/.test(date))
-                return moment(parseInt(date));
-
-            var newDate = moment(),
-                subtractMatch = date.match(/^-(\d+)(\w+)$/);
-
-            if (subtractMatch){
-                var now = moment();
-                newDate = now.subtract(subtractMatch[2], parseInt(subtractMatch[1]));
-            }
-            else{
-                var specifiedDate = moment(date);
-                if (specifiedDate.isValid())
-                    newDate = specifiedDate;
-                else if (/^\d+$/.test(date))
-                    newDate = moment(parseInt(date, 10));
-                else if (splunkDateFormatRegExp.test(date)){
-                    newDate = moment(date.replace(/^(\d{2})\/(\d{2})\/(\d{4}):(\d{1,2}):(\d{1,2}):(\d{1,2})$/, "$3-$1-$2 $4:$5:$6"));
-                }
-                else if (splunkBucketRegExp.test(date)){
-                    newDate = moment(date.replace(splunkBucketRegExp, "$1-$2-$3 $4:$5"));
-                }
-            }
-
-            return newDate;
         },
         round: function(number){
             return parseInt(number, 10);

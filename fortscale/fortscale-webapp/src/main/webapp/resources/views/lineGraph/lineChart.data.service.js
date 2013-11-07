@@ -1,4 +1,4 @@
-angular.module("LineChartWidget").factory("lineChartWidgetData", ["transforms", "format", function(transforms, format){
+angular.module("LineChartWidget").factory("lineChartWidgetData", ["transforms", "format", "utils", function(transforms, format, utils){
     var typeValueGenerators = {
         date: function(options, params){
             var values = [],
@@ -83,8 +83,8 @@ angular.module("LineChartWidget").factory("lineChartWidgetData", ["transforms", 
                 if (!params.timeStart || !params.timeEnd)
                     return;
 
-                var xFirstValue = transforms.getDate(params.timeStart).toDate(),
-                    xLastValue = transforms.getDate(params.timeEnd).toDate(),
+                var xFirstValue = utils.date.getMoment(params.timeStart).toDate(),
+                    xLastValue = utils.date.getMoment(params.timeEnd).toDate(),
                     columnCount = graphData[0].length;
 
                 if (xLastValue > new Date())

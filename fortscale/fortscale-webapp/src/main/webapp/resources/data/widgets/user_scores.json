@@ -4,6 +4,7 @@
     "className": "no-margins widget-advance-one",
     "reportId": "user_scores",
     "refreshOn": ["userName"],
+    "requiredParams": ["userName"],
     "views": [
         {
             "type": "tabs",
@@ -60,6 +61,7 @@
                     "labelsFont": {
                         "size": "20px"
                     },
+                    "maxWidth": 400,
                     "selectable": true,
                     "highlightSelectedItem": false,
                     "selectLabels": false,
@@ -90,6 +92,27 @@
                     "field": "name",
                     "value": "{{name}}",
                     "styleField": "score"
+                },
+                "description": "Click on the bars for a drill-down of the score:",
+                "legend": {
+                    "items": [
+                        {
+                            "value": "High",
+                            "color": "#D77576"
+                        },
+                        {
+                            "value": "Medium",
+                            "color": "#F2CA3A"
+                        },
+                        {
+                            "value": "Low",
+                            "color": "#80BFF0"
+                        },
+                        {
+                            "value": "Average User",
+                            "color": "#e7e7e7"
+                        }
+                    ]
                 },
                 "selectionBar": {
                     "styleField": "score"
