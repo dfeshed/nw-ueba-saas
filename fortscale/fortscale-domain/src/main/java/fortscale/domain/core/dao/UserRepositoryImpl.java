@@ -2,7 +2,6 @@ package fortscale.domain.core.dao;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;

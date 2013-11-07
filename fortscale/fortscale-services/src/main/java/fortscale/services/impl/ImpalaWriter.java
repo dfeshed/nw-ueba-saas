@@ -1,9 +1,10 @@
-package fortscale.services.fe.impl;
+package fortscale.services.impl;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 
 public class ImpalaWriter{
 	private BufferedWriter writer = null;
@@ -51,5 +52,9 @@ public class ImpalaWriter{
 			}
 		}
 		writer = null;
+	}
+	
+	protected long getRuntime(Date timestamp){
+		return timestamp.getTime()/1000;
 	}
 }

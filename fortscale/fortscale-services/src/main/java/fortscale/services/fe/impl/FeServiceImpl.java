@@ -20,7 +20,7 @@ import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.FeService;
-import fortscale.services.impl.ImpalaScoreWriterFactory;
+import fortscale.services.impl.ImpalaWriterFactory;
 
 @Service("feService")
 public class FeServiceImpl implements FeService {
@@ -40,7 +40,7 @@ public class FeServiceImpl implements FeService {
 	private UserService userService;
 	
 	@Autowired
-	private ImpalaScoreWriterFactory impalaGroupsScoreWriterFactory;
+	private ImpalaWriterFactory impalaGroupsScoreWriterFactory;
 
 
 	@Override

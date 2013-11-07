@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService{
 	private VpnDAO vpnDAO;
 	
 	@Autowired
-	private ImpalaScoreWriterFactory impalaGroupsScoreWriterFactory;
+	private ImpalaWriterFactory impalaWriterFactory;
 	
 	@Autowired 
 	private ADUserParser adUserParser; 
@@ -117,7 +117,14 @@ public class UserServiceImpl implements UserService{
 			}
 			
 		}
-		
+		saveUserIdUsernamesMapToImpala(new Date());
+	}
+	
+	private void saveUserIdUsernamesMapToImpala(Date timestamp){
+		List<User> users = userRepository.findAll();
+		ImpalaUseridToAppUsernameWriter writer = impalaWriterFactory.createImpalaUseridToAppUsernameWriter();
+		writer.write(users, timestamp);
+		writer.close();
 	}
 	
 	private void updateUserWithADInfo(AdUser adUser) {
@@ -415,7 +422,7 @@ public class UserServiceImpl implements UserService{
 	
 	private void saveUserTotalScoreToImpala(Date timestamp){
 		List<User> users = userRepository.findAll();
-		ImpalaTotalScoreWriter writer = impalaGroupsScoreWriterFactory.createImpalaTotalScoreWriter();
+		ImpalaTotalScoreWriter writer = impalaWriterFactory.createImpalaTotalScoreWriter();
 		for(User user: users){
 			if(user.getScore(Classifier.total.getId()) != null){
 				writer.writeScore(user, timestamp);
@@ -498,7 +505,7 @@ public class UserServiceImpl implements UserService{
 		}
 		avgScore = avgScore/adUserFeaturesExtractions.size();
 		
-		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaGroupsScoreWriterFactory.createImpalaGroupsScoreWriter();
+		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
 		List<User> users = new ArrayList<>();
 		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
 			User user = userRepository.findOne(extraction.getUserId().toString());

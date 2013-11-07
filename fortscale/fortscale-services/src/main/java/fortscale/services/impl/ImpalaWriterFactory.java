@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ImpalaScoreWriterFactory {
+public class ImpalaWriterFactory {
 
 	@Value("${user.ad.group.membership.score.csv.file.full.path}")
 	private String userAdScoreCsvFileFullPathString;
 	@Value("${user.ad.total.score.csv.file.full.path}")
 	private String userTotalScoreCsvFileFullPathString;
+	@Value("${user.id.to.app.username.csv.file.full.path}")
+	private String useridToAppUsernameCsvFileFullPathString;
 	
 	
 	
@@ -33,7 +35,11 @@ public class ImpalaScoreWriterFactory {
 		this.userTotalScoreCsvFileFullPathString = userTotalScoreCsvFileFullPathString;
 	}
 	
-	
+	public void setUseridToAppUsernameCsvFileFullPathString(
+			String useridToAppUsernameCsvFileFullPathString) {
+		this.useridToAppUsernameCsvFileFullPathString = useridToAppUsernameCsvFileFullPathString;
+	}
+
 	public ImpalaGroupsScoreWriter createImpalaGroupsScoreWriter(){
 		ImpalaGroupsScoreWriter writer = new ImpalaGroupsScoreWriter(getFile(userAdScoreCsvFileFullPathString));
 		return writer;
@@ -41,6 +47,11 @@ public class ImpalaScoreWriterFactory {
 	
 	public ImpalaTotalScoreWriter createImpalaTotalScoreWriter(){
 		ImpalaTotalScoreWriter writer = new ImpalaTotalScoreWriter(getFile(userTotalScoreCsvFileFullPathString));
+		return writer;
+	}
+	
+	public ImpalaUseridToAppUsernameWriter createImpalaUseridToAppUsernameWriter(){
+		ImpalaUseridToAppUsernameWriter writer = new ImpalaUseridToAppUsernameWriter(getFile(useridToAppUsernameCsvFileFullPathString));
 		return writer;
 	}
 }
