@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -398,18 +399,20 @@ public class UserServiceImpl implements UserService{
 	private ConfigurationService configurationService; 
 	
 	private void updateUserTotalScore(List<User> users, boolean isToSave, Date lastRun){
-		ScoreConfiguration scoreConfiguration = configurationService.getScoreConfiguration();
-		Collection<ScoreWeight> scoreWeights = scoreConfiguration.getConfMap().values();
 		for(User user: users){
-			ScoreInfo totalScore = calculateTotalScore(scoreWeights, user.getScores());
-			
-			updateUserScore(user, lastRun, Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false);
+			updateUserTotalScore(user, lastRun);
 		}
 		
 		if(isToSave){
 			userRepository.save(users);
-			saveUserTotalScoreToImpala(lastRun, scoreConfiguration);
+			saveUserTotalScoreToImpala(lastRun, configurationService.getScoreConfiguration());
 		}
+	}
+	
+	private void updateUserTotalScore(User user, Date lastRun){
+		ScoreInfo totalScore = calculateTotalScore(configurationService.getScoreConfiguration().getConfMap().values(), user.getScores());
+		
+		updateUserScore(user, lastRun, Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false);
 	}
 	
 	private ScoreInfo calculateTotalScore(Collection<ScoreWeight> scoreWeights, Map<String, ClassifierScore> classifierScoreMap){
@@ -435,32 +438,31 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void recalculateTotalScore(){
-		ScoreConfiguration scoreConfiguration = configurationService.getScoreConfiguration();
-		Collection<ScoreWeight> scoreWeights = scoreConfiguration.getConfMap().values();
 		List<User> users = userRepository.findAll();
 		for(User user: users){
-			ClassifierScore cScore = user.getScore(Classifier.total.getId());
-			if(cScore == null){
+			recalculateTotalScore(user);
+			userRepository.save(user);
+		}
+	}
+	
+	private void recalculateTotalScore(User user){
+		List<ClassifierScore> classifierScores = new ArrayList<>();
+		for(ClassifierScore classifierScore: user.getScores().values()){
+			if(classifierScore.getClassifierId().equals(Classifier.total.getId())){
 				continue;
 			}
-			user.removeClassifierScore(Classifier.total.getId());
-			for(int i = cScore.getPrevScores().size()-1; i >= 0; i--){
-				ScoreInfo scoreInfo = cScore.getPrevScores().get(i);
-				Map<String, ClassifierScore> map = new HashMap<String, ClassifierScore>();
-				for(ScoreWeight scoreWeight: scoreWeights){
-					ClassifierScore cScore2 = user.getScore(scoreWeight.getId());
-					for(ScoreInfo scoreInfo2: cScore2.getPrevScores()){
-						if(isOnSameDay(scoreInfo.getTimestamp(), scoreInfo2.getTimestamp())){
-							ClassifierScore tmp = new ClassifierScore(cScore2.getClassifierId(), scoreInfo2);
-							map.put(tmp.getClassifierId(), tmp);
-							break;
-						}
-					}
-				}
-				ScoreInfo totalScore = calculateTotalScore(scoreWeights, map);
-				updateUserScore(user, scoreInfo.getTimestamp(), Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false);
+			for(ScoreInfo scoreInfo: classifierScore.getPrevScores()){
+				classifierScores.add(new ClassifierScore(classifierScore.getClassifierId(), scoreInfo));
 			}
-			userRepository.save(user);
+		}
+		
+		user.removeAllScores();
+		
+		Collections.sort(classifierScores, new OrderByClassifierScoreTimestempAsc());
+		
+		for(ClassifierScore classifierScore: classifierScores){
+			updateUserScore(user, classifierScore.getTimestamp(), classifierScore.getClassifierId(), classifierScore.getScore(), classifierScore.getAvgScore(), false);
+			updateUserTotalScore(user, classifierScore.getTimestamp());
 		}
 	}
 	
@@ -751,4 +753,13 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	
+	
+	public static class OrderByClassifierScoreTimestempAsc implements Comparator<ClassifierScore>{
+
+		@Override
+		public int compare(ClassifierScore o1, ClassifierScore o2) {
+			return o1.getTimestamp().compareTo(o2.getTimestamp());
+		}
+		
+	}
 }
