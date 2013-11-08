@@ -34,6 +34,10 @@ public class UserDetailsBean implements Serializable{
 		this.adUserParser = new ADUserParser();
 	}
 	
+	public String getId(){
+		return user.getId();
+	}
+	
 	public String getUsername() {
 		return user.getUsername();
 	}
