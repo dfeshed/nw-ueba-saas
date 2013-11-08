@@ -3,9 +3,12 @@ package fortscale.services.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -396,27 +399,67 @@ public class UserServiceImpl implements UserService{
 	
 	private void updateUserTotalScore(List<User> users, boolean isToSave, Date lastRun){
 		ScoreConfiguration scoreConfiguration = configurationService.getScoreConfiguration();
+		Collection<ScoreWeight> scoreWeights = scoreConfiguration.getConfMap().values();
 		for(User user: users){
-			double totalWeights = 0.00001;
-			double score = 0;
-			double avgScore = 0;
+			ScoreInfo totalScore = calculateTotalScore(scoreWeights, user.getScores());
 			
-			for(ScoreWeight scoreWeight: scoreConfiguration.getConfMap().values()){
-				ClassifierScore classifierScore = user.getScore(scoreWeight.getId());
-				if(classifierScore != null){
-					totalWeights += scoreWeight.getWeight();
-					
-					score += classifierScore.getScore() * scoreWeight.getWeight();
-					avgScore += classifierScore.getAvgScore() * scoreWeight.getWeight();					
-				}
-			}
-			
-			updateUserScore(user, lastRun, Classifier.total.getId(), score/totalWeights, avgScore/totalWeights, false);
+			updateUserScore(user, lastRun, Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false);
 		}
 		
 		if(isToSave){
 			userRepository.save(users);
 			saveUserTotalScoreToImpala(lastRun, scoreConfiguration);
+		}
+	}
+	
+	private ScoreInfo calculateTotalScore(Collection<ScoreWeight> scoreWeights, Map<String, ClassifierScore> classifierScoreMap){
+		double totalWeights = 0.00001;
+		double score = 0;
+		double avgScore = 0;
+		
+		for(ScoreWeight scoreWeight: scoreWeights){
+			ClassifierScore classifierScore = classifierScoreMap.get(scoreWeight.getId());
+			if(classifierScore != null){
+				totalWeights += scoreWeight.getWeight();
+				
+				score += classifierScore.getScore() * scoreWeight.getWeight();
+				avgScore += classifierScore.getAvgScore() * scoreWeight.getWeight();					
+			}
+		}
+		
+		ScoreInfo ret = new ScoreInfo();
+		ret.setScore(score/totalWeights);
+		ret.setAvgScore(avgScore/totalWeights);
+		return ret;
+	}
+	
+	public void recalculateTotalScore(){
+		ScoreConfiguration scoreConfiguration = configurationService.getScoreConfiguration();
+		Collection<ScoreWeight> scoreWeights = scoreConfiguration.getConfMap().values();
+		List<User> users = userRepository.findAll();
+		for(User user: users){
+			ClassifierScore cScore = user.getScore(Classifier.total.getId());
+			if(cScore == null){
+				continue;
+			}
+			user.removeClassifierScore(Classifier.total.getId());
+			for(int i = cScore.getPrevScores().size()-1; i >= 0; i--){
+				ScoreInfo scoreInfo = cScore.getPrevScores().get(i);
+				Map<String, ClassifierScore> map = new HashMap<String, ClassifierScore>();
+				for(ScoreWeight scoreWeight: scoreWeights){
+					ClassifierScore cScore2 = user.getScore(scoreWeight.getId());
+					for(ScoreInfo scoreInfo2: cScore2.getPrevScores()){
+						if(isOnSameDay(scoreInfo.getTimestamp(), scoreInfo2.getTimestamp())){
+							ClassifierScore tmp = new ClassifierScore(cScore2.getClassifierId(), scoreInfo2);
+							map.put(tmp.getClassifierId(), tmp);
+							break;
+						}
+					}
+				}
+				ScoreInfo totalScore = calculateTotalScore(scoreWeights, map);
+				updateUserScore(user, scoreInfo.getTimestamp(), Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false);
+			}
+			userRepository.save(user);
 		}
 	}
 	
