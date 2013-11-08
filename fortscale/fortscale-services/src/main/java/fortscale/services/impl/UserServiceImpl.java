@@ -433,6 +433,7 @@ public class UserServiceImpl implements UserService{
 		return ret;
 	}
 	
+	@Override
 	public void recalculateTotalScore(){
 		ScoreConfiguration scoreConfiguration = configurationService.getScoreConfiguration();
 		Collection<ScoreWeight> scoreWeights = scoreConfiguration.getConfMap().values();
