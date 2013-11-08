@@ -17,7 +17,7 @@
                     {
                         "name": "User",
                         "value": "{{username}}",
-                        "link": "#/d/investigator?entities=vpndata&username={{username}}&status=FAIL"
+                        "link": "#/d/user/{{userDetails.userId}}?currentFeature={{@currentScore}}"
                     },
                     {
                         "name": "Failure Count",

@@ -38,7 +38,7 @@
                             </div>
                             <a class="btn btn-primary" ng-class="{ disabled: !currentPassword || !newPassword || !newPasswordConfirm }" ng-click="changePassword()">Change Password</a>
                         </fieldset>
-                        <div class="alert alert-error" ng-show="success">
+                        <div class="alert alert-success" ng-show="success">
                             <i class="icon-check"></i>
                             {{success.message}}
                         </div>
