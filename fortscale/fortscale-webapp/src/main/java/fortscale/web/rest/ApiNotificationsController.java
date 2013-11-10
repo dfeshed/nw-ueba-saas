@@ -37,4 +37,12 @@ public class ApiNotificationsController {
 			return new ArrayList<Notification>();
 		}
 	}
+
+	@RequestMapping(value = "/clearAll", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public List<Notification> clearAll() {
+		notificationRepository.deleteAll();
+		return new ArrayList<Notification>();
+	}
 }
