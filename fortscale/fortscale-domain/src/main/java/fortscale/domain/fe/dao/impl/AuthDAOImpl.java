@@ -73,14 +73,25 @@ public class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDAO{
 			AuthScore ret = new AuthScore();
 			
 			try{
+				ret.setTimestamp(parseTimestampDate(rs.getLong(AuthScore.TIMESTAMP_FIELD_NAME)));
+				
 				ret.setUserName(rs.getString(AuthScore.USERNAME_FIELD_NAME));
 				ret.setTargetId(rs.getString(AuthScore.TARGET_ID_FIELD_NAME));
 				ret.setSourceIp(rs.getString(AuthScore.SOURCE_IP_FIELD_NAME));
 				ret.setErrorCode(rs.getString(AuthScore.ERROR_CODE_FIELD_NAME));
+				ret.setEventTime(parseEventTimeDate(rs.getString(AuthScore.EVENT_TIME_FIELD_NAME)));
+				
+				ret.setUserNameScore(Double.parseDouble(rs.getString(AuthScore.USERNAME_SCORE_FIELD_NAME)));
+				ret.setTargetIdScore(Double.parseDouble(rs.getString(AuthScore.TARGET_ID_SCORE_FIELD_NAME)));
+				ret.setSourceIpScore(Double.parseDouble(rs.getString(AuthScore.SOURCE_IP_SCORE_FIELD_NAME)));
+				ret.setErrorCodeScore(Double.parseDouble(rs.getString(AuthScore.ERROR_CODE_SCORE_FIELD_NAME)));
+				ret.setEventTimeScore(Double.parseDouble(rs.getString(AuthScore.EVENT_TIME_SCORE_FIELD_NAME)));
+				
+				
 				ret.setEventScore(Double.parseDouble(rs.getString(AuthScore.EVENT_SCORE_FIELD_NAME)));
 				ret.setGlobalScore(Double.parseDouble(rs.getString(AuthScore.GLOBAL_SCORE_FIELD_NAME)));
-				ret.setTimestamp(parseTimestampDate(rs.getLong(AuthScore.TIMESTAMP_FIELD_NAME)));
-				ret.setEventTime(parseEventTimeDate(rs.getString(AuthScore.EVENT_TIME_FIELD_NAME)));
+				
+				
 			} catch (NumberFormatException e) {
 				throw new SQLException(e);
 			} catch (ParseException e) {
