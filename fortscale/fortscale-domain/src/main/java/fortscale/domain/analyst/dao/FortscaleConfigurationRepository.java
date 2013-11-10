@@ -9,4 +9,5 @@ import fortscale.domain.analyst.FortscaleConfiguration;
 
 public interface FortscaleConfigurationRepository extends MongoRepository<FortscaleConfiguration, String>{
 	public List<FortscaleConfiguration> findByConfigId(String configId, Pageable pageable);
+	public FortscaleConfiguration findByConfigIdAndCreatedById(String configId, String createdById);
 }

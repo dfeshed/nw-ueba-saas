@@ -18,6 +18,7 @@ import fortscale.services.UserService;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.ApplicationUserDetailsBean;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.UserDetailsBean;
 
 
 
@@ -39,6 +40,24 @@ public class ApiUserAppController {
 		List<ApplicationUserDetailsBean> applicationUserDetailsBeans = new ArrayList<>();
 		for(User user: users) {
 			applicationUserDetailsBeans.add(new ApplicationUserDetailsBean(user, userApplication));	
+		}
+
+		ret.setData(applicationUserDetailsBeans);
+		ret.setTotal(applicationUserDetailsBeans.size());
+		return ret;
+	}
+	
+	@RequestMapping(value="/{appId}/usersDetails", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<UserDetailsBean>> usersDetails(@PathVariable String appId,
+			@RequestParam(required=true) List<String> usernames, Model model){
+		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
+		UserApplication userApplication = UserApplication.valueOf(appId);
+		List<User> users = userService.findByApplicationUserName(userApplication, usernames);
+		List<UserDetailsBean> applicationUserDetailsBeans = new ArrayList<>();
+		for(User user: users) {
+			applicationUserDetailsBeans.add(new UserDetailsBean(user,null));	
 		}
 
 		ret.setData(applicationUserDetailsBeans);

@@ -43,4 +43,6 @@ public interface UserService {
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 	
 	public void recalculateUsersScores();
+
+	public void recalculateTotalScore();
 }

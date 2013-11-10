@@ -3,9 +3,12 @@ package fortscale.services.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -395,37 +398,79 @@ public class UserServiceImpl implements UserService{
 	private ConfigurationService configurationService; 
 	
 	private void updateUserTotalScore(List<User> users, boolean isToSave, Date lastRun){
-		ScoreConfiguration scoreConfiguration = configurationService.getScoreConfiguration();
 		for(User user: users){
-			double totalWeights = 0.00001;
-			double score = 0;
-			double avgScore = 0;
-			
-			for(ScoreWeight scoreWeight: scoreConfiguration.getConfMap().values()){
-				ClassifierScore classifierScore = user.getScore(scoreWeight.getId());
-				if(classifierScore != null){
-					totalWeights += scoreWeight.getWeight();
-					
-					score += classifierScore.getScore() * scoreWeight.getWeight();
-					avgScore += classifierScore.getAvgScore() * scoreWeight.getWeight();					
-				}
-			}
-			
-			updateUserScore(user, lastRun, Classifier.total.getId(), score/totalWeights, avgScore/totalWeights, false);
+			updateUserTotalScore(user, lastRun);
 		}
 		
 		if(isToSave){
 			userRepository.save(users);
-			saveUserTotalScoreToImpala(lastRun);
+			saveUserTotalScoreToImpala(lastRun, configurationService.getScoreConfiguration());
 		}
 	}
 	
-	private void saveUserTotalScoreToImpala(Date timestamp){
+	private void updateUserTotalScore(User user, Date lastRun){
+		ScoreInfo totalScore = calculateTotalScore(configurationService.getScoreConfiguration().getConfMap().values(), user.getScores());
+		
+		updateUserScore(user, lastRun, Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false);
+	}
+	
+	private ScoreInfo calculateTotalScore(Collection<ScoreWeight> scoreWeights, Map<String, ClassifierScore> classifierScoreMap){
+		double totalWeights = 0.00001;
+		double score = 0;
+		double avgScore = 0;
+		
+		for(ScoreWeight scoreWeight: scoreWeights){
+			ClassifierScore classifierScore = classifierScoreMap.get(scoreWeight.getId());
+			if(classifierScore != null){
+				totalWeights += scoreWeight.getWeight();
+				
+				score += classifierScore.getScore() * scoreWeight.getWeight();
+				avgScore += classifierScore.getAvgScore() * scoreWeight.getWeight();					
+			}
+		}
+		
+		ScoreInfo ret = new ScoreInfo();
+		ret.setScore(score/totalWeights);
+		ret.setAvgScore(avgScore/totalWeights);
+		return ret;
+	}
+	
+	@Override
+	public void recalculateTotalScore(){
+		List<User> users = userRepository.findAll();
+		for(User user: users){
+			recalculateTotalScore(user);
+			userRepository.save(user);
+		}
+	}
+	
+	private void recalculateTotalScore(User user){
+		List<ClassifierScore> classifierScores = new ArrayList<>();
+		for(ClassifierScore classifierScore: user.getScores().values()){
+			if(classifierScore.getClassifierId().equals(Classifier.total.getId())){
+				continue;
+			}
+			for(ScoreInfo scoreInfo: classifierScore.getPrevScores()){
+				classifierScores.add(new ClassifierScore(classifierScore.getClassifierId(), scoreInfo));
+			}
+		}
+		
+		user.removeAllScores();
+		
+		Collections.sort(classifierScores, new OrderByClassifierScoreTimestempAsc());
+		
+		for(ClassifierScore classifierScore: classifierScores){
+			updateUserScore(user, classifierScore.getTimestamp(), classifierScore.getClassifierId(), classifierScore.getScore(), classifierScore.getAvgScore(), false);
+			updateUserTotalScore(user, classifierScore.getTimestamp());
+		}
+	}
+	
+	private void saveUserTotalScoreToImpala(Date timestamp, ScoreConfiguration scoreConfiguration){
 		List<User> users = userRepository.findAll();
 		ImpalaTotalScoreWriter writer = impalaWriterFactory.createImpalaTotalScoreWriter();
 		for(User user: users){
 			if(user.getScore(Classifier.total.getId()) != null){
-				writer.writeScore(user, timestamp);
+				writer.writeScores(user, timestamp, scoreConfiguration);
 			}
 		}
 		writer.close();
@@ -465,8 +510,8 @@ public class UserServiceImpl implements UserService{
 		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
 			String userName = vpnScore.getUserName();
-			List<User> tmpUsers = userRepository.findByAdUserPrincipalNameContaining(userName.toLowerCase());
-			if(tmpUsers == null | tmpUsers.size() == 0 | tmpUsers.size() > 1){
+			List<User> tmpUsers = userRepository.findByUsernameContaining(userName.toLowerCase());
+			if(tmpUsers == null || tmpUsers.size() == 0 || tmpUsers.size() > 1){
 				//TODO:	error log message
 				continue;
 			}
@@ -707,4 +752,13 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	
+	
+	public static class OrderByClassifierScoreTimestempAsc implements Comparator<ClassifierScore>{
+
+		@Override
+		public int compare(ClassifierScore o1, ClassifierScore o2) {
+			return o1.getTimestamp().compareTo(o2.getTimestamp());
+		}
+		
+	}
 }

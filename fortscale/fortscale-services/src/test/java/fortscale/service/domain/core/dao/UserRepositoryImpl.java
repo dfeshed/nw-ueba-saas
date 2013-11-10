@@ -172,4 +172,10 @@ public class UserRepositoryImpl implements UserRepository{
 		return null;
 	}
 
+	@Override
+	public List<User> findByUsernameContaining(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

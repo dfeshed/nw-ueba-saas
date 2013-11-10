@@ -1,4 +1,4 @@
-angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($q, DAL, Cache){
+angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", "reportsProcess", function($q, DAL, Cache, reportsProcess){
     var cache = new Cache({ id: "reports" }), // this is for data
         cachedReports = {}; // This one is just for the report definitions
 
@@ -121,28 +121,42 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", function($
                                 });
                             }
 
-                            deferred.resolve(transformedResults);
-                            if (report.query.cache && transformedResults.length)
-                                cache.setItem(cacheItemKey, transformedResults, { expiresIn: getInSeconds(report.query.cache), hold: true });
+                            resolve(transformedResults);
                         }
                         catch(error){
                             deferred.reject({ error: "Can't transform data: " + error.message });
                         }
                     }
                     else{
-                        deferred.resolve(results);
-                        if (report.query.cache && results.data.length)
-                            cache.setItem(cacheItemKey, results, { expiresIn: getInSeconds(report.query.cache), hold: true });
+                        resolve(results);
                     }
 
                     if (!results || !results.data.length)
                         cache.removeItem(cacheItemKey);
-                }, function(error){
-                    if (report.query.cache)
-                        cache.removeItem(cacheItemKey);
+                }, onError);
 
-                    deferred.reject(error);
-                });
+            function resolve(results){
+                if (report.query.process){
+                    reportsProcess.processData(report.query.process.processId, results, report.query.process.params).then(function(processedResults){
+                        finishResolve(processedResults);
+                    }, onError);
+                }
+                else
+                    finishResolve(results);
+            }
+
+            function finishResolve(results){
+                deferred.resolve(results);
+                if (report.query.cache && results.data.length)
+                    cache.setItem(cacheItemKey, results, { expiresIn: getInSeconds(report.query.cache), hold: true });
+            }
+
+            function onError(error){
+                if (report.query.cache)
+                    cache.removeItem(cacheItemKey);
+
+                deferred.reject(error);
+            }
 
             return deferred.promise;
         },

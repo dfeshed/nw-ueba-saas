@@ -26,8 +26,8 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 
 	@Override
 	public ScoreConfiguration getScoreConfiguration() {
-		Pageable pageable = new PageRequest(0, 1, Direction.DESC, FortscaleConfiguration.CREATED_AT_FIELD_NAME);
-		List<FortscaleConfiguration> fortscaleConfigurations = fortscaleConfigurationRepository.findByConfigId("score", pageable);
+		Pageable pageable = new PageRequest(0, 1, Direction.DESC, FortscaleConfiguration.LAST_MODIFIED_FIELD_NAME);
+		List<FortscaleConfiguration> fortscaleConfigurations = fortscaleConfigurationRepository.findByConfigId(FortscaleConfigurationEnum.score.getId(), pageable);
 		if(fortscaleConfigurations == null || fortscaleConfigurations.size() == 0){
 			return null;
 		}
@@ -42,10 +42,14 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 	
 	@Override
 	public void setScoreConfiguration(ScoreConfiguration scoreConfiguration, String createById, String createdByUsername) {
-		FortscaleConfiguration fortscaleConfiguration = new FortscaleConfiguration("score");
-		fortscaleConfiguration.setConfObj(scoreConfiguration);
-		fortscaleConfiguration.setCreatedById(createById);
+		FortscaleConfiguration fortscaleConfiguration = fortscaleConfigurationRepository.findByConfigIdAndCreatedById(FortscaleConfigurationEnum.score.getId(), createById);
+		if(fortscaleConfiguration == null){
+			fortscaleConfiguration = new FortscaleConfiguration(FortscaleConfigurationEnum.score.getId());
+			fortscaleConfiguration.setCreatedById(createById);
+		}
 		fortscaleConfiguration.setCreatedByUsername(createdByUsername);
+		fortscaleConfiguration.setConfObj(scoreConfiguration);
+		
 		fortscaleConfigurationRepository.save(fortscaleConfiguration);
 	}
 
@@ -56,12 +60,12 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.auth.getId(), 10));
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.vpn.getId(), 10));
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.groups.getId(), 10));
-			setScoreConfiguration(scoreConfiguration, null, "Server");
+			setScoreConfiguration(scoreConfiguration, "Server", "Server");
 //			scoreConfiguration = new ScoreConfiguration();
 //			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.auth.getId(), 20));
 //			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.vpn.getId(), 10));
 //			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.groups.getId(), 10));
-//			setScoreConfiguration(scoreConfiguration, null, "Server");
+//			setScoreConfiguration(scoreConfiguration, "Server", "Server");
 		}
 		
 	}
