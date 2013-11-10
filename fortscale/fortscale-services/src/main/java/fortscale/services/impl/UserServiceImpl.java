@@ -665,6 +665,8 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void recalculateUsersScores() {
+		Calendar oldestTime = Calendar.getInstance();
+		oldestTime.add(Calendar.DAY_OF_MONTH, -7);
 		List<ClassifierRuntime> classifierRuntimes = new ArrayList<>();
 		List<User> users = userRepository.findAll();
 		for(User user: users){
@@ -674,18 +676,29 @@ public class UserServiceImpl implements UserService{
 		
 		List<Date> distinctDates = adUsersFeaturesExtractionRepository.getDistinctRuntime(Classifier.groups.getId());
 		for(Date date: distinctDates){
+			if(date.getTime() < oldestTime.getTimeInMillis()){
+				continue;
+			}
 			classifierRuntimes.add(new ClassifierRuntime(Classifier.groups, date.getTime()));
 		}
 		
 		List<Long> distinctRuntimes = authDAO.getDistinctRuntime();
 		for(Long runtime: distinctRuntimes){
+			runtime = runtime*1000;
+			if(runtime < oldestTime.getTimeInMillis()){
+				continue;
+			}
 			classifierRuntimes.add(new ClassifierRuntime(Classifier.auth, runtime));
 		}
 		
-//		distinctRuntimes = vpnDAO.getDistinctRuntime();
-//		for(Long runtime: distinctRuntimes){
-//			classifierRuntimes.add(new ClassifierRuntime(Classifier.vpn, runtime));
-//		}
+		distinctRuntimes = vpnDAO.getDistinctRuntime();
+		for(Long runtime: distinctRuntimes){
+			runtime = runtime*1000;
+			if(runtime < oldestTime.getTimeInMillis()){
+				continue;
+			}
+			classifierRuntimes.add(new ClassifierRuntime(Classifier.vpn, runtime));
+		}
 		
 		Collections.sort(classifierRuntimes);
 		
@@ -722,7 +735,8 @@ public class UserServiceImpl implements UserService{
 
 		@Override
 		public int compareTo(ClassifierRuntime o) {
-			int ret = (int)(this.runtime - o.runtime);
+			long diff = (int)(this.runtime - o.runtime);
+			int ret = (diff > 0 ? 1 : diff < 0 ? -1 : 0);
 			return ret;
 		}
 
