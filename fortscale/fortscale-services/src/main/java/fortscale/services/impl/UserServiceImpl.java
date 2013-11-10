@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -511,8 +510,8 @@ public class UserServiceImpl implements UserService{
 		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
 			String userName = vpnScore.getUserName();
-			List<User> tmpUsers = userRepository.findByAdUserPrincipalNameContaining(userName.toLowerCase());
-			if(tmpUsers == null | tmpUsers.size() == 0 | tmpUsers.size() > 1){
+			List<User> tmpUsers = userRepository.findByUsernameContaining(userName.toLowerCase());
+			if(tmpUsers == null || tmpUsers.size() == 0 || tmpUsers.size() > 1){
 				//TODO:	error log message
 				continue;
 			}
