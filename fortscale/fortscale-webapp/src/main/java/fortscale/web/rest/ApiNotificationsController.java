@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,10 +13,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.beans.DataBean;
 
 @Controller
 @RequestMapping("/api/notifications/**")
 public class ApiNotificationsController {
+
+	private static final String TIME_STAMP = "ts";
 
 	@Autowired
 	private NotificationsRepository notificationRepository;
@@ -23,18 +27,24 @@ public class ApiNotificationsController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public List<Notification> index() {
-		Iterable<Notification> findAll = notificationRepository.findAll();
+	public DataBean<List<Notification>> index() {
+		DataBean<List<Notification>> ret = new DataBean<List<Notification>>();
+
+		// We return the list of notifications sorted by timestamp (descending)
+		Sort sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP));
+		Iterable<Notification> findAll = notificationRepository.findAll(sortByTSDesc);
 		if (notificationRepository.count() > 0) {
 			// Return all documents
 			ArrayList<Notification> array = new ArrayList<Notification>();
 			for (Notification notification : findAll) {
 				array.add(notification);
 			}
-			return array;
+			ret.setData(array);
+			ret.setTotal(array.size());
+			return ret;
 		} else {
 			// No documents found, return empty response
-			return new ArrayList<Notification>();
+			return new DataBean<List<Notification>>();
 		}
 	}
 
