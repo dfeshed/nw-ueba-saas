@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.beans.DataBean;
 
 @Controller
 @RequestMapping("/api/notifications/**")
@@ -23,7 +24,9 @@ public class ApiNotificationsController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public List<Notification> index() {
+	public DataBean<List<Notification>> index() {
+		DataBean<List<Notification>> ret = new DataBean<List<Notification>>();
+
 		Iterable<Notification> findAll = notificationRepository.findAll();
 		if (notificationRepository.count() > 0) {
 			// Return all documents
@@ -31,10 +34,12 @@ public class ApiNotificationsController {
 			for (Notification notification : findAll) {
 				array.add(notification);
 			}
-			return array;
+			ret.setData(array);
+			ret.setTotal(array.size());
+			return ret;
 		} else {
 			// No documents found, return empty response
-			return new ArrayList<Notification>();
+			return new DataBean<List<Notification>>();
 		}
 	}
 
