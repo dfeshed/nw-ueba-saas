@@ -12,7 +12,9 @@ public class Notification extends AbstractDocument implements Serializable {
 	private String generator_name;
 	private String name;
 	private String cause;
+	private String displayName;
 	private String uuid;
+	private String fsId;
 
 	public long getTs() {
 		return ts;
@@ -29,9 +31,17 @@ public class Notification extends AbstractDocument implements Serializable {
 	public String getCause() {
 		return cause;
 	}
-	
-	public String getUuid(){
+
+	public String getUuid() {
 		return uuid;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public String getFsId() {
+		return fsId;
 	}
 
 }
