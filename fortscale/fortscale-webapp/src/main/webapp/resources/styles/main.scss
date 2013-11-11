@@ -20,6 +20,7 @@ $widgetHeaderHeight: 32px;
 $widgetMarginBottom: 20px;
 
 html, body{ height: 100%; }
+:root{-webkit-print-color-adjust:exact}
 body{
   margin: 0;
   padding: 0;
@@ -59,6 +60,15 @@ a{ cursor: pointer }
     color: Black;
   }
 }
+
+.print-only{
+  visibility: hidden;
+}
+
+.widget-controls .print-only{
+  display: none;
+}
+
 .nav-tabs a{ cursor: pointer; }
 #logo{
   height: 30px;
@@ -171,4 +181,3 @@ a{ cursor: pointer }
 @import "controls/link";
 @import "controls/daterange";
 @import "controls/sliders";
-@import "print";

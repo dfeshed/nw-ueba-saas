@@ -12,35 +12,44 @@
             "settings": {
                 "fields": [
                     {
-                        "name": "Severity",
-                        "icon": "stop",
-                        "style": "score",
-                        "styleParams": {
-                            "value": "eventScore"
-                        },
-                        "renderHeader": false,
-                        "className": "table-small-cell"
-                    },
-                    {
                         "name": "User",
                         "value": "{{username}}",
                         "link": "#/d/user/{{userId}}?currentFeature={{@currentScore}}",
-                        "headerColspan": 2
+                        "style": "textScore",
+                        "styleParams": {
+                            "value": "userNameScore"
+                        },
+                        "valueTooltip": "User score: {{userNameScore}}"
                     },
                     {
                         "name": "Source IP",
                         "value": "{{sourceIp}}",
-                        "link": "#/d/investigator?entities=wmievents4769&client_address={{sourceIp}}"
+                        "link": "#/d/investigator?entities=wmievents4769&client_address={{sourceIp}}",
+                        "style": "textScore",
+                        "styleParams": {
+                            "value": "sourceIpScore"
+                        },
+                        "valueTooltip": "Source IP score: {{sourceIpScore}}"
                     },
                     {
                         "name": "Destination Hostname",
                         "value": "{{destinationHostname}}",
-                        "link": "#/d/investigator?entities=wmievents4769&service_name={{destinationHostname}}"
+                        "link": "#/d/investigator?entities=wmievents4769&service_name={{destinationHostname}}",
+                        "style": "textScore",
+                        "styleParams": {
+                            "value": "targetIdScore"
+                        },
+                        "valueTooltip": "Destination hostname score: {{targetIdScore}}"
                     },
                     {
                         "name": "Error Code",
                         "value": "{{errorCode}}",
-                        "link": "#/d/investigator?entities=wmievents4769&failure_code={{errorCode}}"
+                        "link": "#/d/investigator?entities=wmievents4769&failure_code={{errorCode}}",
+                        "style": "textScore",
+                        "styleParams": {
+                            "value": "errorCodeScore"
+                        },
+                        "valueTooltip": "Error code score: {{errorCodeScore}}"
                     },
                     {
                         "name": "Time",
@@ -50,10 +59,26 @@
                             "options": {
                                 "format": "MM/DD/YY HH:mm:ss"
                             }
-                        }
+                        },
+                        "style": "textScore",
+                        "styleParams": {
+                            "value": "eventTimeScore"
+                        },
+                        "valueTooltip": "Login time score: {{eventTimeScore}}"
+                    },
+                    {
+                        "name": "Severity",
+                        "icon": "stop",
+                        "style": "textScore",
+                        "styleParams": {
+                            "value": "eventScore"
+                        },
+                        "renderHeader": false,
+                        "className": "table-small-cell"
                     },
                     {
                         "name": "Score",
+                        "headerColspan": 2,
                         "value": "{{eventScore}}"
                     }
                 ]

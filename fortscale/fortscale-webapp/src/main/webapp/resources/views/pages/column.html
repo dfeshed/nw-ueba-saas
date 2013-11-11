@@ -11,7 +11,8 @@
          ng-init="initWidget(widget)"
          ng-show="!widget.show || widget.show.value"
          ng-class="{ 'widget-loading': widget.loading }"
-         ng-style="widget.style">
+         ng-style="widget.style"
+         data-widgetId="{{widget.widgetId}}">
         <ng-include src="'views/widgets/widget.html'"></ng-include>
     </div>
 </div>

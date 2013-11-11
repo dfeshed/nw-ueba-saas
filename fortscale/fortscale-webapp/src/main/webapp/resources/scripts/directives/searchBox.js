@@ -69,6 +69,7 @@ angular.module('Fortscale')
                         .attr("placeholder", settings.placeholder)
                         .autocomplete({
                             delay: 400,
+                            autoFocus: true,
                             minLength: MIN_SEARCH_SIZE,
                             source: function( request, response ) {
                                 if (!request.term || request.term.length < MIN_SEARCH_SIZE)
@@ -83,7 +84,6 @@ angular.module('Fortscale')
                                     if (settings.search){
                                         settings.search(searchTerm).then(function(results){
                                             scope.loading = false;
-                                            console.log("RES: ", results)
                                             response(results);
                                         }, function(error){
                                             scope.loading = false;

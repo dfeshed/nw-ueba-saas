@@ -46,12 +46,14 @@
                     "refreshOn": "date"
                 },
                 {
-                    "widgetId": "user_vpn_logins_count"
+                    "widgetId": "user_vpn_logins_count",
+                    "noDataMessage": "No successful VPN logins found for the last 7 days"
                 },
                 {
                     "widgetId": "user_vpn_logins_count",
                     "reportId": "user_vpn_failed_logins_count",
-                    "title": "Failed VPN Logins - Last 7 Days"
+                    "title": "Failed VPN Logins - Last 7 Days",
+                    "noDataMessage": "No failed VPN logins found for the last 7 days"
                 },
                 {
                     "widgetId": "user_vpn_activities"

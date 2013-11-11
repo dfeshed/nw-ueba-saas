@@ -36,6 +36,6 @@
                <ng-include src="'views/pages/column.html'"></ng-include>
             </div>
         </div>
-        <ng-include src="'views/widgets/widget.html'" ng-repeat="widget in dashboard.widgets"></ng-include>
+        <ng-include src="'views/widgets/widget.html'" ng-repeat="widget in dashboard.widgets" data-widgetId="{{widget.widgetId}}"></ng-include>
     </div>
 </div>

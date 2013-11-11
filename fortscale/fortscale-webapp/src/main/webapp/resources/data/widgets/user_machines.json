@@ -39,7 +39,8 @@
                     ]
                 },
                 "chartValue": "count",
-                "chartLabel": "hostname"
+                "chartLabel": "hostname",
+                "noDataMessage": "No machines found"
             }
         }
     ]
