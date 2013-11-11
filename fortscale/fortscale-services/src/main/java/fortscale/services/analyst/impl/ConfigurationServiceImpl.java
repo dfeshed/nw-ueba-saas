@@ -31,7 +31,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 		if(fortscaleConfigurations == null || fortscaleConfigurations.size() == 0){
 			return null;
 		}
-		return fortscaleConfigurations.get(0).getConfObj();
+		return (ScoreConfiguration) fortscaleConfigurations.get(0).getConfObj();
 	}
 
 	@Override

@@ -16,7 +16,8 @@
                             "FAIL": "<strong>{{value}}</strong> failed <strong>VPN logins</strong> in the last 7 days"
                         }
                     }
-                ]
+                ],
+                "noDataMessage": "No activity found"
             }
         }
     ]

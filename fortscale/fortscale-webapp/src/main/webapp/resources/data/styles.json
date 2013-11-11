@@ -52,6 +52,46 @@
             ]
         }
     ],
+    "textScore": [
+        {
+            "properties": {
+                "color": "#049cdb"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "lesserThanOrEqual",
+                    "value": 0.10
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#F59925",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThan",
+                    "value": 0.10
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEqual",
+                    "value": 0.85
+                }
+            ]
+        }
+    ],
     "highScore": [
         {
             "properties": {

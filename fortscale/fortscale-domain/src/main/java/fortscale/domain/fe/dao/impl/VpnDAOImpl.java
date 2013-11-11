@@ -74,14 +74,23 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
 			VpnScore ret = new VpnScore();
 			
 			try{
+				ret.setTimestamp(parseTimestampDate(rs.getLong(VpnScore.TIMESTAMP_FIELD_NAME)));
+				
+				ret.setEventTime(parseEventTimeDate(rs.getString(VpnScore.EVENT_TIME_FIELD_NAME)));
 				ret.setUserName(rs.getString(VpnScore.USERNAME_FIELD_NAME));
 				ret.setLocalIp(rs.getString(VpnScore.LOCAL_IP_FIELD_NAME));
 				ret.setSourceIp(rs.getString(VpnScore.SOURCE_IP_FIELD_NAME));
 				ret.setStatus(rs.getString(VpnScore.STATUS_FIELD_NAME));
+				
+				ret.setEventTimeScore(Double.parseDouble(rs.getString(VpnScore.EVENT_TIME_SCORE_FIELD_NAME)));
+				ret.setUserNameScore(Double.parseDouble(rs.getString(VpnScore.USERNAME_SCORE_FIELD_NAME)));
+				ret.setLocalIpScore(Double.parseDouble(rs.getString(VpnScore.LOCAL_IP_SCORE_FIELD_NAME)));
+				ret.setSourceIpScore(Double.parseDouble(rs.getString(VpnScore.SOURCE_IP_SCORE_FIELD_NAME)));
+				ret.setStatusScore(Double.parseDouble(rs.getString(VpnScore.STATUS_SCORE_FIELD_NAME)));
+				
 				ret.setEventScore(Double.parseDouble(rs.getString(VpnScore.EVENT_SCORE_FIELD_NAME)));
 				ret.setGlobalScore(Double.parseDouble(rs.getString(VpnScore.GLOBAL_SCORE_FIELD_NAME)));
-				ret.setTimestamp(parseTimestampDate(rs.getLong(VpnScore.TIMESTAMP_FIELD_NAME)));
-				ret.setEventTime(parseEventTimeDate(rs.getString(VpnScore.EVENT_TIME_FIELD_NAME)));
+				
 			} catch (NumberFormatException e) {
 				throw new SQLException(e);
 			} catch (ParseException e) {

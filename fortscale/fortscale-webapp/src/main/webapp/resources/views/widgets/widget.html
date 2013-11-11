@@ -45,7 +45,7 @@
                 <ng-include src="'widgets/' + view.type + '/' + view.type + '.view.html'" ng-show="!widget.showInitMessage"></ng-include>
             </div>
             <div class="widget-message widget-no-data" ng-show="widget.noData">
-                No data found
+                {{view.settings.noDataMessage || widget.noDataMessage || "No data found"}}
                 <div>
                     <a ng-click="runWidgetReport(widget, true)" class="clickable widget-message-link">Refresh</a>
                 </div>

@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -430,8 +432,13 @@ public class ClassifierServiceImpl implements ClassifierService {
 		return severityOrderedList;
 	}
 	
+	private static final String MACHINE_NAME_FIELD = "machine_name";
+	private static final String CLIENT_ADDRESSE_FIELD = "client_address";
+	private static final String SERVICE_NAME_FIELD = "service_name";
+	private static final String WMIEVENTS_TABLE_NAME = "wmievents4769";
+	
 	@Override
-	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit){
+	public EBSResult getEBSAlgOnAuthQuery(String query, int offset, int limit){
 		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
 		if(resultsMap.size() == 0) {
 			return new EBSResult(null, null,0, 0);
@@ -439,22 +446,98 @@ public class ClassifierServiceImpl implements ClassifierService {
 
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
-		List<String> keys = new ArrayList<>(resultsMap.get(0).keySet());
+		Set<String> keySet = resultsMap.get(0).keySet();
+		keySet.remove(MACHINE_NAME_FIELD);
+		keySet.remove(CLIENT_ADDRESSE_FIELD);
+		List<String> keys = new ArrayList<>(keySet);
 		for (Map<String, Object> map : resultsMap) {
-			List<String> result = new ArrayList<String>( map.size() );
-			for (int i = 0; i < map.size(); i++) {
+			if(map.get(SERVICE_NAME_FIELD) != null && 
+					( ((String)map.get(SERVICE_NAME_FIELD)).equals("krbtgt") || ((String)map.get(SERVICE_NAME_FIELD)).contains("FS-DC"))){
+				continue;
+			}
+			List<String> workingSet = new ArrayList<String>(keys.size() + 1);
+			List<String> allData = new ArrayList<String>(keys.size() + 2);
+			String machineName = map.get(MACHINE_NAME_FIELD) != null ? map.get(MACHINE_NAME_FIELD).toString() : "";
+			String clientAddress = map.get(CLIENT_ADDRESSE_FIELD) != null ? map.get(CLIENT_ADDRESSE_FIELD).toString() : "";
+			if(!StringUtils.isEmpty(machineName)){
+				workingSet.add(machineName);
+			} else{
+				workingSet.add(clientAddress);
+			}
+			allData.add(machineName);
+			allData.add(clientAddress);
+			for (int i = 0; i < keys.size(); i++) {
 				String keyString = keys.get(i);
 				Object tmp = map.get(keyString);
+				String val = null;
 				if(tmp != null) {
-					result.add(tmp.toString());
+					val = tmp.toString();
 				} else {
 					//TODO: error log.
-					result.add("");
+					val ="";
 				}
+				workingSet.add(val);
+				allData.add(val);
 			}
 			EventBulkScorer.InputStruct inp = new EventBulkScorer.InputStruct();
-			inp.working_set = result;
-			inp.all_data = result;
+			inp.working_set = workingSet;
+			inp.all_data = allData;
+			listResults.add(inp);
+		}
+
+		EventBulkScorer ebs = new EventBulkScorer();
+		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
+		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
+		List<Map<String, Object>> eventResultList = new ArrayList<>();
+		int toIndex = offset + limit;
+		if(toIndex > ebsresult.event_score_list.size()) {
+			toIndex = ebsresult.event_score_list.size();
+		}
+		keys.add(0, CLIENT_ADDRESSE_FIELD);
+		keys.add(0, MACHINE_NAME_FIELD);
+		for (EventBulkScorer.EventScoreStore eventScore : ebsresult.event_score_list.subList(offset, toIndex)) {
+			Map<String, Object> eventMap = new HashMap<>();
+			for (int i=0;i<eventScore.event.size();i++) {
+				eventMap.put(keys.get(i), eventScore.event.get(i));
+			}
+			eventMap.put(EVENT_SCORE, (double)Math.round(eventScore.score));
+			eventResultList.add(eventMap);
+		}
+		
+		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
+	}
+	
+	@Override
+	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit){
+		if(query.contains(WMIEVENTS_TABLE_NAME)){
+			return getEBSAlgOnAuthQuery(query, offset, limit);
+		}
+		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
+		if(resultsMap.size() == 0) {
+			return new EBSResult(null, null,0, 0);
+		}
+
+		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
+
+		Set<String> keySet = resultsMap.get(0).keySet();
+		List<String> keys = new ArrayList<>(keySet);
+		for (Map<String, Object> map : resultsMap) {
+			List<String> workingSet = new ArrayList<String>(keys.size());
+			for (int i = 0; i < keys.size(); i++) {
+				String keyString = keys.get(i);
+				Object tmp = map.get(keyString);
+				String val = null;
+				if(tmp != null) {
+					val = tmp.toString();
+				} else {
+					//TODO: error log.
+					val ="";
+				}
+				workingSet.add(val);
+			}
+			EventBulkScorer.InputStruct inp = new EventBulkScorer.InputStruct();
+			inp.working_set = workingSet;
+			inp.all_data = workingSet;
 			listResults.add(inp);
 		}
 

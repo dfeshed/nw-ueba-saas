@@ -1,6 +1,9 @@
 html, body {
   height: 100%; }
 
+:root {
+  -webkit-print-color-adjust: exact; }
+
 body {
   margin: 0;
   padding: 0;
@@ -47,6 +50,12 @@ a {
   cursor: help; }
   .tooltip-icon:hover {
     color: Black; }
+
+.print-only {
+  visibility: hidden; }
+
+.widget-controls .print-only {
+  display: none; }
 
 .nav-tabs a {
   cursor: pointer; }
@@ -1318,35 +1327,3 @@ daterange .daterange-input {
     line-height: 13px;
     display: block;
     margin-top: 5px; }
-
-.print-only {
-  visibility: hidden; }
-
-.widget-controls .print-only {
-  display: none; }
-
-@media print {
-  .print-only {
-    visibility: visible; }
-
-  .print-hide {
-    display: none !important; }
-
-  .navbar, #sidebar-nav, .btn {
-    display: none; }
-
-  #main-contents {
-    margin-left: 0;
-    border: none;
-    box-shadow: none;
-    border-radius: 0; }
-
-  .dashboard-widgets {
-    background: White;
-    padding: 10px; }
-
-  .widget-tabs li {
-    background: #dedede; }
-
-  .widget-controls .print-only {
-    display: inline-block; } }

@@ -1,0 +1,30 @@
+@media print{
+    .print-only{
+        visibility: visible;
+    }
+    .print-hide{ display: none !important }
+    .navbar, #sidebar-nav, .btn, .widget-view-control a{
+        display: none;
+    }
+
+    #main-contents{
+        margin-left: 0;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .dashboard-widgets{
+        background: White;
+        padding: 10px;
+    }
+
+    .widget-tabs li{
+        background: #dedede;
+    }
+
+}
+
+.widget-controls .print-only{
+    display: inline-block;
+}

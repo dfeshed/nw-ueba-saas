@@ -1,6 +1,6 @@
 {
     "reportId": "user_login_rate",
-    "title": "Logins Rate",
+    "title": "Logins count - last 7 days",
     "refreshOn": ["loginsUser"],
     "views": [
         {
@@ -25,7 +25,7 @@
                     },
                     "selectable": false,
                     "padding": { "top": 0, "right": 50, "left": 50, "bottom": 0 },
-                    "tooltip": "{{seriesLabel}}'s login attempts for {{barLabel}}: {{barValue}}",
+                    "tooltip": "{{seriesLabel}}'s logins for {{barLabel}}: {{barValue}}",
                     "values": {
                         "min": 0
                     }
@@ -55,7 +55,7 @@
                 "legend": {
                     "items": [
                         {
-                            "value": "Number of login attempts",
+                            "value": "Number of successful logins",
                             "color": "#98A3AC"
                         }
                     ]

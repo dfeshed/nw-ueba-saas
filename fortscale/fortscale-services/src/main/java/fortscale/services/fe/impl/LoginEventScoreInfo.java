@@ -76,4 +76,29 @@ public class LoginEventScoreInfo implements ILoginEventScoreInfo {
 		return authScore.getErrorCode();
 	}
 
+	@Override
+	public double getUserNameScore() {
+		return authScore.getUserNameScore();
+	}
+
+	@Override
+	public double getTargetIdScore() {
+		return authScore.getTargetIdScore();
+	}
+
+	@Override
+	public double getSourceIpScore() {
+		return authScore.getSourceIpScore();
+	}
+
+	@Override
+	public double getErrorCodeScore() {
+		return authScore.getErrorCodeScore();
+	}
+
+	@Override
+	public double getEventTimeScore() {
+		return authScore.getEventTimeScore();
+	}
+
 }

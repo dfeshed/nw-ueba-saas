@@ -11,13 +11,22 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 public class NoRedirectAuthenticationSuccessHandler implements
 		AuthenticationSuccessHandler {
+	
+	private int maxInactiveInterval = 60*60;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request,
 			HttpServletResponse response, Authentication authentication)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		request.getSession().setMaxInactiveInterval(maxInactiveInterval);
+	}
 
+	public int getMaxInactiveInterval() {
+		return maxInactiveInterval;
+	}
+
+	public void setMaxInactiveInterval(int maxInactiveInterval) {
+		this.maxInactiveInterval = maxInactiveInterval;
 	}
 
 }

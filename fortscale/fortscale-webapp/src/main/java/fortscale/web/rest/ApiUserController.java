@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,7 +188,15 @@ public class ApiUserController {
 			@RequestParam(defaultValue="7") Integer limit,
 			Model model){
 		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
-		List<IUserScoreHistoryElement> userScores = userService.getUserScoresHistory(uid, classifierId, offset, limit);
+		List<IUserScoreHistoryElement> userScores = new ArrayList<>();
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_MONTH, -(limit-1));
+		for(IUserScoreHistoryElement element: userService.getUserScoresHistory(uid, classifierId, offset, limit)){
+			if(calendar.getTime().after(element.getDate())){
+				continue;
+			}
+			userScores.add(element);
+		}
 		ret.setData(userScores);
 		ret.setTotal(userScores.size());
 		return ret;

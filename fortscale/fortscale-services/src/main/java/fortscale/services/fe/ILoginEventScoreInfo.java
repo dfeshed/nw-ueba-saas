@@ -13,4 +13,9 @@ public interface ILoginEventScoreInfo {
 	public double getEventScore();
 	public double getUserScore();
 	public String getErrorCode();
+	public double getUserNameScore();
+	public double getTargetIdScore();
+	public double getSourceIpScore();
+	public double getErrorCodeScore();
+	public double getEventTimeScore();
 }

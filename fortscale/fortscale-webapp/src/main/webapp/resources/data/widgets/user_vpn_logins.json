@@ -15,6 +15,51 @@
             "settings": {
                 "fields": [
                     {
+                        "name": "Source IP",
+                        "value": "{{sourceIp}}",
+                        "link": "#/d/investigator?entities=vpndatares&username={{@vpnUser}}&source_ip={{sourceIp}}",
+                        "style": "textScore",
+                        "styleParams": {
+                            "value": "sourceIpScore"
+                        },
+                        "valueTooltip": "Source IP score: {{sourceIpScore}}"
+                    },
+                    {
+                        "name": "Internal IP",
+                        "value": "{{internalIP}}",
+                        "link": "#/d/investigator?entities=vpndatares&username={{@vpnUser}}&local_ip={{internalIP}}",
+                        "style": "textScore",
+                        "styleParams": {
+                            "value": "localIpScore"
+                        },
+                        "valueTooltip": "Internal IP score: {{localIpScore}}"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{eventTime}}",
+                        "transform": {
+                            "method": "date",
+                            "options": {
+                                "format": "MM/DD/YY HH:mm:ss"
+                            }
+                        },
+                        "style": "textScore",
+                        "styleParams": {
+                            "value": "eventTimeScore"
+                        },
+                        "valueTooltip": "Login time score: {{eventTimeScore}}"
+                    },
+                    {
+                        "name": "Status",
+                        "value": "{{status}}",
+                        "style": "textScore",
+                        "styleParams": {
+                            "value": "statusScore"
+                        },
+                        "valueTooltip": "Status score: {{statusScore}}",
+                        "link": "#/d/investigator?entities=vpndata&status={{status}}&username={{@vpnUser}}"
+                    },
+                    {
                         "name": "Severity",
                         "icon": "stop",
                         "style": "score",
@@ -25,41 +70,12 @@
                         "className": "table-small-cell"
                     },
                     {
-                        "name": "Source IP",
-                        "value": "{{sourceIp}}",
-                        "link": "#/d/investigator?entities=vpndatares&username={{@vpnUser}}&source_ip={{sourceIp}}",
-                        "headerColspan": 2
-                    },
-                    {
-                        "name": "Internal IP",
-                        "value": "{{internalIP}}",
-                        "link": "#/d/investigator?entities=vpndatares&username={{@vpnUser}}&local_ip={{internalIP}}"
-                    },
-                    {
-                        "name": "Time",
-                        "value": "{{eventTime}}",
-                        "transform": {
-                            "method": "date",
-                            "options": {
-                                "format": "MM/DD/YY HH:mm:ss"
-                            }
-                        }
-                    },
-                    {
-                        "name": "Status",
-                        "value": "{{status}}",
-                        "style": "failOrSuccess",
-                        "styleParams": {
-                            "value": "status"
-                        },
-                        "link": "#/d/investigator?entities=vpndata&status={{status}}&username={{@vpnUser}}"
-                    },
-                    {
                         "name": "Score",
                         "value": "{{eventScore}}",
                         "transform": {
                             "method": "round"
-                        }
+                        },
+                        "headerColspan": 2
                     }
                 ]
             }

@@ -99,7 +99,7 @@ public class FeServiceImpl implements FeService {
 			adUsersFeaturesExtractionRepository.saveMap(adUserFeaturesExtraction);
 			
 			//updating the user with the new score.
-			userService.updateUserScore(user, timestamp, Classifier.ad.getId(), ent.getValue(), avgScore, true);
+			userService.updateUserScore(user, timestamp, Classifier.ad.getId(), ent.getValue(), avgScore, true, true);
 		}
 	}
 	

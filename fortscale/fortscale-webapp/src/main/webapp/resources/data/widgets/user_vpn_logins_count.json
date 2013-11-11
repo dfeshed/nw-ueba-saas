@@ -25,7 +25,7 @@
                     },
                     "selectable": false,
                     "padding": { "top": 0, "right": 50, "left": 50, "bottom": 0 },
-                    "tooltip": "{{seriesLabel}}'s login attempts for {{barLabel}}: {{barValue}}",
+                    "tooltip": "{{seriesLabel}}'s VPN logins for {{barLabel}}: {{barValue}}",
                     "values": {
                         "min": 0
                     }
@@ -55,7 +55,7 @@
                 "legend": {
                     "items": [
                         {
-                            "value": "Number of VPN login attempts",
+                            "value": "Number of successful VPN logins",
                             "color": "#98A3AC"
                         }
                     ]
