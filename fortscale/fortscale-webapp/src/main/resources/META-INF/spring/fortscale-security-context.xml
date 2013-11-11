@@ -11,7 +11,9 @@
 
 	<http pattern="/resources/**" security="none" />
 	
-	<beans:bean id="noRedirectAuthenticationSuccessHandler" class="fortscale.web.NoRedirectAuthenticationSuccessHandler"/>
+	<beans:bean id="noRedirectAuthenticationSuccessHandler" class="fortscale.web.NoRedirectAuthenticationSuccessHandler">
+		<beans:property name="maxInactiveInterval" value="${session.max.inactive.session.interval}"></beans:property>
+	</beans:bean>
 	<beans:bean id="authenticationFailureHandler" class="fortscale.web.AuthenticationFailureHandlerImpl">
 		<beans:property name="restExceptionHandler" ref="restExceptionResolver"></beans:property>
 	</beans:bean>
