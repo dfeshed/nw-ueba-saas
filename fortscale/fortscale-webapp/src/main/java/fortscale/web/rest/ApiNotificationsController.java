@@ -19,6 +19,8 @@ import fortscale.web.beans.DataBean;
 @RequestMapping("/api/notifications/**")
 public class ApiNotificationsController {
 
+	private static final String TIME_STAMP = "ts";
+
 	@Autowired
 	private NotificationsRepository notificationRepository;
 
@@ -27,9 +29,9 @@ public class ApiNotificationsController {
 	@LogException
 	public DataBean<List<Notification>> index() {
 		DataBean<List<Notification>> ret = new DataBean<List<Notification>>();
-		
+
 		// We return the list of notifications sorted by timestamp (descending)
-		Sort sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, "ts"));
+		Sort sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP));
 		Iterable<Notification> findAll = notificationRepository.findAll(sortByTSDesc);
 		if (notificationRepository.count() > 0) {
 			// Return all documents

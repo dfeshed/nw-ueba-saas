@@ -31,8 +31,8 @@ public class Notification extends AbstractDocument implements Serializable {
 	public String getCause() {
 		return cause;
 	}
-	
-	public String getUuid(){
+
+	public String getUuid() {
 		return uuid;
 	}
 
