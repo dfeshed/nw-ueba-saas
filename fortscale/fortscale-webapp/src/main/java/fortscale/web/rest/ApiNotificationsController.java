@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,8 +27,10 @@ public class ApiNotificationsController {
 	@LogException
 	public DataBean<List<Notification>> index() {
 		DataBean<List<Notification>> ret = new DataBean<List<Notification>>();
-
-		Iterable<Notification> findAll = notificationRepository.findAll();
+		
+		// We return the list of notifications sorted by timestamp (descending)
+		Sort sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, "ts"));
+		Iterable<Notification> findAll = notificationRepository.findAll(sortByTSDesc);
 		if (notificationRepository.count() > 0) {
 			// Return all documents
 			ArrayList<Notification> array = new ArrayList<Notification>();
