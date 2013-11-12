@@ -207,6 +207,7 @@ public class UserServiceImpl implements UserService{
 		
 		ADUserParser adUserParser = new ADUserParser();
 		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
+		user.clearGroups();
 		if(groups != null){
 			for(String groupDN: groups){
 				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
@@ -219,6 +220,7 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
+		user.clearAdDirectReport();
 		if(directReports != null){
 			for(String directReportsDN: directReports){
 				User userDirectReport = userRepository.findByAdDn(directReportsDN);

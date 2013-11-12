@@ -498,6 +498,10 @@ public class User extends AbstractDocument {
 		this.groups.add(adUserGroup);
 	}
 	
+	public void clearGroups(){
+		groups.clear();
+	}
+	
 	public Set<AdUserGroup> getGroups() {
 		return Collections.unmodifiableSet(groups);
 	}
@@ -506,6 +510,10 @@ public class User extends AbstractDocument {
 
 		Assert.notNull(adUserDirectReport);
 		this.adDirectReports.add(adUserDirectReport);
+	}
+	
+	public void clearAdDirectReport(){
+		adDirectReports.clear();
 	}
 	
 	public Set<AdUserDirectReport> getAdDirectReports() {

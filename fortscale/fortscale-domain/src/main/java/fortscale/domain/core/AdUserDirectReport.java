@@ -3,7 +3,6 @@ package fortscale.domain.core;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.codehaus.jackson.annotate.JsonCreator;
 
-import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.ad.AdUserRelatedObject;
 
 public class AdUserDirectReport extends AdUserRelatedObject{
@@ -70,8 +69,8 @@ public class AdUserDirectReport extends AdUserRelatedObject{
 	public boolean equals(Object obj) {
 		if(obj == null) return false;
 		if(obj == this) return true;
-		if(!(obj instanceof AdUserGroup)) return false;
-		AdUserGroup adUserGroup = (AdUserGroup)obj;
-		return new EqualsBuilder().append(adUserGroup.getDn(), getDn()).isEquals();
+		if(!(obj instanceof AdUserDirectReport)) return false;
+		AdUserDirectReport adUserDirectReport = (AdUserDirectReport)obj;
+		return new EqualsBuilder().append(adUserDirectReport.getDn(), getDn()).isEquals();
 	}
 }
