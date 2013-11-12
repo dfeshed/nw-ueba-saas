@@ -17,6 +17,8 @@ public class ImpalaTotalScoreWriter extends ImpalaWriter{
 		super(file);
 	}
 	
+	public ImpalaTotalScoreWriter() {}
+
 	public void writeScores(User user, Date timestamp, ScoreConfiguration scoreConfiguration){
 		writeScore(user, TOTAL_SCORE_WEIGHT, timestamp, getTotalScoreExplanation(user, scoreConfiguration));
 		for(ScoreWeight scoreWeight: scoreConfiguration.getConfMap().values()){

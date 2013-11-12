@@ -13,6 +13,8 @@ public class ImpalaUseridToAppUsernameWriter extends ImpalaWriter{
 		super(file);
 	}
 		
+	public ImpalaUseridToAppUsernameWriter() {}
+
 	public void write(List<User> users, Date timestamp){
 		for(User user: users){
 			write(user,timestamp);

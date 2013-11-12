@@ -12,6 +12,8 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 		super(file);
 	}
 		
+	public ImpalaGroupsScoreWriter() {}
+
 	public void writeScore(User user, AdUserFeaturesExtraction extraction, double avgScore){
 		writeScore(extraction.getTimestamp(), user, extraction.getScore(), avgScore);
 	}
