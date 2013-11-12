@@ -9,7 +9,7 @@ import java.util.Date;
 public class ImpalaWriter{
 	private BufferedWriter writer = null;
 	
-	
+	public ImpalaWriter(){}
 	public ImpalaWriter(File file) {
 		writer = null;
 		try {

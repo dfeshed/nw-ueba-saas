@@ -2,17 +2,18 @@ package fortscale.services.impl;
 
 import java.io.File;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ImpalaWriterFactory {
 
-	@Value("${user.ad.group.membership.score.csv.file.full.path}")
+	@Value("${user.ad.group.membership.score.csv.file.full.path:}")
 	private String userAdScoreCsvFileFullPathString;
-	@Value("${user.ad.total.score.csv.file.full.path}")
+	@Value("${user.ad.total.score.csv.file.full.path:}")
 	private String userTotalScoreCsvFileFullPathString;
-	@Value("${user.id.to.app.username.csv.file.full.path}")
+	@Value("${user.id.to.app.username.csv.file.full.path:}")
 	private String useridToAppUsernameCsvFileFullPathString;
 	
 	
@@ -41,16 +42,25 @@ public class ImpalaWriterFactory {
 	}
 
 	public ImpalaGroupsScoreWriter createImpalaGroupsScoreWriter(){
+		if(StringUtils.isEmpty(userAdScoreCsvFileFullPathString)){
+			return new ImpalaGroupsScoreWriter();
+		}
 		ImpalaGroupsScoreWriter writer = new ImpalaGroupsScoreWriter(getFile(userAdScoreCsvFileFullPathString));
 		return writer;
 	}
 	
 	public ImpalaTotalScoreWriter createImpalaTotalScoreWriter(){
+		if(StringUtils.isEmpty(userTotalScoreCsvFileFullPathString)){
+			return new ImpalaTotalScoreWriter();
+		}
 		ImpalaTotalScoreWriter writer = new ImpalaTotalScoreWriter(getFile(userTotalScoreCsvFileFullPathString));
 		return writer;
 	}
 	
 	public ImpalaUseridToAppUsernameWriter createImpalaUseridToAppUsernameWriter(){
+		if(StringUtils.isEmpty(useridToAppUsernameCsvFileFullPathString)){
+			return new ImpalaUseridToAppUsernameWriter();
+		}
 		ImpalaUseridToAppUsernameWriter writer = new ImpalaUseridToAppUsernameWriter(getFile(useridToAppUsernameCsvFileFullPathString));
 		return writer;
 	}
