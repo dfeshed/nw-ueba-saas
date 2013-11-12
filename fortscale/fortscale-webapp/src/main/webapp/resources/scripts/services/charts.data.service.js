@@ -39,7 +39,7 @@ angular.module("ChartWidgets", ["Utils", "Styles", "Transforms"]).factory("chart
         var value = {};
         value[labelSettings.field] = labelValue;
         angular.forEach(seriesSettings, function(series){
-            value[series.field] = series.default || 0;
+            value[series.field] = series.default !== undefined ? series.default : null;
         });
 
         return value;

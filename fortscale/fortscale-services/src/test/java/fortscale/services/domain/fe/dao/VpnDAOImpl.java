@@ -114,4 +114,22 @@ public class VpnDAOImpl implements VpnDAO {
 		return null;
 	}
 
+	@Override
+	public int countNumOfUsers(Date timestamp) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int countNumOfEvents(Date timestamp) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int countNumOfEventsByUser(Date timestamp, String userId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

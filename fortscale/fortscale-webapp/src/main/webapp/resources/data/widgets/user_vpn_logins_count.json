@@ -33,7 +33,8 @@
                 "series": [
                     {
                         "field": "logincount",
-                        "label": "{{@userName}}"
+                        "label": "{{@userName}}",
+                        "default": 0
                     }
                 ],
                 "labels": {

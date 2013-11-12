@@ -266,6 +266,18 @@ public class ClassifierServiceImpl implements ClassifierService {
 		}
 		
 	}
+	
+	@Override
+	public int countLoginEvents(String userId, Date timestamp){
+		User user = userRepository.findOne(userId);
+		if(user == null){
+			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
+		}
+		if(timestamp == null){
+			timestamp = authDAO.getLastRunDate();
+		}
+		return authDAO.countNumOfEventsByUser(timestamp, user.getUsername());
+	}
 
 	@Override
 	public List<ILoginEventScoreInfo> getUserSuspiciousLoginEvents(String userId, Date timestamp, int offset, int limit) {
@@ -279,10 +291,20 @@ public class ClassifierServiceImpl implements ClassifierService {
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
 		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestamp(user.getUsername(), timestamp, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
-		for(AuthScore authScore: authScores){
-			ret.add(createLoginEventScoreInfo(user, authScore));
+		if(offset < authScores.size()){
+			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
+				ret.add(createLoginEventScoreInfo(user, authScore));
+			}
 		}
 		return ret;
+	}
+	
+	@Override
+	public int countLoginEvents(Date timestamp){
+		if(timestamp == null){
+			timestamp = authDAO.getLastRunDate();
+		}
+		return authDAO.countNumOfEvents(timestamp);
 	}
 
 	@Override
@@ -293,24 +315,21 @@ public class ClassifierServiceImpl implements ClassifierService {
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
 		List<AuthScore> authScores = authDAO.findEventsByTimestamp(timestamp, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
-		Map<String, User> userMap = new HashMap<>();
-		int skipped = 0;
-		for(AuthScore authScore: authScores){
-			String username = authScore.getUserName().toLowerCase();
-			User user = userMap.get(username);
-			if(user == null){
-				user = userRepository.findByUsername(username);
+		if(offset < authScores.size()){
+			Map<String, User> userMap = new HashMap<>();
+			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
+				String username = authScore.getUserName().toLowerCase();
+				User user = userMap.get(username);
 				if(user == null){
-					//TODO: warn message
-					continue;
-				} else{
-					userMap.put(username, user);
+					user = userRepository.findByUsername(username);
+					if(user == null){
+						//TODO: warn message
+						continue;
+					} else{
+						userMap.put(username, user);
+					}
 				}
-			}
-			if(skipped >= offset){
 				ret.add(createLoginEventScoreInfo(user, authScore));
-			} else {
-				skipped++;
 			}
 		}
 		return ret;
@@ -332,6 +351,22 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	
 	
+	@Override
+	public int countVpnEvents(String userId, Date timestamp){
+		User user = userRepository.findOne(userId);
+		if(user == null){
+			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
+		}
+		ApplicationUserDetails applicationUserDetails = userService.getApplicationUserDetails(user, UserApplication.vpn);
+		if(applicationUserDetails == null || applicationUserDetails.getUserName() == null) {
+			return 0;
+		}
+		String vpnUserNameString = applicationUserDetails.getUserName();
+		if(timestamp == null){
+			timestamp = vpnDAO.getLastRunDate();
+		}
+		return vpnDAO.countNumOfEventsByUser(timestamp, vpnUserNameString);
+	}
 	
 	@Override
 	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, Date timestamp, int offset, int limit) {
@@ -350,10 +385,20 @@ public class ClassifierServiceImpl implements ClassifierService {
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, VpnScore.EVENT_SCORE_FIELD_NAME));
 		List<VpnScore> vpnScores = vpnDAO.findEventsByUsernameAndTimestamp(vpnUserNameString, timestamp, pageable);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
-		for(VpnScore vpnScore: vpnScores){
-			ret.add(createVpnEventScoreInfo(user, vpnScore));
+		if(offset < vpnScores.size()){
+			for(VpnScore vpnScore: vpnScores.subList(offset, vpnScores.size())){
+				ret.add(createVpnEventScoreInfo(user, vpnScore));
+			}
 		}
 		return ret;
+	}
+	
+	@Override
+	public int countVpnEvents(Date timestamp){
+		if(timestamp == null){
+			timestamp = vpnDAO.getLastRunDate();
+		}
+		return vpnDAO.countNumOfEvents(timestamp);
 	}
 
 	@Override
@@ -364,24 +409,22 @@ public class ClassifierServiceImpl implements ClassifierService {
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, VpnScore.EVENT_SCORE_FIELD_NAME));
 		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestamp(timestamp, pageable);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
-		Map<String, User> userMap = new HashMap<>();
-		int skipped = 0;
-		for(VpnScore vpnScore: vpnScores){
-			String username = vpnScore.getUserName().toLowerCase();
-			User user = userMap.get(username);
-			if(user == null){
-				user = userRepository.findByApplicationUserName(userService.createApplicationUserDetails(UserApplication.vpn, username));
+		if(offset < vpnScores.size()){
+			Map<String, User> userMap = new HashMap<>();
+			for(VpnScore vpnScore: vpnScores.subList(offset, vpnScores.size())){
+				String username = vpnScore.getUserName().toLowerCase();
+				User user = userMap.get(username);
 				if(user == null){
-					//TODO: warn message
-					continue;
-				} else{
-					userMap.put(username, user);
+					user = userRepository.findByApplicationUserName(userService.createApplicationUserDetails(UserApplication.vpn, username));
+					if(user == null){
+						//TODO: warn message
+						continue;
+					} else{
+						userMap.put(username, user);
+					}
 				}
-			}
-			if(skipped >= offset){
+
 				ret.add(createVpnEventScoreInfo(user, vpnScore));
-			} else {
-				skipped++;
 			}
 		}
 		return ret;

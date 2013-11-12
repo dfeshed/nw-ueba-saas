@@ -497,19 +497,43 @@ angular.module("BarsChartWidget").directive("yoxigenBarChart", ["$parse", "$time
                     rects
                         .attr("width", Math.max(0, rectWidth))
                         .attr("height", function (d) {
-                            return Math.max(gridSize, fitToGrid(scale(d[series.field])));
+                            var value = d[series.field];
+                            if (value === null)
+                                return 0;
+
+                            return Math.max(gridSize, fitToGrid(scale(value)));
                         })
                         .attr("x", function (d, i) {
                             return fitToGrid(i * totalRectWidth + leftPadding + seriesIndex * rectWidth + options.borderWidth);
                         })
                         .attr("y", function (d, i) {
-                            return barsArea.height + options.borderWidth - Math.max(gridSize, fitToGrid(scale(d[series.field])));
+                            var value = d[series.field],
+                                height;
+
+                            height = value === null ? 0 : Math.max(gridSize, fitToGrid(scale(value)));
+                            return barsArea.height + options.borderWidth - height;
                         })
                         .attr("fill", function (d) {
                             return getPatternFill(getDataColor(d) || series.color || options.colors[seriesIndex]);
                         })
                         .attr("data-seriesIndex", seriesIndex)
                         .attr("data-index", function(d, i){ return i });
+
+                    if (series.nullDisplay){
+                        angular.forEach(data, function(item, itemIndex){
+                            if (item[series.field] === null){
+                                svg.append("text")
+                                    .text(series.nullDisplay)
+                                    .attr("x", fitToGrid(itemIndex * totalRectWidth + leftPadding) + (totalRectWidth - barsSpacing)  / 2)
+                                    .attr("y", barsArea.height + options.borderWidth - gridSize - 2)
+                                    .attr("font-family", options.barLabelsFont.family)
+                                    .attr("font-size", "14px")
+                                    .attr("font-weight", options.barLabelsFont.weight)
+                                    .attr("fill", "#666666")
+                                    .attr("text-anchor", "middle");
+                            }
+                        });
+                    }
 
                     var textMargins = 4,
                         fontSize = Math.max(10, Math.min(rectWidth - textMargins * 2, options.barLabelsFont.size)) + "px";

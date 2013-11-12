@@ -55,13 +55,17 @@ public class ApiClassifierController {
 			timestamp = new Date(date);
 		}
 		List<ILoginEventScoreInfo> eventScoreInfos = Collections.emptyList();
+		int total = 0;
 		if(uid == null){
 			eventScoreInfos = classifierService.getSuspiciousLoginEvents(timestamp, offset, limit);
+			total = classifierService.countLoginEvents(timestamp);
 		} else{
 			eventScoreInfos = classifierService.getUserSuspiciousLoginEvents(uid, timestamp, offset, limit);
+			total = classifierService.countLoginEvents(uid, timestamp);
 		}
 		ret.setData(eventScoreInfos);
-		ret.setTotal(eventScoreInfos.size());
+		ret.setOffset(offset);
+		ret.setTotal(total);
 		return ret;
 	}
 	
@@ -80,13 +84,17 @@ public class ApiClassifierController {
 			timestamp = new Date(date);
 		}
 		List<IVpnEventScoreInfo> eventScoreInfos = Collections.emptyList();
+		int total = 0;
 		if(uid == null){
 			eventScoreInfos = classifierService.getSuspiciousVpnEvents(timestamp, offset, limit);
+			total = classifierService.countVpnEvents(timestamp);
 		} else{
 			eventScoreInfos = classifierService.getUserSuspiciousVpnEvents(uid, timestamp, offset, limit);
+			total = classifierService.countVpnEvents(uid, timestamp);
 		}
 		ret.setData(eventScoreInfos);
-		ret.setTotal(eventScoreInfos.size());
+		ret.setOffset(offset);
+		ret.setTotal(total);
 		return ret;
 	}
 	
