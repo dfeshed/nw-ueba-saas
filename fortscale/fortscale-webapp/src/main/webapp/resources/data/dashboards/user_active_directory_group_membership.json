@@ -25,6 +25,14 @@
                 {
                     "widgetId": "user_profile_features",
                     "title": "Suspicious Group Membership",
+                    "controls": [
+                        {
+                            "type": "link",
+                            "text": "View all",
+                            "href": "#/d/investigator?entities=ldap_group_membership_scores&username={{@loginsUser}}&time_stamp={{@date}}",
+                            "refreshOn": ["date"]
+                        }
+                    ],
                     "refreshOn": "date",
                     "params": {
                         "date": null

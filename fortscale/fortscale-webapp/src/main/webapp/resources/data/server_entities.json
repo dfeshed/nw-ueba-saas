@@ -256,5 +256,32 @@
                 "type": "string"
             }
         ]
+    },
+    {
+        "name": "Group Membership Scores",
+        "id": "ldap_group_membership_scores",
+        "fields": [
+            {
+                "id": "time_stamp",
+                "name": "Time",
+                "type": "date"
+            },
+            {
+                "id": "username",
+                "name": "Username",
+                "type": "string",
+                "key": "userid"
+            },
+            {
+                "id": "dn",
+                "name": "Group Membership",
+                "type": "string"
+            },
+            {
+                "id": "score",
+                "name": "Score",
+                "type": "number"
+            }
+        ]
     }
 ]

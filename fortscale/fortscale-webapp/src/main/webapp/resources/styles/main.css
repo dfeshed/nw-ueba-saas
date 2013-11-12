@@ -261,6 +261,8 @@ a {
     border: none; }
     .widget.no-border > ng-include > .widget-contents {
       padding-top: 0; }
+  .widget.widget-with-tabs {
+    top: -10px; }
   .widget.inner-widget {
     border: solid 1px #dfdfdf;
     padding: 10px 10px 0; }

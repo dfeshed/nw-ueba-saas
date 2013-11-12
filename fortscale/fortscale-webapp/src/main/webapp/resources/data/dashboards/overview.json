@@ -4,13 +4,13 @@
     "className": "dashboard-noBackground",
     "columns": [
         {
-            "className": "span15",
+            "className": "span12",
             "widgets": [
                 {
                     "title": "Suspicious Users",
                     "renderControls": false,
                     "renderHeader": false,
-                    "className": "no-border",
+                    "className": "no-border widget-with-tabs",
                     "views": [
                         {
                             "type": "container",
@@ -46,6 +46,14 @@
                     ]
                 }
             ]
-        }
+        },
+        {
+            "className": "span3",
+            "widgets": [
+            	{
+            		"widgetId": "security_feed"            	
+            	}
+            ]		
+    	}
     ]
 }

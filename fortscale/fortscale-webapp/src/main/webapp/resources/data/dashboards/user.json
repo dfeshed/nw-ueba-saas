@@ -81,6 +81,9 @@
             "widgets": [
                 {
                     "widgetId": "user_scores_container"
+                },
+                {
+                    "widgetId": "user_security_feed"
                 }
             ]
         }

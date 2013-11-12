@@ -25,9 +25,11 @@
                 {
                     "widgetId": "user_profile_features",
                     "refreshOn": "date",
+                    "title": "Total Score Breakdown",
                     "params": {
                         "date": null
-                    }
+                    },
+                    "controls": []
                 }
             ]
         }

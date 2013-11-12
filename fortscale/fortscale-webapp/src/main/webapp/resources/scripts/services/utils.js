@@ -47,14 +47,22 @@ angular.module("Utils", []).factory("utils", [function(){
                 if (angular.isDate(date))
                     return moment(date);
 
-                if (typeof(date) === "number")
+                if (typeof(date) === "number"){
+                    if (date.toString().length === 10)
+                        return moment(date * 1000);
+
                     return moment(date);
+                }
 
                 if (date === "now")
                     return new moment();
 
-                if (/^\d+$/.test(date))
+                if (/^\d+$/.test(date)){
+                    if (date.length === 10)
+                        return moment(parseInt(date) * 1000);
+
                     return moment(parseInt(date));
+                }
 
                 var newDate = moment(),
                     subtractMatch = date.match(/^-(\d+)\s?(\w+)$/);
