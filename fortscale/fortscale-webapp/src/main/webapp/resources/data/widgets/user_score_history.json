@@ -37,16 +37,15 @@
                 "series": [
                     {
                         "field": "score",
-                        "default": 0,
                         "label": "{{@userName}}",
                         "style": "score",
                         "styleParams": {
                             "value": "score"
-                        }
+                        },
+                        "nullDisplay": "(Not calculated)"
                     },
                     {
                         "field": "avgScore",
-                        "default": 0,
                         "label": "Average user",
                         "color": "#e7e7e7",
                         "barLabelsColor": "#aaaaaa",
