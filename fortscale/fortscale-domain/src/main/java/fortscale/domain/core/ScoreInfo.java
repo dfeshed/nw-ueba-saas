@@ -2,7 +2,6 @@ package fortscale.domain.core;
 
 import java.util.Date;
 
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class ScoreInfo {
