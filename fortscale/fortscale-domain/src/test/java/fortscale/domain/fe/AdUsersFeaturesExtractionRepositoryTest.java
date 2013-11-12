@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +17,7 @@ import fortscale.domain.fe.dao.Threshold;
 
 
 
-
+@Ignore
 public class AdUsersFeaturesExtractionRepositoryTest extends AbstractTest{
 
 	@Autowired

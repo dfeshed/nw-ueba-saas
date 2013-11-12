@@ -1,4 +1,4 @@
-package fortscale.service.jdbc;
+package fortscale.services.domain.jdbc;
 
 import java.util.Collection;
 import java.util.List;

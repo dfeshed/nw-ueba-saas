@@ -1,4 +1,4 @@
-package fortscale.service.fe;
+package fortscale.services.fe;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +16,8 @@ import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.Threshold;
-import fortscale.service.AbstractTest;
+import fortscale.services.analyst.ConfigurationService;
+import fortscale.services.domain.AbstractTest;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.IScoreDistribution;
@@ -34,10 +35,24 @@ public class ClassifierServiceTest extends AbstractTest{
 	
 	@Autowired
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
+	
+	@Autowired
+	private ConfigurationService configurationService;
+	
+	
 
 	@Test
 	public void testGetScoreDistributionForAuth() {
-		List<IScoreDistribution> scoreDistributions = service.getScoreDistribution(Classifier.auth.getId());
+		testGetScoreDistribution(Classifier.auth.getId());
+	}
+	
+	@Test
+	public void testGetScoreDistributionForAd() {
+		testGetScoreDistribution(Classifier.groups.getId());
+	}
+	
+	private void testGetScoreDistribution(String classifierId){
+		List<IScoreDistribution> scoreDistributions = service.getScoreDistribution(classifierId);
 		
 		Date tmpDate = new Date();
 		int total = authDAO.countNumOfUsersAboveThreshold(new Threshold("", 0), tmpDate);
@@ -52,29 +67,7 @@ public class ClassifierServiceTest extends AbstractTest{
 	}
 	
 	@Test
-	public void testGetScoreDistributionForAd() {
-		List<IScoreDistribution> scoreDistributions = service.getScoreDistribution(Classifier.ad.getId());
-		
-		int aboveThreshold = scoreDistributions.get(0).getCount();
-		int total = scoreDistributions.get(0).getCount();
-		total = (int) (total * Math.pow(2, scoreDistributions.size()+1));
-		boolean isFirst = true;
-		for(IScoreDistribution scoreDistribution: scoreDistributions) {
-			double per = (aboveThreshold / (double)total)*100;
-			Assert.assertTrue(Math.abs(scoreDistribution.getPercentage() - per) < 1);
-			Assert.assertEquals(aboveThreshold, scoreDistribution.getCount());
-			
-			if(isFirst) {
-				isFirst = false;
-			} else {
-				aboveThreshold = aboveThreshold * 2;
-			}
-			
-		}
-	}
-	
-	@Test
-	public void testgetAdSuspiciousUsers() {
+	public void testgetGroupSuspiciousUsers() {
 		User user = createUser("test1", 90, 80, 90, 80);
 		userRepository.save(user);
 		adUsersFeaturesExtractionRepository.save(createAdUserFeaturesExtractionDummy(user.getId(), user.getAdDn()));
@@ -84,28 +77,28 @@ public class ClassifierServiceTest extends AbstractTest{
 		user = createUser("test3", 90, 80, 100, 100);
 		userRepository.save(user);
 		adUsersFeaturesExtractionRepository.save(createAdUserFeaturesExtractionDummy(user.getId(), user.getAdDn()));
-		service.getSuspiciousUsersByScore(Classifier.ad.getId(), service.getSeverityElements().get(0).getName());
+		service.getSuspiciousUsersByScore(Classifier.groups.getId(), configurationService.getSeverityElements().get(0).getName());
 		
 	}
 	
 	private TestUser createUser(String id) {
 		TestUser retUser = new TestUser(id + "-dn");
 		retUser.setId(id);
-//		ClassifierScore classifierScoreAd = createClassifierScoreDummy(Classifier.ad.getId());
+//		ClassifierScore classifierScoreAd = createClassifierScoreDummy(Classifier.groups.getId());
 //		ClassifierScore classifierScoreAuth = createClassifierScoreDummy(Classifier.auth.getId());
 		return retUser;
 	}
 	
 	private TestUser createUser(String id, int score, int avgScore, int prevScore, int prevAvgScore) {
 		TestUser user = createUser(id);
-		user.putClassifierScore(createClassifierScore(Classifier.ad.getId(), score, avgScore, createPrevScoreInfoList(prevScore, prevAvgScore)));
+		user.putClassifierScore(createClassifierScore(Classifier.groups.getId(), score, avgScore, createPrevScoreInfoList(prevScore, prevAvgScore)));
 		user.putClassifierScore(createClassifierScore(Classifier.auth.getId(), score, avgScore, createPrevScoreInfoList(prevScore, prevAvgScore)));
 		return user;
 	}
 	
 	private TestUser createUserWithClassifierScore(String id) {
 		TestUser retUser = createUser(id);
-		retUser.putClassifierScore(createClassifierScoreDummy(Classifier.ad.getId()));
+		retUser.putClassifierScore(createClassifierScoreDummy(Classifier.groups.getId()));
 		retUser.putClassifierScore(createClassifierScoreDummy(Classifier.auth.getId()));
 		return retUser;
 	}
@@ -137,7 +130,7 @@ public class ClassifierServiceTest extends AbstractTest{
 	
 	
 	private AdUserFeaturesExtraction createAdUserFeaturesExtractionDummy(String userId, String rawId){
-		AdUserFeaturesExtraction adUserFeaturesExtraction = new AdUserFeaturesExtraction(Classifier.ad.getId(), userId, rawId);
+		AdUserFeaturesExtraction adUserFeaturesExtraction = new AdUserFeaturesExtraction(Classifier.groups.getId(), userId, rawId);
 		return adUserFeaturesExtraction;
 	}
 	

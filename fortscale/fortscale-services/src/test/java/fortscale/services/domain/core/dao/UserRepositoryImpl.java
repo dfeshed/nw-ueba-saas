@@ -1,9 +1,11 @@
-package fortscale.service.domain.core.dao;
+package fortscale.services.domain.core.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,6 +15,7 @@ import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.Threshold;
 
 
@@ -21,8 +24,10 @@ import fortscale.domain.fe.dao.Threshold;
 public class UserRepositoryImpl implements UserRepository{
 	
 	private Map<String, User> userMap = new HashMap<String, User>();
-
-
+	
+	@Autowired
+	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
+	
 	@Override
 	public Page<User> findAll(Pageable pageable) {
 		// TODO Auto-generated method stub
@@ -130,15 +135,23 @@ public class UserRepositoryImpl implements UserRepository{
 	@Override
 	public List<User> findByClassifierIdAndScoreBetween(String classifierId,
 			int lowestVal, int upperVal, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>(userMap.values());
 	}
 
 	@Override
 	public int countNumOfUsersAboveThreshold(String classifierId,
 			Threshold threshold) {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		if(threshold.getValue() == 100) {
+			return 0;
+		}
+		int val = 100 - threshold.getValue();
+		val = val * 10 + val / 10 + 1;
+		if(threshold.getValue() == 0) {
+			val = val * 4;
+		}
+		
+		return val;
 	}
 
 	@Override

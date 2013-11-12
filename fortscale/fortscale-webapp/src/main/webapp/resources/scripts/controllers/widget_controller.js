@@ -219,14 +219,14 @@ angular.module("Fortscale").controller("WidgetController", ["$scope", "$timeout"
         $scope.initControl = function(control){
             controls.initControl(control, getWidgetParams($scope.widget));
             if (control.refreshOn){
-                eventDeregistrationFunctions.push($scope.$on("dashboardParamsChange", function(e, changedParams){
+                $scope.$on("dashboardParamsChange", function(e, changedParams){
                     for(var i= 0, paramValue; i < control.refreshOn.length; i++){
                         if (changedParams[control.refreshOn[i]] !== undefined){
                             controls.initControl(control, getWidgetParams($scope.widget));
                             return;
                         }
                     }
-                }));
+                });
             }
         };
 

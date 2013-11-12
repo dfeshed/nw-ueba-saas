@@ -9,17 +9,20 @@
 		
 	<description>services context for testing.</description>
 	
+	<import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
+	
 	<context:property-placeholder location="classpath*:META-INF/fortscale-services-context-test-config.properties" order="1" ignore-unresolvable="true"/>
 	<context:property-placeholder location="classpath*:META-INF/*.properties" order="2"/>
 	
-	<bean id="userMachineDAO" class="fortscale.service.domain.ad.dao.UserMachineDAOImpl"/>
+	<bean id="userMachineDAO" class="fortscale.services.domain.ad.dao.UserMachineDAOImpl"/>
 	
-	<bean id="authDAO" class="fortscale.service.domain.fe.dao.AuthDAOImpl"/>
+	<bean id="authDAO" class="fortscale.services.domain.fe.dao.AuthDAOImpl"/>
 	
-	<bean id="vpnDAO" class="fortscale.service.domain.fe.dao.VpnDAOImpl"/>
+	<bean id="vpnDAO" class="fortscale.services.domain.fe.dao.VpnDAOImpl"/>
 	
-	<bean id="impalaJdbcTemplate" class="fortscale.service.jdbc.JdbcOperationsTest"/>
+	<bean id="impalaJdbcTemplate" class="fortscale.services.domain.jdbc.JdbcOperationsTest"/>
+	<bean id="fortscaleConfigurationRepository" class="fortscale.services.domain.analyst.dao.FortscaleConfigurationRepositoryImpl"></bean>
 	
-	<context:component-scan base-package="fortscale"/>
+	<context:component-scan base-package="fortscale.services"/>
 	
 </beans>

@@ -1,4 +1,4 @@
-package fortscale.service.domain.ad.dao;
+package fortscale.services.domain.ad.dao;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
