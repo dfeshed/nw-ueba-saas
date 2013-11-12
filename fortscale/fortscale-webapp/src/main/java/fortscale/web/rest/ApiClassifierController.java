@@ -125,19 +125,23 @@ public class ApiClassifierController {
 	@LogException
 	public DataBean<List<ISuspiciousUserInfo>> suspiciousUser(@PathVariable String id, 
 			@RequestParam(defaultValue=SUSPICIOUS_USERS_BY_SCORE) String sortby,
+			@RequestParam(defaultValue="0") Integer page,
+			@RequestParam(defaultValue="10") Integer size,
 			Model model){
 		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
 		List<ISuspiciousUserInfo> users;
+		int total = classifierService.countUsers(id);
 		if(SUSPICIOUS_USERS_BY_SCORE.equals(sortby)){
-			users = classifierService.getSuspiciousUsersByScore(id, null);
+			users = classifierService.getSuspiciousUsersByScore(id, null,page,size);
 		} else if(SUSPICIOUS_USERS_BY_TREND.equals(sortby)){
-			users = classifierService.getSuspiciousUsersByTrend(id, null);
+			users = classifierService.getSuspiciousUsersByTrend(id, null,page,size);
 		} else{
 			throw new InvalidValueException(String.format("no such sorting field [%s]", sortby));
 		}
 
 		ret.setData(users);
-		ret.setTotal(users.size());
+		ret.setOffset(page*size);
+		ret.setTotal(total);
 		return ret;
 	}
 	

@@ -4,6 +4,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -40,16 +41,31 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 
 	@Override
 	public List<User> findByClassifierIdAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
+		DateTime dateTime = new DateTime();
+		dateTime = dateTime.withTimeAtStartOfDay();
+		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lt(upperVal));
+		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
 		query.with(pageable);
 		return mongoTemplate.find(query, User.class);
 	}
 
 	@Override
 	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold) {
+		DateTime dateTime = new DateTime();
+		dateTime = dateTime.withTimeAtStartOfDay();
+		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(classifierCurScoreField).gte(threshold.getValue()));
+		Query query = new Query(where(classifierCurScoreField).gte(threshold.getValue()).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
+		return (int) mongoTemplate.count(query, User.class);
+	}
+
+	@Override
+	public int countNumOfUsers(String classifierId) {
+		DateTime dateTime = new DateTime();
+		dateTime = dateTime.withTimeAtStartOfDay();
+		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
+		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
 		return (int) mongoTemplate.count(query, User.class);
 	}
 	

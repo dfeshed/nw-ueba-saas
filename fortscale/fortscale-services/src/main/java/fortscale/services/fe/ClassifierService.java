@@ -8,8 +8,9 @@ public interface ClassifierService {
 	public List<IClassifierScoreDistribution> getScoreDistribution(); 
 	public Classifier getClassifier(String classifierId);
 	public List<IScoreDistribution> getScoreDistribution(String classifierId); 
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId);
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId);
+	public int countUsers(String classifierId);
+	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size);
+	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size);
 	public List<ILoginEventScoreInfo> getUserSuspiciousLoginEvents(String userId, Date timestamp, int offset, int limit);
 	public List<ILoginEventScoreInfo> getSuspiciousLoginEvents(Date timestamp, int offset, int limit);
 	public int countLoginEvents(Date timestamp);
