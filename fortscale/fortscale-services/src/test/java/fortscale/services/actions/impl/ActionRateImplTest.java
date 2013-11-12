@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.service.AbstractTest;
+import fortscale.services.domain.AbstractTest;
 
 public class ActionRateImplTest extends AbstractTest{
 	

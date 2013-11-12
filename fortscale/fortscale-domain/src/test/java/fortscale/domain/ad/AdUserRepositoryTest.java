@@ -2,12 +2,14 @@ package fortscale.domain.ad;
 
 import java.util.Iterator;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.domain.AbstractTest;
 import fortscale.domain.ad.dao.AdUserRepository;
 
+@Ignore
 public class AdUserRepositoryTest extends AbstractTest{
 
 	@Autowired

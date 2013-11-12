@@ -33,6 +33,7 @@ import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.ebs.EventBulkScorer;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
+import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
@@ -50,39 +51,7 @@ import fortscale.utils.impala.ImpalaPageRequest;
 public class ClassifierServiceImpl implements ClassifierService {
 	
 	private static final String EVENT_SCORE = "eventScore";
-	private static List<SeverityElement> severityOrderedList = getSeverityList();
-//	private static Map<String,SeverityElement> severityMap = null;
 	
-	private Map<String, Classifier> classifiersMap = getClassifiersMap();
-	
-	private static Map<String, Classifier> getClassifiersMap(){
-		Map<String, Classifier> ret = new HashMap<String, Classifier>();
-		for(Classifier classifier: Classifier.values()){
-			ret.put(classifier.getId(), classifier);
-		}
-		return ret;
-	}
-		
-	private static List<SeverityElement> getSeverityList(){
-		List<SeverityElement> ret = new ArrayList<>();
-		ret.add(new SeverityElement("Critical", 90));
-		ret.add(new SeverityElement("High", 50));
-		ret.add(new SeverityElement("Medium", 10));
-		ret.add(new SeverityElement("Low", 0));
-		return ret;
-	}
-	
-//	private static Map<String,SeverityElement> getSeverityMap(){
-//		if(severityMap == null){
-//			Map<String,SeverityElement> tmp = new HashMap<>();
-//			for(SeverityElement element: severityOrderedList){
-//				tmp.put(element.getName(), element);
-//			}
-//			severityMap = tmp;
-//		}
-//		
-//		return severityMap;
-//	}
 	
 	@Autowired
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
@@ -104,10 +73,13 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private ConfigurationService configurationService;
 
 	
 	public Classifier getClassifier(String classifierId){
-		return classifiersMap.get(classifierId);
+		return configurationService.getClassifiersMap().get(classifierId);
 	}
 	
 	public List<IClassifierScoreDistribution> getScoreDistribution(){
@@ -126,7 +98,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		
 		List<Threshold> thresholds = new ArrayList<>();
 		thresholds.add(new Threshold("All", 0));
-		for(SeverityElement element: severityOrderedList){
+		for(SeverityElement element: configurationService.getSeverityElements()){
 			thresholds.add(new Threshold(element.getName(), element.getValue()));
 		}
 		calculateNumOfUsersWithScoresGTThresholdForLastRun(classifierId, thresholds);
@@ -258,19 +230,19 @@ public class ClassifierServiceImpl implements ClassifierService {
 			return new Range(0, 101);
 		}
 		int i = 0;
-		for(SeverityElement element: severityOrderedList){
+		for(SeverityElement element: configurationService.getSeverityElements()){
 			if(element.getName().equals(severityId)){
 				break;
 			}
 			i++;
 		}
-		if(severityOrderedList.size() == i){
+		if(configurationService.getSeverityElements().size() == i){
 			throw new InvalidValueException(String.format("no such severity id: %s", severityId));
 		}
-		int lowestVal = severityOrderedList.get(i).getValue();
+		int lowestVal = configurationService.getSeverityElements().get(i).getValue();
 		int upperVal = 100;
 		if(i > 0){
-			upperVal = severityOrderedList.get(i-1).getValue();
+			upperVal = configurationService.getSeverityElements().get(i-1).getValue();
 		}
 		
 		return new Range(lowestVal, upperVal);
@@ -427,10 +399,6 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	
 
-	@Override
-	public List<SeverityElement> getSeverityElements() {
-		return severityOrderedList;
-	}
 	
 	private static final String MACHINE_NAME_FIELD = "machine_name";
 	private static final String CLIENT_ADDRESSE_FIELD = "client_address";

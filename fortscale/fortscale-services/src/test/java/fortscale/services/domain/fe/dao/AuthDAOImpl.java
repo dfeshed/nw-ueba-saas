@@ -1,4 +1,4 @@
-package fortscale.service.domain.fe.dao;
+package fortscale.services.domain.fe.dao;
 
 import java.util.Date;
 import java.util.List;

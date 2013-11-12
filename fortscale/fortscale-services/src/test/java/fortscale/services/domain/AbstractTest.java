@@ -1,4 +1,4 @@
-package fortscale.service;
+package fortscale.services.domain;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;

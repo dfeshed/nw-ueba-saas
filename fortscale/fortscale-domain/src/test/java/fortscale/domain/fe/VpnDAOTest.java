@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.utils.impala.ImpalaPageRequest;
 
+@Ignore
 public class VpnDAOTest extends AbstractTest {
 
 	@Autowired

@@ -1,4 +1,4 @@
-package fortscale.service.domain.analyst.dao;
+package fortscale.services.domain.analyst.dao;
 
 import java.util.List;
 

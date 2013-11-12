@@ -1,6 +1,9 @@
 package fortscale.services.analyst.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +19,45 @@ import fortscale.domain.analyst.ScoreWeight;
 import fortscale.domain.analyst.dao.FortscaleConfigurationRepository;
 import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.fe.Classifier;
+import fortscale.services.impl.SeverityElement;
 
 
 @Service("configurationService")
 public class ConfigurationServiceImpl implements ConfigurationService, InitializingBean{
+	
+	private static List<SeverityElement> severityOrderedList = getSeverityList();
+//	private static Map<String,SeverityElement> severityMap = null;
+	
+	private Map<String, Classifier> classifiersMap = createClassifiersMap();
+	
+	private static Map<String, Classifier> createClassifiersMap(){
+		Map<String, Classifier> ret = new HashMap<String, Classifier>();
+		for(Classifier classifier: Classifier.values()){
+			ret.put(classifier.getId(), classifier);
+		}
+		return ret;
+	}
+		
+	private static List<SeverityElement> getSeverityList(){
+		List<SeverityElement> ret = new ArrayList<>();
+		ret.add(new SeverityElement("Critical", 90));
+		ret.add(new SeverityElement("High", 50));
+		ret.add(new SeverityElement("Medium", 10));
+		ret.add(new SeverityElement("Low", 0));
+		return ret;
+	}
+	
+//	private static Map<String,SeverityElement> getSeverityMap(){
+//		if(severityMap == null){
+//			Map<String,SeverityElement> tmp = new HashMap<>();
+//			for(SeverityElement element: severityOrderedList){
+//				tmp.put(element.getName(), element);
+//			}
+//			severityMap = tmp;
+//		}
+//		
+//		return severityMap;
+//	}
 	
 	@Autowired
 	private FortscaleConfigurationRepository fortscaleConfigurationRepository;
@@ -71,6 +109,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 	}
 
 	
-
+	@Override
+	public List<SeverityElement> getSeverityElements() {
+		return severityOrderedList;
+	}
 	
+	@Override
+	public Map<String, Classifier> getClassifiersMap(){
+		return classifiersMap;
+	}
 }
