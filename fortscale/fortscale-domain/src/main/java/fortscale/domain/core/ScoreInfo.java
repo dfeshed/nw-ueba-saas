@@ -9,17 +9,16 @@ public class ScoreInfo {
 	public static final String scoreField = "score";
 	public static final String trendField = "trend";
 	public static final String trendScoreField = "trendScore";
+	public static final String timestampField = "timestamp";
 	
-	@Indexed
 	@Field(scoreField)
 	private double score;
 	private double avgScore;
-	@Indexed
 	@Field(trendField)
 	private double trend = 0.0;
-	@Indexed
 	@Field(trendScoreField)
 	private double trendScore = 0.0;
+	@Field(timestampField)
 	private Date timestamp;
 	private Long timestampEpoc;
 	

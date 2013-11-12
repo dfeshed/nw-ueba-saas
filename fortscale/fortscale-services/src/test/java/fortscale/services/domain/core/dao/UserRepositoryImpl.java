@@ -191,4 +191,10 @@ public class UserRepositoryImpl implements UserRepository{
 		return null;
 	}
 
+	@Override
+	public int countNumOfUsers(String classifierId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

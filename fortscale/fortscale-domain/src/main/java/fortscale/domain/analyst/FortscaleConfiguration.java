@@ -17,7 +17,7 @@ public class FortscaleConfiguration extends AbstractAuditableDocument{
 	@Indexed
 	private String configId = "score";
 	@Field("conf")
-	private Object confObj;
+	private ScoreConfiguration confObj;
 	
 	
 	@Indexed
@@ -38,11 +38,11 @@ public class FortscaleConfiguration extends AbstractAuditableDocument{
 		this.createdById = createdBy;
 	}
 
-	public Object getConfObj() {
+	public ScoreConfiguration getConfObj() {
 		return confObj;
 	}
 
-	public void setConfObj(Object confObj) {
+	public void setConfObj(ScoreConfiguration confObj) {
 		this.confObj = confObj;
 	}
 

@@ -135,21 +135,26 @@ public class ClassifierServiceImpl implements ClassifierService {
 	}
 	
 	@Override
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId) {
-		return getTopUsers(classifierId, severityId, new ThresholdNoFilter(), User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
+	public int countUsers(String classifierId){
+		return userRepository.countNumOfUsers(classifierId);
 	}
 	
 	@Override
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId) {
-		return getTopUsers(classifierId, severityId, new ThresholdTrendFilter(), User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
+	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size) {
+		return getTopUsers(classifierId, severityId, new ThresholdNoFilter(),page,size, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
+	}
+	
+	@Override
+	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size) {
+		return getTopUsers(classifierId, severityId, new ThresholdTrendFilter(),page,size, User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
 	}
 
-	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, String... sortingFieldsName) {
+	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, int page, int size, String... sortingFieldsName) {
 		Classifier.validateClassifierId(classifierId);
 		
 		Range severityRange = getRange(severityId);
 		
-		Pageable pageable = new PageRequest(0, 10, Direction.DESC, sortingFieldsName);
+		Pageable pageable = new PageRequest(page, size, Direction.DESC, sortingFieldsName);
 		List<User> users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(User user: users){
