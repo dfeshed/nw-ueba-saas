@@ -26,6 +26,12 @@ public interface VpnDAO {
 	
 	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp);
 	
+	public int countNumOfUsers(Date timestamp);
+	
+	public int countNumOfEvents(Date timestamp);
+	
+	public int countNumOfEventsByUser(Date timestamp, String username);
+	
 	public Date getLastRunDate();
 	
 	public Long getLastRuntime();
