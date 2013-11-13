@@ -47,6 +47,11 @@ angular.module("TableWidget").factory("tableWidgetData", ["utils", "transforms",
                     });
                 }
 
+                if (field.image){
+                    fieldData.type = "image";
+                    fieldData.image = utils.strings.parseValue(field.image, row, params, rowIndex);
+                }
+
                 if (field.className)
                     fieldData.className = utils.strings.parseValue(field.className, row, params, rowIndex);
 

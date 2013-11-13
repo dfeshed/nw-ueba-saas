@@ -15,9 +15,16 @@
             "settings": {
                 "fields": [
                     {
+                        "name": "Image",
+                        "image": "data:image/gif;base64,{{userDetails.image}}",
+                        "className": "table-avatar",
+                        "renderHeader": false
+                    },
+                    {
                         "name": "User",
                         "value": "{{userDetails.name || username}}",
-                        "link": "#/d/user/{{userDetails.id}}?currentFeature={{@currentScore}}"
+                        "link": "#/d/user/{{userDetails.id}}?currentFeature={{@currentScore}}",
+                        "headerColspan": 2
                     },
                     {
                         "name": "Failure Count",

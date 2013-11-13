@@ -968,6 +968,10 @@ body .ui-tooltip {
       width: 9999px; }
     .widget-table td.table-small-cell {
       width: 10px; }
+    .widget-table td.table-avatar {
+      width: 20px; }
+      .widget-table td.table-avatar img {
+        height: 20px; }
     .widget-table td.sideNote {
       color: #999;
       text-align: right;

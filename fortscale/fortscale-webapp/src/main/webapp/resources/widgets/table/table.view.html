@@ -37,6 +37,7 @@
                 <div ng-switch-when="array">
                     <ng-include ng-repeat="fieldData in fieldData.items" src="'tableField'"></ng-include>
                 </div>
+                <img ng-switch-when="image" hide-on-error ng-src="{{fieldData.image}}" />
                 <ng-include ng-switch-default src="'tableField'"></ng-include>
             </td>
         </tr>
