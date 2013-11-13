@@ -8,16 +8,19 @@ import fortscale.domain.analyst.ScoreWeight;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
 import fortscale.services.fe.Classifier;
+import fortscale.utils.impala.ImpalaParser;
 
 public class ImpalaTotalScoreWriter extends ImpalaWriter{
 	
 	private static ScoreWeight TOTAL_SCORE_WEIGHT = new ScoreWeight(Classifier.total.getId(), 0.0);
 	
-	public ImpalaTotalScoreWriter(File file){
-		super(file);
+	public ImpalaTotalScoreWriter(File file, ImpalaParser impalaParser){
+		super(file, impalaParser);
 	}
 	
-	public ImpalaTotalScoreWriter() {}
+	public ImpalaTotalScoreWriter(ImpalaParser impalaParser) {
+		super(impalaParser);
+	}
 
 	public void writeScores(User user, Date timestamp, ScoreConfiguration scoreConfiguration){
 		writeScore(user, TOTAL_SCORE_WEIGHT, timestamp, getTotalScoreExplanation(user, scoreConfiguration));

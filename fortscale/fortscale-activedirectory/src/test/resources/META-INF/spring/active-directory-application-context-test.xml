@@ -11,6 +11,7 @@
 						http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd         
 						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+	<import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
