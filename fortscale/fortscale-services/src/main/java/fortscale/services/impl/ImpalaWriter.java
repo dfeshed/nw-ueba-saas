@@ -6,11 +6,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
+import fortscale.utils.impala.ImpalaParser;
+
 public class ImpalaWriter{
 	private BufferedWriter writer = null;
+	private ImpalaParser impalaParser;
 	
-	public ImpalaWriter(){}
-	public ImpalaWriter(File file) {
+	public ImpalaWriter(ImpalaParser impalaParser){
+		this.impalaParser = impalaParser;
+	}
+	public ImpalaWriter(File file, ImpalaParser impalaParser) {
+		this.impalaParser = impalaParser;
 		writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(file));
@@ -55,6 +61,10 @@ public class ImpalaWriter{
 	}
 	
 	protected long getRuntime(Date timestamp){
-		return timestamp.getTime()/1000;
+		return impalaParser.getRuntime(timestamp);
+	}
+	
+	protected String getRundate(Date date){
+		return impalaParser.formatTimeDate(date);
 	}
 }

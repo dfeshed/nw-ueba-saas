@@ -3,16 +3,21 @@ package fortscale.domain.fe.dao.impl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 
 import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.utils.impala.ImpalaParser;
 
 public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
+	
+	@Autowired
+	private ImpalaParser impalaParser;
+	
 	
 	private String tableName = VpnScore.TABLE_NAME;
 
@@ -76,7 +81,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
 			try{
 				ret.setTimestamp(parseTimestampDate(rs.getLong(VpnScore.TIMESTAMP_FIELD_NAME)));
 				
-				ret.setEventTime(parseEventTimeDate(rs.getString(VpnScore.EVENT_TIME_FIELD_NAME)));
+				ret.setEventTime(impalaParser.parseTimeDate(rs.getString(VpnScore.EVENT_TIME_FIELD_NAME)));
 				ret.setUserName(rs.getString(VpnScore.USERNAME_FIELD_NAME));
 				ret.setLocalIp(rs.getString(VpnScore.LOCAL_IP_FIELD_NAME));
 				ret.setSourceIp(rs.getString(VpnScore.SOURCE_IP_FIELD_NAME));
@@ -99,11 +104,6 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
 			
 			return ret;
 		}
-	}
-	
-	private static Date parseEventTimeDate(String dateString) throws ParseException {
-		SimpleDateFormat pattern = new SimpleDateFormat(VpnScore.DATE_FORMAT);
-		return pattern.parse(dateString);
 	}
 	
 }

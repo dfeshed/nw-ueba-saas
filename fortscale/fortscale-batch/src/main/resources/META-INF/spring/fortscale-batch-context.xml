@@ -20,6 +20,7 @@
 						http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
 						http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd">
 
+	<import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>

@@ -3,11 +3,17 @@ package fortscale.services.impl;
 import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import fortscale.utils.impala.ImpalaParser;
+
 @Component
 public class ImpalaWriterFactory {
+	
+	@Autowired
+	private ImpalaParser impalaParser;
 
 	@Value("${user.ad.group.membership.score.csv.file.full.path:}")
 	private String userAdScoreCsvFileFullPathString;
@@ -43,25 +49,25 @@ public class ImpalaWriterFactory {
 
 	public ImpalaGroupsScoreWriter createImpalaGroupsScoreWriter(){
 		if(StringUtils.isEmpty(userAdScoreCsvFileFullPathString)){
-			return new ImpalaGroupsScoreWriter();
+			return new ImpalaGroupsScoreWriter(impalaParser);
 		}
-		ImpalaGroupsScoreWriter writer = new ImpalaGroupsScoreWriter(getFile(userAdScoreCsvFileFullPathString));
+		ImpalaGroupsScoreWriter writer = new ImpalaGroupsScoreWriter(getFile(userAdScoreCsvFileFullPathString), impalaParser);
 		return writer;
 	}
 	
 	public ImpalaTotalScoreWriter createImpalaTotalScoreWriter(){
 		if(StringUtils.isEmpty(userTotalScoreCsvFileFullPathString)){
-			return new ImpalaTotalScoreWriter();
+			return new ImpalaTotalScoreWriter(impalaParser);
 		}
-		ImpalaTotalScoreWriter writer = new ImpalaTotalScoreWriter(getFile(userTotalScoreCsvFileFullPathString));
+		ImpalaTotalScoreWriter writer = new ImpalaTotalScoreWriter(getFile(userTotalScoreCsvFileFullPathString), impalaParser);
 		return writer;
 	}
 	
 	public ImpalaUseridToAppUsernameWriter createImpalaUseridToAppUsernameWriter(){
 		if(StringUtils.isEmpty(useridToAppUsernameCsvFileFullPathString)){
-			return new ImpalaUseridToAppUsernameWriter();
+			return new ImpalaUseridToAppUsernameWriter(impalaParser);
 		}
-		ImpalaUseridToAppUsernameWriter writer = new ImpalaUseridToAppUsernameWriter(getFile(useridToAppUsernameCsvFileFullPathString));
+		ImpalaUseridToAppUsernameWriter writer = new ImpalaUseridToAppUsernameWriter(getFile(useridToAppUsernameCsvFileFullPathString), impalaParser);
 		return writer;
 	}
 }

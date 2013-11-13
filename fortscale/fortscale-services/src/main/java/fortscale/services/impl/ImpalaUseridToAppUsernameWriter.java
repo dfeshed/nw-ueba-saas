@@ -6,14 +6,17 @@ import java.util.List;
 
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
+import fortscale.utils.impala.ImpalaParser;
 
 public class ImpalaUseridToAppUsernameWriter extends ImpalaWriter{
 	
-	public ImpalaUseridToAppUsernameWriter(File file){
-		super(file);
+	public ImpalaUseridToAppUsernameWriter(File file, ImpalaParser impalaParser){
+		super(file, impalaParser);
 	}
 		
-	public ImpalaUseridToAppUsernameWriter() {}
+	public ImpalaUseridToAppUsernameWriter(ImpalaParser impalaParser) {
+		super(impalaParser);
+	}
 
 	public void write(List<User> users, Date timestamp){
 		for(User user: users){
