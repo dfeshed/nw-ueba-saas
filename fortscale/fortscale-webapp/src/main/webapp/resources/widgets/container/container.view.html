@@ -1,9 +1,0 @@
-<div class="widget-container">
-    <div class="widget {{widget.className}}"
-         ng-repeat="widget in view.widgets"
-         ng-controller="WidgetController"
-         ng-show="!widget.show || widget.show.value"
-         ng-style="widget.style">
-        <ng-include src="'views/widgets/widget.html'"></ng-include>
-    </div>
-</div>

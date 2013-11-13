@@ -1,6 +1,0 @@
-{
-    "endpoint": {
-        "query":  "SELECT source_ip, count(distinct username) as failcount FROM vpndata where status='FAIL' GROUP BY source_ip HAVING failcount>1 ORDER BY failcount desc LIMIT 10",
-        "entity": "investigate"
-    }
-}

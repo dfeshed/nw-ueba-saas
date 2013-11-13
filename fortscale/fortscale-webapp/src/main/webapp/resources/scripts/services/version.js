@@ -1,1 +1,0 @@
-angular.module("Fortscale").value("version", new Date().valueOf());
