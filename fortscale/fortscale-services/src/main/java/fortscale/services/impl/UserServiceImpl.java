@@ -603,7 +603,8 @@ public class UserServiceImpl implements UserService{
 	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore){
 		ClassifierScore cScore = user.getScore(classifierId);
 		boolean isReplaceCurrentScore = true;
-		double trend = 0.0;
+		double trend = 0.0; 
+		double diffScore = 0.0;
 		if(cScore == null){
 			cScore = new ClassifierScore();
 			cScore.setClassifierId(classifierId);
@@ -619,7 +620,8 @@ public class UserServiceImpl implements UserService{
 			if(cScore.getPrevScores().size() > 1){
 				double prevScore = cScore.getPrevScores().get(1).getScore() + 0.00001;
 				double curScore = value + 0.00001;
-				trend = (curScore - prevScore) / prevScore;
+				diffScore = curScore - prevScore;
+				trend = diffScore / prevScore;
 			}
 			
 			ScoreInfo scoreInfo = new ScoreInfo();
@@ -628,7 +630,7 @@ public class UserServiceImpl implements UserService{
 			scoreInfo.setTimestamp(timestamp);
 			scoreInfo.setTimestampEpoc(timestamp.getTime());
 			scoreInfo.setTrend(trend);
-			scoreInfo.setTrendScore(Math.abs(trend));
+			scoreInfo.setTrendScore(diffScore);
 			if (isOnSameDay(timestamp, cScore.getTimestamp())) {
 				if(isSaveMaxScore && value < cScore.getScore()){
 					isReplaceCurrentScore = false;
@@ -650,7 +652,7 @@ public class UserServiceImpl implements UserService{
 			cScore.setTimestamp(timestamp);
 			cScore.setTimestampEpoc(timestamp.getTime());
 			cScore.setTrend(trend);
-			cScore.setTrendScore(Math.abs(trend));
+			cScore.setTrendScore(diffScore);
 		}
 		user.putClassifierScore(cScore);
 		if(isToSave){
