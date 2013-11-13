@@ -1,1 +1,0 @@
-angular.module("LineChartWidget", ["Utils", "Transforms", "Format"]);
