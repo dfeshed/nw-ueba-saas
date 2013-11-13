@@ -28,9 +28,14 @@ $tabsBorderRadius: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    background: -webkit-linear-gradient(top, #f7f7f7, #f7f7f7 55%, #d7d7d7);
-    background: -moz-linear-gradient(top, #f7f7f7, #f7f7f7 55%, #d7d7d7);
-    background: linear-gradient(top, #f7f7f7, #f7f7f7 55%, #d7d7d7);
+    background: #f7f7f7;
+    background: -moz-linear-gradient(top, #f7f7f7 0%, #f7f7f7 55%, #d7d7d7 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(55%,#f7f7f7), color-stop(100%,#d7d7d7));
+    background: -webkit-linear-gradient(top, #f7f7f7 0%,#f7f7f7 55%,#d7d7d7 100%);
+    background: -o-linear-gradient(top, #f7f7f7 0%,#f7f7f7 55%,#d7d7d7 100%);
+    background: -ms-linear-gradient(top, #f7f7f7 0%,#f7f7f7 55%,#d7d7d7 100%);
+    background: linear-gradient(to bottom, #f7f7f7 0%,#f7f7f7 55%,#d7d7d7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#d7d7d7',GradientType=0 );
 
     -webkit-transform: translateY(3px);
     -moz-transform: translateY(3px);

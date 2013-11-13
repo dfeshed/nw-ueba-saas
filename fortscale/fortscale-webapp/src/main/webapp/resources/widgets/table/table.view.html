@@ -17,37 +17,6 @@
                         <i class="icon-caret-up" ng-class="{ 'widget-table-sort-visible': !field.sortDirection || field.sortDirection === 1 }"></i>
                         <i class="icon-caret-down" ng-class="{ 'widget-table-sort-visible': !field.sortDirection || field.sortDirection === -1 }"></i>
                     </span>
-                    <span class="widget-table-filter"
-                          ng-class="{ filtered: field.filter.enabled }"
-                          ng-click="showFilter(field)"
-                          ng-if="field.filter"
-                          ng-init="initFilter(field)">
-                        <i class="icon-filter" title="Filter this field" ng-click="toggleFilter(field)"></i>
-                        <div class="widget-table-filter-window" ng-show="field.filter.open">
-                            <label>
-                                {{field.filter.label}}
-                                <input type="{{field.filter.type}}"
-                                       ng-model="field.filter.value"
-                                       max="{{field.filter.max}}"
-                                       min="{{field.filter.min}}"
-                                       step="{{field.filter.step}}"
-                                       maxlength="{{field.filter.maxlength}}"
-                                       ng-keydown="filterInputKeyDown(field, $event)"
-                                       ng-style="{ width: field.filter.width }"
-                                       focus-when="currentFilter==field.filter"/>
-                            </label>
-                            <i class="icon-ok-sign"
-                               ng-click="filterTable(field)"
-                               ng-class="{ enabled: field.filter.changed }"
-                               title="Apply filter"></i>
-                            <i class="icon-remove-sign"
-                               ng-show="field.filter.enabled"
-                               ng-click="resetFilterTable(field)"
-                               ng-class="{ enabled: field.filter.changed }"
-                               title="Reset filter"></i>
-                            <i class="icon-double-angle-up widget-table-filter-close" ng-click="closeFilter(field)" title="Close"></i>
-                        </div>
-                    </span>
                 </th>
             </tr>
             <tr ng-if="view.data.message">

@@ -123,6 +123,8 @@
     <script src="scripts/controllers/main_dashboard_controller.js"></script>
     <script src="scripts/controllers/dashboard_controller.js"></script>
     <script src="scripts/controllers/widget_controller.js"></script>
+    <script src="scripts/controllers/view_controller.js"></script>
+    <script src="scripts/controllers/control_controller.js"></script>
     <script src="scripts/controllers/widget_filters_controller.js"></script>
     <script src="scripts/controllers/widgets/buttonsBar_controller.js"></script>
     <script src="scripts/controllers/widgets/dashboard_widget_controller.js"></script>
@@ -157,7 +159,6 @@
 <title>{{pageTitle}}</title>
     <ng-include src="'views/main/header.html'"></ng-include>
     <ng-include src="'views/main/sidebar.html'"></ng-include>
-    <ng-include src="'views/dialogs/whitelist_add.html'" ng-if="whitelistAddShowDialog"></ng-include>
     <section id="main-contents" class="content">
         <div class="container-fluid">
             <div id="pad-wrapper" ng-view></div>

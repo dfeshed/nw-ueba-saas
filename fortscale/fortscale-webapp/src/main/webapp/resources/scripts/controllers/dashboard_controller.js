@@ -4,7 +4,7 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
             $scope.dashboardParams = $scope.dashboard && $scope.dashboard.params || {};
 
         if (!$scope.dashboardParamsOptions)
-            $scope.dashboardParamsOptions = {};
+            $scope.dashboardParamsOptions = $scope.dashboard && $scope.dashboard.paramsOptions || {};
 
         for(var paramName in $routeParams){
             if (!~["dashboardId", "entityId", "params"].indexOf(paramName)){
@@ -43,6 +43,10 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                     delete paramsObj.params[paramName];
             }
 
+            for(paramName in paramsObj.params){
+                if (paramsObj.params[paramName].length > 200)
+                    delete paramsObj.params[paramName];
+            }
             $location.search('params', JSON.stringify(paramsObj.params));
         }
 
@@ -220,6 +224,10 @@ angular.module("Fortscale").controller("DashboardController", ["$scope", "$route
                     setControlParamsToDashboard(control, true);
                 });
             }
+
+            if (!$scope.dashboardParamsOptions)
+                $scope.dashboardParamsOptions = dashboard.paramsOptions || {};
+
             setDashboardFieldValues(dashboard);
         }
 

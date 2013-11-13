@@ -30,14 +30,15 @@
     <div class="widget-contents">
         <ng-include ng-if="widget.filters" src="'views/widgets/widget_filters.html'"></ng-include>
         <div ng-repeat="view in widget.views"
+             ng-controller="ViewController"
              class="widget-view {{view.className}}"
              ng-class="{ 'widget-with-message': widget.noData || widget.error || widget.loading }"
              ng-show="!view.show || view.show.value"
-             ng-style="{ height: widget.height }"
-            ng-init="initView(view)">
+             ng-style="{ height: widget.height }">
             <div class="widget-view-controls" ng-if="view.controls">
                 <div class="widget-view-control"
                      ng-repeat="control in view.controls"
+                     ng-controller="WidgetControlController"
                      ng-include="'views/controls/' + control.type + '.html'">
                 </div>
             </div>

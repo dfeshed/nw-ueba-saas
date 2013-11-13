@@ -131,7 +131,7 @@ angular.module("Fortscale").factory("reports", ["$q", "DAL", "Cache", "reportsPr
                         resolve(results);
                     }
 
-                    if (!results || !results.data.length)
+                    if (!results || !results.data || !results.data.length)
                         cache.removeItem(cacheItemKey);
                 }, onError);
 

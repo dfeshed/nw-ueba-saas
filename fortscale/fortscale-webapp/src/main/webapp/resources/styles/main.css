@@ -134,7 +134,7 @@ a {
 
 .dashboard-noBackground .dashboard-widgets {
   background: none;
-  padding: 0; }
+  padding: 0 10px 0 0; }
 
 .dashboard-header {
   padding: 0 10px;
@@ -263,6 +263,8 @@ a {
       padding-top: 0; }
   .widget.widget-with-tabs {
     top: -10px; }
+    .widget.widget-with-tabs > ng-include > .widget-contents {
+      padding-right: 0; }
   .widget.inner-widget {
     border: solid 1px #dfdfdf;
     padding: 10px 10px 0; }
@@ -274,7 +276,7 @@ a {
     border: none; }
 
 .widget-header {
-  height: 32px;
+  min-height: 32px;
   line-height: 32px;
   background: #767676;
   color: white;
@@ -315,7 +317,11 @@ a {
   margin-bottom: 10px; }
 .inner-widget .widget-header-title, .inner-widgets .widget-header-title {
   color: Black;
-  font-weight: bold; }
+  font-weight: bold;
+  line-height: 1.4em;
+  position: relative;
+  top: 7px;
+  margin-bottom: 7px; }
 .inner-widget .widget-view-control a, .inner-widgets .widget-view-control a {
   color: #049cdb; }
   .inner-widget .widget-view-control a:hover, .inner-widgets .widget-view-control a:hover {
@@ -323,7 +329,8 @@ a {
     text-decoration: underline; }
 .inner-widget .widget-contents, .inner-widgets .widget-contents {
   padding-left: 0;
-  padding-right: 0; }
+  padding-right: 0;
+  overflow: hidden; }
 .inner-widget .widget-normal-padding .widget-header, .inner-widgets .widget-normal-padding .widget-header {
   padding: 0 15px;
   padding-right: 0; }
@@ -1139,9 +1146,14 @@ body .ui-tooltip {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    background: -webkit-linear-gradient(top, #f7f7f7, #f7f7f7 55%, #d7d7d7);
-    background: -moz-linear-gradient(top, #f7f7f7, #f7f7f7 55%, #d7d7d7);
-    background: linear-gradient(top, #f7f7f7, #f7f7f7 55%, #d7d7d7);
+    background: #f7f7f7;
+    background: -moz-linear-gradient(top, #f7f7f7 0%, #f7f7f7 55%, #d7d7d7 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f7f7f7), color-stop(55%, #f7f7f7), color-stop(100%, #d7d7d7));
+    background: -webkit-linear-gradient(top, #f7f7f7 0%, #f7f7f7 55%, #d7d7d7 100%);
+    background: -o-linear-gradient(top, #f7f7f7 0%, #f7f7f7 55%, #d7d7d7 100%);
+    background: -ms-linear-gradient(top, #f7f7f7 0%, #f7f7f7 55%, #d7d7d7 100%);
+    background: linear-gradient(to bottom, #f7f7f7 0%, #f7f7f7 55%, #d7d7d7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f7f7f7', endColorstr='#d7d7d7',GradientType=0 );
     -webkit-transform: translateY(3px);
     -moz-transform: translateY(3px);
     transform: translateY(3px);

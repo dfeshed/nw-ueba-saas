@@ -1,1 +1,1 @@
-angular.module("PropertiesWidget", ["Utils", "Format", "Icons"]);
+angular.module("PropertiesWidget", ["Utils", "Format", "Icons", "Transforms"]);

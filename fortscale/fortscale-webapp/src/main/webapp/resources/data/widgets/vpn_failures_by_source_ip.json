@@ -1,6 +1,6 @@
 {
     "reportId": "vpn_failures_by_source_ip",
-    "title": " Top 10 failed VPN logins by Source IP",
+    "title": " Top 10 Failed VPN Logins By Source IP",
     "controls": [
         {
             "type": "link",

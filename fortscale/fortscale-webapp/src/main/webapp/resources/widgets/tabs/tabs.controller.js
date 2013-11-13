@@ -1,13 +1,18 @@
 angular.module("TabsWidget").controller("TabsWidgetController", ["$scope", function($scope){
     var selectedDashboardParam;
 
-    $scope.selectTab = function(tab, tabIndex){
+    $scope.selectTab = function(tab, tabIndex, isDefaultTab){
         setCurrentTab(tabIndex);
 
         if ($scope.view.settings.events){
             angular.forEach($scope.view.settings.events, function(eventSettings){
-                if (eventSettings.eventName === "select")
-                    $scope.$emit("widgetEvent", { event: eventSettings, data: tab, widget: $scope.widget });
+                if (eventSettings.eventName === "select"){
+                    var eventSettingsCopy = angular.copy(eventSettings);
+                    if (isDefaultTab && eventSettingsCopy.actionOptions)
+                        eventSettingsCopy.actionOptions.updateUrl = false;
+
+                    $scope.$emit("widgetEvent", { event: eventSettingsCopy, data: tab, widget: $scope.widget });
+                }
             });
         }
 
@@ -15,18 +20,44 @@ angular.module("TabsWidget").controller("TabsWidgetController", ["$scope", funct
             $scope.view.settings.onSelect(tab);
     };
 
-    $scope.initTabs = function(){
+    function setCurrentTabFromDashboardParam(){
         var currentlySelectedTab = $scope.getWidgetParams()[selectedDashboardParam];
         if (currentlySelectedTab){
             var tabToSelect = findTab(currentlySelectedTab);
-            if (tabToSelect)
-                setCurrentTab(tabToSelect.tabIndex);
-            else
-                selectFirstTab();
+            if (tabToSelect){
+                if (setCurrentTab(tabToSelect.tabIndex))
+                    return true;
+                else
+                    return -1;
+            }
         }
-        else
+
+        return false;
+    }
+
+    var widgetDataListener;
+
+    function init(){
+        if (!$scope.view.data){
+            widgetDataListener = $scope.$on("onWidgetData", function(e, data){
+                var currentTabSet = setCurrentTabFromDashboardParam();
+                if (currentTabSet !== -1)
+                    widgetDataListener();
+            });
+        }
+        else if (!setCurrentTabFromDashboardParam())
             selectFirstTab();
-    };
+
+        if ($scope.view.settings.refreshOn){
+            angular.forEach($scope.view.settings.refreshOn, function(refreshParam){
+                $scope.$on("dashboardParamsChange", function(e, changedParams){
+                    if (changedParams[refreshParam]){
+                        setCurrentTabFromDashboardParam();
+                    }
+                });
+            })
+        }
+    }
 
     if ($scope.view.settings.tab && $scope.view.settings.tab.selected){
         var selectedMatch = $scope.view.settings.tab.selected.match(/^@(.*)$/);
@@ -56,18 +87,21 @@ angular.module("TabsWidget").controller("TabsWidgetController", ["$scope", funct
 
     function selectFirstTab(){
         if ($scope.view.settings.tabs && $scope.view.settings.tabs.length)
-            $scope.selectTab($scope.view.settings.tabs[0], 0);
+            $scope.selectTab($scope.view.settings.tabs[0], 0, true);
     }
 
     function setCurrentTab(tabIndex){
         if (tabIndex !== $scope.currentTabIndex && $scope.view.data){
             $scope.currentTab = $scope.view.data[tabIndex];
             $scope.currentTabIndex = tabIndex;
+            return true;
         }
+
+        return false;
     }
 
     function findTab(id){
-        if (!id)
+        if (!id || !$scope.view.data)
             return null;
 
         for(var i= 0, tab; tab = $scope.view.data[i]; i++){
@@ -77,4 +111,6 @@ angular.module("TabsWidget").controller("TabsWidgetController", ["$scope", funct
 
         return null;
     }
+
+    init();
 }]);

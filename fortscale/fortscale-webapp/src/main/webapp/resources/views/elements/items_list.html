@@ -7,8 +7,9 @@
         <a ng-if="item.link && item.value" ng-bind-html-unsafe="item.value" href="{{item.link}}"></a>
         <span ng-if="!item.link && item.value" class="items-list-text" ng-bind-html-unsafe="item.value"></span>
         <ul ng-if="item.list" class="items-list-inner-list">
-            <li ng-repeat="innerItem in item.list">
-                {{innerItem.value}}
+            <li ng-repeat="innerItem in item.list" class="{{innerItem.className}}">
+                <span ng-if="!innerItem.link" ng-bind-html-unsafe="innerItem.value" title="{{innerItem.tooltip}}"></span>
+                <a ng-if="innerItem.link" href="{{innerItem.link}}" title="{{innerItem.tooltip}}" ng-bind-html-unsafe="innerItem.value"></a>
             </li>
         </ul>
     </li>

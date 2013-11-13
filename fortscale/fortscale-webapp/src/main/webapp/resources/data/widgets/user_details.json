@@ -8,8 +8,17 @@
                 "properties": [
                     {
                         "icon": "user",
-                        "tooltip": "User name",
-                        "value": "{{username}}"
+                        "tooltip": "SAM Account Name",
+                        "list": [
+                            {
+                                "label": "SAM Account Name:",
+                                "value": "{{samacountName}}"
+                            },
+                            {
+                                "label": "AD User Name:",
+                                "value": "{{adUserPrincipalName}}"
+                            }
+                        ]
                     },
                     {
                         "icon": "group",
@@ -22,6 +31,13 @@
                         "tooltip": "Manager",
                         "value": "{{manager.name}}",
                         "link": "#/d/user/{{manager.id}}"
+                    },
+                    {
+                        "icon": "sitemap",
+                        "tooltip": "Direct Reports",
+                        "value": "{{firstname}} {{lastname}}",
+                        "link": "#/d/user/{{id}}",
+                        "array": "userDirectReports"
                     },
                     {
                         "icon": "check",
@@ -78,9 +94,43 @@
                         ]
                     },
                     {
-                        "icon": "clock",
-                        "tooltip": "Account Expires",
-                        "value": "{{adAcountExpires}}"
+                        "icon": "group",
+                        "tooltip": "Organizational Unit",
+                        "value": "{{ou}}",
+                        "transform": {
+                            "method": "ou",
+                            "options": {
+                                "divider": " <i class='icon-caret-right'></i> "
+                            }
+                        }
+                    },
+                    {
+                        "icon": "time",
+                        "tooltip": "Account timeline",
+                        "list": [
+                            {
+                                "label": "Created:",
+                                "value": "{{adWhenCreated}}",
+                                "transform": {
+                                    "method": "date"
+                                }
+                            },
+                            {
+                                "label": "Last modified:",
+                                "value": "{{adWhenChanged}}",
+                                "transform": {
+                                    "method": "date"
+                                }
+                            },
+                            {
+                                "label": "Expires:",
+                                "value": "{{adAcountExpires}}",
+                                "transform": {
+                                    "method": "date"
+                                },
+                                "className": "error"
+                            }
+                        ]
                     },
                     {
                         "icon": "info",
@@ -99,24 +149,29 @@
                         "value": "{{adEmployeeID || adEmployeeNumber}}"
                     },
                     {
-                        "icon": "globe",
-                        "tooltip": "Department",
-                        "value": "{{department}}"
-                    },
-                    {
                         "icon": "phone",
-                        "tooltip": "Home phone",
-                        "value": "{{homePhone}}"
+                        "tooltip": "Phone",
+                        "value": "{{phone || homePhone || otherTelephone || otherHomePhone || otherFacsimileTelephoneNumber || }}"
                     },
                     {
                         "icon": "mobile-phone",
                         "tooltip": "Mobile phone",
-                        "value": "{{mobilePhone}}"
+                        "value": "{{mobilePhone || otherMobile}}"
                     },
                     {
                         "icon": "location-arrow",
                         "tooltip": "Address",
                         "value": "{{address}}"
+                    },
+                    {
+                        "icon": "globe",
+                        "tooltip": "Department",
+                        "value": "{{department || division || company}}"
+                    },
+                    {
+                        "icon": "building",
+                        "tooltip": "Room Number",
+                        "value": "{{roomNumber}}"
                     }
                 ]
             }

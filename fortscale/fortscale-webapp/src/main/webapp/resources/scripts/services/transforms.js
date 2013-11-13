@@ -29,6 +29,24 @@
 
             return newDate.format(options.format);
         },
+        ou: function(ouStr, options){
+            if (!ouStr)
+                return "";
+
+            options = options || {};
+
+            var ous = ouStr.split(","),
+                results = [],
+                ouMatch = /^OU=(.*)$/;
+
+            angular.forEach(ous, function(ou){
+                var match = ou.match(ouMatch);
+                if (match)
+                    results.push(match[1]);
+            });
+
+            return results.join(options.divider || " &gt; ");
+        },
         round: function(number){
             return parseInt(number, 10);
         },
@@ -59,6 +77,13 @@
             }
 
             return transformedParams;
+        },
+        transformValue: function(value, transformSettings){
+            var method = methods[transformSettings.method];
+            if (!method)
+                throw new Error("Invalid transform method: ", transformSettings.method);
+
+            return method(value, transformSettings.options);
         }
     };
 

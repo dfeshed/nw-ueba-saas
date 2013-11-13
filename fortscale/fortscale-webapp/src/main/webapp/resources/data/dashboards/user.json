@@ -5,6 +5,9 @@
     "icon": {
         "type": "user"
     },
+    "paramsOptions": {
+        "userImage": { "persist": false }
+    },
     "iconUrl": "{{@userImage}}",
     "controls": [
         {
