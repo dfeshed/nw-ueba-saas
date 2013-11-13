@@ -516,13 +516,16 @@ public class UserServiceImpl implements UserService{
 		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
 			String userName = vpnScore.getUserName();
-			List<User> tmpUsers = userRepository.findByUsernameContaining(userName.toLowerCase());
-			if(tmpUsers == null || tmpUsers.size() == 0 || tmpUsers.size() > 1){
-				//TODO:	error log message
-				continue;
+			User user = userRepository.findByApplicationUserName(userName, UserApplication.vpn.getId());
+			if(user == null){
+				List<User> tmpUsers = userRepository.findByUsernameContaining(userName.toLowerCase());
+				if(tmpUsers == null || tmpUsers.size() == 0 || tmpUsers.size() > 1){
+					//TODO:	error log message
+					continue;
+				}
+				user = tmpUsers.get(0);
+				createApplicationUserDetailsIfNotExist(user, new ApplicationUserDetails(UserApplication.vpn.getId(), userName));
 			}
-			User user = tmpUsers.get(0);
-			createApplicationUserDetailsIfNotExist(user, new ApplicationUserDetails(UserApplication.vpn.getId(), userName));
 			user = updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg, false, false);
 			if(user != null){
 				users.add(user);

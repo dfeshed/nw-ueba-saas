@@ -22,9 +22,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	
 	@Override
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails) {
-		String appUserNameField = User.getAppUserNameField(applicationUserDetails.getApplicationName());
-		Query query = new Query(where(appUserNameField).is(applicationUserDetails.getUserName()));
-		return mongoTemplate.findOne(query, User.class);
+		return findByApplicationUserName(applicationUserDetails.getApplicationName(), applicationUserDetails.getUserName());
 	}
 	
 	@Override
@@ -37,6 +35,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		}
 		Query query = new Query(new Criteria().orOperator(criterias));
 		return mongoTemplate.find(query, User.class);
+	}
+	
+	@Override
+	public User findByApplicationUserName(String applicationName, String username){
+		String appUserNameField = User.getAppUserNameField(applicationName);
+		Query query = new Query(where(appUserNameField).is(username));
+		return mongoTemplate.findOne(query, User.class);
 	}
 
 	@Override
