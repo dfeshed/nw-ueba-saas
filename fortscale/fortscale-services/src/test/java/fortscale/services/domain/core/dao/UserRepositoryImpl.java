@@ -197,4 +197,17 @@ public class UserRepositoryImpl implements UserRepository{
 		return 0;
 	}
 
+	@Override
+	public User findByApplicationUserName(String applicationName,
+			String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> findByUsernameRegex(String usernameRegex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

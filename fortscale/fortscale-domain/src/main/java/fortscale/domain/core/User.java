@@ -27,6 +27,7 @@ import fortscale.domain.ad.AdUserGroup;
 public class User extends AbstractDocument {	
 	
 	public static final String appField = "app";
+	public static final String usernameField = "username";
 	public static final String classifierScoreField = "scores";
 	
 	
@@ -47,6 +48,7 @@ public class User extends AbstractDocument {
 	
 	private String managerDN;
 	@Indexed
+	@Field(usernameField)
 	private String username;
 	@Indexed
 	private String adUserPrincipalName;

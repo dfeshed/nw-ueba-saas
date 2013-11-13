@@ -38,6 +38,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		Query query = new Query(new Criteria().orOperator(criterias));
 		return mongoTemplate.find(query, User.class);
 	}
+	
+	@Override
+	public User findByApplicationUserName(String applicationName, String username){
+		String appUserNameField = User.getAppUserNameField(applicationName);
+		Query query = new Query(where(appUserNameField).regex(String.format("^%s$", username),"i"));
+		return mongoTemplate.findOne(query, User.class);
+	}
 
 	@Override
 	public List<User> findByClassifierIdAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
@@ -67,6 +74,5 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
 		return (int) mongoTemplate.count(query, User.class);
-	}
-	
+	}	
 }

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdGroup;
@@ -53,6 +54,7 @@ public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	
 	private static final String SEARCH_FIELD_PREFIX = "##";
+	private static final String REGEX_SEPERATOR = "####";
 	private static final int MAX_NUM_OF_HISTORY_DAYS = 21;
 	public static int MAX_NUM_OF_PREV_SCORES = 14;
 	
@@ -85,6 +87,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired 
 	private ADUserParser adUserParser; 
+	
+	@Value("${vpn.to.ad.username.regex.format:^%s*(?i)}")
+	private String vpnToAdUsernameRegexFormat;
 	
 	
 	
@@ -516,19 +521,37 @@ public class UserServiceImpl implements UserService{
 		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
 			String userName = vpnScore.getUserName();
-			List<User> tmpUsers = userRepository.findByUsernameContaining(userName.toLowerCase());
-			if(tmpUsers == null || tmpUsers.size() == 0 || tmpUsers.size() > 1){
-				//TODO:	error log message
-				continue;
+			User user = userRepository.findByApplicationUserName(UserApplication.vpn.getId(), userName);
+			if(user == null){
+				for(String regex: generateUsernameRegexesByVpnUsername(userName)){
+					List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
+					if(tmpUsers == null || tmpUsers.size() == 0 || tmpUsers.size() > 1){
+						//TODO:	error log message
+						continue;
+					}
+					user = tmpUsers.get(0);
+					createApplicationUserDetailsIfNotExist(user, new ApplicationUserDetails(UserApplication.vpn.getId(), userName));
+				}
+				if(user == null){
+					continue;
+				}
 			}
-			User user = tmpUsers.get(0);
-			createApplicationUserDetailsIfNotExist(user, new ApplicationUserDetails(UserApplication.vpn.getId(), userName));
 			user = updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg, false, false);
 			if(user != null){
 				users.add(user);
 			}
 		}
 		updateUserTotalScore(users, true, lastRun);
+	}
+	
+	
+	
+	private List<String> generateUsernameRegexesByVpnUsername(String vpnUsername){
+		List<String> regexes = new ArrayList<>();
+		for(String regexFormat: vpnToAdUsernameRegexFormat.split(REGEX_SEPERATOR)){
+			regexes.add(String.format(regexFormat, vpnUsername));
+		}
+		return regexes;
 	}
 	
 	@Override
