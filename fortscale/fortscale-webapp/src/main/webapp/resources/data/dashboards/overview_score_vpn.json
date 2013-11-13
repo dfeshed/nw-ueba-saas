@@ -6,7 +6,7 @@
             "widgets": [
                 {
                     "widgetId": "users_severity_distribution",
-                    "title": "Distribution of users for VPN logins scores"
+                    "title": "Distribution of Users For VPN Logins Scores"
                 },
                 {
                     "renderControls": false,

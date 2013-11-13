@@ -6,7 +6,7 @@
             "widgets": [
                 {
                     "widgetId": "users_severity_distribution",
-                    "title": "Distribution of users for group membership scores"
+                    "title": "Distribution of Users For Group Membership Scores"
                 },
                 {
                     "renderControls": false,

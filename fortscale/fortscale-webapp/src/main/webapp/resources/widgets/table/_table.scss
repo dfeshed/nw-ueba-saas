@@ -138,6 +138,12 @@ $indexCellColor: #bbb;
       width: 10px;
     }
 
+    &.table-avatar{
+      width: 20px;
+      img{
+        height: 20px;
+      }
+    }
     &.sideNote{
       color: #999;
       text-align: right;

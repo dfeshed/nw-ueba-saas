@@ -1,5 +1,5 @@
 <div class="widget-tabs" ng-controller="TabsWidgetController">
-    <ul ng-if="view.data.length" ng-init="initTabs()">
+    <ul ng-if="view.data.length">
         <li ng-repeat="tab in view.data"
             ng-class="{ selected: $index == currentTabIndex}"
             ng-click="selectTab(tab, $index)"

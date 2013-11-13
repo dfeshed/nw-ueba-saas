@@ -1,6 +1,6 @@
 {
     "reportId": "security_feed",
-    "title": "Security feed notifications",
+    "title": "Security Feed Notifications",
     "noDataMessage": "No notifications found",
     "views": [
         {

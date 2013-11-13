@@ -20,14 +20,14 @@ angular.module("Fortscale").factory("reportsProcess", ["$q", "DAL", function($q,
                 endpoint: {
                     entity: "app",
                     id: params.userType,
-                    method: "usernameToId",
+                    method: "usersDetails",
                     usernames: usernames.join(",")
                 }
             }).then(function(userDetailsResults){
                 angular.forEach(userDetailsResults.data, function(userDetails){
                     for(var i= 0, item; i < results.data.length; i++){
                         item = results.data[i];
-                        if (item[params.userField] === userDetails.username){
+                        if (~userDetails.username.indexOf(item[params.userField])){
                             item.userDetails = userDetails;
                             break;
                         }

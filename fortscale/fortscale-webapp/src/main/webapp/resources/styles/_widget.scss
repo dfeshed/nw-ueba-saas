@@ -35,6 +35,10 @@
 
   &.widget-with-tabs{
     top: -10px;
+
+    & > ng-include > .widget-contents{
+      padding-right: 0;
+    }
   }
   &.inner-widget{
     border: solid 1px #dfdfdf;
@@ -52,7 +56,7 @@
 }
 
 .widget-header{
-  height: $widgetHeaderHeight;
+  min-height: $widgetHeaderHeight;
   line-height: $widgetHeaderHeight;
   background: $widgetHeaderBackgroundColor;
   color: $widgetTitleColor;
@@ -109,6 +113,10 @@
   .widget-header-title{
     color: Black;
     font-weight: bold;
+    line-height: 1.4em;
+    position: relative;
+    top: 7px;
+    margin-bottom: 7px;
   }
 
   .widget-view-control a{
@@ -123,6 +131,7 @@
   .widget-contents{
     padding-left: 0;
     padding-right: 0;
+    overflow: hidden;
   }
 
   .widget-normal-padding{

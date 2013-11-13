@@ -1,6 +1,6 @@
 {
     "reportId": "vpn_failures_by_username",
-    "title": "Top 10 failed VPN logins by username",
+    "title": "Top 10 Failed VPN Logins By Username",
     "controls": [
         {
             "type": "link",
@@ -15,9 +15,16 @@
             "settings": {
                 "fields": [
                     {
+                        "name": "Image",
+                        "image": "data:image/gif;base64,{{userDetails.image}}",
+                        "className": "table-avatar",
+                        "renderHeader": false
+                    },
+                    {
                         "name": "User",
-                        "value": "{{username}}",
-                        "link": "#/d/user/{{userDetails.userId}}?currentFeature={{@currentScore}}"
+                        "value": "{{userDetails.name || username}}",
+                        "link": "#/d/user/{{userDetails.id}}?currentFeature={{@currentScore}}",
+                        "headerColspan": 2
                     },
                     {
                         "name": "Failure Count",

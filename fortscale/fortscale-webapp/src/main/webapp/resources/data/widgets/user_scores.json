@@ -38,7 +38,8 @@
                             }
                         }
                     }
-                ]
+                ],
+                "refreshOn": ["currentFeature"]
             }
         },
         {
