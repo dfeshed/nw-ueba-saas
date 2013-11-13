@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -426,9 +427,14 @@ public class UserServiceImpl implements UserService{
 		double score = 0;
 		double avgScore = 0;
 		
+		DateTime dateTime = new DateTime();
+		dateTime = dateTime.withTimeAtStartOfDay();
 		for(ScoreWeight scoreWeight: scoreWeights){
 			ClassifierScore classifierScore = classifierScoreMap.get(scoreWeight.getId());
 			if(classifierScore != null){
+				if(dateTime.isAfter(classifierScore.getTimestampEpoc())){
+					continue;
+				}
 				totalWeights += scoreWeight.getWeight();
 				
 				score += classifierScore.getScore() * scoreWeight.getWeight();
