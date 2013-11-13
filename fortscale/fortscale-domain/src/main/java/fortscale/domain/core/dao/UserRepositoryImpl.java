@@ -22,7 +22,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	
 	@Override
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails) {
-		return findByApplicationUserName(applicationUserDetails.getApplicationName(), applicationUserDetails.getUserName());
+		String appUserNameField = User.getAppUserNameField(applicationUserDetails.getApplicationName());
+		Query query = new Query(where(appUserNameField).is(applicationUserDetails.getUserName()));
+		return mongoTemplate.findOne(query, User.class);
 	}
 	
 	@Override
@@ -40,7 +42,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	@Override
 	public User findByApplicationUserName(String applicationName, String username){
 		String appUserNameField = User.getAppUserNameField(applicationName);
-		Query query = new Query(where(appUserNameField).is(username));
+		Query query = new Query(where(appUserNameField).regex(String.format("^%s$", username),"i"));
 		return mongoTemplate.findOne(query, User.class);
 	}
 
@@ -72,6 +74,5 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
 		return (int) mongoTemplate.count(query, User.class);
-	}
-	
+	}	
 }
