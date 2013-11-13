@@ -22,7 +22,7 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 	}
 	
 	public void writeScore(Date timestamp, User user, double score, double avgScore){
-		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp),getRundate(timestamp), user.getId(),user.getAdDn(), user.getUsername(), score, avgScore);
+		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp), user.getId(),user.getAdDn(), user.getUsername(), score, avgScore,getRundate(timestamp));
 		write(csvLineString);
 		newLine();
 	}
