@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -304,6 +305,38 @@ public class UserServiceImpl implements UserService{
 //		UserScore score = new UserScore("overall", "User Profile", ufe.getScore(), avgScore);
 //		ret.add(score);
 		return ret;
+	}
+	
+	@Override
+	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp){
+		User user = userRepository.findOne(uid);
+		if(user == null){
+			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
+		}
+		
+		DateTime dateTimeEnd = new DateTime(dayTimestamp);
+		DateTime dateTimeStart = dateTimeEnd.withTimeAtStartOfDay();
+		dateTimeEnd = dateTimeEnd.plusHours(2);
+		Map<String,IUserScore> ret = new HashMap<String, IUserScore>();
+		
+		for(ScoreWeight scoreWeight: configurationService.getScoreConfiguration().getConfMap().values()){
+			ClassifierScore classifierScore = user.getScore(scoreWeight.getId());
+			if(classifierScore != null){
+				for(ScoreInfo prevScoreInfo: classifierScore.getPrevScores()){
+					if(dateTimeStart.isAfter(prevScoreInfo.getTimestampEpoc())){
+						break;
+					} else if(dateTimeEnd.isBefore(prevScoreInfo.getTimestampEpoc())){
+						continue;
+					}
+					Classifier classifier = classifierService.getClassifier(classifierScore.getClassifierId());
+					UserScore score = new UserScore(classifierScore.getClassifierId(), classifier.getDisplayName(),
+							(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
+					ret.put(classifierScore.getClassifierId(), score);
+				}
+			}
+		}
+		
+		return new ArrayList<IUserScore>(ret.values());
 	}
 	
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit){

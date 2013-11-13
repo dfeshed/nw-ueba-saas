@@ -218,7 +218,18 @@ public class ApiUserController {
 		return ret;
 	}
 	
-	
+	@RequestMapping(value="/{uid}/classifier/total/explanation", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<IUserScore>> userTotalScoreExplanation(@PathVariable String uid,
+			@RequestParam(required=true) String date, Model model){
+		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
+		List<IUserScore> userScores = userService.getUserScoresByDay(uid, Long.parseLong(date));
+		
+		ret.setData(userScores);
+		ret.setTotal(userScores.size());
+		return ret;
+	}
 	
 	private User getManager(User user){
 		User manager = null;
