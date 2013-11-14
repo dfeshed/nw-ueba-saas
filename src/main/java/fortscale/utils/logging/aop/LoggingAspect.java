@@ -21,4 +21,13 @@ public class LoggingAspect {
 				joinPoint.getSignature().getName(), 
 				Arrays.asList(joinPoint.getArgs()), exception});
 	}
+	
+	public void logRestCall(JoinPoint joinPoint) {
+		Class<?> loggedClass = joinPoint.getTarget().getClass(); 
+		Logger logger = Logger.getLogger(loggedClass);
+		logger.info("method: {}() - args: {}", 
+				new Object[]{
+				joinPoint.getSignature().getName(), 
+				Arrays.asList(joinPoint.getArgs())});
+	}
 }
