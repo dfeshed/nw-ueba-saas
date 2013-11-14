@@ -8,7 +8,7 @@
       		<onMismatch>ACCEPT</onMismatch>
     	</filter>
 		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}%n
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level  - %X{req.remoteHost} %X{req.requestURI}  %X{req.user} -  %logger{36} - %msg%n%xEx{full}%n
 			</Pattern>
 		</layout>
 	</appender>
