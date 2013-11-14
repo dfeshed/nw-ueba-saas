@@ -20,6 +20,8 @@ public interface UserService {
 	
 	public List<IUserScore> getUserScores(String uid); 
 	
+	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp); 
+	
 	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp); 
 	
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit); 

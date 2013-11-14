@@ -5,7 +5,7 @@ import fortscale.services.exceptions.InvalidValueException;
 public enum Classifier {
 	ad("active_directory","User Profile"),
 	groups("active_directory_group_membership","Groups"),
-	vpn("vpn","vpn"),
+	vpn("vpn","VPN"),
 	auth("auth","Logins"),
 	total("total","Total Score");
 	

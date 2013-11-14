@@ -7,10 +7,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -305,6 +307,38 @@ public class UserServiceImpl implements UserService{
 		return ret;
 	}
 	
+	@Override
+	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp){
+		User user = userRepository.findOne(uid);
+		if(user == null){
+			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
+		}
+		
+		DateTime dateTimeEnd = new DateTime(dayTimestamp);
+		DateTime dateTimeStart = dateTimeEnd.withTimeAtStartOfDay();
+		dateTimeEnd = dateTimeEnd.plusHours(2);
+		Map<String,IUserScore> ret = new HashMap<String, IUserScore>();
+		
+		for(ScoreWeight scoreWeight: configurationService.getScoreConfiguration().getConfMap().values()){
+			ClassifierScore classifierScore = user.getScore(scoreWeight.getId());
+			if(classifierScore != null){
+				for(ScoreInfo prevScoreInfo: classifierScore.getPrevScores()){
+					if(dateTimeStart.isAfter(prevScoreInfo.getTimestampEpoc())){
+						break;
+					} else if(dateTimeEnd.isBefore(prevScoreInfo.getTimestampEpoc())){
+						continue;
+					}
+					Classifier classifier = classifierService.getClassifier(classifierScore.getClassifierId());
+					UserScore score = new UserScore(classifierScore.getClassifierId(), classifier.getDisplayName(),
+							(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
+					ret.put(classifierScore.getClassifierId(), score);
+				}
+			}
+		}
+		
+		return new ArrayList<IUserScore>(ret.values());
+	}
+	
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit){
 		Classifier.validateClassifierId(classifierId);
 		User user = userRepository.findOne(uid);
@@ -416,19 +450,24 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private void updateUserTotalScore(User user, Date lastRun){
-		ScoreInfo totalScore = calculateTotalScore(configurationService.getScoreConfiguration().getConfMap().values(), user.getScores());
+		ScoreInfo totalScore = calculateTotalScore(configurationService.getScoreConfiguration().getConfMap().values(), user.getScores(), lastRun);
 		
-		updateUserScore(user, lastRun, Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false, true);
+		updateUserScore(user, lastRun, Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false, false);
 	}
 	
-	private ScoreInfo calculateTotalScore(Collection<ScoreWeight> scoreWeights, Map<String, ClassifierScore> classifierScoreMap){
+	private ScoreInfo calculateTotalScore(Collection<ScoreWeight> scoreWeights, Map<String, ClassifierScore> classifierScoreMap, Date lastRun){
 		double totalWeights = 0.00001;
 		double score = 0;
 		double avgScore = 0;
 		
+		DateTime dateTime = new DateTime(lastRun.getTime());
+		dateTime = dateTime.withTimeAtStartOfDay();
 		for(ScoreWeight scoreWeight: scoreWeights){
 			ClassifierScore classifierScore = classifierScoreMap.get(scoreWeight.getId());
 			if(classifierScore != null){
+				if(dateTime.isAfter(classifierScore.getTimestampEpoc())){
+					continue;
+				}
 				totalWeights += scoreWeight.getWeight();
 				
 				score += classifierScore.getScore() * scoreWeight.getWeight();
@@ -652,7 +691,7 @@ public class UserServiceImpl implements UserService{
 			cScore.setTimestamp(timestamp);
 			cScore.setTimestampEpoc(timestamp.getTime());
 			cScore.setTrend(trend);
-			cScore.setTrendScore(diffScore);
+			cScore.setTrendScore(Math.abs(diffScore));
 		}
 		user.putClassifierScore(cScore);
 		if(isToSave){
