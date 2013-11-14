@@ -1,6 +1,7 @@
 package fortscale.web.beans;
 
 import fortscale.domain.fe.IFeature;
+import fortscale.domain.fe.IFeatureExplanation;
 
 public class FeatureBean{
 	
@@ -24,6 +25,35 @@ public class FeatureBean{
 
 	public int getFeatureScore() {
 		return feature.getFeatureScore().intValue();
+	}
+	
+	public FeatureExlanationBean getExplanation(){
+		FeatureExlanationBean ret = null;
+		if(feature.getFeatureExplanation() != null){
+			ret = new FeatureExlanationBean(feature.getFeatureExplanation());
+		}
+		return ret;
+	}
+	
+	
+	
+	
+	class FeatureExlanationBean{
+		private IFeatureExplanation explanation;
+		
+		public FeatureExlanationBean(IFeatureExplanation explanation){
+			this.explanation = explanation;
+		}
+		
+		public Double getFeatureDistribution(){
+			return explanation.getFeatureDistribution();
+		}
+		public Integer getFeatrueCount(){
+			return explanation.getFeatrueCount();
+		}
+		public String getFeatureReference(){
+			return explanation.getFeatureReference();
+		}
 	}
 
 }

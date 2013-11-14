@@ -1,6 +1,7 @@
 package fortscale.activedirectory.featureextraction;
 
 import fortscale.domain.fe.IFeature;
+import fortscale.domain.fe.IFeatureExplanation;
 
 public class Feature implements IFeature {
 
@@ -74,6 +75,13 @@ public class Feature implements IFeature {
 	
 	public boolean isNumeric() {
 		return (this.featureType == FEATURE_TYPE_NUMERIC) ? true : false;
+	}
+
+
+	@Override
+	public IFeatureExplanation getFeatureExplanation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

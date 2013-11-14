@@ -10,6 +10,7 @@ public class ADFeature implements IFeature{
 	public static final String DISPLAY_NAME_FIELD = "displayName";
 	public static final String FEATURE_VALUE_FIELD = "featureValue";
 	public static final String FEATURE_SCORE_FIELD = "featureScore";
+	public static final String FEATURE_EXPLANATION_FIELD = "explain";
 
 	@JsonProperty
 	private String featureUniqueName;
@@ -19,8 +20,10 @@ public class ADFeature implements IFeature{
 	private Double featureValue;
 	@JsonProperty
 	private Double featureScore;
+	@JsonProperty
+	private IFeatureExplanation featureExplanation;
 	
-	public ADFeature(String uniqueName, String displayName, Double featureValue, Double featureScore){
+	public ADFeature(String uniqueName, String displayName, Double featureValue, Double featureScore, IFeatureExplanation explanation){
 		this.featureUniqueName = uniqueName;
 		this.featureDisplayName = displayName;
 		this.featureValue = featureValue;
@@ -33,6 +36,7 @@ public class ADFeature implements IFeature{
 			this.featureScore = 0d;
 			logger.error("Got Null value in the featureScore!!! feature unique name: {}, feature display name: {}", this.featureUniqueName, this.featureDisplayName);
 		}
+		this.featureExplanation = explanation;
 	}
 	
 	//Only for json serialization.
@@ -52,5 +56,10 @@ public class ADFeature implements IFeature{
 
 	public Double getFeatureScore() {
 		return featureScore;
+	}
+
+	@Override
+	public IFeatureExplanation getFeatureExplanation() {
+		return featureExplanation;
 	}
 }

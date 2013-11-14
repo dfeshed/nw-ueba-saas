@@ -15,6 +15,8 @@ public interface IFeature {
 
 	public Double getFeatureScore();
 	
+	public IFeatureExplanation getFeatureExplanation();
+	
 	public static class OrderByScoreDesc implements Comparator<IFeature>{
 
 		@Override
