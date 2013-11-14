@@ -450,17 +450,17 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private void updateUserTotalScore(User user, Date lastRun){
-		ScoreInfo totalScore = calculateTotalScore(configurationService.getScoreConfiguration().getConfMap().values(), user.getScores());
+		ScoreInfo totalScore = calculateTotalScore(configurationService.getScoreConfiguration().getConfMap().values(), user.getScores(), lastRun);
 		
-		updateUserScore(user, lastRun, Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false, true);
+		updateUserScore(user, lastRun, Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false, false);
 	}
 	
-	private ScoreInfo calculateTotalScore(Collection<ScoreWeight> scoreWeights, Map<String, ClassifierScore> classifierScoreMap){
+	private ScoreInfo calculateTotalScore(Collection<ScoreWeight> scoreWeights, Map<String, ClassifierScore> classifierScoreMap, Date lastRun){
 		double totalWeights = 0.00001;
 		double score = 0;
 		double avgScore = 0;
 		
-		DateTime dateTime = new DateTime();
+		DateTime dateTime = new DateTime(lastRun.getTime());
 		dateTime = dateTime.withTimeAtStartOfDay();
 		for(ScoreWeight scoreWeight: scoreWeights){
 			ClassifierScore classifierScore = classifierScoreMap.get(scoreWeight.getId());
@@ -691,7 +691,7 @@ public class UserServiceImpl implements UserService{
 			cScore.setTimestamp(timestamp);
 			cScore.setTimestampEpoc(timestamp.getTime());
 			cScore.setTrend(trend);
-			cScore.setTrendScore(diffScore);
+			cScore.setTrendScore(Math.abs(diffScore));
 		}
 		user.putClassifierScore(cScore);
 		if(isToSave){
