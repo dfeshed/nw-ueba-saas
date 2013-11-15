@@ -30,7 +30,7 @@ public class UserRepositoryImpl implements UserRepository{
 	
 	@Override
 	public Page<User> findAll(Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -48,87 +48,87 @@ public class UserRepositoryImpl implements UserRepository{
 
 	@Override
 	public boolean exists(String id) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	@Override
 	public Iterable<User> findAll(Iterable<String> ids) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public long count() {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public void delete(String id) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void delete(User entity) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void delete(Iterable<? extends User> entities) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void deleteAll() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public User findByEmailAddress(EmailAddress emailAddress) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<User> findByLastnameContaining(String lastNamePrefix) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public User findByAdUserPrincipalName(String adUserPrincipalName) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public User findByAdDn(String adDn) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<User> findBySearchFieldContaining(String prefix) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<User> findByAdUserPrincipalNameContaining(
 			String adUserPrincipalNamePrefix) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public User findByApplicationUserName(
 			ApplicationUserDetails applicationUserDetails) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -156,57 +156,57 @@ public class UserRepositoryImpl implements UserRepository{
 
 	@Override
 	public User findByUsername(String username) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<User> findAll() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<User> findAll(Sort arg0) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public <S extends User> List<S> save(Iterable<S> arg0) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<User> findByApplicationUserName(String applicationName,
 			List<String> usernames) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<User> findByUsernameContaining(String username) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public int countNumOfUsers(String classifierId) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public User findByApplicationUserName(String applicationName,
 			String username) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<User> findByUsernameRegex(String usernameRegex) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

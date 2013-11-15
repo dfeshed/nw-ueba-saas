@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -96,11 +97,6 @@ public class UserServiceImpl implements UserService{
 	
 	
 
-	@Override
-	public User getUserById(String uid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
@@ -108,7 +104,7 @@ public class UserServiceImpl implements UserService{
 		if(timestamp != null) {
 			updateUserWithADInfo(timestamp);
 		} else {
-			//TODO: log
+			logger.warn("no timestamp. probably the ad_user table is empty");
 		}
 		
 	}
@@ -183,15 +179,15 @@ public class UserServiceImpl implements UserService{
 		try {
 			user.setAdWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("got and exception while trying to parse active directory when changed field ({})",adUser.getWhenChanged());
+			logger.error("got and exception while trying to parse active directory when changed field",e);
 		}
 		
 		try {
 			user.setAdWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("got and exception while trying to parse active directory when created field ({})",adUser.getWhenChanged());
+			logger.error("got and exception while trying to parse active directory when created field",e);
 		}
 		
 		user.setAdDescription(adUser.getDescription());
@@ -206,8 +202,8 @@ public class UserServiceImpl implements UserService{
 			try {
 				user.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("got and exception while trying to parse active directory account expires field ({})",adUser.getWhenChanged());
+				logger.error("got and exception while trying to parse active directory account expires field",e);
 			}
 		}
 		user.setAdUserAccountControl(adUser.getUserAccountControl());
@@ -221,7 +217,7 @@ public class UserServiceImpl implements UserService{
 				if(adGroup != null){
 					user.addGroup(new AdUserGroup(groupDN, adGroup.getName()));
 				}else{
-					//TODO: LOG WARNING.
+					Log.warn("the user ({}) group ({}) was not found", user.getAdDn(), groupDN);
 				}
 			}
 		}
@@ -239,7 +235,7 @@ public class UserServiceImpl implements UserService{
 					adUserDirectReport.setUsername(userDirectReport.getUsername());
 					user.addAdDirectReport(adUserDirectReport);
 				}else{
-					//TODO: LOG WARNING.
+					logger.warn("the user ({}) direct report ({}) was not found", user.getAdDn(), directReportsDN);
 				}
 			}
 		}
@@ -538,7 +534,7 @@ public class UserServiceImpl implements UserService{
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
 			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
 			if(user == null){
-				//TODO:	error log message
+				logger.error("no user was found with the username {}", authScore.getUserName());
 				continue;
 			}
 			user = updateUserScore(user, lastRun, Classifier.auth.getId(), authScore.getGlobalScore(), avg, false, false);
@@ -565,13 +561,13 @@ public class UserServiceImpl implements UserService{
 				for(String regex: generateUsernameRegexesByVpnUsername(userName)){
 					List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
 					if(tmpUsers == null || tmpUsers.size() == 0 || tmpUsers.size() > 1){
-						//TODO:	error log message
 						continue;
 					}
 					user = tmpUsers.get(0);
 					createApplicationUserDetailsIfNotExist(user, new ApplicationUserDetails(UserApplication.vpn.getId(), userName));
 				}
 				if(user == null){
+					logger.info("no user was found with vpn username ({})", userName);
 					continue;
 				}
 			}
@@ -623,7 +619,7 @@ public class UserServiceImpl implements UserService{
 		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
 			User user = userRepository.findOne(extraction.getUserId().toString());
 			if(user == null){
-				//TODO: error log.
+				logger.error("user with id ({}) was not found in user table", extraction.getUserId());
 				continue;
 			}
 			//updating the user with the new score.

@@ -80,7 +80,6 @@ public class Feature implements IFeature {
 
 	@Override
 	public IFeatureExplanation getFeatureExplanation() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

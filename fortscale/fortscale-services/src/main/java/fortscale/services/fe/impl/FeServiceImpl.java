@@ -21,10 +21,11 @@ import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.FeService;
 import fortscale.services.impl.ImpalaWriterFactory;
+import fortscale.utils.logging.Logger;
 
 @Service("feService")
 public class FeServiceImpl implements FeService {
-	
+	private static Logger logger = Logger.getLogger(FeServiceImpl.class);
 	
 	
 	@Autowired
@@ -63,7 +64,7 @@ public class FeServiceImpl implements FeService {
 //		}
 		String timestamp = adUserRepository.getLatestTimeStamp();
 		if(timestamp == null) {
-			//TODO: log
+			logger.error("no timestamp. probably the ad_user table is empty.");
 			return Collections.emptyList();
 		}
 		return adUserRepository.findByTimestamp(timestamp);
@@ -88,7 +89,7 @@ public class FeServiceImpl implements FeService {
 		for(Entry<String, Double> ent: userScoresMap.entrySet()){
 			User user = userRepository.findByAdDn(ent.getKey());
 			if(user == null){
-				//TODO: ERROR MESSAGE
+				logger.error("user with distinuished name ({}) was not found", ent.getKey());
 				continue;
 			}
 			//inserting new ml scores.
