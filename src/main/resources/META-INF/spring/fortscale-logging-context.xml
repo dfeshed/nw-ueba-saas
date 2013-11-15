@@ -22,7 +22,6 @@
 	<aop:aspectj-autoproxy proxy-target-class="true"/>
 	<aop:config proxy-target-class="true">
 		<aop:aspect ref="loggingAspect">
-			<aop:before method="logRestCall" pointcut="@annotation(fortscale.utils.logging.annotation.LogRestCall)"/>
 			<aop:after-throwing method="logException" pointcut="@annotation(fortscale.utils.logging.annotation.LogException)" throwing="exception"/>
 		</aop:aspect>
 	</aop:config>

@@ -22,7 +22,7 @@ public class LoggingAspect {
 				Arrays.asList(joinPoint.getArgs()), exception});
 	}
 	
-	public void logRestCall(JoinPoint joinPoint) {
+	public void logBeforeCall(JoinPoint joinPoint) {
 		Class<?> loggedClass = joinPoint.getTarget().getClass(); 
 		Logger logger = Logger.getLogger(loggedClass);
 		logger.info("method: {}() - args: {}", 
