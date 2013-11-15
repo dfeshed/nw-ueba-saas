@@ -34,4 +34,10 @@
     	<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
 
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="controllers" expression="within(fortscale.web.rest.*)"/>
+		<aop:aspect ref="loggingAspect">
+			<aop:before method="logBeforeCall" pointcut-ref="controllers"/>
+		</aop:aspect>
+	</aop:config>
 </beans>

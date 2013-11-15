@@ -21,7 +21,6 @@ import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
 import fortscale.utils.logging.annotation.LogException;
-import fortscale.utils.logging.annotation.LogRestCall;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
 import fortscale.web.beans.FeatureBean;
@@ -77,7 +76,6 @@ public class ApiUserController {
 	
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
-	@LogRestCall
 	@LogException
 	public  DataBean<List<UserSearchBean>> search(@RequestParam(required=true) String prefix, Model model){
 		List<User> users = userService.findBySearchFieldContaining(prefix);
