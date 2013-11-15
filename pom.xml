@@ -199,6 +199,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<version>2.1.1</version>
 				<artifactId>maven-source-plugin</artifactId>
 				<executions>
 					<execution>
