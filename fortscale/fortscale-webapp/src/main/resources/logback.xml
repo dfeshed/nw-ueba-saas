@@ -7,11 +7,28 @@
       		<onMatch>DENY</onMatch>
       		<onMismatch>ACCEPT</onMismatch>
     	</filter>
+    	<filter class="ch.qos.logback.classic.filter.LevelFilter">
+      		<level>TRACE</level>
+      		<onMatch>DENY</onMatch>
+      		<onMismatch>ACCEPT</onMismatch>
+    	</filter>
 		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}%n
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level  %logger{36} - %msg%n%xEx{full}%n
 			</Pattern>
 		</layout>
 	</appender>
+	<appender name="ControllerAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+      		<level>DEBUG</level>
+      		<onMatch>DENY</onMatch>
+      		<onMismatch>ACCEPT</onMismatch>
+    	</filter>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level  - %X{req.remoteHost} %X{req.requestURI}  %X{req.user} -  %logger{36} - %msg%n%xEx{full}%n
+			</Pattern>
+		</layout>
+	</appender>
+	
 	<appender name="TestLog" class="ch.qos.logback.core.FileAppender">
 		<file>testFile.log</file>
 		<append>true</append>
@@ -34,6 +51,10 @@
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="TestLog" />
 	</root>
+	
+	<logger name="fortscale.web" additivity="false" level="info">
+		<appender-ref ref="ControllerAppender" />
+	</logger>
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core" additivity="false" level="info">

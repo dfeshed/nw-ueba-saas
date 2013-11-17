@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import fortscale.utils.logging.annotation.LogException;
+
 /**
  * Handles requests for the application home page.
  */
@@ -21,6 +23,7 @@ public class HomeController extends BaseController{
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping("/")
+	@LogException
 	public void unmappedRequest(HttpServletRequest request,
 			HttpServletResponse response) {
         try {
@@ -30,8 +33,7 @@ public class HomeController extends BaseController{
         		response.sendRedirect("signin.html");
         	}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
     }
 }

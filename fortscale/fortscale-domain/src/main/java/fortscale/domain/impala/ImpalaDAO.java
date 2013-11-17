@@ -9,8 +9,11 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 
 import fortscale.utils.impala.ImpalaQuery;
+import fortscale.utils.logging.Logger;
 
 public abstract class ImpalaDAO<T> {
+	private static Logger logger = Logger.getLogger(ImpalaDAO.class);
+	
 	@Autowired
 	protected JdbcOperations impalaJdbcTemplate;
 	
@@ -24,7 +27,8 @@ public abstract class ImpalaDAO<T> {
 			
 			impalaJdbcTemplate.execute(sql);
 		} catch (Exception e) {
-			// TODO: handle exception
+			logger.warn("got an exception while trying to drop table ({})", getTableName());
+			logger.warn("got an exception while trying to drop table", e);
 		}
 		
 		sql = String.format("create table if not exists %s (%s) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'",getTableName(), getInputFileHeaderDesc());

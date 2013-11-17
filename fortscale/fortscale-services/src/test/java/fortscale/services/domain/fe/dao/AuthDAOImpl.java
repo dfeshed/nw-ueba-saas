@@ -13,47 +13,47 @@ public class AuthDAOImpl implements AuthDAO {
 	
 	@Override
 	public AuthScore findCurrentByUsername(String username) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AuthScore> findEventsByUsername(String username,
 			Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AuthScore> findEventsByUsernameAndTimestamp(String username,
 			Date timestamp, Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AuthScore> findEventsByTimestamp(Date timestamp,
 			Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AuthScore> findEventsByTimestamp(Date timestamp,
 			Pageable pageable, String additionalWhereQuery) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AuthScore> findGlobalScoreByUsername(String username, int limit) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AuthScore> findGlobalScoreByTimestamp(Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -80,64 +80,64 @@ public class AuthDAOImpl implements AuthDAO {
 
 	@Override
 	public double calculateAvgScoreOfGlobalScore(Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public List<AuthScore> getTopUsersAboveThreshold(Threshold threshold,
 			Date timestamp, int limit) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AuthScore> findByTimestampAndGlobalScoreBetweenSortByEventScore(
 			Date timestamp, int lowestVal, int upperVal, int limit) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AuthScore> getTopEventsAboveThreshold(Threshold threshold,
 			Date timestamp, int limit) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AuthScore> findAll(Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Long getLastRuntime() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<Long> getDistinctRuntime() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public int countNumOfUsers(Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public int countNumOfEvents(Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public int countNumOfEventsByUser(Date timestamp, String userId) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 

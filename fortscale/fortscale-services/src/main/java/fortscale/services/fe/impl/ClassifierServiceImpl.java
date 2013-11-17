@@ -46,9 +46,11 @@ import fortscale.services.fe.ISuspiciousUserInfo;
 import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.services.impl.SeverityElement;
 import fortscale.utils.impala.ImpalaPageRequest;
+import fortscale.utils.logging.Logger;
 
 @Service("classifierService")
 public class ClassifierServiceImpl implements ClassifierService {
+	private static Logger logger = Logger.getLogger(ClassifierServiceImpl.class);
 	
 	private static final String EVENT_SCORE = "eventScore";
 	
@@ -189,7 +191,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		for(VpnScore vpnScore: vpnScores){
 			User user = userRepository.findByUsername(vpnScore.getUserName().toLowerCase());
 			if(user == null){
-				//TODO: error message.
+				logger.error("user with vpn username ({}) was not found", vpnScore.getUserName());
 				continue;
 			}
 			ret.add(createSuspiciousUserInfo(classifierId, user));
@@ -205,7 +207,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		for(AuthScore authScore: authScores){
 			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
 			if(user == null){
-				//TODO: error message.
+				logger.error("user with username ({}) was not found", authScore.getUserName());
 				continue;
 			}
 			ret.add(createSuspiciousUserInfo(classifierId, user));
@@ -490,7 +492,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 				if(tmp != null) {
 					val = tmp.toString();
 				} else {
-					//TODO: error log.
+					logger.warn("no value returned for the column {}", keyString);
 					val ="";
 				}
 				workingSet.add(val);
@@ -547,7 +549,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 				if(tmp != null) {
 					val = tmp.toString();
 				} else {
-					//TODO: error log.
+					logger.warn("no value returned for the column {}", keyString);
 					val ="";
 				}
 				workingSet.add(val);

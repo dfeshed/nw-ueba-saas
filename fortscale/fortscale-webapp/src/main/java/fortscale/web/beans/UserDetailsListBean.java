@@ -13,7 +13,6 @@ public class UserDetailsListBean extends ListBean<User, UserDetailsBean> {
 
 	@Override
 	protected UserDetailsBean createBean(User item) {
-		// TODO Auto-generated method stub
 //		return new UserDetailsBean(item);
 		return null;
 	}

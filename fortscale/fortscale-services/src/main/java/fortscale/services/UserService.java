@@ -9,8 +9,6 @@ import fortscale.domain.core.User;
 import fortscale.domain.fe.IFeature;
 
 public interface UserService {
-
-	public User getUserById(String uid);
 	
 	public void updateUserWithCurrentADInfo();
 	
