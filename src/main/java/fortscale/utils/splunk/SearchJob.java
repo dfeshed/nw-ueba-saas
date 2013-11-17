@@ -20,8 +20,7 @@ public abstract class SearchJob {
 	
 	public Job run(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception{
 		Job ret = runJob(service, earliestTimeCursor, latestTimeCursor);
-		// Wait for the job to finish
-		while (ret == null) {
+		if (ret == null) {
 			return null;
 		}
 		
