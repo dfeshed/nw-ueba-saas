@@ -593,7 +593,7 @@ public class UserServiceImpl implements UserService{
 	public void updateUserWithGroupMembershipScore(){
 		Date lastRun = adUsersFeaturesExtractionRepository.getLatestTimeStamp();
 		if(lastRun == null){
-			//TODO: WARN LOG
+			logger.warn("there is no timestamp. probably the table is empty.");
 			return;
 		}
 		updateUserWithGroupMembershipScore(lastRun);
@@ -604,7 +604,7 @@ public class UserServiceImpl implements UserService{
 //		Pageable pageable = new PageRequest(0, 10000, Direction.ASC, AdUserFeaturesExtraction.timestampField);
 //		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), pageable);
 		if(adUserFeaturesExtractions.size() == 0){
-			//TODO: WARN LOG
+			logger.warn("the group membership for timestamp ({}) is empty.", lastRun);
 			return;
 		}
 		

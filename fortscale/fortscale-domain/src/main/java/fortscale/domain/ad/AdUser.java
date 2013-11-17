@@ -25,9 +25,6 @@ public class AdUser extends AdObject{
 	@Field("mail")
 	private String emailAddress  = "";
 	
-	//TODO: Remove this field. This is used for test only.
-	private String objectClass = "";
-	
 	private String isCriticalSystemObject = "";
 	
 	private String badPwdCount = "";
@@ -130,14 +127,6 @@ public class AdUser extends AdObject{
 	private String thumbnailPhoto = "";
 	
 	
-	public String getObjectClass() {
-		return objectClass;
-	}
-
-	public void setObjectClass(String objectClass) {
-		this.objectClass = objectClass;
-	}
-
 	public String getWhenChanged() {
 		return whenChanged;
 	}

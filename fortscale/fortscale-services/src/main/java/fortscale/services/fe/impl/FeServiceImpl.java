@@ -74,7 +74,7 @@ public class FeServiceImpl implements FeService {
 	public void setAdUsersScores(Map<String, Double> userScoresMap,
 			Map<String, Collection<IFeature>> userFeaturesScoresMap, Date timestamp) {
 		if(userScoresMap.size() == 0){
-			//TODO: WARN LOG
+			logger.warn("the collection is empty");
 			return;
 		}
 				
