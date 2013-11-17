@@ -53,7 +53,7 @@ public class FeServiceImpl implements FeService {
 //		for(AdUser adUser: adUsersAttrValsList){
 //			User user = userRepository.findByAdDn(adUser.getDistinguishedName());
 //			if(user == null){
-//				//TODO: WARNING
+//				log WARNING
 //				continue;
 //			}
 //			List<FeAttribute> attrValsList = new ArrayList<>();
