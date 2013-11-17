@@ -3,6 +3,7 @@ package fortscale.domain.fe;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 
 
@@ -20,13 +21,27 @@ public class FeatureReadConverter implements Converter<DBObject, IFeature>{
 		if(explanation != null){
 			Double featureDistribution = (Double)explanation.get(FeatureExplanation.FEATURE_DISTRIBUTION_FIELD);
 			Integer featureCount = (Integer)explanation.get(FeatureExplanation.FEATURE_COUNT_FIELD);
-			String[] featureReference = (String[])explanation.get(FeatureExplanation.FEATURE_REFERENCE_FIELD);
-			featureExplanation = new FeatureExplanation(featureDistribution, featureCount, featureReference, score);
+			
+			featureExplanation = new FeatureExplanation(featureDistribution, featureCount, getReferences(explanation), score);
 		}
 		
 		ADFeature adFeature = new ADFeature((String)source.get(ADFeature.UNIQUE_NAME_FIELD), (String)source.get(ADFeature.DISPLAY_NAME_FIELD), value, score, featureExplanation);
 		
 		return adFeature;
+	}
+	
+	private String[] getReferences(DBObject explanation){
+		String ret[];
+		try{
+			BasicDBList featureReference = (BasicDBList)explanation.get(FeatureExplanation.FEATURE_REFERENCE_FIELD);
+			ret = new String[featureReference.size()];
+			featureReference.toArray(ret);
+		} catch(ClassCastException e){
+			ret = new String[1];
+			ret[0] = (String)explanation.get(FeatureExplanation.FEATURE_REFERENCE_FIELD);
+		}
+		
+		return ret;
 	}
 
 }
