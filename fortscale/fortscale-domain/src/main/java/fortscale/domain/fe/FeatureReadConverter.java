@@ -20,8 +20,8 @@ public class FeatureReadConverter implements Converter<DBObject, IFeature>{
 		if(explanation != null){
 			Double featureDistribution = (Double)explanation.get(FeatureExplanation.FEATURE_DISTRIBUTION_FIELD);
 			Integer featureCount = (Integer)explanation.get(FeatureExplanation.FEATURE_COUNT_FIELD);
-			String featureReference = (String)explanation.get(FeatureExplanation.FEATURE_REFERENCE_FIELD);
-			featureExplanation = new FeatureExplanation(featureDistribution, featureCount, featureReference);
+			String[] featureReference = (String[])explanation.get(FeatureExplanation.FEATURE_REFERENCE_FIELD);
+			featureExplanation = new FeatureExplanation(featureDistribution, featureCount, featureReference, score);
 		}
 		
 		ADFeature adFeature = new ADFeature((String)source.get(ADFeature.UNIQUE_NAME_FIELD), (String)source.get(ADFeature.DISPLAY_NAME_FIELD), value, score, featureExplanation);
