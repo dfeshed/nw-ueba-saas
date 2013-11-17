@@ -331,7 +331,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 				if(user == null){
 					user = userRepository.findByUsername(username);
 					if(user == null){
-						//TODO: warn message
+						logger.warn("username ({}) was not found in the user collection", username);
 						continue;
 					} else{
 						userMap.put(username, user);
@@ -425,7 +425,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 				if(user == null){
 					user = userRepository.findByApplicationUserName(userService.createApplicationUserDetails(UserApplication.vpn, username));
 					if(user == null){
-						//TODO: warn message
+						logger.warn("vpn username ({}) was not found in the user collection", username);
 						continue;
 					} else{
 						userMap.put(username, user);
