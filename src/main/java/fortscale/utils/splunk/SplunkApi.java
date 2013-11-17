@@ -335,16 +335,6 @@ public class SplunkApi {
     		if(job == null){
     			break;
     		}
-
-			// Wait for the job to finish
-	        int i = 1;
-			while (!job.isDone()) {
-				Thread.sleep(1000);
-				if(i == 0){
-					logger.info("search progress: {}", job.getDoneProgress() * 100);
-				}
-				i = (i+1)%120;
-			}
 			
 			numOfEvents = job.getEventCount();
 			if(numOfEvents > 500000){
