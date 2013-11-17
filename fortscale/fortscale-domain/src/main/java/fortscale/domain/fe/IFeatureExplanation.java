@@ -5,7 +5,8 @@ import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
 @JsonDeserialize(as=FeatureExplanation.class)
 public interface IFeatureExplanation {
-	public Double getFeatureDistribution();
-	public Integer getFeatrueCount();
-	public String getFeatureReference();
+	public Double getFeatureDistribution();	
+	public String[] getFeatureReference();
+	public Integer getFeatureCount();
+	public String getFeatureDescription();
 }
