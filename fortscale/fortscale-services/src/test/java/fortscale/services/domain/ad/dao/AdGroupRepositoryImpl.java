@@ -1,5 +1,7 @@
 package fortscale.services.domain.ad.dao;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -78,6 +80,12 @@ public class AdGroupRepositoryImpl implements AdGroupRepository{
 
 	@Override
 	public AdGroup findByDistinguishedName(String distinguishedName) {
+		return null;
+	}
+
+	@Override
+	public List<AdGroup> findByLastModifiedExists(boolean exists) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
