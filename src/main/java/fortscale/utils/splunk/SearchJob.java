@@ -20,6 +20,10 @@ public abstract class SearchJob {
 	
 	public Job run(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception{
 		Job ret = runJob(service, earliestTimeCursor, latestTimeCursor);
+		while (ret != null && !ret.isDone()) {
+			Thread.sleep(1000);
+			
+		}
 		if(ret != null && ret.isFailed()){
 			handleJobFailure(ret);
 		}
