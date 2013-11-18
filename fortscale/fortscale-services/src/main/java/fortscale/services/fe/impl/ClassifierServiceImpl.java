@@ -484,12 +484,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private static final String WMIEVENTS_TABLE_NAME = "wmievents4769";
 	
 	@Override
-	public EBSResult getEBSAlgOnAuthQuery(String query, int offset, int limit){
-		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
-		if(resultsMap.size() == 0) {
-			return new EBSResult(null, null,0, 0);
-		}
-
+	public EBSResult getEBSAlgOnAuthQuery(List<Map<String, Object>> resultsMap, int offset, int limit){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
 		Set<String> keySet = resultsMap.get(0).keySet();
@@ -497,20 +492,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		keySet.remove(CLIENT_ADDRESSE_FIELD);
 		List<String> keys = new ArrayList<>(keySet);
 		for (Map<String, Object> map : resultsMap) {
-			Map<String, String> filters = rowFieldRegexFilter.get(WMIEVENTS_TABLE_NAME);
-			if(filters != null){
-				boolean isFilter = false;
-				for(Entry<String, String> entry: filters.entrySet()){
-					String val = (String)map.get(entry.getKey());
-					if(val != null && val.matches(entry.getValue())){
-						logger.debug("filtering the event with {} ({}) by regex ({})", entry.getKey(), val, entry.getValue());
-						isFilter = true;
-						break;
-					}
-				}
-				if(isFilter){
-					continue;
-				}
+			if(filterRowResults(map)){
+				continue;
 			}
 
 			List<String> workingSet = new ArrayList<String>(keys.size() + 1);
@@ -530,19 +513,20 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				String val = null;
 				if(tmp != null) {
 					val = tmp.toString();
-					if(keyString.equals(WMIEVENTS_TIME_FIELD)){
-						try {
-							val = EBSPigUDF.normalized_date_string(val);
-						} catch (Exception e) {
-							logger.warn("got the following event while trying to normalize date", e);
-						}
-					}
 				} else {
 					logger.warn("no value returned for the column {}", keyString);
 					val ="";
 				}
-				workingSet.add(val);
 				allData.add(val);
+				if(keyString.equals(WMIEVENTS_TIME_FIELD)){
+					try {
+						val = EBSPigUDF.normalized_date_string(val);
+					} catch (Exception e) {
+						logger.warn("got the following event while trying to normalize date", e);
+					}
+				}
+				workingSet.add(val);
+				
 			}
 			EventBulkScorer.InputStruct inp = new EventBulkScorer.InputStruct();
 			inp.working_set = workingSet;
@@ -573,22 +557,40 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
 	}
 	
+	private boolean filterRowResults(Map<String, Object> rowVals){
+		boolean isFilter = false;
+		Map<String, String> filters = rowFieldRegexFilter.get(WMIEVENTS_TABLE_NAME);
+		if(filters != null){
+			
+			for(Entry<String, String> entry: filters.entrySet()){
+				String val = (String)rowVals.get(entry.getKey());
+				if(val != null && val.matches(entry.getValue())){
+					logger.debug("filtering the event with {} ({}) by regex ({})", entry.getKey(), val, entry.getValue());
+					isFilter = true;
+					break;
+				}
+			}
+		}
+		
+		return isFilter;
+	}
+	
+	private static final String VPN_DATA_TABLENAME = "vpndata";
+	private static final String VPN_TIME_FIELD = "date_time";
+	
 	@Override
-	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit){
-		if(query.contains(WMIEVENTS_TABLE_NAME)){
-			return getEBSAlgOnAuthQuery(query, offset, limit);
-		}
-		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
-		if(resultsMap.size() == 0) {
-			return new EBSResult(null, null,0, 0);
-		}
-
+	public EBSResult getSimpleEBSAlgOnVpnDataQuery(List<Map<String, Object>> resultsMap, String timeFieldName, int offset, int limit){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
 		Set<String> keySet = resultsMap.get(0).keySet();
 		List<String> keys = new ArrayList<>(keySet);
 		for (Map<String, Object> map : resultsMap) {
+			if(filterRowResults(map)){
+				continue;
+			}
+
 			List<String> workingSet = new ArrayList<String>(keys.size());
+			List<String> allData = new ArrayList<String>(keys.size());
 			for (int i = 0; i < keys.size(); i++) {
 				String keyString = keys.get(i);
 				Object tmp = map.get(keyString);
@@ -599,22 +601,33 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 					logger.warn("no value returned for the column {}", keyString);
 					val ="";
 				}
+				allData.add(val);
+				if(timeFieldName != null && keyString.equals(timeFieldName)){
+					try {
+						val = EBSPigUDF.normalized_date_string(val);
+					} catch (Exception e) {
+						logger.warn("got the following event while trying to normalize date", e);
+					}
+				}
 				workingSet.add(val);
+				
 			}
 			EventBulkScorer.InputStruct inp = new EventBulkScorer.InputStruct();
 			inp.working_set = workingSet;
-			inp.all_data = workingSet;
+			inp.all_data = allData;
 			listResults.add(inp);
 		}
 
 		EventBulkScorer ebs = new EventBulkScorer();
 		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
+		
 		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
 		List<Map<String, Object>> eventResultList = new ArrayList<>();
 		int toIndex = offset + limit;
 		if(toIndex > ebsresult.event_score_list.size()) {
 			toIndex = ebsresult.event_score_list.size();
 		}
+
 		for (EventBulkScorer.EventScoreStore eventScore : ebsresult.event_score_list.subList(offset, toIndex)) {
 			Map<String, Object> eventMap = new HashMap<>();
 			for (int i=0;i<eventScore.event.size();i++) {
@@ -625,6 +638,22 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 		
 		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
+	}
+	
+	@Override
+	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit){
+		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
+		if(resultsMap.size() == 0) {
+			return new EBSResult(null, null,0, 0);
+		}
+		
+		if(query.contains(WMIEVENTS_TABLE_NAME)){
+			return getEBSAlgOnAuthQuery(resultsMap, offset, limit);
+		} else if(query.contains(VPN_DATA_TABLENAME)){
+			return getSimpleEBSAlgOnVpnDataQuery(resultsMap, VPN_TIME_FIELD, offset, limit);
+		} else{
+			return getSimpleEBSAlgOnVpnDataQuery(resultsMap, null, offset, limit);
+		}
 	}
 	
 	public static class OrderByEventScoreDesc implements Comparator<EventBulkScorer.EventScoreStore>{
