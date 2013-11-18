@@ -26,5 +26,5 @@ public interface ClassifierService {
 	public Long getLatestRuntime(String tableName);
 	public void addFilter(String collectionName, String fieldName, String regex);
 	public String getFilterRegex(String collectionName, String fieldName);
-	public EBSResult getSimpleEBSAlgOnVpnDataQuery(List<Map<String, Object>> resultsMap, String timeFieldName, int offset, int limit);
+	public EBSResult getSimpleEBSAlgOnQuery(List<Map<String, Object>> resultsMap, String tableName, String timeFieldName, int offset, int limit);
 }

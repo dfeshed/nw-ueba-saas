@@ -492,7 +492,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		keySet.remove(CLIENT_ADDRESSE_FIELD);
 		List<String> keys = new ArrayList<>(keySet);
 		for (Map<String, Object> map : resultsMap) {
-			if(filterRowResults(map)){
+			if(filterRowResults(map, WMIEVENTS_TABLE_NAME)){
 				continue;
 			}
 
@@ -557,9 +557,12 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
 	}
 	
-	private boolean filterRowResults(Map<String, Object> rowVals){
+	private boolean filterRowResults(Map<String, Object> rowVals, String tableName){
+		if(tableName == null){
+			return false;
+		}
 		boolean isFilter = false;
-		Map<String, String> filters = rowFieldRegexFilter.get(WMIEVENTS_TABLE_NAME);
+		Map<String, String> filters = rowFieldRegexFilter.get(tableName);
 		if(filters != null){
 			
 			for(Entry<String, String> entry: filters.entrySet()){
@@ -579,13 +582,13 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private static final String VPN_TIME_FIELD = "date_time";
 	
 	@Override
-	public EBSResult getSimpleEBSAlgOnVpnDataQuery(List<Map<String, Object>> resultsMap, String timeFieldName, int offset, int limit){
+	public EBSResult getSimpleEBSAlgOnQuery(List<Map<String, Object>> resultsMap, String tableName, String timeFieldName, int offset, int limit){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
 		Set<String> keySet = resultsMap.get(0).keySet();
 		List<String> keys = new ArrayList<>(keySet);
 		for (Map<String, Object> map : resultsMap) {
-			if(filterRowResults(map)){
+			if(filterRowResults(map, tableName)){
 				continue;
 			}
 
@@ -650,9 +653,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(query.contains(WMIEVENTS_TABLE_NAME)){
 			return getEBSAlgOnAuthQuery(resultsMap, offset, limit);
 		} else if(query.contains(VPN_DATA_TABLENAME)){
-			return getSimpleEBSAlgOnVpnDataQuery(resultsMap, VPN_TIME_FIELD, offset, limit);
+			return getSimpleEBSAlgOnQuery(resultsMap, VPN_DATA_TABLENAME, VPN_TIME_FIELD, offset, limit);
 		} else{
-			return getSimpleEBSAlgOnVpnDataQuery(resultsMap, null, offset, limit);
+			return getSimpleEBSAlgOnQuery(resultsMap, null, null, offset, limit);
 		}
 	}
 	
