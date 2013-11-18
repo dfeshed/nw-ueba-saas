@@ -11,4 +11,5 @@ public interface AdUserRepository extends PagingAndSortingRepository<AdUser, Str
 	public List<AdUser> findByTimestamp(String timestamp);
 	public AdUser findByDistinguishedName(String distinguishedName);
 	public List<AdUser> findByDistinguishedNameIgnoreCaseContaining(String distinguishedName);
+	public List<AdUser> findByLastModifiedExists(boolean exists);
 }

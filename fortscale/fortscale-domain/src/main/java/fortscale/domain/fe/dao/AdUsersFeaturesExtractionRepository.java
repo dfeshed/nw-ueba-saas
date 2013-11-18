@@ -23,5 +23,5 @@ public interface AdUsersFeaturesExtractionRepository extends MongoRepository<AdU
 //	public AdUserFeaturesExtraction findByUserIdAndTimestamp(String userId, Date timestamp);
 	public List<AdUserFeaturesExtraction> findByUserId(String userId);
 	
-	
+	public List<AdUserFeaturesExtraction> findByLastModifiedExists(boolean exists);
 }

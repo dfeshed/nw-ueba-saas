@@ -125,4 +125,10 @@ public class AdUserRepositoryImpl implements AdUserRepository{
 		return null;
 	}
 
+	@Override
+	public List<AdUser> findByLastModifiedExists(boolean exists) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

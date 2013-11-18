@@ -10,9 +10,11 @@ import fortscale.domain.core.AbstractDocument;
 public class AbstractFEDocument extends AbstractDocument {
 	public static final String timestampField = "timestamp";
 
-	@Indexed(unique = false, expireAfterSeconds=60*60*24*4)
 	@Field(timestampField)
 	private Date timestamp;
+	
+	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
+	private Date lastModified;
 
 	public Date getTimestamp() {
 		return timestamp;
@@ -21,4 +23,14 @@ public class AbstractFEDocument extends AbstractDocument {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
+
+	public Date getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(Date lastModified) {
+		this.lastModified = lastModified;
+	}
+	
+	
 }
