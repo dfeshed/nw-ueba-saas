@@ -34,6 +34,7 @@ import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.ebs.EBSPigUDF;
 import fortscale.ebs.EventBulkScorer;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
@@ -475,7 +476,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	
 
-	
+	private static final String WMIEVENTS_TIME_FIELD = "timegenerated";
 	private static final String MACHINE_NAME_FIELD = "machine_name";
 	private static final String CLIENT_ADDRESSE_FIELD = "client_address";
 	private static final String SERVICE_NAME_FIELD = "service_name";
@@ -529,6 +530,13 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				String val = null;
 				if(tmp != null) {
 					val = tmp.toString();
+					if(keyString.equals(WMIEVENTS_TIME_FIELD)){
+						try {
+							val = EBSPigUDF.normalized_date_string(val);
+						} catch (Exception e) {
+							logger.warn("got the following event while trying to normalize date", e);
+						}
+					}
 				} else {
 					logger.warn("no value returned for the column {}", keyString);
 					val ="";
@@ -541,28 +549,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			inp.all_data = allData;
 			listResults.add(inp);
 		}
-//		ListIterator<EventBulkScorer.InputStruct> iterator = listResults.listIterator();
-//		while(iterator.hasNext()){
-//			EventBulkScorer.InputStruct inp = iterator.next();
-//			StringBuilder builder = new StringBuilder();
-//			for(String val: inp.working_set){
-//				builder.append(",").append(val);
-//			}
-//			System.out.println(builder.toString());
-//		}
-//		System.out.println();
-//		iterator = listResults.listIterator();
-//		while(iterator.hasNext()){
-//			EventBulkScorer.InputStruct inp = iterator.next();
-//			StringBuilder builder = new StringBuilder();
-//			for(String val: inp.all_data){
-//				builder.append(",").append(val);
-//			}
-//			System.out.println(builder.toString());
-//		}
 
 		EventBulkScorer ebs = new EventBulkScorer();
 		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
+		
 		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
 		List<Map<String, Object>> eventResultList = new ArrayList<>();
 		int toIndex = offset + limit;
