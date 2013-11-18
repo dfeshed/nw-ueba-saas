@@ -205,5 +205,12 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 		return null;
 	}
 
+	@Override
+	public List<AdUserFeaturesExtraction> findByLastModifiedExists(
+			boolean exists) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }
