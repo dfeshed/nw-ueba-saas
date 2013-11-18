@@ -23,4 +23,6 @@ public interface ClassifierService {
 	public EBSResult getEBSAlgOnAuthQuery(String query, int offset, int limit);
 	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit);
 	public Long getLatestRuntime(String tableName);
+	public void addFilter(String collectionName, String fieldName, String regex);
+	public String getFilterRegex(String collectionName, String fieldName);
 }

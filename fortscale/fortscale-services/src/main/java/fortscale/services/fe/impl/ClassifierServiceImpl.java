@@ -6,11 +6,15 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -49,10 +53,11 @@ import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.logging.Logger;
 
 @Service("classifierService")
-public class ClassifierServiceImpl implements ClassifierService {
+public class ClassifierServiceImpl implements ClassifierService, InitializingBean{
 	private static Logger logger = Logger.getLogger(ClassifierServiceImpl.class);
 	
 	private static final String EVENT_SCORE = "eventScore";
+	
 	
 	
 	@Autowired
@@ -78,8 +83,28 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	@Autowired
 	private ConfigurationService configurationService;
+	
+	@Value("${login.service.name.regex:}")
+	private String loginServiceNameRegex;
+	
+	@Value("${login.account.name.regex:}")
+	private String loginAccountNameRegex;
+	
+	private Map<String, Map<String, String>> rowFieldRegexFilter;
+	
+	
+	
+	
 
 	
+	public void setLoginServiceNameRegex(String loginServiceNameRegex) {
+		this.loginServiceNameRegex = loginServiceNameRegex;
+	}
+
+	public void setLoginAccountNameRegex(String loginAccountNameRegex) {
+		this.loginAccountNameRegex = loginAccountNameRegex;
+	}
+
 	public Classifier getClassifier(String classifierId){
 		return configurationService.getClassifiersMap().get(classifierId);
 	}
@@ -454,6 +479,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 	private static final String MACHINE_NAME_FIELD = "machine_name";
 	private static final String CLIENT_ADDRESSE_FIELD = "client_address";
 	private static final String SERVICE_NAME_FIELD = "service_name";
+	private static final String ACCOUNT_NAME_FIELD = "account_name";
 	private static final String WMIEVENTS_TABLE_NAME = "wmievents4769";
 	
 	@Override
@@ -470,10 +496,22 @@ public class ClassifierServiceImpl implements ClassifierService {
 		keySet.remove(CLIENT_ADDRESSE_FIELD);
 		List<String> keys = new ArrayList<>(keySet);
 		for (Map<String, Object> map : resultsMap) {
-			if(map.get(SERVICE_NAME_FIELD) != null && 
-					( ((String)map.get(SERVICE_NAME_FIELD)).equals("krbtgt") || ((String)map.get(SERVICE_NAME_FIELD)).contains("FS-DC"))){
-				continue;
+			Map<String, String> filters = rowFieldRegexFilter.get(WMIEVENTS_TABLE_NAME);
+			if(filters != null){
+				boolean isFilter = false;
+				for(Entry<String, String> entry: filters.entrySet()){
+					String val = (String)map.get(entry.getKey());
+					if(val != null && val.matches(entry.getValue())){
+						logger.debug("filtering the event with {} ({}) by regex ({})", entry.getKey(), val, entry.getValue());
+						isFilter = true;
+						break;
+					}
+				}
+				if(isFilter){
+					continue;
+				}
 			}
+
 			List<String> workingSet = new ArrayList<String>(keys.size() + 1);
 			List<String> allData = new ArrayList<String>(keys.size() + 2);
 			String machineName = map.get(MACHINE_NAME_FIELD) != null ? map.get(MACHINE_NAME_FIELD).toString() : "";
@@ -503,6 +541,25 @@ public class ClassifierServiceImpl implements ClassifierService {
 			inp.all_data = allData;
 			listResults.add(inp);
 		}
+//		ListIterator<EventBulkScorer.InputStruct> iterator = listResults.listIterator();
+//		while(iterator.hasNext()){
+//			EventBulkScorer.InputStruct inp = iterator.next();
+//			StringBuilder builder = new StringBuilder();
+//			for(String val: inp.working_set){
+//				builder.append(",").append(val);
+//			}
+//			System.out.println(builder.toString());
+//		}
+//		System.out.println();
+//		iterator = listResults.listIterator();
+//		while(iterator.hasNext()){
+//			EventBulkScorer.InputStruct inp = iterator.next();
+//			StringBuilder builder = new StringBuilder();
+//			for(String val: inp.all_data){
+//				builder.append(",").append(val);
+//			}
+//			System.out.println(builder.toString());
+//		}
 
 		EventBulkScorer ebs = new EventBulkScorer();
 		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
@@ -620,5 +677,46 @@ public class ClassifierServiceImpl implements ClassifierService {
 			return true;//suspiciousUserInfo.getTrend() > 0;
 		}
 		
+	}
+	
+	@Override
+	public String getFilterRegex(String collectionName, String fieldName){
+		if(rowFieldRegexFilter == null){
+			return null;
+		}
+		Map<String, String> collectionFilters = rowFieldRegexFilter.get(collectionName);
+		if(collectionFilters == null){
+			return null;
+		}
+		return collectionFilters.get(fieldName);
+	}
+	
+	@Override
+	public void addFilter(String collectionName, String fieldName, String regex){
+		if(StringUtils.isEmpty(regex)){
+			logger.warn("got an empty regex for collection name ({}) and field name ({}). not executing!!!",collectionName, fieldName);
+			return;
+		}
+		if(rowFieldRegexFilter == null){
+			rowFieldRegexFilter = new HashMap<>();
+		}
+		
+		Map<String, String> collectionFilters = rowFieldRegexFilter.get(collectionName);
+		if(collectionFilters == null){
+			collectionFilters = new HashMap<>();
+			rowFieldRegexFilter.put(collectionName, collectionFilters);
+		}
+		
+		collectionFilters.put(fieldName, regex);
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		if(!StringUtils.isEmpty(loginAccountNameRegex)){
+			addFilter(WMIEVENTS_TABLE_NAME, ACCOUNT_NAME_FIELD, loginAccountNameRegex);
+		}
+		if(!StringUtils.isEmpty(loginServiceNameRegex)){
+			addFilter(WMIEVENTS_TABLE_NAME, SERVICE_NAME_FIELD, loginServiceNameRegex);
+		}
 	}
 }
