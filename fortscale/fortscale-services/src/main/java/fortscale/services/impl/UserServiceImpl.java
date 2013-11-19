@@ -312,11 +312,12 @@ public class UserServiceImpl implements UserService{
 		
 		DateTime dateTimeEnd = new DateTime(dayTimestamp);
 		DateTime dateTimeStart = dateTimeEnd.withTimeAtStartOfDay();
-		dateTimeEnd = dateTimeEnd.plusHours(2);
+		dateTimeEnd = dateTimeStart.plusHours(24);
 		Map<String,IUserScore> ret = new HashMap<String, IUserScore>();
 		
 		for(ScoreWeight scoreWeight: configurationService.getScoreConfiguration().getConfMap().values()){
-			ClassifierScore classifierScore = user.getScore(scoreWeight.getId());
+			String classifierId = scoreWeight.getId();
+			ClassifierScore classifierScore = user.getScore(classifierId);
 			if(classifierScore != null){
 				for(ScoreInfo prevScoreInfo: classifierScore.getPrevScores()){
 					if(dateTimeStart.isAfter(prevScoreInfo.getTimestampEpoc())){
@@ -324,10 +325,10 @@ public class UserServiceImpl implements UserService{
 					} else if(dateTimeEnd.isBefore(prevScoreInfo.getTimestampEpoc())){
 						continue;
 					}
-					Classifier classifier = classifierService.getClassifier(classifierScore.getClassifierId());
-					UserScore score = new UserScore(classifierScore.getClassifierId(), classifier.getDisplayName(),
-							(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
-					ret.put(classifierScore.getClassifierId(), score);
+					Classifier classifier = classifierService.getClassifier(classifierId);
+					UserScore score = new UserScore(classifierId, classifier.getDisplayName(),
+							(int)Math.round(prevScoreInfo.getScore()), (int)Math.round(prevScoreInfo.getAvgScore()));
+					ret.put(classifierId, score);
 				}
 			}
 		}
