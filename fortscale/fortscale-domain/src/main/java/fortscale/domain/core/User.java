@@ -79,7 +79,7 @@ public class User extends AbstractDocument {
 	
 	private Date accountExpires;
 	
-	private String adUserAccountControl;
+	private Integer adUserAccountControl;
 	
 	private String adLogonHours;
 	
@@ -359,12 +359,12 @@ public class User extends AbstractDocument {
 	}
 
 
-	public String getAdUserAccountControl() {
+	public Integer getAdUserAccountControl() {
 		return adUserAccountControl;
 	}
 
 
-	public void setAdUserAccountControl(String adUserAccountControl) {
+	public void setAdUserAccountControl(Integer adUserAccountControl) {
 		this.adUserAccountControl = adUserAccountControl;
 	}
 

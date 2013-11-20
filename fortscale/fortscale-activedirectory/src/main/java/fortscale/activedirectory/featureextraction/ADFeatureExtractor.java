@@ -118,7 +118,7 @@ public class ADFeatureExtractor {
 	
 	
 	private void parseUserAccountControlFeatures(AdUser adUser) {
-		String userAccountControl = adUser.getUserAccountControl();
+		Integer userAccountControl = adUser.getUserAccountControl();
 		
 		String featureUniqueName;
 		String featureDisplayName;
@@ -130,42 +130,42 @@ public class ADFeatureExtractor {
 		// Account is Disabled
 		featureUniqueName = FEATURE_ACCOUNT_IS_DISABLED_UNIQUE_NAME;
 		featureDisplayName= FEATURE_ACCOUNT_IS_DISABLED_DISPLAY_NAME;
-		featureValue = userAccountControl.isEmpty() ? null : adUserParser.getAccountIsDisabledValue(userAccountControl);
+		featureValue = userAccountControl == null ? null : adUserParser.getAccountIsDisabledValue(userAccountControl);
 		feature = new Feature(featureUniqueName, featureDisplayName, featureType, featureDefaultValue, featureValue);
 		userFeatures.put(feature.getFeatureUniqueName(), (IFeature)feature);
 		
 		// No Password Required
 		featureUniqueName = FEATURE_NO_PASSWORD_REQUIRED_UNIQUE_NAME;
 		featureDisplayName= FEATURE_NO_PASSWORD_REQUIRED_DISPLAY_NAME;
-		featureValue = userAccountControl.isEmpty() ? null : adUserParser.getNoPasswordRequiresValue(userAccountControl);
+		featureValue = userAccountControl == null ? null : adUserParser.getNoPasswordRequiresValue(userAccountControl);
 		feature = new Feature(featureUniqueName, featureDisplayName, featureType, featureDefaultValue, featureValue);
 		userFeatures.put(feature.getFeatureUniqueName(), (IFeature)feature);
 		
 		// Normal User Account
 		featureUniqueName = FEATURE_NOT_NORMAL_USER_ACCOUNT_UNIQUE_NAME;
 		featureDisplayName= FEATURE_NOT_NORMAL_USER_ACCOUNT_DISPLAY_NAME;
-		featureValue = userAccountControl.isEmpty() ? null : adUserParser.getNormalUserAccountValue(userAccountControl);
+		featureValue = userAccountControl == null ? null : adUserParser.getNormalUserAccountValue(userAccountControl);
 		feature = new Feature(featureUniqueName, featureDisplayName, featureType, featureDefaultValue, featureValue);
 		userFeatures.put(feature.getFeatureUniqueName(), (IFeature)feature);
 		
 		// Interdomain Trust Account
 		featureUniqueName = FEATURE_INTERDOMAIN_TRUST_ACCOUNT_UNIQUE_NAME;
 		featureDisplayName= FEATURE_INTERDOMAIN_TRUST_ACCOUNT_DISPLAY_NAME;
-		featureValue = userAccountControl.isEmpty() ? null : adUserParser.getInterdomainTrustAccountValue(userAccountControl);
+		featureValue = userAccountControl == null ? null : adUserParser.getInterdomainTrustAccountValue(userAccountControl);
 		feature = new Feature(featureUniqueName, featureDisplayName, featureType, featureDefaultValue, featureValue);
 		userFeatures.put(feature.getFeatureUniqueName(), (IFeature)feature);
 
 		// Password Never Expires
 		featureUniqueName = FEATURE_PASSWORD_NEVER_EXPIRES_UNIQUE_NAME;
 		featureDisplayName= FEATURE_PASSWORD_NEVER_EXPIRES_DISPLAY_NAME;
-		featureValue = userAccountControl.isEmpty() ? null : adUserParser.getPasswordNeverExpiresValue(userAccountControl);
+		featureValue = userAccountControl == null ? null : adUserParser.getPasswordNeverExpiresValue(userAccountControl);
 		feature = new Feature(featureUniqueName, featureDisplayName, featureType, featureDefaultValue, featureValue);
 		userFeatures.put(feature.getFeatureUniqueName(), (IFeature)feature);
 		
 		// Des Key Only
 		featureUniqueName = FEATURE_DES_KEY_ONLY_UNIQUE_NAME;
 		featureDisplayName= FEATURE_DES_KEY_ONLY_DISPLAY_NAME;
-		featureValue = userAccountControl.isEmpty() ? null : adUserParser.getDesKeyOnlyValue(userAccountControl);
+		featureValue = userAccountControl == null ? null : adUserParser.getDesKeyOnlyValue(userAccountControl);
 		feature = new Feature(featureUniqueName, featureDisplayName, featureType, featureDefaultValue, featureValue);
 		userFeatures.put(feature.getFeatureUniqueName(), (IFeature)feature);		
 	}
@@ -282,8 +282,8 @@ public class ADFeatureExtractor {
 		int featureType = Feature.FEATURE_TYPE_NUMERIC;
 		Double featureDefaultValue = null ;
 		
-		String logonCount = adUser.getLogonCount();
-		Double featureValue = (activityDays==0.0 || logonCount.isEmpty()) ? null : Math.round((Double.parseDouble(logonCount)/activityDays)*100.0) / 100.0;
+		Integer logonCount = adUser.getLogonCount();
+		Double featureValue = (activityDays==0.0 || logonCount == null) ? null : Math.round((((double)logonCount)/activityDays)*100.0) / 100.0;
 		Feature feature = new Feature(featureUniqueName, featureDisplayName, featureType, featureDefaultValue, featureValue);
 		userFeatures.put(feature.getFeatureUniqueName(), (IFeature)feature);
 	}
@@ -295,7 +295,7 @@ public class ADFeatureExtractor {
 		int featureType = Feature.FEATURE_TYPE_NUMERIC;
 		Double featureDefaultValue = null ;
 		
-		String badPwdCount = adUser.getBadPwdCount();
+		String badPwdCount = String.valueOf(adUser.getBadPwdCount());
 		Double featureValue = (activityDays==0.0 || badPwdCount.isEmpty()) ? null : Double.parseDouble(badPwdCount)/activityDays;
 		Feature feature = new Feature(featureUniqueName, featureDisplayName, featureType, featureDefaultValue, featureValue);
 		userFeatures.put(feature.getFeatureUniqueName(), (IFeature)feature);

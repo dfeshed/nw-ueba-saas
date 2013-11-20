@@ -5,32 +5,32 @@ import fortscale.utils.actdir.ADUserParser;
 
 public class ADUserFeatureParser extends ADUserParser{
 	
-	public Double getAccountIsDisabledValue(String userAccountControl) {
+	public Double getAccountIsDisabledValue(Integer userAccountControl) {
 		return isAccountIsDisabled(userAccountControl) ? Feature.POSITIVE_STATUS : Feature.NEGATIVE_STATUS;
 	}
 
 	
-	public Double getNoPasswordRequiresValue(String userAccountControl) {
+	public Double getNoPasswordRequiresValue(Integer userAccountControl) {
 		return isNoPasswordRequiresValue(userAccountControl) ? Feature.POSITIVE_STATUS : Feature.NEGATIVE_STATUS;
 	}
 
 	
-	public Double getNormalUserAccountValue(String userAccountControl) {
+	public Double getNormalUserAccountValue(Integer userAccountControl) {
 		return isNormalUserAccountValue(userAccountControl) ? Feature.NEGATIVE_STATUS : Feature.POSITIVE_STATUS;
 	} 
 	
 	
-	public Double getInterdomainTrustAccountValue(String userAccountControl) {
+	public Double getInterdomainTrustAccountValue(Integer userAccountControl) {
 		return isInterdomainTrustAccountValue(userAccountControl) ? Feature.POSITIVE_STATUS : Feature.NEGATIVE_STATUS;
 	}
 
 	
-	public Double getPasswordNeverExpiresValue(String userAccountControl) {
+	public Double getPasswordNeverExpiresValue(Integer userAccountControl) {
 		return isPasswordNeverExpiresValue(userAccountControl) ? Feature.POSITIVE_STATUS : Feature.NEGATIVE_STATUS;
 	}
 	
 	
-	public Double getDesKeyOnlyValue(String userAccountControl) {
+	public Double getDesKeyOnlyValue(Integer userAccountControl) {
 		return isDesKeyOnlyValue(userAccountControl) ? Feature.POSITIVE_STATUS : Feature.NEGATIVE_STATUS;
 	}
 
