@@ -66,81 +66,81 @@ public class ADUserParser {
 	}
 	
 	
-	public boolean isAccountIsDisabled(String userAccountControl) {
+	public boolean isAccountIsDisabled(Integer userAccountControl) {
 		int flag = 0x00000002;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 	
-	public boolean isLockout(String userAccountControl) {
+	public boolean isLockout(Integer userAccountControl) {
 		int flag = 0x00000010;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 	
-	public boolean isWorkstationTrustAccount(String userAccountControl) {
+	public boolean isWorkstationTrustAccount(Integer userAccountControl) {
 		int flag = 0x00001000;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 	
 	
-	public boolean isServerTrustAccount(String userAccountControl) {
+	public boolean isServerTrustAccount(Integer userAccountControl) {
 		int flag = 0x00002000;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 	
-	public boolean isSmartcardRequired(String userAccountControl) {
+	public boolean isSmartcardRequired(Integer userAccountControl) {
 		int flag = 0x00040000;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 	
 	
-	public boolean isTrustedForDelegation(String userAccountControl) {
+	public boolean isTrustedForDelegation(Integer userAccountControl) {
 		int flag = 0x00080000;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 	
-	public boolean isNotDelegated(String userAccountControl) {
+	public boolean isNotDelegated(Integer userAccountControl) {
 		int flag = 0x00100000;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 	
-	public boolean isPasswordExpired(String userAccountControl) {
+	public boolean isPasswordExpired(Integer userAccountControl) {
 		int flag = 0x00800000;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 	
-	public boolean isTrustedToAuthForDelegation(String userAccountControl) {
+	public boolean isTrustedToAuthForDelegation(Integer userAccountControl) {
 		int flag = 0x01000000;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 
 	
-	public boolean isNoPasswordRequiresValue(String userAccountControl) {
+	public boolean isNoPasswordRequiresValue(Integer userAccountControl) {
 		int flag = 0x00000020;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 
 	
-	public boolean isNormalUserAccountValue(String userAccountControl) {
+	public boolean isNormalUserAccountValue(Integer userAccountControl) {
 		int flag = 0x00000200;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	} 
 	
 	
-	public boolean isInterdomainTrustAccountValue(String userAccountControl) {
+	public boolean isInterdomainTrustAccountValue(Integer userAccountControl) {
 		int flag = 0x00000800;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 
 	
-	public boolean isPasswordNeverExpiresValue(String userAccountControl) {
+	public boolean isPasswordNeverExpiresValue(Integer userAccountControl) {
 		int flag = 0x00010000;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 	
 	
-	public boolean isDesKeyOnlyValue(String userAccountControl) {
+	public boolean isDesKeyOnlyValue(Integer userAccountControl) {
 		int flag = 0x00200000;
-		return ((Integer.parseInt(userAccountControl) & flag) == flag);
+		return ((userAccountControl & flag) == flag);
 	}
 
 	
