@@ -72,38 +72,38 @@ public class ADUserParserTest {
 
 	@Test
 	public void testGetAccountIsDisabledValue() {
-		assertTrue("Account is disabled is recognized when needed", adUserParser.getAccountIsDisabledValue("514").equals(Feature.POSITIVE_STATUS));
-		assertTrue("Account is disabled is unrecognized when needed", adUserParser.getAccountIsDisabledValue("512").equals(Feature.NEGATIVE_STATUS));
+		assertTrue("Account is disabled is recognized when needed", adUserParser.getAccountIsDisabledValue(514).equals(Feature.POSITIVE_STATUS));
+		assertTrue("Account is disabled is unrecognized when needed", adUserParser.getAccountIsDisabledValue(512).equals(Feature.NEGATIVE_STATUS));
 	}
 
 	@Test
 	public void testGetNoPasswordRequiresValue() {
-		assertTrue("No Password Required is recognized when needed", adUserParser.getNoPasswordRequiresValue("544").equals(Feature.POSITIVE_STATUS));
-		assertTrue("No Password Required is unrecognized when needed", adUserParser.getNoPasswordRequiresValue("512").equals(Feature.NEGATIVE_STATUS));
+		assertTrue("No Password Required is recognized when needed", adUserParser.getNoPasswordRequiresValue(544).equals(Feature.POSITIVE_STATUS));
+		assertTrue("No Password Required is unrecognized when needed", adUserParser.getNoPasswordRequiresValue(512).equals(Feature.NEGATIVE_STATUS));
 	}
 
 	@Test
 	public void testGetNormalUserAccountValue() {
-		assertTrue("Normal User Account is recognized when needed", adUserParser.getNormalUserAccountValue("66048").equals(Feature.NEGATIVE_STATUS));
-		assertTrue("Normal User Account is unrecognized when needed", adUserParser.getNormalUserAccountValue("2").equals(Feature.POSITIVE_STATUS));
+		assertTrue("Normal User Account is recognized when needed", adUserParser.getNormalUserAccountValue(66048).equals(Feature.NEGATIVE_STATUS));
+		assertTrue("Normal User Account is unrecognized when needed", adUserParser.getNormalUserAccountValue(2).equals(Feature.POSITIVE_STATUS));
 	}
 
 	@Test
 	public void testGetInterdomainTrustAccountValue() {
-		assertTrue("Interdomain Trust Account is recognized when needed", adUserParser.getInterdomainTrustAccountValue("2560").equals(Feature.POSITIVE_STATUS));
-		assertTrue("Interdomain Trust Account is unrecognized when needed", adUserParser.getInterdomainTrustAccountValue("512").equals(Feature.NEGATIVE_STATUS));
+		assertTrue("Interdomain Trust Account is recognized when needed", adUserParser.getInterdomainTrustAccountValue(2560).equals(Feature.POSITIVE_STATUS));
+		assertTrue("Interdomain Trust Account is unrecognized when needed", adUserParser.getInterdomainTrustAccountValue(512).equals(Feature.NEGATIVE_STATUS));
 	}
 
 	@Test
 	public void testGetPasswordNeverExpiresValue() {
-		assertTrue("Password Never Expires is recognized when needed", adUserParser.getPasswordNeverExpiresValue("66048").equals(Feature.POSITIVE_STATUS));
-		assertTrue("Password Never Expires is unrecognized when needed", adUserParser.getPasswordNeverExpiresValue("512").equals(Feature.NEGATIVE_STATUS));
+		assertTrue("Password Never Expires is recognized when needed", adUserParser.getPasswordNeverExpiresValue(66048).equals(Feature.POSITIVE_STATUS));
+		assertTrue("Password Never Expires is unrecognized when needed", adUserParser.getPasswordNeverExpiresValue(512).equals(Feature.NEGATIVE_STATUS));
 	}
 
 	@Test
 	public void testGetDesKeyOnlyValue() {
-		assertTrue("Des Key Only is recognized when needed", adUserParser.getDesKeyOnlyValue("2097664").equals(Feature.POSITIVE_STATUS));
-		assertTrue("Des Key Only is unrecognized when needed", adUserParser.getDesKeyOnlyValue("512").equals(Feature.NEGATIVE_STATUS));
+		assertTrue("Des Key Only is recognized when needed", adUserParser.getDesKeyOnlyValue(2097664).equals(Feature.POSITIVE_STATUS));
+		assertTrue("Des Key Only is unrecognized when needed", adUserParser.getDesKeyOnlyValue(512).equals(Feature.NEGATIVE_STATUS));
 	}
 
 	@Test

@@ -278,7 +278,7 @@ public class QoS {
 			if (adminGroups.contains(group)) {return false;}
 		}
 		
-		int uac = Integer.parseInt(normalUser.getUserAccountControl());
+		int uac = normalUser.getUserAccountControl();
 		if (((uac & 32) == 32) || ((uac & 65536) == 65536)) {return false;}
 
 		return true;
