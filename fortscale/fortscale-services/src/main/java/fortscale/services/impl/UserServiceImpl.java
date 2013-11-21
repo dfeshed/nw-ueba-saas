@@ -559,7 +559,7 @@ public class UserServiceImpl implements UserService{
 	public User findByUsername(List<String> regexes, String username){
 		for(String regex: regexes){
 			List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
-			if(tmpUsers == null || tmpUsers.size() == 1){
+			if(tmpUsers == null || tmpUsers.size() == 0){
 				continue;
 			}
 			if(tmpUsers.size() > 1){

@@ -318,16 +318,19 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 
 	@Override
-	public List<ILoginEventScoreInfo> getUserSuspiciousLoginEvents(String userId, Date timestamp, int offset, int limit) {
+	public List<ILoginEventScoreInfo> getUserSuspiciousLoginEvents(String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
+		}
+		if(StringUtils.isEmpty(orderBy)){
+			orderBy = AuthScore.EVENT_SCORE_FIELD_NAME;
 		}
 		User user = userRepository.findOne(userId);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
-		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
-		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestamp(user.getUsername(), timestamp, pageable);
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderBy));
+		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestampGtEventScore(user.getUsername(), timestamp, minScore, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
 			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
@@ -346,12 +349,15 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 
 	@Override
-	public List<ILoginEventScoreInfo> getSuspiciousLoginEvents(Date timestamp, int offset, int limit) {
+	public List<ILoginEventScoreInfo> getSuspiciousLoginEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
-		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, AuthScore.EVENT_SCORE_FIELD_NAME));
-		List<AuthScore> authScores = authDAO.findEventsByTimestamp(timestamp, pageable);
+		if(StringUtils.isEmpty(orderBy)){
+			orderBy = AuthScore.EVENT_SCORE_FIELD_NAME;
+		}
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderBy));
+		List<AuthScore> authScores = authDAO.findEventsByTimestampGtEventScore(timestamp, pageable, minScore);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
 			Map<String, User> userMap = new HashMap<>();
@@ -407,7 +413,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, Date timestamp, int offset, int limit) {
+	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
 		if(timestamp == null){
 			timestamp = vpnDAO.getLastRunDate();
 		}
@@ -419,9 +425,12 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(applicationUserDetails == null || applicationUserDetails.getUserName() == null) {
 			return Collections.emptyList();
 		}
+		if(StringUtils.isEmpty(orderBy)){
+			orderBy = VpnScore.EVENT_SCORE_FIELD_NAME;
+		}
 		String vpnUserNameString = applicationUserDetails.getUserName();
-		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, VpnScore.EVENT_SCORE_FIELD_NAME));
-		List<VpnScore> vpnScores = vpnDAO.findEventsByUsernameAndTimestamp(vpnUserNameString, timestamp, pageable);
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderBy));
+		List<VpnScore> vpnScores = vpnDAO.findEventsByUsernameAndTimestampGtEventScore(vpnUserNameString, timestamp, minScore, pageable);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
 			for(VpnScore vpnScore: vpnScores.subList(offset, vpnScores.size())){
@@ -440,12 +449,15 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 
 	@Override
-	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit) {
+	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
 		if(timestamp == null){
 			timestamp = vpnDAO.getLastRunDate();
 		}
-		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(Direction.DESC, VpnScore.EVENT_SCORE_FIELD_NAME));
-		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestamp(timestamp, pageable);
+		if(StringUtils.isEmpty(orderBy)){
+			orderBy = VpnScore.EVENT_SCORE_FIELD_NAME;
+		}
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderBy));
+		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestampGtEventScore(timestamp, pageable, minScore);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
 			Map<String, User> userMap = new HashMap<>();
