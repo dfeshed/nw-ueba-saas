@@ -45,4 +45,8 @@ public interface UserService {
 	public void recalculateUsersScores();
 
 	public void recalculateTotalScore();
+	
+	public User findByAuthUsername(String username);
+
+	public User findByVpnUsername(String username);
 }

@@ -359,13 +359,13 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				String username = authScore.getUserName().toLowerCase();
 				User user = userMap.get(username);
 				if(user == null){
-					user = userRepository.findByUsername(username);
+					user = userService.findByAuthUsername(username);
 					if(user == null){
 						logger.warn("username ({}) was not found in the user collection", username);
 						continue;
-					} else{
-						userMap.put(username, user);
 					}
+					
+					userMap.put(username, user);
 				}
 				ret.add(createLoginEventScoreInfo(user, authScore));
 			}
@@ -617,7 +617,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		Collections.sort(ebsresult.event_score_list, comparator);
 	}
 	
-	private EBSResult processEbsResults(List<String> keys, List<EventBulkScorer.InputStruct> listResults, int offset, int limit, String timeFieldName, String orderBy, String orderByDirection){
+	private EBSResult processEbsResults(List<String> keys, List<EventBulkScorer.InputStruct> listResults, int offset, int limit, String timeFieldName, List<String> fieldNamesFilter, String orderBy, String orderByDirection){
 		EventBulkScorer ebs = new EventBulkScorer();
 		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
 		
@@ -631,9 +631,13 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		
 		for (EventBulkScorer.EventScoreStore eventScore : ebsresult.event_score_list.subList(offset, toIndex)) {
 			Map<String, Object> eventMap = new HashMap<>();
-			for (int i=0;i<eventScore.event.size();i++) {
+			int i=0;
+			for (;i<keys.size();i++) {
 				eventMap.put(keys.get(i), eventScore.event.get(i));
 				eventMap.put(formatKeyScore(keys.get(i)), eventScore.explain.get(i));
+			}
+			for(String fieldName: fieldNamesFilter){
+				eventMap.put(fieldName, eventScore.event.get(i));
 			}
 			eventMap.put(EVENT_SCORE, (double)Math.round(eventScore.score));
 			eventResultList.add(eventMap);
@@ -645,10 +649,11 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private static final String VPN_DATA_TABLENAME = "vpndata";
 	private static final String VPN_TIME_FIELD = "date_time";
 	
-	public EBSResult getSimpleEBSAlgOnQuery(List<Map<String, Object>> resultsMap, String tableName, String timeFieldName, int offset, int limit, String orderBy, String orderByDirection){
+	public EBSResult getSimpleEBSAlgOnQuery(List<Map<String, Object>> resultsMap, String tableName, String timeFieldName, List<String> fieldNamesFilter, int offset, int limit, String orderBy, String orderByDirection){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
 		Set<String> keySet = resultsMap.get(0).keySet();
+		keySet.removeAll(fieldNamesFilter);
 		List<String> keys = new ArrayList<>(keySet);
 		for (Map<String, Object> map : resultsMap) {
 			if(filterRowResults(map, tableName)){
@@ -658,33 +663,44 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			List<String> workingSet = new ArrayList<String>(keys.size());
 			List<String> allData = new ArrayList<String>(keys.size());
 			for (int i = 0; i < keys.size(); i++) {
-				String keyString = keys.get(i);
-				Object tmp = map.get(keyString);
-				String val = null;
-				if(tmp != null) {
-					val = tmp.toString();
-				} else {
-					logger.warn("no value returned for the column {}", keyString);
-					val ="";
-				}
-				allData.add(val);
-				if(timeFieldName != null && keyString.equals(timeFieldName)){
-					try {
-						val = EBSPigUDF.normalized_date_string(val);
-					} catch (Exception e) {
-						logger.warn("got the following event while trying to normalize date", e);
-					}
-				}
-				workingSet.add(val);
+				String fieldName = keys.get(i);
+				Object tmp = map.get(fieldName);
 				
+				processFieldRow(tmp, fieldName, timeFieldName, workingSet, allData);
 			}
+			
+			for(String fieldName: fieldNamesFilter){
+				processFieldRow(map.get(fieldName), fieldName, timeFieldName, null, allData);
+			}
+			
 			EventBulkScorer.InputStruct inp = new EventBulkScorer.InputStruct();
 			inp.working_set = workingSet;
 			inp.all_data = allData;
 			listResults.add(inp);
 		}
 
-		return processEbsResults(keys, listResults, offset, limit, timeFieldName, orderBy, orderByDirection);
+		return processEbsResults(keys, listResults, offset, limit, timeFieldName, fieldNamesFilter, orderBy, orderByDirection);
+	}
+	
+	private void processFieldRow(Object tmp, String fieldName, String timeFieldName, List<String> workingSet, List<String> allData){
+		String val = null;
+		if(tmp != null) {
+			val = tmp.toString();
+		} else {
+			logger.warn("no value returned for the column {}", fieldName);
+			val ="";
+		}
+		allData.add(val);
+		if(workingSet != null){
+			if(timeFieldName != null && fieldName.equals(timeFieldName)){
+				try {
+					val = EBSPigUDF.normalized_date_string(val);
+				} catch (Exception e) {
+					logger.warn("got the following event while trying to normalize date", e);
+				}
+			}
+			workingSet.add(val);
+		}
 	}
 	
 	@Override
@@ -697,9 +713,11 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(query.contains(WMIEVENTS_TABLE_NAME)){
 			return getEBSAlgOnAuthQuery(resultsMap, offset, limit, orderBy, orderByDirection);
 		} else if(query.contains(VPN_DATA_TABLENAME)){
-			return getSimpleEBSAlgOnQuery(resultsMap, VPN_DATA_TABLENAME, VPN_TIME_FIELD, offset, limit, orderBy, orderByDirection);
+			List<String> fieldNamesFilter = new ArrayList<>();
+			fieldNamesFilter.add(VpnScore.LOCAL_IP_FIELD_NAME);
+			return getSimpleEBSAlgOnQuery(resultsMap, VPN_DATA_TABLENAME, VPN_TIME_FIELD, fieldNamesFilter, offset, limit, orderBy, orderByDirection);
 		} else{
-			return getSimpleEBSAlgOnQuery(resultsMap, null, null, offset, limit, orderBy, orderByDirection);
+			return getSimpleEBSAlgOnQuery(resultsMap, null, null,Collections.<String>emptyList(), offset, limit, orderBy, orderByDirection);
 		}
 	}
 	

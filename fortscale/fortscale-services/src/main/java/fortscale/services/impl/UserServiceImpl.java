@@ -94,6 +94,9 @@ public class UserServiceImpl implements UserService{
 	@Value("${vpn.to.ad.username.regex.format:^%s*(?i)}")
 	private String vpnToAdUsernameRegexFormat;
 	
+	@Value("${auth.to.ad.username.regex.format:^%s*(?i)}")
+	private String authToAdUsernameRegexFormat;
+	
 	
 	
 
@@ -533,9 +536,10 @@ public class UserServiceImpl implements UserService{
 		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		List<User> users = new ArrayList<>();
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
-			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
+			String username = authScore.getUserName();
+			User user = findByAuthUsername(username);
 			if(user == null){
-				logger.error("no user was found with the username {}", authScore.getUserName());
+				logger.error("no user was found with the username {}", username);
 				continue;
 			}
 			user = updateUserScore(user, lastRun, Classifier.auth.getId(), authScore.getGlobalScore(), avg, false, false);
@@ -544,6 +548,40 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		updateUserTotalScore(users, true, lastRun);		
+	}
+	
+	@Override
+	public User findByAuthUsername(String username){
+		return findByUsername(generateUsernameRegexesByAuthUsername(username), username);
+	}
+	
+	
+	public User findByUsername(List<String> regexes, String username){
+		for(String regex: regexes){
+			List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
+			if(tmpUsers == null || tmpUsers.size() == 1){
+				continue;
+			}
+			if(tmpUsers.size() > 1){
+				String tmpUsername = String.format("%s@", username);
+				for(User tmpUser: tmpUsers){
+					if(tmpUser.getUsername().startsWith(tmpUsername)){
+						return tmpUser;
+					}
+				}
+			}else{
+				return tmpUsers.get(0);
+			}
+		}
+		return null;
+	}
+	
+	private List<String> generateUsernameRegexesByAuthUsername(String authUsername){
+		List<String> regexes = new ArrayList<>();
+		for(String regexFormat: authToAdUsernameRegexFormat.split(REGEX_SEPERATOR)){
+			regexes.add(String.format(regexFormat, authUsername));
+		}
+		return regexes;
 	}
 	
 	@Override
@@ -556,19 +594,12 @@ public class UserServiceImpl implements UserService{
 		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
-			String userName = vpnScore.getUserName();
-			User user = userRepository.findByApplicationUserName(UserApplication.vpn.getId(), userName);
+			String username = vpnScore.getUserName();
+			User user = userRepository.findByApplicationUserName(UserApplication.vpn.getId(), username);
 			if(user == null){
-				for(String regex: generateUsernameRegexesByVpnUsername(userName)){
-					List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
-					if(tmpUsers == null || tmpUsers.size() == 0 || tmpUsers.size() > 1){
-						continue;
-					}
-					user = tmpUsers.get(0);
-					createApplicationUserDetailsIfNotExist(user, new ApplicationUserDetails(UserApplication.vpn.getId(), userName));
-				}
+				user = findByVpnUsername(username);
 				if(user == null){
-					logger.info("no user was found with vpn username ({})", userName);
+					logger.info("no user was found with vpn username ({})", username);
 					continue;
 				}
 			}
@@ -580,7 +611,10 @@ public class UserServiceImpl implements UserService{
 		updateUserTotalScore(users, true, lastRun);
 	}
 	
-	
+	@Override
+	public User findByVpnUsername(String username){
+		return findByUsername(generateUsernameRegexesByVpnUsername(username), username);
+	}
 	
 	private List<String> generateUsernameRegexesByVpnUsername(String vpnUsername){
 		List<String> regexes = new ArrayList<>();

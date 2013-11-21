@@ -1,24 +1,19 @@
 package fortscale.services.fe.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.IFeature;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.UserService;
-import fortscale.services.fe.Classifier;
 import fortscale.services.fe.FeService;
 import fortscale.services.impl.ImpalaWriterFactory;
 import fortscale.utils.logging.Logger;
