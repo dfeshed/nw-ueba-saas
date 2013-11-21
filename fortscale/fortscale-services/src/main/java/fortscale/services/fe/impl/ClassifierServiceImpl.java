@@ -6,11 +6,15 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,6 +34,7 @@ import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.ebs.EBSPigUDF;
 import fortscale.ebs.EventBulkScorer;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
@@ -46,11 +51,14 @@ import fortscale.services.fe.ISuspiciousUserInfo;
 import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.services.impl.SeverityElement;
 import fortscale.utils.impala.ImpalaPageRequest;
+import fortscale.utils.logging.Logger;
 
 @Service("classifierService")
-public class ClassifierServiceImpl implements ClassifierService {
+public class ClassifierServiceImpl implements ClassifierService, InitializingBean{
+	private static Logger logger = Logger.getLogger(ClassifierServiceImpl.class);
 	
 	private static final String EVENT_SCORE = "eventScore";
+	
 	
 	
 	@Autowired
@@ -76,8 +84,28 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	@Autowired
 	private ConfigurationService configurationService;
+	
+	@Value("${login.service.name.regex:}")
+	private String loginServiceNameRegex;
+	
+	@Value("${login.account.name.regex:}")
+	private String loginAccountNameRegex;
+	
+	private Map<String, Map<String, String>> rowFieldRegexFilter;
+	
+	
+	
+	
 
 	
+	public void setLoginServiceNameRegex(String loginServiceNameRegex) {
+		this.loginServiceNameRegex = loginServiceNameRegex;
+	}
+
+	public void setLoginAccountNameRegex(String loginAccountNameRegex) {
+		this.loginAccountNameRegex = loginAccountNameRegex;
+	}
+
 	public Classifier getClassifier(String classifierId){
 		return configurationService.getClassifiersMap().get(classifierId);
 	}
@@ -189,7 +217,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		for(VpnScore vpnScore: vpnScores){
 			User user = userRepository.findByUsername(vpnScore.getUserName().toLowerCase());
 			if(user == null){
-				//TODO: error message.
+				logger.error("user with vpn username ({}) was not found", vpnScore.getUserName());
 				continue;
 			}
 			ret.add(createSuspiciousUserInfo(classifierId, user));
@@ -205,7 +233,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 		for(AuthScore authScore: authScores){
 			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
 			if(user == null){
-				//TODO: error message.
+				logger.error("user with username ({}) was not found", authScore.getUserName());
 				continue;
 			}
 			ret.add(createSuspiciousUserInfo(classifierId, user));
@@ -329,7 +357,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 				if(user == null){
 					user = userRepository.findByUsername(username);
 					if(user == null){
-						//TODO: warn message
+						logger.warn("username ({}) was not found in the user collection", username);
 						continue;
 					} else{
 						userMap.put(username, user);
@@ -423,7 +451,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 				if(user == null){
 					user = userRepository.findByApplicationUserName(userService.createApplicationUserDetails(UserApplication.vpn, username));
 					if(user == null){
-						//TODO: warn message
+						logger.warn("vpn username ({}) was not found in the user collection", username);
 						continue;
 					} else{
 						userMap.put(username, user);
@@ -448,19 +476,15 @@ public class ClassifierServiceImpl implements ClassifierService {
 	
 	
 
-	
+	private static final String WMIEVENTS_TIME_FIELD = "timegenerated";
 	private static final String MACHINE_NAME_FIELD = "machine_name";
 	private static final String CLIENT_ADDRESSE_FIELD = "client_address";
 	private static final String SERVICE_NAME_FIELD = "service_name";
+	private static final String ACCOUNT_NAME_FIELD = "account_name";
 	private static final String WMIEVENTS_TABLE_NAME = "wmievents4769";
 	
 	@Override
-	public EBSResult getEBSAlgOnAuthQuery(String query, int offset, int limit){
-		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
-		if(resultsMap.size() == 0) {
-			return new EBSResult(null, null,0, 0);
-		}
-
+	public EBSResult getEBSAlgOnAuthQuery(List<Map<String, Object>> resultsMap, int offset, int limit){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
 		Set<String> keySet = resultsMap.get(0).keySet();
@@ -468,10 +492,10 @@ public class ClassifierServiceImpl implements ClassifierService {
 		keySet.remove(CLIENT_ADDRESSE_FIELD);
 		List<String> keys = new ArrayList<>(keySet);
 		for (Map<String, Object> map : resultsMap) {
-			if(map.get(SERVICE_NAME_FIELD) != null && 
-					( ((String)map.get(SERVICE_NAME_FIELD)).equals("krbtgt") || ((String)map.get(SERVICE_NAME_FIELD)).contains("FS-DC"))){
+			if(filterRowResults(map, WMIEVENTS_TABLE_NAME)){
 				continue;
 			}
+
 			List<String> workingSet = new ArrayList<String>(keys.size() + 1);
 			List<String> allData = new ArrayList<String>(keys.size() + 2);
 			String machineName = map.get(MACHINE_NAME_FIELD) != null ? map.get(MACHINE_NAME_FIELD).toString() : "";
@@ -490,11 +514,19 @@ public class ClassifierServiceImpl implements ClassifierService {
 				if(tmp != null) {
 					val = tmp.toString();
 				} else {
-					//TODO: error log.
+					logger.warn("no value returned for the column {}", keyString);
 					val ="";
 				}
-				workingSet.add(val);
 				allData.add(val);
+				if(keyString.equals(WMIEVENTS_TIME_FIELD)){
+					try {
+						val = EBSPigUDF.normalized_date_string(val);
+					} catch (Exception e) {
+						logger.warn("got the following event while trying to normalize date", e);
+					}
+				}
+				workingSet.add(val);
+				
 			}
 			EventBulkScorer.InputStruct inp = new EventBulkScorer.InputStruct();
 			inp.working_set = workingSet;
@@ -504,6 +536,7 @@ public class ClassifierServiceImpl implements ClassifierService {
 
 		EventBulkScorer ebs = new EventBulkScorer();
 		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
+		
 		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
 		List<Map<String, Object>> eventResultList = new ArrayList<>();
 		int toIndex = offset + limit;
@@ -524,22 +557,43 @@ public class ClassifierServiceImpl implements ClassifierService {
 		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
 	}
 	
+	private boolean filterRowResults(Map<String, Object> rowVals, String tableName){
+		if(tableName == null){
+			return false;
+		}
+		boolean isFilter = false;
+		Map<String, String> filters = rowFieldRegexFilter.get(tableName);
+		if(filters != null){
+			
+			for(Entry<String, String> entry: filters.entrySet()){
+				String val = (String)rowVals.get(entry.getKey());
+				if(val != null && val.matches(entry.getValue())){
+					logger.debug("filtering the event with {} ({}) by regex ({})", entry.getKey(), val, entry.getValue());
+					isFilter = true;
+					break;
+				}
+			}
+		}
+		
+		return isFilter;
+	}
+	
+	private static final String VPN_DATA_TABLENAME = "vpndata";
+	private static final String VPN_TIME_FIELD = "date_time";
+	
 	@Override
-	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit){
-		if(query.contains(WMIEVENTS_TABLE_NAME)){
-			return getEBSAlgOnAuthQuery(query, offset, limit);
-		}
-		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
-		if(resultsMap.size() == 0) {
-			return new EBSResult(null, null,0, 0);
-		}
-
+	public EBSResult getSimpleEBSAlgOnQuery(List<Map<String, Object>> resultsMap, String tableName, String timeFieldName, int offset, int limit){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
 		Set<String> keySet = resultsMap.get(0).keySet();
 		List<String> keys = new ArrayList<>(keySet);
 		for (Map<String, Object> map : resultsMap) {
+			if(filterRowResults(map, tableName)){
+				continue;
+			}
+
 			List<String> workingSet = new ArrayList<String>(keys.size());
+			List<String> allData = new ArrayList<String>(keys.size());
 			for (int i = 0; i < keys.size(); i++) {
 				String keyString = keys.get(i);
 				Object tmp = map.get(keyString);
@@ -547,25 +601,36 @@ public class ClassifierServiceImpl implements ClassifierService {
 				if(tmp != null) {
 					val = tmp.toString();
 				} else {
-					//TODO: error log.
+					logger.warn("no value returned for the column {}", keyString);
 					val ="";
 				}
+				allData.add(val);
+				if(timeFieldName != null && keyString.equals(timeFieldName)){
+					try {
+						val = EBSPigUDF.normalized_date_string(val);
+					} catch (Exception e) {
+						logger.warn("got the following event while trying to normalize date", e);
+					}
+				}
 				workingSet.add(val);
+				
 			}
 			EventBulkScorer.InputStruct inp = new EventBulkScorer.InputStruct();
 			inp.working_set = workingSet;
-			inp.all_data = workingSet;
+			inp.all_data = allData;
 			listResults.add(inp);
 		}
 
 		EventBulkScorer ebs = new EventBulkScorer();
 		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
+		
 		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
 		List<Map<String, Object>> eventResultList = new ArrayList<>();
 		int toIndex = offset + limit;
 		if(toIndex > ebsresult.event_score_list.size()) {
 			toIndex = ebsresult.event_score_list.size();
 		}
+
 		for (EventBulkScorer.EventScoreStore eventScore : ebsresult.event_score_list.subList(offset, toIndex)) {
 			Map<String, Object> eventMap = new HashMap<>();
 			for (int i=0;i<eventScore.event.size();i++) {
@@ -576,6 +641,22 @@ public class ClassifierServiceImpl implements ClassifierService {
 		}
 		
 		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
+	}
+	
+	@Override
+	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit){
+		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
+		if(resultsMap.size() == 0) {
+			return new EBSResult(null, null,0, 0);
+		}
+		
+		if(query.contains(WMIEVENTS_TABLE_NAME)){
+			return getEBSAlgOnAuthQuery(resultsMap, offset, limit);
+		} else if(query.contains(VPN_DATA_TABLENAME)){
+			return getSimpleEBSAlgOnQuery(resultsMap, VPN_DATA_TABLENAME, VPN_TIME_FIELD, offset, limit);
+		} else{
+			return getSimpleEBSAlgOnQuery(resultsMap, null, null, offset, limit);
+		}
 	}
 	
 	public static class OrderByEventScoreDesc implements Comparator<EventBulkScorer.EventScoreStore>{
@@ -618,5 +699,46 @@ public class ClassifierServiceImpl implements ClassifierService {
 			return true;//suspiciousUserInfo.getTrend() > 0;
 		}
 		
+	}
+	
+	@Override
+	public String getFilterRegex(String collectionName, String fieldName){
+		if(rowFieldRegexFilter == null){
+			return null;
+		}
+		Map<String, String> collectionFilters = rowFieldRegexFilter.get(collectionName);
+		if(collectionFilters == null){
+			return null;
+		}
+		return collectionFilters.get(fieldName);
+	}
+	
+	@Override
+	public void addFilter(String collectionName, String fieldName, String regex){
+		if(StringUtils.isEmpty(regex)){
+			logger.warn("got an empty regex for collection name ({}) and field name ({}). not executing!!!",collectionName, fieldName);
+			return;
+		}
+		if(rowFieldRegexFilter == null){
+			rowFieldRegexFilter = new HashMap<>();
+		}
+		
+		Map<String, String> collectionFilters = rowFieldRegexFilter.get(collectionName);
+		if(collectionFilters == null){
+			collectionFilters = new HashMap<>();
+			rowFieldRegexFilter.put(collectionName, collectionFilters);
+		}
+		
+		collectionFilters.put(fieldName, regex);
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		if(!StringUtils.isEmpty(loginAccountNameRegex)){
+			addFilter(WMIEVENTS_TABLE_NAME, ACCOUNT_NAME_FIELD, loginAccountNameRegex);
+		}
+		if(!StringUtils.isEmpty(loginServiceNameRegex)){
+			addFilter(WMIEVENTS_TABLE_NAME, SERVICE_NAME_FIELD, loginServiceNameRegex);
+		}
 	}
 }

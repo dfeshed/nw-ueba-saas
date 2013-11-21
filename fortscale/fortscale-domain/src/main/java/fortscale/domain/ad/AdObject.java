@@ -1,5 +1,7 @@
 package fortscale.domain.ad;
 
+import java.util.Date;
+
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
@@ -13,9 +15,12 @@ public class AdObject extends AbstractDocument{
 	@Indexed
 	@Field(dnField)
 	private String distinguishedName;
-	@Indexed(expireAfterSeconds=60*60*24*4)
+	@Indexed()
 	@Field(timestampField)
 	private String timestamp;
+	
+	@Indexed(unique = false, expireAfterSeconds=60*60*24*4)
+	private Date lastModified;
 	
 	public AdObject(String distinguishedName){
 		Assert.hasText(distinguishedName);
@@ -38,4 +43,11 @@ public class AdObject extends AbstractDocument{
 		this.timestamp = timestamp;
 	}
 	
+	public Date getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(Date lastModified) {
+		this.lastModified = lastModified;
+	}
 }

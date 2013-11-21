@@ -58,7 +58,7 @@ public class ApiAnalystController extends BaseController{
 //			try {
 //				mongoUserDetailsService.create(username, password, username, firstName, lastName);
 //			} catch (Exception e) {
-//				//TODO: log
+//				need to log
 //				ret = e.getMessage();
 //			}
 //			

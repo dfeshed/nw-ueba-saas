@@ -3,6 +3,7 @@ package fortscale.domain.fe;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -22,7 +23,11 @@ public class FeatureWriteConverter implements Converter<IFeature, DBObject>{
 		BasicDBObject featureExplanationObject = new BasicDBObject();
 		featureExplanationObject.append(FeatureExplanation.FEATURE_COUNT_FIELD, source.getFeatureExplanation().getFeatureCount());
 		featureExplanationObject.append(FeatureExplanation.FEATURE_DISTRIBUTION_FIELD, source.getFeatureExplanation().getFeatureDistribution());
-		featureExplanationObject.append(FeatureExplanation.FEATURE_REFERENCE_FIELD, source.getFeatureExplanation().getFeatureReference());
+		BasicDBList refs = new BasicDBList();
+		for(String ref: source.getFeatureExplanation().getFeatureReference()){
+			refs.add(ref);
+		}
+		featureExplanationObject.append(FeatureExplanation.FEATURE_REFERENCE_FIELD, refs);
 		
 		featureObject.append(ADFeature.FEATURE_EXPLANATION_FIELD, featureExplanationObject);
 		

@@ -7,8 +7,11 @@ import java.io.IOException;
 import java.util.Date;
 
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.logging.Logger;
 
 public class ImpalaWriter{
+	private static Logger logger = Logger.getLogger(ImpalaWriter.class);
+	
 	private BufferedWriter writer = null;
 	private ImpalaParser impalaParser;
 	
@@ -21,8 +24,7 @@ public class ImpalaWriter{
 		try {
 			writer = new BufferedWriter(new FileWriter(file));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("got and exception while trying to load local file for impala use.", e);
 		}
 	}
 	
@@ -31,8 +33,7 @@ public class ImpalaWriter{
 			try {
 				writer.write(str);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("got and exception while trying to write to local file for impala use.", e);
 			}
 		}
 	}
@@ -42,8 +43,7 @@ public class ImpalaWriter{
 			try {
 				writer.newLine();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("got and exception while trying to write new line to local file for impala use.", e);
 			}
 		}
 	}
@@ -53,8 +53,7 @@ public class ImpalaWriter{
 			try {
 				writer.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("got and exception while trying to close local file for impala use.", e);
 			}
 		}
 		writer = null;

@@ -13,122 +13,122 @@ public class VpnDAOImpl implements VpnDAO {
 
 	@Override
 	public List<VpnScore> findAll(Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public VpnScore findCurrentByUsername(String username) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<VpnScore> findEventsByUsername(String username,
 			Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<VpnScore> findEventsByUsernameAndTimestamp(String username,
 			Date timestamp, Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<VpnScore> findEventsByTimestamp(Date timestamp,
 			Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<VpnScore> findEventsByTimestamp(Date timestamp,
 			Pageable pageable, String additionalWhereQuery) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<VpnScore> findGlobalScoreByUsername(String username, int limit) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<VpnScore> findGlobalScoreByTimestamp(Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public Date getLastRunDate() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public double calculateAvgScoreOfGlobalScore(Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public List<VpnScore> getTopUsersAboveThreshold(Threshold threshold,
 			Date timestamp, int limit) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<VpnScore> findByTimestampAndGlobalScoreBetweenSortByEventScore(
 			Date timestamp, int lowestVal, int upperVal, int limit) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<VpnScore> getTopEventsAboveThreshold(Threshold threshold,
 			Date timestamp, int limit) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Long getLastRuntime() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<Long> getDistinctRuntime() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public int countNumOfUsers(Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public int countNumOfEvents(Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public int countNumOfEventsByUser(Date timestamp, String userId) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 

@@ -24,7 +24,7 @@ public class ADFeatureExtractorTest {
 		adUser = new AdUser("CN=John Doe,OU=Company-Users,DC=Company,DC=dom");
 		adUser.setAccountExpires("0");
 		adUser.setBadPasswordTime("2013/08/25T08:35:47");
-		adUser.setBadPwdCount("0");
+		adUser.setBadPwdCount(0);
 		adUser.setCn("John Doe");
 		adUser.setDisplayName("John Doe");
 		adUser.setFirstname("John");
@@ -32,14 +32,14 @@ public class ADFeatureExtractorTest {
 		adUser.setLastLogon("2013/08/28T17:40:57");
 		adUser.setLastname("Doe");
 		adUser.setLockoutTime("0");
-		adUser.setLogonCount("606");
+		adUser.setLogonCount(606);
 		adUser.setLogonHours("////////////////////////////");
 		adUser.setManager("CN=Manager,OU=Company-Users,DC=Company,DC=dom");
 		adUser.setMemberOf("CN=VPN-Users,OU=Company-Users,DC=Company,DC=dom");
-		adUser.setPrimaryGroupID("513");
+		adUser.setPrimaryGroupID(513);
 		adUser.setPwdLastSet("2013/08/18T09:36:23");
-		adUser.setsAMAccountType("805306368");
-		adUser.setUserAccountControl("512");
+		adUser.setsAMAccountType(805306368L);
+		adUser.setUserAccountControl(512);
 		adUser.setUserParameters("bTogICAgICAgICAgICAgICAgICAgIGQJICAgICAgICAgICAgICAgICAgICAgICAg");
 		adUser.setUserPrincipalName("john_d@company.dom");
 		adUser.setWhenChanged("2013/08/19T14:19:16");

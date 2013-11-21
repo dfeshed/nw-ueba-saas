@@ -213,7 +213,7 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
         if (!WebUtils.isIncludeRequest(webRequest.getRequest())) {
             webRequest.getResponse().setStatus(error.getStatus().value());
         }
-        //TODO support response.sendError ?
+        //support response.sendError ?
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes", "resource" })

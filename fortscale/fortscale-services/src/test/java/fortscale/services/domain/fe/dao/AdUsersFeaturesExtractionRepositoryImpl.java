@@ -25,13 +25,13 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 
 	@Override
 	public List<AdUserFeaturesExtraction> findAll(Sort sort) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Page<AdUserFeaturesExtraction> findAll(Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -50,73 +50,73 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 	@Override
 	public <S extends AdUserFeaturesExtraction> List<S> save(
 			Iterable<S> entities) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public AdUserFeaturesExtraction findOne(String id) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public boolean exists(String id) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	@Override
 	public List<AdUserFeaturesExtraction> findAll() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Iterable<AdUserFeaturesExtraction> findAll(Iterable<String> ids) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public long count() {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public void delete(String id) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void delete(AdUserFeaturesExtraction entity) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void delete(Iterable<? extends AdUserFeaturesExtraction> entities) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void deleteAll() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void saveMap(AdUserFeaturesExtraction adUsersFeaturesExtraction) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public Double calculateAvgScore(String classifierId, Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -147,60 +147,67 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 
 	@Override
 	public Date getLatestTimeStamp() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AdUserFeaturesExtraction> findByClassifierIdAndTimestamp(
 			String classifierId, Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AdUserFeaturesExtraction> findByClassifierIdAndUserId(
 			String classifierId, String userId, Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public AdUserFeaturesExtraction findClassifierIdAndByUserIdAndTimestamp(
 			String classifierId, String userId, Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public AdUserFeaturesExtraction findClassifierIdAndByUserIdAndTimestampepoch(
 			String classifierId, String userId, Long timestampepoch) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AdUserFeaturesExtraction> findByUserId(String userId,
 			Pageable pageable) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<AdUserFeaturesExtraction> findByUserId(String userId) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public AdUserFeaturesExtraction getClassifierIdAndByUserIdAndTimestamp(
 			String classifierId, String userId, Date timestamp) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public List<Date> getDistinctRuntime(String classifierId) {
+		
+		return null;
+	}
+
+	@Override
+	public List<AdUserFeaturesExtraction> findByLastModifiedExists(
+			boolean exists) {
 		// TODO Auto-generated method stub
 		return null;
 	}

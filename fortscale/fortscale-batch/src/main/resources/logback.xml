@@ -42,27 +42,27 @@
 	</root>
 	
 	<!-- 3rdparty Loggers -->
-	<logger name="org.springframework.core" additivity="false" level="info">
+	<logger name="org.springframework.core" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
 	</logger>
 	
-	<logger name="org.springframework.data" additivity="false" level="info">
+	<logger name="org.springframework.data" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
 	</logger>
 	
-	<logger name="org.springframework.beans" additivity="false" level="info">
+	<logger name="org.springframework.beans" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
 	</logger>
 	
-	<logger name="org.springframework.context" additivity="false" level="info">
+	<logger name="org.springframework.context" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
 	</logger>
 
-	<logger name="org.springframework.web" additivity="false" level="info">
+	<logger name="org.springframework.web" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
 	</logger>
 
-	<logger name="org.apache.hadoop" additivity="false" level="info">
+	<logger name="org.apache.hadoop" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
 	</logger>
 	<logger name="com.cloudera.cdk.morphline" additivity="false" level="warn">

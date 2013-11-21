@@ -96,7 +96,6 @@ public class AdUserRepositoryTest extends AbstractTest{
 //		for(AdUser adUser: adUsersAttrValsList){
 //			User user = userRepository.findByAdDn(adUser.getDistinguishedName());
 //			if(user == null){
-//				//TODO: WARNING
 //				continue;
 //			}
 //			ret.put(user.getId().toString(), adUser.getAttrVals());

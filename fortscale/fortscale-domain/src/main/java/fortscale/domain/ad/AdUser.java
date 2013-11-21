@@ -25,20 +25,17 @@ public class AdUser extends AdObject{
 	@Field("mail")
 	private String emailAddress  = "";
 	
-	//TODO: Remove this field. This is used for test only.
-	private String objectClass = "";
-	
 	private String isCriticalSystemObject = "";
 	
-	private String badPwdCount = "";
+	private Integer badPwdCount;
 	
-	private String logonCount = "";
+	private Integer logonCount;
 	
-	private String primaryGroupID = "";
+	private Integer primaryGroupID;
 	
-	private String sAMAccountType = "";
+	private Long sAMAccountType;
 	
-	private String userAccountControl = "";
+	private Integer userAccountControl;
 	
 	private String accountExpires = "";
 	
@@ -126,18 +123,12 @@ public class AdUser extends AdObject{
 	
 	private String sAMAccountName = "";
 	
+	private Long timestampepoch;
+	
 	// Contains the users's photo in Base64 format 
 	private String thumbnailPhoto = "";
 	
 	
-	public String getObjectClass() {
-		return objectClass;
-	}
-
-	public void setObjectClass(String objectClass) {
-		this.objectClass = objectClass;
-	}
-
 	public String getWhenChanged() {
 		return whenChanged;
 	}
@@ -178,43 +169,43 @@ public class AdUser extends AdObject{
 		this.isCriticalSystemObject = isCriticalSystemObject;
 	}
 
-	public String getBadPwdCount() {
+	public Integer getBadPwdCount() {
 		return badPwdCount;
 	}
 
-	public void setBadPwdCount(String badPwdCount) {
+	public void setBadPwdCount(Integer badPwdCount) {
 		this.badPwdCount = badPwdCount;
 	}
 
-	public String getLogonCount() {
+	public Integer getLogonCount() {
 		return logonCount;
 	}
 
-	public void setLogonCount(String logonCount) {
+	public void setLogonCount(Integer logonCount) {
 		this.logonCount = logonCount;
 	}
 
-	public String getPrimaryGroupID() {
+	public Integer getPrimaryGroupID() {
 		return primaryGroupID;
 	}
 
-	public void setPrimaryGroupID(String primaryGroupID) {
+	public void setPrimaryGroupID(Integer primaryGroupID) {
 		this.primaryGroupID = primaryGroupID;
 	}
 
-	public String getsAMAccountType() {
+	public Long getsAMAccountType() {
 		return sAMAccountType;
 	}
 
-	public void setsAMAccountType(String sAMAccountType) {
+	public void setsAMAccountType(Long sAMAccountType) {
 		this.sAMAccountType = sAMAccountType;
 	}
 
-	public String getUserAccountControl() {
+	public Integer getUserAccountControl() {
 		return userAccountControl;
 	}
 
-	public void setUserAccountControl(String userAccountControl) {
+	public void setUserAccountControl(Integer userAccountControl) {
 		this.userAccountControl = userAccountControl;
 	}
 
@@ -552,7 +543,7 @@ public class AdUser extends AdObject{
 		this.attrVals.put("accountExpires",accountExpires);
 		this.attrVals.put("assistant",assistant);
 		this.attrVals.put("badPasswordTime",badPasswordTime);
-		this.attrVals.put("badPwdCount",badPwdCount);
+		this.attrVals.put("badPwdCount",String.valueOf(badPwdCount));
 		this.attrVals.put("c",c);
 		this.attrVals.put("cn",cn);
 		this.attrVals.put("company",company);
@@ -576,7 +567,7 @@ public class AdUser extends AdObject{
 		this.attrVals.put("lastname",lastname);
 		this.attrVals.put("lastname ",lastname );
 		this.attrVals.put("lockoutTime",lockoutTime);
-		this.attrVals.put("logonCount",logonCount);
+		this.attrVals.put("logonCount",String.valueOf(logonCount));
 		this.attrVals.put("logonHours",logonHours);
 		this.attrVals.put("managedObjects",managedObjects);
 		this.attrVals.put("manager",manager);
@@ -589,15 +580,15 @@ public class AdUser extends AdObject{
 		this.attrVals.put("otherMobile",otherMobile);
 		this.attrVals.put("otherTelephone",otherTelephone);
 		this.attrVals.put("personalTitle",personalTitle);
-		this.attrVals.put("primaryGroupID",primaryGroupID);
+		this.attrVals.put("primaryGroupID",String.valueOf(primaryGroupID));
 		this.attrVals.put("pwdLastSet",pwdLastSet);
 		this.attrVals.put("roomNumber",roomNumber);
-		this.attrVals.put("sAMAccountType",sAMAccountType);
+		this.attrVals.put("sAMAccountType",String.valueOf(sAMAccountType));
 		this.attrVals.put("secretary",secretary);
 		this.attrVals.put("streetAddress",streetAddress);
 		this.attrVals.put("telephoneNumber",telephoneNumber);
 		this.attrVals.put("title",title);
-		this.attrVals.put("userAccountControl",userAccountControl);
+		this.attrVals.put("userAccountControl",String.valueOf(userAccountControl));
 		this.attrVals.put("userParameters",userParameters);
 		this.attrVals.put("userPrincipalName",userPrincipalName);
 		this.attrVals.put("userWorkstations",userWorkstations);
@@ -610,7 +601,7 @@ public class AdUser extends AdObject{
 		this.setAccountExpires(attrVals.get("accountExpires"));
 		this.setAssistant(attrVals.get("assistant"));
 		this.setBadPasswordTime(attrVals.get("badPasswordTime"));
-		this.setBadPwdCount(attrVals.get("badPwdCount"));
+		this.setBadPwdCount(Integer.parseInt(attrVals.get("badPwdCount")));
 		this.setC(attrVals.get("c"));
 		this.setCn(attrVals.get("cn"));
 		this.setCompany(attrVals.get("company"));
@@ -634,7 +625,7 @@ public class AdUser extends AdObject{
 		this.setLastname(attrVals.get("lastname"));
 		this.setLastname (attrVals.get("lastname "));
 		this.setLockoutTime(attrVals.get("lockoutTime"));
-		this.setLogonCount(attrVals.get("logonCount"));
+		this.setLogonCount(Integer.parseInt(attrVals.get("logonCount")));
 		this.setLogonHours(attrVals.get("logonHours"));
 		this.setManagedObjects(attrVals.get("managedObjects"));
 		this.setManager(attrVals.get("manager"));
@@ -647,15 +638,15 @@ public class AdUser extends AdObject{
 		this.setOtherMobile(attrVals.get("otherMobile"));
 		this.setOtherTelephone(attrVals.get("otherTelephone"));
 		this.setPersonalTitle(attrVals.get("personalTitle"));
-		this.setPrimaryGroupID(attrVals.get("primaryGroupID"));
+		this.setPrimaryGroupID(Integer.parseInt(attrVals.get("primaryGroupID")));
 		this.setPwdLastSet(attrVals.get("pwdLastSet"));
 		this.setRoomNumber(attrVals.get("roomNumber"));
-		this.setsAMAccountType(attrVals.get("sAMAccountType"));
+		this.setsAMAccountType(Long.parseLong(attrVals.get("sAMAccountType")));
 		this.setSecretary(attrVals.get("secretary"));
 		this.setStreetAddress(attrVals.get("streetAddress"));
 		this.setTelephoneNumber(attrVals.get("telephoneNumber"));
 		this.setTitle(attrVals.get("title"));
-		this.setUserAccountControl(attrVals.get("userAccountControl"));
+		this.setUserAccountControl(Integer.parseInt(attrVals.get("userAccountControl")));
 		this.setUserParameters(attrVals.get("userParameters"));
 		this.setUserPrincipalName(attrVals.get("userPrincipalName"));
 		this.setUserWorkstations(attrVals.get("userWorkstations"));
@@ -707,5 +698,13 @@ public class AdUser extends AdObject{
 
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
+	}
+
+	public Long getTimestampepoch() {
+		return timestampepoch;
+	}
+
+	public void setTimestampepoch(Long timestampepoch) {
+		this.timestampepoch = timestampepoch;
 	}
 }

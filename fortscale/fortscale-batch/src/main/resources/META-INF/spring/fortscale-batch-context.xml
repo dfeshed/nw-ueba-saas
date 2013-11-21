@@ -33,4 +33,11 @@
     	<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
 
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="batchCalls" expression="within(fortscale.batch.*)"/>
+		<aop:aspect ref="loggingAspect">
+			<aop:before method="logBeforeCall" pointcut-ref="batchCalls"/>
+			<aop:after-throwing method="logException" pointcut-ref="batchCalls" throwing="exception"/>
+		</aop:aspect>
+	</aop:config>
 </beans>

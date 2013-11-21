@@ -23,12 +23,14 @@ import fortscale.domain.analyst.dao.AnalystAuthRepository;
 import fortscale.domain.analyst.dao.AnalystRepository;
 import fortscale.domain.core.EmailAddress;
 import fortscale.services.exceptions.UserAlreadyExistException;
+import fortscale.utils.logging.Logger;
 
 
 
 
 @Service
 public class MongoUserDetailsService implements UserDetailsService, InitializingBean{
+	private static Logger logger = Logger.getLogger(MongoUserDetailsService.class);
 	
 	@Autowired
 	private AnalystAuthRepository analystAuthRepository;
@@ -185,7 +187,7 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
 			try {
 				create(firstAdminUserName, firstAdminPassword, firstAdminUserName, firstAdminFirstName, firstAdminLastName);
 			} catch (Exception e) {
-				// TODO: handle exception
+				logger.error("got the following error while trying to add the first analyst record.", e);
 			}
 		}
 	}
