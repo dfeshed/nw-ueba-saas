@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -533,6 +532,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			inp.all_data = allData;
 			listResults.add(inp);
 		}
+		
+		keys.add(0, CLIENT_ADDRESSE_FIELD);
+		keys.add(0, MACHINE_NAME_FIELD);
 
 		EventBulkScorer ebs = new EventBulkScorer();
 		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
@@ -543,18 +545,30 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(toIndex > ebsresult.event_score_list.size()) {
 			toIndex = ebsresult.event_score_list.size();
 		}
-		keys.add(0, CLIENT_ADDRESSE_FIELD);
-		keys.add(0, MACHINE_NAME_FIELD);
+		
 		for (EventBulkScorer.EventScoreStore eventScore : ebsresult.event_score_list.subList(offset, toIndex)) {
 			Map<String, Object> eventMap = new HashMap<>();
-			for (int i=0;i<eventScore.event.size();i++) {
+			String val = eventScore.event.get(0);
+			eventMap.put(keys.get(0), val);
+			eventMap.put(keys.get(1), eventScore.event.get(1));
+			if(StringUtils.isEmpty(val)){
+				eventMap.put(formatKeyScore(keys.get(1)), eventScore.explain.get(1));
+			} else{
+				eventMap.put(formatKeyScore(keys.get(0)), eventScore.explain.get(0));
+			}
+			for (int i=2;i<eventScore.event.size();i++) {
 				eventMap.put(keys.get(i), eventScore.event.get(i));
+				eventMap.put(formatKeyScore(keys.get(i)), eventScore.explain.get(i-1));
 			}
 			eventMap.put(EVENT_SCORE, (double)Math.round(eventScore.score));
 			eventResultList.add(eventMap);
 		}
 		
 		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
+	}
+	
+	private String formatKeyScore(String key){
+		return String.format("%sscore",key);
 	}
 	
 	private boolean filterRowResults(Map<String, Object> rowVals, String tableName){
@@ -576,6 +590,30 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 		
 		return isFilter;
+	}
+	
+	private EBSResult processEbsResults(List<String> keys, List<EventBulkScorer.InputStruct> listResults, int offset, int limit){
+		EventBulkScorer ebs = new EventBulkScorer();
+		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
+		
+		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
+		List<Map<String, Object>> eventResultList = new ArrayList<>();
+		int toIndex = offset + limit;
+		if(toIndex > ebsresult.event_score_list.size()) {
+			toIndex = ebsresult.event_score_list.size();
+		}
+		
+		for (EventBulkScorer.EventScoreStore eventScore : ebsresult.event_score_list.subList(offset, toIndex)) {
+			Map<String, Object> eventMap = new HashMap<>();
+			for (int i=0;i<eventScore.event.size();i++) {
+				eventMap.put(keys.get(i), eventScore.event.get(i));
+				eventMap.put(formatKeyScore(keys.get(i)), eventScore.explain.get(i));
+			}
+			eventMap.put(EVENT_SCORE, (double)Math.round(eventScore.score));
+			eventResultList.add(eventMap);
+		}
+		
+		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
 	}
 	
 	private static final String VPN_DATA_TABLENAME = "vpndata";
@@ -621,26 +659,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			listResults.add(inp);
 		}
 
-		EventBulkScorer ebs = new EventBulkScorer();
-		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
-		
-		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
-		List<Map<String, Object>> eventResultList = new ArrayList<>();
-		int toIndex = offset + limit;
-		if(toIndex > ebsresult.event_score_list.size()) {
-			toIndex = ebsresult.event_score_list.size();
-		}
-
-		for (EventBulkScorer.EventScoreStore eventScore : ebsresult.event_score_list.subList(offset, toIndex)) {
-			Map<String, Object> eventMap = new HashMap<>();
-			for (int i=0;i<eventScore.event.size();i++) {
-				eventMap.put(keys.get(i), eventScore.event.get(i));
-			}
-			eventMap.put(EVENT_SCORE, (double)Math.round(eventScore.score));
-			eventResultList.add(eventMap);
-		}
-		
-		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
+		return processEbsResults(keys, listResults, offset, limit);
 	}
 	
 	@Override
