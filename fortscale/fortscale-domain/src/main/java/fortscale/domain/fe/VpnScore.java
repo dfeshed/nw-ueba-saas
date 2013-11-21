@@ -22,7 +22,6 @@ public class VpnScore {
 	public static final String EVENT_TIME_SCORE_FIELD_NAME = "date_timescore";
 	public static final String USERNAME_SCORE_FIELD_NAME = "usernamescore";
 	public static final String SOURCE_IP_SCORE_FIELD_NAME = "source_ipscore";
-	public static final String LOCAL_IP_SCORE_FIELD_NAME = "local_ipscore";
 	public static final String STATUS_SCORE_FIELD_NAME = "statusscore";
 	
 	public static final String EVENT_SCORE_FIELD_NAME = "eventscore";
@@ -44,7 +43,6 @@ public class VpnScore {
 	private double eventTimeScore;
 	private double userNameScore;
 	private double sourceIpScore;
-	private double localIpScore;
 	private double statusScore;
 	
 	private double eventScore;
@@ -120,12 +118,6 @@ public class VpnScore {
 	}
 	public void setSourceIpScore(double sourceIpScore) {
 		this.sourceIpScore = sourceIpScore;
-	}
-	public double getLocalIpScore() {
-		return localIpScore;
-	}
-	public void setLocalIpScore(double localIpScore) {
-		this.localIpScore = localIpScore;
 	}
 	public double getStatusScore() {
 		return statusScore;

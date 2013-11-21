@@ -91,11 +91,6 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	}
 
 	@Override
-	public double getLocalIpScore() {
-		return vpnScore.getLocalIpScore();
-	}
-
-	@Override
 	public double getStatusScore() {
 		return vpnScore.getStatusScore();
 	}

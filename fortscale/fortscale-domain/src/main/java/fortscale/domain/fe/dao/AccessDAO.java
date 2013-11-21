@@ -277,7 +277,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 								.getString(getEventScoreFieldName())),
 						parseTimestampDate(rs.getLong(getTimestampFieldName())));
 			} catch (NumberFormatException e) {
-				throw new SQLException(e);
+				throw new SQLException(e.getMessage());
 			}
 
 			return ret;

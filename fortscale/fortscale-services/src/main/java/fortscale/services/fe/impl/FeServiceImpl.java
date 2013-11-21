@@ -73,35 +73,35 @@ public class FeServiceImpl implements FeService {
 	@Override
 	public void setAdUsersScores(Map<String, Double> userScoresMap,
 			Map<String, Collection<IFeature>> userFeaturesScoresMap, Date timestamp) {
-		if(userScoresMap.size() == 0){
-			logger.warn("the collection is empty");
-			return;
-		}
-				
-		
-		double avgScore = 0;
-		for(Double score: userScoresMap.values()){
-			avgScore += score;
-		}
-		avgScore = avgScore/userScoresMap.size();
-		
-		
-		for(Entry<String, Double> ent: userScoresMap.entrySet()){
-			User user = userRepository.findByAdDn(ent.getKey());
-			if(user == null){
-				logger.error("user with distinuished name ({}) was not found", ent.getKey());
-				continue;
-			}
-			//inserting new ml scores.
-			AdUserFeaturesExtraction adUserFeaturesExtraction = new AdUserFeaturesExtraction(Classifier.ad.getId(), user.getId(), ent.getKey());
-			adUserFeaturesExtraction.setScore(ent.getValue());
-			adUserFeaturesExtraction.setTimestamp(timestamp);
-			adUserFeaturesExtraction.setAttributes(new ArrayList<>(userFeaturesScoresMap.get(ent.getKey())));
-			adUsersFeaturesExtractionRepository.saveMap(adUserFeaturesExtraction);
-			
-			//updating the user with the new score.
-			userService.updateUserScore(user, timestamp, Classifier.ad.getId(), ent.getValue(), avgScore, true, true);
-		}
+//		if(userScoresMap.size() == 0){
+//			logger.warn("the collection is empty");
+//			return;
+//		}
+//				
+//		
+//		double avgScore = 0;
+//		for(Double score: userScoresMap.values()){
+//			avgScore += score;
+//		}
+//		avgScore = avgScore/userScoresMap.size();
+//		
+//		
+//		for(Entry<String, Double> ent: userScoresMap.entrySet()){
+//			User user = userRepository.findByAdDn(ent.getKey());
+//			if(user == null){
+//				logger.error("user with distinuished name ({}) was not found", ent.getKey());
+//				continue;
+//			}
+//			//inserting new ml scores.
+//			AdUserFeaturesExtraction adUserFeaturesExtraction = new AdUserFeaturesExtraction(Classifier.ad.getId(), user.getId(), ent.getKey());
+//			adUserFeaturesExtraction.setScore(ent.getValue());
+//			adUserFeaturesExtraction.setTimestamp(timestamp);
+//			adUserFeaturesExtraction.setAttributes(new ArrayList<>(userFeaturesScoresMap.get(ent.getKey())));
+//			adUsersFeaturesExtractionRepository.saveMap(adUserFeaturesExtraction);
+//			
+//			//updating the user with the new score.
+//			userService.updateUserScore(user, timestamp, Classifier.ad.getId(), ent.getValue(), avgScore, true, true);
+//		}
 	}
 	
 

@@ -1,5 +1,6 @@
 package fortscale.services.fe.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,6 +51,7 @@ import fortscale.services.fe.ISuspiciousUserInfo;
 import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.services.impl.SeverityElement;
 import fortscale.utils.impala.ImpalaPageRequest;
+import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 
 @Service("classifierService")
@@ -83,6 +85,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	@Autowired
 	private ConfigurationService configurationService;
+	
+	@Autowired
+	private ImpalaParser impalaParser;
 	
 	@Value("${login.service.name.regex:}")
 	private String loginServiceNameRegex;
@@ -482,8 +487,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private static final String ACCOUNT_NAME_FIELD = "account_name";
 	private static final String WMIEVENTS_TABLE_NAME = "wmievents4769";
 	
-	@Override
-	public EBSResult getEBSAlgOnAuthQuery(List<Map<String, Object>> resultsMap, int offset, int limit){
+	public EBSResult getEBSAlgOnAuthQuery(List<Map<String, Object>> resultsMap, int offset, int limit, String orderBy, String orderByDirection){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
 		Set<String> keySet = resultsMap.get(0).keySet();
@@ -539,7 +543,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		EventBulkScorer ebs = new EventBulkScorer();
 		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
 		
-		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
+		sortEventScoreList(keys, ebsresult, WMIEVENTS_TIME_FIELD, orderBy, orderByDirection);
+		
 		List<Map<String, Object>> eventResultList = new ArrayList<>();
 		int toIndex = offset + limit;
 		if(toIndex > ebsresult.event_score_list.size()) {
@@ -592,11 +597,32 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		return isFilter;
 	}
 	
-	private EBSResult processEbsResults(List<String> keys, List<EventBulkScorer.InputStruct> listResults, int offset, int limit){
+	private void sortEventScoreList(List<String> fieldNames, EventBulkScorer.EBSResult ebsresult, String timeFieldName, String orderBy, String orderByDirection){
+		Comparator<EventBulkScorer.EventScoreStore> comparator = new OrderByEventScoreDesc();
+		if(orderBy != null && !EVENT_SCORE.equalsIgnoreCase(orderBy)){
+			int i = 0;
+			for(; i < fieldNames.size(); i++){
+				if(fieldNames.get(i).equalsIgnoreCase(orderBy)){
+					break;
+				}
+			}
+			if(i < fieldNames.size()){
+				if(timeFieldName != null && timeFieldName.equalsIgnoreCase(orderBy)){
+					comparator = new OrderByEventTime(impalaParser, i, orderByDirection);
+				} else{
+					comparator = new OrderByEventStringField(i, orderByDirection);
+				}
+			}
+		}
+		Collections.sort(ebsresult.event_score_list, comparator);
+	}
+	
+	private EBSResult processEbsResults(List<String> keys, List<EventBulkScorer.InputStruct> listResults, int offset, int limit, String timeFieldName, String orderBy, String orderByDirection){
 		EventBulkScorer ebs = new EventBulkScorer();
 		EventBulkScorer.EBSResult ebsresult = ebs.work( listResults );
 		
-		Collections.sort(ebsresult.event_score_list, new OrderByEventScoreDesc());
+		sortEventScoreList(keys, ebsresult, timeFieldName, orderBy, orderByDirection);
+		
 		List<Map<String, Object>> eventResultList = new ArrayList<>();
 		int toIndex = offset + limit;
 		if(toIndex > ebsresult.event_score_list.size()) {
@@ -619,8 +645,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private static final String VPN_DATA_TABLENAME = "vpndata";
 	private static final String VPN_TIME_FIELD = "date_time";
 	
-	@Override
-	public EBSResult getSimpleEBSAlgOnQuery(List<Map<String, Object>> resultsMap, String tableName, String timeFieldName, int offset, int limit){
+	public EBSResult getSimpleEBSAlgOnQuery(List<Map<String, Object>> resultsMap, String tableName, String timeFieldName, int offset, int limit, String orderBy, String orderByDirection){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
 		Set<String> keySet = resultsMap.get(0).keySet();
@@ -659,22 +684,22 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			listResults.add(inp);
 		}
 
-		return processEbsResults(keys, listResults, offset, limit);
+		return processEbsResults(keys, listResults, offset, limit, timeFieldName, orderBy, orderByDirection);
 	}
 	
 	@Override
-	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit){
+	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection){
 		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
 		if(resultsMap.size() == 0) {
 			return new EBSResult(null, null,0, 0);
 		}
 		
 		if(query.contains(WMIEVENTS_TABLE_NAME)){
-			return getEBSAlgOnAuthQuery(resultsMap, offset, limit);
+			return getEBSAlgOnAuthQuery(resultsMap, offset, limit, orderBy, orderByDirection);
 		} else if(query.contains(VPN_DATA_TABLENAME)){
-			return getSimpleEBSAlgOnQuery(resultsMap, VPN_DATA_TABLENAME, VPN_TIME_FIELD, offset, limit);
+			return getSimpleEBSAlgOnQuery(resultsMap, VPN_DATA_TABLENAME, VPN_TIME_FIELD, offset, limit, orderBy, orderByDirection);
 		} else{
-			return getSimpleEBSAlgOnQuery(resultsMap, null, null, offset, limit);
+			return getSimpleEBSAlgOnQuery(resultsMap, null, null, offset, limit, orderBy, orderByDirection);
 		}
 	}
 	
@@ -685,6 +710,62 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			return o2.score > o1.score ? 1 : (o2.score < o1.score ? -1 : 0);
 		}
 		
+	}
+	
+	public static class OrderByEventTime implements Comparator<EventBulkScorer.EventScoreStore>{
+		private int fieldIndex;
+		private ImpalaParser impalaParser;
+		private int isDesc;
+		
+		public OrderByEventTime(ImpalaParser impalaParser, int fieldIndex, String orderByDirection){
+			this.fieldIndex = fieldIndex;
+			this.impalaParser = impalaParser;
+			if("desc".equalsIgnoreCase(orderByDirection)){
+				this.isDesc = 1;
+			} else{
+				this.isDesc = -1;
+			}
+		}
+
+		@Override
+		public int compare(EventBulkScorer.EventScoreStore o1, EventBulkScorer.EventScoreStore o2) {
+			Long time1 = null;
+			Long time2 = null;
+			try {
+				time1 = impalaParser.parseTimeDate(o1.event.get(fieldIndex)).getTime();
+				time2 = impalaParser.parseTimeDate(o2.event.get(fieldIndex)).getTime();
+			} catch (ParseException e) {
+				logger.error("wrong time format ({}, {})", o1.event.get(fieldIndex), o2.event.get(fieldIndex));
+				return 0;
+			}
+			
+			int ret = time2 > time1 ? 1 : (time2 < time1 ? -1 : 0);
+			return ret*isDesc;
+		}
+		
+	}
+	
+	public static class OrderByEventStringField implements Comparator<EventBulkScorer.EventScoreStore>{
+		private int fieldIndex;
+		private int isDesc;
+		
+		public OrderByEventStringField(int fieldIndex, String orderByDirection){
+			this.fieldIndex = fieldIndex;
+			if("desc".equalsIgnoreCase(orderByDirection)){
+				this.isDesc = 1;
+			} else{
+				this.isDesc = -1;
+			}
+		}
+
+		@Override
+		public int compare(EventBulkScorer.EventScoreStore o1, EventBulkScorer.EventScoreStore o2) {
+			String val1 = o1.event.get(fieldIndex);
+			String val2 = o2.event.get(fieldIndex);
+			
+			int ret = val2.compareToIgnoreCase(val1);
+			return ret*isDesc;
+		}		
 	}
 	
 	@Override
