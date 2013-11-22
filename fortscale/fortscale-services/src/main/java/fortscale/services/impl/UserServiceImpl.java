@@ -99,7 +99,21 @@ public class UserServiceImpl implements UserService{
 	
 	
 	
-
+	
+	
+	@Override
+	public void removeClassifierFromAllUsers(String classifierId){
+		if(!Classifier.ad.getId().equals(classifierId)){
+			return;
+		}
+		
+		List<User> users = userRepository.findAll();
+		for(User user: users){
+			user.removeClassifierScore(classifierId);
+		}
+		
+		userRepository.save(users);
+	}
 
 	@Override
 	public void updateUserWithCurrentADInfo() {

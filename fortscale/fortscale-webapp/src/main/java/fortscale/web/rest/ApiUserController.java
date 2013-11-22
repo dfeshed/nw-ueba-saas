@@ -20,6 +20,7 @@ import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
+import fortscale.services.fe.IScoreDistribution;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
@@ -229,6 +230,12 @@ public class ApiUserController {
 		ret.setData(userScores);
 		ret.setTotal(userScores.size());
 		return ret;
+	}
+	
+	@RequestMapping(value="/removeClassifier", method=RequestMethod.GET)
+	@LogException
+	public void removeClassifierFromAllUsers(@RequestParam(required=true) String classifierId, Model model){
+		userService.removeClassifierFromAllUsers(classifierId);
 	}
 	
 	private User getManager(User user){

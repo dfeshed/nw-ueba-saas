@@ -49,4 +49,6 @@ public interface UserService {
 	public User findByAuthUsername(String username);
 
 	public User findByVpnUsername(String username);
+	
+	public void removeClassifierFromAllUsers(String classifierId);
 }

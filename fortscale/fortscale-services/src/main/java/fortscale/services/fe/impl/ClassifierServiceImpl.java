@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -502,10 +501,14 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	public EBSResult getEBSAlgOnAuthQuery(List<Map<String, Object>> resultsMap, int offset, int limit, String orderBy, String orderByDirection){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
-		Set<String> keySet = resultsMap.get(0).keySet();
-		keySet.remove(MACHINE_NAME_FIELD);
-		keySet.remove(CLIENT_ADDRESSE_FIELD);
-		List<String> keys = new ArrayList<>(keySet);
+		List<String> keys = new ArrayList<>();
+		for(String fieldName: resultsMap.get(0).keySet()){
+			if(fieldName.equals(MACHINE_NAME_FIELD) || fieldName.equals(CLIENT_ADDRESSE_FIELD)){
+				continue;
+			}
+			keys.add(fieldName);
+		}
+		
 		for (Map<String, Object> map : resultsMap) {
 			if(filterRowResults(map, WMIEVENTS_TABLE_NAME)){
 				continue;
@@ -664,9 +667,13 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	public EBSResult getSimpleEBSAlgOnQuery(List<Map<String, Object>> resultsMap, String tableName, String timeFieldName, List<String> fieldNamesFilter, int offset, int limit, String orderBy, String orderByDirection){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
-		Set<String> keySet = resultsMap.get(0).keySet();
-		keySet.removeAll(fieldNamesFilter);
-		List<String> keys = new ArrayList<>(keySet);
+		List<String> keys = new ArrayList<>();
+		for(String fieldName: resultsMap.get(0).keySet()){
+			if(fieldNamesFilter.contains(fieldName)){
+				continue;
+			}
+			keys.add(fieldName);
+		}
 		for (Map<String, Object> map : resultsMap) {
 			if(filterRowResults(map, tableName)){
 				continue;
