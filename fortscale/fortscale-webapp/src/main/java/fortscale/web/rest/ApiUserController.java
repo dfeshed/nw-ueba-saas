@@ -20,7 +20,6 @@ import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
-import fortscale.services.fe.IScoreDistribution;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
