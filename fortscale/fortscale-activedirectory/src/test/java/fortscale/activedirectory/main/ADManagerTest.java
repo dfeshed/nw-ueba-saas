@@ -17,6 +17,7 @@ import fortscale.utils.logging.Logger;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/active-directory-application-context-test.xml" })
+@Ignore
 public class ADManagerTest {
 
 	@Autowired
