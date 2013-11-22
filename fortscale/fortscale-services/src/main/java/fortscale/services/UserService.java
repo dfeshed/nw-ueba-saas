@@ -30,8 +30,6 @@ public interface UserService {
 
 	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore);
 	
-	public void createApplicationUserDetailsIfNotExist(User user, ApplicationUserDetails applicationUserDetails);
-
 	public void updateUserWithVpnScore();
 	
 	public void updateUserWithGroupMembershipScore();

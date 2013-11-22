@@ -210,4 +210,10 @@ public class UserRepositoryImpl implements UserRepository{
 		return null;
 	}
 
+	@Override
+	public User findByLogUsername(String logname, String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -45,6 +45,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		Query query = new Query(where(appUserNameField).regex(String.format("^%s$", username),"i"));
 		return mongoTemplate.findOne(query, User.class);
 	}
+	
+	@Override
+	public User findByLogUsername(String logname, String username){
+		String logUsernameField = User.getLogUserNameField(logname);
+		Query query = new Query(where(logUsernameField).regex(String.format("^%s$", username),"i"));
+		return mongoTemplate.findOne(query, User.class);
+	}
 
 	@Override
 	public List<User> findByClassifierIdAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable) {

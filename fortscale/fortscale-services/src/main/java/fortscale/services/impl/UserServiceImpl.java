@@ -551,10 +551,14 @@ public class UserServiceImpl implements UserService{
 		List<User> users = new ArrayList<>();
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
 			String username = authScore.getUserName();
-			User user = findByAuthUsername(username);
+			User user = userRepository.findByLogUsername(AuthScore.TABLE_NAME, username);
 			if(user == null){
-				logger.error("no user was found with the username {}", username);
-				continue;
+				user = findByAuthUsername(username);
+				if(user == null){
+					logger.error("no user was found with the username {}", username);
+					continue;
+				}
+				updateLogUsername(user, AuthScore.TABLE_NAME, username, false);
 			}
 			user = updateUserScore(user, lastRun, Classifier.auth.getId(), authScore.getGlobalScore(), avg, false, false);
 			if(user != null){
@@ -616,6 +620,8 @@ public class UserServiceImpl implements UserService{
 					logger.info("no user was found with vpn username ({})", username);
 					continue;
 				}
+				updateApplicationUserDetails(user, new ApplicationUserDetails(UserApplication.vpn.getId(), username), false);
+				updateLogUsername(user, VpnScore.TABLE_NAME, username, false);
 			}
 			user = updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg, false, false);
 			if(user != null){
@@ -760,10 +766,16 @@ public class UserServiceImpl implements UserService{
 		return (Math.abs(day1 - day2) <= dayThreshold);
 	}
 
-	@Override
-	public void createApplicationUserDetailsIfNotExist(User user, ApplicationUserDetails applicationUserDetails) {
-		if(!user.containsApplicationUserDetails(applicationUserDetails)) {
-			user.addApplicationUserDetails(applicationUserDetails);
+	public void updateApplicationUserDetails(User user, ApplicationUserDetails applicationUserDetails, boolean isSave) {
+		user.addApplicationUserDetails(applicationUserDetails);
+		if(isSave){
+			userRepository.save(user);
+		}
+	}
+	
+	public void updateLogUsername(User user, String logname, String username, boolean isSave) {
+		user.addLogUsername(logname, username);
+		if(isSave){
 			userRepository.save(user);
 		}
 	}
