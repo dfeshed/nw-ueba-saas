@@ -95,9 +95,9 @@ public class UserMachineDAOImpl extends ImpalaDAO<UserMachine> implements UserMa
 				userMachine.setLogoncount(Integer.parseInt(rs.getString(UserMachine.LOGONCOUNT_FIELD_NAME)));
 				userMachine.setUsername(rs.getString(UserMachine.USERNAME_FIELD_NAME));
 			} catch (NumberFormatException e) {
-				throw new SQLException(e);
+				throw new SQLException(e.getMessage());
 			} catch (ParseException e) {
-				throw new SQLException(e);
+				throw new SQLException(e.getMessage());
 			}
 			
 			return userMachine;

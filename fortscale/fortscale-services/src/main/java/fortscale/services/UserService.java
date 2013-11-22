@@ -30,8 +30,6 @@ public interface UserService {
 
 	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore);
 	
-	public void createApplicationUserDetailsIfNotExist(User user, ApplicationUserDetails applicationUserDetails);
-
 	public void updateUserWithVpnScore();
 	
 	public void updateUserWithGroupMembershipScore();
@@ -45,4 +43,10 @@ public interface UserService {
 	public void recalculateUsersScores();
 
 	public void recalculateTotalScore();
+	
+	public User findByAuthUsername(String username);
+
+	public User findByVpnUsername(String username);
+	
+	public void removeClassifierFromAllUsers(String classifierId);
 }

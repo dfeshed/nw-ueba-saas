@@ -98,9 +98,9 @@ public class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDAO{
 				
 				
 			} catch (NumberFormatException e) {
-				throw new SQLException(e);
+				throw new SQLException(e.getMessage());
 			} catch (ParseException e) {
-				throw new SQLException(e);
+				throw new SQLException(e.getMessage());
 			}
 			
 			return ret;

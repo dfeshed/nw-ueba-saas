@@ -78,9 +78,11 @@ public class ApiController {
 	public DataBean<List<Map<String, Object>>> investigateWithEBS(@RequestParam(required=true) String query,
 			@RequestParam(defaultValue="0") Integer offset,
 			@RequestParam(defaultValue="50") Integer limit,
+			@RequestParam(required=false) String orderBy,
+			@RequestParam(defaultValue="DESC") String orderByDirection,
 			Model model){
 		DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
-		EBSResult ebsResult = classifierService.getEBSAlgOnQuery(query, offset, limit);
+		EBSResult ebsResult = classifierService.getEBSAlgOnQuery(query, offset, limit, orderBy, orderByDirection);
 		retBean.setData(ebsResult.getResultsList());
 		retBean.setOffset(ebsResult.getOffset());
 		retBean.setTotal(ebsResult.getTotal());

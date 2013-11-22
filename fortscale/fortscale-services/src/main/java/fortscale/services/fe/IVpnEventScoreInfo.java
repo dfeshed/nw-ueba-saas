@@ -16,6 +16,5 @@ public interface IVpnEventScoreInfo {
 	public double getEventTimeScore();
 	public double getUserNameScore();
 	public double getSourceIpScore();
-	public double getLocalIpScore();
 	public double getStatusScore();
 }

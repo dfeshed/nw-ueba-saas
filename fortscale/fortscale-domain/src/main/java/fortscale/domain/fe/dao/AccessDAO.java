@@ -73,9 +73,26 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 
 		return ret;
 	}
+	
+	public List<T> findEventsByUsernameAndTimestampGtEventScore(String username, Date timestamp, int minScore, Pageable pageable) {
+		List<T> ret = new ArrayList<>();
+		String query = String.format("select * from %s where %s=%s and %s and %s >= %d %s",
+				getTableName(), 
+				getTimestampFieldName(), formatTimestampDate(timestamp),
+				getUserNameEqualComparison(username),
+				getEventScoreFieldName(), minScore,
+				pageable.toString());
+		ret.addAll(impalaJdbcTemplate.query(query, getMapper()));
+
+		return ret;
+	}
 
 	public List<T> findEventsByTimestamp(Date timestamp, Pageable pageable) {
 		return findEventsByTimestamp(timestamp, pageable, null);
+	}
+	
+	public List<T> findEventsByTimestampGtEventScore(Date timestamp, Pageable pageable, int minScore) {
+		return findEventsByTimestamp(timestamp, pageable, String.format("%s >= %d", getEventScoreFieldName(), minScore));
 	}
 
 	public List<T> findEventsByTimestamp(Date timestamp, Pageable pageable,
@@ -277,7 +294,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 								.getString(getEventScoreFieldName())),
 						parseTimestampDate(rs.getLong(getTimestampFieldName())));
 			} catch (NumberFormatException e) {
-				throw new SQLException(e);
+				throw new SQLException(e.getMessage());
 			}
 
 			return ret;

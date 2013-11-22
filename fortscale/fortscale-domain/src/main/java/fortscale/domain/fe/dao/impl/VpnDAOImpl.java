@@ -89,7 +89,6 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
 				
 				ret.setEventTimeScore(Double.parseDouble(rs.getString(VpnScore.EVENT_TIME_SCORE_FIELD_NAME)));
 				ret.setUserNameScore(Double.parseDouble(rs.getString(VpnScore.USERNAME_SCORE_FIELD_NAME)));
-				ret.setLocalIpScore(Double.parseDouble(rs.getString(VpnScore.LOCAL_IP_SCORE_FIELD_NAME)));
 				ret.setSourceIpScore(Double.parseDouble(rs.getString(VpnScore.SOURCE_IP_SCORE_FIELD_NAME)));
 				ret.setStatusScore(Double.parseDouble(rs.getString(VpnScore.STATUS_SCORE_FIELD_NAME)));
 				
@@ -97,9 +96,9 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
 				ret.setGlobalScore(Double.parseDouble(rs.getString(VpnScore.GLOBAL_SCORE_FIELD_NAME)));
 				
 			} catch (NumberFormatException e) {
-				throw new SQLException(e);
+				throw new SQLException(e.getMessage());
 			} catch (ParseException e) {
-				throw new SQLException(e);
+				throw new SQLException(e.getMessage());
 			}
 			
 			return ret;

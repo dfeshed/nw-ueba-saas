@@ -33,13 +33,13 @@ public class ApiAdUserController {
 	
 
 //	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/runfe", method=RequestMethod.GET)
-	@ResponseBody
-	public String runfe(Model model){
-		ADManager adManager = new ADManager();
-		adManager.run(feService, null);
-		return "";
-	}
+//	@RequestMapping(value="/runfe", method=RequestMethod.GET)
+//	@ResponseBody
+//	public String runfe(Model model){
+//		ADManager adManager = new ADManager();
+//		adManager.run(feService, null);
+//		return "";
+//	}
 
 	
 //	@SuppressWarnings("unchecked")
