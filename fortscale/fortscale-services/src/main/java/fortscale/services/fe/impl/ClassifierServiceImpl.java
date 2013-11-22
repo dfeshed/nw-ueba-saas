@@ -321,14 +321,13 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
-		if(StringUtils.isEmpty(orderBy)){
-			orderBy = AuthScore.EVENT_SCORE_FIELD_NAME;
-		}
+		
 		User user = userRepository.findOne(userId);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
-		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderBy));
+		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
 		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestampGtEventScore(user.getLogUsernameMap().get(AuthScore.TABLE_NAME), timestamp, minScore, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
@@ -352,10 +351,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
-		if(StringUtils.isEmpty(orderBy)){
-			orderBy = AuthScore.EVENT_SCORE_FIELD_NAME;
-		}
-		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderBy));
+		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
+
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
 		List<AuthScore> authScores = authDAO.findEventsByTimestampGtEventScore(timestamp, pageable, minScore);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
@@ -375,6 +373,119 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				ret.add(createLoginEventScoreInfo(user, authScore));
 			}
 		}
+		return ret;
+	}
+	
+	private String[] processAuthScoreOrderByFieldName(String orderBy){
+		String defaultOrderBy = AuthScore.EVENT_SCORE_FIELD_NAME;
+		if(StringUtils.isEmpty(orderBy)){
+			orderBy = defaultOrderBy;
+		} else{
+			switch(orderBy){
+			case "username":
+				orderBy = AuthScore.USERNAME_FIELD_NAME;
+				break;
+			case "userScore":
+				orderBy = AuthScore.GLOBAL_SCORE_FIELD_NAME;
+				break;
+			case "userNameScore":
+				orderBy = AuthScore.USERNAME_SCORE_FIELD_NAME;
+				break;
+			case "targetIdScore":
+				orderBy = AuthScore.TARGET_ID_SCORE_FIELD_NAME;
+				break;
+			case "destinationHostname":
+				orderBy = AuthScore.TARGET_ID_FIELD_NAME;
+				break;
+			case "sourceIpScore":
+				orderBy = AuthScore.SOURCE_IP_SCORE_FIELD_NAME;
+				break;
+			case "sourceIp":
+				orderBy = AuthScore.SOURCE_IP_FIELD_NAME;
+				break;
+			case "eventTimeScore":
+				orderBy = AuthScore.EVENT_TIME_SCORE_FIELD_NAME;
+				break;
+			case "eventTime":
+				orderBy = AuthScore.EVENT_TIME_FIELD_NAME;
+				break;
+			case "errorCodeScore":
+				orderBy = AuthScore.ERROR_CODE_SCORE_FIELD_NAME;
+				break;
+			case "errorCode":
+				orderBy = AuthScore.ERROR_CODE_FIELD_NAME;
+				break;
+			default:
+				orderBy = defaultOrderBy;
+				break;
+			}
+		}
+		
+		String ret[];
+		if(!orderBy.equals(AuthScore.EVENT_TIME_FIELD_NAME)){
+			ret = new String[2];
+			ret[0] = orderBy;
+			ret[1] = AuthScore.EVENT_TIME_FIELD_NAME;
+		} else{
+			ret = new String[1];
+			ret[0] = orderBy;
+		}
+		
+		return ret;
+	}
+	
+	private String[] processVpnScoreOrderByFieldName(String orderBy){
+		String defaultOrderBy = VpnScore.EVENT_SCORE_FIELD_NAME;
+		if(StringUtils.isEmpty(orderBy)){
+			orderBy = defaultOrderBy;
+		} else{
+			switch(orderBy){
+			case "username":
+				orderBy = VpnScore.USERNAME_FIELD_NAME;
+				break;
+			case "userScore":
+				orderBy = VpnScore.GLOBAL_SCORE_FIELD_NAME;
+				break;
+			case "userNameScore":
+				orderBy = VpnScore.USERNAME_SCORE_FIELD_NAME;
+				break;
+			case "internalIP":
+				orderBy = VpnScore.LOCAL_IP_FIELD_NAME;
+				break;
+			case "sourceIpScore":
+				orderBy = VpnScore.SOURCE_IP_SCORE_FIELD_NAME;
+				break;
+			case "sourceIp":
+				orderBy = VpnScore.SOURCE_IP_FIELD_NAME;
+				break;
+			case "eventTimeScore":
+				orderBy = VpnScore.EVENT_TIME_SCORE_FIELD_NAME;
+				break;
+			case "eventTime":
+				orderBy = VpnScore.EVENT_TIME_FIELD_NAME;
+				break;
+			case "statusScore":
+				orderBy = VpnScore.STATUS_SCORE_FIELD_NAME;
+				break;
+			case "status":
+				orderBy = VpnScore.STATUS_FIELD_NAME;
+				break;
+			default:
+				orderBy = defaultOrderBy;
+				break;
+			}
+		}
+		
+		String ret[];
+		if(!orderBy.equals(VpnScore.EVENT_TIME_FIELD_NAME)){
+			ret = new String[2];
+			ret[0] = orderBy;
+			ret[1] = VpnScore.EVENT_TIME_FIELD_NAME;
+		} else{
+			ret = new String[1];
+			ret[0] = orderBy;
+		}
+		
 		return ret;
 	}
 	
@@ -424,11 +535,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(applicationUserDetails == null || applicationUserDetails.getUserName() == null) {
 			return Collections.emptyList();
 		}
-		if(StringUtils.isEmpty(orderBy)){
-			orderBy = VpnScore.EVENT_SCORE_FIELD_NAME;
-		}
+		String orderByArray[] = processVpnScoreOrderByFieldName(orderBy);
 		String vpnUserNameString = applicationUserDetails.getUserName();
-		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderBy));
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
 		List<VpnScore> vpnScores = vpnDAO.findEventsByUsernameAndTimestampGtEventScore(vpnUserNameString, timestamp, minScore, pageable);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
@@ -452,10 +561,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(timestamp == null){
 			timestamp = vpnDAO.getLastRunDate();
 		}
-		if(StringUtils.isEmpty(orderBy)){
-			orderBy = VpnScore.EVENT_SCORE_FIELD_NAME;
-		}
-		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderBy));
+		String orderByArray[] = processVpnScoreOrderByFieldName(orderBy);
+		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
 		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestampGtEventScore(timestamp, pageable, minScore);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
