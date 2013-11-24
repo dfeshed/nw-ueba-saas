@@ -7,7 +7,7 @@ import static org.springframework.data.mongodb.core.query.Update.update;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdComputer;
@@ -41,7 +41,7 @@ public class AdServiceImpl implements AdService {
 	private AdOURepository adOURepository;
 	
 	@Autowired
-	private MongoTemplate mongoTemplate;
+	private MongoOperations mongoTemplate;
 	
 	@Autowired
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
