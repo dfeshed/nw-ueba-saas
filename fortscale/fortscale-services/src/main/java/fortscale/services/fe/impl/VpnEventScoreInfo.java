@@ -95,5 +95,15 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 		return vpnScore.getStatusScore();
 	}
 
+	@Override
+	public String getCountry() {
+		return vpnScore.getCountry();
+	}
+
+	@Override
+	public double getCountryScore() {
+		return vpnScore.getCountryScore();
+	}
+
 
 }

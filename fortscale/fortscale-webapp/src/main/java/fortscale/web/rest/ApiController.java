@@ -80,9 +80,10 @@ public class ApiController {
 			@RequestParam(defaultValue="50") Integer limit,
 			@RequestParam(required=false) String orderBy,
 			@RequestParam(defaultValue="DESC") String orderByDirection,
+			@RequestParam(required=false) Integer minScore,
 			Model model){
 		DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
-		EBSResult ebsResult = classifierService.getEBSAlgOnQuery(query, offset, limit, orderBy, orderByDirection);
+		EBSResult ebsResult = classifierService.getEBSAlgOnQuery(query, offset, limit, orderBy, orderByDirection,minScore);
 		retBean.setData(ebsResult.getResultsList());
 		retBean.setOffset(ebsResult.getOffset());
 		retBean.setTotal(ebsResult.getTotal());

@@ -8,5 +8,6 @@ import fortscale.domain.fe.EventResult;
 
 public interface EventResultRepositoryCustom {
 	public List<EventResult> findEventResultsBySqlQuery(String sqlQuery, Pageable pageable);
+	public List<EventResult> findEventResultsBySqlQueryAndGtMinScore(String sqlQuery, Integer minScore, Pageable pageable);
 	public void updateLastRetrieved(String sqlQuery);
 }
