@@ -666,7 +666,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			inp.all_data = allData;
 			listResults.add(inp);
 		}
-		
+				
 		keys.add(0, CLIENT_ADDRESSE_FIELD);
 		keys.add(0, MACHINE_NAME_FIELD);
 
@@ -698,7 +698,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			eventMap.put(EVENT_SCORE, (double)Math.round(eventScore.score));
 			eventResultList.add(eventMap);
 		}
-		
+				
 		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
 	}
 	
@@ -838,9 +838,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public EBSResult getEBSAlgOnQuery(String sqlQuery, int offset, int limit, String orderBy, String orderByDirection){
+	public EBSResult getEBSAlgOnQuery(String sqlQuery, int offset, int limit, String orderBy, String orderByDirection, Integer minScore){
 		String timestampFieldName = getTimestampFieldName(sqlQuery);
-		EBSResult ebsResult = findEBSAlgOnQuery(sqlQuery, offset, limit, orderBy, orderByDirection, timestampFieldName);
+		EBSResult ebsResult = findEBSAlgOnQuery(sqlQuery, offset, limit, orderBy, orderByDirection, timestampFieldName, minScore);
 		if(ebsResult != null){
 			updateSqlQueryLastRetrieved(sqlQuery);
 			return ebsResult;
@@ -861,14 +861,19 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		} else{
 			ebsResult = getSimpleEBSAlgOnQuery(resultsMap, null, null,Collections.<String>emptyList(), 0, resultsMap.size(), orderBy, orderByDirection);
 		}
-		
-		saveEBSResultsOnAuthQuery(sqlQuery, ebsResult, timestampFieldName);
-		
-		int toIndex = offset + limit;
-		if(toIndex > ebsResult.getResultsList().size()) {
-			toIndex = ebsResult.getResultsList().size();
+		if(minScore != null){
+			saveEBSResultsOnAuthQuery(sqlQuery, ebsResult, timestampFieldName, false);
+			ebsResult = findEBSAlgOnQuery(sqlQuery, offset, limit, orderBy, orderByDirection, timestampFieldName, minScore);
+		} else{
+			saveEBSResultsOnAuthQuery(sqlQuery, ebsResult, timestampFieldName, true);
+			
+			int toIndex = offset + limit;
+			if(toIndex > ebsResult.getResultsList().size()) {
+				toIndex = ebsResult.getResultsList().size();
+			}
+			ebsResult = new EBSResult(ebsResult.getResultsList().subList(offset, toIndex), ebsResult.getGlobalScore(), offset, ebsResult.getTotal());
 		}
-		return new EBSResult(ebsResult.getResultsList().subList(offset, toIndex), ebsResult.getGlobalScore(), offset, ebsResult.getTotal());
+		return ebsResult;
 	}
 	
 	private String getTimestampFieldName(String sqlQuery){
@@ -881,43 +886,55 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		return timestampFieldName;
 	}
 	
-	private void saveEBSResultsOnAuthQuery(final String sqlQuery, final EBSResult ebsResult, final String timestampFieldName){
-		ExecutorService executorService = Executors.newFixedThreadPool(1);
-		Runnable task = new Runnable() {
-			@Override
-			public void run(){
-				List<EventResult> eventResults = new ArrayList<>();
-				DateTime date = new DateTime();
-				for(Map<String, Object> result: ebsResult.getResultsList()){
-					EventResult eventResult = new EventResult();
-					eventResult.setAttributes(result);
-					eventResult.setGlobalScore(ebsResult.getGlobalScore());
-					eventResult.setSqlQuery(sqlQuery);
-					eventResult.setLastRetrieved(date);
-					eventResult.setTotal(ebsResult.getTotal());
-					
-					Double eventScore = (Double) result.get(EVENT_SCORE);
-					eventResult.setEventScore(eventScore);
-					
-					if(timestampFieldName != null){
-						String dateString = (String) result.get(timestampFieldName);
-						if(dateString != null){
-							try {
-								DateTime eventTime = new DateTime(impalaParser.parseTimeDate(dateString));
-								eventResult.setEventTime(eventTime);
-							} catch (ParseException e) {
-								logger.warn("recieve date ({}) in the wrong format for the query ({})", dateString, sqlQuery);
-							}
+	private void saveEBSResultsOnAuthQuery(final String sqlQuery, final EBSResult ebsResult, final String timestampFieldName, boolean isRunThread){
+		if(isRunThread){
+			ExecutorService executorService = Executors.newFixedThreadPool(1);
+			Runnable task = new Runnable() {
+				@Override
+				public void run(){
+					EBSResultsOnAuthQuerySaver authQuerySaver = new EBSResultsOnAuthQuerySaver();
+					authQuerySaver.save(sqlQuery, ebsResult, timestampFieldName);
+				}
+			};
+			executorService.submit(task);
+			executorService.shutdown();
+		} else{
+			EBSResultsOnAuthQuerySaver authQuerySaver = new EBSResultsOnAuthQuerySaver();
+			authQuerySaver.save(sqlQuery, ebsResult, timestampFieldName);
+		}
+	}
+	
+	class EBSResultsOnAuthQuerySaver{
+		public void save(final String sqlQuery, final EBSResult ebsResult, final String timestampFieldName){
+			List<EventResult> eventResults = new ArrayList<>();
+			DateTime date = new DateTime();
+			for(Map<String, Object> result: ebsResult.getResultsList()){
+				EventResult eventResult = new EventResult();
+				eventResult.setAttributes(result);
+				eventResult.setGlobalScore(ebsResult.getGlobalScore());
+				eventResult.setSqlQuery(sqlQuery);
+				eventResult.setLastRetrieved(date);
+				eventResult.setTotal(ebsResult.getTotal());
+				
+				Double eventScore = (Double) result.get(EVENT_SCORE);
+				eventResult.setEventScore(eventScore);
+				
+				if(timestampFieldName != null){
+					String dateString = (String) result.get(timestampFieldName);
+					if(dateString != null){
+						try {
+							DateTime eventTime = new DateTime(impalaParser.parseTimeDate(dateString));
+							eventResult.setEventTime(eventTime);
+						} catch (ParseException e) {
+							logger.warn("recieve date ({}) in the wrong format for the query ({})", dateString, sqlQuery);
 						}
 					}
-					
-					eventResults.add(eventResult);
 				}
-				eventResultRepository.save(eventResults);
+				
+				eventResults.add(eventResult);
 			}
-		};
-		executorService.submit(task);
-		executorService.shutdown();
+			eventResultRepository.save(eventResults);
+		}
 	}
 	
 	private void updateSqlQueryLastRetrieved(final String sqlQuery){
@@ -932,7 +949,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		executorService.shutdown();
 	}
 	
-	private EBSResult findEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection, String timestampFieldName){
+	private EBSResult findEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection, String timestampFieldName, Integer minScore){
 		Direction direction = Direction.DESC;
 		if(!"desc".equalsIgnoreCase(orderByDirection)){
 			direction = Direction.ASC;
@@ -953,7 +970,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 
 		int page = offset/pageSize;
 		Pageable pageable = new PageRequest(page, pageSize, direction, fieldName); 
-		List<EventResult> eventResults = eventResultRepository.findEventResultsBySqlQuery(query, pageable);
+		List<EventResult> eventResults = eventResultRepository.findEventResultsBySqlQueryAndGtMinScore(query, minScore, pageable);
 		if(eventResults == null || eventResults.size() == 0){
 			return null;
 		}

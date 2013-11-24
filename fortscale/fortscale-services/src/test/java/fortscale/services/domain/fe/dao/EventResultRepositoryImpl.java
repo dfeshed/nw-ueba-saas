@@ -105,4 +105,11 @@ public class EventResultRepositoryImpl implements EventResultRepository {
 
 	}
 
+	@Override
+	public List<EventResult> findEventResultsBySqlQueryAndGtMinScore(
+			String sqlQuery, Integer minScore, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

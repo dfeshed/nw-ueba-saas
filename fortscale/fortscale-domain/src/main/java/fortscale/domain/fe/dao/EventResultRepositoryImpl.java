@@ -33,4 +33,15 @@ public class EventResultRepositoryImpl implements EventResultRepositoryCustom{
 		mongoTemplate.updateMulti(query(where(EventResult.sqlQueryField).is(sqlQuery)), update(EventResult.lastRetrievedField, date), EventResult.class);
 	}
 
+	@Override
+	public List<EventResult> findEventResultsBySqlQueryAndGtMinScore(
+			String sqlQuery, Integer minScore, Pageable pageable) {
+		if(minScore == null){
+			return findEventResultsBySqlQuery(sqlQuery, pageable);
+		}
+		Query query = new Query(where(EventResult.sqlQueryField).is(sqlQuery).and(EventResult.eventScoreField).gte(minScore));
+		query.with(pageable);
+		return mongoTemplate.find(query,EventResult.class);
+	}
+
 }

@@ -22,7 +22,7 @@ public interface ClassifierService {
 	public int countVpnEvents(Date timestampt);
 	public int countVpnEvents(String userId, Date timestamp);
 	
-	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection);
+	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection, Integer minScore);
 	public Long getLatestRuntime(String tableName);
 	public void addFilter(String collectionName, String fieldName, String regex);
 	public String getFilterRegex(String collectionName, String fieldName);
