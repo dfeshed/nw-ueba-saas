@@ -231,6 +231,12 @@ public class ApiUserController {
 		return ret;
 	}
 	
+	@RequestMapping(value="/removeClassifier", method=RequestMethod.GET)
+	@LogException
+	public void removeClassifierFromAllUsers(@RequestParam(required=true) String classifierId, Model model){
+		userService.removeClassifierFromAllUsers(classifierId);
+	}
+	
 	private User getManager(User user){
 		User manager = null;
 		if(user.getManagerDN() != null && user.getManagerDN().length() > 0){

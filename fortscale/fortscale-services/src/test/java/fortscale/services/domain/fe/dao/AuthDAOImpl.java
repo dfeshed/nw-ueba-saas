@@ -141,4 +141,18 @@ public class AuthDAOImpl implements AuthDAO {
 		return 0;
 	}
 
+	@Override
+	public List<AuthScore> findEventsByUsernameAndTimestampGtEventScore(
+			String username, Date timestamp, int minScore, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<AuthScore> findEventsByTimestampGtEventScore(Date timestamp,
+			Pageable pageable, int minScore) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

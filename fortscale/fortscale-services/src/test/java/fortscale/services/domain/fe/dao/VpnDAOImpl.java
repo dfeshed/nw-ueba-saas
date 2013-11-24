@@ -132,4 +132,18 @@ public class VpnDAOImpl implements VpnDAO {
 		return 0;
 	}
 
+	@Override
+	public List<VpnScore> findEventsByUsernameAndTimestampGtEventScore(
+			String username, Date timestamp, int minScore, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<VpnScore> findEventsByTimestampGtEventScore(Date timestamp,
+			Pageable pageable, int minScore) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

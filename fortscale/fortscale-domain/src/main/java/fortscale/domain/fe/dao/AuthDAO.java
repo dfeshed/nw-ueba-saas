@@ -17,7 +17,11 @@ public interface AuthDAO {
 	
 	public List<AuthScore> findEventsByUsernameAndTimestamp(String username, Date timestamp, Pageable pageable);
 	
+	public List<AuthScore> findEventsByUsernameAndTimestampGtEventScore(String username, Date timestamp, int minScore, Pageable pageable);
+	
 	public List<AuthScore> findEventsByTimestamp(Date timestamp, Pageable pageable);
+	
+	public List<AuthScore> findEventsByTimestampGtEventScore(Date timestamp, Pageable pageable, int minScore);
 	
 	public List<AuthScore> findEventsByTimestamp(Date timestamp, Pageable pageable, String additionalWhereQuery);
 	

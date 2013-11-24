@@ -16,7 +16,11 @@ public interface VpnDAO {
 	
 	public List<VpnScore> findEventsByUsernameAndTimestamp(String username, Date timestamp, Pageable pageable);
 	
+	public List<VpnScore> findEventsByUsernameAndTimestampGtEventScore(String username, Date timestamp, int minScore, Pageable pageable);
+	
 	public List<VpnScore> findEventsByTimestamp(Date timestamp, Pageable pageable);
+	
+	public List<VpnScore> findEventsByTimestampGtEventScore(Date timestamp, Pageable pageable, int minScore);
 	
 	public List<VpnScore> findEventsByTimestamp(Date timestamp, Pageable pageable, String additionalWhereQuery);
 	
