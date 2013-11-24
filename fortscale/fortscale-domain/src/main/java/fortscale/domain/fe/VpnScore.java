@@ -24,7 +24,7 @@ public class VpnScore {
 	public static final String USERNAME_SCORE_FIELD_NAME = "usernamescore";
 	public static final String SOURCE_IP_SCORE_FIELD_NAME = "source_ipscore";
 	public static final String STATUS_SCORE_FIELD_NAME = "statusscore";
-	public static final String COUNTRY_SCORE_FIELD_NAME = "countryScore";
+	public static final String COUNTRY_SCORE_FIELD_NAME = "countryscore";
 	
 	public static final String EVENT_SCORE_FIELD_NAME = "eventscore";
 	public static final String GLOBAL_SCORE_FIELD_NAME = "globalscore";
