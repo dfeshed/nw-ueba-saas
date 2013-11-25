@@ -1,11 +1,11 @@
 package fortscale.domain.core.dao;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
-
-import fortscale.domain.core.Notification;
-import java.lang.String;
 import java.util.List;
 
-public interface NotificationsRepository extends PagingAndSortingRepository<Notification, Long> {
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import fortscale.domain.core.Notification;
+
+public interface NotificationsRepository extends MongoRepository<Notification, Long>, NotificationsRepositoryCustom {
 	List<Notification> findByFsId(String fsid);
 }
