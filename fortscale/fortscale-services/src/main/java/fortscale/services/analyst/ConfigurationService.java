@@ -13,5 +13,6 @@ public interface ConfigurationService {
 	public void setScoreConfiguration(ScoreConfiguration scoreConfiguration, Analyst createdBy);
 	public void setScoreConfiguration(ScoreConfiguration scoreConfiguration, String createById, String createdByUsername);
 	public List<SeverityElement> getSeverityElements();
+	public void setScoreDistribution(String scoreDistribution);
 	public Map<String, Classifier> getClassifiersMap();
 }

@@ -11,11 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.analyst.Analyst;
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.services.analyst.AnalystService;
+import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.security.MongoUserDetailsService;
 import fortscale.utils.logging.annotation.LogException;
@@ -42,6 +44,8 @@ public class ApiAnalystController extends BaseController{
 	private MongoUserDetailsService mongoUserDetailsService;
 	@Autowired
 	private AnalystService analystService;
+	@Autowired
+	private ConfigurationService configurationService;
 
 //	@RequestMapping(value="signup", method=RequestMethod.POST)
 //	@ResponseBody
@@ -95,6 +99,12 @@ public class ApiAnalystController extends BaseController{
 			mongoUserDetailsService.updateUser(analystAuth.getUsername(), username.toString(), newPassword.toString(), username.toString(), firstName.toString(), lastName.toString());
 		}
 		
+	}
+	
+	@RequestMapping(value="/updateScoreDistribution", method=RequestMethod.GET)
+	@LogException
+	public void updateScoreDistribution(@RequestParam(required=true) String dist, Model model){
+		configurationService.setScoreDistribution(dist);
 	}
 	
 	@RequestMapping(value="/me/details", method=RequestMethod.GET)

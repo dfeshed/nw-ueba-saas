@@ -1,12 +1,14 @@
 package fortscale.services.analyst.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -25,39 +27,13 @@ import fortscale.services.impl.SeverityElement;
 @Service("configurationService")
 public class ConfigurationServiceImpl implements ConfigurationService, InitializingBean{
 	
-	private static List<SeverityElement> severityOrderedList = getSeverityList();
-//	private static Map<String,SeverityElement> severityMap = null;
+	private List<SeverityElement> severityOrderedList;
 	
-	private Map<String, Classifier> classifiersMap = createClassifiersMap();
+	private Map<String, Classifier> classifiersMap;
 	
-	private static Map<String, Classifier> createClassifiersMap(){
-		Map<String, Classifier> ret = new HashMap<String, Classifier>();
-		for(Classifier classifier: Classifier.values()){
-			ret.put(classifier.getId(), classifier);
-		}
-		return ret;
-	}
-		
-	private static List<SeverityElement> getSeverityList(){
-		List<SeverityElement> ret = new ArrayList<>();
-		ret.add(new SeverityElement("Critical", 90));
-		ret.add(new SeverityElement("High", 50));
-		ret.add(new SeverityElement("Medium", 10));
-		ret.add(new SeverityElement("Low", 0));
-		return ret;
-	}
+	@Value("${score.distribution:Critical:90,High:80,Medium:50,Low:0}")
+	private String scoreDistribution;
 	
-//	private static Map<String,SeverityElement> getSeverityMap(){
-//		if(severityMap == null){
-//			Map<String,SeverityElement> tmp = new HashMap<>();
-//			for(SeverityElement element: severityOrderedList){
-//				tmp.put(element.getName(), element);
-//			}
-//			severityMap = tmp;
-//		}
-//		
-//		return severityMap;
-//	}
 	
 	@Autowired
 	private FortscaleConfigurationRepository fortscaleConfigurationRepository;
@@ -99,13 +75,14 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.vpn.getId(), 10));
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.groups.getId(), 10));
 			setScoreConfiguration(scoreConfiguration, "Server", "Server");
-//			scoreConfiguration = new ScoreConfiguration();
-//			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.auth.getId(), 20));
-//			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.vpn.getId(), 10));
-//			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.groups.getId(), 10));
-//			setScoreConfiguration(scoreConfiguration, "Server", "Server");
 		}
 		
+		setScoreDistribution(scoreDistribution);
+		
+		classifiersMap = new HashMap<String, Classifier>();
+		for(Classifier classifier: Classifier.values()){
+			classifiersMap.put(classifier.getId(), classifier);
+		}
 	}
 
 	
@@ -117,5 +94,17 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 	@Override
 	public Map<String, Classifier> getClassifiersMap(){
 		return classifiersMap;
+	}
+
+	@Override
+	public void setScoreDistribution(String scoreDistribution) {
+		List<SeverityElement> tmp = new ArrayList<>();
+		for(String elem: scoreDistribution.split(",")){
+			String elemSplit[] = elem.split(":");
+			tmp.add(new SeverityElement(elemSplit[0], Integer.parseInt(elemSplit[1])));
+		}
+		Collections.sort(tmp, new SeverityElement.OrderByValueDesc());
+		severityOrderedList = tmp;
+		this.scoreDistribution = scoreDistribution;
 	}
 }

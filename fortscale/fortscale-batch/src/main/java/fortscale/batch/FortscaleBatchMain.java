@@ -59,7 +59,7 @@ public class FortscaleBatchMain {
 		formatter.printHelp("FortscaleBatchMain", createOptions());
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args){
 		// logger.debug("running parameters: " + StringUtils.join(args, ','));
 		Options options = createOptions();
 		CommandLineParser parser = new PosixParser();
@@ -75,7 +75,6 @@ public class FortscaleBatchMain {
 		} catch (Exception exp) {
 			// oops, something went wrong
 			logger.error("got the following exception:", exp);
-			throw exp;
 		}
 	}
 
