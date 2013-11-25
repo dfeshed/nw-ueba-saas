@@ -60,7 +60,7 @@ public class FeatureExplanation implements IFeatureExplanation {
 	
 	private String generate_general_case_description() {
 		return getFeatureDistribution() < 0.1 ?
-				String.format( "Only %d users (less than %d\\%) share this property", getFeatureCount(), (int)(getFeatureDistribution()*100) ) :
+				String.format( "Only %d users (less than %d%%) share this property", getFeatureCount(), (int)(getFeatureDistribution()*100) ) :
 				"" ;
 	}
 	
