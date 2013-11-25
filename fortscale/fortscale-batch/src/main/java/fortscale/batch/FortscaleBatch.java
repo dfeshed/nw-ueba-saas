@@ -3,7 +3,6 @@ package fortscale.batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
-import fortscale.activedirectory.main.ADManager;
 import fortscale.services.AdService;
 import fortscale.services.UserService;
 import fortscale.services.fe.impl.FeServiceImpl;
@@ -25,13 +24,13 @@ public class FortscaleBatch {
 	private ImpalaWriterFactory impalaGroupsScoreWriterFactory;
 	
 	
-	public void runfe(String userAdScoreCsvFileFullPathString) {
-		ADManager adManager = new ADManager();
-		if(userAdScoreCsvFileFullPathString != null) {
-			impalaGroupsScoreWriterFactory.setUserAdScoreCsvFileFullPathString(userAdScoreCsvFileFullPathString);
-		}
-		adManager.run(feService, null);
-	}
+//	public void runfe(String userAdScoreCsvFileFullPathString) {
+//		ADManager adManager = new ADManager();
+//		if(userAdScoreCsvFileFullPathString != null) {
+//			impalaGroupsScoreWriterFactory.setUserAdScoreCsvFileFullPathString(userAdScoreCsvFileFullPathString);
+//		}
+//		adManager.run(feService, null);
+//	}
 	
 	public void updateGroupMembershipScore(String userAdScoreCsvFileFullPathString, String userTotalScoreCsvFileFullPathString) {
 		if(userAdScoreCsvFileFullPathString != null) {

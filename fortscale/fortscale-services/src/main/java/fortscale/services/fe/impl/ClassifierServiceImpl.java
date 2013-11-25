@@ -9,8 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,9 +31,11 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AuthScore;
+import fortscale.domain.fe.EventResult;
 import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
+import fortscale.domain.fe.dao.EventResultRepository;
 import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.ebs.EBSPigUDF;
@@ -69,6 +74,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private EventResultRepository eventResultRepository;
 	
 	@Autowired
 	private AuthDAO authDAO;
@@ -658,7 +666,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			inp.all_data = allData;
 			listResults.add(inp);
 		}
-		
+				
 		keys.add(0, CLIENT_ADDRESSE_FIELD);
 		keys.add(0, MACHINE_NAME_FIELD);
 
@@ -690,7 +698,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			eventMap.put(EVENT_SCORE, (double)Math.round(eventScore.score));
 			eventResultList.add(eventMap);
 		}
-		
+				
 		return new EBSResult(eventResultList, ebsresult.global_score, offset, ebsresult.event_score_list.size());
 	}
 	
@@ -830,21 +838,154 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection){
-		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
+	public EBSResult getEBSAlgOnQuery(String sqlQuery, int offset, int limit, String orderBy, String orderByDirection, Integer minScore){
+		String timestampFieldName = getTimestampFieldName(sqlQuery);
+		EBSResult ebsResult = findEBSAlgOnQuery(sqlQuery, offset, limit, orderBy, orderByDirection, timestampFieldName, minScore);
+		if(ebsResult != null){
+			updateSqlQueryLastRetrieved(sqlQuery);
+			return ebsResult;
+		}
+		
+		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(sqlQuery, new ColumnMapRowMapper());
 		if(resultsMap.size() == 0) {
 			return new EBSResult(null, null,0, 0);
 		}
+
 		
-		if(query.contains(WMIEVENTS_TABLE_NAME)){
-			return getEBSAlgOnAuthQuery(resultsMap, offset, limit, orderBy, orderByDirection);
-		} else if(query.contains(VPN_DATA_TABLENAME)){
+		if(sqlQuery.contains(WMIEVENTS_TABLE_NAME)){
+			ebsResult = getEBSAlgOnAuthQuery(resultsMap, 0, resultsMap.size(), orderBy, orderByDirection);
+		} else if(sqlQuery.contains(VPN_DATA_TABLENAME)){
 			List<String> fieldNamesFilter = new ArrayList<>();
 			fieldNamesFilter.add(VpnScore.LOCAL_IP_FIELD_NAME);
-			return getSimpleEBSAlgOnQuery(resultsMap, VPN_DATA_TABLENAME, VPN_TIME_FIELD, fieldNamesFilter, offset, limit, orderBy, orderByDirection);
+			ebsResult = getSimpleEBSAlgOnQuery(resultsMap, VPN_DATA_TABLENAME, timestampFieldName, fieldNamesFilter, 0, resultsMap.size(), orderBy, orderByDirection);
 		} else{
-			return getSimpleEBSAlgOnQuery(resultsMap, null, null,Collections.<String>emptyList(), offset, limit, orderBy, orderByDirection);
+			ebsResult = getSimpleEBSAlgOnQuery(resultsMap, null, null,Collections.<String>emptyList(), 0, resultsMap.size(), orderBy, orderByDirection);
 		}
+		if(minScore != null){
+			saveEBSResultsOnAuthQuery(sqlQuery, ebsResult, timestampFieldName, false);
+			ebsResult = findEBSAlgOnQuery(sqlQuery, offset, limit, orderBy, orderByDirection, timestampFieldName, minScore);
+		} else{
+			saveEBSResultsOnAuthQuery(sqlQuery, ebsResult, timestampFieldName, true);
+			
+			int toIndex = offset + limit;
+			if(toIndex > ebsResult.getResultsList().size()) {
+				toIndex = ebsResult.getResultsList().size();
+			}
+			ebsResult = new EBSResult(ebsResult.getResultsList().subList(offset, toIndex), ebsResult.getGlobalScore(), offset, ebsResult.getTotal());
+		}
+		return ebsResult;
+	}
+	
+	private String getTimestampFieldName(String sqlQuery){
+		String timestampFieldName = null;
+		if(sqlQuery.contains(WMIEVENTS_TABLE_NAME)){
+			timestampFieldName = WMIEVENTS_TIME_FIELD;
+		} else if(sqlQuery.contains(VPN_DATA_TABLENAME)){
+			timestampFieldName = VPN_TIME_FIELD;
+		}
+		return timestampFieldName;
+	}
+	
+	private void saveEBSResultsOnAuthQuery(final String sqlQuery, final EBSResult ebsResult, final String timestampFieldName, boolean isRunThread){
+		if(isRunThread){
+			ExecutorService executorService = Executors.newFixedThreadPool(1);
+			Runnable task = new Runnable() {
+				@Override
+				public void run(){
+					EBSResultsOnAuthQuerySaver authQuerySaver = new EBSResultsOnAuthQuerySaver();
+					authQuerySaver.save(sqlQuery, ebsResult, timestampFieldName);
+				}
+			};
+			executorService.submit(task);
+			executorService.shutdown();
+		} else{
+			EBSResultsOnAuthQuerySaver authQuerySaver = new EBSResultsOnAuthQuerySaver();
+			authQuerySaver.save(sqlQuery, ebsResult, timestampFieldName);
+		}
+	}
+	
+	class EBSResultsOnAuthQuerySaver{
+		public void save(final String sqlQuery, final EBSResult ebsResult, final String timestampFieldName){
+			List<EventResult> eventResults = new ArrayList<>();
+			DateTime date = new DateTime();
+			for(Map<String, Object> result: ebsResult.getResultsList()){
+				EventResult eventResult = new EventResult();
+				eventResult.setAttributes(result);
+				eventResult.setGlobalScore(ebsResult.getGlobalScore());
+				eventResult.setSqlQuery(sqlQuery);
+				eventResult.setLastRetrieved(date);
+				eventResult.setTotal(ebsResult.getTotal());
+				
+				Double eventScore = (Double) result.get(EVENT_SCORE);
+				eventResult.setEventScore(eventScore);
+				
+				if(timestampFieldName != null){
+					String dateString = (String) result.get(timestampFieldName);
+					if(dateString != null){
+						try {
+							DateTime eventTime = new DateTime(impalaParser.parseTimeDate(dateString));
+							eventResult.setEventTime(eventTime);
+						} catch (ParseException e) {
+							logger.warn("recieve date ({}) in the wrong format for the query ({})", dateString, sqlQuery);
+						}
+					}
+				}
+				
+				eventResults.add(eventResult);
+			}
+			eventResultRepository.save(eventResults);
+		}
+	}
+	
+	private void updateSqlQueryLastRetrieved(final String sqlQuery){
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		Runnable task = new Runnable() {
+			@Override
+			public void run(){
+				eventResultRepository.updateLastRetrieved(sqlQuery);
+			}
+		};
+		executorService.submit(task);
+		executorService.shutdown();
+	}
+	
+	private EBSResult findEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection, String timestampFieldName, Integer minScore){
+		Direction direction = Direction.DESC;
+		if(!"desc".equalsIgnoreCase(orderByDirection)){
+			direction = Direction.ASC;
+		}
+		String fieldName = EventResult.eventScoreField;
+		if(!StringUtils.isEmpty(orderBy) && !orderBy.equalsIgnoreCase(EVENT_SCORE)){
+			if(orderBy.equalsIgnoreCase(timestampFieldName)){
+				fieldName = EventResult.eventTimeField;
+			}else{
+				fieldName = EventResult.getAttributesAttributeNameField(orderBy);
+			}
+		}
+		
+		int pageSize = limit;
+		if(offset % limit != 0){
+			pageSize = offset + limit;
+		}
+
+		int page = offset/pageSize;
+		Pageable pageable = new PageRequest(page, pageSize, direction, fieldName); 
+		List<EventResult> eventResults = eventResultRepository.findEventResultsBySqlQueryAndGtMinScore(query, minScore, pageable);
+		if(eventResults == null || eventResults.size() == 0){
+			return null;
+		}
+		int total = eventResults.get(0).getTotal();
+		double globalScore = eventResults.get(0).getGlobalScore();
+		List<Map<String, Object>> resultsList = new ArrayList<>();
+		int fromIndex = offset % pageSize;
+		int toIndex = fromIndex + limit;
+		if(toIndex > eventResults.size()){
+			toIndex = eventResults.size();
+		}
+		for(EventResult eventResult: eventResults.subList(fromIndex, toIndex)){
+			resultsList.add(eventResult.getAttributes());
+		}
+		return new EBSResult(resultsList, globalScore, offset, total);
 	}
 	
 	public static class OrderByEventScoreDesc implements Comparator<EventBulkScorer.EventScoreStore>{

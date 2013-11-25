@@ -13,8 +13,10 @@ public interface IVpnEventScoreInfo {
 	public double getEventScore();
 	public double getUserScore();
 	public String getStatus();
+	public String getCountry();
 	public double getEventTimeScore();
 	public double getUserNameScore();
 	public double getSourceIpScore();
 	public double getStatusScore();
+	public double getCountryScore();
 }
