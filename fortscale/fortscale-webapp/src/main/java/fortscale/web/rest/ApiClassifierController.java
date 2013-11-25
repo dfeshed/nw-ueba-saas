@@ -22,6 +22,7 @@ import fortscale.services.fe.IScoreDistribution;
 import fortscale.services.fe.ISuspiciousUserInfo;
 import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 
 
@@ -30,7 +31,7 @@ import fortscale.web.beans.DataBean;
 
 @Controller
 @RequestMapping("/api/classifier/**")
-public class ApiClassifierController {
+public class ApiClassifierController extends BaseController{
 	
 	private static final String SUSPICIOUS_USERS_BY_SCORE = "score";
 	private static final String SUSPICIOUS_USERS_BY_TREND = "trend";
@@ -58,10 +59,7 @@ public class ApiClassifierController {
 		if(date != null){
 			timestamp = new Date(date);
 		}
-		Direction direction = Direction.ASC;
-		if("DESC".equalsIgnoreCase(orderByDirection)){
-			direction = Direction.DESC;
-		}
+		Direction direction = convertStringToDirection(orderByDirection);
 		List<ILoginEventScoreInfo> eventScoreInfos = Collections.emptyList();
 		int total = 0;
 		if(uid == null){
@@ -94,10 +92,7 @@ public class ApiClassifierController {
 		if(date != null){
 			timestamp = new Date(date);
 		}
-		Direction direction = Direction.ASC;
-		if("DESC".equalsIgnoreCase(orderByDirection)){
-			direction = Direction.DESC;
-		}
+		Direction direction = convertStringToDirection(orderByDirection);
 		List<IVpnEventScoreInfo> eventScoreInfos = Collections.emptyList();
 		int total = 0;
 		if(uid == null){

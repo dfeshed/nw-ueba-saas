@@ -8,4 +8,5 @@ public interface IFeatureExplanation {
 	public Double getFeatureDistribution();	
 	public String[] getFeatureReference();
 	public Integer getFeatureCount();
+	public String getDescription();
 }

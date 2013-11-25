@@ -3,6 +3,8 @@ package fortscale.services;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Sort.Direction;
+
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
@@ -20,7 +22,7 @@ public interface UserService {
 	
 	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp); 
 	
-	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp); 
+	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction); 
 	
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit); 
 	
