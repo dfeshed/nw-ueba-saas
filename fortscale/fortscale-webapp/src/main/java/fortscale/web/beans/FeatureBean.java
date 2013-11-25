@@ -5,7 +5,7 @@ import fortscale.domain.fe.IFeatureExplanation;
 
 public class FeatureBean{
 	
-	private static final String SINGLE_VALUE_DESCRIPTION = "No one else has this property";
+	
 	
 	
 	
@@ -43,18 +43,16 @@ public class FeatureBean{
 	
 
 
-	private String generate_single_value_description() {
-		return SINGLE_VALUE_DESCRIPTION;
-	}
+	
 	
 	
 	class FeatureExlanationBean{
 		private IFeatureExplanation explanation;
-		private String description;
+//		private String description;
 		
 		public FeatureExlanationBean(IFeatureExplanation explanation){
 			this.explanation = explanation;			
-			this.description = feature.getFeatureScore() > 80 ? generate_description( ) : "";
+//			this.description = feature.getFeatureScore() > 80 ? generate_description( ) : "";
 		}
 		
 		public Double getFeatureDistribution(){
@@ -68,22 +66,12 @@ public class FeatureBean{
 		}
 		
 		public String getFeatureDescription() {
-			return description;
+			return explanation.getDescription();
 		}
 		
 		
 		
-		private String generate_description() {
-			return (1 == getFeatureCount() ) ?
-					generate_single_value_description( ) :
-					generate_general_case_description( ) ;			
-		}
 		
-		private String generate_general_case_description() {
-			return explanation.getFeatureDistribution() < 0.1 ?
-					String.format( "Only %d users (less than %d\\%) share this property", explanation.getFeatureCount(), (int)(getFeatureDistribution()*100) ) :
-					"" ;
-		}
 	}
 
 }
