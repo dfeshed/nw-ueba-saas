@@ -1,6 +1,7 @@
 package fortscale.domain.core;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,6 +16,16 @@ public class Notification extends AbstractDocument implements Serializable {
 	private String displayName;
 	private String uuid;
 	private String fsId;
+	private String type;
+	private Map<String, String> attributes;
+	
+	public Map<String, String> getAttributes(){
+		return attributes;
+	}
+	
+	public void setCause(String cause) {
+		this.cause = cause;
+	}
 
 	public long getTs() {
 		return ts;
@@ -42,6 +53,10 @@ public class Notification extends AbstractDocument implements Serializable {
 
 	public String getFsId() {
 		return fsId;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 }
