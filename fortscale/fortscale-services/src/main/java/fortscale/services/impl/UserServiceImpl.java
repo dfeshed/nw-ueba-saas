@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdGroup;
@@ -417,7 +418,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp) {
+	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction) {
 		Classifier.validateClassifierId(classifierId);
 //		Long timestampepoch = timestamp/1000;
 		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(classifierId, new Date(timestamp));
@@ -432,8 +433,40 @@ public class UserServiceImpl implements UserService{
 		if(ufe == null || ufe.getAttributes() == null){
 			return Collections.emptyList();
 		}
-		Collections.sort(ufe.getAttributes(), new IFeature.OrderByScoreDesc());
+		
+		Collections.sort(ufe.getAttributes(), getUserFeatureComparator(orderBy, direction));
 		return ufe.getAttributes();
+	}
+	
+	private Comparator<IFeature> getUserFeatureComparator(String orderBy, Direction direction){
+		if(direction == null){
+			direction = Direction.DESC;
+		}
+		Comparator<IFeature> ret = null;
+		if(orderBy == null){
+			orderBy = "featureScore";
+		}
+		switch(orderBy){
+		case "featureScore":
+			ret = new IFeature.OrderByFeatureScore(direction);
+			break;
+		case "featureUniqueName":
+			ret = new IFeature.OrderByFeatureUniqueName(direction);
+			break;
+		case "explanation.featureCount":
+			ret = new IFeature.OrderByFeatureExplanationCount(direction);
+			break;
+		case "explanation.featureDistribution":
+			ret = new IFeature.OrderByFeatureExplanationDistribution(direction);
+			break;
+		case "explanation.featureDescription":
+			ret = new IFeature.OrderByFeatureDescription(direction);
+			break;
+		default:
+			ret = new IFeature.OrderByFeatureScore(direction);
+		}
+		
+		return ret;
 	}
 	
 	
@@ -692,6 +725,8 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore){
 		ClassifierScore cScore = user.getScore(classifierId);
+		
+		
 		boolean isReplaceCurrentScore = true;
 		double trend = 0.0; 
 		double diffScore = 0.0;
@@ -707,6 +742,11 @@ public class UserServiceImpl implements UserService{
 			prevScores.add(scoreInfo);
 			cScore.setPrevScores(prevScores);
 		}else{
+			boolean isOnSameDay = isOnSameDay(timestamp, cScore.getTimestamp());
+			if(!isOnSameDay){
+				logger.warn("Got a score that belong to the past. classifierId ({}), current timestamp ({}), new score timestamp ({})", classifierId, cScore.getTimestamp(), timestamp);
+				return null;
+			}
 			if(cScore.getPrevScores().size() > 1){
 				double prevScore = cScore.getPrevScores().get(1).getScore() + 0.00001;
 				double curScore = value + 0.00001;
@@ -721,7 +761,7 @@ public class UserServiceImpl implements UserService{
 			scoreInfo.setTimestampEpoc(timestamp.getTime());
 			scoreInfo.setTrend(trend);
 			scoreInfo.setTrendScore(diffScore);
-			if (isOnSameDay(timestamp, cScore.getTimestamp())) {
+			if (isOnSameDay) {
 				if(isSaveMaxScore && value < cScore.getScore()){
 					isReplaceCurrentScore = false;
 				}else{
@@ -811,6 +851,10 @@ public class UserServiceImpl implements UserService{
 		
 		List<Long> distinctRuntimes = authDAO.getDistinctRuntime();
 		for(Long runtime: distinctRuntimes){
+			if(runtime == null){
+				logger.warn("got runtime null in the vpndatares table.");
+				continue;
+			}
 			runtime = runtime*1000;
 			if(runtime < oldestTime.getTimeInMillis()){
 				continue;
@@ -820,6 +864,10 @@ public class UserServiceImpl implements UserService{
 		
 		distinctRuntimes = vpnDAO.getDistinctRuntime();
 		for(Long runtime: distinctRuntimes){
+			if(runtime == null){
+				logger.warn("got runtime null in the vpndatares table.");
+				continue;
+			}
 			runtime = runtime*1000;
 			if(runtime < oldestTime.getTimeInMillis()){
 				continue;

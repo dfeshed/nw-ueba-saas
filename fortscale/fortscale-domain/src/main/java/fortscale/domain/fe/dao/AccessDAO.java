@@ -184,9 +184,24 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 
 	public Date getLastRunDate() {
 		Long lastRun = getLastRuntime();
+		if(lastRun == null){
+			String message;
+			if(countNumOfRecords() > 0){
+				message = String.format("run time in the table (%s) is null", getTableName());
+			} else{
+				message = String.format("the table (%s) is empty", getTableName());
+			}
+			throw new RuntimeException(message);
+		}
 		Date retDate = parseTimestampDate(lastRun);
 		lastRunDate = retDate;
 		return retDate;
+	}
+	
+	private int countNumOfRecords(){
+		String query = String.format("select count(*) from %s", getTableName());
+		
+		return impalaJdbcTemplate.queryForInt(query);
 	}
 
 	public Long getLastRuntime() {
