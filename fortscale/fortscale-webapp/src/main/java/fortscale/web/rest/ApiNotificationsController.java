@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.core.Notification;
+import fortscale.domain.core.NotificationAggregate;
 import fortscale.domain.core.NotificationResource;
 import fortscale.domain.core.dao.NotificationResourcesRepository;
 import fortscale.domain.core.dao.NotificationsRepository;
@@ -33,7 +35,8 @@ public class ApiNotificationsController {
 	@Autowired
 	private NotificationResourcesRepository notificationResourcesRepository;
 
-	private DataBean<List<Notification>> notificationsData(Iterable<Notification> userNotifications) {
+	private DataBean<List<Notification>> notificationsDataSingle(
+			Iterable<Notification> userNotifications) {
 		DataBean<List<Notification>> ret = new DataBean<List<Notification>>();
 
 		if (userNotifications != null) {
@@ -42,14 +45,7 @@ public class ApiNotificationsController {
 				NotificationResource res = notificationResourcesRepository
 						.findByMsg_name(notification.getCause());
 
-				String cause = "";
-
-				if (notification.getType() == null || notification.getType().length() == 0
-						|| notification.getType() != "agg") {
-					cause = res.getSingle();
-				} else {
-					cause = res.getAgg();
-				}
+				String cause = res.getSingle();
 
 				if (notification.getAttributes() != null) {
 					cause = generateDynamicCause(cause, notification.getAttributes());
@@ -67,6 +63,63 @@ public class ApiNotificationsController {
 		}
 	}
 
+	private DataBean<List<Object>> notificationDataAgg(Iterable<Object> overviewNotificationsAgg) {
+		DataBean<List<Object>> ret = new DataBean<List<Object>>();
+		ArrayList<Object> array = new ArrayList<Object>();
+		if (overviewNotificationsAgg != null) {
+			for (Object notification : overviewNotificationsAgg) {
+				if (notification instanceof NotificationAggregate) {
+					NotificationAggregate ne = (NotificationAggregate) notification;
+
+					NotificationResource res = notificationResourcesRepository.findByMsg_name(ne
+							.getCause());
+
+					String cause = res.getAgg();
+					HashMap<String, List<String>> aggAttirbues = ne.getAggAttirbues();
+					if(aggAttirbues != null && aggAttirbues.size() > 0){
+						cause = generateDynamicCause(cause, aggAttirbues);
+					}
+					ne.setCause(cause);
+				}
+				array.add(notification);
+			}
+
+			ret.setData(array);
+			ret.setTotal(array.size());
+
+			return ret;
+		}
+		{
+			return new DataBean<List<Object>>();
+		}
+	}
+
+	private String generateDynamicCause(String cause, HashMap<String, List<String>> aggAttirbues) {
+		String dynamicCause = cause;
+
+		for (String key : aggAttirbues.keySet()) {
+			dynamicCause = dynamicCause.replace(String.format("{%s}", key), beautifyList(aggAttirbues.get(key)));
+		}
+
+		return dynamicCause;
+	}
+
+	private String beautifyList(List<String> list) {
+		StringBuilder prettyString = new StringBuilder();
+		
+		for (Iterator<String> it = list.iterator(); it.hasNext(); ) {
+			prettyString.append(it.next());
+
+		    if (!it.hasNext()) {
+		    	prettyString.append(".");
+		    }else{
+		    	prettyString.append(" ,");
+		    }
+		}
+
+		return prettyString.toString();
+	}
+
 	private String generateDynamicCause(String cause, Map<String, String> attributes) {
 		String dynamicCause = cause;
 
@@ -82,7 +135,7 @@ public class ApiNotificationsController {
 	@LogException
 	public DataBean<List<Notification>> userNotifications(@PathVariable("fsid") String fsid) {
 		Iterable<Notification> userNotifications = notificationsRepository.findByFsId(fsid);
-		return notificationsData(userNotifications);
+		return notificationsDataSingle(userNotifications);
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
@@ -95,7 +148,18 @@ public class ApiNotificationsController {
 		PageRequest request = new PageRequest(0, 10, sortByTSDesc);
 
 		Iterable<Notification> overviewNotifications = notificationsRepository.findAll(request);
-		return notificationsData(overviewNotifications);
+		return notificationsDataSingle(overviewNotifications);
+	}
+
+	@RequestMapping(value = "/aggregate", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<Object>> agg() {
+		Sort sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP));
+		PageRequest request = new PageRequest(0, 10, sortByTSDesc);
+
+		Iterable<Object> overviewNotificationsAgg = notificationsRepository.findAllAndAggregate(request);
+		return notificationDataAgg(overviewNotificationsAgg);
 	}
 
 	@RequestMapping(value = "/clearAll", method = RequestMethod.GET)
