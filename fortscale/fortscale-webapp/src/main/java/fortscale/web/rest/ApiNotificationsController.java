@@ -71,10 +71,6 @@ public class ApiNotificationsController {
 				NotificationResource res = notificationResourcesRepository.findByMsg_name(notification.getCause());
 
 				String cause = (1 == notification.getAggregated().size() ) ? res.getSingle() : res.getAgg();
-				HashMap<String, List<String>> aggAttirbues = notification.getAggAttirbues();
-				if(aggAttirbues != null && aggAttirbues.size() > 0){
-//					cause = generateDynamicCause(cause, aggAttirbues);
-				}
 				notification.setCause(cause);
 			
 				array.add(notification);
@@ -88,32 +84,6 @@ public class ApiNotificationsController {
 		{
 			return new DataBean<List<Object>>();
 		}
-	}
-
-	private String generateDynamicCause(String cause, HashMap<String, List<String>> aggAttirbues) {
-		String dynamicCause = cause;
-
-		for (String key : aggAttirbues.keySet()) {
-			dynamicCause = dynamicCause.replace(String.format("{%s}", key), beautifyList(aggAttirbues.get(key)));
-		}
-
-		return dynamicCause;
-	}
-
-	private String beautifyList(List<String> list) {
-		StringBuilder prettyString = new StringBuilder();
-		
-		for (Iterator<String> it = list.iterator(); it.hasNext(); ) {
-			prettyString.append(it.next());
-
-		    if (!it.hasNext()) {
-		    	prettyString.append(".");
-		    }else{
-		    	prettyString.append(" ,");
-		    }
-		}
-
-		return prettyString.toString();
 	}
 
 	private String generateDynamicCause(String cause, Map<String, String> attributes) {
