@@ -232,11 +232,18 @@ public class UserServiceImpl implements UserService{
 		if(groups != null){
 			for(String groupDN: groups){
 				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
+				String groupName = null;
 				if(adGroup != null){
-					user.addGroup(new AdUserGroup(groupDN, adGroup.getName()));
+					groupName = adGroup.getName();
 				}else{
 					Log.warn("the user ({}) group ({}) was not found", user.getAdDn(), groupDN);
+					groupName = adUserParser.parseFirstCNFromDN(groupDN);
+					if(groupName == null){
+						Log.warn("invalid group dn ({}) for user ({})", groupDN, user.getAdDn());
+						continue;
+					}
 				}
+				user.addGroup(new AdUserGroup(groupDN, groupName));
 			}
 		}
 		
@@ -714,8 +721,9 @@ public class UserServiceImpl implements UserService{
 			user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false, true);
 			if(user != null){
 				users.add(user);
+				impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
 			}
-			impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
+			
 		}
 		impalaGroupsScoreWriter.close();
 		
@@ -743,7 +751,7 @@ public class UserServiceImpl implements UserService{
 			cScore.setPrevScores(prevScores);
 		}else{
 			boolean isOnSameDay = isOnSameDay(timestamp, cScore.getTimestamp());
-			if(!isOnSameDay){
+			if(!isOnSameDay && timestamp.before(cScore.getTimestamp())){
 				logger.warn("Got a score that belong to the past. classifierId ({}), current timestamp ({}), new score timestamp ({})", classifierId, cScore.getTimestamp(), timestamp);
 				return null;
 			}
