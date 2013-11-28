@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document(collection=AdUser.COLLECTION_NAME)
 public class AdUser extends AdObject{
 	public static final String COLLECTION_NAME = "ad_user";
+	public static final String thumbnailPhotoField = "thumbnailPhoto";
 	
 	@Field("sn")
 	private String lastname  = "";
@@ -126,6 +127,7 @@ public class AdUser extends AdObject{
 	private Long timestampepoch;
 	
 	// Contains the users's photo in Base64 format 
+	@Field(thumbnailPhotoField)
 	private String thumbnailPhoto = "";
 	
 	

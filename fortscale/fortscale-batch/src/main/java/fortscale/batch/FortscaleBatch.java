@@ -45,6 +45,7 @@ public class FortscaleBatch {
 	public void updateAdInfo() {
 		userService.updateUserWithCurrentADInfo();
 		adService.addLastModifiedFieldToAllCollections();
+		adService.removeThumbnails();
 	}
 	
 	public void updateAuthScore(String userTotalScoreCsvFileFullPathString) {

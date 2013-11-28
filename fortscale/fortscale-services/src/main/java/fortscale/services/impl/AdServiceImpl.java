@@ -64,4 +64,9 @@ public class AdServiceImpl implements AdService {
 		mongoTemplate.updateMulti(query(where(fieldName).exists(false)), update(fieldName, date), entityClass);
 	}
 
+	@Override
+	public void removeThumbnails() {
+		mongoTemplate.updateMulti(query(where(AdUser.thumbnailPhotoField).exists(true)), update(AdUser.thumbnailPhotoField, null), AdUser.class);
+	}
+
 }
