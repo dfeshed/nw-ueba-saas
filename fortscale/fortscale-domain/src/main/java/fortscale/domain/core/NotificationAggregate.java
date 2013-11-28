@@ -22,7 +22,7 @@ public class NotificationAggregate implements Serializable {
 		aggregated.addAll(list);
 		cause = notification.getCause();
 		ts = notification.getTs();
-		aggAttributes = getAttribues(aggregated);
+		aggAttributes = getAttributes(aggregated);
 		type = "agg";
 	}
 
@@ -30,7 +30,7 @@ public class NotificationAggregate implements Serializable {
 		return aggAttributes;
 	}
 
-	private HashMap<String, List<String>> getAttribues(List<Notification> aggregated) {
+	private HashMap<String, List<String>> getAttributes(List<Notification> aggregated) {
 		HashMap<String, List<String>> aggAtt = new HashMap<>();
 
 		for (Notification n : aggregated) {
