@@ -10,6 +10,7 @@ public class ADUserParser {
 	public static final String DATE_FORMAT = "yyyy/MM/dd'T'HH:mm:ss" ;
 	public static final String TIMESTAMP_FORMAT = "yyyy/MM/dd'T'HH:mm" ;
 	public static final String ATTRIBUTE_OU_PREFIX = "OU=";
+	public static final String ATTRIBUTE_CN_PREFIX = "CN=";
 	
 	
 	public String parseOUFromDN(String dn) {
@@ -29,6 +30,23 @@ public class ADUserParser {
 			ouLastIndex = dn.length();
 		}
 		return dn.substring(ouStartIndex, ouLastIndex);  
+	}
+	
+	public String parseFirstCNFromDN(String dn) {
+		int cnStartIndex = dn.indexOf(ATTRIBUTE_CN_PREFIX);
+		if(cnStartIndex == -1){
+			return null;
+		} else{
+			cnStartIndex = cnStartIndex + 3;
+			if(cnStartIndex > dn.length()){
+				return null;
+			}
+		}
+		int cnLastIndex = dn.indexOf(",", cnStartIndex);
+		if(cnLastIndex == -1){
+			cnLastIndex = dn.length();
+		}
+		return dn.substring(cnStartIndex, cnLastIndex);
 	}
 	
 	
