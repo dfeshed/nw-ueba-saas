@@ -73,7 +73,7 @@ public class ApiNotificationsController {
 				String cause = (1 == notification.getAggregated().size() ) ? res.getSingle() : res.getAgg();
 				HashMap<String, List<String>> aggAttirbues = notification.getAggAttirbues();
 				if(aggAttirbues != null && aggAttirbues.size() > 0){
-					cause = generateDynamicCause(cause, aggAttirbues);
+//					cause = generateDynamicCause(cause, aggAttirbues);
 				}
 				notification.setCause(cause);
 			
