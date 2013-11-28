@@ -20,7 +20,7 @@ public class AdObject extends AbstractDocument{
 	@Field(timestampField)
 	private String timestamp;
 	
-	@Indexed(unique = false, expireAfterSeconds=60*60*24*4)
+	@Indexed(unique = false, expireAfterSeconds=60*60*24*20)
 	@Field(lastModifiedField)
 	private Date lastModified;
 	
