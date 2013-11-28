@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 
+import fortscale.domain.core.NotificationAggregate;
+
 public interface NotificationsRepositoryCustom {
 
-	List<Object> findAllAndAggregate(PageRequest request);
+	List<NotificationAggregate> findAllAndAggregate(PageRequest request);
 
 }

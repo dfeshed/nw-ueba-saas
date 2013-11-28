@@ -63,24 +63,20 @@ public class ApiNotificationsController {
 		}
 	}
 
-	private DataBean<List<Object>> notificationDataAgg(Iterable<Object> overviewNotificationsAgg) {
+	private DataBean<List<Object>> notificationDataAgg(Iterable<NotificationAggregate> overviewNotificationsAgg) {
 		DataBean<List<Object>> ret = new DataBean<List<Object>>();
 		ArrayList<Object> array = new ArrayList<Object>();
 		if (overviewNotificationsAgg != null) {
-			for (Object notification : overviewNotificationsAgg) {
-				if (notification instanceof NotificationAggregate) {
-					NotificationAggregate ne = (NotificationAggregate) notification;
+			for (NotificationAggregate notification : overviewNotificationsAgg) {								
+				NotificationResource res = notificationResourcesRepository.findByMsg_name(notification.getCause());
 
-					NotificationResource res = notificationResourcesRepository.findByMsg_name(ne
-							.getCause());
-
-					String cause = res.getAgg();
-					HashMap<String, List<String>> aggAttirbues = ne.getAggAttirbues();
-					if(aggAttirbues != null && aggAttirbues.size() > 0){
-						cause = generateDynamicCause(cause, aggAttirbues);
-					}
-					ne.setCause(cause);
+				String cause = (1 == notification.getAggregated().size() ) ? res.getSingle() : res.getAgg();
+				HashMap<String, List<String>> aggAttirbues = notification.getAggAttirbues();
+				if(aggAttirbues != null && aggAttirbues.size() > 0){
+					cause = generateDynamicCause(cause, aggAttirbues);
 				}
+				notification.setCause(cause);
+			
 				array.add(notification);
 			}
 
@@ -158,7 +154,7 @@ public class ApiNotificationsController {
 		Sort sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP));
 		PageRequest request = new PageRequest(0, 10, sortByTSDesc);
 
-		Iterable<Object> overviewNotificationsAgg = notificationsRepository.findAllAndAggregate(request);
+		Iterable<NotificationAggregate> overviewNotificationsAgg = notificationsRepository.findAllAndAggregate(request);
 		return notificationDataAgg(overviewNotificationsAgg);
 	}
 

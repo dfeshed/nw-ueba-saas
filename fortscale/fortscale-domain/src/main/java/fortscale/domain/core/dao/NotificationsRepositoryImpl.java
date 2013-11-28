@@ -17,9 +17,9 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	private MongoTemplate mongoTemplate;
 	
 	@Override
-	public List<Object> findAllAndAggregate(PageRequest request) {
+	public List<NotificationAggregate> findAllAndAggregate(PageRequest request) {
 		HashMap<String, List<Notification>> aggMap = new HashMap<String, List<Notification>>(); 
-		List<Object> aggNotifications = new ArrayList<>();
+		List<NotificationAggregate> aggNotifications = new ArrayList<>();
 		
 		Query query = new Query().with(request.getSort());
 		List<Notification> notifications = mongoTemplate.find(query, Notification.class);
@@ -34,13 +34,8 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		}
 		
 		for (String key: aggMap.keySet()) {
-			List<Notification> list = aggMap.get(key);
-			if(list.size() == 1){
-				aggNotifications.add(list.get(0));
-			}else{
-				NotificationAggregate agg = new NotificationAggregate(list);
-				aggNotifications.add(agg);
-			}
+			NotificationAggregate agg = new NotificationAggregate(aggMap.get(key));
+			aggNotifications.add(agg);			
 		}
 		
 		int min = Math.min(aggNotifications.size(), request.getPageSize());

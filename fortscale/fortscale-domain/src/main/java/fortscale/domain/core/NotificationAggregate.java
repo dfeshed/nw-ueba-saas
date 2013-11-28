@@ -13,7 +13,6 @@ public class NotificationAggregate implements Serializable {
 	private String generator_name;
 	private String cause;
 	private String type;
-	private String uuid = "";
 	private HashMap<String, List<String>> aggAttirbues;
 
 	public NotificationAggregate(List<Notification> list) {
@@ -58,11 +57,6 @@ public class NotificationAggregate implements Serializable {
 	public String getCause() {
 		return cause;
 	}
-
-	public String getUuid() {
-		return uuid;
-	}
-
 	public String getType() {
 		return type;
 	}
