@@ -13,6 +13,7 @@ public class NotificationAggregate implements Serializable {
 	private String generator_name;
 	private String cause;
 	private String type;
+	private long ts;
 	private HashMap<String, List<String>> aggAttirbues;
 
 	public NotificationAggregate(List<Notification> list) {
@@ -20,6 +21,7 @@ public class NotificationAggregate implements Serializable {
 		generator_name = notification.getGenerator_name();
 		aggregated.addAll(list);
 		cause = notification.getCause();
+		ts = notification.getTs();
 		aggAttirbues = getAttribues(aggregated);
 		type = "agg";
 	}
@@ -29,14 +31,14 @@ public class NotificationAggregate implements Serializable {
 	}
 
 	private HashMap<String, List<String>> getAttribues(List<Notification> aggregated) {
-		HashMap<String, List<String>> aggAtt = new HashMap<>(); 
-				
+		HashMap<String, List<String>> aggAtt = new HashMap<>();
+
 		for (Notification n : aggregated) {
-			if(n.getAttributes() != null){
+			if (n.getAttributes() != null) {
 				Set<Entry<String, String>> entrySet = n.getAttributes().entrySet();
 				for (Entry<String, String> entry : entrySet) {
 					String key = entry.getKey();
-					if(aggAtt.containsKey(key) == false){
+					if (aggAtt.containsKey(key) == false) {
 						aggAtt.put(key, new ArrayList<String>());
 					}
 					aggAtt.get(key).add(entry.getValue());
@@ -57,8 +59,13 @@ public class NotificationAggregate implements Serializable {
 	public String getCause() {
 		return cause;
 	}
+
 	public String getType() {
 		return type;
+	}
+
+	public long getTs() {
+		return ts;
 	}
 
 	public List<Notification> getAggregated() {
