@@ -5,6 +5,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.data.annotation.Transient;
 
 public class FeatureExplanation implements IFeatureExplanation {
+	private static final String EMPTY_STRING = "";
 	public static final String FEATURE_DISTRIBUTION_FIELD = "f_dst";
 	public static final String FEATURE_COUNT_FIELD = "f_cnt";
 	public static final String FEATURE_REFERENCE_FIELD = "ref";
@@ -24,7 +25,7 @@ public class FeatureExplanation implements IFeatureExplanation {
 		this.featureDistribution = featureDistribution;
 		this.featureCount = featureCount;
 		this.featureReference = featureReference;
-		description = score > 80 ? generate_description( ) : "";
+		description = score > 80 ? generate_description( ) : EMPTY_STRING;
 	}
 	
 
@@ -59,9 +60,7 @@ public class FeatureExplanation implements IFeatureExplanation {
 	}
 	
 	private String generate_general_case_description() {
-		return getFeatureDistribution() < 0.1 ?
-				String.format( "Only %d users (less than %d%%) share this property", getFeatureCount(), (int)(getFeatureDistribution()*100) ) :
-				"" ;
+		return EMPTY_STRING ; // canceled
 	}
 	
 }
