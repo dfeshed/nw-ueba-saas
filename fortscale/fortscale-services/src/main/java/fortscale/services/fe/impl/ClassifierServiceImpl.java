@@ -6,9 +6,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,6 +59,9 @@ import fortscale.services.impl.SeverityElement;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.scoring.IEBSResult;
+import fortscale.utils.scoring.IQueryResultsScorer;
+import fortscale.utils.scoring.impl.QueryResultsScorer;
 
 @Service("classifierService")
 public class ClassifierServiceImpl implements ClassifierService, InitializingBean{
@@ -837,6 +842,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 	}
 	
+	private static final String VPN_STATUS_GLOBAL_SCORE_VALUE = "SUCCESS";
+	
 	@Override
 	public EBSResult getEBSAlgOnQuery(String sqlQuery, int offset, int limit, String orderBy, String orderByDirection, Integer minScore){
 		String timestampFieldName = getTimestampFieldName(sqlQuery);
@@ -851,17 +858,25 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			return new EBSResult(null, null,0, 0);
 		}
 
-		
+		boolean isRunThreadForSaving = true;
+		if(minScore != null){
+			isRunThreadForSaving = false;
+		}
 		if(sqlQuery.contains(WMIEVENTS_TABLE_NAME)){
 			ebsResult = getEBSAlgOnAuthQuery(resultsMap, 0, resultsMap.size(), orderBy, orderByDirection);
 		} else if(sqlQuery.contains(VPN_DATA_TABLENAME)){
-			List<String> fieldNamesFilter = new ArrayList<>();
-			fieldNamesFilter.add(VpnScore.LOCAL_IP_FIELD_NAME);
-			ebsResult = getSimpleEBSAlgOnQuery(resultsMap, VPN_DATA_TABLENAME, timestampFieldName, fieldNamesFilter, 0, resultsMap.size(), orderBy, orderByDirection);
+			Set<String> fieldNamesFilterSet = new HashSet<>();
+			fieldNamesFilterSet.add(VpnScore.LOCAL_IP_FIELD_NAME);
+			IQueryResultsScorer queryResultsScorer = new QueryResultsScorer();
+			Set<String> timeFieldNameSet = new HashSet<>();
+			timeFieldNameSet.add(timestampFieldName);
+			IEBSResult tmp = queryResultsScorer.runEBSOnQueryResults(resultsMap, rowFieldRegexFilter.get(VPN_DATA_TABLENAME), timeFieldNameSet, fieldNamesFilterSet, VpnScore.STATUS_FIELD_NAME, VPN_STATUS_GLOBAL_SCORE_VALUE);
+			isRunThreadForSaving = false;
+			ebsResult = new EBSResult(tmp.getResultsList(), tmp.getGlobalScore(), 0, tmp.getResultsList().size());
 		} else{
 			ebsResult = getSimpleEBSAlgOnQuery(resultsMap, null, null,Collections.<String>emptyList(), 0, resultsMap.size(), orderBy, orderByDirection);
 		}
-		if(minScore != null){
+		if(!isRunThreadForSaving){
 			saveEBSResultsOnAuthQuery(sqlQuery, ebsResult, timestampFieldName, false);
 			ebsResult = findEBSAlgOnQuery(sqlQuery, offset, limit, orderBy, orderByDirection, timestampFieldName, minScore);
 		} else{
