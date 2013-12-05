@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdGroup;
@@ -94,9 +95,26 @@ public class UserServiceImpl implements UserService{
 	@Value("${vpn.to.ad.username.regex.format:^%s*(?i)}")
 	private String vpnToAdUsernameRegexFormat;
 	
+	@Value("${auth.to.ad.username.regex.format:^%s*(?i)}")
+	private String authToAdUsernameRegexFormat;
 	
 	
-
+	
+	
+	
+	@Override
+	public void removeClassifierFromAllUsers(String classifierId){
+		if(!Classifier.ad.getId().equals(classifierId)){
+			return;
+		}
+		
+		List<User> users = userRepository.findAll();
+		for(User user: users){
+			user.removeClassifierScore(classifierId);
+		}
+		
+		userRepository.save(users);
+	}
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
@@ -214,11 +232,18 @@ public class UserServiceImpl implements UserService{
 		if(groups != null){
 			for(String groupDN: groups){
 				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
+				String groupName = null;
 				if(adGroup != null){
-					user.addGroup(new AdUserGroup(groupDN, adGroup.getName()));
+					groupName = adGroup.getName();
 				}else{
 					Log.warn("the user ({}) group ({}) was not found", user.getAdDn(), groupDN);
+					groupName = adUserParser.parseFirstCNFromDN(groupDN);
+					if(groupName == null){
+						Log.warn("invalid group dn ({}) for user ({})", groupDN, user.getAdDn());
+						continue;
+					}
 				}
+				user.addGroup(new AdUserGroup(groupDN, groupName));
 			}
 		}
 		
@@ -400,7 +425,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp) {
+	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction) {
 		Classifier.validateClassifierId(classifierId);
 //		Long timestampepoch = timestamp/1000;
 		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(classifierId, new Date(timestamp));
@@ -415,8 +440,40 @@ public class UserServiceImpl implements UserService{
 		if(ufe == null || ufe.getAttributes() == null){
 			return Collections.emptyList();
 		}
-		Collections.sort(ufe.getAttributes(), new IFeature.OrderByScoreDesc());
+		
+		Collections.sort(ufe.getAttributes(), getUserFeatureComparator(orderBy, direction));
 		return ufe.getAttributes();
+	}
+	
+	private Comparator<IFeature> getUserFeatureComparator(String orderBy, Direction direction){
+		if(direction == null){
+			direction = Direction.DESC;
+		}
+		Comparator<IFeature> ret = null;
+		if(orderBy == null){
+			orderBy = "featureScore";
+		}
+		switch(orderBy){
+		case "featureScore":
+			ret = new IFeature.OrderByFeatureScore(direction);
+			break;
+		case "featureUniqueName":
+			ret = new IFeature.OrderByFeatureUniqueName(direction);
+			break;
+		case "explanation.featureCount":
+			ret = new IFeature.OrderByFeatureExplanationCount(direction);
+			break;
+		case "explanation.featureDistribution":
+			ret = new IFeature.OrderByFeatureExplanationDistribution(direction);
+			break;
+		case "explanation.featureDescription":
+			ret = new IFeature.OrderByFeatureDescription(direction);
+			break;
+		default:
+			ret = new IFeature.OrderByFeatureScore(direction);
+		}
+		
+		return ret;
 	}
 	
 	
@@ -533,10 +590,15 @@ public class UserServiceImpl implements UserService{
 		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		List<User> users = new ArrayList<>();
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
-			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
+			String username = authScore.getUserName();
+			User user = userRepository.findByLogUsername(AuthScore.TABLE_NAME, username);
 			if(user == null){
-				logger.error("no user was found with the username {}", authScore.getUserName());
-				continue;
+				user = findByAuthUsername(username);
+				if(user == null){
+					logger.error("no user was found with the username {}", username);
+					continue;
+				}
+				updateLogUsername(user, AuthScore.TABLE_NAME, username, false);
 			}
 			user = updateUserScore(user, lastRun, Classifier.auth.getId(), authScore.getGlobalScore(), avg, false, false);
 			if(user != null){
@@ -544,6 +606,40 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		updateUserTotalScore(users, true, lastRun);		
+	}
+	
+	@Override
+	public User findByAuthUsername(String username){
+		return findByUsername(generateUsernameRegexesByAuthUsername(username), username);
+	}
+	
+	
+	public User findByUsername(List<String> regexes, String username){
+		for(String regex: regexes){
+			List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
+			if(tmpUsers == null || tmpUsers.size() == 0){
+				continue;
+			}
+			if(tmpUsers.size() > 1){
+				String tmpUsername = String.format("%s@", username);
+				for(User tmpUser: tmpUsers){
+					if(tmpUser.getUsername().startsWith(tmpUsername)){
+						return tmpUser;
+					}
+				}
+			}else{
+				return tmpUsers.get(0);
+			}
+		}
+		return null;
+	}
+	
+	private List<String> generateUsernameRegexesByAuthUsername(String authUsername){
+		List<String> regexes = new ArrayList<>();
+		for(String regexFormat: authToAdUsernameRegexFormat.split(REGEX_SEPERATOR)){
+			regexes.add(String.format(regexFormat, authUsername));
+		}
+		return regexes;
 	}
 	
 	@Override
@@ -556,21 +652,16 @@ public class UserServiceImpl implements UserService{
 		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
-			String userName = vpnScore.getUserName();
-			User user = userRepository.findByApplicationUserName(UserApplication.vpn.getId(), userName);
+			String username = vpnScore.getUserName();
+			User user = userRepository.findByApplicationUserName(UserApplication.vpn.getId(), username);
 			if(user == null){
-				for(String regex: generateUsernameRegexesByVpnUsername(userName)){
-					List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
-					if(tmpUsers == null || tmpUsers.size() == 0 || tmpUsers.size() > 1){
-						continue;
-					}
-					user = tmpUsers.get(0);
-					createApplicationUserDetailsIfNotExist(user, new ApplicationUserDetails(UserApplication.vpn.getId(), userName));
-				}
+				user = findByVpnUsername(username);
 				if(user == null){
-					logger.info("no user was found with vpn username ({})", userName);
+					logger.info("no user was found with vpn username ({})", username);
 					continue;
 				}
+				updateApplicationUserDetails(user, new ApplicationUserDetails(UserApplication.vpn.getId(), username), false);
+				updateLogUsername(user, VpnScore.TABLE_NAME, username, false);
 			}
 			user = updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg, false, false);
 			if(user != null){
@@ -580,7 +671,10 @@ public class UserServiceImpl implements UserService{
 		updateUserTotalScore(users, true, lastRun);
 	}
 	
-	
+	@Override
+	public User findByVpnUsername(String username){
+		return findByUsername(generateUsernameRegexesByVpnUsername(username), username);
+	}
 	
 	private List<String> generateUsernameRegexesByVpnUsername(String vpnUsername){
 		List<String> regexes = new ArrayList<>();
@@ -627,8 +721,9 @@ public class UserServiceImpl implements UserService{
 			user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false, true);
 			if(user != null){
 				users.add(user);
+				impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
 			}
-			impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
+			
 		}
 		impalaGroupsScoreWriter.close();
 		
@@ -638,6 +733,8 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore){
 		ClassifierScore cScore = user.getScore(classifierId);
+		
+		
 		boolean isReplaceCurrentScore = true;
 		double trend = 0.0; 
 		double diffScore = 0.0;
@@ -653,6 +750,11 @@ public class UserServiceImpl implements UserService{
 			prevScores.add(scoreInfo);
 			cScore.setPrevScores(prevScores);
 		}else{
+			boolean isOnSameDay = isOnSameDay(timestamp, cScore.getTimestamp());
+			if(!isOnSameDay && timestamp.before(cScore.getTimestamp())){
+				logger.warn("Got a score that belong to the past. classifierId ({}), current timestamp ({}), new score timestamp ({})", classifierId, cScore.getTimestamp(), timestamp);
+				return null;
+			}
 			if(cScore.getPrevScores().size() > 1){
 				double prevScore = cScore.getPrevScores().get(1).getScore() + 0.00001;
 				double curScore = value + 0.00001;
@@ -667,7 +769,7 @@ public class UserServiceImpl implements UserService{
 			scoreInfo.setTimestampEpoc(timestamp.getTime());
 			scoreInfo.setTrend(trend);
 			scoreInfo.setTrendScore(diffScore);
-			if (isOnSameDay(timestamp, cScore.getTimestamp())) {
+			if (isOnSameDay) {
 				if(isSaveMaxScore && value < cScore.getScore()){
 					isReplaceCurrentScore = false;
 				}else{
@@ -712,10 +814,16 @@ public class UserServiceImpl implements UserService{
 		return (Math.abs(day1 - day2) <= dayThreshold);
 	}
 
-	@Override
-	public void createApplicationUserDetailsIfNotExist(User user, ApplicationUserDetails applicationUserDetails) {
-		if(!user.containsApplicationUserDetails(applicationUserDetails)) {
-			user.addApplicationUserDetails(applicationUserDetails);
+	public void updateApplicationUserDetails(User user, ApplicationUserDetails applicationUserDetails, boolean isSave) {
+		user.addApplicationUserDetails(applicationUserDetails);
+		if(isSave){
+			userRepository.save(user);
+		}
+	}
+	
+	public void updateLogUsername(User user, String logname, String username, boolean isSave) {
+		user.addLogUsername(logname, username);
+		if(isSave){
 			userRepository.save(user);
 		}
 	}
@@ -751,6 +859,10 @@ public class UserServiceImpl implements UserService{
 		
 		List<Long> distinctRuntimes = authDAO.getDistinctRuntime();
 		for(Long runtime: distinctRuntimes){
+			if(runtime == null){
+				logger.warn("got runtime null in the vpndatares table.");
+				continue;
+			}
 			runtime = runtime*1000;
 			if(runtime < oldestTime.getTimeInMillis()){
 				continue;
@@ -760,6 +872,10 @@ public class UserServiceImpl implements UserService{
 		
 		distinctRuntimes = vpnDAO.getDistinctRuntime();
 		for(Long runtime: distinctRuntimes){
+			if(runtime == null){
+				logger.warn("got runtime null in the vpndatares table.");
+				continue;
+			}
 			runtime = runtime*1000;
 			if(runtime < oldestTime.getTimeInMillis()){
 				continue;

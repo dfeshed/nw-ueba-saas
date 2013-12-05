@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
 import fortscale.web.beans.FeatureBean;
@@ -32,7 +34,7 @@ import fortscale.web.beans.UserSearchBean;
 
 @Controller
 @RequestMapping("/api/user/**")
-public class ApiUserController {
+public class ApiUserController extends BaseController{
 
 	@Autowired
 	private UserService userService;
@@ -206,9 +208,13 @@ public class ApiUserController {
 	@ResponseBody
 	@LogException
 	public DataBean<List<FeatureBean>> userClassifierAttributes(@PathVariable String uid, @PathVariable String classifierId,
-			@RequestParam(required=true) String date, Model model){
+			@RequestParam(required=true) String date,
+			@RequestParam(required=false) String orderBy,
+			@RequestParam(defaultValue="DESC") String orderByDirection,
+			Model model){
 		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
-		List<IFeature> attrs = userService.getUserAttributesScores(uid, classifierId, Long.parseLong(date));
+		Direction direction = convertStringToDirection(orderByDirection);
+		List<IFeature> attrs = userService.getUserAttributesScores(uid, classifierId, Long.parseLong(date), orderBy, direction);
 		List<FeatureBean> features = new ArrayList<FeatureBean>();
 		for(IFeature feature: attrs){
 			features.add(new FeatureBean(feature));
@@ -229,6 +235,12 @@ public class ApiUserController {
 		ret.setData(userScores);
 		ret.setTotal(userScores.size());
 		return ret;
+	}
+	
+	@RequestMapping(value="/removeClassifier", method=RequestMethod.GET)
+	@LogException
+	public void removeClassifierFromAllUsers(@RequestParam(required=true) String classifierId, Model model){
+		userService.removeClassifierFromAllUsers(classifierId);
 	}
 	
 	private User getManager(User user){

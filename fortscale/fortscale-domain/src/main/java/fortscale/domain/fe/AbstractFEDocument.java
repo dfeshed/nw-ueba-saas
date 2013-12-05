@@ -9,11 +9,14 @@ import fortscale.domain.core.AbstractDocument;
 
 public class AbstractFEDocument extends AbstractDocument {
 	public static final String timestampField = "timestamp";
+	public static final String lastModifiedField = "lastModified";
 
+	@Indexed
 	@Field(timestampField)
 	private Date timestamp;
 	
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
+	@Field(lastModifiedField)
 	private Date lastModified;
 
 	public Date getTimestamp() {

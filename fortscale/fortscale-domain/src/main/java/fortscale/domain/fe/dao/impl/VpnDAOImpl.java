@@ -12,8 +12,11 @@ import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.logging.Logger;
 
 public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
+	private static Logger logger = Logger.getLogger(VpnDAOImpl.class);
+	
 	
 	@Autowired
 	private ImpalaParser impalaParser;
@@ -86,20 +89,30 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
 				ret.setLocalIp(rs.getString(VpnScore.LOCAL_IP_FIELD_NAME));
 				ret.setSourceIp(rs.getString(VpnScore.SOURCE_IP_FIELD_NAME));
 				ret.setStatus(rs.getString(VpnScore.STATUS_FIELD_NAME));
+				try{
+					ret.setCountry(rs.getString(VpnScore.COUNTRY_FIELD_NAME));
+				} catch(Exception e){
+					logger.warn("got the following exception while trying to retrieve the country from the vpn score results table",e);
+				}
 				
-				ret.setEventTimeScore(Double.parseDouble(rs.getString(VpnScore.EVENT_TIME_SCORE_FIELD_NAME)));
-				ret.setUserNameScore(Double.parseDouble(rs.getString(VpnScore.USERNAME_SCORE_FIELD_NAME)));
-				ret.setLocalIpScore(Double.parseDouble(rs.getString(VpnScore.LOCAL_IP_SCORE_FIELD_NAME)));
-				ret.setSourceIpScore(Double.parseDouble(rs.getString(VpnScore.SOURCE_IP_SCORE_FIELD_NAME)));
-				ret.setStatusScore(Double.parseDouble(rs.getString(VpnScore.STATUS_SCORE_FIELD_NAME)));
+				ret.setEventTimeScore(rs.getDouble(VpnScore.EVENT_TIME_SCORE_FIELD_NAME));
+				ret.setUserNameScore(rs.getDouble(VpnScore.USERNAME_SCORE_FIELD_NAME));
+				ret.setSourceIpScore(rs.getDouble(VpnScore.SOURCE_IP_SCORE_FIELD_NAME));
+				ret.setStatusScore(rs.getDouble(VpnScore.STATUS_SCORE_FIELD_NAME));
+				try{
+					ret.setCountryScore(rs.getDouble(VpnScore.COUNTRY_SCORE_FIELD_NAME));
+				} catch(Exception e){
+					logger.warn("got the following exception while trying to retrieve the country score from the vpn score results table",e);
+				}
 				
-				ret.setEventScore(Double.parseDouble(rs.getString(VpnScore.EVENT_SCORE_FIELD_NAME)));
-				ret.setGlobalScore(Double.parseDouble(rs.getString(VpnScore.GLOBAL_SCORE_FIELD_NAME)));
+				
+				ret.setEventScore(rs.getDouble(VpnScore.EVENT_SCORE_FIELD_NAME));
+				ret.setGlobalScore(rs.getDouble(VpnScore.GLOBAL_SCORE_FIELD_NAME));
 				
 			} catch (NumberFormatException e) {
-				throw new SQLException(e);
+				throw new SQLException(e.getMessage());
 			} catch (ParseException e) {
-				throw new SQLException(e);
+				throw new SQLException(e.getMessage());
 			}
 			
 			return ret;

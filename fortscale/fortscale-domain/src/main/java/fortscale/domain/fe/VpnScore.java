@@ -18,12 +18,13 @@ public class VpnScore {
 	public static final String SOURCE_IP_FIELD_NAME = "source_ip";
 	public static final String LOCAL_IP_FIELD_NAME = "local_ip";
 	public static final String STATUS_FIELD_NAME = "status";
+	public static final String COUNTRY_FIELD_NAME = "country";
 	
 	public static final String EVENT_TIME_SCORE_FIELD_NAME = "date_timescore";
 	public static final String USERNAME_SCORE_FIELD_NAME = "usernamescore";
 	public static final String SOURCE_IP_SCORE_FIELD_NAME = "source_ipscore";
-	public static final String LOCAL_IP_SCORE_FIELD_NAME = "local_ipscore";
 	public static final String STATUS_SCORE_FIELD_NAME = "statusscore";
+	public static final String COUNTRY_SCORE_FIELD_NAME = "countryscore";
 	
 	public static final String EVENT_SCORE_FIELD_NAME = "eventscore";
 	public static final String GLOBAL_SCORE_FIELD_NAME = "globalscore";
@@ -40,12 +41,13 @@ public class VpnScore {
 	private String sourceIp;
 	private String localIp;
 	private String status;
+	private String country;
 	
 	private double eventTimeScore;
 	private double userNameScore;
 	private double sourceIpScore;
-	private double localIpScore;
 	private double statusScore;
+	private double countryScore;
 	
 	private double eventScore;
 	private double globalScore;
@@ -121,17 +123,23 @@ public class VpnScore {
 	public void setSourceIpScore(double sourceIpScore) {
 		this.sourceIpScore = sourceIpScore;
 	}
-	public double getLocalIpScore() {
-		return localIpScore;
-	}
-	public void setLocalIpScore(double localIpScore) {
-		this.localIpScore = localIpScore;
-	}
 	public double getStatusScore() {
 		return statusScore;
 	}
 	public void setStatusScore(double statusScore) {
 		this.statusScore = statusScore;
+	}
+	public String getCountry() {
+		return country;
+	}
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	public double getCountryScore() {
+		return countryScore;
+	}
+	public void setCountryScore(double countryScore) {
+		this.countryScore = countryScore;
 	}
 	
 	

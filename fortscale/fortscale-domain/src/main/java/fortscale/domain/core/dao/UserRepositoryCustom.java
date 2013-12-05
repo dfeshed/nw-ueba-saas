@@ -15,4 +15,5 @@ public interface UserRepositoryCustom {
 	public List<User> findByClassifierIdAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable);
 	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold);
 	public int countNumOfUsers(String classifierId);
+	public User findByLogUsername(String logname, String username);
 }

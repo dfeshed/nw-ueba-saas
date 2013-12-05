@@ -23,6 +23,8 @@
 	<bean id="impalaJdbcTemplate" class="fortscale.services.domain.jdbc.JdbcOperationsTest"/>
 	<bean id="fortscaleConfigurationRepository" class="fortscale.services.domain.analyst.dao.FortscaleConfigurationRepositoryImpl"></bean>
 	
+	<bean id="mongoTemplate" class="fortscale.services.domain.jdbc.MongoTemplateDummy"></bean>
+	
 	<context:component-scan base-package="fortscale.services"/>
 	
 </beans>

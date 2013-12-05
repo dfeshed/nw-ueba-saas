@@ -28,7 +28,7 @@ public class ClassifierScore extends ScoreInfo{
 		this.classifierId = classifierId;
 	}
 	public List<ScoreInfo> getPrevScores() {
-		return (List<ScoreInfo>) (prevScores != null ? prevScores : Collections.emptyList());
+		return (List<ScoreInfo>) (prevScores != null ? prevScores : Collections.<ScoreInfo>emptyList());
 	}
 	public void setPrevScores(List<ScoreInfo> prevScores) {
 		this.prevScores = prevScores;

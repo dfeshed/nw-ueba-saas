@@ -1,24 +1,19 @@
 package fortscale.services.fe.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.IFeature;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.UserService;
-import fortscale.services.fe.Classifier;
 import fortscale.services.fe.FeService;
 import fortscale.services.impl.ImpalaWriterFactory;
 import fortscale.utils.logging.Logger;
@@ -73,35 +68,35 @@ public class FeServiceImpl implements FeService {
 	@Override
 	public void setAdUsersScores(Map<String, Double> userScoresMap,
 			Map<String, Collection<IFeature>> userFeaturesScoresMap, Date timestamp) {
-		if(userScoresMap.size() == 0){
-			logger.warn("the collection is empty");
-			return;
-		}
-				
-		
-		double avgScore = 0;
-		for(Double score: userScoresMap.values()){
-			avgScore += score;
-		}
-		avgScore = avgScore/userScoresMap.size();
-		
-		
-		for(Entry<String, Double> ent: userScoresMap.entrySet()){
-			User user = userRepository.findByAdDn(ent.getKey());
-			if(user == null){
-				logger.error("user with distinuished name ({}) was not found", ent.getKey());
-				continue;
-			}
-			//inserting new ml scores.
-			AdUserFeaturesExtraction adUserFeaturesExtraction = new AdUserFeaturesExtraction(Classifier.ad.getId(), user.getId(), ent.getKey());
-			adUserFeaturesExtraction.setScore(ent.getValue());
-			adUserFeaturesExtraction.setTimestamp(timestamp);
-			adUserFeaturesExtraction.setAttributes(new ArrayList<>(userFeaturesScoresMap.get(ent.getKey())));
-			adUsersFeaturesExtractionRepository.saveMap(adUserFeaturesExtraction);
-			
-			//updating the user with the new score.
-			userService.updateUserScore(user, timestamp, Classifier.ad.getId(), ent.getValue(), avgScore, true, true);
-		}
+//		if(userScoresMap.size() == 0){
+//			logger.warn("the collection is empty");
+//			return;
+//		}
+//				
+//		
+//		double avgScore = 0;
+//		for(Double score: userScoresMap.values()){
+//			avgScore += score;
+//		}
+//		avgScore = avgScore/userScoresMap.size();
+//		
+//		
+//		for(Entry<String, Double> ent: userScoresMap.entrySet()){
+//			User user = userRepository.findByAdDn(ent.getKey());
+//			if(user == null){
+//				logger.error("user with distinuished name ({}) was not found", ent.getKey());
+//				continue;
+//			}
+//			//inserting new ml scores.
+//			AdUserFeaturesExtraction adUserFeaturesExtraction = new AdUserFeaturesExtraction(Classifier.ad.getId(), user.getId(), ent.getKey());
+//			adUserFeaturesExtraction.setScore(ent.getValue());
+//			adUserFeaturesExtraction.setTimestamp(timestamp);
+//			adUserFeaturesExtraction.setAttributes(new ArrayList<>(userFeaturesScoresMap.get(ent.getKey())));
+//			adUsersFeaturesExtractionRepository.saveMap(adUserFeaturesExtraction);
+//			
+//			//updating the user with the new score.
+//			userService.updateUserScore(user, timestamp, Classifier.ad.getId(), ent.getValue(), avgScore, true, true);
+//		}
 	}
 	
 

@@ -51,10 +51,6 @@
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/api/analyst/login" access="permitAll" />
 		<intercept-url pattern="/api/analyst/changePassword" access="permitAll" />
-		<intercept-url pattern="/api/user/updateAuthScore" access="permitAll" />
-		<intercept-url pattern="/api/user/updateVpnScore" access="permitAll" />
-		<intercept-url pattern="/api/aduser/runfe" access="permitAll" />
-		<intercept-url pattern="/api/user/updateAdInfo" access="permitAll" />
 		<intercept-url pattern="/404.html" access="permitAll" />
 		<intercept-url pattern="/change_password.html" access="permitAll" />
 		<intercept-url pattern="/signin.html" access="permitAll" />

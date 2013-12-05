@@ -27,6 +27,7 @@ import fortscale.domain.ad.AdUserGroup;
 public class User extends AbstractDocument {	
 	
 	public static final String appField = "app";
+	public static final String logUsernameField = "logUsername";
 	public static final String usernameField = "username";
 	public static final String classifierScoreField = "scores";
 	
@@ -121,6 +122,10 @@ public class User extends AbstractDocument {
 	@Field(appField)
 	@JsonProperty
 	Map<String, ApplicationUserDetails> appUserDetailsMap = new HashMap<>();
+	
+	@Field(logUsernameField)
+	@JsonProperty
+	Map<String, String> logUsernameMap = new HashMap<>();
 	
 	@Indexed
 	@Field(classifierScoreField)
@@ -534,6 +539,20 @@ public class User extends AbstractDocument {
 	public Map<String, ApplicationUserDetails> getApplicationUserDetails(){
 		return appUserDetailsMap;
 	}
+	
+	public boolean containsLogUsername(String logname) {
+		return logUsernameMap.containsKey(logname);
+	}
+	
+	public void addLogUsername(String logname, String username) {
+		Assert.hasText(logname);
+		Assert.hasText(username);
+		logUsernameMap.put(logname, username);
+	}
+	
+	public Map<String, String> getLogUsernameMap(){
+		return logUsernameMap;
+	}
 
 	public HashMap<String, ClassifierScore> getScores() {
 		return scores;
@@ -575,5 +594,9 @@ public class User extends AbstractDocument {
 	
 	public static String getAppUserNameField(String applicationName) {
 		return String.format("%s.%s.%s", User.appField,applicationName,ApplicationUserDetails.userNameField);
+	}
+	
+	public static String getLogUserNameField(String logname) {
+		return String.format("%s.%s", User.logUsernameField,logname);
 	}
 }

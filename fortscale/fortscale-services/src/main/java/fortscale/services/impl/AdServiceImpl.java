@@ -1,9 +1,13 @@
 package fortscale.services.impl;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+import static org.springframework.data.mongodb.core.query.Update.update;
+
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdComputer;
@@ -17,14 +21,12 @@ import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.AdService;
-import fortscale.utils.logging.Logger;
 
 
 
 
 @Service("adService")
 public class AdServiceImpl implements AdService {
-	private static Logger logger = Logger.getLogger(AdServiceImpl.class);
 	
 	@Autowired
 	private AdUserRepository adUserRepository;
@@ -39,64 +41,32 @@ public class AdServiceImpl implements AdService {
 	private AdOURepository adOURepository;
 	
 	@Autowired
+	private MongoOperations mongoTemplate;
+	
+	@Autowired
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
 
 	@Override
 	public void addLastModifiedFieldToAllCollections() {
-		List<AdUser> adUsers = adUserRepository.findByLastModifiedExists(false);
-		for(AdUser adUser: adUsers){
-			try {
-				adUser.setLastModified(new Date());
-			} catch (Exception e) {
-				logger.error("got exception while trying to update ad user field last modified date!!! dn: {}", adUser.getDistinguishedName());
-			}
-			
-		}
-		adUserRepository.save(adUsers);
+		insertLastModified(AdUser.lastModifiedField, AdUser.class);
 		
-		List<AdGroup> adGroups = adGroupRepository.findByLastModifiedExists(false);
-		for(AdGroup adGroup: adGroups){
-			try {
-				adGroup.setLastModified(new Date());
-			} catch (Exception e) {
-				logger.error("got exception while trying to update ad group field last modified date!!! dn: {}", adGroup.getDistinguishedName());
-			}
-			
-		}
-		adGroupRepository.save(adGroups);
-		
-		List<AdComputer> adComputers = adComputerRepository.findByLastModifiedExists(false);
-		for(AdComputer adComputer: adComputers){
-			try {
-				adComputer.setLastModified(new Date());
-			} catch (Exception e) {
-				logger.error("got exception while trying to update ad computer field last modified date!!! dn: {}", adComputer.getDistinguishedName());
-			}
-			
-		}
-		adComputerRepository.save(adComputers);
-		
-		List<AdOU> adOUs = adOURepository.findByLastModifiedExists(false);
-		for(AdOU adOU: adOUs){
-			try {
-				adOU.setLastModified(new Date());
-			} catch (Exception e) {
-				logger.error("got exception while trying to update ad OU field last modified date!!! dn: {}", adOU.getDistinguishedName());
-			}
-			
-		}
-		adOURepository.save(adOUs);
-		
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByLastModifiedExists(false);
-		for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
-			try {
-				adUserFeaturesExtraction.setLastModified(new Date());
-			} catch (Exception e) {
-				logger.error("got exception while trying to update ad UserFeaturesExtraction field last modified date!!! userId: {}", adUserFeaturesExtraction.getUserId());
-			}
-			
-		}
-		adUsersFeaturesExtractionRepository.save(adUserFeaturesExtractions);
+		insertLastModified(AdGroup.lastModifiedField, AdGroup.class);
+
+		insertLastModified(AdComputer.lastModifiedField, AdComputer.class);
+
+		insertLastModified(AdOU.lastModifiedField, AdOU.class);
+
+		insertLastModified(AdUserFeaturesExtraction.lastModifiedField, AdUserFeaturesExtraction.class);
+	}
+	
+	private void insertLastModified(String fieldName, Class<?> entityClass){
+		Date date = new Date();
+		mongoTemplate.updateMulti(query(where(fieldName).exists(false)), update(fieldName, date), entityClass);
+	}
+
+	@Override
+	public void removeThumbnails() {
+		mongoTemplate.updateMulti(query(where(AdUser.thumbnailPhotoField).exists(true)), update(AdUser.thumbnailPhotoField, null), AdUser.class);
 	}
 
 }

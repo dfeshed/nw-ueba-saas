@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import fortscale.services.fe.IScoreDistribution;
 import fortscale.services.fe.ISuspiciousUserInfo;
 import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 
 
@@ -29,7 +31,7 @@ import fortscale.web.beans.DataBean;
 
 @Controller
 @RequestMapping("/api/classifier/**")
-public class ApiClassifierController {
+public class ApiClassifierController extends BaseController{
 	
 	private static final String SUSPICIOUS_USERS_BY_SCORE = "score";
 	private static final String SUSPICIOUS_USERS_BY_TREND = "trend";
@@ -48,19 +50,23 @@ public class ApiClassifierController {
 			@RequestParam(required=false) String uid,
 			@RequestParam(defaultValue="0") Integer offset,
 			@RequestParam(defaultValue="10") Integer limit,
+			@RequestParam(required=false) String orderBy,
+			@RequestParam(defaultValue="DESC") String orderByDirection,
+			@RequestParam(defaultValue="0") Integer minScore,
 			Model model){
 		DataBean<List<ILoginEventScoreInfo>> ret = new DataBean<List<ILoginEventScoreInfo>>();
 		Date timestamp = null;
 		if(date != null){
 			timestamp = new Date(date);
 		}
+		Direction direction = convertStringToDirection(orderByDirection);
 		List<ILoginEventScoreInfo> eventScoreInfos = Collections.emptyList();
 		int total = 0;
 		if(uid == null){
-			eventScoreInfos = classifierService.getSuspiciousLoginEvents(timestamp, offset, limit);
+			eventScoreInfos = classifierService.getSuspiciousLoginEvents(timestamp, offset, limit, orderBy,direction, minScore);
 			total = classifierService.countLoginEvents(timestamp);
 		} else{
-			eventScoreInfos = classifierService.getUserSuspiciousLoginEvents(uid, timestamp, offset, limit);
+			eventScoreInfos = classifierService.getUserSuspiciousLoginEvents(uid, timestamp, offset, limit, orderBy,direction, minScore);
 			total = classifierService.countLoginEvents(uid, timestamp);
 		}
 		ret.setData(eventScoreInfos);
@@ -77,19 +83,23 @@ public class ApiClassifierController {
 			@RequestParam(required=false) String query,
 			@RequestParam(defaultValue="0") Integer offset,
 			@RequestParam(defaultValue="10") Integer limit,
+			@RequestParam(required=false) String orderBy,
+			@RequestParam(defaultValue="DESC") String orderByDirection,
+			@RequestParam(defaultValue="0") Integer minScore,
 			Model model){
 		DataBean<List<IVpnEventScoreInfo>> ret = new DataBean<List<IVpnEventScoreInfo>>();
 		Date timestamp = null;
 		if(date != null){
 			timestamp = new Date(date);
 		}
+		Direction direction = convertStringToDirection(orderByDirection);
 		List<IVpnEventScoreInfo> eventScoreInfos = Collections.emptyList();
 		int total = 0;
 		if(uid == null){
-			eventScoreInfos = classifierService.getSuspiciousVpnEvents(timestamp, offset, limit);
+			eventScoreInfos = classifierService.getSuspiciousVpnEvents(timestamp, offset, limit, orderBy,direction, minScore);
 			total = classifierService.countVpnEvents(timestamp);
 		} else{
-			eventScoreInfos = classifierService.getUserSuspiciousVpnEvents(uid, timestamp, offset, limit);
+			eventScoreInfos = classifierService.getUserSuspiciousVpnEvents(uid, timestamp, offset, limit, orderBy,direction, minScore);
 			total = classifierService.countVpnEvents(uid, timestamp);
 		}
 		ret.setData(eventScoreInfos);
