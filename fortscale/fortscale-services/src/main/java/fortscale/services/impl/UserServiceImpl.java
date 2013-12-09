@@ -309,6 +309,33 @@ public class UserServiceImpl implements UserService{
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
 		}
 		
+		return getUserScores(user);
+	}
+	
+	@Override
+	public Map<String,List<IUserScore>> getUsersScoresByIds(List<String> uids) {
+		List<User> users = userRepository.findByIds(uids);
+		
+		return getUsersScores(users);
+	}
+	
+	@Override
+	public Map<String, List<IUserScore>> getFollowedUsersScores(){
+		List<User> users = userRepository.findByFollowed(true);
+		
+		return getUsersScores(users);
+	}
+	
+	private Map<String, List<IUserScore>> getUsersScores(List<User> users){
+		Map<String,List<IUserScore>> ret = new HashMap<>();
+		for(User user: users){
+			ret.put(user.getId(), getUserScores(user));
+		}
+		
+		return ret;
+	}
+	
+	private List<IUserScore> getUserScores(User user) {
 		List<IUserScore> ret = new ArrayList<IUserScore>();
 		for(ClassifierScore classifierScore: user.getScores().values()){
 			if(isOnSameDay(new Date(), classifierScore.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)) {
@@ -316,7 +343,7 @@ public class UserServiceImpl implements UserService{
 				if(classifier == null){
 					continue;
 				}
-				UserScore score = new UserScore(classifierScore.getClassifierId(), classifier.getDisplayName(),
+				UserScore score = new UserScore(user.getId(), classifierScore.getClassifierId(), classifier.getDisplayName(),
 						(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
 				ret.add(score);
 			}
@@ -358,7 +385,7 @@ public class UserServiceImpl implements UserService{
 						continue;
 					}
 					Classifier classifier = classifierService.getClassifier(classifierId);
-					UserScore score = new UserScore(classifierId, classifier.getDisplayName(),
+					UserScore score = new UserScore(user.getId(), classifierId, classifier.getDisplayName(),
 							(int)Math.round(prevScoreInfo.getScore()), (int)Math.round(prevScoreInfo.getAvgScore()));
 					ret.put(classifierId, score);
 				}
@@ -568,9 +595,9 @@ public class UserServiceImpl implements UserService{
 		
 		for(ClassifierScore classifierScore: classifierScores){
 			boolean isSaveMaxScore = false;
-			if(classifierScore.getClassifierId().equals(Classifier.groups.getId())){
-				isSaveMaxScore = true;
-			}
+//			if(classifierScore.getClassifierId().equals(Classifier.groups.getId())){
+//				isSaveMaxScore = true;
+//			}
 			updateUserScore(user, classifierScore.getTimestamp(), classifierScore.getClassifierId(), classifierScore.getScore(), classifierScore.getAvgScore(), false,isSaveMaxScore);
 			updateUserTotalScore(user, classifierScore.getTimestamp());
 		}
@@ -746,7 +773,7 @@ public class UserServiceImpl implements UserService{
 				continue;
 			}
 			//updating the user with the new score.
-			user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false, true);
+			user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false, false);
 			if(user != null){
 				users.add(user);
 				impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);

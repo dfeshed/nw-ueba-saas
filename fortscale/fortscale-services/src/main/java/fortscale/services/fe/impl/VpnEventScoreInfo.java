@@ -34,6 +34,11 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	public String getUsername() {
 		return user.getUsername();
 	}
+	
+	@Override
+	public Boolean isUserFollowed(){
+		return user.getFollowed();
+	}
 
 	@Override
 	public String getSourceIp() {

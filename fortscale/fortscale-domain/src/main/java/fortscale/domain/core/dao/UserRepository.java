@@ -33,4 +33,5 @@ public interface UserRepository extends MongoRepository<User, String>, UserRepos
 	public User findByAdDn(String adDn);
 	
 	public List<User> findBySearchFieldContaining(String prefix);
+	public List<User> findByFollowed(Boolean followed);
 }

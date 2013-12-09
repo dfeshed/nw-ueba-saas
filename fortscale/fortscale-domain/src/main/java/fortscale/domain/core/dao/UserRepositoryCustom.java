@@ -1,5 +1,6 @@
 package fortscale.domain.core.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -18,4 +19,6 @@ public interface UserRepositoryCustom {
 	public int countNumOfUsers(String classifierId);
 	public User findByLogUsername(String logname, String username);
 	public void updateFollowed(User user, boolean followed);
+	public List<User> findByDNs(Collection<String> dns);
+	public List<User> findByIds(Collection<String> ids);
 }

@@ -3,13 +3,14 @@ package fortscale.services.impl;
 import fortscale.services.IUserScore;
 
 public class UserScore implements IUserScore {
-	
+	private String userId;
 	private String id;
 	private String name;
 	private int score;
 	private int avgScore;
 	
-	public UserScore( String id, String name, int score, int avgScore){
+	public UserScore(String userId, String id, String name, int score, int avgScore){
+		this.userId = userId;
 		this.id = id;
 		this.name = name;
 		this.score = score;
@@ -34,6 +35,11 @@ public class UserScore implements IUserScore {
 	@Override
 	public int getAvgScore() {
 		return avgScore;
+	}
+
+	@Override
+	public String getUserId() {
+		return userId;
 	}
 
 }

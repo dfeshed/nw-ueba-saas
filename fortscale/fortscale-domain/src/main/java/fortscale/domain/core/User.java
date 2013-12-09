@@ -31,10 +31,12 @@ public class User extends AbstractDocument {
 	public static final String usernameField = "username";
 	public static final String classifierScoreField = "scores";
 	public static final String followedField = "followed";
+	public static final String adDnField = "adDn";
 	
 	
 	@Indexed(unique = true)
 	@JsonProperty
+	@Field(adDnField)
 	private String adDn;
 	
 	private String adEmployeeID;

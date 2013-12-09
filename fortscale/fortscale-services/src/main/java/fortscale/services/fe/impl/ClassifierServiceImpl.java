@@ -281,7 +281,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private SuspiciousUserInfo createSuspiciousUserInfo(String classifierId, User user){
 		ClassifierScore classifierScore = user.getScore(classifierId);
 		int trendSign = classifierScore.getTrend() > 0 ? 1 : -1;
-		return new SuspiciousUserInfo(user.getId(), user.getUsername(), (int) Math.round(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrendScore()*trendSign));
+		return new SuspiciousUserInfo(user.getId(), user.getUsername(), (int) Math.round(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrendScore()*trendSign), user.getFollowed());
 	}
 	
 	private Range getRange(String severityId){

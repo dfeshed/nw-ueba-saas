@@ -2,6 +2,7 @@ package fortscale.services;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Sort.Direction;
 
@@ -52,4 +53,8 @@ public interface UserService {
 	public User findByVpnUsername(String username);
 	
 	public void removeClassifierFromAllUsers(String classifierId);
+
+	public Map<String, List<IUserScore>> getUsersScoresByIds(List<String> uids);
+	
+	public Map<String, List<IUserScore>> getFollowedUsersScores();
 }

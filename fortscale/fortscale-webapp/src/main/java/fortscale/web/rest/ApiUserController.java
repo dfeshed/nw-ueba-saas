@@ -2,8 +2,11 @@ package fortscale.web.rest;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
@@ -110,17 +113,56 @@ public class ApiUserController extends BaseController{
 		return new DataListWrapperBean<UserDetailsBean>(ret);
 	}
 	
+	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<String>> followedUsers(Model model){
+		List<String> userIds = new ArrayList<>();
+		for(User user: userRepository.findByFollowed(true)){
+			userIds.add(user.getId());
+		}
+		
+		DataBean<List<String>> ret = new DataBean<>();
+		ret.setData(userIds);
+		ret.setTotal(userIds.size());
+		return ret;
+	}
+	
 	@RequestMapping(value="/usersDetails", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> usersDetails(@RequestParam(required=true) List<String> ids, Model model){
+		List<User> users = userRepository.findByIds(ids);
+		return userDetails(users);
+	}
+	
+	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<UserDetailsBean>> followedUsersDetails(Model model){
+		List<User> users = userRepository.findByFollowed(true);
+		return userDetails(users);
+	}
+	
+	private DataBean<List<UserDetailsBean>> userDetails(List<User> users){
 		List<UserDetailsBean> userDetailsBeans = new ArrayList<>();
-		for(String id: ids) {
-			User user = userRepository.findOne(id);
-			if(user == null){
-				return null;
+		
+		Map<String, User> dnToUserMap = new HashMap<String, User>(users.size());
+		for(User user: users){
+			if(!StringUtils.isEmpty(user.getManagerDN())){
+				dnToUserMap.put(user.getManagerDN(), null);
 			}
-			UserDetailsBean userDetailsBean = new UserDetailsBean(user, getManager(user));
+		}
+		List<User> managers = userRepository.findByDNs(dnToUserMap.keySet());
+		for(User manager: managers){
+			dnToUserMap.put(manager.getAdDn(), manager);
+		}
+		for(User user: users){
+			User manager = null;
+			if(!StringUtils.isEmpty(user.getManagerDN())){
+				manager = dnToUserMap.get(user.getManagerDN());
+			}
+			UserDetailsBean userDetailsBean = new UserDetailsBean(user, manager);
 			userDetailsBeans.add(userDetailsBean);
 		}
 		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
@@ -161,15 +203,28 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserMachinesBean>> usersMachines(@RequestParam(required=true) List<String> ids, Model model){
+		List<User> users = userRepository.findByIds(ids);
+		return usersMachines(users);
+	}
+	
+	@RequestMapping(value="/followedUsersMachines", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<UserMachinesBean>> followedUsersMachines(Model model){
+		List<User> users = userRepository.findByFollowed(true);
+		return usersMachines(users);
+	}
+	
+	private DataBean<List<UserMachinesBean>> usersMachines(List<User> users){
 		List<UserMachinesBean> usersMachinesList = new ArrayList<>();
-		for(String id: ids) {
-			List<UserMachine> userMachines = userService.getUserMachines(id);
+		for(User user: users) {
+			List<UserMachine> userMachines = userService.getUserMachines(user.getId());
 			
 			List<UserMachineBean> userMachinesBean = new ArrayList<UserMachineBean>();
 			for(UserMachine userMachine: userMachines){
 				userMachinesBean.add(new UserMachineBean(userMachine));
 			}
-			usersMachinesList.add(new UserMachinesBean(id, userMachinesBean));
+			usersMachinesList.add(new UserMachinesBean(user.getId(), userMachinesBean));
 		}
 		DataBean<List<UserMachinesBean>> ret = new DataBean<>();
 		ret.setData(usersMachinesList);
@@ -183,6 +238,17 @@ public class ApiUserController extends BaseController{
 	public DataBean<List<IUserScore>> userScores(@PathVariable String id, Model model){
 		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
 		List<IUserScore> userScores = userService.getUserScores(id);
+		ret.setData(userScores);
+		ret.setTotal(userScores.size());
+		return ret;
+	}
+	
+	@RequestMapping(value="/followedUsersScores", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Map<String, List<IUserScore>>> followedUsersScores(Model model){
+		DataBean<Map<String, List<IUserScore>>> ret = new DataBean<Map<String, List<IUserScore>>>();
+		Map<String, List<IUserScore>> userScores = userService.getFollowedUsersScores();
 		ret.setData(userScores);
 		ret.setTotal(userScores.size());
 		return ret;

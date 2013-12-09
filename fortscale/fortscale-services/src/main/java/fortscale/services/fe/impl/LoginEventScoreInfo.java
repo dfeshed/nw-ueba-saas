@@ -27,6 +27,11 @@ public class LoginEventScoreInfo implements ILoginEventScoreInfo {
 	public String getUsername() {
 		return user.getUsername();
 	}
+	
+	@Override
+	public Boolean isUserFollowed() {
+		return user.getFollowed();
+	}
 
 	@Override
 	public String getSourceIp() {
@@ -82,6 +87,7 @@ public class LoginEventScoreInfo implements ILoginEventScoreInfo {
 		Map<String, Object> ret = new HashMap<>(authScore.getAllFields());
 		ret.put("userId", getUserId());
 		ret.put("username", getUsername());
+		ret.put("isUserFollowed", isUserFollowed());
 		
 		return ret;
 	}

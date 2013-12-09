@@ -16,4 +16,5 @@ public interface ILoginEventScoreInfo {
 	public double getSourceIpScore();
 	public double getEventTimeScore();
 	public Map<String, Object> createMap();
+	public Boolean isUserFollowed();
 }
