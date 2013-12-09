@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import fortscale.services.AdService;
 import fortscale.services.UserService;
+import fortscale.services.fe.Classifier;
 import fortscale.services.fe.impl.FeServiceImpl;
 import fortscale.services.impl.ImpalaWriterFactory;
 
@@ -52,7 +53,14 @@ public class FortscaleBatch {
 		if(userTotalScoreCsvFileFullPathString != null) {
 			impalaGroupsScoreWriterFactory.setUserTotalScoreCsvFileFullPathString(userTotalScoreCsvFileFullPathString);
 		}
-		userService.updateUserWithAuthScore();
+		userService.updateUserWithAuthScore(Classifier.auth);
+	}
+	
+	public void updateSshScore(String userTotalScoreCsvFileFullPathString) {
+		if(userTotalScoreCsvFileFullPathString != null) {
+			impalaGroupsScoreWriterFactory.setUserTotalScoreCsvFileFullPathString(userTotalScoreCsvFileFullPathString);
+		}
+		userService.updateUserWithAuthScore(Classifier.ssh);
 	}
 	
 	public void updateVpnScore(String userTotalScoreCsvFileFullPathString) {

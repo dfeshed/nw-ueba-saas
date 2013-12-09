@@ -8,9 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import fortscale.domain.analyst.Analyst;
+import fortscale.domain.analyst.AnalystAuth;
+import fortscale.domain.analyst.AnalystFollowUser;
+import fortscale.domain.analyst.dao.AnalystFollowUserRepository;
 import fortscale.domain.analyst.dao.AnalystRepository;
 import fortscale.domain.core.EmailAddress;
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.analyst.AnalystService;
+import fortscale.services.exceptions.UnknownResourceException;
 
 
 
@@ -19,6 +25,12 @@ public class AnalystServiceImpl implements AnalystService{
 	
 	@Autowired
 	private AnalystRepository analystRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private AnalystFollowUserRepository analystFollowUserRepository;
 	
 	
 
@@ -58,5 +70,23 @@ public class AnalystServiceImpl implements AnalystService{
 	public List<Analyst> findAllNonDisabledUsers() {
 		return analystRepository.findByIsDisabled(false);
 	}
+
+
+
+	@Override
+	public void followUser(AnalystAuth analystAuth, String userId, boolean follow) {
+		User user = userRepository.findOne(userId);
+		if(user == null){
+			throw new UnknownResourceException(String.format("There is no user with such id: %s", userId));
+		}
+		if(user.getFollowed() != follow){
+			AnalystFollowUser analystFollowUser = new AnalystFollowUser(analystAuth.getId(), analystAuth.getUsername(), userId, user.getUsername(), follow);
+			analystFollowUserRepository.save(analystFollowUser);
+			userRepository.updateFollowed(user, follow);
+		}
+	}
+
+
+
 
 }

@@ -4,6 +4,7 @@ package fortscale.domain.core;
 import org.springframework.data.annotation.Id;
 
 public class AbstractDocument {
+	public static final String ID_FIELD = "_id";
 
 	@Id
 	private String id;

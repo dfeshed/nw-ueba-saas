@@ -13,7 +13,9 @@ public interface UserRepositoryCustom {
 	public List<User> findByApplicationUserName(String applicationName, List<String> usernames);
 	public User findByApplicationUserName(String applicationName, String username);
 	public List<User> findByClassifierIdAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable);
+	public List<User> findByClassifierIdAndFollowedAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable);
 	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold);
 	public int countNumOfUsers(String classifierId);
 	public User findByLogUsername(String logname, String username);
+	public void updateFollowed(User user, boolean followed);
 }

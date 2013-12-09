@@ -74,6 +74,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.auth.getId(), 10));
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.vpn.getId(), 10));
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.groups.getId(), 10));
+			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.ssh.getId(), 10));
 			setScoreConfiguration(scoreConfiguration, "Server", "Server");
 		}
 		

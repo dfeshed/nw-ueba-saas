@@ -216,4 +216,16 @@ public class UserRepositoryImpl implements UserRepository{
 		return null;
 	}
 
+	@Override
+	public void updateFollowed(User user, boolean followed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<User> findByClassifierIdAndFollowedAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

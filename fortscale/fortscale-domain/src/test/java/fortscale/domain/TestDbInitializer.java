@@ -59,7 +59,7 @@ public class TestDbInitializer {
 	private UserMachineDAOImpl userMachineDAO;
 	
 	@Autowired
-	private AuthDAOImpl authDAO;
+	private AuthDAOImpl loginDAO;
 	
 	@Autowired
 	private VpnDAOImpl vpnDAO;
@@ -90,9 +90,9 @@ public class TestDbInitializer {
 			userMachineDAO.setTableName(String.format("%stest", userMachineDAO.getTableName()));
 			userMachineDAO.createTable(userMachineHadoopInputFileName);
 			
-			copyCsvToHadoop(AUTHENTICATON_SCORE_INPUT_FILE_NAME, authenticationscoresHadoopInputFileName);
-			authDAO.setTableName(String.format("%stest", authDAO.getTableName()));
-			authDAO.createTable(authenticationscoresHadoopInputFileName);
+//			copyCsvToHadoop(AUTHENTICATON_SCORE_INPUT_FILE_NAME, authenticationscoresHadoopInputFileName);
+//			authDAO.setTableName(String.format("%stest", authDAO.getTableName()));
+//			authDAO.createTable(authenticationscoresHadoopInputFileName);
 			
 			copyCsvToHadoop(VPN_SCORE_INPUT_FILE_NAME, vpnscoresHadoopInputFileName);
 			vpnDAO.setTableName(String.format("%stest", vpnDAO.getTableName()));

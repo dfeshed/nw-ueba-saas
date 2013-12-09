@@ -9,6 +9,8 @@ import fortscale.domain.fe.AuthScore;
 
 public interface AuthDAO {
 
+	public String getTableName();
+	
 	public List<AuthScore> findAll(Pageable pageable);
 	
 	public AuthScore findCurrentByUsername(String username);

@@ -9,6 +9,7 @@ import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.fe.IFeature;
+import fortscale.services.fe.Classifier;
 
 public interface UserService {
 	
@@ -28,7 +29,7 @@ public interface UserService {
 	
 	public List<UserMachine> getUserMachines(String uid);
 	
-	public void updateUserWithAuthScore();
+	public void updateUserWithAuthScore(Classifier classifier);
 
 	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore);
 	
@@ -46,7 +47,7 @@ public interface UserService {
 
 	public void recalculateTotalScore();
 	
-	public User findByAuthUsername(String username);
+	public User findByAuthUsername(LogEventsEnum eventId, String username);
 
 	public User findByVpnUsername(String username);
 	

@@ -1,6 +1,8 @@
 package fortscale.domain.fe;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -13,7 +15,7 @@ public class AuthScore {
 	public static final Object jsonOrder[] = {AuthScore.USERNAME_FIELD_NAME,AuthScore.TARGET_ID_FIELD_NAME,AuthScore.SOURCE_IP_FIELD_NAME,AuthScore.ERROR_CODE_FIELD_NAME,AuthScore.EVENT_SCORE_FIELD_NAME,AuthScore.GLOBAL_SCORE_FIELD_NAME,AuthScore.TIMESTAMP_FIELD_NAME,AuthScore.EVENT_TIME_FIELD_NAME};
 	public static final String implaValueTypeOrder = String.format("%s string, %s string, %s string, %s string, %s double, %s double, %s bigint, %s timestamp", jsonOrder);
 	
-	public static final String TABLE_NAME = "authenticationscores";
+//	public static final String TABLE_NAME = "authenticationscores";
 	
 	
 	public static final String USERNAME_FIELD_NAME = "userid";
@@ -40,20 +42,18 @@ public class AuthScore {
 	private String userName;
 	private String targetId;
 	private String sourceIp;
-	private String errorCode;
 	private Date eventTime;
 	
 	private double userNameScore;
 	private double targetIdScore;
 	private double sourceIpScore;
-	private double errorCodeScore;
 	private double eventTimeScore;
 	
 	private double eventScore;
 	private double globalScore;
 	private Date timestamp;
 	
-	
+	private Map<String, Object> allFields = new HashMap<String, Object>();
 	
 	
 	
@@ -74,12 +74,6 @@ public class AuthScore {
 	}
 	public void setSourceIp(String sourceIp) {
 		this.sourceIp = sourceIp;
-	}
-	public String getErrorCode() {
-		return errorCode;
-	}
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
 	}
 	public double getEventScore() {
 		return eventScore;
@@ -124,17 +118,17 @@ public class AuthScore {
 	public void setSourceIpScore(double sourceIpScore) {
 		this.sourceIpScore = sourceIpScore;
 	}
-	public double getErrorCodeScore() {
-		return errorCodeScore;
-	}
-	public void setErrorCodeScore(double errorCodeScore) {
-		this.errorCodeScore = errorCodeScore;
-	}
 	public double getEventTimeScore() {
 		return eventTimeScore;
 	}
 	public void setEventTimeScore(double eventTimeScore) {
 		this.eventTimeScore = eventTimeScore;
+	}
+	public Map<String, Object> getAllFields() {
+		return allFields;
+	}
+	public void setAllFields(Map<String, Object> allFields) {
+		this.allFields = allFields;
 	}
 	
 	

@@ -44,6 +44,7 @@ import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
+import fortscale.services.LogEventsEnum;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.analyst.ConfigurationService;
@@ -81,7 +82,10 @@ public class UserServiceImpl implements UserService{
 	private UserMachineDAO userMachineDAO;
 	
 	@Autowired
-	private AuthDAO authDAO;
+	private AuthDAO loginDAO;
+	
+	@Autowired
+	private AuthDAO sshDAO;
 	
 	@Autowired
 	private VpnDAO vpnDAO;
@@ -97,6 +101,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Value("${auth.to.ad.username.regex.format:^%s*(?i)}")
 	private String authToAdUsernameRegexFormat;
+	
+	@Value("${ssh.to.ad.username.regex.format:^%s*(?i)}")
+	private String sshToAdUsernameRegexFormat;
 	
 	
 	
@@ -581,26 +588,43 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void updateUserWithAuthScore() {
+	public void updateUserWithAuthScore(Classifier classifier) {
+		AuthDAO authDAO = getAuthDAO(classifier);
 		Date lastRun = authDAO.getLastRunDate();
-		updateUserWithAuthScore(lastRun);
+		updateUserWithAuthScore(authDAO, classifier, lastRun);
 	}
 	
-	private void updateUserWithAuthScore(Date lastRun) {
+	private AuthDAO getAuthDAO(Classifier classifier){
+		AuthDAO ret = null;
+		switch(classifier){
+			case auth:
+				ret = loginDAO;
+				break;
+			case ssh:
+				ret = sshDAO;
+				break;
+		default:
+			break;
+		}
+		
+		return ret;
+	}
+	
+	private void updateUserWithAuthScore(AuthDAO authDAO, Classifier classifier, Date lastRun) {
 		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		List<User> users = new ArrayList<>();
 		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
 			String username = authScore.getUserName();
-			User user = userRepository.findByLogUsername(AuthScore.TABLE_NAME, username);
+			User user = userRepository.findByLogUsername(authDAO.getTableName(), username);
 			if(user == null){
-				user = findByAuthUsername(username);
+				user = findByAuthUsername(classifier.getLogEventsEnum(), username);
 				if(user == null){
 					logger.error("no user was found with the username {}", username);
 					continue;
 				}
-				updateLogUsername(user, AuthScore.TABLE_NAME, username, false);
+				updateLogUsername(user, authDAO.getTableName(), username, false);
 			}
-			user = updateUserScore(user, lastRun, Classifier.auth.getId(), authScore.getGlobalScore(), avg, false, false);
+			user = updateUserScore(user, lastRun, classifier.getId(), authScore.getGlobalScore(), avg, false, false);
 			if(user != null){
 				users.add(user);
 			}
@@ -609,8 +633,8 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public User findByAuthUsername(String username){
-		return findByUsername(generateUsernameRegexesByAuthUsername(username), username);
+	public User findByAuthUsername(LogEventsEnum eventId, String username){
+		return findByUsername(generateUsernameRegexesByAuthUsername(eventId, username), username);
 	}
 	
 	
@@ -634,9 +658,13 @@ public class UserServiceImpl implements UserService{
 		return null;
 	}
 	
-	private List<String> generateUsernameRegexesByAuthUsername(String authUsername){
+	private List<String> generateUsernameRegexesByAuthUsername(LogEventsEnum eventId, String authUsername){
 		List<String> regexes = new ArrayList<>();
-		for(String regexFormat: authToAdUsernameRegexFormat.split(REGEX_SEPERATOR)){
+		String regex = authToAdUsernameRegexFormat;
+		if(eventId.equals(LogEventsEnum.ssh)){
+			regex = sshToAdUsernameRegexFormat;
+		}
+		for(String regexFormat: regex.split(REGEX_SEPERATOR)){
 			regexes.add(String.format(regexFormat, authUsername));
 		}
 		return regexes;
@@ -857,17 +885,23 @@ public class UserServiceImpl implements UserService{
 			classifierRuntimes.add(new ClassifierRuntime(Classifier.groups, date.getTime()));
 		}
 		
-		List<Long> distinctRuntimes = authDAO.getDistinctRuntime();
-		for(Long runtime: distinctRuntimes){
-			if(runtime == null){
-				logger.warn("got runtime null in the vpndatares table.");
-				continue;
+		List<Long> distinctRuntimes = null;
+		
+		Classifier classifiers[] = {Classifier.auth, Classifier.ssh};
+		for(Classifier classifier: classifiers){
+			AuthDAO authDAO = getAuthDAO(classifier);
+			distinctRuntimes = authDAO.getDistinctRuntime();
+			for(Long runtime: distinctRuntimes){
+				if(runtime == null){
+					logger.warn("got runtime null in the vpndatares table.");
+					continue;
+				}
+				runtime = runtime*1000;
+				if(runtime < oldestTime.getTimeInMillis()){
+					continue;
+				}
+				classifierRuntimes.add(new ClassifierRuntime(classifier, runtime));
 			}
-			runtime = runtime*1000;
-			if(runtime < oldestTime.getTimeInMillis()){
-				continue;
-			}
-			classifierRuntimes.add(new ClassifierRuntime(Classifier.auth, runtime));
 		}
 		
 		distinctRuntimes = vpnDAO.getDistinctRuntime();
@@ -889,7 +923,10 @@ public class UserServiceImpl implements UserService{
 			try{
 				switch (classifierRuntime.getClassifier()) {
 				case auth:
-					updateUserWithAuthScore(new Date(classifierRuntime.getRuntime()));
+					updateUserWithAuthScore(loginDAO, Classifier.auth, new Date(classifierRuntime.getRuntime()));
+					break;
+				case ssh:
+					updateUserWithAuthScore(sshDAO, Classifier.ssh, new Date(classifierRuntime.getRuntime()));
 					break;
 				case vpn:
 					updateUserWithVpnScore(new Date(classifierRuntime.getRuntime()));

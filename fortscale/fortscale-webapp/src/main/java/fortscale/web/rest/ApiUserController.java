@@ -21,6 +21,7 @@ import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
+import fortscale.services.fe.Classifier;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
@@ -53,7 +54,12 @@ public class ApiUserController extends BaseController{
 	
 	@RequestMapping(value="/updateAuthScore", method=RequestMethod.GET)
 	public void updateAuthScore(Model model){
-		userService.updateUserWithAuthScore();
+		userService.updateUserWithAuthScore(Classifier.auth);
+	}
+	
+	@RequestMapping(value="/updateSshScore", method=RequestMethod.GET)
+	public void updateSshScore(Model model){
+		userService.updateUserWithAuthScore(Classifier.ssh);
 	}
 	
 	@RequestMapping(value="/updateVpnScore", method=RequestMethod.GET)

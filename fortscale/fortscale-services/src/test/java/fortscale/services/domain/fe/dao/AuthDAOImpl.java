@@ -155,4 +155,10 @@ public class AuthDAOImpl implements AuthDAO {
 		return null;
 	}
 
+	@Override
+	public String getTableName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

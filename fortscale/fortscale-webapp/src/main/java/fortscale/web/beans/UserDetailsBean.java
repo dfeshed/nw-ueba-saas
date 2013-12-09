@@ -40,6 +40,10 @@ public class UserDetailsBean implements Serializable{
 		return user.getId();
 	}
 	
+	public boolean getFollowed(){
+		return user.getFollowed();
+	}
+	
 	public String getUsername() {
 		return user.getUsername();
 	}
