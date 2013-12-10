@@ -158,28 +158,6 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 		return null;
 	}
 
-	@Override
-	public List<AdUserFeaturesExtraction> findByClassifierIdAndUserId(
-			String classifierId, String userId, Pageable pageable) {
-		
-		return null;
-	}
-
-
-
-	@Override
-	public List<AdUserFeaturesExtraction> findByUserId(String userId,
-			Pageable pageable) {
-		
-		return null;
-	}
-
-	@Override
-	public List<AdUserFeaturesExtraction> findByUserId(String userId) {
-		
-		return null;
-	}
-
 
 	@Override
 	public List<Date> getDistinctRuntime(String classifierId) {
@@ -201,12 +179,6 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 		return null;
 	}
 
-	@Override
-	public AdUserFeaturesExtraction findClassifierIdAndByUserIdAndTimestampepoch(
-			String classifierId, String userId, Long timestampepoch) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	
 }
