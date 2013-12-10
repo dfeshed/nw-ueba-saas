@@ -53,6 +53,8 @@ public class AuthScore {
 	private double globalScore;
 	private Date timestamp;
 	
+	private String status;
+	
 	private Map<String, Object> allFields = new HashMap<String, Object>();
 	
 	
@@ -129,6 +131,12 @@ public class AuthScore {
 	}
 	public void setAllFields(Map<String, Object> allFields) {
 		this.allFields = allFields;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	

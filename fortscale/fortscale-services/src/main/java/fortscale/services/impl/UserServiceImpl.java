@@ -106,6 +106,12 @@ public class UserServiceImpl implements UserService{
 	@Value("${ssh.to.ad.username.regex.format:^%s*(?i)}")
 	private String sshToAdUsernameRegexFormat;
 	
+	@Value("${vpn.status.success.value.regex:SUCCESS}")
+	private String vpnStatusSuccessValueRegex;
+	
+	@Value("${ssh.status.success.value.regex:Accepted}")
+	private String sshStatusSuccessValueRegex;
+	
 	
 	
 	
@@ -688,8 +694,18 @@ public class UserServiceImpl implements UserService{
 			if(user == null){
 				user = findByAuthUsername(classifier.getLogEventsEnum(), username);
 				if(user == null){
-					logger.error("no user was found with the username {}", username);
-					continue;
+					if(classifier.getLogEventsEnum().equals(LogEventsEnum.ssh)){
+						logger.info("no user was found with SSH username ({})", username);
+//						if(authDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, sshStatusSuccessValueRegex) > 0){
+//							logger.info("creating a new user from a successed ssh event. ssh username ({})", username);
+//							user = createUser(authScore);
+//						} else{
+							continue;
+//						}
+					} else{
+						logger.error("no user was found with the username {}", username);
+						continue;
+					}
 				}
 				updateLogUsername(user, authDAO.getTableName(), username, false);
 			}
@@ -699,6 +715,15 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		updateUserTotalScore(users, true, lastRun);		
+	}
+	
+	private User createUser(AuthScore authScore){
+		String username = authScore.getUserName();
+		User user = new User(String.format("SSH_%s", username));
+		user.setUsername(username);
+		user.setSearchField(createSearchField(user));
+		
+		return user;
 	}
 	
 	@Override
@@ -755,7 +780,12 @@ public class UserServiceImpl implements UserService{
 				user = findByVpnUsername(username);
 				if(user == null){
 					logger.info("no user was found with vpn username ({})", username);
-					continue;
+//					if(vpnScore.getStatus() != null && vpnScore.getStatus().matches(vpnStatusSuccessValueRegex)){
+//						logger.info("creating a new user from a successed vpn event. vpn username ({})", username);
+//						user = createUser(vpnScore);
+//					} else{
+						continue;
+//					}
 				}
 				updateApplicationUserDetails(user, new ApplicationUserDetails(UserApplication.vpn.getId(), username), false);
 				updateLogUsername(user, VpnScore.TABLE_NAME, username, false);
@@ -766,6 +796,15 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		updateUserTotalScore(users, true, lastRun);
+	}
+	
+	private User createUser(VpnScore vpnScore){
+		String username = vpnScore.getUserName();
+		User user = new User(String.format("VPN_%s", username));
+		user.setUsername(username);
+		user.setSearchField(createSearchField(user));
+		
+		return user;
 	}
 	
 	@Override

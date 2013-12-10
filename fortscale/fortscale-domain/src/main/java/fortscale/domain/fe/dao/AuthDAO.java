@@ -11,6 +11,8 @@ public interface AuthDAO {
 
 	public String getTableName();
 	
+	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal);
+	
 	public List<AuthScore> findAll(Pageable pageable);
 	
 	public AuthScore findCurrentByUsername(String username);

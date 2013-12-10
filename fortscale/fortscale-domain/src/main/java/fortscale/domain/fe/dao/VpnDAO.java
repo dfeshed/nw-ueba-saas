@@ -10,6 +10,8 @@ import fortscale.domain.fe.VpnScore;
 public interface VpnDAO {
 	public List<VpnScore> findAll(Pageable pageable);
 	
+	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal);
+	
 	public VpnScore findCurrentByUsername(String username);
 	
 	public List<VpnScore> findEventsByUsername(String username, Pageable pageable);

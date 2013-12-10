@@ -91,6 +91,8 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 				ret.setEventScore(Double.parseDouble(rs.getString(AuthScore.EVENT_SCORE_FIELD_NAME)));
 				ret.setGlobalScore(Double.parseDouble(rs.getString(AuthScore.GLOBAL_SCORE_FIELD_NAME)));
 				
+				setStatus(rs, ret);
+				
 				ResultSetMetaData resultSetMetaData = rs.getMetaData();
 				Map<String, Object> allFields = new HashMap<String, Object>(resultSetMetaData.getColumnCount());
 				for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
@@ -135,7 +137,7 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 		}
 	}
 	
-	
+	protected abstract void setStatus(ResultSet rs, AuthScore authScore);
 	
 	
 	

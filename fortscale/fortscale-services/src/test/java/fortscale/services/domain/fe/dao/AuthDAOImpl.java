@@ -161,4 +161,11 @@ public class AuthDAOImpl implements AuthDAO {
 		return null;
 	}
 
+	@Override
+	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
 }
