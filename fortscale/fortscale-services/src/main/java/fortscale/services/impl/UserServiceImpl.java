@@ -696,12 +696,12 @@ public class UserServiceImpl implements UserService{
 				if(user == null){
 					if(classifier.getLogEventsEnum().equals(LogEventsEnum.ssh)){
 						logger.info("no user was found with SSH username ({})", username);
-//						if(authDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, sshStatusSuccessValueRegex) > 0){
-//							logger.info("creating a new user from a successed ssh event. ssh username ({})", username);
-//							user = createUser(authScore);
-//						} else{
+						if(authDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, sshStatusSuccessValueRegex) > 0){
+							logger.info("creating a new user from a successed ssh event. ssh username ({})", username);
+							user = createUser(authScore);
+						} else{
 							continue;
-//						}
+						}
 					} else{
 						logger.error("no user was found with the username {}", username);
 						continue;
@@ -780,12 +780,12 @@ public class UserServiceImpl implements UserService{
 				user = findByVpnUsername(username);
 				if(user == null){
 					logger.info("no user was found with vpn username ({})", username);
-//					if(vpnScore.getStatus() != null && vpnScore.getStatus().matches(vpnStatusSuccessValueRegex)){
-//						logger.info("creating a new user from a successed vpn event. vpn username ({})", username);
-//						user = createUser(vpnScore);
-//					} else{
+					if(vpnDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, vpnStatusSuccessValueRegex) > 0){
+						logger.info("creating a new user from a successed vpn event. vpn username ({})", username);
+						user = createUser(vpnScore);
+					} else{
 						continue;
-//					}
+					}
 				}
 				updateApplicationUserDetails(user, new ApplicationUserDetails(UserApplication.vpn.getId(), username), false);
 				updateLogUsername(user, VpnScore.TABLE_NAME, username, false);
