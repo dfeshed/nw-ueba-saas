@@ -165,19 +165,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 		return null;
 	}
 
-	@Override
-	public AdUserFeaturesExtraction findClassifierIdAndByUserIdAndTimestamp(
-			String classifierId, String userId, Date timestamp) {
-		
-		return null;
-	}
 
-	@Override
-	public AdUserFeaturesExtraction findClassifierIdAndByUserIdAndTimestampepoch(
-			String classifierId, String userId, Long timestampepoch) {
-		
-		return null;
-	}
 
 	@Override
 	public List<AdUserFeaturesExtraction> findByUserId(String userId,
@@ -192,12 +180,6 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 		return null;
 	}
 
-	@Override
-	public AdUserFeaturesExtraction getClassifierIdAndByUserIdAndTimestamp(
-			String classifierId, String userId, Date timestamp) {
-		
-		return null;
-	}
 
 	@Override
 	public List<Date> getDistinctRuntime(String classifierId) {
@@ -208,6 +190,20 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 	@Override
 	public List<AdUserFeaturesExtraction> findByLastModifiedExists(
 			boolean exists) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AdUserFeaturesExtraction findByClassifierIdAndUserIdAndTimestamp(
+			String classifierId, String userId, Date timestamp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AdUserFeaturesExtraction findClassifierIdAndByUserIdAndTimestampepoch(
+			String classifierId, String userId, Long timestampepoch) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -40,12 +40,12 @@ public class AdUsersFeaturesExtractionRepositoryTest extends AbstractTest{
 		Assert.assertEquals(adUserFeaturesExtraction.getId(), adUserFeaturesExtraction2.getId());
 	}
 	
-	@Test
-	public void testFindClassifierIdAndByUserIdAndTimestamp() {
-		AdUserFeaturesExtraction adUserFeaturesExtraction = repository.findAll().iterator().next();
-		AdUserFeaturesExtraction adUserFeaturesExtraction2 = repository.findClassifierIdAndByUserIdAndTimestamp(adUserFeaturesExtraction.getClassifierId(), adUserFeaturesExtraction.getUserId(), adUserFeaturesExtraction.getTimestamp());
-		Assert.assertEquals(adUserFeaturesExtraction.getId(), adUserFeaturesExtraction2.getId());
-	}
+//	@Test
+//	public void testFindClassifierIdAndByUserIdAndTimestamp() {
+//		AdUserFeaturesExtraction adUserFeaturesExtraction = repository.findAll().iterator().next();
+//		AdUserFeaturesExtraction adUserFeaturesExtraction2 = repository.findClassifierIdAndByUserIdAndTimestamp(adUserFeaturesExtraction.getClassifierId(), adUserFeaturesExtraction.getUserId(), adUserFeaturesExtraction.getTimestamp());
+//		Assert.assertEquals(adUserFeaturesExtraction.getId(), adUserFeaturesExtraction2.getId());
+//	}
 	
 	@Test
 	public void testCalculateAvgScore() {
@@ -81,19 +81,5 @@ public class AdUsersFeaturesExtractionRepositoryTest extends AbstractTest{
 		Assert.assertTrue(adUserFeaturesExtractions.size() > 0);
 	}
 	
-	@Test
-	public void testFindByUserId() {
-		AdUserFeaturesExtraction adUserFeaturesExtraction = repository.findAll().iterator().next();
-		Pageable pageable = new PageRequest(0, 1, Direction.DESC, AdUserFeaturesExtraction.timestampField);
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = repository.findByUserId(adUserFeaturesExtraction.getUserId(), pageable);
-		Assert.assertTrue(adUserFeaturesExtractions.size() > 0);
-	}
 	
-	@Test
-	public void testFindByClassifierIdAndUserId() {
-		AdUserFeaturesExtraction adUserFeaturesExtraction = repository.findAll().iterator().next();
-		Pageable pageable = new PageRequest(0, 1, Direction.DESC, AdUserFeaturesExtraction.timestampField);
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = repository.findByClassifierIdAndUserId(adUserFeaturesExtraction.getClassifierId(), adUserFeaturesExtraction.getUserId(), pageable);
-		Assert.assertTrue(adUserFeaturesExtractions.size() > 0);
-	}	
 }

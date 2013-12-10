@@ -2,6 +2,7 @@ package fortscale.web.rest;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -282,17 +283,32 @@ public class ApiUserController extends BaseController{
 	public DataBean<List<FeatureBean>> userClassifierAttributes(@PathVariable String uid, @PathVariable String classifierId,
 			@RequestParam(required=true) String date,
 			@RequestParam(required=false) String orderBy,
+			@RequestParam(defaultValue="0") Integer page,
+			@RequestParam(defaultValue="-1") Integer size,
 			@RequestParam(defaultValue="DESC") String orderByDirection,
 			Model model){
 		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
 		Direction direction = convertStringToDirection(orderByDirection);
 		List<IFeature> attrs = userService.getUserAttributesScores(uid, classifierId, Long.parseLong(date), orderBy, direction);
 		List<FeatureBean> features = new ArrayList<FeatureBean>();
+		int total = attrs.size();
+		if(size > 0){
+			int fromIndex = page * size;
+			if(fromIndex >= attrs.size()){
+				attrs = Collections.emptyList();
+			} else{
+				int toIndex = fromIndex + size;
+				if(toIndex > attrs.size()){
+					toIndex = attrs.size();
+				}
+				attrs = attrs.subList(fromIndex, toIndex);
+			}
+		}
 		for(IFeature feature: attrs){
 			features.add(new FeatureBean(feature));
 		}
 		ret.setData(features);
-		ret.setTotal(features.size());
+		ret.setTotal(total);
 		return ret;
 	}
 	

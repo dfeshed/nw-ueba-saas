@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
@@ -462,21 +463,15 @@ public class UserServiceImpl implements UserService{
 	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction) {
 		Classifier.validateClassifierId(classifierId);
 //		Long timestampepoch = timestamp/1000;
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(classifierId, new Date(timestamp));
-//		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.getClassifierIdAndByUserIdAndTimestamp(classifierId,uid, new Date(timestamp));
-		AdUserFeaturesExtraction ufe = null;
-		for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
-			if(adUserFeaturesExtraction.getUserId().equals(uid)){
-				ufe = adUserFeaturesExtraction;
-				break;
-			}
-		}
+		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findByClassifierIdAndUserIdAndTimestamp(classifierId, uid, new Date(timestamp));
 		if(ufe == null || ufe.getAttributes() == null){
 			return Collections.emptyList();
 		}
 		
 		Collections.sort(ufe.getAttributes(), getUserFeatureComparator(orderBy, direction));
-		return ufe.getAttributes();
+		List<IFeature> ret = ufe.getAttributes();
+		
+		return ret;
 	}
 	
 	private Comparator<IFeature> getUserFeatureComparator(String orderBy, Direction direction){
@@ -508,6 +503,35 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		return ret;
+	}
+	
+	private Sort processOrderBy(String orderBy, Direction direction){
+		if(direction == null){
+			direction = Direction.DESC;
+		}
+
+		if(orderBy == null){
+			orderBy = "featureScore";
+		}
+		
+		switch(orderBy){
+		case "featureScore":
+			orderBy = AdUserFeaturesExtraction.getFeatureScoreField();
+			break;
+		case "featureUniqueName":
+			orderBy = AdUserFeaturesExtraction.getFeatureUniqueNameField();
+			break;
+		case "explanation.featureCount":
+			orderBy = AdUserFeaturesExtraction.getExplanationFeatureCountField();
+			break;
+		case "explanation.featureDistribution":
+			orderBy = AdUserFeaturesExtraction.getExplanationFeatureDistributionField();
+			break;
+		default:
+			orderBy = AdUserFeaturesExtraction.getFeatureScoreField();
+		}
+		Sort sort = new Sort(direction, orderBy);
+		return sort;
 	}
 	
 	

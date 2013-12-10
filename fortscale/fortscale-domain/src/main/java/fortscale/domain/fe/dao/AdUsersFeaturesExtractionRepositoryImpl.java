@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.mongodb.MongoDbFactory;
@@ -277,8 +278,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 			String error = result.getErrorMessage();
 			error = error == null ? "NO MESSAGE" : error;
 
-			throw new InvalidDataAccessApiUsageException("Command execution failed:  Error [" + error + "], Command = "
-					+ source, ex);
+			throw new InvalidDataAccessApiUsageException("Command execution failed:  Error [" + error + "], Command = " + source, ex);
 		}
 	}
 
@@ -288,8 +288,9 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 	}
 
 	@Override
-	public AdUserFeaturesExtraction getClassifierIdAndByUserIdAndTimestamp(String classifierId, String userId, Date timestamp) {
-		Query query = new Query(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).and(AdUserFeaturesExtraction.userIdField).is(userId).and(AdUserFeaturesExtraction.timestampField).is(timestamp));
+	public AdUserFeaturesExtraction findByClassifierIdAndUserIdAndTimestamp(String classifierId, String userId, Date timestamp) {
+		Query query = new Query(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).and(AdUserFeaturesExtraction.userIdField).is(new ObjectId(userId)).and(AdUserFeaturesExtraction.timestampField).is(timestamp));
+
 		return mongoTemplate.findOne(query, AdUserFeaturesExtraction.class);
 	}
 }
