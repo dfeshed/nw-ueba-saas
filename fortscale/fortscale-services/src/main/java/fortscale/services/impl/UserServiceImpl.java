@@ -314,23 +314,23 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public Map<String,List<IUserScore>> getUsersScoresByIds(List<String> uids) {
+	public Map<User,List<IUserScore>> getUsersScoresByIds(List<String> uids) {
 		List<User> users = userRepository.findByIds(uids);
 		
 		return getUsersScores(users);
 	}
 	
 	@Override
-	public Map<String, List<IUserScore>> getFollowedUsersScores(){
+	public Map<User, List<IUserScore>> getFollowedUsersScores(){
 		List<User> users = userRepository.findByFollowed(true);
 		
 		return getUsersScores(users);
 	}
 	
-	private Map<String, List<IUserScore>> getUsersScores(List<User> users){
-		Map<String,List<IUserScore>> ret = new HashMap<>();
+	private Map<User, List<IUserScore>> getUsersScores(List<User> users){
+		Map<User,List<IUserScore>> ret = new HashMap<>();
 		for(User user: users){
-			ret.put(user.getId(), getUserScores(user));
+			ret.put(user, getUserScores(user));
 		}
 		
 		return ret;
@@ -470,6 +470,24 @@ public class UserServiceImpl implements UserService{
 		
 		Collections.sort(ufe.getAttributes(), getUserFeatureComparator(orderBy, direction));
 		List<IFeature> ret = ufe.getAttributes();
+		
+		return ret;
+	}
+	
+	@Override
+	public Map<User,List<IFeature>> getFollowedUserAttributesScores(String classifierId, Long timestamp, String orderBy, Direction direction){
+		List<User> users = userRepository.findByFollowed(true);
+		Map<String, User> userMap = new HashMap<>();
+		for(User user: users){
+			userMap.put(user.getId(), user);
+		}
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestampAndUserIds(classifierId, new Date(timestamp), userMap.keySet());
+		
+		Map<User,List<IFeature>> ret = new HashMap<>();
+		for(AdUserFeaturesExtraction ufe: adUserFeaturesExtractions){
+			Collections.sort(ufe.getAttributes(), getUserFeatureComparator(orderBy, direction));
+			ret.put(userMap.get(ufe.getUserId()), ufe.getAttributes());
+		}
 		
 		return ret;
 	}

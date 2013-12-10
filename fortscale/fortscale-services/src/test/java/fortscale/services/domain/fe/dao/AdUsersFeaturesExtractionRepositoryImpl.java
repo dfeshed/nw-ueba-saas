@@ -1,6 +1,7 @@
 package fortscale.services.domain.fe.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -175,6 +176,12 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements AdUsersFeaturesE
 	@Override
 	public AdUserFeaturesExtraction findByClassifierIdAndUserIdAndTimestamp(
 			String classifierId, String userId, Date timestamp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<AdUserFeaturesExtraction> findByClassifierIdAndTimestampAndUserIds(String classifierId, Date timestamp, Collection<String> userIds) {
 		// TODO Auto-generated method stub
 		return null;
 	}

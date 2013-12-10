@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -249,9 +250,13 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public DataBean<Map<String, List<IUserScore>>> followedUsersScores(Model model){
 		DataBean<Map<String, List<IUserScore>>> ret = new DataBean<Map<String, List<IUserScore>>>();
-		Map<String, List<IUserScore>> userScores = userService.getFollowedUsersScores();
-		ret.setData(userScores);
-		ret.setTotal(userScores.size());
+		Map<User, List<IUserScore>> userScores = userService.getFollowedUsersScores();
+		Map<String, List<IUserScore>> data = new HashMap<>();
+		for(Entry<User, List<IUserScore>> entry: userScores.entrySet()){
+			data.put(entry.getKey().getId(), entry.getValue());
+		}
+		ret.setData(data);
+		ret.setTotal(data.size());
 		return ret;
 	}
 	
@@ -290,8 +295,38 @@ public class ApiUserController extends BaseController{
 		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
 		Direction direction = convertStringToDirection(orderByDirection);
 		List<IFeature> attrs = userService.getUserAttributesScores(uid, classifierId, Long.parseLong(date), orderBy, direction);
+		List<FeatureBean> features = getFeatureBeanList(attrs, page, size);
+		ret.setData(features);
+		ret.setTotal(attrs.size());
+		return ret;
+	}
+	
+	@RequestMapping(value="/classifier/{classifierId}/followedUsersAttributes", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Map<String, List<FeatureBean>>> followedUsersClassifierAttributes(@PathVariable String classifierId,
+			@RequestParam(required=true) String date,
+			@RequestParam(required=false) String orderBy,
+			@RequestParam(defaultValue="0") Integer attributesPage,
+			@RequestParam(defaultValue="-1") Integer attributesSize,
+			@RequestParam(defaultValue="DESC") String orderByDirection,
+			Model model){
+		DataBean<Map<String, List<FeatureBean>>> ret = new DataBean<Map<String, List<FeatureBean>>>();
+		Direction direction = convertStringToDirection(orderByDirection);
+		Map<User,List<IFeature>> userToAttrsMap = userService.getFollowedUserAttributesScores(classifierId, Long.parseLong(date), orderBy, direction);
+		Map<String, List<FeatureBean>> data = new HashMap<>();
+		for(Entry<User, List<IFeature>> entry: userToAttrsMap.entrySet()){
+			List<IFeature> attrs = entry.getValue();
+			List<FeatureBean> features = getFeatureBeanList(attrs, attributesPage, attributesSize);
+			data.put(entry.getKey().getId(), features);
+		}
+		ret.setData(data);
+		ret.setTotal(data.size());
+		return ret;
+	}
+	
+	private List<FeatureBean> getFeatureBeanList(List<IFeature> attrs, int page, int size){
 		List<FeatureBean> features = new ArrayList<FeatureBean>();
-		int total = attrs.size();
 		if(size > 0){
 			int fromIndex = page * size;
 			if(fromIndex >= attrs.size()){
@@ -307,9 +342,7 @@ public class ApiUserController extends BaseController{
 		for(IFeature feature: attrs){
 			features.add(new FeatureBean(feature));
 		}
-		ret.setData(features);
-		ret.setTotal(total);
-		return ret;
+		return features;
 	}
 	
 	@RequestMapping(value="/{uid}/classifier/total/explanation", method=RequestMethod.GET)
