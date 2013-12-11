@@ -10,5 +10,5 @@ import fortscale.domain.core.Notification;
 public interface NotificationsRepository extends MongoRepository<Notification, Long>, NotificationsRepositoryCustom {
 	List<Notification> findByFsId(String fsid);
 	
-	List<Notification> findByTsGreaterThan(int ts, Sort sort);
+	List<Notification> findByTsGreaterThan(long ts, Sort sort);
 }
