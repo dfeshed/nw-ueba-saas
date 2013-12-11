@@ -824,6 +824,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	private static final String VPN_DATA_TABLENAME = "vpndata";
 	private static final String VPN_TIME_FIELD = "date_time";
+	private static final String SSH_TIME_FIELD = "date_time";
 	
 	public EBSResult getSimpleEBSAlgOnQuery(List<Map<String, Object>> resultsMap, String tableName, String timeFieldName, List<String> fieldNamesFilter, int offset, int limit, String orderBy, String orderByDirection){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
@@ -906,7 +907,12 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(sqlQuery.contains(WMIEVENTS_TABLE_NAME)){
 			ebsResult = getEBSAlgOnAuthQuery(resultsMap, WMIEVENTS_TABLE_NAME, 0, resultsMap.size(), orderBy, orderByDirection);
 		} else if(sqlQuery.contains(SSH_TABLE_NAME)){
-			ebsResult = getEBSAlgOnAuthQuery(resultsMap, SSH_TABLE_NAME, 0, resultsMap.size(), orderBy, orderByDirection);
+			Set<String> timeFieldNameSet = new HashSet<>();
+			timeFieldNameSet.add(timestampFieldName);
+			IQueryResultsScorer queryResultsScorer = new QueryResultsScorer();
+			IEBSResult tmp = queryResultsScorer.runEBSOnQueryResults(resultsMap, rowFieldRegexFilter.get(SSH_TABLE_NAME), timeFieldNameSet, Collections.<String>emptySet(), null, null);
+			isRunThreadForSaving = false;
+			ebsResult = new EBSResult(tmp.getResultsList(), tmp.getGlobalScore(), 0, tmp.getResultsList().size());
 		} else if(sqlQuery.contains(VPN_DATA_TABLENAME)){
 			Set<String> fieldNamesFilterSet = new HashSet<>();
 			fieldNamesFilterSet.add(VpnScore.LOCAL_IP_FIELD_NAME);
@@ -940,6 +946,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			timestampFieldName = WMIEVENTS_TIME_FIELD;
 		} else if(sqlQuery.contains(VPN_DATA_TABLENAME)){
 			timestampFieldName = VPN_TIME_FIELD;
+		} else if(sqlQuery.contains(SSH_TABLE_NAME)){
+			timestampFieldName = SSH_TIME_FIELD;
 		}
 		return timestampFieldName;
 	}
