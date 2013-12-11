@@ -372,15 +372,20 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 
 	@Override
-	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
+	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
 		AuthDAO authDAO = getAuthDAO(eventId);
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
 		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
+		
+		List<String> usernames = null;
+		if(onlyFollowedUsers){
+			usernames = userService.getFollowedUsersAuthLogUsername(eventId);
+		}
 
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<AuthScore> authScores = authDAO.findEventsByTimestampGtEventScore(timestamp, pageable, minScore);
+		List<AuthScore> authScores = authDAO.findEventsByTimestampGtEventScoreInUsernameList(timestamp, pageable, minScore, usernames);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
 			Map<String, User> userMap = new HashMap<>();
@@ -599,13 +604,19 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 
 	@Override
-	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
+	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
 		if(timestamp == null){
 			timestamp = vpnDAO.getLastRunDate();
 		}
 		String orderByArray[] = processVpnScoreOrderByFieldName(orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestampGtEventScore(timestamp, pageable, minScore);
+		
+		List<String> usernames = null;
+		if(onlyFollowedUsers){
+			usernames = userService.getFollowedUsersVpnLogUsername();
+		}
+		
+		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestampGtEventScoreInUsernameList(timestamp, pageable, minScore, usernames);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
 			Map<String, User> userMap = new HashMap<>();

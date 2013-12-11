@@ -59,4 +59,8 @@ public interface UserService {
 	public Map<User, List<IUserScore>> getUsersScoresByIds(List<String> uids);
 	
 	public Map<User, List<IUserScore>> getFollowedUsersScores();
+
+	public List<String> getFollowedUsersVpnLogUsername();
+
+	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId);
 }

@@ -1,5 +1,6 @@
 package fortscale.services.domain.fe.dao;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -150,6 +151,14 @@ public class VpnDAOImpl implements VpnDAO {
 	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<VpnScore> findEventsByTimestampGtEventScoreInUsernameList(
+			Date timestamp, Pageable pageable, Integer minScore,
+			Collection<String> usernames) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

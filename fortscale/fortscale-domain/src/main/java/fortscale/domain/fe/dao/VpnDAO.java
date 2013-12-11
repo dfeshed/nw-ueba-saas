@@ -1,5 +1,6 @@
 package fortscale.domain.fe.dao;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public interface VpnDAO {
 	public List<VpnScore> findEventsByTimestamp(Date timestamp, Pageable pageable);
 	
 	public List<VpnScore> findEventsByTimestampGtEventScore(Date timestamp, Pageable pageable, int minScore);
+	
+	public List<VpnScore> findEventsByTimestampGtEventScoreInUsernameList(Date timestamp, Pageable pageable, Integer minScore, Collection<String> usernames);
 	
 	public List<VpnScore> findEventsByTimestamp(Date timestamp, Pageable pageable, String additionalWhereQuery);
 	

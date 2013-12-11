@@ -664,15 +664,15 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void updateUserWithAuthScore(Classifier classifier) {
-		AuthDAO authDAO = getAuthDAO(classifier);
+		AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
 		Date lastRun = authDAO.getLastRunDate();
 		updateUserWithAuthScore(authDAO, classifier, lastRun);
 	}
 	
-	private AuthDAO getAuthDAO(Classifier classifier){
+	private AuthDAO getAuthDAO(LogEventsEnum eventId){
 		AuthDAO ret = null;
-		switch(classifier){
-			case auth:
+		switch(eventId){
+			case login:
 				ret = loginDAO;
 				break;
 			case ssh:
@@ -788,7 +788,7 @@ public class UserServiceImpl implements UserService{
 					}
 				}
 				updateApplicationUserDetails(user, new ApplicationUserDetails(UserApplication.vpn.getId(), username), false);
-				updateLogUsername(user, VpnScore.TABLE_NAME, username, false);
+				updateVpnLogUsername(user, username, false);
 			}
 			user = updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg, false, false);
 			if(user != null){
@@ -796,6 +796,48 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		updateUserTotalScore(users, true, lastRun);
+	}
+	
+	private void updateAuthLogUsername(LogEventsEnum eventId, User user, String username, boolean isSave){
+		AuthDAO authDAO = getAuthDAO(eventId);
+		updateLogUsername(user, authDAO.getTableName(), username, isSave);
+	}
+	
+	private String getAuthLogUsername(LogEventsEnum eventId, User user){
+		AuthDAO authDAO = getAuthDAO(eventId);
+		return user.getLogUsernameMap().get(authDAO.getTableName());
+	}
+	
+	@Override
+	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId){
+		List<String> usernames = new ArrayList<>();
+		for(User user: userRepository.findByFollowed(true)){
+			String username = getAuthLogUsername(eventId, user);
+			if(username != null){
+				usernames.add(username);
+			}
+		}
+		return usernames;
+	}
+	
+	private void updateVpnLogUsername(User user, String username, boolean isSave){
+		updateLogUsername(user, VpnScore.TABLE_NAME, username, isSave);
+	}
+	
+	private String getVpnLogUsername(User user){
+		return user.getLogUsernameMap().get(VpnScore.TABLE_NAME);
+	}
+	
+	@Override
+	public List<String> getFollowedUsersVpnLogUsername(){
+		List<String> usernames = new ArrayList<>();
+		for(User user: userRepository.findByFollowed(true)){
+			String username = getVpnLogUsername(user);
+			if(username != null){
+				usernames.add(username);
+			}
+		}
+		return usernames;
 	}
 	
 	private User createUser(VpnScore vpnScore){
@@ -997,7 +1039,7 @@ public class UserServiceImpl implements UserService{
 		
 		Classifier classifiers[] = {Classifier.auth, Classifier.ssh};
 		for(Classifier classifier: classifiers){
-			AuthDAO authDAO = getAuthDAO(classifier);
+			AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
 			distinctRuntimes = authDAO.getDistinctRuntime();
 			for(Long runtime: distinctRuntimes){
 				if(runtime == null){

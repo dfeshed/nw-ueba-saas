@@ -1,5 +1,6 @@
 package fortscale.services.domain.fe.dao;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -165,6 +166,14 @@ public class AuthDAOImpl implements AuthDAO {
 	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<AuthScore> findEventsByTimestampGtEventScoreInUsernameList(
+			Date timestamp, Pageable pageable, Integer minScore,
+			Collection<String> usernames) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
