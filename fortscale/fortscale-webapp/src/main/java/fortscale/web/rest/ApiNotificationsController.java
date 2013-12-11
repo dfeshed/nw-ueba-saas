@@ -122,13 +122,13 @@ public class ApiNotificationsController {
 
 	
 	/***
-	 * Gets notification after a given time stamp, with optional paging offset
+	 * Gets notification after a given time stamp
 	 * @return list of matching notification, empty list if no notification found
 	 */
 	@RequestMapping(value = "/after/{ts}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Notification>> after(@PathVariable("ts") int ts) {
+	public DataBean<List<Notification>> after(@PathVariable("ts") long ts) {
 		
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, TIME_STAMP));
 		
