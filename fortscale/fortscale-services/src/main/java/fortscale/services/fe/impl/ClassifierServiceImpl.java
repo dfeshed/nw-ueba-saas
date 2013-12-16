@@ -350,9 +350,13 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
+		String logUsername = user.getLogUsernameMap().get(authDAO.getTableName());
+		if(StringUtils.isEmpty(logUsername)){
+			return Collections.emptyList();
+		}
 		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestampGtEventScore(user.getLogUsernameMap().get(authDAO.getTableName()), timestamp, minScore, pageable);
+		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestampGtEventScore(logUsername, timestamp, minScore, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
 			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
