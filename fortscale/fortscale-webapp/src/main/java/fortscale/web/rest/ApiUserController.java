@@ -155,9 +155,11 @@ public class ApiUserController extends BaseController{
 				dnToUserMap.put(user.getManagerDN(), null);
 			}
 		}
-		List<User> managers = userRepository.findByDNs(dnToUserMap.keySet());
-		for(User manager: managers){
-			dnToUserMap.put(manager.getAdDn(), manager);
+		if(dnToUserMap.size() > 0){
+			List<User> managers = userRepository.findByDNs(dnToUserMap.keySet());
+			for(User manager: managers){
+				dnToUserMap.put(manager.getAdDn(), manager);
+			}
 		}
 		for(User user: users){
 			User manager = null;
