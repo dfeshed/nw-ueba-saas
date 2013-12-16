@@ -13,6 +13,7 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
 	private boolean isSkipFirstLine = false;
 	private String delimiter = ",";
 	private boolean isDisableQuotes = false;
+	private boolean forceSingleLineEvents = false;
 	
 	
 	public abstract void open() throws IOException;
@@ -42,6 +43,10 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
     		} else{
     			if(!isDisableQuotes){
     				val = val.replace("\"", QUOTES_REPLACEMENT);
+    			}
+    			
+    			if (forceSingleLineEvents) {
+    				val.replace('\n', '\t');
     			}
     		}
     		if(!isDisableQuotes){
@@ -83,6 +88,14 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
 	}
 	public boolean isDisableQuotes() {
 		return isDisableQuotes;
+	}
+	
+	public void setForceSingleLineEvents(boolean forceSingleLineEvents) {
+		this.forceSingleLineEvents = forceSingleLineEvents;
+	}
+	
+	public boolean isForceSingleLineEvents() {
+		return this.forceSingleLineEvents;
 	}
 	
 	@Override
