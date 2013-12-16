@@ -107,5 +107,19 @@ public class AdUserFeaturesExtraction extends AbstractFEDocument{
 		this.timestampepoch = timestampepoch;
 	}
 	
+	public static String getFeatureScoreField() {
+		return String.format("%s.%s", AdUserFeaturesExtraction.attrListField, ADFeature.FEATURE_SCORE_FIELD);
+	}
 	
+	public static String getFeatureUniqueNameField() {
+		return String.format("%s.%s", AdUserFeaturesExtraction.attrListField, ADFeature.UNIQUE_NAME_FIELD);
+	}
+	
+	public static String getExplanationFeatureCountField() {
+		return String.format("%s.%s.%s", AdUserFeaturesExtraction.attrListField, ADFeature.FEATURE_EXPLANATION_FIELD, FeatureExplanation.FEATURE_COUNT_FIELD);
+	}
+	
+	public static String getExplanationFeatureDistributionField() {
+		return String.format("%s.%s.%s", AdUserFeaturesExtraction.attrListField, ADFeature.FEATURE_EXPLANATION_FIELD, FeatureExplanation.FEATURE_DISTRIBUTION_FIELD);
+	}	
 }

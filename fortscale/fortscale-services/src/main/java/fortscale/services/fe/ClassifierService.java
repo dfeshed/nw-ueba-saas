@@ -5,20 +5,22 @@ import java.util.List;
 
 import org.springframework.data.domain.Sort.Direction;
 
+import fortscale.services.LogEventsEnum;
+
 
 public interface ClassifierService {
 	public List<IClassifierScoreDistribution> getScoreDistribution(); 
 	public Classifier getClassifier(String classifierId);
 	public List<IScoreDistribution> getScoreDistribution(String classifierId); 
 	public int countUsers(String classifierId);
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size);
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size);
-	public List<ILoginEventScoreInfo> getUserSuspiciousLoginEvents(String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore);
-	public List<ILoginEventScoreInfo> getSuspiciousLoginEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore);
-	public int countLoginEvents(Date timestamp);
-	public int countLoginEvents(String userId, Date timestamp);
+	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size, boolean followedOnly);
+	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly);
+	public List<ILoginEventScoreInfo> getUserSuspiciousAuthEvents(LogEventsEnum eventId, String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore);
+	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers);
+	public int countAuthEvents(LogEventsEnum eventId, Date timestamp);
+	public int countAuthEvents(LogEventsEnum eventId, String userId, Date timestamp);
 	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore);
-	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore);
+	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers);
 	public int countVpnEvents(Date timestampt);
 	public int countVpnEvents(String userId, Date timestamp);
 	

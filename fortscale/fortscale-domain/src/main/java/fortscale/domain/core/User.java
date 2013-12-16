@@ -30,10 +30,13 @@ public class User extends AbstractDocument {
 	public static final String logUsernameField = "logUsername";
 	public static final String usernameField = "username";
 	public static final String classifierScoreField = "scores";
+	public static final String followedField = "followed";
+	public static final String adDnField = "adDn";
 	
 	
 	@Indexed(unique = true)
 	@JsonProperty
+	@Field(adDnField)
 	private String adDn;
 	
 	private String adEmployeeID;
@@ -103,8 +106,8 @@ public class User extends AbstractDocument {
 	private String adO;
 	
 	private String adRoomNumber;
-	
-	
+	@Field(followedField)
+	private Boolean followed = false;
 	
 	
 	
@@ -486,6 +489,15 @@ public class User extends AbstractDocument {
 
 	public void setAdDn(String adDn) {
 		this.adDn = adDn;
+	}
+
+	public Boolean getFollowed() {
+		return followed;
+	}
+
+
+	public void setFollowed(Boolean followed) {
+		this.followed = followed;
 	}
 
 

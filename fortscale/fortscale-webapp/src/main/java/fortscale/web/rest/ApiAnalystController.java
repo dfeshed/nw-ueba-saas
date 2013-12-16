@@ -122,4 +122,15 @@ public class ApiAnalystController extends BaseController{
 	}
 	
 	
+	@RequestMapping(value="/followUser", method=RequestMethod.GET)
+	@LogException
+	public void followUser(@RequestParam(required=true) String userId,
+			@RequestParam(defaultValue="true") Boolean follow,
+			Model model){
+		AnalystAuth analystAuth = getThisAnalystAuth();
+		if(analystAuth != null) {
+			analystService.followUser(analystAuth, userId, follow);
+		}
+	}
+	
 }

@@ -1,7 +1,10 @@
 package fortscale.domain.core.dao;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+import static org.springframework.data.mongodb.core.query.Update.update;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -63,6 +66,17 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		query.with(pageable);
 		return mongoTemplate.find(query, User.class);
 	}
+	
+	@Override
+	public List<User> findByClassifierIdAndFollowedAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
+		DateTime dateTime = new DateTime();
+		dateTime = dateTime.withTimeAtStartOfDay();
+		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
+		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
+		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
+		query.with(pageable);
+		return mongoTemplate.find(query, User.class);
+	}
 
 	@Override
 	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold) {
@@ -81,5 +95,33 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
 		return (int) mongoTemplate.count(query, User.class);
-	}	
+	}
+
+	@Override
+	public void updateFollowed(User user, boolean followed) {
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.followedField, followed), User.class);
+	}
+
+	@Override
+	public List<User> findByDNs(Collection<String> dns) {
+		return findByUniqueField(User.adDnField,dns);
+	}
+	
+	private List<User> findByUniqueField(String fieldName, Collection<?> vals) {
+		Criteria criterias[] = new Criteria[vals.size()];
+		int i = 0;
+		for(Object val: vals){
+			criterias[i] = where(fieldName).is(val);
+			i++;
+		}
+		Query query = new Query(new Criteria().orOperator(criterias));
+		return mongoTemplate.find(query, User.class);
+	}
+
+	@Override
+	public List<User> findByIds(Collection<String> ids) {
+		return findByUniqueField(User.ID_FIELD,ids);
+	}
+
+		
 }

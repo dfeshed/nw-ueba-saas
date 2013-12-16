@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	public abstract String getEventScoreFieldName();
 
 	public abstract String getGlobalScoreFieldName();
+	
+	public abstract String getStatusFieldName();
 
 	public abstract T createAccessObject(String userName, double globalScore,
 			double eventScore, Date timestamp);
@@ -93,6 +96,38 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	
 	public List<T> findEventsByTimestampGtEventScore(Date timestamp, Pageable pageable, int minScore) {
 		return findEventsByTimestamp(timestamp, pageable, String.format("%s >= %d", getEventScoreFieldName(), minScore));
+	}
+	
+	public List<T> findEventsByTimestampGtEventScoreInUsernameList(Date timestamp, Pageable pageable, Integer minScore, Collection<String> usernames) {
+		StringBuilder builder = new StringBuilder();
+		boolean isFirst = true;
+		if(minScore != null){
+			builder.append(String.format("%s >= %d", getEventScoreFieldName(), minScore));
+			isFirst = false;
+		}
+		if(usernames != null && !usernames.isEmpty()){
+			if(!isFirst){
+				builder.append(" and ");
+			} else{
+				isFirst = false;
+			}
+			builder.append(getUsernameFieldName()).append(" in (");
+			boolean isFirstUsername = true;
+			for(String username: usernames){
+				if(isFirstUsername){
+					isFirstUsername = false;
+				} else{
+					builder.append(",");
+				}
+				builder.append("\"").append(username).append("\"");
+			}
+			builder.append(")");
+		}
+		String additionalWhereQuery = null;
+		if(!isFirst){
+			additionalWhereQuery = builder.toString();
+		}
+		return findEventsByTimestamp(timestamp, pageable, additionalWhereQuery);
 	}
 
 	public List<T> findEventsByTimestamp(Date timestamp, Pageable pageable,
@@ -176,6 +211,16 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	public int countNumOfEventsByUser(Date timestamp, String username){
 		String query = String.format("select count(*) from %s where %s=%s and %s",
 				getTableName(),
+				getTimestampFieldName(), formatTimestampDate(timestamp),
+				getUserNameEqualComparison(username));
+		
+		return impalaJdbcTemplate.queryForInt(query);
+	}
+	
+	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal){
+		String query = String.format("select count(*) from %s where lower(%s) regexp \"%s\" and %s=%s and %s",
+				getTableName(),
+				getStatusFieldName(), statusVal.toLowerCase(),
 				getTimestampFieldName(), formatTimestampDate(timestamp),
 				getUserNameEqualComparison(username));
 		

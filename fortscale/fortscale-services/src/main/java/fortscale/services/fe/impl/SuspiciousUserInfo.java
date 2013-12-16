@@ -7,12 +7,14 @@ public class SuspiciousUserInfo implements ISuspiciousUserInfo {
 	private String username;
 	private int score;
 	private double trend;
+	private Boolean isUserFollowed;
 	
-	public SuspiciousUserInfo(String userId, String username, int score, double trend){
+	public SuspiciousUserInfo(String userId, String username, int score, double trend, Boolean isUserFollowed){
 		this.score = score;
 		this.username = username;
 		this.trend = trend;
 		this.userId = userId;
+		this.isUserFollowed = isUserFollowed;
 	}
 
 	@Override
@@ -33,6 +35,11 @@ public class SuspiciousUserInfo implements ISuspiciousUserInfo {
 	@Override
 	public String getUserId() {
 		return userId;
+	}
+
+	@Override
+	public Boolean getIsUserFollowed() {
+		return isUserFollowed;
 	}
 
 }

@@ -2,8 +2,13 @@ package fortscale.web.rest;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
@@ -21,6 +26,7 @@ import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserService;
+import fortscale.services.fe.Classifier;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
@@ -53,7 +59,12 @@ public class ApiUserController extends BaseController{
 	
 	@RequestMapping(value="/updateAuthScore", method=RequestMethod.GET)
 	public void updateAuthScore(Model model){
-		userService.updateUserWithAuthScore();
+		userService.updateUserWithAuthScore(Classifier.auth);
+	}
+	
+	@RequestMapping(value="/updateSshScore", method=RequestMethod.GET)
+	public void updateSshScore(Model model){
+		userService.updateUserWithAuthScore(Classifier.ssh);
 	}
 	
 	@RequestMapping(value="/updateVpnScore", method=RequestMethod.GET)
@@ -104,17 +115,56 @@ public class ApiUserController extends BaseController{
 		return new DataListWrapperBean<UserDetailsBean>(ret);
 	}
 	
+	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<String>> followedUsers(Model model){
+		List<String> userIds = new ArrayList<>();
+		for(User user: userRepository.findByFollowed(true)){
+			userIds.add(user.getId());
+		}
+		
+		DataBean<List<String>> ret = new DataBean<>();
+		ret.setData(userIds);
+		ret.setTotal(userIds.size());
+		return ret;
+	}
+	
 	@RequestMapping(value="/usersDetails", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> usersDetails(@RequestParam(required=true) List<String> ids, Model model){
+		List<User> users = userRepository.findByIds(ids);
+		return userDetails(users);
+	}
+	
+	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<UserDetailsBean>> followedUsersDetails(Model model){
+		List<User> users = userRepository.findByFollowed(true);
+		return userDetails(users);
+	}
+	
+	private DataBean<List<UserDetailsBean>> userDetails(List<User> users){
 		List<UserDetailsBean> userDetailsBeans = new ArrayList<>();
-		for(String id: ids) {
-			User user = userRepository.findOne(id);
-			if(user == null){
-				return null;
+		
+		Map<String, User> dnToUserMap = new HashMap<String, User>(users.size());
+		for(User user: users){
+			if(!StringUtils.isEmpty(user.getManagerDN())){
+				dnToUserMap.put(user.getManagerDN(), null);
 			}
-			UserDetailsBean userDetailsBean = new UserDetailsBean(user, getManager(user));
+		}
+		List<User> managers = userRepository.findByDNs(dnToUserMap.keySet());
+		for(User manager: managers){
+			dnToUserMap.put(manager.getAdDn(), manager);
+		}
+		for(User user: users){
+			User manager = null;
+			if(!StringUtils.isEmpty(user.getManagerDN())){
+				manager = dnToUserMap.get(user.getManagerDN());
+			}
+			UserDetailsBean userDetailsBean = new UserDetailsBean(user, manager);
 			userDetailsBeans.add(userDetailsBean);
 		}
 		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
@@ -155,15 +205,28 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserMachinesBean>> usersMachines(@RequestParam(required=true) List<String> ids, Model model){
+		List<User> users = userRepository.findByIds(ids);
+		return usersMachines(users);
+	}
+	
+	@RequestMapping(value="/followedUsersMachines", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<UserMachinesBean>> followedUsersMachines(Model model){
+		List<User> users = userRepository.findByFollowed(true);
+		return usersMachines(users);
+	}
+	
+	private DataBean<List<UserMachinesBean>> usersMachines(List<User> users){
 		List<UserMachinesBean> usersMachinesList = new ArrayList<>();
-		for(String id: ids) {
-			List<UserMachine> userMachines = userService.getUserMachines(id);
+		for(User user: users) {
+			List<UserMachine> userMachines = userService.getUserMachines(user.getId());
 			
 			List<UserMachineBean> userMachinesBean = new ArrayList<UserMachineBean>();
 			for(UserMachine userMachine: userMachines){
 				userMachinesBean.add(new UserMachineBean(userMachine));
 			}
-			usersMachinesList.add(new UserMachinesBean(id, userMachinesBean));
+			usersMachinesList.add(new UserMachinesBean(user.getId(), userMachinesBean));
 		}
 		DataBean<List<UserMachinesBean>> ret = new DataBean<>();
 		ret.setData(usersMachinesList);
@@ -179,6 +242,21 @@ public class ApiUserController extends BaseController{
 		List<IUserScore> userScores = userService.getUserScores(id);
 		ret.setData(userScores);
 		ret.setTotal(userScores.size());
+		return ret;
+	}
+	
+	@RequestMapping(value="/followedUsersScores", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Map<String, List<IUserScore>>> followedUsersScores(Model model){
+		DataBean<Map<String, List<IUserScore>>> ret = new DataBean<Map<String, List<IUserScore>>>();
+		Map<User, List<IUserScore>> userScores = userService.getFollowedUsersScores();
+		Map<String, List<IUserScore>> data = new HashMap<>();
+		for(Entry<User, List<IUserScore>> entry: userScores.entrySet()){
+			data.put(entry.getKey().getId(), entry.getValue());
+		}
+		ret.setData(data);
+		ret.setTotal(data.size());
 		return ret;
 	}
 	
@@ -210,18 +288,61 @@ public class ApiUserController extends BaseController{
 	public DataBean<List<FeatureBean>> userClassifierAttributes(@PathVariable String uid, @PathVariable String classifierId,
 			@RequestParam(required=true) String date,
 			@RequestParam(required=false) String orderBy,
+			@RequestParam(defaultValue="0") Integer page,
+			@RequestParam(defaultValue="-1") Integer size,
 			@RequestParam(defaultValue="DESC") String orderByDirection,
 			Model model){
 		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
 		Direction direction = convertStringToDirection(orderByDirection);
 		List<IFeature> attrs = userService.getUserAttributesScores(uid, classifierId, Long.parseLong(date), orderBy, direction);
+		List<FeatureBean> features = getFeatureBeanList(attrs, page, size);
+		ret.setData(features);
+		ret.setTotal(attrs.size());
+		return ret;
+	}
+	
+	@RequestMapping(value="/classifier/{classifierId}/followedUsersAttributes", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Map<String, List<FeatureBean>>> followedUsersClassifierAttributes(@PathVariable String classifierId,
+			@RequestParam(required=true) String date,
+			@RequestParam(required=false) String orderBy,
+			@RequestParam(defaultValue="0") Integer attributesPage,
+			@RequestParam(defaultValue="-1") Integer attributesSize,
+			@RequestParam(defaultValue="DESC") String orderByDirection,
+			Model model){
+		DataBean<Map<String, List<FeatureBean>>> ret = new DataBean<Map<String, List<FeatureBean>>>();
+		Direction direction = convertStringToDirection(orderByDirection);
+		Map<User,List<IFeature>> userToAttrsMap = userService.getFollowedUserAttributesScores(classifierId, Long.parseLong(date), orderBy, direction);
+		Map<String, List<FeatureBean>> data = new HashMap<>();
+		for(Entry<User, List<IFeature>> entry: userToAttrsMap.entrySet()){
+			List<IFeature> attrs = entry.getValue();
+			List<FeatureBean> features = getFeatureBeanList(attrs, attributesPage, attributesSize);
+			data.put(entry.getKey().getId(), features);
+		}
+		ret.setData(data);
+		ret.setTotal(data.size());
+		return ret;
+	}
+	
+	private List<FeatureBean> getFeatureBeanList(List<IFeature> attrs, int page, int size){
 		List<FeatureBean> features = new ArrayList<FeatureBean>();
+		if(size > 0){
+			int fromIndex = page * size;
+			if(fromIndex >= attrs.size()){
+				attrs = Collections.emptyList();
+			} else{
+				int toIndex = fromIndex + size;
+				if(toIndex > attrs.size()){
+					toIndex = attrs.size();
+				}
+				attrs = attrs.subList(fromIndex, toIndex);
+			}
+		}
 		for(IFeature feature: attrs){
 			features.add(new FeatureBean(feature));
 		}
-		ret.setData(features);
-		ret.setTotal(features.size());
-		return ret;
+		return features;
 	}
 	
 	@RequestMapping(value="/{uid}/classifier/total/explanation", method=RequestMethod.GET)

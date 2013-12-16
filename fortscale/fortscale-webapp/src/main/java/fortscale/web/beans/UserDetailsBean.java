@@ -40,6 +40,10 @@ public class UserDetailsBean implements Serializable{
 		return user.getId();
 	}
 	
+	public boolean getFollowed(){
+		return user.getFollowed();
+	}
+	
 	public String getUsername() {
 		return user.getUsername();
 	}
@@ -50,7 +54,13 @@ public class UserDetailsBean implements Serializable{
 
 
 	public String getName() {
-		return user.getFirstname() + " " + user.getLastname();
+		if(user.getFirstname() != null && user.getLastname() != null){
+			return user.getFirstname() + " " + user.getLastname();
+		} else if(user.getAdDisplayName() != null){
+			return user.getAdDisplayName();
+		} else{
+			return user.getUsername();
+		}
 	}
 
 	public String getJobTitle() {
@@ -131,7 +141,7 @@ public class UserDetailsBean implements Serializable{
 		
 	public Boolean isAccountIsDisabled() {
 		try {
-			return adUserParser.isAccountIsDisabled(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isAccountIsDisabled(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -141,7 +151,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isLockout() {
 		try{
-			return adUserParser.isLockout(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isLockout(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -151,7 +161,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isWorkstationTrustAccount() {
 		try{
-			return adUserParser.isWorkstationTrustAccount(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isWorkstationTrustAccount(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -162,7 +172,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isServerTrustAccount() {
 		try{
-			return adUserParser.isServerTrustAccount(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isServerTrustAccount(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -172,7 +182,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isSmartcardRequired() {
 		try{
-			return adUserParser.isSmartcardRequired(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isSmartcardRequired(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -183,7 +193,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isTrustedForDelegation() {
 		try{
-			return adUserParser.isTrustedForDelegation(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isTrustedForDelegation(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -193,7 +203,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isNotDelegated() {
 		try{
-			return adUserParser.isNotDelegated(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isNotDelegated(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -203,7 +213,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isPasswordExpired() {
 		try{
-			return adUserParser.isPasswordExpired(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -213,7 +223,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isTrustedToAuthForDelegation() {
 		try{
-			return adUserParser.isTrustedToAuthForDelegation(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isTrustedToAuthForDelegation(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -224,7 +234,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isNoPasswordRequiresValue() {
 		try{
-			return adUserParser.isNoPasswordRequiresValue(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isNoPasswordRequiresValue(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -235,7 +245,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isNormalUserAccountValue() {
 		try{
-			return adUserParser.isNormalUserAccountValue(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isNormalUserAccountValue(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -246,7 +256,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isInterdomainTrustAccountValue() {
 		try{
-			return adUserParser.isInterdomainTrustAccountValue(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isInterdomainTrustAccountValue(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -257,7 +267,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isPasswordNeverExpiresValue() {
 		try{
-			return adUserParser.isPasswordNeverExpiresValue(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isPasswordNeverExpiresValue(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}
@@ -268,7 +278,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isDesKeyOnlyValue() {
 		try{
-			return adUserParser.isDesKeyOnlyValue(user.getAdUserAccountControl());
+			return user.getAdUserAccountControl() != null ? adUserParser.isDesKeyOnlyValue(user.getAdUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
 			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
 		}

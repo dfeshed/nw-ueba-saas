@@ -11,12 +11,14 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.SerializationUtils.serializeToJsonSafely;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.mongodb.MongoDbFactory;
@@ -25,6 +27,7 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperationContext;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.mongodb.BasicDBList;
@@ -277,8 +280,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 			String error = result.getErrorMessage();
 			error = error == null ? "NO MESSAGE" : error;
 
-			throw new InvalidDataAccessApiUsageException("Command execution failed:  Error [" + error + "], Command = "
-					+ source, ex);
+			throw new InvalidDataAccessApiUsageException("Command execution failed:  Error [" + error + "], Command = " + source, ex);
 		}
 	}
 
@@ -288,8 +290,22 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 	}
 
 	@Override
-	public AdUserFeaturesExtraction getClassifierIdAndByUserIdAndTimestamp(String classifierId, String userId, Date timestamp) {
-		Query query = new Query(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).and(AdUserFeaturesExtraction.userIdField).is(userId).and(AdUserFeaturesExtraction.timestampField).is(timestamp));
+	public AdUserFeaturesExtraction findByClassifierIdAndUserIdAndTimestamp(String classifierId, String userId, Date timestamp) {
+		Query query = new Query(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).and(AdUserFeaturesExtraction.userIdField).is(new ObjectId(userId)).and(AdUserFeaturesExtraction.timestampField).is(timestamp));
+
 		return mongoTemplate.findOne(query, AdUserFeaturesExtraction.class);
+	}
+	
+	@Override
+	public List<AdUserFeaturesExtraction> findByClassifierIdAndTimestampAndUserIds(String classifierId, Date timestamp, Collection<String> userIds){
+		Criteria criterias[] = new Criteria[userIds.size()];
+		int i = 0;
+		for(String userId: userIds){
+			criterias[i] = where(AdUserFeaturesExtraction.userIdField).is(new ObjectId(userId));
+			i++;
+		}
+		Criteria criteria = new Criteria().orOperator(criterias);
+		Query query = new Query(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).and(AdUserFeaturesExtraction.timestampField).is(timestamp).andOperator(criteria));
+		return mongoTemplate.find(query, AdUserFeaturesExtraction.class);
 	}
 }

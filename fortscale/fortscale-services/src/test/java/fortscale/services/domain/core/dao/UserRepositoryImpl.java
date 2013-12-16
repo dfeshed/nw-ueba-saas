@@ -1,6 +1,7 @@
 package fortscale.services.domain.core.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,6 +213,36 @@ public class UserRepositoryImpl implements UserRepository{
 
 	@Override
 	public User findByLogUsername(String logname, String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void updateFollowed(User user, boolean followed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<User> findByClassifierIdAndFollowedAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> findByDNs(Collection<String> dns) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> findByIds(Collection<String> ids) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> findByFollowed(Boolean followed) {
 		// TODO Auto-generated method stub
 		return null;
 	}

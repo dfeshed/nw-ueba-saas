@@ -1,9 +1,12 @@
 package fortscale.domain.fe.dao.impl;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,13 +16,13 @@ import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.utils.impala.ImpalaParser;
 
-public class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDAO{
+public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDAO{
 	
 	@Autowired
 	private ImpalaParser impalaParser;
 	
 	
-	private String tableName = AuthScore.TABLE_NAME;
+	
 
 	@Override
 	public RowMapper<AuthScore> getMapper() {
@@ -57,13 +60,7 @@ public class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDAO{
 	}
 
 
-	@Override
-	public String getTableName() {
-		return tableName;
-	}
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
+	
 	
 	@Override
 	public String getInputFileHeaderDesc() {
@@ -83,18 +80,51 @@ public class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDAO{
 				ret.setUserName(rs.getString(AuthScore.USERNAME_FIELD_NAME));
 				ret.setTargetId(rs.getString(AuthScore.TARGET_ID_FIELD_NAME));
 				ret.setSourceIp(rs.getString(AuthScore.SOURCE_IP_FIELD_NAME));
-				ret.setErrorCode(rs.getString(AuthScore.ERROR_CODE_FIELD_NAME));
 				ret.setEventTime(impalaParser.parseTimeDate(rs.getString(AuthScore.EVENT_TIME_FIELD_NAME)));
 				
 				ret.setUserNameScore(Double.parseDouble(rs.getString(AuthScore.USERNAME_SCORE_FIELD_NAME)));
 				ret.setTargetIdScore(Double.parseDouble(rs.getString(AuthScore.TARGET_ID_SCORE_FIELD_NAME)));
 				ret.setSourceIpScore(Double.parseDouble(rs.getString(AuthScore.SOURCE_IP_SCORE_FIELD_NAME)));
-				ret.setErrorCodeScore(Double.parseDouble(rs.getString(AuthScore.ERROR_CODE_SCORE_FIELD_NAME)));
 				ret.setEventTimeScore(Double.parseDouble(rs.getString(AuthScore.EVENT_TIME_SCORE_FIELD_NAME)));
 				
 				
 				ret.setEventScore(Double.parseDouble(rs.getString(AuthScore.EVENT_SCORE_FIELD_NAME)));
 				ret.setGlobalScore(Double.parseDouble(rs.getString(AuthScore.GLOBAL_SCORE_FIELD_NAME)));
+				
+				setStatus(rs, ret);
+				
+				ResultSetMetaData resultSetMetaData = rs.getMetaData();
+				Map<String, Object> allFields = new HashMap<String, Object>(resultSetMetaData.getColumnCount());
+				for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
+					String columnName = resultSetMetaData.getColumnName(i);
+					if(AuthScore.ERROR_CODE_FIELD_NAME.equals(columnName)){
+						columnName = "errorCode";
+					} else if(AuthScore.USERNAME_FIELD_NAME.equals(columnName)){
+						columnName = "username";
+					} else if(AuthScore.ERROR_CODE_SCORE_FIELD_NAME.equals(columnName)){
+						columnName = "errorCodeScore";
+					} else if(AuthScore.EVENT_SCORE_FIELD_NAME.equals(columnName)){
+						columnName = "eventScore";
+					} else if(AuthScore.EVENT_TIME_FIELD_NAME.equals(columnName)){
+						columnName = "eventTime";
+					} else if(AuthScore.EVENT_TIME_SCORE_FIELD_NAME.equals(columnName)){
+						columnName = "eventTimeScore";
+					} else if(AuthScore.SOURCE_IP_FIELD_NAME.equals(columnName)){
+						columnName = "sourceIp";
+					} else if(AuthScore.SOURCE_IP_SCORE_FIELD_NAME.equals(columnName)){
+						columnName = "sourceIpScore";
+					} else if(AuthScore.TARGET_ID_FIELD_NAME.equals(columnName)){
+						columnName = "destinationHostname";
+					} else if(AuthScore.TARGET_ID_SCORE_FIELD_NAME.equals(columnName)){
+						columnName = "targetIdScore";
+					} else if(AuthScore.TIMESTAMP_FIELD_NAME.equals(columnName)){
+						columnName = "timestamp";
+					} else if(AuthScore.USERNAME_SCORE_FIELD_NAME.equals(columnName)){
+						columnName = "userNameScore";
+					}
+					allFields.put(columnName, rs.getObject(i));
+				}
+				ret.setAllFields(allFields);
 				
 				
 			} catch (NumberFormatException e) {
@@ -107,7 +137,7 @@ public class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDAO{
 		}
 	}
 	
-	
+	protected abstract void setStatus(ResultSet rs, AuthScore authScore);
 	
 	
 	

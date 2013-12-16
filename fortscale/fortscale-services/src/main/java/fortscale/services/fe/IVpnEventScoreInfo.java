@@ -19,4 +19,5 @@ public interface IVpnEventScoreInfo {
 	public double getSourceIpScore();
 	public double getStatusScore();
 	public double getCountryScore();
+	public Boolean isUserFollowed();
 }

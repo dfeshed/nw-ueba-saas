@@ -1,5 +1,6 @@
 package fortscale.domain.fe.dao;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,7 @@ interface AdUsersFeaturesExtractionRepositoryCustom {
 //	public Double calculateUsersDailyMaxScores(String classifierId, String userId);
 	public List<Threshold> calculateNumOfUsersWithScoresGTThresholdForLastRun(String classifierId,List<Threshold> thresholds);
 	public Date getLatestTimeStamp();
-	public AdUserFeaturesExtraction getClassifierIdAndByUserIdAndTimestamp(String classifierId, String userId, Date timestamp);
 	public List<Date> getDistinctRuntime(String classifierId);
+	public AdUserFeaturesExtraction findByClassifierIdAndUserIdAndTimestamp(String classifierId, String userId, Date timestamp);
+	public List<AdUserFeaturesExtraction> findByClassifierIdAndTimestampAndUserIds(String classifierId, Date timestamp, Collection<String> userIds);
 }
