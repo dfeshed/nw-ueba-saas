@@ -15,6 +15,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang.math.Range;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,6 @@ import fortscale.services.LogEventsEnum;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.analyst.ConfigurationService;
-import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
@@ -166,7 +167,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				i++;
 				continue;
 			}
-			int percent = (int)((threshold.getCount()/(double)total)*100);
+			int percent = (int)Math.round(((threshold.getCount()/(double)total)*100));
 			int count = threshold.getCount() - prevCount;
 			ret.add(new ScoreDistribution(threshold.getName(), count, percent - prevPercent,threshold.getValue(), prevThreshold));
 			prevPercent = percent;
@@ -205,9 +206,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		Pageable pageable = new PageRequest(page, size, Direction.DESC, sortingFieldsName);
 		List<User> users = null;
 		if(followedOnly){
-			users = userRepository.findByClassifierIdAndFollowedAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
+			users = userRepository.findByClassifierIdAndFollowedAndScoreBetween(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
 		} else{
-			users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
+			users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
 		}
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(User user: users){
@@ -217,113 +218,20 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			}
 			ret.add(suspiciousUserInfo);
 		}
-		return ret;
+		return ret;		
+	}
 		
-//		List<ISuspiciousUserInfo> ret = Collections.emptyList();
-//		if(classifierId.equals(Classifier.ad.getId())){
-//			ret = getAdSuspiciousUsers(classifierId, severityId);
-//		} else if(classifierId.equals(Classifier.auth.getId())){
-//			ret = getAuthSuspiciousUsers(classifierId, severityId);
-//		} else if(classifierId.equals(Classifier.vpn.getId())){
-//			ret = getVpnSuspiciousUsers(classifierId, severityId);
-//		} else {
-//			throw new InvalidValueException(String.format("no such classifier id [%s]", classifierId));
-//		}
-//		
-//		return ret;
-	}
-	
-	
-	private List<ISuspiciousUserInfo> getVpnSuspiciousUsers(String classifierId, String severityId) {
-		Date lastRun = vpnDAO.getLastRunDate();
-		Range severityRange = getRange(severityId);
-		List<VpnScore> vpnScores = vpnDAO.findByTimestampAndGlobalScoreBetweenSortByEventScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
-		List<ISuspiciousUserInfo> ret = new ArrayList<>();
-		for(VpnScore vpnScore: vpnScores){
-			User user = userRepository.findByUsername(vpnScore.getUserName().toLowerCase());
-			if(user == null){
-				logger.error("user with vpn username ({}) was not found", vpnScore.getUserName());
-				continue;
-			}
-			ret.add(createSuspiciousUserInfo(classifierId, user));
-		}
-		return ret;
-	}
-	
-	private List<ISuspiciousUserInfo> getAuthSuspiciousUsers(String classifierId, String severityId) {
-		Date lastRun = loginDAO.getLastRunDate();
-		Range severityRange = getRange(severityId);
-		List<AuthScore> authScores = loginDAO.findByTimestampAndGlobalScoreBetweenSortByEventScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
-		List<ISuspiciousUserInfo> ret = new ArrayList<>();
-		for(AuthScore authScore: authScores){
-			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
-			if(user == null){
-				logger.error("user with username ({}) was not found", authScore.getUserName());
-				continue;
-			}
-			ret.add(createSuspiciousUserInfo(classifierId, user));
-		}
-		return ret;
-	}
-	
-	private List<ISuspiciousUserInfo> getAdSuspiciousUsers(String classifierId, String severityId) {
-		Range severityRange = getRange(severityId);
-		
-		Pageable pageable = new PageRequest(0, 10, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId));
-		List<User> users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
-		List<ISuspiciousUserInfo> ret = new ArrayList<>();
-		for(User user: users){
-			ret.add(createSuspiciousUserInfo(classifierId, user));
-		}
-		return ret;
-	}
-	
 	private SuspiciousUserInfo createSuspiciousUserInfo(String classifierId, User user){
 		ClassifierScore classifierScore = user.getScore(classifierId);
 		int trendSign = classifierScore.getTrend() > 0 ? 1 : -1;
-		return new SuspiciousUserInfo(user.getId(), user.getUsername(), (int) Math.round(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrendScore()*trendSign), user.getFollowed());
+		return new SuspiciousUserInfo(user.getId(), user.getUsername(), (int) Math.floor(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrendScore()*trendSign), user.getFollowed());
 	}
 	
 	private Range getRange(String severityId){
 		if(severityId == null){
-			return new Range(0, 101);
+			return new IntRange(0, 101);
 		}
-		int i = 0;
-		for(SeverityElement element: configurationService.getSeverityElements()){
-			if(element.getName().equals(severityId)){
-				break;
-			}
-			i++;
-		}
-		if(configurationService.getSeverityElements().size() == i){
-			throw new InvalidValueException(String.format("no such severity id: %s", severityId));
-		}
-		int lowestVal = configurationService.getSeverityElements().get(i).getValue();
-		int upperVal = 100;
-		if(i > 0){
-			upperVal = configurationService.getSeverityElements().get(i-1).getValue();
-		}
-		
-		return new Range(lowestVal, upperVal);
-	}
-
-	class Range{
-		private int lowestVal;
-		private int upperVal;
-		
-		public Range(int lowestVal, int upperVal){
-			this.lowestVal = lowestVal;
-			this.upperVal = upperVal;
-		}
-
-		public int getLowestVal() {
-			return lowestVal;
-		}
-
-		public int getUpperVal() {
-			return upperVal;
-		}
-		
+		return configurationService.getRange(severityId);
 	}
 	
 	@Override
@@ -1128,6 +1036,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		Long retLong = null;
 		if(loginDAO.getTableName().equals(tableName)) {
 			retLong = loginDAO.getLastRuntime();
+		} else if(sshDAO.getTableName().equals(tableName)) {
+			retLong = sshDAO.getLastRuntime();
 		} else if (VpnScore.TABLE_NAME.equals(tableName)) {
 			retLong = vpnDAO.getLastRuntime();
 		}
