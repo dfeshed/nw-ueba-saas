@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.fe.dao.Threshold;
 
@@ -121,6 +122,35 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	@Override
 	public List<User> findByIds(Collection<String> ids) {
 		return findByUniqueField(User.ID_FIELD,ids);
+	}
+
+	@Override
+	public User findByAdEmailAddress(EmailAddress emailAddress) {
+		return null;
+	}
+
+	@Override
+	public List<User> findByAdLastnameContaining(String lastNamePrefix) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User findByAdUserPrincipalName(String adUserPrincipalName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> findByAdUserPrincipalNameContaining(String adUserPrincipalNamePrefix) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User findByAdDn(String adDn) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 		

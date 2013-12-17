@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.fe.dao.Threshold;
 
@@ -21,4 +22,20 @@ public interface UserRepositoryCustom {
 	public void updateFollowed(User user, boolean followed);
 	public List<User> findByDNs(Collection<String> dns);
 	public List<User> findByIds(Collection<String> ids);
+	
+	/**
+	 * Returns the {@link Customer} with the given {@link EmailAddress}.
+	 * 
+	 * @param string
+	 * @return
+	 */
+	public User findByAdEmailAddress(EmailAddress emailAddress);
+	
+	public List<User> findByAdLastnameContaining(String lastNamePrefix);
+	
+	public User findByAdUserPrincipalName(String adUserPrincipalName);
+	
+	public List<User> findByAdUserPrincipalNameContaining(String adUserPrincipalNamePrefix);
+	
+	public User findByAdDn(String adDn);
 }

@@ -1,0 +1,386 @@
+package fortscale.domain.core;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import fortscale.domain.ad.AdUserGroup;
+
+public class UserAdInfo {
+	public static final String adDnField = "dn";
+	
+	@Indexed(unique = true)
+	private String objectGUID;
+
+	@Indexed(unique = true)
+	@Field(adDnField)
+	private String dn;
+	
+	private String employeeID;
+	
+	private String employeeNumber;
+	
+
+	private String firstname, lastname;
+
+	@Field("email")
+	@Indexed
+	private EmailAddress emailAddress;
+	
+	private String managerDN;
+
+	@Indexed
+	private String userPrincipalName;
+
+	private String sAMAccountName;
+	
+	private String telephoneNumber;
+	
+	private String otherFacsimileTelephoneNumber;
+	
+	private String otherHomePhone;
+	
+	private String homePhone;
+	
+	private String otherMobile;
+	
+	private String mobile;
+	
+	private String otherTelephone;
+
+	private String thumbnailPhoto;
+	
+	private String position;
+	
+	private String department;
+	
+	private String displayName;
+	
+	private Date accountExpires;
+	
+	private Integer userAccountControl;
+	
+	private String alogonHours;
+	
+	private Date whenChanged;
+	
+	private Date whenCreated;
+	
+	private String description;
+	
+	private String streetAddress;
+		
+	private String company;
+	
+	private String c;
+				
+	private String division;
+			
+	private String l;
+	
+	private String o;
+	
+	private String roomNumber;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private Set<AdUserDirectReport> adDirectReports = new HashSet<AdUserDirectReport>();
+	
+	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
+
+	public String getDn() {
+		return dn;
+	}
+
+	public void setDn(String dn) {
+		this.dn = dn;
+	}
+
+	public String getEmployeeID() {
+		return employeeID;
+	}
+
+	public void setEmployeeID(String employeeID) {
+		this.employeeID = employeeID;
+	}
+
+	public String getEmployeeNumber() {
+		return employeeNumber;
+	}
+
+	public void setEmployeeNumber(String employeeNumber) {
+		this.employeeNumber = employeeNumber;
+	}
+
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public EmailAddress getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(EmailAddress emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
+	public String getManagerDN() {
+		return managerDN;
+	}
+
+	public void setManagerDN(String managerDN) {
+		this.managerDN = managerDN;
+	}
+
+	public String getUserPrincipalName() {
+		return userPrincipalName;
+	}
+
+	public void setUserPrincipalName(String userPrincipalName) {
+		this.userPrincipalName = userPrincipalName;
+	}
+
+	public String getsAMAccountName() {
+		return sAMAccountName;
+	}
+
+	public void setsAMAccountName(String sAMAccountName) {
+		this.sAMAccountName = sAMAccountName;
+	}
+
+	public String getTelephoneNumber() {
+		return telephoneNumber;
+	}
+
+	public void setTelephoneNumber(String telephoneNumber) {
+		this.telephoneNumber = telephoneNumber;
+	}
+
+	public String getOtherFacsimileTelephoneNumber() {
+		return otherFacsimileTelephoneNumber;
+	}
+
+	public void setOtherFacsimileTelephoneNumber(String otherFacsimileTelephoneNumber) {
+		this.otherFacsimileTelephoneNumber = otherFacsimileTelephoneNumber;
+	}
+
+	public String getOtherHomePhone() {
+		return otherHomePhone;
+	}
+
+	public void setOtherHomePhone(String otherHomePhone) {
+		this.otherHomePhone = otherHomePhone;
+	}
+
+	public String getHomePhone() {
+		return homePhone;
+	}
+
+	public void setHomePhone(String homePhone) {
+		this.homePhone = homePhone;
+	}
+
+	public String getOtherMobile() {
+		return otherMobile;
+	}
+
+	public void setOtherMobile(String otherMobile) {
+		this.otherMobile = otherMobile;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getOtherTelephone() {
+		return otherTelephone;
+	}
+
+	public void setOtherTelephone(String otherTelephone) {
+		this.otherTelephone = otherTelephone;
+	}
+
+	public String getThumbnailPhoto() {
+		return thumbnailPhoto;
+	}
+
+	public void setThumbnailPhoto(String thumbnailPhoto) {
+		this.thumbnailPhoto = thumbnailPhoto;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public Date getAccountExpires() {
+		return accountExpires;
+	}
+
+	public void setAccountExpires(Date accountExpires) {
+		this.accountExpires = accountExpires;
+	}
+
+	public Integer getUserAccountControl() {
+		return userAccountControl;
+	}
+
+	public void setUserAccountControl(Integer userAccountControl) {
+		this.userAccountControl = userAccountControl;
+	}
+
+	public String getAlogonHours() {
+		return alogonHours;
+	}
+
+	public void setAlogonHours(String alogonHours) {
+		this.alogonHours = alogonHours;
+	}
+
+	public Date getWhenChanged() {
+		return whenChanged;
+	}
+
+	public void setWhenChanged(Date whenChanged) {
+		this.whenChanged = whenChanged;
+	}
+
+	public Date getWhenCreated() {
+		return whenCreated;
+	}
+
+	public void setWhenCreated(Date whenCreated) {
+		this.whenCreated = whenCreated;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getStreetAddress() {
+		return streetAddress;
+	}
+
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getC() {
+		return c;
+	}
+
+	public void setC(String c) {
+		this.c = c;
+	}
+
+	public String getDivision() {
+		return division;
+	}
+
+	public void setDivision(String division) {
+		this.division = division;
+	}
+
+	public String getL() {
+		return l;
+	}
+
+	public void setL(String l) {
+		this.l = l;
+	}
+
+	public String getO() {
+		return o;
+	}
+
+	public void setO(String o) {
+		this.o = o;
+	}
+
+	public String getRoomNumber() {
+		return roomNumber;
+	}
+
+	public void setRoomNumber(String roomNumber) {
+		this.roomNumber = roomNumber;
+	}
+
+	public Set<AdUserDirectReport> getAdDirectReports() {
+		return adDirectReports;
+	}
+
+	public void setAdDirectReports(Set<AdUserDirectReport> adDirectReports) {
+		this.adDirectReports = adDirectReports;
+	}
+
+	public Set<AdUserGroup> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(Set<AdUserGroup> groups) {
+		this.groups = groups;
+	}
+	
+	
+	
+	
+	
+	
+	
+}
