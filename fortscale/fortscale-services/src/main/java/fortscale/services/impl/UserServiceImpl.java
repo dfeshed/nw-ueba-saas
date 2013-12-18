@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+import static org.springframework.data.mongodb.core.query.Update.update;
+
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.mortbay.log.Log;
@@ -18,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdGroup;
@@ -35,6 +41,7 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
+import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.AuthScore;
@@ -63,6 +70,9 @@ public class UserServiceImpl implements UserService{
 	private static final String REGEX_SEPERATOR = "####";
 	private static final int MAX_NUM_OF_HISTORY_DAYS = 21;
 	public static int MAX_NUM_OF_PREV_SCORES = 14;
+	
+	@Autowired
+	private MongoOperations mongoTemplate;
 	
 	@Autowired
 	private AdUserRepository adUserRepository;
@@ -166,83 +176,80 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private void updateUserWithADInfo(AdUser adUser) {
+		if(adUser.getObjectGUID() == null) {
+			logger.error("got ad user with no ObjectGUID name field.");
+			return;
+		}
 		if(adUser.getDistinguishedName() == null) {
 			logger.error("got ad user with no distinguished name field.");
 			return;
 		}
-		User user = userRepository.findByAdDn(adUser.getDistinguishedName());
-		if(user == null){
-			user = new User(adUser.getDistinguishedName());
-		}
-		user.setFirstname(adUser.getFirstname());
-		user.setLastname(adUser.getLastname());
-		if(adUser.getEmailAddress() != null && adUser.getEmailAddress().length() > 0){
-			user.setEmailAddress(new EmailAddress(adUser.getEmailAddress()));
-		}
-		user.setAdUserPrincipalName(adUser.getUserPrincipalName());
-		user.setAdSAMAccountName(adUser.getsAMAccountName());
-		String username = adUser.getUserPrincipalName();
-		if(StringUtils.isEmpty(username)) {
-			username = adUser.getsAMAccountName();
-		}
-		if(!StringUtils.isEmpty(username)) {
-			user.setUsername(username.toLowerCase());
-			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
-		} else{
-			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
-		}
 		
-		user.setAdEmployeeID(adUser.getEmployeeID());
-		user.setAdEmployeeNumber(adUser.getEmployeeNumber());
-		user.setManagerDN(adUser.getManager());
-		user.setMobile(adUser.getMobile());
-		user.setTelephoneNumber(adUser.getTelephoneNumber());
-		user.setOtherFacsimileTelephoneNumber(adUser.getOtherFacsimileTelephoneNumber());
-		user.setOtherHomePhone(adUser.getOtherHomePhone());
-		user.setOtherMobile(adUser.getOtherMobile());
-		user.setOtherTelephone(adUser.getOtherTelephone());
-		user.setHomePhone(adUser.getHomePhone());
-		user.setSearchField(createSearchField(user));
-		user.setDepartment(adUser.getDepartment());
-		user.setPosition(adUser.getTitle());
-		user.setThumbnailPhoto(adUser.getThumbnailPhoto());
-		user.setAdDisplayName(adUser.getDisplayName());
-		user.setAdLogonHours(adUser.getLogonHours());
+		
+		
+		
+		UserAdInfo userAdInfo = new UserAdInfo();
+		userAdInfo.setObjectGUID(adUser.getObjectGUID());
+		userAdInfo.setDn(adUser.getDistinguishedName());
+		userAdInfo.setFirstname(adUser.getFirstname());
+		userAdInfo.setLastname(adUser.getLastname());
+		if(adUser.getEmailAddress() != null && adUser.getEmailAddress().length() > 0){
+			userAdInfo.setEmailAddress(new EmailAddress(adUser.getEmailAddress()));
+		}
+		userAdInfo.setUserPrincipalName(adUser.getUserPrincipalName());
+		userAdInfo.setsAMAccountName(adUser.getsAMAccountName());
+		
+		
+		
+		userAdInfo.setEmployeeID(adUser.getEmployeeID());
+		userAdInfo.setEmployeeNumber(adUser.getEmployeeNumber());
+		userAdInfo.setManagerDN(adUser.getManager());
+		userAdInfo.setMobile(adUser.getMobile());
+		userAdInfo.setTelephoneNumber(adUser.getTelephoneNumber());
+		userAdInfo.setOtherFacsimileTelephoneNumber(adUser.getOtherFacsimileTelephoneNumber());
+		userAdInfo.setOtherHomePhone(adUser.getOtherHomePhone());
+		userAdInfo.setOtherMobile(adUser.getOtherMobile());
+		userAdInfo.setOtherTelephone(adUser.getOtherTelephone());
+		userAdInfo.setHomePhone(adUser.getHomePhone());
+		userAdInfo.setDepartment(adUser.getDepartment());
+		userAdInfo.setPosition(adUser.getTitle());
+		userAdInfo.setThumbnailPhoto(adUser.getThumbnailPhoto());
+		userAdInfo.setDisplayName(adUser.getDisplayName());
+		userAdInfo.setLogonHours(adUser.getLogonHours());
 		try {
-			user.setAdWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
+			userAdInfo.setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
 		} catch (ParseException e) {
 			logger.error("got and exception while trying to parse active directory when changed field ({})",adUser.getWhenChanged());
 			logger.error("got and exception while trying to parse active directory when changed field",e);
 		}
 		
 		try {
-			user.setAdWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
+			userAdInfo.setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
 		} catch (ParseException e) {
 			logger.error("got and exception while trying to parse active directory when created field ({})",adUser.getWhenChanged());
 			logger.error("got and exception while trying to parse active directory when created field",e);
 		}
 		
-		user.setAdDescription(adUser.getDescription());
-		user.setAdStreetAddress(adUser.getStreetAddress());
-		user.setAdCompany(adUser.getCompany());
-		user.setAdC(adUser.getC());
-		user.setAdDivision(adUser.getDivision());
-		user.setAdL(adUser.getL());
-		user.setAdO(adUser.getO());
-		user.setAdRoomNumber(adUser.getRoomNumber());
+		userAdInfo.setDescription(adUser.getDescription());
+		userAdInfo.setStreetAddress(adUser.getStreetAddress());
+		userAdInfo.setCompany(adUser.getCompany());
+		userAdInfo.setC(adUser.getC());
+		userAdInfo.setDivision(adUser.getDivision());
+		userAdInfo.setL(adUser.getL());
+		userAdInfo.setO(adUser.getO());
+		userAdInfo.setRoomNumber(adUser.getRoomNumber());
 		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().equals("0") && !adUser.getAccountExpires().startsWith("30828")){
 			try {
-				user.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
+				userAdInfo.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
 			} catch (ParseException e) {
 				logger.error("got and exception while trying to parse active directory account expires field ({})",adUser.getWhenChanged());
 				logger.error("got and exception while trying to parse active directory account expires field",e);
 			}
 		}
-		user.setAdUserAccountControl(adUser.getUserAccountControl());
+		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
 		
 		ADUserParser adUserParser = new ADUserParser();
 		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
-		user.clearGroups();
 		if(groups != null){
 			for(String groupDN: groups){
 				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
@@ -250,55 +257,107 @@ public class UserServiceImpl implements UserService{
 				if(adGroup != null){
 					groupName = adGroup.getName();
 				}else{
-					Log.warn("the user ({}) group ({}) was not found", user.getAdDn(), groupDN);
+					Log.warn("the user ({}) group ({}) was not found", adUser.getDistinguishedName(), groupDN);
 					groupName = adUserParser.parseFirstCNFromDN(groupDN);
 					if(groupName == null){
-						Log.warn("invalid group dn ({}) for user ({})", groupDN, user.getAdDn());
+						Log.warn("invalid group dn ({}) for user ({})", groupDN, adUser.getDistinguishedName());
 						continue;
 					}
 				}
-				user.addGroup(new AdUserGroup(groupDN, groupName));
+				userAdInfo.addGroup(new AdUserGroup(groupDN, groupName));
 			}
 		}
 		
 		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
-		user.clearAdDirectReport();
 		if(directReports != null){
 			for(String directReportsDN: directReports){
-				User userDirectReport = userRepository.findByAdDn(directReportsDN);
+				User userDirectReport = userRepository.findByAdInfoDn(directReportsDN);
 				if(userDirectReport != null){
-					AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, userDirectReport.getAdDisplayName());
+					String displayName = userDirectReport.getUsername();
+					if(userDirectReport.getAdInfo() != null && !StringUtils.isEmpty(userDirectReport.getAdInfo().getDisplayName())){
+						displayName = userDirectReport.getAdInfo().getDisplayName();
+					}
+					AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, displayName);
 					adUserDirectReport.setUserId(userDirectReport.getId());
-					adUserDirectReport.setFirstname(userDirectReport.getFirstname());
-					adUserDirectReport.setLastname(userDirectReport.getLastname());
 					adUserDirectReport.setUsername(userDirectReport.getUsername());
-					user.addAdDirectReport(adUserDirectReport);
+					if(userDirectReport.getAdInfo() != null){
+						adUserDirectReport.setFirstname(userDirectReport.getAdInfo().getFirstname());
+						adUserDirectReport.setLastname(userDirectReport.getAdInfo().getLastname());
+					}
+					
+					userAdInfo.addAdDirectReport(adUserDirectReport);
 				}else{
-					logger.warn("the user ({}) direct report ({}) was not found", user.getAdDn(), directReportsDN);
+					logger.warn("the user ({}) direct report ({}) was not found", adUser.getDistinguishedName(), directReportsDN);
 				}
 			}
 		}
 		
-		userRepository.save(user);
+		
+		User user = userRepository.findByAdObjectGUID(adUser.getObjectGUID());
+		boolean isSaveUser = false;
+		if(user == null){
+			user = new User();
+			isSaveUser = true;
+		}
+		
+		user.setAdInfo(userAdInfo);
+		
+		String username = adUser.getUserPrincipalName();
+		if(StringUtils.isEmpty(username)) {
+			username = adUser.getsAMAccountName();
+		}
+		
+		if(!StringUtils.isEmpty(username)) {
+			username = username.toLowerCase();
+		} else{
+			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
+		}
+		
+		
+		
+		String searchField = createSearchField(userAdInfo, username);
+		
+		if(isSaveUser){
+			if(!StringUtils.isEmpty(username)) {
+				user.setUsername(username);
+				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
+			}
+			user.setSearchField(searchField);
+			userRepository.save(user);
+		} else{
+			updateUser(user, User.adInfoField, userAdInfo);
+			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
+				updateUser(user, User.usernameField, username);
+			}
+			if(!searchField.equals(user.getSearchField())){
+				updateUser(user, User.searchFieldName, searchField);
+			}
+		}
 	}
 	
-	private String createSearchField(User user){
+	private void updateUser(User user, String fieldName, Object val){
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(fieldName, val), User.class);
+	}
+	
+	private String createSearchField(UserAdInfo userAdInfo, String username){
 		StringBuilder sb = new StringBuilder();
-		if(user.getFirstname() != null && user.getFirstname().length() > 0){
-			if(user.getLastname() != null && user.getLastname().length() > 0){
-				sb.append(SEARCH_FIELD_PREFIX).append(user.getFirstname().toLowerCase()).append(" ").append(user.getLastname().toLowerCase());
-				sb.append(SEARCH_FIELD_PREFIX).append(user.getLastname().toLowerCase()).append(" ").append(user.getFirstname().toLowerCase());
-			} else{
-				sb.append(SEARCH_FIELD_PREFIX).append(user.getFirstname().toLowerCase());
-			}
-		}else{
-			if(user.getLastname() != null && user.getLastname().length() > 0){
-				sb.append(SEARCH_FIELD_PREFIX).append(SEARCH_FIELD_PREFIX).append(user.getLastname().toLowerCase());
+		if(userAdInfo != null){
+			if(userAdInfo.getFirstname() != null && userAdInfo.getFirstname().length() > 0){
+				if(userAdInfo.getLastname() != null && userAdInfo.getLastname().length() > 0){
+					sb.append(SEARCH_FIELD_PREFIX).append(userAdInfo.getFirstname().toLowerCase()).append(" ").append(userAdInfo.getLastname().toLowerCase());
+					sb.append(SEARCH_FIELD_PREFIX).append(userAdInfo.getLastname().toLowerCase()).append(" ").append(userAdInfo.getFirstname().toLowerCase());
+				} else{
+					sb.append(SEARCH_FIELD_PREFIX).append(userAdInfo.getFirstname().toLowerCase());
+				}
+			}else{
+				if(userAdInfo.getLastname() != null && userAdInfo.getLastname().length() > 0){
+					sb.append(SEARCH_FIELD_PREFIX).append(SEARCH_FIELD_PREFIX).append(userAdInfo.getLastname().toLowerCase());
+				}
 			}
 		}
 		
-		if(!StringUtils.isEmpty(user.getUsername())){
-			sb.append(SEARCH_FIELD_PREFIX).append(user.getUsername());
+		if(!StringUtils.isEmpty(username)){
+			sb.append(SEARCH_FIELD_PREFIX).append(username);
 		}
 		return sb.toString();
 	}
@@ -719,9 +778,9 @@ public class UserServiceImpl implements UserService{
 	
 	private User createUser(AuthScore authScore){
 		String username = authScore.getUserName();
-		User user = new User(String.format("SSH_%s", username));
+		User user = new User();
 		user.setUsername(username);
-		user.setSearchField(createSearchField(user));
+		user.setSearchField(createSearchField(null, username));
 		
 		return user;
 	}
@@ -842,9 +901,9 @@ public class UserServiceImpl implements UserService{
 	
 	private User createUser(VpnScore vpnScore){
 		String username = vpnScore.getUserName();
-		User user = new User(String.format("VPN_%s", username));
+		User user = new User();
 		user.setUsername(username);
-		user.setSearchField(createSearchField(user));
+		user.setSearchField(createSearchField(null, username));
 		
 		return user;
 	}
@@ -1144,5 +1203,157 @@ public class UserServiceImpl implements UserService{
 			return o1.getTimestamp().compareTo(o2.getTimestamp());
 		}
 		
+	}
+	
+	
+	@Override
+	public void updateUserWithCurrentADInfoNewSchema() {
+		String timestamp = adUserRepository.getLatestTimeStamp();
+		if(timestamp != null) {
+			updateUserWithADInfoNewSchema(adUserRepository.findByTimestamp(timestamp));
+		} else {
+			logger.error("no timestamp. probably the ad_user table is empty");
+		}
+		
+	}
+	
+	
+	private void updateUserWithADInfoNewSchema(Iterable<AdUser> adUsers) {
+		for(AdUser adUser: adUsers){
+			try {
+				updateUserWithADInfo(adUser);
+			} catch (Exception e) {
+				logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
+			}
+			
+		}
+		saveUserIdUsernamesMapToImpala(new Date());
+	}
+		
+	private void updateUserWithADInfoNewSchema(AdUser adUser) {
+		if(adUser.getDistinguishedName() == null) {
+			logger.error("got ad user with no distinguished name field.");
+			return;
+		}
+		User user = userRepository.findByAdDn(adUser.getDistinguishedName());
+		if(user == null){
+			return;
+		}
+		
+		user.getAdInfo().setFirstname(adUser.getFirstname());
+		user.getAdInfo().setLastname(adUser.getLastname());
+		if(adUser.getEmailAddress() != null && adUser.getEmailAddress().length() > 0){
+			user.getAdInfo().setEmailAddress(new EmailAddress(adUser.getEmailAddress()));
+		}
+		user.getAdInfo().setUserPrincipalName(adUser.getUserPrincipalName());
+		user.getAdInfo().setsAMAccountName(adUser.getsAMAccountName());
+		String username = adUser.getUserPrincipalName();
+		if(StringUtils.isEmpty(username)) {
+			username = adUser.getsAMAccountName();
+		}
+		if(!StringUtils.isEmpty(username)) {
+			user.setUsername(username.toLowerCase());
+			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
+		} else{
+			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
+		}
+		
+		user.getAdInfo().setEmployeeID(adUser.getEmployeeID());
+		user.getAdInfo().setEmployeeNumber(adUser.getEmployeeNumber());
+		user.getAdInfo().setManagerDN(adUser.getManager());
+		user.getAdInfo().setMobile(adUser.getMobile());
+		user.getAdInfo().setTelephoneNumber(adUser.getTelephoneNumber());
+		user.getAdInfo().setOtherFacsimileTelephoneNumber(adUser.getOtherFacsimileTelephoneNumber());
+		user.getAdInfo().setOtherHomePhone(adUser.getOtherHomePhone());
+		user.getAdInfo().setOtherMobile(adUser.getOtherMobile());
+		user.getAdInfo().setOtherTelephone(adUser.getOtherTelephone());
+		user.getAdInfo().setHomePhone(adUser.getHomePhone());
+		user.getAdInfo().setDepartment(adUser.getDepartment());
+		user.getAdInfo().setPosition(adUser.getTitle());
+		user.getAdInfo().setThumbnailPhoto(adUser.getThumbnailPhoto());
+		user.getAdInfo().setDisplayName(adUser.getDisplayName());
+		user.getAdInfo().setLogonHours(adUser.getLogonHours());
+		try {
+			user.getAdInfo().setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
+		} catch (ParseException e) {
+			logger.error("got and exception while trying to parse active directory when changed field ({})",adUser.getWhenChanged());
+			logger.error("got and exception while trying to parse active directory when changed field",e);
+		}
+		
+		try {
+			user.getAdInfo().setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
+		} catch (ParseException e) {
+			logger.error("got and exception while trying to parse active directory when created field ({})",adUser.getWhenChanged());
+			logger.error("got and exception while trying to parse active directory when created field",e);
+		}
+		
+		user.getAdInfo().setDescription(adUser.getDescription());
+		user.getAdInfo().setStreetAddress(adUser.getStreetAddress());
+		user.getAdInfo().setCompany(adUser.getCompany());
+		user.getAdInfo().setC(adUser.getC());
+		user.getAdInfo().setDivision(adUser.getDivision());
+		user.getAdInfo().setL(adUser.getL());
+		user.getAdInfo().setO(adUser.getO());
+		user.getAdInfo().setRoomNumber(adUser.getRoomNumber());
+		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().equals("0") && !adUser.getAccountExpires().startsWith("30828")){
+			try {
+				user.getAdInfo().setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
+			} catch (ParseException e) {
+				logger.error("got and exception while trying to parse active directory account expires field ({})",adUser.getWhenChanged());
+				logger.error("got and exception while trying to parse active directory account expires field",e);
+			}
+		}
+		user.getAdInfo().setUserAccountControl(adUser.getUserAccountControl());
+		
+		ADUserParser adUserParser = new ADUserParser();
+		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
+		user.getAdInfo().clearGroups();
+		if(groups != null){
+			for(String groupDN: groups){
+				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
+				String groupName = null;
+				if(adGroup != null){
+					groupName = adGroup.getName();
+				}else{
+					Log.warn("the user ({}) group ({}) was not found", user.getAdInfo().getDn(), groupDN);
+					groupName = adUserParser.parseFirstCNFromDN(groupDN);
+					if(groupName == null){
+						Log.warn("invalid group dn ({}) for user ({})", groupDN, user.getAdInfo().getDn());
+						continue;
+					}
+				}
+				user.getAdInfo().addGroup(new AdUserGroup(groupDN, groupName));
+			}
+		}
+		
+		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
+		user.getAdInfo().clearAdDirectReport();
+		if(directReports != null){
+			for(String directReportsDN: directReports){
+				User userDirectReport = userRepository.findByAdDn(directReportsDN);
+				if(userDirectReport != null){
+					String displayName = userDirectReport.getUsername();
+					if(userDirectReport.getAdInfo() != null && !StringUtils.isEmpty(userDirectReport.getAdInfo().getDisplayName())){
+						displayName = userDirectReport.getAdInfo().getDisplayName();
+					}
+					AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, displayName);
+					adUserDirectReport.setUserId(userDirectReport.getId());
+					adUserDirectReport.setUsername(userDirectReport.getUsername());
+					if(userDirectReport.getAdInfo() != null){
+						adUserDirectReport.setFirstname(userDirectReport.getAdInfo().getFirstname());
+						adUserDirectReport.setLastname(userDirectReport.getAdInfo().getLastname());
+					}
+					
+					user.getAdInfo().addAdDirectReport(adUserDirectReport);
+				}else{
+					logger.warn("the user ({}) direct report ({}) was not found", user.getAdInfo().getDn(), directReportsDN);
+				}
+			}
+		}
+		
+		user.setSearchField(createSearchField(user.getAdInfo(), user.getUsername()));
+		user.getAdInfo().setObjectGUID(adUser.getObjectGUID());
+		user.setAdDn(null);
+		userRepository.save(user);
 	}
 }

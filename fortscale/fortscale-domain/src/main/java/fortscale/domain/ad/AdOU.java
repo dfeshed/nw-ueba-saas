@@ -1,6 +1,5 @@
 package fortscale.domain.ad;
 
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
@@ -33,10 +32,10 @@ public class AdOU extends AdObject{
 	 * 
 	 * @param distinguishedName must not be {@literal null} or empty.
 	 */
-	@PersistenceConstructor
-	public AdOU(String distinguishedName) {
-		super(distinguishedName);
-	}
+//	@PersistenceConstructor
+//	public AdOU(String distinguishedName) {
+//		super(distinguishedName);
+//	}
 
 	public String getIsCriticalSystemObject() {
 		return isCriticalSystemObject;

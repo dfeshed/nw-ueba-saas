@@ -1,6 +1,5 @@
 package fortscale.domain.ad;
 
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
@@ -30,10 +29,10 @@ public class AdComputer extends AdObject{
 	 * 
 	 * @param distinguishedName must not be {@literal null} or empty.
 	 */
-	@PersistenceConstructor
-	public AdComputer(String distinguishedName) {
-		super(distinguishedName);
-	}
+//	@PersistenceConstructor
+//	public AdComputer(String distinguishedName) {
+//		super(distinguishedName);
+//	}
 
 
 

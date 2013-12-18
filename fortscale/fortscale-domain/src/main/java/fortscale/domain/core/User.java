@@ -20,6 +20,7 @@ public class User extends AbstractDocument {
 	public static final String appField = "app";
 	public static final String logUsernameField = "logUsername";
 	public static final String usernameField = "username";
+	public static final String searchFieldName = "sf";
 	public static final String classifierScoreField = "scores";
 	public static final String followedField = "followed";
 	public static final String adInfoField = "adInfo";
@@ -44,12 +45,22 @@ public class User extends AbstractDocument {
 	@Field(classifierScoreField)
 	private HashMap<String, ClassifierScore> scores = new HashMap<String, ClassifierScore>();
 	
-	@Field("sf")
+	@Field(searchFieldName)
 	@Indexed
 	private String searchField;
 	
 	@Field(adInfoField)
 	private UserAdInfo adInfo = new UserAdInfo();
+	
+	private String adDn;
+	
+	public String getAdDn() {
+		return adDn;
+	}
+	
+	public void setAdDn(String adDn) {
+		this.adDn = adDn;
+	}
 		
 	
 
@@ -183,5 +194,9 @@ public class User extends AbstractDocument {
 	
 	public static String getLogUserNameField(String logname) {
 		return String.format("%s.%s", User.logUsernameField,logname);
+	}
+	
+	public static String getAdInfoField(String adInfoFieldName) {
+		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
 	}
 }

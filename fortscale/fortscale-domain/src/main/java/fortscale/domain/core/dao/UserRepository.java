@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 
 
@@ -15,6 +14,7 @@ public interface UserRepository extends MongoRepository<User, String>, UserRepos
 	public User findByUsername(String username);
 	public List<User> findByUsernameContaining(String username);
 	public List<User> findByUsernameRegex(String usernameRegex);
+	public User findByAdDn(String adDn);
 	
 	public List<User> findBySearchFieldContaining(String prefix);
 	public List<User> findByFollowed(Boolean followed);

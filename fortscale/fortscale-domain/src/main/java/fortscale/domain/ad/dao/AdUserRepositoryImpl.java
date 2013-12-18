@@ -38,7 +38,8 @@ class AdUserRepositoryImpl implements AdUserRepositoryCustom{
 		Iterator<DBObject> iter = collection.find().iterator();
 		while(iter.hasNext()){
 			DBObject cur = iter.next();
-			AdUser adUser = new AdUser((String) cur.toMap().get(AdObject.dnField));
+			AdUser adUser = new AdUser();
+			adUser.setDistinguishedName((String) cur.toMap().get(AdObject.dnField));
 			adUser.setAttrVals(cur.toMap());
 			ret.add(adUser);
 		}

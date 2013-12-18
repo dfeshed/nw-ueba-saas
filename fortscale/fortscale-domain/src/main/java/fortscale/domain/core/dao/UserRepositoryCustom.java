@@ -37,5 +37,7 @@ public interface UserRepositoryCustom {
 	
 	public List<User> findByAdUserPrincipalNameContaining(String adUserPrincipalNamePrefix);
 	
-	public User findByAdDn(String adDn);
+	public User findByAdInfoDn(String adDn);
+	
+	public User findByAdObjectGUID(String objectGUID);
 }

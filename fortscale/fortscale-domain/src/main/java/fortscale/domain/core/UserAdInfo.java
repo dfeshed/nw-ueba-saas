@@ -6,13 +6,19 @@ import java.util.Set;
 
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.util.Assert;
 
 import fortscale.domain.ad.AdUserGroup;
 
 public class UserAdInfo {
+	public static final String objectGUIDField = "objectGUID";
 	public static final String adDnField = "dn";
+	public static final String emailAddressField = "email";
+	public static final String lastnameField = "lastname";
+	public static final String userPrincipalNameField = "userPrincipalName";
 	
 	@Indexed(unique = true)
+	@Field(objectGUIDField)
 	private String objectGUID;
 
 	@Indexed(unique = true)
@@ -24,15 +30,18 @@ public class UserAdInfo {
 	private String employeeNumber;
 	
 
-	private String firstname, lastname;
+	private String firstname;
+	@Field(lastnameField)
+	private String lastname;
 
-	@Field("email")
+	@Field(emailAddressField)
 	@Indexed
 	private EmailAddress emailAddress;
 	
 	private String managerDN;
 
 	@Indexed
+	@Field(userPrincipalNameField)
 	private String userPrincipalName;
 
 	private String sAMAccountName;
@@ -63,7 +72,7 @@ public class UserAdInfo {
 	
 	private Integer userAccountControl;
 	
-	private String alogonHours;
+	private String logonHours;
 	
 	private Date whenChanged;
 	
@@ -93,6 +102,14 @@ public class UserAdInfo {
 	
 	
 	
+	public String getObjectGUID() {
+		return objectGUID;
+	}
+
+	public void setObjectGUID(String objectGUID) {
+		this.objectGUID = objectGUID;
+	}
+
 	private Set<AdUserDirectReport> adDirectReports = new HashSet<AdUserDirectReport>();
 	
 	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
@@ -273,12 +290,12 @@ public class UserAdInfo {
 		this.userAccountControl = userAccountControl;
 	}
 
-	public String getAlogonHours() {
-		return alogonHours;
+	public String getLogonHours() {
+		return logonHours;
 	}
 
-	public void setAlogonHours(String alogonHours) {
-		this.alogonHours = alogonHours;
+	public void setLogonHours(String logonHours) {
+		this.logonHours = logonHours;
 	}
 
 	public Date getWhenChanged() {
@@ -380,7 +397,26 @@ public class UserAdInfo {
 	
 	
 	
+	public void addGroup(AdUserGroup adUserGroup) {
+
+		Assert.notNull(adUserGroup);
+		this.groups.add(adUserGroup);
+	}
 	
+	public void clearGroups(){
+		groups.clear();
+	}
+	
+	
+	public void addAdDirectReport(AdUserDirectReport adUserDirectReport) {
+
+		Assert.notNull(adUserDirectReport);
+		this.adDirectReports.add(adUserDirectReport);
+	}
+	
+	public void clearAdDirectReport(){
+		adDirectReports.clear();
+	}
 	
 	
 }
