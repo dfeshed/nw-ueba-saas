@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
@@ -17,11 +16,9 @@ public class UserAdInfo {
 	public static final String lastnameField = "lastname";
 	public static final String userPrincipalNameField = "userPrincipalName";
 	
-	@Indexed(unique = true)
 	@Field(objectGUIDField)
 	private String objectGUID;
 
-	@Indexed(unique = true)
 	@Field(adDnField)
 	private String dn;
 	
@@ -35,12 +32,10 @@ public class UserAdInfo {
 	private String lastname;
 
 	@Field(emailAddressField)
-	@Indexed
 	private EmailAddress emailAddress;
 	
 	private String managerDN;
 
-	@Indexed
 	@Field(userPrincipalNameField)
 	private String userPrincipalName;
 
@@ -110,7 +105,7 @@ public class UserAdInfo {
 		this.objectGUID = objectGUID;
 	}
 
-	private Set<AdUserDirectReport> adDirectReports = new HashSet<AdUserDirectReport>();
+	private Set<AdUserDirectReport> directReports = new HashSet<AdUserDirectReport>();
 	
 	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
 
@@ -378,12 +373,12 @@ public class UserAdInfo {
 		this.roomNumber = roomNumber;
 	}
 
-	public Set<AdUserDirectReport> getAdDirectReports() {
-		return adDirectReports;
+	public Set<AdUserDirectReport> getDirectReports() {
+		return directReports;
 	}
 
-	public void setAdDirectReports(Set<AdUserDirectReport> adDirectReports) {
-		this.adDirectReports = adDirectReports;
+	public void setAdDirectReports(Set<AdUserDirectReport> directReports) {
+		this.directReports = directReports;
 	}
 
 	public Set<AdUserGroup> getGroups() {
@@ -408,14 +403,14 @@ public class UserAdInfo {
 	}
 	
 	
-	public void addAdDirectReport(AdUserDirectReport adUserDirectReport) {
+	public void addDirectReport(AdUserDirectReport userDirectReport) {
 
-		Assert.notNull(adUserDirectReport);
-		this.adDirectReports.add(adUserDirectReport);
+		Assert.notNull(userDirectReport);
+		this.directReports.add(userDirectReport);
 	}
 	
-	public void clearAdDirectReport(){
-		adDirectReports.clear();
+	public void clearDirectReport(){
+		directReports.clear();
 	}
 	
 	

@@ -1,5 +1,9 @@
 package fortscale.services.impl;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+import static org.springframework.data.mongodb.core.query.Update.update;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,10 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
-import static org.springframework.data.mongodb.core.query.Update.update;
-
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.mortbay.log.Log;
@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdGroup;
@@ -157,13 +156,33 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private void updateUserWithADInfo(Iterable<AdUser> adUsers) {
-		for(AdUser adUser: adUsers){
-			try {
-				updateUserWithADInfo(adUser);
-			} catch (Exception e) {
-				logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
+		if(mongoTemplate.exists(query(where(User.adInfoField).exists(false)), User.class)){
+			logger.info("Updating User schema regarding to the active directory info");
+			List<User> users = updateUserWithADInfoNewSchema(adUsers);
+			
+			try{
+				logger.info("Dropping adDn index");
+				mongoTemplate.indexOps(User.class).dropIndex("adDn");
+			} catch(Exception e){
+				logger.error("failed to drop adDn index.", e);
+			}
+			try{
+				logger.info("Dropping adObjectGUID index");
+				mongoTemplate.indexOps(User.class).dropIndex("adObjectGUID");
+			} catch(Exception e){
+				logger.error("failed to drop adObjectGUID index.", e);
 			}
 			
+			userRepository.save(users);
+		} else{
+			for(AdUser adUser: adUsers){
+				try {
+					updateUserWithADInfo(adUser);
+				} catch (Exception e) {
+					logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
+				}
+				
+			}
 		}
 		saveUserIdUsernamesMapToImpala(new Date());
 	}
@@ -285,7 +304,7 @@ public class UserServiceImpl implements UserService{
 						adUserDirectReport.setLastname(userDirectReport.getAdInfo().getLastname());
 					}
 					
-					userAdInfo.addAdDirectReport(adUserDirectReport);
+					userAdInfo.addDirectReport(adUserDirectReport);
 				}else{
 					logger.warn("the user ({}) direct report ({}) was not found", adUser.getDistinguishedName(), directReportsDN);
 				}
@@ -293,7 +312,7 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		
-		User user = userRepository.findByAdObjectGUID(adUser.getObjectGUID());
+		User user = userRepository.findByAdInfoObjectGUID(adUser.getObjectGUID());
 		boolean isSaveUser = false;
 		if(user == null){
 			user = new User();
@@ -857,11 +876,6 @@ public class UserServiceImpl implements UserService{
 		updateUserTotalScore(users, true, lastRun);
 	}
 	
-	private void updateAuthLogUsername(LogEventsEnum eventId, User user, String username, boolean isSave){
-		AuthDAO authDAO = getAuthDAO(eventId);
-		updateLogUsername(user, authDAO.getTableName(), username, isSave);
-	}
-	
 	private String getAuthLogUsername(LogEventsEnum eventId, User user){
 		AuthDAO authDAO = getAuthDAO(eventId);
 		return user.getLogUsernameMap().get(authDAO.getTableName());
@@ -1210,7 +1224,9 @@ public class UserServiceImpl implements UserService{
 	public void updateUserWithCurrentADInfoNewSchema() {
 		String timestamp = adUserRepository.getLatestTimeStamp();
 		if(timestamp != null) {
-			updateUserWithADInfoNewSchema(adUserRepository.findByTimestamp(timestamp));
+			List<User> users = updateUserWithADInfoNewSchema(adUserRepository.findByTimestamp(timestamp));
+			userRepository.save(users);
+			saveUserIdUsernamesMapToImpala(new Date());
 		} else {
 			logger.error("no timestamp. probably the ad_user table is empty");
 		}
@@ -1218,26 +1234,43 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	
-	private void updateUserWithADInfoNewSchema(Iterable<AdUser> adUsers) {
+	private List<User> updateUserWithADInfoNewSchema(Iterable<AdUser> adUsers) {
+		List<User> ret = new ArrayList<>();
 		for(AdUser adUser: adUsers){
 			try {
-				updateUserWithADInfo(adUser);
+				User user = updateUserWithADInfoNewSchema(adUser);
+				if(user != null){
+					ret.add(user);
+				}
 			} catch (Exception e) {
 				logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
 			}
 			
 		}
-		saveUserIdUsernamesMapToImpala(new Date());
+		
+		
+		return ret;
 	}
 		
-	private void updateUserWithADInfoNewSchema(AdUser adUser) {
+	private User updateUserWithADInfoNewSchema(AdUser adUser) {
+		if(adUser.getObjectGUID() == null) {
+			logger.error("got ad user with no ObjectGUID name field.");
+			return null;
+		}
 		if(adUser.getDistinguishedName() == null) {
 			logger.error("got ad user with no distinguished name field.");
-			return;
+			return null;
 		}
-		User user = userRepository.findByAdDn(adUser.getDistinguishedName());
+		
+		User user = null;
+		if(adUser.getObjectGUID() != null) {
+			user = userRepository.findByAdObjectGUID(adUser.getObjectGUID());
+		}
 		if(user == null){
-			return;
+			user = userRepository.findByAdDn(adUser.getDistinguishedName());
+		}
+		if(user == null){
+			return null;
 		}
 		
 		user.getAdInfo().setFirstname(adUser.getFirstname());
@@ -1327,7 +1360,7 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
-		user.getAdInfo().clearAdDirectReport();
+		user.getAdInfo().clearDirectReport();
 		if(directReports != null){
 			for(String directReportsDN: directReports){
 				User userDirectReport = userRepository.findByAdDn(directReportsDN);
@@ -1344,7 +1377,7 @@ public class UserServiceImpl implements UserService{
 						adUserDirectReport.setLastname(userDirectReport.getAdInfo().getLastname());
 					}
 					
-					user.getAdInfo().addAdDirectReport(adUserDirectReport);
+					user.getAdInfo().addDirectReport(adUserDirectReport);
 				}else{
 					logger.warn("the user ({}) direct report ({}) was not found", user.getAdInfo().getDn(), directReportsDN);
 				}
@@ -1353,7 +1386,10 @@ public class UserServiceImpl implements UserService{
 		
 		user.setSearchField(createSearchField(user.getAdInfo(), user.getUsername()));
 		user.getAdInfo().setObjectGUID(adUser.getObjectGUID());
+		user.getAdInfo().setDn(adUser.getDistinguishedName());
 		user.setAdDn(null);
-		userRepository.save(user);
+		user.setAdObjectGUID(null);
+
+		return user;
 	}
 }

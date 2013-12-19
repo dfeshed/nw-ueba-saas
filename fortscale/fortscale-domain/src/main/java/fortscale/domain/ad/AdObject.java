@@ -13,7 +13,7 @@ public class AdObject extends AbstractDocument{
 	public static final String timestampField = "timestamp";
 	public static final String lastModifiedField = "lastModified";
 	
-	@Indexed(unique=true, sparse=true)
+	@Indexed
 	@Field(objectGUIDField)
 	private String objectGUID;
 	

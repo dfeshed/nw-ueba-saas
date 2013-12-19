@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -16,6 +18,12 @@ import org.springframework.util.Assert;
 
 
 @Document
+@CompoundIndexes({
+		@CompoundIndex(name="ad_objectGUID_1", def = "{'adInfo.objectGUID': 1}"),
+		@CompoundIndex(name="ad_dn_1", def = "{'adInfo.dn': 1}"),
+		@CompoundIndex(name="ad_emailAddress_1", def = "{'adInfo.emailAddress': 1}"),
+		@CompoundIndex(name="ad_userPrincipalName_1", def = "{'adInfo.userPrincipalName': 1}"),
+})
 public class User extends AbstractDocument {	
 	public static final String appField = "app";
 	public static final String logUsernameField = "logUsername";
@@ -60,6 +68,16 @@ public class User extends AbstractDocument {
 	
 	public void setAdDn(String adDn) {
 		this.adDn = adDn;
+	}
+	
+	private String adObjectGUID;
+	
+	public String getAdObjectGUID() {
+		return adObjectGUID;
+	}
+
+	public void setAdObjectGUID(String adObjectGUID) {
+		this.adObjectGUID = adObjectGUID;
 	}
 		
 	

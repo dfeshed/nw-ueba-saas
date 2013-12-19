@@ -154,7 +154,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 	
 	@Override
-	public User findByAdObjectGUID(String objectGUID) {
+	public User findByAdInfoObjectGUID(String objectGUID) {
 		return findOneByField(User.getAdInfoField(UserAdInfo.objectGUIDField), objectGUID);
 	}
 	
