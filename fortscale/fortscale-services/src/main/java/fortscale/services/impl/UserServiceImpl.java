@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private void updateUserWithADInfo(Iterable<AdUser> adUsers) {
-		if(mongoTemplate.exists(query(where(User.adInfoField).exists(false)), User.class)){
+		if(!mongoTemplate.exists(query(where(User.adInfoField).exists(true)), User.class)){
 			logger.info("Updating User schema regarding to the active directory info");
 			List<User> users = updateUserWithADInfoNewSchema(adUsers);
 			
