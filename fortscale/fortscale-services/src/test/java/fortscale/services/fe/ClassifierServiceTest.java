@@ -228,7 +228,7 @@ public class ClassifierServiceTest{
 	public class TestUser extends User{
 
 		public TestUser(String adDn) {
-			super(adDn);
+			setAdDn(adDn);
 		}
 		
 		public void setId(String userIdString) {

@@ -151,8 +151,8 @@ public class ApiUserController extends BaseController{
 		
 		Map<String, User> dnToUserMap = new HashMap<String, User>(users.size());
 		for(User user: users){
-			if(!StringUtils.isEmpty(user.getManagerDN())){
-				dnToUserMap.put(user.getManagerDN(), null);
+			if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
+				dnToUserMap.put(user.getAdInfo().getManagerDN(), null);
 			}
 		}
 		if(dnToUserMap.size() > 0){
@@ -163,8 +163,8 @@ public class ApiUserController extends BaseController{
 		}
 		for(User user: users){
 			User manager = null;
-			if(!StringUtils.isEmpty(user.getManagerDN())){
-				manager = dnToUserMap.get(user.getManagerDN());
+			if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
+				manager = dnToUserMap.get(user.getAdInfo().getManagerDN());
 			}
 			UserDetailsBean userDetailsBean = new UserDetailsBean(user, manager);
 			userDetailsBeans.add(userDetailsBean);
@@ -368,8 +368,9 @@ public class ApiUserController extends BaseController{
 	
 	private User getManager(User user){
 		User manager = null;
-		if(user.getManagerDN() != null && user.getManagerDN().length() > 0){
-			manager = userRepository.findByAdDn(user.getManagerDN());
+		String managerDN = user.getAdInfo().getManagerDN();
+		if(!StringUtils.isEmpty(managerDN)){
+			manager = userRepository.findByAdDn(managerDN);
 		}
 		return manager;
 	}

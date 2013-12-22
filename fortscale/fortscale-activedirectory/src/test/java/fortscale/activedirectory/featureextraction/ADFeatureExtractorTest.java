@@ -21,7 +21,8 @@ public class ADFeatureExtractorTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		
-		adUser = new AdUser("CN=John Doe,OU=Company-Users,DC=Company,DC=dom");
+		adUser = new AdUser();
+		adUser.setDistinguishedName("CN=John Doe,OU=Company-Users,DC=Company,DC=dom");
 		adUser.setAccountExpires("0");
 		adUser.setBadPasswordTime("2013/08/25T08:35:47");
 		adUser.setBadPwdCount(0);
