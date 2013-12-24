@@ -21,6 +21,7 @@ public interface UserRepositoryCustom {
 	public User findByLogUsername(String logname, String username);
 	public void updateFollowed(User user, boolean followed);
 	public List<User> findByDNs(Collection<String> dns);
+	public List<User> findByGUIDs(Collection<String> guids);
 	public List<User> findByIds(Collection<String> ids);
 	
 	/**

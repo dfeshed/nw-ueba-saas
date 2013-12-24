@@ -14,15 +14,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdGroup;
@@ -103,6 +112,12 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ImpalaWriterFactory impalaWriterFactory;
 	
+	@Autowired
+	private ThreadPoolTaskExecutor mongoDbReaderExecuter;
+	
+	@Autowired
+	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
+	
 	@Autowired 
 	private ADUserParser adUserParser; 
 	
@@ -122,7 +137,7 @@ public class UserServiceImpl implements UserService{
 	private String sshStatusSuccessValueRegex;
 	
 	
-	
+	private Map<String, String> groupDnToNameMap = new HashMap<>();
 	
 	
 	@Override
@@ -151,13 +166,10 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public void updateUserWithADInfo(String timestamp) {
-		updateUserWithADInfo(adUserRepository.findByTimestamp(timestamp));
-	}
-	
-	private void updateUserWithADInfo(Iterable<AdUser> adUsers) {
+	public void updateUserWithADInfo(final String timestamp) {
 		if(!mongoTemplate.exists(query(where(User.adInfoField).exists(true)), User.class)){
 			logger.info("Updating User schema regarding to the active directory info");
+			Iterable<AdUser> adUsers = adUserRepository.findByTimestamp(timestamp);
 			List<User> users = updateUserWithADInfoNewSchema(adUsers);
 			
 			try{
@@ -175,17 +187,87 @@ public class UserServiceImpl implements UserService{
 			
 			userRepository.save(users);
 		} else{
-			for(AdUser adUser: adUsers){
+			//getting all users
+			logger.info("getting all users");
+			
+			
+			
+			logger.info("getting all ad users");
+			long count = adUserRepository.countByTimestamp(timestamp);
+			final int pageSize = 1000;
+			int numOfPages = (int)((count-1)/pageSize) + 1;
+			final AtomicInteger counter = new AtomicInteger(-1);
+			CompletionService<UpdateUserAdInfoContext> pool = new ExecutorCompletionService<UpdateUserAdInfoContext>(mongoDbReaderExecuter);
+			for(int i = 0; i < numOfPages; i++){
+				Callable<UpdateUserAdInfoContext> task = new Callable<UpdateUserAdInfoContext>() {
+					@Override
+					public UpdateUserAdInfoContext call(){
+						int page = counter.incrementAndGet();
+						PageRequest pageRequest = new PageRequest(page, pageSize);
+						List<AdUser> adUsers = adUserRepository.findByTimestamp(timestamp, pageRequest);
+						List<String> guids = new ArrayList<>(adUsers.size());
+						for(AdUser adUser: adUsers){
+							guids.add(adUser.getObjectGUID());
+						}
+						List<User> users = userRepository.findByGUIDs(guids);
+						return new UpdateUserAdInfoContext(adUsers, users);
+					}
+				};
+				pool.submit(task);
+			}
+			
+			
+			logger.info("filling all users with ad info data");
+			CompletionService<String> writerPool = new ExecutorCompletionService<String>(mongoDbWriterExecuter);
+			int numOfThreadExceptions = 0;
+			List<AdUser> adUsers = new ArrayList<>();
+			int numOfTasks = 0;
+			for(int i = 0; i < numOfPages; i++){
+				UpdateUserAdInfoContext updateUserAdInfoContext = null;
 				try {
-					updateUserWithADInfo(adUser);
-				} catch (Exception e) {
-					logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
+					updateUserAdInfoContext = pool.take().get(5, TimeUnit.SECONDS);
+				} catch (InterruptedException | TimeoutException | ExecutionException e1) {
+					logger.error("while getting ad user object from mongo got the following exception.", e1);
+					numOfThreadExceptions++;
+					if(numOfThreadExceptions > 5){
+						break;
+					}
+					continue;
 				}
-				
+				if(updateUserAdInfoContext == null){
+					logger.error("updateUserAdInfoContext is null");
+					continue;
+				}
+				List<AdUser> pageAdUsers = updateUserAdInfoContext.getAdUsers();
+				logger.info("Going over {} ad users", pageAdUsers.size());
+				adUsers.addAll(pageAdUsers);
+				for(AdUser adUser: pageAdUsers){
+					try {
+						numOfTasks += updateUserWithADInfo(adUser, updateUserAdInfoContext, writerPool);
+					} catch (Exception e) {
+						logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
+					}
+				}
+			}
+			
+			numOfThreadExceptions = 0;
+			for(int i = 0; i < numOfTasks; i++){
+				try {
+					String res = writerPool.take().get(5, TimeUnit.SECONDS);
+				} catch (InterruptedException | TimeoutException | ExecutionException e1) {
+					logger.error("while getting ad user object from mongo got the following exception.", e1);
+					numOfThreadExceptions++;
+					if(numOfThreadExceptions > 5){
+						break;
+					}
+					continue;
+				}
 			}
 		}
-		saveUserIdUsernamesMapToImpala(new Date());
+//		saveUserIdUsernamesMapToImpala(new Date());
 	}
+	
+	
 	
 	private void saveUserIdUsernamesMapToImpala(Date timestamp){
 		List<User> users = userRepository.findAll();
@@ -194,20 +276,20 @@ public class UserServiceImpl implements UserService{
 		writer.close();
 	}
 	
-	private void updateUserWithADInfo(AdUser adUser) {
+	private int updateUserWithADInfo(AdUser adUser, UpdateUserAdInfoContext updateUserAdInfoContext, CompletionService<String> pool) {
 		if(adUser.getObjectGUID() == null) {
 			logger.error("got ad user with no ObjectGUID name field.");
-			return;
+			return 0;
 		}
 		if(adUser.getDistinguishedName() == null) {
 			logger.error("got ad user with no distinguished name field.");
-			return;
+			return 0;
 		}
 		
 		
 		
 		
-		UserAdInfo userAdInfo = new UserAdInfo();
+		final UserAdInfo userAdInfo = new UserAdInfo();
 		userAdInfo.setObjectGUID(adUser.getObjectGUID());
 		userAdInfo.setDn(adUser.getDistinguishedName());
 		userAdInfo.setFirstname(adUser.getFirstname());
@@ -271,17 +353,20 @@ public class UserServiceImpl implements UserService{
 		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
 		if(groups != null){
 			for(String groupDN: groups){
-				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
-				String groupName = null;
-				if(adGroup != null){
-					groupName = adGroup.getName();
-				}else{
-					Log.warn("the user ({}) group ({}) was not found", adUser.getDistinguishedName(), groupDN);
-					groupName = adUserParser.parseFirstCNFromDN(groupDN);
-					if(groupName == null){
-						Log.warn("invalid group dn ({}) for user ({})", groupDN, adUser.getDistinguishedName());
-						continue;
-					}
+				String groupName = groupDnToNameMap.get(groupDN);
+				if(groupName == null){
+//					AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
+//					if(adGroup != null){
+//						groupName = adGroup.getName();
+//					}else{
+//						Log.warn("the user ({}) group ({}) was not found", adUser.getDistinguishedName(), groupDN);
+						groupName = adUserParser.parseFirstCNFromDN(groupDN);
+						if(groupName == null){
+							Log.warn("invalid group dn ({}) for user ({})", groupDN, adUser.getDistinguishedName());
+							continue;
+						}
+//					}
+					groupDnToNameMap.put(groupDN, groupName);
 				}
 				userAdInfo.addGroup(new AdUserGroup(groupDN, groupName));
 			}
@@ -290,29 +375,13 @@ public class UserServiceImpl implements UserService{
 		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
 		if(directReports != null){
 			for(String directReportsDN: directReports){
-				User userDirectReport = userRepository.findByAdInfoDn(directReportsDN);
-				if(userDirectReport != null){
-					String displayName = userDirectReport.getUsername();
-					if(userDirectReport.getAdInfo() != null && !StringUtils.isEmpty(userDirectReport.getAdInfo().getDisplayName())){
-						displayName = userDirectReport.getAdInfo().getDisplayName();
-					}
-					AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, displayName);
-					adUserDirectReport.setUserId(userDirectReport.getId());
-					adUserDirectReport.setUsername(userDirectReport.getUsername());
-					if(userDirectReport.getAdInfo() != null){
-						adUserDirectReport.setFirstname(userDirectReport.getAdInfo().getFirstname());
-						adUserDirectReport.setLastname(userDirectReport.getAdInfo().getLastname());
-					}
-					
-					userAdInfo.addDirectReport(adUserDirectReport);
-				}else{
-					logger.warn("the user ({}) direct report ({}) was not found", adUser.getDistinguishedName(), directReportsDN);
-				}
+				String displayName = adUserParser.parseFirstCNFromDN(directReportsDN);
+				AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, displayName);
+				userAdInfo.addDirectReport(adUserDirectReport);
 			}
 		}
 		
-		
-		User user = userRepository.findByAdInfoObjectGUID(adUser.getObjectGUID());
+		User user = updateUserAdInfoContext.findByObjectGUID(adUser.getObjectGUID());
 		boolean isSaveUser = false;
 		if(user == null){
 			user = new User();
@@ -334,24 +403,47 @@ public class UserServiceImpl implements UserService{
 		
 		
 		
-		String searchField = createSearchField(userAdInfo, username);
+		final String searchField = createSearchField(userAdInfo, username);
 		
+		
+		final User finalUser = user;
+		int numOfTasks = 0;
 		if(isSaveUser){
 			if(!StringUtils.isEmpty(username)) {
-				user.setUsername(username);
-				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
+				finalUser.setUsername(username);
+				finalUser.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, finalUser.getUsername()));
 			}
-			user.setSearchField(searchField);
-			userRepository.save(user);
+			finalUser.setSearchField(searchField);
+			
+			Callable<String> task = new Callable<String>() {
+				@Override
+				public String call(){
+					userRepository.save(finalUser);
+					return "";
+				}
+			};
+			pool.submit(task);
+			numOfTasks = 1;
+			
 		} else{
-			updateUser(user, User.adInfoField, userAdInfo);
-			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
-				updateUser(user, User.usernameField, username);
-			}
-			if(!searchField.equals(user.getSearchField())){
-				updateUser(user, User.searchFieldName, searchField);
-			}
+			final String finalUsername = username;
+			Callable<String> task = new Callable<String>() {
+				@Override
+				public String call(){
+					updateUser(finalUser, User.adInfoField, userAdInfo);
+					if(!StringUtils.isEmpty(finalUsername) && !finalUsername.equals(finalUser.getUsername())){
+						updateUser(finalUser, User.usernameField, finalUsername);
+					}
+					if(!searchField.equals(finalUser.getSearchField())){
+						updateUser(finalUser, User.searchFieldName, searchField);
+					}
+					return "";
+				}
+			};
+			pool.submit(task);
+			numOfTasks = 1;
 		}
+		return numOfTasks;
 	}
 	
 	private void updateUser(User user, String fieldName, Object val){
@@ -1391,5 +1483,35 @@ public class UserServiceImpl implements UserService{
 		user.setAdObjectGUID(null);
 
 		return user;
+	}
+	
+	class UpdateUserAdInfoContext{
+		private List<AdUser> adUsers = new ArrayList<>();
+		private Map<String,User> guidToUsersMap = new HashMap<>();
+		
+		public UpdateUserAdInfoContext(List<AdUser> adUsers, List<User> users){
+			this.adUsers = adUsers;
+			for(User user: users){
+				guidToUsersMap.put(user.getAdInfo().getObjectGUID(), user);
+			}
+		}
+		
+		
+		public List<AdUser> getAdUsers() {
+			return adUsers;
+		}
+		public void setAdUsers(List<AdUser> adUsers) {
+			this.adUsers = adUsers;
+		}
+		public Map<String,User> getGuidToUsersMap() {
+			return guidToUsersMap;
+		}
+		public void setGuidToUsersMap(Map<String,User> guidToUsersMap) {
+			this.guidToUsersMap = guidToUsersMap;
+		}
+		
+		public User findByObjectGUID(String objectGUID){
+			return guidToUsersMap.get(objectGUID);
+		}
 	}
 }

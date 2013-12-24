@@ -110,6 +110,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		return findByUniqueField(User.getAdInfoField(UserAdInfo.adDnField),dns);
 	}
 	
+	@Override
+	public List<User> findByGUIDs(Collection<String> guids) {
+		return findByUniqueField(User.getAdInfoField(UserAdInfo.objectGUIDField),guids);
+	}
+	
 	private List<User> findByUniqueField(String fieldName, Collection<?> vals) {
 		Criteria criterias[] = new Criteria[vals.size()];
 		int i = 0;

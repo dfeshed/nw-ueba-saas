@@ -19,7 +19,7 @@ import org.springframework.util.Assert;
 
 @Document
 @CompoundIndexes({
-		@CompoundIndex(name="ad_objectGUID_1", def = "{'adInfo.objectGUID': 1}"),
+		@CompoundIndex(name="ad_objectGUID_1", def = "{'adInfo.objectGUID': 1}", unique=true),
 		@CompoundIndex(name="ad_dn_1", def = "{'adInfo.dn': 1}"),
 		@CompoundIndex(name="ad_emailAddress_1", def = "{'adInfo.emailAddress': 1}"),
 		@CompoundIndex(name="ad_userPrincipalName_1", def = "{'adInfo.userPrincipalName': 1}"),

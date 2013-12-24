@@ -27,6 +27,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.dao.UserMachineDAO;
@@ -106,11 +107,16 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	@Autowired
 	private ImpalaParser impalaParser;
 	
+	@Autowired
+	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
+	
 	@Value("${login.service.name.regex:}")
 	private String loginServiceNameRegex;
 	
 	@Value("${login.account.name.regex:}")
 	private String loginAccountNameRegex;
+	
+	
 	
 	private Map<String, Map<String, String>> rowFieldRegexFilter;
 	
@@ -866,7 +872,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	private void saveEBSResultsOnAuthQuery(final String sqlQuery, final EBSResult ebsResult, final String timestampFieldName, boolean isRunThread){
 		if(isRunThread){
-			ExecutorService executorService = Executors.newFixedThreadPool(1);
 			Runnable task = new Runnable() {
 				@Override
 				public void run(){
@@ -874,8 +879,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 					authQuerySaver.save(sqlQuery, ebsResult, timestampFieldName);
 				}
 			};
-			executorService.submit(task);
-			executorService.shutdown();
+			mongoDbWriterExecuter.submit(task);
 		} else{
 			EBSResultsOnAuthQuerySaver authQuerySaver = new EBSResultsOnAuthQuerySaver();
 			authQuerySaver.save(sqlQuery, ebsResult, timestampFieldName);

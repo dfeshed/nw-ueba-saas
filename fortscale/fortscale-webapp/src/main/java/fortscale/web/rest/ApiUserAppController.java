@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class ApiUserAppController {
 		List<User> users = userService.findByApplicationUserName(userApplication, usernames);
 		List<UserDetailsBean> applicationUserDetailsBeans = new ArrayList<>();
 		for(User user: users) {
-			applicationUserDetailsBeans.add(new UserDetailsBean(user,null));	
+			applicationUserDetailsBeans.add(new UserDetailsBean(user,null, Collections.<User>emptyList()));	
 		}
 
 		ret.setData(applicationUserDetailsBeans);

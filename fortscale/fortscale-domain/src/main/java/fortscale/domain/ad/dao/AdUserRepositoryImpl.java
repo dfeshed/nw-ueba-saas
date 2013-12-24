@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -55,5 +58,11 @@ class AdUserRepositoryImpl implements AdUserRepositoryCustom{
 	@Override
 	public String getLatestTimeStamp() {
 		return mongoDbRepositoryUtil.getLatestTimeStampString(AdObject.timestampField, AdUser.COLLECTION_NAME);
+	}
+
+	@Override
+	public long countByTimestamp(String timestamp) {
+		// TODO Auto-generated method stub
+		return mongoTemplate.count(query(where(AdObject.timestampField).is(timestamp)), AdUser.class);
 	}
 }

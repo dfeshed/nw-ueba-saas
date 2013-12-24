@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import fortscale.domain.ad.AdUserGroup;
-import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -28,11 +27,13 @@ public class UserDetailsBean implements Serializable{
 
 	private User user;
 	private User manager;
+	private List<User> directReports;
 	private ADUserParser adUserParser;
 	
-	public UserDetailsBean(User user, User manager){
+	public UserDetailsBean(User user, User manager, List<User> directReports){
 		this.user = user;
 		this.manager = manager;
+		this.directReports = directReports;
 		this.adUserParser = new ADUserParser();
 	}
 	
@@ -54,13 +55,7 @@ public class UserDetailsBean implements Serializable{
 
 
 	public String getName() {
-		if(user.getAdInfo().getFirstname() != null && user.getAdInfo().getLastname() != null){
-			return user.getAdInfo().getFirstname() + " " + user.getAdInfo().getLastname();
-		} else if(user.getAdInfo().getDisplayName() != null){
-			return user.getAdInfo().getDisplayName();
-		} else{
-			return user.getUsername();
-		}
+		return getUserName(user);
 	}
 
 	public String getJobTitle() {
@@ -288,8 +283,8 @@ public class UserDetailsBean implements Serializable{
 	
 	public List<UserDirectReportBean> getUserDirectReports() {
 		List<UserDirectReportBean> ret = new ArrayList<>();
-		for(AdUserDirectReport adUserDirectReport: user.getAdInfo().getDirectReports()){
-			ret.add(new UserDirectReportBean(adUserDirectReport));
+		for(User user: directReports){
+			ret.add(new UserDirectReportBean(user));
 		}
 		return ret;
 	}
@@ -375,13 +370,7 @@ public class UserDetailsBean implements Serializable{
 		}
 		
 		public String getName() {
-			if(managerUser.getAdInfo().getFirstname() != null && managerUser.getAdInfo().getLastname() != null){
-				return managerUser.getAdInfo().getFirstname() + " " + managerUser.getAdInfo().getLastname();
-			} else if(managerUser.getAdInfo().getDisplayName() != null){
-				return managerUser.getAdInfo().getDisplayName();
-			} else{
-				return managerUser.getUsername();
-			}
+			return getUserName(managerUser);
 		}
 		public String getWorkerId() {
 			return managerUser.getAdInfo().getEmployeeID();
@@ -392,27 +381,37 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public class UserDirectReportBean{
-		private AdUserDirectReport adUserDirectReport;
+		private User adUserDirectReport;
 		
-		public UserDirectReportBean(AdUserDirectReport adUserDirectReport) {
+		public UserDirectReportBean(User adUserDirectReport) {
 			this.adUserDirectReport = adUserDirectReport;
 		}
 		
 		public String getId() {
-			return adUserDirectReport.getUserId();
+			return adUserDirectReport.getId();
 		}
 		
 		public String getName() {
-			return adUserDirectReport.getName();
+			return getUserName(adUserDirectReport);
 		}
 		public String getUsername() {
 			return adUserDirectReport.getUsername();
 		}
 		public String getFirstname() {
-			return adUserDirectReport.getFirstname();
+			return adUserDirectReport.getAdInfo().getFirstname();
 		}
 		public String getLastname() {
-			return adUserDirectReport.getLastname();
+			return adUserDirectReport.getAdInfo().getLastname();
+		}
+	}
+	
+	private static String getUserName(User user){
+		if(user.getAdInfo().getFirstname() != null && user.getAdInfo().getLastname() != null){
+			return user.getAdInfo().getFirstname() + " " + user.getAdInfo().getLastname();
+		} else if(user.getAdInfo().getDisplayName() != null){
+			return user.getAdInfo().getDisplayName();
+		} else{
+			return user.getUsername();
 		}
 	}
 	
