@@ -16,6 +16,6 @@
 	</bean>
 	<bean id="saltSource" class="fortscale.services.security.FortscaleSaltSource"/>
 
-	<task:executor id="mongoDbReaderExecuter" pool-size="0-20"/>
-	<task:executor id="mongoDbWriterExecuter" pool-size="0-100"/>
+	<task:executor id="mongoDbReaderExecuter" pool-size="0-20" keep-alive="5"/>
+	<task:executor id="mongoDbWriterExecuter" pool-size="0-100" keep-alive="5"/>
 </beans>

@@ -136,6 +136,9 @@ public class UserServiceImpl implements UserService{
 	@Value("${ssh.status.success.value.regex:Accepted}")
 	private String sshStatusSuccessValueRegex;
 	
+	@Value("${ad.info.update.read.page.size:1000}")
+	private int readPageSize;
+	
 	
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
 	
@@ -167,7 +170,8 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void updateUserWithADInfo(final String timestamp) {
-		if(!mongoTemplate.exists(query(where(User.adInfoField).exists(true)), User.class)){
+		logger.info("Starting to update users with ad info.");
+		if(!mongoTemplate.exists(query(where(User.adInfoField).exists(true)), User.class) && userRepository.count() > 0){
 			logger.info("Updating User schema regarding to the active directory info");
 			Iterable<AdUser> adUsers = adUserRepository.findByTimestamp(timestamp);
 			List<User> users = updateUserWithADInfoNewSchema(adUsers);
@@ -187,15 +191,9 @@ public class UserServiceImpl implements UserService{
 			
 			userRepository.save(users);
 		} else{
-			//getting all users
-			logger.info("getting all users");
-			
-			
-			
 			logger.info("getting all ad users");
 			long count = adUserRepository.countByTimestamp(timestamp);
-			final int pageSize = 1000;
-			int numOfPages = (int)((count-1)/pageSize) + 1;
+			int numOfPages = (int)((count-1)/readPageSize) + 1;
 			final AtomicInteger counter = new AtomicInteger(-1);
 			CompletionService<UpdateUserAdInfoContext> pool = new ExecutorCompletionService<UpdateUserAdInfoContext>(mongoDbReaderExecuter);
 			for(int i = 0; i < numOfPages; i++){
@@ -203,7 +201,7 @@ public class UserServiceImpl implements UserService{
 					@Override
 					public UpdateUserAdInfoContext call(){
 						int page = counter.incrementAndGet();
-						PageRequest pageRequest = new PageRequest(page, pageSize);
+						PageRequest pageRequest = new PageRequest(page, readPageSize);
 						List<AdUser> adUsers = adUserRepository.findByTimestamp(timestamp, pageRequest);
 						List<String> guids = new ArrayList<>(adUsers.size());
 						for(AdUser adUser: adUsers){
@@ -239,21 +237,28 @@ public class UserServiceImpl implements UserService{
 					continue;
 				}
 				List<AdUser> pageAdUsers = updateUserAdInfoContext.getAdUsers();
+				int pageNumOfTasks = 0;
 				logger.info("Going over {} ad users", pageAdUsers.size());
 				adUsers.addAll(pageAdUsers);
 				for(AdUser adUser: pageAdUsers){
 					try {
-						numOfTasks += updateUserWithADInfo(adUser, updateUserAdInfoContext, writerPool);
+						pageNumOfTasks += updateUserWithADInfo(adUser, updateUserAdInfoContext, writerPool);
+						
 					} catch (Exception e) {
 						logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
 					}
 				}
+				logger.info("finished processing {} ad users info. triggered {} tasks with {} inserts, {} username updates, {} search field updates, {} ad info updates",
+						pageAdUsers.size(), pageNumOfTasks, updateUserAdInfoContext.getNumOfInserts(), updateUserAdInfoContext.getNumOfUsernameUpdates(),
+						updateUserAdInfoContext.getNumOfSearchFieldUpdates(), updateUserAdInfoContext.getNumOfAdInfoUpdates());
+				numOfTasks += pageNumOfTasks;
 			}
 			
+			logger.info("waiting for all the {} writing tasks.", numOfTasks);
 			numOfThreadExceptions = 0;
 			for(int i = 0; i < numOfTasks; i++){
 				try {
-					String res = writerPool.take().get(5, TimeUnit.SECONDS);
+					writerPool.take().get(5, TimeUnit.SECONDS);
 				} catch (InterruptedException | TimeoutException | ExecutionException e1) {
 					logger.error("while getting ad user object from mongo got the following exception.", e1);
 					numOfThreadExceptions++;
@@ -263,8 +268,10 @@ public class UserServiceImpl implements UserService{
 					continue;
 				}
 			}
+			logger.info("finished updating the user collection.");
 		}
 //		saveUserIdUsernamesMapToImpala(new Date());
+		logger.info("finished updating users with ad info.");
 	}
 	
 	
@@ -424,9 +431,17 @@ public class UserServiceImpl implements UserService{
 			};
 			pool.submit(task);
 			numOfTasks = 1;
+			updateUserAdInfoContext.incrementNumOfInserts();
 			
 		} else{
 			final String finalUsername = username;
+			updateUserAdInfoContext.incrementNumOfAdInfoUpdates();
+			if(!StringUtils.isEmpty(finalUsername) && !finalUsername.equals(finalUser.getUsername())){
+				updateUserAdInfoContext.incrementNumOfUsernameUpdates();
+			}
+			if(!searchField.equals(finalUser.getSearchField())){
+				updateUserAdInfoContext.incrementNumOfSearchFieldUpdates();
+			}
 			Callable<String> task = new Callable<String>() {
 				@Override
 				public String call(){
@@ -1488,6 +1503,10 @@ public class UserServiceImpl implements UserService{
 	class UpdateUserAdInfoContext{
 		private List<AdUser> adUsers = new ArrayList<>();
 		private Map<String,User> guidToUsersMap = new HashMap<>();
+		private int numOfInserts = 0;
+		private int numOfUsernameUpdates = 0;
+		private int numOfSearchFieldUpdates = 0;
+		private int numOfAdInfoUpdates = 0;
 		
 		public UpdateUserAdInfoContext(List<AdUser> adUsers, List<User> users){
 			this.adUsers = adUsers;
@@ -1513,5 +1532,48 @@ public class UserServiceImpl implements UserService{
 		public User findByObjectGUID(String objectGUID){
 			return guidToUsersMap.get(objectGUID);
 		}
+
+
+		public int getNumOfInserts() {
+			return numOfInserts;
+		}
+
+
+		public void incrementNumOfInserts() {
+			this.numOfInserts++;
+		}
+
+
+		public int getNumOfUsernameUpdates() {
+			return numOfUsernameUpdates;
+		}
+
+
+		public void incrementNumOfUsernameUpdates() {
+			this.numOfUsernameUpdates++;
+		}
+
+
+		public int getNumOfSearchFieldUpdates() {
+			return numOfSearchFieldUpdates;
+		}
+
+
+		public void incrementNumOfSearchFieldUpdates() {
+			this.numOfSearchFieldUpdates++;
+		}
+
+
+		public int getNumOfAdInfoUpdates() {
+			return numOfAdInfoUpdates;
+		}
+
+
+		public void incrementNumOfAdInfoUpdates() {
+			this.numOfAdInfoUpdates++;
+		}
+		
+		
+		
 	}
 }
