@@ -14,6 +14,7 @@ import fortscale.domain.ad.AdComputer;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdOU;
 import fortscale.domain.ad.AdUser;
+import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.services.AdService;
 
@@ -25,6 +26,9 @@ public class AdServiceImpl implements AdService {
 	
 	@Autowired
 	private MongoOperations mongoTemplate;
+	
+	@Autowired
+	private AdUserRepository adUserRepository;
 	
 	@Override
 	public void addLastModifiedFieldToAllCollections() {
@@ -46,7 +50,8 @@ public class AdServiceImpl implements AdService {
 
 	@Override
 	public void removeThumbnails() {
-		mongoTemplate.updateMulti(query(where(AdUser.thumbnailPhotoField).exists(true)), update(AdUser.thumbnailPhotoField, null), AdUser.class);
+		String timestamp = adUserRepository.getLatestTimeStamp();
+		mongoTemplate.updateMulti(query(where(AdUser.timestampField).ne(timestamp).and(AdUser.thumbnailPhotoField).exists(true)), update(AdUser.thumbnailPhotoField, null), AdUser.class);
 	}
 
 }

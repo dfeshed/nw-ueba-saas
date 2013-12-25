@@ -120,14 +120,18 @@ public class ApiUserController extends BaseController{
 		fillUserRelatedDns(user, userRelatedDnsList);
 		fillDnToUsersMap(userRelatedDnsList, dnToUserMap);
 		
-		UserDetailsBean ret = createUserDetailsBean(user, dnToUserMap);
+		UserDetailsBean ret = createUserDetailsBean(user, dnToUserMap, true);
 		return new DataListWrapperBean<UserDetailsBean>(ret);
 	}
 	
-	private UserDetailsBean createUserDetailsBean(User user, Map<String, User> dnToUserMap){
+	private UserDetailsBean createUserDetailsBean(User user, Map<String, User> dnToUserMap, boolean isWithThumbnail){
 		User manager = getUserManager(user, dnToUserMap);
 		List<User> directReports = getUserDirectReports(user, dnToUserMap);
-		return new UserDetailsBean(user, manager, directReports);
+		UserDetailsBean ret =  new UserDetailsBean(user, manager, directReports);
+		if(isWithThumbnail){
+			ret.setThumbnailPhoto(userService.getUserThumbnail(user));
+		}
+		return ret;
 	}
 	
 	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
@@ -215,7 +219,7 @@ public class ApiUserController extends BaseController{
 		fillDnToUsersMap(userRelatedDnsList, dnToUserMap);
 		
 		for(User user: users){
-			UserDetailsBean userDetailsBean = createUserDetailsBean(user, dnToUserMap);
+			UserDetailsBean userDetailsBean = createUserDetailsBean(user, dnToUserMap, false);
 			userDetailsBeans.add(userDetailsBean);
 		}
 		DataBean<List<UserDetailsBean>> ret = new DataBean<>();

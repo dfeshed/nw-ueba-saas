@@ -28,6 +28,7 @@ public class UserDetailsBean implements Serializable{
 	private User user;
 	private User manager;
 	private List<User> directReports;
+	private String thumbnailPhoto;
 	private ADUserParser adUserParser;
 	
 	public UserDetailsBean(User user, User manager, List<User> directReports){
@@ -35,6 +36,10 @@ public class UserDetailsBean implements Serializable{
 		this.manager = manager;
 		this.directReports = directReports;
 		this.adUserParser = new ADUserParser();
+	}
+	
+	public void setThumbnailPhoto(String thumbnailPhoto) {
+		this.thumbnailPhoto = thumbnailPhoto;
 	}
 	
 	public String getId(){
@@ -339,7 +344,7 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public String getImage() {
-		return user.getAdInfo().getThumbnailPhoto();
+		return thumbnailPhoto;
 	}
 
 	public UserManagerBean getManager() {
@@ -414,7 +419,7 @@ public class UserDetailsBean implements Serializable{
 			return user.getUsername();
 		}
 	}
-	
+
 	public class UserGroupBean{
 		private AdUserGroup adUserGroup;
 		

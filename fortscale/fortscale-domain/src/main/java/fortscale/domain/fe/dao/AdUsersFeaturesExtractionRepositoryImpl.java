@@ -40,8 +40,6 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
-import fortscale.domain.ad.AdObject;
-import fortscale.domain.ad.AdUser;
 import fortscale.domain.core.dao.MongoDbRepositoryUtil;
 import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;

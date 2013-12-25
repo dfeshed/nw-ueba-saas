@@ -144,6 +144,18 @@ public class UserServiceImpl implements UserService{
 	
 	
 	@Override
+	public String getUserThumbnail(User user) {
+		String ret = null;
+		String timestamp = adUserRepository.getLatestTimeStamp();
+		if(timestamp != null){
+			AdUser adUser = adUserRepository.findByTimestampAndObjectGUID(timestamp, user.getAdInfo().getObjectGUID());
+			ret = adUser.getThumbnailPhoto();
+		}
+		
+		return ret;
+	}
+	
+	@Override
 	public void removeClassifierFromAllUsers(String classifierId){
 		if(!Classifier.ad.getId().equals(classifierId)){
 			return;
@@ -319,7 +331,6 @@ public class UserServiceImpl implements UserService{
 		userAdInfo.setHomePhone(adUser.getHomePhone());
 		userAdInfo.setDepartment(adUser.getDepartment());
 		userAdInfo.setPosition(adUser.getTitle());
-		userAdInfo.setThumbnailPhoto(adUser.getThumbnailPhoto());
 		userAdInfo.setDisplayName(adUser.getDisplayName());
 		userAdInfo.setLogonHours(adUser.getLogonHours());
 		try {
@@ -1501,7 +1512,6 @@ public class UserServiceImpl implements UserService{
 		user.getAdInfo().setHomePhone(adUser.getHomePhone());
 		user.getAdInfo().setDepartment(adUser.getDepartment());
 		user.getAdInfo().setPosition(adUser.getTitle());
-		user.getAdInfo().setThumbnailPhoto(adUser.getThumbnailPhoto());
 		user.getAdInfo().setDisplayName(adUser.getDisplayName());
 		user.getAdInfo().setLogonHours(adUser.getLogonHours());
 		try {
@@ -1706,4 +1716,6 @@ public class UserServiceImpl implements UserService{
 		
 		
 	}
+
+	
 }
