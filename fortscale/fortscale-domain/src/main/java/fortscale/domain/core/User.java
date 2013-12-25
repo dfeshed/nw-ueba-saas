@@ -188,7 +188,9 @@ public class User extends AbstractDocument {
 	
 	
 	
-	
+	public static String getClassifierScoreField(String classifierId) {
+		return String.format("%s.%s", User.classifierScoreField, classifierId);
+	}
 	
 	public static String getClassifierScoreCurrentTimestampField(String classifierId) {
 		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.timestampField);

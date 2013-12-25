@@ -218,7 +218,6 @@ public class UserServiceImpl implements UserService{
 			logger.info("filling all users with ad info data");
 			CompletionService<String> writerPool = new ExecutorCompletionService<String>(mongoDbWriterExecuter);
 			int numOfThreadExceptions = 0;
-			List<AdUser> adUsers = new ArrayList<>();
 			int numOfTasks = 0;
 			for(int i = 0; i < numOfPages; i++){
 				UpdateUserAdInfoContext updateUserAdInfoContext = null;
@@ -239,7 +238,6 @@ public class UserServiceImpl implements UserService{
 				List<AdUser> pageAdUsers = updateUserAdInfoContext.getAdUsers();
 				int pageNumOfTasks = 0;
 				logger.info("Going over {} ad users", pageAdUsers.size());
-				adUsers.addAll(pageAdUsers);
 				for(AdUser adUser: pageAdUsers){
 					try {
 						pageNumOfTasks += updateUserWithADInfo(adUser, updateUserAdInfoContext, writerPool);
@@ -838,13 +836,24 @@ public class UserServiceImpl implements UserService{
 	
 	private void saveUserTotalScoreToImpala(Date timestamp, ScoreConfiguration scoreConfiguration){
 		List<User> users = userRepository.findAll();
+		saveUserTotalScoreToImpala(users, timestamp, scoreConfiguration);
+	}
+	
+	private void saveUserTotalScoreToImpala(List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
 		ImpalaTotalScoreWriter writer = impalaWriterFactory.createImpalaTotalScoreWriter();
+
+		saveUserTotalScoreToImpala(writer, users, timestamp, scoreConfiguration);
+		
+		writer.close();
+	}
+	
+	private void saveUserTotalScoreToImpala(ImpalaTotalScoreWriter writer, List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
+		logger.info("writing {} users total score to local file", users.size());
 		for(User user: users){
 			if(user.getScore(Classifier.total.getId()) != null){
 				writer.writeScores(user, timestamp, scoreConfiguration);
 			}
 		}
-		writer.close();
 	}
 
 	@Override
@@ -1052,40 +1061,122 @@ public class UserServiceImpl implements UserService{
 		updateUserWithGroupMembershipScore(lastRun);
 	}
 	
-	private void updateUserWithGroupMembershipScore(Date lastRun){
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun);
-//		Pageable pageable = new PageRequest(0, 10000, Direction.ASC, AdUserFeaturesExtraction.timestampField);
-//		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), pageable);
-		if(adUserFeaturesExtractions.size() == 0){
+	private void updateUserWithGroupMembershipScore(final Date lastRun){
+		final String classifierId = Classifier.groups.getId();
+		long count = adUsersFeaturesExtractionRepository.countByClassifierIdAndTimestamp(classifierId, lastRun); 
+		if(count == 0){
 			logger.warn("the group membership for timestamp ({}) is empty.", lastRun);
 			return;
 		}
+		logger.info("getting all the {} AdUserFeaturesExtraction", count);
 		
-		double avgScore = 0;
-		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-			avgScore += extraction.getScore();
+		final double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(classifierId, lastRun);
+		
+		
+		int numOfPages = (int)((count-1)/readPageSize) + 1;
+		final AtomicInteger counter = new AtomicInteger(-1);
+		CompletionService<UpdateUserGroupMembershipScoreContext> pool = new ExecutorCompletionService<UpdateUserGroupMembershipScoreContext>(mongoDbReaderExecuter);
+		for(int i = 0; i < numOfPages; i++){
+			Callable<UpdateUserGroupMembershipScoreContext> task = new Callable<UpdateUserGroupMembershipScoreContext>() {
+				@Override
+				public UpdateUserGroupMembershipScoreContext call(){
+					int page = counter.incrementAndGet();
+					PageRequest pageRequest = new PageRequest(page, readPageSize);
+					List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(classifierId, lastRun, pageRequest);
+					List<String> ids = new ArrayList<>(adUserFeaturesExtractions.size());
+					for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
+						ids.add(adUserFeaturesExtraction.getUserId());
+					}
+					List<User> users = userRepository.findByIds(ids);
+					return new UpdateUserGroupMembershipScoreContext(adUserFeaturesExtractions, users);
+				}
+			};
+			pool.submit(task);
 		}
-		avgScore = avgScore/adUserFeaturesExtractions.size();
 		
+		
+		logger.info("filling all users with group membership score");
+		CompletionService<String> writerPool = new ExecutorCompletionService<String>(mongoDbWriterExecuter);
+		int numOfThreadExceptions = 0;
+		int numOfTasks = 0;
 		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
-		List<User> users = new ArrayList<>();
-		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-			User user = userRepository.findOne(extraction.getUserId().toString());
-			if(user == null){
-				logger.error("user with id ({}) was not found in user table", extraction.getUserId());
+		ImpalaTotalScoreWriter impalaTotalScoreWriter = impalaWriterFactory.createImpalaTotalScoreWriter();
+		for(int i = 0; i < numOfPages; i++){
+			UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext = null;
+			try {
+				updateUserGroupMembershipScoreContext = pool.take().get(5, TimeUnit.SECONDS);
+			} catch (InterruptedException | TimeoutException | ExecutionException e1) {
+				logger.error("while getting AdUserFeaturesExtraction from mongo got the following exception.", e1);
+				numOfThreadExceptions++;
+				if(numOfThreadExceptions > 5){
+					break;
+				}
 				continue;
 			}
-			//updating the user with the new score.
-			user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false, false);
-			if(user != null){
-				users.add(user);
-				impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
+			if(updateUserGroupMembershipScoreContext == null){
+				logger.error("updateUserGroupMembershipScoreContext is null");
+				continue;
 			}
+			logger.info("Going over {} AdUserFeaturesExtraction", updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractionsSize());
+			List<User> users = new ArrayList<>();
+			for(AdUserFeaturesExtraction extraction: updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractions()){
+				User user = updateUserGroupMembershipScoreContext.findByUserId(extraction.getUserId().toString());
+				if(user == null){
+					logger.error("user with id ({}) was not found in user table", extraction.getUserId());
+					continue;
+				}
+				//updating the user with the new score.
+				user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), classifierId, extraction.getScore(), avgScore, false, false);
+				if(user != null){
+					users.add(user);
+				}
+				
+			}
+			
+			updateUserTotalScore(users, false, lastRun);
+			
+			for(final User user: users){
+				Callable<String> task = new Callable<String>() {
+					@Override
+					public String call(){
+						updateUser(user, User.getClassifierScoreField(classifierId), user.getScore(classifierId));
+						updateUser(user, User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+						return "";
+					}
+				};
+				writerPool.submit(task);
+			}
+			
+			numOfTasks += users.size();
+			logger.info("finished processing {} AdUserFeaturesExtraction. triggered {} tasks.",	updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractionsSize(), users.size());
+			
+			logger.info("writing group score to local file");
+			for(User user: users){
+				impalaGroupsScoreWriter.writeScore(user, updateUserGroupMembershipScoreContext.findFeautreByUserId(user.getId()), avgScore);
+			}
+
+			saveUserTotalScoreToImpala(impalaTotalScoreWriter, users, lastRun, configurationService.getScoreConfiguration());
+			
 			
 		}
 		impalaGroupsScoreWriter.close();
+		impalaTotalScoreWriter.close();
 		
-		updateUserTotalScore(users, true, lastRun);
+		logger.info("waiting for all the {} writing tasks.", numOfTasks);
+		numOfThreadExceptions = 0;
+		for(int i = 0; i < numOfTasks; i++){
+			try {
+				writerPool.take().get(5, TimeUnit.SECONDS);
+			} catch (InterruptedException | TimeoutException | ExecutionException e1) {
+				logger.error("while getting ad user object from mongo got the following exception.", e1);
+				numOfThreadExceptions++;
+				if(numOfThreadExceptions > 5){
+					break;
+				}
+				continue;
+			}
+		}
+		logger.info("finished updating the user collection. with group membership score and total score.");
 	}
 	
 	@Override
@@ -1498,6 +1589,45 @@ public class UserServiceImpl implements UserService{
 		user.setAdObjectGUID(null);
 
 		return user;
+	}
+	
+	class UpdateUserGroupMembershipScoreContext{
+		private Map<String,AdUserFeaturesExtraction> adUserFeaturesExtractionsMap = new HashMap<>();
+		private Map<String,User> usersMap = new HashMap<>();
+		
+		public UpdateUserGroupMembershipScoreContext(List<AdUserFeaturesExtraction> adUserFeaturesExtractions, List<User> users){
+			for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
+				adUserFeaturesExtractionsMap.put(adUserFeaturesExtraction.getUserId(), adUserFeaturesExtraction);
+			}
+
+			for(User user: users){
+				usersMap.put(user.getId(), user);
+			}
+		}
+		
+		
+
+		
+		public User findByUserId(String uid){
+			return usersMap.get(uid);
+		}
+		
+		public AdUserFeaturesExtraction findFeautreByUserId(String uid){
+			return adUserFeaturesExtractionsMap.get(uid);
+		}
+
+
+
+		public Collection<AdUserFeaturesExtraction> getAdUserFeaturesExtractions() {
+			return adUserFeaturesExtractionsMap.values();
+		}
+		
+		public int getAdUserFeaturesExtractionsSize(){
+			return adUserFeaturesExtractionsMap.size();
+		}
+
+
+
 	}
 	
 	class UpdateUserAdInfoContext{

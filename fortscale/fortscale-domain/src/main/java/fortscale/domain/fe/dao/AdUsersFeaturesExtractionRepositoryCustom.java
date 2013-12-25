@@ -15,4 +15,5 @@ interface AdUsersFeaturesExtractionRepositoryCustom {
 	public List<Date> getDistinctRuntime(String classifierId);
 	public AdUserFeaturesExtraction findByClassifierIdAndUserIdAndTimestamp(String classifierId, String userId, Date timestamp);
 	public List<AdUserFeaturesExtraction> findByClassifierIdAndTimestampAndUserIds(String classifierId, Date timestamp, Collection<String> userIds);
+	public long countByClassifierIdAndTimestamp(String classifierId, Date timestamp);
 }

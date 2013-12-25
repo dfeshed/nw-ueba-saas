@@ -62,7 +62,6 @@ class AdUserRepositoryImpl implements AdUserRepositoryCustom{
 
 	@Override
 	public long countByTimestamp(String timestamp) {
-		// TODO Auto-generated method stub
 		return mongoTemplate.count(query(where(AdObject.timestampField).is(timestamp)), AdUser.class);
 	}
 }

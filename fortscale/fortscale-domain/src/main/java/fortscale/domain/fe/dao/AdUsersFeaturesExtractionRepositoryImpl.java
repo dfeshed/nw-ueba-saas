@@ -8,6 +8,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.newA
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 import static org.springframework.data.mongodb.core.query.SerializationUtils.serializeToJsonSafely;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
+import fortscale.domain.ad.AdObject;
+import fortscale.domain.ad.AdUser;
 import fortscale.domain.core.dao.MongoDbRepositoryUtil;
 import fortscale.domain.fe.ADFeature;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
@@ -166,7 +169,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 	}
 	
 	public Double calculateAvgScore(String classifierId, Date timestamp){
-		Aggregation agg = newAggregation(match(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).andOperator(where(AdUserFeaturesExtraction.timestampField).is(timestamp))),
+		Aggregation agg = newAggregation(match(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).and(AdUserFeaturesExtraction.timestampField).is(timestamp)),
 				project(AdUserFeaturesExtraction.timestampField, AdUserFeaturesExtraction.scoreField),
 				group(AdUserFeaturesExtraction.timestampField).avg(AdUserFeaturesExtraction.scoreField).as("score"));
 	
@@ -307,5 +310,10 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 		Criteria criteria = new Criteria().orOperator(criterias);
 		Query query = new Query(where(AdUserFeaturesExtraction.classifierIdField).is(classifierId).and(AdUserFeaturesExtraction.timestampField).is(timestamp).andOperator(criteria));
 		return mongoTemplate.find(query, AdUserFeaturesExtraction.class);
+	}
+
+	@Override
+	public long countByClassifierIdAndTimestamp(String classifierId, Date timestamp) {
+		return mongoTemplate.count(query(where(AdUserFeaturesExtraction.timestampField).is(timestamp).and(AdUserFeaturesExtraction.classifierIdField).is(classifierId)), AdUserFeaturesExtraction.class);
 	}
 }
