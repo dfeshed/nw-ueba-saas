@@ -1,4 +1,4 @@
-package fortscale.ingest.monitor.mongo;
+package fortscale.monitor.mongo;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -8,8 +8,8 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-import fortscale.ingest.monitor.JobReport;
-import fortscale.ingest.monitor.JobStep;
+import fortscale.monitor.JobReport;
+import fortscale.monitor.JobStep;
 
 
 public class MongoJobProgressReporterTest {

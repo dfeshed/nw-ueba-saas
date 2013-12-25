@@ -1,4 +1,4 @@
-package fortscale.ingest.monitor;
+package fortscale.monitor;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -39,7 +39,7 @@ public class JobProgressReportShellCommand {
  	 * -fs,--finish-step <id> <step-name>>           reports step finish
 	 */
 	public static void main(String[] args) {
-		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/ingest-context.xml");
+		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/monitor-context.xml");
 		
 		JobProgressReportShellCommand me = context.getBean(JobProgressReportShellCommand.class);
 		me.run(args);

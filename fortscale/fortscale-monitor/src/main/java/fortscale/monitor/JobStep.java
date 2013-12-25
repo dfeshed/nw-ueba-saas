@@ -1,4 +1,4 @@
-package fortscale.ingest.monitor;
+package fortscale.monitor;
 
 import java.util.Date;
 

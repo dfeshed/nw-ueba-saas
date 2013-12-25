@@ -1,4 +1,4 @@
-package fortscale.ingest.monitor;
+package fortscale.monitor;
 
 /**
  * Defines operations to report on jobs progress and steps progress

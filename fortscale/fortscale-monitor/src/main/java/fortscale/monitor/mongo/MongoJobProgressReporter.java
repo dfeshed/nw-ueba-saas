@@ -1,4 +1,4 @@
-package fortscale.ingest.monitor.mongo;
+package fortscale.monitor.mongo;
 
 import java.util.Date;
 
@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.ingest.monitor.JobProgressReporter;
-import fortscale.ingest.monitor.JobReport;
-import fortscale.ingest.monitor.JobStep;
+import fortscale.monitor.JobProgressReporter;
+import fortscale.monitor.JobReport;
+import fortscale.monitor.JobStep;
 
 @Component
 public class MongoJobProgressReporter implements JobProgressReporter {
