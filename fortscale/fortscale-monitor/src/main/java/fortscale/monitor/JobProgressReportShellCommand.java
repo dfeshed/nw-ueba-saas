@@ -1,4 +1,4 @@
-package fortscale.ingest.monitor;
+package fortscale.monitor;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;

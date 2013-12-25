@@ -6,8 +6,8 @@
 		<artifactId>fortscale</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>fortscale-ingest</artifactId>
-	<name>fortscale-ingest</name>
+	<artifactId>fortscale-monitor</artifactId>
+	<name>fortscale-monitor</name>
 	<packaging>jar</packaging>
 
 	<properties>
