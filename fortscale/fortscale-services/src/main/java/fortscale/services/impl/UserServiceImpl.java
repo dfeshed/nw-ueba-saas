@@ -231,22 +231,22 @@ public class UserServiceImpl implements UserService{
 			CompletionService<String> writerPool = new ExecutorCompletionService<String>(mongoDbWriterExecuter);
 			int numOfThreadExceptions = 0;
 			int numOfTasks = 0;
-			for(int i = 0; i < numOfPages; i++){
+			for(int i = 0; i < numOfPages && numOfThreadExceptions <= 5; i++){
 				UpdateUserAdInfoContext updateUserAdInfoContext = null;
 				try {
-					updateUserAdInfoContext = pool.take().get(5, TimeUnit.SECONDS);
-				} catch (InterruptedException | TimeoutException | ExecutionException e1) {
-					logger.error("while getting ad user object from mongo got the following exception.", e1);
-					numOfThreadExceptions++;
-					if(numOfThreadExceptions > 5){
-						break;
+					TaskResult<UpdateUserAdInfoContext> taskResult = getTaskResultes(pool);
+					numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
+
+					if(taskResult.getResult() == null){
+						logger.error("updateUserAdInfoContext is null");
+						continue;
 					}
-					continue;
+					updateUserAdInfoContext = taskResult.getResult();
+				} catch (TimeoutException timeoutException) {
+					logger.error("while getting ad user object from mongo got the time out exception.", timeoutException);
+					break;
 				}
-				if(updateUserAdInfoContext == null){
-					logger.error("updateUserAdInfoContext is null");
-					continue;
-				}
+
 				List<AdUser> pageAdUsers = updateUserAdInfoContext.getAdUsers();
 				int pageNumOfTasks = 0;
 				logger.info("Going over {} ad users", pageAdUsers.size());
@@ -265,23 +265,26 @@ public class UserServiceImpl implements UserService{
 			}
 			
 			logger.info("waiting for all the {} writing tasks.", numOfTasks);
-			numOfThreadExceptions = 0;
-			for(int i = 0; i < numOfTasks; i++){
-				try {
-					writerPool.take().get(5, TimeUnit.SECONDS);
-				} catch (InterruptedException | TimeoutException | ExecutionException e1) {
-					logger.error("while getting ad user object from mongo got the following exception.", e1);
-					numOfThreadExceptions++;
-					if(numOfThreadExceptions > 5){
-						break;
-					}
-					continue;
-				}
-			}
+			waitForAllWritingTasks(writerPool, numOfTasks);
+			
 			logger.info("finished updating the user collection.");
 		}
 //		saveUserIdUsernamesMapToImpala(new Date());
 		logger.info("finished updating users with ad info.");
+	}
+	
+	private <T> TaskResult<T> getTaskResultes(CompletionService<T> pool) throws TimeoutException{
+		TaskResult<T> ret = new TaskResult<>();
+		while(ret.getResult() == null && ret.getNumOfTaskExceptions() <= 5){
+			try {
+				ret.setResult(pool.take().get(30, TimeUnit.SECONDS));
+			} catch (InterruptedException | ExecutionException e1) {
+				logger.error("while getting ad user object from mongo got the following exception.", e1);
+				ret.incrementNumOfTaskExceptions();
+			}
+		}
+		
+		return ret;
 	}
 	
 	
@@ -1110,84 +1113,96 @@ public class UserServiceImpl implements UserService{
 		CompletionService<String> writerPool = new ExecutorCompletionService<String>(mongoDbWriterExecuter);
 		int numOfThreadExceptions = 0;
 		int numOfTasks = 0;
-		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
-		ImpalaTotalScoreWriter impalaTotalScoreWriter = impalaWriterFactory.createImpalaTotalScoreWriter();
-		for(int i = 0; i < numOfPages; i++){
-			UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext = null;
-			try {
-				updateUserGroupMembershipScoreContext = pool.take().get(5, TimeUnit.SECONDS);
-			} catch (InterruptedException | TimeoutException | ExecutionException e1) {
-				logger.error("while getting AdUserFeaturesExtraction from mongo got the following exception.", e1);
-				numOfThreadExceptions++;
-				if(numOfThreadExceptions > 5){
+		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = null;
+		ImpalaTotalScoreWriter impalaTotalScoreWriter = null;
+		try{
+			impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
+			impalaTotalScoreWriter = impalaWriterFactory.createImpalaTotalScoreWriter();
+			for(int i = 0; i < numOfPages && numOfThreadExceptions <= 5; i++){
+				UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext = null;
+				try {
+					TaskResult<UpdateUserGroupMembershipScoreContext> taskResult = getTaskResultes(pool);
+					numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
+
+					if(taskResult.getResult() == null){
+						logger.error("updateUserGroupMembershipScoreContext is null");
+						continue;
+					}
+					updateUserGroupMembershipScoreContext = taskResult.getResult();
+				} catch (TimeoutException timeoutException) {
+					logger.error("while getting AdUserFeaturesExtraction from mongo got the time out exception.", timeoutException);
 					break;
 				}
-				continue;
-			}
-			if(updateUserGroupMembershipScoreContext == null){
-				logger.error("updateUserGroupMembershipScoreContext is null");
-				continue;
-			}
-			logger.info("Going over {} AdUserFeaturesExtraction", updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractionsSize());
-			List<User> users = new ArrayList<>();
-			for(AdUserFeaturesExtraction extraction: updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractions()){
-				User user = updateUserGroupMembershipScoreContext.findByUserId(extraction.getUserId().toString());
-				if(user == null){
-					logger.error("user with id ({}) was not found in user table", extraction.getUserId());
-					continue;
-				}
-				//updating the user with the new score.
-				user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), classifierId, extraction.getScore(), avgScore, false, false);
-				if(user != null){
-					users.add(user);
+
+				logger.info("Going over {} AdUserFeaturesExtraction", updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractionsSize());
+				List<User> users = new ArrayList<>();
+				for(AdUserFeaturesExtraction extraction: updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractions()){
+					User user = updateUserGroupMembershipScoreContext.findByUserId(extraction.getUserId().toString());
+					if(user == null){
+						logger.error("user with id ({}) was not found in user table", extraction.getUserId());
+						continue;
+					}
+					//updating the user with the new score.
+					user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), classifierId, extraction.getScore(), avgScore, false, false);
+					if(user != null){
+						users.add(user);
+					}
+					
 				}
 				
+				updateUserTotalScore(users, false, lastRun);
+				
+				for(final User user: users){
+					Callable<String> task = new Callable<String>() {
+						@Override
+						public String call(){
+							updateUser(user, User.getClassifierScoreField(classifierId), user.getScore(classifierId));
+							updateUser(user, User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+							return "";
+						}
+					};
+					writerPool.submit(task);
+				}
+				
+				numOfTasks += users.size();
+				logger.info("finished processing {} AdUserFeaturesExtraction. triggered {} tasks.",	updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractionsSize(), users.size());
+				
+				logger.info("writing group score to local file");
+				for(User user: users){
+					impalaGroupsScoreWriter.writeScore(user, updateUserGroupMembershipScoreContext.findFeautreByUserId(user.getId()), avgScore);
+				}
+	
+				saveUserTotalScoreToImpala(impalaTotalScoreWriter, users, lastRun, configurationService.getScoreConfiguration());
+				
+				
 			}
-			
-			updateUserTotalScore(users, false, lastRun);
-			
-			for(final User user: users){
-				Callable<String> task = new Callable<String>() {
-					@Override
-					public String call(){
-						updateUser(user, User.getClassifierScoreField(classifierId), user.getScore(classifierId));
-						updateUser(user, User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
-						return "";
-					}
-				};
-				writerPool.submit(task);
+		} finally{
+			if(impalaGroupsScoreWriter != null){
+				impalaGroupsScoreWriter.close();
 			}
-			
-			numOfTasks += users.size();
-			logger.info("finished processing {} AdUserFeaturesExtraction. triggered {} tasks.",	updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractionsSize(), users.size());
-			
-			logger.info("writing group score to local file");
-			for(User user: users){
-				impalaGroupsScoreWriter.writeScore(user, updateUserGroupMembershipScoreContext.findFeautreByUserId(user.getId()), avgScore);
+			if(impalaTotalScoreWriter != null){
+				impalaTotalScoreWriter.close();
 			}
-
-			saveUserTotalScoreToImpala(impalaTotalScoreWriter, users, lastRun, configurationService.getScoreConfiguration());
-			
-			
 		}
-		impalaGroupsScoreWriter.close();
-		impalaTotalScoreWriter.close();
 		
 		logger.info("waiting for all the {} writing tasks.", numOfTasks);
-		numOfThreadExceptions = 0;
-		for(int i = 0; i < numOfTasks; i++){
+		waitForAllWritingTasks(writerPool, numOfTasks);
+
+
+		logger.info("finished updating the user collection. with group membership score and total score.");
+	}
+	
+	private void waitForAllWritingTasks(CompletionService<String> writerPool, int numOfTasks){
+		int numOfThreadExceptions = 0;
+		for(int i = 0; i < numOfTasks && numOfThreadExceptions <= 5; i++){
 			try {
-				writerPool.take().get(5, TimeUnit.SECONDS);
-			} catch (InterruptedException | TimeoutException | ExecutionException e1) {
-				logger.error("while getting ad user object from mongo got the following exception.", e1);
-				numOfThreadExceptions++;
-				if(numOfThreadExceptions > 5){
-					break;
-				}
-				continue;
+				TaskResult<String> taskResult = getTaskResultes(writerPool);
+				numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
+			} catch (TimeoutException timeoutException) {
+				logger.error("while getting ad user object from mongo got the time out exception.", timeoutException);
+				break;
 			}
 		}
-		logger.info("finished updating the user collection. with group membership score and total score.");
 	}
 	
 	@Override
@@ -1713,6 +1728,30 @@ public class UserServiceImpl implements UserService{
 			this.numOfAdInfoUpdates++;
 		}
 		
+		
+		
+	}
+	
+	
+	class TaskResult<T>{
+		private T result;
+		private int numOfTaskExceptions = 0;
+		
+		
+		public void setResult(T result) {
+			this.result = result;
+		}
+
+		public T getResult() {
+			return result;
+		}
+
+		public int getNumOfTaskExceptions() {
+			return numOfTaskExceptions;
+		}
+		public void incrementNumOfTaskExceptions() {
+			this.numOfTaskExceptions++;
+		}
 		
 		
 	}

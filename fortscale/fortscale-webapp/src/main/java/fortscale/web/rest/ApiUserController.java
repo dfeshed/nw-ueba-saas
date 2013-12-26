@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -114,11 +115,11 @@ public class ApiUserController extends BaseController{
 			return null;
 		}
 		
-		List<String> userRelatedDnsList = new ArrayList<>();
+		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
 
-		fillUserRelatedDns(user, userRelatedDnsList);
-		fillDnToUsersMap(userRelatedDnsList, dnToUserMap);
+		fillUserRelatedDns(user, userRelatedDnsSet);
+		fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 		
 		UserDetailsBean ret = createUserDetailsBean(user, dnToUserMap, true);
 		return new DataListWrapperBean<UserDetailsBean>(ret);
@@ -170,22 +171,22 @@ public class ApiUserController extends BaseController{
 		return directReports;
 	}
 	
-	private void fillUserRelatedDns(User user, List<String> userRelatedDnsList){
+	private void fillUserRelatedDns(User user, Set<String> userRelatedDnsSet){
 		if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
-			userRelatedDnsList.add(user.getAdInfo().getManagerDN());
+			userRelatedDnsSet.add(user.getAdInfo().getManagerDN());
 		}
 		
 		Set<AdUserDirectReport> adUserDirectReports = user.getAdInfo().getDirectReports();
 		if(adUserDirectReports != null){
 			for(AdUserDirectReport adUserDirectReport: adUserDirectReports){
-				userRelatedDnsList.add(adUserDirectReport.getDn());
+				userRelatedDnsSet.add(adUserDirectReport.getDn());
 			}
 		}
 	}
 	
-	private void fillDnToUsersMap(List<String> userRelatedDnsList, Map<String, User> dnToUserMap){
-		if(userRelatedDnsList.size() > 0){
-			List<User> managers = userRepository.findByDNs(userRelatedDnsList);
+	private void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap){
+		if(userRelatedDnsSet.size() > 0){
+			List<User> managers = userRepository.findByDNs(userRelatedDnsSet);
 			for(User manager: managers){
 				dnToUserMap.put(manager.getAdDn(), manager);
 			}
@@ -211,12 +212,12 @@ public class ApiUserController extends BaseController{
 	private DataBean<List<UserDetailsBean>> userDetails(List<User> users){
 		List<UserDetailsBean> userDetailsBeans = new ArrayList<>();
 		
-		List<String> userRelatedDnsList = new ArrayList<>();
+		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
 		for(User user: users){
-			fillUserRelatedDns(user, userRelatedDnsList);
+			fillUserRelatedDns(user, userRelatedDnsSet);
 		}
-		fillDnToUsersMap(userRelatedDnsList, dnToUserMap);
+		fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 		
 		for(User user: users){
 			UserDetailsBean userDetailsBean = createUserDetailsBean(user, dnToUserMap, false);
@@ -419,16 +420,5 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public void removeClassifierFromAllUsers(@RequestParam(required=true) String classifierId, Model model){
 		userService.removeClassifierFromAllUsers(classifierId);
-	}
-	
-	private User getManager(User user){
-		User manager = null;
-		String managerDN = user.getAdInfo().getManagerDN();
-		if(!StringUtils.isEmpty(managerDN)){
-			manager = userRepository.findByAdDn(managerDN);
-		}
-		return manager;
-	}
-	
-	
+	}	
 }
