@@ -54,8 +54,6 @@ public class UserAdInfo {
 	private String mobile;
 	
 	private String otherTelephone;
-
-	private String thumbnailPhoto;
 	
 	private String position;
 	
@@ -235,14 +233,6 @@ public class UserAdInfo {
 
 	public void setOtherTelephone(String otherTelephone) {
 		this.otherTelephone = otherTelephone;
-	}
-
-	public String getThumbnailPhoto() {
-		return thumbnailPhoto;
-	}
-
-	public void setThumbnailPhoto(String thumbnailPhoto) {
-		this.thumbnailPhoto = thumbnailPhoto;
 	}
 
 	public String getPosition() {

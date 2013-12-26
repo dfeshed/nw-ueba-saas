@@ -65,4 +65,6 @@ public interface UserService {
 	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId);
 
 	public void updateUserWithCurrentADInfoNewSchema();
+	
+	public String getUserThumbnail(User user);
 }
