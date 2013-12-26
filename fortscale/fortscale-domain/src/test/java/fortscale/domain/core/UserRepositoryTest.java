@@ -36,13 +36,6 @@ public class UserRepositoryTest  extends AbstractTest{
 	}
 	
 	@Test
-	public void testFindByAdDn() {
-		User user = repository.findAll().iterator().next();
-		User user2 = repository.findByAdDn(user.getAdDn());
-		Assert.assertEquals(user.getId(), user2.getId());
-	}
-	
-	@Test
 	public void testFindByUsername() {
 		User user = repository.findAll().iterator().next();
 		User user2 = repository.findByUsername(user.getUsername());

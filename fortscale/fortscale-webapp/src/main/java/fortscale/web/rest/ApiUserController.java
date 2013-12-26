@@ -188,7 +188,7 @@ public class ApiUserController extends BaseController{
 		if(userRelatedDnsSet.size() > 0){
 			List<User> managers = userRepository.findByDNs(userRelatedDnsSet);
 			for(User manager: managers){
-				dnToUserMap.put(manager.getAdDn(), manager);
+				dnToUserMap.put(manager.getAdInfo().getDn(), manager);
 			}
 		}
 	}
