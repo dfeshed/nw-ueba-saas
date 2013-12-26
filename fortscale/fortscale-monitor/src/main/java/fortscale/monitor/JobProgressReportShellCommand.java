@@ -120,7 +120,8 @@ public class JobProgressReportShellCommand {
 				String sourceType = args[0];
 				String jobName = args[1];
 				
-				reporter.startJob(sourceType, jobName);
+				String id = reporter.startJob(sourceType, jobName);
+				System.out.print(id);
 			}
 			
 		} else if (cmd.hasOption("fj")) {
