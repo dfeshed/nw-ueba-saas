@@ -22,6 +22,11 @@ import org.springframework.util.Assert;
 		@CompoundIndex(name="ad_objectGUID_1", def = "{'adInfo.objectGUID': 1}", unique=true),
 		@CompoundIndex(name="ad_dn_1", def = "{'adInfo.dn': 1}"),
 		@CompoundIndex(name="ad_emailAddress_1", def = "{'adInfo.emailAddress': 1}"),
+		@CompoundIndex(name="appActive_directoryUserName_1", def = "{'app.active_directory.userName': 1}"),
+		@CompoundIndex(name="appVpnUsername_1", def = "{'app.vpn.userName': 1}"),
+		@CompoundIndex(name="logUsername_authenticationscores_1", def = "{'logUsername.authenticationscores': 1}"),
+		@CompoundIndex(name="logUsername_vpndatares_1", def = "{'logUsername.vpndatares': 1}"),
+		@CompoundIndex(name="logUsername_sshscores_1", def = "{'logUsername.sshscores': 1}"),
 		@CompoundIndex(name="ad_userPrincipalName_1", def = "{'adInfo.userPrincipalName': 1}"),
 })
 public class User extends AbstractDocument {	
