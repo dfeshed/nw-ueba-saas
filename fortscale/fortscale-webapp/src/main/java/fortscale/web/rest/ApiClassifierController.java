@@ -72,10 +72,10 @@ public class ApiClassifierController extends BaseController {
 		switch (id) {
 		case ssh:
 		case login:
-			ret = authEvents(id, timestamp, uid, offset, limit, orderByDirection, direction, minScore, followedOnly);
+			ret = authEvents(id, timestamp, uid, offset, limit, orderBy, direction, minScore, followedOnly);
 			break;
 		case vpn:
-			ret = vpnEvents(id, timestamp, uid, offset, limit, orderByDirection, direction, minScore, followedOnly);
+			ret = vpnEvents(id, timestamp, uid, offset, limit, orderBy, direction, minScore, followedOnly);
 		default:
 			break;
 		}
