@@ -23,7 +23,7 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 
 	public void writeScore(User user, AdUserFeaturesExtraction extraction, double avgScore){
 		Date timestamp = extraction.getTimestamp();
-		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp), user.getId(),user.getAdDn(), user.getUsername(), extraction.getScore(), avgScore,getRundate(timestamp));
+		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp), user.getId(),user.getAdInfo().getDn(), user.getUsername(), extraction.getScore(), avgScore,getRundate(timestamp));
 		for(IFeature feature: extraction.getAttributes()){
 			write(csvLineString);
 			writeFeature(feature);
