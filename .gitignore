@@ -2,3 +2,9 @@
 /Servers
 /.settings
 /RemoteSystemsTempFiles
+fortscale/fortscale-ingest/.settings/
+fortscale/fortscale-ingest/output/
+fortscale/fortscale-ingest/target/
+fortscale/fortscale-ingest/.project
+fortscale/fortscale-ingest/.springBeans
+fortscale/fortscale-ingest/testFile.log
