@@ -93,8 +93,11 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public  DataBean<List<UserSearchBean>> search(@RequestParam(required=true) String prefix, Model model){
-		List<User> users = userService.findBySearchFieldContaining(prefix);
+	public  DataBean<List<UserSearchBean>> search(@RequestParam(required=true) String prefix,
+			@RequestParam(defaultValue="0") Integer page,
+			@RequestParam(defaultValue="10") Integer size
+			, Model model){
+		List<User> users = userService.findBySearchFieldContaining(prefix, page, size);
 		List<UserSearchBean> data = new ArrayList<UserSearchBean>();
 		for(User user: users){
 			data.add(new UserSearchBean(user));

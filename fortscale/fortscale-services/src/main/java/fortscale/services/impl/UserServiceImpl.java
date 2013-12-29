@@ -501,9 +501,9 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<User> findBySearchFieldContaining(String prefix) {
+	public List<User> findBySearchFieldContaining(String prefix, int page, int size) {
 		
-		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX+prefix.toLowerCase());
+		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX+prefix.toLowerCase(), new PageRequest(page, size));
 	}
 
 	@Override
