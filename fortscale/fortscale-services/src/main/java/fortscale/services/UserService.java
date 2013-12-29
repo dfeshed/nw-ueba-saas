@@ -18,7 +18,7 @@ public interface UserService {
 	
 	public void updateUserWithADInfo(String timestamp);
 	
-	public List<User> findBySearchFieldContaining(String prefix);
+	public List<User> findBySearchFieldContaining(String prefix, int page, int size);
 	
 	public List<IUserScore> getUserScores(String uid); 
 	
