@@ -35,12 +35,18 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 		IFeatureExplanation explanation = feature.getFeatureExplanation();
 		String ref = "";
 		String refs = "";
-		if(explanation.getFeatureReference().length > 0){
-			ref = explanation.getFeatureReference()[0];
-			refs = StringUtils.join(explanation.getFeatureReference(), ",");
+		String count = "";
+		String dist = "";
+		if(explanation != null){
+			if(explanation.getFeatureReference().length > 0){
+				ref = explanation.getFeatureReference()[0];
+				refs = StringUtils.join(explanation.getFeatureReference(), ",");
+			}
+			count = explanation.getFeatureCount().toString();
+			dist = explanation.getFeatureDistribution().toString();
 		}
 		String csvLineString = String.format("|%s|%s|%s|%s|%s|%s", feature.getFeatureUniqueName(), feature.getFeatureScore(),
-				explanation.getFeatureDistribution(), explanation.getFeatureCount(), ref, refs);
+				dist, count, ref, refs);
 		write(csvLineString);
 	}
 	
