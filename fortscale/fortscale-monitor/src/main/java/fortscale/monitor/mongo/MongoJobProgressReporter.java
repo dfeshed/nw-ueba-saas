@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fortscale.monitor.JobMessage;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.JobReport;
 import fortscale.monitor.JobStep;
@@ -116,5 +117,66 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 		}
 
 	}
+	
+	/***
+	 * Reports error during processing of job step
+	 * @param id the job instance id
+	 * @param stepName the name of the step inside the job
+	 * @param message the error message
+	 */
+	@Override
+	public void error(String id, String stepName, String message) {
+		if ((id==null) || (stepName==null) || (message==null)) {
+			logger.warn(String.format("error called with id=%s, stepName=%s, message=%s", id, stepName, message));
+			return;
+		}
+		
+		logStepMessage(id, stepName, Severity.ERROR, message);
+	}
+	
+	/***
+	 * Reports warning during processing of job step
+	 * @param id the job instance id
+	 * @param stepName the name of the step inside the job
+	 * @param message the error message
+	 */
+	@Override
+	public void warn(String id, String stepName, String message) {
+		if ((id==null) || (stepName==null) || (message==null)) {
+			logger.warn(String.format("warn called with id=%s, stepName=%s, message=%s", id, stepName, message));
+			return;
+		}
+		
+		logStepMessage(id, stepName, Severity.WARN, message);
+	}
+	
+	private void logStepMessage(String id, String stepName, Severity severity, String message) {	
+		// get the job report
+		JobReport report = repository.findOne(id);
+		if (report!=null) {
+			JobStep step = report.findStep(stepName);
+			if (step!=null) {
+				JobMessage jobMessage = new JobMessage();
+				jobMessage.setWhen(new Date());
+				jobMessage.setSeverity(severity.toString());
+				jobMessage.setMessage(message);
+				
+				step.addMessages(jobMessage);
+				if (severity == Severity.ERROR)
+					report.setHasErrors(true);
+				if (severity == Severity.WARN)
+					report.setHasWarnings(true);
+				
+				repository.save(report);
+			} else {
+				logger.warn(String.format("step %s not found in job %s", stepName, id));
+			}
+			
+		} else {
+			logger.warn(String.format("job not found with id=%s", id));
+		}
+	}
 
+	private enum Severity { ERROR, WARN };
+	
 }

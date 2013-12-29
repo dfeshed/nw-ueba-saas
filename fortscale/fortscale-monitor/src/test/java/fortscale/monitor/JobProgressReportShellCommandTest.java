@@ -81,4 +81,17 @@ public class JobProgressReportShellCommandTest {
 		verify(reporter).finishStep("JobID", "StepA");
 	}
 	
+	
+	@Test
+	public void run_with_err_should_pass_all_message_parts_seperated_by_space_to_reporter() {
+		subject.run(new String[] { "-err", "JobID", "StepA", "part1", "part2", "part3" });
+		verify(reporter).error("JobID", "StepA", "part1 part2 part3");
+	}
+	
+	@Test
+	public void run_with_warn_should_pass_all_message_parts_seperated_by_space_to_reporter() {
+		subject.run(new String[] { "-warn", "JobID", "StepA", "part1", "part2", "part3" });
+		verify(reporter).warn("JobID", "StepA", "part1 part2 part3");
+	}
+	
 }

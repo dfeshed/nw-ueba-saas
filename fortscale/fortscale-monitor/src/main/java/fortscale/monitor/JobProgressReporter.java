@@ -44,4 +44,19 @@ public interface JobProgressReporter {
 	public void finishStep(String id, String stepName);
 	
 	
+	/***
+	 * Reports error during processing of job step
+	 * @param id the job instance id
+	 * @param stepName the name of the step inside the job
+	 * @param message the error message
+	 */
+	public void error(String id, String stepName, String message);
+	
+	/***
+	 * Reports warning during processing of job step
+	 * @param id the job instance id
+	 * @param stepName the name of the step inside the job
+	 * @param message the error message
+	 */
+	public void warn(String id, String stepName, String message);
 }
