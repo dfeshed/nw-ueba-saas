@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /***
  * Shell command class to report on job progress. Use main method to call
@@ -37,6 +38,8 @@ public class JobProgressReportShellCommand {
 	 * -fj,--finish-job <id>                         reports job finish
   	 * -ss,--start-step <id> <step-name> <ordinal>   reports step start
  	 * -fs,--finish-step <id> <step-name>>           reports step finish
+ 	 * -warn, --warning <id> <step-name> <message>	 report warning during step
+ 	 * -err, --error <id> <step-name> <message>	     report error during step
 	 */
 	public static void main(String[] args) {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/monitor-context.xml");
@@ -85,6 +88,22 @@ public class JobProgressReportShellCommand {
 		OptionBuilder.withLongOpt("finish-step");
 		OptionBuilder.withDescription("reports step finish");
 		options.addOption(OptionBuilder.create("fs"));
+		
+		// error option
+		OptionBuilder.withArgName("id> <step-name> <message");
+		OptionBuilder.withValueSeparator(' ');
+		OptionBuilder.hasArgs(2);
+		OptionBuilder.withLongOpt("error");
+		OptionBuilder.withDescription("report error during step");
+		options.addOption(OptionBuilder.create("err"));
+
+		// error option
+		OptionBuilder.withArgName("id> <step-name> <message");
+		OptionBuilder.withValueSeparator(' ');
+		OptionBuilder.hasArgs(2);
+		OptionBuilder.withLongOpt("warning");
+		OptionBuilder.withDescription("report warning during step");
+		options.addOption(OptionBuilder.create("warn"));
 		
 		return options;
 	}
@@ -158,6 +177,37 @@ public class JobProgressReportShellCommand {
 				
 				reporter.finishStep(id, stepName);
 			}
+			
+		} else if (cmd.hasOption("err")) {
+			//handle error in step
+			String[] args = cmd.getOptionValues("err");
+			String[] all = cmd.getArgs();
+			if (args.length == 2) {
+				String id = args[0];
+				String stepName = args[1];
+				
+				// get the message from the rest of the command args
+				String[] messageParts = cmd.getArgs();
+				String message = StringUtils.arrayToDelimitedString(messageParts, " ");
+				
+				reporter.error(id, stepName, message);
+			}
+			
+		} else if (cmd.hasOption("warn")) {
+			// handle warn in step
+			String[] args = cmd.getOptionValues("warn");
+			if (args.length == 2) {
+				String id = args[0];
+				String stepName = args[1];
+				
+				// get the message from the rest of the command args
+				String[] messageParts = cmd.getArgs();
+				String message = StringUtils.arrayToDelimitedString(messageParts, " ");
+				
+				reporter.warn(id, stepName, message);
+			}
+			
+			
 			
 		} else {
 			logger.error("no option matched in command line: " + cmd.toString());

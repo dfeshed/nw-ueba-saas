@@ -17,12 +17,17 @@ public class JobReport {
 	private Date start;
 	private Date finish;
 	private List<JobStep> steps;
+	private boolean hasErrors;
+	private boolean hasWarnings;
+	
 
 	public JobReport() {}
 	
 	public JobReport(String sourceType, String jobName) {
 		this.setSourceType(sourceType);
 		this.setJobName(jobName);
+		this.hasErrors = false;
+		this.hasWarnings = false;
 	}
 	
 	
@@ -97,6 +102,22 @@ public class JobReport {
 
 	public void setSteps(List<JobStep> steps) {
 		this.steps = steps;
+	}
+
+	public boolean isHasErrors() {
+		return hasErrors;
+	}
+
+	public void setHasErrors(boolean hasErrors) {
+		this.hasErrors = hasErrors;
+	}
+
+	public boolean isHasWarnings() {
+		return hasWarnings;
+	}
+
+	public void setHasWarnings(boolean hasWarnings) {
+		this.hasWarnings = hasWarnings;
 	}
 
 
