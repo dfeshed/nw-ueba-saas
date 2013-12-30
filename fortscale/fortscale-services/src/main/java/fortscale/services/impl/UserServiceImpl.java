@@ -1121,6 +1121,7 @@ public class UserServiceImpl implements UserService{
 			for(int i = 0; i < numOfPages && numOfThreadExceptions <= 5; i++){
 				UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext = null;
 				try {
+					logger.info("waiting for the next page...");
 					TaskResult<UpdateUserGroupMembershipScoreContext> taskResult = getTaskResultes(pool);
 					numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
 
