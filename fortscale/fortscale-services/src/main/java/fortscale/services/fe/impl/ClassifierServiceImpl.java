@@ -250,7 +250,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
-		return authDAO.countNumOfEventsByUser(timestamp, user.getUsername());
+		String logUsername = user.getLogUsernameMap().get(authDAO.getTableName());
+		return authDAO.countNumOfEventsByUser(timestamp, logUsername);
 	}
 
 	@Override
