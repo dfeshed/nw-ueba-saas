@@ -1,6 +1,8 @@
 package fortscale.monitor;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class JobStep {
 
@@ -8,6 +10,7 @@ public class JobStep {
 	private String stepName;
 	private Date start;
 	private Date finish;
+	private List<JobMessage> messages;
 	
 	public JobStep() {}
 	
@@ -45,6 +48,22 @@ public class JobStep {
 
 	public void setFinish(Date finish) {
 		this.finish = finish;
+	}
+	
+	public List<JobMessage> getMessages() {
+		if (messages == null) {
+			messages = new ArrayList<JobMessage>();
+		}
+		return messages;
+	}
+	
+	public void setMessages(List<JobMessage> messages) {
+		this.messages = messages;
+	}
+	
+	public void addMessages(JobMessage message) {
+		List<JobMessage> messages = getMessages();
+		messages.add(message);
 	}
 	
 }

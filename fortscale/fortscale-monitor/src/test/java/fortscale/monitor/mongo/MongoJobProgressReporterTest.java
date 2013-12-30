@@ -5,13 +5,18 @@ import static org.mockito.Mockito.*;
 
 import java.util.Date;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 
 import fortscale.monitor.JobReport;
 import fortscale.monitor.JobStep;
 
-
+@RunWith(JUnitParamsRunner.class)
 public class MongoJobProgressReporterTest {
 
 	private MongoJobProgressReporter subject;
@@ -222,7 +227,6 @@ public class MongoJobProgressReporterTest {
 	
 	@Test
 	public void reportStepFinish_shouldPutFinishTimeForStep() {
-		
 		// setup mock
 		JobReport value = new JobReport();
 		value.setId("aaaa");
@@ -243,5 +247,127 @@ public class MongoJobProgressReporterTest {
 		
 		assertTrue((diff/1000L) < 3L); // diff should be up to 3 seconds from now 
 	}
+	
+	@Test
+	public void error_should_put_new_message_for_step() {
+		// arrange
+		JobReport previousReport = new JobReport();
+		previousReport.setStart(new Date());
+		previousReport.getSteps().add(new JobStep("StepA"));
+		
+		when(repository.findOne("aaaa")).thenReturn(previousReport);
+			
+		// act
+		subject.error("aaaa", "StepA", "my error message");
+		
+		// assert
+		ArgumentCaptor<JobReport> argument = ArgumentCaptor.forClass(JobReport.class);
+		verify(repository).save(argument.capture());
+		assertTrue(argument.getValue().findStep("StepA").getMessages().size() == 1);
+		assertTrue(argument.getValue().findStep("StepA").getMessages().get(0).getMessage().equals("my error message"));
+		assertTrue(argument.getValue().findStep("StepA").getMessages().get(0).getSeverity().equals("ERROR"));
+	}
 
+	@Test
+	public void warn_should_put_new_message_for_step() {
+		// arrange
+		JobReport previousReport = new JobReport();
+		previousReport.setStart(new Date());
+		previousReport.getSteps().add(new JobStep("StepA"));
+		
+		when(repository.findOne("aaaa")).thenReturn(previousReport);
+			
+		// act
+		subject.warn("aaaa", "StepA", "my error message");
+		
+		// assert
+		ArgumentCaptor<JobReport> argument = ArgumentCaptor.forClass(JobReport.class);
+		verify(repository).save(argument.capture());
+		assertTrue(argument.getValue().findStep("StepA").getMessages().size() == 1);
+		assertTrue(argument.getValue().findStep("StepA").getMessages().get(0).getMessage().equals("my error message"));
+		assertTrue(argument.getValue().findStep("StepA").getMessages().get(0).getSeverity().equals("WARN"));
+	}
+	
+	@Test
+	@Parameters({ "bbb, StepA",
+				  "aaaa, StepB"
+				})
+	public void error_with_invalid_parameters_should_do_nothing(String id, String stepName) {
+		
+		// arrange
+		JobReport previousReport = new JobReport();
+		previousReport.setStart(new Date());
+		previousReport.setId("aaaa");
+		previousReport.getSteps().add(new JobStep("StepA"));
+		
+		when(repository.findOne("aaaa")).thenReturn(previousReport);
+		when(repository.findOne(anyString())).thenReturn(null);
+		
+		// act
+		subject.error(id, stepName, "my error message");
+		
+		// assert
+		verify(repository, times(0)).save(any(JobReport.class));
+	}
+	
+	@Test
+	@Parameters({ "bbb, StepA",
+				  "aaaa, StepB"
+				})
+	public void warn_with_invalid_parameters_should_do_nothing(String id, String stepName) {
+		
+		// arrange
+		JobReport previousReport = new JobReport();
+		previousReport.setStart(new Date());
+		previousReport.setId("aaaa");
+		previousReport.getSteps().add(new JobStep("StepA"));
+		
+		when(repository.findOne("aaaa")).thenReturn(previousReport);
+		when(repository.findOne(anyString())).thenReturn(null);
+		
+		// act
+		subject.warn(id, stepName, "my error message");
+		
+		// assert
+		verify(repository, times(0)).save(any(JobReport.class));		
+	}
+	
+	@Test
+	public void error_should_mark_the_job_report_as_haserrors() {
+		
+		// arrange
+		JobReport previousReport = new JobReport();
+		previousReport.setStart(new Date());
+		previousReport.getSteps().add(new JobStep("StepA"));
+		
+		when(repository.findOne("aaaa")).thenReturn(previousReport);
+			
+		// act
+		subject.error("aaaa", "StepA", "my error message");
+		
+		// assert
+		ArgumentCaptor<JobReport> argument = ArgumentCaptor.forClass(JobReport.class);
+		verify(repository).save(argument.capture());
+		assertTrue(argument.getValue().isHasErrors());
+		
+	}
+	
+	@Test
+	public void warn_should_mark_the_job_report_as_has_warnings() {
+		// arrange
+		JobReport previousReport = new JobReport();
+		previousReport.setStart(new Date());
+		previousReport.getSteps().add(new JobStep("StepA"));
+		
+		when(repository.findOne("aaaa")).thenReturn(previousReport);
+			
+		// act
+		subject.warn("aaaa", "StepA", "my error message");
+		
+		// assert
+		ArgumentCaptor<JobReport> argument = ArgumentCaptor.forClass(JobReport.class);
+		verify(repository).save(argument.capture());
+		assertTrue(argument.getValue().isHasWarnings());
+	}
+	
 }
