@@ -120,9 +120,7 @@ public class AdUser extends AdObject{
 	private String whenCreated = "";
 	
 	private String sAMAccountName = "";
-	
-	private Long timestampepoch;
-	
+		
 	// Contains the users's photo in Base64 format 
 	@Field(thumbnailPhotoField)
 	private String thumbnailPhoto = "";
@@ -699,11 +697,4 @@ public class AdUser extends AdObject{
 		this.emailAddress = emailAddress;
 	}
 
-	public Long getTimestampepoch() {
-		return timestampepoch;
-	}
-
-	public void setTimestampepoch(Long timestampepoch) {
-		this.timestampepoch = timestampepoch;
-	}
 }

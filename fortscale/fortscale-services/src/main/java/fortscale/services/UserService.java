@@ -16,7 +16,7 @@ public interface UserService {
 	
 	public void updateUserWithCurrentADInfo();
 	
-	public void updateUserWithADInfo(String timestamp);
+	public void updateUserWithADInfo(Long timestampepoch);
 	
 	public List<User> findBySearchFieldContaining(String prefix, int page, int size);
 	

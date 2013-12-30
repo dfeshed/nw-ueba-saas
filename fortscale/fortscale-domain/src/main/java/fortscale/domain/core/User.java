@@ -28,6 +28,17 @@ import org.springframework.util.Assert;
 		@CompoundIndex(name="logUsername_vpndatares_1", def = "{'logUsername.vpndatares': 1}"),
 		@CompoundIndex(name="logUsername_sshscores_1", def = "{'logUsername.sshscores': 1}"),
 		@CompoundIndex(name="ad_userPrincipalName_1", def = "{'adInfo.userPrincipalName': 1}"),
+		@CompoundIndex(name="ad_userPrincipalName_1", def = "{'adInfo.userPrincipalName': 1}"),
+		@CompoundIndex(name="totalScoreCurScore", def = "{'scores.total.score': -1}"),
+		@CompoundIndex(name="totalScoreCurTrend", def = "{'scores.total.trendScore': -1}"),
+		@CompoundIndex(name="active_directory_group_membershipScoreCurScore", def = "{'scores.active_directory_group_membership.score': -1}"),
+		@CompoundIndex(name="active_directory_group_membershipScoreCurTrend", def = "{'scores.active_directory_group_membership.trendScore': -1}"),
+		@CompoundIndex(name="authScoreCurScore", def = "{'scores.auth.score': -1}"),
+		@CompoundIndex(name="authScoreCurTrend", def = "{'scores.auth.trendScore': -1}"),
+		@CompoundIndex(name="sshScoreCurScore", def = "{'scores.ssh.score': -1}"),
+		@CompoundIndex(name="sshScoreCurTrend", def = "{'scores.ssh.trendScore': -1}"),
+		@CompoundIndex(name="vpnScoreCurScore", def = "{'scores.vpn.score': -1}"),
+		@CompoundIndex(name="vpnScoreCurTrend", def = "{'scores.vpn.trendScore': -1}"),
 })
 public class User extends AbstractDocument {	
 	public static final String appField = "app";
@@ -43,6 +54,7 @@ public class User extends AbstractDocument {
 	@Field(usernameField)
 	private String username;
 	
+	@Indexed
 	@Field(followedField)
 	private Boolean followed = false;
 	

@@ -146,9 +146,9 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public String getUserThumbnail(User user) {
 		String ret = null;
-		String timestamp = adUserRepository.getLatestTimeStamp();
-		if(timestamp != null){
-			AdUser adUser = adUserRepository.findByTimestampAndObjectGUID(timestamp, user.getAdInfo().getObjectGUID());
+		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoch != null){
+			AdUser adUser = adUserRepository.findByTimestampepochAndObjectGUID(timestampepoch, user.getAdInfo().getObjectGUID());
 			ret = adUser.getThumbnailPhoto();
 		}
 		
@@ -171,9 +171,9 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
-		String timestamp = adUserRepository.getLatestTimeStamp();
-		if(timestamp != null) {
-			updateUserWithADInfo(timestamp);
+		Long timestampepoc = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoc != null) {
+			updateUserWithADInfo(timestampepoc);
 		} else {
 			logger.warn("no timestamp. probably the ad_user table is empty");
 		}
@@ -181,11 +181,11 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public void updateUserWithADInfo(final String timestamp) {
+	public void updateUserWithADInfo(final Long timestampepoch) {
 		logger.info("Starting to update users with ad info.");
 		if(!mongoTemplate.exists(query(where(User.adInfoField).exists(true)), User.class) && userRepository.count() > 0){
 			logger.info("Updating User schema regarding to the active directory info");
-			Iterable<AdUser> adUsers = adUserRepository.findByTimestamp(timestamp);
+			Iterable<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch);
 			List<User> users = updateUserWithADInfoNewSchema(adUsers);
 			
 			try{
@@ -203,8 +203,8 @@ public class UserServiceImpl implements UserService{
 			
 			userRepository.save(users);
 		} else{
-			logger.info("getting all ad users");
-			long count = adUserRepository.countByTimestamp(timestamp);
+			long count = adUserRepository.countByTimestampepoch(timestampepoch);
+			logger.info("getting all {} ad users", count);
 			int numOfPages = (int)((count-1)/readPageSize) + 1;
 			final AtomicInteger counter = new AtomicInteger(-1);
 			CompletionService<UpdateUserAdInfoContext> pool = new ExecutorCompletionService<UpdateUserAdInfoContext>(mongoDbReaderExecuter);
@@ -214,7 +214,7 @@ public class UserServiceImpl implements UserService{
 					public UpdateUserAdInfoContext call(){
 						int page = counter.incrementAndGet();
 						PageRequest pageRequest = new PageRequest(page, readPageSize);
-						List<AdUser> adUsers = adUserRepository.findByTimestamp(timestamp, pageRequest);
+						List<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch,pageRequest);
 						List<String> guids = new ArrayList<>(adUsers.size());
 						for(AdUser adUser: adUsers){
 							guids.add(adUser.getObjectGUID());
@@ -1447,9 +1447,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void updateUserWithCurrentADInfoNewSchema() {
-		String timestamp = adUserRepository.getLatestTimeStamp();
-		if(timestamp != null) {
-			List<User> users = updateUserWithADInfoNewSchema(adUserRepository.findByTimestamp(timestamp));
+		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoch != null) {
+			List<User> users = updateUserWithADInfoNewSchema(adUserRepository.findByTimestampepoch(timestampepoch));
 			userRepository.save(users);
 			saveUserIdUsernamesMapToImpala(new Date());
 		} else {

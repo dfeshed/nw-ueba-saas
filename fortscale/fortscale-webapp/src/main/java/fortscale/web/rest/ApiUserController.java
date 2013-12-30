@@ -52,9 +52,9 @@ public class ApiUserController extends BaseController{
 	private UserRepository userRepository;
 	
 	@RequestMapping(value="/updateAdInfo", method=RequestMethod.GET)
-	public void updateAdInfo(@RequestParam(required=false) String timestamp, Model model){
-		if(timestamp != null){
-			userService.updateUserWithADInfo(timestamp);
+	public void updateAdInfo(@RequestParam(required=false) Long timestampepoch, Model model){
+		if(timestampepoch != null){
+			userService.updateUserWithADInfo(timestampepoch);
 		} else{
 			userService.updateUserWithCurrentADInfo();
 		}

@@ -50,8 +50,10 @@ public class AdServiceImpl implements AdService {
 
 	@Override
 	public void removeThumbnails() {
-		String timestamp = adUserRepository.getLatestTimeStamp();
-		mongoTemplate.updateMulti(query(where(AdUser.timestampField).ne(timestamp).and(AdUser.thumbnailPhotoField).exists(true)), update(AdUser.thumbnailPhotoField, null), AdUser.class);
+		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoch != null){
+			mongoTemplate.updateMulti(query(where(AdUser.timestampepochField).ne(timestampepoch).and(AdUser.thumbnailPhotoField).exists(true)), update(AdUser.thumbnailPhotoField, null), AdUser.class);
+		}
 	}
 
 }
