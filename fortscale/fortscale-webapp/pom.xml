@@ -41,6 +41,11 @@
 			<artifactId>fortscale-activedirectory</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-monitor</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>

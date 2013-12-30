@@ -370,4 +370,8 @@ public class MongoJobProgressReporterTest {
 		assertTrue(argument.getValue().isHasWarnings());
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void findJobReportsForLastDays_should_throw_exception_if_days_is_zero() {
+		subject.findJobReportsForLastDays(0);
+	}
 }

@@ -181,14 +181,12 @@ public class JobProgressReportShellCommand {
 		} else if (cmd.hasOption("err")) {
 			//handle error in step
 			String[] args = cmd.getOptionValues("err");
-			String[] all = cmd.getArgs();
 			if (args.length == 2) {
 				String id = args[0];
 				String stepName = args[1];
 				
 				// get the message from the rest of the command args
-				String[] messageParts = cmd.getArgs();
-				String message = StringUtils.arrayToDelimitedString(messageParts, " ");
+				String message = StringUtils.arrayToDelimitedString(cmd.getArgs(), " ");
 				
 				reporter.error(id, stepName, message);
 			}
@@ -201,8 +199,7 @@ public class JobProgressReportShellCommand {
 				String stepName = args[1];
 				
 				// get the message from the rest of the command args
-				String[] messageParts = cmd.getArgs();
-				String message = StringUtils.arrayToDelimitedString(messageParts, " ");
+				String message = StringUtils.arrayToDelimitedString(cmd.getArgs(), " ");
 				
 				reporter.warn(id, stepName, message);
 			}

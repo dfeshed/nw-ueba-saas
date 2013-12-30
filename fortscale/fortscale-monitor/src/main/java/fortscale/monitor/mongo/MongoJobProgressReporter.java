@@ -1,10 +1,13 @@
 package fortscale.monitor.mongo;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import fortscale.monitor.JobMessage;
@@ -16,6 +19,8 @@ import fortscale.monitor.JobStep;
 public class MongoJobProgressReporter implements JobProgressReporter {
 
 	private static Logger logger = LoggerFactory.getLogger(MongoJobProgressReporter.class);
+	
+	private enum Severity { ERROR, WARN };
 	
 	@Autowired
 	private JobReportRepository repository;
@@ -177,6 +182,23 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 		}
 	}
 
-	private enum Severity { ERROR, WARN };
+	
+	/**
+	 * Gets the list of job reports in the last given days
+	 * @param days the number of days to retrieve
+	 * @return the list of job reports found
+	 */
+	public List<JobReport> findJobReportsForLastDays(int days) {
+		if (days<1)
+			throw new IllegalArgumentException("days must be greater than 0");
+		
+		// calculate data value for start date
+		Calendar start = Calendar.getInstance();
+		start.add(Calendar.DATE, - days);
+		
+		return repository.findByStartGreaterThan(start.getTime(), new Sort(Sort.Direction.ASC, "sourceType", "jobName", "start"));
+	}
+	
+	
 	
 }
