@@ -74,6 +74,12 @@ public class ApiMonitorController {
 			runDetail.setHasErrors(report.isHasErrors());
 			runDetail.setHasWarnings(report.isHasWarnings());
 			
+			if (report.isHasErrors())
+				sourceSummary.setHasErrors(true);
+			if (report.isHasWarnings())
+				sourceSummary.setHasWarnings(true);
+			
+			
 			jobSummary.getRunDetails().add(runDetail);
 		}
 		
@@ -110,7 +116,8 @@ public class ApiMonitorController {
 		
 		private String sourceType;
 		private List<JobSummary> jobs;
-		
+		private boolean hasErrors;
+		private boolean hasWarnings;
 		
 		public String getSourceType() {
 			return sourceType;
@@ -129,6 +136,22 @@ public class ApiMonitorController {
 		
 		public void setJobs(List<JobSummary> jobs) {
 			this.jobs = jobs;
+		}
+
+		public boolean isHasErrors() {
+			return hasErrors;
+		}
+
+		public void setHasErrors(boolean hasErrors) {
+			this.hasErrors = hasErrors;
+		}
+
+		public boolean isHasWarnings() {
+			return hasWarnings;
+		}
+
+		public void setHasWarnings(boolean hasWarnings) {
+			this.hasWarnings = hasWarnings;
 		}
 	}
 
