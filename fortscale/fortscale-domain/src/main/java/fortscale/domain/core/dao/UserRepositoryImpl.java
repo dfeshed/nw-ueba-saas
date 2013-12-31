@@ -136,13 +136,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 	
 	private List<User> findByUniqueField(String fieldName, Collection<?> vals) {
-		Criteria criterias[] = new Criteria[vals.size()];
-		int i = 0;
-		for(Object val: vals){
-			criterias[i] = where(fieldName).is(val);
-			i++;
-		}
-		Query query = new Query(new Criteria().orOperator(criterias));
+//		Criteria criterias[] = new Criteria[vals.size()];
+//		int i = 0;
+//		for(Object val: vals){
+//			criterias[i] = where(fieldName).is(val);
+//			i++;
+//		}
+		Query query = new Query(where(fieldName).in(vals));
 		return mongoTemplate.find(query, User.class);
 	}
 
