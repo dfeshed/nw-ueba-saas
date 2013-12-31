@@ -69,7 +69,8 @@ public class ApiMonitorController {
 			// add the run detail for the job summary
 			RunDetail runDetail = new RunDetail();
 			runDetail.setStart(report.getStart().getTime());
-			runDetail.setFinish(report.getFinish().getTime());
+			if (report.getFinish()!=null)
+				runDetail.setFinish(report.getFinish().getTime());
 			runDetail.setId(report.getId());
 			runDetail.setHasErrors(report.isHasErrors());
 			runDetail.setHasWarnings(report.isHasWarnings());
