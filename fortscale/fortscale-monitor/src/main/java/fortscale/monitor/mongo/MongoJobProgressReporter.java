@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import fortscale.monitor.JobMessage;
 import fortscale.monitor.JobProgressReporter;
-import fortscale.monitor.JobReport;
-import fortscale.monitor.JobStep;
+import fortscale.monitor.domain.JobMessage;
+import fortscale.monitor.domain.JobReport;
+import fortscale.monitor.domain.JobStep;
 
 @Component
 public class MongoJobProgressReporter implements JobProgressReporter {

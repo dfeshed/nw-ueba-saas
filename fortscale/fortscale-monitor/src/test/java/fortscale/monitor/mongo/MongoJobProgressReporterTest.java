@@ -13,8 +13,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
-import fortscale.monitor.JobReport;
-import fortscale.monitor.JobStep;
+import fortscale.monitor.domain.JobReport;
+import fortscale.monitor.domain.JobStep;
 
 @RunWith(JUnitParamsRunner.class)
 public class MongoJobProgressReporterTest {

@@ -2,6 +2,8 @@ package fortscale.monitor;
 
 import java.util.List;
 
+import fortscale.monitor.domain.JobReport;
+
 /**
  * Defines operations to report on jobs progress and steps progress
  */

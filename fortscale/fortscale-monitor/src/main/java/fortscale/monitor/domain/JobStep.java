@@ -1,4 +1,4 @@
-package fortscale.monitor;
+package fortscale.monitor.domain;
 
 import java.util.ArrayList;
 import java.util.Date;

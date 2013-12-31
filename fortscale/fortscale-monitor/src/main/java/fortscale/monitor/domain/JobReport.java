@@ -1,19 +1,24 @@
-package fortscale.monitor;
+package fortscale.monitor.domain;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collection="job_report")
+@TypeAlias(value="JobReport")
 public class JobReport {
 
 	@Id
 	private String id;
 	private String jobName;
 	private String sourceType;
+	// expire report after 20 days
+	@Indexed(unique=false, expireAfterSeconds=60*60*24*20, background=true)
 	private Date start;
 	private Date finish;
 	private List<JobStep> steps;

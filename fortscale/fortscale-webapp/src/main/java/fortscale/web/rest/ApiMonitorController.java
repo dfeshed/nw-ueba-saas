@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.monitor.JobProgressReporter;
-import fortscale.monitor.JobReport;
+import fortscale.monitor.domain.JobReport;
 import fortscale.utils.logging.annotation.LogException;
 
 @Controller
@@ -75,12 +75,6 @@ public class ApiMonitorController {
 			runDetail.setHasErrors(report.isHasErrors());
 			runDetail.setHasWarnings(report.isHasWarnings());
 			
-			if (report.isHasErrors())
-				sourceSummary.setHasErrors(true);
-			if (report.isHasWarnings())
-				sourceSummary.setHasWarnings(true);
-			
-			
 			jobSummary.getRunDetails().add(runDetail);
 		}
 		
@@ -117,8 +111,6 @@ public class ApiMonitorController {
 		
 		private String sourceType;
 		private List<JobSummary> jobs;
-		private boolean hasErrors;
-		private boolean hasWarnings;
 		
 		public String getSourceType() {
 			return sourceType;
@@ -137,22 +129,6 @@ public class ApiMonitorController {
 		
 		public void setJobs(List<JobSummary> jobs) {
 			this.jobs = jobs;
-		}
-
-		public boolean isHasErrors() {
-			return hasErrors;
-		}
-
-		public void setHasErrors(boolean hasErrors) {
-			this.hasErrors = hasErrors;
-		}
-
-		public boolean isHasWarnings() {
-			return hasWarnings;
-		}
-
-		public void setHasWarnings(boolean hasWarnings) {
-			this.hasWarnings = hasWarnings;
 		}
 	}
 
