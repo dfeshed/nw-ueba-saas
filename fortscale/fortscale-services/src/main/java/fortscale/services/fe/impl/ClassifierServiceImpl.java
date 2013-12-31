@@ -603,7 +603,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 
 			List<String> workingSet = new ArrayList<String>(keys.size() + 1);
 			List<String> allData = new ArrayList<String>(keys.size() + 2);
-			String machineName = map.get(MACHINE_NAME_FIELD) != null ? map.get(MACHINE_NAME_FIELD).toString() : "";
+			String machineName = map.get(MACHINE_NAME_FIELD) != null ? map.get(MACHINE_NAME_FIELD).toString().toLowerCase() : "";
 			String clientAddress = map.get(CLIENT_ADDRESSE_FIELD) != null ? map.get(CLIENT_ADDRESSE_FIELD).toString() : "";
 			if(!StringUtils.isEmpty(machineName)){
 				workingSet.add(machineName);
