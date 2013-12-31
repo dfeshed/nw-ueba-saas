@@ -57,12 +57,12 @@ public class FeServiceImpl implements FeService {
 //			}
 //			ret.put(user.getId().toString(), attrValsList);
 //		}
-		String timestamp = adUserRepository.getLatestTimeStamp();
-		if(timestamp == null) {
+		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoch == null) {
 			logger.error("no timestamp. probably the ad_user table is empty.");
 			return Collections.emptyList();
 		}
-		return adUserRepository.findByTimestamp(timestamp);
+		return adUserRepository.findByTimestampepoch(timestampepoch);
 	}
 
 	@Override

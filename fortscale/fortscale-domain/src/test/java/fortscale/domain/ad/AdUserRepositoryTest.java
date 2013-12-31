@@ -53,15 +53,7 @@ public class AdUserRepositoryTest extends AbstractTest{
 		repository.findByEmailAddress(user.getEmailAddress());
 	}
 	
-	@Test
-	public void testGetLatestTimeStamp(){
-		repository.getLatestTimeStamp();
-	}
 	
-	@Test
-	public void testFindByTimestamp(){
-		repository.findByTimestamp(repository.getLatestTimeStamp());
-	}
 	
 	
 	

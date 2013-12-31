@@ -7,6 +7,6 @@ import fortscale.domain.ad.AdUser;
 interface AdUserRepositoryCustom {
 
 	public List<AdUser> findAdUsersAttrVals();
-	public String getLatestTimeStamp();
-	public long countByTimestamp(String timestamp);
+	public Long getLatestTimeStampepoch();
+	public long countByTimestampepoch(Long timestampepoch);
 }

@@ -1,6 +1,5 @@
 package fortscale.activedirectory.main;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +10,6 @@ import ml.algorithms.CFA;
 import ml.classifiers.Classifier;
 import ml.classifiers.WekaRandomForest;
 import fortscale.activedirectory.featureextraction.ADFeatureExtractor;
-import fortscale.activedirectory.featureextraction.ADUserFeatureParser;
 import fortscale.activedirectory.featureextraction.Feature;
 import fortscale.activedirectory.featureextraction.FeatureVector;
 import fortscale.activedirectory.featureextraction.InstancesFeatures;
@@ -72,15 +70,9 @@ public class ADManager {
 
 
 	private void retrieveTimestamp() {
-		ADUserFeatureParser adUserParser = new ADUserFeatureParser();
 		for (AdUser adUser : userAttributes) {
-			try {
-				timeStamp = adUserParser.parseTimestamp(adUser.getTimestamp());
-				break;
-			}
-			catch (ParseException e) {
-				logger.error("Error while parsing timestamp date: {}", adUser.getTimestamp(), e);
-			}
+			timeStamp = new Date(adUser.getTimestampepoch());
+			break;
 		}
 	}
 	

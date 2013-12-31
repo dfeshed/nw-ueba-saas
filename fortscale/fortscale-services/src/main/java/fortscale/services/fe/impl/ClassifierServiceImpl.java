@@ -207,14 +207,21 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, int page, int size, boolean followedOnly, String... sortingFieldsName) {
 		Classifier.validateClassifierId(classifierId);
 		
-		Range severityRange = getRange(severityId);
-		
 		Pageable pageable = new PageRequest(page, size, Direction.DESC, sortingFieldsName);
 		List<User> users = null;
-		if(followedOnly){
-			users = userRepository.findByClassifierIdAndFollowedAndScoreBetween(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+		if(severityId != null){
+			Range severityRange = getRange(severityId);
+			if(followedOnly){
+				users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndCurrentDay(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+			} else{
+				users = userRepository.findByClassifierIdAndScoreBetweenAndCurrentDay(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+			}
 		} else{
-			users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+			if(followedOnly){
+				users = userRepository.findByClassifierIdAndFollowedAndCurrentDay(classifierId, pageable);
+			} else{
+				users = userRepository.findByClassifierIdAndCurrentDay(classifierId, pageable);
+			}
 		}
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(User user: users){
@@ -250,7 +257,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
-		return authDAO.countNumOfEventsByUser(timestamp, user.getUsername());
+		String logUsername = user.getLogUsernameMap().get(authDAO.getTableName());
+		return authDAO.countNumOfEventsByUser(timestamp, logUsername);
 	}
 
 	@Override

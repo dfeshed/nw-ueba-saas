@@ -8,8 +8,11 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -56,12 +59,15 @@ class AdUserRepositoryImpl implements AdUserRepositoryCustom{
 	}
 
 	@Override
-	public String getLatestTimeStamp() {
-		return mongoDbRepositoryUtil.getLatestTimeStampString(AdObject.timestampField, AdUser.COLLECTION_NAME);
+	public Long getLatestTimeStampepoch() {
+		Query query = new Query();
+		query.fields().include(AdObject.timestampepochField);
+		AdUser adUser = mongoTemplate.findOne(query.with(new PageRequest(0, 1, Direction.DESC, AdObject.timestampepochField)), AdUser.class);
+		return adUser.getTimestampepoch();
 	}
 
 	@Override
-	public long countByTimestamp(String timestamp) {
-		return mongoTemplate.count(query(where(AdObject.timestampField).is(timestamp)), AdUser.class);
+	public long countByTimestampepoch(Long timestampepoch) {
+		return mongoTemplate.count(query(where(AdObject.timestampepochField).is(timestampepoch)), AdUser.class);
 	}
 }
