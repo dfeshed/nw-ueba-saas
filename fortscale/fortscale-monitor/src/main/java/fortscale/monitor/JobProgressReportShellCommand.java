@@ -42,7 +42,8 @@ public class JobProgressReportShellCommand {
  	 * -err, --error <id> <step-name> <message>	     report error during step
 	 */
 	public static void main(String[] args) {
-		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/monitor-context.xml");
+		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/monitor-context.xml", 
+				"classpath*:META-INF/spring/mongo-context.xml");
 		
 		JobProgressReportShellCommand me = context.getBean(JobProgressReportShellCommand.class);
 		me.run(args);

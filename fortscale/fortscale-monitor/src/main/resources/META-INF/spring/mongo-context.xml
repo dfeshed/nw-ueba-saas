@@ -7,9 +7,10 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd         
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-
-	<context:property-placeholder location="classpath:META-INF/fortscale-monitor.properties" order="1" ignore-unresolvable="true"/>
-
-	<context:component-scan base-package="fortscale.monitor" />
-	<mongo:repositories base-package="fortscale.monitor" />	
+	
+	<!-- setup mongodb repositories -->
+	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}"/>
+	
+	<mongo:template id="mongoTemplate" db-factory-ref="mongoDbFactory" write-concern="SAFE" />
+	
 </beans>
