@@ -27,6 +27,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.dao.UserMachineDAO;
@@ -106,11 +107,16 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	@Autowired
 	private ImpalaParser impalaParser;
 	
+	@Autowired
+	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
+	
 	@Value("${login.service.name.regex:}")
 	private String loginServiceNameRegex;
 	
 	@Value("${login.account.name.regex:}")
 	private String loginAccountNameRegex;
+	
+	
 	
 	private Map<String, Map<String, String>> rowFieldRegexFilter;
 	
@@ -201,14 +207,21 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, int page, int size, boolean followedOnly, String... sortingFieldsName) {
 		Classifier.validateClassifierId(classifierId);
 		
-		Range severityRange = getRange(severityId);
-		
 		Pageable pageable = new PageRequest(page, size, Direction.DESC, sortingFieldsName);
 		List<User> users = null;
-		if(followedOnly){
-			users = userRepository.findByClassifierIdAndFollowedAndScoreBetween(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+		if(severityId != null){
+			Range severityRange = getRange(severityId);
+			if(followedOnly){
+				users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndCurrentDay(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+			} else{
+				users = userRepository.findByClassifierIdAndScoreBetweenAndCurrentDay(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+			}
 		} else{
-			users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+			if(followedOnly){
+				users = userRepository.findByClassifierIdAndFollowedAndCurrentDay(classifierId, pageable);
+			} else{
+				users = userRepository.findByClassifierIdAndCurrentDay(classifierId, pageable);
+			}
 		}
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(User user: users){
@@ -244,7 +257,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
-		return authDAO.countNumOfEventsByUser(timestamp, user.getUsername());
+		String logUsername = user.getLogUsernameMap().get(authDAO.getTableName());
+		return authDAO.countNumOfEventsByUser(timestamp, logUsername);
 	}
 
 	@Override
@@ -589,7 +603,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 
 			List<String> workingSet = new ArrayList<String>(keys.size() + 1);
 			List<String> allData = new ArrayList<String>(keys.size() + 2);
-			String machineName = map.get(MACHINE_NAME_FIELD) != null ? map.get(MACHINE_NAME_FIELD).toString() : "";
+			String machineName = map.get(MACHINE_NAME_FIELD) != null ? map.get(MACHINE_NAME_FIELD).toString().toLowerCase() : "";
 			String clientAddress = map.get(CLIENT_ADDRESSE_FIELD) != null ? map.get(CLIENT_ADDRESSE_FIELD).toString() : "";
 			if(!StringUtils.isEmpty(machineName)){
 				workingSet.add(machineName);
@@ -866,7 +880,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	private void saveEBSResultsOnAuthQuery(final String sqlQuery, final EBSResult ebsResult, final String timestampFieldName, boolean isRunThread){
 		if(isRunThread){
-			ExecutorService executorService = Executors.newFixedThreadPool(1);
 			Runnable task = new Runnable() {
 				@Override
 				public void run(){
@@ -874,8 +887,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 					authQuerySaver.save(sqlQuery, ebsResult, timestampFieldName);
 				}
 			};
-			executorService.submit(task);
-			executorService.shutdown();
+			mongoDbWriterExecuter.submit(task);
 		} else{
 			EBSResultsOnAuthQuerySaver authQuerySaver = new EBSResultsOnAuthQuerySaver();
 			authQuerySaver.save(sqlQuery, ebsResult, timestampFieldName);

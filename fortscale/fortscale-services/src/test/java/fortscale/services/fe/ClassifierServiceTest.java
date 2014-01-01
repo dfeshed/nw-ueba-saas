@@ -175,7 +175,7 @@ public class ClassifierServiceTest{
 		Mockito.when(configurationService.getRange(severityId)).thenReturn(severityRange);
 		String classifierId = Classifier.groups.getId();
 		Pageable pageable = new PageRequest(0, limit, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
-		Mockito.when(userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable)).thenReturn(users);
+		Mockito.when(userRepository.findByClassifierIdAndScoreBetweenAndCurrentDay(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable)).thenReturn(users);
 		List<ISuspiciousUserInfo> suspiciousUserInfos = classifierService.getSuspiciousUsersByScore(Classifier.groups.getId(), severityId, 0, limit, false);
 		Assert.assertEquals(limit, suspiciousUserInfos.size());
 		for(int i = 0; i < limit; i++){

@@ -16,9 +16,9 @@ public interface UserService {
 	
 	public void updateUserWithCurrentADInfo();
 	
-	public void updateUserWithADInfo(String timestamp);
+	public void updateUserWithADInfo(Long timestampepoch);
 	
-	public List<User> findBySearchFieldContaining(String prefix);
+	public List<User> findBySearchFieldContaining(String prefix, int page, int size);
 	
 	public List<IUserScore> getUserScores(String uid); 
 	
@@ -65,4 +65,6 @@ public interface UserService {
 	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId);
 
 	public void updateUserWithCurrentADInfoNewSchema();
+	
+	public String getUserThumbnail(User user);
 }

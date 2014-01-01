@@ -2,6 +2,7 @@ package fortscale.domain.core.dao;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import fortscale.domain.core.User;
@@ -17,6 +18,6 @@ public interface UserRepository extends MongoRepository<User, String>, UserRepos
 	public User findByAdDn(String adDn);
 	public User findByAdObjectGUID(String adObjectGUID);
 	
-	public List<User> findBySearchFieldContaining(String prefix);
+	public List<User> findBySearchFieldContaining(String prefix, Pageable pageable);
 	public List<User> findByFollowed(Boolean followed);
 }

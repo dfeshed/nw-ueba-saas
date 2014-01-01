@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 import fortscale.domain.AbstractTest;
 import fortscale.domain.core.dao.UserRepository;
@@ -32,13 +33,6 @@ public class UserRepositoryTest  extends AbstractTest{
 	public void testFindOne(){
 		User user = repository.findAll().iterator().next();
 		User user2 = repository.findOne(user.getId());
-		Assert.assertEquals(user.getId(), user2.getId());
-	}
-	
-	@Test
-	public void testFindByAdDn() {
-		User user = repository.findAll().iterator().next();
-		User user2 = repository.findByAdDn(user.getAdDn());
 		Assert.assertEquals(user.getId(), user2.getId());
 	}
 	
@@ -80,9 +74,9 @@ public class UserRepositoryTest  extends AbstractTest{
 		while(user.getUsername() == null || user.getUsername().contains("{")) {
 			user = iterator.next();
 		}
-		User user2 = repository.findBySearchFieldContaining(user.getUsername()).get(0);
+		User user2 = repository.findBySearchFieldContaining(user.getUsername(),new PageRequest(0, 10)).get(0);
 		Assert.assertEquals(user.getId(), user2.getId());
-		List<User> users = repository.findBySearchFieldContaining(user.getAdInfo().getFirstname().toLowerCase());
+		List<User> users = repository.findBySearchFieldContaining(user.getAdInfo().getFirstname().toLowerCase(), new PageRequest(0, 10));
 		Assert.assertTrue(users.size() > 0);
 	}	
 }

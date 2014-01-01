@@ -60,7 +60,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 
 	@Override
-	public List<User> findByClassifierIdAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
+	public List<User> findByClassifierIdAndScoreBetweenAndCurrentDay(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
 		DateTime dateTime = new DateTime();
 		dateTime = dateTime.withTimeAtStartOfDay();
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
@@ -71,12 +71,32 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 	
 	@Override
-	public List<User> findByClassifierIdAndFollowedAndScoreBetween(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
+	public List<User> findByClassifierIdAndFollowedAndScoreBetweenAndCurrentDay(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
 		DateTime dateTime = new DateTime();
 		dateTime = dateTime.withTimeAtStartOfDay();
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
 		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
+		query.with(pageable);
+		return mongoTemplate.find(query, User.class);
+	}
+	
+	@Override
+	public List<User> findByClassifierIdAndCurrentDay(String classifierId, Pageable pageable) {
+		DateTime dateTime = new DateTime();
+		dateTime = dateTime.withTimeAtStartOfDay();
+		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
+		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
+		query.with(pageable);
+		return mongoTemplate.find(query, User.class);
+	}
+
+	@Override
+	public List<User> findByClassifierIdAndFollowedAndCurrentDay(String classifierId, Pageable pageable) {
+		DateTime dateTime = new DateTime();
+		dateTime = dateTime.withTimeAtStartOfDay();
+		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
+		Query query = new Query(where(User.followedField).is(true).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
 		query.with(pageable);
 		return mongoTemplate.find(query, User.class);
 	}
@@ -110,14 +130,19 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		return findByUniqueField(User.getAdInfoField(UserAdInfo.adDnField),dns);
 	}
 	
+	@Override
+	public List<User> findByGUIDs(Collection<String> guids) {
+		return findByUniqueField(User.getAdInfoField(UserAdInfo.objectGUIDField),guids);
+	}
+	
 	private List<User> findByUniqueField(String fieldName, Collection<?> vals) {
-		Criteria criterias[] = new Criteria[vals.size()];
-		int i = 0;
-		for(Object val: vals){
-			criterias[i] = where(fieldName).is(val);
-			i++;
-		}
-		Query query = new Query(new Criteria().orOperator(criterias));
+//		Criteria criterias[] = new Criteria[vals.size()];
+//		int i = 0;
+//		for(Object val: vals){
+//			criterias[i] = where(fieldName).is(val);
+//			i++;
+//		}
+		Query query = new Query(where(fieldName).in(vals));
 		return mongoTemplate.find(query, User.class);
 	}
 
@@ -179,6 +204,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		Query query = new Query(criteria);
 		return mongoTemplate.find(query, User.class);
 	}
+
+	
 
 	
 }

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.ad.UserMachine;
+import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.IFeature;
@@ -49,9 +52,9 @@ public class ApiUserController extends BaseController{
 	private UserRepository userRepository;
 	
 	@RequestMapping(value="/updateAdInfo", method=RequestMethod.GET)
-	public void updateAdInfo(@RequestParam(required=false) String timestamp, Model model){
-		if(timestamp != null){
-			userService.updateUserWithADInfo(timestamp);
+	public void updateAdInfo(@RequestParam(required=false) Long timestampepoch, Model model){
+		if(timestampepoch != null){
+			userService.updateUserWithADInfo(timestampepoch);
 		} else{
 			userService.updateUserWithCurrentADInfo();
 		}
@@ -90,8 +93,11 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public  DataBean<List<UserSearchBean>> search(@RequestParam(required=true) String prefix, Model model){
-		List<User> users = userService.findBySearchFieldContaining(prefix);
+	public  DataBean<List<UserSearchBean>> search(@RequestParam(required=true) String prefix,
+			@RequestParam(defaultValue="0") Integer page,
+			@RequestParam(defaultValue="10") Integer size
+			, Model model){
+		List<User> users = userService.findBySearchFieldContaining(prefix, page, size);
 		List<UserSearchBean> data = new ArrayList<UserSearchBean>();
 		for(User user: users){
 			data.add(new UserSearchBean(user));
@@ -111,8 +117,25 @@ public class ApiUserController extends BaseController{
 		if(user == null){
 			return null;
 		}
-		UserDetailsBean ret = new UserDetailsBean(user, getManager(user));
+		
+		Set<String> userRelatedDnsSet = new HashSet<>();
+		Map<String, User> dnToUserMap = new HashMap<String, User>();
+
+		fillUserRelatedDns(user, userRelatedDnsSet);
+		fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+		
+		UserDetailsBean ret = createUserDetailsBean(user, dnToUserMap, true);
 		return new DataListWrapperBean<UserDetailsBean>(ret);
+	}
+	
+	private UserDetailsBean createUserDetailsBean(User user, Map<String, User> dnToUserMap, boolean isWithThumbnail){
+		User manager = getUserManager(user, dnToUserMap);
+		List<User> directReports = getUserDirectReports(user, dnToUserMap);
+		UserDetailsBean ret =  new UserDetailsBean(user, manager, directReports);
+		if(isWithThumbnail){
+			ret.setThumbnailPhoto(userService.getUserThumbnail(user));
+		}
+		return ret;
 	}
 	
 	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
@@ -128,6 +151,49 @@ public class ApiUserController extends BaseController{
 		ret.setData(userIds);
 		ret.setTotal(userIds.size());
 		return ret;
+	}
+	
+	private User getUserManager(User user, Map<String, User> dnToUserMap){
+		User manager = null;
+		if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
+			manager = dnToUserMap.get(user.getAdInfo().getManagerDN());
+		}
+		return manager;
+	}
+	
+	private List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap){
+		Set<AdUserDirectReport> adUserDirectReports = user.getAdInfo().getDirectReports();
+		if(adUserDirectReports == null || adUserDirectReports.isEmpty()){
+			return Collections.emptyList();
+		}
+		
+		List<User> directReports = new ArrayList<>();
+		for(AdUserDirectReport adUserDirectReport: adUserDirectReports){
+			directReports.add(dnToUserMap.get(adUserDirectReport.getDn()));
+		}
+		return directReports;
+	}
+	
+	private void fillUserRelatedDns(User user, Set<String> userRelatedDnsSet){
+		if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
+			userRelatedDnsSet.add(user.getAdInfo().getManagerDN());
+		}
+		
+		Set<AdUserDirectReport> adUserDirectReports = user.getAdInfo().getDirectReports();
+		if(adUserDirectReports != null){
+			for(AdUserDirectReport adUserDirectReport: adUserDirectReports){
+				userRelatedDnsSet.add(adUserDirectReport.getDn());
+			}
+		}
+	}
+	
+	private void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap){
+		if(userRelatedDnsSet.size() > 0){
+			List<User> managers = userRepository.findByDNs(userRelatedDnsSet);
+			for(User manager: managers){
+				dnToUserMap.put(manager.getAdInfo().getDn(), manager);
+			}
+		}
 	}
 	
 	@RequestMapping(value="/usersDetails", method=RequestMethod.GET)
@@ -149,24 +215,15 @@ public class ApiUserController extends BaseController{
 	private DataBean<List<UserDetailsBean>> userDetails(List<User> users){
 		List<UserDetailsBean> userDetailsBeans = new ArrayList<>();
 		
-		Map<String, User> dnToUserMap = new HashMap<String, User>(users.size());
+		Set<String> userRelatedDnsSet = new HashSet<>();
+		Map<String, User> dnToUserMap = new HashMap<String, User>();
 		for(User user: users){
-			if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
-				dnToUserMap.put(user.getAdInfo().getManagerDN(), null);
-			}
+			fillUserRelatedDns(user, userRelatedDnsSet);
 		}
-		if(dnToUserMap.size() > 0){
-			List<User> managers = userRepository.findByDNs(dnToUserMap.keySet());
-			for(User manager: managers){
-				dnToUserMap.put(manager.getAdDn(), manager);
-			}
-		}
+		fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+		
 		for(User user: users){
-			User manager = null;
-			if(!StringUtils.isEmpty(user.getAdInfo().getManagerDN())){
-				manager = dnToUserMap.get(user.getAdInfo().getManagerDN());
-			}
-			UserDetailsBean userDetailsBean = new UserDetailsBean(user, manager);
+			UserDetailsBean userDetailsBean = createUserDetailsBean(user, dnToUserMap, false);
 			userDetailsBeans.add(userDetailsBean);
 		}
 		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
@@ -174,6 +231,8 @@ public class ApiUserController extends BaseController{
 		ret.setTotal(userDetailsBeans.size());
 		return ret;
 	}
+	
+	
 	
 	@RequestMapping(value="/{id}/contactinfo", method=RequestMethod.GET)
 	@ResponseBody
@@ -364,16 +423,5 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public void removeClassifierFromAllUsers(@RequestParam(required=true) String classifierId, Model model){
 		userService.removeClassifierFromAllUsers(classifierId);
-	}
-	
-	private User getManager(User user){
-		User manager = null;
-		String managerDN = user.getAdInfo().getManagerDN();
-		if(!StringUtils.isEmpty(managerDN)){
-			manager = userRepository.findByAdDn(managerDN);
-		}
-		return manager;
-	}
-	
-	
+	}	
 }

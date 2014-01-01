@@ -52,7 +52,7 @@ public class ImpalaTotalScoreWriter extends ImpalaWriter{
 		}
 		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp), getRuntime(classifierScore.getTimestamp()),
 				user.getUsername(), scoreWeight.getId(), classifierScore.getScore(), scoreExplanation, classifierScore.getAvgScore(), classifierScore.getTrend(), scoreWeight.getWeight(),
-				user.getAdDn(), user.getId());
+				user.getAdInfo().getDn(), user.getId());
 		write(csvLineString);
 		newLine();
 	}

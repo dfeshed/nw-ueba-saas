@@ -14,15 +14,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdGroup;
@@ -103,6 +112,12 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ImpalaWriterFactory impalaWriterFactory;
 	
+	@Autowired
+	private ThreadPoolTaskExecutor mongoDbReaderExecuter;
+	
+	@Autowired
+	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
+	
 	@Autowired 
 	private ADUserParser adUserParser; 
 	
@@ -121,9 +136,24 @@ public class UserServiceImpl implements UserService{
 	@Value("${ssh.status.success.value.regex:Accepted}")
 	private String sshStatusSuccessValueRegex;
 	
+	@Value("${ad.info.update.read.page.size:1000}")
+	private int readPageSize;
 	
 	
+	private Map<String, String> groupDnToNameMap = new HashMap<>();
 	
+	
+	@Override
+	public String getUserThumbnail(User user) {
+		String ret = null;
+		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoch != null){
+			AdUser adUser = adUserRepository.findByTimestampepochAndObjectGUID(timestampepoch, user.getAdInfo().getObjectGUID());
+			ret = adUser.getThumbnailPhoto();
+		}
+		
+		return ret;
+	}
 	
 	@Override
 	public void removeClassifierFromAllUsers(String classifierId){
@@ -141,9 +171,9 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
-		String timestamp = adUserRepository.getLatestTimeStamp();
-		if(timestamp != null) {
-			updateUserWithADInfo(timestamp);
+		Long timestampepoc = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoc != null) {
+			updateUserWithADInfo(timestampepoc);
 		} else {
 			logger.warn("no timestamp. probably the ad_user table is empty");
 		}
@@ -151,13 +181,11 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public void updateUserWithADInfo(String timestamp) {
-		updateUserWithADInfo(adUserRepository.findByTimestamp(timestamp));
-	}
-	
-	private void updateUserWithADInfo(Iterable<AdUser> adUsers) {
-		if(!mongoTemplate.exists(query(where(User.adInfoField).exists(true)), User.class)){
+	public void updateUserWithADInfo(final Long timestampepoch) {
+		logger.info("Starting to update users with ad info.");
+		if(!mongoTemplate.exists(query(where(User.adInfoField).exists(true)), User.class) && userRepository.count() > 0){
 			logger.info("Updating User schema regarding to the active directory info");
+			Iterable<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch);
 			List<User> users = updateUserWithADInfoNewSchema(adUsers);
 			
 			try{
@@ -175,17 +203,91 @@ public class UserServiceImpl implements UserService{
 			
 			userRepository.save(users);
 		} else{
-			for(AdUser adUser: adUsers){
+			long count = adUserRepository.countByTimestampepoch(timestampepoch);
+			logger.info("getting all {} ad users", count);
+			int numOfPages = (int)((count-1)/readPageSize) + 1;
+			final AtomicInteger counter = new AtomicInteger(-1);
+			CompletionService<UpdateUserAdInfoContext> pool = new ExecutorCompletionService<UpdateUserAdInfoContext>(mongoDbReaderExecuter);
+			for(int i = 0; i < numOfPages; i++){
+				Callable<UpdateUserAdInfoContext> task = new Callable<UpdateUserAdInfoContext>() {
+					@Override
+					public UpdateUserAdInfoContext call(){
+						int page = counter.incrementAndGet();
+						PageRequest pageRequest = new PageRequest(page, readPageSize);
+						List<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch,pageRequest);
+						List<String> guids = new ArrayList<>(adUsers.size());
+						for(AdUser adUser: adUsers){
+							guids.add(adUser.getObjectGUID());
+						}
+						List<User> users = userRepository.findByGUIDs(guids);
+						return new UpdateUserAdInfoContext(adUsers, users);
+					}
+				};
+				pool.submit(task);
+			}
+			
+			
+			logger.info("filling all users with ad info data");
+			CompletionService<String> writerPool = new ExecutorCompletionService<String>(mongoDbWriterExecuter);
+			int numOfThreadExceptions = 0;
+			int numOfTasks = 0;
+			for(int i = 0; i < numOfPages && numOfThreadExceptions <= 5; i++){
+				UpdateUserAdInfoContext updateUserAdInfoContext = null;
 				try {
-					updateUserWithADInfo(adUser);
-				} catch (Exception e) {
-					logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
+					TaskResult<UpdateUserAdInfoContext> taskResult = getTaskResultes(pool);
+					numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
+
+					if(taskResult.getResult() == null){
+						logger.error("updateUserAdInfoContext is null");
+						continue;
+					}
+					updateUserAdInfoContext = taskResult.getResult();
+				} catch (TimeoutException timeoutException) {
+					logger.error("while getting ad user object from mongo got the time out exception.", timeoutException);
+					break;
 				}
-				
+
+				List<AdUser> pageAdUsers = updateUserAdInfoContext.getAdUsers();
+				int pageNumOfTasks = 0;
+				logger.info("Going over {} ad users", pageAdUsers.size());
+				for(AdUser adUser: pageAdUsers){
+					try {
+						pageNumOfTasks += updateUserWithADInfo(adUser, updateUserAdInfoContext, writerPool);
+						
+					} catch (Exception e) {
+						logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
+					}
+				}
+				logger.info("finished processing {} ad users info. triggered {} tasks with {} inserts, {} username updates, {} search field updates, {} ad info updates",
+						pageAdUsers.size(), pageNumOfTasks, updateUserAdInfoContext.getNumOfInserts(), updateUserAdInfoContext.getNumOfUsernameUpdates(),
+						updateUserAdInfoContext.getNumOfSearchFieldUpdates(), updateUserAdInfoContext.getNumOfAdInfoUpdates());
+				numOfTasks += pageNumOfTasks;
+			}
+			
+			logger.info("waiting for all the {} writing tasks.", numOfTasks);
+			waitForAllWritingTasks(writerPool, numOfTasks);
+			
+			logger.info("finished updating the user collection.");
+		}
+//		saveUserIdUsernamesMapToImpala(new Date());
+		logger.info("finished updating users with ad info.");
+	}
+	
+	private <T> TaskResult<T> getTaskResultes(CompletionService<T> pool) throws TimeoutException{
+		TaskResult<T> ret = new TaskResult<>();
+		while(ret.getResult() == null && ret.getNumOfTaskExceptions() <= 5){
+			try {
+				ret.setResult(pool.take().get(30, TimeUnit.SECONDS));
+			} catch (InterruptedException | ExecutionException e1) {
+				logger.error("while getting ad user object from mongo got the following exception.", e1);
+				ret.incrementNumOfTaskExceptions();
 			}
 		}
-		saveUserIdUsernamesMapToImpala(new Date());
+		
+		return ret;
 	}
+	
+	
 	
 	private void saveUserIdUsernamesMapToImpala(Date timestamp){
 		List<User> users = userRepository.findAll();
@@ -194,20 +296,20 @@ public class UserServiceImpl implements UserService{
 		writer.close();
 	}
 	
-	private void updateUserWithADInfo(AdUser adUser) {
+	private int updateUserWithADInfo(AdUser adUser, UpdateUserAdInfoContext updateUserAdInfoContext, CompletionService<String> pool) {
 		if(adUser.getObjectGUID() == null) {
 			logger.error("got ad user with no ObjectGUID name field.");
-			return;
+			return 0;
 		}
 		if(adUser.getDistinguishedName() == null) {
 			logger.error("got ad user with no distinguished name field.");
-			return;
+			return 0;
 		}
 		
 		
 		
 		
-		UserAdInfo userAdInfo = new UserAdInfo();
+		final UserAdInfo userAdInfo = new UserAdInfo();
 		userAdInfo.setObjectGUID(adUser.getObjectGUID());
 		userAdInfo.setDn(adUser.getDistinguishedName());
 		userAdInfo.setFirstname(adUser.getFirstname());
@@ -232,7 +334,6 @@ public class UserServiceImpl implements UserService{
 		userAdInfo.setHomePhone(adUser.getHomePhone());
 		userAdInfo.setDepartment(adUser.getDepartment());
 		userAdInfo.setPosition(adUser.getTitle());
-		userAdInfo.setThumbnailPhoto(adUser.getThumbnailPhoto());
 		userAdInfo.setDisplayName(adUser.getDisplayName());
 		userAdInfo.setLogonHours(adUser.getLogonHours());
 		try {
@@ -271,17 +372,20 @@ public class UserServiceImpl implements UserService{
 		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
 		if(groups != null){
 			for(String groupDN: groups){
-				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
-				String groupName = null;
-				if(adGroup != null){
-					groupName = adGroup.getName();
-				}else{
-					Log.warn("the user ({}) group ({}) was not found", adUser.getDistinguishedName(), groupDN);
-					groupName = adUserParser.parseFirstCNFromDN(groupDN);
-					if(groupName == null){
-						Log.warn("invalid group dn ({}) for user ({})", groupDN, adUser.getDistinguishedName());
-						continue;
-					}
+				String groupName = groupDnToNameMap.get(groupDN);
+				if(groupName == null){
+//					AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
+//					if(adGroup != null){
+//						groupName = adGroup.getName();
+//					}else{
+//						Log.warn("the user ({}) group ({}) was not found", adUser.getDistinguishedName(), groupDN);
+						groupName = adUserParser.parseFirstCNFromDN(groupDN);
+						if(groupName == null){
+							Log.warn("invalid group dn ({}) for user ({})", groupDN, adUser.getDistinguishedName());
+							continue;
+						}
+//					}
+					groupDnToNameMap.put(groupDN, groupName);
 				}
 				userAdInfo.addGroup(new AdUserGroup(groupDN, groupName));
 			}
@@ -290,29 +394,13 @@ public class UserServiceImpl implements UserService{
 		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
 		if(directReports != null){
 			for(String directReportsDN: directReports){
-				User userDirectReport = userRepository.findByAdInfoDn(directReportsDN);
-				if(userDirectReport != null){
-					String displayName = userDirectReport.getUsername();
-					if(userDirectReport.getAdInfo() != null && !StringUtils.isEmpty(userDirectReport.getAdInfo().getDisplayName())){
-						displayName = userDirectReport.getAdInfo().getDisplayName();
-					}
-					AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, displayName);
-					adUserDirectReport.setUserId(userDirectReport.getId());
-					adUserDirectReport.setUsername(userDirectReport.getUsername());
-					if(userDirectReport.getAdInfo() != null){
-						adUserDirectReport.setFirstname(userDirectReport.getAdInfo().getFirstname());
-						adUserDirectReport.setLastname(userDirectReport.getAdInfo().getLastname());
-					}
-					
-					userAdInfo.addDirectReport(adUserDirectReport);
-				}else{
-					logger.warn("the user ({}) direct report ({}) was not found", adUser.getDistinguishedName(), directReportsDN);
-				}
+				String displayName = adUserParser.parseFirstCNFromDN(directReportsDN);
+				AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, displayName);
+				userAdInfo.addDirectReport(adUserDirectReport);
 			}
 		}
 		
-		
-		User user = userRepository.findByAdInfoObjectGUID(adUser.getObjectGUID());
+		User user = updateUserAdInfoContext.findByObjectGUID(adUser.getObjectGUID());
 		boolean isSaveUser = false;
 		if(user == null){
 			user = new User();
@@ -334,24 +422,55 @@ public class UserServiceImpl implements UserService{
 		
 		
 		
-		String searchField = createSearchField(userAdInfo, username);
+		final String searchField = createSearchField(userAdInfo, username);
 		
+		
+		final User finalUser = user;
+		int numOfTasks = 0;
 		if(isSaveUser){
 			if(!StringUtils.isEmpty(username)) {
-				user.setUsername(username);
-				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
+				finalUser.setUsername(username);
+				finalUser.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, finalUser.getUsername()));
 			}
-			user.setSearchField(searchField);
-			userRepository.save(user);
+			finalUser.setSearchField(searchField);
+			
+			Callable<String> task = new Callable<String>() {
+				@Override
+				public String call(){
+					userRepository.save(finalUser);
+					return "";
+				}
+			};
+			pool.submit(task);
+			numOfTasks = 1;
+			updateUserAdInfoContext.incrementNumOfInserts();
+			
 		} else{
-			updateUser(user, User.adInfoField, userAdInfo);
-			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
-				updateUser(user, User.usernameField, username);
+			final String finalUsername = username;
+			updateUserAdInfoContext.incrementNumOfAdInfoUpdates();
+			if(!StringUtils.isEmpty(finalUsername) && !finalUsername.equals(finalUser.getUsername())){
+				updateUserAdInfoContext.incrementNumOfUsernameUpdates();
 			}
-			if(!searchField.equals(user.getSearchField())){
-				updateUser(user, User.searchFieldName, searchField);
+			if(!searchField.equals(finalUser.getSearchField())){
+				updateUserAdInfoContext.incrementNumOfSearchFieldUpdates();
 			}
+			Callable<String> task = new Callable<String>() {
+				@Override
+				public String call(){
+					updateUser(finalUser, User.adInfoField, userAdInfo);
+					if(!StringUtils.isEmpty(finalUsername) && !finalUsername.equals(finalUser.getUsername())){
+						updateUser(finalUser, User.usernameField, finalUsername);
+					}
+					if(!searchField.equals(finalUser.getSearchField())){
+						updateUser(finalUser, User.searchFieldName, searchField);
+					}
+					return "";
+				}
+			};
+			pool.submit(task);
+			numOfTasks = 1;
 		}
+		return numOfTasks;
 	}
 	
 	private void updateUser(User user, String fieldName, Object val){
@@ -382,9 +501,9 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<User> findBySearchFieldContaining(String prefix) {
+	public List<User> findBySearchFieldContaining(String prefix, int page, int size) {
 		
-		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX+prefix.toLowerCase());
+		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX+prefix.toLowerCase(), new PageRequest(page, size));
 	}
 
 	@Override
@@ -731,13 +850,24 @@ public class UserServiceImpl implements UserService{
 	
 	private void saveUserTotalScoreToImpala(Date timestamp, ScoreConfiguration scoreConfiguration){
 		List<User> users = userRepository.findAll();
+		saveUserTotalScoreToImpala(users, timestamp, scoreConfiguration);
+	}
+	
+	private void saveUserTotalScoreToImpala(List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
 		ImpalaTotalScoreWriter writer = impalaWriterFactory.createImpalaTotalScoreWriter();
+
+		saveUserTotalScoreToImpala(writer, users, timestamp, scoreConfiguration);
+		
+		writer.close();
+	}
+	
+	private void saveUserTotalScoreToImpala(ImpalaTotalScoreWriter writer, List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
+		logger.info("writing {} users total score to local file", users.size());
 		for(User user: users){
 			if(user.getScore(Classifier.total.getId()) != null){
 				writer.writeScores(user, timestamp, scoreConfiguration);
 			}
 		}
-		writer.close();
 	}
 
 	@Override
@@ -945,40 +1075,135 @@ public class UserServiceImpl implements UserService{
 		updateUserWithGroupMembershipScore(lastRun);
 	}
 	
-	private void updateUserWithGroupMembershipScore(Date lastRun){
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun);
-//		Pageable pageable = new PageRequest(0, 10000, Direction.ASC, AdUserFeaturesExtraction.timestampField);
-//		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), pageable);
-		if(adUserFeaturesExtractions.size() == 0){
+	private void updateUserWithGroupMembershipScore(final Date lastRun){
+		final String classifierId = Classifier.groups.getId();
+		long count = adUsersFeaturesExtractionRepository.countByClassifierIdAndTimestamp(classifierId, lastRun); 
+		if(count == 0){
 			logger.warn("the group membership for timestamp ({}) is empty.", lastRun);
 			return;
 		}
+		logger.info("getting all the {} AdUserFeaturesExtraction", count);
 		
-		double avgScore = 0;
-		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-			avgScore += extraction.getScore();
+		final double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(classifierId, lastRun);
+		
+		
+		int numOfPages = (int)((count-1)/readPageSize) + 1;
+		final AtomicInteger counter = new AtomicInteger(-1);
+		CompletionService<UpdateUserGroupMembershipScoreContext> pool = new ExecutorCompletionService<UpdateUserGroupMembershipScoreContext>(mongoDbReaderExecuter);
+		for(int i = 0; i < numOfPages; i++){
+			Callable<UpdateUserGroupMembershipScoreContext> task = new Callable<UpdateUserGroupMembershipScoreContext>() {
+				@Override
+				public UpdateUserGroupMembershipScoreContext call(){
+					int page = counter.incrementAndGet();
+					PageRequest pageRequest = new PageRequest(page, readPageSize);
+					List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(classifierId, lastRun, pageRequest);
+					List<String> ids = new ArrayList<>(adUserFeaturesExtractions.size());
+					for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
+						ids.add(adUserFeaturesExtraction.getUserId());
+					}
+					List<User> users = userRepository.findByIds(ids);
+					return new UpdateUserGroupMembershipScoreContext(adUserFeaturesExtractions, users);
+				}
+			};
+			pool.submit(task);
 		}
-		avgScore = avgScore/adUserFeaturesExtractions.size();
 		
-		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
-		List<User> users = new ArrayList<>();
-		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-			User user = userRepository.findOne(extraction.getUserId().toString());
-			if(user == null){
-				logger.error("user with id ({}) was not found in user table", extraction.getUserId());
-				continue;
+		
+		logger.info("filling all users with group membership score");
+		CompletionService<String> writerPool = new ExecutorCompletionService<String>(mongoDbWriterExecuter);
+		int numOfThreadExceptions = 0;
+		int numOfTasks = 0;
+		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = null;
+		ImpalaTotalScoreWriter impalaTotalScoreWriter = null;
+		try{
+			impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
+			impalaTotalScoreWriter = impalaWriterFactory.createImpalaTotalScoreWriter();
+			for(int i = 0; i < numOfPages && numOfThreadExceptions <= 5; i++){
+				UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext = null;
+				try {
+					logger.info("waiting for the next page...");
+					TaskResult<UpdateUserGroupMembershipScoreContext> taskResult = getTaskResultes(pool);
+					numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
+
+					if(taskResult.getResult() == null){
+						logger.error("updateUserGroupMembershipScoreContext is null");
+						continue;
+					}
+					updateUserGroupMembershipScoreContext = taskResult.getResult();
+				} catch (TimeoutException timeoutException) {
+					logger.error("while getting AdUserFeaturesExtraction from mongo got the time out exception.", timeoutException);
+					break;
+				}
+
+				logger.info("Going over {} AdUserFeaturesExtraction", updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractionsSize());
+				List<User> users = new ArrayList<>();
+				for(AdUserFeaturesExtraction extraction: updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractions()){
+					User user = updateUserGroupMembershipScoreContext.findByUserId(extraction.getUserId().toString());
+					if(user == null){
+						logger.error("user with id ({}) was not found in user table", extraction.getUserId());
+						continue;
+					}
+					//updating the user with the new score.
+					user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), classifierId, extraction.getScore(), avgScore, false, false);
+					if(user != null){
+						users.add(user);
+					}
+					
+				}
+				
+				updateUserTotalScore(users, false, lastRun);
+				
+				for(final User user: users){
+					Callable<String> task = new Callable<String>() {
+						@Override
+						public String call(){
+							updateUser(user, User.getClassifierScoreField(classifierId), user.getScore(classifierId));
+							updateUser(user, User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+							return "";
+						}
+					};
+					writerPool.submit(task);
+				}
+				
+				numOfTasks += users.size();
+				logger.info("finished processing {} AdUserFeaturesExtraction. triggered {} tasks.",	updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractionsSize(), users.size());
+				
+				logger.info("writing group score to local file");
+				for(User user: users){
+					impalaGroupsScoreWriter.writeScore(user, updateUserGroupMembershipScoreContext.findFeautreByUserId(user.getId()), avgScore);
+				}
+	
+				saveUserTotalScoreToImpala(impalaTotalScoreWriter, users, lastRun, configurationService.getScoreConfiguration());
+				
+				
 			}
-			//updating the user with the new score.
-			user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false, false);
-			if(user != null){
-				users.add(user);
-				impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
+		} finally{
+			if(impalaGroupsScoreWriter != null){
+				impalaGroupsScoreWriter.close();
 			}
-			
+			if(impalaTotalScoreWriter != null){
+				impalaTotalScoreWriter.close();
+			}
 		}
-		impalaGroupsScoreWriter.close();
 		
-		updateUserTotalScore(users, true, lastRun);
+		logger.info("waiting for all the {} writing tasks.", numOfTasks);
+		waitForAllWritingTasks(writerPool, numOfTasks);
+
+
+		logger.info("finished updating the user collection. with group membership score and total score.");
+	}
+	
+	private void waitForAllWritingTasks(CompletionService<String> writerPool, int numOfTasks){
+		int numOfThreadExceptions = 0;
+		for(int i = 0; i < numOfTasks && numOfThreadExceptions <= 5; i++){
+			try {
+				TaskResult<String> taskResult = getTaskResultes(writerPool);
+				numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
+			} catch (TimeoutException timeoutException) {
+				logger.error("while getting ad user object from mongo got the time out exception.", timeoutException);
+				break;
+			}
+		}
 	}
 	
 	@Override
@@ -1055,14 +1280,22 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private boolean isOnSameDay(Date date1, Date date2, int dayThreshold){
-		Calendar tmp = Calendar.getInstance();
-		tmp.setTime(date1);
-		Calendar tmp1 = Calendar.getInstance();
-		tmp1.setTime(date2);
-		int day1 = tmp.get(Calendar.DAY_OF_YEAR);
-		int day2 = tmp1.get(Calendar.DAY_OF_YEAR);
+		DateTime dateTime1 = new DateTime(date1.getTime());
+		dateTime1 = dateTime1.withTimeAtStartOfDay();
+		DateTime dateTime2 = new DateTime(date2.getTime());
+		dateTime2 = dateTime2.withTimeAtStartOfDay();
+		if(dateTime1.equals(dateTime2)){
+			return true;
+		}
 		
-		return (Math.abs(day1 - day2) <= dayThreshold);
+		
+		if(dateTime1.isAfter(dateTime2)){
+			dateTime1 = dateTime1.minusDays(dayThreshold);
+			return dateTime1.isBefore(dateTime2);
+		} else{
+			dateTime2 = dateTime2.minusDays(dayThreshold);
+			return dateTime2.isBefore(dateTime1);
+		}
 	}
 
 	public void updateApplicationUserDetails(User user, ApplicationUserDetails applicationUserDetails, boolean isSave) {
@@ -1222,9 +1455,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void updateUserWithCurrentADInfoNewSchema() {
-		String timestamp = adUserRepository.getLatestTimeStamp();
-		if(timestamp != null) {
-			List<User> users = updateUserWithADInfoNewSchema(adUserRepository.findByTimestamp(timestamp));
+		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoch != null) {
+			List<User> users = updateUserWithADInfoNewSchema(adUserRepository.findByTimestampepoch(timestampepoch));
 			userRepository.save(users);
 			saveUserIdUsernamesMapToImpala(new Date());
 		} else {
@@ -1303,7 +1536,6 @@ public class UserServiceImpl implements UserService{
 		user.getAdInfo().setHomePhone(adUser.getHomePhone());
 		user.getAdInfo().setDepartment(adUser.getDepartment());
 		user.getAdInfo().setPosition(adUser.getTitle());
-		user.getAdInfo().setThumbnailPhoto(adUser.getThumbnailPhoto());
 		user.getAdInfo().setDisplayName(adUser.getDisplayName());
 		user.getAdInfo().setLogonHours(adUser.getLogonHours());
 		try {
@@ -1392,4 +1624,146 @@ public class UserServiceImpl implements UserService{
 
 		return user;
 	}
+	
+	class UpdateUserGroupMembershipScoreContext{
+		private Map<String,AdUserFeaturesExtraction> adUserFeaturesExtractionsMap = new HashMap<>();
+		private Map<String,User> usersMap = new HashMap<>();
+		
+		public UpdateUserGroupMembershipScoreContext(List<AdUserFeaturesExtraction> adUserFeaturesExtractions, List<User> users){
+			for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
+				adUserFeaturesExtractionsMap.put(adUserFeaturesExtraction.getUserId(), adUserFeaturesExtraction);
+			}
+
+			for(User user: users){
+				usersMap.put(user.getId(), user);
+			}
+		}
+		
+		
+
+		
+		public User findByUserId(String uid){
+			return usersMap.get(uid);
+		}
+		
+		public AdUserFeaturesExtraction findFeautreByUserId(String uid){
+			return adUserFeaturesExtractionsMap.get(uid);
+		}
+
+
+
+		public Collection<AdUserFeaturesExtraction> getAdUserFeaturesExtractions() {
+			return adUserFeaturesExtractionsMap.values();
+		}
+		
+		public int getAdUserFeaturesExtractionsSize(){
+			return adUserFeaturesExtractionsMap.size();
+		}
+
+
+
+	}
+	
+	class UpdateUserAdInfoContext{
+		private List<AdUser> adUsers = new ArrayList<>();
+		private Map<String,User> guidToUsersMap = new HashMap<>();
+		private int numOfInserts = 0;
+		private int numOfUsernameUpdates = 0;
+		private int numOfSearchFieldUpdates = 0;
+		private int numOfAdInfoUpdates = 0;
+		
+		public UpdateUserAdInfoContext(List<AdUser> adUsers, List<User> users){
+			this.adUsers = adUsers;
+			for(User user: users){
+				guidToUsersMap.put(user.getAdInfo().getObjectGUID(), user);
+			}
+		}
+		
+		
+		public List<AdUser> getAdUsers() {
+			return adUsers;
+		}
+		public void setAdUsers(List<AdUser> adUsers) {
+			this.adUsers = adUsers;
+		}
+		public Map<String,User> getGuidToUsersMap() {
+			return guidToUsersMap;
+		}
+		public void setGuidToUsersMap(Map<String,User> guidToUsersMap) {
+			this.guidToUsersMap = guidToUsersMap;
+		}
+		
+		public User findByObjectGUID(String objectGUID){
+			return guidToUsersMap.get(objectGUID);
+		}
+
+
+		public int getNumOfInserts() {
+			return numOfInserts;
+		}
+
+
+		public void incrementNumOfInserts() {
+			this.numOfInserts++;
+		}
+
+
+		public int getNumOfUsernameUpdates() {
+			return numOfUsernameUpdates;
+		}
+
+
+		public void incrementNumOfUsernameUpdates() {
+			this.numOfUsernameUpdates++;
+		}
+
+
+		public int getNumOfSearchFieldUpdates() {
+			return numOfSearchFieldUpdates;
+		}
+
+
+		public void incrementNumOfSearchFieldUpdates() {
+			this.numOfSearchFieldUpdates++;
+		}
+
+
+		public int getNumOfAdInfoUpdates() {
+			return numOfAdInfoUpdates;
+		}
+
+
+		public void incrementNumOfAdInfoUpdates() {
+			this.numOfAdInfoUpdates++;
+		}
+		
+		
+		
+	}
+	
+	
+	class TaskResult<T>{
+		private T result;
+		private int numOfTaskExceptions = 0;
+		
+		
+		public void setResult(T result) {
+			this.result = result;
+		}
+
+		public T getResult() {
+			return result;
+		}
+
+		public int getNumOfTaskExceptions() {
+			return numOfTaskExceptions;
+		}
+		public void incrementNumOfTaskExceptions() {
+			this.numOfTaskExceptions++;
+		}
+		
+		
+	}
+
+	
 }

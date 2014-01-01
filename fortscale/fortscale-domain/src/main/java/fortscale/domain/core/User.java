@@ -19,10 +19,26 @@ import org.springframework.util.Assert;
 
 @Document
 @CompoundIndexes({
-		@CompoundIndex(name="ad_objectGUID_1", def = "{'adInfo.objectGUID': 1}"),
+		@CompoundIndex(name="ad_objectGUID_1", def = "{'adInfo.objectGUID': 1}", unique=true, sparse=true),
 		@CompoundIndex(name="ad_dn_1", def = "{'adInfo.dn': 1}"),
 		@CompoundIndex(name="ad_emailAddress_1", def = "{'adInfo.emailAddress': 1}"),
+		@CompoundIndex(name="appActive_directoryUserName_1", def = "{'app.active_directory.userName': 1}"),
+		@CompoundIndex(name="appVpnUsername_1", def = "{'app.vpn.userName': 1}"),
+		@CompoundIndex(name="logUsername_authenticationscores_1", def = "{'logUsername.authenticationscores': 1}"),
+		@CompoundIndex(name="logUsername_vpndatares_1", def = "{'logUsername.vpndatares': 1}"),
+		@CompoundIndex(name="logUsername_sshscores_1", def = "{'logUsername.sshscores': 1}"),
 		@CompoundIndex(name="ad_userPrincipalName_1", def = "{'adInfo.userPrincipalName': 1}"),
+		@CompoundIndex(name="ad_userPrincipalName_1", def = "{'adInfo.userPrincipalName': 1}"),
+		@CompoundIndex(name="totalScoreCurScore", def = "{'scores.total.score': -1}"),
+		@CompoundIndex(name="totalScoreCurTrend", def = "{'scores.total.trendScore': -1}"),
+		@CompoundIndex(name="active_directory_group_membershipScoreCurScore", def = "{'scores.active_directory_group_membership.score': -1}"),
+		@CompoundIndex(name="active_directory_group_membershipScoreCurTrend", def = "{'scores.active_directory_group_membership.trendScore': -1}"),
+		@CompoundIndex(name="authScoreCurScore", def = "{'scores.auth.score': -1}"),
+		@CompoundIndex(name="authScoreCurTrend", def = "{'scores.auth.trendScore': -1}"),
+		@CompoundIndex(name="sshScoreCurScore", def = "{'scores.ssh.score': -1}"),
+		@CompoundIndex(name="sshScoreCurTrend", def = "{'scores.ssh.trendScore': -1}"),
+		@CompoundIndex(name="vpnScoreCurScore", def = "{'scores.vpn.score': -1}"),
+		@CompoundIndex(name="vpnScoreCurTrend", def = "{'scores.vpn.trendScore': -1}"),
 })
 public class User extends AbstractDocument {	
 	public static final String appField = "app";
@@ -38,6 +54,7 @@ public class User extends AbstractDocument {
 	@Field(usernameField)
 	private String username;
 	
+	@Indexed
 	@Field(followedField)
 	private Boolean followed = false;
 	
@@ -188,7 +205,9 @@ public class User extends AbstractDocument {
 	
 	
 	
-	
+	public static String getClassifierScoreField(String classifierId) {
+		return String.format("%s.%s", User.classifierScoreField, classifierId);
+	}
 	
 	public static String getClassifierScoreCurrentTimestampField(String classifierId) {
 		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.timestampField);
