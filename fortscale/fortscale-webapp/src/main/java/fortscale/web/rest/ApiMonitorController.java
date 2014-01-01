@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import fortscale.domain.core.Notification;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobReport;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.beans.DataBean;
 
 @Controller
 @RequestMapping("/api/monitor")
@@ -29,13 +31,15 @@ public class ApiMonitorController {
 	@RequestMapping(value = "/summary/{days}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public List<SourceTypeSummary> summary(@PathVariable("days") int days) {
+	public DataBean<List<SourceTypeSummary>> summary(@PathVariable("days") int days) {
 		
 		// get the list of job reports for the last days,
 		// assume it is sorted by source type, job name and start date
 		List<JobReport> reports = monitor.findJobReportsForLastDays(days);
 		
+		// convert job report results to service response format
 		List<SourceTypeSummary> summary = new LinkedList<SourceTypeSummary>();
+		int total = 0;
 		for (JobReport report : reports) {
 			
 			// find the source type summary for the report
@@ -50,6 +54,7 @@ public class ApiMonitorController {
 				sourceSummary = new SourceTypeSummary();
 				sourceSummary.setSourceType(report.getSourceType());
 				summary.add(sourceSummary);
+				total++;
 			}
 			
 			// find the job name summary for the report
@@ -72,13 +77,26 @@ public class ApiMonitorController {
 			if (report.getFinish()!=null)
 				runDetail.setFinish(report.getFinish().getTime());
 			runDetail.setId(report.getId());
-			runDetail.setHasErrors(report.isHasErrors());
-			runDetail.setHasWarnings(report.isHasWarnings());
+			
+			if (report.isHasErrors()) {
+				runDetail.setSeverity("ERROR");
+			} else if (report.isHasWarnings()) {
+				runDetail.setSeverity("WARN");
+			} else if (report.getFinish()!=null) {
+				runDetail.setSeverity("OK");
+			} else {
+				runDetail.setSeverity("NO_DATA");
+			}
 			
 			jobSummary.getRunDetails().add(runDetail);
 		}
 		
-		return summary;
+		DataBean<List<SourceTypeSummary>> ret = new DataBean<List<SourceTypeSummary>>();
+		ret.setData(summary);
+		ret.setTotal(total);
+		ret.setOffset(0);
+		
+		return ret;
 	}
 	
 	/***
@@ -88,7 +106,7 @@ public class ApiMonitorController {
 	@RequestMapping(value = "/summary", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public List<SourceTypeSummary> summary() {
+	public DataBean<List<SourceTypeSummary>> summary() {
 		return summary(7);
 	}
 	
@@ -161,8 +179,7 @@ public class ApiMonitorController {
 		private String id;
 		private long start;
 		private long finish;
-		private boolean hasErrors;
-		private boolean hasWarnings;
+		private String severity = "NO_DATA";
 		
 		public void setId(String id) {
 			this.id = id;
@@ -188,20 +205,12 @@ public class ApiMonitorController {
 			this.finish = finish;
 		}
 
-		public boolean isHasErrors() {
-			return hasErrors;
+		public String getSeverity() {
+			return severity;
 		}
 
-		public void setHasErrors(boolean hasErrors) {
-			this.hasErrors = hasErrors;
-		}
-
-		public boolean isHasWarnings() {
-			return hasWarnings;
-		}
-
-		public void setHasWarnings(boolean hasWarnings) {
-			this.hasWarnings = hasWarnings;
+		public void setSeverity(String severity) {
+			this.severity = severity;
 		}
 	}
 }
