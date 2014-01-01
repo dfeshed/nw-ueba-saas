@@ -1280,14 +1280,22 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private boolean isOnSameDay(Date date1, Date date2, int dayThreshold){
-		Calendar tmp = Calendar.getInstance();
-		tmp.setTime(date1);
-		Calendar tmp1 = Calendar.getInstance();
-		tmp1.setTime(date2);
-		int day1 = tmp.get(Calendar.DAY_OF_YEAR);
-		int day2 = tmp1.get(Calendar.DAY_OF_YEAR);
+		DateTime dateTime1 = new DateTime(date1.getTime());
+		dateTime1 = dateTime1.withTimeAtStartOfDay();
+		DateTime dateTime2 = new DateTime(date2.getTime());
+		dateTime2 = dateTime2.withTimeAtStartOfDay();
+		if(dateTime1.equals(dateTime2)){
+			return true;
+		}
 		
-		return (Math.abs(day1 - day2) <= dayThreshold);
+		
+		if(dateTime1.isAfter(dateTime2)){
+			dateTime1 = dateTime1.minusDays(dayThreshold);
+			return dateTime1.isBefore(dateTime2);
+		} else{
+			dateTime2 = dateTime2.minusDays(dayThreshold);
+			return dateTime2.isBefore(dateTime1);
+		}
 	}
 
 	public void updateApplicationUserDetails(User user, ApplicationUserDetails applicationUserDetails, boolean isSave) {
