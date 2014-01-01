@@ -608,8 +608,7 @@ public class UserServiceImpl implements UserService{
 		
 		List<IUserScoreHistoryElement> ret = new ArrayList<IUserScoreHistoryElement>();
 		ClassifierScore classifierScore = user.getScore(classifierId);
-		Date currentDate = new Date();
-		if(classifierScore != null && isOnSameDay(currentDate, classifierScore.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)){
+		if(classifierScore != null){
 			
 			if(!classifierScore.getPrevScores().isEmpty()){
 				ScoreInfo scoreInfo = classifierScore.getPrevScores().get(0);
@@ -626,9 +625,6 @@ public class UserServiceImpl implements UserService{
 				}
 				for(; i < classifierScore.getPrevScores().size(); i++){
 					scoreInfo = classifierScore.getPrevScores().get(i);
-					if(!isOnSameDay(currentDate, scoreInfo.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)) {
-						break;
-					}
 					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
 					ret.add(userScoreHistoryElement);
 				}
@@ -658,7 +654,6 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		ret = ret.subList(offset, toIndex);
-		Collections.reverse(ret);
 		return ret;
 	}
 
