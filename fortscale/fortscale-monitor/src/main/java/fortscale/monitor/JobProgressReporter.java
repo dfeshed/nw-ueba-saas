@@ -2,6 +2,7 @@ package fortscale.monitor;
 
 import java.util.List;
 
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.monitor.domain.JobReport;
 
 /**
@@ -71,4 +72,11 @@ public interface JobProgressReporter {
 	 * @return the list of job reports found
 	 */
 	public List<JobReport> findJobReportsForLastDays(int days);
+	
+	/**
+	 * Adds a data received metric to the job report
+	 * @param id the job instance id
+	 * @param data the data received details
+	 */
+	public void addDataReceived(String id, JobDataReceived data);
 }

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import fortscale.monitor.JobProgressReporter;
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.monitor.domain.JobMessage;
 import fortscale.monitor.domain.JobReport;
 import fortscale.monitor.domain.JobStep;
@@ -199,6 +200,26 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 		return repository.findByStartGreaterThan(start.getTime(), new Sort(Sort.Direction.ASC, "sourceType", "jobName", "start"));
 	}
 	
+	
+	/**
+	 * Adds a data received metric to the job report
+	 * @param id the job instance id
+	 * @param data the data received details
+	 */
+	public void addDataReceived(String id, JobDataReceived data) {
+		if (id==null || data==null) {
+			logger.warn("addDataReceived was called with id={}, data={}", id, data);
+			return;
+		}
+			
+		JobReport report = repository.findOne(id);
+		if (report==null) {
+			logger.warn("report not found with id={}", id);
+		} else {
+			report.getDataReceived().add(data);
+			repository.save(report);
+		}
+	}
 	
 	
 }

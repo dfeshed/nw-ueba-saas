@@ -12,7 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.internal.verification.VerificationModeFactory;
 
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.monitor.domain.JobReport;
 import fortscale.monitor.domain.JobStep;
 
@@ -373,5 +375,34 @@ public class MongoJobProgressReporterTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void findJobReportsForLastDays_should_throw_exception_if_days_is_zero() {
 		subject.findJobReportsForLastDays(0);
+	}
+	
+	@Test
+	public void addDataReceived_should_append_the_data_to_existing_list() {
+		// arrange
+		JobReport previousReport = new JobReport();
+		previousReport.setStart(new Date());
+		previousReport.getDataReceived().add(new JobDataReceived("Users", 323, "KB"));
+		when(repository.findOne("sss")).thenReturn(previousReport);
+		
+		// act
+		subject.addDataReceived("sss", new JobDataReceived("Groups", 23, "KB"));
+		
+		// assert
+		ArgumentCaptor<JobReport> argument = ArgumentCaptor.forClass(JobReport.class);
+		verify(repository).save(argument.capture());
+		assertTrue(argument.getValue().getDataReceived().toArray().length == 2);
+	}
+	
+	@Test
+	public void addDataReceived_with_invalid_id_should_do_nothing() {
+		// arrange
+		when(repository.findOne("sss")).thenReturn(null);
+		
+		// act
+		subject.addDataReceived("sss", new JobDataReceived("Groups", 23, "KB"));
+		
+		// assert
+		verify(repository, VerificationModeFactory.times(0)).save(any(JobReport.class));
 	}
 }

@@ -13,6 +13,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import fortscale.monitor.domain.JobDataReceived;
+
 /***
  * Shell command class to report on job progress. Use main method to call
  * directly from the command line to report on job progress.
@@ -40,6 +42,7 @@ public class JobProgressReportShellCommand {
  	 * -fs,--finish-step <id> <step-name>>           reports step finish
  	 * -warn, --warning <id> <step-name> <message>	 report warning during step
  	 * -err, --error <id> <step-name> <message>	     report error during step
+ 	 * -data, --data-received <id> <data type> <value> <value type> report data received by the job
 	 */
 	public static void main(String[] args) {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/monitor-context.xml", 
@@ -105,6 +108,14 @@ public class JobProgressReportShellCommand {
 		OptionBuilder.withLongOpt("warning");
 		OptionBuilder.withDescription("report warning during step");
 		options.addOption(OptionBuilder.create("warn"));
+		
+		// add data received
+		OptionBuilder.withArgName("id> <data type> <value> <value type");
+		OptionBuilder.withValueSeparator(' ');
+		OptionBuilder.hasArgs(4);
+		OptionBuilder.withLongOpt("data-received");
+		OptionBuilder.withDescription("reports the data received");
+		options.addOption(OptionBuilder.create("data"));
 		
 		return options;
 	}
@@ -205,7 +216,19 @@ public class JobProgressReportShellCommand {
 				reporter.warn(id, stepName, message);
 			}
 			
-			
+		} else if (cmd.hasOption("data")) {
+			// handle data received
+			String[] args = cmd.getOptionValues("data");
+			if (args.length == 4) {
+				try {
+					String id = args[0];
+					String dataType = args[1];
+					int value = Integer.parseInt(args[2]);
+					String valueType = args[3];
+						
+					reporter.addDataReceived(id, new JobDataReceived(dataType, value, valueType));
+				} catch (NumberFormatException e) {}
+			}
 			
 		} else {
 			logger.error("no option matched in command line: " + cmd.toString());

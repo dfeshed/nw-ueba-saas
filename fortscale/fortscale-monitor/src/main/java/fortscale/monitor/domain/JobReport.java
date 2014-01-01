@@ -1,7 +1,7 @@
 package fortscale.monitor.domain;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -24,6 +24,7 @@ public class JobReport {
 	private List<JobStep> steps;
 	private boolean hasErrors;
 	private boolean hasWarnings;
+	private List<JobDataReceived> dataReceived;
 	
 
 	public JobReport() {}
@@ -91,7 +92,7 @@ public class JobReport {
 
 	public List<JobStep> getSteps() {
 		if (steps == null) {
-			steps = new ArrayList<JobStep>();
+			steps = new LinkedList<JobStep>();
 		}
 		return steps;
 	}
@@ -123,6 +124,17 @@ public class JobReport {
 
 	public void setHasWarnings(boolean hasWarnings) {
 		this.hasWarnings = hasWarnings;
+	}
+
+	public List<JobDataReceived> getDataReceived() {
+		if (dataReceived==null) {
+			dataReceived = new LinkedList<JobDataReceived>();
+		}
+		return dataReceived;
+	}
+
+	public void setDataReceived(List<JobDataReceived> dataReceived) {
+		this.dataReceived = dataReceived;
 	}
 
 

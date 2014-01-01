@@ -3,9 +3,12 @@ package fortscale.monitor;
 import static org.mockito.Mockito.*;
 import junitparams.Parameters;
 import junitparams.JUnitParamsRunner;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import fortscale.monitor.domain.JobDataReceived;
 
 @RunWith(JUnitParamsRunner.class)
 public class JobProgressReportShellCommandTest {
@@ -43,6 +46,11 @@ public class JobProgressReportShellCommandTest {
 				  "-ss xx ",
 				  "-ss xx xx ",
 				  "-fs xx",
+				  "-data id general xxx MB",
+				  "-data id general 3",
+				  "-data id general",
+				  "-data id",
+				  "-data"
 				})
 	public void run_with_invalid_command_should_do_nothing(String argstr) {
  		String[] args = argstr.split(" ");
@@ -94,4 +102,9 @@ public class JobProgressReportShellCommandTest {
 		verify(reporter).warn("JobID", "StepA", "part1 part2 part3");
 	}
 	
+	@Test
+	public void run_with_data_should_pass_values_to_reporter() {
+		subject.run(new String[] { "-data", "jobid", "general", "33", "MB" });
+		verify(reporter).addDataReceived("jobid", new JobDataReceived("general", 33, "MB"));
+	}
 }
