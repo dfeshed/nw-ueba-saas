@@ -203,69 +203,14 @@ public class UserServiceImpl implements UserService{
 			
 			userRepository.save(users);
 		} else{
-			long count = adUserRepository.countByTimestampepoch(timestampepoch);
-			logger.info("getting all {} ad users", count);
-			int numOfPages = (int)((count-1)/readPageSize) + 1;
-			final AtomicInteger counter = new AtomicInteger(-1);
-			CompletionService<UpdateUserAdInfoContext> pool = new ExecutorCompletionService<UpdateUserAdInfoContext>(mongoDbReaderExecuter);
-			for(int i = 0; i < numOfPages; i++){
-				Callable<UpdateUserAdInfoContext> task = new Callable<UpdateUserAdInfoContext>() {
-					@Override
-					public UpdateUserAdInfoContext call(){
-						int page = counter.incrementAndGet();
-						PageRequest pageRequest = new PageRequest(page, readPageSize);
-						List<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch,pageRequest);
-						List<String> guids = new ArrayList<>(adUsers.size());
-						for(AdUser adUser: adUsers){
-							guids.add(adUser.getObjectGUID());
-						}
-						List<User> users = userRepository.findByGUIDs(guids);
-						return new UpdateUserAdInfoContext(adUsers, users);
-					}
-				};
-				pool.submit(task);
-			}
+			CompletionService<UpdateUserAdInfoContext> readerPool = createUpdateUserAdInfoContextReaderPool();
+			int numOfReaderTasks = triggerUserAdInfoReaders(readerPool, timestampepoch);
 			
+			CompletionService<String> writerPool = createUserAdInfoWriterPool();
+			int numOfWriterTasks = processUserAdInfoAndTriggerUserUpdate(readerPool, writerPool, numOfReaderTasks);
 			
-			logger.info("filling all users with ad info data");
-			CompletionService<String> writerPool = new ExecutorCompletionService<String>(mongoDbWriterExecuter);
-			int numOfThreadExceptions = 0;
-			int numOfTasks = 0;
-			for(int i = 0; i < numOfPages && numOfThreadExceptions <= 5; i++){
-				UpdateUserAdInfoContext updateUserAdInfoContext = null;
-				try {
-					TaskResult<UpdateUserAdInfoContext> taskResult = getTaskResultes(pool);
-					numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
-
-					if(taskResult.getResult() == null){
-						logger.error("updateUserAdInfoContext is null");
-						continue;
-					}
-					updateUserAdInfoContext = taskResult.getResult();
-				} catch (TimeoutException timeoutException) {
-					logger.error("while getting ad user object from mongo got the time out exception.", timeoutException);
-					break;
-				}
-
-				List<AdUser> pageAdUsers = updateUserAdInfoContext.getAdUsers();
-				int pageNumOfTasks = 0;
-				logger.info("Going over {} ad users", pageAdUsers.size());
-				for(AdUser adUser: pageAdUsers){
-					try {
-						pageNumOfTasks += updateUserWithADInfo(adUser, updateUserAdInfoContext, writerPool);
-						
-					} catch (Exception e) {
-						logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
-					}
-				}
-				logger.info("finished processing {} ad users info. triggered {} tasks with {} inserts, {} username updates, {} search field updates, {} ad info updates",
-						pageAdUsers.size(), pageNumOfTasks, updateUserAdInfoContext.getNumOfInserts(), updateUserAdInfoContext.getNumOfUsernameUpdates(),
-						updateUserAdInfoContext.getNumOfSearchFieldUpdates(), updateUserAdInfoContext.getNumOfAdInfoUpdates());
-				numOfTasks += pageNumOfTasks;
-			}
-			
-			logger.info("waiting for all the {} writing tasks.", numOfTasks);
-			waitForAllWritingTasks(writerPool, numOfTasks);
+			logger.info("waiting for all the {} writing tasks.", numOfWriterTasks);
+			waitForAllWritingTasks(writerPool, numOfWriterTasks);
 			
 			logger.info("finished updating the user collection.");
 		}
@@ -273,10 +218,93 @@ public class UserServiceImpl implements UserService{
 		logger.info("finished updating users with ad info.");
 	}
 	
+	private CompletionService<UpdateUserAdInfoContext> createUpdateUserAdInfoContextReaderPool(){
+		return new ExecutorCompletionService<UpdateUserAdInfoContext>(mongoDbReaderExecuter);
+	}
+	
+	private CompletionService<String> createUserAdInfoWriterPool(){
+		return new ExecutorCompletionService<String>(mongoDbWriterExecuter);
+	}
+	
+	private int triggerUserAdInfoReaders(CompletionService<UpdateUserAdInfoContext> pool, final Long timestampepoch){
+		long count = adUserRepository.countByTimestampepoch(timestampepoch);
+		logger.info("filling reading tasks of {} ad users", count);
+		int numOfPages = (int)((count-1)/readPageSize) + 1;
+		final AtomicInteger counter = new AtomicInteger(-1);
+		
+		for(int i = 0; i < numOfPages; i++){
+			Callable<UpdateUserAdInfoContext> task = new Callable<UpdateUserAdInfoContext>() {
+				@Override
+				public UpdateUserAdInfoContext call(){
+					int page = counter.incrementAndGet();
+					PageRequest pageRequest = new PageRequest(page, readPageSize);
+					List<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch,pageRequest);
+					List<String> guids = new ArrayList<>(adUsers.size());
+					for(AdUser adUser: adUsers){
+						guids.add(adUser.getObjectGUID());
+					}
+					List<User> users = userRepository.findByGUIDs(guids);
+					return new UpdateUserAdInfoContext(adUsers, users);
+				}
+			};
+			pool.submit(task);
+		}
+		
+		return numOfPages;
+	}
+	
+	private int processUserAdInfoAndTriggerUserUpdate(CompletionService<UpdateUserAdInfoContext> readerPool, CompletionService<String> writerPool, int numOfReaderTasks){
+		logger.info("filling all users with ad info data");
+		
+		int numOfThreadExceptions = 0;
+		int numOfWriterTasks = 0;
+		for(int i = 0; i < numOfReaderTasks && numOfThreadExceptions <= 5; i++){
+			UpdateUserAdInfoContext updateUserAdInfoContext = null;
+			try {
+				TaskResult<UpdateUserAdInfoContext> taskResult = getTaskResultes(readerPool);
+				numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
+
+				if(taskResult.getResult() == null){
+					logger.error("updateUserAdInfoContext is null");
+					continue;
+				}
+				updateUserAdInfoContext = taskResult.getResult();
+			} catch (TimeoutException timeoutException) {
+				logger.error("while getting ad user object from mongo got the time out exception.", timeoutException);
+				break;
+			}
+
+			int pageNumOfTasks = processUserAdInfoAndTriggerUserUpdate(updateUserAdInfoContext, writerPool);
+			numOfWriterTasks += pageNumOfTasks;
+		}
+		
+		return numOfWriterTasks;
+	}
+	
+	private int processUserAdInfoAndTriggerUserUpdate(UpdateUserAdInfoContext updateUserAdInfoContext, CompletionService<String> writerPool){
+		List<AdUser> pageAdUsers = updateUserAdInfoContext.getAdUsers();
+		int pageNumOfTasks = 0;
+		logger.info("Going over {} ad users", pageAdUsers.size());
+		for(AdUser adUser: pageAdUsers){
+			try {
+				pageNumOfTasks += updateUserWithADInfo(adUser, updateUserAdInfoContext, writerPool);
+				
+			} catch (Exception e) {
+				logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
+			}
+		}
+		logger.info("finished processing {} ad users info. triggered {} tasks with {} inserts, {} username updates, {} search field updates, {} ad info updates",
+				pageAdUsers.size(), pageNumOfTasks, updateUserAdInfoContext.getNumOfInserts(), updateUserAdInfoContext.getNumOfUsernameUpdates(),
+				updateUserAdInfoContext.getNumOfSearchFieldUpdates(), updateUserAdInfoContext.getNumOfAdInfoUpdates());
+		
+		return pageNumOfTasks;
+	}
+	
 	private <T> TaskResult<T> getTaskResultes(CompletionService<T> pool) throws TimeoutException{
 		TaskResult<T> ret = new TaskResult<>();
 		while(ret.getResult() == null && ret.getNumOfTaskExceptions() <= 5){
 			try {
+				logger.info("waiting for task results...");
 				ret.setResult(pool.take().get(30, TimeUnit.SECONDS));
 			} catch (InterruptedException | ExecutionException e1) {
 				logger.error("while getting ad user object from mongo got the following exception.", e1);
