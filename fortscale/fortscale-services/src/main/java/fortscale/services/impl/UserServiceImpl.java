@@ -149,7 +149,11 @@ public class UserServiceImpl implements UserService{
 		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
 		if(timestampepoch != null){
 			AdUser adUser = adUserRepository.findByTimestampepochAndObjectGUID(timestampepoch, user.getAdInfo().getObjectGUID());
-			ret = adUser.getThumbnailPhoto();
+			if(adUser == null){
+				logger.error("ad user document not found");
+			} else{
+				ret = adUser.getThumbnailPhoto();
+			}
 		}
 		
 		return ret;
