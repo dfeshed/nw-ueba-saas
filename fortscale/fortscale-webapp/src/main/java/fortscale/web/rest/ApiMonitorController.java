@@ -125,11 +125,15 @@ public class ApiMonitorController {
 	@RequestMapping(value = "/report/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public JobReport findReport(@PathVariable("id") String id) {
+	public DataBean<JobReport> findReport(@PathVariable("id") String id) {
 		Assert.hasText(id);
 		
 		JobReport report = monitor.getByID(id);
-		return report;		
+		
+		DataBean<JobReport> response = new DataBean<JobReport>();
+		response.setData(report);
+		response.setTotal(1);
+		return response;
 	}
 	
 	public class SourceTypeSummary {
