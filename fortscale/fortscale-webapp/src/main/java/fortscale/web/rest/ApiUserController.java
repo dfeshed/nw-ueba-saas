@@ -334,10 +334,12 @@ public class ApiUserController extends BaseController{
 		calendar.add(Calendar.DAY_OF_MONTH, -(limit-1));
 		for(IUserScoreHistoryElement element: userService.getUserScoresHistory(uid, classifierId, offset, limit)){
 			if(calendar.getTime().after(element.getDate())){
-				continue;
+				break;
 			}
 			userScores.add(element);
 		}
+		
+		Collections.reverse(userScores);
 		ret.setData(userScores);
 		ret.setTotal(userScores.size());
 		return ret;
