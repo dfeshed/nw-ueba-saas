@@ -25,6 +25,7 @@ public class JobReport {
 	private boolean hasErrors;
 	private boolean hasWarnings;
 	private List<JobDataReceived> dataReceived;
+	private int totalExceptedSteps;
 	
 
 	public JobReport() {}
@@ -135,6 +136,14 @@ public class JobReport {
 
 	public void setDataReceived(List<JobDataReceived> dataReceived) {
 		this.dataReceived = dataReceived;
+	}
+
+	public int getTotalExceptedSteps() {
+		return totalExceptedSteps;
+	}
+
+	public void setTotalExceptedSteps(int totalExceptedSteps) {
+		this.totalExceptedSteps = totalExceptedSteps;
 	}
 
 

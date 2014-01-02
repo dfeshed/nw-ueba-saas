@@ -44,7 +44,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 	}
 
 	@Override
-	public String startJob(String sourceType, String jobName) {
+	public String startJob(String sourceType, String jobName, int numSteps) {
 		
 		if ((sourceType ==null) || (jobName == null)) {
 			logger.warn(String.format("startJob called with sourceType=%s, jobName=%s", sourceType, jobName));
@@ -55,6 +55,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 		report.setJobName(jobName);
 		report.setSourceType(sourceType);
 		report.setStart(new Date());
+		report.setTotalExceptedSteps(numSteps);
 		
 		JobReport saved = repository.save(report);
 		return saved.getId();

@@ -35,13 +35,13 @@ public class JobProgressReportShellCommand {
 	
 	/***
 	 * Usage: 
- 	 * -h,--help                                     prints help usage
-  	 * -sj,--start-job <source-type> <job-name>      reports job start
-	 * -fj,--finish-job <id>                         reports job finish
-  	 * -ss,--start-step <id> <step-name> <ordinal>   reports step start
- 	 * -fs,--finish-step <id> <step-name>>           reports step finish
- 	 * -warn, --warning <id> <step-name> <message>	 report warning during step
- 	 * -err, --error <id> <step-name> <message>	     report error during step
+ 	 * -h,--help                                     	prints help usage
+  	 * -sj,--start-job <source-type> <job-name> <steps> reports job start
+	 * -fj,--finish-job <id>                         	reports job finish
+  	 * -ss,--start-step <id> <step-name> <ordinal>   	reports step start
+ 	 * -fs,--finish-step <id> <step-name>>           	reports step finish
+ 	 * -warn, --warning <id> <step-name> <message>	 	report warning during step
+ 	 * -err, --error <id> <step-name> <message>	     	report error during step
  	 * -data, --data-received <id> <data type> <value> <value type> report data received by the job
 	 */
 	public static void main(String[] args) {
@@ -63,9 +63,9 @@ public class JobProgressReportShellCommand {
 		options.addOption(OptionBuilder.create("h"));
 		
 		// start job option
-		OptionBuilder.withArgName("source-type> <job-name");
+		OptionBuilder.withArgName("source-type> <job-name> <num-steps");
 		OptionBuilder.withValueSeparator(' ');
-		OptionBuilder.hasArgs(2);
+		OptionBuilder.hasArgs(3);
 		OptionBuilder.withLongOpt("start-job");
 		OptionBuilder.withDescription("reports job start");
 		options.addOption(OptionBuilder.create("sj"));
@@ -147,12 +147,15 @@ public class JobProgressReportShellCommand {
 		if (cmd.hasOption("sj")) {
 			// handle start job
 			String[] args = cmd.getOptionValues("sj");
-			if (args.length == 2) {
-				String sourceType = args[0];
-				String jobName = args[1];
-				
-				String id = reporter.startJob(sourceType, jobName);
-				System.out.print(id);
+			if (args.length == 3) {
+				try {
+					String sourceType = args[0];
+					String jobName = args[1];
+					int numSteps = Integer.parseInt(args[2]);
+					
+					String id = reporter.startJob(sourceType, jobName, numSteps);
+					System.out.print(id);
+				} catch (NumberFormatException e) {}
 			}
 			
 		} else if (cmd.hasOption("fj")) {

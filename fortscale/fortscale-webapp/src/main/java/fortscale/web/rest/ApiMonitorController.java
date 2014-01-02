@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import fortscale.domain.core.Notification;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobReport;
+import fortscale.monitor.domain.JobStep;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 
@@ -87,6 +87,13 @@ public class ApiMonitorController {
 			} else {
 				runDetail.setSeverity("NO_DATA");
 			}
+			
+			// set a flag indicating if all steps were executed
+			runDetail.setRunAllSteps(false);
+			for (JobStep step : report.getSteps()) {
+				if (step.getOrdinal() == report.getTotalExceptedSteps() && step.getFinish()!=null)
+					runDetail.setRunAllSteps(true);
+			}			
 			
 			jobSummary.getRunDetails().add(runDetail);
 		}
@@ -180,6 +187,7 @@ public class ApiMonitorController {
 		private long start;
 		private long finish;
 		private String severity = "NO_DATA";
+		private boolean runAllSteps;
 		
 		public void setId(String id) {
 			this.id = id;
@@ -212,5 +220,13 @@ public class ApiMonitorController {
 		public void setSeverity(String severity) {
 			this.severity = severity;
 		}
+		
+		public boolean isRunAllSteps() {
+			return runAllSteps;
+		}
+
+		public void setRunAllSteps(boolean runAllSteps) {
+			this.runAllSteps = runAllSteps;
+		}		
 	}
 }

@@ -63,9 +63,9 @@ public class JobProgressReportShellCommandTest {
 	
 	@Test
 	public void run_with_sj_should_call_reporter_with_arguments() {
-		subject.run(new String[] { "-sj", "VPN", "Fetch" });
+		subject.run(new String[] { "-sj", "VPN", "Fetch", "0" });
 		
-		verify(reporter).startJob("VPN", "Fetch");
+		verify(reporter).startJob("VPN", "Fetch", 0);
 	}
 	
 	@Test
