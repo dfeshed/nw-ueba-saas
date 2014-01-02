@@ -125,13 +125,15 @@ public class ApiMonitorController {
 	@RequestMapping(value = "/report/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<JobReport> findReport(@PathVariable("id") String id) {
+	public DataBean<List<JobReport>> findReport(@PathVariable("id") String id) {
 		Assert.hasText(id);
 		
 		JobReport report = monitor.getByID(id);
 		
-		DataBean<JobReport> response = new DataBean<JobReport>();
-		response.setData(report);
+		DataBean<List<JobReport>> response = new DataBean<List<JobReport>>();
+		List<JobReport> list = new LinkedList<JobReport>();
+		list.add(report);
+		response.setData(list);
 		response.setTotal(1);
 		return response;
 	}
