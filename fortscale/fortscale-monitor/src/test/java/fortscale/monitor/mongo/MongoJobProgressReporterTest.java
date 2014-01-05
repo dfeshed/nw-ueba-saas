@@ -12,9 +12,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.internal.verification.VerificationModeFactory;
 
-import fortscale.monitor.JobReport;
-import fortscale.monitor.JobStep;
+import fortscale.monitor.domain.JobDataReceived;
+import fortscale.monitor.domain.JobReport;
+import fortscale.monitor.domain.JobStep;
 
 @RunWith(JUnitParamsRunner.class)
 public class MongoJobProgressReporterTest {
@@ -50,7 +52,7 @@ public class MongoJobProgressReporterTest {
 		report.setId("aaaa");
 		when(repository.save((JobReport)anyObject())).thenReturn(report);
 		
-		String id = subject.startJob("sourceA",  "jobA");
+		String id = subject.startJob("sourceA",  "jobA", 0);
 		assertNotNull(id);
 		assertTrue(id.length()>0);
 	}
@@ -65,7 +67,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.save((JobReport)anyObject())).thenReturn(value);
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
-		String id = subject.startJob("sourceA", "jobA");
+		String id = subject.startJob("sourceA", "jobA", 0);
 		JobReport report = subject.getByID(id);
 		
 		assertNotNull(report);
@@ -82,7 +84,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
 		
-		String id = subject.startJob("sourceA", "jobA");
+		String id = subject.startJob("sourceA", "jobA", 0);
 		JobReport report = subject.getByID(id);
 		
 		Date start = report.getStart();
@@ -119,7 +121,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
 		
-		String id = subject.startJob("SourceA", "JobA");
+		String id = subject.startJob("SourceA", "JobA", 0);
 		subject.finishJob(id);
 		
 		JobReport report = subject.getByID(id);
@@ -156,7 +158,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.save((JobReport)anyObject())).thenReturn(value);
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
-		String id = subject.startJob("SourceA",  "JobA");
+		String id = subject.startJob("SourceA",  "JobA", 0);
 		subject.startStep(id, null, 0);
 		
 		// do nothing, ensure no exception is thrown
@@ -174,7 +176,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
 				
-		String id = subject.startJob("SourceA",  "JobA");
+		String id = subject.startJob("SourceA",  "JobA", 0);
 		subject.startStep(id, "Step1", 0);
 		
 		JobReport report = subject.getByID(id);
@@ -193,7 +195,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
 		
-		String id = subject.startJob("SourceA",  "JobA");
+		String id = subject.startJob("SourceA",  "JobA", 0);
 		subject.finishStep(id, "IgnoreMe");
 		
 		// do nothing, ensure no exception is thrown
@@ -214,7 +216,7 @@ public class MongoJobProgressReporterTest {
 		report.setId("aaaa");
 		when(repository.save((JobReport)anyObject())).thenReturn(report);
 		
-		String id = subject.startJob("SourceA",  "JobA");
+		String id = subject.startJob("SourceA",  "JobA", 0);
 		subject.finishStep(id, null);
 		
 		// do nothing, ensure no exception is thrown
@@ -235,7 +237,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.save((JobReport)anyObject())).thenReturn(value);
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
-		String id = subject.startJob("SourceA",  "JobA");
+		String id = subject.startJob("SourceA",  "JobA", 0);
 		subject.startStep(id, "StepA",  0);
 		subject.finishStep(id, "StepA");
 		
@@ -370,4 +372,37 @@ public class MongoJobProgressReporterTest {
 		assertTrue(argument.getValue().isHasWarnings());
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void findJobReportsForLastDays_should_throw_exception_if_days_is_zero() {
+		subject.findJobReportsForLastDays(0);
+	}
+	
+	@Test
+	public void addDataReceived_should_append_the_data_to_existing_list() {
+		// arrange
+		JobReport previousReport = new JobReport();
+		previousReport.setStart(new Date());
+		previousReport.getDataReceived().add(new JobDataReceived("Users", 323, "KB"));
+		when(repository.findOne("sss")).thenReturn(previousReport);
+		
+		// act
+		subject.addDataReceived("sss", new JobDataReceived("Groups", 23, "KB"));
+		
+		// assert
+		ArgumentCaptor<JobReport> argument = ArgumentCaptor.forClass(JobReport.class);
+		verify(repository).save(argument.capture());
+		assertTrue(argument.getValue().getDataReceived().toArray().length == 2);
+	}
+	
+	@Test
+	public void addDataReceived_with_invalid_id_should_do_nothing() {
+		// arrange
+		when(repository.findOne("sss")).thenReturn(null);
+		
+		// act
+		subject.addDataReceived("sss", new JobDataReceived("Groups", 23, "KB"));
+		
+		// assert
+		verify(repository, VerificationModeFactory.times(0)).save(any(JobReport.class));
+	}
 }

@@ -1,5 +1,10 @@
 package fortscale.monitor;
 
+import java.util.List;
+
+import fortscale.monitor.domain.JobDataReceived;
+import fortscale.monitor.domain.JobReport;
+
 /**
  * Defines operations to report on jobs progress and steps progress
  */
@@ -17,9 +22,10 @@ public interface JobProgressReporter {
 	 * Reports start time of the job for the source type 
 	 * @param sourceType the type of data the job handles, i.e. VPN, SSH
 	 * @param jobName the name of the job
+	 * @param numSteps the total number steps expected in the job
 	 * @return the job instance id
 	 */
-	public String startJob(String sourceType, String jobName);
+	public String startJob(String sourceType, String jobName, int numSteps);
 	
 	/**
 	 * Reports the time the job has finished executing
@@ -59,4 +65,19 @@ public interface JobProgressReporter {
 	 * @param message the error message
 	 */
 	public void warn(String id, String stepName, String message);
+	
+	
+	/**
+	 * Gets the list of job reports in the last given days
+	 * @param days the number of days to retrieve
+	 * @return the list of job reports found
+	 */
+	public List<JobReport> findJobReportsForLastDays(int days);
+	
+	/**
+	 * Adds a data received metric to the job report
+	 * @param id the job instance id
+	 * @param data the data received details
+	 */
+	public void addDataReceived(String id, JobDataReceived data);
 }

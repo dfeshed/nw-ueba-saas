@@ -1,21 +1,27 @@
 package fortscale.monitor.mongo;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import fortscale.monitor.JobMessage;
 import fortscale.monitor.JobProgressReporter;
-import fortscale.monitor.JobReport;
-import fortscale.monitor.JobStep;
+import fortscale.monitor.domain.JobDataReceived;
+import fortscale.monitor.domain.JobMessage;
+import fortscale.monitor.domain.JobReport;
+import fortscale.monitor.domain.JobStep;
 
 @Component
 public class MongoJobProgressReporter implements JobProgressReporter {
 
 	private static Logger logger = LoggerFactory.getLogger(MongoJobProgressReporter.class);
+	
+	private enum Severity { ERROR, WARN };
 	
 	@Autowired
 	private JobReportRepository repository;
@@ -38,7 +44,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 	}
 
 	@Override
-	public String startJob(String sourceType, String jobName) {
+	public String startJob(String sourceType, String jobName, int numSteps) {
 		
 		if ((sourceType ==null) || (jobName == null)) {
 			logger.warn(String.format("startJob called with sourceType=%s, jobName=%s", sourceType, jobName));
@@ -49,6 +55,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 		report.setJobName(jobName);
 		report.setSourceType(sourceType);
 		report.setStart(new Date());
+		report.setTotalExceptedSteps(numSteps);
 		
 		JobReport saved = repository.save(report);
 		return saved.getId();
@@ -177,6 +184,43 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 		}
 	}
 
-	private enum Severity { ERROR, WARN };
+	
+	/**
+	 * Gets the list of job reports in the last given days
+	 * @param days the number of days to retrieve
+	 * @return the list of job reports found
+	 */
+	public List<JobReport> findJobReportsForLastDays(int days) {
+		if (days<1)
+			throw new IllegalArgumentException("days must be greater than 0");
+		
+		// calculate data value for start date
+		Calendar start = Calendar.getInstance();
+		start.add(Calendar.DATE, - days);
+		
+		return repository.findByStartGreaterThan(start.getTime(), new Sort(Sort.Direction.ASC, "sourceType", "jobName", "start"));
+	}
+	
+	
+	/**
+	 * Adds a data received metric to the job report
+	 * @param id the job instance id
+	 * @param data the data received details
+	 */
+	public void addDataReceived(String id, JobDataReceived data) {
+		if (id==null || data==null) {
+			logger.warn("addDataReceived was called with id={}, data={}", id, data);
+			return;
+		}
+			
+		JobReport report = repository.findOne(id);
+		if (report==null) {
+			logger.warn("report not found with id={}", id);
+		} else {
+			report.getDataReceived().add(data);
+			repository.save(report);
+		}
+	}
+	
 	
 }
