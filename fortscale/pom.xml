@@ -143,6 +143,8 @@
 		<module>fortscale-activedirectory</module>
 		<module>fortscale-batch</module>
 		<module>fortscale-monitor</module>
+		<module>fortscale-collection</module>
+		<module>fortscale-utilities</module>
 
 		<!-- <module>fortscale-webapp-security</module> -->
 	</modules>
