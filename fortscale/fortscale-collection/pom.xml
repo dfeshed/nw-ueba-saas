@@ -105,9 +105,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-utilities</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.fortscale.utils</groupId>
+			<artifactId>geoip_service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>

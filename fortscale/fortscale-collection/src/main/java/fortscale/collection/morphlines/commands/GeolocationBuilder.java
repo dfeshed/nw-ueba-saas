@@ -12,8 +12,8 @@ import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
-import fortscale.utils.geoip.GeoIPInfo;
-import fortscale.utils.geoip.GeoIPService;
+import com.fortscale.utils.geoip.GeoIPInfo;
+import com.fortscale.utils.geoip.GeoIPService;
 import com.typesafe.config.Config;
 
 /**
