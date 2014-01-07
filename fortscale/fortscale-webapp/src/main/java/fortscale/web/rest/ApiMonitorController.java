@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,9 +74,8 @@ public class ApiMonitorController {
 			
 			// add the run detail for the job summary
 			RunDetail runDetail = new RunDetail();
-			runDetail.setStart(report.getStart().getTime());
-			if (report.getFinish()!=null)
-				runDetail.setFinish(report.getFinish().getTime());
+			runDetail.setStart(report.getStart());
+			runDetail.setFinish(report.getFinish());
 			runDetail.setId(report.getId());
 			
 			if (report.isHasErrors()) {
@@ -190,8 +190,8 @@ public class ApiMonitorController {
 	public class RunDetail {
 		
 		private String id;
-		private long start;
-		private long finish;
+		private Date start;
+		private Date finish;
 		private String severity = "NO_DATA";
 		private boolean runAllSteps;
 		
@@ -203,19 +203,19 @@ public class ApiMonitorController {
 			return id;
 		}
 
-		public long getStart() {
+		public Date getStart() {
 			return start;
 		}
 
-		public void setStart(long start) {
+		public void setStart(Date start) {
 			this.start = start;
 		}
 
-		public long getFinish() {
+		public Date getFinish() {
 			return finish;
 		}
 
-		public void setFinish(long finish) {
+		public void setFinish(Date finish) {
 			this.finish = finish;
 		}
 
