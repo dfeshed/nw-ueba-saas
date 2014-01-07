@@ -2,13 +2,13 @@ package fortscale.collection.morphlines.commands;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+
 import com.typesafe.config.Config;
 
 public class FortscaleExtractDomainNameBuilder implements CommandBuilder {
@@ -21,7 +21,7 @@ public class FortscaleExtractDomainNameBuilder implements CommandBuilder {
 	@Override
 	public Command build(Config config, Command parent, Command child,
 			MorphlineContext context) {
-		return new FortscaleExtractDomainName(config, parent, child, context);
+		return new FortscaleExtractDomainName(this, config, parent, child, context);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -31,21 +31,18 @@ public class FortscaleExtractDomainNameBuilder implements CommandBuilder {
 
 		private final String recordField;
 
-		public FortscaleExtractDomainName(Config config, Command parent, Command child,
+		public FortscaleExtractDomainName(CommandBuilder builder, Config config, Command parent, Command child,
 				MorphlineContext context) {
-			super(config, parent, child, context);
+			super(builder, config, parent, child, context);
 			this.recordField = getConfigs().getString(config, "recordField");
 			validateArguments();
 		}
 
 		@Override
 		protected boolean doProcess(Record inputRecord)  {
-			List tmp = inputRecord.get(this.recordField );
-			if (tmp != null && tmp.size() > 0)
-			{
-				String domain =(String) tmp.get(0);
-				tmp.set(0, normalizeDnsName(domain));
-			}
+			String domain = getField(inputRecord, recordField);
+			domain = normalizeDnsName(domain);
+
 			return super.doProcess(inputRecord);
 
 		}

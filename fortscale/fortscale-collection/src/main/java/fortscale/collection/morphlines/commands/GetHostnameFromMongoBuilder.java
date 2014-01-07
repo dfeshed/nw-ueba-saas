@@ -26,7 +26,7 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 
 	@Override
 	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
-		return new GetHostnameFromMongo(config, parent, child, context);
+		return new GetHostnameFromMongo(this, config, parent, child, context);
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
@@ -47,9 +47,9 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 		private static MongoClient mongoClient = null;
 		private static DBCollection dbCollection = null;
 
-		public GetHostnameFromMongo(Config config, Command parent, Command child,
+		public GetHostnameFromMongo(CommandBuilder builder, Config config, Command parent, Command child,
 				MorphlineContext context) {
-			super(config, parent, child, context);
+			super(builder, config, parent, child, context);
 			this.ipAddress = getConfigs().getString(config, "ipAddress");
 			this.timeStamp = getConfigs().getString(config, "timeStamp");
 			this.host = getConfigs().getString(config, "host");
@@ -116,10 +116,6 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 
 			return super.doProcess(inputRecord);
 
-		}
-
-		private String getHostname(String ip) {
-			return getHostname(ip, 0);
 		}
 
 		private String getHostname(String ip, int ts) {

@@ -23,6 +23,7 @@
 		<commons-cli.version>1.2</commons-cli.version>
 		<kite-version>0.10.0</kite-version>
 		<hive.version>0.10.0-cdh4.3.1</hive.version>
+		<quartz.version>2.2.1</quartz.version>
 	</properties>
 
 	<repositories>
@@ -34,6 +35,18 @@
 	</repositories>
 
 	<dependencies>
+
+		<!-- quartz -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>${quartz.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz-jobs</artifactId>
+			<version>${quartz.version}</version>
+		</dependency>
 
 		<!-- test -->
 		<dependency>
@@ -103,13 +116,13 @@
 			<artifactId>dnsjava</artifactId>
 			<version>2.1.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.fortscale.utils</groupId>
 			<artifactId>geoip_service</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.hive</groupId>
 			<artifactId>hive-jdbc</artifactId>
@@ -128,6 +141,14 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<!-- download java doc plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
 			</plugin>
 			<!-- copy non packaged resources to target -->

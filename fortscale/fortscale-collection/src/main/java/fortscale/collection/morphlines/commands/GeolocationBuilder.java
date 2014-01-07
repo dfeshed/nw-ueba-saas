@@ -2,7 +2,6 @@ package fortscale.collection.morphlines.commands;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +28,7 @@ public class GeolocationBuilder implements CommandBuilder {
 
 	@Override
 	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
-		return new Geolocation(config, parent, child, context);
+		return new Geolocation(this, config, parent, child, context);
 	}
 
 	private static final class Geolocation extends AbstractCommand {
@@ -38,8 +37,8 @@ public class GeolocationBuilder implements CommandBuilder {
 		private final String outputFieldName;
 		private GeoIPService geoIpService;
 
-		public Geolocation(Config config, Command parent, Command child, MorphlineContext context) {
-			super(config, parent, child, context);
+		public Geolocation(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
+			super(builder, config, parent, child, context);
 			// Get the field which holds the IP addresses
 			this.recordField = getConfigs().getString(config, "input_record_name");
 			// This is the field name we'll use to hold the country name
@@ -61,7 +60,7 @@ public class GeolocationBuilder implements CommandBuilder {
 		@Override
 		protected boolean doProcess(Record inputRecord) {
 
-			List tmp = inputRecord.get(this.recordField);
+			List<?> tmp = inputRecord.get(this.recordField);
 			if (tmp != null && tmp.size() > 0) {
 				// Get the IP Address
 				String ipAddress = (String) tmp.get(0);
