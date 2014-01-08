@@ -144,6 +144,7 @@
 		<module>fortscale-batch</module>
 		<module>fortscale-monitor</module>
 		<module>fortscale-collection</module>
+		<module>fortscale-utils</module>
 
 		<!-- <module>fortscale-webapp-security</module> -->
 	</modules>
