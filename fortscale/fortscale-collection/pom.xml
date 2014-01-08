@@ -129,6 +129,12 @@
 			<version>${hive.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-utils</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
