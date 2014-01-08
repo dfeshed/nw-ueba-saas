@@ -1,10 +1,8 @@
+/.classpath
 /.metadata
-/Servers
+/.project
 /.settings
 /RemoteSystemsTempFiles
-fortscale/fortscale-ingest/.settings/
-fortscale/fortscale-ingest/output/
-fortscale/fortscale-ingest/target/
-fortscale/fortscale-ingest/.project
-fortscale/fortscale-ingest/.springBeans
-fortscale/fortscale-ingest/testFile.log
+/Servers
+target
+testFile.log
