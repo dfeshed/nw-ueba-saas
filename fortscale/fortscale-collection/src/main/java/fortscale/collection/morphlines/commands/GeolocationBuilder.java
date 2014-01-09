@@ -2,7 +2,6 @@ package fortscale.collection.morphlines.commands;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +11,7 @@ import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+
 import com.fortscale.utils.geoip.GeoIPInfo;
 import com.fortscale.utils.geoip.GeoIPService;
 import com.typesafe.config.Config;
