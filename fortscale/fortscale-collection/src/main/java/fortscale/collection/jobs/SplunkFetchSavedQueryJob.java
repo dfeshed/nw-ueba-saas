@@ -36,6 +36,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 	private String savedQuery;
 	private String outputPath;
 	private String returnKeys;
+	private String filenameFormat;
 	
 	private File outputTempFile;
 	private File outputFile;
@@ -63,7 +64,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 		
 		
 		// connect to splunk
-		logger.debug("trying to connect splunk at server={}, port={}, username={}, password={}", hostName, port, username, password);
+		logger.debug("trying to connect splunk at {}@{}:{}", username, hostName, port);
 		SplunkApi splunkApi = new SplunkApi(hostName, port, username, password);
 		
 		// configure events handler to save events to csv file
@@ -106,6 +107,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 		savedQuery = getJobDataMapStringValue(map, "savedQuery");
 		outputPath = getJobDataMapStringValue(map, "outputPath");
 		returnKeys = getJobDataMapStringValue(map, "returnKeys");
+		filenameFormat = getJobDataMapStringValue(map, "filenameFormat");
 	}
 	
 	private File ensureOutputDirectoryExists(String outputPath) throws JobExecutionException {
@@ -127,7 +129,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 	private void createOutputFile(JobExecutionContext context, File outputDir) throws JobExecutionException {
 		
 		// generate filename according to the job name and time
-		String filename = String.format("%s_%d.csv", context.getJobDetail().getKey().getName(), (new Date()).getTime() );
+		String filename = String.format(filenameFormat, (new Date()).getTime());
 		
 		outputTempFile = new File(outputDir, filename + ".part");
 		outputFile = new File(outputDir, filename);

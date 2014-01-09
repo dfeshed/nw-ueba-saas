@@ -21,7 +21,7 @@
                 </entry>
                 <entry>
                     <key>port</key>
-                    <value>8000</value>
+                    <value>8089</value>
                 </entry>
                 <entry>
                 	<key>username</key>
@@ -50,6 +50,10 @@
 				<entry>
 					<key>returnKeys</key>
 					<value>_raw</value>
+				</entry>
+				<entry>
+					<key>filenameFormat</key>
+					<value>VPN_%d.csv</value>
 				</entry>
             </job-data-map>
 		</job>
