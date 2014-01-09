@@ -6,5 +6,17 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:component-scan base-package="fortscale.collection" />
+	<import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
+	<import resource="classpath*:META-INF/spring/monitor-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
+	
+	<context:property-placeholder location="classpath*:META-INF/fortscale-collection.properties" order="1" ignore-unresolvable="true"/>
+    <context:property-placeholder location="classpath*:META-INF/*.properties" order="2"/>
+	<context:property-placeholder location="classpath*:META-INF/spring/*.properties" order="3"/>
+    <context:spring-configured/>
+    
+	<context:component-scan base-package="fortscale" />
 </beans>
