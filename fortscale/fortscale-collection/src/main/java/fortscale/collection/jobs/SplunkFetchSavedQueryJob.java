@@ -2,6 +2,7 @@ package fortscale.collection.jobs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Properties;
 
 import org.quartz.DisallowConcurrentExecution;
@@ -14,8 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
-import static fortscale.collection.jobs.JobDataMapExtension.getJobDataMapIntValue;
-import static fortscale.collection.jobs.JobDataMapExtension.getJobDataMapStringValue;
+import static fortscale.collection.JobDataMapExtension.getJobDataMapIntValue;
+import static fortscale.collection.JobDataMapExtension.getJobDataMapStringValue;
 
 
 /**
@@ -126,7 +127,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 	private void createOutputFile(JobExecutionContext context, File outputDir) throws JobExecutionException {
 		
 		// generate filename according to the job name and time
-		String filename = String.format("{0}_{1}.csv", context.getJobDetail().getKey().getName(), context.getJobRunTime());
+		String filename = String.format("%s_%d.csv", context.getJobDetail().getKey().getName(), (new Date()).getTime() );
 		
 		outputTempFile = new File(outputDir, filename + ".part");
 		outputFile = new File(outputDir, filename);

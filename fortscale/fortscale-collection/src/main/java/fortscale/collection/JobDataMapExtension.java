@@ -1,4 +1,4 @@
-package fortscale.collection.jobs;
+package fortscale.collection;
 
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionException;
@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 /**
  * static helper extensions method on top of JobDataMap
  */
-class JobDataMapExtension {
+public class JobDataMapExtension {
 
 	private static Logger logger = LoggerFactory.getLogger(JobDataMapExtension.class);
 	
