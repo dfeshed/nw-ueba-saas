@@ -12,7 +12,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import fortscale.monitor.JobProgressReporter;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
 import static fortscale.collection.JobDataMapExtension.getJobDataMapIntValue;
@@ -41,6 +43,8 @@ public class SplunkFetchSavedQueryJob implements Job {
 	private File outputTempFile;
 	private File outputFile;
 	
+	@Autowired 
+	private JobProgressReporter monitor;
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -49,6 +53,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 		// get the job group name to be used using monitoring 
 		String sourceName = context.getJobDetail().getKey().getGroup();
 		String jobName = context.getJobDetail().getKey().getName();
+		String monitorId = monitor.startJob(sourceName, jobName, 3);
 		
 		// get parameters from context
 		logger.debug("getting parameters from job context");
@@ -56,15 +61,17 @@ public class SplunkFetchSavedQueryJob implements Job {
 		
 		// ensure output path exists
 		logger.debug("creating output file at {}", outputPath);
+		monitor.startStep(monitorId, "Prepare sink file", 1);
 		File outputDir = ensureOutputDirectoryExists(outputPath);
 		
 		// try to create output file
 		createOutputFile(context, outputDir);
 		logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
-		
+		monitor.finishStep(monitorId, "Prepare sink file");
 		
 		// connect to splunk
 		logger.debug("trying to connect splunk at {}@{}:{}", username, hostName, port);
+		monitor.startStep(monitorId, "Query Splunk", 2);
 		SplunkApi splunkApi = new SplunkApi(hostName, port, username, password);
 		
 		// configure events handler to save events to csv file
@@ -87,10 +94,14 @@ public class SplunkFetchSavedQueryJob implements Job {
 			logger.error("error running splunk query", e);
 			throw new JobExecutionException("error running splunk query");
 		}
+		monitor.finishStep(monitorId, "Query Splunk");
 		
 		// rename output file once get from splunk finished
+		monitor.startStep(monitorId, "Rename Output", 3);
 		outputTempFile.renameTo(outputFile);
+		monitor.finishStep(monitorId, "Rename Output");
 		
+		monitor.finishJob(monitorId);
 		logger.info("vpn fetch job finished");
 	}
 	

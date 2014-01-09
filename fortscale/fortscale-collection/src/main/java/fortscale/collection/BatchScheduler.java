@@ -22,8 +22,11 @@ public class BatchScheduler {
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 			
 			// loading spring application context
-			ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
-			
+			ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+					"classpath*:META-INF/spring/collection-context.xml",
+					"classpath*:META-INF/spring/monitor-context.xml", 
+					"classpath*:META-INF/spring/mongo-context.xml");
+						
 			// set spring bean supporting job factory for the scheduler
 			AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
 			jobFactory.setApplicationContext(context);
