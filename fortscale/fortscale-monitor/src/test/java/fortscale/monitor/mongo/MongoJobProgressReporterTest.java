@@ -395,6 +395,23 @@ public class MongoJobProgressReporterTest {
 	}
 	
 	@Test
+	public void addDataReceived_should_normalize_value_to_MB() {
+		// arrange
+		JobReport previousReport = new JobReport();
+		previousReport.setStart(new Date());
+		when(repository.findOne("sss")).thenReturn(previousReport);
+		
+		// act
+		subject.addDataReceived("sss", new JobDataReceived("Groups", 5300, "KB"));
+		
+		// assert
+		ArgumentCaptor<JobReport> argument = ArgumentCaptor.forClass(JobReport.class);
+		verify(repository).save(argument.capture());
+		assertTrue(argument.getValue().getDataReceived().iterator().next().getValue() == 5);
+		assertTrue(argument.getValue().getDataReceived().iterator().next().getValueType() == "MB");
+	}
+	
+	@Test
 	public void addDataReceived_with_invalid_id_should_do_nothing() {
 		// arrange
 		when(repository.findOne("sss")).thenReturn(null);

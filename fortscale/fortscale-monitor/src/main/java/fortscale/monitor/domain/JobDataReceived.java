@@ -16,6 +16,20 @@ public class JobDataReceived {
 		this.dataType = dataType;
 		this.value = value;
 		this.valueType = valueType;
+		
+		normalizeValue();
+	}
+	
+	private void normalizeValue() {
+		if (valueType!=null && value>1024) {
+			if (valueType.equalsIgnoreCase("KB")) {
+				valueType = "MB";
+				value = value / 1024;
+			} else if (valueType.equalsIgnoreCase("MB")) {
+				valueType = "GB";
+				value = value / 1024;
+			}
+		}
 	}
 	
 	public String getDataType() {
@@ -29,6 +43,8 @@ public class JobDataReceived {
 	}
 	public void setValue(int value) {
 		this.value = value;
+		
+		normalizeValue();
 	}
 	public String getValueType() {
 		return valueType;
