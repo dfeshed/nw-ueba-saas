@@ -7,12 +7,12 @@
       		<onMatch>DENY</onMatch>
       		<onMismatch>ACCEPT</onMismatch>
     	</filter>
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}%n
-			</Pattern>
-		</layout>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}%n</Pattern>
+		</encoder>
 	</appender>
-	<appender name="TestLog" class="ch.qos.logback.core.FileAppender">
+
+	<appender name="LogFile" class="ch.qos.logback.core.FileAppender">
 		<file>logFile.log</file>
 		<append>true</append>
 		<encoder>
@@ -23,7 +23,7 @@
 
 	<root level="debug">
 		<appender-ref ref="STDOUT" />
-		<appender-ref ref="TestLog" />
+		<appender-ref ref="LogFile" />
 	</root>
 	
 </configuration>
