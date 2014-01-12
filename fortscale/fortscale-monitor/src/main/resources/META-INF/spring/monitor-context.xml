@@ -8,7 +8,7 @@
 						http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd         
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:property-placeholder location="classpath:META-INF/fortscale-monitor.properties" order="1" ignore-unresolvable="true"/>
+	<context:property-placeholder location="classpath:META-INF/fortscale-monitor.properties"/>
 
 	<context:component-scan base-package="fortscale.monitor" />
 	<mongo:repositories base-package="fortscale.monitor" />	
