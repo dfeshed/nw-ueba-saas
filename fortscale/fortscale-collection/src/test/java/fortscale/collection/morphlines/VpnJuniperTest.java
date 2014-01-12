@@ -21,7 +21,7 @@ public class VpnJuniperTest {
 		morphlineTester.init(confFile, vpnOutputFields);
 	}
 
-	@Test
+//	@Test
 	@Parameters
 	public void test(String testCase, String inputLine, String expectedOutput) {
 		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
