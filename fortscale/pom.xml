@@ -137,6 +137,7 @@
 	
 	<modules>
 		<module>fortscale-global-config</module>
+		<module>fortscale-utils</module>
 		<module>fortscale-domain</module>
 		<module>fortscale-webapp</module>
 		<module>fortscale-services</module>
