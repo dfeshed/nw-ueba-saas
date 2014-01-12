@@ -118,7 +118,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	
 	
-	private Map<String, Map<String, String>> rowFieldRegexFilter;
+	private Map<String, Map<String, String>> rowFieldRegexFilter = new HashMap<>();
 	
 	
 	
