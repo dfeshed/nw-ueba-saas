@@ -21,7 +21,7 @@ public class VpnJuniperTest {
 		morphlineTester.init(confFile, vpnOutputFields);
 	}
 
-//	@Test
+	@Test
 	@Parameters
 	public void test(String testCase, String inputLine, String expectedOutput) {
 		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
@@ -34,13 +34,13 @@ public class VpnJuniperTest {
         return	$(
         		$ (
         		"Successful VPN Authentication with Empty username",
-				"Nov  7 14:41:28 11.155.45.2 Juniper: 2013-11-07 14:41:28 - ive - [208.91.35.4] - VPN Tunneling: Session started for user with IP 11.155.46.100, hostname victory.local",
+				"Nov 7 14:41:28 11.155.45.2 Juniper: 2013-11-07 14:41:28 - ive - [208.91.35.4] - VPN Tunneling: Session started for user with IP 11.155.46.100, hostname victory.local",
 				null
 				),
-        		$ (
+				$ (
         		"Regular Successful VPN Authentication",
-				"Nov  7 14:41:28 11.155.45.2 Juniper: 2013-11-07 14:41:28 - ive - [208.91.35.4] sergio-contractor(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.100, hostname victory.local",
-				"2013-11-07 14:41:28,1383864088,sergio-contractor,208.91.35.4,11.155.46.100,SUCCESS,Nov  7 14:41:28 11.155.45.2 Juniper: 2013-11-07 14:41:28 - ive - [208.91.35.4] sergio-contractor(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.100, hostname victory.local,United States,victory.local"
+				"Nov 7 14:41:28 11.155.45.2 Juniper: 2013-11-07 14:41:28 - ive - [208.91.35.4] sergio-contractor(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.100, hostname victory.local",
+				"2013-11-07 14:41:28,1383835288,sergio-contractor,208.91.35.4,11.155.46.100,SUCCESS,Nov 7 14:41:28 11.155.45.2 Juniper: 2013-11-07 14:41:28 - ive - [208.91.35.4] sergio-contractor(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.100, hostname victory.local,United States,victory.local"
 				),
 				$ (
 				"Regular Successful VPN Authentication",
