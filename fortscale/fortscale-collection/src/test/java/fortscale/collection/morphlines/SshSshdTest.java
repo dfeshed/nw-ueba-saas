@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 public class SshSshdTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "src/main/resources/conf-files/readSSH_centos.conf";
+	private String confFile = "src/main/non-packaged-resources/conf-files/readSSH_centos.conf";
 	private String[] sshOutputFields = new String[] {"date_time","date_time_epoch","ip","source_machine","user","status","auth_method","message","client_hostname"};
 													   
 

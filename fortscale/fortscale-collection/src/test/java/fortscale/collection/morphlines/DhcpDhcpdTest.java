@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 public class DhcpDhcpdTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "src/main/resources/conf-files/read_DHCPD.conf";
+	private String confFile = "src/main/non-packaged-resources/conf-files/read_DHCPD.conf";
 	private String[] dhcpOutputFields = new String[] {"date_time","date_time_epoch","ip","hostname","mac_address"};
 
 	
