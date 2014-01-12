@@ -30,6 +30,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 
 	private static Logger logger = LoggerFactory.getLogger(SplunkFetchSavedQueryJob.class);
 		
+	//TODO: get common data from configuration
 	private String hostName;
 	private int port;
 	private String username;
@@ -98,8 +99,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 		monitor.finishStep(monitorId, "Query Splunk");
 		
 		// report to monitor the file size
-		int sizeInKB = (int) (outputTempFile.length() / 1024);
-		monitor.addDataReceived(monitorId, new JobDataReceived("Events", sizeInKB, "KB"));
+		monitor.addDataReceived(monitorId, getJobDataReceived(outputTempFile));
 		
 		// rename output file once get from splunk finished
 		monitor.startStep(monitorId, "Rename Output", 3);
@@ -142,8 +142,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 		}
 	}
 	
-	private void createOutputFile(JobExecutionContext context, File outputDir) throws JobExecutionException {
-		
+	private void createOutputFile(JobExecutionContext context, File outputDir) throws JobExecutionException {	
 		// generate filename according to the job name and time
 		String filename = String.format(filenameFormat, (new Date()).getTime());
 		
@@ -159,6 +158,15 @@ public class SplunkFetchSavedQueryJob implements Job {
 		} catch (IOException e) {
 			logger.error("error creating file " + outputTempFile.getPath(), e);
 			throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
+		}
+	}
+	
+	private JobDataReceived getJobDataReceived(File output) {
+		if (output.length() < 1024) {
+			return new JobDataReceived("Events", (int)output.length(), "Bytes");
+		} else {
+			int sizeInKB = (int) (outputTempFile.length() / 1024);
+			return new JobDataReceived("Events", sizeInKB, "KB");
 		}
 	}
 }

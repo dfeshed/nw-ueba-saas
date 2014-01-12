@@ -9,21 +9,18 @@ import org.kitesdk.morphline.base.Compiler;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
-import fortscale.collection.ItemsProcessor;
-
 /**
  * process items using a given kite (A.K.A morphline) conf file
  */
-public class MorphlinesItemsProcessor implements ItemsProcessor {
+public class MorphlinesItemsProcessor {
 
 	private Command morphline;
 	private RecordSinkCommand sinkCommand;
 
-	public MorphlinesItemsProcessor(Resource config) throws IOException {
+	public MorphlinesItemsProcessor(Resource config) throws IOException, IllegalArgumentException {
 		// ensure required parameters are set
 		Assert.isTrue(config != null, "morphline config file is required");
-		Assert.isTrue(config.exists() && config.isReadable(),
-				"morphline config file is not accesible");
+		Assert.isTrue(config.exists() && config.isReadable(), "morphline config file is not accesible");
 		
 		// create the morphline command to be used by this processor
 		MorphlineContext morphlineContext = new MorphlineContext.Builder().build();
@@ -31,8 +28,7 @@ public class MorphlinesItemsProcessor implements ItemsProcessor {
 		morphline = new Compiler().compile(config.getFile(), null, morphlineContext, sinkCommand);
 	}
 
-	@Override
-	public Object process(Object item) {
+	public Record process(String item) {
 
 		// create a record that holds the input string
 		Record record = new Record();

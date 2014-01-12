@@ -45,7 +45,7 @@
 				</entry>
 				<entry>
 					<key>outputPath</key>
-					<value>/temp/input</value>
+					<value>./input</value>
 				</entry>
 				<entry>
 					<key>returnKeys</key>
@@ -58,16 +58,73 @@
             </job-data-map>
 		</job>
 	
+		<job>
+			<name>VPN_ETL</name>
+			<group>VPN</group>
+			<description>process vpn events received from splunk into files</description>
+			<job-class>fortscale.collection.jobs.VPNEventsProcessJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			
+			<job-data-map>
+				<entry>
+					<key>inputPath</key>
+					<value>./input</value>
+				</entry>
+				<entry>
+					<key>errorPath</key>
+					<value>./error</value>
+				</entry>
+				<entry>
+					<key>finishPath</key>
+					<value>./finish</value>
+				</entry>
+				<entry>
+					<key>filesFilter</key>
+					<value>VPN_\d+.csv$</value>
+				</entry>
+				<entry>
+					<key>outputFields</key>
+					<value>date_time,date_time_unixTime,username,source_ip,local_ip,status,message,country_name</value>
+				</entry>
+				<entry>
+					<key>outputSeparator</key>
+					<value>,</value>
+				</entry>
+				<entry>
+					<key>morphlineFile</key>
+					<value>file:resources/readVPN_openVPN.conf</value>
+				</entry>
+				<entry>
+					<key>hadoopFilePath</key>
+					<value>/user/cloudera/data/vpn/vpnETL.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableName</key>
+					<value>vpndata</value>
+				</entry>
+			</job-data-map>
+			
+		</job>
+	
 		<trigger>
 			<cron>
-				<!-- trigger every hour at 5 minutes pasted elapsed hour to get fetch hourly data from splunk -->
-				<name>vpn_hourly_trigger</name>
+				<name>vpn_fetch_hourly_trigger</name>
 				<job-name>VPN_Fetch_Data</job-name>
 				<job-group>VPN</job-group>
-				<cron-expression>0 5 * * * ?</cron-expression>
+ 				<cron-expression>0 5 * * * ?</cron-expression>
 			</cron>
 		</trigger>
-	
+		
+		<trigger>
+			<cron>
+				<name>vpn_etl_hourly_trigger</name>
+				<job-name>VPN_ETL</job-name>
+				<job-group>VPN</job-group>
+				<cron-expression>0 6 * * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
 	</schedule>
 
 
