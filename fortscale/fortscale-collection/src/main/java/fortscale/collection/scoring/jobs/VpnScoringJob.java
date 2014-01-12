@@ -1,27 +1,17 @@
 package fortscale.collection.scoring.jobs;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.monitor.JobProgressReporter;
 import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
 
-public class VpnScoringJob  implements Job {
+public class VpnScoringJob extends EventScoringJob{
 	private static Logger logger = Logger.getLogger(VpnScoringJob.class);
 	
 	@Autowired
 	private UserService userService;
 	
-	@Autowired 
-	private JobProgressReporter monitor;
-
-	@Override
-	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		String monitorId = startMonitoring(jobExecutionContext, 2);
-		
+	protected void runSteps(String monitorId){
 		boolean isSucceeded = runPig(monitorId);
 		if(!isSucceeded){
 			return;
@@ -31,9 +21,6 @@ public class VpnScoringJob  implements Job {
 		if(!isSucceeded){
 			return;
 		}
-		
-		
-		monitor.finishJob(monitorId);
 	}
 	
 	private boolean runPig(String monitorId){
@@ -74,15 +61,5 @@ public class VpnScoringJob  implements Job {
 		monitor.finishStep(monitorId, stepName);
 		
 		return true;
-	}
-
-	private String startMonitoring(JobExecutionContext jobExecutionContext, int numOfSteps){
-		// get the job group name to be used using monitoring 
-		String sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
-		String jobName = jobExecutionContext.getJobDetail().getKey().getName();
-		String monitorId = monitor.startJob(sourceName, jobName, numOfSteps);
-		
-		return monitorId;
-	}
-	
+	}	
 }

@@ -6,8 +6,8 @@ import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.logging.Logger;
 
-public class SshScoringJob extends EventScoringJob{
-	private static Logger logger = Logger.getLogger(SshScoringJob.class);
+public class LoginScoringJob extends EventScoringJob {
+private static Logger logger = Logger.getLogger(LoginScoringJob.class);
 	
 	@Autowired
 	private UserService userService;
@@ -18,16 +18,16 @@ public class SshScoringJob extends EventScoringJob{
 			return;
 		}
 		
-		isSucceeded = runUpdateUserWithSshScore(monitorId);
+		isSucceeded = runUpdateUserWithLoginScore(monitorId);
 		if(!isSucceeded){
 			return;
 		}
 	}
 	
 	private boolean runPig(String monitorId){
-		String cmd = "/home/cloudera/fortscale/fortscale-scripts/scripts/uploadSSHDataToHDFS_part4_runpig.sh";
-		logger.info("Running SSH pig with the following shell command: {}", cmd);
-		String stepName = "Running SSH pig";
+		String cmd = "/home/cloudera/fortscale/fortscale-scripts/scripts/uploadLOGINDataToHDFS_part4_runpig.sh";
+		logger.info("Running LOGIN pig with the following shell command: {}", cmd);
+		String stepName = "Running LOGIN pig";
 		
 		
 		Runtime run = Runtime.getRuntime();
@@ -49,14 +49,14 @@ public class SshScoringJob extends EventScoringJob{
 		return true;
 	}
 	
-	private boolean runUpdateUserWithSshScore(String monitorId){
-		String stepName = "updateUserWithSshScore";
+	private boolean runUpdateUserWithLoginScore(String monitorId){
+		String stepName = "updateUserWithLoginScore";
 		monitor.startStep(monitorId, stepName, 2);
 		try {
-			userService.updateUserWithAuthScore(Classifier.ssh);
+			userService.updateUserWithAuthScore(Classifier.auth);
 		} catch (Exception e) {
-			logger.error("while running updateUserWithSshScore, got the following exception", e);
-			monitor.error(monitorId, stepName, String.format("while running updateUserWithSshScore, got the following exception %s", e.getMessage()));
+			logger.error("while running updateUserWithLoginScore, got the following exception", e);
+			monitor.error(monitorId, stepName, String.format("while running updateUserWithLoginScore, got the following exception %s", e.getMessage()));
 			return false;
 		}
 		monitor.finishStep(monitorId, stepName);
