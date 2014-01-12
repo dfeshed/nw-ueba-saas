@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.monitor.JobProgressReporter;
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
 import static fortscale.collection.JobDataMapExtension.getJobDataMapIntValue;
@@ -95,6 +96,10 @@ public class SplunkFetchSavedQueryJob implements Job {
 			throw new JobExecutionException("error running splunk query");
 		}
 		monitor.finishStep(monitorId, "Query Splunk");
+		
+		// report to monitor the file size
+		int sizeInKB = (int) (outputTempFile.length() / 1024);
+		monitor.addDataReceived(monitorId, new JobDataReceived("Events", sizeInKB, "KB"));
 		
 		// rename output file once get from splunk finished
 		monitor.startStep(monitorId, "Rename Output", 3);
