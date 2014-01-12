@@ -26,27 +26,9 @@ public class SshScoringJob extends EventScoringJob{
 	
 	private boolean runPig(String monitorId){
 		String cmd = "/home/cloudera/fortscale/fortscale-scripts/scripts/uploadSSHDataToHDFS_part4_runpig.sh";
-		logger.info("Running SSH pig with the following shell command: {}", cmd);
-		String stepName = "Running SSH pig";
+		String stepName = "SSH pig";
 		
-		
-		Runtime run = Runtime.getRuntime();
-		Process pr = null;			
-		
-		monitor.startStep(monitorId, stepName, 1);
-		try {
-			pr = run.exec(cmd);
-			pr.waitFor();
-
-		} catch (Exception e) {
-			logger.error(String.format("while running the command %s, got the following exception", cmd), e);
-			monitor.error(monitorId, stepName, String.format("while running the command %s, got the following exception %s", cmd, e.getMessage()));
-			return false;
-		}
-		monitor.finishStep(monitorId, stepName);
-		
-		
-		return true;
+		return runCmd(monitorId, cmd, stepName);
 	}
 	
 	private boolean runUpdateUserWithSshScore(String monitorId){
