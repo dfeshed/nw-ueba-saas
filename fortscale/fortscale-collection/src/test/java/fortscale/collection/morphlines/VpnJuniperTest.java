@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 public class VpnJuniperTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "src/main/resources/conf-files/readVPN_juniper.conf";
+	private String confFile = "src/main/non-packaged-resources/conf-files/readVPN_juniper.conf";
 	private String[] vpnOutputFields = new String[] {"date_time","date_time_unixTime","username","source_ip","local_ip","status","message","country_name","host_name"};
 
 	
