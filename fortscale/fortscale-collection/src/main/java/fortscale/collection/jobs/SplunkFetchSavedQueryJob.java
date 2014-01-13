@@ -19,7 +19,6 @@ import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
-import static fortscale.collection.JobDataMapExtension.getJobDataMapIntValue;
 import static fortscale.collection.JobDataMapExtension.getJobDataMapStringValue;
 
 
