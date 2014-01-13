@@ -46,7 +46,7 @@
 			<name>SSH_ETL</name>
 			<group>SSH</group>
 			<description>process ssh events received from splunk into files</description>
-			<job-class>fortscale.collection.jobs.SSHEventsProcessJob</job-class>
+			<job-class>fortscale.collection.jobs.EventProcessJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			

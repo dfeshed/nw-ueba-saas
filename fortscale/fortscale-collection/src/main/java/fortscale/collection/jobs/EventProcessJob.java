@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.util.Assert;
 
 import fortscale.collection.hadoop.HDFSLineAppender;
 import fortscale.collection.io.BufferedLineReader;
@@ -27,15 +26,11 @@ import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 
 /**
- * Abstract class to help build event process jobs from saved files
- * to hadoop
+ * Job class to help build event process jobs from saved files into hadoop
  */
-public class AbstractEventProcessJob implements Job {
+public class EventProcessJob implements Job {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractEventProcessJob.class);
-	
-	protected String jobName;
-	protected String dataSourceName;
+	private static Logger logger = LoggerFactory.getLogger(EventProcessJob.class);
 	
 	protected String inputPath;
 	protected String errorPath;
@@ -52,15 +47,7 @@ public class AbstractEventProcessJob implements Job {
 	
 	@Autowired
 	protected JobProgressReporter monitor;
-	
-	public AbstractEventProcessJob(String jobName, String dataSourceName) {
-		Assert.notNull(jobName);
-		Assert.notNull(dataSourceName);
-		this.jobName = jobName;
-		this.dataSourceName = dataSourceName;
-	}
-	
-	
+		
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
@@ -88,8 +75,13 @@ public class AbstractEventProcessJob implements Job {
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		logger.info("{} {} job started", jobName, dataSourceName);
-		monitorId = monitor.startJob(dataSourceName, jobName, 3);
+		
+		// get the job group name to be used using monitoring 
+		String sourceName = context.getJobDetail().getKey().getGroup();
+		String jobName = context.getJobDetail().getKey().getName();
+		
+		logger.info("{} {} job started", jobName, sourceName);
+		monitorId = monitor.startJob(sourceName, jobName, 3);
 
 		// get parameters from job data map
 		monitor.startStep(monitorId, "Get Job Parameters", 1);
@@ -135,7 +127,7 @@ public class AbstractEventProcessJob implements Job {
 		monitor.finishStep(monitorId, "Process Files");
 
 		monitor.finishJob(monitorId);
-		logger.info("{} {} job started", jobName, dataSourceName);
+		logger.info("{} {} job finished", jobName, sourceName);
 	}
 	
 	/**
