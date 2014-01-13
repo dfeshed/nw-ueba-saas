@@ -31,6 +31,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -509,6 +510,12 @@ public class UserServiceImpl implements UserService{
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(fieldName, val), User.class);
 	}
 	
+	private void updateUser(User user, Update update){
+		if(user.getId() != null){
+			mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
+		}
+	}
+	
 	private String createSearchField(UserAdInfo userAdInfo, String username){
 		StringBuilder sb = new StringBuilder();
 		if(userAdInfo != null){
@@ -881,11 +888,16 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private void saveUserTotalScoreToImpala(List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
-		ImpalaTotalScoreWriter writer = impalaWriterFactory.createImpalaTotalScoreWriter();
-
-		saveUserTotalScoreToImpala(writer, users, timestamp, scoreConfiguration);
-		
-		writer.close();
+		ImpalaTotalScoreWriter writer = null;
+		try{
+			writer = impalaWriterFactory.createImpalaTotalScoreWriter();
+	
+			saveUserTotalScoreToImpala(writer, users, timestamp, scoreConfiguration);			
+		} finally{
+			if(writer != null){
+				writer.close();
+			}
+		}
 	}
 	
 	private void saveUserTotalScoreToImpala(ImpalaTotalScoreWriter writer, List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
@@ -920,36 +932,125 @@ public class UserServiceImpl implements UserService{
 		return ret;
 	}
 	
-	private void updateUserWithAuthScore(AuthDAO authDAO, Classifier classifier, Date lastRun) {
+	private Map<String, List<User>> getUsernameToUsersMap(String tablename){
+		logger.info("getting all users");
+		Map<String, List<User>> usersMap = new HashMap<>();
+		for(User user: userRepository.findAllExcludeAdInfo()){
+			String logUsername = user.getLogUserName(tablename);
+			if(logUsername != null){
+				List<User> tmp = usersMap.get(logUsername.toLowerCase());
+				if(tmp == null){
+					tmp = new ArrayList<>();
+					usersMap.put(logUsername.toLowerCase(), tmp);
+				}
+				tmp.add(user);
+			} else{
+				List<User> tmp = usersMap.get(user.getUsername().toLowerCase());
+				if(tmp == null){
+					tmp = new ArrayList<>();
+					usersMap.put(user.getUsername().toLowerCase(), tmp);
+				}
+				tmp.add(user);
+				String usernameSplit[] = StringUtils.split(user.getUsername(), "@");
+				if(usernameSplit.length > 1){
+					tmp = usersMap.get(usernameSplit[0].toLowerCase());
+					if(tmp == null){
+						tmp = new ArrayList<>();
+						usersMap.put(usernameSplit[0].toLowerCase(), tmp);
+					}
+					tmp.add(user);
+				}
+			}
+		}
+		return usersMap;
+	}
+	
+	private void updateUserWithAuthScore(AuthDAO authDAO, final Classifier classifier, Date lastRun) {
+		logger.info("calculating avg score for {} events.", classifier);
 		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		logger.info("getting all {} scores", classifier);
+		List<AuthScore> authScores = authDAO.findGlobalScoreByTimestamp(lastRun);
+		
+		
+		Map<String, List<User>> usersMap = getUsernameToUsersMap(authDAO.getTableName());
+		
+		logger.info("going over all {} {} scores", authScores.size(), classifier);
+		final String tablename = authDAO.getTableName();
+		List<Update> updates = new ArrayList<>();
 		List<User> users = new ArrayList<>();
-		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
-			String username = authScore.getUserName();
-			User user = userRepository.findByLogUsername(authDAO.getTableName(), username);
-			if(user == null){
-				user = findByAuthUsername(classifier.getLogEventsEnum(), username);
-				if(user == null){
-					if(classifier.getLogEventsEnum().equals(LogEventsEnum.ssh)){
-						logger.info("no user was found with SSH username ({})", username);
-						if(authDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, sshStatusSuccessValueRegex) > 0){
-							logger.info("creating a new user from a successed ssh event. ssh username ({})", username);
-							user = createUser(authScore);
-						} else{
-							continue;
-						}
+		List<User> newUsers = new ArrayList<>();
+		for(AuthScore authScore: authScores){
+			final String username = authScore.getUserName();
+			List<User> optionUsers = usersMap.get(username.toLowerCase());
+			User user = null;
+			if(optionUsers == null){
+				if(classifier.getLogEventsEnum().equals(LogEventsEnum.ssh)){
+					logger.info("no user was found with SSH username ({})", username);
+					if(authDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, sshStatusSuccessValueRegex) > 0){
+						logger.info("creating a new user from a successed ssh event. ssh username ({})", username);
+						user = createUser(authScore);
 					} else{
-						logger.error("no user was found with the username {}", username);
+						continue;
+					}
+				} else{
+					logger.error("no user was found with the username {}", username);
+					continue;
+				}
+			} else{
+				if(optionUsers.size() == 1){
+					user = optionUsers.get(0);
+				} else{
+					for(User option: optionUsers){
+						if(username.equals(option.getUsername().toLowerCase())){
+							user = option;
+							break;
+						}
+					}
+					if(user == null){
+						logger.info("got more than one user for the following {} username: {}", classifier.getId(), username);
 						continue;
 					}
 				}
+			}
+
+			final boolean isNewLogUsername = (user.getLogUserName(authDAO.getTableName()) == null) ? true : false;
+			if(isNewLogUsername){
 				updateLogUsername(user, authDAO.getTableName(), username, false);
 			}
+			
 			user = updateUserScore(user, lastRun, classifier.getId(), authScore.getGlobalScore(), avg, false, false);
 			if(user != null){
-				users.add(user);
+//					updateUserTotalScore(user, lastRun);
+				if(user.getId() != null){
+					Update update = new Update();
+					update.set(User.getClassifierScoreField(classifier.getId()), user.getScore(classifier.getId()));
+//						update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+					if(isNewLogUsername){
+						update.set(User.getLogUserNameField(tablename), username);
+					}
+					updates.add(update);
+					users.add(user);
+				} else{
+					newUsers.add(user);
+				}
 			}
 		}
-		updateUserTotalScore(users, true, lastRun);		
+		
+		logger.info("finished processing {} {} scores.",	authScores.size(), classifier);
+		
+		logger.info("updating all the {} users.", users.size());
+		for(int i = 0; i < users.size(); i++){
+			Update update = updates.get(i);
+			User user = users.get(i);
+			updateUser(user, update);
+		}
+		
+		logger.info("adding {} new users.", newUsers.size());
+		if(newUsers.size() > 0){
+			userRepository.save(newUsers);
+		}
+		
+		logger.info("finished updating the user collection. with {} score and total score.", classifier);
 	}
 	
 	private User createUser(AuthScore authScore){
@@ -1006,31 +1107,90 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private void updateUserWithVpnScore(Date lastRun) {
+		logger.info("calculating avg score for vpn events.");
 		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		
+		logger.info("getting all vpn scores");
+		List<VpnScore> vpnScores = vpnDAO.findGlobalScoreByTimestamp(lastRun);
+		
+		final String tablename = VpnScore.TABLE_NAME;
+		
+		Map<String, List<User>> usersMap = getUsernameToUsersMap(tablename);
+		
+		logger.info("going over all {} vpn scores", vpnScores.size());
+		List<User> newUsers = new ArrayList<>();
+		List<Update> updates = new ArrayList<>();
 		List<User> users = new ArrayList<>();
-		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
+		for(VpnScore vpnScore: vpnScores){
 			String username = vpnScore.getUserName();
-			User user = userRepository.findByApplicationUserName(UserApplication.vpn.getId(), username);
-			if(user == null){
-				user = findByVpnUsername(username);
-				if(user == null){
-					logger.info("no user was found with vpn username ({})", username);
-					if(vpnDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, vpnStatusSuccessValueRegex) > 0){
-						logger.info("creating a new user from a successed vpn event. vpn username ({})", username);
-						user = createUser(vpnScore);
-					} else{
+			
+			List<User> optionUsers = usersMap.get(username.toLowerCase());
+			User user = null;
+			if(optionUsers == null){
+				logger.info("no user was found with vpn username ({})", username);
+				if(vpnDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, vpnStatusSuccessValueRegex) > 0){
+					logger.info("creating a new user from a successed vpn event. vpn username ({})", username);
+					user = createUser(vpnScore);
+				} else{
+					continue;
+				}
+			} else{
+				if(optionUsers.size() == 1){
+					user = optionUsers.get(0);
+				} else{
+					for(User option: optionUsers){
+						if(username.equals(option.getUsername().toLowerCase())){
+							user = option;
+							break;
+						}
+					}
+					if(user == null){
+						logger.info("got more than one user for the following vpn username: {}", username);
 						continue;
 					}
 				}
+			}
+			
+			final boolean isNewLogUsername = (user.getLogUserName(tablename) == null) ? true : false;
+			if(isNewLogUsername){
 				updateApplicationUserDetails(user, new ApplicationUserDetails(UserApplication.vpn.getId(), username), false);
 				updateVpnLogUsername(user, username, false);
 			}
+			
 			user = updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg, false, false);
 			if(user != null){
-				users.add(user);
+				updateUserTotalScore(user, lastRun);
+				if(user.getId() != null){
+					Update update = new Update();
+					update.set(User.getClassifierScoreField(Classifier.vpn.getId()), user.getScore(Classifier.vpn.getId()));
+					update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+					if(isNewLogUsername){
+						update.set(User.getLogUserNameField(tablename), user.getLogUserName(tablename));
+						update.set(User.getAppField(UserApplication.vpn.getId()), user.getApplicationUserDetails().get(UserApplication.vpn.getId()));
+					}
+					updates.add(update);
+					users.add(user);
+				} else{
+					newUsers.add(user);
+				}
 			}
 		}
-		updateUserTotalScore(users, true, lastRun);
+		
+		logger.info("finished processing {} vpn scores.",	vpnScores.size());
+		
+		logger.info("updating all the {} users.", users.size());
+		for(int i = 0; i < users.size(); i++){
+			Update update = updates.get(i);
+			User user = users.get(i);
+			updateUser(user, update);
+		}
+		
+		logger.info("inserting {} new users.", newUsers.size());
+		if(newUsers.size() > 0){
+			userRepository.save(newUsers);
+		}
+				
+		logger.info("finished updating the user collection. with vpn score and total score.");		
 	}
 	
 	private String getAuthLogUsername(LogEventsEnum eventId, User user){

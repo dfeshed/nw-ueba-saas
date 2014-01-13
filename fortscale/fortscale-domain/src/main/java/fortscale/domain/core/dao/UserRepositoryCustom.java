@@ -25,13 +25,8 @@ public interface UserRepositoryCustom {
 	public List<User> findByDNs(Collection<String> dns);
 	public List<User> findByGUIDs(Collection<String> guids);
 	public List<User> findByIds(Collection<String> ids);
-	
-	/**
-	 * Returns the {@link Customer} with the given {@link EmailAddress}.
-	 * 
-	 * @param string
-	 * @return
-	 */
+	public List<User> findAllExcludeAdInfo();
+
 	public User findByAdEmailAddress(EmailAddress emailAddress);
 	
 	public List<User> findByAdLastnameContaining(String lastNamePrefix);

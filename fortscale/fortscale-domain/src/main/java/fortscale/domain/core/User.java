@@ -75,7 +75,7 @@ public class User extends AbstractDocument {
 	private String searchField;
 	
 	@Field(adInfoField)
-	private UserAdInfo adInfo = new UserAdInfo();
+	private UserAdInfo adInfo;
 	
 	private String adDn;
 	
@@ -115,6 +115,9 @@ public class User extends AbstractDocument {
 	
 	
 	public UserAdInfo getAdInfo() {
+		if(adInfo == null){
+			adInfo = new UserAdInfo();
+		}
 		return adInfo;
 	}
 
@@ -172,6 +175,10 @@ public class User extends AbstractDocument {
 		logUsernameMap.put(logname, username);
 	}
 	
+	public String getLogUserName(String logname){
+		return logUsernameMap.get(logname);
+	}
+	
 	public Map<String, String> getLogUsernameMap(){
 		return logUsernameMap;
 	}
@@ -227,6 +234,10 @@ public class User extends AbstractDocument {
 	
 	public static String getAppUserNameField(String applicationName) {
 		return String.format("%s.%s.%s", User.appField,applicationName,ApplicationUserDetails.userNameField);
+	}
+	
+	public static String getAppField(String applicationName) {
+		return String.format("%s.%s", User.appField,applicationName);
 	}
 	
 	public static String getLogUserNameField(String logname) {
