@@ -7,8 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -39,10 +37,6 @@ public class ApiController {
 	
 	@Autowired
 	private ClassifierService classifierService;
-	
-	@Autowired
-	private Scheduler jobScheduler;
-	
 	
 	@RequestMapping("/**")
 	@LogException
@@ -110,30 +104,6 @@ public class ApiController {
 	@LogException
 	public Date selfCheck(){
 		return new Date();
-	}
-	
-	@RequestMapping(value="/startScheduler", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public String startScheduler(){
-		try {
-			jobScheduler.start();
-		} catch (SchedulerException e) {
-			throw new RuntimeException(e);
-		}
-		return "";
-	}
-	
-	@RequestMapping(value="/shutdownScheduler", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public String shutdownScheduler(){
-		try {
-			jobScheduler.shutdown();
-		} catch (SchedulerException e) {
-			throw new RuntimeException(e);
-		}
-		return "";
 	}
 	
 }
