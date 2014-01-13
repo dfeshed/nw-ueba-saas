@@ -153,6 +153,16 @@
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-common</artifactId>
 			<version>${hadoop.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- jdk tools is required by hadoop common, leaked dependency -->
 		<dependency>
@@ -276,7 +286,7 @@
 							<outputDirectory>${basedir}/target/resources</outputDirectory>
 							<resources>
 								<resource>
-									<directory>src/main/non-packaged-resources</directory>
+									<directory>resources</directory>
 									<filtering>true</filtering>
 								</resource>
 							</resources>
