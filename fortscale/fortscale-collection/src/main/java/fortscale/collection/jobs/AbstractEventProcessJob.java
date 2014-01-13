@@ -106,6 +106,7 @@ public class AbstractEventProcessJob implements Job {
 		
 		// get hadoop file writer
 		HDFSLineAppender appender = createHDFSLineAppender();
+		// TODO: create appender only if there are files to process
 		
 		// read each file and process lines
 		try {
@@ -200,8 +201,10 @@ public class AbstractEventProcessJob implements Job {
 		// append to hadoop, if there is data to be written
 		if (record!=null) {
 			hadoop.writeLine(output);
+			return true;
+		} else {
+			return false;
 		}
-		return true;
 	}
 	
 	protected void refreshImpala(String tableName) throws JobExecutionException {
@@ -239,9 +242,16 @@ public class AbstractEventProcessJob implements Job {
 		else
 			renamed = new File(path + File.separator + file.getName());
 
+		// create parent file if not exists
+		if (!renamed.getParentFile().exists()) {
+			if (!renamed.getParentFile().mkdirs()) {
+				logger.error("cannot create path {}", path);
+				return;
+			}
+		}
+		
 		if (!file.renameTo(renamed))
-			logger.error("failed moving file {} to path {}", file.getName(),
-					path);
+			logger.error("failed moving file {} to path {}", file.getName(), path);
 	}
 }
 

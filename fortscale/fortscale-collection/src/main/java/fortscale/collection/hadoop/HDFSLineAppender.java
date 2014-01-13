@@ -36,6 +36,7 @@ public class HDFSLineAppender {
 	public void writeLine(String line) throws IOException {
 		if (writer!=null && line!=null) {
 			writer.write(line);
+			writer.newLine();
 		}
 	}
 	
