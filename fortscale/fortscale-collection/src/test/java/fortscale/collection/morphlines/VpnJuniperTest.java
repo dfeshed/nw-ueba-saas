@@ -5,7 +5,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitParamsRunner.class)
@@ -21,7 +21,7 @@ public class VpnJuniperTest {
 		morphlineTester.init(confFile, vpnOutputFields);
 	}
 
-	@Test
+	@Ignore
 	@Parameters
 	public void test(String testCase, String inputLine, String expectedOutput) {
 		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
