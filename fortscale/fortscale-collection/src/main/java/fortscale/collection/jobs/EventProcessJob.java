@@ -19,6 +19,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import fortscale.collection.hadoop.HDFSLineAppender;
+import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -44,6 +45,9 @@ public class EventProcessJob implements Job {
 	
 	@Autowired
 	protected ResourceLoader resourceLoader;
+	
+	@Autowired
+	protected ImpalaClient impalaClient;
 	
 	@Autowired
 	protected JobProgressReporter monitor;
@@ -83,48 +87,58 @@ public class EventProcessJob implements Job {
 		logger.info("{} {} job started", jobName, sourceName);
 		monitorId = monitor.startJob(sourceName, jobName, 3);
 
-		// get parameters from job data map
-		monitor.startStep(monitorId, "Get Job Parameters", 1);
-		getJobParameters(context);
-		monitor.finishStep(monitorId, "Get Job Parameters");
-
-		// list files in chronological order
-		monitor.startStep(monitorId, "List Files", 2);
-		File[] files = listFiles(inputPath);
-		monitor.finishStep(monitorId, "List Files");
-
-		// start process file stage
-		logger.info("processing {} files in {}", files.length, inputPath);
-		monitor.startStep(monitorId, "Process Files", 3);
 		
-		// get hadoop file writer
-		HDFSLineAppender appender = createHDFSLineAppender();
-		
-		// read each file and process lines
+		String currentStep = "Get Job Parameters";
 		try {
-			for (File file : files) {
-				logger.info("starting to process {}", file.getName()); 
-				
-				// transform events in file
-				boolean success = processFile(file, appender);
-				
-				if (success) {
-					moveFileToFolder(file, finishPath);
-				} else {
-					moveFileToFolder(file, errorPath);
+			// get parameters from job data map
+			monitor.startStep(monitorId, currentStep, 1);
+			getJobParameters(context);
+			monitor.finishStep(monitorId, currentStep);
+
+			// list files in chronological order
+			currentStep = "List Files";
+			monitor.startStep(monitorId, currentStep, 2);
+			File[] files = listFiles(inputPath);
+			monitor.finishStep(monitorId, currentStep);
+
+			// start process file stage
+			logger.info("processing {} files in {}", files.length, inputPath);
+			currentStep = "Process Files";
+			monitor.startStep(monitorId, currentStep, 3);
+
+			// get hadoop file writer
+			HDFSLineAppender appender = createHDFSLineAppender();
+			
+			// read each file and process lines
+			try {
+				for (File file : files) {
+					logger.info("starting to process {}", file.getName()); 
+					
+					// transform events in file
+					boolean success = processFile(file, appender);
+					
+					if (success) {
+						moveFileToFolder(file, finishPath);
+					} else {
+						moveFileToFolder(file, errorPath);
+					}
+		
+					logger.info("finished processing {}", file.getName());
 				}
-	
-				logger.info("finished processing {}", file.getName());
+			} catch (IOException e) {
+				logger.error("error processing files", e);
+				monitor.error(monitorId, currentStep, e.toString());
+				throw new JobExecutionException("error processing files", e);
 			}
-		} catch (IOException e) {
-			logger.error("error processing files", e);
-			monitor.error(monitorId, "Process Files", e.toString());
+			
+			closeHDFSAppender(appender);
+			impalaClient.refreshTable(impalaTableName);
+			
+			monitor.finishStep(monitorId, currentStep);
+		} catch (JobExecutionException e) {
+			monitor.error(monitorId, currentStep, e.toString());
+			throw e;
 		}
-		
-		closeHDFSAppender(appender);	
-		refreshImpala(impalaTableName);
-		
-		monitor.finishStep(monitorId, "Process Files");
 
 		monitor.finishJob(monitorId);
 		logger.info("{} {} job finished", jobName, sourceName);
@@ -199,10 +213,7 @@ public class EventProcessJob implements Job {
 		}
 	}
 	
-	protected void refreshImpala(String tableName) throws JobExecutionException {
-		
-	}
-	
+
 	protected HDFSLineAppender createHDFSLineAppender() throws JobExecutionException {
 		try {
 			logger.debug("opening hdfs file {} for append", hadoopFilePath);
