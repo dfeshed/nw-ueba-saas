@@ -13,6 +13,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
@@ -30,11 +31,17 @@ public class SplunkFetchSavedQueryJob implements Job {
 
 	private static Logger logger = LoggerFactory.getLogger(SplunkFetchSavedQueryJob.class);
 		
-	//TODO: get common data from configuration
+	// get common data from configuration
+	@Value("${splunk.host}")
 	private String hostName;
+	@Value("${splunk.port}")
 	private int port;
+	@Value("${splunk.user}")
 	private String username;
+	@Value("${splunk.password}")
 	private String password;
+	
+	// data from job data map parameters
 	private String earliest;
 	private String latest;
 	private String savedQuery;
@@ -114,10 +121,6 @@ public class SplunkFetchSavedQueryJob implements Job {
 		JobDataMap map = context.getMergedJobDataMap();
 		
 		// get parameters values from the job data map
-		hostName = getJobDataMapStringValue(map, "hostName");
-		port = getJobDataMapIntValue(map, "port");
-		username = getJobDataMapStringValue(map, "username");
-		password = getJobDataMapStringValue(map, "password");
 		earliest = getJobDataMapStringValue(map, "earliest");
 		latest = getJobDataMapStringValue(map, "latest");
 		savedQuery = getJobDataMapStringValue(map, "savedQuery");

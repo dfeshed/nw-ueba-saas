@@ -2,13 +2,12 @@
 <configuration scan="true">
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-      		<level>DEBUG</level>
-      		<onMatch>DENY</onMatch>
-      		<onMismatch>ACCEPT</onMismatch>
+		<!--  deny all events with a level bellow INFO -->
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      		<level>INFO</level>
     	</filter>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}%n</Pattern>
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</Pattern>
 		</encoder>
 	</appender>
 
