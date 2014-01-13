@@ -1,6 +1,5 @@
 package fortscale.collection;
 
-import java.util.List;
 
 public interface ItemsProcessor {
 
