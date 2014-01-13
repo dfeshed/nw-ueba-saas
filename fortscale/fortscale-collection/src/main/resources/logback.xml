@@ -2,20 +2,28 @@
 <configuration scan="true">
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level  %logger{36} - %msg%n</Pattern>
-		</layout>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+      		<level>DEBUG</level>
+      		<onMatch>DENY</onMatch>
+      		<onMismatch>ACCEPT</onMismatch>
+    	</filter>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}%n</Pattern>
+		</encoder>
 	</appender>
 
-	<root level="error">
+	<appender name="LogFile" class="ch.qos.logback.core.FileAppender">
+		<file>logFile.log</file>
+		<append>true</append>
+		<encoder>
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</encoder>
+	</appender>
+
+	<root level="debug">
 		<appender-ref ref="STDOUT" />
+		<appender-ref ref="LogFile" />
 	</root>
-	
-	<logger name="fortscale" additivity="false" level="info">
-		<appender-ref ref="STDOUT" />
-	</logger>
-	
-	<!--  suppress logback status messages -->
-	<statusListener class="ch.qos.logback.core.status.NopStatusListener" />
 	
 </configuration>

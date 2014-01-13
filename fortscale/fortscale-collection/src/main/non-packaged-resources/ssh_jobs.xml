@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>SSH_Fetch_Data</name>
+			<group>SSH</group>
+			<description>Fetch data from splunk hourly</description>
+			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			
+			<job-data-map>
+				<entry>
+					<key>earliest</key>
+					<value>-1h@h</value>
+				</entry>
+				<entry>
+					<key>latest</key>
+					<value>-0h@h</value>
+				</entry>
+				<entry>
+					<key>savedQuery</key>
+					<value>getSSHdata</value>
+				</entry>
+				<entry>
+					<key>outputPath</key>
+					<value>./input</value>
+				</entry>
+				<entry>
+					<key>returnKeys</key>
+					<value>_raw</value>
+				</entry>
+				<entry>
+					<key>filenameFormat</key>
+					<value>SSH_%d.csv</value>
+				</entry>
+            </job-data-map>
+		</job>
+		
+		<job>
+			<name>SSH_ETL</name>
+			<group>SSH</group>
+			<description>process ssh events received from splunk into files</description>
+			<job-class>fortscale.collection.jobs.SSHEventsProcessJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			
+			<job-data-map>
+				<entry>
+					<key>inputPath</key>
+					<value>./input</value>
+				</entry>
+				<entry>
+					<key>errorPath</key>
+					<value>./error</value>
+				</entry>
+				<entry>
+					<key>finishPath</key>
+					<value>./finish</value>
+				</entry>
+				<entry>
+					<key>filesFilter</key>
+					<value>SSH_\d+.csv$</value>
+				</entry>
+				<entry>
+					<key>outputFields</key>
+					<value>date_time,date_time_unixTime,username,source_ip,local_ip,status,message,country_name</value>
+				</entry>
+				<entry>
+					<key>outputSeparator</key>
+					<value>,</value>
+				</entry>
+				<entry>
+					<key>morphlineFile</key>
+					<value>file:resources/morphlines/readVPN_openVPN.conf</value>
+				</entry>
+				<entry>
+					<key>hadoopFilePath</key>
+					<value>/user/cloudera/data/ssh/sshData.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableName</key>
+					<value>sshdata</value>
+				</entry>
+			</job-data-map>
+			
+		</job>
+		
+	</schedule>
+	
+</job-scheduling-data>

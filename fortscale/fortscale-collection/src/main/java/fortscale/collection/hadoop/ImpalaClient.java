@@ -5,7 +5,7 @@ import org.quartz.JobExecutionException;
 public class ImpalaClient {
 
 	public void refreshTable(String tableName) throws JobExecutionException {
-		
+		// TODO: implement
 	}
 	
 }

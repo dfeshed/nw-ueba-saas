@@ -1,11 +1,14 @@
 package fortscale.collection.morphlines;
 
 import java.io.IOException;
+
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.Fields;
 import org.kitesdk.morphline.base.Compiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
@@ -14,6 +17,8 @@ import org.springframework.util.Assert;
  */
 public class MorphlinesItemsProcessor {
 
+	private static Logger logger = LoggerFactory.getLogger(MorphlinesItemsProcessor.class); 
+	
 	private Command morphline;
 	private RecordSinkCommand sinkCommand;
 
@@ -43,7 +48,7 @@ public class MorphlinesItemsProcessor {
 		Record processed = sinkCommand.popRecord();
 
 		if (!success) {
-			// TODO: log error processing record
+			logger.warn("error processing record {}", item);
 			return null;
 		}
 

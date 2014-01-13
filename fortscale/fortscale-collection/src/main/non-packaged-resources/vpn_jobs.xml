@@ -15,22 +15,6 @@
 			<recover>true</recover>
 			
 			<job-data-map>
-                <entry>
-                    <key>hostName</key>
-                    <value>integ-splunk-07.fortscale.dom</value>
-                </entry>
-                <entry>
-                    <key>port</key>
-                    <value>8089</value>
-                </entry>
-                <entry>
-                	<key>username</key>
-                	<value>admin</value>
-                </entry>
-				<entry>
-					<key>password</key>
-                	<value>P@ssw0rd</value>
-				</entry>
 				<entry>
 					<key>earliest</key>
 					<value>-1h@h</value>
@@ -93,7 +77,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>file:resources/readVPN_openVPN.conf</value>
+					<value>file:resources/conf-files/readVPN_openVPN.conf</value>
 				</entry>
 				<entry>
 					<key>hadoopFilePath</key>
@@ -112,7 +96,7 @@
 				<name>vpn_fetch_hourly_trigger</name>
 				<job-name>VPN_Fetch_Data</job-name>
 				<job-group>VPN</job-group>
- 				<cron-expression>* 2 * * * ?</cron-expression>
+ 				<cron-expression>1 * * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

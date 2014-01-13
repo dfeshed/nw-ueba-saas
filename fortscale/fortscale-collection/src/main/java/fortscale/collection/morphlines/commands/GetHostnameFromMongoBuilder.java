@@ -1,6 +1,5 @@
 package fortscale.collection.morphlines.commands;
 
-import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -10,12 +9,15 @@ import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.typesafe.config.Config;
+
+import fortscale.utils.logging.Logger;
 
 public class GetHostnameFromMongoBuilder implements CommandBuilder {
 
@@ -26,7 +28,7 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 
 	@Override
 	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
-		return new GetHostnameFromMongo(this, config, parent, child, context);
+		return new GetHostnameFromMongo(config, parent, child, context);
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
@@ -47,9 +49,10 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 		private static MongoClient mongoClient = null;
 		private static DBCollection dbCollection = null;
 
-		public GetHostnameFromMongo(CommandBuilder builder, Config config, Command parent, Command child,
-				MorphlineContext context) {
-			super(builder, config, parent, child, context);
+		private static final Logger logger = Logger.getLogger(GetHostnameFromMongo.class);
+		
+		public GetHostnameFromMongo(Config config, Command parent, Command child, MorphlineContext context) {
+			super(config, parent, child, context);
 			this.ipAddress = getConfigs().getString(config, "ipAddress");
 			this.timeStamp = getConfigs().getString(config, "timeStamp");
 			this.host = getConfigs().getString(config, "host");
@@ -72,11 +75,13 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 					mongoClient = new MongoClient(host, port);
 					// Get the fortscale db
 					DB db = mongoClient.getDB(mongoDB);
-					// Get the DHCP collection
+					// Test the connection to the mongo server
+					db.getCollectionNames();
+					// If the connection works, Get the DHCP collection
 					dbCollection = db.getCollection(collectioName);
 
-				} catch (UnknownHostException e) {
-					System.err.println("Error connecting to Mongo: " + e.getMessage());
+				} catch (Exception e) {
+					logger.error("Error Connecting to Mongo Server", e);
 				}
 			}
 		}
@@ -104,7 +109,7 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 							ts = Integer.valueOf((String) timeStampObject);
 						}
 					} catch (ClassCastException e) {
-						System.err.println("Error converting timeStamp to integer");
+						logger.error("Error converting timeStamp to integer", e);
 					}
 				}
 
@@ -113,10 +118,15 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 					inputRecord.put(this.outputRecordName, getHostname(ip, ts));
 				}
 			}
+			
+			else {
+				inputRecord.put(this.outputRecordName, STRING_EMPTY);
+			}
 
 			return super.doProcess(inputRecord);
 
 		}
+
 
 		private String getHostname(String ip, int ts) {
 			// Create a query for the IP address

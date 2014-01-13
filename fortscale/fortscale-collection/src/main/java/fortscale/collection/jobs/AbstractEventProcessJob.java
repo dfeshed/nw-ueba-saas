@@ -20,6 +20,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
 
 import fortscale.collection.hadoop.HDFSLineAppender;
+import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.monitor.JobProgressReporter;
@@ -106,7 +107,6 @@ public class AbstractEventProcessJob implements Job {
 		
 		// get hadoop file writer
 		HDFSLineAppender appender = createHDFSLineAppender();
-		// TODO: create appender only if there are files to process
 		
 		// read each file and process lines
 		try {
@@ -130,7 +130,7 @@ public class AbstractEventProcessJob implements Job {
 		}
 		
 		closeHDFSAppender(appender);	
-		refreshImpala("XXX");
+		refreshImpala(impalaTableName);
 		
 		monitor.finishStep(monitorId, "Process Files");
 

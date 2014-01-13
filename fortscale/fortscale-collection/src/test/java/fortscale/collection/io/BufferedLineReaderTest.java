@@ -1,12 +1,15 @@
-package fortscale.collection.jobs;
+package fortscale.collection.io;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import fortscale.collection.io.BufferedLineReader;
 
 public class BufferedLineReaderTest {
 

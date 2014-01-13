@@ -120,35 +120,36 @@
 			<version>2.1.1</version>
 		</dependency>
 
+		<!--  fortscale dependencies -->
 		<dependency>
 			<groupId>com.fortscale.utils</groupId>
 			<artifactId>geoip_service</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-monitor</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-global-config</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<!-- required by splunk api -->
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>2.0</version>
 		</dependency>
-
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
+		
+		
 
 		<!-- hadoop dependencies -->
 		<dependency>
@@ -167,8 +168,23 @@
 			<artifactId>hadoop-common</artifactId>
 			<version>${hadoop.version}</version>
 		</dependency>
+		<!-- jdk tools is required by hadoop common, leaked dependency -->
+		<dependency>
+    		<groupId>jdk.tools</groupId>
+    		<artifactId>jdk.tools</artifactId>
+    		<version>1.7.0_05</version>
+    		<scope>system</scope>
+    		<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
+		</dependency>
+		
 
 		<!-- impala dependencies -->
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-utils</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.hive</groupId>
 			<artifactId>hive-jdbc</artifactId>
@@ -180,7 +196,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.hive</groupId>
 			<artifactId>hive-metastore</artifactId>
@@ -200,7 +215,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.hive</groupId>
 			<artifactId>hive-service</artifactId>
@@ -212,25 +226,22 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.thrift</groupId>
 			<artifactId>libfb303</artifactId>
 			<version>0.9.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.thrift</groupId>
 			<artifactId>libthrift</artifactId>
 			<version>0.9.0</version>
 		</dependency>
 
+
 		<dependency>
-    		<groupId>jdk.tools</groupId>
-    		<artifactId>jdk.tools</artifactId>
-    		<version>1.7.0_05</version>
-    		<scope>system</scope>
-    		<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
 		</dependency>
 
 	</dependencies>

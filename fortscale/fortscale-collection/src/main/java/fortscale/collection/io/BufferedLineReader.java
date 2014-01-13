@@ -1,4 +1,4 @@
-package fortscale.collection.jobs;
+package fortscale.collection.io;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Read a file line by line using buffered reader
  */
-class BufferedLineReader {
+public class BufferedLineReader {
 
 	private static Logger logger = LoggerFactory.getLogger(BufferedLineReader.class);
 	
