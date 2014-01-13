@@ -1,5 +1,6 @@
 package fortscale.collection.scoring.jobs;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.utils.logging.Logger;
 
+@DisallowConcurrentExecution
 public abstract class EventScoringJob implements Job {
 	private static Logger logger = Logger.getLogger(EventScoringJob.class);
 	
