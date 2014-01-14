@@ -60,7 +60,7 @@
 				<name>vpn_etl_hourly_trigger</name>
 				<job-name>VPN_ETL</job-name>
 				<job-group>VPN</job-group>
-				<cron-expression>* 4 * * * ?</cron-expression>
+				<cron-expression>0 4 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

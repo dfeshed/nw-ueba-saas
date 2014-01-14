@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.kitesdk.morphline.api.Record;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -29,6 +30,7 @@ import fortscale.monitor.domain.JobDataReceived;
 /**
  * Job class to help build event process jobs from saved files into hadoop
  */
+@DisallowConcurrentExecution
 public class EventProcessJob implements Job {
 
 	private static Logger logger = LoggerFactory.getLogger(EventProcessJob.class);

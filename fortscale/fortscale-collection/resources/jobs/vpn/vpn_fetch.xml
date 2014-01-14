@@ -10,7 +10,7 @@
 			<name>VPN_Fetch_Data</name>
 			<group>VPN</group>
 			<description>Fetch data from splunk hourly</description>
-			<job-class>fortscale.collection.jobs.EventProcessJob</job-class>
+			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			
@@ -47,7 +47,7 @@
 				<name>vpn_fetch_hourly_trigger</name>
 				<job-name>VPN_Fetch_Data</job-name>
 				<job-group>VPN</job-group>
- 				<cron-expression>* 3 * * * ?</cron-expression>
+ 				<cron-expression>0 3 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

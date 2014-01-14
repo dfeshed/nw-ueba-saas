@@ -59,7 +59,7 @@
 				<name>ssh_etl_hourly_trigger</name>
 				<job-name>SSH_ETL</job-name>
 				<job-group>SSH</job-group>
-				<cron-expression>2 * * * * ?</cron-expression>
+				<cron-expression>0 3 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

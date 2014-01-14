@@ -47,7 +47,7 @@
 				<name>ssh_fetch_hourly_trigger</name>
 				<job-name>SSH_Fetch_Data</job-name>
 				<job-group>SSH</job-group>
- 				<cron-expression>1 * * * * ?</cron-expression>
+ 				<cron-expression>0 2 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 				
