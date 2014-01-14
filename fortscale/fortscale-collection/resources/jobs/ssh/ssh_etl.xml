@@ -7,42 +7,6 @@
 
 	<schedule>
 		<job>
-			<name>SSH_Fetch_Data</name>
-			<group>SSH</group>
-			<description>Fetch data from splunk hourly</description>
-			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
-			<durability>true</durability>
-			<recover>true</recover>
-			
-			<job-data-map>
-				<entry>
-					<key>earliest</key>
-					<value>-1h@h</value>
-				</entry>
-				<entry>
-					<key>latest</key>
-					<value>-0h@h</value>
-				</entry>
-				<entry>
-					<key>savedQuery</key>
-					<value>getSSHdata</value>
-				</entry>
-				<entry>
-					<key>outputPath</key>
-					<value>./input</value>
-				</entry>
-				<entry>
-					<key>returnKeys</key>
-					<value>_raw</value>
-				</entry>
-				<entry>
-					<key>filenameFormat</key>
-					<value>SSH_%d.csv</value>
-				</entry>
-            </job-data-map>
-		</job>
-		
-		<job>
 			<name>SSH_ETL</name>
 			<group>SSH</group>
 			<description>process ssh events received from splunk into files</description>
@@ -89,15 +53,6 @@
 				</entry>
 			</job-data-map>
 		</job>
-		
-		<trigger>
-			<cron>
-				<name>ssh_fetch_hourly_trigger</name>
-				<job-name>SSH_Fetch_Data</job-name>
-				<job-group>SSH</job-group>
- 				<cron-expression>1 * * * * ?</cron-expression>
-			</cron>
-		</trigger>
 		
 		<trigger>
 			<cron>

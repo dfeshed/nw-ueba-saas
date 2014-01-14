@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>VPN_Fetch_Data</name>
+			<group>VPN</group>
+			<description>Fetch data from splunk hourly</description>
+			<job-class>fortscale.collection.jobs.EventProcessJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			
+			<job-data-map>
+				<entry>
+					<key>earliest</key>
+					<value>-1h@h</value>
+				</entry>
+				<entry>
+					<key>latest</key>
+					<value>-0h@h</value>
+				</entry>
+				<entry>
+					<key>savedQuery</key>
+					<value>getVPNdata</value>
+				</entry>
+				<entry>
+					<key>outputPath</key>
+					<value>./input</value>
+				</entry>
+				<entry>
+					<key>returnKeys</key>
+					<value>_raw</value>
+				</entry>
+				<entry>
+					<key>filenameFormat</key>
+					<value>VPN_%d.csv</value>
+				</entry>
+            </job-data-map>
+		</job>
+	
+		<trigger>
+			<cron>
+				<name>vpn_fetch_hourly_trigger</name>
+				<job-name>VPN_Fetch_Data</job-name>
+				<job-group>VPN</job-group>
+ 				<cron-expression>* 3 * * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+	</schedule>
+
+</job-scheduling-data>
