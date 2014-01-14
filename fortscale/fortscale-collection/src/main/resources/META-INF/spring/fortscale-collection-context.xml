@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <beans 
 	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:hdp="http://www.springframework.org/schema/hadoop"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+	<hdp:configuration id="hadoopConfiguration" resources="file:/etc/hadoop/conf/core-site.xml, file:/etc/hadoop/conf/hdfs-site.xml, file:/etc/hadoop/conf/mapred-site.xml"/>
+	<hdp:pig-factory id="pigFactory" configuration-ref="hadoopConfiguration"/>
+
+    <hdp:pig-template pig-factory-ref="pigFactory"/>
 	<bean id="autowiringSpringBeanJobFactory" class="fortscale.collection.AutowiringSpringBeanJobFactory"/>
 	<bean id="stdSchedulerFactory" class="org.quartz.impl.StdSchedulerFactory"/>
 	<bean id="jobScheduler" factory-bean="stdSchedulerFactory" factory-method="getScheduler">
