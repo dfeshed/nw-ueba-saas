@@ -33,10 +33,14 @@ public interface UserService {
 	public List<UserMachine> getUserMachines(String uid);
 	
 	public void updateUserWithAuthScore(Classifier classifier);
+	
+	public void updateUserWithAuthScore(Classifier classifier, Date lastRun);
 
 	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore);
 	
 	public void updateUserWithVpnScore();
+	
+	public void updateUserWithVpnScore(Date lastRun);
 	
 	public void updateUserWithGroupMembershipScore();
 	

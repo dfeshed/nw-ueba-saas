@@ -29,4 +29,17 @@ public class ImpalaClient {
 		}
 	}
 	
+	public void addPartitionToTable(String tableName, Long runtime) throws JobExecutionException{
+		Assert.hasText(tableName);
+		Assert.notNull(runtime);
+		String sql = String.format("alter table %s add partition (runtime=%s)", tableName, runtime.toString());
+		try {
+			impalaJdbcTemplate.execute(sql);
+		} catch (DataAccessException e) {
+			String errorMessage = String.format("failed to to run the following  sql command: %s", sql);
+			logger.error(errorMessage, e);
+			throw new JobExecutionException(errorMessage, e);
+		}
+	}
+	
 }
