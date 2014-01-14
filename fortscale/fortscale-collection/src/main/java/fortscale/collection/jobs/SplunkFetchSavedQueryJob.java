@@ -109,7 +109,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 		
 		// rename output file once get from splunk finished
 		monitor.startStep(monitorId, "Rename Output", 3);
-		outputTempFile.renameTo(outputFile);
+		renameOutput();
 		monitor.finishStep(monitorId, "Rename Output");
 		
 		monitor.finishJob(monitorId);
@@ -169,6 +169,16 @@ public class SplunkFetchSavedQueryJob implements Job {
 		} else {
 			int sizeInKB = (int) (outputTempFile.length() / 1024);
 			return new JobDataReceived("Events", sizeInKB, "KB");
+		}
+	}
+	
+	private void renameOutput() {
+		if (outputTempFile.length()==0) {
+			logger.info("deleting empty output file {}", outputTempFile.getName());
+			if (!outputTempFile.delete())
+				logger.warn("cannot delete empty file {}", outputTempFile.getName());
+		} else {
+			outputTempFile.renameTo(outputFile);
 		}
 	}
 }
