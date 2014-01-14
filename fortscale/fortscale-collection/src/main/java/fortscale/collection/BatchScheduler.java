@@ -14,6 +14,7 @@ public class BatchScheduler {
 
 	private static Logger logger = LoggerFactory.getLogger(BatchScheduler.class);
 	
+	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		ClassPathXmlApplicationContext context = null;
 		try {
@@ -34,10 +35,6 @@ public class BatchScheduler {
 			
 		} catch (SchedulerException e) {
 			logger.error("error in scheduling collection jobs", e);
-		} finally{
-			if(context != null){
-				context.close();
-			}
 		}
 	}
 
