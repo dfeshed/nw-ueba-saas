@@ -2,10 +2,6 @@
 <configuration scan="true">
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<!--  deny all events with a level bellow INFO -->
-		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-      		<level>INFO</level>
-    	</filter>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</Pattern>
 		</encoder>
@@ -13,16 +9,19 @@
 
 	<appender name="LogFile" class="ch.qos.logback.core.FileAppender">
 		<file>logFile.log</file>
-		<append>true</append>
+		<append>false</append>
 		<encoder>
 			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
 			</Pattern>
 		</encoder>
 	</appender>
 
-	<root level="debug">
+	<logger name="fortscale" level="INFO" />
+	<logger name="org.quartz" level="INFO" />
+	<root level="ERROR">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="LogFile" />
 	</root>
+	
 	
 </configuration>
