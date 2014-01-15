@@ -1,19 +1,16 @@
 package fortscale.collection.hadoop.pig;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.pig.backend.executionengine.ExecJob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.data.hadoop.pig.PigOperations;
-import org.springframework.data.hadoop.pig.PigScript;
 
 
 public abstract class EventScoringPigRunner {
 	
 	@Autowired
-	private PigOperations  pigOperations;
+	private PigRunner pigRunner;
 	
 	
 	public abstract Resource getPigScriptResource();
@@ -28,19 +25,8 @@ public abstract class EventScoringPigRunner {
         scriptParameters.put("outputData", String.format("%sruntime=%s", getOutputDataFullPathPrefix(),runtime));
         scriptParameters.put("deltaTime", deltaTime.toString());
         fillWithSpecificScriptParameters(scriptParameters);
-        PigScript pigScript = new PigScript(getPigScriptResource(), scriptParameters);
-        List<ExecJob> execJobs = pigOperations.executeScript(pigScript);
-        
-        if(execJobs.isEmpty()){
-        	throw new Exception("execJobs is empty.");
-        }
-        
-        ExecJob execJob = execJobs.get(0);
-        while(!execJob.hasCompleted()){
-			Thread.sleep(10000);
-		}
-        
-        return execJob;
+
+        return pigRunner.run(getPigScriptResource(), scriptParameters);
 	}
 	
 	protected void fillWithSpecificScriptParameters(Properties scriptParameters){}
