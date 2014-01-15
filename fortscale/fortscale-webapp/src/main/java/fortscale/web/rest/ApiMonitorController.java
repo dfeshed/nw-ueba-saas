@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.monitor.JobProgressReporter;
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.monitor.domain.JobReport;
 import fortscale.monitor.domain.JobStep;
 import fortscale.utils.logging.annotation.LogException;
@@ -25,6 +26,10 @@ public class ApiMonitorController {
 
 	@Autowired
 	private JobProgressReporter monitor;
+	
+	public void setJobProgressReporter(JobProgressReporter monitor) {
+		this.monitor = monitor;
+	}
 	
 	/***
 	 * Get an aggregated list of jobs monitor status according to source type and job name 
@@ -98,10 +103,12 @@ public class ApiMonitorController {
 				runDetail.setSeverity("ERROR");
 			} else if (report.isHasWarnings()) {
 				runDetail.setSeverity("WARN");
+			} else if (!hasData(report)) {
+				runDetail.setSeverity("NO_DATA");
 			} else if (report.getFinish()!=null) {
 				runDetail.setSeverity("OK");
 			} else {
-				runDetail.setSeverity("NO_DATA");
+				runDetail.setSeverity("NOT_FINISHED");
 			}
 			
 			// set a flag indicating if all steps were executed
@@ -122,6 +129,13 @@ public class ApiMonitorController {
 		return ret;
 	}
 	
+	private boolean hasData(JobReport report) {
+		for (JobDataReceived data : report.getDataReceived()) {
+			if (data.getValue()>0)
+				return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Get the job report for the given id
