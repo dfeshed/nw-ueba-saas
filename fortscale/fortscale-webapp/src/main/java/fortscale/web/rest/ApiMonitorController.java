@@ -103,12 +103,12 @@ public class ApiMonitorController {
 				runDetail.setSeverity("ERROR");
 			} else if (report.isHasWarnings()) {
 				runDetail.setSeverity("WARN");
+			} else if (report.getFinish()==null) {
+				runDetail.setSeverity("NOT_FINISHED");
 			} else if (!hasData(report)) {
 				runDetail.setSeverity("NO_DATA");
-			} else if (report.getFinish()!=null) {
-				runDetail.setSeverity("OK");
 			} else {
-				runDetail.setSeverity("NOT_FINISHED");
+				runDetail.setSeverity("OK");
 			}
 			
 			// set a flag indicating if all steps were executed
