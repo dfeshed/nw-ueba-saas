@@ -14,6 +14,7 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
 	private String delimiter = ",";
 	private boolean isDisableQuotes = false;
 	private boolean forceSingleLineEvents = false;
+	private boolean surroundKeyWithQuotes = false;
 	
 	
 	public abstract void open() throws IOException;
@@ -46,7 +47,7 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
     			}
     			
     			if (forceSingleLineEvents) {
-    				val.replace('\n', '\t');
+    				val = val.replace('\n', '\t');
     			}
     		}
     		if(!isDisableQuotes){
@@ -101,5 +102,13 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
 	@Override
 	public void setDisableQuotes(boolean isDisableQuotes) {
 		this.isDisableQuotes = isDisableQuotes;
+	}
+	
+	public boolean isSurroundKeyWithQuotes() {
+		return this.surroundKeyWithQuotes;
+	}
+	
+	public void setSurroundKeyWithQuotes(boolean surroundKeyWithQuotes) {
+		this.surroundKeyWithQuotes = surroundKeyWithQuotes;
 	}
 }
