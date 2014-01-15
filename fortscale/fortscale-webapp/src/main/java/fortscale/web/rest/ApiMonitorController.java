@@ -10,9 +10,11 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.monitor.JobProgressReporter;
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.monitor.domain.JobReport;
 import fortscale.monitor.domain.JobStep;
 import fortscale.utils.logging.annotation.LogException;
@@ -25,19 +27,38 @@ public class ApiMonitorController {
 	@Autowired
 	private JobProgressReporter monitor;
 	
+	public void setJobProgressReporter(JobProgressReporter monitor) {
+		this.monitor = monitor;
+	}
+	
 	/***
 	 * Get an aggregated list of jobs monitor status according to source type and job name 
 	 * @return
 	 */
-	@RequestMapping(value = "/summary/{days}", method = RequestMethod.GET)
+	@RequestMapping(value = "/summary", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<SourceTypeSummary>> summary(@PathVariable("days") int days) {
+	public DataBean<List<SourceTypeSummary>> summary(
+			@RequestParam(value="count", defaultValue="50") int count,
+			@RequestParam(value="earliest", defaultValue="0") long earliest,
+			@RequestParam(value="latest", defaultValue="0") long latest) {
+			
+		List<JobReport> reports;
+		if (latest!=0) {
+			// get reports older than the latest time given, exclude latest
+			reports = monitor.findJobReportsOlderThan(new Date(latest), count);
+			
+		} else {
+			if (earliest!=0) {
+				// get reports newer from the earliest time given, exclude earliest
+				reports = monitor.findJobReportsNewerThan(new Date(earliest), count);
+			} else {
+				// get reports older than now (latest page)
+				reports = monitor.findJobReportsOlderThan(new Date(), count);
+			}
+		}
 		
-		// get the list of job reports for the last days,
-		// assume it is sorted by source type, job name and start date
-		List<JobReport> reports = monitor.findJobReportsForLastDays(days);
-		
+
 		// convert job report results to service response format
 		List<SourceTypeSummary> summary = new LinkedList<SourceTypeSummary>();
 		int total = 0;
@@ -82,10 +103,12 @@ public class ApiMonitorController {
 				runDetail.setSeverity("ERROR");
 			} else if (report.isHasWarnings()) {
 				runDetail.setSeverity("WARN");
-			} else if (report.getFinish()!=null) {
-				runDetail.setSeverity("OK");
-			} else {
+			} else if (report.getFinish()==null) {
+				runDetail.setSeverity("NOT_FINISHED");
+			} else if (!hasData(report)) {
 				runDetail.setSeverity("NO_DATA");
+			} else {
+				runDetail.setSeverity("OK");
 			}
 			
 			// set a flag indicating if all steps were executed
@@ -106,17 +129,14 @@ public class ApiMonitorController {
 		return ret;
 	}
 	
-	/***
-	 * Get an aggregated list of jobs monitor status according to source type and job name 
-	 * @return
-	 */
-	@RequestMapping(value = "/summary", method = RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<SourceTypeSummary>> summary() {
-		return summary(7);
+	private boolean hasData(JobReport report) {
+		for (JobDataReceived data : report.getDataReceived()) {
+			if (data.getValue()>0)
+				return true;
+		}
+		return false;
 	}
-	
+
 	/**
 	 * Get the job report for the given id
 	 * @param id the job report identifier
