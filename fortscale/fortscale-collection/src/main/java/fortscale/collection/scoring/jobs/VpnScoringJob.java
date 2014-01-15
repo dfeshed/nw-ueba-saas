@@ -1,47 +1,59 @@
 package fortscale.collection.scoring.jobs;
 
+import java.util.Date;
+
+import org.apache.pig.backend.executionengine.ExecJob;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
 
+import fortscale.collection.hadoop.pig.VpnScoringPigRunner;
+import fortscale.services.LogEventsEnum;
 import fortscale.services.UserService;
-import fortscale.utils.logging.Logger;
 
-public class VpnScoringJob extends EventScoringJob{
-	private static Logger logger = Logger.getLogger(VpnScoringJob.class);
+public class VpnScoringJob extends EventScoringJob implements InitializingBean{
 	
 	@Autowired
 	private UserService userService;
 	
-	protected void runSteps(String monitorId){
-		boolean isSucceeded = runPig(monitorId);
-		if(!isSucceeded){
-			return;
-		}
-		
-		isSucceeded = runUpdateUserWithVpnScore(monitorId);
-		if(!isSucceeded){
-			return;
-		}
+	@Autowired
+	private VpnScoringPigRunner vpnScoringPigRunner;
+	
+	@Value("${impala.vpn.table.name:}")
+	private String tableName;
+	
+	@Override
+	protected void runSteps() throws Exception{
+		runScoringSteps(LogEventsEnum.vpn);		
 	}
 	
-	private boolean runPig(String monitorId){
-		String cmd = "/home/cloudera/fortscale/fortscale-scripts/scripts/uploadVPNDataToHDFS_part4_runEBS.sh";
-		String stepName = "Running VPN pig";
-
-		return runCmd(monitorId, cmd, stepName);
-	}
-	
-	private boolean runUpdateUserWithVpnScore(String monitorId){
-		String stepName = "updateUserWithVpnScore";
-		monitor.startStep(monitorId, stepName, 2);
-		try {
-			userService.updateUserWithVpnScore();
-		} catch (Exception e) {
-			logger.error("while running updateUserWithVpnScore, got the following exception", e);
-			monitor.error(monitorId, stepName, String.format("while running updateUserWithVpnScore, got the following exception %s", e.getMessage()));
-			return false;
-		}
-		monitor.finishStep(monitorId, stepName);
+	@Override
+	protected boolean runUpdateUserWithEventScore(Date runtime){
+		userService.updateUserWithVpnScore(runtime);
 		
 		return true;
-	}	
+	}
+
+	@Override
+	protected String getTableName() {
+		return tableName;
+	}
+
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.hasText(tableName);
+		
+	}
+
+	@Override
+	protected ExecJob runPig(Long runtime, Long deltaTime) throws Exception {
+		return vpnScoringPigRunner.run(runtime, deltaTime);
+	}
+	
+	@Override
+	protected int getTotalNumOfSteps() {
+		return 4;
+	}
 }

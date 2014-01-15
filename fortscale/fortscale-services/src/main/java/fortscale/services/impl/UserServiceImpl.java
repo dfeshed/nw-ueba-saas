@@ -916,6 +916,12 @@ public class UserServiceImpl implements UserService{
 		updateUserWithAuthScore(authDAO, classifier, lastRun);
 	}
 	
+	@Override
+	public void updateUserWithAuthScore(Classifier classifier, Date lastRun) {
+		AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
+		updateUserWithAuthScore(authDAO, classifier, lastRun);
+	}
+	
 	private AuthDAO getAuthDAO(LogEventsEnum eventId){
 		AuthDAO ret = null;
 		switch(eventId){
@@ -1106,7 +1112,8 @@ public class UserServiceImpl implements UserService{
 		updateUserWithVpnScore(lastRun);
 	}
 	
-	private void updateUserWithVpnScore(Date lastRun) {
+	@Override
+	public void updateUserWithVpnScore(Date lastRun) {
 		logger.info("calculating avg score for vpn events.");
 		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		

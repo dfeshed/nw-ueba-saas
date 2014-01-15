@@ -1,60 +1,68 @@
 package fortscale.collection.scoring.jobs;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Date;
 
+import org.apache.pig.backend.executionengine.ExecJob;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
+
+import fortscale.collection.hadoop.pig.LoginScoringPigRunner;
+import fortscale.services.LogEventsEnum;
 import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
-import fortscale.utils.logging.Logger;
 
-public class LoginScoringJob extends EventScoringJob {
-	private static Logger logger = Logger.getLogger(LoginScoringJob.class);
+public class LoginScoringJob extends EventScoringJob implements InitializingBean{
 	
 	@Autowired
 	private UserService userService;
 	
-	protected void runSteps(String monitorId){
-		boolean isSucceeded = runPrepareRegex(monitorId);
-		if(!isSucceeded){
-			return;
-		}
+	@Autowired
+	private LoginScoringPigRunner loginScoringPigRunner;
+	
+	@Value("${impala.login.table.name:}")
+	private String tableName;
+	
+	@Override
+	protected void runSteps() throws Exception{
 		
-		isSucceeded = runPig(monitorId);
-		if(!isSucceeded){
-			return;
-		}
-		
-		isSucceeded = runUpdateUserWithLoginScore(monitorId);
-		if(!isSucceeded){
-			return;
-		}
+		runScoringSteps(LogEventsEnum.login);		
 	}
 	
-	private boolean runPrepareRegex(String monitorId){
-		String cmd = "/home/cloudera/fortscale/fortscale-scripts/scripts/uploadWMIDataToHDFS_part4_prepareregex.sh";
-		String stepName = "prepareregex";
-		
-		return runCmd(monitorId, cmd, stepName);
-	}
+//	private boolean runPrepareRegex(){
+//		String cmd = "/home/cloudera/fortscale/fortscale-scripts/scripts/uploadWMIDataToHDFS_part4_prepareregex.sh";
+//		String stepName = "prepareregex";
+//		
+//		return runCmd(cmd, stepName);
+//	}
 	
-	private boolean runPig(String monitorId){
-		String cmd = "/home/cloudera/fortscale/fortscale-scripts/scripts/uploadWMIDataToHDFS_part5_runpig.sh";
-		String stepName = "LOGIN pig";
-		
-		return runCmd(monitorId, cmd, stepName);
-	}
-	
-	private boolean runUpdateUserWithLoginScore(String monitorId){
-		String stepName = "updateUserWithLoginScore";
-		monitor.startStep(monitorId, stepName, 2);
-		try {
-			userService.updateUserWithAuthScore(Classifier.auth);
-		} catch (Exception e) {
-			logger.error("while running updateUserWithLoginScore, got the following exception", e);
-			monitor.error(monitorId, stepName, String.format("while running updateUserWithLoginScore, got the following exception %s", e.getMessage()));
-			return false;
-		}
-		monitor.finishStep(monitorId, stepName);
+	@Override
+	protected boolean runUpdateUserWithEventScore(Date runtime){
+		userService.updateUserWithAuthScore(Classifier.auth, runtime);
 		
 		return true;
+	}
+
+	@Override
+	protected String getTableName() {
+		return tableName;
+	}
+
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.hasText(tableName);
+		
+	}	
+	
+	@Override
+	protected ExecJob runPig(Long runtime, Long deltaTime) throws Exception {
+		return loginScoringPigRunner.run(runtime, deltaTime);
+	}
+
+	@Override
+	protected int getTotalNumOfSteps() {
+		return 4;
 	}	
 }
