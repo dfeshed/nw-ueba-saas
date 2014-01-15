@@ -86,7 +86,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 		SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
 		handler.setSearchReturnKeys(returnKeys);
 		handler.setDelimiter(",");
-		handler.setDisableQuotes(true);
+		handler.setDisableQuotes(false);
 		handler.setSkipFirstLine(true);
 		handler.setForceSingleLineEvents(true);
 			
