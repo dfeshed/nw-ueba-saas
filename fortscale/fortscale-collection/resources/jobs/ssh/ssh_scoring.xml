@@ -13,7 +13,12 @@
 			<job-class>fortscale.collection.scoring.jobs.SshScoringJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
-			
+			<job-data-map>
+				<entry>
+					<key>impalaTableName</key>
+					<value>sshscores</value>
+				</entry>
+			</job-data-map>
 			
 		</job>
 	

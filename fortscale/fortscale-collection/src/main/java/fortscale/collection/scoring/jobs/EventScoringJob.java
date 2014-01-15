@@ -1,5 +1,7 @@
 package fortscale.collection.scoring.jobs;
 
+import static fortscale.collection.JobDataMapExtension.getJobDataMapStringValue;
+
 import java.util.Date;
 
 import org.apache.pig.backend.executionengine.ExecJob;
@@ -7,6 +9,7 @@ import org.apache.pig.tools.pigstats.PigStats;
 import org.joda.time.DateTime;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,18 +29,36 @@ public abstract class EventScoringJob implements Job {
 	@Autowired
 	private ImpalaClient impalaClient;
 		
-	protected abstract String getTableName();
+	
 	
 	private String monitorId;
 	
 	private String stepName;
 	
 	private int stepIndex = 1;
+	
+	private String impalaTableName;
 
 	
+	
+	protected String getTableName(){
+		return impalaTableName;
+	}
+	
+	
+	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
+		JobDataMap map = context.getMergedJobDataMap();
+
+		// get parameters values from the job data map
+		
+		impalaTableName = getJobDataMapStringValue(map, "impalaTableName");
+		
+	}
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		getJobParameters(jobExecutionContext);
+		
 		String monitorId = startMonitoring(jobExecutionContext, 2);
 		
 		setMonitorId(monitorId);

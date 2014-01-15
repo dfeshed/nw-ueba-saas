@@ -13,7 +13,12 @@
 			<job-class>fortscale.collection.scoring.jobs.VpnScoringJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
-			
+			<job-data-map>
+				<entry>
+					<key>impalaTableName</key>
+					<value>vpndatares</value>
+				</entry>
+			</job-data-map>
 			
 		</job>
 	
