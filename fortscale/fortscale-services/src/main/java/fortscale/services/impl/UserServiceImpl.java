@@ -987,6 +987,10 @@ public class UserServiceImpl implements UserService{
 		List<User> newUsers = new ArrayList<>();
 		for(AuthScore authScore: authScores){
 			final String username = authScore.getUserName();
+			if(StringUtils.isEmpty(username)){
+				logger.error("got a empty string {} username", classifier);
+				continue;
+			}
 			List<User> optionUsers = usersMap.get(username.toLowerCase());
 			User user = null;
 			if(optionUsers == null){
@@ -1026,11 +1030,11 @@ public class UserServiceImpl implements UserService{
 			
 			user = updateUserScore(user, lastRun, classifier.getId(), authScore.getGlobalScore(), avg, false, false);
 			if(user != null){
-//					updateUserTotalScore(user, lastRun);
+				updateUserTotalScore(user, lastRun);
 				if(user.getId() != null){
 					Update update = new Update();
 					update.set(User.getClassifierScoreField(classifier.getId()), user.getScore(classifier.getId()));
-//						update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+					update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
 					if(isNewLogUsername){
 						update.set(User.getLogUserNameField(tablename), username);
 					}
@@ -1130,6 +1134,10 @@ public class UserServiceImpl implements UserService{
 		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnScores){
 			String username = vpnScore.getUserName();
+			if(StringUtils.isEmpty(username)){
+				logger.error("got a empty string vpn username");
+				continue;
+			}
 			
 			List<User> optionUsers = usersMap.get(username.toLowerCase());
 			User user = null;

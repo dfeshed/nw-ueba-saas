@@ -1,4 +1,4 @@
-package fortscale.collection.scoring.jobs;
+package fortscale.collection.jobs.scoring;
 
 import java.util.Date;
 
