@@ -38,7 +38,7 @@ public class RecordToStringItemsProcessorTest {
 	}
 	
 	@Test
-	public void process_should_only_return_fields_that_are_in_record() {
+	public void process_should_return_all_fields_that_are_specified_including_null() {
 		// arrange
 		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(",", "fieldA", "fieldB", "fieldC");
 		Record record = new Record();
@@ -49,9 +49,9 @@ public class RecordToStringItemsProcessorTest {
 		String output = subject.process(record);
 		
 		// assert
-		assertEquals("AAA,CCC", output);
+		assertEquals("AAA,,CCC", output);
 	}
-	
+		
 	@Test
 	public void process_should_join_with_separator() {
 		// arrange

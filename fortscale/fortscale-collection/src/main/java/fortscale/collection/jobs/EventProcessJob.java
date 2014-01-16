@@ -44,6 +44,7 @@ public class EventProcessJob implements Job {
 	protected String monitorId;
 	protected String hadoopFilePath;
 	protected String impalaTableName;
+	protected HDFSLineAppender appender;
 	
 	@Autowired
 	protected ResourceLoader resourceLoader;
@@ -109,7 +110,7 @@ public class EventProcessJob implements Job {
 			monitor.startStep(monitorId, currentStep, 3);
 
 			// get hadoop file writer
-			HDFSLineAppender appender = createHDFSLineAppender();
+			createHDFSLineAppender();
 			
 			// read each file and process lines
 			try {
@@ -117,7 +118,7 @@ public class EventProcessJob implements Job {
 					logger.info("starting to process {}", file.getName()); 
 					
 					// transform events in file
-					boolean success = processFile(file, appender);
+					boolean success = processFile(file);
 					
 					if (success) {
 						moveFileToFolder(file, finishPath);
@@ -133,8 +134,8 @@ public class EventProcessJob implements Job {
 				throw new JobExecutionException("error processing files", e);
 			}
 			
-			closeHDFSAppender(appender);
-			impalaClient.refreshTable(impalaTableName);
+			closeHDFSAppender();
+			refreshImpala();
 			
 			monitor.finishStep(monitorId, currentStep);
 		} catch (JobExecutionException e) {
@@ -168,7 +169,7 @@ public class EventProcessJob implements Job {
 	}
 	
 	
-	protected boolean processFile(File file, HDFSLineAppender hadoop) throws IOException {
+	protected boolean processFile(File file) throws IOException {
 		
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
@@ -177,14 +178,14 @@ public class EventProcessJob implements Job {
 			int lineCounter = 0;
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				if (processLine(line, hadoop))
+				if (processLine(line))
 					++lineCounter;
 			}
 			
-			monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), lineCounter, "Events"));
-		
 			// flush hadoop
-			hadoop.flush();
+			flushHDFSAppender();
+			
+			monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), lineCounter, "Events"));
 		} finally {
 			reader.close();
 		}
@@ -201,27 +202,29 @@ public class EventProcessJob implements Job {
 		}
 	}
 
-	protected boolean processLine(String line, HDFSLineAppender hadoop) throws IOException {
+	protected boolean processLine(String line) throws IOException {
 		// process each line
 		Record record = morphline.process(line);
 		String output = recordToString.process(record);
 		
 		// append to hadoop, if there is data to be written
-		if (record!=null) {
-			hadoop.writeLine(output);
+		if (output!=null) {
+			appender.writeLine(output);
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-
-	protected HDFSLineAppender createHDFSLineAppender() throws JobExecutionException {
+	protected void refreshImpala() throws JobExecutionException {
+		impalaClient.refreshTable(impalaTableName);
+	}
+	
+	protected void createHDFSLineAppender() throws JobExecutionException {
 		try {
 			logger.debug("opening hdfs file {} for append", hadoopFilePath);
-			HDFSLineAppender appender = new HDFSLineAppender();
+			appender = new HDFSLineAppender();
 			appender.open(hadoopFilePath);
-			return appender;
 		} catch (IOException e) {
 			logger.error("error opening hdfs file for append at " + hadoopFilePath, e);
 			monitor.error(monitorId, "Process Files", String.format("error appending to hdfs file %s: \n %s",  hadoopFilePath, e.toString()));
@@ -229,7 +232,17 @@ public class EventProcessJob implements Job {
 		}
 	}
 	
-	protected void closeHDFSAppender(HDFSLineAppender appender) throws JobExecutionException {
+	protected void flushHDFSAppender() throws IOException {
+		try {
+			appender.flush();
+		} catch (IOException e) {
+			logger.error("error flushing hdfs file " + hadoopFilePath, e);
+			monitor.error(monitorId, "Process Files", String.format("error flushing hdfs file %s: \n %s",  hadoopFilePath, e.toString()));
+			throw e;
+		}
+	}
+	
+	protected void closeHDFSAppender() throws JobExecutionException {
 		try {
 			logger.debug("closing hdfs file {}", hadoopFilePath);
 			appender.close();

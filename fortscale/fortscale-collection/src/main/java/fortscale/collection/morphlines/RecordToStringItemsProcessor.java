@@ -1,11 +1,7 @@
 package fortscale.collection.morphlines;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.kitesdk.morphline.api.Record;
 import org.springframework.util.Assert;
-import com.google.common.base.Joiner;
 
 /**
  * Converts morphline record into string line
@@ -31,16 +27,27 @@ public class RecordToStringItemsProcessor {
 		if (item instanceof Record) {
 			Record record = (Record)item;
 			
-			List<Object> values = new ArrayList<Object>(fields.length);
+			boolean firstItem = true;
+			boolean noValues = true;
+			StringBuilder sb = new StringBuilder();
 			for (String field : fields) {
-				values.add(record.getFirstValue(field));
+				if (!firstItem) {
+					sb.append(separator);
+				}
+			
+				Object value = record.getFirstValue(field);
+				if (value!=null) {
+					sb.append(value.toString());
+					noValues = false;
+				}
+				
+				firstItem = false;
 			}
 			
-			String joined = Joiner.on(separator).skipNulls().join(values);
-			if (joined==null || joined.isEmpty())
+			if (noValues)
 				return null;
 			else
-				return joined;
+				return sb.toString();
 			
 		} else {
 			return null;

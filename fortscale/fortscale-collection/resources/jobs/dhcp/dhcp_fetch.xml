@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>DHCP_Fetch_Data</name>
+			<group>DHCP</group>
+			<description>Fetch data from splunk hourly</description>
+			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			
+			<job-data-map>
+				<entry>
+					<key>savedQuery</key>
+					<value>getDHCPdata</value>
+				</entry>
+				<entry>
+					<key>outputPath</key>
+					<value>./input</value>
+				</entry>
+				<entry>
+					<key>returnKeys</key>
+					<value>_raw</value>
+				</entry>
+				<entry>
+					<key>filenameFormat</key>
+					<value>DHCP_%d.csv</value>
+				</entry>
+            </job-data-map>
+		</job>
+			
+		<!-- trigger the job every 15 minutes, passing splunk time parameters from the trigger -->
+		<trigger>
+			<cron>
+				<name>dhcp_fetch_every_15min_first_trigger</name>
+				<job-name>DHCP_Fetch_Data</job-name>
+				<job-group>DHCP</job-group>
+ 				<cron-expression>0 15 * * * ?</cron-expression>
+ 				<job-data-map>
+ 					<entry>
+						<key>earliest</key>
+						<value>-1h@h</value>
+					</entry>
+					<entry>
+						<key>latest</key>
+						<value>-1h@h+15m</value>
+					</entry>
+ 				</job-data-map>
+			</cron>
+		</trigger>
+		
+		<trigger>
+			<cron>
+				<name>dhcp_fetch_every_15min_second_trigger</name>
+				<job-name>DHCP_Fetch_Data</job-name>
+				<job-group>DHCP</job-group>
+ 				<cron-expression>0 30 * * * ?</cron-expression>
+ 				<job-data-map>
+ 					<entry>
+						<key>earliest</key>
+						<value>-1h@h+15m</value>
+					</entry>
+					<entry>
+						<key>latest</key>
+						<value>-1h@h+30m</value>
+					</entry>
+ 				</job-data-map>
+			</cron>
+		</trigger>
+		
+		<trigger>
+			<cron>
+				<name>dhcp_fetch_every_15min_third_trigger</name>
+				<job-name>DHCP_Fetch_Data</job-name>
+				<job-group>DHCP</job-group>
+ 				<cron-expression>0 45 * * * ?</cron-expression>
+ 				<job-data-map>
+ 					<entry>
+						<key>earliest</key>
+						<value>-1h@h+30m</value>
+					</entry>
+					<entry>
+						<key>latest</key>
+						<value>-1h@h+45m</value>
+					</entry>
+ 				</job-data-map>
+			</cron>
+		</trigger>
+		
+		<trigger>
+			<cron>
+				<name>dhcp_fetch_every_15min_fourth_trigger</name>
+				<job-name>DHCP_Fetch_Data</job-name>
+				<job-group>DHCP</job-group>
+ 				<cron-expression>0 0 * * * ?</cron-expression>
+ 				<job-data-map>
+ 					<entry>
+						<key>earliest</key>
+						<value>-1h@h+45m</value>
+					</entry>
+					<entry>
+						<key>latest</key>
+						<value>-0h@h</value>
+					</entry>
+ 				</job-data-map>
+			</cron>
+		</trigger>
+				
+	</schedule>
+	
+</job-scheduling-data>

@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>DHCP_ETL</name>
+			<group>DHCP</group>
+			<description>process DHCP events received from splunk into files</description>
+			<job-class>fortscale.collection.jobs.DHCPEventsProcessJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			
+			<job-data-map>
+				<entry>
+					<key>inputPath</key>
+					<value>./input</value>
+				</entry>
+				<entry>
+					<key>errorPath</key>
+					<value>./error</value>
+				</entry>
+				<entry>
+					<key>finishPath</key>
+					<value>./finish</value>
+				</entry>
+				<entry>
+					<key>filesFilter</key>
+					<value>DHCP_\d+.csv$</value>
+				</entry>
+				<entry>
+					<key>morphlineFile</key>
+					<value>file:resources/conf-files/readDHCPD.conf</value>
+				</entry>
+			</job-data-map>
+		</job>
+		
+		<trigger>
+			<cron>
+				<name>dhcp_etl_hourly_trigger</name>
+				<job-name>DHCP_ETL</job-name>
+				<job-group>DHCP</job-group>
+				<cron-expression>0 1/15 * * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+	</schedule>
+	
+</job-scheduling-data>

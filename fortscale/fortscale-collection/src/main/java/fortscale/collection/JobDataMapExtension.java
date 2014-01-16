@@ -1,9 +1,15 @@
 package fortscale.collection;
 
+import java.io.IOException;
+
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
+import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 
 /**
  * static helper extensions method on top of JobDataMap
@@ -54,5 +60,20 @@ public class JobDataMapExtension {
 		}
 	}
 	
+	/**
+	 * get an instance of MorphlinesItemsProcessor loaded with the morphlines config file 
+	 * specified by the configuration key
+	 */
+	public static MorphlinesItemsProcessor getMorphlinesItemsProcessor(ResourceLoader resourceLoader, JobDataMap map, String key) throws JobExecutionException {
+		String filename = "";
+		try {
+			filename = getJobDataMapStringValue(map, key);
+			Resource morphlineConf = resourceLoader.getResource(filename);
+			return new MorphlinesItemsProcessor(morphlineConf);
+		} catch (IOException e) {
+			logger.error("error loading morphline processor for " + filename, e);
+			throw new JobExecutionException("error loading morphline processo for " + filename, e);
+		}
+	}
 	
 }
