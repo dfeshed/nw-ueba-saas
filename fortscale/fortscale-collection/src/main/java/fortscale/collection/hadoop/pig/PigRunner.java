@@ -10,8 +10,11 @@ import org.springframework.data.hadoop.pig.PigOperations;
 import org.springframework.data.hadoop.pig.PigScript;
 import org.springframework.stereotype.Component;
 
+import fortscale.utils.logging.Logger;
+
 @Component
 public class PigRunner {
+	private static Logger logger = Logger.getLogger(PigRunner.class);
 	
 	@Autowired
 	private PigOperations  pigOperations;
@@ -22,6 +25,10 @@ public class PigRunner {
         
         if(execJobs.isEmpty()){
         	throw new Exception("execJobs is empty.");
+        }
+        
+        if(execJobs.size() > 1){
+        	logger.warn("got more then one exec jobs. expected to get only one.");
         }
         
         ExecJob execJob = execJobs.get(0);
