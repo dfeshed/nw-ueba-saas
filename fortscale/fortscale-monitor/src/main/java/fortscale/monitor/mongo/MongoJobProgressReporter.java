@@ -198,7 +198,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 	public List<JobReport> findJobReportsOlderThan(Date when, int count) {
 		Assert.isTrue(count > 0);
 		
-		PageRequest page = new PageRequest(0, count, new Sort(Sort.Direction.DESC, "sourceType", "jobName", "start"));
+		PageRequest page = new PageRequest(0, count, new Sort(Sort.Direction.DESC, "start", "sourceType", "jobName"));
 		Page<JobReport> resultPage = repository.findByStartLessThan(when, page);
 		
 		List<JobReport> reports = new LinkedList<JobReport>();
@@ -219,7 +219,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 	public List<JobReport> findJobReportsNewerThan(Date when, int count) {
 		Assert.isTrue(count > 0);
 		
-		PageRequest page = new PageRequest(0, count, new Sort(Sort.Direction.ASC, "sourceType", "jobName", "start"));
+		PageRequest page = new PageRequest(0, count, new Sort(Sort.Direction.ASC, "start", "sourceType", "jobName"));
 		Page<JobReport> resultPage = repository.findByStartGreaterThan(when, page);
 		
 		List<JobReport> reports = new LinkedList<JobReport>();
