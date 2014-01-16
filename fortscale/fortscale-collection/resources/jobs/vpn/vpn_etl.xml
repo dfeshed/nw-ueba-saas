@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>VPN_ETL</name>
+			<group>VPN</group>
+			<description>process vpn events received from splunk into files</description>
+			<job-class>fortscale.collection.jobs.EventProcessJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			
+			<job-data-map>
+				<entry>
+					<key>inputPath</key>
+					<value>./input</value>
+				</entry>
+				<entry>
+					<key>errorPath</key>
+					<value>./error</value>
+				</entry>
+				<entry>
+					<key>finishPath</key>
+					<value>./finish</value>
+				</entry>
+				<entry>
+					<key>filesFilter</key>
+					<value>VPN_\d+.csv$</value>
+				</entry>
+				<entry>
+					<key>outputFields</key>
+					<value>date_time,date_time_unixTime,username,source_ip,local_ip,status,message,country_name</value>
+				</entry>
+				<entry>
+					<key>outputSeparator</key>
+					<value>,</value>
+				</entry>
+				<entry>
+					<key>morphlineFile</key>
+					<value>file:resources/conf-files/readVPN_openVPN.conf</value>
+				</entry>
+				<entry>
+					<key>hadoopFilePath</key>
+					<value>/user/cloudera/data/vpn/vpnETL.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableName</key>
+					<value>vpndata</value>
+				</entry>
+			</job-data-map>
+			
+		</job>
+	
+		<trigger>
+			<cron>
+				<name>vpn_etl_hourly_trigger</name>
+				<job-name>VPN_ETL</job-name>
+				<job-group>VPN</job-group>
+				<cron-expression>0 4 * * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+	</schedule>
+
+
+</job-scheduling-data>
