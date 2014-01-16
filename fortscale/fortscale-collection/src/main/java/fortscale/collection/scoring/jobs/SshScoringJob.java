@@ -38,8 +38,4 @@ public class SshScoringJob extends EventScoringJob{
 		return sshScoringPigRunner.run(runtime, deltaTime);
 	}
 	
-	@Override
-	protected int getTotalNumOfSteps() {
-		return 4;
-	}
 }

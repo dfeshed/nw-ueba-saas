@@ -27,7 +27,7 @@
 				<name>SSH_SCORING_HOURLY_TRIGGER</name>
 				<job-name>SSH_SCORING</job-name>
 				<job-group>SSH</job-group>
-				<cron-expression>0 7 * * * ?</cron-expression>
+				<cron-expression>0 15 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 	

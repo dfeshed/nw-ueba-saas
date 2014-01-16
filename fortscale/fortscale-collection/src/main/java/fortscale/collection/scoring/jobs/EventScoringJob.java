@@ -73,7 +73,13 @@ public abstract class EventScoringJob implements Job {
 		monitor.finishJob(monitorId);
 	}
 	
-	protected abstract int getTotalNumOfSteps();
+	protected int getTotalNumOfSteps(){
+		return getTotalNumOfScoringSteps();
+	}
+	
+	protected int getTotalNumOfScoringSteps(){
+		return 4;
+	}
 	
 	protected abstract void runSteps() throws Exception;
 	

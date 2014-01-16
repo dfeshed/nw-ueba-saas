@@ -36,9 +36,4 @@ public class VpnScoringJob extends EventScoringJob{
 	protected ExecJob runPig(Long runtime, Long deltaTime) throws Exception {
 		return vpnScoringPigRunner.run(runtime, deltaTime);
 	}
-	
-	@Override
-	protected int getTotalNumOfSteps() {
-		return 4;
-	}
 }
