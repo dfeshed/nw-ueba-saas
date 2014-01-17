@@ -1,7 +1,5 @@
 package fortscale.collection.jobs;
 
-import static fortscale.collection.JobDataMapExtension.getJobDataMapStringValue;
-import static fortscale.collection.JobDataMapExtension.getMorphlinesItemsProcessor;
 
 import java.io.IOException;
 
@@ -10,13 +8,12 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 
+import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.mongo.DHCPEventsSink;
-import fortscale.monitor.JobProgressReporter;
-
-import org.slf4j.*;
 
 /**
  * Scheduled job to process dhcp events into mongodb
@@ -29,18 +26,21 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	@Autowired
 	private DHCPEventsSink mongo;
 	
+	@Autowired
+	private JobDataMapExtension jobDataMapExtension;
+	
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
 		// get parameters values from the job data map
-		inputPath = getJobDataMapStringValue(map, "inputPath");
-		errorPath = getJobDataMapStringValue(map, "errorPath");
-		finishPath = getJobDataMapStringValue(map, "finishPath");
-		filesFilter = getJobDataMapStringValue(map, "filesFilter");
+		inputPath = jobDataMapExtension.getJobDataMapStringValue(map, "inputPath");
+		errorPath = jobDataMapExtension.getJobDataMapStringValue(map, "errorPath");
+		finishPath = jobDataMapExtension.getJobDataMapStringValue(map, "finishPath");
+		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		
 		// build record to items processor
-		morphline = getMorphlinesItemsProcessor(resourceLoader, map, "morphlineFile");
+		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 	}
 	
 	@Override

@@ -10,7 +10,7 @@
 			<name>SSH_SCORING</name>
 			<group>SSH</group>
 			<description>Running SSH Scoring</description>
-			<job-class>fortscale.collection.scoring.jobs.SshScoringJob</job-class>
+			<job-class>fortscale.collection.jobs.scoring.SshScoringJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			<job-data-map>

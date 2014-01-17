@@ -1,6 +1,5 @@
 package fortscale.collection.jobs;
 
-import static fortscale.collection.JobDataMapExtension.getJobDataMapStringValue;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,8 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 
+import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.hadoop.HDFSLineAppender;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.io.BufferedLineReader;
@@ -46,33 +45,35 @@ public class EventProcessJob implements Job {
 	protected String impalaTableName;
 	protected HDFSLineAppender appender;
 	
-	@Autowired
-	protected ResourceLoader resourceLoader;
+	
 	
 	@Autowired
 	protected ImpalaClient impalaClient;
 	
 	@Autowired
 	protected JobProgressReporter monitor;
+	
+	@Autowired
+	private JobDataMapExtension jobDataMapExtension;
 		
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
 		// get parameters values from the job data map
-		inputPath = getJobDataMapStringValue(map, "inputPath");
-		errorPath = getJobDataMapStringValue(map, "errorPath");
-		finishPath = getJobDataMapStringValue(map, "finishPath");
-		filesFilter = getJobDataMapStringValue(map, "filesFilter");
-		hadoopFilePath = getJobDataMapStringValue(map, "hadoopFilePath");
-		impalaTableName = getJobDataMapStringValue(map, "impalaTableName");
+		inputPath = jobDataMapExtension.getJobDataMapStringValue(map, "inputPath");
+		errorPath = jobDataMapExtension.getJobDataMapStringValue(map, "errorPath");
+		finishPath = jobDataMapExtension.getJobDataMapStringValue(map, "finishPath");
+		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
+		hadoopFilePath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilePath");
+		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
 		
 		// build record to items processor
-		String[] outputFields = getJobDataMapStringValue(map, "outputFields").split(",");
-		String outputSeparator = getJobDataMapStringValue(map, "outputSeparator");
+		String[] outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields").split(",");
+		String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, outputFields);
 		
 		try {
-			Resource morphlineConf = resourceLoader.getResource(getJobDataMapStringValue(map, "morphlineFile"));
+			Resource morphlineConf = jobDataMapExtension.getJobDataMapResourceValue(map, "morphlineFile");
 			morphline = new MorphlinesItemsProcessor(morphlineConf);
 		} catch (IOException e) {
 			logger.error("error loading morphline processor", e);

@@ -10,13 +10,13 @@
 			<name>VPN_SCORING</name>
 			<group>VPN</group>
 			<description>Running VPN Scoring</description>
-			<job-class>fortscale.collection.scoring.jobs.VpnScoringJob</job-class>
+			<job-class>fortscale.collection.jobs.scoring.VpnScoringJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>vpndatares</value>
+					<value>${impala.vpn.table.name}</value>
 				</entry>
 			</job-data-map>
 			

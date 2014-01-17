@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import fortscale.collection.JobDataMapExtension;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
-import static fortscale.collection.JobDataMapExtension.getJobDataMapStringValue;
 
 
 /**
@@ -53,6 +53,9 @@ public class SplunkFetchSavedQueryJob implements Job {
 	
 	@Autowired 
 	private JobProgressReporter monitor;
+	
+	@Autowired
+	private JobDataMapExtension jobDataMapExtension;
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -120,12 +123,12 @@ public class SplunkFetchSavedQueryJob implements Job {
 		JobDataMap map = context.getMergedJobDataMap();
 		
 		// get parameters values from the job data map
-		earliest = getJobDataMapStringValue(map, "earliest");
-		latest = getJobDataMapStringValue(map, "latest");
-		savedQuery = getJobDataMapStringValue(map, "savedQuery");
-		outputPath = getJobDataMapStringValue(map, "outputPath");
-		returnKeys = getJobDataMapStringValue(map, "returnKeys");
-		filenameFormat = getJobDataMapStringValue(map, "filenameFormat");
+		earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
+		latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
+		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
+		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");
+		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
+		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 	}
 	
 	private File ensureOutputDirectoryExists(String outputPath) throws JobExecutionException {

@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.scoring;
 
-import static fortscale.collection.JobDataMapExtension.getJobDataMapStringValue;
 
 import java.util.Date;
 
@@ -14,6 +13,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.services.LogEventsEnum;
@@ -28,6 +28,9 @@ public abstract class EventScoringJob implements Job {
 	
 	@Autowired
 	private ImpalaClient impalaClient;
+	
+	@Autowired
+	private JobDataMapExtension jobDataMapExtension;
 		
 	
 	
@@ -51,7 +54,7 @@ public abstract class EventScoringJob implements Job {
 
 		// get parameters values from the job data map
 		
-		impalaTableName = getJobDataMapStringValue(map, "impalaTableName");
+		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
 		
 	}
 
