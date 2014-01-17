@@ -1,16 +1,15 @@
 package fortscale.monitor.mongo;
 
 import java.util.Date;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import fortscale.monitor.domain.JobReport;
 
 public interface JobReportRepository extends MongoRepository<JobReport, String> {
 	
-	Page<JobReport> findByStartLessThan(Date start, Pageable pageable);
-	
-	Page<JobReport> findByStartGreaterThan(Date start, Pageable pageable);
+	List<JobReport> findByStartBetween(Date from, Date to, Sort sort);
+		
+	List<JobReport> findByStartGreaterThan(Date start, Sort sort);
 }

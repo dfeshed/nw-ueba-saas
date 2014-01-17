@@ -10,7 +10,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.monitor.JobProgressReporter;
@@ -31,34 +30,52 @@ public class ApiMonitorController {
 		this.monitor = monitor;
 	}
 	
+
+	/**
+	 * returns job details of the 24 hours BEFORE the specified latest timestamp.
+	 */
+	@RequestMapping(value = "/summary/before/{ts}", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<SourceTypeSummary>> summaryBefore(@PathVariable("ts") long ts) {
+		
+		List<JobReport> reports = monitor.findJobReportsOlderThan(new Date(ts));
+		return convertToSummaryDataBean(reports);
+	}
+	
+	/**
+	 * returns all the job details AFTER the specified earliest timestamp.
+	 */
+	@RequestMapping(value = "/summary/after/{ts}", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<SourceTypeSummary>> summaryAfter(@PathVariable("ts") long ts) {
+		
+		List<JobReport> reports = monitor.findJobReportsNewerThan(new Date(ts));
+		return convertToSummaryDataBean(reports);
+	}
+	
+	
+	
+
 	/***
-	 * Get an aggregated list of jobs monitor status according to source type and job name 
-	 * @return
+	 * returns all the job details in the last 24 hours
 	 */
 	@RequestMapping(value = "/summary", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<SourceTypeSummary>> summary(
-			@RequestParam(value="count", defaultValue="50") int count,
-			@RequestParam(value="earliest", defaultValue="0") long earliest,
-			@RequestParam(value="latest", defaultValue="0") long latest) {
+	public DataBean<List<SourceTypeSummary>> summary() {
 			
-		List<JobReport> reports;
-		if (latest!=0) {
-			// get reports older than the latest time given, exclude latest
-			reports = monitor.findJobReportsOlderThan(new Date(latest), count);
-			
-		} else {
-			if (earliest!=0) {
-				// get reports newer from the earliest time given, exclude earliest
-				reports = monitor.findJobReportsNewerThan(new Date(earliest), count);
-			} else {
-				// get reports older than now (latest page)
-				reports = monitor.findJobReportsOlderThan(new Date(), count);
-			}
-		}
+		//summary (not parameters): returns all the job details in the last 24 hours
+		//summary + latest (timestamp): returns job details of the 24 hours BEFORE the specified latest timestamp.
+		//summary + earliest (timestamp): returns all the job details AFTER the specified earliest timestamp.
 		
-
+		List<JobReport> reports = monitor.findLatestJobReports();
+		return convertToSummaryDataBean(reports);
+	}
+		
+	
+	private DataBean<List<SourceTypeSummary>> convertToSummaryDataBean(List<JobReport> reports) {
 		// convert job report results to service response format
 		List<SourceTypeSummary> summary = new LinkedList<SourceTypeSummary>();
 		int total = 0;

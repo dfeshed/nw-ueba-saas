@@ -37,10 +37,10 @@ public class ApiMonitorControllerTest {
 		report.setFinish(new Date());
 		report.getDataReceived().add(new JobDataReceived("MyType", 0, "Events"));
 		reports.add(report);
-		when(monitor.findJobReportsOlderThan(any(Date.class), anyInt())).thenReturn(reports);
+		when(monitor.findLatestJobReports()).thenReturn(reports);
 		
 		// act
-		DataBean<List<SourceTypeSummary>> result = subject.summary(1, 0, 0);
+		DataBean<List<SourceTypeSummary>> result = subject.summary();
 		
 		// assert
 		assertNotNull(result);
@@ -60,10 +60,10 @@ public class ApiMonitorControllerTest {
 		report.getDataReceived().add(new JobDataReceived("MyTypeA", 0, "Events"));
 		report.getDataReceived().add(new JobDataReceived("MyTypeB", 1, "Events"));
 		reports.add(report);
-		when(monitor.findJobReportsOlderThan(any(Date.class), anyInt())).thenReturn(reports);
+		when(monitor.findLatestJobReports()).thenReturn(reports);
 		
 		// act
-		DataBean<List<SourceTypeSummary>> result = subject.summary(1, 0, 0);
+		DataBean<List<SourceTypeSummary>> result = subject.summary();
 		
 		// assert
 		assertNotNull(result);
