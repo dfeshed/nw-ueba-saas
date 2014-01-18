@@ -1,0 +1,30 @@
+#!/bin/bash
+ad_fields=(
+    "distinguishedName"
+    "name"
+    "isCriticalSystemObject"
+    "isDeleted"
+    "groupType"
+    "sAMAccountType"
+    "memberOf"
+    "managedBy"
+    "managedObjects"
+    "masteredBy"
+    "member"
+    "nonSecurityMember"
+    "nonSecurityMemberBL"
+    "directReports"
+    "secretary"
+    "whenChanged"
+    "whenCreated"
+    "accountNameHistory"
+    "cn"
+    "description"
+    "displayName"
+    "mail"
+    "sAMAccountName"
+    "objectSid"
+    "objectGUID"
+)
+cat tmp.txt |
+python ldiftocsv.py ${ad_fields[@]}
