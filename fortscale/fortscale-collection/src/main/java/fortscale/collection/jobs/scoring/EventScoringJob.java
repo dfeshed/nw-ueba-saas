@@ -12,11 +12,12 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.hadoop.ImpalaClient;
+import fortscale.collection.hadoop.pig.EventScoringPigRunner;
 import fortscale.monitor.JobProgressReporter;
-import fortscale.services.LogEventsEnum;
 import fortscale.utils.logging.Logger;
 
 @DisallowConcurrentExecution
@@ -31,7 +32,9 @@ public abstract class EventScoringJob implements Job {
 	
 	@Autowired
 	private JobDataMapExtension jobDataMapExtension;
-		
+	
+	@Autowired
+	private EventScoringPigRunner eventScoringPigRunner;
 	
 	
 	private String monitorId;
@@ -41,6 +44,12 @@ public abstract class EventScoringJob implements Job {
 	private int stepIndex = 1;
 	
 	private String impalaTableName;
+	
+	private Resource pigScriptResource;
+	
+	private String pigInputData;
+	
+	private String pigOutputDataPrefix;
 
 	
 	
@@ -55,6 +64,9 @@ public abstract class EventScoringJob implements Job {
 		// get parameters values from the job data map
 		
 		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
+		pigScriptResource = jobDataMapExtension.getJobDataMapResourceValue(map, "pigScriptResouce");
+		pigInputData = jobDataMapExtension.getJobDataMapStringValue(map, "pigInputData");
+		pigOutputDataPrefix = jobDataMapExtension.getJobDataMapStringValue(map, "pigOutputDataPrefix");
 		
 	}
 
@@ -84,40 +96,36 @@ public abstract class EventScoringJob implements Job {
 		return 4;
 	}
 	
-	protected abstract void runSteps() throws Exception;
-	
-	protected boolean runScoringSteps(LogEventsEnum eventsEnum) throws Exception{
+	protected void runSteps() throws Exception{
 		DateTime dateTime = new DateTime();
 		Long runtime = dateTime.getMillis() / 1000;
 		Long deltaTime = dateTime.minusDays(14).getMillis() / 1000;
 		
 		
-		boolean isSucceeded = runScoringPig(runtime, deltaTime, eventsEnum);
+		boolean isSucceeded = runScoringPig(runtime, deltaTime);
 		if(!isSucceeded){
-			return false;
+			return;
 		}
 		
 		
-		isSucceeded = runAddPartitionQuery(runtime, eventsEnum);
+		isSucceeded = runAddPartitionQuery(runtime);
 		if(!isSucceeded){
-			return false;
+			return;
 		}
 		
-		isSucceeded = runRefreshTable(eventsEnum);
+		isSucceeded = runRefreshTable();
 		if(!isSucceeded){
-			return false;
+			return;
 		}
 		
-		isSucceeded = runUpdateUserWithEventScore(runtime, eventsEnum);
+		isSucceeded = runUpdateUserWithEventScore(runtime);
 		if(!isSucceeded){
-			return false;
-		}
-		
-		return true;
+			return;
+		}		
 	}
-	
-	private boolean runUpdateUserWithEventScore(Long runtime, LogEventsEnum eventsEnum){
-		startNewStep(String.format("updateUser %s Score", eventsEnum));
+		
+	private boolean runUpdateUserWithEventScore(Long runtime){
+		startNewStep("updateUser Score");
 		
 		DateTime dateTime = new DateTime(runtime * 1000);
 		boolean isSucceeded = runUpdateUserWithEventScore(dateTime.toDate());
@@ -129,8 +137,8 @@ public abstract class EventScoringJob implements Job {
 	
 	protected abstract boolean runUpdateUserWithEventScore(Date runtime);
 	
-	private boolean runScoringPig(Long runtime, Long deltaTime, LogEventsEnum eventsEnum) throws Exception{
-		startNewStep(String.format("%s pig", eventsEnum));
+	private boolean runScoringPig(Long runtime, Long deltaTime) throws Exception{
+		startNewStep("pig");
 				
 		ExecJob execJob = runPig(runtime, deltaTime);
 		if(ExecJob.JOB_STATUS.FAILED.equals(execJob.getStatus())){
@@ -149,10 +157,12 @@ public abstract class EventScoringJob implements Job {
 		return true;
 	}
 	
-	protected abstract ExecJob runPig(Long runtime, Long deltaTime) throws Exception;
+	protected ExecJob runPig(Long runtime, Long deltaTime) throws Exception{
+		return eventScoringPigRunner.run(runtime, deltaTime, pigScriptResource, pigInputData, pigOutputDataPrefix);
+	}
 	
-	private boolean runAddPartitionQuery(Long runtime, LogEventsEnum eventsEnum) throws JobExecutionException{	
-		startNewStep(String.format("%s add partition", eventsEnum));
+	private boolean runAddPartitionQuery(Long runtime) throws JobExecutionException{	
+		startNewStep(String.format("%s add partition ", getTableName()));
 		
 		impalaClient.addPartitionToTable(getTableName(), runtime);
 
@@ -162,8 +172,8 @@ public abstract class EventScoringJob implements Job {
 		return true;
 	}
 	
-	private boolean runRefreshTable(LogEventsEnum eventsEnum) throws JobExecutionException{	
-		startNewStep(String.format("%s refresh table", eventsEnum));
+	private boolean runRefreshTable() throws JobExecutionException{	
+		startNewStep(String.format("%s refresh table", getTableName()));
 		
 		impalaClient.refreshTable(getTableName());
 
@@ -225,4 +235,37 @@ public abstract class EventScoringJob implements Job {
 	public void finishStep(){
 		monitor.finishStep(monitorId, stepName);
 	}
+
+
+	public Resource getPigScriptResource() {
+		return pigScriptResource;
+	}
+
+
+	public void setPigScriptResource(Resource pigScriptResource) {
+		this.pigScriptResource = pigScriptResource;
+	}
+
+
+	public String getPigInputData() {
+		return pigInputData;
+	}
+
+
+	public void setPigInputData(String pigInputData) {
+		this.pigInputData = pigInputData;
+	}
+
+
+	public String getPigOutputDataPrefix() {
+		return pigOutputDataPrefix;
+	}
+
+
+	public void setPigOutputDataPrefix(String pigOutputDataPrefix) {
+		this.pigOutputDataPrefix = pigOutputDataPrefix;
+	}
+	
+	
+	
 }

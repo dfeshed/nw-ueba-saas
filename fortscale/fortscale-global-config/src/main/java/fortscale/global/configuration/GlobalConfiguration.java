@@ -1,4 +1,4 @@
-package configuration;
+package fortscale.global.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 
 @Configuration
-@PropertySource("classpath:META-INF/spring/fortscale-config.properties")
+@PropertySource("classpath:META-INF/fortscale-config.properties")
 public class GlobalConfiguration {
 
 	@Bean

@@ -16,7 +16,19 @@
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>authenticationscores</value>
+					<value>${impala.login.table.name}</value>
+				</entry>
+				<entry>
+					<key>pigScriptResouce</key>
+					<value>${collection.pig.scripts.dir.path}/authentication.pig</value>
+				</entry>
+				<entry>
+					<key>pigInputData</key>
+					<value>${hdfs.user.data.security.events.4769.path}</value>
+				</entry>
+				<entry>
+					<key>pigOutputDataPrefix</key>
+					<value>${hdfs.user.processeddata.security.events.4769.path}/</value>
 				</entry>
 			</job-data-map>
 			

@@ -18,6 +18,18 @@
 					<key>impalaTableName</key>
 					<value>${impala.vpn.table.name}</value>
 				</entry>
+				<entry>
+					<key>pigScriptResouce</key>
+					<value>${collection.pig.scripts.dir.path}/vpn.pig</value>
+				</entry>
+				<entry>
+					<key>pigInputData</key>
+					<value>${hdfs.user.data.vpn.path}</value>
+				</entry>
+				<entry>
+					<key>pigOutputDataPrefix</key>
+					<value>${hdfs.user.processeddata.vpnscores.path}/</value>
+				</entry>
 			</job-data-map>
 			
 		</job>
@@ -27,7 +39,7 @@
 				<name>VPN_SCORING_HOURLY_TRIGGER</name>
 				<job-name>VPN_SCORING</job-name>
 				<job-group>VPN</job-group>
-				<cron-expression>0 10 * * * ?</cron-expression>
+				<cron-expression>1 * * * * ?</cron-expression>
 			</cron>
 		</trigger>
 	
