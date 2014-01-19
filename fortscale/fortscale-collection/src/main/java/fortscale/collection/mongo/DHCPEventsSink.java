@@ -96,6 +96,7 @@ public class DHCPEventsSink {
 		if (mongoClient!=null) {
 			mongoClient.close();
 			mongoClient = null;
+			dbCollection = null;
 		}
 	}
 	

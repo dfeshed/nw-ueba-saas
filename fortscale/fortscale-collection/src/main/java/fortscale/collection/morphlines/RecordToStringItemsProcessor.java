@@ -20,39 +20,30 @@ public class RecordToStringItemsProcessor {
 		this.separator = separator;
 	}
 	
-	public String process(Record item) {
-		if (item==null) 
+	public String process(Record record) {
+		if (record==null) 
 			return null;
 		
-		if (item instanceof Record) {
-			Record record = (Record)item;
-			
-			boolean firstItem = true;
-			boolean noValues = true;
-			StringBuilder sb = new StringBuilder();
-			for (String field : fields) {
-				if (!firstItem) {
-					sb.append(separator);
-				}
-			
-				Object value = record.getFirstValue(field);
-				if (value!=null) {
-					sb.append(value.toString());
-					noValues = false;
-				}
-				
-				firstItem = false;
+		boolean firstItem = true;
+		boolean noValues = true;
+		StringBuilder sb = new StringBuilder();
+		for (String field : fields) {
+			if (!firstItem) {
+				sb.append(separator);
+			}
+		
+			Object value = record.getFirstValue(field);
+			if (value!=null) {
+				sb.append(value.toString());
+				noValues = false;
 			}
 			
-			if (noValues)
-				return null;
-			else
-				return sb.toString();
-			
-		} else {
-			return null;
+			firstItem = false;
 		}
+		
+		if (noValues)
+			return null;
+		else
+			return sb.toString();
 	}
-	
-
 }
