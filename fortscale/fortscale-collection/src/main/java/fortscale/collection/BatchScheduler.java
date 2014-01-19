@@ -13,12 +13,31 @@ public class BatchScheduler {
 	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
-			logger.info("loading the collection application context");
+		ClassPathXmlApplicationContext context = null;
+		try {
+			// Grab schedule instance from the factory
+			// use the quartz.conf instance for jobs and triggers configuration
+			logger.info("initializing batch scheduler");
 			
 			// loading spring application context
-			@SuppressWarnings("unused")
-			ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
+			context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
+
+			Scheduler scheduler = (Scheduler) context.getBean("jobScheduler");
+
+			// do not start scheduler in case of pause argument, just initialize it
+			// this is to be used mainly in debug scenarios 
+			if (args.length > 0 && args[0].equals("pause"))
+				return;
+				
+			// start of the scheduler, the application will not terminate
+			// until a call to scheduler.shutdown() is made, because there are
+			// active threads
+			logger.info("starting batch scheduler execution");
+			scheduler.start();
 			
+		} catch (SchedulerException e) {
+			logger.error("error in scheduling collection jobs", e);
+		}
 	}
 
 }
