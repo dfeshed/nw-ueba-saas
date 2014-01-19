@@ -104,7 +104,7 @@ public class EventProcessJob implements Job {
 			monitor.startStep(monitorId, currentStep, 3);
 
 			// get hadoop file writer
-			createHDFSLineAppender();
+			createOutputAppender();
 			
 			// read each file and process lines
 			try {
@@ -129,7 +129,7 @@ public class EventProcessJob implements Job {
 			}
 			
 			
-			closeHDFSAppender();
+			closeOutputAppender();
 			refreshImpala();
 			
 			monitor.finishStep(monitorId, currentStep);
@@ -179,7 +179,7 @@ public class EventProcessJob implements Job {
 			}
 			
 			// flush hadoop
-			flushHDFSAppender();
+			flushOutputAppender();
 			
 			monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), lineCounter, "Events"));
 		} finally {
@@ -219,7 +219,7 @@ public class EventProcessJob implements Job {
 	}
 	
 	
-	protected void createHDFSLineAppender() throws JobExecutionException {
+	protected void createOutputAppender() throws JobExecutionException {
 		try {
 			logger.debug("opening hdfs file {} for append", hadoopFilePath);
 
@@ -233,7 +233,7 @@ public class EventProcessJob implements Job {
 		}
 	}
 	
-	protected void flushHDFSAppender() throws IOException {
+	protected void flushOutputAppender() throws IOException {
 		try {
 			appender.flush();
 		} catch (IOException e) {
@@ -243,7 +243,7 @@ public class EventProcessJob implements Job {
 		}
 	}
 	
-	protected void closeHDFSAppender() throws JobExecutionException {
+	protected void closeOutputAppender() throws JobExecutionException {
 		try {
 			logger.debug("closing hdfs file {}", hadoopFilePath);
 			appender.close();

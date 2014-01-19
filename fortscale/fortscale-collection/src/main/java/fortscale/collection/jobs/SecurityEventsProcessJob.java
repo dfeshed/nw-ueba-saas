@@ -81,7 +81,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		return false;
 	}
 
-	@Override protected void createHDFSLineAppender() throws JobExecutionException {
+	@Override protected void createOutputAppender() throws JobExecutionException {
 		// go over the events map and create an appender for each event
 		try {
 			for (EventProcessHandlers handlers : eventsMap.values()) {
@@ -109,7 +109,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		}
 	}
 	
-	@Override protected void flushHDFSAppender() throws IOException {
+	@Override protected void flushOutputAppender() throws IOException {
 		// try and flush all appender that we can, if one of them 
 		// throws exception than continue flushing the rest and throw
 		// the exception at the end
@@ -129,7 +129,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			throw exception;
 	}
 	
-	@Override protected void closeHDFSAppender() throws JobExecutionException {
+	@Override protected void closeOutputAppender() throws JobExecutionException {
 		// try and close all appender that we can, if one of them 
 		// throws exception than continue closing the rest and throw
 		// the exception at the end

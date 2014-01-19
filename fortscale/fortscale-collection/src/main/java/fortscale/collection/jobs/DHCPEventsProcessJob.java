@@ -61,15 +61,15 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 		}			
 	}
 	
-	@Override protected void createHDFSLineAppender() throws JobExecutionException {
+	@Override protected void createOutputAppender() throws JobExecutionException {
 		try {
 			mongo.connect();
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
 		}
 	}
-	@Override protected void flushHDFSAppender() throws IOException {}
-	@Override protected void closeHDFSAppender() throws JobExecutionException {
+	@Override protected void flushOutputAppender() throws IOException {}
+	@Override protected void closeOutputAppender() throws JobExecutionException {
 		try {
 			mongo.postProcessIndexes();
 			mongo.close();
