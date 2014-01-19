@@ -24,8 +24,6 @@ public class BatchScheduler {
 			// loading spring application context
 			context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
 
-			Scheduler scheduler = (Scheduler) context.getBean("jobScheduler");
-
 			// do not start scheduler in case of pause argument, just initialize it
 			// this is to be used mainly in debug scenarios 
 			if (args.length > 0 && args[0].equals("pause"))
@@ -35,6 +33,7 @@ public class BatchScheduler {
 			// until a call to scheduler.shutdown() is made, because there are
 			// active threads
 			logger.info("starting batch scheduler execution");
+			Scheduler scheduler = (Scheduler) context.getBean("jobScheduler");
 			scheduler.start();
 			
 		} catch (SchedulerException e) {

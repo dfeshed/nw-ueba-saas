@@ -41,5 +41,4 @@ ad_fields=(
 mongo_fields="$( join_with_glue ',' timestamp ${ad_fields[@]} timestampepoch)"
 ## Adding filter:
 search_cmd+=( "(&(objectclass=group)) ${ad_fields[@]}" )
-echo "${search_cmd[@]}"
 ${search_cmd[@]} > ${outputfile}
