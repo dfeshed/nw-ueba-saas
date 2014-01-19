@@ -33,12 +33,7 @@ public class MorphlinesItemsProcessor {
 		morphline = new Compiler().compile(config.getFile(), null, morphlineContext, sinkCommand);
 	}
 
-	public Record process(String item) {
-
-		// create a record that holds the input string
-		Record record = new Record();
-		record.put(Fields.MESSAGE, item);
-
+	public Record process(Record record) {
 		// process the record
 		boolean success = morphline.process(record);
 
@@ -48,12 +43,21 @@ public class MorphlinesItemsProcessor {
 		Record processed = sinkCommand.popRecord();
 
 		if (!success) {
-			logger.warn("error processing record {}", item);
+			logger.warn("error processing record {}", record);
 			return null;
 		}
 
 		// return the result record
 		return processed;
+	}
+	
+	public Record process(String item) {
+
+		// create a record that holds the input string
+		Record record = new Record();
+		record.put(Fields.MESSAGE, item);
+
+		return process(record);
 	}
 
 }

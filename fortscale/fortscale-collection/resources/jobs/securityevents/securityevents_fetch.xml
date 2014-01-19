@@ -36,6 +36,14 @@
 					<value>TaskCategory,EventCode,LogName,Message,RecordNumber,SourceName,_time,ComputerName</value>
 				</entry>
 				<entry>
+					<key>delimiter</key>
+					<value>|</value>
+				</entry>
+				<entry>
+					<key>encloseQuotes</key>
+					<value>false</value>
+				</entry>
+				<entry>
 					<key>filenameFormat</key>
 					<value>SEC_%d.csv</value>
 				</entry>
@@ -45,6 +53,7 @@
 		<trigger>
 			<cron>
 				<name>sec_evt_fetch_hourly_trigger</name>
+				<group>Security Events</group>
 				<job-name>SecurityEvents_Fetch_Data</job-name>
 				<job-group>Security Events</job-group>
  				<cron-expression>0 1 * * * ?</cron-expression>

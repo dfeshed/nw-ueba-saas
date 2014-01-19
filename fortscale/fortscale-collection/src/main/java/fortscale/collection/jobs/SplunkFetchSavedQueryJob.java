@@ -47,6 +47,8 @@ public class SplunkFetchSavedQueryJob implements Job {
 	private String outputPath;
 	private String returnKeys;
 	private String filenameFormat;
+	private String delimiter;
+	private boolean encloseQuotes = true;
 	
 	private File outputTempFile;
 	private File outputFile;
@@ -88,8 +90,8 @@ public class SplunkFetchSavedQueryJob implements Job {
 		// configure events handler to save events to csv file
 		SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
 		handler.setSearchReturnKeys(returnKeys);
-		handler.setDelimiter(",");
-		handler.setDisableQuotes(false);
+		handler.setDelimiter(delimiter);
+		handler.setDisableQuotes(!encloseQuotes);
 		handler.setSkipFirstLine(true);
 		handler.setForceSingleLineEvents(true);
 			
@@ -129,6 +131,11 @@ public class SplunkFetchSavedQueryJob implements Job {
 		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
+		
+		// try and retrieve the delimiter value, if present in the job data map
+		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
+		// try and retrieve the enclose quotes value, if present in the job data map
+		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
 	}
 	
 	private File ensureOutputDirectoryExists(String outputPath) throws JobExecutionException {

@@ -55,7 +55,33 @@ public class JobDataMapExtension {
 		return value;
 	}
 	
-	private String getEnvPropertyValue(String value, String mapKey) throws JobExecutionException{
+	public String getJobDataMapStringValue(JobDataMap map, String key, String defaultValue) throws JobExecutionException {
+		if (!map.containsKey(key))
+			return defaultValue;
+		
+		String value = map.getString(key);
+		if (value==null || value.length()==0) {
+			return defaultValue;
+		}
+		
+		value = getEnvPropertyValue(value, key);
+		return value;
+	}
+	
+	public boolean getJobDataMapBooleanValue(JobDataMap map, String key, boolean defaultValue) {
+		if (!map.containsKey(key))
+			return defaultValue;
+		
+		try {
+			boolean value = map.getBoolean(key);
+			return value;
+		} catch (ClassCastException e) {
+			logger.warn("value for key {} in job data map is not boolean", key);
+			return defaultValue;
+		}
+	}
+	
+	private String getEnvPropertyValue(String value, String mapKey) throws JobExecutionException {
 		String ret = value;
 		if(value.contains(ENV_PROP_PERFIX)){
 			StringBuilder builder = new StringBuilder();

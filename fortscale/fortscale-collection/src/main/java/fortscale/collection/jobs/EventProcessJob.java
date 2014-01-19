@@ -15,7 +15,6 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.hadoop.HDFSLineAppender;
@@ -54,7 +53,7 @@ public class EventProcessJob implements Job {
 	protected JobProgressReporter monitor;
 	
 	@Autowired
-	private JobDataMapExtension jobDataMapExtension;
+	protected JobDataMapExtension jobDataMapExtension;
 		
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
@@ -72,13 +71,7 @@ public class EventProcessJob implements Job {
 		String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, outputFields);
 		
-		try {
-			Resource morphlineConf = jobDataMapExtension.getJobDataMapResourceValue(map, "morphlineFile");
-			morphline = new MorphlinesItemsProcessor(morphlineConf);
-		} catch (IOException e) {
-			logger.error("error loading morphline processor", e);
-			throw new JobExecutionException("error loading morphline processor", e);
-		}
+		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 	}
 	
 	@Override
@@ -135,6 +128,7 @@ public class EventProcessJob implements Job {
 				throw new JobExecutionException("error processing files", e);
 			}
 			
+			
 			closeHDFSAppender();
 			refreshImpala();
 			
@@ -170,6 +164,7 @@ public class EventProcessJob implements Job {
 	}
 	
 	
+	
 	protected boolean processFile(File file) throws IOException {
 		
 		BufferedLineReader reader = new BufferedLineReader();
@@ -203,12 +198,14 @@ public class EventProcessJob implements Job {
 		}
 	}
 
+	
 	protected boolean processLine(String line) throws IOException {
 		// process each line
 		Record record = morphline.process(line);
 		String output = recordToString.process(record);
 		
 		// append to hadoop, if there is data to be written
+		
 		if (output!=null) {
 			appender.writeLine(output);
 			return true;
@@ -221,11 +218,14 @@ public class EventProcessJob implements Job {
 		impalaClient.refreshTable(impalaTableName);
 	}
 	
+	
 	protected void createHDFSLineAppender() throws JobExecutionException {
 		try {
 			logger.debug("opening hdfs file {} for append", hadoopFilePath);
+
 			appender = new HDFSLineAppender();
 			appender.open(hadoopFilePath);
+
 		} catch (IOException e) {
 			logger.error("error opening hdfs file for append at " + hadoopFilePath, e);
 			monitor.error(monitorId, "Process Files", String.format("error appending to hdfs file %s: \n %s",  hadoopFilePath, e.toString()));
