@@ -37,6 +37,7 @@
 		<trigger>
 			<cron>
 				<name>VPN_SCORING_HOURLY_TRIGGER</name>
+				<group>VPN</group>
 				<job-name>VPN_SCORING</job-name>
 				<job-group>VPN</job-group>
 				<cron-expression>1 * * * * ?</cron-expression>

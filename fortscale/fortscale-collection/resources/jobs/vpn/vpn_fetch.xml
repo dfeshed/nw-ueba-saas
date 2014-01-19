@@ -45,6 +45,7 @@
 		<trigger>
 			<cron>
 				<name>vpn_fetch_hourly_trigger</name>
+				<group>VPN</group>
 				<job-name>VPN_Fetch_Data</job-name>
 				<job-group>VPN</job-group>
  				<cron-expression>0 3 * * * ?</cron-expression>

@@ -37,6 +37,7 @@
 		<trigger>
 			<cron>
 				<name>SSH_SCORING_HOURLY_TRIGGER</name>
+				<group>SSH</group>
 				<job-name>SSH_SCORING</job-name>
 				<job-group>SSH</job-group>
 				<cron-expression>0 15 * * * ?</cron-expression>
