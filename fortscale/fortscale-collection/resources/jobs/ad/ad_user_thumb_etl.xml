@@ -7,28 +7,32 @@
 
 	<schedule>
 		<job>
-			<name>AD_USER_ETL</name>
+			<name>AD_USER_THUMBNAIL_ETL</name>
 			<group>AD</group>
-			<description>Run AD USER ETL HOURLY</description>
-			<job-class>fortscale.collection.jobs.ad.AdUserProcessJob</job-class>
+			<description>Run AD USER THUMBNAIL ETL HOURLY</description>
+			<job-class>fortscale.collection.jobs.ad.AdUserThumbnailProcessJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			
 			<job-data-map>
 				<entry>
-					<key>inputPath</key>
-					<value>${collection.fetch.data.ad.user.path}</value>
+					<key>ldapFieldSeperator</key>
+					<value>${collection.ldap.field.seperator}</value>
+				</entry>
+				<entry>
+					<key>adUserThumbnailBufferSize</key>
+					<value>10000</value>
 				</entry>
             </job-data-map>
 		</job>
 	
 		<trigger>
 			<cron>
-				<name>ad_user_etl_hourly_trigger</name>
+				<name>ad_user_thumbnail_etl_hourly_trigger</name>
 				<group>AD</group>
-				<job-name>AD_USER_ETL</job-name>
+				<job-name>AD_USER_THUMBNAIL_ETL</job-name>
 				<job-group>AD</job-group>
- 				<cron-expression>0 10 * * * ?</cron-expression>
+ 				<cron-expression>0 0 0 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

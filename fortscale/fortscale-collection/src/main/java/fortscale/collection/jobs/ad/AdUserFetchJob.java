@@ -91,8 +91,8 @@ public class AdUserFetchJob extends FortscaleJob {
 	private boolean fetchAndWriteToFileStep(){
 		startNewStep("Fetch and Write to file");
 		
-		boolean isSucceeded =  runCmd(null, ldapUserSearchShellScript, outputTempFile.getAbsolutePath());
-		if(!isSucceeded){
+		Process pr =  runCmd(null, ldapUserSearchShellScript, outputTempFile.getAbsolutePath());
+		if(pr == null){
 			return false;
 		}
 		renameOutput(outputTempFile, outputFile);

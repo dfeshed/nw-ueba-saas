@@ -38,9 +38,11 @@ import org.springframework.stereotype.Service;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
+import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
+import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.analyst.ScoreConfiguration;
 import fortscale.domain.analyst.ScoreWeight;
@@ -85,6 +87,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private AdUserRepository adUserRepository;
+	
+	@Autowired
+	private AdUserThumbnailRepository adUserThumbnailRepository;
 	
 	@Autowired
 	private AdGroupRepository adGroupRepository;
@@ -147,14 +152,11 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public String getUserThumbnail(User user) {
 		String ret = null;
-		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
-		if(timestampepoch != null){
-			AdUser adUser = adUserRepository.findByTimestampepochAndObjectGUID(timestampepoch, user.getAdInfo().getObjectGUID());
-			if(adUser == null){
-				logger.error("ad user document not found");
-			} else{
-				ret = adUser.getThumbnailPhoto();
-			}
+		
+		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.CREATED_AT_FIELD_NAME);
+		List<AdUserThumbnail> adUserThumbnails = adUserThumbnailRepository.findByObjectGUID(user.getAdInfo().getObjectGUID(), pageRequest);
+		if(adUserThumbnails.size() > 0){
+			ret = adUserThumbnails.get(0).getThumbnailPhoto();
 		}
 		
 		return ret;

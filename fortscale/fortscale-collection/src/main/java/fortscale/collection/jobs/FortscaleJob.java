@@ -52,8 +52,8 @@ public abstract class FortscaleJob implements Job {
 		monitor.finishJob(monitorId);
 	}
 	
-	
-	protected boolean runCmd(File workingDir, String... commands){
+		
+	protected Process runCmd(File workingDir, String... commands){
 		ProcessBuilder processBuilder = null;
 		Process pr = null;	
 		try {
@@ -68,10 +68,10 @@ public abstract class FortscaleJob implements Job {
 			String cmd = StringUtils.join(commands, " ");
 			logger.error(String.format("while running the command \"%s\", got the following exception", cmd), e);
 			monitor.error(monitorId, stepName, String.format("while running the command %s, got the following exception %s", cmd, e.getMessage()));
-			return false;
+			return null;
 		}		
 		
-		return true;
+		return pr;
 	}
 	
 	protected File ensureOutputDirectoryExists(String outputPath) throws JobExecutionException {

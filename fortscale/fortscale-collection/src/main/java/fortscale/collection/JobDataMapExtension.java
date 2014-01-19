@@ -2,6 +2,7 @@ package fortscale.collection;
 
 import java.io.IOException;
 
+import org.apache.commons.lang.StringUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -124,14 +125,21 @@ public class JobDataMapExtension {
 	 * @return the field value
 	 * @throws JobExecutionException 
 	 */
-	public static int getJobDataMapIntValue(JobDataMap map, String key) throws JobExecutionException {
+	public int getJobDataMapIntValue(JobDataMap map, String key) throws JobExecutionException {
 		if (!map.containsKey(key)) {
 			logger.error("job data map does not contain key {}", key);
 			throw new JobExecutionException("JobDataMap does not contains key " + key);
 		}
-
+		
+		String value = map.getString(key);
+		if (StringUtils.isEmpty(value)) {
+			logger.error("JobDataMap key {} does not have value", key);
+			throw new JobExecutionException("JobDataMap key " + key + " does not have value");
+		}
+		
+		value = getEnvPropertyValue(value, key);
 		try {
-			return map.getInt(key);
+			return Integer.parseInt(value);
 		} catch (ClassCastException e) {
 			logger.error("error getting int value for key {}", key);
 			throw new JobExecutionException("error getting int value for key " + key, e);
