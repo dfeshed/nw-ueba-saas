@@ -4,11 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import org.kitesdk.morphline.api.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.DB;
@@ -34,6 +38,9 @@ public class DHCPEventsSink {
 	
 	private MongoClient mongoClient = null;
 	private DBCollection dbCollection = null;
+	
+	@Autowired
+	private ResourceLoader resourceLoader;
 	
 	
 	public void connect() throws Exception {
@@ -63,10 +70,12 @@ public class DHCPEventsSink {
 			
 			try {
 				object.put("datetime", getStringValue(record, "date_time"));
-				object.put("timestampepoch", getLongValue(record, "date_time_epoch"));
+				Long timestampepoch = getLongValue(record, "date_time_epoch");
+				object.put("timestampepoch", timestampepoch);
 				object.put("ip_address", getStringValue(record, "ip"));
 				object.put("hostname", getStringValue(record, "hostname"));
 				object.put("MAC_address", getStringValue(record, "mac_address"));
+				object.put("datetimeparsed", new Date(timestampepoch));
 			} catch (Exception e) {
 				// just log the error and return as usual, do not propagate exception 
 				// when a field is missing as a lot of dhcp events are dropped normally for
@@ -85,7 +94,8 @@ public class DHCPEventsSink {
 		// it could be closed if no records were saved to mongodb, thus there is no
 		// reason to run the java script
 		if (mongoClient!=null && mongoClient.getConnector().isOpen()) {
-			InputStream stream = DHCPEventsSink.class.getResourceAsStream("/META-INF/mongodb/index_dhcp_log.js");
+			Resource resource = resourceLoader.getResource("file:resources/scripts/index_dhcp_log.js");
+			InputStream stream = resource.getInputStream();
 			String javascript = getStringFromInputStream(stream);
 		
 			mongoClient.getDB(dbName).eval(javascript);
