@@ -33,7 +33,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>file:resources/conf-files/readDHCPD.conf</value>
+					<value>file:resources/conf-files/read_DHCPD.conf</value>
 				</entry>
 			</job-data-map>
 		</job>
@@ -41,6 +41,7 @@
 		<trigger>
 			<cron>
 				<name>dhcp_etl_hourly_trigger</name>
+				<group>DHCP</group>
 				<job-name>DHCP_ETL</job-name>
 				<job-group>DHCP</job-group>
 				<cron-expression>0 1/15 * * * ?</cron-expression>

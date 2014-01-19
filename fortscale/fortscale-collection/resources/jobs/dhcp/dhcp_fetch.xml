@@ -38,9 +38,9 @@
 		<trigger>
 			<cron>
 				<name>dhcp_fetch_every_15min_first_trigger</name>
+				<group>DHCP</group>
 				<job-name>DHCP_Fetch_Data</job-name>
 				<job-group>DHCP</job-group>
- 				<cron-expression>0 15 * * * ?</cron-expression>
  				<job-data-map>
  					<entry>
 						<key>earliest</key>
@@ -51,15 +51,16 @@
 						<value>-1h@h+15m</value>
 					</entry>
  				</job-data-map>
+ 				<cron-expression>0 15 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
 		<trigger>
 			<cron>
 				<name>dhcp_fetch_every_15min_second_trigger</name>
+				<group>DHCP</group>
 				<job-name>DHCP_Fetch_Data</job-name>
 				<job-group>DHCP</job-group>
- 				<cron-expression>0 30 * * * ?</cron-expression>
  				<job-data-map>
  					<entry>
 						<key>earliest</key>
@@ -70,15 +71,16 @@
 						<value>-1h@h+30m</value>
 					</entry>
  				</job-data-map>
+ 				<cron-expression>0 30 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
 		<trigger>
 			<cron>
 				<name>dhcp_fetch_every_15min_third_trigger</name>
+				<group>DHCP</group>
 				<job-name>DHCP_Fetch_Data</job-name>
 				<job-group>DHCP</job-group>
- 				<cron-expression>0 45 * * * ?</cron-expression>
  				<job-data-map>
  					<entry>
 						<key>earliest</key>
@@ -89,15 +91,16 @@
 						<value>-1h@h+45m</value>
 					</entry>
  				</job-data-map>
+ 				<cron-expression>0 45 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
 		<trigger>
 			<cron>
 				<name>dhcp_fetch_every_15min_fourth_trigger</name>
+				<group>DHCP</group>
 				<job-name>DHCP_Fetch_Data</job-name>
 				<job-group>DHCP</job-group>
- 				<cron-expression>0 0 * * * ?</cron-expression>
  				<job-data-map>
  					<entry>
 						<key>earliest</key>
@@ -108,6 +111,7 @@
 						<value>-0h@h</value>
 					</entry>
  				</job-data-map>
+ 				<cron-expression>0 0 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 				

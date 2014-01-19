@@ -73,7 +73,7 @@ public class DHCPEventsSink {
 	
 	public void postProcessIndexes() throws Exception {
 		
-		InputStream stream = DHCPEventsSink.class.getResourceAsStream("META-INF/mongodb/index_dhcp_log.js");
+		InputStream stream = DHCPEventsSink.class.getResourceAsStream("/META-INF/mongodb/index_dhcp_log.js");
 		String javascript = getStringFromInputStream(stream);
 		
 		mongoClient.getDB(dbName).eval(javascript);
@@ -94,6 +94,7 @@ public class DHCPEventsSink {
 			br = new BufferedReader(new InputStreamReader(is));
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
+				sb.append("\n");
 			}
 		} catch (IOException e) {
 			logger.error("error reading js file", e);
