@@ -54,7 +54,6 @@ public class AdUserFetchJob extends FortscaleJob {
 		
 	@Override
 	protected void runSteps() throws Exception{
-		// ensure output path exists
 		
 		boolean isSucceeded = prepareSinkFileStep(); 
 		if(!isSucceeded){
@@ -72,6 +71,7 @@ public class AdUserFetchJob extends FortscaleJob {
 		startNewStep("Prepare sink file");
 		
 		logger.debug("creating output file at {}", outputPath);
+		// ensure output path exists
 		File outputDir = ensureOutputDirectoryExists(outputPath);
 		
 		// generate filename according to the job name and time
@@ -95,24 +95,13 @@ public class AdUserFetchJob extends FortscaleJob {
 		if(!isSucceeded){
 			return false;
 		}
-		renameOutput();
+		renameOutput(outputTempFile, outputFile);
 		
 		monitorDataReceived(outputFile, "AdUser");
 		
 		finishStep();
 		
 		return true;
-	}
-	
-	
-	private void renameOutput() {
-		if (outputTempFile.length()==0) {
-			logger.info("deleting empty output file {}", outputTempFile.getName());
-			if (!outputTempFile.delete())
-				logger.warn("cannot delete empty file {}", outputTempFile.getName());
-		} else {
-			outputTempFile.renameTo(outputFile);
-		}
 	}
 	
 }

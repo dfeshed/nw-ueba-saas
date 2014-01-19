@@ -40,7 +40,7 @@
 				<group>VPN</group>
 				<job-name>VPN_SCORING</job-name>
 				<job-group>VPN</job-group>
-				<cron-expression>1 * * * * ?</cron-expression>
+				<cron-expression>0 10 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 	

@@ -19,7 +19,7 @@
 						http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 						http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
 						http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd">
-    <context:property-placeholder location="classpath*:META-INF/*.properties"/>
-    <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
+<!--     <context:property-placeholder location="classpath*:META-INF/*.properties"/> -->
+<!--     <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/> -->
     <context:mbean-export/>
 </beans>

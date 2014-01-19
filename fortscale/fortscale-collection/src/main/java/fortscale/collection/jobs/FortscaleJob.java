@@ -2,8 +2,6 @@ package fortscale.collection.jobs;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.quartz.Job;
@@ -106,6 +104,16 @@ public abstract class FortscaleJob implements Job {
 		}
 		
 		return outputFile;
+	}
+	
+	protected void renameOutput(File oldOutputFile, File newOutputFile) {
+		if (oldOutputFile.length()==0) {
+			logger.info("deleting empty output file {}", oldOutputFile.getName());
+			if (!oldOutputFile.delete())
+				logger.warn("cannot delete empty file {}", oldOutputFile.getName());
+		} else {
+			oldOutputFile.renameTo(newOutputFile);
+		}
 	}
 	
 	protected void monitorDataReceived(File output, String dataType){
