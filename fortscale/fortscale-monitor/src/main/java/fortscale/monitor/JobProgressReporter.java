@@ -68,22 +68,22 @@ public interface JobProgressReporter {
 	public void warn(String id, String stepName, String message);
 	
 	/**
-	 * Gets the list of job reports older than the time given (excluded), restrict the list 
-	 * of items count to the amount given.
+	 * Gets the list of job reports older than the time given (excluded)
 	 * @param when the starting time to look for reports
 	 * @param count the maximum number of job report to return
 	 * @return the list of job reports found
 	 */
-	public List<JobReport> findJobReportsOlderThan(Date when, int count);
+	public List<JobReport> findJobReportsOlderThan(Date when);
 	
 	/**
-	 * Get the list of job reports newer than the time given (excluded), restrict the list
-	 * of items count to the amount given.
+	 * Get the list of job reports newer than the time given (excluded).
 	 * @param when the starting time to look for reports
 	 * @param count the maximum number of job reports to return
 	 * @return the list of job reports found
 	 */
-	public List<JobReport> findJobReportsNewerThan(Date when, int count);
+	public List<JobReport> findJobReportsNewerThan(Date when);
+	
+	public List<JobReport> findLatestJobReports();
 	
 	/**
 	 * Adds a data received metric to the job report
