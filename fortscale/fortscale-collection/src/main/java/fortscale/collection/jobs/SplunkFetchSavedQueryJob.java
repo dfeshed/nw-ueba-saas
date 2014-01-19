@@ -170,7 +170,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 		if (output.length() < 1024) {
 			return new JobDataReceived("Events", (int)output.length(), "Bytes");
 		} else {
-			int sizeInKB = (int) (outputTempFile.length() / 1024);
+			int sizeInKB = (int) (output.length() / 1024);
 			return new JobDataReceived("Events", sizeInKB, "KB");
 		}
 	}

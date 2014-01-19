@@ -61,27 +61,41 @@ public class DHCPEventsSink {
 			// create db object to contain the record fields
 			DBObject object =  new BasicDBObject();
 			
-			object.put("datetime", getStringValue(record, "date_time"));
-			object.put("timestampepoch", getLongValue(record, "date_time_epoch"));
-			object.put("ip_address", getStringValue(record, "ip"));
-			object.put("hostname", getStringValue(record, "hostname"));
-			object.put("MAC_address", getStringValue(record, "mac_address"));
+			try {
+				object.put("datetime", getStringValue(record, "date_time"));
+				object.put("timestampepoch", getLongValue(record, "date_time_epoch"));
+				object.put("ip_address", getStringValue(record, "ip"));
+				object.put("hostname", getStringValue(record, "hostname"));
+				object.put("MAC_address", getStringValue(record, "mac_address"));
+			} catch (Exception e) {
+				// just log the error and return as usual, do not propagate exception 
+				// when a field is missing as a lot of dhcp events are dropped normally for
+				// not having the expected fields. Otherwise it will overload the monitoring 
+				// page
+				logger.debug(String.format("cannot extract fields from record: %s", record.toString()));
+				return;
+			}
 			 
 			dbCollection.insert(object);
 		}
 	}
 	
 	public void postProcessIndexes() throws Exception {
+		// check if mongodb connection is open, before executing the script
+		// it could be closed if no records were saved to mongodb, thus there is no
+		// reason to run the java script
+		if (mongoClient!=null && mongoClient.getConnector().isOpen()) {
+			InputStream stream = DHCPEventsSink.class.getResourceAsStream("/META-INF/mongodb/index_dhcp_log.js");
+			String javascript = getStringFromInputStream(stream);
 		
-		InputStream stream = DHCPEventsSink.class.getResourceAsStream("/META-INF/mongodb/index_dhcp_log.js");
-		String javascript = getStringFromInputStream(stream);
-		
-		mongoClient.getDB(dbName).eval(javascript);
+			mongoClient.getDB(dbName).eval(javascript);
+		}
 	}
 	
 	public void close() {
 		if (mongoClient!=null) {
 			mongoClient.close();
+			mongoClient = null;
 		}
 	}
 	
@@ -116,7 +130,7 @@ public class DHCPEventsSink {
 		if (value!=null && value instanceof String) {
 			return (String)value;
 		} else {
-			logger.warn(String.format("field %s is missing from morphline record %s", field, record.toString()));
+			logger.debug(String.format("field %s is missing from morphline record %s", field, record.toString()));
 			throw new IllegalArgumentException("field " + field + " is missing from morphlines record");
 		}
 	}
@@ -125,8 +139,15 @@ public class DHCPEventsSink {
 		Object value = record.getFirstValue(field);
 		if (value!=null && value instanceof Long) {
 			return (Long)value;
+		} else if (value!=null && value instanceof Integer) {
+			Integer intValue = (Integer)value;
+			return intValue.longValue();
+		} else if (value!=null && value instanceof String) {
+			// try to parse the string into number
+			String strValue = (String)value;
+			return Long.parseLong(strValue);
 		} else {
-			logger.warn(String.format("field %s is missing from morphline record %s", field, record.toString()));
+			logger.debug(String.format("field %s is missing from morphline record %s", field, record.toString()));
 			throw new IllegalArgumentException("field " + field + " is missing from morphlines record");
 		}
 	}
