@@ -1,7 +1,9 @@
 package fortscale.collection.jobs;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 import org.quartz.Job;
@@ -114,6 +116,27 @@ public abstract class FortscaleJob implements Job {
 		} else {
 			oldOutputFile.renameTo(newOutputFile);
 		}
+	}
+	
+	/**
+	 * Gets list of files in the input folder sorted according to the time stamp
+	 */
+	protected File[] listFiles(String inputPath, final String filesFilter) throws JobExecutionException {
+		File inputDir = new File(inputPath);
+		if (!inputDir.exists() || !inputDir.isDirectory()) {
+			logger.error("input path {} does not exists", inputPath);
+			throw new JobExecutionException(String.format("input path %s does not exists", inputPath));
+		}
+
+		FileFilter filter = new FileFilter() {
+			public boolean accept(File pathname) {
+				return pathname.isFile() && pathname.getName().matches(filesFilter);
+			}
+		};
+
+		File[] files = inputDir.listFiles(filter);
+		Arrays.sort(files);
+		return files;
 	}
 	
 	protected void monitorDataReceived(File output, String dataType){
