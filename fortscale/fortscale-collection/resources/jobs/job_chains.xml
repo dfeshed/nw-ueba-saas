@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<chains-data>
+	<chain>
+		<first>
+			<name>Fetch</name>
+			<group>VPN</group>
+		</first>
+		<second>
+			<name>ETL</name>
+			<group>VPN</group>
+		</second>
+	</chain>
+	<chain>
+		<first>
+			<name>Fetch</name>
+			<group>SSH</group>
+		</first>
+		<second>
+			<name>ETL</name>
+			<group>SSH</group>
+		</second>
+	</chain>
+	<chain>
+		<first>
+			<name>Fetch</name>
+			<group>Security Events</group>
+		</first>
+		<second>
+			<name>ETL</name>
+			<group>Security Events</group>
+		</second>
+	</chain>
+	<chain>
+		<first>
+			<name>Fetch</name>
+			<group>DHCP</group>
+		</first>
+		<second>
+			<name>ETL</name>
+			<group>DHCP</group>
+		</second>
+	</chain>
+	<chain>
+		<first>
+			<name>User Fetch</name>
+			<group>AD</group>
+		</first>
+		<second>
+			<name>User ETL</name>
+			<group>AD</group>
+		</second>
+	</chain>
+	<chain>
+		<first>
+			<name>User Fetch</name>
+			<group>AD</group>
+		</first>
+		<second>
+			<name>User Thumbnail ETL</name>
+			<group>AD</group>
+		</second>
+	</chain>
+</chains-data>

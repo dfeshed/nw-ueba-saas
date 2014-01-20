@@ -34,9 +34,14 @@ public class BatchScheduler {
 			// active threads
 			logger.info("starting batch scheduler execution");
 			Scheduler scheduler = (Scheduler) context.getBean("jobScheduler");
+			
+			// build job chaining listener
+			JobChainingListener listener = new JobChainingListener("resources/jobs/job_chains.xml");
+			scheduler.getListenerManager().addJobListener(listener);
+			
 			scheduler.start();
 			
-		} catch (SchedulerException e) {
+		} catch (Exception e) {
 			logger.error("error in scheduling collection jobs", e);
 		}
 	}
