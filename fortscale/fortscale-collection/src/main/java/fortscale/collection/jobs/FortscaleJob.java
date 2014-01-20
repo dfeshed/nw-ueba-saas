@@ -117,6 +117,25 @@ public abstract class FortscaleJob implements Job {
 		}
 	}
 	
+	protected void moveFileToFolder(File file, String path) {
+		File renamed = null;
+		if (path.endsWith(File.separator))
+			renamed = new File(path + file.getName());
+		else
+			renamed = new File(path + File.separator + file.getName());
+
+		// create parent file if not exists
+		if (!renamed.getParentFile().exists()) {
+			if (!renamed.getParentFile().mkdirs()) {
+				logger.error("cannot create path {}", path);
+				return;
+			}
+		}
+		
+		if (!file.renameTo(renamed))
+			logger.error("failed moving file {} to path {}", file.getName(), path);
+	}
+	
 	/**
 	 * Gets list of files in the input folder sorted according to the time stamp
 	 */

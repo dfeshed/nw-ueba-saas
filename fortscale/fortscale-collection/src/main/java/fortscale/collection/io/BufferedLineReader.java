@@ -21,8 +21,15 @@ public class BufferedLineReader {
 	private boolean hasWarnings = false;
 	private IOException exception;
 	
+	public BufferedLineReader(){}
+	
+	public BufferedLineReader(BufferedReader reader){
+		this.reader = reader;
+	}
+	
 	public void open(File file) {
 		try {
+			close();
 			if (file!=null) {
 				
 				if (!file.exists()) {
@@ -72,6 +79,8 @@ public class BufferedLineReader {
 				logger.error("error closing file " + filename, e);
 				hasWarnings = true;
 				exception = e;
+			} finally{
+				reader = null;
 			}
 		}
 	}

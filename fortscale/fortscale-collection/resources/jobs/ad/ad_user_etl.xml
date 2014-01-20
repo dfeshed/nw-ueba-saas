@@ -21,31 +21,35 @@
 				</entry>
 				<entry>
 					<key>finishPath</key>
-					<value>{collection.fetch.finish.data.ad.user.path}</value>
+					<value>${collection.fetch.finish.data.ad.user.path}</value>
 				</entry>
 				<entry>
 					<key>filesFilter</key>
-					<value>AD_USER_\d+.csv$</value>
+					<value>users\d+.csv$</value>
 				</entry>
 				<entry>
 					<key>outputFields</key>
-					<value>distinguishedName,isCriticalSystemObject,isDeleted,badPwdCount,logonCount,primaryGroupID,sAMAccountType,userAccountControl,accountExpires,badPasswordTime,lastLogoff,lockoutTime,assistant,memberOf,managedObjects,manager,masteredBy,directReports,secretary,logonHours,whenChanged,streetAddress,cn,company,c,department,description,displayName,division,mail,employeeID,employeeNumber,employeeType,givenName,l,o,personalTitle,otherFacsimileTelephoneNumber,otherHomePhone,homePhone,otherMobile,mobile,otherTelephone,roomNumber,userPrincipalName,telephoneNumber,title,userParameters,userWorkstations,lastLogon,pwdLastSet,whenCreated,sn,sAMAccountName,thumbnailPhoto,objectSid,objectGUID</value>
+					<value>timestamp,distinguishedName,isCriticalSystemObject,isDeleted,badPwdCount,logonCount,primaryGroupID,sAMAccountType,userAccountControl,accountExpires,badPasswordTime,lastLogoff,lockoutTime,assistant,memberOf,managedObjects,manager,masteredBy,directReports,secretary,logonHours,whenChanged,streetAddress,cn,company,c,department,description,displayName,division,mail,employeeID,employeeNumber,employeeType,givenName,l,o,personalTitle,otherFacsimileTelephoneNumber,otherHomePhone,homePhone,otherMobile,mobile,otherTelephone,roomNumber,userPrincipalName,telephoneNumber,title,userParameters,userWorkstations,lastLogon,pwdLastSet,whenCreated,sn,sAMAccountName,thumbnailPhoto,objectSid,objectGUID,timestampepoch</value>
 				</entry>
 				<entry>
 					<key>outputSeparator</key>
-					<value>,</value>
+					<value>|</value>
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>file:resources/conf-files/readSSH_centos.conf</value>
+					<value>file:${collection.morphline.conf.ad.path}/readADDataUsers.conf</value>
 				</entry>
 				<entry>
-					<key>hadoopFilePath</key>
-					<value>/user/cloudera/data/ssh/sshData.csv</value>
+					<key>hadoopDirPath</key>
+					<value>${hdfs.user.data.ldap.users.path}</value>
+				</entry>
+				<entry>
+					<key>filenameFormat</key>
+					<value>users%d.csv</value>
 				</entry>
 				<entry>
 					<key>impalaTableName</key>
-					<value>sshdata</value>
+					<value>${impala.ldapusers.table.name}</value>
 				</entry>
             </job-data-map>
 		</job>
@@ -56,7 +60,7 @@
 				<group>AD</group>
 				<job-name>User ETL</job-name>
 				<job-group>AD</job-group>
- 				<cron-expression>0 10 * * * ?</cron-expression>
+ 				<cron-expression>0 0 0 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

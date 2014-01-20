@@ -21,7 +21,7 @@
 				</entry>
 				<entry>
 					<key>filenameFormat</key>
-					<value>AD_USER_%d.txt</value>
+					<value>users%d.csv</value>
 				</entry>
             </job-data-map>
 		</job>

@@ -50,14 +50,4 @@
 			<group>AD</group>
 		</second>
 	</chain>
-	<chain>
-		<first>
-			<name>User Fetch</name>
-			<group>AD</group>
-		</first>
-		<second>
-			<name>User Thumbnail ETL</name>
-			<group>AD</group>
-		</second>
-	</chain>
 </chains-data>
