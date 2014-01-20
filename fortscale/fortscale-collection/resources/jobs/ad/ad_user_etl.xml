@@ -19,6 +19,34 @@
 					<key>inputPath</key>
 					<value>${collection.fetch.data.ad.user.path}</value>
 				</entry>
+				<entry>
+					<key>finishPath</key>
+					<value>{collection.fetch.finish.data.ad.user.path}</value>
+				</entry>
+				<entry>
+					<key>filesFilter</key>
+					<value>AD_USER_\d+.csv$</value>
+				</entry>
+				<entry>
+					<key>outputFields</key>
+					<value>distinguishedName,isCriticalSystemObject,isDeleted,badPwdCount,logonCount,primaryGroupID,sAMAccountType,userAccountControl,accountExpires,badPasswordTime,lastLogoff,lockoutTime,assistant,memberOf,managedObjects,manager,masteredBy,directReports,secretary,logonHours,whenChanged,streetAddress,cn,company,c,department,description,displayName,division,mail,employeeID,employeeNumber,employeeType,givenName,l,o,personalTitle,otherFacsimileTelephoneNumber,otherHomePhone,homePhone,otherMobile,mobile,otherTelephone,roomNumber,userPrincipalName,telephoneNumber,title,userParameters,userWorkstations,lastLogon,pwdLastSet,whenCreated,sn,sAMAccountName,thumbnailPhoto,objectSid,objectGUID</value>
+				</entry>
+				<entry>
+					<key>outputSeparator</key>
+					<value>,</value>
+				</entry>
+				<entry>
+					<key>morphlineFile</key>
+					<value>file:resources/conf-files/readSSH_centos.conf</value>
+				</entry>
+				<entry>
+					<key>hadoopFilePath</key>
+					<value>/user/cloudera/data/ssh/sshData.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableName</key>
+					<value>sshdata</value>
+				</entry>
             </job-data-map>
 		</job>
 	

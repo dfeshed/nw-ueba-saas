@@ -12,8 +12,7 @@ ad_fields=(
     "objectGUID"
     "thumbnailPhoto"
 )
-mongo_fields="$( join_with_glue ',' timestamp ${ad_fields[@]} timestampepoch)"
 ## Adding filter:
 search_cmd+=( "(&(objectclass=user)) ${ad_fields[@]}" )
 ${search_cmd[@]} |
-python ldiftocsv.py ${ad_fields[@]} 
+python ${repo_root}/scripts/ldiftocsv.py ${ad_fields[@]} 

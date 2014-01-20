@@ -20,7 +20,7 @@
 				</entry>
 				<entry>
 					<key>pigScriptResouce</key>
-					<value>${collection.pig.scripts.dir.path}/vpn.pig</value>
+					<value>file:${collection.pig.scripts.dir.path}/vpn.pig</value>
 				</entry>
 				<entry>
 					<key>pigInputData</key>

@@ -14,15 +14,15 @@ public class EventScoringPigRunner {
 	@Autowired
 	private PigRunner pigRunner;
 	
-	@Value("${collection.lib.dir}/beardedpig-1.0-SNAPSHOT.jar")
+	@Value("file:${collection.lib.dir}/beardedpig-1.0-SNAPSHOT.jar")
 	private Resource jarFilePath1;
-	@Value("${collection.lib.dir}/calibro-1.0-SNAPSHOT.jar")
+	@Value("file:${collection.lib.dir}/calibro-1.0-SNAPSHOT.jar")
 	private Resource jarFilePath2;
 	
 	public ExecJob run(Long runtime, Long deltaTime, Resource pigScriptResource, String inputData, String outputDataPrefix) throws Exception{
 		Properties scriptParameters = new Properties();
-        scriptParameters.put("jarFilePath1", jarFilePath1);
-        scriptParameters.put("jarFilePath2", jarFilePath2);    
+        scriptParameters.put("jarFilePath1", jarFilePath1.getFile().getAbsolutePath());
+        scriptParameters.put("jarFilePath2", jarFilePath2.getFile().getAbsolutePath());    
         scriptParameters.put("inputData", inputData);
         scriptParameters.put("outputData", String.format("%sruntime=%s", outputDataPrefix,runtime));
         scriptParameters.put("deltaTime", deltaTime.toString());
