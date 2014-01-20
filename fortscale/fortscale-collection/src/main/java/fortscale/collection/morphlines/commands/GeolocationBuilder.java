@@ -47,11 +47,7 @@ public class GeolocationBuilder implements CommandBuilder {
 
 			// Try to instantiate the GeoIP service
 			try {
-				String DB = getClass().getResource("/GeoLite2-City.mmdb").getFile();
-				File dbFile = new File(DB);
-				if (dbFile.exists()) {
-					this.geoIpService = new GeoIPService(dbFile);
-				}
+				this.geoIpService = new GeoIPService();
 			} catch (IOException e) {
 				this.geoIpService = null;
 			}
