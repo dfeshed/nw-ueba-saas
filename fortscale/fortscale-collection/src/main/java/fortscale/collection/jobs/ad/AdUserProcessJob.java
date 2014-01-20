@@ -2,6 +2,7 @@ package fortscale.collection.jobs.ad;
 
 import java.io.File;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.jobs.FortscaleJob;
 
+@DisallowConcurrentExecution
 public class AdUserProcessJob extends FortscaleJob {
 
 	@Autowired

@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -16,6 +18,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 
+@DisallowConcurrentExecution
 public class AdUserThumbnailProcessJob extends FortscaleJob {
 	
 	@Autowired
@@ -54,7 +57,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 	@Override
 	protected void runSteps() throws Exception {
-		startNewStep("everything");
+		startNewStep("etl");
 		
 		Process pr =  runCmd(null, ldapUserThumbnail);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
@@ -67,7 +70,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	}
 	
 	private void processLine(String line){
-		String lineSplit[] = line.split(ldapFieldSeperator);
+		String lineSplit[] = StringUtils.split(line, ldapFieldSeperator);
 		if(lineSplit.length != 2){
 			return;
 		}

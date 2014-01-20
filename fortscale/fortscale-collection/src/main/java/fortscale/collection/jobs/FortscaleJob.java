@@ -62,7 +62,6 @@ public abstract class FortscaleJob implements Job {
 				processBuilder.directory(workingDir);
 			}
 			pr = processBuilder.start();
-			pr.waitFor();
 
 		} catch (Exception e) {
 			String cmd = StringUtils.join(commands, " ");

@@ -88,13 +88,15 @@ public class AdUserFetchJob extends FortscaleJob {
 		return true;
 	}
 	
-	private boolean fetchAndWriteToFileStep(){
+	private boolean fetchAndWriteToFileStep() throws InterruptedException{
 		startNewStep("Fetch and Write to file");
 		
 		Process pr =  runCmd(null, ldapUserSearchShellScript, outputTempFile.getAbsolutePath());
 		if(pr == null){
 			return false;
 		}
+		pr.waitFor();
+		
 		renameOutput(outputTempFile, outputFile);
 		
 		monitorDataReceived(outputFile, "AdUser");
