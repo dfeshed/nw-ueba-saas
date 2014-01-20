@@ -5,9 +5,6 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +13,6 @@ import static org.mockito.Mockito.*;
 import org.mockito.*;
 import org.springframework.data.domain.Sort;
 
-import static org.hamcrest.core.Is.*;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.dao.NotificationResourcesRepository;
 import fortscale.domain.core.dao.NotificationsRepository;
@@ -58,7 +54,7 @@ public class ApiNotificationsControllerTest {
 		long ts = 0;
 		
 		// when
-		DataBean<List<Notification>> result = controller.after(0);
+		DataBean<List<Notification>> result = controller.after(ts);
 		
 		//then
 		assertTrue(result.getTotal() == 4);
@@ -71,7 +67,7 @@ public class ApiNotificationsControllerTest {
 		long ts = 0;
 		
 		// when
-		DataBean<List<Notification>> result = controller.after(0);
+		DataBean<List<Notification>> result = controller.after(ts);
 		
 		//then
 		assertTrue(result.getTotal() == 4);

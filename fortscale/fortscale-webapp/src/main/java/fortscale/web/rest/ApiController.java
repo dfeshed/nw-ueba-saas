@@ -38,7 +38,6 @@ public class ApiController {
 	@Autowired
 	private ClassifierService classifierService;
 	
-	
 	@RequestMapping("/**")
 	@LogException
     public void unmappedRequest(HttpServletRequest request) {

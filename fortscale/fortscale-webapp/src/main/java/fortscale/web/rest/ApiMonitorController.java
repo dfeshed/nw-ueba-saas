@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.monitor.JobProgressReporter;
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.monitor.domain.JobReport;
 import fortscale.monitor.domain.JobStep;
 import fortscale.utils.logging.annotation.LogException;
@@ -25,19 +26,56 @@ public class ApiMonitorController {
 	@Autowired
 	private JobProgressReporter monitor;
 	
-	/***
-	 * Get an aggregated list of jobs monitor status according to source type and job name 
-	 * @return
+	public void setJobProgressReporter(JobProgressReporter monitor) {
+		this.monitor = monitor;
+	}
+	
+
+	/**
+	 * returns job details of the 24 hours BEFORE the specified latest timestamp.
 	 */
-	@RequestMapping(value = "/summary/{days}", method = RequestMethod.GET)
+	@RequestMapping(value = "/summary/before/{ts}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<SourceTypeSummary>> summary(@PathVariable("days") int days) {
+	public DataBean<List<SourceTypeSummary>> summaryBefore(@PathVariable("ts") long ts) {
 		
-		// get the list of job reports for the last days,
-		// assume it is sorted by source type, job name and start date
-		List<JobReport> reports = monitor.findJobReportsForLastDays(days);
+		List<JobReport> reports = monitor.findJobReportsOlderThan(new Date(ts));
+		return convertToSummaryDataBean(reports);
+	}
+	
+	/**
+	 * returns all the job details AFTER the specified earliest timestamp.
+	 */
+	@RequestMapping(value = "/summary/after/{ts}", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<SourceTypeSummary>> summaryAfter(@PathVariable("ts") long ts) {
 		
+		List<JobReport> reports = monitor.findJobReportsNewerThan(new Date(ts));
+		return convertToSummaryDataBean(reports);
+	}
+	
+	
+	
+
+	/***
+	 * returns all the job details in the last 24 hours
+	 */
+	@RequestMapping(value = "/summary", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<SourceTypeSummary>> summary() {
+			
+		//summary (not parameters): returns all the job details in the last 24 hours
+		//summary + latest (timestamp): returns job details of the 24 hours BEFORE the specified latest timestamp.
+		//summary + earliest (timestamp): returns all the job details AFTER the specified earliest timestamp.
+		
+		List<JobReport> reports = monitor.findLatestJobReports();
+		return convertToSummaryDataBean(reports);
+	}
+		
+	
+	private DataBean<List<SourceTypeSummary>> convertToSummaryDataBean(List<JobReport> reports) {
 		// convert job report results to service response format
 		List<SourceTypeSummary> summary = new LinkedList<SourceTypeSummary>();
 		int total = 0;
@@ -82,10 +120,12 @@ public class ApiMonitorController {
 				runDetail.setSeverity("ERROR");
 			} else if (report.isHasWarnings()) {
 				runDetail.setSeverity("WARN");
-			} else if (report.getFinish()!=null) {
-				runDetail.setSeverity("OK");
-			} else {
+			} else if (report.getFinish()==null) {
+				runDetail.setSeverity("NOT_FINISHED");
+			} else if (!hasData(report)) {
 				runDetail.setSeverity("NO_DATA");
+			} else {
+				runDetail.setSeverity("OK");
 			}
 			
 			// set a flag indicating if all steps were executed
@@ -106,17 +146,14 @@ public class ApiMonitorController {
 		return ret;
 	}
 	
-	/***
-	 * Get an aggregated list of jobs monitor status according to source type and job name 
-	 * @return
-	 */
-	@RequestMapping(value = "/summary", method = RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<SourceTypeSummary>> summary() {
-		return summary(7);
+	private boolean hasData(JobReport report) {
+		for (JobDataReceived data : report.getDataReceived()) {
+			if (data.getValue()>0)
+				return true;
+		}
+		return false;
 	}
-	
+
 	/**
 	 * Get the job report for the given id
 	 * @param id the job report identifier

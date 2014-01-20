@@ -23,7 +23,7 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 	@Override
 	public Command build(Config config, Command parent, Command child,
 			MorphlineContext context) {
-		return new GetHostnameFromDNS(config, parent, child, context);
+		return new GetHostnameFromDNS(this, config, parent, child, context);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -40,9 +40,9 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 		private final String outputRecordName;
 		private int dnsLookupCounter = 0;
 
-		public GetHostnameFromDNS(Config config, Command parent, Command child,
+		public GetHostnameFromDNS(CommandBuilder builder, Config config, Command parent, Command child,
 				MorphlineContext context) {
-			super(config, parent, child, context);
+			super(builder, config, parent, child, context);
 			this.ipAddress = getConfigs().getString(config, "ip_address");
 			if (getConfig().hasPath("dns_servers")) {
 				this.dnsServers = getConfigs().getStringList(config, "dns_servers");
@@ -66,7 +66,7 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 		@Override
 		protected boolean doProcess(Record inputRecord)  {
 			if ((this.maxQueries == -1) || (this.maxQueries > dnsLookupCounter)) {
-				List tmp = inputRecord.get(this.ipAddress );
+				List<?> tmp = inputRecord.get(this.ipAddress );
 				String ip = null;
 				String[] dnsServersArray = null;
 				if (tmp != null && tmp.size() > 0) {

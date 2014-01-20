@@ -27,7 +27,7 @@ public class GetHostnameBuilder implements CommandBuilder {
 	@Override
 	public Command build(Config config, Command parent, Command child,
 			MorphlineContext context) {
-		return new GetHostname(config, parent, child, context);
+		return new GetHostname(this, config, parent, child, context);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -40,9 +40,9 @@ public class GetHostnameBuilder implements CommandBuilder {
 		private final String impalaServer;
 		private final String impalaPort;
 
-		public GetHostname(Config config, Command parent, Command child,
+		public GetHostname(CommandBuilder builder, Config config, Command parent, Command child,
 				MorphlineContext context) {
-			super(config, parent, child, context);
+			super(builder, config, parent, child, context);
 			this.ipAddress = getConfigs().getString(config, "ipAddress");
 			this.impalaServer = getConfigs().getString(config, "impalaServer");
 			this.impalaPort = getConfigs().getString(config, "impalaPort");
@@ -52,7 +52,7 @@ public class GetHostnameBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord)  {
-			List tmp = inputRecord.get(this.ipAddress );
+			List<?> tmp = inputRecord.get(this.ipAddress );
 			String ip = null;
 			if (tmp != null && tmp.size() > 0)
 			{
@@ -81,7 +81,6 @@ public class GetHostnameBuilder implements CommandBuilder {
 			}*/
 			long  maxDate =0;
 			String computerName = null;
-			String computerIP = null;
 			if (resultsMapTable != null)
 			{
 				for (Map<String, Object> computerNameObj : resultsMapTable) {
@@ -91,7 +90,6 @@ public class GetHostnameBuilder implements CommandBuilder {
 						{
 							maxDate = Long.parseLong(computerNameObj.get("eventtimeepoch").toString());
 							computerName = computerNameObj.get("machinename").toString();
-							computerIP = computerNameObj.get("ip").toString();
 						}
 					}
 				}       

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>LOGIN_SCORING</name>
+			<group>LOGIN</group>
+			<description>Running LOGIN Scoring</description>
+			<job-class>fortscale.collection.scoring.jobs.LoginScoringJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			<job-data-map>
+				<entry>
+					<key>impalaTableName</key>
+					<value>authenticationscores</value>
+				</entry>
+			</job-data-map>
+			
+		</job>
+	
+<!-- 		<trigger> -->
+<!-- 			<cron> -->
+<!-- 				<name>LOGIN_SCORING_HOURLY_TRIGGER</name> -->
+<!-- 				<job-name>LOGIN_SCORING</job-name> -->
+<!-- 				<job-group>LOGIN</job-group> -->
+<!-- 				<cron-expression>0 7 * * * ?</cron-expression> -->
+<!-- 			</cron> -->
+<!-- 		</trigger> -->
+	
+	</schedule>
+
+
+</job-scheduling-data>

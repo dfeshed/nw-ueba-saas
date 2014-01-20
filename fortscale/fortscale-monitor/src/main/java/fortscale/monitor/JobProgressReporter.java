@@ -1,5 +1,6 @@
 package fortscale.monitor;
 
+import java.util.Date;
 import java.util.List;
 
 import fortscale.monitor.domain.JobDataReceived;
@@ -66,13 +67,23 @@ public interface JobProgressReporter {
 	 */
 	public void warn(String id, String stepName, String message);
 	
-	
 	/**
-	 * Gets the list of job reports in the last given days
-	 * @param days the number of days to retrieve
+	 * Gets the list of job reports older than the time given (excluded)
+	 * @param when the starting time to look for reports
+	 * @param count the maximum number of job report to return
 	 * @return the list of job reports found
 	 */
-	public List<JobReport> findJobReportsForLastDays(int days);
+	public List<JobReport> findJobReportsOlderThan(Date when);
+	
+	/**
+	 * Get the list of job reports newer than the time given (excluded).
+	 * @param when the starting time to look for reports
+	 * @param count the maximum number of job reports to return
+	 * @return the list of job reports found
+	 */
+	public List<JobReport> findJobReportsNewerThan(Date when);
+	
+	public List<JobReport> findLatestJobReports();
 	
 	/**
 	 * Adds a data received metric to the job report
