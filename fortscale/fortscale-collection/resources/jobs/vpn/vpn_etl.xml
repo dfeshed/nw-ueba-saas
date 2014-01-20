@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>VPN_ETL</name>
+			<name>ETL</name>
 			<group>VPN</group>
 			<description>process vpn events received from splunk into files</description>
 			<job-class>fortscale.collection.jobs.EventProcessJob</job-class>
@@ -59,7 +59,7 @@
 			<cron>
 				<name>vpn_etl_hourly_trigger</name>
 				<group>VPN</group>
-				<job-name>VPN_ETL</job-name>
+				<job-name>ETL</job-name>
 				<job-group>VPN</job-group>
 				<cron-expression>0 4 * * * ?</cron-expression>
 			</cron>

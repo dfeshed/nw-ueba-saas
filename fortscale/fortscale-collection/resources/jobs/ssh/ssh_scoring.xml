@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>SSH_SCORING</name>
+			<name>Scoring</name>
 			<group>SSH</group>
 			<description>Running SSH Scoring</description>
 			<job-class>fortscale.collection.jobs.scoring.SshScoringJob</job-class>
@@ -38,7 +38,7 @@
 			<cron>
 				<name>SSH_SCORING_HOURLY_TRIGGER</name>
 				<group>SSH</group>
-				<job-name>SSH_SCORING</job-name>
+				<job-name>Scoring</job-name>
 				<job-group>SSH</job-group>
 				<cron-expression>0 15 * * * ?</cron-expression>
 			</cron>

@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>AD_USER_Fetch_Data</name>
+			<name>User Fetch</name>
 			<group>AD</group>
 			<description>Run LDAP SEARCH HOURLY</description>
 			<job-class>fortscale.collection.jobs.ad.AdUserFetchJob</job-class>
@@ -30,7 +30,7 @@
 			<cron>
 				<name>ad_user_fetch_hourly_trigger</name>
 				<group>AD</group>
-				<job-name>AD_USER_Fetch_Data</job-name>
+				<job-name>User Fetch</job-name>
 				<job-group>AD</job-group>
  				<cron-expression>0 10 * * * ?</cron-expression>
 			</cron>

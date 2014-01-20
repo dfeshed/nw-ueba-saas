@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>DHCP_ETL</name>
+			<name>ETL</name>
 			<group>DHCP</group>
 			<description>process DHCP events received from splunk into files</description>
 			<job-class>fortscale.collection.jobs.DHCPEventsProcessJob</job-class>
@@ -42,7 +42,7 @@
 			<cron>
 				<name>dhcp_etl_hourly_trigger</name>
 				<group>DHCP</group>
-				<job-name>DHCP_ETL</job-name>
+				<job-name>ETL</job-name>
 				<job-group>DHCP</job-group>
 				<cron-expression>0 1/15 * * * ?</cron-expression>
 			</cron>

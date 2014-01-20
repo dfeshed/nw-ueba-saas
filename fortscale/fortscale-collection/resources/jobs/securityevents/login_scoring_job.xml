@@ -7,8 +7,8 @@
 
 	<schedule>
 		<job>
-			<name>LOGIN_SCORING</name>
-			<group>LOGIN</group>
+			<name>Login Scoring</name>
+			<group>VPN</group>
 			<description>Running LOGIN Scoring</description>
 			<job-class>fortscale.collection.scoring.jobs.LoginScoringJob</job-class>
 			<durability>true</durability>

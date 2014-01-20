@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>VPN_SCORING</name>
+			<name>Scoring</name>
 			<group>VPN</group>
 			<description>Running VPN Scoring</description>
 			<job-class>fortscale.collection.jobs.scoring.VpnScoringJob</job-class>
@@ -38,7 +38,7 @@
 			<cron>
 				<name>VPN_SCORING_HOURLY_TRIGGER</name>
 				<group>VPN</group>
-				<job-name>VPN_SCORING</job-name>
+				<job-name>Scoring</job-name>
 				<job-group>VPN</job-group>
 				<cron-expression>0 10 * * * ?</cron-expression>
 			</cron>

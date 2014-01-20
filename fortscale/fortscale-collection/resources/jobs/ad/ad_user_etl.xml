@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>AD_USER_ETL</name>
+			<name>User ETL</name>
 			<group>AD</group>
 			<description>Run AD USER ETL HOURLY</description>
 			<job-class>fortscale.collection.jobs.ad.AdUserProcessJob</job-class>
@@ -26,7 +26,7 @@
 			<cron>
 				<name>ad_user_etl_hourly_trigger</name>
 				<group>AD</group>
-				<job-name>AD_USER_ETL</job-name>
+				<job-name>User ETL</job-name>
 				<job-group>AD</job-group>
  				<cron-expression>0 10 * * * ?</cron-expression>
 			</cron>

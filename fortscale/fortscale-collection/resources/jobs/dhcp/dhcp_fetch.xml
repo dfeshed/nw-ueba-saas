@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>DHCP_Fetch_Data</name>
+			<name>Fetch</name>
 			<group>DHCP</group>
 			<description>Fetch data from splunk hourly</description>
 			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
@@ -39,7 +39,7 @@
 			<cron>
 				<name>dhcp_fetch_every_15min_first_trigger</name>
 				<group>DHCP</group>
-				<job-name>DHCP_Fetch_Data</job-name>
+				<job-name>Fetch</job-name>
 				<job-group>DHCP</job-group>
  				<job-data-map>
  					<entry>
@@ -59,7 +59,7 @@
 			<cron>
 				<name>dhcp_fetch_every_15min_second_trigger</name>
 				<group>DHCP</group>
-				<job-name>DHCP_Fetch_Data</job-name>
+				<job-name>Fetch</job-name>
 				<job-group>DHCP</job-group>
  				<job-data-map>
  					<entry>
@@ -79,7 +79,7 @@
 			<cron>
 				<name>dhcp_fetch_every_15min_third_trigger</name>
 				<group>DHCP</group>
-				<job-name>DHCP_Fetch_Data</job-name>
+				<job-name>Fetch</job-name>
 				<job-group>DHCP</job-group>
  				<job-data-map>
  					<entry>
@@ -99,7 +99,7 @@
 			<cron>
 				<name>dhcp_fetch_every_15min_fourth_trigger</name>
 				<group>DHCP</group>
-				<job-name>DHCP_Fetch_Data</job-name>
+				<job-name>Fetch</job-name>
 				<job-group>DHCP</job-group>
  				<job-data-map>
  					<entry>
