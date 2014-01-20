@@ -7,9 +7,9 @@
 
 	<schedule>
 		<job>
-			<name>User Fetch</name>
+			<name>Group Fetch</name>
 			<group>AD</group>
-			<description>Run LDAP USER SEARCH HOURLY</description>
+			<description>Run LDAP Group SEARCH HOURLY</description>
 			<job-class>fortscale.collection.jobs.ad.AdFetchJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
@@ -17,24 +17,24 @@
 			<job-data-map>
 				<entry>
 					<key>outputPath</key>
-					<value>${collection.fetch.data.ad.user.path}</value>
+					<value>${collection.fetch.data.ad.group.path}</value>
 				</entry>
 				<entry>
 					<key>filenameFormat</key>
-					<value>users%d.csv</value>
+					<value>groups%d.csv</value>
 				</entry>
 				<entry>
 					<key>ldapUserSearchShellScript</key>
-					<value>${collection.shell.scripts.dir.path}/ldapUserSearch.sh</value>
+					<value>${collection.shell.scripts.dir.path}/ldapGroupSearch.sh</value>
 				</entry>
             </job-data-map>
 		</job>
 	
 		<trigger>
 			<cron>
-				<name>ad_user_fetch_hourly_trigger</name>
+				<name>ad_group_fetch_hourly_trigger</name>
 				<group>AD</group>
-				<job-name>User Fetch</job-name>
+				<job-name>Group Fetch</job-name>
 				<job-group>AD</job-group>
  				<cron-expression>0 10 * * * ?</cron-expression>
 			</cron>

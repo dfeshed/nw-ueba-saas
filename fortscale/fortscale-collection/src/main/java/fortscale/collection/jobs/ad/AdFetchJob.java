@@ -8,7 +8,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.jobs.FortscaleJob;
@@ -18,22 +17,23 @@ import fortscale.utils.logging.Logger;
 
 
 @DisallowConcurrentExecution
-public class AdUserFetchJob extends FortscaleJob {
-	private static Logger logger = Logger.getLogger(AdUserFetchJob.class);
+public class AdFetchJob extends FortscaleJob {
+	private static Logger logger = Logger.getLogger(AdFetchJob.class);
 	
 	private static final String OUTPUT_TEMP_FILE_SUFFIX = ".part";
 	
 	@Autowired
 	private JobDataMapExtension jobDataMapExtension;
 	
-	private String filenameFormat;
-	private String outputPath;
 	
 	private File outputTempFile;
 	private File outputFile;
 	
-	@Value("${collection.shell.scripts.dir.path}/ldapUserSearch.sh")
+	//Job parameters:
+	private String filenameFormat;
+	private String outputPath;
 	private String ldapUserSearchShellScript;
+	
 	
 	
 	
@@ -45,6 +45,7 @@ public class AdUserFetchJob extends FortscaleJob {
 		
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");	
+		ldapUserSearchShellScript = jobDataMapExtension.getJobDataMapStringValue(map, "ldapUserSearchShellScript");
 	}
 
 	@Override
@@ -99,7 +100,7 @@ public class AdUserFetchJob extends FortscaleJob {
 		
 		renameOutput(outputTempFile, outputFile);
 		
-		monitorDataReceived(outputFile, "AdUser");
+		monitorDataReceived(outputFile, "Ad");
 		
 		finishStep();
 		

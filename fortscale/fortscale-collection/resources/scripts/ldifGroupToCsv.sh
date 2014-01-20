@@ -8,7 +8,7 @@ common_vars="${repo_root}/scripts/common_vars.sh"
 if [ -r ${common_vars} ]; then
     source ${common_vars}
 fi
-out=$1
+input=$1
 ad_fields=(
     "distinguishedName"
     "name"
@@ -36,6 +36,5 @@ ad_fields=(
     "objectSid"
     "objectGUID"
 )
-## Adding filter:
-search_cmd+=( "(&(objectclass=group)) ${ad_fields[@]}" )
-${search_cmd[@]} > ${out}
+cat ${input} |
+python ${repo_root}/scripts/ldiftocsv.py ${ad_fields[@]}

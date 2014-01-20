@@ -68,7 +68,6 @@ ad_fields=(
     "objectSid"
     "objectGUID"
 )
-mongo_fields="$( join_with_glue ',' timestamp ${ad_fields[@]} timestampepoch)"
 ## Adding filter:
 search_cmd+=( "(&(objectclass=user)) ${ad_fields[@]}" )
 ${search_cmd[@]} > ${out} 

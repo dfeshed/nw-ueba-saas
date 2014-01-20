@@ -50,4 +50,14 @@
 			<group>AD</group>
 		</second>
 	</chain>
+	<chain>
+		<first>
+			<name>Group Fetch</name>
+			<group>AD</group>
+		</first>
+		<second>
+			<name>Group ETL</name>
+			<group>AD</group>
+		</second>
+	</chain>
 </chains-data>

@@ -16,6 +16,10 @@
 			
 			<job-data-map>
 				<entry>
+					<key>ldiftocsv</key>
+					<value>${collection.shell.scripts.dir.path}/ldifUserToCsv.sh</value>
+				</entry>
+				<entry>
 					<key>inputPath</key>
 					<value>${collection.fetch.data.ad.user.path}</value>
 				</entry>
