@@ -126,10 +126,9 @@ public class EventProcessJob implements Job {
 				logger.error("error processing files", e);
 				monitor.error(monitorId, currentStep, e.toString());
 				throw new JobExecutionException("error processing files", e);
+			} finally {
+				closeOutputAppender();
 			}
-			
-			
-			closeOutputAppender();
 			refreshImpala();
 			
 			monitor.finishStep(monitorId, currentStep);
