@@ -8,7 +8,7 @@
 	<schedule>
 		<job>
 			<name>Fetch</name>
-			<group>Security Events</group>
+			<group>SecurityEvents</group>
 			<description>Fetch data from splunk hourly</description>
 			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
 			<durability>true</durability>
@@ -53,9 +53,9 @@
 		<trigger>
 			<cron>
 				<name>sec_evt_fetch_hourly_trigger</name>
-				<group>Security Events</group>
+				<group>SecurityEvents</group>
 				<job-name>Fetch</job-name>
-				<job-group>Security Events</job-group>
+				<job-group>SecurityEvents</job-group>
  				<cron-expression>0 1 * * * ?</cron-expression>
 			</cron>
 		</trigger>

@@ -23,11 +23,11 @@
 	<chain>
 		<first>
 			<name>Fetch</name>
-			<group>Security Events</group>
+			<group>SecurityEvents</group>
 		</first>
 		<second>
 			<name>ETL</name>
-			<group>Security Events</group>
+			<group>SecurityEvents</group>
 		</second>
 	</chain>
 	<chain>

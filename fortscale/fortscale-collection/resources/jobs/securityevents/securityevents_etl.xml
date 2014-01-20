@@ -8,7 +8,7 @@
 	<schedule>
 		<job>
 			<name>ETL</name>
-			<group>Security Events</group>
+			<group>SecurityEvents</group>
 			<description>process security events ssh events received from splunk into files</description>
 			<job-class>fortscale.collection.jobs.SecurityEventsProcessJob</job-class>
 			<durability>true</durability>
@@ -67,7 +67,7 @@
 		<trigger>
 			<cron>
 				<name>sec_etl_hourly_trigger</name>
-				<group>Security Events</group>
+				<group>SecurityEvents</group>
 				<job-name>ETL</job-name>
 				<job-group>Security Events</job-group>
 				<cron-expression>0 3 * * * ?</cron-expression>
