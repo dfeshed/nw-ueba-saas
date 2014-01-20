@@ -17,7 +17,7 @@
 			<job-data-map>
 				<entry>
 					<key>threshold</key>
-					<value>100</value>
+					<value>500</value>
 				</entry>
             </job-data-map>
 		</job>
