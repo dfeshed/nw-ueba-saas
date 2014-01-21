@@ -159,12 +159,6 @@
 
 		<!-- impala dependencies -->
 		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-utils</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.apache.hive</groupId>
 			<artifactId>hive-jdbc</artifactId>
 			<version>${hive.version}</version>
