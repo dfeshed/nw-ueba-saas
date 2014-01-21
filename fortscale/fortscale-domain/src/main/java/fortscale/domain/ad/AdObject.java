@@ -17,6 +17,8 @@ public class AdObject extends AbstractDocument{
 	@Field(objectGUIDField)
 	private String objectGUID;
 	
+	private String objectSid;
+	
 	@Indexed
 	@Field(dnField)
 	private String distinguishedName;
@@ -64,4 +66,14 @@ public class AdObject extends AbstractDocument{
 	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
 	}
+
+	public String getObjectSid() {
+		return objectSid;
+	}
+
+	public void setObjectSid(String objectSid) {
+		this.objectSid = objectSid;
+	}
+	
+	
 }

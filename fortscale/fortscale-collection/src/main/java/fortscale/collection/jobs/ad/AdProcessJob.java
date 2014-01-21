@@ -25,7 +25,7 @@ import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 
 @DisallowConcurrentExecution
-public class AdProcessJob extends FortscaleJob {
+public abstract class AdProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
 
 	@Autowired
@@ -59,6 +59,8 @@ public class AdProcessJob extends FortscaleJob {
 	protected String hadoopDirPath;
 	private String filenameFormat;
 	protected String impalaTableName;
+	
+	String[] outputFields;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -75,7 +77,7 @@ public class AdProcessJob extends FortscaleJob {
 		
 
 		// build record to items processor
-		String[] outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields").split(",");
+		outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields").split(",");
 		String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, outputFields);
 
@@ -129,20 +131,18 @@ public class AdProcessJob extends FortscaleJob {
 
 	}
 	
-	protected void processFile(File file) throws JobExecutionException {
+	protected void processFile(File file) throws Exception {
 		startNewStep("process file");
 
 		BufferedLineReader reader = null;
 		Date runtime = new Date();
-		String timestamp = impalaParser.formatTimeDate(runtime);
-		String timestampepoch = Long.toString(impalaParser.getRuntime(runtime));
 		try {
 			logger.info("starting to process {}", file.getName());
 
 			Process pr =  runCmd(null, ldiftocsv, file.getAbsolutePath());
 			reader = new BufferedLineReader( new BufferedReader(new InputStreamReader(pr.getInputStream())));
 			// transform events in file
-			processFile(reader, timestamp, timestampepoch);
+			processFile(reader, runtime);
 
 			moveFileToFolder(file, finishPath);
 
@@ -160,8 +160,14 @@ public class AdProcessJob extends FortscaleJob {
 		finishStep();
 	}
 
-	protected boolean processFile(BufferedLineReader reader, String timestamp, String timestampepoch) throws IOException {
-
+	protected boolean processFile(BufferedLineReader reader, Date runtime) throws Exception {
+		if(isTimestampAlreadyProcessed(runtime)){
+			logger.warn("the following runtime ({}) was already processed.", runtime);
+			return false;
+		}
+		String timestamp = impalaParser.formatTimeDate(runtime);
+		String timestampepoch = Long.toString(impalaParser.getRuntime(runtime));
+		
 		String line = null;
 		while ((line = reader.readLine()) != null) {
 			Record record = morphlineProcessLine(line);
@@ -169,6 +175,7 @@ public class AdProcessJob extends FortscaleJob {
 				record.put("timestamp", timestamp);
 				record.put("timestampepoch", timestampepoch);
 				writeToHdfs(record);
+				updateDb(record);
 			}
 		}
 
@@ -183,6 +190,11 @@ public class AdProcessJob extends FortscaleJob {
 			return true;
 		}
 	}
+	
+	
+	protected abstract boolean isTimestampAlreadyProcessed(Date runtime);
+	protected abstract void updateDb(Record record) throws Exception;
+	
 
 	protected Record morphlineProcessLine(String line){
 		return morphline.process(line);
@@ -243,5 +255,11 @@ public class AdProcessJob extends FortscaleJob {
 			throw new JobExecutionException("error closing hdfs file " + hadoopFilePath, e);
 		}
 	}
+
+	protected String[] getOutputFields() {
+		return outputFields;
+	}
+	
+	
 
 }

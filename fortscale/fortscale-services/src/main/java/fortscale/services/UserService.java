@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Sort.Direction;
 
+import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
@@ -71,4 +72,6 @@ public interface UserService {
 	public void updateUserWithCurrentADInfoNewSchema();
 	
 	public String getUserThumbnail(User user);
+
+	public void updateUserWithADInfo(AdUser adUser);
 }

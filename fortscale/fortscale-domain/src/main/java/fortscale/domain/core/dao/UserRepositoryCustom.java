@@ -38,4 +38,5 @@ public interface UserRepositoryCustom {
 	public User findByAdInfoDn(String adDn);
 	
 	public User findByAdInfoObjectGUID(String objectGUID);
+	User findByObjectGUID(String objectGUID);
 }

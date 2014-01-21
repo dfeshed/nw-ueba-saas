@@ -36,7 +36,7 @@ public abstract class FortscaleJob implements Job {
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		getJobParameters(jobExecutionContext);
+		init(jobExecutionContext);
 		
 		String monitorId = startMonitoring(jobExecutionContext, getTotalNumOfSteps());
 		
@@ -50,6 +50,10 @@ public abstract class FortscaleJob implements Job {
 		
 		
 		monitor.finishJob(monitorId);
+	}
+	
+	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
+		getJobParameters(jobExecutionContext);
 	}
 	
 		

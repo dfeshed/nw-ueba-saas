@@ -10,7 +10,7 @@
 			<name>Scoring</name>
 			<group>Security Events</group>
 			<description>Running LOGIN Scoring</description>
-			<job-class>fortscale.collection.scoring.jobs.LoginScoringJob</job-class>
+			<job-class>fortscale.collection.jobs.scoring.LoginScoringJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			<job-data-map>

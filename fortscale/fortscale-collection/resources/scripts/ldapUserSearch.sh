@@ -69,5 +69,5 @@ ad_fields=(
     "objectGUID"
 )
 ## Adding filter:
-search_cmd+=( "(&(objectclass=user)) ${ad_fields[@]}" )
+search_cmd+=( "(&(objectclass=user))(!(objectclass=computer)) ${ad_fields[@]}" )
 ${search_cmd[@]} > ${out} 
