@@ -28,6 +28,10 @@
 					<value>getVPNdata</value>
 				</entry>
 				<entry>
+					<key>encloseQuotes</key>
+					<value>false</value>
+				</entry>
+				<entry>
 					<key>outputPath</key>
 					<value>./input</value>
 				</entry>
