@@ -33,8 +33,8 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 	private ImpalaWriterFactoryImpl impalaWriterFactory;
 	
 	
-	@Value("file:${collection.shell.scripts.dir.path}/runProfRankRuby.sh")
-	private Resource runProfRankRubyScript;
+	@Value("${collection.shell.scripts.dir.path}/runProfRankRuby.sh")
+	private String runProfRankRubyScript;
 
 
 	String hadoopFilePath;
@@ -106,7 +106,7 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 		startNewStep("scoring");
 		BufferedLineReader reader = null;
 		try {
-			Process pr =  runCmd(null, runProfRankRubyScript.getFile().getAbsolutePath());
+			Process pr =  runCmd(null, runProfRankRubyScript);
 			reader = new BufferedLineReader( new BufferedReader(new InputStreamReader(pr.getInputStream())));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
