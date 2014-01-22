@@ -19,6 +19,10 @@ public class BatchScheduler {
 			// use the quartz.conf instance for jobs and triggers configuration
 			logger.info("initializing batch scheduler");
 			
+			// point quartz configuration to external file resource
+			System.setProperty("org.quartz.properties", "resources/jobs/quartz.properties");
+			
+			
 			// loading spring application context
 			context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
 
