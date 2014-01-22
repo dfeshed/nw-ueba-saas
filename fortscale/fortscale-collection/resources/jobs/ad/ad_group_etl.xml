@@ -33,7 +33,7 @@
 				</entry>
 				<entry>
 					<key>outputFields</key>
-					<value>timestamp,distinguishedName,name,isCriticalSystemObject,isDeleted,groupType,sAMAccountType,memberOf,managedBy,managedObjects,masteredBy,member,nonSecurityMember,nonSecurityMemberBL,directReports,secretary,whenChanged,whenCreated,accountNameHistory,cn,description,displayName,mail,sAMAccountName,objectSid,objectGUID,timestampepoch</value>
+					<value>${collection.ad.group.output.fields}</value>
 				</entry>
 				<entry>
 					<key>outputSeparator</key>

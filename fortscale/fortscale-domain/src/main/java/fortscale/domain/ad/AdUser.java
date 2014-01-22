@@ -11,7 +11,7 @@ public class AdUser extends AdObject{
 	public static final String thumbnailPhotoField = "thumbnailPhoto";
 	
 	
-	private String timestamp;
+	
 	@Field("sn")
 	private String sn;
 	@Field("givenName")
@@ -553,14 +553,6 @@ public class AdUser extends AdObject{
 
 	public void setMail(String mail) {
 		this.mail = mail;
-	}
-
-	public String getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
 	}
 
 	public String getIsDeleted() {

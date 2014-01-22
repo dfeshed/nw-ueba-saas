@@ -30,6 +30,8 @@ public class AdObject extends AbstractDocument{
 	@Field(lastModifiedField)
 	private Date lastModified;
 	
+	private String timestamp;
+	
 //	public AdObject(String distinguishedName){
 //		Assert.hasText(distinguishedName);
 //		this.distinguishedName = distinguishedName;
@@ -75,5 +77,12 @@ public class AdObject extends AbstractDocument{
 		this.objectSid = objectSid;
 	}
 	
+	public String getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
 	
 }
