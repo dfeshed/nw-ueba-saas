@@ -64,10 +64,9 @@ ad_fields=(
     "whenCreated"
     "sn"
     "sAMAccountName"
-    "thumbnailPhoto"
     "objectSid"
     "objectGUID"
 )
 ## Adding filter:
-search_cmd+=( "(&(objectclass=user))(!(objectclass=computer)) ${ad_fields[@]}" )
+search_cmd+=( "(&(objectclass=user)(!(objectclass=computer))) ${ad_fields[@]}" )
 ${search_cmd[@]} > ${out} 
