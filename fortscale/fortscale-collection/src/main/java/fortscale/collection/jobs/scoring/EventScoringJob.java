@@ -13,7 +13,6 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 
-import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.hadoop.pig.EventScoringPigRunner;
 import fortscale.collection.jobs.FortscaleJob;
@@ -25,10 +24,7 @@ public abstract class EventScoringJob extends FortscaleJob {
 	
 	@Autowired
 	private ImpalaClient impalaClient;
-	
-	@Autowired
-	private JobDataMapExtension jobDataMapExtension;
-	
+		
 	@Autowired
 	private EventScoringPigRunner eventScoringPigRunner;
 	

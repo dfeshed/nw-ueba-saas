@@ -13,14 +13,12 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.hadoop.HDFSLineAppender;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
-import fortscale.monitor.JobProgressReporter;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 
@@ -29,13 +27,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
 
 	@Autowired
-	private JobDataMapExtension jobDataMapExtension;
-
-	@Autowired
 	protected ImpalaClient impalaClient;
-
-	@Autowired
-	protected JobProgressReporter monitor;
 	
 	@Autowired
 	private ImpalaParser impalaParser;

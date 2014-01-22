@@ -1,8 +1,6 @@
 package fortscale.services.impl;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
@@ -12,7 +10,7 @@ import fortscale.utils.logging.Logger;
 public class ImpalaWriter{
 	private static Logger logger = Logger.getLogger(ImpalaWriter.class);
 	
-	private BufferedWriter writer = null;
+	private HDFSWriter writer = null;
 	private ImpalaParser impalaParser;
 	
 	public ImpalaWriter(ImpalaParser impalaParser){
@@ -20,12 +18,12 @@ public class ImpalaWriter{
 	}
 	public ImpalaWriter(File file, ImpalaParser impalaParser) {
 		this.impalaParser = impalaParser;
-		writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter(file));
-		} catch (IOException e) {
-			logger.error("got and exception while trying to load local file for impala use.", e);
-		}
+		writer = new LocalFileWriter(file);
+	}
+	
+	public ImpalaWriter(HDFSWriter writer, ImpalaParser impalaParser) {
+		this.impalaParser = impalaParser;
+		this.writer = writer;
 	}
 	
 	public void write(String str){
@@ -41,7 +39,7 @@ public class ImpalaWriter{
 	public void newLine(){
 		if (writer != null) {
 			try {
-				writer.newLine();
+				writer.writeLine("");
 			} catch (IOException e) {
 				logger.error("got and exception while trying to write new line to local file for impala use.", e);
 			}

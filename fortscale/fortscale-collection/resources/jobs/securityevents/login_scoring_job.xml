@@ -8,7 +8,7 @@
 	<schedule>
 		<job>
 			<name>Scoring</name>
-			<group>Security Events</group>
+			<group>SecurityEvents</group>
 			<description>Running LOGIN Scoring</description>
 			<job-class>fortscale.collection.jobs.scoring.LoginScoringJob</job-class>
 			<durability>true</durability>
@@ -37,9 +37,9 @@
 		<trigger>
 			<cron>
 				<name>LOGIN_SCORING_HOURLY_TRIGGER</name>
-				<group>Security Events</group>
+				<group>SecurityEvents</group>
 				<job-name>Scoring</job-name>
-				<job-group>Security Events</job-group>
+				<job-group>SecurityEvents</job-group>
 				<cron-expression>0 20 * * * ?</cron-expression>
 			</cron>
 		</trigger>

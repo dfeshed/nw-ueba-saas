@@ -14,13 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -686,16 +679,26 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ConfigurationService configurationService; 
 	
-	private void updateUserTotalScore(List<User> users, boolean isToSave, Date lastRun){
+	@Override
+	public void updateUserTotalScore(){
+		logger.info("getting all users");
+		List<User> users = userRepository.findAllExcludeAdInfo();
+		Date lastRun = new Date();
+		
+		logger.info("update all user total score.");
 		for(User user: users){
 			updateUserTotalScore(user, lastRun);
 		}
 		
-		if(isToSave){
-			userRepository.save(users);
-			saveUserTotalScoreToImpala(lastRun, configurationService.getScoreConfiguration());
+		for(User user: users){
+			Update update = new Update();
+			update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+			updateUser(user, update);
 		}
+		
+		saveUserTotalScoreToImpala(users, lastRun, configurationService.getScoreConfiguration());
 	}
+	
 	
 	private void updateUserTotalScore(User user, Date lastRun){
 		ScoreInfo totalScore = calculateTotalScore(configurationService.getScoreConfiguration().getConfMap().values(), user.getScores(), lastRun);
@@ -762,12 +765,7 @@ public class UserServiceImpl implements UserService{
 			updateUserTotalScore(user, classifierScore.getTimestamp());
 		}
 	}
-	
-	private void saveUserTotalScoreToImpala(Date timestamp, ScoreConfiguration scoreConfiguration){
-		List<User> users = userRepository.findAll();
-		saveUserTotalScoreToImpala(users, timestamp, scoreConfiguration);
-	}
-	
+		
 	private void saveUserTotalScoreToImpala(List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
 		ImpalaTotalScoreWriter writer = null;
 		try{
@@ -782,7 +780,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private void saveUserTotalScoreToImpala(ImpalaTotalScoreWriter writer, List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
-		logger.info("writing {} users total score to local file", users.size());
+		logger.info("writing {} users total score to the file system.", users.size());
 		for(User user: users){
 			if(user.getScore(Classifier.total.getId()) != null){
 				writer.writeScores(user, timestamp, scoreConfiguration);
@@ -915,7 +913,6 @@ public class UserServiceImpl implements UserService{
 				if(user.getId() != null){
 					Update update = new Update();
 					update.set(User.getClassifierScoreField(classifier.getId()), user.getScore(classifier.getId()));
-					update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
 					if(isNewLogUsername){
 						update.set(User.getLogUserNameField(tablename), username);
 					}
@@ -1059,7 +1056,6 @@ public class UserServiceImpl implements UserService{
 				if(user.getId() != null){
 					Update update = new Update();
 					update.set(User.getClassifierScoreField(Classifier.vpn.getId()), user.getScore(Classifier.vpn.getId()));
-					update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
 					if(isNewLogUsername){
 						update.set(User.getLogUserNameField(tablename), user.getLogUserName(tablename));
 						update.set(User.getAppField(UserApplication.vpn.getId()), user.getApplicationUserDetails().get(UserApplication.vpn.getId()));
@@ -1200,7 +1196,10 @@ public class UserServiceImpl implements UserService{
 	public void saveUserGroupMembershipScoreToImpala(ImpalaGroupsScoreWriter impalaGroupsScoreWriter, List<User> users,  UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext, double avgScore){
 		logger.info("writing group score to local file");
 		for(User user: users){
-			impalaGroupsScoreWriter.writeScore(user, updateUserGroupMembershipScoreContext.findFeautreByUserId(user.getId()), avgScore);
+			AdUserFeaturesExtraction adUserFeaturesExtraction = updateUserGroupMembershipScoreContext.findFeautreByUserId(user.getId());
+			if(adUserFeaturesExtraction != null){
+				impalaGroupsScoreWriter.writeScore(user, adUserFeaturesExtraction, avgScore);
+			}
 		}
 	}
 	

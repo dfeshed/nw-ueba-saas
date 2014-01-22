@@ -74,4 +74,6 @@ public interface UserService {
 	public String getUserThumbnail(User user);
 
 	public void updateUserWithADInfo(AdUser adUser);
+
+	public void updateUserTotalScore();
 }

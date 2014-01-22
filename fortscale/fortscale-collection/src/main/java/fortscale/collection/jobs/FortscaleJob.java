@@ -11,6 +11,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import fortscale.collection.JobDataMapExtension;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.logging.Logger;
@@ -20,6 +21,9 @@ public abstract class FortscaleJob implements Job {
 	
 	@Autowired 
 	protected JobProgressReporter monitor;
+	
+	@Autowired
+	protected JobDataMapExtension jobDataMapExtension;
 	
 	private String monitorId;
 	

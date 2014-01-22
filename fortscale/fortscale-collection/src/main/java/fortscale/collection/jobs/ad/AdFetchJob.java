@@ -7,9 +7,7 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.utils.logging.Logger;
 
@@ -21,9 +19,6 @@ public class AdFetchJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdFetchJob.class);
 	
 	private static final String OUTPUT_TEMP_FILE_SUFFIX = ".part";
-	
-	@Autowired
-	private JobDataMapExtension jobDataMapExtension;
 	
 	
 	private File outputTempFile;

@@ -13,17 +13,13 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 
 @DisallowConcurrentExecution
 public class AdUserThumbnailProcessJob extends FortscaleJob {
-	
-	@Autowired
-	private JobDataMapExtension jobDataMapExtension;
-	
+		
 	@Autowired
 	private AdUserThumbnailRepository adUserThumbnailRepository;
 

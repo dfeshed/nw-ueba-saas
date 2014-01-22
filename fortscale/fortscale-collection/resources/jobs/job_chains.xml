@@ -42,11 +42,21 @@
 	</chain>
 	<chain>
 		<first>
-			<name>User Fetch</name>
+			<name>User_Fetch</name>
 			<group>AD</group>
 		</first>
 		<second>
-			<name>User ETL</name>
+			<name>User_ETL</name>
+			<group>AD</group>
+		</second>
+	</chain>
+	<chain>
+		<first>
+			<name>User_ETL</name>
+			<group>AD</group>
+		</first>
+		<second>
+			<name>Group_Membership_Scoring</name>
 			<group>AD</group>
 		</second>
 	</chain>

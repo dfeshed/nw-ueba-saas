@@ -20,6 +20,10 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 	public ImpalaGroupsScoreWriter(ImpalaParser impalaParser) {
 		super(impalaParser);
 	}
+	
+	public ImpalaGroupsScoreWriter(HDFSWriter writer, ImpalaParser impalaParser) {
+		super(writer, impalaParser);
+	}
 
 	public void writeScore(User user, AdUserFeaturesExtraction extraction, double avgScore){
 		Date timestamp = extraction.getTimestamp();

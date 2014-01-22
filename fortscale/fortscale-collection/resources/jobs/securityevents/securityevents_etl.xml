@@ -69,7 +69,7 @@
 				<name>sec_etl_hourly_trigger</name>
 				<group>SecurityEvents</group>
 				<job-name>ETL</job-name>
-				<job-group>Security Events</job-group>
+				<job-group>SecurityEvents</job-group>
 				<cron-expression>0 3 * * * ?</cron-expression>
 			</cron>
 		</trigger>
