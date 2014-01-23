@@ -1,18 +1,13 @@
 package fortscale.monitor.mongo;
 
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.monitor.domain.JobMessage;
@@ -189,45 +184,34 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 
 	
 	/**
-	 * Gets the list of job reports older than the time given (excluded), restrict the list 
-	 * of items count to the amount given.
+	 * Gets the list of job reports older than the time given (excluded)
 	 * @param when the starting time to look for reports
 	 * @param count the maximum number of job report to return
 	 * @return the list of job reports found
 	 */
-	public List<JobReport> findJobReportsOlderThan(Date when, int count) {
-		Assert.isTrue(count > 0);
-		
-		PageRequest page = new PageRequest(0, count, new Sort(Sort.Direction.DESC, "sourceType", "jobName", "start"));
-		Page<JobReport> resultPage = repository.findByStartLessThan(when, page);
-		
-		List<JobReport> reports = new LinkedList<JobReport>();
-		for (JobReport report : resultPage) {
-			reports.add(report);
-		}
-		
-		return reports;
+	public List<JobReport> findJobReportsOlderThan(Date when) {
+		Date dayBefore = new Date(when.getTime() - (1000L*60*60*24));
+		return repository.findByStartBetween(dayBefore, when, 
+				new Sort(Sort.Direction.DESC, "start", "sourceType", "jobName"));
 	}
 	
 	/**
-	 * Get the list of job reports newer than the time given (excluded), restrict the list
-	 * of items count to the amount given.
+	 * Get the list of job reports newer than the time given (excluded)
 	 * @param when the starting time to look for reports
 	 * @param count the maximum number of job reports to return
 	 * @return the list of job reports found
 	 */
-	public List<JobReport> findJobReportsNewerThan(Date when, int count) {
-		Assert.isTrue(count > 0);
+	public List<JobReport> findJobReportsNewerThan(Date when) {
+		return repository.findByStartGreaterThan(when, 
+				new Sort(Sort.Direction.DESC, "start", "sourceType", "jobName"));
+	}
+	
+	public List<JobReport> findLatestJobReports() {
+		Date now = new Date();
+		Date yesterday = new Date(now.getTime() - (1000L*60*60*24));
 		
-		PageRequest page = new PageRequest(0, count, new Sort(Sort.Direction.ASC, "sourceType", "jobName", "start"));
-		Page<JobReport> resultPage = repository.findByStartGreaterThan(when, page);
-		
-		List<JobReport> reports = new LinkedList<JobReport>();
-		for (JobReport report : resultPage) {
-			reports.add(report);
-		}
-		
-		return reports;
+		return repository.findByStartGreaterThan(yesterday,
+				new Sort(Sort.Direction.DESC, "start", "sourceType", "jobName"));
 	}
 	
 	/**
