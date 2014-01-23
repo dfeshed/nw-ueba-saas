@@ -4,29 +4,31 @@ import java.util.Properties;
 
 import org.apache.pig.backend.executionengine.ExecJob;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
 
-
-public abstract class EventScoringPigRunner {
+@Component
+public class EventScoringPigRunner {
 	
 	@Autowired
 	private PigRunner pigRunner;
 	
+	@Value("file:${collection.lib.dir}/beardedpig-1.0-SNAPSHOT.jar")
+	private Resource jarFilePath1;
+	@Value("file:${collection.lib.dir}/calibro-1.0-SNAPSHOT.jar")
+	private Resource jarFilePath2;
 	
-	public abstract Resource getPigScriptResource();
-	public abstract String getInputDataFullPath();
-	public abstract String getOutputDataFullPathPrefix();
-	
-	public ExecJob run(Long runtime, Long deltaTime) throws Exception{
+	public ExecJob run(Long runtime, Long deltaTime, Resource pigScriptResource, String inputData, String outputDataPrefix) throws Exception{
 		Properties scriptParameters = new Properties();
-        scriptParameters.put("jarFilePath1", "/home/cloudera/fortscale/fs-paprika/event-bulk-scorer/bearded-pig/target/beardedpig-1.0-SNAPSHOT.jar");
-        scriptParameters.put("jarFilePath2", "/home/cloudera/fortscale/fs-paprika/calibro/target/calibro-1.0-SNAPSHOT.jar");    
-        scriptParameters.put("inputData", getInputDataFullPath());
-        scriptParameters.put("outputData", String.format("%sruntime=%s", getOutputDataFullPathPrefix(),runtime));
+        scriptParameters.put("jarFilePath1", jarFilePath1.getFile().getAbsolutePath());
+        scriptParameters.put("jarFilePath2", jarFilePath2.getFile().getAbsolutePath());    
+        scriptParameters.put("inputData", inputData);
+        scriptParameters.put("outputData", String.format("%sruntime=%s", outputDataPrefix,runtime));
         scriptParameters.put("deltaTime", deltaTime.toString());
         fillWithSpecificScriptParameters(scriptParameters);
 
-        return pigRunner.run(getPigScriptResource(), scriptParameters);
+        return pigRunner.run(pigScriptResource, scriptParameters);
 	}
 	
 	protected void fillWithSpecificScriptParameters(Properties scriptParameters){}

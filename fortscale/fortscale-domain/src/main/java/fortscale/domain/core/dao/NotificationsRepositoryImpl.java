@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Criteria;
 
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationAggregate;
 
 public class NotificationsRepositoryImpl implements NotificationsRepositoryCustom {
+  private static final long OLD_EVENTS_THRESHOLD_IN_SEC = 60*60*24 ; // we will opt out older events; @todo move to configuration..
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
@@ -21,7 +24,10 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		HashMap<String, List<Notification>> aggMap = new HashMap<String, List<Notification>>(); 
 		List<NotificationAggregate> aggNotifications = new ArrayList<>();
 		
-		Query query = new Query().with(request.getSort());
+    long current_unix_time = System.currentTimeMillis( ) / 1000L  ; // in seconds
+		Query query = new Query( ).with( request.getSort() );
+    query.addCriteria( Criteria.where("ts").gte(  new Long( current_unix_time - OLD_EVENTS_THRESHOLD_IN_SEC ) ) );
+
 		List<Notification> notifications = mongoTemplate.find(query, Notification.class);
 		
 		for (Notification notification : notifications) {

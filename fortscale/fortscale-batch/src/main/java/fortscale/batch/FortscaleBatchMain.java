@@ -82,10 +82,11 @@ public class FortscaleBatchMain {
 	public static void run(CommandLine line) throws Exception {
 		String action = line.getOptionValue(OPT_BATCH_ACTION.getOpt());
 
+		
 		// create the app context
 		@SuppressWarnings("resource")
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
-				configs);
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(configs);
+		
 
 		FortscaleBatch fortscaleBatch = (FortscaleBatch) ctx
 				.getBean("fortscaleBatch");

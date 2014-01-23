@@ -85,13 +85,13 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 						if (this.isShortName) {
 							result = getShortName(result,ip);
 						}
-						if ((!result.equals("")) && (!result.equals(ip)))
-						{
+						if ((!result.equals("")) && (!result.equals(ip))) {
 							dnsLookupCounter++;
 						}
 						inputRecord.replaceValues(this.outputRecordName, result);
 					} catch (IOException e) {
-						inputRecord.replaceValues(this.outputRecordName, "");				}
+						inputRecord.replaceValues(this.outputRecordName, "");				
+					}
 				}
 			}
 			return super.doProcess(inputRecord);

@@ -1,7 +1,7 @@
 package fortscale.batch;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import fortscale.services.AdService;
 import fortscale.services.UserService;
@@ -12,7 +12,7 @@ import fortscale.services.impl.ImpalaWriterFactory;
 
 
 
-@Configuration
+@Component
 public class FortscaleBatch {
 
 	@Autowired

@@ -96,7 +96,7 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 			if (mongoClient != null && dbCollection != null) {
 
 				String ip = null;
-				int ts = 0;
+				long ts = 0;
 
 				if (ipValue != null && ipValue.size() > 0) {
 					ip = (String) ipValue.get(0);
@@ -106,10 +106,10 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 					Object timeStampObject = timeStamp.get(0);
 					try {
 						if (timeStampObject != null) {
-							ts = Integer.valueOf((String) timeStampObject);
+							ts = Long.valueOf((String) timeStampObject);
 						}
 					} catch (ClassCastException e) {
-						logger.error("Error converting timeStamp to integer", e);
+						logger.error("Error converting timeStamp to long", e);
 					}
 				}
 
@@ -128,7 +128,7 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 		}
 
 
-		private String getHostname(String ip, int ts) {
+		private String getHostname(String ip, long ts) {
 			// Create a query for the IP address
 			BasicDBObject query = new BasicDBObject("ip_address", ip);
 

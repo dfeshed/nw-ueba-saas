@@ -17,6 +17,8 @@ public class AdObject extends AbstractDocument{
 	@Field(objectGUIDField)
 	private String objectGUID;
 	
+	private String objectSid;
+	
 	@Indexed
 	@Field(dnField)
 	private String distinguishedName;
@@ -27,6 +29,8 @@ public class AdObject extends AbstractDocument{
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*20)
 	@Field(lastModifiedField)
 	private Date lastModified;
+	
+	private String timestamp;
 	
 //	public AdObject(String distinguishedName){
 //		Assert.hasText(distinguishedName);
@@ -64,4 +68,21 @@ public class AdObject extends AbstractDocument{
 	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
 	}
+
+	public String getObjectSid() {
+		return objectSid;
+	}
+
+	public void setObjectSid(String objectSid) {
+		this.objectSid = objectSid;
+	}
+	
+	public String getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+	
 }

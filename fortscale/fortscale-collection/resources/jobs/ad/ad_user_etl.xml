@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>User_ETL</name>
+			<group>AD</group>
+			<description>Run AD USER ETL HOURLY</description>
+			<job-class>fortscale.collection.jobs.ad.AdUserProcessJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			
+			<job-data-map>
+				<entry>
+					<key>ldiftocsv</key>
+					<value>${collection.shell.scripts.dir.path}/ldifUserToCsv.sh</value>
+				</entry>
+				<entry>
+					<key>inputPath</key>
+					<value>${collection.fetch.data.ad.user.path}</value>
+				</entry>
+				<entry>
+					<key>finishPath</key>
+					<value>${collection.fetch.finish.data.ad.user.path}</value>
+				</entry>
+				<entry>
+					<key>filesFilter</key>
+					<value>users\d+.csv$</value>
+				</entry>
+				<entry>
+					<key>outputFields</key>
+					<value>${collection.ad.user.output.fields}</value>
+				</entry>
+				<entry>
+					<key>outputSeparator</key>
+					<value>|</value>
+				</entry>
+				<entry>
+					<key>morphlineFile</key>
+					<value>file:${collection.morphline.conf.ad.path}/readADDataUsers.conf</value>
+				</entry>
+				<entry>
+					<key>hadoopDirPath</key>
+					<value>${hdfs.user.data.ldap.users.path}</value>
+				</entry>
+				<entry>
+					<key>filenameFormat</key>
+					<value>users%d.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableName</key>
+					<value>${impala.ldapusers.table.name}</value>
+				</entry>
+            </job-data-map>
+		</job>
+	
+		<trigger>
+			<cron>
+				<name>ad_user_etl_hourly_trigger</name>
+				<group>AD</group>
+				<job-name>User_ETL</job-name>
+				<job-group>AD</job-group>
+ 				<cron-expression>0 0 0 * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+	</schedule>
+
+</job-scheduling-data>

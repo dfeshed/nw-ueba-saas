@@ -26,6 +26,7 @@
     <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-security-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-webapp-context.xml"/>
     <import resource="classpath*:META-INF/spring/monitor-context.xml"/>
     <context:property-placeholder location="classpath*:META-INF/application-config.properties" order="1" ignore-unresolvable="true"/>
     <context:property-placeholder location="classpath*:META-INF/*.properties" order="2"/>
