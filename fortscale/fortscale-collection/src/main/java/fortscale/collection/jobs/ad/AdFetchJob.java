@@ -87,6 +87,7 @@ public class AdFetchJob extends FortscaleJob {
 	private boolean fetchAndWriteToFileStep() throws InterruptedException{
 		startNewStep("Fetch and Write to file");
 		
+		//TODO: Handle errors
 		Process pr =  runCmd(null, ldapUserSearchShellScript, outputTempFile.getAbsolutePath());
 		if(pr == null){
 			return false;

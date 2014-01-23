@@ -9,8 +9,8 @@ if [ -r ${common_vars} ]; then
     source ${common_vars}
 fi
 ad_fields=(
+	"thumbnailPhoto"
     "objectGUID"
-    "thumbnailPhoto"
 )
 ## Adding filter:
 search_cmd+=( "(&(objectclass=user)) ${ad_fields[@]}" )

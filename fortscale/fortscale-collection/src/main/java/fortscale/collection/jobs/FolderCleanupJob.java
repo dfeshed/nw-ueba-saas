@@ -69,7 +69,7 @@ public class FolderCleanupJob implements Job {
 		}
 		
 		if (!folderFile.isDirectory())
-			throw new JobExecutionException("folder " + folderFile.getPath() + " does not exists or not a folder");
+			throw new JobExecutionException("folder " + folderFile.getPath() + " does not exists or not a folder", false);
 		
 		// get the folder free space
 		int freespaceMB = (int)(folderFile.getUsableSpace() / (1024 * 1024));

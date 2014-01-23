@@ -1,6 +1,5 @@
 package fortscale.collection.jobs;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -19,8 +18,7 @@ public class AdUserProcessJobTest {
 	@Test
 	public void outputFieldsTest() throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		final Properties properties = new Properties();
-		String configPropertiesFile = "src/main/resources/META-INF/fortscale-collection.properties";
-		InputStream fileStream = new FileInputStream(configPropertiesFile);
+		InputStream fileStream = AdUserProcessJobTest.class.getResourceAsStream("/META-INF/fortscale-collection.properties");
 
 		properties.load(fileStream);
 		String outputFields = properties.getProperty("collection.ad.user.output.fields");

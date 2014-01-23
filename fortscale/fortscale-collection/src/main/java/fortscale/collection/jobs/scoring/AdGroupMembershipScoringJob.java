@@ -10,7 +10,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.io.BufferedLineReader;
@@ -88,14 +87,22 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 			monitor.error(getMonitorId(), getStepName(), String.format("error opening hdfs file %s: \n %s", hadoopFilePath, e.toString()));
 			throw new JobExecutionException("error opening hdfs file for append at " + hadoopFilePath, e);
 		}
-		userService.updateUserWithGroupMembershipScore();
 		
 		try {
-			impalaWriterFactory.closeGroupsScoreAppender();
-		} catch (IOException e) {
-			logger.error("error closing hdfs file " + hadoopFilePath, e);
-			monitor.error(getMonitorId(), getStepName(), String.format("error closing hdfs file %s: \n %s", hadoopFilePath, e.toString()));
-			throw new JobExecutionException("error closing hdfs file " + hadoopFilePath, e);
+			userService.updateUserWithGroupMembershipScore();
+		} catch(Exception e){
+			logger.error("got an exception during the process of updating group membership.", e);
+			monitor.error(getMonitorId(), getStepName(),String.format("got an exception during the process of updating group membership: %s", e.toString()));
+			return false;
+		} finally{
+		
+			try {
+				impalaWriterFactory.closeGroupsScoreAppender();
+			} catch (IOException e) {
+				logger.error("error closing hdfs file " + hadoopFilePath, e);
+				monitor.error(getMonitorId(), getStepName(), String.format("error closing hdfs file %s: \n %s", hadoopFilePath, e.toString()));
+				throw new JobExecutionException("error closing hdfs file " + hadoopFilePath, e);
+			}
 		}
 		finishStep();
 		

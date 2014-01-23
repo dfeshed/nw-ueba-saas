@@ -181,16 +181,22 @@ public class EventProcessJob implements Job {
 			flushOutputAppender();
 			
 			monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), lineCounter, "Events"));
+		} catch (IOException e) {
+			logger.error("error processing file " + file.getName(), e);
+			monitor.error(monitorId, "Process Files", e.toString());
+			return false;
 		} finally {
 			reader.close();
 		}
 
 		
 		if (reader.HasErrors()) {
+			logger.error("error processing file " + file.getName(), reader.getException());
 			monitor.error(monitorId, "Process Files", reader.getException().toString());
 			return false;
 		} else {
 			if (reader.hasWarnings()) {
+				logger.warn("error processing file " + file.getName(), reader.getException());
 				monitor.warn(monitorId, "Process Files", reader.getException().toString());
 			}
 			return true;
