@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>SSH_Fetch_Data</name>
+			<name>Fetch</name>
 			<group>SSH</group>
 			<description>Fetch data from splunk hourly</description>
 			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
@@ -45,7 +45,8 @@
 		<trigger>
 			<cron>
 				<name>ssh_fetch_hourly_trigger</name>
-				<job-name>SSH_Fetch_Data</job-name>
+				<group>SSH</group>
+				<job-name>Fetch</job-name>
 				<job-group>SSH</job-group>
  				<cron-expression>0 2 * * * ?</cron-expression>
 			</cron>

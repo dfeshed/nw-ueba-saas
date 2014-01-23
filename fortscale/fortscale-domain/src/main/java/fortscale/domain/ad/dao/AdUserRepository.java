@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import fortscale.domain.ad.AdUser;
 
 public interface AdUserRepository extends PagingAndSortingRepository<AdUser, String>, AdUserRepositoryCustom{
-	public AdUser findByEmailAddress(String emailAddress);
+	public AdUser findByMail(String mail);
 	public List<AdUser> findByTimestampepoch(Long timestampepoch);
 	public AdUser findByTimestampepochAndObjectGUID(Long timestampepoch, String objectGUID);
 	public List<AdUser> findByTimestampepoch(Long timestampepoch, Pageable pageable);

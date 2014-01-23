@@ -5,8 +5,12 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AccessDAO;
@@ -14,15 +18,16 @@ import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 
-public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
+@Component("vpnDAO")
+public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, InitializingBean{
 	private static Logger logger = Logger.getLogger(VpnDAOImpl.class);
 	
 	
 	@Autowired
 	private ImpalaParser impalaParser;
 	
-	
-	private String tableName = VpnScore.TABLE_NAME;
+	@Value("${impala.vpn.table.name}")
+	private String tableName;// = VpnScore.TABLE_NAME;
 
 	@Override
 	public RowMapper<VpnScore> getMapper() {
@@ -123,6 +128,11 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
 	@Override
 	public String getStatusFieldName() {
 		return VpnScore.STATUS_FIELD_NAME;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.hasText(tableName);
 	}
 	
 }

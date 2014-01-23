@@ -21,6 +21,10 @@ public class ImpalaTotalScoreWriter extends ImpalaWriter{
 	public ImpalaTotalScoreWriter(ImpalaParser impalaParser) {
 		super(impalaParser);
 	}
+	
+	public ImpalaTotalScoreWriter(HDFSWriter writer, ImpalaParser impalaParser) {
+		super(writer, impalaParser);
+	}
 
 	public void writeScores(User user, Date timestamp, ScoreConfiguration scoreConfiguration){
 		writeScore(user, TOTAL_SCORE_WEIGHT, timestamp, getTotalScoreExplanation(user, scoreConfiguration));

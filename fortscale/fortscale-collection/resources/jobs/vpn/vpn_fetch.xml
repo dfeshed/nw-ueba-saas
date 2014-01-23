@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>VPN_Fetch_Data</name>
+			<name>Fetch</name>
 			<group>VPN</group>
 			<description>Fetch data from splunk hourly</description>
 			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
@@ -28,6 +28,10 @@
 					<value>getVPNdata</value>
 				</entry>
 				<entry>
+					<key>encloseQuotes</key>
+					<value>false</value>
+				</entry>
+				<entry>
 					<key>outputPath</key>
 					<value>./input</value>
 				</entry>
@@ -45,7 +49,8 @@
 		<trigger>
 			<cron>
 				<name>vpn_fetch_hourly_trigger</name>
-				<job-name>VPN_Fetch_Data</job-name>
+				<group>VPN</group>
+				<job-name>Fetch</job-name>
 				<job-group>VPN</job-group>
  				<cron-expression>0 3 * * * ?</cron-expression>
 			</cron>

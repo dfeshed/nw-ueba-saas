@@ -34,6 +34,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 	
 	@Override
+	public User findByObjectGUID(String objectGUID) {
+		Query query = new Query(where(User.getAdInfoField(UserAdInfo.objectGUIDField)).is(objectGUID));
+		return mongoTemplate.findOne(query, User.class);
+	}
+	
+	@Override
 	public List<User> findByApplicationUserName(String applicationName, List<String> usernames){
 		String appUserNameField = User.getAppUserNameField(applicationName);
 		Criteria criterias[] = new Criteria[usernames.size()];

@@ -9,7 +9,12 @@ import org.springframework.data.domain.Pageable;
 import fortscale.domain.fe.VpnScore;
 
 public interface VpnDAO {
+	
+	public String getTableName();
+	
 	public List<VpnScore> findAll(Pageable pageable);
+	
+	public int countNumOfRecords();
 	
 	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal);
 	

@@ -1,6 +1,5 @@
 package fortscale.collection.jobs;
 
-import static fortscale.collection.JobDataMapExtension.getJobDataMapStringValue;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -16,9 +15,8 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 
+import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.hadoop.HDFSLineAppender;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.io.BufferedLineReader;
@@ -44,39 +42,36 @@ public class EventProcessJob implements Job {
 	protected String monitorId;
 	protected String hadoopFilePath;
 	protected String impalaTableName;
+	protected HDFSLineAppender appender;
 	
-	@Autowired
-	protected ResourceLoader resourceLoader;
+	
 	
 	@Autowired
 	protected ImpalaClient impalaClient;
 	
 	@Autowired
 	protected JobProgressReporter monitor;
+	
+	@Autowired
+	protected JobDataMapExtension jobDataMapExtension;
 		
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
 		// get parameters values from the job data map
-		inputPath = getJobDataMapStringValue(map, "inputPath");
-		errorPath = getJobDataMapStringValue(map, "errorPath");
-		finishPath = getJobDataMapStringValue(map, "finishPath");
-		filesFilter = getJobDataMapStringValue(map, "filesFilter");
-		hadoopFilePath = getJobDataMapStringValue(map, "hadoopFilePath");
-		impalaTableName = getJobDataMapStringValue(map, "impalaTableName");
+		inputPath = jobDataMapExtension.getJobDataMapStringValue(map, "inputPath");
+		errorPath = jobDataMapExtension.getJobDataMapStringValue(map, "errorPath");
+		finishPath = jobDataMapExtension.getJobDataMapStringValue(map, "finishPath");
+		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
+		hadoopFilePath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilePath");
+		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
 		
 		// build record to items processor
-		String[] outputFields = getJobDataMapStringValue(map, "outputFields").split(",");
-		String outputSeparator = getJobDataMapStringValue(map, "outputSeparator");
+		String[] outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields").split(",");
+		String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, outputFields);
 		
-		try {
-			Resource morphlineConf = resourceLoader.getResource(getJobDataMapStringValue(map, "morphlineFile"));
-			morphline = new MorphlinesItemsProcessor(morphlineConf);
-		} catch (IOException e) {
-			logger.error("error loading morphline processor", e);
-			throw new JobExecutionException("error loading morphline processor", e);
-		}
+		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 	}
 	
 	@Override
@@ -109,7 +104,7 @@ public class EventProcessJob implements Job {
 			monitor.startStep(monitorId, currentStep, 3);
 
 			// get hadoop file writer
-			HDFSLineAppender appender = createHDFSLineAppender();
+			createOutputAppender();
 			
 			// read each file and process lines
 			try {
@@ -117,7 +112,7 @@ public class EventProcessJob implements Job {
 					logger.info("starting to process {}", file.getName()); 
 					
 					// transform events in file
-					boolean success = processFile(file, appender);
+					boolean success = processFile(file);
 					
 					if (success) {
 						moveFileToFolder(file, finishPath);
@@ -131,10 +126,10 @@ public class EventProcessJob implements Job {
 				logger.error("error processing files", e);
 				monitor.error(monitorId, currentStep, e.toString());
 				throw new JobExecutionException("error processing files", e);
+			} finally {
+				closeOutputAppender();
 			}
-			
-			closeHDFSAppender(appender);
-			impalaClient.refreshTable(impalaTableName);
+			refreshImpala();
 			
 			monitor.finishStep(monitorId, currentStep);
 		} catch (JobExecutionException e) {
@@ -168,7 +163,8 @@ public class EventProcessJob implements Job {
 	}
 	
 	
-	protected boolean processFile(File file, HDFSLineAppender hadoop) throws IOException {
+	
+	protected boolean processFile(File file) throws IOException {
 		
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
@@ -177,51 +173,64 @@ public class EventProcessJob implements Job {
 			int lineCounter = 0;
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				if (processLine(line, hadoop))
+				if (processLine(line))
 					++lineCounter;
 			}
 			
-			monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), lineCounter, "Events"));
-		
 			// flush hadoop
-			hadoop.flush();
+			flushOutputAppender();
+			
+			monitor.addDataReceived(monitorId, new JobDataReceived(file.getName(), lineCounter, "Events"));
+		} catch (IOException e) {
+			logger.error("error processing file " + file.getName(), e);
+			monitor.error(monitorId, "Process Files", e.toString());
+			return false;
 		} finally {
 			reader.close();
 		}
 
 		
 		if (reader.HasErrors()) {
+			logger.error("error processing file " + file.getName(), reader.getException());
 			monitor.error(monitorId, "Process Files", reader.getException().toString());
 			return false;
 		} else {
 			if (reader.hasWarnings()) {
+				logger.warn("error processing file " + file.getName(), reader.getException());
 				monitor.warn(monitorId, "Process Files", reader.getException().toString());
 			}
 			return true;
 		}
 	}
 
-	protected boolean processLine(String line, HDFSLineAppender hadoop) throws IOException {
+	
+	protected boolean processLine(String line) throws IOException {
 		// process each line
 		Record record = morphline.process(line);
 		String output = recordToString.process(record);
 		
 		// append to hadoop, if there is data to be written
-		if (record!=null) {
-			hadoop.writeLine(output);
+		
+		if (output!=null) {
+			appender.writeLine(output);
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-
-	protected HDFSLineAppender createHDFSLineAppender() throws JobExecutionException {
+	protected void refreshImpala() throws JobExecutionException {
+		impalaClient.refreshTable(impalaTableName);
+	}
+	
+	
+	protected void createOutputAppender() throws JobExecutionException {
 		try {
 			logger.debug("opening hdfs file {} for append", hadoopFilePath);
-			HDFSLineAppender appender = new HDFSLineAppender();
+
+			appender = new HDFSLineAppender();
 			appender.open(hadoopFilePath);
-			return appender;
+
 		} catch (IOException e) {
 			logger.error("error opening hdfs file for append at " + hadoopFilePath, e);
 			monitor.error(monitorId, "Process Files", String.format("error appending to hdfs file %s: \n %s",  hadoopFilePath, e.toString()));
@@ -229,7 +238,17 @@ public class EventProcessJob implements Job {
 		}
 	}
 	
-	protected void closeHDFSAppender(HDFSLineAppender appender) throws JobExecutionException {
+	protected void flushOutputAppender() throws IOException {
+		try {
+			appender.flush();
+		} catch (IOException e) {
+			logger.error("error flushing hdfs file " + hadoopFilePath, e);
+			monitor.error(monitorId, "Process Files", String.format("error flushing hdfs file %s: \n %s",  hadoopFilePath, e.toString()));
+			throw e;
+		}
+	}
+	
+	protected void closeOutputAppender() throws JobExecutionException {
 		try {
 			logger.debug("closing hdfs file {}", hadoopFilePath);
 			appender.close();

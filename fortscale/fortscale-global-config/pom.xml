@@ -46,6 +46,18 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>jenkins</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>jenkins</value>
+				</property>
+			</activation>
+			<properties>
+				<env>jenkins</env>
+			</properties>
+		</profile>
+		<profile>
 			<id>prod</id>
 			<activation>
 				<property>

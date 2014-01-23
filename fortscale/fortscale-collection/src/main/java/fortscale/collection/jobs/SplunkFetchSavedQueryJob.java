@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import fortscale.collection.JobDataMapExtension;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
-import static fortscale.collection.JobDataMapExtension.getJobDataMapStringValue;
 
 
 /**
@@ -47,12 +47,17 @@ public class SplunkFetchSavedQueryJob implements Job {
 	private String outputPath;
 	private String returnKeys;
 	private String filenameFormat;
+	private String delimiter;
+	private boolean encloseQuotes = true;
 	
 	private File outputTempFile;
 	private File outputFile;
 	
 	@Autowired 
 	private JobProgressReporter monitor;
+	
+	@Autowired
+	private JobDataMapExtension jobDataMapExtension;
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -85,8 +90,8 @@ public class SplunkFetchSavedQueryJob implements Job {
 		// configure events handler to save events to csv file
 		SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
 		handler.setSearchReturnKeys(returnKeys);
-		handler.setDelimiter(",");
-		handler.setDisableQuotes(false);
+		handler.setDelimiter(delimiter);
+		handler.setDisableQuotes(!encloseQuotes);
 		handler.setSkipFirstLine(true);
 		handler.setForceSingleLineEvents(true);
 			
@@ -120,12 +125,17 @@ public class SplunkFetchSavedQueryJob implements Job {
 		JobDataMap map = context.getMergedJobDataMap();
 		
 		// get parameters values from the job data map
-		earliest = getJobDataMapStringValue(map, "earliest");
-		latest = getJobDataMapStringValue(map, "latest");
-		savedQuery = getJobDataMapStringValue(map, "savedQuery");
-		outputPath = getJobDataMapStringValue(map, "outputPath");
-		returnKeys = getJobDataMapStringValue(map, "returnKeys");
-		filenameFormat = getJobDataMapStringValue(map, "filenameFormat");
+		earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
+		latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
+		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
+		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");
+		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
+		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
+		
+		// try and retrieve the delimiter value, if present in the job data map
+		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
+		// try and retrieve the enclose quotes value, if present in the job data map
+		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
 	}
 	
 	private File ensureOutputDirectoryExists(String outputPath) throws JobExecutionException {
@@ -167,7 +177,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 		if (output.length() < 1024) {
 			return new JobDataReceived("Events", (int)output.length(), "Bytes");
 		} else {
-			int sizeInKB = (int) (outputTempFile.length() / 1024);
+			int sizeInKB = (int) (output.length() / 1024);
 			return new JobDataReceived("Events", sizeInKB, "KB");
 		}
 	}

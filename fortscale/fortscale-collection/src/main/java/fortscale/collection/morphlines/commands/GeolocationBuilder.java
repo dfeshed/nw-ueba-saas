@@ -1,6 +1,5 @@
 package fortscale.collection.morphlines.commands;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +10,8 @@ import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fortscale.utils.geoip.GeoIPInfo;
 import com.fortscale.utils.geoip.GeoIPService;
@@ -22,6 +23,8 @@ import com.typesafe.config.Config;
  */
 public class GeolocationBuilder implements CommandBuilder {
 
+	private static Logger logger = LoggerFactory.getLogger(GeolocationBuilder.class);
+	
 	@Override
 	public Collection<String> getNames() {
 		return Collections.singletonList("Geolocation");
@@ -47,11 +50,7 @@ public class GeolocationBuilder implements CommandBuilder {
 
 			// Try to instantiate the GeoIP service
 			try {
-				String DB = getClass().getResource("/GeoLite2-City.mmdb").getFile();
-				File dbFile = new File(DB);
-				if (dbFile.exists()) {
-					this.geoIpService = new GeoIPService(dbFile);
-				}
+				this.geoIpService = new GeoIPService();
 			} catch (IOException e) {
 				this.geoIpService = null;
 			}
@@ -73,7 +72,7 @@ public class GeolocationBuilder implements CommandBuilder {
 						// Write the country name
 						inputRecord.put(this.outputFieldName, countryName);
 					} catch (IOException e) {
-						// TODO: Insert logging here
+						logger.warn("error resolving geo2ip for {}, exception: {}", ipAddress, e.toString());
 					}
 					// If an error occurs, we're not adding / changing anything
 				}

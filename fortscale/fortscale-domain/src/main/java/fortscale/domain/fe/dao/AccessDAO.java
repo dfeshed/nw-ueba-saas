@@ -243,7 +243,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return retDate;
 	}
 	
-	private int countNumOfRecords(){
+	public int countNumOfRecords(){
 		String query = String.format("select count(*) from %s", getTableName());
 		
 		return impalaJdbcTemplate.queryForInt(query);
