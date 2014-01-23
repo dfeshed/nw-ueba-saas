@@ -852,7 +852,19 @@ public class UserServiceImpl implements UserService{
 	
 	private void updateUserWithAuthScore(AuthDAO authDAO, final Classifier classifier, Date lastRun) {
 		logger.info("calculating avg score for {} events.", classifier);
-		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		double avg = 0;
+		try{
+			avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		} catch(Exception e){
+			int count = authDAO.countNumOfRecords();
+			String message;
+			if(count > 0){
+				message = String.format("while running calculateAvgScoreOfGlobalScore on the table (%s) with runtime (%s) got an exception.", authDAO.getTableName(), lastRun);
+			} else{
+				message = String.format("the table (%s) is empty", authDAO.getTableName());
+			}
+			throw new RuntimeException(message,e);
+		}
 		logger.info("getting all {} scores", classifier);
 		List<AuthScore> authScores = authDAO.findGlobalScoreByTimestamp(lastRun);
 		
@@ -997,7 +1009,19 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateUserWithVpnScore(Date lastRun) {
 		logger.info("calculating avg score for vpn events.");
-		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		double avg = 0;
+		try{
+			avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		} catch(Exception e){
+			int count = vpnDAO.countNumOfRecords();
+			String message;
+			if(count > 0){
+				message = String.format("while running calculateAvgScoreOfGlobalScore on the table (%s) with runtime (%s) got an exception.", vpnDAO.getTableName(), lastRun);
+			} else{
+				message = String.format("the table (%s) is empty", vpnDAO.getTableName());
+			}
+			throw new RuntimeException(message,e);
+		}
 		
 		logger.info("getting all vpn scores");
 		List<VpnScore> vpnScores = vpnDAO.findGlobalScoreByTimestamp(lastRun);
