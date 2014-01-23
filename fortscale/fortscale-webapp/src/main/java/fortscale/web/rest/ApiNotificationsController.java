@@ -1,8 +1,6 @@
 package fortscale.web.rest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -117,6 +115,23 @@ public class ApiNotificationsController {
 		return notificationsDataSingle(overviewNotifications);
 	}
 
+	
+	/***
+	 * Gets notification after a given time stamp
+	 * @return list of matching notification, empty list if no notification found
+	 */
+	@RequestMapping(value = "/after/{ts}", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<Notification>> after(@PathVariable("ts") long ts) {
+		
+		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, TIME_STAMP));
+		
+		// pass the time stamp and paging to the repository to perform the query
+		Iterable<Notification> notifications = notificationsRepository.findByTsGreaterThan(ts, sort);
+		return notificationsDataSingle(notifications);
+	}
+	
 	@RequestMapping(value = "/aggregate", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -127,6 +142,7 @@ public class ApiNotificationsController {
 		Iterable<NotificationAggregate> overviewNotificationsAgg = notificationsRepository.findAllAndAggregate(request);
 		return notificationDataAgg(overviewNotificationsAgg);
 	}
+
 
 	@RequestMapping(value = "/clearAll", method = RequestMethod.GET)
 	@ResponseBody

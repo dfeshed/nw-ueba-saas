@@ -12,6 +12,14 @@ public class NotificationResource extends AbstractDocument implements Serializab
 	private String single;
 	private String agg;
 
+	public NotificationResource() {}
+	
+	public NotificationResource(String msg_name, String single, String agg) {
+		this.msg_name = msg_name;
+		this.single = single;
+		this.agg = agg;
+	}
+	
 	public String getMsg_name() {
 		return msg_name;
 	}

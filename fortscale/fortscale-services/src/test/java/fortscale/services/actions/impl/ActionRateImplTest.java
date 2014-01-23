@@ -6,19 +6,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 
-import fortscale.services.domain.AbstractTest;
-
-public class ActionRateImplTest extends AbstractTest{
+public class ActionRateImplTest{
 	
-	@Autowired
+	@InjectMocks
 	private ActionRateImpl actionRate;
 	
 	String rateField  = "time";
 	String eventField = "event";
 
+	
+	
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+	}
 	
 	@Test
 	public void testRateTable() {

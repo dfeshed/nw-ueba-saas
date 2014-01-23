@@ -1,5 +1,9 @@
 package fortscale.services.impl;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+import static org.springframework.data.mongodb.core.query.Update.update;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,13 +14,25 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdGroup;
@@ -34,6 +50,7 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
+import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.AuthScore;
@@ -44,6 +61,7 @@ import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
+import fortscale.services.LogEventsEnum;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.analyst.ConfigurationService;
@@ -61,6 +79,9 @@ public class UserServiceImpl implements UserService{
 	private static final String REGEX_SEPERATOR = "####";
 	private static final int MAX_NUM_OF_HISTORY_DAYS = 21;
 	public static int MAX_NUM_OF_PREV_SCORES = 14;
+	
+	@Autowired
+	private MongoOperations mongoTemplate;
 	
 	@Autowired
 	private AdUserRepository adUserRepository;
@@ -81,13 +102,22 @@ public class UserServiceImpl implements UserService{
 	private UserMachineDAO userMachineDAO;
 	
 	@Autowired
-	private AuthDAO authDAO;
+	private AuthDAO loginDAO;
+	
+	@Autowired
+	private AuthDAO sshDAO;
 	
 	@Autowired
 	private VpnDAO vpnDAO;
 	
 	@Autowired
 	private ImpalaWriterFactory impalaWriterFactory;
+	
+	@Autowired
+	private ThreadPoolTaskExecutor mongoDbReaderExecuter;
+	
+	@Autowired
+	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
 	
 	@Autowired 
 	private ADUserParser adUserParser; 
@@ -98,9 +128,37 @@ public class UserServiceImpl implements UserService{
 	@Value("${auth.to.ad.username.regex.format:^%s*(?i)}")
 	private String authToAdUsernameRegexFormat;
 	
+	@Value("${ssh.to.ad.username.regex.format:^%s*(?i)}")
+	private String sshToAdUsernameRegexFormat;
+	
+	@Value("${vpn.status.success.value.regex:SUCCESS}")
+	private String vpnStatusSuccessValueRegex;
+	
+	@Value("${ssh.status.success.value.regex:Accepted}")
+	private String sshStatusSuccessValueRegex;
+	
+	@Value("${ad.info.update.read.page.size:1000}")
+	private int readPageSize;
 	
 	
+	private Map<String, String> groupDnToNameMap = new HashMap<>();
 	
+	
+	@Override
+	public String getUserThumbnail(User user) {
+		String ret = null;
+		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoch != null){
+			AdUser adUser = adUserRepository.findByTimestampepochAndObjectGUID(timestampepoch, user.getAdInfo().getObjectGUID());
+			if(adUser == null){
+				logger.error("ad user document not found");
+			} else{
+				ret = adUser.getThumbnailPhoto();
+			}
+		}
+		
+		return ret;
+	}
 	
 	@Override
 	public void removeClassifierFromAllUsers(String classifierId){
@@ -118,9 +176,9 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
-		String timestamp = adUserRepository.getLatestTimeStamp();
-		if(timestamp != null) {
-			updateUserWithADInfo(timestamp);
+		Long timestampepoc = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoc != null) {
+			updateUserWithADInfo(timestampepoc);
 		} else {
 			logger.warn("no timestamp. probably the ad_user table is empty");
 		}
@@ -128,21 +186,141 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public void updateUserWithADInfo(String timestamp) {
-		updateUserWithADInfo(adUserRepository.findByTimestamp(timestamp));
+	public void updateUserWithADInfo(final Long timestampepoch) {
+		logger.info("Starting to update users with ad info.");
+		if(!mongoTemplate.exists(query(where(User.adInfoField).exists(true)), User.class) && userRepository.count() > 0){
+			logger.info("Updating User schema regarding to the active directory info");
+			Iterable<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch);
+			List<User> users = updateUserWithADInfoNewSchema(adUsers);
+			
+			try{
+				logger.info("Dropping adDn index");
+				mongoTemplate.indexOps(User.class).dropIndex("adDn");
+			} catch(Exception e){
+				logger.error("failed to drop adDn index.", e);
+			}
+			try{
+				logger.info("Dropping adObjectGUID index");
+				mongoTemplate.indexOps(User.class).dropIndex("adObjectGUID");
+			} catch(Exception e){
+				logger.error("failed to drop adObjectGUID index.", e);
+			}
+			
+			userRepository.save(users);
+		} else{
+			CompletionService<UpdateUserAdInfoContext> readerPool = createUpdateUserAdInfoContextReaderPool();
+			int numOfReaderTasks = triggerUserAdInfoReaders(readerPool, timestampepoch);
+			
+			CompletionService<String> writerPool = createUserAdInfoWriterPool();
+			int numOfWriterTasks = processUserAdInfoAndTriggerUserUpdate(readerPool, writerPool, numOfReaderTasks);
+			
+			logger.info("waiting for all the {} writing tasks.", numOfWriterTasks);
+			waitForAllWritingTasks(writerPool, numOfWriterTasks);
+			
+			logger.info("finished updating the user collection.");
+		}
+//		saveUserIdUsernamesMapToImpala(new Date());
+		logger.info("finished updating users with ad info.");
 	}
 	
-	private void updateUserWithADInfo(Iterable<AdUser> adUsers) {
-		for(AdUser adUser: adUsers){
+	private CompletionService<UpdateUserAdInfoContext> createUpdateUserAdInfoContextReaderPool(){
+		return new ExecutorCompletionService<UpdateUserAdInfoContext>(mongoDbReaderExecuter);
+	}
+	
+	private CompletionService<String> createUserAdInfoWriterPool(){
+		return new ExecutorCompletionService<String>(mongoDbWriterExecuter);
+	}
+	
+	private int triggerUserAdInfoReaders(CompletionService<UpdateUserAdInfoContext> pool, final Long timestampepoch){
+		long count = adUserRepository.countByTimestampepoch(timestampepoch);
+		logger.info("filling reading tasks of {} ad users", count);
+		int numOfPages = (int)((count-1)/readPageSize) + 1;
+		final AtomicInteger counter = new AtomicInteger(-1);
+		
+		for(int i = 0; i < numOfPages; i++){
+			Callable<UpdateUserAdInfoContext> task = new Callable<UpdateUserAdInfoContext>() {
+				@Override
+				public UpdateUserAdInfoContext call(){
+					int page = counter.incrementAndGet();
+					PageRequest pageRequest = new PageRequest(page, readPageSize);
+					List<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch,pageRequest);
+					List<String> guids = new ArrayList<>(adUsers.size());
+					for(AdUser adUser: adUsers){
+						guids.add(adUser.getObjectGUID());
+					}
+					List<User> users = userRepository.findByGUIDs(guids);
+					return new UpdateUserAdInfoContext(adUsers, users);
+				}
+			};
+			pool.submit(task);
+		}
+		
+		return numOfPages;
+	}
+	
+	private int processUserAdInfoAndTriggerUserUpdate(CompletionService<UpdateUserAdInfoContext> readerPool, CompletionService<String> writerPool, int numOfReaderTasks){
+		logger.info("filling all users with ad info data");
+		
+		int numOfThreadExceptions = 0;
+		int numOfWriterTasks = 0;
+		for(int i = 0; i < numOfReaderTasks && numOfThreadExceptions <= 5; i++){
+			UpdateUserAdInfoContext updateUserAdInfoContext = null;
 			try {
-				updateUserWithADInfo(adUser);
+				TaskResult<UpdateUserAdInfoContext> taskResult = getTaskResultes(readerPool);
+				numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
+
+				if(taskResult.getResult() == null){
+					logger.error("updateUserAdInfoContext is null");
+					continue;
+				}
+				updateUserAdInfoContext = taskResult.getResult();
+			} catch (TimeoutException timeoutException) {
+				logger.error("while getting ad user object from mongo got the time out exception.", timeoutException);
+				break;
+			}
+
+			int pageNumOfTasks = processUserAdInfoAndTriggerUserUpdate(updateUserAdInfoContext, writerPool);
+			numOfWriterTasks += pageNumOfTasks;
+		}
+		
+		return numOfWriterTasks;
+	}
+	
+	private int processUserAdInfoAndTriggerUserUpdate(UpdateUserAdInfoContext updateUserAdInfoContext, CompletionService<String> writerPool){
+		List<AdUser> pageAdUsers = updateUserAdInfoContext.getAdUsers();
+		int pageNumOfTasks = 0;
+		logger.info("Going over {} ad users", pageAdUsers.size());
+		for(AdUser adUser: pageAdUsers){
+			try {
+				pageNumOfTasks += updateUserWithADInfo(adUser, updateUserAdInfoContext, writerPool);
+				
 			} catch (Exception e) {
 				logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
 			}
-			
 		}
-		saveUserIdUsernamesMapToImpala(new Date());
+		logger.info("finished processing {} ad users info. triggered {} tasks with {} inserts, {} username updates, {} search field updates, {} ad info updates",
+				pageAdUsers.size(), pageNumOfTasks, updateUserAdInfoContext.getNumOfInserts(), updateUserAdInfoContext.getNumOfUsernameUpdates(),
+				updateUserAdInfoContext.getNumOfSearchFieldUpdates(), updateUserAdInfoContext.getNumOfAdInfoUpdates());
+		
+		return pageNumOfTasks;
 	}
+	
+	private <T> TaskResult<T> getTaskResultes(CompletionService<T> pool) throws TimeoutException{
+		TaskResult<T> ret = new TaskResult<>();
+		while(ret.getResult() == null && ret.getNumOfTaskExceptions() <= 5){
+			try {
+				logger.info("waiting for task results...");
+				ret.setResult(pool.take().get(30, TimeUnit.SECONDS));
+			} catch (InterruptedException | ExecutionException e1) {
+				logger.error("while getting ad user object from mongo got the following exception.", e1);
+				ret.incrementNumOfTaskExceptions();
+			}
+		}
+		
+		return ret;
+	}
+	
+	
 	
 	private void saveUserIdUsernamesMapToImpala(Date timestamp){
 		List<User> users = userRepository.findAll();
@@ -151,148 +329,220 @@ public class UserServiceImpl implements UserService{
 		writer.close();
 	}
 	
-	private void updateUserWithADInfo(AdUser adUser) {
+	private int updateUserWithADInfo(AdUser adUser, UpdateUserAdInfoContext updateUserAdInfoContext, CompletionService<String> pool) {
+		if(adUser.getObjectGUID() == null) {
+			logger.error("got ad user with no ObjectGUID name field.");
+			return 0;
+		}
 		if(adUser.getDistinguishedName() == null) {
 			logger.error("got ad user with no distinguished name field.");
-			return;
-		}
-		User user = userRepository.findByAdDn(adUser.getDistinguishedName());
-		if(user == null){
-			user = new User(adUser.getDistinguishedName());
-		}
-		user.setFirstname(adUser.getFirstname());
-		user.setLastname(adUser.getLastname());
-		if(adUser.getEmailAddress() != null && adUser.getEmailAddress().length() > 0){
-			user.setEmailAddress(new EmailAddress(adUser.getEmailAddress()));
-		}
-		user.setAdUserPrincipalName(adUser.getUserPrincipalName());
-		user.setAdSAMAccountName(adUser.getsAMAccountName());
-		String username = adUser.getUserPrincipalName();
-		if(StringUtils.isEmpty(username)) {
-			username = adUser.getsAMAccountName();
-		}
-		if(!StringUtils.isEmpty(username)) {
-			user.setUsername(username.toLowerCase());
-			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
-		} else{
-			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
+			return 0;
 		}
 		
-		user.setAdEmployeeID(adUser.getEmployeeID());
-		user.setAdEmployeeNumber(adUser.getEmployeeNumber());
-		user.setManagerDN(adUser.getManager());
-		user.setMobile(adUser.getMobile());
-		user.setTelephoneNumber(adUser.getTelephoneNumber());
-		user.setOtherFacsimileTelephoneNumber(adUser.getOtherFacsimileTelephoneNumber());
-		user.setOtherHomePhone(adUser.getOtherHomePhone());
-		user.setOtherMobile(adUser.getOtherMobile());
-		user.setOtherTelephone(adUser.getOtherTelephone());
-		user.setHomePhone(adUser.getHomePhone());
-		user.setSearchField(createSearchField(user));
-		user.setDepartment(adUser.getDepartment());
-		user.setPosition(adUser.getTitle());
-		user.setThumbnailPhoto(adUser.getThumbnailPhoto());
-		user.setAdDisplayName(adUser.getDisplayName());
-		user.setAdLogonHours(adUser.getLogonHours());
+		
+		
+		
+		final UserAdInfo userAdInfo = new UserAdInfo();
+		userAdInfo.setObjectGUID(adUser.getObjectGUID());
+		userAdInfo.setDn(adUser.getDistinguishedName());
+		userAdInfo.setFirstname(adUser.getFirstname());
+		userAdInfo.setLastname(adUser.getLastname());
+		if(adUser.getEmailAddress() != null && adUser.getEmailAddress().length() > 0){
+			userAdInfo.setEmailAddress(new EmailAddress(adUser.getEmailAddress()));
+		}
+		userAdInfo.setUserPrincipalName(adUser.getUserPrincipalName());
+		userAdInfo.setsAMAccountName(adUser.getsAMAccountName());
+		
+		
+		
+		userAdInfo.setEmployeeID(adUser.getEmployeeID());
+		userAdInfo.setEmployeeNumber(adUser.getEmployeeNumber());
+		userAdInfo.setManagerDN(adUser.getManager());
+		userAdInfo.setMobile(adUser.getMobile());
+		userAdInfo.setTelephoneNumber(adUser.getTelephoneNumber());
+		userAdInfo.setOtherFacsimileTelephoneNumber(adUser.getOtherFacsimileTelephoneNumber());
+		userAdInfo.setOtherHomePhone(adUser.getOtherHomePhone());
+		userAdInfo.setOtherMobile(adUser.getOtherMobile());
+		userAdInfo.setOtherTelephone(adUser.getOtherTelephone());
+		userAdInfo.setHomePhone(adUser.getHomePhone());
+		userAdInfo.setDepartment(adUser.getDepartment());
+		userAdInfo.setPosition(adUser.getTitle());
+		userAdInfo.setDisplayName(adUser.getDisplayName());
+		userAdInfo.setLogonHours(adUser.getLogonHours());
 		try {
-			user.setAdWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
+			userAdInfo.setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
 		} catch (ParseException e) {
 			logger.error("got and exception while trying to parse active directory when changed field ({})",adUser.getWhenChanged());
 			logger.error("got and exception while trying to parse active directory when changed field",e);
 		}
 		
 		try {
-			user.setAdWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
+			userAdInfo.setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
 		} catch (ParseException e) {
 			logger.error("got and exception while trying to parse active directory when created field ({})",adUser.getWhenChanged());
 			logger.error("got and exception while trying to parse active directory when created field",e);
 		}
 		
-		user.setAdDescription(adUser.getDescription());
-		user.setAdStreetAddress(adUser.getStreetAddress());
-		user.setAdCompany(adUser.getCompany());
-		user.setAdC(adUser.getC());
-		user.setAdDivision(adUser.getDivision());
-		user.setAdL(adUser.getL());
-		user.setAdO(adUser.getO());
-		user.setAdRoomNumber(adUser.getRoomNumber());
+		userAdInfo.setDescription(adUser.getDescription());
+		userAdInfo.setStreetAddress(adUser.getStreetAddress());
+		userAdInfo.setCompany(adUser.getCompany());
+		userAdInfo.setC(adUser.getC());
+		userAdInfo.setDivision(adUser.getDivision());
+		userAdInfo.setL(adUser.getL());
+		userAdInfo.setO(adUser.getO());
+		userAdInfo.setRoomNumber(adUser.getRoomNumber());
 		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().equals("0") && !adUser.getAccountExpires().startsWith("30828")){
 			try {
-				user.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
+				userAdInfo.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
 			} catch (ParseException e) {
 				logger.error("got and exception while trying to parse active directory account expires field ({})",adUser.getWhenChanged());
 				logger.error("got and exception while trying to parse active directory account expires field",e);
 			}
 		}
-		user.setAdUserAccountControl(adUser.getUserAccountControl());
+		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
 		
 		ADUserParser adUserParser = new ADUserParser();
 		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
-		user.clearGroups();
 		if(groups != null){
 			for(String groupDN: groups){
-				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
-				String groupName = null;
-				if(adGroup != null){
-					groupName = adGroup.getName();
-				}else{
-					Log.warn("the user ({}) group ({}) was not found", user.getAdDn(), groupDN);
-					groupName = adUserParser.parseFirstCNFromDN(groupDN);
-					if(groupName == null){
-						Log.warn("invalid group dn ({}) for user ({})", groupDN, user.getAdDn());
-						continue;
-					}
+				String groupName = groupDnToNameMap.get(groupDN);
+				if(groupName == null){
+//					AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
+//					if(adGroup != null){
+//						groupName = adGroup.getName();
+//					}else{
+//						Log.warn("the user ({}) group ({}) was not found", adUser.getDistinguishedName(), groupDN);
+						groupName = adUserParser.parseFirstCNFromDN(groupDN);
+						if(groupName == null){
+							Log.warn("invalid group dn ({}) for user ({})", groupDN, adUser.getDistinguishedName());
+							continue;
+						}
+//					}
+					groupDnToNameMap.put(groupDN, groupName);
 				}
-				user.addGroup(new AdUserGroup(groupDN, groupName));
+				userAdInfo.addGroup(new AdUserGroup(groupDN, groupName));
 			}
 		}
 		
 		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
-		user.clearAdDirectReport();
 		if(directReports != null){
 			for(String directReportsDN: directReports){
-				User userDirectReport = userRepository.findByAdDn(directReportsDN);
-				if(userDirectReport != null){
-					AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, userDirectReport.getAdDisplayName());
-					adUserDirectReport.setUserId(userDirectReport.getId());
-					adUserDirectReport.setFirstname(userDirectReport.getFirstname());
-					adUserDirectReport.setLastname(userDirectReport.getLastname());
-					adUserDirectReport.setUsername(userDirectReport.getUsername());
-					user.addAdDirectReport(adUserDirectReport);
-				}else{
-					logger.warn("the user ({}) direct report ({}) was not found", user.getAdDn(), directReportsDN);
+				String displayName = adUserParser.parseFirstCNFromDN(directReportsDN);
+				AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, displayName);
+				userAdInfo.addDirectReport(adUserDirectReport);
+			}
+		}
+		
+		User user = updateUserAdInfoContext.findByObjectGUID(adUser.getObjectGUID());
+		boolean isSaveUser = false;
+		if(user == null){
+			user = new User();
+			isSaveUser = true;
+		}
+		
+		user.setAdInfo(userAdInfo);
+		
+		String username = adUser.getUserPrincipalName();
+		if(StringUtils.isEmpty(username)) {
+			username = adUser.getsAMAccountName();
+		}
+		
+		if(!StringUtils.isEmpty(username)) {
+			username = username.toLowerCase();
+		} else{
+			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
+		}
+		
+		
+		
+		final String searchField = createSearchField(userAdInfo, username);
+		
+		
+		final User finalUser = user;
+		int numOfTasks = 0;
+		if(isSaveUser){
+			if(!StringUtils.isEmpty(username)) {
+				finalUser.setUsername(username);
+				finalUser.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, finalUser.getUsername()));
+			}
+			finalUser.setSearchField(searchField);
+			
+			Callable<String> task = new Callable<String>() {
+				@Override
+				public String call(){
+					userRepository.save(finalUser);
+					return "";
+				}
+			};
+			pool.submit(task);
+			numOfTasks = 1;
+			updateUserAdInfoContext.incrementNumOfInserts();
+			
+		} else{
+			final String finalUsername = username;
+			updateUserAdInfoContext.incrementNumOfAdInfoUpdates();
+			if(!StringUtils.isEmpty(finalUsername) && !finalUsername.equals(finalUser.getUsername())){
+				updateUserAdInfoContext.incrementNumOfUsernameUpdates();
+			}
+			if(!searchField.equals(finalUser.getSearchField())){
+				updateUserAdInfoContext.incrementNumOfSearchFieldUpdates();
+			}
+			Callable<String> task = new Callable<String>() {
+				@Override
+				public String call(){
+					updateUser(finalUser, User.adInfoField, userAdInfo);
+					if(!StringUtils.isEmpty(finalUsername) && !finalUsername.equals(finalUser.getUsername())){
+						updateUser(finalUser, User.usernameField, finalUsername);
+					}
+					if(!searchField.equals(finalUser.getSearchField())){
+						updateUser(finalUser, User.searchFieldName, searchField);
+					}
+					return "";
+				}
+			};
+			pool.submit(task);
+			numOfTasks = 1;
+		}
+		return numOfTasks;
+	}
+	
+	private void updateUser(User user, String fieldName, Object val){
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(fieldName, val), User.class);
+	}
+	
+	private void updateUser(User user, Update update){
+		if(user.getId() != null){
+			mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
+		}
+	}
+	
+	private String createSearchField(UserAdInfo userAdInfo, String username){
+		StringBuilder sb = new StringBuilder();
+		if(userAdInfo != null){
+			if(userAdInfo.getFirstname() != null && userAdInfo.getFirstname().length() > 0){
+				if(userAdInfo.getLastname() != null && userAdInfo.getLastname().length() > 0){
+					sb.append(SEARCH_FIELD_PREFIX).append(userAdInfo.getFirstname().toLowerCase()).append(" ").append(userAdInfo.getLastname().toLowerCase());
+					sb.append(SEARCH_FIELD_PREFIX).append(userAdInfo.getLastname().toLowerCase()).append(" ").append(userAdInfo.getFirstname().toLowerCase());
+				} else{
+					sb.append(SEARCH_FIELD_PREFIX).append(userAdInfo.getFirstname().toLowerCase());
+				}
+			}else{
+				if(userAdInfo.getLastname() != null && userAdInfo.getLastname().length() > 0){
+					sb.append(SEARCH_FIELD_PREFIX).append(SEARCH_FIELD_PREFIX).append(userAdInfo.getLastname().toLowerCase());
 				}
 			}
 		}
 		
-		userRepository.save(user);
-	}
-	
-	private String createSearchField(User user){
-		StringBuilder sb = new StringBuilder();
-		if(user.getFirstname() != null && user.getFirstname().length() > 0){
-			if(user.getLastname() != null && user.getLastname().length() > 0){
-				sb.append(SEARCH_FIELD_PREFIX).append(user.getFirstname().toLowerCase()).append(" ").append(user.getLastname().toLowerCase());
-				sb.append(SEARCH_FIELD_PREFIX).append(user.getLastname().toLowerCase()).append(" ").append(user.getFirstname().toLowerCase());
-			} else{
-				sb.append(SEARCH_FIELD_PREFIX).append(user.getFirstname().toLowerCase());
-			}
-		}else{
-			if(user.getLastname() != null && user.getLastname().length() > 0){
-				sb.append(SEARCH_FIELD_PREFIX).append(SEARCH_FIELD_PREFIX).append(user.getLastname().toLowerCase());
-			}
-		}
-		
-		if(!StringUtils.isEmpty(user.getUsername())){
-			sb.append(SEARCH_FIELD_PREFIX).append(user.getUsername());
+		if(!StringUtils.isEmpty(username)){
+			sb.append(SEARCH_FIELD_PREFIX).append(username);
 		}
 		return sb.toString();
 	}
 
 	@Override
-	public List<User> findBySearchFieldContaining(String prefix) {
+	public List<User> findBySearchFieldContaining(String prefix, int page, int size) {
 		
-		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX+prefix.toLowerCase());
+		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX+prefix.toLowerCase(), new PageRequest(page, size));
 	}
 
 	@Override
@@ -302,6 +552,33 @@ public class UserServiceImpl implements UserService{
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
 		}
 		
+		return getUserScores(user);
+	}
+	
+	@Override
+	public Map<User,List<IUserScore>> getUsersScoresByIds(List<String> uids) {
+		List<User> users = userRepository.findByIds(uids);
+		
+		return getUsersScores(users);
+	}
+	
+	@Override
+	public Map<User, List<IUserScore>> getFollowedUsersScores(){
+		List<User> users = userRepository.findByFollowed(true);
+		
+		return getUsersScores(users);
+	}
+	
+	private Map<User, List<IUserScore>> getUsersScores(List<User> users){
+		Map<User,List<IUserScore>> ret = new HashMap<>();
+		for(User user: users){
+			ret.put(user, getUserScores(user));
+		}
+		
+		return ret;
+	}
+	
+	private List<IUserScore> getUserScores(User user) {
 		List<IUserScore> ret = new ArrayList<IUserScore>();
 		for(ClassifierScore classifierScore: user.getScores().values()){
 			if(isOnSameDay(new Date(), classifierScore.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)) {
@@ -309,7 +586,7 @@ public class UserServiceImpl implements UserService{
 				if(classifier == null){
 					continue;
 				}
-				UserScore score = new UserScore(classifierScore.getClassifierId(), classifier.getDisplayName(),
+				UserScore score = new UserScore(user.getId(), classifierScore.getClassifierId(), classifier.getDisplayName(),
 						(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
 				ret.add(score);
 			}
@@ -351,7 +628,7 @@ public class UserServiceImpl implements UserService{
 						continue;
 					}
 					Classifier classifier = classifierService.getClassifier(classifierId);
-					UserScore score = new UserScore(classifierId, classifier.getDisplayName(),
+					UserScore score = new UserScore(user.getId(), classifierId, classifier.getDisplayName(),
 							(int)Math.round(prevScoreInfo.getScore()), (int)Math.round(prevScoreInfo.getAvgScore()));
 					ret.put(classifierId, score);
 				}
@@ -370,8 +647,7 @@ public class UserServiceImpl implements UserService{
 		
 		List<IUserScoreHistoryElement> ret = new ArrayList<IUserScoreHistoryElement>();
 		ClassifierScore classifierScore = user.getScore(classifierId);
-		Date currentDate = new Date();
-		if(classifierScore != null && isOnSameDay(currentDate, classifierScore.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)){
+		if(classifierScore != null){
 			
 			if(!classifierScore.getPrevScores().isEmpty()){
 				ScoreInfo scoreInfo = classifierScore.getPrevScores().get(0);
@@ -388,9 +664,6 @@ public class UserServiceImpl implements UserService{
 				}
 				for(; i < classifierScore.getPrevScores().size(); i++){
 					scoreInfo = classifierScore.getPrevScores().get(i);
-					if(!isOnSameDay(currentDate, scoreInfo.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)) {
-						break;
-					}
 					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
 					ret.add(userScoreHistoryElement);
 				}
@@ -420,7 +693,6 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		ret = ret.subList(offset, toIndex);
-		Collections.reverse(ret);
 		return ret;
 	}
 
@@ -428,21 +700,33 @@ public class UserServiceImpl implements UserService{
 	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction) {
 		Classifier.validateClassifierId(classifierId);
 //		Long timestampepoch = timestamp/1000;
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(classifierId, new Date(timestamp));
-//		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.getClassifierIdAndByUserIdAndTimestamp(classifierId,uid, new Date(timestamp));
-		AdUserFeaturesExtraction ufe = null;
-		for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
-			if(adUserFeaturesExtraction.getUserId().equals(uid)){
-				ufe = adUserFeaturesExtraction;
-				break;
-			}
-		}
+		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findByClassifierIdAndUserIdAndTimestamp(classifierId, uid, new Date(timestamp));
 		if(ufe == null || ufe.getAttributes() == null){
 			return Collections.emptyList();
 		}
 		
 		Collections.sort(ufe.getAttributes(), getUserFeatureComparator(orderBy, direction));
-		return ufe.getAttributes();
+		List<IFeature> ret = ufe.getAttributes();
+		
+		return ret;
+	}
+	
+	@Override
+	public Map<User,List<IFeature>> getFollowedUserAttributesScores(String classifierId, Long timestamp, String orderBy, Direction direction){
+		List<User> users = userRepository.findByFollowed(true);
+		Map<String, User> userMap = new HashMap<>();
+		for(User user: users){
+			userMap.put(user.getId(), user);
+		}
+		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestampAndUserIds(classifierId, new Date(timestamp), userMap.keySet());
+		
+		Map<User,List<IFeature>> ret = new HashMap<>();
+		for(AdUserFeaturesExtraction ufe: adUserFeaturesExtractions){
+			Collections.sort(ufe.getAttributes(), getUserFeatureComparator(orderBy, direction));
+			ret.put(userMap.get(ufe.getUserId()), ufe.getAttributes());
+		}
+		
+		return ret;
 	}
 	
 	private Comparator<IFeature> getUserFeatureComparator(String orderBy, Direction direction){
@@ -474,6 +758,35 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		return ret;
+	}
+	
+	private Sort processOrderBy(String orderBy, Direction direction){
+		if(direction == null){
+			direction = Direction.DESC;
+		}
+
+		if(orderBy == null){
+			orderBy = "featureScore";
+		}
+		
+		switch(orderBy){
+		case "featureScore":
+			orderBy = AdUserFeaturesExtraction.getFeatureScoreField();
+			break;
+		case "featureUniqueName":
+			orderBy = AdUserFeaturesExtraction.getFeatureUniqueNameField();
+			break;
+		case "explanation.featureCount":
+			orderBy = AdUserFeaturesExtraction.getExplanationFeatureCountField();
+			break;
+		case "explanation.featureDistribution":
+			orderBy = AdUserFeaturesExtraction.getExplanationFeatureDistributionField();
+			break;
+		default:
+			orderBy = AdUserFeaturesExtraction.getFeatureScoreField();
+		}
+		Sort sort = new Sort(direction, orderBy);
+		return sort;
 	}
 	
 	
@@ -561,9 +874,9 @@ public class UserServiceImpl implements UserService{
 		
 		for(ClassifierScore classifierScore: classifierScores){
 			boolean isSaveMaxScore = false;
-			if(classifierScore.getClassifierId().equals(Classifier.groups.getId())){
-				isSaveMaxScore = true;
-			}
+//			if(classifierScore.getClassifierId().equals(Classifier.groups.getId())){
+//				isSaveMaxScore = true;
+//			}
 			updateUserScore(user, classifierScore.getTimestamp(), classifierScore.getClassifierId(), classifierScore.getScore(), classifierScore.getAvgScore(), false,isSaveMaxScore);
 			updateUserTotalScore(user, classifierScore.getTimestamp());
 		}
@@ -571,46 +884,197 @@ public class UserServiceImpl implements UserService{
 	
 	private void saveUserTotalScoreToImpala(Date timestamp, ScoreConfiguration scoreConfiguration){
 		List<User> users = userRepository.findAll();
-		ImpalaTotalScoreWriter writer = impalaWriterFactory.createImpalaTotalScoreWriter();
+		saveUserTotalScoreToImpala(users, timestamp, scoreConfiguration);
+	}
+	
+	private void saveUserTotalScoreToImpala(List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
+		ImpalaTotalScoreWriter writer = null;
+		try{
+			writer = impalaWriterFactory.createImpalaTotalScoreWriter();
+	
+			saveUserTotalScoreToImpala(writer, users, timestamp, scoreConfiguration);			
+		} finally{
+			if(writer != null){
+				writer.close();
+			}
+		}
+	}
+	
+	private void saveUserTotalScoreToImpala(ImpalaTotalScoreWriter writer, List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
+		logger.info("writing {} users total score to local file", users.size());
 		for(User user: users){
 			if(user.getScore(Classifier.total.getId()) != null){
 				writer.writeScores(user, timestamp, scoreConfiguration);
 			}
 		}
-		writer.close();
 	}
 
 	@Override
-	public void updateUserWithAuthScore() {
+	public void updateUserWithAuthScore(Classifier classifier) {
+		AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
 		Date lastRun = authDAO.getLastRunDate();
-		updateUserWithAuthScore(lastRun);
-	}
-	
-	private void updateUserWithAuthScore(Date lastRun) {
-		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
-		List<User> users = new ArrayList<>();
-		for(AuthScore authScore: authDAO.findGlobalScoreByTimestamp(lastRun)){
-			String username = authScore.getUserName();
-			User user = userRepository.findByLogUsername(AuthScore.TABLE_NAME, username);
-			if(user == null){
-				user = findByAuthUsername(username);
-				if(user == null){
-					logger.error("no user was found with the username {}", username);
-					continue;
-				}
-				updateLogUsername(user, AuthScore.TABLE_NAME, username, false);
-			}
-			user = updateUserScore(user, lastRun, Classifier.auth.getId(), authScore.getGlobalScore(), avg, false, false);
-			if(user != null){
-				users.add(user);
-			}
-		}
-		updateUserTotalScore(users, true, lastRun);		
+		updateUserWithAuthScore(authDAO, classifier, lastRun);
 	}
 	
 	@Override
-	public User findByAuthUsername(String username){
-		return findByUsername(generateUsernameRegexesByAuthUsername(username), username);
+	public void updateUserWithAuthScore(Classifier classifier, Date lastRun) {
+		AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
+		updateUserWithAuthScore(authDAO, classifier, lastRun);
+	}
+	
+	private AuthDAO getAuthDAO(LogEventsEnum eventId){
+		AuthDAO ret = null;
+		switch(eventId){
+			case login:
+				ret = loginDAO;
+				break;
+			case ssh:
+				ret = sshDAO;
+				break;
+		default:
+			break;
+		}
+		
+		return ret;
+	}
+	
+	private Map<String, List<User>> getUsernameToUsersMap(String tablename){
+		logger.info("getting all users");
+		Map<String, List<User>> usersMap = new HashMap<>();
+		for(User user: userRepository.findAllExcludeAdInfo()){
+			String logUsername = user.getLogUserName(tablename);
+			if(logUsername != null){
+				List<User> tmp = usersMap.get(logUsername.toLowerCase());
+				if(tmp == null){
+					tmp = new ArrayList<>();
+					usersMap.put(logUsername.toLowerCase(), tmp);
+				}
+				tmp.add(user);
+			} else{
+				List<User> tmp = usersMap.get(user.getUsername().toLowerCase());
+				if(tmp == null){
+					tmp = new ArrayList<>();
+					usersMap.put(user.getUsername().toLowerCase(), tmp);
+				}
+				tmp.add(user);
+				String usernameSplit[] = StringUtils.split(user.getUsername(), "@");
+				if(usernameSplit.length > 1){
+					tmp = usersMap.get(usernameSplit[0].toLowerCase());
+					if(tmp == null){
+						tmp = new ArrayList<>();
+						usersMap.put(usernameSplit[0].toLowerCase(), tmp);
+					}
+					tmp.add(user);
+				}
+			}
+		}
+		return usersMap;
+	}
+	
+	private void updateUserWithAuthScore(AuthDAO authDAO, final Classifier classifier, Date lastRun) {
+		logger.info("calculating avg score for {} events.", classifier);
+		double avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		logger.info("getting all {} scores", classifier);
+		List<AuthScore> authScores = authDAO.findGlobalScoreByTimestamp(lastRun);
+		
+		
+		Map<String, List<User>> usersMap = getUsernameToUsersMap(authDAO.getTableName());
+		
+		logger.info("going over all {} {} scores", authScores.size(), classifier);
+		final String tablename = authDAO.getTableName();
+		List<Update> updates = new ArrayList<>();
+		List<User> users = new ArrayList<>();
+		List<User> newUsers = new ArrayList<>();
+		for(AuthScore authScore: authScores){
+			final String username = authScore.getUserName();
+			if(StringUtils.isEmpty(username)){
+				logger.error("got a empty string {} username", classifier);
+				continue;
+			}
+			List<User> optionUsers = usersMap.get(username.toLowerCase());
+			User user = null;
+			if(optionUsers == null){
+				if(classifier.getLogEventsEnum().equals(LogEventsEnum.ssh)){
+					logger.info("no user was found with SSH username ({})", username);
+					if(authDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, sshStatusSuccessValueRegex) > 0){
+						logger.info("creating a new user from a successed ssh event. ssh username ({})", username);
+						user = createUser(authScore);
+					} else{
+						continue;
+					}
+				} else{
+					logger.error("no user was found with the username {}", username);
+					continue;
+				}
+			} else{
+				if(optionUsers.size() == 1){
+					user = optionUsers.get(0);
+				} else{
+					for(User option: optionUsers){
+						if(username.equals(option.getUsername().toLowerCase())){
+							user = option;
+							break;
+						}
+					}
+					if(user == null){
+						logger.info("got more than one user for the following {} username: {}", classifier.getId(), username);
+						continue;
+					}
+				}
+			}
+
+			final boolean isNewLogUsername = (user.getLogUserName(authDAO.getTableName()) == null) ? true : false;
+			if(isNewLogUsername){
+				updateLogUsername(user, authDAO.getTableName(), username, false);
+			}
+			
+			user = updateUserScore(user, lastRun, classifier.getId(), authScore.getGlobalScore(), avg, false, false);
+			if(user != null){
+				updateUserTotalScore(user, lastRun);
+				if(user.getId() != null){
+					Update update = new Update();
+					update.set(User.getClassifierScoreField(classifier.getId()), user.getScore(classifier.getId()));
+					update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+					if(isNewLogUsername){
+						update.set(User.getLogUserNameField(tablename), username);
+					}
+					updates.add(update);
+					users.add(user);
+				} else{
+					newUsers.add(user);
+				}
+			}
+		}
+		
+		logger.info("finished processing {} {} scores.",	authScores.size(), classifier);
+		
+		logger.info("updating all the {} users.", users.size());
+		for(int i = 0; i < users.size(); i++){
+			Update update = updates.get(i);
+			User user = users.get(i);
+			updateUser(user, update);
+		}
+		
+		logger.info("adding {} new users.", newUsers.size());
+		if(newUsers.size() > 0){
+			userRepository.save(newUsers);
+		}
+		
+		logger.info("finished updating the user collection. with {} score and total score.", classifier);
+	}
+	
+	private User createUser(AuthScore authScore){
+		String username = authScore.getUserName();
+		User user = new User();
+		user.setUsername(username);
+		user.setSearchField(createSearchField(null, username));
+		
+		return user;
+	}
+	
+	@Override
+	public User findByAuthUsername(LogEventsEnum eventId, String username){
+		return findByUsername(generateUsernameRegexesByAuthUsername(eventId, username), username);
 	}
 	
 	
@@ -634,9 +1098,13 @@ public class UserServiceImpl implements UserService{
 		return null;
 	}
 	
-	private List<String> generateUsernameRegexesByAuthUsername(String authUsername){
+	private List<String> generateUsernameRegexesByAuthUsername(LogEventsEnum eventId, String authUsername){
 		List<String> regexes = new ArrayList<>();
-		for(String regexFormat: authToAdUsernameRegexFormat.split(REGEX_SEPERATOR)){
+		String regex = authToAdUsernameRegexFormat;
+		if(eventId.equals(LogEventsEnum.ssh)){
+			regex = sshToAdUsernameRegexFormat;
+		}
+		for(String regexFormat: regex.split(REGEX_SEPERATOR)){
 			regexes.add(String.format(regexFormat, authUsername));
 		}
 		return regexes;
@@ -648,27 +1116,142 @@ public class UserServiceImpl implements UserService{
 		updateUserWithVpnScore(lastRun);
 	}
 	
-	private void updateUserWithVpnScore(Date lastRun) {
+	@Override
+	public void updateUserWithVpnScore(Date lastRun) {
+		logger.info("calculating avg score for vpn events.");
 		double avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
+		
+		logger.info("getting all vpn scores");
+		List<VpnScore> vpnScores = vpnDAO.findGlobalScoreByTimestamp(lastRun);
+		
+		final String tablename = VpnScore.TABLE_NAME;
+		
+		Map<String, List<User>> usersMap = getUsernameToUsersMap(tablename);
+		
+		logger.info("going over all {} vpn scores", vpnScores.size());
+		List<User> newUsers = new ArrayList<>();
+		List<Update> updates = new ArrayList<>();
 		List<User> users = new ArrayList<>();
-		for(VpnScore vpnScore: vpnDAO.findGlobalScoreByTimestamp(lastRun)){
+		for(VpnScore vpnScore: vpnScores){
 			String username = vpnScore.getUserName();
-			User user = userRepository.findByApplicationUserName(UserApplication.vpn.getId(), username);
-			if(user == null){
-				user = findByVpnUsername(username);
-				if(user == null){
-					logger.info("no user was found with vpn username ({})", username);
+			if(StringUtils.isEmpty(username)){
+				logger.error("got a empty string vpn username");
+				continue;
+			}
+			
+			List<User> optionUsers = usersMap.get(username.toLowerCase());
+			User user = null;
+			if(optionUsers == null){
+				logger.info("no user was found with vpn username ({})", username);
+				if(vpnDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, vpnStatusSuccessValueRegex) > 0){
+					logger.info("creating a new user from a successed vpn event. vpn username ({})", username);
+					user = createUser(vpnScore);
+				} else{
 					continue;
 				}
-				updateApplicationUserDetails(user, new ApplicationUserDetails(UserApplication.vpn.getId(), username), false);
-				updateLogUsername(user, VpnScore.TABLE_NAME, username, false);
+			} else{
+				if(optionUsers.size() == 1){
+					user = optionUsers.get(0);
+				} else{
+					for(User option: optionUsers){
+						if(username.equals(option.getUsername().toLowerCase())){
+							user = option;
+							break;
+						}
+					}
+					if(user == null){
+						logger.info("got more than one user for the following vpn username: {}", username);
+						continue;
+					}
+				}
 			}
+			
+			final boolean isNewLogUsername = (user.getLogUserName(tablename) == null) ? true : false;
+			if(isNewLogUsername){
+				updateApplicationUserDetails(user, new ApplicationUserDetails(UserApplication.vpn.getId(), username), false);
+				updateVpnLogUsername(user, username, false);
+			}
+			
 			user = updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg, false, false);
 			if(user != null){
-				users.add(user);
+				updateUserTotalScore(user, lastRun);
+				if(user.getId() != null){
+					Update update = new Update();
+					update.set(User.getClassifierScoreField(Classifier.vpn.getId()), user.getScore(Classifier.vpn.getId()));
+					update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+					if(isNewLogUsername){
+						update.set(User.getLogUserNameField(tablename), user.getLogUserName(tablename));
+						update.set(User.getAppField(UserApplication.vpn.getId()), user.getApplicationUserDetails().get(UserApplication.vpn.getId()));
+					}
+					updates.add(update);
+					users.add(user);
+				} else{
+					newUsers.add(user);
+				}
 			}
 		}
-		updateUserTotalScore(users, true, lastRun);
+		
+		logger.info("finished processing {} vpn scores.",	vpnScores.size());
+		
+		logger.info("updating all the {} users.", users.size());
+		for(int i = 0; i < users.size(); i++){
+			Update update = updates.get(i);
+			User user = users.get(i);
+			updateUser(user, update);
+		}
+		
+		logger.info("inserting {} new users.", newUsers.size());
+		if(newUsers.size() > 0){
+			userRepository.save(newUsers);
+		}
+				
+		logger.info("finished updating the user collection. with vpn score and total score.");		
+	}
+	
+	private String getAuthLogUsername(LogEventsEnum eventId, User user){
+		AuthDAO authDAO = getAuthDAO(eventId);
+		return user.getLogUsernameMap().get(authDAO.getTableName());
+	}
+	
+	@Override
+	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId){
+		List<String> usernames = new ArrayList<>();
+		for(User user: userRepository.findByFollowed(true)){
+			String username = getAuthLogUsername(eventId, user);
+			if(username != null){
+				usernames.add(username);
+			}
+		}
+		return usernames;
+	}
+	
+	private void updateVpnLogUsername(User user, String username, boolean isSave){
+		updateLogUsername(user, VpnScore.TABLE_NAME, username, isSave);
+	}
+	
+	private String getVpnLogUsername(User user){
+		return user.getLogUsernameMap().get(VpnScore.TABLE_NAME);
+	}
+	
+	@Override
+	public List<String> getFollowedUsersVpnLogUsername(){
+		List<String> usernames = new ArrayList<>();
+		for(User user: userRepository.findByFollowed(true)){
+			String username = getVpnLogUsername(user);
+			if(username != null){
+				usernames.add(username);
+			}
+		}
+		return usernames;
+	}
+	
+	private User createUser(VpnScore vpnScore){
+		String username = vpnScore.getUserName();
+		User user = new User();
+		user.setUsername(username);
+		user.setSearchField(createSearchField(null, username));
+		
+		return user;
 	}
 	
 	@Override
@@ -692,42 +1275,176 @@ public class UserServiceImpl implements UserService{
 			return;
 		}
 		updateUserWithGroupMembershipScore(lastRun);
-	}
+	}	
 	
-	private void updateUserWithGroupMembershipScore(Date lastRun){
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun);
-//		Pageable pageable = new PageRequest(0, 10000, Direction.ASC, AdUserFeaturesExtraction.timestampField);
-//		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierId(Classifier.groups.getId(), pageable);
-		if(adUserFeaturesExtractions.size() == 0){
+	private void updateUserWithGroupMembershipScore(final Date lastRun){
+		final String classifierId = Classifier.groups.getId();
+		long count = adUsersFeaturesExtractionRepository.countByClassifierIdAndTimestamp(classifierId, lastRun); 
+		if(count == 0){
 			logger.warn("the group membership for timestamp ({}) is empty.", lastRun);
 			return;
 		}
 		
-		double avgScore = 0;
-		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-			avgScore += extraction.getScore();
-		}
-		avgScore = avgScore/adUserFeaturesExtractions.size();
+		CompletionService<UpdateUserGroupMembershipScoreContext> readerPool = createUpdateUserGroupMembershipScoreContextReaderPool();		
+		int numOfReaderTasks = triggerAdUserFeaturesExtractionReaders(lastRun, readerPool, count, classifierId);
 		
-		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
-		List<User> users = new ArrayList<>();
-		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-			User user = userRepository.findOne(extraction.getUserId().toString());
+		CompletionService<String> writerPool = createUserGroupMembershipScoreWriterPool();
+		int numOfWriterTasks = processAllAdUserFeaturesExtractionAndTriggerUserUpdate(lastRun, readerPool, writerPool, numOfReaderTasks, classifierId);
+		
+		logger.info("waiting for all the {} writing tasks.", numOfWriterTasks);
+		waitForAllWritingTasks(writerPool, numOfWriterTasks);
+
+
+		logger.info("finished updating the user collection. with group membership score and total score.");
+	}
+	
+	private void waitForAllWritingTasks(CompletionService<String> writerPool, int numOfTasks){
+		int numOfThreadExceptions = 0;
+		for(int i = 0; i < numOfTasks && numOfThreadExceptions <= 5; i++){
+			try {
+				TaskResult<String> taskResult = getTaskResultes(writerPool);
+				numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
+			} catch (TimeoutException timeoutException) {
+				logger.error("while getting ad user object from mongo got the time out exception.", timeoutException);
+				break;
+			}
+		}
+	}
+	
+	private CompletionService<UpdateUserGroupMembershipScoreContext> createUpdateUserGroupMembershipScoreContextReaderPool(){
+		return new ExecutorCompletionService<UpdateUserGroupMembershipScoreContext>(mongoDbReaderExecuter);
+	}
+	
+	private CompletionService<String> createUserGroupMembershipScoreWriterPool(){
+		return new ExecutorCompletionService<String>(mongoDbWriterExecuter);
+	}
+	
+	private int triggerAdUserFeaturesExtractionReaders(final Date lastRun, CompletionService<UpdateUserGroupMembershipScoreContext> readerPool, long count, final String classifierId){
+		
+		logger.info("filling reading tasks of {} AdUserFeaturesExtraction", count);
+		
+		int numOfPages = (int)((count-1)/readPageSize) + 1;
+		final AtomicInteger counter = new AtomicInteger(-1);
+		for(int i = 0; i < numOfPages; i++){
+			Callable<UpdateUserGroupMembershipScoreContext> task = new Callable<UpdateUserGroupMembershipScoreContext>() {
+				@Override
+				public UpdateUserGroupMembershipScoreContext call(){
+					int page = counter.incrementAndGet();
+					PageRequest pageRequest = new PageRequest(page, readPageSize);
+					List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(classifierId, lastRun, pageRequest);
+					List<String> ids = new ArrayList<>(adUserFeaturesExtractions.size());
+					for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
+						ids.add(adUserFeaturesExtraction.getUserId());
+					}
+					List<User> users = userRepository.findByIds(ids);
+					return new UpdateUserGroupMembershipScoreContext(adUserFeaturesExtractions, users);
+				}
+			};
+			readerPool.submit(task);
+		}
+		
+		return numOfPages;
+	}
+	
+	private int processAllAdUserFeaturesExtractionAndTriggerUserUpdate(final Date lastRun, CompletionService<UpdateUserGroupMembershipScoreContext> readerPool, CompletionService<String> writerPool, int numOfReaderTasks, final String classifierId){		
+		logger.info("calculating average score...");
+		final double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(classifierId, lastRun);
+		logger.info("average score is {}", avgScore);
+		
+		
+		logger.info("filling all users with group membership score");
+		
+		int numOfThreadExceptions = 0;
+		int numOfWriterTasks = 0;
+		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = null;
+		ImpalaTotalScoreWriter impalaTotalScoreWriter = null;
+		try{
+			impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
+			impalaTotalScoreWriter = impalaWriterFactory.createImpalaTotalScoreWriter();
+			
+			
+			for(int i = 0; i < numOfReaderTasks && numOfThreadExceptions <= 5; i++){
+				UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext = null;
+				try {
+					logger.info("waiting for the next page...");
+					TaskResult<UpdateUserGroupMembershipScoreContext> taskResult = getTaskResultes(readerPool);
+					numOfThreadExceptions += taskResult.getNumOfTaskExceptions();
+
+					if(taskResult.getResult() == null){
+						logger.error("updateUserGroupMembershipScoreContext is null");
+						continue;
+					}
+					updateUserGroupMembershipScoreContext = taskResult.getResult();
+				} catch (TimeoutException timeoutException) {
+					logger.error("while getting AdUserFeaturesExtraction from mongo got the time out exception.", timeoutException);
+					break;
+				}
+
+				List<User> users = new ArrayList<>();
+				int numOfPageWriterTasks = processAdUserFeaturesExtractionAndTriggerUserUpdate(lastRun, avgScore, writerPool, updateUserGroupMembershipScoreContext, classifierId, users);
+				numOfWriterTasks += numOfPageWriterTasks;
+				
+				saveUserGroupMembershipScoreToImpala(impalaGroupsScoreWriter, users, updateUserGroupMembershipScoreContext, avgScore);
+	
+				saveUserTotalScoreToImpala(impalaTotalScoreWriter, users, lastRun, configurationService.getScoreConfiguration());
+				
+				
+			}
+			
+		} finally{
+			if(impalaGroupsScoreWriter != null){
+				impalaGroupsScoreWriter.close();
+			}
+			if(impalaTotalScoreWriter != null){
+				impalaTotalScoreWriter.close();
+			}
+		}
+		
+		return numOfWriterTasks;
+	}
+	
+	private void saveUserGroupMembershipScoreToImpala(ImpalaGroupsScoreWriter impalaGroupsScoreWriter, List<User> users,  UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext, double avgScore){
+		logger.info("writing group score to local file");
+		for(User user: users){
+			impalaGroupsScoreWriter.writeScore(user, updateUserGroupMembershipScoreContext.findFeautreByUserId(user.getId()), avgScore);
+		}
+	}
+	
+	private int processAdUserFeaturesExtractionAndTriggerUserUpdate(final Date lastRun, double avgScore, CompletionService<String> writerPool, UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext,
+			final String classifierId, List<User> users){
+		logger.info("Going over {} AdUserFeaturesExtraction", updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractionsSize());
+		
+		for(AdUserFeaturesExtraction extraction: updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractions()){
+			User user = updateUserGroupMembershipScoreContext.findByUserId(extraction.getUserId().toString());
 			if(user == null){
 				logger.error("user with id ({}) was not found in user table", extraction.getUserId());
 				continue;
 			}
 			//updating the user with the new score.
-			user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false, true);
+			user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), classifierId, extraction.getScore(), avgScore, false, false);
 			if(user != null){
 				users.add(user);
-				impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
 			}
 			
 		}
-		impalaGroupsScoreWriter.close();
 		
-		updateUserTotalScore(users, true, lastRun);
+		updateUserTotalScore(users, false, lastRun);
+		
+		for(final User user: users){
+			Callable<String> task = new Callable<String>() {
+				@Override
+				public String call(){
+					updateUser(user, User.getClassifierScoreField(classifierId), user.getScore(classifierId));
+					updateUser(user, User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+					return "";
+				}
+			};
+			writerPool.submit(task);
+		}
+		
+		logger.info("finished processing {} AdUserFeaturesExtraction. triggered {} tasks.",	updateUserGroupMembershipScoreContext.getAdUserFeaturesExtractionsSize(), users.size());
+		
+		return users.size();
 	}
 	
 	@Override
@@ -804,14 +1521,22 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private boolean isOnSameDay(Date date1, Date date2, int dayThreshold){
-		Calendar tmp = Calendar.getInstance();
-		tmp.setTime(date1);
-		Calendar tmp1 = Calendar.getInstance();
-		tmp1.setTime(date2);
-		int day1 = tmp.get(Calendar.DAY_OF_YEAR);
-		int day2 = tmp1.get(Calendar.DAY_OF_YEAR);
+		DateTime dateTime1 = new DateTime(date1.getTime());
+		dateTime1 = dateTime1.withTimeAtStartOfDay();
+		DateTime dateTime2 = new DateTime(date2.getTime());
+		dateTime2 = dateTime2.withTimeAtStartOfDay();
+		if(dateTime1.equals(dateTime2)){
+			return true;
+		}
 		
-		return (Math.abs(day1 - day2) <= dayThreshold);
+		
+		if(dateTime1.isAfter(dateTime2)){
+			dateTime1 = dateTime1.minusDays(dayThreshold);
+			return dateTime1.isBefore(dateTime2);
+		} else{
+			dateTime2 = dateTime2.minusDays(dayThreshold);
+			return dateTime2.isBefore(dateTime1);
+		}
 	}
 
 	public void updateApplicationUserDetails(User user, ApplicationUserDetails applicationUserDetails, boolean isSave) {
@@ -857,17 +1582,23 @@ public class UserServiceImpl implements UserService{
 			classifierRuntimes.add(new ClassifierRuntime(Classifier.groups, date.getTime()));
 		}
 		
-		List<Long> distinctRuntimes = authDAO.getDistinctRuntime();
-		for(Long runtime: distinctRuntimes){
-			if(runtime == null){
-				logger.warn("got runtime null in the vpndatares table.");
-				continue;
+		List<Long> distinctRuntimes = null;
+		
+		Classifier classifiers[] = {Classifier.auth, Classifier.ssh};
+		for(Classifier classifier: classifiers){
+			AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
+			distinctRuntimes = authDAO.getDistinctRuntime();
+			for(Long runtime: distinctRuntimes){
+				if(runtime == null){
+					logger.warn("got runtime null in the vpndatares table.");
+					continue;
+				}
+				runtime = runtime*1000;
+				if(runtime < oldestTime.getTimeInMillis()){
+					continue;
+				}
+				classifierRuntimes.add(new ClassifierRuntime(classifier, runtime));
 			}
-			runtime = runtime*1000;
-			if(runtime < oldestTime.getTimeInMillis()){
-				continue;
-			}
-			classifierRuntimes.add(new ClassifierRuntime(Classifier.auth, runtime));
 		}
 		
 		distinctRuntimes = vpnDAO.getDistinctRuntime();
@@ -889,7 +1620,10 @@ public class UserServiceImpl implements UserService{
 			try{
 				switch (classifierRuntime.getClassifier()) {
 				case auth:
-					updateUserWithAuthScore(new Date(classifierRuntime.getRuntime()));
+					updateUserWithAuthScore(loginDAO, Classifier.auth, new Date(classifierRuntime.getRuntime()));
+					break;
+				case ssh:
+					updateUserWithAuthScore(sshDAO, Classifier.ssh, new Date(classifierRuntime.getRuntime()));
 					break;
 				case vpn:
 					updateUserWithVpnScore(new Date(classifierRuntime.getRuntime()));
@@ -958,4 +1692,319 @@ public class UserServiceImpl implements UserService{
 		}
 		
 	}
+	
+	
+	@Override
+	public void updateUserWithCurrentADInfoNewSchema() {
+		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoch != null) {
+			List<User> users = updateUserWithADInfoNewSchema(adUserRepository.findByTimestampepoch(timestampepoch));
+			userRepository.save(users);
+			saveUserIdUsernamesMapToImpala(new Date());
+		} else {
+			logger.error("no timestamp. probably the ad_user table is empty");
+		}
+		
+	}
+	
+	
+	private List<User> updateUserWithADInfoNewSchema(Iterable<AdUser> adUsers) {
+		List<User> ret = new ArrayList<>();
+		for(AdUser adUser: adUsers){
+			try {
+				User user = updateUserWithADInfoNewSchema(adUser);
+				if(user != null){
+					ret.add(user);
+				}
+			} catch (Exception e) {
+				logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
+			}
+			
+		}
+		
+		
+		return ret;
+	}
+		
+	private User updateUserWithADInfoNewSchema(AdUser adUser) {
+		if(adUser.getObjectGUID() == null) {
+			logger.error("got ad user with no ObjectGUID name field.");
+			return null;
+		}
+		if(adUser.getDistinguishedName() == null) {
+			logger.error("got ad user with no distinguished name field.");
+			return null;
+		}
+		
+		User user = null;
+		if(adUser.getObjectGUID() != null) {
+			user = userRepository.findByAdObjectGUID(adUser.getObjectGUID());
+		}
+		if(user == null){
+			user = userRepository.findByAdDn(adUser.getDistinguishedName());
+		}
+		if(user == null){
+			return null;
+		}
+		
+		user.getAdInfo().setFirstname(adUser.getFirstname());
+		user.getAdInfo().setLastname(adUser.getLastname());
+		if(adUser.getEmailAddress() != null && adUser.getEmailAddress().length() > 0){
+			user.getAdInfo().setEmailAddress(new EmailAddress(adUser.getEmailAddress()));
+		}
+		user.getAdInfo().setUserPrincipalName(adUser.getUserPrincipalName());
+		user.getAdInfo().setsAMAccountName(adUser.getsAMAccountName());
+		String username = adUser.getUserPrincipalName();
+		if(StringUtils.isEmpty(username)) {
+			username = adUser.getsAMAccountName();
+		}
+		if(!StringUtils.isEmpty(username)) {
+			user.setUsername(username.toLowerCase());
+			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
+		} else{
+			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
+		}
+		
+		user.getAdInfo().setEmployeeID(adUser.getEmployeeID());
+		user.getAdInfo().setEmployeeNumber(adUser.getEmployeeNumber());
+		user.getAdInfo().setManagerDN(adUser.getManager());
+		user.getAdInfo().setMobile(adUser.getMobile());
+		user.getAdInfo().setTelephoneNumber(adUser.getTelephoneNumber());
+		user.getAdInfo().setOtherFacsimileTelephoneNumber(adUser.getOtherFacsimileTelephoneNumber());
+		user.getAdInfo().setOtherHomePhone(adUser.getOtherHomePhone());
+		user.getAdInfo().setOtherMobile(adUser.getOtherMobile());
+		user.getAdInfo().setOtherTelephone(adUser.getOtherTelephone());
+		user.getAdInfo().setHomePhone(adUser.getHomePhone());
+		user.getAdInfo().setDepartment(adUser.getDepartment());
+		user.getAdInfo().setPosition(adUser.getTitle());
+		user.getAdInfo().setDisplayName(adUser.getDisplayName());
+		user.getAdInfo().setLogonHours(adUser.getLogonHours());
+		try {
+			user.getAdInfo().setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
+		} catch (ParseException e) {
+			logger.error("got and exception while trying to parse active directory when changed field ({})",adUser.getWhenChanged());
+			logger.error("got and exception while trying to parse active directory when changed field",e);
+		}
+		
+		try {
+			user.getAdInfo().setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
+		} catch (ParseException e) {
+			logger.error("got and exception while trying to parse active directory when created field ({})",adUser.getWhenChanged());
+			logger.error("got and exception while trying to parse active directory when created field",e);
+		}
+		
+		user.getAdInfo().setDescription(adUser.getDescription());
+		user.getAdInfo().setStreetAddress(adUser.getStreetAddress());
+		user.getAdInfo().setCompany(adUser.getCompany());
+		user.getAdInfo().setC(adUser.getC());
+		user.getAdInfo().setDivision(adUser.getDivision());
+		user.getAdInfo().setL(adUser.getL());
+		user.getAdInfo().setO(adUser.getO());
+		user.getAdInfo().setRoomNumber(adUser.getRoomNumber());
+		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().equals("0") && !adUser.getAccountExpires().startsWith("30828")){
+			try {
+				user.getAdInfo().setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
+			} catch (ParseException e) {
+				logger.error("got and exception while trying to parse active directory account expires field ({})",adUser.getWhenChanged());
+				logger.error("got and exception while trying to parse active directory account expires field",e);
+			}
+		}
+		user.getAdInfo().setUserAccountControl(adUser.getUserAccountControl());
+		
+		ADUserParser adUserParser = new ADUserParser();
+		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
+		user.getAdInfo().clearGroups();
+		if(groups != null){
+			for(String groupDN: groups){
+				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
+				String groupName = null;
+				if(adGroup != null){
+					groupName = adGroup.getName();
+				}else{
+					Log.warn("the user ({}) group ({}) was not found", user.getAdInfo().getDn(), groupDN);
+					groupName = adUserParser.parseFirstCNFromDN(groupDN);
+					if(groupName == null){
+						Log.warn("invalid group dn ({}) for user ({})", groupDN, user.getAdInfo().getDn());
+						continue;
+					}
+				}
+				user.getAdInfo().addGroup(new AdUserGroup(groupDN, groupName));
+			}
+		}
+		
+		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
+		user.getAdInfo().clearDirectReport();
+		if(directReports != null){
+			for(String directReportsDN: directReports){
+				User userDirectReport = userRepository.findByAdDn(directReportsDN);
+				if(userDirectReport != null){
+					String displayName = userDirectReport.getUsername();
+					if(userDirectReport.getAdInfo() != null && !StringUtils.isEmpty(userDirectReport.getAdInfo().getDisplayName())){
+						displayName = userDirectReport.getAdInfo().getDisplayName();
+					}
+					AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, displayName);
+					adUserDirectReport.setUserId(userDirectReport.getId());
+					adUserDirectReport.setUsername(userDirectReport.getUsername());
+					if(userDirectReport.getAdInfo() != null){
+						adUserDirectReport.setFirstname(userDirectReport.getAdInfo().getFirstname());
+						adUserDirectReport.setLastname(userDirectReport.getAdInfo().getLastname());
+					}
+					
+					user.getAdInfo().addDirectReport(adUserDirectReport);
+				}else{
+					logger.warn("the user ({}) direct report ({}) was not found", user.getAdInfo().getDn(), directReportsDN);
+				}
+			}
+		}
+		
+		user.setSearchField(createSearchField(user.getAdInfo(), user.getUsername()));
+		user.getAdInfo().setObjectGUID(adUser.getObjectGUID());
+		user.getAdInfo().setDn(adUser.getDistinguishedName());
+		user.setAdDn(null);
+		user.setAdObjectGUID(null);
+
+		return user;
+	}
+	
+	class UpdateUserGroupMembershipScoreContext{
+		private Map<String,AdUserFeaturesExtraction> adUserFeaturesExtractionsMap = new HashMap<>();
+		private Map<String,User> usersMap = new HashMap<>();
+		
+		public UpdateUserGroupMembershipScoreContext(List<AdUserFeaturesExtraction> adUserFeaturesExtractions, List<User> users){
+			for(AdUserFeaturesExtraction adUserFeaturesExtraction: adUserFeaturesExtractions){
+				adUserFeaturesExtractionsMap.put(adUserFeaturesExtraction.getUserId(), adUserFeaturesExtraction);
+			}
+
+			for(User user: users){
+				usersMap.put(user.getId(), user);
+			}
+		}
+		
+		
+
+		
+		public User findByUserId(String uid){
+			return usersMap.get(uid);
+		}
+		
+		public AdUserFeaturesExtraction findFeautreByUserId(String uid){
+			return adUserFeaturesExtractionsMap.get(uid);
+		}
+
+
+
+		public Collection<AdUserFeaturesExtraction> getAdUserFeaturesExtractions() {
+			return adUserFeaturesExtractionsMap.values();
+		}
+		
+		public int getAdUserFeaturesExtractionsSize(){
+			return adUserFeaturesExtractionsMap.size();
+		}
+
+
+
+	}
+	
+	class UpdateUserAdInfoContext{
+		private List<AdUser> adUsers = new ArrayList<>();
+		private Map<String,User> guidToUsersMap = new HashMap<>();
+		private int numOfInserts = 0;
+		private int numOfUsernameUpdates = 0;
+		private int numOfSearchFieldUpdates = 0;
+		private int numOfAdInfoUpdates = 0;
+		
+		public UpdateUserAdInfoContext(List<AdUser> adUsers, List<User> users){
+			this.adUsers = adUsers;
+			for(User user: users){
+				guidToUsersMap.put(user.getAdInfo().getObjectGUID(), user);
+			}
+		}
+		
+		
+		public List<AdUser> getAdUsers() {
+			return adUsers;
+		}
+		public void setAdUsers(List<AdUser> adUsers) {
+			this.adUsers = adUsers;
+		}
+		public Map<String,User> getGuidToUsersMap() {
+			return guidToUsersMap;
+		}
+		public void setGuidToUsersMap(Map<String,User> guidToUsersMap) {
+			this.guidToUsersMap = guidToUsersMap;
+		}
+		
+		public User findByObjectGUID(String objectGUID){
+			return guidToUsersMap.get(objectGUID);
+		}
+
+
+		public int getNumOfInserts() {
+			return numOfInserts;
+		}
+
+
+		public void incrementNumOfInserts() {
+			this.numOfInserts++;
+		}
+
+
+		public int getNumOfUsernameUpdates() {
+			return numOfUsernameUpdates;
+		}
+
+
+		public void incrementNumOfUsernameUpdates() {
+			this.numOfUsernameUpdates++;
+		}
+
+
+		public int getNumOfSearchFieldUpdates() {
+			return numOfSearchFieldUpdates;
+		}
+
+
+		public void incrementNumOfSearchFieldUpdates() {
+			this.numOfSearchFieldUpdates++;
+		}
+
+
+		public int getNumOfAdInfoUpdates() {
+			return numOfAdInfoUpdates;
+		}
+
+
+		public void incrementNumOfAdInfoUpdates() {
+			this.numOfAdInfoUpdates++;
+		}
+		
+		
+		
+	}
+	
+	
+	class TaskResult<T>{
+		private T result;
+		private int numOfTaskExceptions = 0;
+		
+		
+		public void setResult(T result) {
+			this.result = result;
+		}
+
+		public T getResult() {
+			return result;
+		}
+
+		public int getNumOfTaskExceptions() {
+			return numOfTaskExceptions;
+		}
+		public void incrementNumOfTaskExceptions() {
+			this.numOfTaskExceptions++;
+		}
+		
+		
+	}
+
+	
 }

@@ -11,17 +11,17 @@ public class UserContactInfoBean {
 	}
 	
 	public String getMobile(){
-		return user.getMobile();
+		return user.getAdInfo().getMobile();
 	}
 	
 	public String getEmail(){
-		if(user.getEmailAddress() == null){
+		if(user.getAdInfo().getEmailAddress() == null){
 			return null;
 		}
-		return user.getEmailAddress().toString();
+		return user.getAdInfo().getEmailAddress().toString();
 	}
 	
 	public String getPhone(){
-		return user.getTelephoneNumber();
+		return user.getAdInfo().getTelephoneNumber();
 	}
 }

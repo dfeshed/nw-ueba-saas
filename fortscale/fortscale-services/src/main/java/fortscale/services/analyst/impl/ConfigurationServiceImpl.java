@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang.math.Range;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +22,7 @@ import fortscale.domain.analyst.ScoreConfiguration;
 import fortscale.domain.analyst.ScoreWeight;
 import fortscale.domain.analyst.dao.FortscaleConfigurationRepository;
 import fortscale.services.analyst.ConfigurationService;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.impl.SeverityElement;
 
@@ -74,6 +77,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.auth.getId(), 10));
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.vpn.getId(), 10));
 			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.groups.getId(), 10));
+			scoreConfiguration.addScoreWeight(new ScoreWeight(Classifier.ssh.getId(), 10));
 			setScoreConfiguration(scoreConfiguration, "Server", "Server");
 		}
 		
@@ -92,6 +96,30 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 	}
 	
 	@Override
+	public Range getRange(String severityId){
+		if(severityId == null){
+			return new IntRange(0, 101);
+		}
+		int i = 0;
+		for(SeverityElement element: getSeverityElements()){
+			if(element.getName().equals(severityId)){
+				break;
+			}
+			i++;
+		}
+		if(getSeverityElements().size() == i){
+			throw new InvalidValueException(String.format("no such severity id: %s", severityId));
+		}
+		int lowestVal = getSeverityElements().get(i).getValue();
+		int upperVal = 101;
+		if(i > 0){
+			upperVal = getSeverityElements().get(i-1).getValue();
+		}
+		
+		return new IntRange(lowestVal, upperVal);
+	}
+	
+	@Override
 	public Map<String, Classifier> getClassifiersMap(){
 		return classifiersMap;
 	}
@@ -106,5 +134,12 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 		Collections.sort(tmp, new SeverityElement.OrderByValueDesc());
 		severityOrderedList = tmp;
 		this.scoreDistribution = scoreDistribution;
+	}
+	
+	@Override
+	public void setScoreDistribution(List<SeverityElement> severityList){
+		Collections.sort(severityList, new SeverityElement.OrderByValueDesc());
+		severityOrderedList = severityList;
+		this.scoreDistribution = null;
 	}
 }

@@ -33,7 +33,7 @@ public class ImpalaUseridToAppUsernameWriter extends ImpalaWriter{
 	
 	private void writeApplicationUserDetails(User user, ApplicationUserDetails applicationUserDetails, Date timestamp){
 		String csvLineString = String.format("%s|%s|%s|%s|%s|%s", getRuntime(timestamp), applicationUserDetails.getApplicationName(), applicationUserDetails.getUserName(),
-				user.getId(), user.getUsername(), user.getAdDn());
+				user.getId(), user.getUsername(), user.getAdInfo().getDn());
 		write(csvLineString);
 		newLine();
 	}

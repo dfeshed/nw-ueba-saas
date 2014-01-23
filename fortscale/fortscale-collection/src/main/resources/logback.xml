@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</Pattern>
+		</encoder>
+	</appender>
+
+	<appender name="LogFile" class="ch.qos.logback.core.FileAppender">
+		<file>logFile.log</file>
+		<append>false</append>
+		<encoder>
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</encoder>
+	</appender>
+
+	<logger name="fortscale" level="INFO" />
+	<logger name="org.quartz" level="INFO" />
+	<root level="ERROR">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="LogFile" />
+	</root>
+	
+	
+</configuration>

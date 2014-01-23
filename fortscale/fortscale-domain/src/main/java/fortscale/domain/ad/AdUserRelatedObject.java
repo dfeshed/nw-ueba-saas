@@ -10,8 +10,10 @@ public class AdUserRelatedObject {
 	@JsonProperty
 	private final String dn;
 	@JsonProperty
-	private final String name;
+	private String name;
 	
+	
+
 	@JsonCreator
 	public AdUserRelatedObject(@JsonProperty("dn") String dn, @JsonProperty("name") String name){
 		Assert.hasText(dn, "dn must not be null or empty!");
@@ -30,6 +32,10 @@ public class AdUserRelatedObject {
 	}
 	public String getName() {
 		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	

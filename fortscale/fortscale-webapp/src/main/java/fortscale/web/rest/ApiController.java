@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,6 @@ public class ApiController {
 	@Autowired
 	private ClassifierService classifierService;
 	
-	
 	@RequestMapping("/**")
 	@LogException
     public void unmappedRequest(HttpServletRequest request) {
@@ -54,6 +54,8 @@ public class ApiController {
         }
         throw new UnknownResourceException(builder.toString());
     }
+	
+	
 	
 	@RequestMapping(value="/investigate", method=RequestMethod.GET)
 	@ResponseBody
@@ -95,6 +97,13 @@ public class ApiController {
 	@LogException
 	public Long getLatestRuntime(@RequestParam(required=true) String tableName,	Model model){
 		return classifierService.getLatestRuntime(tableName);
+	}
+	
+	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public Date selfCheck(){
+		return new Date();
 	}
 	
 }

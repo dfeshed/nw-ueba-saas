@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import fortscale.domain.ad.AdUserGroup;
-import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -28,16 +27,27 @@ public class UserDetailsBean implements Serializable{
 
 	private User user;
 	private User manager;
+	private List<User> directReports;
+	private String thumbnailPhoto;
 	private ADUserParser adUserParser;
 	
-	public UserDetailsBean(User user, User manager){
+	public UserDetailsBean(User user, User manager, List<User> directReports){
 		this.user = user;
 		this.manager = manager;
+		this.directReports = directReports;
 		this.adUserParser = new ADUserParser();
+	}
+	
+	public void setThumbnailPhoto(String thumbnailPhoto) {
+		this.thumbnailPhoto = thumbnailPhoto;
 	}
 	
 	public String getId(){
 		return user.getId();
+	}
+	
+	public boolean getFollowed(){
+		return user.getFollowed();
 	}
 	
 	public String getUsername() {
@@ -50,90 +60,90 @@ public class UserDetailsBean implements Serializable{
 
 
 	public String getName() {
-		return user.getFirstname() + " " + user.getLastname();
+		return getUserName(user);
 	}
 
 	public String getJobTitle() {
-		return user.getPosition();
+		return user.getAdInfo().getPosition();
 	}
 
 	public String getAdEmployeeID() {
-		return user.getAdEmployeeID();
+		return user.getAdInfo().getEmployeeID();
 	}
 	
 	public String getAdEmployeeNumber() {
-		return user.getAdEmployeeNumber();
+		return user.getAdInfo().getEmployeeNumber();
 	}
 	
 	public String getAdDisplayName(){
-		return user.getAdDisplayName();
+		return user.getAdInfo().getDisplayName();
 	}
 	
 	public String getOu(){
-		return adUserParser.parseOUFromDN(user.getAdDn());
+		return adUserParser.parseOUFromDN(user.getAdInfo().getDn());
 	}
 	
 	public String getAdUserPrincipalName(){
-		return user.getAdUserPrincipalName();
+		return user.getAdInfo().getUserPrincipalName();
 	}
 	
 	public String getSAMAcountName(){
-		return user.getAdSAMAccountName();
+		return user.getAdInfo().getsAMAccountName();
 	}
 	
 	public Long getAdAcountExpires(){
-		return user.getAccountExpires() != null ? user.getAccountExpires().getTime() : null;
+		return user.getAdInfo().getAccountExpires() != null ? user.getAdInfo().getAccountExpires().getTime() : null;
 	}
 	
 	public String getLogonHours(){
-		return user.getAdLogonHours();
+		return user.getAdInfo().getLogonHours();
 	}
 	
 	public Long getAdWhenChanged(){
-		return user.getAdWhenChanged() != null ? user.getAdWhenChanged().getTime() : null;
+		return user.getAdInfo().getWhenChanged() != null ? user.getAdInfo().getWhenChanged().getTime() : null;
 	}
 	
 	public Long getAdWhenCreated(){
-		return user.getAdWhenCreated() != null ? user.getAdWhenCreated().getTime() : null;
+		return user.getAdInfo().getWhenCreated() != null ? user.getAdInfo().getWhenCreated().getTime() : null;
 	}
 	
 	public String getDescription(){
-		return user.getAdDescription();
+		return user.getAdInfo().getDescription();
 	}
 	
 	public String getStreetAddress(){
-		return user.getAdStreetAddress();
+		return user.getAdInfo().getStreetAddress();
 	}
 	
 	public String getCompany(){
-		return user.getAdCompany();
+		return user.getAdInfo().getCompany();
 	}
 	
 	public String getAdC(){
-		return user.getAdC();
+		return user.getAdInfo().getC();
 	}
 	
 	public String getDivision(){
-		return user.getAdDivision();
+		return user.getAdInfo().getDivision();
 	}
 	
 	public String getAdL(){
-		return user.getAdL();
+		return user.getAdInfo().getL();
 	}
 	
 	public String getAdO(){
-		return user.getAdO();
+		return user.getAdInfo().getO();
 	}
 	
 	public String getRoomNumber(){
-		return user.getAdRoomNumber();
+		return user.getAdInfo().getRoomNumber();
 	}
 		
 	public Boolean isAccountIsDisabled() {
 		try {
-			return adUserParser.isAccountIsDisabled(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -141,9 +151,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isLockout() {
 		try{
-			return adUserParser.isLockout(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isLockout(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -151,9 +161,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isWorkstationTrustAccount() {
 		try{
-			return adUserParser.isWorkstationTrustAccount(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isWorkstationTrustAccount(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -162,9 +172,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isServerTrustAccount() {
 		try{
-			return adUserParser.isServerTrustAccount(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isServerTrustAccount(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -172,9 +182,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isSmartcardRequired() {
 		try{
-			return adUserParser.isSmartcardRequired(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isSmartcardRequired(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -183,9 +193,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isTrustedForDelegation() {
 		try{
-			return adUserParser.isTrustedForDelegation(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isTrustedForDelegation(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -193,9 +203,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isNotDelegated() {
 		try{
-			return adUserParser.isNotDelegated(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isNotDelegated(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -203,9 +213,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isPasswordExpired() {
 		try{
-			return adUserParser.isPasswordExpired(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -213,9 +223,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isTrustedToAuthForDelegation() {
 		try{
-			return adUserParser.isTrustedToAuthForDelegation(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isTrustedToAuthForDelegation(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -224,9 +234,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isNoPasswordRequiresValue() {
 		try{
-			return adUserParser.isNoPasswordRequiresValue(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isNoPasswordRequiresValue(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -235,9 +245,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isNormalUserAccountValue() {
 		try{
-			return adUserParser.isNormalUserAccountValue(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isNormalUserAccountValue(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -246,9 +256,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isInterdomainTrustAccountValue() {
 		try{
-			return adUserParser.isInterdomainTrustAccountValue(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isInterdomainTrustAccountValue(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -257,9 +267,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isPasswordNeverExpiresValue() {
 		try{
-			return adUserParser.isPasswordNeverExpiresValue(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordNeverExpiresValue(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -268,9 +278,9 @@ public class UserDetailsBean implements Serializable{
 	
 	public Boolean isDesKeyOnlyValue() {
 		try{
-			return adUserParser.isDesKeyOnlyValue(user.getAdUserAccountControl());
+			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isDesKeyOnlyValue(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
 		}
 			
 		return null;
@@ -278,63 +288,63 @@ public class UserDetailsBean implements Serializable{
 	
 	public List<UserDirectReportBean> getUserDirectReports() {
 		List<UserDirectReportBean> ret = new ArrayList<>();
-		for(AdUserDirectReport adUserDirectReport: user.getAdDirectReports()){
-			ret.add(new UserDirectReportBean(adUserDirectReport));
+		for(User user: directReports){
+			ret.add(new UserDirectReportBean(user));
 		}
 		return ret;
 	}
 
 	public List<UserGroupBean> getGroups() {
 		List<UserGroupBean> ret = new ArrayList<>();
-		for(AdUserGroup adUserGroup: user.getGroups()){
+		for(AdUserGroup adUserGroup: user.getAdInfo().getGroups()){
 			ret.add(new UserGroupBean(adUserGroup));
 		}
 		return ret;
 	}
 
 	public String getDepartment() {
-		return user.getDepartment();
+		return user.getAdInfo().getDepartment();
 	}
 	
 	public String getEmail(){
-		if(user.getEmailAddress() == null){
+		if(user.getAdInfo().getEmailAddress() == null){
 			return null;
 		}
-		return user.getEmailAddress().toString();
+		return user.getAdInfo().getEmailAddress().toString();
 	}
 	
 	public String getPhone(){
-		return user.getTelephoneNumber();
+		return user.getAdInfo().getTelephoneNumber();
 	}
 	
 	public String getMobilePhone(){
-		return user.getMobile();
+		return user.getAdInfo().getMobile();
 	}
 	
 	public String getOtherFacsimileTelephoneNumber() {
-		return user.getOtherFacsimileTelephoneNumber();
+		return user.getAdInfo().getOtherFacsimileTelephoneNumber();
 	}
 
 	public String getOtherHomePhone() {
-		return user.getOtherHomePhone();
+		return user.getAdInfo().getOtherHomePhone();
 	}
 
 
 	public String getHomePhone() {
-		return user.getHomePhone();
+		return user.getAdInfo().getHomePhone();
 	}
 
 	public String getOtherMobile() {
-		return user.getOtherMobile();
+		return user.getAdInfo().getOtherMobile();
 	}
 
 
 	public String getOtherTelephone() {
-		return user.getOtherTelephone();
+		return user.getAdInfo().getOtherTelephone();
 	}
 	
 	public String getImage() {
-		return user.getThumbnailPhoto();
+		return thumbnailPhoto;
 	}
 
 	public UserManagerBean getManager() {
@@ -365,10 +375,10 @@ public class UserDetailsBean implements Serializable{
 		}
 		
 		public String getName() {
-			return String.format("%s %s", managerUser.getFirstname(), managerUser.getLastname());
+			return getUserName(managerUser);
 		}
 		public String getWorkerId() {
-			return managerUser.getAdEmployeeID();
+			return managerUser.getAdInfo().getEmployeeID();
 		}
 		public String getUsername() {
 			return managerUser.getUsername();
@@ -376,30 +386,40 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public class UserDirectReportBean{
-		private AdUserDirectReport adUserDirectReport;
+		private User adUserDirectReport;
 		
-		public UserDirectReportBean(AdUserDirectReport adUserDirectReport) {
+		public UserDirectReportBean(User adUserDirectReport) {
 			this.adUserDirectReport = adUserDirectReport;
 		}
 		
 		public String getId() {
-			return adUserDirectReport.getUserId();
+			return adUserDirectReport.getId();
 		}
 		
 		public String getName() {
-			return adUserDirectReport.getName();
+			return getUserName(adUserDirectReport);
 		}
 		public String getUsername() {
 			return adUserDirectReport.getUsername();
 		}
 		public String getFirstname() {
-			return adUserDirectReport.getFirstname();
+			return adUserDirectReport.getAdInfo().getFirstname();
 		}
 		public String getLastname() {
-			return adUserDirectReport.getLastname();
+			return adUserDirectReport.getAdInfo().getLastname();
 		}
 	}
 	
+	private static String getUserName(User user){
+		if(user.getAdInfo().getFirstname() != null && user.getAdInfo().getLastname() != null){
+			return user.getAdInfo().getFirstname() + " " + user.getAdInfo().getLastname();
+		} else if(user.getAdInfo().getDisplayName() != null){
+			return user.getAdInfo().getDisplayName();
+		} else{
+			return user.getUsername();
+		}
+	}
+
 	public class UserGroupBean{
 		private AdUserGroup adUserGroup;
 		

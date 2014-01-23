@@ -14,12 +14,8 @@ import fortscale.domain.ad.AdComputer;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdOU;
 import fortscale.domain.ad.AdUser;
-import fortscale.domain.ad.dao.AdComputerRepository;
-import fortscale.domain.ad.dao.AdGroupRepository;
-import fortscale.domain.ad.dao.AdOURepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
-import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.AdService;
 
 
@@ -29,23 +25,11 @@ import fortscale.services.AdService;
 public class AdServiceImpl implements AdService {
 	
 	@Autowired
-	private AdUserRepository adUserRepository;
-	
-	@Autowired
-	private AdGroupRepository adGroupRepository;
-	
-	@Autowired
-	private AdComputerRepository adComputerRepository;
-	
-	@Autowired
-	private AdOURepository adOURepository;
-	
-	@Autowired
 	private MongoOperations mongoTemplate;
 	
 	@Autowired
-	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
-
+	private AdUserRepository adUserRepository;
+	
 	@Override
 	public void addLastModifiedFieldToAllCollections() {
 		insertLastModified(AdUser.lastModifiedField, AdUser.class);
@@ -66,7 +50,10 @@ public class AdServiceImpl implements AdService {
 
 	@Override
 	public void removeThumbnails() {
-		mongoTemplate.updateMulti(query(where(AdUser.thumbnailPhotoField).exists(true)), update(AdUser.thumbnailPhotoField, null), AdUser.class);
+		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
+		if(timestampepoch != null){
+			mongoTemplate.updateMulti(query(where(AdUser.timestampepochField).ne(timestampepoch).and(AdUser.thumbnailPhotoField).exists(true)), update(AdUser.thumbnailPhotoField, null), AdUser.class);
+		}
 	}
 
 }

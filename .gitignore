@@ -1,4 +1,8 @@
+/.classpath
 /.metadata
-/Servers
+/.project
 /.settings
 /RemoteSystemsTempFiles
+/Servers
+target
+testFile.log

@@ -13,6 +13,12 @@
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-utils</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jruby</groupId>
+    				<artifactId>jruby-complete</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>fortscale</groupId>

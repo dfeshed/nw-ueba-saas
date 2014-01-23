@@ -3,10 +3,7 @@ package fortscale.domain.ad;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -123,9 +120,7 @@ public class AdUser extends AdObject{
 	private String whenCreated = "";
 	
 	private String sAMAccountName = "";
-	
-	private Long timestampepoch;
-	
+		
 	// Contains the users's photo in Base64 format 
 	@Field(thumbnailPhotoField)
 	private String thumbnailPhoto = "";
@@ -672,11 +667,11 @@ public class AdUser extends AdObject{
 	 * 
 	 * @param distinguishedName must not be {@literal null} or empty.
 	 */
-	@PersistenceConstructor
-	@JsonCreator
-	public AdUser(@JsonProperty("distinguishedName") String distinguishedName) {
-		super(distinguishedName);
-	}
+//	@PersistenceConstructor
+//	@JsonCreator
+//	public AdUser(@JsonProperty("distinguishedName") String distinguishedName) {
+//		super(distinguishedName);
+//	}
 	
 	public String getLastname() {
 		return lastname;
@@ -702,11 +697,4 @@ public class AdUser extends AdObject{
 		this.emailAddress = emailAddress;
 	}
 
-	public Long getTimestampepoch() {
-		return timestampepoch;
-	}
-
-	public void setTimestampepoch(Long timestampepoch) {
-		this.timestampepoch = timestampepoch;
-	}
 }

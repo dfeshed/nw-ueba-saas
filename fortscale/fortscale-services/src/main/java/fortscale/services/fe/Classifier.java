@@ -1,20 +1,24 @@
 package fortscale.services.fe;
 
+import fortscale.services.LogEventsEnum;
 import fortscale.services.exceptions.InvalidValueException;
 
 public enum Classifier {
-	ad("active_directory","User Profile"),
-	groups("active_directory_group_membership","Groups"),
-	vpn("vpn","VPN"),
-	auth("auth","Logins"),
-	total("total","Total Score");
+	ad("active_directory","User Profile",null),
+	groups("active_directory_group_membership","Groups",null),
+	vpn("vpn","VPN",null),
+	auth("auth","Logins",LogEventsEnum.login),
+	ssh("ssh","SSH",LogEventsEnum.ssh),
+	total("total","Total Score",null);
 	
 	private String id;
 	private String displayName;
+	private LogEventsEnum logEventsEnum;
 	
-	Classifier(String id, String displayName) {
+	Classifier(String id, String displayName, LogEventsEnum logEventsEnum) {
 		this.id = id;
 		this.displayName = displayName;
+		this.setLogEventsEnum(logEventsEnum);
 	}
 
 	public String getId() {
@@ -36,6 +40,14 @@ public enum Classifier {
 		if(!isExist){
 			throw new InvalidValueException(String.format("no such classifier id [%s]", classifierId));
 		}
+	}
+
+	public LogEventsEnum getLogEventsEnum() {
+		return logEventsEnum;
+	}
+
+	public void setLogEventsEnum(LogEventsEnum logEventsEnum) {
+		this.logEventsEnum = logEventsEnum;
 	}
 	
 	

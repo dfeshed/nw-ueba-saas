@@ -1,6 +1,8 @@
 package fortscale.services.fe.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import fortscale.domain.core.User;
 import fortscale.domain.fe.AuthScore;
@@ -10,20 +12,10 @@ public class LoginEventScoreInfo implements ILoginEventScoreInfo {
 	
 	private User user;
 	private AuthScore authScore;
-	private String sourceHostname;
-	private String destinationIp;
 	
 	public LoginEventScoreInfo(User user, AuthScore authScore){
 		this.authScore = authScore;
 		this.user = user;
-	}
-
-	public void setSourceHostname(String sourceHostname) {
-		this.sourceHostname = sourceHostname;
-	}
-
-	public void setDestinationIp(String destinationIp) {
-		this.destinationIp = destinationIp;
 	}
 
 	@Override
@@ -35,26 +27,23 @@ public class LoginEventScoreInfo implements ILoginEventScoreInfo {
 	public String getUsername() {
 		return user.getUsername();
 	}
+	
+	@Override
+	public Boolean isUserFollowed() {
+		return user.getFollowed();
+	}
 
 	@Override
 	public String getSourceIp() {
 		return authScore.getSourceIp();
 	}
 
-	@Override
-	public String getSourceHostname() {
-		return sourceHostname;
-	}
 
 	@Override
 	public Date getEventTime() {
 		return authScore.getEventTime();
 	}
 
-	@Override
-	public String getDestinationIp() {
-		return destinationIp;
-	}
 
 	@Override
 	public String getDestinationHostname() {
@@ -71,10 +60,6 @@ public class LoginEventScoreInfo implements ILoginEventScoreInfo {
 		return authScore.getGlobalScore();
 	}
 
-	@Override
-	public String getErrorCode() {
-		return authScore.getErrorCode();
-	}
 
 	@Override
 	public double getUserNameScore() {
@@ -91,14 +76,20 @@ public class LoginEventScoreInfo implements ILoginEventScoreInfo {
 		return authScore.getSourceIpScore();
 	}
 
-	@Override
-	public double getErrorCodeScore() {
-		return authScore.getErrorCodeScore();
-	}
 
 	@Override
 	public double getEventTimeScore() {
 		return authScore.getEventTimeScore();
+	}
+
+	@Override
+	public Map<String, Object> createMap() {
+		Map<String, Object> ret = new HashMap<>(authScore.getAllFields());
+		ret.put("userId", getUserId());
+		ret.put("username", getUsername());
+		ret.put("isUserFollowed", isUserFollowed());
+		
+		return ret;
 	}
 
 }

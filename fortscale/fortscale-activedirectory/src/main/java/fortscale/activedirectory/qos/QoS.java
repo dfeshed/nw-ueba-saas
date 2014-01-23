@@ -78,7 +78,8 @@ public class QoS {
 		}
 
 
-		AdUser sanityPowerUser = new AdUser(SANITY_TEST_SUPER_POWER_USER_NAME);
+		AdUser sanityPowerUser = new AdUser();
+		sanityPowerUser.setDistinguishedName(SANITY_TEST_SUPER_POWER_USER_NAME);
 		String memberOf = "";
 		for (AdUser adUser : validUsers) {
 			memberOf += adUser.getMemberOf();
@@ -288,7 +289,8 @@ public class QoS {
 	
 	private AdUser createTestUser(String testUserName, AdUser adminUser, AdUser nonAdminUser) {
 		
-		AdUser testUser = new AdUser(testUserName);
+		AdUser testUser = new AdUser();
+		testUser.setDistinguishedName(testUserName);
 		
 		Map<String, String> adminAttrVals =    adminUser.getAttrVals();
 		Map<String, String> nonAdminAttrVals = nonAdminUser.getAttrVals();
@@ -364,7 +366,8 @@ public class QoS {
 
 	
 	private AdUser createManualTestUser(String testUserName, AdUser normalUser) {
-		AdUser testUser = new AdUser(testUserName);
+		AdUser testUser = new AdUser();
+		testUser.setDistinguishedName(testUserName);
 		
 		Map<String, String> normalUserAttrVals = normalUser.getAttrVals();
 		Map<String, String> testAttrVals = testUser.getAttrVals();

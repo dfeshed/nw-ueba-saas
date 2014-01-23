@@ -118,5 +118,11 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO{
 			return ret;
 		}
 	}
+
+
+	@Override
+	public String getStatusFieldName() {
+		return VpnScore.STATUS_FIELD_NAME;
+	}
 	
 }

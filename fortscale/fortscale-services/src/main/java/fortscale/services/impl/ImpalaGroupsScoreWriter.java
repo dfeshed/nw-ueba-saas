@@ -23,7 +23,7 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 
 	public void writeScore(User user, AdUserFeaturesExtraction extraction, double avgScore){
 		Date timestamp = extraction.getTimestamp();
-		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp), user.getId(),user.getAdDn(), user.getUsername(), extraction.getScore(), avgScore,getRundate(timestamp));
+		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp), user.getId(),user.getAdInfo().getDn(), user.getUsername(), extraction.getScore(), avgScore,getRundate(timestamp));
 		for(IFeature feature: extraction.getAttributes()){
 			write(csvLineString);
 			writeFeature(feature);
@@ -35,12 +35,18 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 		IFeatureExplanation explanation = feature.getFeatureExplanation();
 		String ref = "";
 		String refs = "";
-		if(explanation.getFeatureReference().length > 0){
-			ref = explanation.getFeatureReference()[0];
-			refs = StringUtils.join(explanation.getFeatureReference(), ",");
+		String count = "";
+		String dist = "";
+		if(explanation != null){
+			if(explanation.getFeatureReference().length > 0){
+				ref = explanation.getFeatureReference()[0];
+				refs = StringUtils.join(explanation.getFeatureReference(), ",");
+			}
+			count = explanation.getFeatureCount().toString();
+			dist = explanation.getFeatureDistribution().toString();
 		}
 		String csvLineString = String.format("|%s|%s|%s|%s|%s|%s", feature.getFeatureUniqueName(), feature.getFeatureScore(),
-				explanation.getFeatureDistribution(), explanation.getFeatureCount(), ref, refs);
+				dist, count, ref, refs);
 		write(csvLineString);
 	}
 	

@@ -1,5 +1,6 @@
 package fortscale.domain.fe.dao;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,10 @@ import fortscale.domain.fe.AuthScore;
 
 public interface AuthDAO {
 
+	public String getTableName();
+	
+	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal);
+	
 	public List<AuthScore> findAll(Pageable pageable);
 	
 	public AuthScore findCurrentByUsername(String username);
@@ -22,6 +27,8 @@ public interface AuthDAO {
 	public List<AuthScore> findEventsByTimestamp(Date timestamp, Pageable pageable);
 	
 	public List<AuthScore> findEventsByTimestampGtEventScore(Date timestamp, Pageable pageable, int minScore);
+	
+	public List<AuthScore> findEventsByTimestampGtEventScoreInUsernameList(Date timestamp, Pageable pageable, Integer minScore, Collection<String> usernames);
 	
 	public List<AuthScore> findEventsByTimestamp(Date timestamp, Pageable pageable, String additionalWhereQuery);
 	

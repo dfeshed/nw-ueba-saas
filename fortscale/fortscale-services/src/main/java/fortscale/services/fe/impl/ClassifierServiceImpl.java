@@ -6,13 +6,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang.math.Range;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.dao.UserMachineDAO;
@@ -40,10 +45,10 @@ import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.ebs.EBSPigUDF;
 import fortscale.ebs.EventBulkScorer;
+import fortscale.services.LogEventsEnum;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.analyst.ConfigurationService;
-import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
@@ -57,6 +62,9 @@ import fortscale.services.impl.SeverityElement;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.scoring.IEBSResult;
+import fortscale.utils.scoring.IQueryResultsScorer;
+import fortscale.utils.scoring.impl.QueryResultsScorer;
 
 @Service("classifierService")
 public class ClassifierServiceImpl implements ClassifierService, InitializingBean{
@@ -79,7 +87,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private EventResultRepository eventResultRepository;
 	
 	@Autowired
-	private AuthDAO authDAO;
+	private AuthDAO loginDAO;
+	
+	@Autowired
+	private AuthDAO sshDAO;
 	
 	@Autowired
 	private VpnDAO vpnDAO;
@@ -96,13 +107,18 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	@Autowired
 	private ImpalaParser impalaParser;
 	
+	@Autowired
+	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
+	
 	@Value("${login.service.name.regex:}")
 	private String loginServiceNameRegex;
 	
 	@Value("${login.account.name.regex:}")
 	private String loginAccountNameRegex;
 	
-	private Map<String, Map<String, String>> rowFieldRegexFilter;
+	
+	
+	private Map<String, Map<String, String>> rowFieldRegexFilter = new HashMap<>();
 	
 	
 	
@@ -157,7 +173,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				i++;
 				continue;
 			}
-			int percent = (int)((threshold.getCount()/(double)total)*100);
+			int percent = (int)Math.round(((threshold.getCount()/(double)total)*100));
 			int count = threshold.getCount() - prevCount;
 			ret.add(new ScoreDistribution(threshold.getName(), count, percent - prevPercent,threshold.getValue(), prevThreshold));
 			prevPercent = percent;
@@ -179,22 +195,34 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size) {
-		return getTopUsers(classifierId, severityId, new ThresholdNoFilter(),page,size, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
+	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size, boolean followedOnly) {
+		return getTopUsers(classifierId, severityId, new ThresholdNoFilter(),page,size, followedOnly, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
 	}
 	
 	@Override
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size) {
-		return getTopUsers(classifierId, severityId, new ThresholdTrendFilter(),page,size, User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
+	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly) {
+		return getTopUsers(classifierId, severityId, new ThresholdTrendFilter(),page,size, followedOnly, User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
 	}
 
-	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, int page, int size, String... sortingFieldsName) {
+	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, int page, int size, boolean followedOnly, String... sortingFieldsName) {
 		Classifier.validateClassifierId(classifierId);
 		
-		Range severityRange = getRange(severityId);
-		
 		Pageable pageable = new PageRequest(page, size, Direction.DESC, sortingFieldsName);
-		List<User> users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
+		List<User> users = null;
+		if(severityId != null){
+			Range severityRange = getRange(severityId);
+			if(followedOnly){
+				users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndCurrentDay(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+			} else{
+				users = userRepository.findByClassifierIdAndScoreBetweenAndCurrentDay(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+			}
+		} else{
+			if(followedOnly){
+				users = userRepository.findByClassifierIdAndFollowedAndCurrentDay(classifierId, pageable);
+			} else{
+				users = userRepository.findByClassifierIdAndCurrentDay(classifierId, pageable);
+			}
+		}
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
 		for(User user: users){
 			ISuspiciousUserInfo suspiciousUserInfo = createSuspiciousUserInfo(classifierId, user);
@@ -203,117 +231,25 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			}
 			ret.add(suspiciousUserInfo);
 		}
-		return ret;
+		return ret;		
+	}
 		
-//		List<ISuspiciousUserInfo> ret = Collections.emptyList();
-//		if(classifierId.equals(Classifier.ad.getId())){
-//			ret = getAdSuspiciousUsers(classifierId, severityId);
-//		} else if(classifierId.equals(Classifier.auth.getId())){
-//			ret = getAuthSuspiciousUsers(classifierId, severityId);
-//		} else if(classifierId.equals(Classifier.vpn.getId())){
-//			ret = getVpnSuspiciousUsers(classifierId, severityId);
-//		} else {
-//			throw new InvalidValueException(String.format("no such classifier id [%s]", classifierId));
-//		}
-//		
-//		return ret;
-	}
-	
-	
-	private List<ISuspiciousUserInfo> getVpnSuspiciousUsers(String classifierId, String severityId) {
-		Date lastRun = vpnDAO.getLastRunDate();
-		Range severityRange = getRange(severityId);
-		List<VpnScore> vpnScores = vpnDAO.findByTimestampAndGlobalScoreBetweenSortByEventScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
-		List<ISuspiciousUserInfo> ret = new ArrayList<>();
-		for(VpnScore vpnScore: vpnScores){
-			User user = userRepository.findByUsername(vpnScore.getUserName().toLowerCase());
-			if(user == null){
-				logger.error("user with vpn username ({}) was not found", vpnScore.getUserName());
-				continue;
-			}
-			ret.add(createSuspiciousUserInfo(classifierId, user));
-		}
-		return ret;
-	}
-	
-	private List<ISuspiciousUserInfo> getAuthSuspiciousUsers(String classifierId, String severityId) {
-		Date lastRun = authDAO.getLastRunDate();
-		Range severityRange = getRange(severityId);
-		List<AuthScore> authScores = authDAO.findByTimestampAndGlobalScoreBetweenSortByEventScore(lastRun, severityRange.getLowestVal(), severityRange.getUpperVal(), 10);
-		List<ISuspiciousUserInfo> ret = new ArrayList<>();
-		for(AuthScore authScore: authScores){
-			User user = userRepository.findByUsername(authScore.getUserName().toLowerCase());
-			if(user == null){
-				logger.error("user with username ({}) was not found", authScore.getUserName());
-				continue;
-			}
-			ret.add(createSuspiciousUserInfo(classifierId, user));
-		}
-		return ret;
-	}
-	
-	private List<ISuspiciousUserInfo> getAdSuspiciousUsers(String classifierId, String severityId) {
-		Range severityRange = getRange(severityId);
-		
-		Pageable pageable = new PageRequest(0, 10, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId));
-		List<User> users = userRepository.findByClassifierIdAndScoreBetween(classifierId, severityRange.getLowestVal(), severityRange.getUpperVal(), pageable);
-		List<ISuspiciousUserInfo> ret = new ArrayList<>();
-		for(User user: users){
-			ret.add(createSuspiciousUserInfo(classifierId, user));
-		}
-		return ret;
-	}
-	
 	private SuspiciousUserInfo createSuspiciousUserInfo(String classifierId, User user){
 		ClassifierScore classifierScore = user.getScore(classifierId);
 		int trendSign = classifierScore.getTrend() > 0 ? 1 : -1;
-		return new SuspiciousUserInfo(user.getId(), user.getUsername(), (int) Math.round(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrendScore()*trendSign));
+		return new SuspiciousUserInfo(user.getId(), user.getUsername(), (int) Math.floor(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrendScore()*trendSign), user.getFollowed());
 	}
 	
 	private Range getRange(String severityId){
 		if(severityId == null){
-			return new Range(0, 101);
+			return new IntRange(0, 101);
 		}
-		int i = 0;
-		for(SeverityElement element: configurationService.getSeverityElements()){
-			if(element.getName().equals(severityId)){
-				break;
-			}
-			i++;
-		}
-		if(configurationService.getSeverityElements().size() == i){
-			throw new InvalidValueException(String.format("no such severity id: %s", severityId));
-		}
-		int lowestVal = configurationService.getSeverityElements().get(i).getValue();
-		int upperVal = 100;
-		if(i > 0){
-			upperVal = configurationService.getSeverityElements().get(i-1).getValue();
-		}
-		
-		return new Range(lowestVal, upperVal);
-	}
-
-	class Range{
-		private int lowestVal;
-		private int upperVal;
-		
-		public Range(int lowestVal, int upperVal){
-			this.lowestVal = lowestVal;
-			this.upperVal = upperVal;
-		}
-
-		public int getLowestVal() {
-			return lowestVal;
-		}
-
-		public int getUpperVal() {
-			return upperVal;
-		}
-		
+		return configurationService.getRange(severityId);
 	}
 	
 	@Override
-	public int countLoginEvents(String userId, Date timestamp){
+	public int countAuthEvents(LogEventsEnum eventId, String userId, Date timestamp){
+		AuthDAO authDAO = getAuthDAO(eventId);
 		User user = userRepository.findOne(userId);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
@@ -321,11 +257,13 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
-		return authDAO.countNumOfEventsByUser(timestamp, user.getUsername());
+		String logUsername = user.getLogUsernameMap().get(authDAO.getTableName());
+		return authDAO.countNumOfEventsByUser(timestamp, logUsername);
 	}
 
 	@Override
-	public List<ILoginEventScoreInfo> getUserSuspiciousLoginEvents(String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
+	public List<ILoginEventScoreInfo> getUserSuspiciousAuthEvents(LogEventsEnum eventId, String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
+		AuthDAO authDAO = getAuthDAO(eventId);
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
@@ -334,9 +272,13 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
+		String logUsername = user.getLogUsernameMap().get(authDAO.getTableName());
+		if(StringUtils.isEmpty(logUsername)){
+			return Collections.emptyList();
+		}
 		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestampGtEventScore(user.getLogUsernameMap().get(AuthScore.TABLE_NAME), timestamp, minScore, pageable);
+		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestampGtEventScore(logUsername, timestamp, minScore, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
 			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
@@ -347,7 +289,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public int countLoginEvents(Date timestamp){
+	public int countAuthEvents(LogEventsEnum eventId, Date timestamp){
+		AuthDAO authDAO = getAuthDAO(eventId);
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
@@ -355,14 +298,20 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 
 	@Override
-	public List<ILoginEventScoreInfo> getSuspiciousLoginEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
+	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
+		AuthDAO authDAO = getAuthDAO(eventId);
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
 		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
+		
+		List<String> usernames = null;
+		if(onlyFollowedUsers){
+			usernames = userService.getFollowedUsersAuthLogUsername(eventId);
+		}
 
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<AuthScore> authScores = authDAO.findEventsByTimestampGtEventScore(timestamp, pageable, minScore);
+		List<AuthScore> authScores = authDAO.findEventsByTimestampGtEventScoreInUsernameList(timestamp, pageable, minScore, usernames);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
 			Map<String, User> userMap = new HashMap<>();
@@ -370,7 +319,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				String username = authScore.getUserName().toLowerCase();
 				User user = userMap.get(username);
 				if(user == null){
-					user = userService.findByAuthUsername(username);
+					user = userService.findByAuthUsername(eventId, username);
 					if(user == null){
 						logger.warn("username ({}) was not found in the user collection", username);
 						continue;
@@ -381,6 +330,22 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				ret.add(createLoginEventScoreInfo(user, authScore));
 			}
 		}
+		return ret;
+	}
+	
+	public AuthDAO getAuthDAO(LogEventsEnum eventId){
+		AuthDAO ret = null;
+		switch(eventId){
+			case login:
+				ret = loginDAO;
+				break;
+			case ssh:
+				ret = sshDAO;
+				break;
+		default:
+			break;
+		}
+		
 		return ret;
 	}
 	
@@ -565,13 +530,19 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 
 	@Override
-	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
+	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
 		if(timestamp == null){
 			timestamp = vpnDAO.getLastRunDate();
 		}
 		String orderByArray[] = processVpnScoreOrderByFieldName(orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestampGtEventScore(timestamp, pageable, minScore);
+		
+		List<String> usernames = null;
+		if(onlyFollowedUsers){
+			usernames = userService.getFollowedUsersVpnLogUsername();
+		}
+		
+		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestampGtEventScoreInUsernameList(timestamp, pageable, minScore, usernames);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
 			Map<String, User> userMap = new HashMap<>();
@@ -612,8 +583,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private static final String SERVICE_NAME_FIELD = "service_name";
 	private static final String ACCOUNT_NAME_FIELD = "account_name";
 	private static final String WMIEVENTS_TABLE_NAME = "wmievents4769";
+	private static final String SSH_TABLE_NAME = "sshdata";
 	
-	public EBSResult getEBSAlgOnAuthQuery(List<Map<String, Object>> resultsMap, int offset, int limit, String orderBy, String orderByDirection){
+	public EBSResult getEBSAlgOnAuthQuery(List<Map<String, Object>> resultsMap, String tableName, int offset, int limit, String orderBy, String orderByDirection){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
 
 		List<String> keys = new ArrayList<>();
@@ -625,13 +597,13 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 		
 		for (Map<String, Object> map : resultsMap) {
-			if(filterRowResults(map, WMIEVENTS_TABLE_NAME)){
+			if(filterRowResults(map, tableName)){
 				continue;
 			}
 
 			List<String> workingSet = new ArrayList<String>(keys.size() + 1);
 			List<String> allData = new ArrayList<String>(keys.size() + 2);
-			String machineName = map.get(MACHINE_NAME_FIELD) != null ? map.get(MACHINE_NAME_FIELD).toString() : "";
+			String machineName = map.get(MACHINE_NAME_FIELD) != null ? map.get(MACHINE_NAME_FIELD).toString().toLowerCase() : "";
 			String clientAddress = map.get(CLIENT_ADDRESSE_FIELD) != null ? map.get(CLIENT_ADDRESSE_FIELD).toString() : "";
 			if(!StringUtils.isEmpty(machineName)){
 				workingSet.add(machineName);
@@ -778,6 +750,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	private static final String VPN_DATA_TABLENAME = "vpndata";
 	private static final String VPN_TIME_FIELD = "date_time";
+	private static final String SSH_TIME_FIELD = "date_time";
 	
 	public EBSResult getSimpleEBSAlgOnQuery(List<Map<String, Object>> resultsMap, String tableName, String timeFieldName, List<String> fieldNamesFilter, int offset, int limit, String orderBy, String orderByDirection){
 		List<EventBulkScorer.InputStruct> listResults = new ArrayList<EventBulkScorer.InputStruct>((int)resultsMap.size());
@@ -837,6 +810,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 	}
 	
+	private static final String VPN_STATUS_GLOBAL_SCORE_VALUE = "SUCCESS";
+	
 	@Override
 	public EBSResult getEBSAlgOnQuery(String sqlQuery, int offset, int limit, String orderBy, String orderByDirection, Integer minScore){
 		String timestampFieldName = getTimestampFieldName(sqlQuery);
@@ -851,17 +826,32 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			return new EBSResult(null, null,0, 0);
 		}
 
-		
+		boolean isRunThreadForSaving = true;
+		if(minScore != null){
+			isRunThreadForSaving = false;
+		}
 		if(sqlQuery.contains(WMIEVENTS_TABLE_NAME)){
-			ebsResult = getEBSAlgOnAuthQuery(resultsMap, 0, resultsMap.size(), orderBy, orderByDirection);
+			ebsResult = getEBSAlgOnAuthQuery(resultsMap, WMIEVENTS_TABLE_NAME, 0, resultsMap.size(), orderBy, orderByDirection);
+		} else if(sqlQuery.contains(SSH_TABLE_NAME)){
+			Set<String> timeFieldNameSet = new HashSet<>();
+			timeFieldNameSet.add(timestampFieldName);
+			IQueryResultsScorer queryResultsScorer = new QueryResultsScorer();
+			IEBSResult tmp = queryResultsScorer.runEBSOnQueryResults(resultsMap, rowFieldRegexFilter.get(SSH_TABLE_NAME), timeFieldNameSet, Collections.<String>emptySet(), null, null);
+			isRunThreadForSaving = false;
+			ebsResult = new EBSResult(tmp.getResultsList(), tmp.getGlobalScore(), 0, tmp.getResultsList().size());
 		} else if(sqlQuery.contains(VPN_DATA_TABLENAME)){
-			List<String> fieldNamesFilter = new ArrayList<>();
-			fieldNamesFilter.add(VpnScore.LOCAL_IP_FIELD_NAME);
-			ebsResult = getSimpleEBSAlgOnQuery(resultsMap, VPN_DATA_TABLENAME, timestampFieldName, fieldNamesFilter, 0, resultsMap.size(), orderBy, orderByDirection);
+			Set<String> fieldNamesFilterSet = new HashSet<>();
+			fieldNamesFilterSet.add(VpnScore.LOCAL_IP_FIELD_NAME);
+			IQueryResultsScorer queryResultsScorer = new QueryResultsScorer();
+			Set<String> timeFieldNameSet = new HashSet<>();
+			timeFieldNameSet.add(timestampFieldName);
+			IEBSResult tmp = queryResultsScorer.runEBSOnQueryResults(resultsMap, rowFieldRegexFilter.get(VPN_DATA_TABLENAME), timeFieldNameSet, fieldNamesFilterSet, VpnScore.STATUS_FIELD_NAME, VPN_STATUS_GLOBAL_SCORE_VALUE);
+			isRunThreadForSaving = false;
+			ebsResult = new EBSResult(tmp.getResultsList(), tmp.getGlobalScore(), 0, tmp.getResultsList().size());
 		} else{
 			ebsResult = getSimpleEBSAlgOnQuery(resultsMap, null, null,Collections.<String>emptyList(), 0, resultsMap.size(), orderBy, orderByDirection);
 		}
-		if(minScore != null){
+		if(!isRunThreadForSaving){
 			saveEBSResultsOnAuthQuery(sqlQuery, ebsResult, timestampFieldName, false);
 			ebsResult = findEBSAlgOnQuery(sqlQuery, offset, limit, orderBy, orderByDirection, timestampFieldName, minScore);
 		} else{
@@ -882,13 +872,14 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			timestampFieldName = WMIEVENTS_TIME_FIELD;
 		} else if(sqlQuery.contains(VPN_DATA_TABLENAME)){
 			timestampFieldName = VPN_TIME_FIELD;
+		} else if(sqlQuery.contains(SSH_TABLE_NAME)){
+			timestampFieldName = SSH_TIME_FIELD;
 		}
 		return timestampFieldName;
 	}
 	
 	private void saveEBSResultsOnAuthQuery(final String sqlQuery, final EBSResult ebsResult, final String timestampFieldName, boolean isRunThread){
 		if(isRunThread){
-			ExecutorService executorService = Executors.newFixedThreadPool(1);
 			Runnable task = new Runnable() {
 				@Override
 				public void run(){
@@ -896,8 +887,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 					authQuerySaver.save(sqlQuery, ebsResult, timestampFieldName);
 				}
 			};
-			executorService.submit(task);
-			executorService.shutdown();
+			mongoDbWriterExecuter.submit(task);
 		} else{
 			EBSResultsOnAuthQuerySaver authQuerySaver = new EBSResultsOnAuthQuerySaver();
 			authQuerySaver.save(sqlQuery, ebsResult, timestampFieldName);
@@ -1056,8 +1046,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	@Override
 	public Long getLatestRuntime(String tableName) {
 		Long retLong = null;
-		if(AuthScore.TABLE_NAME.equals(tableName)) {
-			retLong = authDAO.getLastRuntime();
+		if(loginDAO.getTableName().equals(tableName)) {
+			retLong = loginDAO.getLastRuntime();
+		} else if(sshDAO.getTableName().equals(tableName)) {
+			retLong = sshDAO.getLastRuntime();
 		} else if (VpnScore.TABLE_NAME.equals(tableName)) {
 			retLong = vpnDAO.getLastRuntime();
 		}
