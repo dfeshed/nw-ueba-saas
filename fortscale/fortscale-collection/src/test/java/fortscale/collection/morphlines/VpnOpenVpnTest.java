@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 public class VpnOpenVpnTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "resources/conf-files/readVPN_openvpn.conf";
+	private String confFile = "resources/conf-files/readVPN_openVPN.conf";
 	private String[] vpnOutputFields = new String[] {"date_time","date_time_unixTime","username","source_ip","local_ip","status","message","country_name","host_name"};
 
 	
