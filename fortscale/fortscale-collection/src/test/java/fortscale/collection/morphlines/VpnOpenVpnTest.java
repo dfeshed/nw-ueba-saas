@@ -22,7 +22,7 @@ public class VpnOpenVpnTest {
 
 	@Test
 	@Parameters
-	public void test(String testCase, String inputLine, String expectedOutput) {
+	public void testVpnSingleLines(String testCase, String inputLine, String expectedOutput) {
 		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
 	}
 	
