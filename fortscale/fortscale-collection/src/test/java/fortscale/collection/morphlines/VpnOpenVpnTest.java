@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 public class VpnOpenVpnTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "resources/conf-files/readVPN_juniper.conf";
+	private String confFile = "resources/conf-files/readVPN_openvpn.conf";
 	private String[] vpnOutputFields = new String[] {"date_time","date_time_unixTime","username","source_ip","local_ip","status","message","country_name","host_name"};
 	
 	@Before
@@ -22,13 +22,13 @@ public class VpnOpenVpnTest {
 
 	@Test
 	@Parameters
-	public void testVpnSingleLines(String testCase, String inputLine, String expectedOutput) {
+	public void test(String testCase, String inputLine, String expectedOutput) {
 		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
 	}
 	
 	
 	@SuppressWarnings("unused")
-	private Object[] parametersForTestVpnSingleLines() {
+	private Object[] parametersForTest() {
         return
         $(
 			$ (
