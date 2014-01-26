@@ -55,7 +55,7 @@
 				</entry>
 				<entry>
 					<key>hadoopFilePath4769</key>
-					<value>/user/cloudera/data/wmi4769/data4769.csv</value>
+					<value>${hdfs.user.data.security.events.4769.file}</value>
 				</entry>
 				<entry>
 					<key>impalaTableName4769</key>
