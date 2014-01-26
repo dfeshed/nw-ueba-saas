@@ -2,16 +2,19 @@ package fortscale.collection.hadoop.pig;
 
 import java.util.Properties;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import fortscale.services.analyst.ConfigurationService;
 
 @Component("loginScoringPigRunner")
 public class LoginScoringPigRunner extends EventScoringPigRunner {
-	@Value("${login.service.name.regex:}")
-	private String loginServiceNameRegex;
+	@Autowired
+	private ConfigurationService configurationService;
 	
 	@Override
 	protected void fillWithSpecificScriptParameters(Properties scriptParameters){
-		scriptParameters.put("dcRegex", loginServiceNameRegex);
+		scriptParameters.put("accountRegex", configurationService.getLoginAccountNameRegex());
+		scriptParameters.put("dcRegex", configurationService.getLoginServiceRegex());
 	}
 }
