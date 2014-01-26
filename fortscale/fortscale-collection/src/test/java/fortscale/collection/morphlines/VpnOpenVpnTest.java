@@ -36,7 +36,7 @@ public class VpnOpenVpnTest {
 			$ (
         	"Regular Successful VPN Authentication",
 			"Nov  6 07:55:40 openvpnas openvpnas: [-] OVPN 2 OUT: 'Wed Nov  6 05:55:40 2023 ross/79.122.200.58:53722 MULTI: primary virtual IP for ross/79.122.200.58:53722: 10.110.120.168'",
-			"2023-11-06 05:55:40,1699250140,ross,79.122.200.58,10.110.120.168,SUCCESS,Nov  6 07:55:40 openvpnas openvpnas: [-] OVPN 2 OUT: 'Wed Nov  6 05:55:40 2023 ross/79.122.200.58:53722 MULTI: primary virtual IP for ross/79.122.200.58:53722: 10.110.120.168',Israel,"
+			"2023-11-06 05:55:40,1699250140,ross,79.122.200.58,10.110.120.168,SUCCESS,Nov  6 07:55:40 openvpnas openvpnas: [-] OVPN 2 OUT: 'Wed Nov  6 05:55:40 2023 ross/79.122.200.58:53722 MULTI: primary virtual IP for ross/79.122.200.58:53722: 10.110.120.168',Russia,"
 			)
         );
     }
