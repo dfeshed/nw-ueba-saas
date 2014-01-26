@@ -2,6 +2,7 @@ package fortscale.collection.jobs.ad;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -33,12 +34,17 @@ public class AdUserProcessJob extends AdProcessJob {
 	}
 
 	@Override
-	protected void updateDb(Record record) throws Exception {
+	protected boolean updateDb(Record record) throws Exception {
 		AdUser adUser = new AdUser();
 		converter.convert(record, adUser);
+		if(StringUtils.isEmpty(adUser.getDistinguishedName()) || StringUtils.isEmpty(adUser.getObjectGUID())){
+			return false;
+		}
 		adUser.setLastModified(new Date());
 		adUserRepository.save(adUser);
 		userService.updateUserWithADInfo(adUser);
+		
+		return true;
 	}
 	
 	

@@ -20,7 +20,6 @@ import org.apache.commons.lang.math.Range;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -110,11 +109,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	@Autowired
 	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
 	
-	@Value("${login.service.name.regex:}")
-	private String loginServiceNameRegex;
 	
-	@Value("${login.account.name.regex:}")
-	private String loginAccountNameRegex;
+	
+	
 	
 	
 	
@@ -125,13 +122,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 
 	
-	public void setLoginServiceNameRegex(String loginServiceNameRegex) {
-		this.loginServiceNameRegex = loginServiceNameRegex;
-	}
-
-	public void setLoginAccountNameRegex(String loginAccountNameRegex) {
-		this.loginAccountNameRegex = loginAccountNameRegex;
-	}
 
 	public Classifier getClassifier(String classifierId){
 		return configurationService.getClassifiersMap().get(classifierId);
@@ -1111,9 +1101,11 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		String loginAccountNameRegex = configurationService.getLoginAccountNameRegex();
 		if(!StringUtils.isEmpty(loginAccountNameRegex)){
 			addFilter(WMIEVENTS_TABLE_NAME, ACCOUNT_NAME_FIELD, loginAccountNameRegex);
 		}
+		String loginServiceNameRegex = configurationService.getLoginServiceRegex();
 		if(!StringUtils.isEmpty(loginServiceNameRegex)){
 			addFilter(WMIEVENTS_TABLE_NAME, SERVICE_NAME_FIELD, loginServiceNameRegex);
 		}

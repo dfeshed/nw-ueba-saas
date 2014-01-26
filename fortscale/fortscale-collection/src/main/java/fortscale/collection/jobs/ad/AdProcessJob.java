@@ -166,8 +166,9 @@ public abstract class AdProcessJob extends FortscaleJob {
 			if(record != null){
 				record.put("timestamp", timestamp);
 				record.put("timestampepoch", timestampepoch);
-				writeToHdfs(record);
-				updateDb(record);
+				if(updateDb(record)){
+					writeToHdfs(record);
+				}
 			}
 		}
 
@@ -185,7 +186,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 	
 	
 	protected abstract boolean isTimestampAlreadyProcessed(Date runtime);
-	protected abstract void updateDb(Record record) throws Exception;
+	protected abstract boolean updateDb(Record record) throws Exception;
 	
 
 	protected Record morphlineProcessLine(String line){
