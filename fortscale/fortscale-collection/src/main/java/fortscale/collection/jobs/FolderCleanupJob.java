@@ -84,15 +84,18 @@ public class FolderCleanupJob implements Job {
 			for (int i=0;i<files.length && freespaceMB<=threshold;i++) {
 				File fileToDelete = files[i];
 				try {
-					fileToDelete.delete();
-					freespaceMB = (int)(folderFile.getUsableSpace() / (1024 * 1024));
-					logger.info("file {} was deleted", fileToDelete.getName());
+					if (fileToDelete.isDirectory()) {
+						cleanupFolder(fileToDelete, threshold);
+					} else {
+						fileToDelete.delete();
+						freespaceMB = (int)(folderFile.getUsableSpace() / (1024 * 1024));
+						logger.info("file {} was deleted", fileToDelete.getName());
+					}
 				} catch (Exception e) {
 					logger.error("cannot delete file " + fileToDelete.getName(), e);
 					monitor.error(monitorId, "Cleanup", "cannot delete file " + fileToDelete.getName());
 				}
 			}
 		}
-	}
-	
+	}	
 }
