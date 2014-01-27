@@ -30,13 +30,12 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 		Date timestamp = extraction.getTimestamp();
 		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp), user.getId(),user.getAdInfo().getDn(), user.getUsername(), extraction.getScore(), avgScore,getRundate(timestamp));
 		for(IFeature feature: extraction.getAttributes()){
-			write(csvLineString);
-			writeFeature(feature);
-			newLine();
+			String featureLine = writeFeature(feature);
+			writeLine(csvLineString + featureLine, getRuntime(timestamp));
 		}
 	}
 	
-	public void writeFeature(IFeature feature){
+	public String writeFeature(IFeature feature){
 		IFeatureExplanation explanation = feature.getFeatureExplanation();
 		String ref = "";
 		String refs = "";
@@ -52,7 +51,7 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 		}
 		String csvLineString = String.format("|%s|%s|%s|%s|%s|%s", feature.getFeatureUniqueName(), feature.getFeatureScore(),
 				dist, count, ref, refs);
-		write(csvLineString);
+		return csvLineString;
 	}
 	
 }
