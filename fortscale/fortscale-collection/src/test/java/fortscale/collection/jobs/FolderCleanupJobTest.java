@@ -25,10 +25,12 @@ public class FolderCleanupJobTest {
 		// create mock files in folder
 		fileA = mock(File.class);
 		when(fileA.getName()).thenReturn("a.txt");
+		when(fileA.isDirectory()).thenReturn(false);
 		when(fileA.compareTo(any(File.class))).thenReturn(new Integer(-1));
 		
 		fileB = mock(File.class);
 		when(fileB.getName()).thenReturn("b.txt");
+		when(fileB.isDirectory()).thenReturn(false);
 		when(fileB.compareTo(any(File.class))).thenReturn(new Integer(1));
 		
 		File[] contentList = new File[] { fileA, fileB };
