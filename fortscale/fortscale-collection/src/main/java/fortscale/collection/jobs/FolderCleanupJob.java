@@ -64,12 +64,12 @@ public class FolderCleanupJob implements Job {
 		if (!folderFile.exists()) {
 			// log warning and exit as there is nothing to do (some folders may not be created all the time, e.g. error)
 			logger.warn("folder {} does not exists", folderFile.getName());
-			monitor.warn(monitorId, "Cleanup", String.format("folder %s does not exists", folderFile.getName()));
+			monitor.warn(monitorId, "Cleanup", String.format("folder '%s' does not exists", folderFile.getName()));
 			return;
 		}
 		
 		if (!folderFile.isDirectory())
-			throw new JobExecutionException("folder " + folderFile.getPath() + " does not exists or not a folder", false);
+			throw new JobExecutionException("folder '" + folderFile.getPath() + "' does not exists or not a folder", false);
 		
 		// get the folder free space
 		int freespaceMB = (int)(folderFile.getUsableSpace() / (1024 * 1024));
@@ -84,15 +84,18 @@ public class FolderCleanupJob implements Job {
 			for (int i=0;i<files.length && freespaceMB<=threshold;i++) {
 				File fileToDelete = files[i];
 				try {
-					fileToDelete.delete();
+					if (fileToDelete.isDirectory()) {
+						cleanupFolder(fileToDelete, threshold);
+					} else {
+						fileToDelete.delete();
+						logger.info("file {} was deleted", fileToDelete.getName());
+					}
 					freespaceMB = (int)(folderFile.getUsableSpace() / (1024 * 1024));
-					logger.info("file {} was deleted", fileToDelete.getName());
 				} catch (Exception e) {
 					logger.error("cannot delete file " + fileToDelete.getName(), e);
 					monitor.error(monitorId, "Cleanup", "cannot delete file " + fileToDelete.getName());
 				}
 			}
 		}
-	}
-	
+	}	
 }
