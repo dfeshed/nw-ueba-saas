@@ -50,12 +50,20 @@
 					<value>timeGeneratedRaw,timeGenerated,categoryString,eventCode,logfile,messageData,recordNumber,sourceName,account_name,account_domain,service_name,service_id,client_address,ticket_options,failure_code,source_network_address,timeGeneratedUnixTime,client_hostname</value>
 				</entry>
 				<entry>
+					<key>timestampField4769</key>
+					<value>timeGeneratedUnixTime</value>
+				</entry>
+				<entry>
 					<key>outputSeparator4769</key>
 					<value>|</value>
 				</entry>
 				<entry>
-					<key>hadoopFilePath4769</key>
-					<value>${hdfs.user.data.security.events.4769.file}</value>
+					<key>hadoopPath4769</key>
+					<value>${hdfs.user.data.security.events.4769.path}</value>
+				</entry>
+				<entry>
+					<key>hadoopFilename4769</key>
+					<value>data4769.csv</value>
 				</entry>
 				<entry>
 					<key>impalaTableName4769</key>
