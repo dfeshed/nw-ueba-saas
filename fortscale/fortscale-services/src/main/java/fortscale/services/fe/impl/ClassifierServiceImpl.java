@@ -894,6 +894,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				eventResult.setGlobalScore(ebsResult.getGlobalScore());
 				eventResult.setSqlQuery(sqlQuery);
 				eventResult.setLastRetrieved(date);
+				eventResult.setCreatedAt(date);
 				eventResult.setTotal(ebsResult.getTotal());
 				
 				Double eventScore = (Double) result.get(EVENT_SCORE);
@@ -922,7 +923,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		Runnable task = new Runnable() {
 			@Override
 			public void run(){
-				eventResultRepository.updateLastRetrieved(sqlQuery);
+				DateTime createdAt = eventResultRepository.getLatestCreatedAt();
+				eventResultRepository.updateLastRetrieved(sqlQuery, createdAt);
 			}
 		};
 		executorService.submit(task);
@@ -949,8 +951,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 
 		int page = offset/pageSize;
-		Pageable pageable = new PageRequest(page, pageSize, direction, fieldName); 
-		List<EventResult> eventResults = eventResultRepository.findEventResultsBySqlQueryAndGtMinScore(query, minScore, pageable);
+		Pageable pageable = new PageRequest(page, pageSize, direction, fieldName);
+		DateTime createdAt = eventResultRepository.getLatestCreatedAt();
+		List<EventResult> eventResults = eventResultRepository.findEventResultsBySqlQueryAndCreatedAtAndGtMinScore(query, createdAt, minScore, pageable);
 		if(eventResults == null || eventResults.size() == 0){
 			return null;
 		}
