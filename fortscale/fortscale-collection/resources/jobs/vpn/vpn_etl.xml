@@ -45,7 +45,7 @@
 				</entry>
 				<entry>
 					<key>hadoopFilePath</key>
-					<value>/user/cloudera/data/vpn/vpnETL.csv</value>
+					<value>${hdfs.user.data.vpn.name}</value>
 				</entry>
 				<entry>
 					<key>impalaTableName</key>
