@@ -325,11 +325,12 @@ public class SplunkApi {
 		String cursor = null;
         
         int numOfEvents = -1;
-        int dispatchMaxCount = 0;
+        int dispatchMaxCount = searchJob.getDispatchMaxCount(splunkService);
         
 		
         int eventSum = 0;
         Job job = null;
+        int numOfTimesJobFinalized = 0;
     	do{
     		
     		job = searchJob.run(splunkService, earliestTimeCursor, cursor);
@@ -337,7 +338,16 @@ public class SplunkApi {
     			break;
     		}
 			
-			numOfEvents = job.getEventCount();			
+			numOfEvents = job.getEventCount();
+			if(job.isFinalized() || job.isPaused()){
+				if(numOfEvents < dispatchMaxCount){
+					numOfTimesJobFinalized++;
+					if(numOfTimesJobFinalized > 3){
+						logger.error("The search job was finalized or paused {} times. The last job unique search identifier is {}.", numOfTimesJobFinalized, job.getSid());
+						throw new RuntimeException(String.format("The search job was finalized %d times. The last job unique search identifier is %s.", numOfTimesJobFinalized, job.getSid()));
+					}
+				}
+			}
 			
 			logger.info("going over {} events", numOfEvents);
 			int offset = 0;
@@ -390,12 +400,11 @@ public class SplunkApi {
 		        	}
 		        }
 			}
-			dispatchMaxCount = searchJob.getDispatchMaxCount(splunkService);
-			if(!searchJob.isContainTime() && numOfEvents >= dispatchMaxCount){
-				logger.warn("you might have missed some events. numOfEvents({}), dispatchMaxCount({})");
+			if(!searchJob.isContainTime() && (job.isFinalized() || job.isPaused())){
+				logger.warn("you might have missed some events since the job was {}", job.isFinalized() ? "finalized" : "paused");
 			}
 			eventSum += offset;
-    	} while(cursor != null && numOfEvents > 0 && (maxNumOfEvents < 0 || (eventSum < maxNumOfEvents) ) && (earliestTimeCursor == null || SplunkUtil.compareCursors(earliestTimeCursor, cursor) < 0) && numOfEvents >= dispatchMaxCount);
+    	} while(cursor != null && numOfEvents > 0 && (maxNumOfEvents < 0 || (eventSum < maxNumOfEvents) ) && (earliestTimeCursor == null || SplunkUtil.compareCursors(earliestTimeCursor, cursor) < 0) && (job.isFinalized() || job.isPaused()));
         
     	logger.info("finished search");
     	if(eventSum == 0){
