@@ -36,6 +36,10 @@
 					<value>date_time,date_time_unixTime,username,source_ip,local_ip,status,message,country_name,host_name</value>
 				</entry>
 				<entry>
+					<key>timestampField</key>
+					<value>date_time_unixTime</value>
+				</entry>
+				<entry>
 					<key>outputSeparator</key>
 					<value>|</value>
 				</entry>
@@ -44,8 +48,12 @@
 					<value>file:resources/conf-files/readVPN_openVPN.conf</value>
 				</entry>
 				<entry>
-					<key>hadoopFilePath</key>
-					<value>${hdfs.user.data.vpn.file}</value>
+					<key>hadoopPath</key>
+					<value>${hdfs.user.data.vpn.path}</value>
+				</entry>
+				<entry>
+					<key>hadoopFilename</key>
+					<value>vpnETL.csv</value>
 				</entry>
 				<entry>
 					<key>impalaTableName</key>

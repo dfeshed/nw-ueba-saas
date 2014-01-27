@@ -32,7 +32,14 @@ public class ImpalaClient {
 	public void addPartitionToTable(String tableName, Long runtime) throws JobExecutionException{
 		Assert.hasText(tableName);
 		Assert.notNull(runtime);
-		String sql = String.format("alter table %s add partition (runtime=%s)", tableName, runtime.toString());
+		addPartitionToTable(tableName, String.format("runtime=%s", runtime.toString()));
+	}
+	
+	public void addPartitionToTable(String tableName, String partition) throws JobExecutionException {
+		Assert.hasText(tableName);
+		Assert.hasText(partition);
+		
+		String sql = String.format("alter table %s add partition (%s)", tableName, partition);
 		try {
 			impalaJdbcTemplate.execute(sql);
 		} catch (DataAccessException e) {

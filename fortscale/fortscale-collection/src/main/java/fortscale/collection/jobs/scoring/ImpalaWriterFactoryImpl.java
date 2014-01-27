@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Component;
 
-import fortscale.collection.hadoop.HDFSLineAppender;
+import fortscale.utils.hdfs.HDFSLineAppender;
 import fortscale.services.impl.ImpalaGroupsScoreWriter;
 import fortscale.services.impl.ImpalaTotalScoreWriter;
 import fortscale.services.impl.ImpalaUseridToAppUsernameWriter;
