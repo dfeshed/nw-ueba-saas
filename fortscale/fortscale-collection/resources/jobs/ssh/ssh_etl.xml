@@ -49,7 +49,7 @@
 				</entry>
 				<entry>
 					<key>hadoopPath</key>
-					<value>/user/cloudera/data/ssh</value>
+					<value>${hdfs.user.data.ssh.path}</value>
 				</entry>
 				<entry>
 					<key>hadoopFilename</key>

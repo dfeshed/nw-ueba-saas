@@ -59,7 +59,7 @@
 				</entry>
 				<entry>
 					<key>hadoopPath4769</key>
-					<value>/user/cloudera/data/wmi4769</value>
+					<value>${hdfs.user.data.security.events.4769.path}</value>
 				</entry>
 				<entry>
 					<key>hadoopFilename4769</key>
