@@ -1,4 +1,4 @@
-package fortscale.collection.hadoop;
+package fortscale.utils.hdfs;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -8,15 +8,14 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import fortscale.services.impl.HDFSWriter;
-
 /**
  * HDFS file writer that appends lines to file
  */
-public class HDFSLineAppender implements HDFSWriter{
+public class HDFSLineAppender implements HDFSWriter {
 
 	private BufferedWriter writer;
-
+	private FileSystem fs;
+	
 	@Override
 	public void open(String filename) throws IOException {
 		close();
@@ -25,7 +24,7 @@ public class HDFSLineAppender implements HDFSWriter{
 		configuration.addResource(new Path("/etc/hadoop/conf/core-site.xml"));
 		configuration.addResource(new Path("/etc/hadoop/conf/hdfs-site.xml"));
 		
-		FileSystem fs = FileSystem.get(configuration);
+		fs = FileSystem.get(configuration);
 		
 		Path path = new Path(filename);
 		if (fs.exists(path)) {
@@ -37,6 +36,11 @@ public class HDFSLineAppender implements HDFSWriter{
 		}
 	}
 
+	@Override
+	public void writeLine(String line, long timestamp) throws IOException {
+		writeLine(line);
+	}
+	
 	@Override
 	public void writeLine(String line) throws IOException {
 		if (writer!=null && line!=null) {
@@ -55,8 +59,13 @@ public class HDFSLineAppender implements HDFSWriter{
 	@Override
 	public void close() throws IOException {
 		if (writer!=null) {
-			writer.close();
-			writer = null;
+			try {
+				writer.close();
+				writer = null;
+			} finally {
+				fs.close();
+				fs = null;
+			}
 		}
 	}
 
