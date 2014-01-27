@@ -40,7 +40,7 @@
 					<key>eventsToProcess</key>
 					<value>4769</value>
 				</entry>
-				<!--  4769 parameters -->
+				<!--  4769 parameters  -->
 				<entry>
 					<key>morphlineFile4769</key>
 					<value>file:resources/conf-files/processSecEvt4769.conf</value>
