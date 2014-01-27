@@ -9,6 +9,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
 import fortscale.domain.fe.IFeature;
 import fortscale.domain.fe.IFeatureExplanation;
+import fortscale.utils.hdfs.HDFSWriter;
 import fortscale.utils.impala.ImpalaParser;
 
 public class ImpalaGroupsScoreWriter extends ImpalaWriter{

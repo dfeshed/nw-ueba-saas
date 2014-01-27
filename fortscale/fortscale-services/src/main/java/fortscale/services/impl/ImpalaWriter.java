@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+import fortscale.utils.hdfs.HDFSWriter;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 

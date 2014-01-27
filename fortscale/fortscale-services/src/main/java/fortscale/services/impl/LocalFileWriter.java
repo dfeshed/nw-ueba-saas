@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import fortscale.utils.hdfs.HDFSWriter;
 import fortscale.utils.logging.Logger;
 
 public class LocalFileWriter implements HDFSWriter {
@@ -57,6 +58,11 @@ public class LocalFileWriter implements HDFSWriter {
 		}
 		File file = new File(filename);
 		writer = new BufferedWriter(new FileWriter(file));
+	}
+
+	@Override
+	public void writeLine(String line, long timestamp) throws IOException {
+		writeLine(line);
 	}
 
 }
