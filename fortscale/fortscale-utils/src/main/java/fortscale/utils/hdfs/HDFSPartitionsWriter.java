@@ -117,6 +117,12 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 		}
 		
 		fs.close();
+		
+		// cleanup members
+		fs = null;
+		writers = new HashMap<String, BufferedWriter>(2);
+		newPartitions = new LinkedList<String>();
+		
 		if (lastException!=null)
 			throw lastException;
 	}
@@ -156,7 +162,8 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 
 			// stored the new partition to be used later for impala refresh
 			String partitionName = partitionStrategy.getImpalaPartitionName(timestamp);
-			newPartitions.add(partitionName);
+			if (partitionName!=null)
+				newPartitions.add(partitionName);
 		}
 		
 		// check if a writer already created for that file

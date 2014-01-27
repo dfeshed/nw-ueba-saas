@@ -38,7 +38,7 @@ public class HDFSLineAppender implements HDFSWriter {
 
 	@Override
 	public void writeLine(String line, long timestamp) throws IOException {
-		writeLine(line, 0);
+		writeLine(line);
 	}
 	
 	@Override
