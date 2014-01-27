@@ -3,7 +3,6 @@ package fortscale.domain.fe;
 import java.util.Map;
 
 import org.joda.time.DateTime;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -43,7 +42,6 @@ public class EventResult  extends AbstractDocument{
 	private DateTime eventTime;
 	
 	
-	@CreatedDate
 	@Indexed
     @Field(CREATED_AT_FIELD_NAME)
     private DateTime createdAt;
@@ -93,6 +91,10 @@ public class EventResult  extends AbstractDocument{
 
 	public void setTotal(int total) {
 		this.total = total;
+	}
+	
+	public void setCreatedAt(DateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 	
 	public DateTime getCreatedAt() {
