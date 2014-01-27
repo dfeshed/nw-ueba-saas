@@ -21,6 +21,8 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.BasicDBObject;
 
+import fortscale.collection.morphlines.RecordExtensions;
+
 
 @Component
 public class DHCPEventsSink {
@@ -69,12 +71,12 @@ public class DHCPEventsSink {
 			DBObject object =  new BasicDBObject();
 			
 			try {
-				object.put("datetime", getStringValue(record, "date_time"));
-				Long timestampepoch = getLongValue(record, "date_time_epoch");
+				object.put("datetime", RecordExtensions.getStringValue(record, "date_time"));
+				Long timestampepoch = RecordExtensions.getLongValue(record, "date_time_epoch");
 				object.put("timestampepoch", timestampepoch);
-				object.put("ip_address", getStringValue(record, "ip"));
-				object.put("hostname", getStringValue(record, "hostname"));
-				object.put("MAC_address", getStringValue(record, "mac_address"));
+				object.put("ip_address", RecordExtensions.getStringValue(record, "ip"));
+				object.put("hostname", RecordExtensions.getStringValue(record, "hostname"));
+				object.put("MAC_address", RecordExtensions.getStringValue(record, "mac_address"));
 				object.put("datetimeparsed", new Date(timestampepoch));
 			} catch (Exception e) {
 				// just log the error and return as usual, do not propagate exception 
@@ -135,33 +137,5 @@ public class DHCPEventsSink {
 		}
 		return sb.toString();
 	}
-
-	private String getStringValue(Record record, String field) throws IllegalArgumentException {
-		Object value = record.getFirstValue(field);
-		if (value!=null && value instanceof String) {
-			return (String)value;
-		} else {
-			logger.debug(String.format("field %s is missing from morphline record %s", field, record.toString()));
-			throw new IllegalArgumentException("field " + field + " is missing from morphlines record");
-		}
-	}
-	
-	private Long getLongValue(Record record, String field) throws IllegalArgumentException  {
-		Object value = record.getFirstValue(field);
-		if (value!=null && value instanceof Long) {
-			return (Long)value;
-		} else if (value!=null && value instanceof Integer) {
-			Integer intValue = (Integer)value;
-			return intValue.longValue();
-		} else if (value!=null && value instanceof String) {
-			// try to parse the string into number
-			String strValue = (String)value;
-			return Long.parseLong(strValue);
-		} else {
-			logger.debug(String.format("field %s is missing from morphline record %s", field, record.toString()));
-			throw new IllegalArgumentException("field " + field + " is missing from morphlines record");
-		}
-	}
-	
 
 }

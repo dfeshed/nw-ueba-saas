@@ -47,7 +47,6 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 	@Override
 	protected int getTotalNumOfSteps() {
-		// TODO Auto-generated method stub
 		return 1;
 	}
 

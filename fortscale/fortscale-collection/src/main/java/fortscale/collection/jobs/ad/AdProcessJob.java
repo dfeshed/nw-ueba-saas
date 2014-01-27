@@ -13,7 +13,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.hadoop.HDFSLineAppender;
+import fortscale.utils.hdfs.HDFSLineAppender;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.jobs.FortscaleJob;

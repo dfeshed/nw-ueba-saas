@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
@@ -17,10 +19,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.collection.JobDataMapExtension;
-import fortscale.collection.hadoop.HDFSLineAppender;
+import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.collection.hadoop.ImpalaClient;
+import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
+import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
@@ -40,11 +45,13 @@ public class EventProcessJob implements Job {
 	protected MorphlinesItemsProcessor morphline;
 	protected RecordToStringItemsProcessor recordToString;
 	protected String monitorId;
-	protected String hadoopFilePath;
+	protected String hadoopPath;
+	protected String hadoopFilename;
 	protected String impalaTableName;
-	protected HDFSLineAppender appender;
-	
-	
+	protected HDFSPartitionsWriter appender;
+	protected String partitionType;
+	protected String fileSplitType;
+	protected String timestampField;
 	
 	@Autowired
 	protected ImpalaClient impalaClient;
@@ -63,8 +70,10 @@ public class EventProcessJob implements Job {
 		errorPath = jobDataMapExtension.getJobDataMapStringValue(map, "errorPath");
 		finishPath = jobDataMapExtension.getJobDataMapStringValue(map, "finishPath");
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
-		hadoopFilePath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilePath");
+		hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath");
+		hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename");
 		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
+		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
 		
 		// build record to items processor
 		String[] outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields").split(",");
@@ -210,9 +219,9 @@ public class EventProcessJob implements Job {
 		String output = recordToString.process(record);
 		
 		// append to hadoop, if there is data to be written
-		
 		if (output!=null) {
-			appender.writeLine(output);
+			Long timestamp = RecordExtensions.getLongValue(record, timestampField);
+			appender.writeLine(output, timestamp.longValue());
 			return true;
 		} else {
 			return false;
@@ -220,21 +229,45 @@ public class EventProcessJob implements Job {
 	}
 	
 	protected void refreshImpala() throws JobExecutionException {
-		impalaClient.refreshTable(impalaTableName);
+
+		List<JobExecutionException> exceptions = new LinkedList<JobExecutionException>();
+		
+		// declare new partitions for impala
+		for (String partition : appender.getNewPartitions()) {
+			try {
+				impalaClient.addPartitionToTable(impalaTableName, partition); 
+			} catch (JobExecutionException e) {
+				exceptions.add(e);
+			}
+		}
+		
+		try {
+			impalaClient.refreshTable(impalaTableName);
+		} catch (JobExecutionException e) {
+			exceptions.add(e);
+		}
+		
+		// log all errors if any
+		for (JobExecutionException e : exceptions) {
+			logger.error("", e);
+			monitor.error(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+		}
+		if (!exceptions.isEmpty())
+			throw exceptions.get(0);
 	}
-	
 	
 	protected void createOutputAppender() throws JobExecutionException {
 		try {
-			logger.debug("opening hdfs file {} for append", hadoopFilePath);
+			logger.debug("initializing hadoop appender in {}", hadoopPath);
 
-			appender = new HDFSLineAppender();
-			appender.open(hadoopFilePath);
+			// calculate file directory path according to partition strategy
+			appender = new HDFSPartitionsWriter(hadoopPath, new MonthlyPartitionStrategy(), new DailyFileSplitStrategy());
+			appender.open(hadoopFilename);
 
 		} catch (IOException e) {
-			logger.error("error opening hdfs file for append at " + hadoopFilePath, e);
-			monitor.error(monitorId, "Process Files", String.format("error appending to hdfs file %s: \n %s",  hadoopFilePath, e.toString()));
-			throw new JobExecutionException("error opening hdfs file for append at " + hadoopFilePath, e);
+			logger.error("error creating hdfs partitions writer at " + hadoopPath, e);
+			monitor.error(monitorId, "Process Files", String.format("error creating hdfs partitions writer at %s: \n %s",  hadoopPath, e.toString()));
+			throw new JobExecutionException("error creating hdfs partitions writer at " + hadoopPath, e);
 		}
 	}
 	
@@ -242,20 +275,20 @@ public class EventProcessJob implements Job {
 		try {
 			appender.flush();
 		} catch (IOException e) {
-			logger.error("error flushing hdfs file " + hadoopFilePath, e);
-			monitor.error(monitorId, "Process Files", String.format("error flushing hdfs file %s: \n %s",  hadoopFilePath, e.toString()));
+			logger.error("error flushing hdfs partitions writer at " + hadoopPath, e);
+			monitor.error(monitorId, "Process Files", String.format("error flushing partitions at %s: \n %s",  hadoopPath, e.toString()));
 			throw e;
 		}
 	}
 	
 	protected void closeOutputAppender() throws JobExecutionException {
 		try {
-			logger.debug("closing hdfs file {}", hadoopFilePath);
-			appender.close();
+			logger.debug("flushing hdfs paritions at {}", hadoopPath);
+			appender.close(); 
 		} catch (IOException e) {
-			logger.error("error closing hdfs file " + hadoopFilePath, e);
-			monitor.error(monitorId, "Process Files", String.format("error closing hdfs file %s: \n %s",  hadoopFilePath, e.toString()));
-			throw new JobExecutionException("error closing hdfs file " + hadoopFilePath, e);
+			logger.error("error closing hdfs partitions writer at " + hadoopPath, e);
+			monitor.error(monitorId, "Process Files", String.format("error closing partitions at %s: \n %s",  hadoopPath, e.toString()));
+			throw new JobExecutionException("error closing partitions at " + hadoopPath, e);
 		}
 	}
 	

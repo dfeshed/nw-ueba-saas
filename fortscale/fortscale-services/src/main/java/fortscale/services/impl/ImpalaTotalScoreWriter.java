@@ -8,6 +8,7 @@ import fortscale.domain.analyst.ScoreWeight;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
 import fortscale.services.fe.Classifier;
+import fortscale.utils.hdfs.HDFSWriter;
 import fortscale.utils.impala.ImpalaParser;
 
 public class ImpalaTotalScoreWriter extends ImpalaWriter{
