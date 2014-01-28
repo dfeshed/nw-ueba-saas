@@ -104,7 +104,15 @@ public class SplunkFetchSavedQueryJob implements Job {
 			logger.debug("running splunk saved query");
 			splunkApi.runSavedSearch(savedQuery, properties, null, handler);
 		} catch (Exception e) {
+			// log error and delete output
 			logger.error("error running splunk query", e);
+			monitor.error(monitorId, "Query Splunk", "error during events from splunk to file " + outputTempFile.getName() + "\n" + e.toString());
+			try {
+				outputTempFile.delete();
+			} catch (Exception ex) {
+				logger.error("cannot delete temp output file " + outputTempFile.getName());
+				monitor.error(monitorId, "Query Splunk", "cannot delete temporary events file " + outputTempFile.getName());
+			}
 			throw new JobExecutionException("error running splunk query");
 		}
 		monitor.finishStep(monitorId, "Query Splunk");
