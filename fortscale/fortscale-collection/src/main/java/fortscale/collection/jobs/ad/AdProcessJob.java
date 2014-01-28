@@ -216,6 +216,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 			try {
 				impalaClient.addPartitionToTable(impalaTableName, partition);
 			} catch (JobExecutionException e) {
+				logger.error(String.format("error adding partition '%s' to table '%s'", partition, impalaTableName), e);
 				lastException = e;
 			}
 		}

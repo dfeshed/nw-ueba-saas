@@ -29,13 +29,14 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 	public void writeScore(User user, AdUserFeaturesExtraction extraction, double avgScore){
 		Date timestamp = extraction.getTimestamp();
 		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp), user.getId(),user.getAdInfo().getDn(), user.getUsername(), extraction.getScore(), avgScore,getRundate(timestamp));
-		for(IFeature feature: extraction.getAttributes()){
-			String featureLine = writeFeature(feature);
-			writeLine(csvLineString + featureLine, getRuntime(timestamp));
+		for(IFeature feature: extraction.getAttributes()) {
+			StringBuilder sb = new StringBuilder(csvLineString);
+			writeFeature(sb, feature);
+			writeLine(sb.toString(), getRuntime(timestamp));
 		}
 	}
 	
-	public String writeFeature(IFeature feature){
+	private void writeFeature(StringBuilder sb, IFeature feature){
 		IFeatureExplanation explanation = feature.getFeatureExplanation();
 		String ref = "";
 		String refs = "";
@@ -49,9 +50,19 @@ public class ImpalaGroupsScoreWriter extends ImpalaWriter{
 			count = explanation.getFeatureCount().toString();
 			dist = explanation.getFeatureDistribution().toString();
 		}
-		String csvLineString = String.format("|%s|%s|%s|%s|%s|%s", feature.getFeatureUniqueName(), feature.getFeatureScore(),
-				dist, count, ref, refs);
-		return csvLineString;
+		
+		sb.append("|");
+		sb.append(feature.getFeatureUniqueName());
+		sb.append("|");
+		sb.append(feature.getFeatureScore());
+		sb.append("|");
+		sb.append(dist);
+		sb.append("|");
+		sb.append(count);
+		sb.append("|");
+		sb.append(ref);
+		sb.append("|");
+		sb.append(refs);
 	}
 	
 }
