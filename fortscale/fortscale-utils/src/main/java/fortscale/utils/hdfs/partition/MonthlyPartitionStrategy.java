@@ -74,7 +74,8 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		sb.append(normalizedBasePath);
 		if (!normalizedBasePath.endsWith("/"))
 			sb.append('/');
-		sb.append(String.format("yearmonth=%s%02d/", when.getYear(), when.getMonthOfYear()));
+		sb.append(getImpalaPartitionName(when.getMillis()));
+		sb.append("/");
 
 		
 		return sb.toString();
