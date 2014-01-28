@@ -116,7 +116,8 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 			}
 		}
 		
-		fs.close();
+		if (fs!=null)
+			fs.close();
 		
 		// cleanup members
 		fs = null;

@@ -62,11 +62,11 @@
 	</chain>
 	<chain>
 		<first>
-			<name>Group Fetch</name>
+			<name>Group_Fetch</name>
 			<group>AD</group>
 		</first>
 		<second>
-			<name>Group ETL</name>
+			<name>Group_ETL</name>
 			<group>AD</group>
 		</second>
 	</chain>

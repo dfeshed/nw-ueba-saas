@@ -27,20 +27,20 @@ public class ImpalaWriter{
 		this.writer = writer;
 	}
 	
-	public void write(String str){
+	public void writeLine(String str, long ts){
 		if (writer != null) {
 			try {
-				writer.write(str);
+				writer.writeLine(str, ts);
 			} catch (IOException e) {
 				logger.error("got and exception while trying to write to local file for impala use.", e);
 			}
 		}
 	}
 
-	public void newLine(){
+	public void newLine(long ts){
 		if (writer != null) {
 			try {
-				writer.writeLine("");
+				writer.writeLine("", ts);
 			} catch (IOException e) {
 				logger.error("got and exception while trying to write new line to local file for impala use.", e);
 			}

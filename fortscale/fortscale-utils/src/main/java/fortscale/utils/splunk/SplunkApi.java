@@ -271,7 +271,7 @@ public class SplunkApi {
 	
 	
 	public String runSearchQuery(String splunkSearchQuery, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler) throws Exception{
-		return runSearchQuery(splunkSearchQuery, earliestTimeCursor, splunkEventsHandler, false);
+		return runSearchQuery(splunkSearchQuery, earliestTimeCursor, splunkEventsHandler, true);
 	}
 	
 	public String runSearchQuery(String splunkSearchQuery, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler, boolean isContainTime) throws Exception{
@@ -282,7 +282,7 @@ public class SplunkApi {
 	}
 	
 	public String runSavedSearch(String savedSearchName, Properties arguments, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler) throws Exception{
-		return runSavedSearch(savedSearchName, arguments, earliestTimeCursor, splunkEventsHandler, false);
+		return runSavedSearch(savedSearchName, arguments, earliestTimeCursor, splunkEventsHandler, true);
 	}
 	
 	public String runSavedSearch(String savedSearchName, Properties arguments, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler, boolean isContainTime) throws Exception{
@@ -325,10 +325,12 @@ public class SplunkApi {
 		String cursor = null;
         
         int numOfEvents = -1;
+        int dispatchMaxCount = searchJob.getDispatchMaxCount(splunkService);
         
 		
         int eventSum = 0;
         Job job = null;
+        int numOfTimesJobFinalized = 0;
     	do{
     		
     		job = searchJob.run(splunkService, earliestTimeCursor, cursor);
@@ -337,10 +339,15 @@ public class SplunkApi {
     		}
 			
 			numOfEvents = job.getEventCount();
-			if(numOfEvents > 500000){
-				numOfEvents = 500000;
+			if(job.isFinalized() || job.isPaused()){
+				if(numOfEvents < dispatchMaxCount){
+					numOfTimesJobFinalized++;
+					if(numOfTimesJobFinalized > 3){
+						logger.error("The search job was finalized or paused {} times. The last job unique search identifier is {}.", numOfTimesJobFinalized, job.getSid());
+						throw new RuntimeException(String.format("The search job was finalized %d times. The last job unique search identifier is %s.", numOfTimesJobFinalized, job.getSid()));
+					}
+				}
 			}
-			
 			
 			logger.info("going over {} events", numOfEvents);
 			int offset = 0;
@@ -364,7 +371,10 @@ public class SplunkApi {
 			            	if(retCursor != null){
 			            		logger.info("return cursor: {}", retCursor);
 			            	} else{
-			            		logger.error("event does not contain timestamp. event: {}", event.toString());
+			            		if(offset > 0){
+			            			logger.error("event does not contain timestamp. event: {}", event.toString());
+			            			throw new RuntimeException(String.format("event does not contain timestamp. event: %s", event.toString()));
+			            		}
 			            	}
 			            }
 			       
@@ -373,11 +383,13 @@ public class SplunkApi {
 			        	offset++;
 			        	lastEvent = event;
 			        }
-			        if(lastEvent != null){
-			        	cursor = lastEvent.get("_time");
-			        	logger.info("last event time {}", cursor);
-			        } else{
-			        	break;
+			        if(searchJob.isContainTime() && lastEvent != null){
+			        	cursor = lastEvent.get(SPLUNK_TIMESTAMP_FIELD);
+			        	if(cursor == null){
+			        		logger.error("last event does not contain timestamp. event: {}", lastEvent.toString());
+			        	} else{
+			        		logger.info("last event time {}", cursor);
+			        	}
 			        }
 		        } finally{
 		        	if(reader != null){
@@ -388,8 +400,11 @@ public class SplunkApi {
 		        	}
 		        }
 			}
+			if(!searchJob.isContainTime() && (job.isFinalized() || job.isPaused())){
+				logger.warn("you might have missed some events since the job was {}", job.isFinalized() ? "finalized" : "paused");
+			}
 			eventSum += offset;
-    	} while(numOfEvents > 0 && (maxNumOfEvents < 0 || (eventSum < maxNumOfEvents) ) && (earliestTimeCursor == null || SplunkUtil.compareCursors(earliestTimeCursor, cursor) < 0) && numOfEvents >= searchJob.getDispatchMaxCount(splunkService));
+    	} while(cursor != null && numOfEvents > 0 && (maxNumOfEvents < 0 || (eventSum < maxNumOfEvents) ) && (earliestTimeCursor == null || SplunkUtil.compareCursors(earliestTimeCursor, cursor) < 0) && (job.isFinalized() || job.isPaused()));
         
     	logger.info("finished search");
     	if(eventSum == 0){
