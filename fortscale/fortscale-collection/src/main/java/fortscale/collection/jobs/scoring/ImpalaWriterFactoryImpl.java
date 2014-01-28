@@ -4,7 +4,9 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Component;
 
-import fortscale.utils.hdfs.HDFSLineAppender;
+import fortscale.utils.hdfs.HDFSPartitionsWriter;
+import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
 import fortscale.services.impl.ImpalaGroupsScoreWriter;
 import fortscale.services.impl.ImpalaTotalScoreWriter;
 import fortscale.services.impl.ImpalaUseridToAppUsernameWriter;
@@ -13,12 +15,12 @@ import fortscale.services.impl.ImpalaWriterFactory;
 @Component
 public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	
-	private HDFSLineAppender groupsScoreAppender;
-	private HDFSLineAppender totalScoreAppender;
+	private HDFSPartitionsWriter groupsScoreAppender;
+	private HDFSPartitionsWriter totalScoreAppender;
 	
-	public void createGroupsScoreAppender(String filename) throws IOException{
+	public void createGroupsScoreAppender(String basePath, String filename) throws IOException{
 		if(groupsScoreAppender == null){
-			groupsScoreAppender = new HDFSLineAppender();
+			groupsScoreAppender = new HDFSPartitionsWriter(basePath, new MonthlyPartitionStrategy(), new DefaultFileSplitStrategy());
 		}
 		groupsScoreAppender.open(filename);
 	}
@@ -27,9 +29,9 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 		groupsScoreAppender.close();
 	}
 	
-	public void createTotalScoreAppender(String filename) throws IOException{
+	public void createTotalScoreAppender(String basePath, String filename) throws IOException{
 		if(totalScoreAppender == null){
-			totalScoreAppender = new HDFSLineAppender();
+			totalScoreAppender = new HDFSPartitionsWriter(basePath, new MonthlyPartitionStrategy(), new DefaultFileSplitStrategy());
 		}
 		totalScoreAppender.open(filename);
 	}

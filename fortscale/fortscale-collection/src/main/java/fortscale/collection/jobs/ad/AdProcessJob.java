@@ -13,7 +13,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.utils.hdfs.HDFSLineAppender;
+import fortscale.utils.hdfs.HDFSPartitionsWriter;
+import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.jobs.FortscaleJob;
@@ -38,8 +40,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 	protected MorphlinesItemsProcessor morphline;
 	protected RecordToStringItemsProcessor recordToString;
 
-	protected HDFSLineAppender appender;
-	String hadoopFilePath;
+	protected HDFSPartitionsWriter appender;
+	protected String hadoopFilename;
 
 	// job parameters:
 	private String ldiftocsv;
@@ -76,8 +78,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 		
 		// generate filename according to the job name and time
-		String filename = String.format(filenameFormat, (new Date()).getTime()/1000);
-		hadoopFilePath = String.format("%s/%s", hadoopDirPath, filename);
+		hadoopFilename = String.format(filenameFormat, (new Date()).getTime()/1000);
 	}
 
 	@Override
@@ -167,7 +168,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 				record.put("timestamp", timestamp);
 				record.put("timestampepoch", timestampepoch);
 				if(updateDb(record)){
-					writeToHdfs(record);
+					writeToHdfs(record, runtime.getTime());
 				}
 			}
 		}
@@ -193,13 +194,13 @@ public abstract class AdProcessJob extends FortscaleJob {
 		return morphline.process(line);
 	}
 	
-	protected boolean writeToHdfs(Record record) throws IOException{
+	protected boolean writeToHdfs(Record record, long runtime) throws IOException{
 		String output = recordToString.process(record);
 
 		// append to hadoop, if there is data to be written
 
 		if (output != null) {
-			appender.writeLine(output);
+			appender.writeLine(output, runtime);
 			return true;
 		} else {
 			return false;
@@ -208,7 +209,23 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	protected void refreshImpala() throws JobExecutionException {
 		startNewStep("impala refresh");
+		
+		// add any new partition created during write to hdfs
+		JobExecutionException lastException = null;
+		for (String partition : appender.getNewPartitions()) {
+			try {
+				impalaClient.addPartitionToTable(impalaTableName, partition);
+			} catch (JobExecutionException e) {
+				logger.error(String.format("error adding partition '%s' to table '%s'", partition, impalaTableName), e);
+				lastException = e;
+			}
+		}
+		
 		impalaClient.refreshTable(impalaTableName);
+		
+		if (lastException!=null)
+			throw lastException;
+		
 		finishStep();
 	}
 
@@ -217,14 +234,13 @@ public abstract class AdProcessJob extends FortscaleJob {
 		try {
 			logger.debug("opening hdfs file {} for append", hadoopDirPath);
 
-			appender = new HDFSLineAppender();
-			
-			appender.open(hadoopFilePath);
+			appender = new HDFSPartitionsWriter(hadoopDirPath, new MonthlyPartitionStrategy(), new DefaultFileSplitStrategy());
+			appender.open(hadoopFilename);
 
 		} catch (IOException e) {
-			logger.error("error opening hdfs file for append at " + hadoopFilePath, e);
-			monitor.error(getMonitorId(), getStepName(), String.format("error opening hdfs file %s: \n %s", hadoopFilePath, e.toString()));
-			throw new JobExecutionException("error opening hdfs file for append at " + hadoopFilePath, e);
+			logger.error("error opening hdfs file for append at " + hadoopDirPath, e);
+			monitor.error(getMonitorId(), getStepName(), String.format("error opening hdfs file %s: \n %s", hadoopDirPath, e.toString()));
+			throw new JobExecutionException("error opening hdfs file for append at " + hadoopDirPath, e);
 		}
 	}
 
@@ -232,20 +248,20 @@ public abstract class AdProcessJob extends FortscaleJob {
 		try {
 			appender.flush();
 		} catch (IOException e) {
-			logger.error("error flushing hdfs file " + hadoopFilePath, e);
-			monitor.error(getMonitorId(), getStepName(), String.format("error flushing hdfs file %s: \n %s", hadoopFilePath, e.toString()));
+			logger.error("error flushing hdfs file " + hadoopDirPath, e);
+			monitor.error(getMonitorId(), getStepName(), String.format("error flushing hdfs file %s: \n %s", hadoopDirPath, e.toString()));
 			throw e;
 		}
 	}
 
 	protected void closeOutputAppender() throws JobExecutionException {
 		try {
-			logger.debug("closing hdfs file {}", hadoopFilePath);
+			logger.debug("closing hdfs file {}", hadoopDirPath);
 			appender.close();
 		} catch (IOException e) {
-			logger.error("error closing hdfs file " + hadoopFilePath, e);
-			monitor.error(getMonitorId(), getStepName(), String.format("error closing hdfs file %s: \n %s", hadoopFilePath, e.toString()));
-			throw new JobExecutionException("error closing hdfs file " + hadoopFilePath, e);
+			logger.error("error closing hdfs file " + hadoopDirPath, e);
+			monitor.error(getMonitorId(), getStepName(), String.format("error closing hdfs file %s: \n %s", hadoopDirPath, e.toString()));
+			throw new JobExecutionException("error closing hdfs file " + hadoopDirPath, e);
 		}
 	}
 
