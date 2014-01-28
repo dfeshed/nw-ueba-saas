@@ -15,7 +15,7 @@ import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.jobs.ad.AdProcessJob;
-import fortscale.services.UserService;
+import fortscale.services.UserServiceFacade;
 import fortscale.utils.logging.Logger;
 
 public class AdGroupMembershipScoringJob extends FortscaleJob {
@@ -26,7 +26,7 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 	protected ImpalaClient impalaClient;
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceFacade userServiceFacade;
 	
 	@Autowired
 	private ImpalaWriterFactoryImpl impalaWriterFactory;
@@ -89,7 +89,7 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 		}
 		
 		try {
-			userService.updateUserWithGroupMembershipScore();
+			userServiceFacade.updateUserWithGroupMembershipScore();
 		} catch(Exception e){
 			logger.error("got an exception during the process of updating group membership.", e);
 			monitor.error(getMonitorId(), getStepName(),String.format("got an exception during the process of updating group membership: %s", e.toString()));

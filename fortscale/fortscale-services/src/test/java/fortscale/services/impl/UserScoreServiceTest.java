@@ -11,34 +11,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import fortscale.domain.ad.dao.AdGroupRepository;
-import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
-import fortscale.domain.fe.dao.AuthDAO;
-import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.IUserScoreHistoryElement;
+import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
-import fortscale.utils.actdir.ADUserParser;
 
-public class UserServiceTest {
-	@Mock
-	private MongoOperations mongoTemplate;
-	
-	@Mock
-	private AdUserRepository adUserRepository;
-	
-	@Mock
-	private AdGroupRepository adGroupRepository;
-		
+public class UserScoreServiceTest {	
 	@Mock
 	private UserRepository userRepository;
 	
@@ -47,33 +31,12 @@ public class UserServiceTest {
 	
 	@Mock
 	private ClassifierService classifierService;
-	
+				
 	@Mock
-	private UserMachineDAO userMachineDAO;
-	
-	@Mock
-	private AuthDAO loginDAO;
-	
-	@Mock
-	private AuthDAO sshDAO;
-	
-	@Mock
-	private VpnDAO vpnDAO;
-	
-	@Mock
-	private ImpalaWriterFactory impalaWriterFactory;
-	
-	@Mock
-	private ThreadPoolTaskExecutor mongoDbReaderExecuter;
-	
-	@Mock
-	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
-	
-	@Mock 
-	private ADUserParser adUserParser; 
-	
+	private ConfigurationService configurationService; 
+		
 	@InjectMocks
-	private UserServiceImpl userService;
+	private UserScoreServiceImpl userScoreService;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -97,7 +60,7 @@ public class UserServiceTest {
 		User user = new User();
 		user.putClassifierScore(classifierScore);
 		Mockito.when(userRepository.findOne(uid)).thenReturn(user);
-		List<IUserScoreHistoryElement> elements = userService.getUserScoresHistory(uid, classifierId, 0, 10);
+		List<IUserScoreHistoryElement> elements = userScoreService.getUserScoresHistory(uid, classifierId, 0, 10);
 		
 		Assert.assertEquals(infos.size(),elements.size());
 	}
@@ -129,7 +92,7 @@ public class UserServiceTest {
 		User user = new User();
 		user.putClassifierScore(classifierScore);
 		Mockito.when(userRepository.findOne(uid)).thenReturn(user);
-		List<IUserScoreHistoryElement> elements = userService.getUserScoresHistory(uid, classifierId, offset, limit);
+		List<IUserScoreHistoryElement> elements = userScoreService.getUserScoresHistory(uid, classifierId, offset, limit);
 		
 		Assert.assertEquals(limit,elements.size());
 		for(int i = 0; i < limit; i++){

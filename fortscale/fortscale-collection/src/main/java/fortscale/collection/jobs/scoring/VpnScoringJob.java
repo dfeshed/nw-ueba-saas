@@ -4,16 +4,16 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.services.UserService;
+import fortscale.services.UserServiceFacade;
 
 public class VpnScoringJob extends EventScoringJob{
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceFacade userServiceFacade;
 			
 	@Override
 	protected boolean runUpdateUserWithEventScore(Date runtime){
-		userService.updateUserWithVpnScore(runtime);
+		userServiceFacade.updateUserWithVpnScore(runtime);
 		
 		return true;
 	}

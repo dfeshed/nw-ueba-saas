@@ -1,24 +1,27 @@
 package fortscale.services.fe;
 
 import fortscale.services.LogEventsEnum;
+import fortscale.services.UserApplication;
 import fortscale.services.exceptions.InvalidValueException;
 
 public enum Classifier {
-	ad("active_directory","User Profile",null),
-	groups("active_directory_group_membership","Groups",null),
-	vpn("vpn","VPN",null),
-	auth("auth","Logins",LogEventsEnum.login),
-	ssh("ssh","SSH",LogEventsEnum.ssh),
-	total("total","Total Score",null);
+	ad("active_directory","User Profile",null, UserApplication.active_directory),
+	groups("active_directory_group_membership","Groups",null, UserApplication.active_directory),
+	vpn("vpn","VPN",null, UserApplication.vpn),
+	auth("auth","Logins",LogEventsEnum.login, UserApplication.active_directory),
+	ssh("ssh","SSH",LogEventsEnum.ssh, UserApplication.ssh),
+	total("total","Total Score",null, null);
 	
 	private String id;
 	private String displayName;
 	private LogEventsEnum logEventsEnum;
+	private UserApplication userApplication;
 	
-	Classifier(String id, String displayName, LogEventsEnum logEventsEnum) {
+	Classifier(String id, String displayName, LogEventsEnum logEventsEnum, UserApplication userApplication) {
 		this.id = id;
 		this.displayName = displayName;
 		this.setLogEventsEnum(logEventsEnum);
+		this.userApplication = userApplication;
 	}
 
 	public String getId() {
@@ -49,6 +52,16 @@ public enum Classifier {
 	public void setLogEventsEnum(LogEventsEnum logEventsEnum) {
 		this.logEventsEnum = logEventsEnum;
 	}
+
+	public UserApplication getUserApplication() {
+		return userApplication;
+	}
+
+	public void setUserApplication(UserApplication userApplication) {
+		this.userApplication = userApplication;
+	}
+	
+	
 	
 	
 //	public static String getAdClassifierUniqueName(){

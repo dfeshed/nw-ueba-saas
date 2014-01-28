@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fortscale.services.AdService;
-import fortscale.services.UserService;
+import fortscale.services.UserServiceFacade;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.impl.FeServiceImpl;
 import fortscale.services.impl.ImpalaWriterFactory;
@@ -18,7 +18,7 @@ public class FortscaleBatch {
 	@Autowired
 	private FeServiceImpl feService;
 	@Autowired
-	private UserService userService;
+	private UserServiceFacade userServiceFacade;
 	@Autowired
 	private AdService adService;
 	@Autowired
@@ -40,11 +40,11 @@ public class FortscaleBatch {
 		if(userTotalScoreCsvFileFullPathString != null) {
 			impalaGroupsScoreWriterFactory.setUserTotalScoreCsvFileFullPathString(userTotalScoreCsvFileFullPathString);
 		}
-		userService.updateUserWithGroupMembershipScore();
+		userServiceFacade.updateUserWithGroupMembershipScore();
 	}
 	
 	public void updateAdInfo() {
-		userService.updateUserWithCurrentADInfo();
+		userServiceFacade.updateUserWithCurrentADInfo();
 		adService.addLastModifiedFieldToAllCollections();
 		adService.removeThumbnails();
 	}
@@ -53,20 +53,20 @@ public class FortscaleBatch {
 		if(userTotalScoreCsvFileFullPathString != null) {
 			impalaGroupsScoreWriterFactory.setUserTotalScoreCsvFileFullPathString(userTotalScoreCsvFileFullPathString);
 		}
-		userService.updateUserWithAuthScore(Classifier.auth);
+		userServiceFacade.updateUserWithAuthScore(Classifier.auth);
 	}
 	
 	public void updateSshScore(String userTotalScoreCsvFileFullPathString) {
 		if(userTotalScoreCsvFileFullPathString != null) {
 			impalaGroupsScoreWriterFactory.setUserTotalScoreCsvFileFullPathString(userTotalScoreCsvFileFullPathString);
 		}
-		userService.updateUserWithAuthScore(Classifier.ssh);
+		userServiceFacade.updateUserWithAuthScore(Classifier.ssh);
 	}
 	
 	public void updateVpnScore(String userTotalScoreCsvFileFullPathString) {
 		if(userTotalScoreCsvFileFullPathString != null) {
 			impalaGroupsScoreWriterFactory.setUserTotalScoreCsvFileFullPathString(userTotalScoreCsvFileFullPathString);
 		}
-		userService.updateUserWithVpnScore();
+		userServiceFacade.updateUserWithVpnScore();
 	}
 }
