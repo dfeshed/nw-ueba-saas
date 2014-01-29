@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class MonthlyPartitionStrategyTest {
 		String[] actuals = strategy.getPartitionsForDateRange("/base/path", start, finish);
 		
 		// assert
-		assertArrayEquals(new String[] { "/base/path/year=2014/month=1/" }, actuals);
+		assertArrayEquals(new String[] { "/base/path/yearmonth=201401/" }, actuals);
 	}
 	
 	@Test
@@ -35,7 +36,7 @@ public class MonthlyPartitionStrategyTest {
 		String[] actuals = strategy.getPartitionsForDateRange("/base/path", start, finish);
 		
 		// assert
-		assertArrayEquals(new String[] { "/base/path/year=2014/month=1/", "/base/path/year=2014/month=2/" }, actuals);
+		assertArrayEquals(new String[] { "/base/path/yearmonth=201401/", "/base/path/yearmonth=201402/" }, actuals);
 	}
 	
 	@Test
@@ -49,7 +50,7 @@ public class MonthlyPartitionStrategyTest {
 		String[] actuals = strategy.getPartitionsForDateRange("/base/path", start, finish);
 		
 		// assert
-		assertArrayEquals(new String[] { "/base/path/year=2014/month=1/", "/base/path/year=2014/month=2/" }, actuals);
+		assertArrayEquals(new String[] { "/base/path/yearmonth=201401/", "/base/path/yearmonth=201402/" }, actuals);
 	}
 	
 	@Test
@@ -62,7 +63,7 @@ public class MonthlyPartitionStrategyTest {
 		String actual = strategy.getImpalaPartitionName(ts);
 		
 		// assert
-		assertEquals("year=2013,month=12", actual);
+		assertEquals("yearmonth=201312", actual);
 	}
 	
 	@Test
@@ -75,7 +76,7 @@ public class MonthlyPartitionStrategyTest {
 		String actual = strategy.getImpalaPartitionName(ts);
 		
 		// assert
-		assertEquals("year=2013,month=12", actual);
+		assertEquals("yearmonth=201312", actual);
 	} 
 	
 	@Test
@@ -88,7 +89,7 @@ public class MonthlyPartitionStrategyTest {
 		String actual = strategy.getPartitionPath(ts, "/user/cloudera/data/ssh");
 		
 		// assert
-		assertEquals("/user/cloudera/data/ssh/year=2013/month=12/", actual);
+		assertEquals("/user/cloudera/data/ssh/yearmonth=201312/", actual);
 	}
 	
 	@Test
@@ -101,7 +102,7 @@ public class MonthlyPartitionStrategyTest {
 		String actual = strategy.getPartitionPath(ts, "/user/cloudera/data/ssh");
 		
 		// assert
-		assertEquals("/user/cloudera/data/ssh/year=2013/month=12/", actual);
+		assertEquals("/user/cloudera/data/ssh/yearmonth=201312/", actual);
 	}
 	
 	@Test
@@ -110,7 +111,7 @@ public class MonthlyPartitionStrategyTest {
 		MonthlyPartitionStrategy strategy = new MonthlyPartitionStrategy();
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		int month = Calendar.getInstance().get(Calendar.MONTH) + 1; // month are starting from 0 here
-		String expectedPath = String.format("/user/cloudera/data/ssh/year=%s/month=%s/", year, month);
+		String expectedPath = String.format("/user/cloudera/data/ssh/yearmonth=%s%02d/", year, month);
 		
 		// act 
 		String actual = strategy.getPartitionPath((new Date()).getTime(), "/user/cloudera/data/ssh/");
@@ -123,12 +124,13 @@ public class MonthlyPartitionStrategyTest {
 	public void monthly_partition_should_add_path_seperator_to_base_path_suffix() {
 		// arrange
 		MonthlyPartitionStrategy strategy = new MonthlyPartitionStrategy();
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		int month = Calendar.getInstance().get(Calendar.MONTH) + 1; // month are starting from 0 here
-		String expectedPath = String.format("/user/cloudera/data/ssh/year=%s/month=%s/", year, month);
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH) + 1; // month are starting from 0 here
+		String expectedPath = String.format("/user/cloudera/data/ssh/yearmonth=%s%02d/", year, month);
 		
 		// act 
-		String actual = strategy.getPartitionPath((new Date()).getTime(), "/user/cloudera/data/ssh");
+		String actual = strategy.getPartitionPath(calendar.getTimeInMillis(), "/user/cloudera/data/ssh");
 		
 		// assert
 		assertEquals(expectedPath, actual);
@@ -139,12 +141,13 @@ public class MonthlyPartitionStrategyTest {
 	public void monthly_partition_should_normalize_back_slashes() {
 		// arrange
 		MonthlyPartitionStrategy strategy = new MonthlyPartitionStrategy();
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		int month = Calendar.getInstance().get(Calendar.MONTH) + 1; // month are starting from 0 here
-		String expectedPath = String.format("/user/cloudera/data/ssh/year=%s/month=%s/", year, month);
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH) + 1; // month are starting from 0 here
+		String expectedPath = String.format("/user/cloudera/data/ssh/yearmonth=%s%02d/", year, month);
 		
 		// act 
-		String actual = strategy.getPartitionPath((new Date()).getTime(), "\\user\\cloudera\\data\\ssh\\");
+		String actual = strategy.getPartitionPath(calendar.getTimeInMillis(), "\\user\\cloudera\\data\\ssh\\");
 		
 		// assert
 		assertEquals(expectedPath, actual);		
@@ -163,6 +166,6 @@ public class MonthlyPartitionStrategyTest {
 		
 		String actual = strategy.getImpalaPartitionName(timestamp);
 		
-		assertEquals("year=2014,month=1", actual);
+		assertEquals("yearmonth=201401", actual);
 	}
 }
