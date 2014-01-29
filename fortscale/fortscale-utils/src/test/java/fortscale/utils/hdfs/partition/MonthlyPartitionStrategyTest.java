@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -123,12 +124,13 @@ public class MonthlyPartitionStrategyTest {
 	public void monthly_partition_should_add_path_seperator_to_base_path_suffix() {
 		// arrange
 		MonthlyPartitionStrategy strategy = new MonthlyPartitionStrategy();
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		int month = Calendar.getInstance().get(Calendar.MONTH) + 1; // month are starting from 0 here
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH) + 1; // month are starting from 0 here
 		String expectedPath = String.format("/user/cloudera/data/ssh/yearmonth=%s%02d/", year, month);
 		
 		// act 
-		String actual = strategy.getPartitionPath((new Date()).getTime(), "/user/cloudera/data/ssh");
+		String actual = strategy.getPartitionPath(calendar.getTimeInMillis(), "/user/cloudera/data/ssh");
 		
 		// assert
 		assertEquals(expectedPath, actual);
@@ -139,12 +141,13 @@ public class MonthlyPartitionStrategyTest {
 	public void monthly_partition_should_normalize_back_slashes() {
 		// arrange
 		MonthlyPartitionStrategy strategy = new MonthlyPartitionStrategy();
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		int month = Calendar.getInstance().get(Calendar.MONTH) + 1; // month are starting from 0 here
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH) + 1; // month are starting from 0 here
 		String expectedPath = String.format("/user/cloudera/data/ssh/yearmonth=%s%02d/", year, month);
 		
 		// act 
-		String actual = strategy.getPartitionPath((new Date()).getTime(), "\\user\\cloudera\\data\\ssh\\");
+		String actual = strategy.getPartitionPath(calendar.getTimeInMillis(), "\\user\\cloudera\\data\\ssh\\");
 		
 		// assert
 		assertEquals(expectedPath, actual);		
