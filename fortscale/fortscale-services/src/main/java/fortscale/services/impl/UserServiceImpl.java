@@ -1218,7 +1218,7 @@ public class UserServiceImpl implements UserService{
 	}
 		
 	public void saveUserGroupMembershipScoreToImpala(ImpalaGroupsScoreWriter impalaGroupsScoreWriter, List<User> users,  UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext, double avgScore){
-		logger.info("writing group score to local file");
+		logger.info("writing group score");
 		for(User user: users){
 			AdUserFeaturesExtraction adUserFeaturesExtraction = updateUserGroupMembershipScoreContext.findFeautreByUserId(user.getId());
 			if(adUserFeaturesExtraction != null){

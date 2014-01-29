@@ -27,11 +27,10 @@ public class TotalScoringJob extends FortscaleJob {
 	@Autowired
 	private ImpalaWriterFactoryImpl impalaWriterFactory;
 	
-	String hadoopFilePath;
 
 	// job parameters:
 	protected String hadoopDirPath;
-	private String filenameFormat;
+	protected String hadoopFilename;
 	protected String impalaTableName;
 	
 	@Override
@@ -40,12 +39,11 @@ public class TotalScoringJob extends FortscaleJob {
 
 		// get parameters values from the job data map
 		hadoopDirPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopDirPath");
-		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
 				
 		// generate filename according to the job name and time
-		String filename = String.format(filenameFormat, (new Date()).getTime()/1000);
-		hadoopFilePath = String.format("%s/%s", hadoopDirPath, filename);
+		String filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
+		hadoopFilename = String.format(filenameFormat, (new Date()).getTime()/1000);
 	}
 
 	@Override
@@ -67,11 +65,11 @@ public class TotalScoringJob extends FortscaleJob {
 	private boolean updateTotalScore() throws JobExecutionException{
 		startNewStep("update");
 		try {
-			impalaWriterFactory.createTotalScoreAppender(hadoopFilePath);
+			impalaWriterFactory.createTotalScoreAppender(hadoopDirPath, hadoopFilename);
 		} catch (IOException e) {
-			logger.error("error opening hdfs file for append at " + hadoopFilePath, e);
-			monitor.error(getMonitorId(), getStepName(), String.format("error opening hdfs file %s: \n %s", hadoopFilePath, e.toString()));
-			throw new JobExecutionException("error opening hdfs file for append at " + hadoopFilePath, e);
+			logger.error("error opening hdfs file for append at " + hadoopDirPath, e);
+			monitor.error(getMonitorId(), getStepName(), String.format("error opening hdfs file %s: \n %s", hadoopDirPath, e.toString()));
+			throw new JobExecutionException("error opening hdfs file for append at " + hadoopDirPath, e);
 		}
 		
 		try{
@@ -85,9 +83,9 @@ public class TotalScoringJob extends FortscaleJob {
 			try {
 				impalaWriterFactory.closeTotalScoreAppender();
 			} catch (IOException e) {
-				logger.error("error closing hdfs file " + hadoopFilePath, e);
-				monitor.error(getMonitorId(), getStepName(), String.format("error closing hdfs file %s: \n %s", hadoopFilePath, e.toString()));
-				throw new JobExecutionException("error closing hdfs file " + hadoopFilePath, e);
+				logger.error("error closing hdfs file " + hadoopDirPath, e);
+				monitor.error(getMonitorId(), getStepName(), String.format("error closing hdfs file %s: \n %s", hadoopDirPath, e.toString()));
+				throw new JobExecutionException("error closing hdfs file " + hadoopDirPath, e);
 			}
 		}
 		
