@@ -138,6 +138,7 @@ public class EventProcessJob implements Job {
 			} finally {
 				closeOutputAppender();
 			}
+			
 			refreshImpala();
 			
 			monitor.finishStep(monitorId, currentStep);
@@ -249,11 +250,9 @@ public class EventProcessJob implements Job {
 		
 		// log all errors if any
 		for (JobExecutionException e : exceptions) {
-			logger.error("", e);
-			monitor.error(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+			logger.error("error refreshing impala", e);
+			monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
 		}
-		if (!exceptions.isEmpty())
-			throw exceptions.get(0);
 	}
 	
 	protected void createOutputAppender() throws JobExecutionException {

@@ -183,10 +183,8 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		// log all errors if any
 		for (JobExecutionException e : exceptions) {
 			logger.error("", e);
-			monitor.error(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+			monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
 		}
-		if (!exceptions.isEmpty())
-			throw exceptions.get(0);
 	}
 	
 	/**
