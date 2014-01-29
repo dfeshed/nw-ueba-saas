@@ -50,7 +50,8 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	@Autowired
 	private UserService userService;
 	
-	@Autowired UserScoreService userScoreService;
+	@Autowired 
+	private UserScoreService userScoreService;
 	
 	@Autowired
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
@@ -223,14 +224,15 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		try{
 			avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
 		} catch(Exception e){
-			int count = authDAO.countNumOfRecords();
+			int count = authDAO.countNumOfEvents(lastRun);
 			String message;
 			if(count > 0){
 				message = String.format("while running calculateAvgScoreOfGlobalScore on the table (%s) with runtime (%s) got an exception.", authDAO.getTableName(), lastRun);
+				throw new RuntimeException(message,e);
 			} else{
-				message = String.format("the table (%s) is empty", authDAO.getTableName());
+				logger.info("no events found on runtime: {}", lastRun);
+				return;
 			}
-			throw new RuntimeException(message,e);
 		}
 		logger.info("getting all {} scores", classifier);
 		List<AuthScore> authScores = authDAO.findGlobalScoreByTimestamp(lastRun);

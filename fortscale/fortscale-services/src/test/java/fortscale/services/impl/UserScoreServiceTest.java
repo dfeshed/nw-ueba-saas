@@ -3,7 +3,6 @@ package fortscale.services.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,11 +49,11 @@ public class UserScoreServiceTest {
 		String classifierId = Classifier.groups.getId();
 		
 		ScoreInfo scoreInfo = null;
-		scoreInfo = createScoreInfo(2014, 1, 1, 12, 23, 50, 10, 10);
+		scoreInfo = UserScoreTestUtil.createScoreInfo(2014, 1, 1, 12, 23, 50, 10, 10);
 		ClassifierScore classifierScore = new ClassifierScore(classifierId, scoreInfo);
 		List<ScoreInfo> infos = new ArrayList<>();
 		infos.add(scoreInfo);
-		infos.add(createScoreInfo(2013, 12, 31, 12, 23, 50, 10, 10));
+		infos.add(UserScoreTestUtil.createScoreInfo(2013, 12, 31, 12, 23, 50, 10, 10));
 		classifierScore.setPrevScores(infos);
 		
 		User user = new User();
@@ -74,19 +73,19 @@ public class UserScoreServiceTest {
 		int limit = 7;
 		
 		ScoreInfo scoreInfo = null;
-		scoreInfo = createScoreInfo(2014, 5, 15, 2, 5, 10, 11, 12);
+		scoreInfo = UserScoreTestUtil.createScoreInfo(2014, 5, 15, 2, 5, 10, 11, 12);
 		ClassifierScore classifierScore = new ClassifierScore(classifierId, scoreInfo);
 		List<ScoreInfo> infos = new ArrayList<>();
 		infos.add(scoreInfo);
-		infos.add(createScoreInfo(2014, 5, 14, 4, 10, 20, 16, 22));
-		infos.add(createScoreInfo(2014, 5, 13, 5, 15, 30, 21, 32));
-		infos.add(createScoreInfo(2014, 5, 12, 6, 20, 40, 26, 42));
-		infos.add(createScoreInfo(2014, 5, 11, 7, 25, 50, 31, 52));
-		infos.add(createScoreInfo(2014, 5, 10, 8, 30, 60, 36, 62));
-		infos.add(createScoreInfo(2014, 5, 9, 9, 35, 70, 41, 72));
-		infos.add(createScoreInfo(2014, 5, 8, 10, 40, 80, 46, 82));
-		infos.add(createScoreInfo(2014, 5, 7, 11, 45, 90, 51, 92));
-		infos.add(createScoreInfo(2014, 5, 6, 12, 50, 91, 56, 93));
+		infos.add(UserScoreTestUtil.createScoreInfo(2014, 5, 14, 4, 10, 20, 16, 22));
+		infos.add(UserScoreTestUtil.createScoreInfo(2014, 5, 13, 5, 15, 30, 21, 32));
+		infos.add(UserScoreTestUtil.createScoreInfo(2014, 5, 12, 6, 20, 40, 26, 42));
+		infos.add(UserScoreTestUtil.createScoreInfo(2014, 5, 11, 7, 25, 50, 31, 52));
+		infos.add(UserScoreTestUtil.createScoreInfo(2014, 5, 10, 8, 30, 60, 36, 62));
+		infos.add(UserScoreTestUtil.createScoreInfo(2014, 5, 9, 9, 35, 70, 41, 72));
+		infos.add(UserScoreTestUtil.createScoreInfo(2014, 5, 8, 10, 40, 80, 46, 82));
+		infos.add(UserScoreTestUtil.createScoreInfo(2014, 5, 7, 11, 45, 90, 51, 92));
+		infos.add(UserScoreTestUtil.createScoreInfo(2014, 5, 6, 12, 50, 91, 56, 93));
 		classifierScore.setPrevScores(infos);
 		
 		User user = new User();
@@ -105,16 +104,4 @@ public class UserScoreServiceTest {
 		}
 	}
 	
-	private ScoreInfo createScoreInfo(int year, int monthOfYear, int dayOfMonth, int hourOfDay, double avgScore, double score, double trend, double trendScore){
-		ScoreInfo ret = new ScoreInfo();
-		DateTime dateTime = new DateTime(year, monthOfYear, dayOfMonth, hourOfDay, 0);
-		ret.setAvgScore(avgScore);
-		ret.setScore(score);
-		ret.setTimestamp(dateTime.toDate());
-		ret.setTimestampEpoc(dateTime.getMillis());
-		ret.setTrend(trend);
-		ret.setTrendScore(trendScore);
-		
-		return ret;
-	}
 }
