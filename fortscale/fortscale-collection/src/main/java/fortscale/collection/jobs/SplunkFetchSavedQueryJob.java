@@ -40,11 +40,13 @@ public class SplunkFetchSavedQueryJob implements Job {
 	@Value("${splunk.password}")
 	private String password;
 	
+	@Value("${collection.fetch.data.path}")
+	private String outputPath;
+	
 	// data from job data map parameters
 	private String earliest;
 	private String latest;
 	private String savedQuery;
-	private String outputPath;
 	private String returnKeys;
 	private String filenameFormat;
 	private String delimiter;
@@ -128,7 +130,6 @@ public class SplunkFetchSavedQueryJob implements Job {
 		earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
 		latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
-		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		
