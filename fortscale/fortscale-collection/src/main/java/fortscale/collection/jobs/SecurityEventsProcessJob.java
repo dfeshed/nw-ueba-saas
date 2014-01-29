@@ -34,9 +34,6 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		JobDataMap map = context.getMergedJobDataMap();
 
 		// get parameters values from the job data map
-		inputPath = jobDataMapExtension.getJobDataMapStringValue(map, "inputPath");
-		errorPath = jobDataMapExtension.getJobDataMapStringValue(map, "errorPath");
-		finishPath = jobDataMapExtension.getJobDataMapStringValue(map, "finishPath");
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		
 		// load main morphline file
