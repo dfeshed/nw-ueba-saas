@@ -28,10 +28,6 @@
 					<value>getSECdata</value>
 				</entry>
 				<entry>
-					<key>outputPath</key>
-					<value>./input</value>
-				</entry>
-				<entry>
 					<key>returnKeys</key>
 					<value>TaskCategory,EventCode,LogName,Message,RecordNumber,SourceName,_time,ComputerName</value>
 				</entry>

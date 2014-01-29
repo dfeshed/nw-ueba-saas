@@ -122,7 +122,6 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 		// cleanup members
 		fs = null;
 		writers = new HashMap<String, BufferedWriter>(2);
-		newPartitions = new LinkedList<String>();
 		
 		if (lastException!=null)
 			throw lastException;
@@ -140,6 +139,7 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 		configuration.addResource(new Path("/etc/hadoop/conf/hdfs-site.xml"));
 		
 		fs = FileSystem.get(configuration);
+		newPartitions = new LinkedList<String>();
 	}
 	
 	/**

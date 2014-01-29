@@ -17,6 +17,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
@@ -38,9 +39,14 @@ public class EventProcessJob implements Job {
 
 	private static Logger logger = LoggerFactory.getLogger(EventProcessJob.class);
 	
+	@Value("${collection.fetch.data.path}")
 	protected String inputPath;
+	@Value("${collection.fetch.error.data.path}")
 	protected String errorPath;
+	@Value("${collection.fetch.finish.data.path}")
 	protected String finishPath;
+	
+	
 	protected String filesFilter;
 	protected MorphlinesItemsProcessor morphline;
 	protected RecordToStringItemsProcessor recordToString;
@@ -66,9 +72,6 @@ public class EventProcessJob implements Job {
 		JobDataMap map = context.getMergedJobDataMap();
 
 		// get parameters values from the job data map
-		inputPath = jobDataMapExtension.getJobDataMapStringValue(map, "inputPath");
-		errorPath = jobDataMapExtension.getJobDataMapStringValue(map, "errorPath");
-		finishPath = jobDataMapExtension.getJobDataMapStringValue(map, "finishPath");
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath");
 		hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename");
@@ -138,6 +141,7 @@ public class EventProcessJob implements Job {
 			} finally {
 				closeOutputAppender();
 			}
+			
 			refreshImpala();
 			
 			monitor.finishStep(monitorId, currentStep);
@@ -249,11 +253,9 @@ public class EventProcessJob implements Job {
 		
 		// log all errors if any
 		for (JobExecutionException e : exceptions) {
-			logger.error("", e);
-			monitor.error(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+			logger.error("error refreshing impala", e);
+			monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
 		}
-		if (!exceptions.isEmpty())
-			throw exceptions.get(0);
 	}
 	
 	protected void createOutputAppender() throws JobExecutionException {

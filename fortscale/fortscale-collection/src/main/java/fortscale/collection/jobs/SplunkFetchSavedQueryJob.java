@@ -40,11 +40,13 @@ public class SplunkFetchSavedQueryJob implements Job {
 	@Value("${splunk.password}")
 	private String password;
 	
+	@Value("${collection.fetch.data.path}")
+	private String outputPath;
+	
 	// data from job data map parameters
 	private String earliest;
 	private String latest;
 	private String savedQuery;
-	private String outputPath;
 	private String returnKeys;
 	private String filenameFormat;
 	private String delimiter;
@@ -104,7 +106,15 @@ public class SplunkFetchSavedQueryJob implements Job {
 			logger.debug("running splunk saved query");
 			splunkApi.runSavedSearch(savedQuery, properties, null, handler);
 		} catch (Exception e) {
+			// log error and delete output
 			logger.error("error running splunk query", e);
+			monitor.error(monitorId, "Query Splunk", "error during events from splunk to file " + outputTempFile.getName() + "\n" + e.toString());
+			try {
+				outputTempFile.delete();
+			} catch (Exception ex) {
+				logger.error("cannot delete temp output file " + outputTempFile.getName());
+				monitor.error(monitorId, "Query Splunk", "cannot delete temporary events file " + outputTempFile.getName());
+			}
 			throw new JobExecutionException("error running splunk query");
 		}
 		monitor.finishStep(monitorId, "Query Splunk");
@@ -128,7 +138,6 @@ public class SplunkFetchSavedQueryJob implements Job {
 		earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
 		latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
-		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		
