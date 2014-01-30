@@ -8,6 +8,7 @@ import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
+import fortscale.services.fe.Classifier;
 
 public interface UserService {
 	public void updateUserWithCurrentADInfo();
@@ -53,4 +54,10 @@ public interface UserService {
 	public User createUser(UserApplication userApplication, String username);
 
 	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave);
+	
+	public void fillUpdateUserScore(Update update, User user, Classifier classifier);
+	
+	public void fillUpdateLogUsername(Update update, String username, String logname);
+	
+	public void fillUpdateAppUsername(Update update,  User user, Classifier classifier);
 }

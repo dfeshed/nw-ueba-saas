@@ -833,6 +833,24 @@ public class UserServiceImpl implements UserService{
 		public void incrementNumOfAdInfoUpdates() {
 			this.numOfAdInfoUpdates++;
 		}
-	}	
+	}
+
+
+	@Override
+	public void fillUpdateUserScore(Update update, User user, Classifier classifier) {
+		update.set(User.getClassifierScoreField(classifier.getId()), user.getScore(classifier.getId()));
+	}
+
+
+	@Override
+	public void fillUpdateLogUsername(Update update, String username, String logname) {
+		update.set(User.getLogUserNameField(logname), username);
+	}
+
+
+	@Override
+	public void fillUpdateAppUsername(Update update, User user, Classifier classifier) {
+		update.set(User.getAppField(classifier.getUserApplication().getId()), user.getApplicationUserDetails().get(classifier.getUserApplication().getId()));
+	}
 
 }

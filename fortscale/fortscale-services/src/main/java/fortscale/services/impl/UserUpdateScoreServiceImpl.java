@@ -292,15 +292,14 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 			
 			user = updateUserScore(user, lastRun, classifier.getId(), authScore.getGlobalScore(), avg, false, false);
 			if(user != null){
-				updateUserTotalScore(user, lastRun);
 				if(user.getId() != null){
 					Update update = new Update();
-					update.set(User.getClassifierScoreField(classifier.getId()), user.getScore(classifier.getId()));
+					userService.fillUpdateUserScore(update, user, classifier);
 					if(isNewLogUsername){
-						update.set(User.getLogUserNameField(tablename), username);
+						userService.fillUpdateLogUsername(update, username, tablename);
 					}
 					if(isNewAppUsername){
-						update.set(User.getAppField(classifier.getUserApplication().getId()), user.getApplicationUserDetails().get(classifier.getUserApplication().getId()));
+						userService.fillUpdateAppUsername(update, user, classifier);
 					}
 					updates.add(update);
 					users.add(user);
@@ -404,7 +403,6 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 			
 			user = updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg, false, false);
 			if(user != null){
-				updateUserTotalScore(user, lastRun);
 				if(user.getId() != null){
 					Update update = new Update();
 					update.set(User.getClassifierScoreField(Classifier.vpn.getId()), user.getScore(Classifier.vpn.getId()));
@@ -555,7 +553,8 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		}
 	}
 	
-	private User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore){
+	@Override
+	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore){
 		ClassifierScore cScore = user.getScore(classifierId);
 		
 		
