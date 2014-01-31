@@ -32,10 +32,6 @@
 					<value>false</value>
 				</entry>
 				<entry>
-					<key>outputPath</key>
-					<value>./input</value>
-				</entry>
-				<entry>
 					<key>returnKeys</key>
 					<value>_raw</value>
 				</entry>
