@@ -77,7 +77,7 @@ public class DHCPEventsSink {
 				object.put("ip_address", RecordExtensions.getStringValue(record, "ip"));
 				object.put("hostname", RecordExtensions.getStringValue(record, "hostname"));
 				object.put("MAC_address", RecordExtensions.getStringValue(record, "mac_address"));
-				object.put("datetimeparsed", new Date(timestampepoch));
+				object.put("datetimeparsed", new Date(normalizeTimestamp(timestampepoch)));
 			} catch (Exception e) {
 				// just log the error and return as usual, do not propagate exception 
 				// when a field is missing as a lot of dhcp events are dropped normally for
@@ -89,6 +89,13 @@ public class DHCPEventsSink {
 			 
 			dbCollection.insert(object);
 		}
+	}
+	
+	private long normalizeTimestamp(long ts) {
+		if (ts < 100000000000L)
+			return ts * 1000;
+		else
+			return ts;
 	}
 	
 	public void postProcessIndexes() throws Exception {

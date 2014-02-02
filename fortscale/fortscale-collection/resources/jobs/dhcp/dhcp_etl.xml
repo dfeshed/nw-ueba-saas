@@ -16,18 +16,6 @@
 			
 			<job-data-map>
 				<entry>
-					<key>inputPath</key>
-					<value>./input</value>
-				</entry>
-				<entry>
-					<key>errorPath</key>
-					<value>./error</value>
-				</entry>
-				<entry>
-					<key>finishPath</key>
-					<value>./finish</value>
-				</entry>
-				<entry>
 					<key>filesFilter</key>
 					<value>DHCP_\d+.csv$</value>
 				</entry>
