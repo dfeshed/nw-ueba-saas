@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.hadoop.pig.EventScoringPigRunner;
+import fortscale.collection.hadoop.pig.NoPartitionExistException;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.utils.logging.Logger;
 
@@ -104,23 +105,27 @@ public abstract class EventScoringJob extends FortscaleJob {
 	protected abstract boolean runUpdateUserWithEventScore(Date runtime);
 	
 	private boolean runScoringPig(Long runtime, Long deltaTime) throws Exception{
+		boolean ret = true;
 		startNewStep("pig");
-				
-		ExecJob execJob = runPig(runtime, deltaTime);
-		if(ExecJob.JOB_STATUS.FAILED.equals(execJob.getStatus())){
-			PigStats pigStats = execJob.getStatistics();
-			String errMsg = String.format("while running the step %s, the pig job had failed with error code (%d) and the following message: %s.", getStepName(),
-        			pigStats.getErrorCode(), pigStats.getErrorMessage());
-        	logger.error(errMsg);
-        	logger.error(pigStats.getJobGraph().toString());
-        	monitor.error(getMonitorId(), getStepName(), errMsg);
-			return false;
-        }
+		try{
+			ExecJob execJob = runPig(runtime, deltaTime);
+			if(ExecJob.JOB_STATUS.FAILED.equals(execJob.getStatus())){
+				PigStats pigStats = execJob.getStatistics();
+				String errMsg = String.format("while running the step %s, the pig job had failed with error code (%d) and the following message: %s.", getStepName(),
+	        			pigStats.getErrorCode(), pigStats.getErrorMessage());
+	        	logger.error(errMsg);
+	        	logger.error(pigStats.getJobGraph().toString());
+	        	monitor.error(getMonitorId(), getStepName(), errMsg);
+				return false;
+	        }
+		} catch(NoPartitionExistException e){
+			ret = false;
+		}
 
 		monitor.finishStep(getMonitorId(), getStepName());
 		
 		
-		return true;
+		return ret;
 	}
 	
 	protected ExecJob runPig(Long runtime, Long deltaTime) throws Exception{
