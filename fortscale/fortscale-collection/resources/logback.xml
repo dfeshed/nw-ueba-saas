@@ -51,7 +51,10 @@
 		<appender-ref ref="SYSLOG" />
 	</logger>
 
-	<logger name="org.apache.hadoop" additivity="false" level="warn">
+	<logger name="org.apache.hadoop" additivity="false" level="error">
+		<appender-ref ref="SYSLOG" />
+	</logger>
+	<logger name="org.apache.pig.backend.hadoop23" additivity="false" level="error">
 		<appender-ref ref="SYSLOG" />
 	</logger>
     <logger name="org.hibernate" additivity="false" level="warn">
