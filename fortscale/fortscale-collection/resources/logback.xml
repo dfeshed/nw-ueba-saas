@@ -19,6 +19,7 @@
 	<appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
 		<syslogHost>localhost</syslogHost>
 		<facility>USER</facility>
+		<suffixPattern>fortscale-collection: %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</suffixPattern>
 	</appender>
 
 	<root level="info">
@@ -26,6 +27,10 @@
 	</root>
 	
 	<!-- 3rdparty Loggers -->
+	<logger name="org.quartz" additivity="false" level="warn" >
+		<appender-ref ref="SYSLOG" />
+	</logger>
+	
 	<logger name="org.springframework.core" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
 	</logger>
@@ -46,7 +51,7 @@
 		<appender-ref ref="SYSLOG" />
 	</logger>
 
-	<logger name="org.apache.hadoop" additivity="false" level="info">
+	<logger name="org.apache.hadoop" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
 	</logger>
     <logger name="org.hibernate" additivity="false" level="warn">
