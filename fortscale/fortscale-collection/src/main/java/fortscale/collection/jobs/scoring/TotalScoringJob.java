@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.jobs.ad.AdProcessJob;
-import fortscale.services.UserService;
+import fortscale.services.UserServiceFacade;
 import fortscale.utils.logging.Logger;
 
 public class TotalScoringJob extends FortscaleJob {
@@ -22,7 +22,7 @@ public class TotalScoringJob extends FortscaleJob {
 	protected ImpalaClient impalaClient;
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceFacade userServiceFacade;
 	
 	@Autowired
 	private ImpalaWriterFactoryImpl impalaWriterFactory;
@@ -73,7 +73,7 @@ public class TotalScoringJob extends FortscaleJob {
 		}
 		
 		try{
-			userService.updateUserTotalScore();
+			userServiceFacade.updateUserTotalScore();
 		} catch(Exception e){
 			logger.error("got an exception during the process of updating total score.", e);
 			monitor.error(getMonitorId(), getStepName(),String.format("got an exception during the process of updating total score: %s", e.toString()));

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.services.UserService;
+import fortscale.services.UserServiceFacade;
 
 public class AdUserProcessJob extends AdProcessJob {
 
@@ -18,7 +18,7 @@ public class AdUserProcessJob extends AdProcessJob {
 	private AdUserRepository adUserRepository;
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceFacade userServiceFacade;
 	
 	private RecordToBeanItemConverter<AdUser> converter;
 	
@@ -42,7 +42,7 @@ public class AdUserProcessJob extends AdProcessJob {
 		}
 		adUser.setLastModified(new Date());
 		adUserRepository.save(adUser);
-		userService.updateUserWithADInfo(adUser);
+		userServiceFacade.updateUserWithADInfo(adUser);
 		
 		return true;
 	}

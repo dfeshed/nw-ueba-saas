@@ -31,7 +31,6 @@ import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.EventResultRepository;
 import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.fe.dao.VpnDAO;
-import fortscale.services.UserService;
 import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.fe.impl.ClassifierServiceImpl;
 import fortscale.services.fe.impl.ScoreDistribution;
@@ -62,9 +61,6 @@ public class ClassifierServiceTest{
 	
 	@Mock
 	private UserMachineDAO userMachineDAO;
-	
-	@Mock
-	private UserService userService;
 	
 	@Mock
 	private ConfigurationService configurationService;

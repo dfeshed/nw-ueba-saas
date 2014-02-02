@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.core.User;
 import fortscale.services.UserApplication;
-import fortscale.services.UserService;
+import fortscale.services.UserServiceFacade;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.ApplicationUserDetailsBean;
 import fortscale.web.beans.DataBean;
@@ -28,7 +28,7 @@ import fortscale.web.beans.UserDetailsBean;
 public class ApiUserAppController {
 
 	@Autowired
-	private UserService userService;
+	private UserServiceFacade userServiceFacade;
 	
 	@RequestMapping(value="/{appId}/usernameToId", method=RequestMethod.GET)
 	@ResponseBody
@@ -37,7 +37,7 @@ public class ApiUserAppController {
 			@RequestParam(required=true) List<String> usernames, Model model){
 		DataBean<List<ApplicationUserDetailsBean>> ret = new DataBean<>();
 		UserApplication userApplication = UserApplication.valueOf(appId);
-		List<User> users = userService.findByApplicationUserName(userApplication, usernames);
+		List<User> users = userServiceFacade.findByApplicationUserName(userApplication, usernames);
 		List<ApplicationUserDetailsBean> applicationUserDetailsBeans = new ArrayList<>();
 		for(User user: users) {
 			applicationUserDetailsBeans.add(new ApplicationUserDetailsBean(user, userApplication));	
@@ -55,7 +55,7 @@ public class ApiUserAppController {
 			@RequestParam(required=true) List<String> usernames, Model model){
 		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
 		UserApplication userApplication = UserApplication.valueOf(appId);
-		List<User> users = userService.findByApplicationUserName(userApplication, usernames);
+		List<User> users = userServiceFacade.findByApplicationUserName(userApplication, usernames);
 		List<UserDetailsBean> applicationUserDetailsBeans = new ArrayList<>();
 		for(User user: users) {
 			applicationUserDetailsBeans.add(new UserDetailsBean(user,null, Collections.<User>emptyList()));	

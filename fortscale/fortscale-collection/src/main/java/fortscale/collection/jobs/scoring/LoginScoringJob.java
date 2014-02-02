@@ -6,13 +6,13 @@ import org.apache.pig.backend.executionengine.ExecJob;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.collection.hadoop.pig.LoginScoringPigRunner;
-import fortscale.services.UserService;
+import fortscale.services.UserServiceFacade;
 import fortscale.services.fe.Classifier;
 
 public class LoginScoringJob extends EventScoringJob{
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceFacade userServiceFacade;
 	
 	@Autowired
 	private LoginScoringPigRunner loginScoringPigRunner;
@@ -27,7 +27,7 @@ public class LoginScoringJob extends EventScoringJob{
 	
 	@Override
 	protected boolean runUpdateUserWithEventScore(Date runtime){
-		userService.updateUserWithAuthScore(Classifier.auth, runtime);
+		userServiceFacade.updateUserWithAuthScore(Classifier.auth, runtime);
 		
 		return true;
 	}
