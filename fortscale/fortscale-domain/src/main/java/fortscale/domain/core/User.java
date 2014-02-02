@@ -156,6 +156,10 @@ public class User extends AbstractDocument {
 		return appUserDetailsMap.containsKey(applicationUserDetails.getApplicationName());
 	}
 	
+	public ApplicationUserDetails getApplicationUserDetails(String applicationName) {
+		return appUserDetailsMap.get(applicationName);
+	}
+	
 	public void addApplicationUserDetails(ApplicationUserDetails applicationUserDetails) {
 		Assert.notNull(applicationUserDetails);
 		appUserDetailsMap.put(applicationUserDetails.getApplicationName(), applicationUserDetails);

@@ -3,6 +3,7 @@ package fortscale.collection.hadoop.pig;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.backend.executionengine.ExecJob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -19,12 +20,12 @@ public class PigRunner {
 	@Autowired
 	private PigOperations  pigOperations;
 		
-	public ExecJob run(Resource pigScriptResource, Properties scriptParameters) throws Exception{
+	public ExecJob run(Resource pigScriptResource, Properties scriptParameters) throws NoPigJobExecutedException, ExecException, InterruptedException{
         PigScript pigScript = new PigScript(pigScriptResource, scriptParameters);
         List<ExecJob> execJobs = pigOperations.executeScript(pigScript);
         
         if(execJobs.isEmpty()){
-        	throw new Exception("execJobs is empty.");
+        	throw new NoPigJobExecutedException("execJobs is empty.");
         }
         
         if(execJobs.size() > 1){

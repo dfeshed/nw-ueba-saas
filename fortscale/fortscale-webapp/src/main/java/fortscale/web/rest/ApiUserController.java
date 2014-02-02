@@ -28,7 +28,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
-import fortscale.services.UserService;
+import fortscale.services.UserServiceFacade;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
@@ -46,7 +46,7 @@ import fortscale.web.beans.UserSearchBean;
 public class ApiUserController extends BaseController{
 
 	@Autowired
-	private UserService userService;
+	private UserServiceFacade userServiceFacade;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -54,40 +54,40 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/updateAdInfo", method=RequestMethod.GET)
 	public void updateAdInfo(@RequestParam(required=false) Long timestampepoch, Model model){
 		if(timestampepoch != null){
-			userService.updateUserWithADInfo(timestampepoch);
+			userServiceFacade.updateUserWithADInfo(timestampepoch);
 		} else{
-			userService.updateUserWithCurrentADInfo();
+			userServiceFacade.updateUserWithCurrentADInfo();
 		}
 	}
 	
 	@RequestMapping(value="/updateAuthScore", method=RequestMethod.GET)
 	public void updateAuthScore(Model model){
-		userService.updateUserWithAuthScore(Classifier.auth);
+		userServiceFacade.updateUserWithAuthScore(Classifier.auth);
 	}
 	
 	@RequestMapping(value="/updateSshScore", method=RequestMethod.GET)
 	public void updateSshScore(Model model){
-		userService.updateUserWithAuthScore(Classifier.ssh);
+		userServiceFacade.updateUserWithAuthScore(Classifier.ssh);
 	}
 	
 	@RequestMapping(value="/updateVpnScore", method=RequestMethod.GET)
 	public void updateVpnScore(Model model){
-		userService.updateUserWithVpnScore();
+		userServiceFacade.updateUserWithVpnScore();
 	}
 	
 	@RequestMapping(value="/updateGroupsScore", method=RequestMethod.GET)
 	public void updateGroupsScore(Model model){
-		userService.updateUserWithGroupMembershipScore();
+		userServiceFacade.updateUserWithGroupMembershipScore();
 	}
 	
 	@RequestMapping(value="/recalculateScores", method=RequestMethod.GET)
 	public void recalculateScores(Model model){
-		userService.recalculateUsersScores();
+		userServiceFacade.recalculateUsersScores();
 	}
 	
 	@RequestMapping(value="/recalculateTotalScores", method=RequestMethod.GET)
 	public void recalculateTotalScores(Model model){
-		userService.recalculateTotalScore();
+		userServiceFacade.recalculateTotalScore();
 	}
 	
 	@RequestMapping(value="/search", method=RequestMethod.GET)
@@ -97,7 +97,7 @@ public class ApiUserController extends BaseController{
 			@RequestParam(defaultValue="0") Integer page,
 			@RequestParam(defaultValue="10") Integer size
 			, Model model){
-		List<User> users = userService.findBySearchFieldContaining(prefix, page, size);
+		List<User> users = userServiceFacade.findBySearchFieldContaining(prefix, page, size);
 		List<UserSearchBean> data = new ArrayList<UserSearchBean>();
 		for(User user: users){
 			data.add(new UserSearchBean(user));
@@ -133,7 +133,7 @@ public class ApiUserController extends BaseController{
 		List<User> directReports = getUserDirectReports(user, dnToUserMap);
 		UserDetailsBean ret =  new UserDetailsBean(user, manager, directReports);
 		if(isWithThumbnail){
-			ret.setThumbnailPhoto(userService.getUserThumbnail(user));
+			ret.setThumbnailPhoto(userServiceFacade.getUserThumbnail(user));
 		}
 		return ret;
 	}
@@ -251,7 +251,7 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public DataBean<List<UserMachineBean>> userMachines(@PathVariable String id, Model model){
 		DataBean<List<UserMachineBean>> ret = new DataBean<List<UserMachineBean>>();
-		List<UserMachine> userMachines = userService.getUserMachines(id);
+		List<UserMachine> userMachines = userServiceFacade.getUserMachines(id);
 		
 		List<UserMachineBean> userMachinesBean = new ArrayList<UserMachineBean>();
 		for(UserMachine userMachine: userMachines){
@@ -281,7 +281,7 @@ public class ApiUserController extends BaseController{
 	private DataBean<List<UserMachinesBean>> usersMachines(List<User> users){
 		List<UserMachinesBean> usersMachinesList = new ArrayList<>();
 		for(User user: users) {
-			List<UserMachine> userMachines = userService.getUserMachines(user.getId());
+			List<UserMachine> userMachines = userServiceFacade.getUserMachines(user.getId());
 			
 			List<UserMachineBean> userMachinesBean = new ArrayList<UserMachineBean>();
 			for(UserMachine userMachine: userMachines){
@@ -300,7 +300,7 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public DataBean<List<IUserScore>> userScores(@PathVariable String id, Model model){
 		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
-		List<IUserScore> userScores = userService.getUserScores(id);
+		List<IUserScore> userScores = userServiceFacade.getUserScores(id);
 		ret.setData(userScores);
 		ret.setTotal(userScores.size());
 		return ret;
@@ -311,7 +311,7 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public DataBean<Map<String, List<IUserScore>>> followedUsersScores(Model model){
 		DataBean<Map<String, List<IUserScore>>> ret = new DataBean<Map<String, List<IUserScore>>>();
-		Map<User, List<IUserScore>> userScores = userService.getFollowedUsersScores();
+		Map<User, List<IUserScore>> userScores = userServiceFacade.getFollowedUsersScores();
 		Map<String, List<IUserScore>> data = new HashMap<>();
 		for(Entry<User, List<IUserScore>> entry: userScores.entrySet()){
 			data.put(entry.getKey().getId(), entry.getValue());
@@ -332,7 +332,7 @@ public class ApiUserController extends BaseController{
 		List<IUserScoreHistoryElement> userScores = new ArrayList<>();
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_MONTH, -(limit-1));
-		for(IUserScoreHistoryElement element: userService.getUserScoresHistory(uid, classifierId, offset, limit)){
+		for(IUserScoreHistoryElement element: userServiceFacade.getUserScoresHistory(uid, classifierId, offset, limit)){
 			if(calendar.getTime().after(element.getDate())){
 				break;
 			}
@@ -357,7 +357,7 @@ public class ApiUserController extends BaseController{
 			Model model){
 		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
 		Direction direction = convertStringToDirection(orderByDirection);
-		List<IFeature> attrs = userService.getUserAttributesScores(uid, classifierId, Long.parseLong(date), orderBy, direction);
+		List<IFeature> attrs = userServiceFacade.getUserAttributesScores(uid, classifierId, Long.parseLong(date), orderBy, direction);
 		List<FeatureBean> features = getFeatureBeanList(attrs, page, size);
 		ret.setData(features);
 		ret.setTotal(attrs.size());
@@ -376,7 +376,7 @@ public class ApiUserController extends BaseController{
 			Model model){
 		DataBean<Map<String, List<FeatureBean>>> ret = new DataBean<Map<String, List<FeatureBean>>>();
 		Direction direction = convertStringToDirection(orderByDirection);
-		Map<User,List<IFeature>> userToAttrsMap = userService.getFollowedUserAttributesScores(classifierId, Long.parseLong(date), orderBy, direction);
+		Map<User,List<IFeature>> userToAttrsMap = userServiceFacade.getFollowedUserAttributesScores(classifierId, Long.parseLong(date), orderBy, direction);
 		Map<String, List<FeatureBean>> data = new HashMap<>();
 		for(Entry<User, List<IFeature>> entry: userToAttrsMap.entrySet()){
 			List<IFeature> attrs = entry.getValue();
@@ -414,7 +414,7 @@ public class ApiUserController extends BaseController{
 	public DataBean<List<IUserScore>> userTotalScoreExplanation(@PathVariable String uid,
 			@RequestParam(required=true) String date, Model model){
 		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
-		List<IUserScore> userScores = userService.getUserScoresByDay(uid, Long.parseLong(date));
+		List<IUserScore> userScores = userServiceFacade.getUserScoresByDay(uid, Long.parseLong(date));
 		
 		ret.setData(userScores);
 		ret.setTotal(userScores.size());
@@ -424,6 +424,6 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/removeClassifier", method=RequestMethod.GET)
 	@LogException
 	public void removeClassifierFromAllUsers(@RequestParam(required=true) String classifierId, Model model){
-		userService.removeClassifierFromAllUsers(classifierId);
+		userServiceFacade.removeClassifierFromAllUsers(classifierId);
 	}	
 }
