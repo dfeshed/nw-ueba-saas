@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import org.xbill.DNS.*;
 import org.kitesdk.morphline.api.Command;
@@ -39,10 +40,12 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 		private boolean isShortName = false;
 		private final String outputRecordName;
 		private int dnsLookupCounter = 0;
+		private HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
+		private String EMPTY_STRING = "";
 
-		public GetHostnameFromDNS(CommandBuilder builder, Config config, Command parent, Command child,
-				MorphlineContext context) {
+		public GetHostnameFromDNS(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
+			
 			this.ipAddress = getConfigs().getString(config, "ip_address");
 			if (getConfig().hasPath("dns_servers")) {
 				this.dnsServers = getConfigs().getStringList(config, "dns_servers");
@@ -65,35 +68,48 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord)  {
-			if ((this.maxQueries == -1) || (this.maxQueries > dnsLookupCounter)) {
-				List<?> tmp = inputRecord.get(this.ipAddress );
-				String ip = null;
-				String[] dnsServersArray = null;
-				if (tmp != null && tmp.size() > 0) {
-					ip =(String) tmp.get(0);
-				}
-				if (this.dnsServers != null && this.dnsServers.size() > 0) {
+			try {
+				if ((this.maxQueries == -1) || (this.maxQueries > dnsLookupCounter)) {
 
-					dnsServersArray = Arrays.copyOf(this.dnsServers.toArray(), this.dnsServers.toArray().length, String[].class);
-				}
-				if (ip!=null) {
-					try {
-						String result = reverseDns(ip,dnsServersArray,this.timeoutInSeconds);
-						if (this.isRemoveLastDot) {
-							result = removeLastDot(result);
+					String ip_address = (String) inputRecord.getFirstValue(this.ipAddress);
+					if (null != ip_address) {
+						
+						String[] dnsServersArray = null;
+						if (this.dnsServers != null && this.dnsServers.size() > 0) {
+							dnsServersArray = Arrays.copyOf(this.dnsServers.toArray(), this.dnsServers.toArray().length, String[].class);
 						}
-						if (this.isShortName) {
-							result = getShortName(result,ip);
+					
+						String resolvedHostname;
+						if (dnsCacheMap.containsKey(ip_address)) {
+							resolvedHostname = dnsCacheMap.get(ip_address);
 						}
-						if ((!result.equals("")) && (!result.equals(ip))) {
+						else {
+							resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
 							dnsLookupCounter++;
+
+							if (null!=resolvedHostname && resolvedHostname.equalsIgnoreCase(EMPTY_STRING) && resolvedHostname.equalsIgnoreCase(ip_address)) {
+							
+								if (this.isRemoveLastDot) {
+									resolvedHostname = removeLastDot(resolvedHostname);
+								}
+								if (this.isShortName) {
+									resolvedHostname = getShortName(resolvedHostname);
+								}
+								dnsCacheMap.put(ip_address, resolvedHostname);
+							}
+							else {
+								resolvedHostname = EMPTY_STRING; 
+							}
 						}
-						inputRecord.replaceValues(this.outputRecordName, result);
-					} catch (IOException e) {
-						inputRecord.replaceValues(this.outputRecordName, "");				
+	
+						inputRecord.replaceValues(this.outputRecordName, resolvedHostname);
 					}
 				}
 			}
+			catch (IOException e) {
+				inputRecord.replaceValues(this.outputRecordName, EMPTY_STRING);				
+			}
+			
 			return super.doProcess(inputRecord);
 		}		
 
@@ -125,27 +141,13 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 		}
 
 		private static String removeLastDot(String input) {
-			String result = null;
-			if (input.endsWith(".")) {
-				result = input.substring(0, input.length()-1);
-			}
-			else {
-				result = input;
-			}
-			return result;
+			return input.endsWith(".") ? input.substring(0, input.length()-1) : input ; 
 		}
 
-		private static String getShortName(String input,String ipAddress) {
-			String result = null;
-			if ((!input.equals(ipAddress)) && (input.indexOf('.') > 0)) {
-				result = input.substring(0, input.indexOf('.'));
-			}
-			else {
-				result = input;
-			}
-			return result;
+		private static String getShortName(String input) {
+			int firstDotIndex = input.indexOf('.') ;
+			return (firstDotIndex > 0) ? input.substring(0, firstDotIndex) : input; 
 		}
 
 	}
 }
-
