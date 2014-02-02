@@ -43,9 +43,9 @@ public class DhcpDhcpdTest {
 				"2014-11-19 23:59:56,1416441596,172.16.30.160,ML-retro-3cf-045dd0,e0:1d:41:04:7c:c0"
 				),
         		$ (
-        		"Regular dhcpack with no hostname",
+        		"Regular dhcpack with no hostname. Drop the record",
 				"Nov 19 23:59:54 server01 dhcpd: DHCPACK on 10.28.192.236 to e0:cd:1d:17:7f:51 via eth0",
-				"2014-11-19 23:59:54,1416441594,10.28.192.236,,e0:cd:1d:17:7f:51"
+				null
 				)
         		);
     }
