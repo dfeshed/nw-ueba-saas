@@ -33,8 +33,7 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 	}
 
 	@Override
-	public Command build(Config config, Command parent, Command child,
-			MorphlineContext context) {
+	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
 		return new GetHostnameFromDNS(this, config, parent, child, context);
 	}
 
@@ -50,8 +49,8 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 		private List<String> dnsServers;
 		private boolean isShortName = false;
 		private final String outputRecordName;
-		private static int dnsLookupCounter = 0;
-		private static HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
+		private int dnsLookupCounter = 0;
+		private HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
 		private String EMPTY_STRING = "";
 		
 		private static final Logger logger = LoggerFactory.getLogger(GetHostnameFromDNS.class);
