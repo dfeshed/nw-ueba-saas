@@ -30,6 +30,7 @@ import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.fe.Classifier;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
@@ -44,6 +45,7 @@ import fortscale.web.beans.UserSearchBean;
 @Controller
 @RequestMapping("/api/user/**")
 public class ApiUserController extends BaseController{
+	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
 	private UserServiceFacade userServiceFacade;
@@ -169,7 +171,13 @@ public class ApiUserController extends BaseController{
 		
 		List<User> directReports = new ArrayList<>();
 		for(AdUserDirectReport adUserDirectReport: adUserDirectReports){
-			directReports.add(dnToUserMap.get(adUserDirectReport.getDn()));
+			User directReport = dnToUserMap.get(adUserDirectReport.getDn());
+			if(directReport != null){
+				directReports.add(directReport);
+			} else{
+				logger.warn("the ad user with the dn ({}) does not exist in the collection user.", adUserDirectReport.getDn());
+			}
+			
 		}
 		return directReports;
 	}
