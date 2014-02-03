@@ -63,7 +63,6 @@ public class HDFSLineAppender implements HDFSWriter {
 				writer.close();
 				writer = null;
 			} finally {
-				fs.close();
 				fs = null;
 			}
 		}

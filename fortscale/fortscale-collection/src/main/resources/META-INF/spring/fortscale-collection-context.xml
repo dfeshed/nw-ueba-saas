@@ -10,6 +10,7 @@
 
 	<hdp:configuration id="hadoopConfiguration" resources="file:/etc/hadoop/conf/core-site.xml, file:/etc/hadoop/conf/hdfs-site.xml, file:/etc/hadoop/conf/mapred-site.xml"/>
 	<hdp:pig-factory id="pigFactory" configuration-ref="hadoopConfiguration"/>
+	<hdp:file-system/>
 
     <hdp:pig-template pig-factory-ref="pigFactory"/>
 	<bean id="autowiringSpringBeanJobFactory" class="fortscale.collection.AutowiringSpringBeanJobFactory"/>

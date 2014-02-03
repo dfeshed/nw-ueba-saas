@@ -115,10 +115,7 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 				logger.error("error closing hdfs appender", e);
 			}
 		}
-		
-		if (fs!=null)
-			fs.close();
-		
+				
 		// cleanup members
 		fs = null;
 		writers = new HashMap<String, BufferedWriter>(2);
