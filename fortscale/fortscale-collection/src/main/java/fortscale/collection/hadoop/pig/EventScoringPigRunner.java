@@ -1,11 +1,9 @@
 package fortscale.collection.hadoop.pig;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.pig.backend.executionengine.ExecJob;
@@ -26,7 +24,7 @@ public class EventScoringPigRunner {
 	private PigRunner pigRunner;
 	
 	@Autowired
-	private Configuration hadoopConfiguration;
+	private FileSystem hadoopFs;
 	
 	@Value("file:${collection.lib.dir}/beardedpig-1.0-SNAPSHOT.jar")
 	private Resource jarFilePath1;
@@ -35,25 +33,23 @@ public class EventScoringPigRunner {
 	
 	protected PartitionStrategy partitionStrategy = new MonthlyPartitionStrategy();
 	
-	public ExecJob run(Long runtime, Long deltaTime, Resource pigScriptResource, String inputData, String outputDataPrefix) throws IOException, NoPartitionExistException, NoPigJobExecutedException, InterruptedException{
+	public ExecJob run(Long runtime, Long earliestEventTime, Resource pigScriptResource, String inputData, String outputDataPrefix) throws IOException, NoPartitionExistException, NoPigJobExecutedException, InterruptedException{
 		Properties scriptParameters = new Properties();
         scriptParameters.put("jarFilePath1", jarFilePath1.getFile().getAbsolutePath());
         scriptParameters.put("jarFilePath2", jarFilePath2.getFile().getAbsolutePath());    
-        scriptParameters.put("inputData", getInputDataParameter(inputData, deltaTime));
+        scriptParameters.put("inputData", getInputDataParameter(inputData, earliestEventTime, runtime));
         scriptParameters.put("outputData", String.format("%sruntime=%s", outputDataPrefix,runtime));
-        scriptParameters.put("deltaTime", deltaTime.toString());
+        scriptParameters.put("deltaTime", earliestEventTime.toString());
         fillWithSpecificScriptParameters(scriptParameters);
 
         return pigRunner.run(pigScriptResource, scriptParameters);
 	}
 	
-	protected String getInputDataParameter(String inputData, Long runtime) throws IOException, NoPartitionExistException {
-		FileSystem fs = FileSystem.get(hadoopConfiguration);
-		long finish = (new Date()).getTime();
-		String[] partitions = partitionStrategy.getPartitionsForDateRange(inputData, runtime, finish);
+	protected String getInputDataParameter(String inputData, long earliestEventTime, long latestEventTime) throws IOException, NoPartitionExistException {
+		String[] partitions = partitionStrategy.getPartitionsForDateRange(inputData, earliestEventTime, latestEventTime);
 		StringBuilder builder = new StringBuilder();
 		for(String partitionPath: partitions){
-			if(fs.exists(new Path(partitionPath))) {
+			if(hadoopFs.exists(new Path(partitionPath))) {
 				builder.append(partitionPath).append(",");
 			} else{
 				logger.info("the partition {} does not exist.", partitionPath);

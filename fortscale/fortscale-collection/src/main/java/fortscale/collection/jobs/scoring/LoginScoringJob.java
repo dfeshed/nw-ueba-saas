@@ -33,7 +33,7 @@ public class LoginScoringJob extends EventScoringJob{
 	}
 	
 	@Override
-	protected ExecJob runPig(Long runtime, Long deltaTime) throws Exception {
-		return loginScoringPigRunner.run(runtime, deltaTime, getPigScriptResource(), getPigInputData(), getPigOutputDataPrefix());
+	protected ExecJob runPig(Long runtime, Long earliestEventTime) throws Exception {
+		return loginScoringPigRunner.run(runtime, earliestEventTime, getPigScriptResource(), getPigInputData(), getPigOutputDataPrefix());
 	}
 }

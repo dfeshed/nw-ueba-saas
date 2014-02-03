@@ -66,10 +66,10 @@ public abstract class EventScoringJob extends FortscaleJob {
 	protected void runSteps() throws Exception{
 		DateTime dateTime = new DateTime();
 		Long runtime = dateTime.getMillis() / 1000;
-		Long deltaTime = dateTime.minusDays(14).getMillis() / 1000;
+		Long earliestEventTime = dateTime.minusDays(14).getMillis() / 1000;
 		
 		
-		boolean isSucceeded = runScoringPig(runtime, deltaTime);
+		boolean isSucceeded = runScoringPig(runtime, earliestEventTime);
 		if(!isSucceeded){
 			return;
 		}
@@ -104,11 +104,11 @@ public abstract class EventScoringJob extends FortscaleJob {
 	
 	protected abstract boolean runUpdateUserWithEventScore(Date runtime);
 	
-	private boolean runScoringPig(Long runtime, Long deltaTime) throws Exception{
+	private boolean runScoringPig(Long runtime, Long earliestEventTime) throws Exception{
 		boolean ret = true;
 		startNewStep("pig");
 		try{
-			ExecJob execJob = runPig(runtime, deltaTime);
+			ExecJob execJob = runPig(runtime, earliestEventTime);
 			if(ExecJob.JOB_STATUS.FAILED.equals(execJob.getStatus())){
 				PigStats pigStats = execJob.getStatistics();
 				String errMsg = String.format("while running the step %s, the pig job had failed with error code (%d) and the following message: %s.", getStepName(),
@@ -128,8 +128,8 @@ public abstract class EventScoringJob extends FortscaleJob {
 		return ret;
 	}
 	
-	protected ExecJob runPig(Long runtime, Long deltaTime) throws Exception{
-		return eventScoringPigRunner.run(runtime, deltaTime, pigScriptResource, pigInputData, pigOutputDataPrefix);
+	protected ExecJob runPig(Long runtime, Long earliestEventTime) throws Exception{
+		return eventScoringPigRunner.run(runtime, earliestEventTime, pigScriptResource, pigInputData, pigOutputDataPrefix);
 	}
 	
 	private boolean runAddPartitionQuery(Long runtime) throws JobExecutionException{	
