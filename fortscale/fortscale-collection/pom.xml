@@ -276,6 +276,12 @@
 									<directory>resources</directory>
 									<filtering>true</filtering>
 								</resource>
+								<resource>
+									<directory>src/main/resources</directory>
+									<includes>
+										<include>logback.xml</include>
+									</includes>
+								</resource>
 							</resources>
 						</configuration>
 					</execution>
