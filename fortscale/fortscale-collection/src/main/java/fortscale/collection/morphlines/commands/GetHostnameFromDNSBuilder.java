@@ -50,8 +50,8 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 		private List<String> dnsServers;
 		private boolean isShortName = false;
 		private final String outputRecordName;
-		private int dnsLookupCounter = 0;
-		private HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
+		private static int dnsLookupCounter = 0;
+		private static HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
 		private String EMPTY_STRING = "";
 		
 		private static final Logger logger = LoggerFactory.getLogger(GetHostnameFromDNS.class);
