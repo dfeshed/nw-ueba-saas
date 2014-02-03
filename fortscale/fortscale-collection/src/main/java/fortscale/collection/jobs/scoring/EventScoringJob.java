@@ -23,7 +23,13 @@ import fortscale.utils.logging.Logger;
 public abstract class EventScoringJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(EventScoringJob.class);
 	
-	private static int EVENTS_DELTA_TIME_IN_SEC = 14*24*60*60;
+	public static int EVENTS_DELTA_TIME_IN_SEC_DEFAULT = 14*24*60*60;
+	public static final String IMPALA_TABLE_NAME_JOB_PARAMETER = "impalaTableName";
+	public static final String PIG_SCRIPT_RESOURCE_JOB_PARAMETER = "pigScriptResouce";
+	public static final String PIG_INPUT_DATA_JOB_PARAMETER = "pigInputData";
+	public static final String PIG_OUTPUT_DATA_PREFIX_JOB_PARAMETER = "pigOutputDataPrefix";
+	public static final String LATEST_EVENT_TIME_JOB_PARAMETER = "latestEventTime";
+	public static final String DELTA_TIME_IN_SEC_JOB_PARAMETER = "deltaTimeInSec";
 	
 	@Autowired
 	private ImpalaClient impalaClient;
@@ -45,6 +51,7 @@ public abstract class EventScoringJob extends FortscaleJob {
 	private String pigOutputDataPrefix;
 		
 	private Long latestEventTime = null;
+	private Long deltaTimeInSec = null;
 
 	
 	
@@ -61,7 +68,11 @@ public abstract class EventScoringJob extends FortscaleJob {
 			DateTime dateTime = new DateTime();
 			runtime = dateTime.getMillis() / 1000;
 		}
-		earliestEventTime = runtime - EVENTS_DELTA_TIME_IN_SEC;
+		if(deltaTimeInSec != null){
+			earliestEventTime = runtime - deltaTimeInSec;
+		} else{
+			earliestEventTime = runtime - EVENTS_DELTA_TIME_IN_SEC_DEFAULT;
+		}
 	}
 	
 	@Override
@@ -70,15 +81,17 @@ public abstract class EventScoringJob extends FortscaleJob {
 
 		// get parameters values from the job data map
 		
-		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
-		pigScriptResource = jobDataMapExtension.getJobDataMapResourceValue(map, "pigScriptResouce");
-		pigInputData = jobDataMapExtension.getJobDataMapStringValue(map, "pigInputData");
-		pigOutputDataPrefix = jobDataMapExtension.getJobDataMapStringValue(map, "pigOutputDataPrefix");
-		if (map.containsKey("latestEventTime")) {
-			latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, "latestEventTime");
+		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_NAME_JOB_PARAMETER);
+		pigScriptResource = jobDataMapExtension.getJobDataMapResourceValue(map, PIG_SCRIPT_RESOURCE_JOB_PARAMETER);
+		pigInputData = jobDataMapExtension.getJobDataMapStringValue(map, PIG_INPUT_DATA_JOB_PARAMETER);
+		pigOutputDataPrefix = jobDataMapExtension.getJobDataMapStringValue(map, PIG_OUTPUT_DATA_PREFIX_JOB_PARAMETER);
+		if (map.containsKey(LATEST_EVENT_TIME_JOB_PARAMETER)) {
+			latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER);
 			latestEventTime = normalizeTimeToEpochSec(latestEventTime);
 		}
-		
+		if (map.containsKey(DELTA_TIME_IN_SEC_JOB_PARAMETER)) {
+			deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, DELTA_TIME_IN_SEC_JOB_PARAMETER);
+		}
 	}
 	
 	private long normalizeTimeToEpochSec(long ts) {
