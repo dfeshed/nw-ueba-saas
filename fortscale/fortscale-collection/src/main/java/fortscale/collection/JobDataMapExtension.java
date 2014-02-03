@@ -147,6 +147,34 @@ public class JobDataMapExtension {
 	}
 	
 	/**
+	 * get the job data map long value, throw exception if the key does not exists or the value is empty
+	 * @param map the merged job data map
+	 * @param key the field key
+	 * @return the field value
+	 * @throws JobExecutionException 
+	 */
+	public long getJobDataMapLongValue(JobDataMap map, String key) throws JobExecutionException {
+		if (!map.containsKey(key)) {
+			logger.error("job data map does not contain key {}", key);
+			throw new JobExecutionException("JobDataMap does not contains key " + key);
+		}
+		
+		String value = map.getString(key);
+		if (StringUtils.isEmpty(value)) {
+			logger.error("JobDataMap key {} does not have value", key);
+			throw new JobExecutionException("JobDataMap key " + key + " does not have value");
+		}
+		
+		value = getEnvPropertyValue(value, key);
+		try {
+			return Long.parseLong(value);
+		} catch (ClassCastException e) {
+			logger.error("error getting long value for key {}", key);
+			throw new JobExecutionException("error getting long value for key " + key, e);
+		}
+	}
+	
+	/**
 	 * get the job data map resource value, throw exception if the key does not exists or the value is empty or not a resource
 	 * @param map the merged job data map
 	 * @param key the field key

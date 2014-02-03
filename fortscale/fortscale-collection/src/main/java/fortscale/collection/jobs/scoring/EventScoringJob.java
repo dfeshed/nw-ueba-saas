@@ -23,13 +23,19 @@ import fortscale.utils.logging.Logger;
 public abstract class EventScoringJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(EventScoringJob.class);
 	
+	private static int EVENTS_DELTA_TIME_IN_SEC = 14*24*60*60;
+	
 	@Autowired
 	private ImpalaClient impalaClient;
 		
 	@Autowired
 	private EventScoringPigRunner eventScoringPigRunner;
 	
+	protected Long runtime;
+	protected Long earliestEventTime;
 	
+	
+	//parameters:
 	private String impalaTableName;
 	
 	private Resource pigScriptResource;
@@ -37,11 +43,25 @@ public abstract class EventScoringJob extends FortscaleJob {
 	private String pigInputData;
 	
 	private String pigOutputDataPrefix;
+		
+	private Long latestEventTime = null;
 
 	
 	
 	protected String getTableName(){
 		return impalaTableName;
+	}
+	
+	@Override
+	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
+		super.init(jobExecutionContext);
+		
+		runtime = latestEventTime;
+		if(runtime == null){
+			DateTime dateTime = new DateTime();
+			runtime = dateTime.getMillis() / 1000;
+		}
+		earliestEventTime = runtime - EVENTS_DELTA_TIME_IN_SEC;
 	}
 	
 	@Override
@@ -54,7 +74,18 @@ public abstract class EventScoringJob extends FortscaleJob {
 		pigScriptResource = jobDataMapExtension.getJobDataMapResourceValue(map, "pigScriptResouce");
 		pigInputData = jobDataMapExtension.getJobDataMapStringValue(map, "pigInputData");
 		pigOutputDataPrefix = jobDataMapExtension.getJobDataMapStringValue(map, "pigOutputDataPrefix");
+		if (map.containsKey("latestEventTime")) {
+			latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, "latestEventTime");
+			latestEventTime = normalizeTimeToEpochSec(latestEventTime);
+		}
 		
+	}
+	
+	private long normalizeTimeToEpochSec(long ts) {
+		if (ts < 100000000000L)
+			return ts;
+		else
+			return ts /1000;
 	}
 
 	@Override
@@ -64,18 +95,14 @@ public abstract class EventScoringJob extends FortscaleJob {
 		
 	@Override
 	protected void runSteps() throws Exception{
-		DateTime dateTime = new DateTime();
-		Long runtime = dateTime.getMillis() / 1000;
-		Long earliestEventTime = dateTime.minusDays(14).getMillis() / 1000;
 		
-		
-		boolean isSucceeded = runScoringPig(runtime, earliestEventTime);
+		boolean isSucceeded = runScoringPig();
 		if(!isSucceeded){
 			return;
 		}
 		
 		
-		isSucceeded = runAddPartitionQuery(runtime);
+		isSucceeded = runAddPartitionQuery();
 		if(!isSucceeded){
 			return;
 		}
@@ -85,13 +112,13 @@ public abstract class EventScoringJob extends FortscaleJob {
 			return;
 		}
 		
-		isSucceeded = runUpdateUserWithEventScore(runtime);
+		isSucceeded = runUpdateUserWithEventScore();
 		if(!isSucceeded){
 			return;
 		}		
 	}
 		
-	private boolean runUpdateUserWithEventScore(Long runtime){
+	private boolean runUpdateUserWithEventScore(){
 		startNewStep("updateUser Score");
 		
 		DateTime dateTime = new DateTime(runtime * 1000);
@@ -104,11 +131,11 @@ public abstract class EventScoringJob extends FortscaleJob {
 	
 	protected abstract boolean runUpdateUserWithEventScore(Date runtime);
 	
-	private boolean runScoringPig(Long runtime, Long earliestEventTime) throws Exception{
+	private boolean runScoringPig() throws Exception{
 		boolean ret = true;
 		startNewStep("pig");
 		try{
-			ExecJob execJob = runPig(runtime, earliestEventTime);
+			ExecJob execJob = runPig();
 			if(ExecJob.JOB_STATUS.FAILED.equals(execJob.getStatus())){
 				PigStats pigStats = execJob.getStatistics();
 				String errMsg = String.format("while running the step %s, the pig job had failed with error code (%d) and the following message: %s.", getStepName(),
@@ -128,11 +155,11 @@ public abstract class EventScoringJob extends FortscaleJob {
 		return ret;
 	}
 	
-	protected ExecJob runPig(Long runtime, Long earliestEventTime) throws Exception{
+	protected ExecJob runPig() throws Exception{
 		return eventScoringPigRunner.run(runtime, earliestEventTime, pigScriptResource, pigInputData, pigOutputDataPrefix);
 	}
 	
-	private boolean runAddPartitionQuery(Long runtime) throws JobExecutionException{	
+	private boolean runAddPartitionQuery() throws JobExecutionException{	
 		startNewStep(String.format("%s add partition ", getTableName()));
 		
 		impalaClient.addPartitionToTable(getTableName(), runtime);
@@ -183,7 +210,26 @@ public abstract class EventScoringJob extends FortscaleJob {
 	public void setPigOutputDataPrefix(String pigOutputDataPrefix) {
 		this.pigOutputDataPrefix = pigOutputDataPrefix;
 	}
-	
+
+	public Long getLatestEventTime() {
+		return latestEventTime;
+	}
+
+	public Long getRuntime() {
+		return runtime;
+	}
+
+	public void setRuntime(Long runtime) {
+		this.runtime = runtime;
+	}
+
+	public Long getEarliestEventTime() {
+		return earliestEventTime;
+	}
+
+	public void setEarliestEventTime(Long earliestEventTime) {
+		this.earliestEventTime = earliestEventTime;
+	}
 	
 	
 }
