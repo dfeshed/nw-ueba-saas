@@ -2,18 +2,12 @@ package fortscale.collection.jobs.scoring;
 
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.Iterator;
@@ -36,20 +30,15 @@ import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
-import org.quartz.impl.JobDetailImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.hadoop.pig.EventScoringPigRunner;
-import fortscale.collection.hadoop.pig.NoPartitionExistException;
-import fortscale.collection.hadoop.pig.NoPigJobExecutedException;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.services.UserServiceFacade;
 
@@ -116,23 +105,33 @@ public class VpnScoringJobTest {
 	
 	@Test
 	public void runtimeWithParamSecondTest() throws Exception{
-		Long expectedRuntime = System.currentTimeMillis()/1000;
-		when(jobDataMapExtension.getJobDataMapLongValue((JobDataMap)any(), eq("latestEventTime"))).thenReturn(expectedRuntime);
+		JobExecutionContextDummy jobExecutionContextDummy = new JobExecutionContextDummy();
+		Long expectedRuntime = System.currentTimeMillis()/1000 - 5;
+		Long deltaTimeInSec = 10L;
+		when(jobDataMapExtension.getJobDataMapLongValue((JobDataMap)any(), eq(EventScoringJob.LATEST_EVENT_TIME_JOB_PARAMETER))).thenReturn(expectedRuntime);
+		jobExecutionContextDummy.getMergedJobDataMap().put(EventScoringJob.LATEST_EVENT_TIME_JOB_PARAMETER, expectedRuntime);
+		when(jobDataMapExtension.getJobDataMapLongValue((JobDataMap)any(), eq(EventScoringJob.DELTA_TIME_IN_SEC_JOB_PARAMETER))).thenReturn(deltaTimeInSec);
+		jobExecutionContextDummy.getMergedJobDataMap().put(EventScoringJob.DELTA_TIME_IN_SEC_JOB_PARAMETER, deltaTimeInSec);
 		ExecJob execJob = new ExecJobDummy();
 		when(eventScoringPigRunner.run((Long)any(), (Long)any(), (Resource)any(), (String)any(), (String)any())).thenReturn(execJob);
-		vpnScoringJob.execute(new JobExecutionContextDummy());
+		
+		
+		vpnScoringJob.execute(jobExecutionContextDummy);
 		assertEquals(expectedRuntime, vpnScoringJob.getRuntime());
+		assertEquals(expectedRuntime - deltaTimeInSec, vpnScoringJob.getEarliestEventTime().longValue());
 	}
 	
 	@Test
 	public void runtimeWithParamMillisTest() throws Exception{
-		DateTime dateTime = new DateTime();
+		JobExecutionContextDummy jobExecutionContextDummy = new JobExecutionContextDummy();
+		DateTime dateTime = new DateTime(System.currentTimeMillis() - 5000);
 		long expectedRuntimeInMillis = dateTime.getMillis();
-		long earliestEventTime = dateTime.minusDays(14).getMillis();
-		when(jobDataMapExtension.getJobDataMapLongValue((JobDataMap)any(), eq("latestEventTime"))).thenReturn(expectedRuntimeInMillis);
+		long earliestEventTime = dateTime.minusSeconds(EventScoringJob.EVENTS_DELTA_TIME_IN_SEC_DEFAULT).getMillis();
+		when(jobDataMapExtension.getJobDataMapLongValue((JobDataMap)any(), eq(EventScoringJob.LATEST_EVENT_TIME_JOB_PARAMETER))).thenReturn(expectedRuntimeInMillis);
+		jobExecutionContextDummy.getMergedJobDataMap().put(EventScoringJob.LATEST_EVENT_TIME_JOB_PARAMETER, expectedRuntimeInMillis);
 		ExecJob execJob = new ExecJobDummy();
 		when(eventScoringPigRunner.run((Long)any(), (Long)any(), (Resource)any(), (String)any(), (String)any())).thenReturn(execJob);
-		vpnScoringJob.execute(new JobExecutionContextDummy());
+		vpnScoringJob.execute(jobExecutionContextDummy);
 		assertEquals(expectedRuntimeInMillis/1000, vpnScoringJob.getRuntime().longValue());
 		assertEquals(earliestEventTime/1000, vpnScoringJob.getEarliestEventTime().longValue());
 	}
