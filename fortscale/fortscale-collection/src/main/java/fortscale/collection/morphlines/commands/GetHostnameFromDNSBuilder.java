@@ -4,13 +4,25 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import org.xbill.DNS.*;
+
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xbill.DNS.DClass;
+import org.xbill.DNS.ExtendedResolver;
+import org.xbill.DNS.Message;
+import org.xbill.DNS.Name;
+import org.xbill.DNS.Resolver;
+import org.xbill.DNS.ReverseMap;
+import org.xbill.DNS.Section;
+import org.xbill.DNS.Type;
+
 import com.typesafe.config.Config;
 
 public class GetHostnameFromDNSBuilder implements CommandBuilder {
@@ -21,8 +33,7 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 	}
 
 	@Override
-	public Command build(Config config, Command parent, Command child,
-			MorphlineContext context) {
+	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
 		return new GetHostnameFromDNS(this, config, parent, child, context);
 	}
 
@@ -39,10 +50,14 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 		private boolean isShortName = false;
 		private final String outputRecordName;
 		private int dnsLookupCounter = 0;
+		private HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
+		private String EMPTY_STRING = "";
+		
+		private static final Logger logger = LoggerFactory.getLogger(GetHostnameFromDNS.class);
 
-		public GetHostnameFromDNS(CommandBuilder builder, Config config, Command parent, Command child,
-				MorphlineContext context) {
+		public GetHostnameFromDNS(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
+			
 			this.ipAddress = getConfigs().getString(config, "ip_address");
 			if (getConfig().hasPath("dns_servers")) {
 				this.dnsServers = getConfigs().getStringList(config, "dns_servers");
@@ -65,36 +80,53 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord)  {
-			if ((this.maxQueries == -1) || (this.maxQueries > dnsLookupCounter)) {
-				List<?> tmp = inputRecord.get(this.ipAddress );
-				String ip = null;
-				String[] dnsServersArray = null;
-				if (tmp != null && tmp.size() > 0) {
-					ip =(String) tmp.get(0);
+			try {
+				Object field = inputRecord.getFirstValue(this.ipAddress);
+				if (null == field) {
+					inputRecord.replaceValues(this.outputRecordName, EMPTY_STRING);
+					return super.doProcess(inputRecord);
 				}
-				if (this.dnsServers != null && this.dnsServers.size() > 0) {
+				
+				String ip_address = (String) field;
+				String resolvedHostname = EMPTY_STRING;
+				
+				if (dnsCacheMap.containsKey(ip_address)) {
+					resolvedHostname = dnsCacheMap.get(ip_address);
+					inputRecord.replaceValues(this.outputRecordName, resolvedHostname);
+					return super.doProcess(inputRecord);
+				}
 
-					dnsServersArray = Arrays.copyOf(this.dnsServers.toArray(), this.dnsServers.toArray().length, String[].class);
-				}
-				if (ip!=null) {
-					try {
-						String result = reverseDns(ip,dnsServersArray,this.timeoutInSeconds);
+				if ((this.maxQueries == -1) || (this.maxQueries > dnsLookupCounter)) {
+					String[] dnsServersArray = null;
+					if (this.dnsServers != null && this.dnsServers.size() > 0) {
+						dnsServersArray = Arrays.copyOf(this.dnsServers.toArray(), this.dnsServers.toArray().length, String[].class);
+					}
+					resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
+					dnsLookupCounter++;
+
+					if (null==resolvedHostname || resolvedHostname.equalsIgnoreCase(EMPTY_STRING) || resolvedHostname.equalsIgnoreCase(ip_address)) {
+						resolvedHostname = EMPTY_STRING;
+					}
+					else {
 						if (this.isRemoveLastDot) {
-							result = removeLastDot(result);
+							resolvedHostname = removeLastDot(resolvedHostname);
 						}
 						if (this.isShortName) {
-							result = getShortName(result,ip);
+							resolvedHostname = getShortName(resolvedHostname);
 						}
-						if ((!result.equals("")) && (!result.equals(ip))) {
-							dnsLookupCounter++;
-						}
-						inputRecord.replaceValues(this.outputRecordName, result);
-					} catch (IOException e) {
-						inputRecord.replaceValues(this.outputRecordName, "");				
+						dnsCacheMap.put(ip_address, resolvedHostname);
 					}
 				}
+
+				inputRecord.replaceValues(this.outputRecordName, resolvedHostname);
+				return super.doProcess(inputRecord);
+				
 			}
-			return super.doProcess(inputRecord);
+			catch (Exception e) {
+				logger.warn("Exception while doing DNS resolving of IP to Hostname", e);
+				inputRecord.replaceValues(this.outputRecordName, EMPTY_STRING);
+				return super.doProcess(inputRecord);
+			}
 		}		
 
 		private static String reverseDns(String hostIp,String[] dnsServers,int timeoutInSecs) throws IOException {
@@ -125,27 +157,13 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 		}
 
 		private static String removeLastDot(String input) {
-			String result = null;
-			if (input.endsWith(".")) {
-				result = input.substring(0, input.length()-1);
-			}
-			else {
-				result = input;
-			}
-			return result;
+			return input.endsWith(".") ? input.substring(0, input.length()-1) : input ; 
 		}
 
-		private static String getShortName(String input,String ipAddress) {
-			String result = null;
-			if ((!input.equals(ipAddress)) && (input.indexOf('.') > 0)) {
-				result = input.substring(0, input.indexOf('.'));
-			}
-			else {
-				result = input;
-			}
-			return result;
+		private static String getShortName(String input) {
+			int firstDotIndex = input.indexOf('.') ;
+			return (firstDotIndex > 0) ? input.substring(0, firstDotIndex) : input; 
 		}
 
 	}
 }
-
