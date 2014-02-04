@@ -37,7 +37,7 @@ public class GetHostnameFromDHCPBuilder implements CommandBuilder {
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
 	private static final class GetHostnameFromDHCP extends AbstractCommand {
-
+	
 		private static final String STRING_EMPTY = "";
 		private final String ipAddress;
 		private final String timeStamp;
@@ -149,7 +149,8 @@ public class GetHostnameFromDHCPBuilder implements CommandBuilder {
 							return mongoHostname;
 						}
 					}
-					
+				} catch (Exception e) {
+					logger.debug("error getting hostname from dhcp collection", e);
 				} finally {
 					cursor.close();
 				}
