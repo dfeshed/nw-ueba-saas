@@ -1,6 +1,11 @@
+SET pig.tmpfilecompression true
+SET pig.tmpfilecompression.codec LZO
+SET  pig.tmpfilecompression.storage seqfile
+SET  pig.maxCombinedSplitSize 2147483648
+
 REGISTER '$jarFilePath1';
 REGISTER '$jarFilePath2';
-raw             = LOAD '$inputData' USING PigStorage('|') AS (date_time:chararray,date_time_unixTime:long,username:chararray,source_ip:chararray,local_ip:chararray,status:chararray,message:chararray,country_name:chararray);
+raw             = LOAD '$inputData' USING PigStorage('|') AS (date_time:chararray,date_time_unixTime:long,username:chararray,source_ip:chararray,local_ip:chararray,status:chararray,country_name:chararray);
 loginByTime     = FILTER raw by date_time_unixTime > (long)'$deltaTime';
 loginOrdered = FOREACH loginByTime GENERATE date_time,username,source_ip,status,country_name,date_time_unixTime,local_ip;
 success                 = FILTER loginOrdered by status == 'SUCCESS';
