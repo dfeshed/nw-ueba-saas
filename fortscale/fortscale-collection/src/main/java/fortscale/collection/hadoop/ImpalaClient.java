@@ -39,7 +39,7 @@ public class ImpalaClient {
 		Assert.hasText(tableName);
 		Assert.hasText(partition);
 		
-		String sql = String.format("alter table %s add partition (%s)", tableName, partition);
+		String sql = String.format("alter table %s add if not exists partition (%s)", tableName, partition);
 		try {
 			impalaJdbcTemplate.execute(sql);
 		} catch (DataAccessException e) {
