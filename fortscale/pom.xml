@@ -192,7 +192,6 @@
 		<module>fortscale-domain</module>
 		<module>fortscale-webapp</module>
 		<module>fortscale-services</module>
-		<module>fortscale-batch</module>
 		<module>fortscale-monitor</module>
 		<module>fortscale-collection</module>
 		<module>fortscale-utils</module>
