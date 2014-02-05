@@ -39,11 +39,12 @@ public class FolderCleanupJobTest {
 	
 	@Test
 	public void usable_space_greater_then_threshold_should_not_delete_files() throws Exception {
-		// arrange
-		when(folderMock.getUsableSpace()).thenReturn(new Long(60 * 1024 * 1024));
+		// arrange - mock 30% free space
+		when(folderMock.getUsableSpace()).thenReturn(new Long(30 * 1024 * 1024));
+		when(folderMock.getTotalSpace()).thenReturn(new Long(100 * 1024 * 1024));
 		
 		// act
-		subject.cleanupFolder(folderMock, 50);
+		subject.cleanupFolder(folderMock, 20);
 		
 		// assert
 		verifyNoMoreInteractions(fileA, fileB);
@@ -52,11 +53,12 @@ public class FolderCleanupJobTest {
 	@Test
 	public void cleanup_should_delete_only_the_needed_amount_of_files_to_get_over_the_threshold() throws Exception {
 		// arrange
-		when(folderMock.getUsableSpace()).thenReturn(new Long(40 * 1024 * 1024)).thenReturn(new Long(60 * 1024 * 1024));
+		when(folderMock.getUsableSpace()).thenReturn(new Long(15 * 1024 * 1024)).thenReturn(new Long(25 * 1024 * 1024));
+		when(folderMock.getTotalSpace()).thenReturn(new Long(100 * 1024 * 1024));
 		when(fileA.delete()).thenReturn(Boolean.TRUE);
 		
 		// act
-		subject.cleanupFolder(folderMock, 50);
+		subject.cleanupFolder(folderMock, 20);
 		
 		// assert
 		verify(fileA).delete();
