@@ -72,8 +72,8 @@ public class FolderCleanupJob implements Job {
 			throw new JobExecutionException("folder '" + folderFile.getPath() + "' does not exists or not a folder", false);
 		
 		// get the folder free space
-		int totalMB = (int) (folderFile.getTotalSpace() / (1024 *1024));
-		int freespaceMB = (int)(folderFile.getUsableSpace() / (1024 * 1024));
+		long totalMB = (folderFile.getTotalSpace() / (1024 *1024));
+		long freespaceMB = (folderFile.getUsableSpace() / (1024 * 1024));
 		int precentFree = (int) (freespaceMB * 100 / totalMB);
 		if (precentFree <= threshold) {
 			logger.info("reached avaialbe size threshold, starting to delete files from " + folderFile.getPath());
@@ -92,7 +92,7 @@ public class FolderCleanupJob implements Job {
 						fileToDelete.delete();
 						logger.info("file {} was deleted", fileToDelete.getName());
 					}
-					freespaceMB = (int)(folderFile.getUsableSpace() / (1024 * 1024));
+					freespaceMB = (folderFile.getUsableSpace() / (1024 * 1024));
 					precentFree = (int) (freespaceMB * 100 / totalMB);
 				} catch (Exception e) {
 					logger.error("cannot delete file " + fileToDelete.getName(), e);
