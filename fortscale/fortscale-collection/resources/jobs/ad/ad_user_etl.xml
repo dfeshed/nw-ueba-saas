@@ -57,16 +57,6 @@
 				</entry>
             </job-data-map>
 		</job>
-	
-		<trigger>
-			<cron>
-				<name>ad_user_etl_hourly_trigger</name>
-				<group>AD</group>
-				<job-name>User_ETL</job-name>
-				<job-group>AD</job-group>
- 				<cron-expression>0 0 0 * * ?</cron-expression>
-			</cron>
-		</trigger>
 		
 	</schedule>
 
