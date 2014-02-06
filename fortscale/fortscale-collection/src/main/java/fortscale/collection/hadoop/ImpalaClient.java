@@ -49,4 +49,12 @@ public class ImpalaClient {
 		}
 	}
 	
+	public void dropPartitionFromTable(String tableName, String partition) throws DataAccessException {
+		Assert.hasText(tableName);
+		Assert.hasText(partition);
+		
+		String sql = String.format("alter table %s drop if exists partition (%s)", tableName, partition);
+		impalaJdbcTemplate.execute(sql);
+	}
+	
 }

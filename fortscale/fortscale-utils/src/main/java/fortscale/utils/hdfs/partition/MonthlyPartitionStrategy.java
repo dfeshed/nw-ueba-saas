@@ -39,6 +39,24 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		return String.format("yearmonth=%s%02d", year, month);
 	}
 	
+	/**
+	 * Gets the partition name extracted from the hdfs path given
+	 */
+	public String getImpalaPartitionNameFromPath(String path) {
+		if (path==null || path.isEmpty())
+			throw new IllegalArgumentException("path cannot be null");
+		
+		// normalize and strip last slash
+		String normalized = normalizePath(path);
+		normalized = normalized.substring(0, normalized.length()-1);
+		
+		String partitionPart = normalized.substring(normalized.lastIndexOf("/")+1);
+		
+		if (isPathInPartitionFormat(partitionPart))
+			return partitionPart;
+		else
+			return null;
+	}
 	
 	/**
 	 * Gets the partitions names that contains data for the date range given
@@ -73,7 +91,7 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		
 		String partitionPart = normalized.substring(normalized.lastIndexOf("/")+1);
 		
-		return partitionPart.matches("yearmonth=\\d{6}");
+		return isPathInPartitionFormat(partitionPart);
 	}
 	
 	/**
@@ -103,6 +121,10 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		if (startPeriod.isAfter(timestamp))
 			return -1;
 		return 0;
+	}
+	
+	private boolean isPathInPartitionFormat(String path) {
+		return path.matches("yearmonth=\\d{6}");
 	}
 	
 	private DateTime getDateForTimestamp(long timestamp) {		

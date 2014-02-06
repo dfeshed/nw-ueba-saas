@@ -85,4 +85,10 @@ public class DefaultPartitionStrategyTest {
 		assertEquals(true, strategy.isPartitionPath("/base"));
 		assertEquals(true, strategy.isPartitionPath("/base/path/"));
 	}
+	
+	@Test
+	public void default_partition_should_return_null_for_partition_name_from_path() {
+		DefaultPartitionStrategy strategy = new DefaultPartitionStrategy();
+		assertNull(strategy.getImpalaPartitionNameFromPath("/base/path/"));
+	}
 }

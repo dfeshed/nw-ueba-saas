@@ -16,6 +16,11 @@ public interface PartitionStrategy {
 	String getImpalaPartitionName(long timestamp);
 	
 	/**
+	 * Gets the partition name extracted from the hdfs path given
+	 */
+	String getImpalaPartitionNameFromPath(String path);
+	
+	/**
 	 * Gets the partitions names that contains data for the date range given
 	 */
 	String[] getPartitionsForDateRange(String basePath, long start, long finish);

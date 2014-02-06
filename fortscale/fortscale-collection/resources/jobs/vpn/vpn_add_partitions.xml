@@ -31,8 +31,12 @@
 						<value>vpndata</value>
 					</entry>
 					<entry>
-						<key>directoryPrefix</key>
-						<value>yearmonth=</value>
+						<key>daysToRetain</key>
+						<value>180</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>monthly</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 35 * * * ?</cron-expression>
@@ -55,8 +59,12 @@
 						<value>vpndataRes</value>
 					</entry>
 					<entry>
-						<key>directoryPrefix</key>
-						<value>runtime=</value>
+						<key>partitionStrategy</key>
+						<value>runtime</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>8</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 51 * * * ?</cron-expression>

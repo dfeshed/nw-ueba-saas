@@ -27,6 +27,13 @@ public class DefaultPartitionStrategy implements PartitionStrategy {
 
 	
 	/**
+	 * Gets the partition name extracted from the hdfs path given
+	 */
+	public String getImpalaPartitionNameFromPath(String path) {
+		return null;
+	}
+	
+	/**
 	 * Gets the partitions names that contains data for the date range given
 	 */
 	public String[] getPartitionsForDateRange(String basePath, long start, long finish) {

@@ -25,6 +25,25 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 		return "runtime=" + timestamp;
 	}
 
+	/**
+	 * Gets the partition name extracted from the hdfs path given
+	 */
+	public String getImpalaPartitionNameFromPath(String path) {
+		if (path==null || path.isEmpty())
+			throw new IllegalArgumentException("path cannot be null");
+		
+		// normalize and strip last slash
+		String normalized = normalizePath(path);
+		normalized = normalized.substring(0, normalized.length()-1);
+		
+		String partitionPart = normalized.substring(normalized.lastIndexOf("/")+1);
+		
+		if (isPathInPartitionFormat(partitionPart))
+			return partitionPart;
+		else
+			return null;
+	}
+	
 	@Override
 	public String[] getPartitionsForDateRange(String basePath, long start, long finish) {
 		if (basePath==null)
@@ -69,4 +88,8 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 		return 0;
 	}
 
+	
+	private boolean isPathInPartitionFormat(String path) {
+		return path.matches("^runtime=[\\d]+$");
+	}
 }

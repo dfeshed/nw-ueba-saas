@@ -24,9 +24,13 @@
 					<value>totalscore</value>
 				</entry>
 				<entry>
-					<key>directoryPrefix</key>
-					<value>yearmonth=</value>
-				</entry>
+						<key>partitionStrategy</key>
+						<value>runtime</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>8</value>
+					</entry>
             </job-data-map>
 		</job>
 	

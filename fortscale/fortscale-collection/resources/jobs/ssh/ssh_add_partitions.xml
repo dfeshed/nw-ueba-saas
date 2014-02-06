@@ -41,8 +41,12 @@
 						<value>sshdata</value>
 					</entry>
 					<entry>
-						<key>directoryPrefix</key>
-						<value>yearmonth=</value>
+						<key>partitionStrategy</key>
+						<value>monthly</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>180</value>
 					</entry>
 	            </job-data-map>
  				<cron-expression>0 36 * * * ?</cron-expression>
@@ -65,8 +69,12 @@
 						<value>sshScores</value>
 					</entry>
 					<entry>
-						<key>directoryPrefix</key>
-						<value>runtime=</value>
+						<key>partitionStrategy</key>
+						<value>runtime</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>8</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 52 * * * ?</cron-expression>

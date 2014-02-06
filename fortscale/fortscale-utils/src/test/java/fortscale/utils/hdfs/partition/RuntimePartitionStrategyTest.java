@@ -49,4 +49,14 @@ public class RuntimePartitionStrategyTest {
 	public void compare_tests(String path, long runtime, int expected) {
 		assertEquals(expected, strategy.comparePartitionTo(path, runtime));
 	}
+	
+	@Test
+	@Parameters({
+		"/base/runtime=201402, runtime=201402",
+		"/base/runtime=201402/, runtime=201402",
+		"/base/path/runtime=201402, runtime=201402"
+	})
+	public void get_partition_from_path_test(String path, String partition) {
+		assertEquals(partition, strategy.getImpalaPartitionNameFromPath(path));
+	}
 }

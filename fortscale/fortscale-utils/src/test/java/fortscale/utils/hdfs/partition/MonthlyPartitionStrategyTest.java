@@ -198,4 +198,15 @@ public class MonthlyPartitionStrategyTest {
 		MonthlyPartitionStrategy strategy = new MonthlyPartitionStrategy();
 		assertEquals(expected, strategy.isPartitionPath(path));
 	}
+	
+	@Test
+	@Parameters({
+		"/base/yearmonth=201402, yearmonth=201402",
+		"/base/yearmonth=201402/, yearmonth=201402",
+		"/base/path/yearmonth=201402, yearmonth=201402"
+	})
+	public void monthly_partition_get_partition_from_path_test(String path, String partition) {
+		MonthlyPartitionStrategy strategy = new MonthlyPartitionStrategy();
+		assertEquals(partition, strategy.getImpalaPartitionNameFromPath(path));
+	}
 }

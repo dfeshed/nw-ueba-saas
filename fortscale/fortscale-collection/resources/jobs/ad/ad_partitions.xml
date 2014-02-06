@@ -31,8 +31,12 @@
 						<value>ldapUsers</value>
 					</entry>
 					<entry>
-						<key>directoryPrefix</key>
-						<value>yearmonth=</value>
+						<key>partitionStrategy</key>
+						<value>monthly</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>180</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 35 * * * ?</cron-expression>
@@ -55,8 +59,12 @@
 						<value>ldapGroups</value>
 					</entry>
 					<entry>
-						<key>directoryPrefix</key>
-						<value>yearmonth=</value>
+						<key>partitionStrategy</key>
+						<value>monthly</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>180</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 36 * * * ?</cron-expression>
@@ -79,8 +87,12 @@
 						<value>ldap_group_membership_scores</value>
 					</entry>
 					<entry>
-						<key>directoryPrefix</key>
-						<value>yearmonth=</value>
+						<key>partitionStrategy</key>
+						<value>monthly</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>90</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 57 * * * ?</cron-expression>
