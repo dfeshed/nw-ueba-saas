@@ -8,11 +8,11 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import fortscale.collection.configuration.CollectionPropertiesResolver;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 
 /**
@@ -23,11 +23,8 @@ public class JobDataMapExtension {
 
 	private static Logger logger = LoggerFactory.getLogger(JobDataMapExtension.class);
 	
-	private static final String ENV_PROP_PERFIX = "${";
-	private static final String ENV_PROP_SUFFIX = "}";
-	
 	@Autowired
-	Environment env;
+	CollectionPropertiesResolver propertiesResolver;
 	
 	@Autowired
 	protected ResourceLoader resourceLoader;
@@ -82,40 +79,13 @@ public class JobDataMapExtension {
 		}
 	}
 	
-	private String getEnvPropertyValue(String value, String mapKey) throws JobExecutionException {
-		String ret = value;
-		if(value.contains(ENV_PROP_PERFIX)){
-			StringBuilder builder = new StringBuilder();
-			int cursor = 0;
-			while(cursor < value.length()){
-				int nextStart = value.indexOf(ENV_PROP_PERFIX, cursor);
-				if(nextStart == -1){
-					builder.append(value.substring(cursor));
-					break;
-				} else{
-					if(cursor < nextStart){
-						builder.append(value.substring(cursor, nextStart));
-						cursor = nextStart;
-					}
-				}
-				
-				int endIndex = value.indexOf(ENV_PROP_SUFFIX, cursor);
-				if(endIndex == -1){
-					logger.error("JobDataMap key {} contained mal structured env propery value {}.", mapKey, value);
-					throw new JobExecutionException(String.format("JobDataMap key %s contained mal structured env propery value {}.", mapKey, value));
-				}
-				String propkey = value.substring(cursor + ENV_PROP_PERFIX.length(),endIndex);
-				cursor = endIndex + ENV_PROP_SUFFIX.length();
-				String propVal = env.getProperty(propkey);
-				if (propVal==null) {
-					logger.error("JobDataMap key ({}) contained the value ({}) which contained env propery key ({}) which does not exist.", mapKey, value, propkey);
-					throw new JobExecutionException(String.format("JobDataMap key (%s) contained the value (%s) which contained env propery key (%s) which does not exist.", mapKey, value, propkey));
-				}
-				builder.append(propVal);
-			}
-			ret = builder.toString();
+	private String getEnvPropertyValue(String value, String mapKey) {
+		try{
+			return propertiesResolver.getEnvPropertyValue(value);
+		} catch(Exception e){
+			logger.error(String.format("got an exception for the following job parameter: key: %s, value: %s", mapKey, value), e);
+			throw new RuntimeException(String.format("got an exception for the following job parameter: key: %s, value: %s", mapKey, value), e);
 		}
-		return ret;
 	}
 	
 	/**
