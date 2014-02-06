@@ -1,5 +1,6 @@
 package fortscale.utils.hdfs.partition;
 
+import static fortscale.utils.hdfs.partition.PartitionsUtils.normalizePath;
 
 /**
  * Default partition strategy places all files in the same flat directory
@@ -36,11 +37,21 @@ public class DefaultPartitionStrategy implements PartitionStrategy {
 		return new String[] { normalizePath(basePath) };
 	}
 	
-	private String normalizePath(String path) {
-		String normalized = path.replace('\\', '/');
-		if (normalized.endsWith("/"))
-			return normalized;
-		else
-			return normalized + '/';
+	/**
+	 * Determine if the path given is according to the partition naming strategy
+	 */
+	public boolean isPartitionPath(String path) {
+		return true;
 	}
+	
+	/**
+	 * compares the given timestamp to the partition period. Return 0 in case the 
+	 * timestamp is within the partition, 1 if the timestamp is newer than the partition
+	 * or -1 if the timestamp is older than the partition. 
+	 */
+	public int comparePartitionTo(String partitionPath, long ts) {
+		return 0;
+	}
+	
+	
 }

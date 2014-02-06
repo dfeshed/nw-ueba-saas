@@ -8,7 +8,11 @@ import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 
+@RunWith(JUnitParamsRunner.class)
 public class MonthlyPartitionStrategyTest {
 
 	@Test
@@ -167,5 +171,31 @@ public class MonthlyPartitionStrategyTest {
 		String actual = strategy.getImpalaPartitionName(timestamp);
 		
 		assertEquals("yearmonth=201401", actual);
+	}
+	
+	@Test
+	@Parameters({
+		"/base/yearmonth=201402, 1391674242, 0",
+		"/base/yearmonth=201402, 1394092770, 1",
+		"/base/yearmonth=201402, 1394092770000, 1",
+		"/base/yearmonth=201402, 1388995170, -1"
+	})
+	public void monthly_partition_compare_to_test(String path, long ts, int expected) {
+		MonthlyPartitionStrategy strategy = new MonthlyPartitionStrategy();
+		assertEquals(expected, strategy.comparePartitionTo(path, ts));
+	}
+	
+	@Test
+	@Parameters({
+		"/base/yearmonth=201402, true",
+		"/base/yearmonth=20141, false",
+		"/base/yearmonth=, false",
+		"/base/yearmonth, false",
+		"/base/year, false",
+		"/base/, false"
+	})
+	public void monthly_partition_is_partition_test(String path, boolean expected) {
+		MonthlyPartitionStrategy strategy = new MonthlyPartitionStrategy();
+		assertEquals(expected, strategy.isPartitionPath(path));
 	}
 }
