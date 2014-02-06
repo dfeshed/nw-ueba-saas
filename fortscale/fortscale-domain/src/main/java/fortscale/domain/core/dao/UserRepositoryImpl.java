@@ -61,7 +61,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	@Override
 	public User findByLogUsername(String logname, String username){
 		String logUsernameField = User.getLogUserNameField(logname);
-		Query query = new Query(where(logUsernameField).regex(String.format("^%s$", username),"i"));
+		Query query = new Query(where(logUsernameField).is(username));
 		return mongoTemplate.findOne(query, User.class);
 	}
 
@@ -155,6 +155,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	@Override
 	public List<User> findByIds(Collection<String> ids) {
 		return findByUniqueField(User.ID_FIELD,ids);
+	}
+	
+	@Override
+	public List<User> findByUsernames(Collection<String> usernames){
+		return findByUniqueField(User.usernameField,usernames);
 	}
 
 	@Override
