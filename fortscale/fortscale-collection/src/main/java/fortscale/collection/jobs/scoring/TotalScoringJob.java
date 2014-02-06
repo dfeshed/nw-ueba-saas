@@ -48,7 +48,7 @@ public class TotalScoringJob extends FortscaleJob {
 
 	@Override
 	protected int getTotalNumOfSteps() {
-		return 2;
+		return 3;
 	}
 
 	@Override
@@ -59,7 +59,25 @@ public class TotalScoringJob extends FortscaleJob {
 			return;
 		}
 		
+		runAddPartitionQuery();
+		
 		refreshImpala();
+	}
+	
+	private void runAddPartitionQuery() throws JobExecutionException{	
+		startNewStep(String.format("%s add partitions ", impalaTableName));
+				
+		// declare new partitions for impala
+		for (String partition : impalaWriterFactory.getTotalScoreNewPartitions()) {
+			try {
+				impalaClient.addPartitionToTable(impalaTableName, partition); 
+			} catch (JobExecutionException e) {
+				logger.error(String.format("got exception while trying to add total score partition %s.", partition), e);
+				monitor.warn(getMonitorId(), getStepName(), String.format("got exception while trying to add total score partition %s. exception: %s", partition, e.toString()));
+			}
+		}
+		
+		finishStep();		
 	}
 	
 	private boolean updateTotalScore() throws JobExecutionException{

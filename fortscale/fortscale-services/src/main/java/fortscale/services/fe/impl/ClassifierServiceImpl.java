@@ -306,7 +306,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(offset < authScores.size()){
 			Map<String, User> userMap = new HashMap<>();
 			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
-				String username = authScore.getUserName().toLowerCase();
+				String username = authScore.getUserName();
 				User user = userMap.get(username);
 				if(user == null){
 					user = userService.findByAuthUsername(eventId, username);
@@ -537,16 +537,15 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(offset < vpnScores.size()){
 			Map<String, User> userMap = new HashMap<>();
 			for(VpnScore vpnScore: vpnScores.subList(offset, vpnScores.size())){
-				String username = vpnScore.getUserName().toLowerCase();
+				String username = vpnScore.getUserName();
 				User user = userMap.get(username);
 				if(user == null){
-					user = userRepository.findByApplicationUserName(userService.createApplicationUserDetails(UserApplication.vpn, username));
+					user = userService.findByAuthUsername(LogEventsEnum.vpn, username);
 					if(user == null){
 						logger.warn("vpn username ({}) was not found in the user collection", username);
 						continue;
-					} else{
-						userMap.put(username, user);
 					}
+					userMap.put(username, user);
 				}
 
 				ret.add(createVpnEventScoreInfo(user, vpnScore));
