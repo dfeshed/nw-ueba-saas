@@ -483,15 +483,13 @@ public class UserServiceImpl implements UserService{
 		
 		User user = findByLogUsername(eventId, username);
 		
-		if(user == null){
+		String usernameSplit[] = StringUtils.split(username, '@');
+		if(user == null && usernameSplit.length > 1){
 			user = userRepository.findByUsername(username);
 		}
 		
 		if(user == null){
-			String usernameSplit[] = StringUtils.split(username, '@');
-			if(usernameSplit.length > 1){
-				user = userRepository.findByUsername(usernameSplit[0]);
-			}
+			user = userRepository.findByNoDomainUsername(usernameSplit[0]);
 			
 			if(user == null){
 				//tried to avoid this call since its performance is bad.
