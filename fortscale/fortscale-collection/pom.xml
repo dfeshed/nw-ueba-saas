@@ -314,10 +314,10 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputdirectory>target\lib</outputdirectory>
-							<overwritereleases>false</overwritereleases>
-							<overwritesnapshots>false</overwritesnapshots>
-							<overwriteifnewer>true</overwriteifnewer>
+							<outputDirectory>target\lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
 						</configuration>
 					</execution>
 					<!-- copy dependency to target folder -->
