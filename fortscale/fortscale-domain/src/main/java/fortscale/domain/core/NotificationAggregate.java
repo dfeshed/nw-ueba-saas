@@ -9,6 +9,8 @@ import java.util.Set;
 
 public class NotificationAggregate implements Serializable {
 
+	private static final long serialVersionUID = 8732010071833651983L;
+	
 	private List<Notification> aggregated = new ArrayList<Notification>();
 	private String generator_name;
 	private String cause;
