@@ -101,8 +101,8 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 					if (this.dnsServers != null && this.dnsServers.size() > 0) {
 						dnsServersArray = Arrays.copyOf(this.dnsServers.toArray(), this.dnsServers.toArray().length, String[].class);
 					}
-					resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
 					dnsLookupCounter++;
+					resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
 
 					if (null==resolvedHostname || resolvedHostname.equalsIgnoreCase(EMPTY_STRING) || resolvedHostname.equalsIgnoreCase(ip_address)) {
 						resolvedHostname = EMPTY_STRING;
@@ -123,7 +123,8 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 				
 			}
 			catch (Exception e) {
-				logger.warn("Exception while doing DNS resolving of IP to Hostname", e);
+				// log debug as the log file can be very big with lots of messages like this
+				logger.debug("Exception while doing DNS resolving of IP to Hostname", e);
 				inputRecord.replaceValues(this.outputRecordName, EMPTY_STRING);
 				return super.doProcess(inputRecord);
 			}
