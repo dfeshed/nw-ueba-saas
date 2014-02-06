@@ -132,7 +132,9 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 				ret.setAllFields(allFields);
 				
 				
-			} catch (NumberFormatException | ParseException | NullPointerException e) {
+			} catch (SQLException se){
+				throw se;
+			} catch (Exception e)  {
 				numOfErrors++;
 				if(numOfErrors < 5){
 					ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper();

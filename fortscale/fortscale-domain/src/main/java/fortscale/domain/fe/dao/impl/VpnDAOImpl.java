@@ -117,7 +117,9 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 				ret.setEventScore(rs.getDouble(VpnScore.EVENT_SCORE_FIELD_NAME));
 				ret.setGlobalScore(rs.getDouble(VpnScore.GLOBAL_SCORE_FIELD_NAME));
 				
-			} catch (NumberFormatException | ParseException | NullPointerException e) {
+			} catch (SQLException se){
+				throw se;
+			} catch (Exception e)  {
 				numOfErrors++;
 				if(numOfErrors < 5){
 					ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper();

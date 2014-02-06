@@ -376,7 +376,9 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 						Double.parseDouble(rs
 								.getString(getEventScoreFieldName())),
 						parseTimestampDate(Long.parseLong(rs.getString(getTimestampFieldName()))));
-			} catch (NumberFormatException | NullPointerException e) {
+			} catch (SQLException se){
+				throw se;
+			} catch (Exception e) {
 				numOfErrors++;
 				if(numOfErrors < 5){
 					ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper();
