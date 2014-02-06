@@ -56,7 +56,7 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 
 	@Override
 	protected int getTotalNumOfSteps() {
-		return 3;
+		return 4;
 	}
 
 	@Override
