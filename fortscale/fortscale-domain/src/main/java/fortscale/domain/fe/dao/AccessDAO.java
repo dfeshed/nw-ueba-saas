@@ -181,6 +181,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return ret;
 	}
 
+	@SuppressWarnings("deprecation")
 	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp) {
 		String query = String.format(
 				"select count(distinct(%s)) from %s where %s=%s and %s > %d",
@@ -191,6 +192,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForInt(query);
 	}
 
+	@SuppressWarnings("deprecation")
 	public int countNumOfUsers(Date timestamp) {
 		String query = String.format(
 				"select count(distinct(%s)) from %s where %s=%s",
@@ -200,6 +202,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForInt(query);
 	}
 
+	@SuppressWarnings("deprecation")
 	public int countNumOfEvents(Date timestamp) {
 		String query = String.format("select count(*) from %s where %s=%s",
 				getTableName(), getTimestampFieldName(),
@@ -208,6 +211,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForInt(query);
 	}
 
+	@SuppressWarnings("deprecation")
 	public int countNumOfEventsByUser(Date timestamp, String username){
 		String query = String.format("select count(*) from %s where %s=%s and %s",
 				getTableName(),
@@ -217,6 +221,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForInt(query);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal){
 		String query = String.format("select count(*) from %s where lower(%s) regexp \"%s\" and %s=%s and %s",
 				getTableName(),
@@ -243,6 +248,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return retDate;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public int countNumOfRecords(){
 		String query = String.format("select count(*) from %s", getTableName());
 		
