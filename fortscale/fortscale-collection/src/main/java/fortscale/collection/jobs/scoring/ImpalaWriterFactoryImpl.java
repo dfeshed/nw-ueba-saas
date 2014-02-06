@@ -1,19 +1,26 @@
 package fortscale.collection.jobs.scoring;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.utils.hdfs.HDFSPartitionsWriter;
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
+import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.services.impl.ImpalaGroupsScoreWriter;
 import fortscale.services.impl.ImpalaTotalScoreWriter;
 import fortscale.services.impl.ImpalaUseridToAppUsernameWriter;
 import fortscale.services.impl.ImpalaWriterFactory;
+import fortscale.utils.hdfs.HDFSPartitionsWriter;
+import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
 
 @Component
 public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
+	
+	@Autowired
+	protected ImpalaClient impalaClient;
 	
 	private HDFSPartitionsWriter groupsScoreAppender;
 	private HDFSPartitionsWriter totalScoreAppender;
@@ -27,6 +34,28 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	
 	public void closeGroupsScoreAppender() throws IOException{
 		groupsScoreAppender.close();
+	}
+	
+	public List<String> getGroupsScoreNewPartitions(){
+		List<String> ret = null;
+		if(groupsScoreAppender != null){
+			ret = groupsScoreAppender.getNewPartitions();
+		} else{
+			ret = Collections.emptyList();
+		}
+		
+		return ret;
+	}
+	
+	public List<String> getTotalScoreNewPartitions(){
+		List<String> ret = null;
+		if(totalScoreAppender != null){
+			ret = totalScoreAppender.getNewPartitions();
+		} else{
+			ret = Collections.emptyList();
+		}
+		
+		return ret;
 	}
 	
 	public void createTotalScoreAppender(String basePath, String filename) throws IOException{

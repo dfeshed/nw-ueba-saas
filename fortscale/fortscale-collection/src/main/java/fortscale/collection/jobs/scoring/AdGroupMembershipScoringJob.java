@@ -72,7 +72,25 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 			return;
 		}
 		
+		runAddPartitionQuery();
+		
 		refreshImpala();
+	}
+	
+	private void runAddPartitionQuery() throws JobExecutionException{	
+		startNewStep(String.format("%s add partitions ", impalaTableName));
+				
+		// declare new partitions for impala
+		for (String partition : impalaWriterFactory.getGroupsScoreNewPartitions()) {
+			try {
+				impalaClient.addPartitionToTable(impalaTableName, partition); 
+			} catch (JobExecutionException e) {
+				logger.error(String.format("got exception while trying to add group score partition %s.", partition), e);
+				monitor.warn(getMonitorId(), getStepName(), String.format("got exception while trying to add group score partition %s. exception: %s", partition, e.toString()));
+			}
+		}
+		
+		finishStep();		
 	}
 	
 	private boolean updateGroupMembershipScore() throws JobExecutionException{
