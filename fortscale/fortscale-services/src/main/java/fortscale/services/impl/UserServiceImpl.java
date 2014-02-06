@@ -90,13 +90,13 @@ public class UserServiceImpl implements UserService{
 	@Autowired 
 	private ADUserParser adUserParser; 
 	
-	@Value("${vpn.to.ad.username.regex.format:^%s*(?i)}")
+	@Value("${vpn.to.ad.username.regex.format:^%s@.*(?i)}")
 	private String vpnToAdUsernameRegexFormat;
 	
-	@Value("${auth.to.ad.username.regex.format:^%s*(?i)}")
+	@Value("${auth.to.ad.username.regex.format:^%s@.*(?i)}")
 	private String authToAdUsernameRegexFormat;
 	
-	@Value("${ssh.to.ad.username.regex.format:^%s*(?i)}")
+	@Value("${ssh.to.ad.username.regex.format:^%s@.*(?i)}")
 	private String sshToAdUsernameRegexFormat;
 	
 	
@@ -331,10 +331,14 @@ public class UserServiceImpl implements UserService{
 		
 		final String searchField = createSearchField(userAdInfo, username);
 		
-		
+		String noDomainUsername = null;
+		if(!StringUtils.isEmpty(username)) {
+			noDomainUsername = StringUtils.split(username, '@')[0];
+		}
 		if(isSaveUser){
 			if(!StringUtils.isEmpty(username)) {
 				user.setUsername(username);
+				user.setNoDomainUsername(noDomainUsername);
 				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
 			}
 			user.setSearchField(searchField);
@@ -345,6 +349,9 @@ public class UserServiceImpl implements UserService{
 			update.set(User.adInfoField, userAdInfo);
 			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
 				update.set(User.usernameField, username);
+			}
+			if(!StringUtils.isEmpty(noDomainUsername) && !noDomainUsername.equals(user.getNoDomainUsername())){
+				update.set(User.noDomainUsernameField, noDomainUsername);
 			}
 			if(!searchField.equals(user.getSearchField())){
 				update.set(User.searchFieldName, searchField);
@@ -467,55 +474,102 @@ public class UserServiceImpl implements UserService{
 	
 	
 	
-	@Override
-	public User findByVpnUsername(String username){
-		return findByUsername(generateUsernameRegexesByVpnUsername(username), username);
-	}
-	
-	private List<String> generateUsernameRegexesByVpnUsername(String vpnUsername){
-		List<String> regexes = new ArrayList<>();
-		for(String regexFormat: vpnToAdUsernameRegexFormat.split(REGEX_SEPERATOR)){
-			regexes.add(String.format(regexFormat, vpnUsername));
-		}
-		return regexes;
-	}
 	
 	@Override
 	public User findByAuthUsername(LogEventsEnum eventId, String username){
-		return findByUsername(generateUsernameRegexesByAuthUsername(eventId, username), username);
+		if(StringUtils.isEmpty(username)){
+			return null;
+		}
+		
+		User user = findByLogUsername(eventId, username);
+		
+		if(user == null){
+			user = userRepository.findByUsername(username);
+		}
+		
+		if(user == null){
+			String usernameSplit[] = StringUtils.split(username, '@');
+			if(usernameSplit.length > 1){
+				user = userRepository.findByUsername(usernameSplit[0]);
+			}
+			
+			if(user == null){
+				//tried to avoid this call since its performance is bad.
+				user = findByUsername(generateUsernameRegexByAuthUsername(eventId, usernameSplit[0]), username);
+			}
+		}
+		
+		return user;
+	}
+	
+	@Override
+	public User findByLogUsername(LogEventsEnum eventId, String username){
+		String tablename = null;
+		switch(eventId){
+		case login:
+			tablename = loginDAO.getTableName();
+			break;
+		case ssh:
+			tablename = sshDAO.getTableName();
+			break;
+		case vpn:
+			tablename = vpnDAO.getTableName();
+			break;
+		default:
+			break;
+		}
+		
+		if(StringUtils.isEmpty(tablename)){
+			return null;
+		}
+		return userRepository.findByLogUsername(tablename, username);
 	}
 	
 	
-	public User findByUsername(List<String> regexes, String username){
-		for(String regex: regexes){
-			List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
-			if(tmpUsers == null || tmpUsers.size() == 0){
-				continue;
-			}
-			if(tmpUsers.size() > 1){
-				String tmpUsername = String.format("%s@", username);
-				for(User tmpUser: tmpUsers){
-					if(tmpUser.getUsername().startsWith(tmpUsername)){
-						return tmpUser;
-					}
-				}
-			}else{
-				return tmpUsers.get(0);
+	private User findByUsername(String regex, String username){
+		if(StringUtils.isEmpty(regex)){
+			return null;
+		}
+		
+		List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
+		if(tmpUsers == null || tmpUsers.size() == 0){
+			return null;
+		}
+		
+		if(tmpUsers.size() == 1){
+			return tmpUsers.get(0);
+		}
+		
+		for(User tmpUser: tmpUsers){
+			if(tmpUser.getUsername().equalsIgnoreCase(username)){
+				return tmpUser;
 			}
 		}
+		
 		return null;
 	}
 	
-	private List<String> generateUsernameRegexesByAuthUsername(LogEventsEnum eventId, String authUsername){
-		List<String> regexes = new ArrayList<>();
-		String regex = authToAdUsernameRegexFormat;
-		if(eventId.equals(LogEventsEnum.ssh)){
-			regex = sshToAdUsernameRegexFormat;
+	private String generateUsernameRegexByAuthUsername(LogEventsEnum eventId, String authUsername){
+		String regexFormat = null;
+		switch(eventId){
+		case login:
+			regexFormat = authToAdUsernameRegexFormat;
+			break;
+		case ssh:
+			regexFormat = sshToAdUsernameRegexFormat;
+			break;
+		case vpn:
+			regexFormat = vpnToAdUsernameRegexFormat;
+			break;
+		default:
+			break;
 		}
-		for(String regexFormat: regex.split(REGEX_SEPERATOR)){
-			regexes.add(String.format(regexFormat, authUsername));
+		
+		if(StringUtils.isEmpty(regexFormat)){
+			return null;
 		}
-		return regexes;
+
+		return String.format(regexFormat, authUsername);
 	}
 	
 	
