@@ -13,29 +13,31 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.typesafe.config.Config;
 
+import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.utils.logging.Logger;
 
-public class GetHostnameFromMongoBuilder implements CommandBuilder {
+public class GetHostnameFromDHCPBuilder implements CommandBuilder {
 
 	@Override
 	public Collection<String> getNames() {
-		return Collections.singletonList("GetHostnameFromMongo");
+		return Collections.singletonList("GetHostnameFromDHCP");
 	}
 
 	@Override
 	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
-		return new GetHostnameFromMongo(this, config, parent, child, context);
+		return new GetHostnameFromDHCP(this, config, parent, child, context);
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
-	private static final class GetHostnameFromMongo extends AbstractCommand {
-
+	private static final class GetHostnameFromDHCP extends AbstractCommand {
+	
 		private static final String STRING_EMPTY = "";
 		private final String ipAddress;
 		private final String timeStamp;
@@ -49,9 +51,9 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 		private static MongoClient mongoClient = null;
 		private static DBCollection dbCollection = null;
 
-		private static final Logger logger = Logger.getLogger(GetHostnameFromMongo.class);
+		private static final Logger logger = Logger.getLogger(GetHostnameFromDHCP.class);
 		
-		public GetHostnameFromMongo(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
+		public GetHostnameFromDHCP(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			this.ipAddress = getConfigs().getString(config, "ipAddress");
 			this.timeStamp = getConfigs().getString(config, "timeStamp");
@@ -88,38 +90,22 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
-			List<?> ipValue = inputRecord.get(this.ipAddress);
-			List<?> timeStamp = inputRecord.get(this.timeStamp);
-
 			// If we weren't able to connect or access the collection,
 			// return an empty string
-			if (mongoClient != null && dbCollection != null) {
-
-				String ip = null;
-				long ts = 0;
-
-				if (ipValue != null && ipValue.size() > 0) {
-					ip = (String) ipValue.get(0);
-				}
-
-				if (timeStamp != null && timeStamp.size() > 0) {
-					Object timeStampObject = timeStamp.get(0);
-					try {
-						if (timeStampObject != null) {
-							ts = Long.valueOf((String) timeStampObject);
-						}
-					} catch (ClassCastException e) {
-						logger.error("Error converting timeStamp to long", e);
-					}
-				}
-
-				if (ip != null) {
+			if (mongoClient != null && dbCollection != null) {		
+				try {
+					
+					String ip = RecordExtensions.getStringValue(inputRecord, this.ipAddress);
+					Long ts = RecordExtensions.getLongValue(inputRecord, this.timeStamp);
+					
 					// Try and get a hostname to the IP
 					inputRecord.put(this.outputRecordName, getHostname(ip, ts));
+					
+				} catch (IllegalArgumentException e) {
+					// did not found ip or ts fields in input record
+					inputRecord.put(this.outputRecordName, STRING_EMPTY);
 				}
-			}
-			
-			else {
+			} else {
 				inputRecord.put(this.outputRecordName, STRING_EMPTY);
 			}
 
@@ -129,6 +115,9 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 
 
 		private String getHostname(String ip, long ts) {
+			if (ip==null)
+				return STRING_EMPTY;
+			
 			// Create a query for the IP address
 			BasicDBObject query = new BasicDBObject("ip_address", ip);
 
@@ -144,16 +133,29 @@ public class GetHostnameFromMongoBuilder implements CommandBuilder {
 				query.append("timestampepoch", val);
 			}
 
-			// Get one document
-			DBObject docs = dbCollection.findOne(query);
-			if (docs != null) {
-				// Get the hostname, cache it and return it
-				String mongoHostname = String.valueOf(docs.get("hostname"));
-				if (mongoHostname != null && mongoHostname.length() != 0) {
-					return mongoHostname;
+			// get all dhcp records in the time slot, sort them according to
+			// descending order and return the hostname of the most recent dhcp 
+			// ip lease event
+			DBCursor cursor = dbCollection.find(query);
+			if (cursor!=null) {
+				try {
+					cursor.sort(new BasicDBObject("timestampepoch", -1));
+					
+					DBObject doc = cursor.next();
+					if (doc!=null) {
+						// Get the hostname, cache it and return it
+						String mongoHostname = String.valueOf(doc.get("hostname"));
+						if (mongoHostname != null && !mongoHostname.isEmpty()) {
+							return mongoHostname;
+						}
+					}
+				} catch (Exception e) {
+					logger.debug("error getting hostname from dhcp collection", e);
+				} finally {
+					cursor.close();
 				}
 			}
-
+			
 			// We didn't find a hostname for the IP
 			return STRING_EMPTY;
 		}
