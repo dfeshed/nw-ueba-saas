@@ -1,5 +1,5 @@
 SET pig.tmpfilecompression true
-SET pig.tmpfilecompression.codec lzo
+SET pig.tmpfilecompression.codec gz
 SET  pig.tmpfilecompression.storage seqfile
 SET  pig.maxCombinedSplitSize 2147483648
 

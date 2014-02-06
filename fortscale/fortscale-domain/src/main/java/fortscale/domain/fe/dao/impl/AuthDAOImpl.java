@@ -9,14 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 
 import fortscale.domain.fe.AuthScore;
 import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.logging.Logger;
 
 public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDAO{
+	private static Logger logger = Logger.getLogger(AuthDAOImpl.class);
 	
 	@Autowired
 	private ImpalaParser impalaParser;
@@ -69,6 +72,8 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 
 	
 	class AuthScoreMapper implements RowMapper<AuthScore>{
+		
+		private int numOfErrors = 0;
 
 		@Override
 		public AuthScore mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -127,10 +132,16 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 				ret.setAllFields(allFields);
 				
 				
-			} catch (NumberFormatException e) {
-				throw new SQLException(e.getMessage());
-			} catch (ParseException e) {
-				throw new SQLException(e.getMessage());
+			} catch (SQLException se){
+				throw se;
+			} catch (Exception e)  {
+				numOfErrors++;
+				if(numOfErrors < 5){
+					ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper();
+					logger.error("the following record caused an excption. record: {}", columnMapRowMapper.mapRow(rs, rowNum));
+					logger.error("here is the exception",e);
+				}
+				return null;
 			}
 			
 			return ret;
