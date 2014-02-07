@@ -54,4 +54,27 @@ public class MorphlinesTester {
 
 	}
 	
+	
+	@Test
+	public void testSingleRecord(String testCase, Record inputRecord, String expectedOutput) {
+		Record parsedRecord = (Record) subject.process(inputRecord);
+		
+		if (null == expectedOutput) {
+			assertEquals("ETL error with " + testCase, null ,parsedRecord);
+		}
+		
+		else {
+			assertNotNull("parsed record should not be null", parsedRecord);
+			String parsedOutput = "";
+			String seperator = "";
+			for (String field : outputFields) {
+				String parsedField = (null == parsedRecord.getFirstValue(field)) ? "" : parsedRecord.getFirstValue(field).toString() ;
+				parsedOutput += seperator + parsedField;
+				seperator = ",";
+			}
+			assertEquals("ETL error with " + testCase, expectedOutput ,parsedOutput);
+		}
+
+	}
+	
 }
