@@ -13,7 +13,7 @@ public class Sec4769Test {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/processSecEvt4769.conf";
-	private String[] sec4769OutputFields = new String[] {"timeGeneratedRaw","timeGenerated","categoryString","eventCode","logfile","recordNumber","sourceName","account_name","account_domain","service_name","service_id","client_address","ticket_options","failure_code","source_network_address","timeGeneratedUnixTime","client_hostname"};
+	private String[] sec4769OutputFields = new String[] {"account_name","account_domain","service_name","service_id","client_address","ticket_options","failure_code","source_network_address","client_hostname"};
 
 	
 	@Before
