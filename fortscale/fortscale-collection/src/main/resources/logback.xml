@@ -7,11 +7,20 @@
 		</encoder>
 	</appender>
 
-	<appender name="LogFile" class="ch.qos.logback.core.FileAppender">
+	<appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>logFile.log</file>
-		<append>false</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>logFile.%i.log</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>5</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>100MB</maxFileSize>
+		</triggeringPolicy>
+		
 		<encoder>
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}
 			</Pattern>
 		</encoder>
 	</appender>

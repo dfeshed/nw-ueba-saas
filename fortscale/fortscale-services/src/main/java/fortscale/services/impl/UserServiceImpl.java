@@ -205,11 +205,11 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateUserWithADInfo(AdUser adUser) {
 		if(adUser.getObjectGUID() == null) {
-			logger.error("got ad user with no ObjectGUID name field.");
+			logger.warn("got ad user with no ObjectGUID name field.");
 			return;
 		}
 		if(adUser.getDistinguishedName() == null) {
-			logger.error("got ad user with no distinguished name field.");
+			logger.warn("got ad user with no distinguished name field.");
 			return;
 		}
 		
@@ -246,15 +246,13 @@ public class UserServiceImpl implements UserService{
 		try {
 			userAdInfo.setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
 		} catch (ParseException e) {
-			logger.error("got and exception while trying to parse active directory when changed field ({})",adUser.getWhenChanged());
-			logger.error("got and exception while trying to parse active directory when changed field",e);
+			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
 		}
 		
 		try {
 			userAdInfo.setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
 		} catch (ParseException e) {
-			logger.error("got and exception while trying to parse active directory when created field ({})",adUser.getWhenChanged());
-			logger.error("got and exception while trying to parse active directory when created field",e);
+			logger.error(String.format("got and exception while trying to parse active directory when created field (%s)",adUser.getWhenCreated()), e);
 		}
 		
 		userAdInfo.setDescription(adUser.getDescription());
@@ -269,8 +267,7 @@ public class UserServiceImpl implements UserService{
 			try {
 				userAdInfo.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
 			} catch (ParseException e) {
-				logger.error("got and exception while trying to parse active directory account expires field ({})",adUser.getWhenChanged());
-				logger.error("got and exception while trying to parse active directory account expires field",e);
+				logger.error(String.format("got and exception while trying to parse active directory account expires field (%s)",adUser.getAccountExpires()), e);
 			}
 		}
 		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
@@ -659,7 +656,7 @@ public class UserServiceImpl implements UserService{
 					ret.add(user);
 				}
 			} catch (Exception e) {
-				logger.error("got exception while trying to update user with active directory info!!! dn: {}", adUser.getDistinguishedName());
+				logger.error(String.format("got exception while trying to update user with active directory info!!! dn: %s", adUser.getDistinguishedName()), e);
 			}
 			
 		}
@@ -724,15 +721,13 @@ public class UserServiceImpl implements UserService{
 		try {
 			user.getAdInfo().setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
 		} catch (ParseException e) {
-			logger.error("got and exception while trying to parse active directory when changed field ({})",adUser.getWhenChanged());
-			logger.error("got and exception while trying to parse active directory when changed field",e);
+			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
 		}
 		
 		try {
 			user.getAdInfo().setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
 		} catch (ParseException e) {
-			logger.error("got and exception while trying to parse active directory when created field ({})",adUser.getWhenChanged());
-			logger.error("got and exception while trying to parse active directory when created field",e);
+			logger.error(String.format("got and exception while trying to parse active directory when created field (%s)",adUser.getWhenCreated()), e);
 		}
 		
 		user.getAdInfo().setDescription(adUser.getDescription());
@@ -747,8 +742,7 @@ public class UserServiceImpl implements UserService{
 			try {
 				user.getAdInfo().setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
 			} catch (ParseException e) {
-				logger.error("got and exception while trying to parse active directory account expires field ({})",adUser.getWhenChanged());
-				logger.error("got and exception while trying to parse active directory account expires field",e);
+				logger.error(String.format("got and exception while trying to parse active directory account expires field (%s)",adUser.getAccountExpires()), e);
 			}
 		}
 		user.getAdInfo().setUserAccountControl(adUser.getUserAccountControl());
