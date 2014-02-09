@@ -10,13 +10,13 @@
 	<appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>logFile.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      		<fileNamePattern>logFile.%i.log</fileNamePattern>
-      		<minIndex>1</minIndex>
-      		<maxIndex>5</maxIndex>
+			<fileNamePattern>logFile.%i.log</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>5</maxIndex>
 		</rollingPolicy>
 
-    	<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      		<maxFileSize>100MB</maxFileSize>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>100MB</maxFileSize>
 		</triggeringPolicy>
 		
 		<encoder>
@@ -37,6 +37,7 @@
 
 	<root level="info">
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</root>
 	
 	<!-- 3rdparty Loggers -->
