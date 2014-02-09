@@ -39,7 +39,7 @@
 						<value>90</value>
 					</entry>
             	</job-data-map>
- 				<cron-expression>0 37 * * * ?</cron-expression>
+ 				<cron-expression>0 37 3 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
@@ -68,7 +68,7 @@
 						<value>8</value>
 					</entry>
             	</job-data-map>
- 				<cron-expression>0 52 * * * ?</cron-expression>
+ 				<cron-expression>0 52 3 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

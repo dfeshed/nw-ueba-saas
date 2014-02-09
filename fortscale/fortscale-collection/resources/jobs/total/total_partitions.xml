@@ -40,7 +40,7 @@
 				<group>TOTAL</group>
 				<job-name>Add_Partitions</job-name>
 				<job-group>TOTAL</job-group>
- 				<cron-expression>0 56 * * * ?</cron-expression>
+ 				<cron-expression>0 56 3 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
