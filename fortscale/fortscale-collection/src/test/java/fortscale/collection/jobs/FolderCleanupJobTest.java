@@ -46,7 +46,7 @@ public class FolderCleanupJobTest {
 		when(folderMock.getTotalSpace()).thenReturn(new Long(100 * 1024 * 1024));
 		
 		// act
-		subject.cleanupFolder(folderMock, 20, 1024);
+		subject.cleanupFolder(folderMock, 20, 1024, false);
 		
 		// assert
 		verify(fileA, VerificationModeFactory.times(0)).delete();
@@ -61,7 +61,7 @@ public class FolderCleanupJobTest {
 		when(fileA.delete()).thenReturn(Boolean.TRUE);
 		
 		// act
-		subject.cleanupFolder(folderMock, 20, 1024);
+		subject.cleanupFolder(folderMock, 20, 1024, false);
 		
 		// assert
 		verify(fileA).delete();

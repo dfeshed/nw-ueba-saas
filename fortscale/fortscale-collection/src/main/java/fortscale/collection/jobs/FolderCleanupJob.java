@@ -46,9 +46,10 @@ public class FolderCleanupJob implements Job {
 			String folder = jobDataMapExtension.getJobDataMapStringValue(map, "folder");
 			int threshold = jobDataMapExtension.getJobDataMapIntValue(map, "threshold");
 			int maxFolderSize = jobDataMapExtension.getJobDataMapIntValue(map, "maxFolderSize");
+			boolean recursive = jobDataMapExtension.getJobDataMapBooleanValue(map, "recursive", true);
 		
 			// execute cleanup logic
-			cleanupFolder(new File(folder), threshold, maxFolderSize);
+			cleanupFolder(new File(folder), threshold, maxFolderSize, recursive);
 		
 			monitor.finishStep(monitorId, "Cleanup");
 		} catch (Exception e) {
@@ -64,7 +65,7 @@ public class FolderCleanupJob implements Job {
 	}
 
 	
-	public void cleanupFolder(File folderFile, int threshold, int maxFolderSize) throws JobExecutionException {
+	public void cleanupFolder(File folderFile, int threshold, int maxFolderSize, boolean recursive) throws JobExecutionException {
 		if (!folderFile.exists()) {
 			// log warning and exit as there is nothing to do (some folders may not be created all the time, e.g. error)
 			logger.warn("folder {} does not exists", folderFile.getName());
@@ -94,7 +95,8 @@ public class FolderCleanupJob implements Job {
 				File fileToDelete = files[i];
 				try {
 					if (fileToDelete.isDirectory()) {
-						cleanupFolder(fileToDelete, threshold, maxFolderSize);
+						if (recursive)
+							cleanupFolder(fileToDelete, threshold, maxFolderSize, recursive);
 					} else {
 						fileToDelete.delete();
 						logger.info("file {} was deleted", fileToDelete.getName());
@@ -106,6 +108,13 @@ public class FolderCleanupJob implements Job {
 					logger.error("cannot delete file " + fileToDelete.getName(), e);
 					monitor.error(monitorId, "Cleanup", "cannot delete file " + fileToDelete.getName());
 				}
+			}
+			
+			// if we still have not enough free space report as warning
+			if (precentFree <= threshold || folderSizeMB > maxFolderSize) {
+				String message = String.format("delete all that can be from % but still not enough free space", folderFile.getName());
+				logger.warn(message);
+				monitor.warn(monitorId, "Cleanup", message);
 			}
 		}
 	}	
