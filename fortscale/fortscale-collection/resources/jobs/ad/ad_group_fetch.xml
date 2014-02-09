@@ -36,7 +36,7 @@
 				<group>AD</group>
 				<job-name>Group_Fetch</job-name>
 				<job-group>AD</job-group>
- 				<cron-expression>0 2 * * * ?</cron-expression>
+ 				<cron-expression>0 30 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
