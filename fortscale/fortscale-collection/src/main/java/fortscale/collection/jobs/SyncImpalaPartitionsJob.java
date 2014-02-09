@@ -169,7 +169,7 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 					logger.error("error deleting hdfs path " + path);
 					monitor.warn(getMonitorId(), getStepName(), "cannot delete hdfs path " + path);
 				}
-			} catch (IOException ioe) {
+			} catch (Exception ioe) {
 				String message = String.format("error deleting hdfs path %s", path);
 				logger.error(message, ioe);
 				monitor.error(getMonitorId(), getStepName(), message + "\n" + ioe.toString());
@@ -208,7 +208,7 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 				String message = String.format("error droping partition %s from table %s", partition, tableName);
 				logger.error(message, e);
 				monitor.error(getMonitorId(), getStepName(), message + "\n" + e.toString());
-			} catch (IOException ioe) {
+			} catch (Exception ioe) {
 				String message = String.format("error deleting hdfs path %s", partition);
 				logger.error(message, ioe);
 				monitor.error(getMonitorId(), getStepName(), message + "\n" + ioe.toString());
