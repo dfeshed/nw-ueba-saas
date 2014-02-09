@@ -1,5 +1,7 @@
 package fortscale.utils.hdfs.partition;
 
+import static fortscale.utils.hdfs.partition.PartitionsUtils.normalizePath;
+
 class PartitionsUtils {
 
 	static String normalizePath(String path) {
@@ -17,5 +19,18 @@ class PartitionsUtils {
 		if (timestamp<100000000000L)
 			timestamp = timestamp * 1000;
 		return timestamp;
+	}
+	
+	static String getPartitionPartFromPath(String path) {
+		if (path==null)
+			return null;
+		
+		String normalized = normalizePath(path);
+		normalized = normalized.substring(0, normalized.length()-1);
+		
+		if (normalized.contains("/"))
+			return normalized.substring(normalized.lastIndexOf("/")+1);
+		else
+			return null;
 	}
 }

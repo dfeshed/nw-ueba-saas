@@ -31,14 +31,9 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 	public String getImpalaPartitionNameFromPath(String path) {
 		if (path==null || path.isEmpty())
 			throw new IllegalArgumentException("path cannot be null");
-		
-		// normalize and strip last slash
-		String normalized = normalizePath(path);
-		normalized = normalized.substring(0, normalized.length()-1);
-		
-		String partitionPart = normalized.substring(normalized.lastIndexOf("/")+1);
-		
-		if (isPathInPartitionFormat(partitionPart))
+			
+		String partitionPart = getPartitionPartFromPath(path);
+		if (partitionPart!=null && isPathInPartitionFormat(partitionPart))
 			return partitionPart;
 		else
 			return null;
@@ -62,13 +57,10 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 	public boolean isPartitionPath(String path) {
 		if (path==null || path.isEmpty())
 			return false;
-		
-		String normalized = normalizePath(path);
-		normalized = normalized.substring(0, normalized.length()-1);
-		
-		String partitionPart = normalized.substring(normalized.lastIndexOf("/")+1);
-		
-		return partitionPart.matches("^runtime=[\\d]+$");
+			
+		String partitionPart = getPartitionPartFromPath(path);
+		return partitionPart!=null && partitionPart.matches("^runtime=[\\d]+$");
+
 	}
 
 	@Override
@@ -77,10 +69,7 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 			return 0;
 		
 		// get the runtime part from the path
-		String normalized = normalizePath(partitionPath);
-		normalized = normalized.substring(0, normalized.length()-1);
-		String partitionPart = normalized.substring(normalized.lastIndexOf("/")+1);
-		
+		String partitionPart = getPartitionPartFromPath(partitionPath);
 		long runtime = Long.parseLong(partitionPart.substring(8));
 		runtime = normalizeTimestamp(runtime);
 		ts = normalizeTimestamp(ts);

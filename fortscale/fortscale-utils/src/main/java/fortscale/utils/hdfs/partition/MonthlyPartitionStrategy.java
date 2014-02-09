@@ -45,14 +45,9 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 	public String getImpalaPartitionNameFromPath(String path) {
 		if (path==null || path.isEmpty())
 			throw new IllegalArgumentException("path cannot be null");
-		
-		// normalize and strip last slash
-		String normalized = normalizePath(path);
-		normalized = normalized.substring(0, normalized.length()-1);
-		
-		String partitionPart = normalized.substring(normalized.lastIndexOf("/")+1);
-		
-		if (isPathInPartitionFormat(partitionPart))
+			
+		String partitionPart = getPartitionPartFromPath(path);
+		if (partitionPart!=null && isPathInPartitionFormat(partitionPart))
 			return partitionPart;
 		else
 			return null;
@@ -85,13 +80,8 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		if (path==null || path.isEmpty())
 			return false;
 		
-		// normalize and strip last slash
-		String normalized = normalizePath(path);
-		normalized = normalized.substring(0, normalized.length()-1);
-		
-		String partitionPart = normalized.substring(normalized.lastIndexOf("/")+1);
-		
-		return isPathInPartitionFormat(partitionPart);
+		String partitionPart = getPartitionPartFromPath(path);
+		return partitionPart!=null && isPathInPartitionFormat(partitionPart);
 	}
 	
 	/**
@@ -103,10 +93,7 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		if (!isPartitionPath(partitionPath))
 			return 0;
 		
-		// get the partition part of the path
-		String normalized = normalizePath(partitionPath);
-		normalized = normalized.substring(0, normalized.length()-1);
-		String partitionPart = normalized.substring(normalized.lastIndexOf("/")+1);
+		String partitionPart = getPartitionPartFromPath(partitionPath);
 		
 		int year = Integer.parseInt(partitionPart.substring(10, 14));
 		int month = Integer.parseInt(partitionPart.substring(14));
