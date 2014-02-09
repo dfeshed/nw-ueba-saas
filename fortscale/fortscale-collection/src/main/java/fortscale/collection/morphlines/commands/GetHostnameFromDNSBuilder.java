@@ -1,6 +1,7 @@
 package fortscale.collection.morphlines.commands;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,6 +52,7 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 		private final String outputRecordName;
 		private int dnsLookupCounter = 0;
 		private HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
+		private List<String> blackIpListCache = new ArrayList<String>();
 		private String EMPTY_STRING = "";
 		
 		private static final Logger logger = LoggerFactory.getLogger(GetHostnameFromDNS.class);
@@ -90,6 +92,11 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 				String ip_address = (String) field;
 				String resolvedHostname = EMPTY_STRING;
 				
+				if (blackIpListCache.contains(ip_address)) {
+					inputRecord.replaceValues(this.outputRecordName, EMPTY_STRING);
+					return super.doProcess(inputRecord);
+				}
+
 				if (dnsCacheMap.containsKey(ip_address)) {
 					resolvedHostname = dnsCacheMap.get(ip_address);
 					inputRecord.replaceValues(this.outputRecordName, resolvedHostname);
@@ -102,7 +109,15 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 						dnsServersArray = Arrays.copyOf(this.dnsServers.toArray(), this.dnsServers.toArray().length, String[].class);
 					}
 					dnsLookupCounter++;
-					resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
+					try {
+						resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
+					}
+					catch (Exception e) {
+						logger.debug("Exception while running reverseDns resolving for IP: {}. Adding it to black list.", ip_address);
+						blackIpListCache.add(ip_address);
+						inputRecord.replaceValues(this.outputRecordName, EMPTY_STRING);
+						return super.doProcess(inputRecord);
+					}
 
 					if (null==resolvedHostname || resolvedHostname.equalsIgnoreCase(EMPTY_STRING) || resolvedHostname.equalsIgnoreCase(ip_address)) {
 						resolvedHostname = EMPTY_STRING;
