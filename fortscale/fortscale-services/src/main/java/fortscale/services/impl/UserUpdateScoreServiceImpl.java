@@ -251,7 +251,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		for(AuthScore authScore: authScores){
 			final String username = authScore.getUserName();
 			if(StringUtils.isEmpty(username)){
-				logger.error("got a empty string {} username", classifier);
+				logger.warn("got a empty string {} username", classifier);
 				continue;
 			}
 
@@ -266,7 +266,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 						continue;
 					}
 				} else{
-					logger.error("no user was found with the username {}", username);
+					logger.warn("no user was found with the username {}", username);
 					continue;
 				}
 			}
@@ -350,7 +350,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		for(VpnScore vpnScore: vpnScores){
 			String username = vpnScore.getUserName();
 			if(StringUtils.isEmpty(username)){
-				logger.error("got a empty string vpn username");
+				logger.warn("got a empty string vpn username");
 				continue;
 			}
 			
@@ -478,7 +478,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	private void updateUserWithGroupMembershipScore(final Date lastRun, double avgScore, AdUserFeaturesExtraction extraction, UpdateUserGroupMembershipScoreContext context){		
 		User user = userService.findByUserId(extraction.getUserId());
 		if(user == null){
-			logger.error("user with id ({}) was not found in user table", extraction.getUserId());
+			logger.warn("user with id ({}) was not found in user table", extraction.getUserId());
 			return;
 		}
 		//updating the user with the new score.
