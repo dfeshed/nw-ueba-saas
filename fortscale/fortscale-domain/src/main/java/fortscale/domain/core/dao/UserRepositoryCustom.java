@@ -25,6 +25,7 @@ public interface UserRepositoryCustom {
 	public List<User> findByDNs(Collection<String> dns);
 	public List<User> findByGUIDs(Collection<String> guids);
 	public List<User> findByIds(Collection<String> ids);
+	public List<User> findByUsernames(Collection<String> usernames);
 	public List<User> findAllExcludeAdInfo();
 
 	public User findByAdEmailAddress(EmailAddress emailAddress);

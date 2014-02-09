@@ -19,7 +19,7 @@ public class AdGroupProcessJobTest {
 	@Test
 	public void outputFieldsTest() throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		final Properties properties = new Properties();
-		String configPropertiesFile = "resources/fortscale-collection.properties";
+		String configPropertiesFile = "src/main/resources/META-INF/fortscale-collection.properties";
 		InputStream fileStream = new FileInputStream(configPropertiesFile);
 
 		properties.load(fileStream);

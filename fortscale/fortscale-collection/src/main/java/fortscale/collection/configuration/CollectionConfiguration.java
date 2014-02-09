@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@PropertySource("file:resources/fortscale-collection.properties")
+@PropertySource("classpath:META-INF/fortscale-collection.properties")
 public class CollectionConfiguration {
 
 	@Bean

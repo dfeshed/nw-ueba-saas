@@ -11,14 +11,17 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 
 import fortscale.domain.impala.ImpalaDAO;
 import fortscale.utils.impala.ImpalaCriteria;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaQuery;
+import fortscale.utils.logging.Logger;
 
 public abstract class AccessDAO<T> extends ImpalaDAO<T> {
+	private static Logger logger = Logger.getLogger(AccessDAO.class);
 
 	private Date lastRunDate = null;
 
@@ -54,40 +57,60 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	}
 
 	public List<T> findEventsByUsername(String username, Pageable pageable) {
-		List<T> ret = new ArrayList<>();
+		
 		String query = String.format("select * from %s where %s",
 				getTableName(), getUserNameEqualComparison(username));
 		if (pageable != null) {
 			query = String.format("%s %s", query, pageable.toString());
 		}
-		ret.addAll(impalaJdbcTemplate.query(query, getMapper()));
+		
 
+		return getListResults(query);
+	}
+	
+	private List<T> getListResults(String query){
+		List<T> ret = new ArrayList<>();
+		for(T res: impalaJdbcTemplate.query(query, getMapper())){
+			if(res != null){
+				ret.add(res);
+			}
+		}
+		return ret;
+	}
+	
+	private List<T> getListGlobalResults(String query){
+		List<T> ret = new ArrayList<>();
+		for(T res: impalaJdbcTemplate.query(query, new GlobalScoreMapper())){
+			if(res != null){
+				ret.add(res);
+			}
+		}
 		return ret;
 	}
 
 	public List<T> findEventsByUsernameAndTimestamp(String username,
 			Date timestamp, Pageable pageable) {
-		List<T> ret = new ArrayList<>();
+		
 		String query = String.format("select * from %s where %s=%s and %s %s",
 				getTableName(), getTimestampFieldName(),
 				formatTimestampDate(timestamp),
 				getUserNameEqualComparison(username), pageable.toString());
-		ret.addAll(impalaJdbcTemplate.query(query, getMapper()));
+		
 
-		return ret;
+		return getListResults(query);
 	}
 	
 	public List<T> findEventsByUsernameAndTimestampGtEventScore(String username, Date timestamp, int minScore, Pageable pageable) {
-		List<T> ret = new ArrayList<>();
+		
 		String query = String.format("select * from %s where %s=%s and %s and %s >= %d %s",
 				getTableName(), 
 				getTimestampFieldName(), formatTimestampDate(timestamp),
 				getUserNameEqualComparison(username),
 				getEventScoreFieldName(), minScore,
 				pageable.toString());
-		ret.addAll(impalaJdbcTemplate.query(query, getMapper()));
+		
 
-		return ret;
+		return getListResults(query);
 	}
 
 	public List<T> findEventsByTimestamp(Date timestamp, Pageable pageable) {
@@ -132,7 +155,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 
 	public List<T> findEventsByTimestamp(Date timestamp, Pageable pageable,
 			String additionalWhereQuery) {
-		List<T> ret = new ArrayList<>();
+		
 		ImpalaQuery query = new ImpalaQuery();
 		query.select("*")
 				.from(getTableName())
@@ -143,13 +166,11 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		}
 		query.limitAndSort(pageable);
 
-		ret.addAll(impalaJdbcTemplate.query(query.toSQL(), getMapper()));
-
-		return ret;
+		return getListResults(query.toSQL());
 	}
 
 	public List<T> findGlobalScoreByUsername(String username, int limit) {
-		List<T> ret = new ArrayList<>();
+		
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(
 				Direction.DESC, getTimestampFieldName()));
 		String query = String
@@ -160,13 +181,13 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 						getUserNameEqualComparison(username),
 						getTimestampFieldName(), getUsernameFieldName(),
 						getGlobalScoreFieldName(), pageable.toString());
-		ret.addAll(impalaJdbcTemplate.query(query, new GlobalScoreMapper()));
+		
 
-		return ret;
+		return getListGlobalResults(query);
 	}
 
 	public List<T> findGlobalScoreByTimestamp(Date timestamp) {
-		List<T> ret = new ArrayList<>();
+		
 		String query = String
 				.format("select %s, %s, %s, max(%s) as %s from %s where %s=%s group by %s, %s, %s",
 						getTimestampFieldName(), getUsernameFieldName(),
@@ -176,11 +197,12 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 						formatTimestampDate(timestamp),
 						getTimestampFieldName(), getUsernameFieldName(),
 						getGlobalScoreFieldName());
-		ret.addAll(impalaJdbcTemplate.query(query, new GlobalScoreMapper()));
+		
 
-		return ret;
+		return getListGlobalResults(query);
 	}
 
+	@SuppressWarnings("deprecation")
 	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp) {
 		String query = String.format(
 				"select count(distinct(%s)) from %s where %s=%s and %s > %d",
@@ -191,6 +213,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForInt(query);
 	}
 
+	@SuppressWarnings("deprecation")
 	public int countNumOfUsers(Date timestamp) {
 		String query = String.format(
 				"select count(distinct(%s)) from %s where %s=%s",
@@ -200,6 +223,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForInt(query);
 	}
 
+	@SuppressWarnings("deprecation")
 	public int countNumOfEvents(Date timestamp) {
 		String query = String.format("select count(*) from %s where %s=%s",
 				getTableName(), getTimestampFieldName(),
@@ -208,6 +232,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForInt(query);
 	}
 
+	@SuppressWarnings("deprecation")
 	public int countNumOfEventsByUser(Date timestamp, String username){
 		String query = String.format("select count(*) from %s where %s=%s and %s",
 				getTableName(),
@@ -217,6 +242,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForInt(query);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal){
 		String query = String.format("select count(*) from %s where lower(%s) regexp \"%s\" and %s=%s and %s",
 				getTableName(),
@@ -243,6 +269,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return retDate;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public int countNumOfRecords(){
 		String query = String.format("select count(*) from %s", getTableName());
 		
@@ -286,7 +313,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 
 	public List<T> getTopUsersAboveThreshold(Threshold threshold,
 			Date timestamp, int limit) {
-		List<T> ret = new ArrayList<>();
+		
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(
 				Direction.DESC, getGlobalScoreFieldName()));
 		String query = String
@@ -299,14 +326,14 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 						getGlobalScoreFieldName(), threshold.getValue(),
 						getTimestampFieldName(), getUsernameFieldName(),
 						getGlobalScoreFieldName(), pageable.toString());
-		ret.addAll(impalaJdbcTemplate.query(query, new GlobalScoreMapper()));
+		
 
-		return ret;
+		return getListGlobalResults(query);
 	}
 
 	public List<T> findByTimestampAndGlobalScoreBetweenSortByEventScore(
 			Date timestamp, int lowestVal, int upperVal, int limit) {
-		List<T> ret = new ArrayList<>();
+		
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(
 				Direction.DESC, getEventScoreFieldName()));
 		String query = String
@@ -320,14 +347,14 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 						getGlobalScoreFieldName(), upperVal,
 						getTimestampFieldName(), getUsernameFieldName(),
 						getGlobalScoreFieldName(), pageable.toString());
-		ret.addAll(impalaJdbcTemplate.query(query, new GlobalScoreMapper()));
+		
 
-		return ret;
+		return getListGlobalResults(query);
 	}
 
 	public List<T> getTopEventsAboveThreshold(Threshold threshold,
 			Date timestamp, int limit) {
-		List<T> ret = new ArrayList<>();
+		
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(
 				Direction.DESC, getTimestampFieldName()));
 		String query = String.format(
@@ -335,12 +362,14 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 				getTimestampFieldName(), formatTimestampDate(timestamp),
 				getGlobalScoreFieldName(), threshold.getValue(),
 				pageable.toString());
-		ret.addAll(impalaJdbcTemplate.query(query, getMapper()));
+		
 
-		return ret;
+		return getListResults(query);
 	}
 
 	class GlobalScoreMapper implements RowMapper<T> {
+		
+		private int numOfErrors = 0;
 
 		@Override
 		public T mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -352,9 +381,17 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 								.getString(getGlobalScoreFieldName())),
 						Double.parseDouble(rs
 								.getString(getEventScoreFieldName())),
-						parseTimestampDate(rs.getLong(getTimestampFieldName())));
-			} catch (NumberFormatException e) {
-				throw new SQLException(e.getMessage());
+						parseTimestampDate(Long.parseLong(rs.getString(getTimestampFieldName()))));
+			} catch (SQLException se){
+				throw se;
+			} catch (Exception e) {
+				numOfErrors++;
+				if(numOfErrors < 5){
+					ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper();
+					logger.error("the following record caused an excption. record: {}", columnMapRowMapper.mapRow(rs, rowNum));
+					logger.error("here is the exception",e);
+				}
+				return null;
 			}
 
 			return ret;

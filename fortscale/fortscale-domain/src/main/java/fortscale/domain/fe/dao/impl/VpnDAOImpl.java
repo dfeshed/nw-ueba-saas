@@ -8,6 +8,7 @@ import java.util.Date;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -81,6 +82,8 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 
 	
 	class VpnScoreMapper implements RowMapper<VpnScore>{
+		
+		private int numOfErrors = 0;
 
 		@Override
 		public VpnScore mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -114,10 +117,16 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 				ret.setEventScore(rs.getDouble(VpnScore.EVENT_SCORE_FIELD_NAME));
 				ret.setGlobalScore(rs.getDouble(VpnScore.GLOBAL_SCORE_FIELD_NAME));
 				
-			} catch (NumberFormatException e) {
-				throw new SQLException(e.getMessage());
-			} catch (ParseException e) {
-				throw new SQLException(e.getMessage());
+			} catch (SQLException se){
+				throw se;
+			} catch (Exception e)  {
+				numOfErrors++;
+				if(numOfErrors < 5){
+					ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper();
+					logger.error("the following record caused an excption. record: {}", columnMapRowMapper.mapRow(rs, rowNum));
+					logger.error("here is the exception",e);
+				}
+				return null;
 			}
 			
 			return ret;

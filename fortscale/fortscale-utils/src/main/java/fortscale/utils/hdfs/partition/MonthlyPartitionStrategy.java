@@ -51,7 +51,7 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		DateTime finishDate = getDateForTimestamp(finish);
 		
 		List<String> partitions = new LinkedList<String>();
-		while (startDate.getYear() <= finishDate.getYear() && startDate.getMonthOfYear() <= finishDate.getMonthOfYear() ) {
+		while ( (startDate.getYear() < finishDate.getYear()) || (startDate.getYear() == finishDate.getYear() && startDate.getMonthOfYear() <= finishDate.getMonthOfYear()) ) {
 			partitions.add(getPartitionPathForDate(basePath, startDate));
 			startDate = startDate.plusMonths(1);			
 		}
