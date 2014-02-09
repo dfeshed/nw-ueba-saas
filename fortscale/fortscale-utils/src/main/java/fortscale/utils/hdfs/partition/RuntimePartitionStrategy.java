@@ -64,7 +64,11 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 			return false;
 		
 		String normalized = normalizePath(path);
-		return normalized.matches("^/.*/runtime=[\\d]+/$");
+		normalized = normalized.substring(0, normalized.length()-1);
+		
+		String partitionPart = normalized.substring(normalized.lastIndexOf("/")+1);
+		
+		return partitionPart.matches("^runtime=[\\d]+$");
 	}
 
 	@Override

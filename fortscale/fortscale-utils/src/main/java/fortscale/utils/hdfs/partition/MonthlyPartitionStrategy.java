@@ -112,7 +112,7 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		int month = Integer.parseInt(partitionPart.substring(14));
 		
 		DateTime startPeriod = new DateTime(year, month, 1, 0, 0, DateTimeZone.UTC);
-		DateTime endPeriod = (new DateTime(year, month+1, 1, 0, 0, DateTimeZone.UTC)).minusDays(1);
+		DateTime endPeriod = (new DateTime(year, month, 1, 0, 0, DateTimeZone.UTC)).plusMonths(1).minusDays(1);
 		
 		long timestamp = normalizeTimestamp(ts);
 		

@@ -36,7 +36,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>180</value>
+						<value>90</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 35 * * * ?</cron-expression>
@@ -64,7 +64,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>180</value>
+						<value>90</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 36 * * * ?</cron-expression>
@@ -92,7 +92,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>90</value>
+						<value>8</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 57 * * * ?</cron-expression>

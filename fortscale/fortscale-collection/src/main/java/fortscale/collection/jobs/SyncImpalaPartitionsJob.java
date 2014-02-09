@@ -40,10 +40,10 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 	private int daysToRetain;
 	
 	// step computed data
-	private List<String> partitions;
-	private List<String> partitionsToAdd;
-	private List<String> partitionsToDelete;
-	private List<String> foldersToDelete;
+	private List<Path> partitions;
+	private List<Path> partitionsToAdd;
+	private List<Path> partitionsToDelete;
+	private List<Path> foldersToDelete;
 	private PartitionStrategy partitionStrategy;
 	
 	@Override
@@ -85,7 +85,7 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 	
 	private boolean listHDFSDirectoriesStep() {
 		startNewStep("List HDFS Paths");
-		partitions = new LinkedList<String>();
+		partitions = new LinkedList<Path>();
 		
 		try {
 			// check that input hdfs path exists
@@ -96,7 +96,7 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 				return false;
 			}
 			
-			// create a filter for folders
+			// create a filter for folders only
 			PathFilter filter = new PathFilter() {
 				 @Override
 				  public boolean accept(Path path) {
@@ -112,7 +112,7 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 			// get all matching folders
 			FileStatus[] files = hadoopFs.listStatus(new Path(hdfsPath), filter);
 			for (FileStatus file : files) {
-				partitions.add(file.getPath().getName());
+				partitions.add(file.getPath());
 			}
 			
 		} catch (IOException e) {
@@ -128,22 +128,23 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 	private boolean decideOnDirectories() {
 		startNewStep("Decide on Directories");
 		
-		partitionsToAdd = new LinkedList<String>();
-		partitionsToDelete = new LinkedList<String>();
-		foldersToDelete = new LinkedList<String>();
+		partitionsToAdd = new LinkedList<Path>();
+		partitionsToDelete = new LinkedList<Path>();
+		foldersToDelete = new LinkedList<Path>();
 		
 		// get the timestamp to retain partitions after
 		long retentionTS = DateTime.now(DateTimeZone.UTC).minusDays(daysToRetain).getMillis();
 		
 		// go over all directories in hdfs path and decide what to do which each one
-		for (String partition : partitions) {
-			if (partitionStrategy.isPartitionPath(partition)) {
+		for (Path partition : partitions) {
+			String partitionPath = partition.toString();
+			if (partitionStrategy.isPartitionPath(partitionPath)) {
 				// check if the partition should be retained
-				if (partitionStrategy.comparePartitionTo(partition, retentionTS)>0) {
+				if (partitionStrategy.comparePartitionTo(partitionPath, retentionTS)>0) {
 					// retention time stamp is newer than the partition - delete it
 					partitionsToDelete.add(partition);
 				} else {
-					// retention time stamp is old than the partition - keep it
+					// retention time stamp is older or within the partition - keep it
 					partitionsToAdd.add(partition);
 				}
 			} else {
@@ -160,10 +161,10 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 		startNewStep("Delete Non Partitions Directories");
 		boolean result = true;
 		
-		for (String path : foldersToDelete) {
+		for (Path path : foldersToDelete) {
 			try {
 				logger.info("deleting hdfs path {}", path);
-				boolean succeed = hadoopFs.delete(new Path(path), true);
+				boolean succeed = hadoopFs.delete(path, true);
 				if (!succeed) {
 					logger.error("error deleting hdfs path " + path);
 					monitor.warn(getMonitorId(), getStepName(), "cannot delete hdfs path " + path);
@@ -184,20 +185,20 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 		boolean result = true;
 	
 		// go over the partitions to be removed from impala
-		for (String partition : partitionsToDelete) {
+		for (Path partition : partitionsToDelete) {
 			try {
 				// drop the partition from hdfs
 				logger.info("droping partition {} from table {}", partition, tableName);
 
-				String partitionName = partitionStrategy.getImpalaPartitionNameFromPath(partition);
+				String partitionName = partitionStrategy.getImpalaPartitionNameFromPath(partition.toString());
 				if (partitionName!=null)
-					impalaClient.dropPartitionFromTable(tableName, partition);
+					impalaClient.dropPartitionFromTable(tableName, partitionName);
 				
-				logger.info("partition {} dropped from table {}", partition, tableName);
+				logger.info("partition {} dropped from table {}", partitionName, tableName);
 				
 				// delete the partition folder from hdfs
 				logger.info("deleting hdfs path {}", partition);
-				boolean succeed = hadoopFs.delete(new Path(partition), true);
+				boolean succeed = hadoopFs.delete(partition, true);
 				if (!succeed) {
 					logger.error("error deleting hdfs path " + partition);
 					monitor.warn(getMonitorId(), getStepName(), "cannot delete hdfs path " + partition);
@@ -223,29 +224,20 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 		startNewStep("Add Partitions");
 		boolean result = true;
 		
-		boolean needRefresh = false;
-		for (String partition : partitionsToAdd) {
+		for (Path partition : partitionsToAdd) {
 			try {
-				impalaClient.addPartitionToTable(tableName, partition);
-				needRefresh = true;
+				String partitionName = partitionStrategy.getImpalaPartitionNameFromPath(partition.toString());
+				if (partitionName!=null)
+					impalaClient.addPartitionToTable(tableName, partitionName);
+
 			} catch (JobExecutionException e) {
 				String message = String.format("error addition partition '%s' to table '%s'", partition, tableName);
 				logger.error(message, e);
 				monitor.error(getMonitorId(), getStepName(), message + "\n" + e.toString());
 				result = false;
 			}
-		}
-		
-		try {
-			if (needRefresh)
-				impalaClient.refreshTable(tableName);
-		} catch (JobExecutionException e) {
-			String message = String.format("error refreshing table '%s'", tableName);
-			logger.error(message, e);
-			monitor.error(getMonitorId(), getStepName(), message + "\n" + e.toString());
-			result = false;
-		}
-		
+		}	
+	
 		finishStep();
 		return result;
 	}

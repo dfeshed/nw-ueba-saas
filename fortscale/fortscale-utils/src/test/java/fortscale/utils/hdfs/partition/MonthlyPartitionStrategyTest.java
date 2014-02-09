@@ -178,7 +178,8 @@ public class MonthlyPartitionStrategyTest {
 		"/base/yearmonth=201402, 1391674242, 0",
 		"/base/yearmonth=201402, 1394092770, 1",
 		"/base/yearmonth=201402, 1394092770000, 1",
-		"/base/yearmonth=201402, 1388995170, -1"
+		"/base/yearmonth=201402, 1388995170, -1",
+		"/base/yearmonth=201312, 1394092770000, 1"
 	})
 	public void monthly_partition_compare_to_test(String path, long ts, int expected) {
 		MonthlyPartitionStrategy strategy = new MonthlyPartitionStrategy();

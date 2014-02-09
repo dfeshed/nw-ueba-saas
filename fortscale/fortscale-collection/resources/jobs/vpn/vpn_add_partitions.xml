@@ -32,7 +32,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>180</value>
+						<value>90</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
