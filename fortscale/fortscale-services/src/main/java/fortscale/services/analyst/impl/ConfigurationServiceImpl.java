@@ -43,7 +43,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Initializ
 	@Value("${fortscale.home.dir}/fortscale-scripts/scripts/getDCs.sh")
 	private String getDCsScriptPath;
 	
-	@Value("${score.distribution:Critical:90,High:80,Medium:50,Low:0}")
+	@Value("${score.distribution:Critical:95,High:80,Medium:50,Low:0}")
 	private String scoreDistribution;
 	
 	@Value("${login.service.name.regex:}")
