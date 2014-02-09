@@ -35,23 +35,10 @@
 		<suffixPattern>fortscale-collection: %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</suffixPattern>
 	</appender>
 
-	<root level="warn">
+	<root level="info">
 		<appender-ref ref="SYSLOG" />
 		<appender-ref ref="LogFile" />
 	</root>
-	
-	<logger name="fortscale" additivity="false" level="INFO">
-    	<appender-ref ref="SYSLOG" />
-    </logger>
-
-    <logger name="fortscale.collection.morphlines" additivity="false" level="ERROR">
-		<appender-ref ref="SYSLOG" />
-    </logger>
-
-    <logger name="fortscale.collection.morphlines.commands" dditivity="false" level="ERROR">
-		<appender-ref ref="SYSLOG" />
-    </logger>
-	
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.quartz" additivity="false" level="warn" >
