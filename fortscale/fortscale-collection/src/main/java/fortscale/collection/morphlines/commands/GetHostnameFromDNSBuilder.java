@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.kitesdk.morphline.api.Command;
@@ -51,6 +52,7 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 		private final String outputRecordName;
 		private int dnsLookupCounter = 0;
 		private HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
+		private HashSet<String> blackIpHashSetCache = new HashSet<String>();
 		private String EMPTY_STRING = "";
 		
 		private static final Logger logger = LoggerFactory.getLogger(GetHostnameFromDNS.class);
@@ -90,6 +92,12 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 				String ip_address = (String) field;
 				String resolvedHostname = EMPTY_STRING;
 				
+				if (!blackIpHashSetCache.isEmpty() && blackIpHashSetCache.contains(ip_address)) {
+					logger.debug("IP {} is in the black list. Skipping it.", ip_address);
+					inputRecord.replaceValues(this.outputRecordName, EMPTY_STRING);
+					return super.doProcess(inputRecord);
+				}
+
 				if (dnsCacheMap.containsKey(ip_address)) {
 					resolvedHostname = dnsCacheMap.get(ip_address);
 					inputRecord.replaceValues(this.outputRecordName, resolvedHostname);
@@ -102,7 +110,15 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 						dnsServersArray = Arrays.copyOf(this.dnsServers.toArray(), this.dnsServers.toArray().length, String[].class);
 					}
 					dnsLookupCounter++;
-					resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
+					try {
+						resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
+					}
+					catch (Exception e) {
+						logger.debug("Exception while running reverseDns resolving for IP: {}. Adding it to black list.", ip_address);
+						blackIpHashSetCache.add(ip_address);
+						inputRecord.replaceValues(this.outputRecordName, EMPTY_STRING);
+						return super.doProcess(inputRecord);
+					}
 
 					if (null==resolvedHostname || resolvedHostname.equalsIgnoreCase(EMPTY_STRING) || resolvedHostname.equalsIgnoreCase(ip_address)) {
 						resolvedHostname = EMPTY_STRING;
