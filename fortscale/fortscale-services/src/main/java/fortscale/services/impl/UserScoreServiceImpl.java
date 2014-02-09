@@ -275,6 +275,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 		return ret;
 	}
 	
+	@SuppressWarnings("unused")
 	private Sort processOrderBy(String orderBy, Direction direction){
 		if(direction == null){
 			direction = Direction.DESC;

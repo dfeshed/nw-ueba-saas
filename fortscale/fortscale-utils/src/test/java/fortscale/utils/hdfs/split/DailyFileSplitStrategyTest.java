@@ -3,7 +3,6 @@ package fortscale.utils.hdfs.split;
 import static org.junit.Assert.*;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 
 import org.junit.Before;

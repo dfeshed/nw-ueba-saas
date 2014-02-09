@@ -6,6 +6,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = NotificationResource.COLLECTION_NAME)
 public class NotificationResource extends AbstractDocument implements Serializable {
+
+	private static final long serialVersionUID = -4341743756171863765L;
+
 	public static final String COLLECTION_NAME = "notification_resources";
 
 	private String msg_name;

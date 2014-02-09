@@ -34,7 +34,7 @@ public class RecordToStringItemsProcessor {
 		
 			Object value = record.getFirstValue(field);
 			if (value!=null) {
-				sb.append(value.toString());
+				sb.append(value.toString().trim());
 				noValues = false;
 			}
 			

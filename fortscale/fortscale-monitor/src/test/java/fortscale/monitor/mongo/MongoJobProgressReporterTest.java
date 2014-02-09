@@ -268,6 +268,7 @@ public class MongoJobProgressReporterTest {
 		assertTrue(argument.getValue().findStep("StepA").getMessages().size() == 1);
 		assertTrue(argument.getValue().findStep("StepA").getMessages().get(0).getMessage().equals("my error message"));
 		assertTrue(argument.getValue().findStep("StepA").getMessages().get(0).getSeverity().equals("ERROR"));
+		assertTrue(argument.getValue().isHasErrors()==true);
 	}
 
 	@Test
