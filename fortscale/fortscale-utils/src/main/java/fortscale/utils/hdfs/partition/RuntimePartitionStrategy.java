@@ -94,6 +94,9 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 
 	
 	private boolean isPathInPartitionFormat(String path) {
-		return path.matches("^runtime=[\\d]+$");
+		if (path==null)
+			return false;
+		else
+			return path.matches("^runtime=[\\d]+$");
 	}
 }
