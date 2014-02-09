@@ -93,6 +93,7 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 				String resolvedHostname = EMPTY_STRING;
 				
 				if (blackIpListCache.contains(ip_address)) {
+					logger.debug("IP {} is in the black list. Skipping it.", ip_address);
 					inputRecord.replaceValues(this.outputRecordName, EMPTY_STRING);
 					return super.doProcess(inputRecord);
 				}
