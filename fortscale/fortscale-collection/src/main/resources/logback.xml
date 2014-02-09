@@ -89,36 +89,4 @@
 	</logger>
 	
 	
-</configuration><?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true">
-
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</Pattern>
-		</encoder>
-	</appender>
-
-	<appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>logFile.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>logFile.%i.log</fileNamePattern>
-			<minIndex>1</minIndex>
-			<maxIndex>5</maxIndex>
-		</rollingPolicy>
-
-		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-			<maxFileSize>100MB</maxFileSize>
-		</triggeringPolicy>
-		
-		<encoder>
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}
-			</Pattern>
-		</encoder>
-	</appender>
-	
-	<root level="debug">
-		<appender-ref ref="LogFile" />
-	</root>
-	
-	
 </configuration>
