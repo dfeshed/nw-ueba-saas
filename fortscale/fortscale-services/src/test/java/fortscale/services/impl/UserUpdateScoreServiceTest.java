@@ -223,18 +223,17 @@ public class UserUpdateScoreServiceTest {
 		user.setUsername(adUserName);
 		List<User> users = new ArrayList<>();
 		users.add(user);
-		when(userRepository.findAllExcludeAdInfo()).thenReturn(users);
 		when(loginDAO.getLastRunDate()).thenReturn(date);
 		when(loginDAO.calculateAvgScoreOfGlobalScore(date)).thenReturn(avgScore);
 		userUpdateScoreService.updateUserWithAuthScore(Classifier.auth);
 		verify(userRepository, never()).save((Iterable<User>) any());
-		verifyZeroInteractions(userService);
+		verify(userService, never()).updateUser((User) any(), (Update) any());
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void updateUserWithAuthScoreForLoginAndCorrelationToAdUserUsernameAndEmptyLogUsernameTest(){
-		//Testing the scenario where the login username is not correlated to any AdUser name and that the logUsername field of the User is empty.
+		//Testing the scenario where the login username is correlated to AdUser name and that the logUsername field of the User is empty.
 		Classifier classifier = Classifier.auth;
 		
 		Date date = new Date(System.currentTimeMillis() - 1000);
@@ -256,9 +255,7 @@ public class UserUpdateScoreServiceTest {
 //		ScoreInfo scoreInfo = UserScoreTestUtil.createScoreInfo(date, avgScore, globalScore, 10, 10);
 //		ClassifierScore classifierScore = new ClassifierScore(classifier.getId(), scoreInfo);
 //		user.putClassifierScore(classifierScore);
-		List<User> users = new ArrayList<>();
-		users.add(user);
-		when(userRepository.findAllExcludeAdInfo()).thenReturn(users);
+		when(userService.findByAuthUsername(classifier.getLogEventsEnum(), loginUserName)).thenReturn(user);
 		when(loginDAO.getLastRunDate()).thenReturn(date);
 		when(loginDAO.calculateAvgScoreOfGlobalScore(date)).thenReturn(avgScore);
 		when(userService.createNewApplicationUserDetails(user, classifier.getUserApplication(), loginUserName, false)).thenReturn(false);
@@ -297,12 +294,11 @@ public class UserUpdateScoreServiceTest {
 		user.addLogUsername(tableName, userLoginUsername);
 		List<User> users = new ArrayList<>();
 		users.add(user);
-		when(userRepository.findAllExcludeAdInfo()).thenReturn(users);
 		when(loginDAO.getLastRunDate()).thenReturn(date);
 		when(loginDAO.calculateAvgScoreOfGlobalScore(date)).thenReturn(avgScore);
 		userUpdateScoreService.updateUserWithAuthScore(Classifier.auth);
 		verify(userRepository, never()).save((Iterable<User>) any());
-		verifyZeroInteractions(userService);
+		verify(userService, never()).updateUser((User) any(), (Update) any());
 	}
 	
 	@Test

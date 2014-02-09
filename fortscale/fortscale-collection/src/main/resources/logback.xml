@@ -7,16 +7,29 @@
 		</encoder>
 	</appender>
 
-	<appender name="LogFile" class="ch.qos.logback.core.FileAppender">
+	<appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>logFile.log</file>
-		<append>false</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>logFile.%i.log</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>5</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>100MB</maxFileSize>
+		</triggeringPolicy>
+		
 		<encoder>
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}
 			</Pattern>
 		</encoder>
 	</appender>
 	
 	<appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      		<level>ERROR</level>
+    	</filter>
+	
 		<syslogHost>localhost</syslogHost>
 		<facility>USER</facility>
 		<suffixPattern>fortscale-collection: %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</suffixPattern>
@@ -24,6 +37,7 @@
 
 	<root level="warn">
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</root>
 	
 	<logger name="fortscale" additivity="false" level="INFO">
@@ -42,39 +56,49 @@
 	<!-- 3rdparty Loggers -->
 	<logger name="org.quartz" additivity="false" level="warn" >
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</logger>
 	
 	<logger name="org.springframework.core" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</logger>
 	
 	<logger name="org.springframework.data" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</logger>
 	
 	<logger name="org.springframework.beans" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</logger>
 	
 	<logger name="org.springframework.context" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</logger>
 
 	<logger name="org.springframework.web" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</logger>
 
 	<logger name="org.apache.hadoop" additivity="false" level="error">
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</logger>
 	<logger name="org.apache.pig.backend.hadoop23" additivity="false" level="error">
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</logger>
     <logger name="org.hibernate" additivity="false" level="warn">
-        <appender-ref ref="SYSLOG" />
+        <appender-ref ref="LogFile" />
+		<appender-ref ref="SYSLOG" />
     </logger>
     <logger name="com.cloudera.cdk.morphline" additivity="false" level="info">
 		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
 	</logger>
 	
 	

@@ -26,8 +26,6 @@ public interface UserService {
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 		
 	public User findByAuthUsername(LogEventsEnum eventId, String username);
-
-	public User findByVpnUsername(String username);
 	
 	public void removeClassifierFromAllUsers(String classifierId);
 
@@ -60,4 +58,6 @@ public interface UserService {
 	public void fillUpdateLogUsername(Update update, String username, String logname);
 	
 	public void fillUpdateAppUsername(Update update,  User user, Classifier classifier);
+
+	public User findByLogUsername(LogEventsEnum eventId, String username);
 }

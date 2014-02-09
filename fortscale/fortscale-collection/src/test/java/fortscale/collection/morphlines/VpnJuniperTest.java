@@ -116,12 +116,16 @@ public class VpnJuniperTest {
 				$ (
 		        "Regular (Poza) Failed VPN Authentication",
 				"Nov  7 14:36:10 11.155.45.2 Juniper: 2013-11-07 14:36:10 - ive - [72.193.146.27] bvaldes(Users)[] - Login failed using auth server server.mypozza.com (ACE Server).  Reason: Failed",
-				"2013-11-07 14:36:10,1383834970,bvaldes,72.193.146.27,,FAIL,Nov  7 14:36:10 11.155.45.2 Juniper: 2013-11-07 14:36:10 - ive - [72.193.146.27] bvaldes(Users)[] - Login failed using auth server server.mypozza.com (ACE Server).  Reason: Failed,United States,"
+				null
+//				TODO: When VPN failures are being processed, replace the expected null with the commented-out line
+//				"2013-11-07 14:36:10,1383834970,bvaldes,72.193.146.27,,FAIL,Nov  7 14:36:10 11.155.45.2 Juniper: 2013-11-07 14:36:10 - ive - [72.193.146.27] bvaldes(Users)[] - Login failed using auth server server.mypozza.com (ACE Server).  Reason: Failed,United States,"
 				),
 				$ (
 		        "Regular (Poza) Failed VPN Authentication",
 				"Nov  7 14:35:54 11.155.45.2 Juniper: 2013-11-07 14:35:54 - ive - [72.193.146.27] bvaldes(Users)[] - Login failed using auth server server.mypozza.com (ACE Server).  Reason: Failed",
-				"2013-11-07 14:35:54,1383834954,bvaldes,72.193.146.27,,FAIL,Nov  7 14:35:54 11.155.45.2 Juniper: 2013-11-07 14:35:54 - ive - [72.193.146.27] bvaldes(Users)[] - Login failed using auth server server.mypozza.com (ACE Server).  Reason: Failed,United States,"
+				null
+//				TODO: When VPN failures are being processed, replace the expected null with the commented-out line 
+//				"2013-11-07 14:35:54,1383834954,bvaldes,72.193.146.27,,FAIL,Nov  7 14:35:54 11.155.45.2 Juniper: 2013-11-07 14:35:54 - ive - [72.193.146.27] bvaldes(Users)[] - Login failed using auth server server.mypozza.com (ACE Server).  Reason: Failed,United States,"
 				)
         		);
     }

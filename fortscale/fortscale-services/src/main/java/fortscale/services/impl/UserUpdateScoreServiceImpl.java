@@ -185,6 +185,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		return ret;
 	}
 	
+	//This code is left for possible use in the near future.
 	private Map<String, List<User>> getUsernameToUsersMap(String tablename){
 		logger.info("getting all users");
 		Map<String, List<User>> usersMap = new HashMap<>();
@@ -218,6 +219,10 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		return usersMap;
 	}
 	
+	private User findByAuthUsername(LogEventsEnum eventId, String username){
+		return userService.findByAuthUsername(eventId, username);
+	}
+	
 	private void updateUserWithAuthScore(AuthDAO authDAO, final Classifier classifier, Date lastRun) {
 		logger.info("calculating avg score for {} events.", classifier);
 		double avg = 0;
@@ -237,9 +242,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		logger.info("getting all {} scores", classifier);
 		List<AuthScore> authScores = authDAO.findGlobalScoreByTimestamp(lastRun);
 		
-		
-		Map<String, List<User>> usersMap = getUsernameToUsersMap(authDAO.getTableName());
-		
+				
 		logger.info("going over all {} {} scores", authScores.size(), classifier);
 		final String tablename = authDAO.getTableName();
 		List<Update> updates = new ArrayList<>();
@@ -248,12 +251,12 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		for(AuthScore authScore: authScores){
 			final String username = authScore.getUserName();
 			if(StringUtils.isEmpty(username)){
-				logger.error("got a empty string {} username", classifier);
+				logger.warn("got a empty string {} username", classifier);
 				continue;
 			}
-			List<User> optionUsers = usersMap.get(username.toLowerCase());
-			User user = null;
-			if(optionUsers == null){
+
+			User user = findByAuthUsername(classifier.getLogEventsEnum(), username);
+			if(user == null){
 				if(classifier.getLogEventsEnum().equals(LogEventsEnum.ssh)){
 					logger.info("no user was found with SSH username ({})", username);
 					if(authDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, sshStatusSuccessValueRegex) > 0){
@@ -263,23 +266,8 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 						continue;
 					}
 				} else{
-					logger.error("no user was found with the username {}", username);
+					logger.warn("no user was found with the username {}", username);
 					continue;
-				}
-			} else{
-				if(optionUsers.size() == 1){
-					user = optionUsers.get(0);
-				} else{
-					for(User option: optionUsers){
-						if(username.equals(option.getUsername().toLowerCase())){
-							user = option;
-							break;
-						}
-					}
-					if(user == null){
-						logger.info("got more than one user for the following {} username: {}", classifier.getId(), username);
-						continue;
-					}
 				}
 			}
 
@@ -354,9 +342,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		List<VpnScore> vpnScores = vpnDAO.findGlobalScoreByTimestamp(lastRun);
 		
 		final String tablename = VpnScore.TABLE_NAME;
-		
-		Map<String, List<User>> usersMap = getUsernameToUsersMap(tablename);
-		
+				
 		logger.info("going over all {} vpn scores", vpnScores.size());
 		List<User> newUsers = new ArrayList<>();
 		List<Update> updates = new ArrayList<>();
@@ -364,34 +350,18 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		for(VpnScore vpnScore: vpnScores){
 			String username = vpnScore.getUserName();
 			if(StringUtils.isEmpty(username)){
-				logger.error("got a empty string vpn username");
+				logger.warn("got a empty string vpn username");
 				continue;
 			}
 			
-			List<User> optionUsers = usersMap.get(username.toLowerCase());
-			User user = null;
-			if(optionUsers == null){
+			User user = findByAuthUsername(LogEventsEnum.vpn, username);
+			if(user == null){
 				logger.info("no user was found with vpn username ({})", username);
 				if(vpnDAO.countNumOfEventsByUserAndStatusRegex(lastRun, username, vpnStatusSuccessValueRegex) > 0){
 					logger.info("creating a new user from a successed vpn event. vpn username ({})", username);
 					user = createUser(vpnScore);
 				} else{
 					continue;
-				}
-			} else{
-				if(optionUsers.size() == 1){
-					user = optionUsers.get(0);
-				} else{
-					for(User option: optionUsers){
-						if(username.equals(option.getUsername().toLowerCase())){
-							user = option;
-							break;
-						}
-					}
-					if(user == null){
-						logger.info("got more than one user for the following vpn username: {}", username);
-						continue;
-					}
 				}
 			}
 			
@@ -508,7 +478,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	private void updateUserWithGroupMembershipScore(final Date lastRun, double avgScore, AdUserFeaturesExtraction extraction, UpdateUserGroupMembershipScoreContext context){		
 		User user = userService.findByUserId(extraction.getUserId());
 		if(user == null){
-			logger.error("user with id ({}) was not found in user table", extraction.getUserId());
+			logger.warn("user with id ({}) was not found in user table", extraction.getUserId());
 			return;
 		}
 		//updating the user with the new score.
