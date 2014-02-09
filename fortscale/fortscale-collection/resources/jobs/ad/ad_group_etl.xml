@@ -28,6 +28,10 @@
 					<value>${collection.fetch.finish.data.ad.group.path}</value>
 				</entry>
 				<entry>
+					<key>errorPath</key>
+					<value>${collection.fetch.error.data.ad.group.path}</value>
+				</entry>
+				<entry>
 					<key>filesFilter</key>
 					<value>groups\d+.csv$</value>
 				</entry>

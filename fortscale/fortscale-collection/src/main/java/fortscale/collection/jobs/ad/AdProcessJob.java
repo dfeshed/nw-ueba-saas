@@ -47,6 +47,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 	private String ldiftocsv;
 	protected String inputPath;
 	protected String finishPath;
+	protected String errorPath;
 
 	private String filesFilter;
 
@@ -64,6 +65,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		ldiftocsv = jobDataMapExtension.getJobDataMapStringValue(map, "ldiftocsv");
 		inputPath = jobDataMapExtension.getJobDataMapStringValue(map, "inputPath");
 		finishPath = jobDataMapExtension.getJobDataMapStringValue(map, "finishPath");
+		errorPath = jobDataMapExtension.getJobDataMapStringValue(map, "errorPath");
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		hadoopDirPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopDirPath");
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
@@ -137,11 +139,10 @@ public abstract class AdProcessJob extends FortscaleJob {
 			// transform events in file
 			processFile(reader, runtime);
 
-			moveFileToFolder(file, finishPath);
-
 			logger.info("finished processing {}", file.getName());
 
-		} catch (IOException e) {
+		} catch (Exception e) {
+			moveFileToFolder(file, errorPath);
 			logger.error("error processing files", e);
 			throw new JobExecutionException("error processing files", e);
 		} finally{
@@ -149,6 +150,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 				reader.close();
 			}
 		}
+		
+		moveFileToFolder(file, finishPath);
 		
 		finishStep();
 	}
