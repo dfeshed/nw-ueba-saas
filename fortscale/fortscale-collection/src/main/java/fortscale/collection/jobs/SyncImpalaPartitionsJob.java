@@ -102,7 +102,7 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 				  public boolean accept(Path path) {
 					try {
 						return hadoopFs.isDirectory(path);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						logger.debug(String.format("error quering if a '%s' is a directory", path), e);
 						return false;
 					}
@@ -115,7 +115,7 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 				partitions.add(file.getPath());
 			}
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("error listing hdfs partition directories", e);
 			monitor.error(getMonitorId(), getStepName(), "error listing hdfs partition directories\n" + e.toString());
 			return false;
