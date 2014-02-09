@@ -25,12 +25,14 @@ public class FolderCleanupJobTest {
 		// create mock files in folder
 		fileA = mock(File.class);
 		when(fileA.getName()).thenReturn("a.txt");
+		when(fileA.exists()).thenReturn(true);
 		when(fileA.isDirectory()).thenReturn(false);
 		when(fileA.compareTo(any(File.class))).thenReturn(new Integer(-1));
 		
 		fileB = mock(File.class);
 		when(fileB.getName()).thenReturn("b.txt");
 		when(fileB.isDirectory()).thenReturn(false);
+		when(fileB.exists()).thenReturn(true);
 		when(fileB.compareTo(any(File.class))).thenReturn(new Integer(1));
 		
 		File[] contentList = new File[] { fileA, fileB };
@@ -44,10 +46,11 @@ public class FolderCleanupJobTest {
 		when(folderMock.getTotalSpace()).thenReturn(new Long(100 * 1024 * 1024));
 		
 		// act
-		subject.cleanupFolder(folderMock, 20);
+		subject.cleanupFolder(folderMock, 20, 1024);
 		
 		// assert
-		verifyNoMoreInteractions(fileA, fileB);
+		verify(fileA, VerificationModeFactory.times(0)).delete();
+		verify(fileB, VerificationModeFactory.times(0)).delete();
 	}
 
 	@Test
@@ -58,7 +61,7 @@ public class FolderCleanupJobTest {
 		when(fileA.delete()).thenReturn(Boolean.TRUE);
 		
 		// act
-		subject.cleanupFolder(folderMock, 20);
+		subject.cleanupFolder(folderMock, 20, 1024);
 		
 		// assert
 		verify(fileA).delete();

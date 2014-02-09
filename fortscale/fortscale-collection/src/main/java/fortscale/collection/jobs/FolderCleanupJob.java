@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.monitor.JobProgressReporter;
-
+import org.apache.commons.io.FileUtils;
 
 /**
  * Folder cleanup jobs to remove files from a folder once the available disk space is bellow a certain threshold
@@ -45,14 +45,18 @@ public class FolderCleanupJob implements Job {
 			JobDataMap map = context.getMergedJobDataMap();
 			String folder = jobDataMapExtension.getJobDataMapStringValue(map, "folder");
 			int threshold = jobDataMapExtension.getJobDataMapIntValue(map, "threshold");
+			int maxFolderSize = jobDataMapExtension.getJobDataMapIntValue(map, "maxFolderSize");
 		
 			// execute cleanup logic
-			cleanupFolder(new File(folder), threshold);
+			cleanupFolder(new File(folder), threshold, maxFolderSize);
 		
 			monitor.finishStep(monitorId, "Cleanup");
 		} catch (Exception e) {
 			monitor.error(monitorId, "Cleanup", e.toString());
-			throw e;
+			if (e instanceof JobExecutionException)
+				throw e;
+			else
+				throw new JobExecutionException(e);
 		} finally {
 			monitor.finishJob(monitorId);
 		}
@@ -60,7 +64,7 @@ public class FolderCleanupJob implements Job {
 	}
 
 	
-	public void cleanupFolder(File folderFile, int threshold) throws JobExecutionException {
+	public void cleanupFolder(File folderFile, int threshold, int maxFolderSize) throws JobExecutionException {
 		if (!folderFile.exists()) {
 			// log warning and exit as there is nothing to do (some folders may not be created all the time, e.g. error)
 			logger.warn("folder {} does not exists", folderFile.getName());
@@ -75,7 +79,10 @@ public class FolderCleanupJob implements Job {
 		long totalMB = (folderFile.getTotalSpace() / (1024 *1024));
 		long freespaceMB = (folderFile.getUsableSpace() / (1024 * 1024));
 		int precentFree = (int) (freespaceMB * 100 / totalMB);
-		if (precentFree <= threshold) {
+		
+		long folderSizeMB = (FileUtils.sizeOfDirectory(folderFile) / (1024 * 1024));
+		
+		if (precentFree <= threshold || folderSizeMB > maxFolderSize) {
 			logger.info("reached avaialbe size threshold, starting to delete files from " + folderFile.getPath());
 			
 			// get the list of files sorted according to name so that old files will be deleted first
@@ -83,17 +90,18 @@ public class FolderCleanupJob implements Job {
 			Arrays.sort(files);
 
 			// delete files until we reach the threshold goal
-			for (int i=0;i<files.length && precentFree<=threshold;i++) {
+			for (int i=0;i<files.length && (precentFree<=threshold || folderSizeMB > maxFolderSize);i++) {
 				File fileToDelete = files[i];
 				try {
 					if (fileToDelete.isDirectory()) {
-						cleanupFolder(fileToDelete, threshold);
+						cleanupFolder(fileToDelete, threshold, maxFolderSize);
 					} else {
 						fileToDelete.delete();
 						logger.info("file {} was deleted", fileToDelete.getName());
 					}
 					freespaceMB = (folderFile.getUsableSpace() / (1024 * 1024));
 					precentFree = (int) (freespaceMB * 100 / totalMB);
+					folderSizeMB = (FileUtils.sizeOfDirectory(folderFile) / (1024 * 1024));
 				} catch (Exception e) {
 					logger.error("cannot delete file " + fileToDelete.getName(), e);
 					monitor.error(monitorId, "Cleanup", "cannot delete file " + fileToDelete.getName());
