@@ -2,7 +2,6 @@ package fortscale.collection.morphlines.commands;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
