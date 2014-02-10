@@ -11,7 +11,7 @@ public class AdGroup extends AdObject{
 	private String name;
 	private String isCriticalSystemObject;
 	private String isDeleted;
-	private String groupType;
+	private Integer groupType;
 	private String sAMAccountType;
 	private String memberOf;
 	private String managedBy;
@@ -66,11 +66,11 @@ public class AdGroup extends AdObject{
 		this.isDeleted = isDeleted;
 	}
 
-	public String getGroupType() {
+	public Integer getGroupType() {
 		return groupType;
 	}
 
-	public void setGroupType(String groupType) {
+	public void setGroupType(Integer groupType) {
 		this.groupType = groupType;
 	}
 
