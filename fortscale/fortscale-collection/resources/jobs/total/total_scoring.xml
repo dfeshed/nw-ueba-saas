@@ -36,7 +36,7 @@
 				<group>TOTAL</group>
 				<job-name>Scoring</job-name>
 				<job-group>TOTAL</job-group>
-				<cron-expression>0 40 * * * ?</cron-expression>
+				<cron-expression>0 45 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 	</schedule>
