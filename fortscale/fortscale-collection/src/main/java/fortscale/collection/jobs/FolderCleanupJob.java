@@ -56,8 +56,10 @@ public class FolderCleanupJob implements Job {
 			monitor.error(monitorId, "Cleanup", e.toString());
 			if (e instanceof JobExecutionException)
 				throw e;
-			else
+			else {
+				logger.error("un expected error during folder clean up job" + e.toString());
 				throw new JobExecutionException(e);
+			}
 		} finally {
 			monitor.finishJob(monitorId);
 		}
