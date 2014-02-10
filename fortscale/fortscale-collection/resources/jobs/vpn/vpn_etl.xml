@@ -57,7 +57,7 @@
 				<group>VPN</group>
 				<job-name>ETL</job-name>
 				<job-group>VPN</job-group>
-				<cron-expression>0 4 * * * ?</cron-expression>
+				<cron-expression>0 33 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

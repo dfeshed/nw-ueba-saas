@@ -70,4 +70,25 @@ public class DefaultPartitionStrategyTest {
 		DefaultPartitionStrategy strategy = new DefaultPartitionStrategy();
 		assertNull(strategy.getImpalaPartitionName((new Date()).getTime()));
 	}
+	
+	@Test
+	public void default_partition_compare_to_ts_should_return_0_for_all_parameters() {
+		DefaultPartitionStrategy strategy = new DefaultPartitionStrategy();
+		for (long ts=0; ts<1391673570; ts+=5000) {
+			assertEquals(0, strategy.comparePartitionTo("/path", ts));
+		}
+	}
+	
+	@Test
+	public void default_partition_is_partition_path_should_return_true_always() {
+		DefaultPartitionStrategy strategy = new DefaultPartitionStrategy();
+		assertEquals(true, strategy.isPartitionPath("/base"));
+		assertEquals(true, strategy.isPartitionPath("/base/path/"));
+	}
+	
+	@Test
+	public void default_partition_should_return_null_for_partition_name_from_path() {
+		DefaultPartitionStrategy strategy = new DefaultPartitionStrategy();
+		assertNull(strategy.getImpalaPartitionNameFromPath("/base/path/"));
+	}
 }

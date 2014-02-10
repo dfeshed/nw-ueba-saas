@@ -7,39 +7,43 @@
 
 	<schedule>
 		<job>
-			<name>Scoring</name>
+			<name>Add_Partitions</name>
 			<group>TOTAL</group>
-			<description>Running Total Scoring</description>
-			<job-class>fortscale.collection.jobs.scoring.TotalScoringJob</job-class>
+			<description>Ensure Impala partitions are in sync with HDFS</description>
+			<job-class>fortscale.collection.jobs.SyncImpalaPartitionsJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
+			
 			<job-data-map>
 				<entry>
-					<key>impalaTableName</key>
-					<value>${impala.total.scores.table.name}</value>
-				</entry>
-				<entry>
-					<key>hadoopDirPath</key>
+					<key>hdfsPath</key>
 					<value>${hdfs.user.processeddata.totalscore.path}</value>
 				</entry>
 				<entry>
-					<key>filenameFormat</key>
-					<value>totalscore%d.csv</value>
+					<key>tableName</key>
+					<value>totalscore</value>
 				</entry>
-			</job-data-map>
-			
+				<entry>
+						<key>partitionStrategy</key>
+						<value>runtime</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>8</value>
+					</entry>
+            </job-data-map>
 		</job>
-		
+	
 		<trigger>
 			<cron>
-				<name>TOTAL_SCORING_HOURLY_TRIGGER</name>
+				<name>total_partitions_sync_hourly_trigger</name>
 				<group>TOTAL</group>
-				<job-name>Scoring</job-name>
+				<job-name>Add_Partitions</job-name>
 				<job-group>TOTAL</job-group>
-				<cron-expression>0 45 * * * ?</cron-expression>
+ 				<cron-expression>0 56 3 * * ?</cron-expression>
 			</cron>
 		</trigger>
+		
 	</schedule>
-
 
 </job-scheduling-data>

@@ -32,7 +32,7 @@
 				<group>AD</group>
 				<job-name>User_Thumbnail_ETL</job-name>
 				<job-group>AD</job-group>
- 				<cron-expression>0 0 0 * * ?</cron-expression>
+ 				<cron-expression>0 40 0 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

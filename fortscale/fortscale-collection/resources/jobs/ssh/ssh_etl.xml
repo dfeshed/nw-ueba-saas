@@ -50,16 +50,6 @@
 			</job-data-map>
 		</job>
 		
-		<trigger>
-			<cron>
-				<name>ssh_etl_hourly_trigger</name>
-				<group>SSH</group>
-				<job-name>ETL</job-name>
-				<job-group>SSH</job-group>
-				<cron-expression>0 3 * * * ?</cron-expression>
-			</cron>
-		</trigger>
-		
 	</schedule>
 	
 </job-scheduling-data>
