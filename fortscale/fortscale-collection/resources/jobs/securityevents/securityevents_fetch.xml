@@ -52,7 +52,7 @@
 				<group>SecurityEvents</group>
 				<job-name>Fetch</job-name>
 				<job-group>SecurityEvents</job-group>
- 				<cron-expression>0 1 * * * ?</cron-expression>
+ 				<cron-expression>0 5 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 				

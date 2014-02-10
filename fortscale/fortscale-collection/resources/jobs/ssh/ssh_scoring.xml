@@ -32,18 +32,7 @@
 				</entry>
 			</job-data-map>
 			
-		</job>
-	
-		<trigger>
-			<cron>
-				<name>SSH_SCORING_HOURLY_TRIGGER</name>
-				<group>SSH</group>
-				<job-name>Scoring</job-name>
-				<job-group>SSH</job-group>
-				<cron-expression>0 15 * * * ?</cron-expression>
-			</cron>
-		</trigger>
-	
+		</job>	
 	</schedule>
 
 
