@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -18,6 +19,7 @@ import fortscale.collection.jobs.ad.AdProcessJob;
 import fortscale.services.UserServiceFacade;
 import fortscale.utils.logging.Logger;
 
+@DisallowConcurrentExecution
 public class AdGroupMembershipScoringJob extends FortscaleJob {
 	
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
