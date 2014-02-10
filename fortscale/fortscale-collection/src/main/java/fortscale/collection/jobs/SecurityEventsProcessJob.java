@@ -139,12 +139,12 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		// try and close all appender that we can, if one of them 
 		// throws exception than continue closing the rest and throw
 		// the exception at the end
-		IOException exception = null;
+		Exception exception = null;
 		for (EventProcessHandlers handlers : eventsMap.values()) {
 			try {
 				if (handlers.appender!=null)
 					handlers.appender.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				logger.error("error closing hdfs partitions writer at " + handlers.hadoopPath, e);
 				monitor.error(monitorId, "Process Files", String.format("error closing hdfs partitions writer at %s: \n %s",  handlers.hadoopPath, e.toString()));
 				exception = e;
