@@ -151,10 +151,10 @@ public class EventProcessJob implements Job {
 			logger.error("unexpected error during event process job: " + exp.toString());
 			monitor.error(monitorId, currentStep, exp.toString());
 			throw new JobExecutionException(exp);
+		} finally {
+			monitor.finishJob(monitorId);
+			logger.info("{} {} job finished", jobName, sourceName);
 		}
-
-		monitor.finishJob(monitorId);
-		logger.info("{} {} job finished", jobName, sourceName);
 	}
 	
 	/**

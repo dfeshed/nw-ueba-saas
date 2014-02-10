@@ -136,10 +136,10 @@ public class SplunkFetchSavedQueryJob implements Job {
 				logger.error("unexpected error during splunk fetch " + e.toString());
 				throw new JobExecutionException(e);
 			}
+		} finally {
+			monitor.finishJob(monitorId);
+			logger.info("vpn fetch job finished");
 		}
-		
-		monitor.finishJob(monitorId);
-		logger.info("vpn fetch job finished");
 	}
 	
 	private void getJobParameters(JobExecutionContext context) throws JobExecutionException {
