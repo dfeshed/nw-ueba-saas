@@ -88,7 +88,6 @@ public class EventProcessJob implements Job {
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		
 		// get the job group name to be used using monitoring 
 		String sourceName = context.getJobDetail().getKey().getGroup();
 		String jobName = context.getJobDetail().getKey().getName();
@@ -148,10 +147,14 @@ public class EventProcessJob implements Job {
 		} catch (JobExecutionException e) {
 			monitor.error(monitorId, currentStep, e.toString());
 			throw e;
+		} catch (Exception exp) {
+			logger.error("unexpected error during event process job: " + exp.toString());
+			monitor.error(monitorId, currentStep, exp.toString());
+			throw new JobExecutionException(exp);
+		} finally {
+			monitor.finishJob(monitorId);
+			logger.info("{} {} job finished", jobName, sourceName);
 		}
-
-		monitor.finishJob(monitorId);
-		logger.info("{} {} job finished", jobName, sourceName);
 	}
 	
 	/**
