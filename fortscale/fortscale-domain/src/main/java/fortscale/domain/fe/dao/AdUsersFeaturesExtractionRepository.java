@@ -16,7 +16,4 @@ public interface AdUsersFeaturesExtractionRepository extends MongoRepository<AdU
 	public List<AdUserFeaturesExtraction> findByClassifierIdAndTimestamp(String classifierId, Date timestamp, Pageable pageable);
 	
 	public List<AdUserFeaturesExtraction> findByClassifierIdAndTimestampAndScoreBetween(String classifierId, Date timestamp, int lowestVal, int upperVal, Pageable pageable);
-	
-	
-	public List<AdUserFeaturesExtraction> findByLastModifiedExists(boolean exists);
 }
