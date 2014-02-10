@@ -11,29 +11,16 @@ public class AbstractFEDocument extends AbstractDocument {
 	public static final String timestampField = "timestamp";
 	public static final String lastModifiedField = "lastModified";
 
-	@Indexed
+	@Indexed(unique = false, expireAfterSeconds=60*60*24*8)
 	@Field(timestampField)
 	private Date timestamp;
 	
-	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
-	@Field(lastModifiedField)
-	private Date lastModified;
-
-	public Date getTimestamp() {
+		public Date getTimestamp() {
 		return timestamp;
 	}
 
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
-	}
-
-	public Date getLastModified() {
-		return lastModified;
-	}
-
-	public void setLastModified(Date lastModified) {
-		this.lastModified = lastModified;
-	}
-	
+	}	
 	
 }
