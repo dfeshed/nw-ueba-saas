@@ -7,7 +7,7 @@ REGISTER '$jarFilePath1';
 REGISTER '$jarFilePath2';
 raw             	= LOAD '$inputData' USING PigStorage('|') AS (date_time:chararray,date_time_unixTime:long,username:chararray,source_ip:chararray,local_ip:chararray,status:chararray,country_name:chararray);
 loginByTime     	= FILTER raw by date_time_unixTime > (long)'$deltaTime';
-loginOrdered 		= FOREACH loginByTime GENERATE date_time,LOWER(username),source_ip,LOWER(status),LOWER(country_name),date_time_unixTime,local_ip;
+loginOrdered 		= FOREACH loginByTime GENERATE date_time,LOWER(username) as username,source_ip,LOWER(status) as status,LOWER(country_name) as country_name,date_time_unixTime,local_ip;
 success         	= FILTER loginOrdered by status == 'success';
 fail            	= FILTER loginOrdered by status == 'fail';
 userSuccess     	= GROUP success by username PARALLEL 1;
