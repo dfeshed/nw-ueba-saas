@@ -23,7 +23,7 @@ public class ImpalaClient {
 		String sql = String.format("REFRESH %s", tableName);
 		try {
 			impalaJdbcTemplate.execute(sql);
-		} catch (DataAccessException e) {
+		} catch (Exception e) {
 			logger.error("error refreshing impala table " + tableName, e);
 			throw new JobExecutionException("error refreshing impala table " + tableName, e);
 		}
@@ -42,11 +42,19 @@ public class ImpalaClient {
 		String sql = String.format("alter table %s add if not exists partition (%s)", tableName, partition);
 		try {
 			impalaJdbcTemplate.execute(sql);
-		} catch (DataAccessException e) {
+		} catch (Exception e) {
 			String errorMessage = String.format("failed to to run the following  sql command: %s", sql);
 			logger.error(errorMessage, e);
 			throw new JobExecutionException(errorMessage, e);
 		}
+	}
+	
+	public void dropPartitionFromTable(String tableName, String partition) throws DataAccessException {
+		Assert.hasText(tableName);
+		Assert.hasText(partition);
+		
+		String sql = String.format("alter table %s drop if exists partition (%s)", tableName, partition);
+		impalaJdbcTemplate.execute(sql);
 	}
 	
 }

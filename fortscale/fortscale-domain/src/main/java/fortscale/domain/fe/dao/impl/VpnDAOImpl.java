@@ -2,7 +2,6 @@ package fortscale.domain.fe.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Date;
 
 import org.springframework.beans.factory.InitializingBean;

@@ -1,5 +1,7 @@
 package fortscale.utils.hdfs.partition;
 
+import static fortscale.utils.hdfs.partition.PartitionsUtils.*;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,6 +39,19 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		return String.format("yearmonth=%s%02d", year, month);
 	}
 	
+	/**
+	 * Gets the partition name extracted from the hdfs path given
+	 */
+	public String getImpalaPartitionNameFromPath(String path) {
+		if (path==null || path.isEmpty())
+			throw new IllegalArgumentException("path cannot be null");
+			
+		String partitionPart = getPartitionPartFromPath(path);
+		if (partitionPart!=null && isPathInPartitionFormat(partitionPart))
+			return partitionPart;
+		else
+			return null;
+	}
 	
 	/**
 	 * Gets the partitions names that contains data for the date range given
@@ -57,27 +72,59 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		}
 		return partitions.toArray(new String[0]);
 	}
-	
-	private DateTime getDateForTimestamp(long timestamp) {
-		// convert timestamp in seconds to timestamp in milli-seconds
-		// 100000000000L is 3/3/1973, assume we won't get data before that....
-		if (timestamp<100000000000L)
-			timestamp = timestamp * 1000;
 		
-		return new DateTime(timestamp, DateTimeZone.UTC);
+	/**
+	 * Determine if the path given is according to the partition naming strategy
+	 */
+	public boolean isPartitionPath(String path) {
+		if (path==null || path.isEmpty())
+			return false;
+		
+		String partitionPart = getPartitionPartFromPath(path);
+		return partitionPart!=null && isPathInPartitionFormat(partitionPart);
+	}
+	
+	/**
+	 * compares the given timestamp to the partition period. Return 0 in case the 
+	 * timestamp is within the partition, 1 if the timestamp is newer than the partition
+	 * or -1 if the timestamp is older than the partition. 
+	 */
+	public int comparePartitionTo(String partitionPath, long ts) {
+		if (!isPartitionPath(partitionPath))
+			return 0;
+		
+		String partitionPart = getPartitionPartFromPath(partitionPath);
+		
+		int year = Integer.parseInt(partitionPart.substring(10, 14));
+		int month = Integer.parseInt(partitionPart.substring(14));
+		
+		DateTime startPeriod = new DateTime(year, month, 1, 0, 0, DateTimeZone.UTC);
+		DateTime endPeriod = (new DateTime(year, month, 1, 0, 0, DateTimeZone.UTC)).plusMonths(1).minusDays(1);
+		
+		long timestamp = normalizeTimestamp(ts);
+		
+		if (endPeriod.isBefore(timestamp))
+			return 1;
+		if (startPeriod.isAfter(timestamp))
+			return -1;
+		return 0;
+	}
+	
+	private boolean isPathInPartitionFormat(String path) {
+		return path.matches("yearmonth=\\d{6}");
+	}
+	
+	private DateTime getDateForTimestamp(long timestamp) {		
+		return new DateTime(normalizeTimestamp(timestamp), DateTimeZone.UTC);
 	}
 	
 	private String getPartitionPathForDate(String basePath, DateTime when) {
-		String normalizedBasePath = basePath.replace('\\', '/');
-		
 		StringBuilder sb = new StringBuilder();
-		sb.append(normalizedBasePath);
-		if (!normalizedBasePath.endsWith("/"))
-			sb.append('/');
+		sb.append(normalizePath(basePath));
 		sb.append(getImpalaPartitionName(when.getMillis()));
 		sb.append("/");
-
 		
 		return sb.toString();
 	}
+	
 }

@@ -186,6 +186,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	}
 	
 	//This code is left for possible use in the near future.
+	@SuppressWarnings("unused")
 	private Map<String, List<User>> getUsernameToUsersMap(String tablename){
 		logger.info("getting all users");
 		Map<String, List<User>> usersMap = new HashMap<>();

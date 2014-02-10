@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>Add_Partitions</name>
+			<group>SSH</group>
+			<description>Ensure Impala partitions are in sync with HDFS</description>
+			<job-class>fortscale.collection.jobs.SyncImpalaPartitionsJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+		</job>
+	
+		<!-- <trigger>
+			<cron>
+				<name>ssh_partitions_hourly_trigger</name>
+				<group>SSH</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>SSH</job-group>
+ 				<cron-expression>0 36 3 * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+		<trigger>
+			<cron>
+				<name>sshdata_partitions_hourly_trigger</name>
+				<group>SSH</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>SSH</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.data.ssh.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>sshdata</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>monthly</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>90</value>
+					</entry>
+	            </job-data-map>
+ 				<cron-expression>0 36 3 * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+		<trigger>		
+			<cron>
+				<name>sshScores_partition_sync_hourly_trigger</name>
+				<group>SSH</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>SSH</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.processeddata.sshscores.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>sshScores</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>runtime</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>14</value>
+					</entry>
+            	</job-data-map>
+ 				<cron-expression>0 52 3 * * ?</cron-expression>
+			</cron>
+		</trigger>-->
+		
+	</schedule>
+
+</job-scheduling-data>

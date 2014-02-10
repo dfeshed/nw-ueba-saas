@@ -48,7 +48,7 @@
 				<group>VPN</group>
 				<job-name>Fetch</job-name>
 				<job-group>VPN</job-group>
- 				<cron-expression>0 40 * * * ?</cron-expression>
+ 				<cron-expression>0 30 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

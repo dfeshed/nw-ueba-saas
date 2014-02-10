@@ -31,8 +31,7 @@
 					<value>${hdfs.user.processeddata.sshscores.path}/</value>
 				</entry>
 			</job-data-map>
-			
-		</job>	
+		</job>			
 	</schedule>
 
 
