@@ -30,6 +30,8 @@ public abstract class EventScoringJob extends FortscaleJob {
 	public static final String PIG_OUTPUT_DATA_PREFIX_JOB_PARAMETER = "pigOutputDataPrefix";
 	public static final String LATEST_EVENT_TIME_JOB_PARAMETER = "latestEventTime";
 	public static final String DELTA_TIME_IN_SEC_JOB_PARAMETER = "deltaTimeInSec";
+	public static final String NUM_OF_HISTORY_SCORING_JOB_PARAMETER = "numOfHistoryScoring";
+	public static final String HISTORY_STEP_IN_MIN_JOB_PARAMETER = "historyStepInMin";
 	
 	@Autowired
 	private ImpalaClient impalaClient;
@@ -52,18 +54,17 @@ public abstract class EventScoringJob extends FortscaleJob {
 		
 	private Long latestEventTime = null;
 	private Long deltaTimeInSec = null;
+	private Integer numOfHistoryScoring = 0;
+	private Integer historyStepInMin = 60;
 
 	
 	
 	protected String getTableName(){
 		return impalaTableName;
 	}
-	
-	@Override
-	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
-		super.init(jobExecutionContext);
 		
-		runtime = latestEventTime;
+	private void initRuntimeParameters(Long runtimeParam){
+		runtime = runtimeParam;
 		if(runtime == null){
 			DateTime dateTime = new DateTime();
 			runtime = dateTime.getMillis() / 1000;
@@ -92,6 +93,12 @@ public abstract class EventScoringJob extends FortscaleJob {
 		if (map.containsKey(DELTA_TIME_IN_SEC_JOB_PARAMETER)) {
 			deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, DELTA_TIME_IN_SEC_JOB_PARAMETER);
 		}
+		if (map.containsKey(NUM_OF_HISTORY_SCORING_JOB_PARAMETER)) {
+			numOfHistoryScoring = jobDataMapExtension.getJobDataMapIntValue(map, NUM_OF_HISTORY_SCORING_JOB_PARAMETER);
+		}
+		if (map.containsKey(HISTORY_STEP_IN_MIN_JOB_PARAMETER)) {
+			historyStepInMin = jobDataMapExtension.getJobDataMapIntValue(map, HISTORY_STEP_IN_MIN_JOB_PARAMETER);
+		}
 	}
 	
 	private long normalizeTimeToEpochSec(long ts) {
@@ -103,32 +110,39 @@ public abstract class EventScoringJob extends FortscaleJob {
 
 	@Override
 	protected int getTotalNumOfSteps(){
-		return 4;
+		return 4 * (numOfHistoryScoring + 1);
 	}
 		
 	@Override
 	protected void runSteps() throws Exception{
-		
-		boolean isSucceeded = runScoringPig();
-		if(!isSucceeded){
-			return;
+		int numOfCycles = numOfHistoryScoring + 1;
+		for(int i = 0; i < numOfCycles; i++){
+			Long runtimeParam = null;
+			if(latestEventTime != null){
+				runtimeParam = latestEventTime - (i * historyStepInMin * 60);
+			}
+			initRuntimeParameters(runtimeParam);
+			boolean isSucceeded = runScoringPig();
+			if(!isSucceeded){
+				continue;
+			}
+			
+			
+			isSucceeded = runAddPartitionQuery();
+			if(!isSucceeded){
+				continue;
+			}
+			
+			isSucceeded = runRefreshTable();
+			if(!isSucceeded){
+				continue;
+			}
+			
+			isSucceeded = runUpdateUserWithEventScore();
+			if(!isSucceeded){
+				continue;
+			}
 		}
-		
-		
-		isSucceeded = runAddPartitionQuery();
-		if(!isSucceeded){
-			return;
-		}
-		
-		isSucceeded = runRefreshTable();
-		if(!isSucceeded){
-			return;
-		}
-		
-		isSucceeded = runUpdateUserWithEventScore();
-		if(!isSucceeded){
-			return;
-		}		
 	}
 		
 	private boolean runUpdateUserWithEventScore(){
@@ -226,6 +240,16 @@ public abstract class EventScoringJob extends FortscaleJob {
 
 	public Long getLatestEventTime() {
 		return latestEventTime;
+	}
+	
+	
+
+	public Integer getNumOfHistoryScoring() {
+		return numOfHistoryScoring;
+	}
+
+	public Integer getHistoryStepInMin() {
+		return historyStepInMin;
 	}
 
 	public Long getRuntime() {
