@@ -2,12 +2,16 @@ package fortscale.domain.fe.dao.impl;
 
 import java.sql.ResultSet;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import fortscale.domain.fe.AuthScore;
 import fortscale.utils.logging.Logger;
 
 public class SshDAOImpl extends AuthDAOImpl{
 	private static Logger logger = Logger.getLogger(SshDAOImpl.class);
-	private String tableName = "sshscores";
+	
+	@Value("${impala.ssh.table.name}")
+	private String tableName;
 	public static final String STATUS_FIELD_NAME = "status";
 	
 	@Override

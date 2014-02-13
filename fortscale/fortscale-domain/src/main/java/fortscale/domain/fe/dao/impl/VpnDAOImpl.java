@@ -27,7 +27,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	private ImpalaParser impalaParser;
 	
 	@Value("${impala.vpn.table.name}")
-	private String tableName;// = VpnScore.TABLE_NAME;
+	private String tableName;
 
 	@Override
 	public RowMapper<VpnScore> getMapper() {

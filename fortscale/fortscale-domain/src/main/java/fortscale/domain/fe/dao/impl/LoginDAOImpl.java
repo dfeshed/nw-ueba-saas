@@ -2,13 +2,17 @@ package fortscale.domain.fe.dao.impl;
 
 import java.sql.ResultSet;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import fortscale.domain.fe.AuthScore;
 import fortscale.utils.logging.Logger;
 
 
 public class LoginDAOImpl extends AuthDAOImpl{
 	private static Logger logger = Logger.getLogger(LoginDAOImpl.class);
-	private String tableName = "authenticationscores";
+	
+	@Value("${impala.login.table.name}")
+	private String tableName;
 	public static final String ERROR_CODE_FIELD_NAME = "errorcode";
 	
 	@Override
