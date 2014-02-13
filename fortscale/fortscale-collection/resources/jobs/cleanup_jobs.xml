@@ -42,7 +42,7 @@
 						<value>./finish</value>
 					</entry>
             	</job-data-map>
- 				<cron-expression>0 45 * * * ?</cron-expression>
+ 				<cron-expression>0 55 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
@@ -74,7 +74,7 @@
 						<value>./finish/ad/group</value>
 					</entry>
             	</job-data-map>
- 				<cron-expression>0 55 * * * ?</cron-expression>
+ 				<cron-expression>0 45 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
@@ -90,7 +90,7 @@
 						<value>./error</value>
 					</entry>
             	</job-data-map>
- 				<cron-expression>0 20 * * * ?</cron-expression>
+ 				<cron-expression>0 30 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
@@ -122,7 +122,7 @@
 						<value>./error/ad/group</value>
 					</entry>
             	</job-data-map>
- 				<cron-expression>0 30 * * * ?</cron-expression>
+ 				<cron-expression>0 20 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
