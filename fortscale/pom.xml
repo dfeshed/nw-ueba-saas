@@ -28,7 +28,7 @@
 		<test.int.exclude>nothingToExlude</test.int.exclude>
 		<test.int.include>**/*TestInt.java</test.int.include>
 		<test.int.groups></test.int.groups>
-		<test.int.exgroup></test.int.exgroup>
+		<test.int.exgroups></test.int.exgroups>
 	</properties>
 
 	<dependencies>
@@ -230,6 +230,9 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<systemPropertyVariables>
+						<org.quartz.properties>resources/jobs/quartz.properties</org.quartz.properties>
+					</systemPropertyVariables>
 					<excludes>
 						<exclude>${test.int.exclude}</exclude>
 					</excludes>
@@ -237,7 +240,7 @@
 						<include>${test.int.include}</include>
 					</includes>
 					<groups>${test.int.groups}</groups>
-					<excludedGroups>${test.int.exgroup}</excludedGroups>
+					<excludedGroups>${test.int.exgroups}</excludedGroups>
 				</configuration>
 				<executions>
 					<execution>
