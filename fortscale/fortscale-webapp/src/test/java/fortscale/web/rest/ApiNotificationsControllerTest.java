@@ -18,6 +18,7 @@ import fortscale.domain.core.dao.NotificationResourcesRepository;
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.domain.core.NotificationResource;
 import fortscale.web.beans.DataBean;
+import fortscale.web.rest.ApiNotificationsController;
 
 public class ApiNotificationsControllerTest {
 

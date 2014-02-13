@@ -16,6 +16,7 @@ import fortscale.monitor.domain.JobMessage;
 import fortscale.monitor.domain.JobReport;
 import fortscale.monitor.domain.JobStep;
 import fortscale.web.beans.DataBean;
+import fortscale.web.rest.ApiMonitorController;
 import fortscale.web.rest.ApiMonitorController.SourceTypeSummary;
 
 public class ApiMonitorControllerTest {

@@ -7,10 +7,10 @@ import org.junit.experimental.categories.Category;
 
 import com.splunk.HttpException;
 
-import fortscale.utils.test.category.IntegrationTest;
+import fortscale.utils.test.category.SplunkTestCategory;
 
 
-@Category(IntegrationTest.class)
+@Category(SplunkTestCategory.class)
 public class SplunkTestInt {
 	
 	private static final String SPLUNK_SERVER_HOST_NAME_PROPERTY = "splunkServer";
@@ -48,14 +48,14 @@ public class SplunkTestInt {
 		}
 	}
 
-	@Category(IntegrationTest.class)
+	@Category(SplunkTestCategory.class)
 	@Test
 	public void testSplunkConnect(){
 		@SuppressWarnings("unused")
 		SplunkApi splunkApi = new SplunkApi(host, port, user, password);
 	}
 	
-	@Category(IntegrationTest.class)
+	@Category(SplunkTestCategory.class)
 	@Test
 	public void testWrongSplunkLoginParameters(){
 		try{
