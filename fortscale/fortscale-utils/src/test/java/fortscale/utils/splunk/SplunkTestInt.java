@@ -3,10 +3,15 @@ package fortscale.utils.splunk;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.splunk.HttpException;
 
-public class SplunkTest {
+import fortscale.utils.test.category.SplunkTestCategory;
+
+
+@Category(SplunkTestCategory.class)
+public class SplunkTestInt {
 	
 	private static final String SPLUNK_SERVER_HOST_NAME_PROPERTY = "splunkServer";
 	private static final String SPLUNK_SERVER_PORT_PROPERTY = "splunkPort";
@@ -43,12 +48,14 @@ public class SplunkTest {
 		}
 	}
 
+	@Category(SplunkTestCategory.class)
 	@Test
 	public void testSplunkConnect(){
 		@SuppressWarnings("unused")
 		SplunkApi splunkApi = new SplunkApi(host, port, user, password);
 	}
 	
+	@Category(SplunkTestCategory.class)
 	@Test
 	public void testWrongSplunkLoginParameters(){
 		try{
