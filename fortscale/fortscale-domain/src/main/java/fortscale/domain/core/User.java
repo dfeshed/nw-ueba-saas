@@ -27,8 +27,6 @@ import org.springframework.util.Assert;
 		@CompoundIndex(name="logUsername_authenticationscores_1", def = "{'logUsername.authenticationscores': 1}"),
 		@CompoundIndex(name="logUsername_vpndatares_1", def = "{'logUsername.vpndatares': 1}"),
 		@CompoundIndex(name="logUsername_sshscores_1", def = "{'logUsername.sshscores': 1}"),
-		@CompoundIndex(name="ad_userPrincipalName_1", def = "{'adInfo.userPrincipalName': 1}"),
-		@CompoundIndex(name="ad_userPrincipalName_1", def = "{'adInfo.userPrincipalName': 1}"),
 		@CompoundIndex(name="totalScoreCurScore", def = "{'scores.total.score': -1}"),
 		@CompoundIndex(name="totalScoreCurTrend", def = "{'scores.total.trendScore': -1}"),
 		@CompoundIndex(name="active_directory_group_membershipScoreCurScore", def = "{'scores.active_directory_group_membership.score': -1}"),
@@ -71,7 +69,6 @@ public class User extends AbstractDocument {
 	@JsonProperty
 	Map<String, String> logUsernameMap = new HashMap<>();
 	
-	@Indexed
 	@Field(classifierScoreField)
 	private HashMap<String, ClassifierScore> scores = new HashMap<String, ClassifierScore>();
 	

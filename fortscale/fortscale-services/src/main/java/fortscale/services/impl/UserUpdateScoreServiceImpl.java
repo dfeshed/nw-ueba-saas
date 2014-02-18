@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +78,12 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	
 	@Value("${ssh.status.success.value.regex:Accepted}")
 	private String sshStatusSuccessValueRegex;
+	
+	@Value("${group.membership.score.page.size}")
+	private int groupMembershipScorePageSize;
+	
+	@Value("${total.score.page.size}")
+	private int totalScorePageSize;
 	
 
 	@Override
@@ -435,28 +442,34 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 			return;
 		}
 		
+		logger.info("total number of group membership score is {}", count);
+		
 		logger.info("calculating average score...");
 		final double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(Classifier.groups.getId(), lastRun);
 		logger.info("average score is {}", avgScore);
-		
-		logger.info("retrieving all users");
-		List<User> users = userRepository.findAllExcludeAdInfo();
-		
-		logger.info("retrieving all {} group membership score documents", count);
-		List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun);
-		
-		
-		UpdateUserGroupMembershipScoreContext context = new UpdateUserGroupMembershipScoreContext(adUserFeaturesExtractions, users);
-		for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-			updateUserWithGroupMembershipScore(lastRun, avgScore, extraction, context);
-		}
-		
-		logger.info("finished updating the user collection. with group membership score and total score.");
+				
+		groupMembershipScorePageSize = 10000;
+		int numOfPages = (int) (((count -1) / groupMembershipScorePageSize) + 1); 
 		
 		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = null;
 		try{
 			impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
-			saveUserGroupMembershipScoreToImpala(impalaGroupsScoreWriter, users, context, avgScore);
+			for(int i = 0; i < numOfPages; i++){
+				logger.info("retrieving page #{} of group membership score documents. page size is {}.", i, groupMembershipScorePageSize);
+				PageRequest pageRequest = new PageRequest(i, groupMembershipScorePageSize);
+				List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun, pageRequest);
+				
+				logger.info("updating the user collection and the hdfs with group membership score");
+				for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
+					User user = updateUserWithGroupMembershipScore(lastRun, avgScore, extraction);
+					if(user != null){
+						impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
+					}
+				}
+				
+				logger.info("finished updating the user collection and the hdfs with group membership score");
+				
+			}
 		} finally{
 			if(impalaGroupsScoreWriter != null){
 				impalaGroupsScoreWriter.close();
@@ -467,27 +480,30 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	}
 		
 	public void saveUserGroupMembershipScoreToImpala(ImpalaGroupsScoreWriter impalaGroupsScoreWriter, List<User> users,  UpdateUserGroupMembershipScoreContext updateUserGroupMembershipScoreContext, double avgScore){
-		logger.info("writing group score to local file");
+		logger.info("writing group score to file");
 		for(User user: users){
 			AdUserFeaturesExtraction adUserFeaturesExtraction = updateUserGroupMembershipScoreContext.findFeautreByUserId(user.getId());
 			if(adUserFeaturesExtraction != null){
 				impalaGroupsScoreWriter.writeScore(user, adUserFeaturesExtraction, avgScore);
 			}
 		}
+		logger.info("finished writing group score to file");
 	}
 	
-	private void updateUserWithGroupMembershipScore(final Date lastRun, double avgScore, AdUserFeaturesExtraction extraction, UpdateUserGroupMembershipScoreContext context){		
+	private User updateUserWithGroupMembershipScore(final Date lastRun, double avgScore, AdUserFeaturesExtraction extraction){		
 		User user = userService.findByUserId(extraction.getUserId());
 		if(user == null){
 			logger.warn("user with id ({}) was not found in user table", extraction.getUserId());
-			return;
+			return null;
 		}
 		//updating the user with the new score.
 		user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false, false);
 	
 		Update update = new Update();
 		update.set(User.getClassifierScoreField(Classifier.groups.getId()), user.getScore(Classifier.groups.getId()));
-		userService.updateUser(user, update);		
+		userService.updateUser(user, update);
+		
+		return user;
 	}
 	
 	@Override
