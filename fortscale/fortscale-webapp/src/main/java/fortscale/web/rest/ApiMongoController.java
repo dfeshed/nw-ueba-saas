@@ -37,13 +37,22 @@ public class ApiMongoController extends BaseController{
 			Model model){
 		DBCollection dbCollection = mongoTemplate.getDb().getCollection(collectionName);
 		
-		DBCursor cursor = dbCollection.find((DBObject) JSON.parse(query), (DBObject) JSON.parse(keys));
-		cursor.skip(skip);
-		cursor.limit(limit);
-
+		DBCursor cursor = null;
 		DataBean<List<DBObject>> ret = new DataBean<List<DBObject>>();
-		ret.setData(cursor.toArray());
-		ret.setTotal(cursor.count());
+		try{
+			cursor = dbCollection.find((DBObject) JSON.parse(query), (DBObject) JSON.parse(keys));
+		
+			cursor.skip(skip);
+			cursor.limit(limit);
+	
+			
+			ret.setData(cursor.toArray());
+			ret.setTotal(cursor.count());
+		} finally{
+			if(cursor != null){
+				cursor.close();
+			}
+		}
 		
 		return ret;
 	}
