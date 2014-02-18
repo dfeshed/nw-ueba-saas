@@ -117,6 +117,33 @@ public class JobDataMapExtension {
 	}
 	
 	/**
+	 * get the job data map int value, if the key does not exists or the value is empty return the default value.
+	 * @param map the merged job data map
+	 * @param key the field key
+	 * @param defaultValue the default value
+	 * @return the field value
+	 * @throws JobExecutionException 
+	 */
+	public Integer getJobDataMapIntValue(JobDataMap map, String key, Integer defaultValue) throws JobExecutionException {
+		if (!map.containsKey(key)) {
+			return defaultValue;
+		}
+		
+		String value = map.getString(key);
+		if (StringUtils.isEmpty(value)) {
+			return defaultValue;
+		}
+		
+		value = getEnvPropertyValue(value, key);
+		try {
+			return Integer.parseInt(value);
+		} catch (ClassCastException e) {
+			logger.error("error getting int value for key {}", key);
+			throw new JobExecutionException("error getting int value for key " + key, e);
+		}
+	}
+	
+	/**
 	 * get the job data map long value, throw exception if the key does not exists or the value is empty
 	 * @param map the merged job data map
 	 * @param key the field key
@@ -133,6 +160,33 @@ public class JobDataMapExtension {
 		if (StringUtils.isEmpty(value)) {
 			logger.error("JobDataMap key {} does not have value", key);
 			throw new JobExecutionException("JobDataMap key " + key + " does not have value");
+		}
+		
+		value = getEnvPropertyValue(value, key);
+		try {
+			return Long.parseLong(value);
+		} catch (ClassCastException e) {
+			logger.error("error getting long value for key {}", key);
+			throw new JobExecutionException("error getting long value for key " + key, e);
+		}
+	}
+	
+	/**
+	 * get the job data map long value, if the key does not exists or the value is empty return the default value
+	 * @param map the merged job data map
+	 * @param key the field key
+	 * @param defaultValue the default value
+	 * @return the field value
+	 * @throws JobExecutionException 
+	 */
+	public Long getJobDataMapLongValue(JobDataMap map, String key, Long defaultValue) throws JobExecutionException {
+		if (!map.containsKey(key)) {
+			return defaultValue;
+		}
+		
+		String value = map.getString(key);
+		if (StringUtils.isEmpty(value)) {
+			return defaultValue;
 		}
 		
 		value = getEnvPropertyValue(value, key);

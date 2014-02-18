@@ -86,22 +86,21 @@ public abstract class EventScoringJob extends FortscaleJob {
 		pigScriptResource = jobDataMapExtension.getJobDataMapResourceValue(map, PIG_SCRIPT_RESOURCE_JOB_PARAMETER);
 		pigInputData = jobDataMapExtension.getJobDataMapStringValue(map, PIG_INPUT_DATA_JOB_PARAMETER);
 		pigOutputDataPrefix = jobDataMapExtension.getJobDataMapStringValue(map, PIG_OUTPUT_DATA_PREFIX_JOB_PARAMETER);
-		if (map.containsKey(LATEST_EVENT_TIME_JOB_PARAMETER)) {
-			latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER);
-			latestEventTime = normalizeTimeToEpochSec(latestEventTime);
-		}
-		if (map.containsKey(DELTA_TIME_IN_SEC_JOB_PARAMETER)) {
-			deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, DELTA_TIME_IN_SEC_JOB_PARAMETER);
-		}
-		if (map.containsKey(NUM_OF_HISTORY_SCORING_JOB_PARAMETER)) {
-			numOfHistoryScoring = jobDataMapExtension.getJobDataMapIntValue(map, NUM_OF_HISTORY_SCORING_JOB_PARAMETER);
-		}
-		if (map.containsKey(HISTORY_STEP_IN_MIN_JOB_PARAMETER)) {
-			historyStepInMin = jobDataMapExtension.getJobDataMapIntValue(map, HISTORY_STEP_IN_MIN_JOB_PARAMETER);
-		}
+		
+		latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER, null);
+		latestEventTime = normalizeTimeToEpochSec(latestEventTime);
+
+		deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, DELTA_TIME_IN_SEC_JOB_PARAMETER, (long)EVENTS_DELTA_TIME_IN_SEC_DEFAULT);
+
+		numOfHistoryScoring = jobDataMapExtension.getJobDataMapIntValue(map, NUM_OF_HISTORY_SCORING_JOB_PARAMETER, 0);
+		historyStepInMin = jobDataMapExtension.getJobDataMapIntValue(map, HISTORY_STEP_IN_MIN_JOB_PARAMETER, 60);
 	}
 	
-	private long normalizeTimeToEpochSec(long ts) {
+	private Long normalizeTimeToEpochSec(Long ts) {
+		if(ts == null){
+			return null;
+		}
+		
 		if (ts < 100000000000L)
 			return ts;
 		else
