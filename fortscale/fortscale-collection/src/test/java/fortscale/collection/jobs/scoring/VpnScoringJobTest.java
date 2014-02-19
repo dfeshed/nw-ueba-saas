@@ -94,6 +94,7 @@ public class VpnScoringJobTest {
 	public void runtimeNoParamTest() throws Exception{
 		DateTime beforeExecute = new DateTime();
 		ExecJob execJob = new ExecJobDummy();
+		when(jobDataMapExtension.getJobDataMapLongValue(any(JobDataMap.class), any(String.class), eq((Long)null))).thenReturn(null);
 		when(eventScoringPigRunner.run((Long)any(), (Long)any(), (Resource)any(), (String)any(), (String)any())).thenReturn(execJob);
 		vpnScoringJob.execute(new JobExecutionContextDummy());
 		DateTime afterExecute = new DateTime();
@@ -105,33 +106,31 @@ public class VpnScoringJobTest {
 	
 	@Test
 	public void runtimeWithParamSecondTest() throws Exception{
-		JobExecutionContextDummy jobExecutionContextDummy = new JobExecutionContextDummy();
 		Long expectedRuntime = System.currentTimeMillis()/1000 - 5;
 		Long deltaTimeInSec = 10L;
-		when(jobDataMapExtension.getJobDataMapLongValue((JobDataMap)any(), eq(EventScoringJob.LATEST_EVENT_TIME_JOB_PARAMETER))).thenReturn(expectedRuntime);
-		jobExecutionContextDummy.getMergedJobDataMap().put(EventScoringJob.LATEST_EVENT_TIME_JOB_PARAMETER, expectedRuntime);
-		when(jobDataMapExtension.getJobDataMapLongValue((JobDataMap)any(), eq(EventScoringJob.DELTA_TIME_IN_SEC_JOB_PARAMETER))).thenReturn(deltaTimeInSec);
-		jobExecutionContextDummy.getMergedJobDataMap().put(EventScoringJob.DELTA_TIME_IN_SEC_JOB_PARAMETER, deltaTimeInSec);
+		when(jobDataMapExtension.getJobDataMapLongValue(any(JobDataMap.class), eq(EventScoringJob.LATEST_EVENT_TIME_JOB_PARAMETER), eq((Long)null))).thenReturn(expectedRuntime);
+		Long defaultDeltaValue = new Long(EventScoringJob.EVENTS_DELTA_TIME_IN_SEC_DEFAULT);
+		when(jobDataMapExtension.getJobDataMapLongValue(any(JobDataMap.class), eq(EventScoringJob.DELTA_TIME_IN_SEC_JOB_PARAMETER), eq(defaultDeltaValue))).thenReturn(deltaTimeInSec);
 		ExecJob execJob = new ExecJobDummy();
 		when(eventScoringPigRunner.run((Long)any(), (Long)any(), (Resource)any(), (String)any(), (String)any())).thenReturn(execJob);
 		
 		
-		vpnScoringJob.execute(jobExecutionContextDummy);
+		vpnScoringJob.execute(new JobExecutionContextDummy());
 		assertEquals(expectedRuntime, vpnScoringJob.getRuntime());
 		assertEquals(expectedRuntime - deltaTimeInSec, vpnScoringJob.getEarliestEventTime().longValue());
 	}
 	
 	@Test
 	public void runtimeWithParamMillisTest() throws Exception{
-		JobExecutionContextDummy jobExecutionContextDummy = new JobExecutionContextDummy();
 		DateTime dateTime = new DateTime(System.currentTimeMillis() - 5000);
 		long expectedRuntimeInMillis = dateTime.getMillis();
 		long earliestEventTime = dateTime.minusSeconds(EventScoringJob.EVENTS_DELTA_TIME_IN_SEC_DEFAULT).getMillis();
-		when(jobDataMapExtension.getJobDataMapLongValue((JobDataMap)any(), eq(EventScoringJob.LATEST_EVENT_TIME_JOB_PARAMETER))).thenReturn(expectedRuntimeInMillis);
-		jobExecutionContextDummy.getMergedJobDataMap().put(EventScoringJob.LATEST_EVENT_TIME_JOB_PARAMETER, expectedRuntimeInMillis);
+		when(jobDataMapExtension.getJobDataMapLongValue(any(JobDataMap.class), eq(EventScoringJob.LATEST_EVENT_TIME_JOB_PARAMETER), eq((Long)null))).thenReturn(expectedRuntimeInMillis);
+		Long defaultDeltaValue = new Long(EventScoringJob.EVENTS_DELTA_TIME_IN_SEC_DEFAULT);
+		when(jobDataMapExtension.getJobDataMapLongValue(any(JobDataMap.class), eq(EventScoringJob.DELTA_TIME_IN_SEC_JOB_PARAMETER), eq(defaultDeltaValue))).thenReturn(defaultDeltaValue);
 		ExecJob execJob = new ExecJobDummy();
 		when(eventScoringPigRunner.run((Long)any(), (Long)any(), (Resource)any(), (String)any(), (String)any())).thenReturn(execJob);
-		vpnScoringJob.execute(jobExecutionContextDummy);
+		vpnScoringJob.execute(new JobExecutionContextDummy());
 		assertEquals(expectedRuntimeInMillis/1000, vpnScoringJob.getRuntime().longValue());
 		assertEquals(earliestEventTime/1000, vpnScoringJob.getEarliestEventTime().longValue());
 	}
