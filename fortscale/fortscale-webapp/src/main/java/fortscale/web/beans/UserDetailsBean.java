@@ -57,6 +57,10 @@ public class UserDetailsBean implements Serializable{
 	public Map<String, ApplicationUserDetails> getApplicationUserDetails() {
 		return user.getApplicationUserDetails();
 	}
+	
+	public Map<String, String> getLogUsernameMap(){
+		return user.getLogUsernameMap();
+	}
 
 
 	public String getName() {
