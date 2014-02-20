@@ -85,7 +85,7 @@ public class UserDetailsBean implements Serializable{
 	
 	public String getOu(){
 		String dn = user.getAdInfo().getDn();
-		return dn != null ? dn : null;		
+		return dn != null ? adUserParser.parseOUFromDN(dn) : null;		
 	}
 	
 	public String getAdUserPrincipalName(){

@@ -448,7 +448,6 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		final double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(Classifier.groups.getId(), lastRun);
 		logger.info("average score is {}", avgScore);
 				
-		groupMembershipScorePageSize = 10000;
 		int numOfPages = (int) (((count -1) / groupMembershipScorePageSize) + 1); 
 		
 		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = null;
