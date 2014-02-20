@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.IntRange;
@@ -806,7 +804,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		String timestampFieldName = getTimestampFieldName(sqlQuery);
 		EBSResult ebsResult = findEBSAlgOnQuery(sqlQuery, offset, limit, orderBy, orderByDirection, timestampFieldName, minScore);
 		if(ebsResult != null){
-			updateSqlQueryLastRetrieved(sqlQuery);
 			return ebsResult;
 		}
 		
@@ -917,19 +914,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 	}
 	
-	private void updateSqlQueryLastRetrieved(final String sqlQuery){
-		ExecutorService executorService = Executors.newFixedThreadPool(1);
-		Runnable task = new Runnable() {
-			@Override
-			public void run(){
-				DateTime createdAt = eventResultRepository.getLatestCreatedAt();
-				eventResultRepository.updateLastRetrieved(sqlQuery, createdAt);
-			}
-		};
-		executorService.submit(task);
-		executorService.shutdown();
-	}
-	
 	private EBSResult findEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection, String timestampFieldName, Integer minScore){
 		Direction direction = Direction.DESC;
 		if(!"desc".equalsIgnoreCase(orderByDirection)){
@@ -967,6 +951,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		for(EventResult eventResult: eventResults.subList(fromIndex, toIndex)){
 			resultsList.add(eventResult.getAttributes());
 		}
+		
 		return new EBSResult(resultsList, globalScore, offset, total);
 	}
 	

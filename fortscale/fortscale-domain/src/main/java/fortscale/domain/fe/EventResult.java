@@ -3,6 +3,8 @@ package fortscale.domain.fe;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -13,6 +15,10 @@ import fortscale.domain.core.AbstractDocument;
 
 
 @Document(collection=EventResult.collectionName)
+@CompoundIndexes({
+	@CompoundIndex(name="sqleventScore", def = "{'sqlQuery': -1, 'eventScore': -1}"),
+	@CompoundIndex(name="sqleventTimeCreatedAt", def = "{'sqlQuery': -1, 'eventTime': -1}"),
+})
 public class EventResult  extends AbstractDocument{
 	public static final String collectionName =  "event_result";
 	public static final String sqlQueryField = "sqlQuery";
