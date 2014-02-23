@@ -59,6 +59,11 @@ public class DefaultPartitionStrategy implements PartitionStrategy {
 	public int comparePartitionTo(String partitionPath, long ts) {
 		return 0;
 	}
+
+	@Override
+	public String getPartitionDefinition() {
+		return null;
+	}
 	
 	
 }

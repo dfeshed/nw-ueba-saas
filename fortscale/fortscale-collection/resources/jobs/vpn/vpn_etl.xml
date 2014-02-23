@@ -29,7 +29,7 @@
 				</entry>
 				<entry>
 					<key>outputSeparator</key>
-					<value>|</value>
+					<value>${impala.data.vpn.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>morphlineFile</key>

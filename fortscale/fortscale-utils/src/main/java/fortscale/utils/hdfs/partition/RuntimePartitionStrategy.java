@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RuntimePartitionStrategy implements PartitionStrategy {
+	private static final String RUNTIME_PARTITION_FIELD_NAME="runtime";
 
 	@Override
 	public String getPartitionPath(long timestamp, String basePath) {
@@ -22,7 +23,7 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 
 	@Override
 	public String getImpalaPartitionName(long timestamp) {
-		return "runtime=" + timestamp;
+		return String.format("%s=%d",RUNTIME_PARTITION_FIELD_NAME, timestamp);
 	}
 
 	/**
@@ -59,7 +60,8 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 			return false;
 			
 		String partitionPart = getPartitionPartFromPath(path);
-		return partitionPart!=null && partitionPart.matches("^runtime=[\\d]+$");
+		String regex = String.format("^%s=[\\d]+$", RUNTIME_PARTITION_FIELD_NAME);
+		return partitionPart!=null && partitionPart.matches(regex);
 
 	}
 
@@ -87,5 +89,10 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 			return false;
 		else
 			return path.matches("^runtime=[\\d]+$");
+	}
+
+	@Override
+	public String getPartitionDefinition() {
+		return String.format("%s INT",RUNTIME_PARTITION_FIELD_NAME);
 	}
 }

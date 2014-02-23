@@ -43,7 +43,7 @@
 				</entry>
 				<entry>
 					<key>outputSeparator4769</key>
-					<value>|</value>
+					<value>${impala.data.security.events.4769.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>hadoopPath4769</key>
