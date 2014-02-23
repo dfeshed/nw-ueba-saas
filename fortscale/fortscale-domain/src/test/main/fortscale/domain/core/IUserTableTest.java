@@ -3,15 +3,15 @@ package fortscale.domain.core;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Properties;
-import java.util.Set;
 
 import junit.framework.Assert;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Test;
+
+import fortscale.utils.impala.ImpalaParser;
 
 public class IUserTableTest {
 
@@ -27,11 +27,18 @@ public class IUserTableTest {
 		
 		PropertyDescriptor propertyDescriptors[] = PropertyUtils.getPropertyDescriptors(IUserTable.class);
 		
-		Set<String> expectedFieldsSet = new HashSet<>();
-		expectedFieldsSet.addAll(Arrays.asList(impalaUserFields.split(",")));
-		Assert.assertEquals(expectedFieldsSet.size(), propertyDescriptors.length);
+		HashMap<String, String> expectedFieldsMap = new HashMap<>();
+		for(String fieldDef: impalaUserFields.split(",")){
+			String fieldDefSplit[] = fieldDef.split(" ");
+			expectedFieldsMap.put(fieldDefSplit[0], fieldDefSplit[1]);
+		}
+		Assert.assertEquals(expectedFieldsMap.size(), propertyDescriptors.length);
 		for(PropertyDescriptor propertyDescriptor: propertyDescriptors){
-			Assert.assertTrue(expectedFieldsSet.contains(propertyDescriptor.getName()));
+			Assert.assertTrue(expectedFieldsMap.containsKey(propertyDescriptor.getName()));
+			String type = expectedFieldsMap.get(propertyDescriptor.getName());
+			Class<?> actualType = propertyDescriptor.getPropertyType();
+			Assert.assertEquals(ImpalaParser.convertImpalaTypeToJavaType(type), actualType);
 		}
 	}
+	
 }

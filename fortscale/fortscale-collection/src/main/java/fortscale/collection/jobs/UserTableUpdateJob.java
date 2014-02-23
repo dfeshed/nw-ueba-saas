@@ -160,11 +160,12 @@ public class UserTableUpdateJob extends FortscaleJob {
 		userTable.setVpnUsernames(user.getLogUserName(vpnTableName));
 		
 		List<String> values = new ArrayList<>();
-		for(String field: impalaUserFields.split(",")){
+		for(String fieldDef: impalaUserFields.split(",")){
+			String fieldDefSplit[] = fieldDef.split(" ");
 			try {
-				values.add(BeanUtils.getProperty(userTable, field));
+				values.add(BeanUtils.getProperty(userTable, fieldDefSplit[0]));
 			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-				logger.warn(String.format("got the following exception while trying to read the field %s", field), e);
+				logger.warn(String.format("got the following exception while trying to read the field %s", fieldDef), e);
 				values.add("NULL");
 			}
 		}

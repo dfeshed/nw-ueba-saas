@@ -7,7 +7,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.impala.ImpalaDateTime;
 
 
 @JsonPropertyOrder({AuthScore.USERNAME_FIELD_NAME,AuthScore.TARGET_ID_FIELD_NAME,AuthScore.SOURCE_IP_FIELD_NAME,AuthScore.ERROR_CODE_FIELD_NAME,AuthScore.EVENT_SCORE_FIELD_NAME,AuthScore.GLOBAL_SCORE_FIELD_NAME,AuthScore.TIMESTAMP_FIELD_NAME,AuthScore.EVENT_TIME_FIELD_NAME})
@@ -95,7 +95,7 @@ public class AuthScore {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern=ImpalaParser.DATE_FORMAT)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern=ImpalaDateTime.DATE_FORMAT)
 	public Date getEventTime() {
 		return eventTime;
 	}
