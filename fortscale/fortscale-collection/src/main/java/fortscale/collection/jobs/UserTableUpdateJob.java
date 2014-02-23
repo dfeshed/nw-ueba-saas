@@ -79,8 +79,9 @@ public class UserTableUpdateJob extends FortscaleJob {
 
 	@Override
 	protected void runSteps() throws Exception {
+		RemoteIterator<LocatedFileStatus> files = listOldFiles();
+		
 		try{
-			RemoteIterator<LocatedFileStatus> files = listOldFiles();
 			
 			createHdfsAppender();
 			
@@ -89,14 +90,16 @@ public class UserTableUpdateJob extends FortscaleJob {
 				return;
 			}
 			
-			deleteOldFiles(files);
-					
-			refreshImpala();
 		} finally{
 			if(usersAppender != null){
 				usersAppender.close();
 			}
 		}
+		
+		deleteOldFiles(files);
+		
+		refreshImpala();
+		
 	}
 	
 	private RemoteIterator<LocatedFileStatus> listOldFiles() throws IOException{
@@ -137,19 +140,14 @@ public class UserTableUpdateJob extends FortscaleJob {
 		pageSize = 10000;
 		
 		int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
-		
-		try{
-			for(int i = 0; i < numOfPages; i++){
-				logger.info("retrieving page #{} of user documents. page size is {}.", i, pageSize);
-				PageRequest pageRequest = new PageRequest(i, pageSize);
-				logger.info("writing all the users in this page to the user table in the hdfs");
-				for(User user: userRepository.findAll(pageRequest).getContent()){
-					processUser(user);
-				}
-				logger.info("finished writing all the users in this page to the user table in the hdfs");
+		for(int i = 0; i < numOfPages; i++){
+			logger.info("retrieving page #{} of user documents. page size is {}.", i, pageSize);
+			PageRequest pageRequest = new PageRequest(i, pageSize);
+			logger.info("writing all the users in this page to the user table in the hdfs");
+			for(User user: userRepository.findAll(pageRequest).getContent()){
+				processUser(user);
 			}
-		} finally{
-			usersAppender.flush();
+			logger.info("finished writing all the users in this page to the user table in the hdfs");
 		}
 		
 		finishStep();
