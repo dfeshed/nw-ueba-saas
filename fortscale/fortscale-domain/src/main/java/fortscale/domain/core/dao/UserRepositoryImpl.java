@@ -204,7 +204,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	
 	private User findOneByField(String field, Object val){
 		List<User> users = findByField(field, val);
-		return users.get(0);
+		if(users.size() > 0){
+			return users.get(0);
+		} else{
+			return null;
+		}
 	}
 
 	private List<User> findByFields(List<String> fields, List<?> vals){
