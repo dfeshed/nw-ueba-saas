@@ -32,10 +32,10 @@
 		
 		<trigger>
 			<cron>
-				<name>TOTAL_SCORING_HOURLY_TRIGGER</name>
-				<group>TOTAL</group>
-				<job-name>Scoring</job-name>
-				<job-group>TOTAL</job-group>
+				<name>USER_Export_HOURLY_TRIGGER</name>
+				<group>USER</group>
+				<job-name>Export</job-name>
+				<job-group>USER</job-group>
 				<cron-expression>0 55 * * * ?</cron-expression>
 			</cron>
 		</trigger>
