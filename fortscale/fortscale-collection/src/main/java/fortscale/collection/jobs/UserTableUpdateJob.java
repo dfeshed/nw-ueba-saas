@@ -137,14 +137,19 @@ public class UserTableUpdateJob extends FortscaleJob {
 		pageSize = 10000;
 		
 		int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
-		for(int i = 0; i < numOfPages; i++){
-			logger.info("retrieving page #{} of user documents. page size is {}.", i, pageSize);
-			PageRequest pageRequest = new PageRequest(i, pageSize);
-			logger.info("writing all the users in this page to the user table in the hdfs");
-			for(User user: userRepository.findAll(pageRequest).getContent()){
-				processUser(user);
+		
+		try{
+			for(int i = 0; i < numOfPages; i++){
+				logger.info("retrieving page #{} of user documents. page size is {}.", i, pageSize);
+				PageRequest pageRequest = new PageRequest(i, pageSize);
+				logger.info("writing all the users in this page to the user table in the hdfs");
+				for(User user: userRepository.findAll(pageRequest).getContent()){
+					processUser(user);
+				}
+				logger.info("finished writing all the users in this page to the user table in the hdfs");
 			}
-			logger.info("finished writing all the users in this page to the user table in the hdfs");
+		} finally{
+			usersAppender.flush();
 		}
 		
 		finishStep();
