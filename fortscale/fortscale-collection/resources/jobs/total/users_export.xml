@@ -23,8 +23,8 @@
 					<value>${hdfs.user.data.users.path}</value>
 				</entry>
 				<entry>
-					<key>hadoopFilenamePrefix</key>
-					<value>users</value>
+					<key>filenameFormat</key>
+					<value>users%d.csv</value>
 				</entry>
 			</job-data-map>
 			

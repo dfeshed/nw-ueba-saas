@@ -3,6 +3,7 @@ package fortscale.collection.jobs;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -56,7 +57,7 @@ public class UserTableUpdateJob extends FortscaleJob {
 
 	// job parameters:
 	protected String hadoopDirPath;
-	protected String hadoopFilenamePrefix;
+	protected String hadoopFilename;
 	protected String impalaTableName;
 	
 	@Override
@@ -66,7 +67,8 @@ public class UserTableUpdateJob extends FortscaleJob {
 		// get parameters values from the job data map
 		hadoopDirPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopDirPath");
 		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");				
-		hadoopFilenamePrefix = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilenamePrefix");
+		String filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
+		hadoopFilename = String.format(filenameFormat, (new Date()).getTime()/1000);
 	}
 
 	@Override
@@ -121,7 +123,7 @@ public class UserTableUpdateJob extends FortscaleJob {
 		startNewStep("createHdfsAppender");
 		
 		DefaultFileSplitStrategy defaultFileSplitStrategy = new DefaultFileSplitStrategy();
-		String fullPath = defaultFileSplitStrategy.getFilePath(hadoopDirPath, hadoopFilenamePrefix, System.currentTimeMillis()/1000);
+		String fullPath = defaultFileSplitStrategy.getFilePath(hadoopDirPath, hadoopFilename, 0);
 		usersAppender = new HDFSLineAppender();
 		usersAppender.open(fullPath);
 		
