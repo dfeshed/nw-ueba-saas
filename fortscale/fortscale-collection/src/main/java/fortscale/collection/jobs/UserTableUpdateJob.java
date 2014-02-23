@@ -28,7 +28,6 @@ import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
 import fortscale.utils.logging.Logger;
 
 public class UserTableUpdateJob extends FortscaleJob {
-
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
 
 	@Autowired
@@ -48,6 +47,8 @@ public class UserTableUpdateJob extends FortscaleJob {
 	private String sshTableName;
 	@Value("${impala.user.fields}")
 	private String impalaUserFields;
+	@Value("${impala.user.table,delimiter}")
+	private String impalaUserTableDelimiter;
 	@Value("${users.page.size:10000}")
 	private int pageSize;
 	
@@ -172,7 +173,7 @@ public class UserTableUpdateJob extends FortscaleJob {
 			}
 		}
 		
-		usersAppender.writeLine(StringUtils.join(values, ","));
+		usersAppender.writeLine(StringUtils.join(values, impalaUserTableDelimiter));
 	}
 		
 	
