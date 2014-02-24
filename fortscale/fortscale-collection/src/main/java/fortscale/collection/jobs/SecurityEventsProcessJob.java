@@ -15,6 +15,7 @@ import org.quartz.JobExecutionException;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
+import fortscale.utils.impala.ImpalaParser;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -47,9 +48,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile" + eventToProcess);
 			handler.timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField" + eventToProcess);
 
-			String[] outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + eventToProcess).split(",");
+			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + eventToProcess);
 			String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + eventToProcess);
-			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, outputFields);
+			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 			
 			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + eventToProcess);
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + eventToProcess);

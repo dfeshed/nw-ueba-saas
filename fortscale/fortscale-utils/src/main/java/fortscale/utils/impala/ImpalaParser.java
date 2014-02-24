@@ -44,6 +44,12 @@ public class ImpalaParser {
 		return ret;
 	}
 	
+	public static String[] getTableFieldNamesAsArray(String tableFieldDefinition){
+		List<String> fieldsNameList = getTableFieldNames(tableFieldDefinition);
+		
+		return fieldsNameList.toArray(new String[fieldsNameList.size()]);
+	}
+	
 	public static HashMap<String, Class<?>> getTableFieldDefinitionMap(String tableFieldDefinition){
 		HashMap<String, Class<?>> ret = new HashMap<>();
 		for(String fieldDef: tableFieldDefinition.split(TABLE_FIELD_DEFINITION_DELIMITER)){

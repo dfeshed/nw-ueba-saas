@@ -24,6 +24,7 @@ import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
+import fortscale.utils.impala.ImpalaParser;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
@@ -79,9 +80,9 @@ public class EventProcessJob implements Job {
 		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
 		
 		// build record to items processor
-		String[] outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields").split(",");
+		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
 		String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
-		recordToString = new RecordToStringItemsProcessor(outputSeparator, outputFields);
+		recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 		
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 	}
