@@ -1,4 +1,4 @@
-package fortscale.collection.configuration;
+package fortscale.utils.properties;
 
 public class IllegalStructuredProperty extends Exception {
 	private static final long serialVersionUID = -6704002773138843751L;

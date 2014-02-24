@@ -1,4 +1,4 @@
-package fortscale.collection.configuration;
+package fortscale.utils.properties;
 
 public class PropertyNotExistException extends Exception{
 	private static final long serialVersionUID = 2449385756631510880L;

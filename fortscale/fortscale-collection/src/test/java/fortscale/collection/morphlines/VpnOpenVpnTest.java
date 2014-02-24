@@ -2,9 +2,7 @@ package fortscale.collection.morphlines;
 
 import static junitparams.JUnitParamsRunner.$;
 
-import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -14,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.properties.PropertiesResolver;
 
 @RunWith(JUnitParamsRunner.class)
 public class VpnOpenVpnTest {
@@ -23,11 +22,8 @@ public class VpnOpenVpnTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		Properties properties = new Properties();
-		InputStream is = getClass().getResourceAsStream( "/META-INF/fortscale-config.properties" );
-
-		properties.load(is);
-		String impalaTableFields = properties.getProperty("impala.data.vpn.table.fields");
+		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
+		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		morphlineTester.init(confFile, vpnOutputFields);
 	}

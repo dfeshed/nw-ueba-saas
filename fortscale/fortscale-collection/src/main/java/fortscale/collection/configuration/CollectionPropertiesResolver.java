@@ -12,6 +12,8 @@ import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.stereotype.Component;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.properties.IllegalStructuredProperty;
+import fortscale.utils.properties.PropertyNotExistException;
 
 @Component
 public class CollectionPropertiesResolver implements InitializingBean{
