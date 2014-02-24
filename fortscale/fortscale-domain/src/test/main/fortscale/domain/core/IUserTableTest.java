@@ -14,8 +14,6 @@ import org.junit.Test;
 import fortscale.utils.impala.ImpalaParser;
 
 public class IUserTableTest {
-
-	
 	@Test
 	public void testFieldMapping() throws IOException{
 		final Properties properties = new Properties();
@@ -27,14 +25,9 @@ public class IUserTableTest {
 		
 		PropertyDescriptor propertyDescriptors[] = PropertyUtils.getPropertyDescriptors(IUserTable.class);
 		
-		HashMap<String, Class<?>> expectedFieldsMap = new HashMap<>();
-		for(String fieldDef: impalaUserFields.split(",")){
-			String fieldDefSplit[] = fieldDef.split(" ");
-			Assert.assertFalse(expectedFieldsMap.containsKey(fieldDefSplit[0]));
-			Class<?> type = ImpalaParser.convertImpalaTypeToJavaType(fieldDefSplit[1]);
-			Assert.assertNotNull(type);
-			expectedFieldsMap.put(fieldDefSplit[0], type);
-		}
+		HashMap<String, Class<?>> expectedFieldsMap = ImpalaParser.getTableFieldDefinitionMap(impalaUserFields);
+		Assert.assertEquals(ImpalaParser.getTableFieldNames(impalaUserFields).size(), expectedFieldsMap.size());
+
 		Assert.assertEquals(expectedFieldsMap.size(), propertyDescriptors.length);
 		for(PropertyDescriptor propertyDescriptor: propertyDescriptors){
 			Assert.assertTrue(expectedFieldsMap.containsKey(propertyDescriptor.getName()));

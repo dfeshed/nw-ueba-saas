@@ -11,8 +11,7 @@ import org.junit.Test;
 
 import fortscale.utils.impala.ImpalaParser;
 
-public class VpnDataTableTest {
-
+public class SshDataTableTest {
 	@Test
 	public void testFieldMapping() throws IOException{
 		final Properties properties = new Properties();
@@ -20,7 +19,7 @@ public class VpnDataTableTest {
 		InputStream is = getClass().getResourceAsStream( "/META-INF/fortscale-config.properties" );
 
 		properties.load(is);
-		String impalaTableFields = properties.getProperty("impala.data.vpn.table.fields");
+		String impalaTableFields = properties.getProperty("impala.data.ssh.table.fields");
 				
 		HashMap<String, Class<?>> expectedFieldsMap = ImpalaParser.getTableFieldDefinitionMap(impalaTableFields);
 		Assert.assertEquals(ImpalaParser.getTableFieldNames(impalaTableFields).size(), expectedFieldsMap.size());

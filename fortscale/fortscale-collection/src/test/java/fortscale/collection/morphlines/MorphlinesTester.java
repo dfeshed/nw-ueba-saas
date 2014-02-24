@@ -2,7 +2,9 @@ package fortscale.collection.morphlines;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.Test;
 import org.kitesdk.morphline.api.Record;
@@ -14,13 +16,13 @@ import fortscale.utils.logging.Logger;
 public class MorphlinesTester {
 
 	private MorphlinesItemsProcessor subject;
-	private String[] outputFields;
+	private List<String> outputFields;
 	private static final Logger logger = Logger.getLogger(MorphlinesTester.class);
 	
 	public MorphlinesTester() {
 	}
 
-	public void init(String confFile, String[] outputFields) {
+	public void init(String confFile,List<String> outputFields) {
 		try {
 			Resource conf = new FileSystemResource(confFile);
 			subject = new MorphlinesItemsProcessor(conf);

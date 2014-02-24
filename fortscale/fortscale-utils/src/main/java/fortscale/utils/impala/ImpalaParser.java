@@ -1,11 +1,17 @@
 package fortscale.utils.impala;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import org.joda.time.DateTime;
 
 public class ImpalaParser {
+	
+	private static final String TABLE_FIELD_DEFINITION_DELIMITER = ",";
+	private static final String FIELD_DEFINITION_DELIMITER = " ";
 	
 	public Date parseTimeDate(String dateString) throws ParseException {
 		return ImpalaDateTime.parseTimeDate(dateString);
@@ -25,6 +31,28 @@ public class ImpalaParser {
 	
 	public long getRuntime(Date timestamp){
 		return timestamp.getTime()/1000;
+	}
+	
+	public static List<String> getTableFieldNames(String tableFieldDefinition){
+		String tableFieldDefinitionSplit[] = tableFieldDefinition.split(TABLE_FIELD_DEFINITION_DELIMITER);
+		List<String> ret = new ArrayList<>(tableFieldDefinitionSplit.length);
+		for(String fieldDef: tableFieldDefinitionSplit){
+			String fieldDefSplit[] = fieldDef.split(FIELD_DEFINITION_DELIMITER);
+			ret.add(fieldDefSplit[0]);
+		}
+		
+		return ret;
+	}
+	
+	public static HashMap<String, Class<?>> getTableFieldDefinitionMap(String tableFieldDefinition){
+		HashMap<String, Class<?>> ret = new HashMap<>();
+		for(String fieldDef: tableFieldDefinition.split(TABLE_FIELD_DEFINITION_DELIMITER)){
+			String fieldDefSplit[] = fieldDef.split(FIELD_DEFINITION_DELIMITER);
+			Class<?> type = ImpalaParser.convertImpalaTypeToJavaType(fieldDefSplit[1]);
+			ret.put(fieldDefSplit[0], type);
+		}
+		
+		return ret;
 	}
 	
 	public static Class<?> convertImpalaTypeToJavaType(String impalaType){

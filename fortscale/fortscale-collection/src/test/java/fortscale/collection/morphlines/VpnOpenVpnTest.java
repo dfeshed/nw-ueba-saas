@@ -1,6 +1,11 @@
 package fortscale.collection.morphlines;
 
 import static junitparams.JUnitParamsRunner.$;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.Properties;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
@@ -8,15 +13,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import fortscale.utils.impala.ImpalaParser;
+
 @RunWith(JUnitParamsRunner.class)
 public class VpnOpenVpnTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readVPN_openVPN.conf";
-	private String[] vpnOutputFields = new String[] {"date_time","date_time_unixTime","username","source_ip","local_ip","status","message","country_name","host_name"};
 	
 	@Before
 	public void setUp() throws Exception {
+		Properties properties = new Properties();
+		InputStream is = getClass().getResourceAsStream( "/META-INF/fortscale-config.properties" );
+
+		properties.load(is);
+		String impalaTableFields = properties.getProperty("impala.data.vpn.table.fields");
+		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		morphlineTester.init(confFile, vpnOutputFields);
 	}
 
@@ -34,7 +46,7 @@ public class VpnOpenVpnTest {
 			$ (
         	"Regular (FS) Successful VPN Authentication",
 			"Nov  6 07:55:40 vpnserver vpnserver: [-] OVPN 2 OUT: 'Wed Nov  6 05:55:40 2023 ross/79.122.200.58:53722 MULTI: primary virtual IP for ross/79.122.200.58:53722: 10.110.120.168'",
-			"2023-11-06 07:55:40,1699242940,ross,79.122.200.58,10.110.120.168,SUCCESS,Nov  6 07:55:40 vpnserver vpnserver: [-] OVPN 2 OUT: 'Wed Nov  6 05:55:40 2023 ross/79.122.200.58:53722 MULTI: primary virtual IP for ross/79.122.200.58:53722: 10.110.120.168',Russia,"
+			"2023-11-06 07:55:40,1699242940,ross,79.122.200.58,10.110.120.168,SUCCESS,Russia,"
 			),
 			$ (
 			"Regular (FS) Failed VPN Authentication",
