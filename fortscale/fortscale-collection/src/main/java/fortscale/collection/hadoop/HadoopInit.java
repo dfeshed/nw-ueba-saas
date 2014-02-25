@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.partition.RuntimePartitionStrategy;
 
 @Component
 public class HadoopInit implements InitializingBean{
@@ -44,6 +45,16 @@ public class HadoopInit implements InitializingBean{
 	@Value("${hdfs.user.data.security.events.4769.path}")
 	private String impalaSecDataDirectory;
 	
+	//Security Events Scoring table
+	@Value("${impala.login.table.fields}")
+	private String impalaSecScoringTableFields;
+	@Value("${impala.login.table.delimiter}")
+	private String impalaSecScoringTableDelimiter;
+	@Value("${impala.login.table.name}")
+	private String impalaSecScoringTableName;
+	@Value("${hdfs.user.processeddata.security.events.4769.path}")
+	private String impalaSecScoringDirectory;
+	
 	//VPN Data table
 	@Value("${impala.data.vpn.table.fields}")
 	private String impalaVpnDataTableFields;
@@ -53,6 +64,16 @@ public class HadoopInit implements InitializingBean{
 	private String impalaVpnDataTableName;
 	@Value("${hdfs.user.data.vpn.path}")
 	private String impalaVpnDataDirectory;
+	
+	//VPN Scoring table
+	@Value("${impala.vpn.table.fields}")
+	private String impalaVpnScoringTableFields;
+	@Value("${impala.vpn.table.delimiter}")
+	private String impalaVpnScoringTableDelimiter;
+	@Value("${impala.vpn.table.name}")
+	private String impalaVpnScoringTableName;
+	@Value("${hdfs.user.processeddata.vpnscores.path}")
+	private String impalaVpnScoringDirectory;
 	
 	//SSH Data table
 	@Value("${impala.data.ssh.table.fields}")
@@ -64,7 +85,15 @@ public class HadoopInit implements InitializingBean{
 	@Value("${hdfs.user.data.ssh.path}")
 	private String impalaSshDataDirectory;
 	
-	
+	//SSH Scoring table
+	@Value("${impala.ssh.table.fields}")
+	private String impalaSshScoringTableFields;
+	@Value("${impala.ssh.table.delimiter}")
+	private String impalaSshScoringTableDelimiter;
+	@Value("${impala.ssh.table.name}")
+	private String impalaSshScoringTableName;
+	@Value("${hdfs.user.processeddata.sshscores.path}")
+	private String impalaSshScoringDirectory;
 	
 	
 
@@ -78,23 +107,44 @@ public class HadoopInit implements InitializingBean{
 	
 	public void createImpalaTables(){
 		MonthlyPartitionStrategy monthlyPartitionStrategy = new MonthlyPartitionStrategy();
+		RuntimePartitionStrategy runtimePartitionStrategy = new RuntimePartitionStrategy();
 		//Users table
 		createTable(impalaUserTableName, impalaUserFields, null, impalaUserTableDelimiter, impalaUsersDirectory);
 		
 		//Security Events Data table
 		createTable(impalaSecDataTableName, impalaSecDataTableFields, monthlyPartitionStrategy.getPartitionDefinition(), impalaSecDataTableDelimiter, impalaSecDataDirectory);
 		
+		//Security Events Scoring table
+		createTable(impalaSecScoringTableName, impalaSecScoringTableFields, runtimePartitionStrategy.getPartitionDefinition(), impalaSecScoringTableDelimiter, impalaSecScoringDirectory);
+		
 		//VPN Data table
 		createTable(impalaVpnDataTableName, impalaVpnDataTableFields, monthlyPartitionStrategy.getPartitionDefinition(), impalaVpnDataTableDelimiter, impalaVpnDataDirectory);
+		
+		//VPN Scoring table
+		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, runtimePartitionStrategy.getPartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
+		
+		//VPN View Table
+		createTableView("view_vpndata", "SELECT date_time,date_time_unix,username,if(hostname != \"\",hostname,source_ip) as source_ip,local_ip,status,country,yearmonth FROM vpndata");
 				
 		//SSH Data table
 		createTable(impalaSshDataTableName, impalaSshDataTableFields, monthlyPartitionStrategy.getPartitionDefinition(), impalaSshDataTableDelimiter, impalaSshDataDirectory);
+		
+		//SSH Scoring table
+		createTable(impalaSshScoringTableName, impalaSshScoringTableFields, runtimePartitionStrategy.getPartitionDefinition(), impalaSshScoringTableDelimiter, impalaSshScoringDirectory);
 		
 	}
 	
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location){
 		try{
 			impalaClient.createTable(tableName, fields, partition, delimiter, location);
+		} catch(Exception e){
+			//Nothing to do. just making sure that the table exist.
+		}
+	}
+	
+	private void createTableView(String tableViewName, String selectStatement){
+		try{
+			impalaClient.createTableView(tableViewName, selectStatement);
 		} catch(Exception e){
 			//Nothing to do. just making sure that the table exist.
 		}

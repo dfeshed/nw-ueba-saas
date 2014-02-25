@@ -76,4 +76,11 @@ public class ImpalaClient {
 		impalaJdbcTemplate.execute(builder.toString());
 	}
 	
+	public void createTableView(String tableViewName, String selectStatement){
+		Assert.hasText(tableViewName);
+		Assert.hasText(selectStatement);
+		String sql = String.format("CREATE VIEW %s AS %", tableViewName, selectStatement);
+		impalaJdbcTemplate.execute(sql);
+	}
+	
 }
