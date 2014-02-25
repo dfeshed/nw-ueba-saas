@@ -332,7 +332,9 @@ public class SplunkApi {
         Job job = null;
         int numOfTimesJobFinalized = 0;
     	do{
-    		
+    		if(job != null){
+				job.cancel();
+			}
     		job = searchJob.run(splunkService, earliestTimeCursor, cursor);
     		if(job == null){
     			break;
@@ -417,6 +419,11 @@ public class SplunkApi {
     	if(searchJob.isContainTime() &&retCursor == null && eventSum > 0){
     		logger.error("no timestamp was recieved from search!!! though {} events were recieved.", eventSum);
     	}
+		
+		if(job != null && !job.isFailed()){
+			job.cancel();
+		}
+		
         return retCursor;
 	}
 	
