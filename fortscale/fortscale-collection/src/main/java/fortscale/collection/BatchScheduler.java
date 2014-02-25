@@ -106,12 +106,12 @@ public class BatchScheduler {
 		startJob("Fetch", "DHCP");
 		startJob("ETL", "DHCP");
 		startJob("Fetch", "SecurityEvents");
-		startJob("Group_ETL", "SecurityEvents");
-		startJob("Group_ETL", "SecurityEvents");
+		startJob("ETL", "SecurityEvents");
+		startJob("Scoring", "SecurityEvents");
 		startJob("Fetch", "VPN");
+		startJob("ETL", "VPN");
 		startJob("Scoring", "VPN");
-		startJob("Group_ETL", "VPN");
-		startJob("Scoring", "SSH");
+		startJob("Fetch", "SSH");
 		startJob("ETL", "SSH");
 		startJob("Scoring", "SSH");
 		startJob("Scoring", "TOTAL");
