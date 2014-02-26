@@ -240,12 +240,12 @@ public class EventProcessJob implements Job {
 	protected boolean processLine(String line) throws IOException {
 		// process each line
 		Record record = morphline.process(line);
+		addNormalizedUsernameField(record);
 		String output = recordToString.process(record);
 		
 		// append to hadoop, if there is data to be written
 		if (output!=null) {
 			Long timestamp = RecordExtensions.getLongValue(record, timestampField);
-			addNormalizedUsernameField(record);
 			appender.writeLine(output, timestamp.longValue());
 			return true;
 		} else {
