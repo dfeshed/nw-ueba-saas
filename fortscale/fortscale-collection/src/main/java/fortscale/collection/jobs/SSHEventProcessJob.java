@@ -1,35 +1,28 @@
 package fortscale.collection.jobs;
 
-import java.io.IOException;
-
+import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.utils.hdfs.HDFSPartitionsWriter;
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.services.impl.UsernameNormalizer;
+import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.hdfs.split.WeeklyFileSplitStrategy;
 
 @DisallowConcurrentExecution
 public class SSHEventProcessJob extends EventProcessJob {
 	
-	private static final Logger logger = LoggerFactory.getLogger(SSHEventProcessJob.class);
+	@Autowired
+	UsernameNormalizer sshUsernameNormalizer;
 	
 	@Override
-	protected void createOutputAppender() throws JobExecutionException {
-		try {
-			logger.debug("initializing hadoop appender in {}", hadoopPath);
-
-			// calculate file directory path according to partition strategy
-			appender = new HDFSPartitionsWriter(hadoopPath, new MonthlyPartitionStrategy(), new WeeklyFileSplitStrategy());
-			appender.open(hadoopFilename);
-
-		} catch (IOException e) {
-			logger.error("error creating hdfs partitions writer at " + hadoopPath, e);
-			monitor.error(monitorId, "Process Files", String.format("error creating hdfs partitions writer at %s: \n %s",  hadoopPath, e.toString()));
-			throw new JobExecutionException("error creating hdfs partitions writer at " + hadoopPath, e);
-		}
+	protected String normalizeUsername(Record record){
+		String username = extractUsernameFromRecord(record);
+		return sshUsernameNormalizer.normalize(username);
+	}
+	
+	@Override
+	protected FileSplitStrategy getFileSplitStrategy(){
+		return new WeeklyFileSplitStrategy();
 	}
 
 }

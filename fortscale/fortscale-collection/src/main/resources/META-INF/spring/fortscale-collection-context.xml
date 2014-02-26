@@ -25,4 +25,8 @@
 	<bean id="jobScheduler" factory-bean="stdSchedulerFactory" factory-method="getScheduler">
 		<property name="jobFactory" ref="autowiringSpringBeanJobFactory"/>
 	</bean>
+	
+	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer"/>
+	<bean id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer"/>
+	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer"/>
 </beans>

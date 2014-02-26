@@ -23,7 +23,9 @@ import fortscale.collection.JobDataMapExtension;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
+import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
@@ -68,7 +70,21 @@ public class EventProcessJob implements Job {
 	
 	@Autowired
 	protected JobDataMapExtension jobDataMapExtension;
+	
+	@Value("${impala.data.table.fields.normalized_username}")
+	private String normalizedUsernameField;
+	@Value("${impala.table.fields.username}")
+	private String usernameField;
+	
+	
+	
+	
+	
 		
+	public String getUsernameField() {
+		return usernameField;
+	}
+
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
@@ -229,11 +245,24 @@ public class EventProcessJob implements Job {
 		// append to hadoop, if there is data to be written
 		if (output!=null) {
 			Long timestamp = RecordExtensions.getLongValue(record, timestampField);
+			addNormalizedUsernameField(record);
 			appender.writeLine(output, timestamp.longValue());
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	protected void addNormalizedUsernameField(Record record){
+		record.put(normalizedUsernameField, normalizeUsername(record));
+	}
+	
+	protected String normalizeUsername(Record record){
+		return extractUsernameFromRecord(record);
+	}
+	
+	protected String extractUsernameFromRecord(Record record){
+		return RecordExtensions.getStringValue(record, getUsernameField());
 	}
 	
 	protected void refreshImpala() throws JobExecutionException {
@@ -267,7 +296,7 @@ public class EventProcessJob implements Job {
 			logger.debug("initializing hadoop appender in {}", hadoopPath);
 
 			// calculate file directory path according to partition strategy
-			appender = new HDFSPartitionsWriter(hadoopPath, new MonthlyPartitionStrategy(), new DailyFileSplitStrategy());
+			appender = new HDFSPartitionsWriter(hadoopPath, getPartitionStrategy(), getFileSplitStrategy());
 			appender.open(hadoopFilename);
 
 		} catch (IOException e) {
@@ -275,6 +304,14 @@ public class EventProcessJob implements Job {
 			monitor.error(monitorId, "Process Files", String.format("error creating hdfs partitions writer at %s: \n %s",  hadoopPath, e.toString()));
 			throw new JobExecutionException("error creating hdfs partitions writer at " + hadoopPath, e);
 		}
+	}
+	
+	protected PartitionStrategy getPartitionStrategy(){
+		return new MonthlyPartitionStrategy();
+	}
+	
+	protected FileSplitStrategy getFileSplitStrategy(){
+		return new DailyFileSplitStrategy();
 	}
 	
 	protected void flushOutputAppender() throws IOException {

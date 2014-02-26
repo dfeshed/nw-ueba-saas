@@ -11,7 +11,10 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
+import fortscale.services.impl.UsernameNormalizer;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
@@ -30,6 +33,25 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	private static Logger logger = Logger.getLogger(SecurityEventsProcessJob.class);
 	
 	private Map<String, EventProcessHandlers> eventsMap;
+	
+	@Value("${impala.data.security.events.4769.table.morphline.fields.username}")
+	private String usernameField;
+	
+	@Autowired
+	UsernameNormalizer secUsernameNormalizer;
+	
+	
+	
+	@Override
+	protected String normalizeUsername(Record record){
+		String username = extractUsernameFromRecord(record);
+		return secUsernameNormalizer.normalize(username);
+	}
+	
+	@Override
+	public String getUsernameField(){
+		return usernameField;
+	}
 	
 	@Override protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
@@ -75,6 +97,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			EventProcessHandlers handler = eventsMap.get(eventCode);
 			if (handler!=null) {
 				Record processedRecord = handler.morphline.process(record);
+				addNormalizedUsernameField(processedRecord);
 				String output = handler.recordToStringProcessor.process(processedRecord);
 				
 				if (output!=null) {
