@@ -26,7 +26,11 @@
 		<property name="jobFactory" ref="autowiringSpringBeanJobFactory"/>
 	</bean>
 	
-	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer"/>
-	<bean id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer"/>
+	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
+		<property name="matchersString" value="([^ \\t\\n\\x0B\\f\\r\\@]+)# # #$1@fortscale.com"/>
+	</bean>
+	<bean id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
+		<property name="matchersString" value="([\\S]+)@([^ \\t\\n\\x0B\\f\\r\\.]+)\\.([^ \\t\\n\\x0B\\f\\r\\.]+)# # #$1@$2.$3#####([\\S]+)@[^ \\t\\n\\x0B\\f\\r]+\\.([^ \\t\\n\\x0B\\f\\r\\.]+)\\.([^ \\t\\n\\x0B\\f\\r\\.]+)# # #$1@$2.$3"/>
+	</bean>
 	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer"/>
 </beans>
