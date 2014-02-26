@@ -240,6 +240,9 @@ public class EventProcessJob implements Job {
 	protected boolean processLine(String line) throws IOException {
 		// process each line
 		Record record = morphline.process(line);
+		if(record == null){
+			return false;
+		}
 		addNormalizedUsernameField(record);
 		String output = recordToString.process(record);
 		
