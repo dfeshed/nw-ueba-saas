@@ -46,6 +46,7 @@ public class GetHostnameFromDHCPBuilder implements CommandBuilder {
 		private final String mongoDB;
 		private final String mongoCollection;
 		private int leaseTimeInMins = 0;
+		private int graceTimeInMins = 0;
 
 		private static MongoClient mongoClient = null;
 		private static DBCollection dbCollection = null;
@@ -62,7 +63,10 @@ public class GetHostnameFromDHCPBuilder implements CommandBuilder {
 			this.mongoDB = getConfigs().getString(config, "db");
 			this.mongoCollection = getConfigs().getString(config, "collection");
 			this.leaseTimeInMins = getConfigs().getInt(config, "leaseTimeInMins");
-
+			if (getConfig().hasPath("graceTimeInMins")) {
+				this.graceTimeInMins = getConfigs().getInt(config, "graceTimeInMins");
+			}
+			
 			validateArguments();
 
 			connectToMongo(this.host, this.port, this.mongoDB, this.mongoCollection);
@@ -125,7 +129,8 @@ public class GetHostnameFromDHCPBuilder implements CommandBuilder {
 			// lease time
 
 			if (ts != 0) {
-				BasicDBObject val = new BasicDBObject("$lte", ts);
+				long upperLimitTs = (graceTimeInMins > 0)? ts + graceTimeInMins * 60 : ts;
+				BasicDBObject val = new BasicDBObject("$lte", upperLimitTs);
 				if (leaseTimeInMins > 0) {
 					val.append("$gte", ts - leaseTimeInMins * 60);
 				}
@@ -140,12 +145,14 @@ public class GetHostnameFromDHCPBuilder implements CommandBuilder {
 				try {
 					cursor.sort(new BasicDBObject("timestampepoch", -1));
 					
-					DBObject doc = cursor.next();
-					if (doc!=null) {
-						// Get the hostname, cache it and return it
-						String mongoHostname = String.valueOf(doc.get("hostname"));
-						if (mongoHostname != null && !mongoHostname.isEmpty()) {
-							return mongoHostname;
+					if (cursor.hasNext()) {
+						DBObject doc = cursor.next();
+						if (doc!=null) {
+							// Get the hostname, cache it and return it
+							String mongoHostname = String.valueOf(doc.get("hostname"));
+							if (mongoHostname != null && !mongoHostname.isEmpty()) {
+								return mongoHostname;
+							}
 						}
 					}
 				} catch (Exception e) {

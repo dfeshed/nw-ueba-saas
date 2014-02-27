@@ -9,7 +9,8 @@ raw             = LOAD '$inputData' USING PigStorage('|') AS (generatedTimeRaw:c
 loginByTime     = FILTER raw by generatedTimeUnixTime > (long)'$deltaTime';
 onlyUsers       = FILTER loginByTime by NOT (LOWER(account_name) MATCHES LOWER('$accountRegex'));
 onlyUsersNoDC   = FILTER onlyUsers  by NOT (LOWER(service_name) MATCHES LOWER('$dcRegex'));
-userWithCompOrdered = FOREACH onlyUsersNoDC GENERATE generatedTime,LOWER(account_name) as account_name,LOWER(service_name),(computer_name is null?client_address:(computer_name==''?client_address:LOWER(computer_name))),failure_code;
+notSameHost		= FILTER onlyUsersNoDC by NOT ((computer_name is null) OR (computer_name=='') OR (STARTSWITH(LOWER(computer_name),LOWER(service_name))));
+userWithCompOrdered = FOREACH notSameHost GENERATE generatedTime,LOWER(account_name) as account_name,LOWER(service_name),(computer_name is null?client_address:(computer_name==''?client_address:LOWER(computer_name))),failure_code;
 user            = GROUP userWithCompOrdered by account_name PARALLEL 1;
 result          = FOREACH user GENERATE FLATTEN( fortscale.ebs.EBSPigUDF( group,5,0,userWithCompOrdered ) );
 store result into '$outputData' using PigStorage(',','-noschema');

@@ -122,6 +122,7 @@ public class GetHostnameFromDNSBuilder implements CommandBuilder {
 
 					if (null==resolvedHostname || resolvedHostname.equalsIgnoreCase(EMPTY_STRING) || resolvedHostname.equalsIgnoreCase(ip_address)) {
 						resolvedHostname = EMPTY_STRING;
+						blackIpHashSetCache.add(ip_address);
 					}
 					else {
 						if (this.isRemoveLastDot) {
