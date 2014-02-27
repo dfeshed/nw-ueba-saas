@@ -15,7 +15,7 @@
  		<property name="localOverride" value="true"/>
  	</bean>
 
-	<hdp:configuration id="hadoopConfiguration" resources=""/>
+	<hdp:configuration id="hadoopConfiguration" resources="file:/etc/hadoop/conf/core-site.xml, file:/etc/hadoop/conf/hdfs-site.xml, file:/etc/hadoop/conf/mapred-site.xml"/>
 	<hdp:pig-factory id="pigFactory" configuration-ref="hadoopConfiguration"/>
 	<hdp:file-system/>
 
