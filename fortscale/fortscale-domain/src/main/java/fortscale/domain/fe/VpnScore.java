@@ -8,7 +8,6 @@ public class VpnScore {
 	public static final String USERNAME_FIELD_NAME = "username";
 	public static final String SOURCE_IP_FIELD_NAME = "source_ip";
 	public static final String LOCAL_IP_FIELD_NAME = "local_ip";
-	public static final String STATUS_FIELD_NAME = "status";
 	public static final String COUNTRY_FIELD_NAME = "country";
 	
 	public static final String EVENT_TIME_SCORE_FIELD_NAME = "date_timescore";

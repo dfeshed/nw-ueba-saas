@@ -104,12 +104,54 @@ public class UserServiceImpl implements UserService{
 	
 	
 	@Override
-	public User createUser(UserApplication userApplication, String username){
+	public User createUser(UserApplication userApplication, String username, String appUsername){
 		User user = new User();
 		user.setUsername(username);
 		user.setSearchField(createSearchField(null, username));
-		createNewApplicationUserDetails(user, new ApplicationUserDetails(userApplication.getId(), username), false);
+		createNewApplicationUserDetails(user, new ApplicationUserDetails(userApplication.getId(), appUsername), false);
 		return user;
+	}
+	
+	
+	//NOTICE: The user of this method should check the status of the event if he doesn't want to add new users with fail status he should call with onlyUpdate=true
+	//        The same goes for cases like security events where we don't want to create new User if there is no correlation with the active directory.
+	@Override
+	public void updateOrCreateUserWithClassifierUsername(final Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate) {
+		if(StringUtils.isEmpty(normalizedUsername)){
+			logger.warn("got a empty string {} username", classifier);
+			return;
+		}
+
+		User user = userRepository.findByUsername(normalizedUsername);
+		if(user == null && onlyUpdate){
+			return;
+		}
+		
+		user = createUser(classifier.getUserApplication(), normalizedUsername, logUsername);				
+		
+		String tablename = getTableName(classifier.getLogEventsEnum());
+		final boolean isNewLogUsername = (user.getLogUserName(tablename) == null) ? true : false;
+		boolean isNewAppUsername = false;
+		if(isNewLogUsername){
+			isNewAppUsername = createNewApplicationUserDetails(user, classifier.getUserApplication(), logUsername, false);
+			updateLogUsername(user, tablename, logUsername, false);
+		}
+			
+		if(user.getId() != null){
+			if(isNewLogUsername || isNewAppUsername){
+				Update update = new Update();
+				if(isNewLogUsername){
+					fillUpdateLogUsername(update, logUsername, tablename);
+				}
+				if(isNewAppUsername){
+					fillUpdateAppUsername(update, user, classifier);
+				}
+				
+				updateUser(user, update);
+			}
+		} else{
+			userRepository.save(user);
+		}		
 	}
 	
 	
@@ -461,6 +503,16 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public User findByLogUsername(LogEventsEnum eventId, String username){
+		String tablename = getTableName(eventId);
+		
+		if(StringUtils.isEmpty(tablename)){
+			return null;
+		}
+		return userRepository.findByLogUsername(tablename, username);
+	}
+	
+	@Override
+	public String getTableName(LogEventsEnum eventId){
 		String tablename = null;
 		switch(eventId){
 		case login:
@@ -476,10 +528,7 @@ public class UserServiceImpl implements UserService{
 			break;
 		}
 		
-		if(StringUtils.isEmpty(tablename)){
-			return null;
-		}
-		return userRepository.findByLogUsername(tablename, username);
+		return tablename;
 	}
 	
 	

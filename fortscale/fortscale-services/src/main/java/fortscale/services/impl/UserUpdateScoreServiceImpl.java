@@ -31,7 +31,6 @@ import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.LogEventsEnum;
-import fortscale.services.UserApplication;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 import fortscale.services.UserUpdateScoreService;
@@ -73,11 +72,6 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	private ConfigurationService configurationService; 
 	
 	
-	@Value("${vpn.status.success.value.regex:SUCCESS}")
-	private String vpnStatusSuccessValueRegex;
-	
-	@Value("${ssh.status.success.value.regex:Accepted}")
-	private String sshStatusSuccessValueRegex;
 	
 	@Value("${group.membership.score.page.size}")
 	private int groupMembershipScorePageSize;
@@ -231,79 +225,8 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	private User findByAuthUsername(LogEventsEnum eventId, String username){
 		return userService.findByAuthUsername(eventId, username);
 	}
-	private void updateUserWithClassifierUsernames(AuthDAO authDAO, final Classifier classifier, Date lastRun) {
-		logger.info("getting all {} usernames", classifier);
-		List<AuthScore> authScores = authDAO.findUsernamesByTimestamp(lastRun);
-		logger.info("going over the usernames.", classifier);
-		String tablename = authDAO.getTableName();
-		List<Update> updates = new ArrayList<>();
-		List<User> users = new ArrayList<>();
-		List<User> newUsers = new ArrayList<>();
-		for(AuthScore authScore: authScores){
-			final String username = authScore.getNormalizedUsername();
-			if(StringUtils.isEmpty(username)){
-				logger.warn("got a empty string {} username", classifier);
-				continue;
-			}
-
-			User user = userRepository.findByUsername(username);
-			if(user == null){
-				if(classifier.getLogEventsEnum().equals(LogEventsEnum.ssh)){
-					logger.info("no user was found with SSH username ({})", username);
-					if(authDAO.countNumOfEventsByNormalizedUsernameAndStatusRegex(lastRun, username, sshStatusSuccessValueRegex) > 0){
-						logger.info("creating a new user from a successed ssh event. ssh username ({})", username);
-						user = userService.createUser(UserApplication.ssh, username);
-					} else{
-						continue;
-					}
-				} else{
-					logger.warn("no user was found with the username {}", username);
-					continue;
-				}
-			}
-
-			final boolean isNewLogUsername = (user.getLogUserName(authDAO.getTableName()) == null) ? true : false;
-			boolean isNewAppUsername = false;
-			if(isNewLogUsername){
-				isNewAppUsername = userService.createNewApplicationUserDetails(user, classifier.getUserApplication(), authScore.getUserName(), false);
-				userService.updateLogUsername(user, authDAO.getTableName(), authScore.getUserName(), false);
-			}
-			
-			if(user.getId() != null){
-				if(isNewLogUsername || isNewAppUsername){
-					Update update = new Update();
-					if(isNewLogUsername){
-						userService.fillUpdateLogUsername(update, authScore.getUserName(), tablename);
-					}
-					if(isNewAppUsername){
-						userService.fillUpdateAppUsername(update, user, classifier);
-					}
-					updates.add(update);
-					users.add(user);
-				}
-			} else{
-				newUsers.add(user);
-			}
-		}
-		
-		logger.info("finished processing {} {} usernames.",	authScores.size(), classifier);
-		
-		logger.info("updating all the {} users.", users.size());
-		for(int i = 0; i < users.size(); i++){
-			Update update = updates.get(i);
-			User user = users.get(i);
-			userService.updateUser(user, update);
-		}
-		
-		logger.info("adding {} new users.", newUsers.size());
-		if(newUsers.size() > 0){
-			userRepository.save(newUsers);
-		}
-	}
 	
-	private void updateUserWithAuthScore(AuthDAO authDAO, final Classifier classifier, Date lastRun) {
-		updateUserWithClassifierUsernames(authDAO, classifier, lastRun);
-		
+	private void updateUserWithAuthScore(AuthDAO authDAO, final Classifier classifier, Date lastRun) {		
 		logger.info("calculating avg score for {} events.", classifier);
 		double avg = 0;
 		try{
@@ -367,75 +290,9 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		updateUserWithVpnScore(lastRun);
 	}
 	
-	private void updateUserWithVpnUsernames(Date lastRun) {
-		logger.info("getting all vpn usernames");
-		List<VpnScore> vpnScores = vpnDAO.findUsernamesByTimestamp(lastRun);
-		
-		final String tablename = vpnDAO.getTableName();
-				
-		logger.info("going over all {} vpn usernames", vpnScores.size());
-		List<User> newUsers = new ArrayList<>();
-		List<Update> updates = new ArrayList<>();
-		List<User> users = new ArrayList<>();
-		for(VpnScore vpnScore: vpnScores){
-			String username = vpnScore.getNormalizedUsername();
-			if(StringUtils.isEmpty(username)){
-				logger.warn("got a empty string vpn username");
-				continue;
-			}
-			
-			User user = userRepository.findByUsername(username);
-			if(user == null){
-				logger.info("no user was found with vpn username ({})", username);
-				if(vpnDAO.countNumOfEventsByNormalizedUsernameAndStatusRegex(lastRun, username, vpnStatusSuccessValueRegex) > 0){
-					logger.info("creating a new user from a successed vpn event. vpn username ({})", username);
-					user = createUser(vpnScore);
-				} else{
-					continue;
-				}
-			}
-			
-			final boolean isNewLogUsername = (user.getLogUserName(tablename) == null) ? true : false;
-			if(isNewLogUsername){
-				userService.createNewApplicationUserDetails(user, UserApplication.vpn, vpnScore.getUserName(), false);
-				updateVpnLogUsername(user, vpnScore.getUserName(), false);
-			}
-			
-			if(user.getId() != null){
-				if(isNewLogUsername){
-					Update update = new Update();
-					update.set(User.getLogUserNameField(tablename), user.getLogUserName(tablename));
-					update.set(User.getAppField(UserApplication.vpn.getId()), user.getApplicationUserDetails().get(UserApplication.vpn.getId()));
-					updates.add(update);
-					users.add(user);
-				}
-			} else{
-				newUsers.add(user);
-			}
-			
-		}
-		
-		logger.info("finished processing {} vpn usernames.",	vpnScores.size());
-		
-		logger.info("updating all the {} users.", users.size());
-		for(int i = 0; i < users.size(); i++){
-			Update update = updates.get(i);
-			User user = users.get(i);
-			userService.updateUser(user, update);
-		}
-		
-		logger.info("inserting {} new users.", newUsers.size());
-		if(newUsers.size() > 0){
-			userRepository.save(newUsers);
-		}
-				
-		logger.info("finished updating the user collection. with vpn usernames.");	
-	}
 	
 	@Override
 	public void updateUserWithVpnScore(Date lastRun) {
-		updateUserWithVpnUsernames(lastRun);
-		
 		logger.info("calculating avg score for vpn events.");
 		double avg = 0;
 		try{
@@ -490,18 +347,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 						
 		logger.info("finished updating the user collection with vpn score.");		
 	}
-	
-	
-	
-	private void updateVpnLogUsername(User user, String username, boolean isSave){
-		userService.updateLogUsername(user, vpnDAO.getTableName(), username, isSave);
-	}
-	
-	private User createUser(VpnScore vpnScore){
-		return userService.createUser(UserApplication.vpn, vpnScore.getUserName());
-	}
-	
-	
+		
 	@Override
 	public void updateUserWithGroupMembershipScore(){
 		Date lastRun = adUsersFeaturesExtractionRepository.getLatestTimeStamp();

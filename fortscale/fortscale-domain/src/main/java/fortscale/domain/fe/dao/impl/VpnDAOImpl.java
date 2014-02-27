@@ -26,6 +26,9 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Value("${impala.data.table.fields.normalized_username}")
 	private String normalizedUsernameField;
 	
+	@Value("${impala.vpn.table.fields.status}")
+	private String statusFieldName;
+	
 	@Value("${impala.vpn.table.fields}")
 	private String impalaVpnScoringTableFields;
 	
@@ -114,7 +117,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 				ret.setUserName(rs.getString(VpnScore.USERNAME_FIELD_NAME));
 				ret.setLocalIp(rs.getString(VpnScore.LOCAL_IP_FIELD_NAME));
 				ret.setSourceIp(rs.getString(VpnScore.SOURCE_IP_FIELD_NAME));
-				ret.setStatus(rs.getString(VpnScore.STATUS_FIELD_NAME));
+				ret.setStatus(rs.getString(statusFieldName));
 				try{
 					ret.setCountry(rs.getString(VpnScore.COUNTRY_FIELD_NAME));
 				} catch(Exception e){
@@ -154,7 +157,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 
 	@Override
 	public String getStatusFieldName() {
-		return VpnScore.STATUS_FIELD_NAME;
+		return statusFieldName;
 	}
 
 	@Override

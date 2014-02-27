@@ -266,11 +266,8 @@ public class UserUpdateScoreServiceTest {
 		assertNotNull(classifierScore);
 		assertEquals(avgScore, classifierScore.getAvgScore(), 0);
 		assertEquals(globalScore, classifierScore.getScore(),0);
-		verify(userService,times(1)).updateLogUsername(eq(user), eq(tableName), eq(loginUserName), eq(false));
 		verify(userRepository, never()).save((Iterable<User>) any());
 		verify(userService, times(1)).fillUpdateUserScore((Update) any(), eq(user),  eq(classifier));
-		verify(userService, times(1)).fillUpdateLogUsername((Update) any(), eq(loginUserName), eq(tableName));
-		verify(userService, never()).fillUpdateAppUsername((Update) any(), (User) any(), (Classifier) any());
 		
 	}
 	

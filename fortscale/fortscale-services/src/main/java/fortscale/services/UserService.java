@@ -47,7 +47,7 @@ public interface UserService {
 
 	public void updateLogUsername(User user, String logname, String username, boolean isSave);
 
-	public User createUser(UserApplication userApplication, String username);
+	public User createUser(UserApplication userApplication, String username, String appUsername);
 
 	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave);
 	
@@ -58,4 +58,8 @@ public interface UserService {
 	public void fillUpdateAppUsername(Update update,  User user, Classifier classifier);
 
 	public User findByLogUsername(LogEventsEnum eventId, String username);
+
+	public String getTableName(LogEventsEnum eventId);
+
+	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate);
 }

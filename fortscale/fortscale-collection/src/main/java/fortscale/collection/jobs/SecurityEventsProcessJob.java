@@ -14,6 +14,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import fortscale.services.fe.Classifier;
 import fortscale.services.impl.UsernameNormalizer;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
@@ -51,6 +52,10 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	@Override
 	public String getUsernameField(){
 		return usernameField;
+	}
+	
+	protected Classifier getClassifier(){
+		return Classifier.auth;
 	}
 	
 	@Override protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
@@ -103,6 +108,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 				if (output!=null) {
 					Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
 					handler.appender.writeLine(output, timestamp.longValue());
+					updateOrCreateUserWithClassifierUsername(record);
 					return true;
 				}
 			}

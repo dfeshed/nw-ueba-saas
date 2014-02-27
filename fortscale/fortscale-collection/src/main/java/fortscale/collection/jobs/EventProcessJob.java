@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.collection.JobDataMapExtension;
+import fortscale.services.UserService;
+import fortscale.services.fe.Classifier;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
@@ -76,7 +78,8 @@ public class EventProcessJob implements Job {
 	@Autowired
 	protected JobDataMapExtension jobDataMapExtension;
 	
-	
+	@Autowired
+	protected UserService userService;
 	
 	
 	
@@ -250,11 +253,31 @@ public class EventProcessJob implements Job {
 		if (output!=null) {
 			Long timestamp = RecordExtensions.getLongValue(record, timestampField);
 			appender.writeLine(output, timestamp.longValue());
+			updateOrCreateUserWithClassifierUsername(record);
 			return true;
 		} else {
 			return false;
 		}
 	}
+	
+	protected void updateOrCreateUserWithClassifierUsername(Record record){
+		Classifier classifier = getClassifier();
+		if(classifier != null){
+			String normalizedUsername = extractNormalizedUsernameFromRecord(record);
+			String logUsername = extractUsernameFromRecord(record);
+			userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, isOnlyUpdateUser(record));
+		}
+	}
+	
+	protected Classifier getClassifier(){
+		return null;
+	}
+	
+	protected boolean isOnlyUpdateUser(Record record){
+		return true;
+	}
+	
+	
 	
 	protected void addNormalizedUsernameField(Record record){
 		record.put(normalizedUsernameField, normalizeUsername(record));
@@ -266,6 +289,10 @@ public class EventProcessJob implements Job {
 	
 	protected String extractUsernameFromRecord(Record record){
 		return RecordExtensions.getStringValue(record, getUsernameField());
+	}
+	
+	protected String extractNormalizedUsernameFromRecord(Record record){
+		return RecordExtensions.getStringValue(record, normalizedUsernameField);
 	}
 	
 	protected void refreshImpala() throws JobExecutionException {

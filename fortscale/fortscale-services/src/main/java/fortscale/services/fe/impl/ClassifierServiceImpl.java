@@ -18,6 +18,7 @@ import org.apache.commons.lang.math.Range;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -108,7 +109,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
 	
 	
-	
+	@Value("${impala.vpn.table.fields.status}")
+	private String vpnStatusFieldName;
 	
 	
 	
@@ -433,7 +435,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				orderBy = VpnScore.STATUS_SCORE_FIELD_NAME;
 				break;
 			case "status":
-				orderBy = VpnScore.STATUS_FIELD_NAME;
+				orderBy = vpnStatusFieldName;
 				break;
 			default:
 				orderBy = defaultOrderBy;
@@ -835,7 +837,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			IQueryResultsScorer queryResultsScorer = new QueryResultsScorer();
 			Set<String> timeFieldNameSet = new HashSet<>();
 			timeFieldNameSet.add(timestampFieldName);
-			IEBSResult tmp = queryResultsScorer.runEBSOnQueryResults(resultsMap, rowFieldRegexFilter.get(VPN_DATA_TABLENAME), timeFieldNameSet, fieldNamesFilterSet, VpnScore.STATUS_FIELD_NAME, VPN_STATUS_GLOBAL_SCORE_VALUE);
+			IEBSResult tmp = queryResultsScorer.runEBSOnQueryResults(resultsMap, rowFieldRegexFilter.get(VPN_DATA_TABLENAME), timeFieldNameSet, fieldNamesFilterSet, vpnStatusFieldName, VPN_STATUS_GLOBAL_SCORE_VALUE);
 			isRunThreadForSaving = false;
 			ebsResult = new EBSResult(tmp.getResultsList(), tmp.getGlobalScore(), 0, tmp.getResultsList().size());
 		} else{
