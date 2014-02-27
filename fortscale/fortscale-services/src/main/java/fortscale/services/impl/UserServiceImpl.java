@@ -127,7 +127,9 @@ public class UserServiceImpl implements UserService{
 			return;
 		}
 		
-		user = createUser(classifier.getUserApplication(), normalizedUsername, logUsername);				
+		if(user == null){
+			user = createUser(classifier.getUserApplication(), normalizedUsername, logUsername);
+		}
 		
 		String tablename = getTableName(classifier.getLogEventsEnum());
 		final boolean isNewLogUsername = (user.getLogUserName(tablename) == null) ? true : false;
