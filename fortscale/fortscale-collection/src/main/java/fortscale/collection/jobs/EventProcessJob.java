@@ -49,6 +49,11 @@ public class EventProcessJob implements Job {
 	@Value("${collection.fetch.finish.data.path}")
 	protected String finishPath;
 	
+	@Value("${impala.data.table.fields.normalized_username}")
+	private String normalizedUsernameField;
+	@Value("${impala.table.fields.username}")
+	private String usernameField;
+	
 	
 	protected String filesFilter;
 	protected MorphlinesItemsProcessor morphline;
@@ -70,11 +75,6 @@ public class EventProcessJob implements Job {
 	
 	@Autowired
 	protected JobDataMapExtension jobDataMapExtension;
-	
-	@Value("${impala.data.table.fields.normalized_username}")
-	private String normalizedUsernameField;
-	@Value("${impala.table.fields.username}")
-	private String usernameField;
 	
 	
 	

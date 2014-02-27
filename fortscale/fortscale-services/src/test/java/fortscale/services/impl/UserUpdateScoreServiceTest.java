@@ -242,11 +242,13 @@ public class UserUpdateScoreServiceTest {
 		AuthScore authScore = new AuthScore();
 		String loginUserName = "testUser";
 		authScore.setUserName(loginUserName);
+		authScore.setNormalizedUsername(loginUserName);
 		double globalScore = 12.3;
 		authScore.setGlobalScore(globalScore);
 		List<AuthScore> authScores = new ArrayList<>();
 		authScores.add(authScore);
 		when(loginDAO.findGlobalScoreByTimestamp(date)).thenReturn(authScores);
+		when(loginDAO.findUsernamesByTimestamp(date)).thenReturn(authScores);
 		String tableName = "loginstable";
 		when(loginDAO.getTableName()).thenReturn(tableName);
 		String adUserName = String.format("%s@abc.com",loginUserName);
@@ -255,7 +257,7 @@ public class UserUpdateScoreServiceTest {
 //		ScoreInfo scoreInfo = UserScoreTestUtil.createScoreInfo(date, avgScore, globalScore, 10, 10);
 //		ClassifierScore classifierScore = new ClassifierScore(classifier.getId(), scoreInfo);
 //		user.putClassifierScore(classifierScore);
-		when(userService.findByAuthUsername(classifier.getLogEventsEnum(), loginUserName)).thenReturn(user);
+		when(userRepository.findByUsername(loginUserName)).thenReturn(user);
 		when(loginDAO.getLastRunDate()).thenReturn(date);
 		when(loginDAO.calculateAvgScoreOfGlobalScore(date)).thenReturn(avgScore);
 		when(userService.createNewApplicationUserDetails(user, classifier.getUserApplication(), loginUserName, false)).thenReturn(false);

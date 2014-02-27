@@ -13,7 +13,12 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	
 	@Value("${impala.login.table.name}")
 	private String tableName;
-	public static final String ERROR_CODE_FIELD_NAME = "errorcode";
+	
+	@Value("${impala.login.table.fields}")
+	private String impalaSecScoringTableFields;
+	@Value("${impala.login.table.fields.errorcode}")
+	private String errorCodeName;
+	
 	
 	@Override
 	public String getTableName() {
@@ -25,7 +30,7 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	@Override
 	protected void setStatus(ResultSet rs, AuthScore authScore) {
 		try {
-			authScore.setStatus(rs.getString(ERROR_CODE_FIELD_NAME));
+			authScore.setStatus(rs.getString(errorCodeName));
 		} catch (Exception e) {
 			logger.info("no status found in the login event");
 			authScore.setStatus("");
@@ -33,6 +38,10 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	}
 	@Override
 	public String getStatusFieldName() {
-		return ERROR_CODE_FIELD_NAME;
+		return errorCodeName;
+	}
+	@Override
+	public String getInputFileHeaderDesc() {
+		return impalaSecScoringTableFields;
 	}
 }

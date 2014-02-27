@@ -15,6 +15,7 @@ public class UsernameNormalizer implements InitializingBean{
 	}
 
 	public String normalize(String username){
+		username = username.toLowerCase();
 		String ret = null;
 		if(regexMatcher != null){
 			ret = regexMatcher.match(username);

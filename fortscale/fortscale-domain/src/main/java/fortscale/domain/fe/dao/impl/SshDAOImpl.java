@@ -12,7 +12,11 @@ public class SshDAOImpl extends AuthDAOImpl{
 	
 	@Value("${impala.ssh.table.name}")
 	private String tableName;
-	public static final String STATUS_FIELD_NAME = "status";
+	@Value("${impala.ssh.table.fields}")
+	private String impalaSshScoringTableFields;
+	@Value("${impala.ssh.table.fields.status}")
+	private String statusFieldName;
+	
 	
 	@Override
 	public String getTableName() {
@@ -25,7 +29,7 @@ public class SshDAOImpl extends AuthDAOImpl{
 	@Override
 	protected void setStatus(ResultSet rs, AuthScore authScore) {
 		try {
-			authScore.setStatus(rs.getString(STATUS_FIELD_NAME));
+			authScore.setStatus(rs.getString(statusFieldName));
 		} catch (Exception e) {
 			logger.info("no status found in the login event");
 			authScore.setStatus("");
@@ -33,6 +37,10 @@ public class SshDAOImpl extends AuthDAOImpl{
 	}
 	@Override
 	public String getStatusFieldName() {
-		return STATUS_FIELD_NAME;
+		return statusFieldName;
+	}
+	@Override
+	public String getInputFileHeaderDesc() {
+		return impalaSshScoringTableFields;
 	}
 }

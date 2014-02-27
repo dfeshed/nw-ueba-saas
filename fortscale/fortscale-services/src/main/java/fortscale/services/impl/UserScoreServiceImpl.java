@@ -107,16 +107,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 			}
 		}
 		
-//		Pageable pageable = new PageRequest(0, 1, Direction.DESC, AdUserFeaturesExtraction.timestampField);
-//		List<AdUserFeaturesExtraction> ufeList = adUsersFeaturesExtractionRepository.findByUserId(user.getAdDn(), pageable);
-//		if(ufeList == null || ufeList.size() == 0){
-//			return Collections.emptyList();
-//		}
-//		AdUserFeaturesExtraction ufe = ufeList.get(0);
-//		Double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(Classifier.getAdClassifierUniqueName(), ufe.getTimestamp());
-//		List<IUserScore> ret = new ArrayList<IUserScore>();
-//		UserScore score = new UserScore("overall", "User Profile", ufe.getScore(), avgScore);
-//		ret.add(score);
 		return ret;
 	}
 	
@@ -188,17 +178,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 			}
 		}
 		
-//		Pageable pageable = new PageRequest(0, 14, Direction.DESC, AdUserFeaturesExtraction.timestampField);
-//		List<AdUserFeaturesExtraction> ufeList = adUsersFeaturesExtractionRepository.findByUserIdAndClassifierId(uid, classifierId, pageable);
-//		if(ufeList == null || ufeList.size() == 0){
-//			return Collections.emptyList();
-//		}
-//		
-//		for(AdUserFeaturesExtraction ufe: ufeList){
-//			Double avgScore = adUsersFeaturesExtractionRepository.calculateUsersDailyMaxScores(classifierId, uid);
-//			UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(ufe.getTimestamp(), ufe.getScore(), avgScore);
-//			ret.add(userScoreHistoryElement);
-//		}
 		if(offset >ret.size()) {
 			return Collections.emptyList();
 		}
