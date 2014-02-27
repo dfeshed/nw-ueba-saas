@@ -10,7 +10,7 @@
 			<name>ETL</name>
 			<group>VPN</group>
 			<description>process vpn events received from splunk into files</description>
-			<job-class>fortscale.collection.jobs.EventProcessJob</job-class>
+			<job-class>fortscale.collection.jobs.VPNEventProcessJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			
