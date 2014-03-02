@@ -12,6 +12,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -27,6 +28,8 @@ import fortscale.utils.hdfs.HDFSLineAppender;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
 import fortscale.utils.logging.Logger;
 
+
+@DisallowConcurrentExecution
 public class UserTableUpdateJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
 

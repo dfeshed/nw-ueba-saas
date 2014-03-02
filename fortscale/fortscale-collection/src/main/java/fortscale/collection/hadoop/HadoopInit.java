@@ -95,6 +95,16 @@ public class HadoopInit implements InitializingBean{
 	@Value("${hdfs.user.processeddata.sshscores.path}")
 	private String impalaSshScoringDirectory;
 	
+	//Group Membership Score table
+	@Value("${impala.ldap.group.membership.scores.table.fields}")
+	private String impalaGroupMembershipScoringTableFields;
+	@Value("${impala.ldap.group.membership.scores.table.delimiter}")
+	private String impalaGroupMembershipScoringTableDelimiter;
+	@Value("${impala.ldap.group.membership.scores.table.name}")
+	private String impalaGroupMembershipScoringTableName;
+	@Value("${hdfs.user.processeddata.group.membership.score.path}")
+	private String impalaGroupMembershipScoringDirectory;
+	
 	
 
 	public void createDirectories() throws IOException{
@@ -112,25 +122,28 @@ public class HadoopInit implements InitializingBean{
 		createTable(impalaUserTableName, impalaUserFields, null, impalaUserTableDelimiter, impalaUsersDirectory);
 		
 		//Security Events Data table
-		createTable(impalaSecDataTableName, impalaSecDataTableFields, monthlyPartitionStrategy.getPartitionDefinition(), impalaSecDataTableDelimiter, impalaSecDataDirectory);
+		createTable(impalaSecDataTableName, impalaSecDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSecDataTableDelimiter, impalaSecDataDirectory);
 		
 		//Security Events Scoring table
-		createTable(impalaSecScoringTableName, impalaSecScoringTableFields, runtimePartitionStrategy.getPartitionDefinition(), impalaSecScoringTableDelimiter, impalaSecScoringDirectory);
+		createTable(impalaSecScoringTableName, impalaSecScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaSecScoringTableDelimiter, impalaSecScoringDirectory);
 		
 		//VPN Data table
-		createTable(impalaVpnDataTableName, impalaVpnDataTableFields, monthlyPartitionStrategy.getPartitionDefinition(), impalaVpnDataTableDelimiter, impalaVpnDataDirectory);
+		createTable(impalaVpnDataTableName, impalaVpnDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaVpnDataTableDelimiter, impalaVpnDataDirectory);
 		
 		//VPN Scoring table
-		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, runtimePartitionStrategy.getPartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
+		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
 		
 		//VPN View Table
 		createTableView("view_vpndata", "SELECT date_time,date_time_unix,username,if(hostname != \"\",hostname,source_ip) as source_ip,local_ip,status,country,yearmonth FROM vpndata");
 				
 		//SSH Data table
-		createTable(impalaSshDataTableName, impalaSshDataTableFields, monthlyPartitionStrategy.getPartitionDefinition(), impalaSshDataTableDelimiter, impalaSshDataDirectory);
+		createTable(impalaSshDataTableName, impalaSshDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSshDataTableDelimiter, impalaSshDataDirectory);
 		
 		//SSH Scoring table
-		createTable(impalaSshScoringTableName, impalaSshScoringTableFields, runtimePartitionStrategy.getPartitionDefinition(), impalaSshScoringTableDelimiter, impalaSshScoringDirectory);
+		createTable(impalaSshScoringTableName, impalaSshScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaSshScoringTableDelimiter, impalaSshScoringDirectory);
+		
+		//Group Membership Scoring table
+		createTable(impalaGroupMembershipScoringTableName, impalaGroupMembershipScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaGroupMembershipScoringTableDelimiter, impalaGroupMembershipScoringDirectory);
 		
 	}
 	

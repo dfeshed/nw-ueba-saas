@@ -12,7 +12,7 @@ public class ImpalaWriter{
 	private static Logger logger = Logger.getLogger(ImpalaWriter.class);
 	
 	private HDFSWriter writer = null;
-	private ImpalaParser impalaParser;
+	protected ImpalaParser impalaParser;
 	
 	public ImpalaWriter(ImpalaParser impalaParser){
 		this.impalaParser = impalaParser;

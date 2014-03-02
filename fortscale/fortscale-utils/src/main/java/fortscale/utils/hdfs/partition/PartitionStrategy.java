@@ -37,5 +37,5 @@ public interface PartitionStrategy {
 	 */
 	int comparePartitionTo(String partitionPath, long ts);
 	
-	String getPartitionDefinition();
+	String getTablePartitionDefinition();
 }

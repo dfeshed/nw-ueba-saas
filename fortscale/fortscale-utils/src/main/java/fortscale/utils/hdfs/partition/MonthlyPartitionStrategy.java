@@ -130,7 +130,7 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 
 
 	@Override
-	public String getPartitionDefinition() {
+	public String getTablePartitionDefinition() {
 		return String.format("%s INT",MONTHLY_PARTITION_FIELD_NAME);
 	}
 	

@@ -92,7 +92,7 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 	}
 
 	@Override
-	public String getPartitionDefinition() {
+	public String getTablePartitionDefinition() {
 		return String.format("%s INT",RUNTIME_PARTITION_FIELD_NAME);
 	}
 }

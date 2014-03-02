@@ -26,7 +26,6 @@ public class IUserTableTest {
 		PropertyDescriptor propertyDescriptors[] = PropertyUtils.getPropertyDescriptors(IUserTable.class);
 		
 		HashMap<String, Class<?>> expectedFieldsMap = ImpalaParser.getTableFieldDefinitionMap(impalaUserFields);
-		Assert.assertEquals(ImpalaParser.getTableFieldNames(impalaUserFields).size(), expectedFieldsMap.size());
 
 		Assert.assertEquals(expectedFieldsMap.size(), propertyDescriptors.length);
 		for(PropertyDescriptor propertyDescriptor: propertyDescriptors){

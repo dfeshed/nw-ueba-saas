@@ -10,9 +10,11 @@ public class ImpalaDateTime {
 	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss" ;
 	
 	private DateTime dateTime;
+	private String toString;
 	
 	public ImpalaDateTime(DateTime dateTime){
 		this.dateTime = dateTime;
+		this.toString = formatTimeDate(dateTime);
 	}
 	
 	public DateTime getDateTime(){
@@ -21,7 +23,7 @@ public class ImpalaDateTime {
 	
 	@Override
 	public String toString(){
-		return formatTimeDate(dateTime);
+		return toString;
 	}
 	
 	public static Date parseTimeDate(String dateString) throws ParseException {

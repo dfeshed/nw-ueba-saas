@@ -61,7 +61,7 @@ public class DefaultPartitionStrategy implements PartitionStrategy {
 	}
 
 	@Override
-	public String getPartitionDefinition() {
+	public String getTablePartitionDefinition() {
 		return null;
 	}
 	
