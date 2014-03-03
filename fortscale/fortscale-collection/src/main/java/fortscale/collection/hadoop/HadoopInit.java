@@ -95,6 +95,27 @@ public class HadoopInit implements InitializingBean{
 	@Value("${hdfs.user.processeddata.sshscores.path}")
 	private String impalaSshScoringDirectory;
 	
+	
+	//AD Group table
+	@Value("${impala.ldapgroups.table.fields}")
+	private String impalaAdGroupTableFields;
+	@Value("${impala.ldapgroups.table.delimiter}")
+	private String impalaAdGroupTableDelimiter;
+	@Value("${impala.ldapgroups.table.name}")
+	private String impalaAdGroupTableName;
+	@Value("${hdfs.user.data.ldap.groups.path}")
+	private String impalaAdGroupDirectory;
+	
+	//AD User table
+	@Value("${impala.ldapusers.table.fields}")
+	private String impalaAdUserTableFields;
+	@Value("${impala.ldapusers.table.delimiter}")
+	private String impalaAdUserTableDelimiter;
+	@Value("${impala.ldapusers.table.name}")
+	private String impalaAdUserTableName;
+	@Value("${hdfs.user.data.ldap.groups.path}")
+	private String impalaAdUserDirectory;
+	
 	//Group Membership Score table
 	@Value("${impala.ldap.group.membership.scores.table.fields}")
 	private String impalaGroupMembershipScoringTableFields;
@@ -142,6 +163,12 @@ public class HadoopInit implements InitializingBean{
 		//SSH Scoring table
 		createTable(impalaSshScoringTableName, impalaSshScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaSshScoringTableDelimiter, impalaSshScoringDirectory);
 		
+		//AD Group table
+		createTable(impalaAdGroupTableName, impalaAdGroupTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaAdGroupTableDelimiter, impalaAdGroupDirectory);
+		
+		//AD User table
+		createTable(impalaAdUserTableName, impalaAdUserTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaAdUserTableDelimiter, impalaAdUserDirectory);
+				
 		//Group Membership Scoring table
 		createTable(impalaGroupMembershipScoringTableName, impalaGroupMembershipScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaGroupMembershipScoringTableDelimiter, impalaGroupMembershipScoringDirectory);
 		

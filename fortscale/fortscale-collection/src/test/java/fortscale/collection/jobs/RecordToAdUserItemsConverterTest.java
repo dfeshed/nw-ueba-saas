@@ -13,9 +13,9 @@ public class RecordToAdUserItemsConverterTest {
 	@Test
 	public void simpleConvertion() throws InstantiationException, IllegalAccessException{
 		Record record = new Record();
-		String timestampField = "timestamp";
+		String runtimeField = "runtime";
 		String timestampValue = "23/3/2014";
-		record.put(timestampField, timestampValue);
+		record.put(runtimeField, timestampValue);
 		String sAMAccountTypeField = "sAMAccountType";
 		Long sAMAccountTypeValue = 22L;
 		record.put(sAMAccountTypeField, sAMAccountTypeValue);
@@ -26,12 +26,12 @@ public class RecordToAdUserItemsConverterTest {
 		Integer userAccountControlValue = 5;
 		record.put(userAccountControlField, userAccountControlValue);
 		
-		RecordToBeanItemConverter<AdUser> converter = new RecordToBeanItemConverter<AdUser>(timestampField, sAMAccountTypeField, userAccountControlField, timestampepochField);
+		RecordToBeanItemConverter<AdUser> converter = new RecordToBeanItemConverter<AdUser>(runtimeField, sAMAccountTypeField, userAccountControlField, timestampepochField);
 		
 		AdUser adUser = new AdUser();
 		converter.convert(record, adUser);
 		
-		Assert.assertEquals(timestampValue, adUser.getTimestamp());
+		Assert.assertEquals(timestampValue, adUser.getRuntime());
 		Assert.assertEquals(sAMAccountTypeValue, adUser.getsAMAccountType());
 		Assert.assertEquals(userAccountControlValue, adUser.getUserAccountControl());
 		Assert.assertEquals(timestampepochValue, adUser.getTimestampepoch());

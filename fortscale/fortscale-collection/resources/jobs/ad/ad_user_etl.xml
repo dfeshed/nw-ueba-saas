@@ -37,11 +37,11 @@
 				</entry>
 				<entry>
 					<key>outputFields</key>
-					<value>${collection.ad.user.output.fields}</value>
+					<value>${impala.ldapusers.table.fields}</value>
 				</entry>
 				<entry>
 					<key>outputSeparator</key>
-					<value>|</value>
+					<value>${impala.ldapusers.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
