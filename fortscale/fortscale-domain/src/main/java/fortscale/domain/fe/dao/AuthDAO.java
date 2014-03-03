@@ -14,17 +14,17 @@ public interface AuthDAO {
 	
 	public int countNumOfRecords();
 	
-	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal);
+	public int countNumOfEventsByNormalizedUsernameAndStatusRegex(Date timestamp, String username, String statusVal);
 	
 	public List<AuthScore> findAll(Pageable pageable);
 	
-	public AuthScore findCurrentByUsername(String username);
+	public AuthScore findCurrentByNormalizedUsername(String username);
 	
-	public List<AuthScore> findEventsByUsername(String username, Pageable pageable);
+	public List<AuthScore> findEventsByNormalizedUsername(String username, Pageable pageable);
 	
-	public List<AuthScore> findEventsByUsernameAndTimestamp(String username, Date timestamp, Pageable pageable);
+	public List<AuthScore> findEventsByNormalizedUsernameAndTimestamp(String username, Date timestamp, Pageable pageable);
 	
-	public List<AuthScore> findEventsByUsernameAndTimestampGtEventScore(String username, Date timestamp, int minScore, Pageable pageable);
+	public List<AuthScore> findEventsByNormalizedUsernameAndTimestampGtEventScore(String username, Date timestamp, int minScore, Pageable pageable);
 	
 	public List<AuthScore> findEventsByTimestamp(Date timestamp, Pageable pageable);
 	
@@ -34,9 +34,11 @@ public interface AuthDAO {
 	
 	public List<AuthScore> findEventsByTimestamp(Date timestamp, Pageable pageable, String additionalWhereQuery);
 	
-	public List<AuthScore> findGlobalScoreByUsername(String username, int limit);
+	public List<AuthScore> findGlobalScoreByNormalizedUsername(String username, int limit);
 	
 	public List<AuthScore> findGlobalScoreByTimestamp(Date timestamp);
+	
+	public List<AuthScore> findUsernamesByTimestamp(Date timestamp);
 	
 	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp);
 	
@@ -44,7 +46,7 @@ public interface AuthDAO {
 	
 	public int countNumOfEvents(Date timestamp);
 	
-	public int countNumOfEventsByUser(Date timestamp, String username);
+	public int countNumOfEventsByNormalizedUsername(Date timestamp, String username);
 	
 	public Date getLastRunDate();
 	

@@ -5,8 +5,6 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +19,6 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.ad.AdUserThumbnail;
@@ -32,12 +29,10 @@ import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.LogEventsEnum;
@@ -109,12 +104,56 @@ public class UserServiceImpl implements UserService{
 	
 	
 	@Override
-	public User createUser(UserApplication userApplication, String username){
+	public User createUser(UserApplication userApplication, String username, String appUsername){
 		User user = new User();
 		user.setUsername(username);
 		user.setSearchField(createSearchField(null, username));
-		createNewApplicationUserDetails(user, new ApplicationUserDetails(userApplication.getId(), username), false);
+		createNewApplicationUserDetails(user, new ApplicationUserDetails(userApplication.getId(), appUsername), false);
 		return user;
+	}
+	
+	
+	//NOTICE: The user of this method should check the status of the event if he doesn't want to add new users with fail status he should call with onlyUpdate=true
+	//        The same goes for cases like security events where we don't want to create new User if there is no correlation with the active directory.
+	@Override
+	public void updateOrCreateUserWithClassifierUsername(final Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate) {
+		if(StringUtils.isEmpty(normalizedUsername)){
+			logger.warn("got a empty string {} username", classifier);
+			return;
+		}
+
+		User user = userRepository.findByUsername(normalizedUsername);
+		if(user == null && onlyUpdate){
+			return;
+		}
+		
+		if(user == null){
+			user = createUser(classifier.getUserApplication(), normalizedUsername, logUsername);
+		}
+		
+		String tablename = getTableName(classifier.getLogEventsEnum());
+		final boolean isNewLogUsername = (user.getLogUserName(tablename) == null) ? true : false;
+		boolean isNewAppUsername = false;
+		if(isNewLogUsername){
+			isNewAppUsername = createNewApplicationUserDetails(user, classifier.getUserApplication(), logUsername, false);
+			updateLogUsername(user, tablename, logUsername, false);
+		}
+			
+		if(user.getId() != null){
+			if(isNewLogUsername || isNewAppUsername){
+				Update update = new Update();
+				if(isNewLogUsername){
+					fillUpdateLogUsername(update, logUsername, tablename);
+				}
+				if(isNewAppUsername){
+					fillUpdateAppUsername(update, user, classifier);
+				}
+				
+				updateUser(user, update);
+			}
+		} else{
+			userRepository.save(user);
+		}		
 	}
 	
 	
@@ -159,48 +198,16 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateUserWithADInfo(final Long timestampepoch) {
 		logger.info("Starting to update users with ad info.");
-		if(!mongoTemplate.exists(query(where(User.adInfoField).exists(true)), User.class) && userRepository.count() > 0){
-			logger.info("Updating User schema regarding to the active directory info");
-			Iterable<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch);
-			List<User> users = updateUserWithADInfoNewSchema(adUsers);
-			
-			try{
-				logger.info("Dropping adDn index");
-				mongoTemplate.indexOps(User.class).dropIndex("adDn");
-			} catch(Exception e){
-				logger.error("failed to drop adDn index.", e);
-			}
-			try{
-				logger.info("Dropping adObjectGUID index");
-				mongoTemplate.indexOps(User.class).dropIndex("adObjectGUID");
-			} catch(Exception e){
-				logger.error("failed to drop adObjectGUID index.", e);
-			}
-			
-			userRepository.save(users);
-		} else{
-			Iterable<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch);
-			for(AdUser adUser: adUsers){
-				updateUserWithADInfo(adUser);
-			}
+		
+		Iterable<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch);
+		for(AdUser adUser: adUsers){
+			updateUserWithADInfo(adUser);
 		}
-//		saveUserIdUsernamesMapToImpala(new Date());
+		
 		logger.info("finished updating users with ad info.");
 	}
 	
-	
-	
-	
-	
-	
-	
-	private void saveUserIdUsernamesMapToImpala(Date timestamp){
-		List<User> users = userRepository.findAll();
-		ImpalaUseridToAppUsernameWriter writer = impalaWriterFactory.createImpalaUseridToAppUsernameWriter();
-		writer.write(users, timestamp);
-		writer.close();
-	}
-	
+		
 	@Override
 	public void updateUserWithADInfo(AdUser adUser) {
 		if(adUser.getObjectGUID() == null) {
@@ -453,7 +460,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public String getVpnLogUsername(User user){
-		return user.getLogUsernameMap().get(VpnScore.TABLE_NAME);
+		return user.getLogUsernameMap().get(vpnDAO.getTableName());
 	}
 	
 	@Override
@@ -498,6 +505,16 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public User findByLogUsername(LogEventsEnum eventId, String username){
+		String tablename = getTableName(eventId);
+		
+		if(StringUtils.isEmpty(tablename)){
+			return null;
+		}
+		return userRepository.findByLogUsername(tablename, username);
+	}
+	
+	@Override
+	public String getTableName(LogEventsEnum eventId){
 		String tablename = null;
 		switch(eventId){
 		case login:
@@ -513,10 +530,7 @@ public class UserServiceImpl implements UserService{
 			break;
 		}
 		
-		if(StringUtils.isEmpty(tablename)){
-			return null;
-		}
-		return userRepository.findByLogUsername(tablename, username);
+		return tablename;
 	}
 	
 	
@@ -622,264 +636,8 @@ public class UserServiceImpl implements UserService{
 	
 	
 	
-	public static class OrderByClassifierScoreTimestempAsc implements Comparator<ClassifierScore>{
-
-		@Override
-		public int compare(ClassifierScore o1, ClassifierScore o2) {
-			return o1.getTimestamp().compareTo(o2.getTimestamp());
-		}
-		
-	}
 	
 	
-	@Override
-	public void updateUserWithCurrentADInfoNewSchema() {
-		Long timestampepoch = adUserRepository.getLatestTimeStampepoch();
-		if(timestampepoch != null) {
-			List<User> users = updateUserWithADInfoNewSchema(adUserRepository.findByTimestampepoch(timestampepoch));
-			userRepository.save(users);
-			saveUserIdUsernamesMapToImpala(new Date());
-		} else {
-			logger.error("no timestamp. probably the ad_user table is empty");
-		}
-		
-	}
-	
-	
-	private List<User> updateUserWithADInfoNewSchema(Iterable<AdUser> adUsers) {
-		List<User> ret = new ArrayList<>();
-		for(AdUser adUser: adUsers){
-			try {
-				User user = updateUserWithADInfoNewSchema(adUser);
-				if(user != null){
-					ret.add(user);
-				}
-			} catch (Exception e) {
-				logger.error(String.format("got exception while trying to update user with active directory info!!! dn: %s", adUser.getDistinguishedName()), e);
-			}
-			
-		}
-		
-		
-		return ret;
-	}
-		
-	private User updateUserWithADInfoNewSchema(AdUser adUser) {
-		if(adUser.getObjectGUID() == null) {
-			logger.error("got ad user with no ObjectGUID name field.");
-			return null;
-		}
-		if(adUser.getDistinguishedName() == null) {
-			logger.error("got ad user with no distinguished name field.");
-			return null;
-		}
-		
-		User user = null;
-		if(adUser.getObjectGUID() != null) {
-			user = userRepository.findByAdObjectGUID(adUser.getObjectGUID());
-		}
-		if(user == null){
-			user = userRepository.findByAdDn(adUser.getDistinguishedName());
-		}
-		if(user == null){
-			return null;
-		}
-		
-		user.getAdInfo().setFirstname(adUser.getGivenName());
-		user.getAdInfo().setLastname(adUser.getSn());
-		if(adUser.getMail() != null && adUser.getMail().length() > 0){
-			user.getAdInfo().setEmailAddress(new EmailAddress(adUser.getMail()));
-		}
-		user.getAdInfo().setUserPrincipalName(adUser.getUserPrincipalName());
-		user.getAdInfo().setsAMAccountName(adUser.getsAMAccountName());
-		String username = adUser.getUserPrincipalName();
-		if(StringUtils.isEmpty(username)) {
-			username = adUser.getsAMAccountName();
-		}
-		if(!StringUtils.isEmpty(username)) {
-			user.setUsername(username.toLowerCase());
-			user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
-		} else{
-			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
-		}
-		
-		user.getAdInfo().setEmployeeID(adUser.getEmployeeID());
-		user.getAdInfo().setEmployeeNumber(adUser.getEmployeeNumber());
-		user.getAdInfo().setManagerDN(adUser.getManager());
-		user.getAdInfo().setMobile(adUser.getMobile());
-		user.getAdInfo().setTelephoneNumber(adUser.getTelephoneNumber());
-		user.getAdInfo().setOtherFacsimileTelephoneNumber(adUser.getOtherFacsimileTelephoneNumber());
-		user.getAdInfo().setOtherHomePhone(adUser.getOtherHomePhone());
-		user.getAdInfo().setOtherMobile(adUser.getOtherMobile());
-		user.getAdInfo().setOtherTelephone(adUser.getOtherTelephone());
-		user.getAdInfo().setHomePhone(adUser.getHomePhone());
-		user.getAdInfo().setDepartment(adUser.getDepartment());
-		user.getAdInfo().setPosition(adUser.getTitle());
-		user.getAdInfo().setDisplayName(adUser.getDisplayName());
-		user.getAdInfo().setLogonHours(adUser.getLogonHours());
-		try {
-			user.getAdInfo().setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
-		} catch (ParseException e) {
-			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
-		}
-		
-		try {
-			user.getAdInfo().setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
-		} catch (ParseException e) {
-			logger.error(String.format("got and exception while trying to parse active directory when created field (%s)",adUser.getWhenCreated()), e);
-		}
-		
-		user.getAdInfo().setDescription(adUser.getDescription());
-		user.getAdInfo().setStreetAddress(adUser.getStreetAddress());
-		user.getAdInfo().setCompany(adUser.getCompany());
-		user.getAdInfo().setC(adUser.getC());
-		user.getAdInfo().setDivision(adUser.getDivision());
-		user.getAdInfo().setL(adUser.getL());
-		user.getAdInfo().setO(adUser.getO());
-		user.getAdInfo().setRoomNumber(adUser.getRoomNumber());
-		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().equals("0") && !adUser.getAccountExpires().startsWith("30828")){
-			try {
-				user.getAdInfo().setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
-			} catch (ParseException e) {
-				logger.error(String.format("got and exception while trying to parse active directory account expires field (%s)",adUser.getAccountExpires()), e);
-			}
-		}
-		user.getAdInfo().setUserAccountControl(adUser.getUserAccountControl());
-		
-		ADUserParser adUserParser = new ADUserParser();
-		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
-		user.getAdInfo().clearGroups();
-		if(groups != null){
-			for(String groupDN: groups){
-				AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
-				String groupName = null;
-				if(adGroup != null){
-					groupName = adGroup.getName();
-				}else{
-					Log.warn("the user ({}) group ({}) was not found", user.getAdInfo().getDn(), groupDN);
-					groupName = adUserParser.parseFirstCNFromDN(groupDN);
-					if(groupName == null){
-						Log.warn("invalid group dn ({}) for user ({})", groupDN, user.getAdInfo().getDn());
-						continue;
-					}
-				}
-				user.getAdInfo().addGroup(new AdUserGroup(groupDN, groupName));
-			}
-		}
-		
-		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
-		user.getAdInfo().clearDirectReport();
-		if(directReports != null){
-			for(String directReportsDN: directReports){
-				User userDirectReport = userRepository.findByAdDn(directReportsDN);
-				if(userDirectReport != null){
-					String displayName = userDirectReport.getUsername();
-					if(userDirectReport.getAdInfo() != null && !StringUtils.isEmpty(userDirectReport.getAdInfo().getDisplayName())){
-						displayName = userDirectReport.getAdInfo().getDisplayName();
-					}
-					AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, displayName);
-					adUserDirectReport.setUserId(userDirectReport.getId());
-					adUserDirectReport.setUsername(userDirectReport.getUsername());
-					if(userDirectReport.getAdInfo() != null){
-						adUserDirectReport.setFirstname(userDirectReport.getAdInfo().getFirstname());
-						adUserDirectReport.setLastname(userDirectReport.getAdInfo().getLastname());
-					}
-					
-					user.getAdInfo().addDirectReport(adUserDirectReport);
-				}else{
-					logger.warn("the user ({}) direct report ({}) was not found", user.getAdInfo().getDn(), directReportsDN);
-				}
-			}
-		}
-		
-		user.setSearchField(createSearchField(user.getAdInfo(), user.getUsername()));
-		user.getAdInfo().setObjectGUID(adUser.getObjectGUID());
-		user.getAdInfo().setDn(adUser.getDistinguishedName());
-		user.setAdDn(null);
-		user.setAdObjectGUID(null);
-
-		return user;
-	}
-	
-	
-	
-	
-	
-	
-	class UpdateUserAdInfoContext{
-		private List<AdUser> adUsers = new ArrayList<>();
-		private Map<String,User> guidToUsersMap = new HashMap<>();
-		private int numOfInserts = 0;
-		private int numOfUsernameUpdates = 0;
-		private int numOfSearchFieldUpdates = 0;
-		private int numOfAdInfoUpdates = 0;
-		
-		public UpdateUserAdInfoContext(List<AdUser> adUsers, List<User> users){
-			this.adUsers = adUsers;
-			for(User user: users){
-				guidToUsersMap.put(user.getAdInfo().getObjectGUID(), user);
-			}
-		}
-		
-		
-		public List<AdUser> getAdUsers() {
-			return adUsers;
-		}
-		public void setAdUsers(List<AdUser> adUsers) {
-			this.adUsers = adUsers;
-		}
-		public Map<String,User> getGuidToUsersMap() {
-			return guidToUsersMap;
-		}
-		public void setGuidToUsersMap(Map<String,User> guidToUsersMap) {
-			this.guidToUsersMap = guidToUsersMap;
-		}
-		
-		public User findByObjectGUID(String objectGUID){
-			return guidToUsersMap.get(objectGUID);
-		}
-
-
-		public int getNumOfInserts() {
-			return numOfInserts;
-		}
-
-
-		public void incrementNumOfInserts() {
-			this.numOfInserts++;
-		}
-
-
-		public int getNumOfUsernameUpdates() {
-			return numOfUsernameUpdates;
-		}
-
-
-		public void incrementNumOfUsernameUpdates() {
-			this.numOfUsernameUpdates++;
-		}
-
-
-		public int getNumOfSearchFieldUpdates() {
-			return numOfSearchFieldUpdates;
-		}
-
-
-		public void incrementNumOfSearchFieldUpdates() {
-			this.numOfSearchFieldUpdates++;
-		}
-
-
-		public int getNumOfAdInfoUpdates() {
-			return numOfAdInfoUpdates;
-		}
-
-
-		public void incrementNumOfAdInfoUpdates() {
-			this.numOfAdInfoUpdates++;
-		}
-	}
-
 
 	@Override
 	public void fillUpdateUserScore(Update update, User user, Classifier classifier) {
@@ -897,5 +655,4 @@ public class UserServiceImpl implements UserService{
 	public void fillUpdateAppUsername(Update update, User user, Classifier classifier) {
 		update.set(User.getAppField(classifier.getUserApplication().getId()), user.getApplicationUserDetails().get(classifier.getUserApplication().getId()));
 	}
-
 }

@@ -10,7 +10,7 @@
 			<name>ETL</name>
 			<group>VPN</group>
 			<description>process vpn events received from splunk into files</description>
-			<job-class>fortscale.collection.jobs.EventProcessJob</job-class>
+			<job-class>fortscale.collection.jobs.VPNEventProcessJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			
@@ -21,15 +21,15 @@
 				</entry>
 				<entry>
 					<key>outputFields</key>
-					<value>date_time,date_time_unixTime,username,source_ip,local_ip,status,country_name,host_name</value>
+					<value>${impala.data.vpn.table.fields}</value>
 				</entry>
 				<entry>
 					<key>timestampField</key>
-					<value>date_time_unixTime</value>
+					<value>${impala.data.table.fields.epochtime}</value>
 				</entry>
 				<entry>
 					<key>outputSeparator</key>
-					<value>|</value>
+					<value>${impala.data.vpn.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>morphlineFile</key>

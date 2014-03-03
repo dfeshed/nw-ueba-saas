@@ -1,6 +1,9 @@
 package fortscale.collection.morphlines;
 
 import static junitparams.JUnitParamsRunner.$;
+
+import java.util.Arrays;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
@@ -18,7 +21,7 @@ public class DhcpDhcpdTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		morphlineTester.init(confFile, dhcpOutputFields);
+		morphlineTester.init(confFile, Arrays.asList(dhcpOutputFields));
 	}
 
 	@Test

@@ -2,22 +2,12 @@ package fortscale.domain.fe;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-
-@JsonPropertyOrder({"eventTime","userName","sourceIp","localIp","status","eventScore","globalScore","timestamp"})
-public class VpnScore {
-	public static final Object impalaFieldsOrder[] = {VpnScore.USERNAME_FIELD_NAME,VpnScore.LOCAL_IP_FIELD_NAME,VpnScore.SOURCE_IP_FIELD_NAME,VpnScore.STATUS_FIELD_NAME,VpnScore.EVENT_SCORE_FIELD_NAME,VpnScore.GLOBAL_SCORE_FIELD_NAME,VpnScore.TIMESTAMP_FIELD_NAME,VpnScore.EVENT_TIME_FIELD_NAME};
-	public static final String implaValueTypeOrder = String.format("%s string, %s string, %s string, %s string, %s double, %s double, %s bigint, %s timestamp", impalaFieldsOrder);
-	
-	public static final String TABLE_NAME = "vpndatares";
-	
-	
+public class VpnScore {	
 	public static final String EVENT_TIME_FIELD_NAME = "date_time";
 	public static final String USERNAME_FIELD_NAME = "username";
 	public static final String SOURCE_IP_FIELD_NAME = "source_ip";
 	public static final String LOCAL_IP_FIELD_NAME = "local_ip";
-	public static final String STATUS_FIELD_NAME = "status";
 	public static final String COUNTRY_FIELD_NAME = "country";
 	
 	public static final String EVENT_TIME_SCORE_FIELD_NAME = "date_timescore";
@@ -35,7 +25,7 @@ public class VpnScore {
 	
 	
 	
-	
+	private String normalizedUsername;
 	private Date eventTime;
 	private String userName;
 	private String sourceIp;
@@ -57,6 +47,13 @@ public class VpnScore {
 	private Date timestamp;
 	
 	
+	
+	public String getNormalizedUsername() {
+		return normalizedUsername;
+	}
+	public void setNormalizedUsername(String normalizedUsername) {
+		this.normalizedUsername = normalizedUsername;
+	}
 	public Date getEventTime() {
 		return eventTime;
 	}

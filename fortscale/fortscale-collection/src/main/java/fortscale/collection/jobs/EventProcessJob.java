@@ -20,10 +20,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.collection.JobDataMapExtension;
+import fortscale.services.UserService;
+import fortscale.services.fe.Classifier;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
+import fortscale.utils.hdfs.split.FileSplitStrategy;
+import fortscale.utils.impala.ImpalaParser;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
@@ -46,6 +51,11 @@ public class EventProcessJob implements Job {
 	@Value("${collection.fetch.finish.data.path}")
 	protected String finishPath;
 	
+	@Value("${impala.data.table.fields.normalized_username}")
+	private String normalizedUsernameField;
+	@Value("${impala.table.fields.username}")
+	private String usernameField;
+	
 	
 	protected String filesFilter;
 	protected MorphlinesItemsProcessor morphline;
@@ -67,7 +77,17 @@ public class EventProcessJob implements Job {
 	
 	@Autowired
 	protected JobDataMapExtension jobDataMapExtension;
+	
+	@Autowired
+	protected UserService userService;
+	
+	
+	
 		
+	public String getUsernameField() {
+		return usernameField;
+	}
+
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
@@ -79,9 +99,9 @@ public class EventProcessJob implements Job {
 		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
 		
 		// build record to items processor
-		String[] outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields").split(",");
+		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
 		String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
-		recordToString = new RecordToStringItemsProcessor(outputSeparator, outputFields);
+		recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 		
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 	}
@@ -223,16 +243,56 @@ public class EventProcessJob implements Job {
 	protected boolean processLine(String line) throws IOException {
 		// process each line
 		Record record = morphline.process(line);
+		if(record == null){
+			return false;
+		}
+		addNormalizedUsernameField(record);
 		String output = recordToString.process(record);
 		
 		// append to hadoop, if there is data to be written
 		if (output!=null) {
 			Long timestamp = RecordExtensions.getLongValue(record, timestampField);
 			appender.writeLine(output, timestamp.longValue());
+			updateOrCreateUserWithClassifierUsername(record);
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	protected void updateOrCreateUserWithClassifierUsername(Record record){
+		Classifier classifier = getClassifier();
+		if(classifier != null){
+			String normalizedUsername = extractNormalizedUsernameFromRecord(record);
+			String logUsername = extractUsernameFromRecord(record);
+			userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, isOnlyUpdateUser(record));
+		}
+	}
+	
+	protected Classifier getClassifier(){
+		return null;
+	}
+	
+	protected boolean isOnlyUpdateUser(Record record){
+		return true;
+	}
+	
+	
+	
+	protected void addNormalizedUsernameField(Record record){
+		record.put(normalizedUsernameField, normalizeUsername(record));
+	}
+	
+	protected String normalizeUsername(Record record){
+		return extractUsernameFromRecord(record);
+	}
+	
+	protected String extractUsernameFromRecord(Record record){
+		return RecordExtensions.getStringValue(record, getUsernameField());
+	}
+	
+	protected String extractNormalizedUsernameFromRecord(Record record){
+		return RecordExtensions.getStringValue(record, normalizedUsernameField);
 	}
 	
 	protected void refreshImpala() throws JobExecutionException {
@@ -266,7 +326,7 @@ public class EventProcessJob implements Job {
 			logger.debug("initializing hadoop appender in {}", hadoopPath);
 
 			// calculate file directory path according to partition strategy
-			appender = new HDFSPartitionsWriter(hadoopPath, new MonthlyPartitionStrategy(), new DailyFileSplitStrategy());
+			appender = new HDFSPartitionsWriter(hadoopPath, getPartitionStrategy(), getFileSplitStrategy());
 			appender.open(hadoopFilename);
 
 		} catch (IOException e) {
@@ -274,6 +334,14 @@ public class EventProcessJob implements Job {
 			monitor.error(monitorId, "Process Files", String.format("error creating hdfs partitions writer at %s: \n %s",  hadoopPath, e.toString()));
 			throw new JobExecutionException("error creating hdfs partitions writer at " + hadoopPath, e);
 		}
+	}
+	
+	protected PartitionStrategy getPartitionStrategy(){
+		return new MonthlyPartitionStrategy();
+	}
+	
+	protected FileSplitStrategy getFileSplitStrategy(){
+		return new DailyFileSplitStrategy();
 	}
 	
 	protected void flushOutputAppender() throws IOException {

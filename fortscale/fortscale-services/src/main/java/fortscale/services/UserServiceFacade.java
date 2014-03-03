@@ -63,4 +63,6 @@ public void updateUserWithCurrentADInfo();
 	public void updateUserWithADInfo(AdUser adUser);
 
 	public void updateUserTotalScore();
+	
+	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate);
 }

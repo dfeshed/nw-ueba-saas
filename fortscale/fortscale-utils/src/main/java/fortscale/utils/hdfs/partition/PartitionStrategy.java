@@ -36,4 +36,6 @@ public interface PartitionStrategy {
 	 * or -1 if the timestamp is older than the partition. 
 	 */
 	int comparePartitionTo(String partitionPath, long ts);
+	
+	String getTablePartitionDefinition();
 }

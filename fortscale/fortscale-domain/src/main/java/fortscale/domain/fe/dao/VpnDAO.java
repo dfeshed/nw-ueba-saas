@@ -16,15 +16,15 @@ public interface VpnDAO {
 	
 	public int countNumOfRecords();
 	
-	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal);
+	public int countNumOfEventsByNormalizedUsernameAndStatusRegex(Date timestamp, String username, String statusVal);
 	
-	public VpnScore findCurrentByUsername(String username);
+	public VpnScore findCurrentByNormalizedUsername(String username);
 	
-	public List<VpnScore> findEventsByUsername(String username, Pageable pageable);
+	public List<VpnScore> findEventsByNormalizedUsername(String username, Pageable pageable);
 	
-	public List<VpnScore> findEventsByUsernameAndTimestamp(String username, Date timestamp, Pageable pageable);
+	public List<VpnScore> findEventsByNormalizedUsernameAndTimestamp(String username, Date timestamp, Pageable pageable);
 	
-	public List<VpnScore> findEventsByUsernameAndTimestampGtEventScore(String username, Date timestamp, int minScore, Pageable pageable);
+	public List<VpnScore> findEventsByNormalizedUsernameAndTimestampGtEventScore(String username, Date timestamp, int minScore, Pageable pageable);
 	
 	public List<VpnScore> findEventsByTimestamp(Date timestamp, Pageable pageable);
 	
@@ -34,9 +34,11 @@ public interface VpnDAO {
 	
 	public List<VpnScore> findEventsByTimestamp(Date timestamp, Pageable pageable, String additionalWhereQuery);
 	
-	public List<VpnScore> findGlobalScoreByUsername(String username, int limit);
+	public List<VpnScore> findGlobalScoreByNormalizedUsername(String username, int limit);
 	
 	public List<VpnScore> findGlobalScoreByTimestamp(Date timestamp);
+	
+	public List<VpnScore> findUsernamesByTimestamp(Date timestamp);
 	
 	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp);
 	
@@ -44,7 +46,7 @@ public interface VpnDAO {
 	
 	public int countNumOfEvents(Date timestamp);
 	
-	public int countNumOfEventsByUser(Date timestamp, String username);
+	public int countNumOfEventsByNormalizedUsername(Date timestamp, String username);
 	
 	public Date getLastRunDate();
 	

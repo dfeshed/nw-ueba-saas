@@ -18,6 +18,7 @@ import org.apache.commons.lang.math.Range;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -108,7 +109,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
 	
 	
-	
+	@Value("${impala.vpn.table.fields.status}")
+	private String vpnStatusFieldName;
 	
 	
 	
@@ -246,7 +248,11 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			timestamp = authDAO.getLastRunDate();
 		}
 		String logUsername = user.getLogUsernameMap().get(authDAO.getTableName());
-		return authDAO.countNumOfEventsByUser(timestamp, logUsername);
+		if(logUsername != null){
+			return authDAO.countNumOfEventsByNormalizedUsername(timestamp, user.getUsername());
+		} else{
+			return 0;
+		}
 	}
 
 	@Override
@@ -266,7 +272,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<AuthScore> authScores = authDAO.findEventsByUsernameAndTimestampGtEventScore(logUsername, timestamp, minScore, pageable);
+		List<AuthScore> authScores = authDAO.findEventsByNormalizedUsernameAndTimestampGtEventScore(user.getUsername(), timestamp, minScore, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
 			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
@@ -429,7 +435,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				orderBy = VpnScore.STATUS_SCORE_FIELD_NAME;
 				break;
 			case "status":
-				orderBy = VpnScore.STATUS_FIELD_NAME;
+				orderBy = vpnStatusFieldName;
 				break;
 			default:
 				orderBy = defaultOrderBy;
@@ -476,11 +482,11 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(applicationUserDetails == null || applicationUserDetails.getUserName() == null) {
 			return 0;
 		}
-		String vpnUserNameString = applicationUserDetails.getUserName();
+
 		if(timestamp == null){
 			timestamp = vpnDAO.getLastRunDate();
 		}
-		return vpnDAO.countNumOfEventsByUser(timestamp, vpnUserNameString);
+		return vpnDAO.countNumOfEventsByNormalizedUsername(timestamp, user.getUsername());
 	}
 	
 	@Override
@@ -497,9 +503,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			return Collections.emptyList();
 		}
 		String orderByArray[] = processVpnScoreOrderByFieldName(orderBy);
-		String vpnUserNameString = applicationUserDetails.getUserName();
+		String vpnUserNameString = user.getUsername();//applicationUserDetails.getUserName();
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<VpnScore> vpnScores = vpnDAO.findEventsByUsernameAndTimestampGtEventScore(vpnUserNameString, timestamp, minScore, pageable);
+		List<VpnScore> vpnScores = vpnDAO.findEventsByNormalizedUsernameAndTimestampGtEventScore(vpnUserNameString, timestamp, minScore, pageable);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
 			for(VpnScore vpnScore: vpnScores.subList(offset, vpnScores.size())){
@@ -831,7 +837,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			IQueryResultsScorer queryResultsScorer = new QueryResultsScorer();
 			Set<String> timeFieldNameSet = new HashSet<>();
 			timeFieldNameSet.add(timestampFieldName);
-			IEBSResult tmp = queryResultsScorer.runEBSOnQueryResults(resultsMap, rowFieldRegexFilter.get(VPN_DATA_TABLENAME), timeFieldNameSet, fieldNamesFilterSet, VpnScore.STATUS_FIELD_NAME, VPN_STATUS_GLOBAL_SCORE_VALUE);
+			IEBSResult tmp = queryResultsScorer.runEBSOnQueryResults(resultsMap, rowFieldRegexFilter.get(VPN_DATA_TABLENAME), timeFieldNameSet, fieldNamesFilterSet, vpnStatusFieldName, VPN_STATUS_GLOBAL_SCORE_VALUE);
 			isRunThreadForSaving = false;
 			ebsResult = new EBSResult(tmp.getResultsList(), tmp.getGlobalScore(), 0, tmp.getResultsList().size());
 		} else{
@@ -1027,7 +1033,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			retLong = loginDAO.getLastRuntime();
 		} else if(sshDAO.getTableName().equals(tableName)) {
 			retLong = sshDAO.getLastRuntime();
-		} else if (VpnScore.TABLE_NAME.equals(tableName)) {
+		} else if (vpnDAO.getTableName().equals(tableName)) {
 			retLong = vpnDAO.getLastRuntime();
 		}
 		return retLong;

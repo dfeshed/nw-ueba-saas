@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -193,26 +194,34 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	public User findByAdInfoObjectGUID(String objectGUID) {
 		return findOneByField(User.getAdInfoField(UserAdInfo.objectGUIDField), objectGUID);
 	}
-	
-	private List<User> findByField(String field, Object val){
+		
+	private List<User> findByField(String field, Object val, Pageable pageable){
 		List<String> fields = new ArrayList<>();
 		fields.add(field);
 		List<Object> vals = new ArrayList<>();
 		vals.add(val);
-		return findByFields(fields, vals);
+		return findByFields(fields, vals, pageable);
 	}
 	
 	private User findOneByField(String field, Object val){
-		List<User> users = findByField(field, val);
-		return users.get(0);
+		PageRequest pageRequest = new PageRequest(0, 1);
+		List<User> users = findByField(field, val, pageRequest);
+		if(users.size() > 0){
+			return users.get(0);
+		} else{
+			return null;
+		}
 	}
-
-	private List<User> findByFields(List<String> fields, List<?> vals){
+	
+	private List<User> findByFields(List<String> fields, List<?> vals, Pageable pageable){
 		Criteria criteria = where(fields.get(0)).is(vals.get(0));
 		for(int i = 1; i < fields.size(); i++){
 			criteria.and(fields.get(i)).is(vals.get(i));
 		}
 		Query query = new Query(criteria);
+		if(pageable != null){
+			query.with(pageable);
+		}
 		return mongoTemplate.find(query, User.class);
 	}
 

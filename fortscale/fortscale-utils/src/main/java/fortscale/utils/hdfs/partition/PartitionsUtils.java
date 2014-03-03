@@ -1,6 +1,5 @@
 package fortscale.utils.hdfs.partition;
 
-import static fortscale.utils.hdfs.partition.PartitionsUtils.normalizePath;
 
 class PartitionsUtils {
 

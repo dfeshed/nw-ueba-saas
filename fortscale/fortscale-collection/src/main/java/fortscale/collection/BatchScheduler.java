@@ -26,12 +26,15 @@ public class BatchScheduler {
 				batch.startAll();
 			} else if (args[0].equals("pause")) {
 				// do nothing
+			} else if (args[0].equals("cycle")) {
+				batch.runFullCycle();
+				batch.shutdown();
 			} else if (args.length==2) {
 				// run the given job only
 				String jobName = args[0];
 				String group = args[1];
 				
-				batch.startJob(jobName, group);
+				batch.startSchedulerWithOneJob(jobName, group);
 				batch.shutdown();
 			} else {
 				System.out.println("Usage:");
@@ -77,20 +80,51 @@ public class BatchScheduler {
 		scheduler.start();
 	}
 	
-	public void startJob(String jobName, String group) throws Exception {
+	public void startSchedulerWithOneJob(String jobName, String group) throws Exception {
+		startSchedulerAndPauseAllJobs();
+
+		startJob(jobName, group);
+	}
+	
+	private void startSchedulerAndPauseAllJobs() throws Exception{
 		if (scheduler==null)
 			loadScheduler();
+		
+		scheduler.start();
+		scheduler.pauseAll();
+	}
+	
+	public void runFullCycle() throws Exception{
+		startSchedulerAndPauseAllJobs();
+		
+		startJob("Group_Fetch", "AD");
+		startJob("Group_ETL", "AD");
+		startJob("User_Fetch", "AD");
+		startJob("User_ETL", "AD");
+		startJob("User_Thumbnail_ETL", "AD");
+		startJob("Group_Membership_Scoring", "AD");
+		startJob("Fetch", "DHCP");
+		startJob("ETL", "DHCP");
+		startJob("Fetch", "SecurityEvents");
+		startJob("ETL", "SecurityEvents");
+		startJob("Scoring", "SecurityEvents");
+		startJob("Fetch", "VPN");
+		startJob("ETL", "VPN");
+		startJob("Scoring", "VPN");
+		startJob("Fetch", "SSH");
+		startJob("ETL", "SSH");
+		startJob("Scoring", "SSH");
+		startJob("Scoring", "TOTAL");
+		startJob("Export", "USER");
+	}
+	
+	private void startJob(String jobName, String group) throws Exception {
 		
 		JobKey jobKey = new JobKey(jobName, group);
 		
 		// register job listener to close the scheduler after job completion
 		NotifyJobFinishListener.FinishSignal monitor = NotifyJobFinishListener.waitOnJob(scheduler, jobKey);
 
-		// pause all triggers and schedule only the required job
-		// we need to start the scheduler before triggering and pausing all jobs as the
-		// jobs configuration is loaded only when the scheduler is started
-		scheduler.start();
-		scheduler.pauseAll();
 		scheduler.triggerJob(jobKey);
 		
 		

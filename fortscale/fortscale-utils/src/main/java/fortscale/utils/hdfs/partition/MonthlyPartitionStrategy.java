@@ -13,6 +13,7 @@ import org.joda.time.DateTimeZone;
  * The path will contain a directory for a year and a directory for a month hierarcy.
  */
 public class MonthlyPartitionStrategy implements PartitionStrategy {
+	private static final String MONTHLY_PARTITION_FIELD_NAME="yearmonth";
 
 	@Override
 	public String getPartitionPath(long timestamp, String basePath) {
@@ -36,7 +37,7 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		int year = when.getYear();
 		int month = when.getMonthOfYear();
 		
-		return String.format("yearmonth=%s%02d", year, month);
+		return String.format("%s=%s%02d",MONTHLY_PARTITION_FIELD_NAME, year, month);
 	}
 	
 	/**
@@ -111,7 +112,7 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 	}
 	
 	private boolean isPathInPartitionFormat(String path) {
-		return path.matches("yearmonth=\\d{6}");
+		return path.matches(String.format("%s=\\d{6}", MONTHLY_PARTITION_FIELD_NAME));
 	}
 	
 	private DateTime getDateForTimestamp(long timestamp) {		
@@ -125,6 +126,12 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 		sb.append("/");
 		
 		return sb.toString();
+	}
+
+
+	@Override
+	public String getTablePartitionDefinition() {
+		return String.format("%s INT",MONTHLY_PARTITION_FIELD_NAME);
 	}
 	
 }

@@ -25,4 +25,14 @@
 	<bean id="jobScheduler" factory-bean="stdSchedulerFactory" factory-method="getScheduler">
 		<property name="jobFactory" ref="autowiringSpringBeanJobFactory"/>
 	</bean>
+	
+	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
+		<property name="matchersString" value="${collection.vpn.etl.username.normalize.matchers}"/>
+	</bean>
+	<bean id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
+		<property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
+	</bean>
+	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
+		<property name="matchersString" value="${collection.ssh.etl.username.normalize.matchers}"/>
+	</bean>
 </beans>

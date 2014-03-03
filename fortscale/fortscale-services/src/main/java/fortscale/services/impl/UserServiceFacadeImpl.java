@@ -157,5 +157,10 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 		userUpdateScoreService.updateUserTotalScore();
 	}
 
+	@Override
+	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate) {
+		userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, onlyUpdate);
+	}
+
 
 }

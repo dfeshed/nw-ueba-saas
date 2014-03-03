@@ -11,10 +11,15 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
+import fortscale.services.fe.Classifier;
+import fortscale.services.impl.UsernameNormalizer;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
+import fortscale.utils.impala.ImpalaParser;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -29,6 +34,29 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	private static Logger logger = Logger.getLogger(SecurityEventsProcessJob.class);
 	
 	private Map<String, EventProcessHandlers> eventsMap;
+	
+	@Value("${impala.data.security.events.4769.table.morphline.fields.username}")
+	private String usernameField;
+	
+	@Autowired
+	UsernameNormalizer secUsernameNormalizer;
+	
+	
+	
+	@Override
+	protected String normalizeUsername(Record record){
+		String username = extractUsernameFromRecord(record);
+		return secUsernameNormalizer.normalize(username);
+	}
+	
+	@Override
+	public String getUsernameField(){
+		return usernameField;
+	}
+	
+	protected Classifier getClassifier(){
+		return Classifier.auth;
+	}
 	
 	@Override protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
@@ -47,9 +75,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile" + eventToProcess);
 			handler.timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField" + eventToProcess);
 
-			String[] outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + eventToProcess).split(",");
+			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + eventToProcess);
 			String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + eventToProcess);
-			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, outputFields);
+			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 			
 			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + eventToProcess);
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + eventToProcess);
@@ -74,11 +102,13 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			EventProcessHandlers handler = eventsMap.get(eventCode);
 			if (handler!=null) {
 				Record processedRecord = handler.morphline.process(record);
+				addNormalizedUsernameField(processedRecord);
 				String output = handler.recordToStringProcessor.process(processedRecord);
 				
 				if (output!=null) {
 					Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
 					handler.appender.writeLine(output, timestamp.longValue());
+					updateOrCreateUserWithClassifierUsername(record);
 					return true;
 				}
 			}

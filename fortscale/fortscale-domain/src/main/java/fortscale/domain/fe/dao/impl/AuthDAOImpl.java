@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -23,6 +24,9 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 	@Autowired
 	private ImpalaParser impalaParser;
 	
+	@Value("${impala.data.table.fields.normalized_username}")
+	private String normalizedUsernameField;
+	
 	
 	
 
@@ -34,6 +38,11 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 	@Override
 	public String getTimestampFieldName() {
 		return AuthScore.TIMESTAMP_FIELD_NAME;
+	}
+
+	@Override
+	public String getNormalizedUsernameField() {
+		return normalizedUsernameField;
 	}
 
 	@Override
@@ -52,22 +61,26 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 	}
 
 	@Override
-	public AuthScore createAccessObject(String userName, double globalScore, double eventScore, Date timestamp) {
+	public AuthScore createAccessObject(String normalizedUsername, double globalScore, double eventScore, Date timestamp) {
 		AuthScore ret = new AuthScore();
-		ret.setUserName(userName);
+		ret.setNormalizedUsername(normalizedUsername);
 		ret.setGlobalScore(globalScore);
 		ret.setEventScore(eventScore);
 		ret.setTimestamp(timestamp);
+		return ret;
+	}
+	
+	@Override
+	public AuthScore createAccessObject(String normalizedUsername, String username) {
+		AuthScore ret = new AuthScore();
+		ret.setNormalizedUsername(normalizedUsername);
+		ret.setUserName(username);
 		return ret;
 	}
 
 
 	
 	
-	@Override
-	public String getInputFileHeaderDesc() {
-		return AuthScore.implaValueTypeOrder;
-	}
 
 	
 	class AuthScoreMapper implements RowMapper<AuthScore>{
@@ -81,6 +94,7 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 			try{
 				ret.setTimestamp(parseTimestampDate(rs.getLong(AuthScore.TIMESTAMP_FIELD_NAME)));
 				
+				ret.setNormalizedUsername(rs.getString(normalizedUsernameField));
 				ret.setUserName(rs.getString(AuthScore.USERNAME_FIELD_NAME));
 				ret.setTargetId(rs.getString(AuthScore.TARGET_ID_FIELD_NAME));
 				ret.setSourceIp(rs.getString(AuthScore.SOURCE_IP_FIELD_NAME));

@@ -28,6 +28,8 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	public abstract RowMapper<T> getMapper();
 
 	public abstract String getTimestampFieldName();
+	
+	public abstract String getNormalizedUsernameField();
 
 	public abstract String getUsernameFieldName();
 
@@ -37,18 +39,18 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	
 	public abstract String getStatusFieldName();
 
-	public abstract T createAccessObject(String userName, double globalScore,
-			double eventScore, Date timestamp);
+	public abstract T createAccessObject(String normalizedUsername, double globalScore,	double eventScore, Date timestamp);
+	public abstract T createAccessObject(String normalizedUsername, String username);
 
 	public List<T> findAll(Pageable pageable) {
 		return super.findAll(pageable, getMapper());
 	}
 
-	public T findCurrentByUsername(String username) {
+	public T findCurrentByNormalizedUsername(String username) {
 		T ret = null;
 		Pageable pageable = new ImpalaPageRequest(1, new Sort(Direction.DESC,
 				getTimestampFieldName()));
-		List<T> scoreList = findEventsByUsername(username, pageable);
+		List<T> scoreList = findEventsByNormalizedUsername(username, pageable);
 		if (scoreList.size() > 0) {
 			ret = scoreList.get(0);
 		}
@@ -56,10 +58,10 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return ret;
 	}
 
-	public List<T> findEventsByUsername(String username, Pageable pageable) {
+	public List<T> findEventsByNormalizedUsername(String username, Pageable pageable) {
 		
 		String query = String.format("select * from %s where %s",
-				getTableName(), getUserNameEqualComparison(username));
+				getTableName(), getNormalizedUserNameEqualComparison(username));
 		if (pageable != null) {
 			query = String.format("%s %s", query, pageable.toString());
 		}
@@ -87,25 +89,35 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		}
 		return ret;
 	}
+	
+	private List<T> getListUsernamesResults(String query){
+		List<T> ret = new ArrayList<>();
+		for(T res: impalaJdbcTemplate.query(query, new UsernameMapper())){
+			if(res != null){
+				ret.add(res);
+			}
+		}
+		return ret;
+	}
 
-	public List<T> findEventsByUsernameAndTimestamp(String username,
+	public List<T> findEventsByNormalizedUsernameAndTimestamp(String username,
 			Date timestamp, Pageable pageable) {
 		
 		String query = String.format("select * from %s where %s=%s and %s %s",
 				getTableName(), getTimestampFieldName(),
 				formatTimestampDate(timestamp),
-				getUserNameEqualComparison(username), pageable.toString());
+				getNormalizedUserNameEqualComparison(username), pageable.toString());
 		
 
 		return getListResults(query);
 	}
 	
-	public List<T> findEventsByUsernameAndTimestampGtEventScore(String username, Date timestamp, int minScore, Pageable pageable) {
+	public List<T> findEventsByNormalizedUsernameAndTimestampGtEventScore(String username, Date timestamp, int minScore, Pageable pageable) {
 		
 		String query = String.format("select * from %s where %s=%s and %s and %s >= %d %s",
 				getTableName(), 
 				getTimestampFieldName(), formatTimestampDate(timestamp),
-				getUserNameEqualComparison(username),
+				getNormalizedUserNameEqualComparison(username),
 				getEventScoreFieldName(), minScore,
 				pageable.toString());
 		
@@ -169,17 +181,17 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return getListResults(query.toSQL());
 	}
 
-	public List<T> findGlobalScoreByUsername(String username, int limit) {
+	public List<T> findGlobalScoreByNormalizedUsername(String username, int limit) {
 		
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(
 				Direction.DESC, getTimestampFieldName()));
 		String query = String
 				.format("select %s, %s, %s, max(%s) as %s from %s where %s group by %s, %s, %s %s",
-						getTimestampFieldName(), getUsernameFieldName(),
+						getTimestampFieldName(), getNormalizedUsernameField(),
 						getGlobalScoreFieldName(), getEventScoreFieldName(),
 						getEventScoreFieldName(), getTableName(),
-						getUserNameEqualComparison(username),
-						getTimestampFieldName(), getUsernameFieldName(),
+						getNormalizedUserNameEqualComparison(username),
+						getTimestampFieldName(), getNormalizedUsernameField(),
 						getGlobalScoreFieldName(), pageable.toString());
 		
 
@@ -190,23 +202,36 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		
 		String query = String
 				.format("select %s, %s, %s, max(%s) as %s from %s where %s=%s group by %s, %s, %s",
-						getTimestampFieldName(), getUsernameFieldName(),
+						getTimestampFieldName(), getNormalizedUsernameField(),
 						getGlobalScoreFieldName(), getEventScoreFieldName(),
 						getEventScoreFieldName(), getTableName(),
 						getTimestampFieldName(),
 						formatTimestampDate(timestamp),
-						getTimestampFieldName(), getUsernameFieldName(),
+						getTimestampFieldName(), getNormalizedUsernameField(),
 						getGlobalScoreFieldName());
 		
 
 		return getListGlobalResults(query);
+	}
+	
+	public List<T> findUsernamesByTimestamp(Date timestamp) {
+		
+		String query = String
+				.format("select %s, %s from %s where %s=%s group by %s, %s",
+						getNormalizedUsernameField(), getUsernameFieldName(),
+						getTableName(),
+						getTimestampFieldName(), formatTimestampDate(timestamp),
+						getNormalizedUsernameField(), getUsernameFieldName());
+		
+
+		return getListUsernamesResults(query);
 	}
 
 	@SuppressWarnings("deprecation")
 	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp) {
 		String query = String.format(
 				"select count(distinct(%s)) from %s where %s=%s and %s > %d",
-				getUsernameFieldName(), getTableName(),
+				getNormalizedUsernameField(), getTableName(),
 				getTimestampFieldName(), formatTimestampDate(timestamp),
 				getGlobalScoreFieldName(), threshold.getValue());
 
@@ -217,7 +242,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	public int countNumOfUsers(Date timestamp) {
 		String query = String.format(
 				"select count(distinct(%s)) from %s where %s=%s",
-				getUsernameFieldName(), getTableName(),
+				getNormalizedUsernameField(), getTableName(),
 				getTimestampFieldName(), formatTimestampDate(timestamp));
 
 		return impalaJdbcTemplate.queryForInt(query);
@@ -233,22 +258,22 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	}
 
 	@SuppressWarnings("deprecation")
-	public int countNumOfEventsByUser(Date timestamp, String username){
+	public int countNumOfEventsByNormalizedUsername(Date timestamp, String username){
 		String query = String.format("select count(*) from %s where %s=%s and %s",
 				getTableName(),
 				getTimestampFieldName(), formatTimestampDate(timestamp),
-				getUserNameEqualComparison(username));
+				getNormalizedUserNameEqualComparison(username));
 		
 		return impalaJdbcTemplate.queryForInt(query);
 	}
 	
 	@SuppressWarnings("deprecation")
-	public int countNumOfEventsByUserAndStatusRegex(Date timestamp, String username, String statusVal){
+	public int countNumOfEventsByNormalizedUsernameAndStatusRegex(Date timestamp, String username, String statusVal){
 		String query = String.format("select count(*) from %s where lower(%s) regexp \"%s\" and %s=%s and %s",
 				getTableName(),
 				getStatusFieldName(), statusVal.toLowerCase(),
 				getTimestampFieldName(), formatTimestampDate(timestamp),
-				getUserNameEqualComparison(username));
+				getNormalizedUserNameEqualComparison(username));
 		
 		return impalaJdbcTemplate.queryForInt(query);
 	}
@@ -304,9 +329,9 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	public double calculateAvgScoreOfGlobalScore(Date timestamp) {
 		String query = String
 				.format("select avg(tmp.g) from (select %s, max(%s) as g from %s where %s = %s group by %s) as tmp",
-						getUsernameFieldName(), getGlobalScoreFieldName(),
+						getNormalizedUsernameField(), getGlobalScoreFieldName(),
 						getTableName(), getTimestampFieldName(),
-						formatTimestampDate(timestamp), getUsernameFieldName());
+						formatTimestampDate(timestamp), getNormalizedUsernameField());
 
 		return impalaJdbcTemplate.queryForObject(query, Double.class);
 	}
@@ -318,13 +343,13 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 				Direction.DESC, getGlobalScoreFieldName()));
 		String query = String
 				.format("select %s, %s, %s, max(%s) as %s from %s where %s=%s and %s > %d group by %s, %s, %s %s",
-						getTimestampFieldName(), getUsernameFieldName(),
+						getTimestampFieldName(), getNormalizedUsernameField(),
 						getGlobalScoreFieldName(), getEventScoreFieldName(),
 						getEventScoreFieldName(), getTableName(),
 						getTimestampFieldName(),
 						formatTimestampDate(timestamp),
 						getGlobalScoreFieldName(), threshold.getValue(),
-						getTimestampFieldName(), getUsernameFieldName(),
+						getTimestampFieldName(), getNormalizedUsernameField(),
 						getGlobalScoreFieldName(), pageable.toString());
 		
 
@@ -338,14 +363,14 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 				Direction.DESC, getEventScoreFieldName()));
 		String query = String
 				.format("select %s, %s, %s, max(%s) as %s from %s where %s=%s and %s >= %d and %s < %d group by %s, %s, %s %s",
-						getTimestampFieldName(), getUsernameFieldName(),
+						getTimestampFieldName(), getNormalizedUsernameField(),
 						getGlobalScoreFieldName(), getEventScoreFieldName(),
 						getEventScoreFieldName(), getTableName(),
 						getTimestampFieldName(),
 						formatTimestampDate(timestamp),
 						getGlobalScoreFieldName(), lowestVal,
 						getGlobalScoreFieldName(), upperVal,
-						getTimestampFieldName(), getUsernameFieldName(),
+						getTimestampFieldName(), getNormalizedUsernameField(),
 						getGlobalScoreFieldName(), pageable.toString());
 		
 
@@ -376,7 +401,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 			T ret = null;
 
 			try {
-				ret = createAccessObject(rs.getString(getUsernameFieldName()),
+				ret = createAccessObject(rs.getString(getNormalizedUsernameField()),
 						Double.parseDouble(rs
 								.getString(getGlobalScoreFieldName())),
 						Double.parseDouble(rs
@@ -397,11 +422,37 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 			return ret;
 		}
 	}
+	
+	class UsernameMapper implements RowMapper<T> {
+		
+		private int numOfErrors = 0;
 
-	private String getUserNameEqualComparison(String username) {
-		return String.format("lower(%s) = \"%s\"", getUsernameFieldName(),
+		@Override
+		public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+			T ret = null;
+
+			try {
+				ret = createAccessObject(rs.getString(getNormalizedUsernameField()), rs.getString(getUsernameFieldName()));
+			} catch (SQLException se){
+				throw se;
+			} catch (Exception e) {
+				numOfErrors++;
+				if(numOfErrors < 5){
+					ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper();
+					logger.error("the following record caused an excption. record: {}", columnMapRowMapper.mapRow(rs, rowNum));
+					logger.error("here is the exception",e);
+				}
+				return null;
+			}
+
+			return ret;
+		}
+	}
+
+	private String getNormalizedUserNameEqualComparison(String username) {
+		return String.format("lower(%s) = \"%s\"", getNormalizedUsernameField(),
 				username.toLowerCase());
-		// return String.format("%s rlike \"(?i)%s\"", getUsernameFieldName(),
+		// return String.format("%s rlike \"(?i)%s\"", getNormalizedUsernameField(),
 		// username);
 	}
 

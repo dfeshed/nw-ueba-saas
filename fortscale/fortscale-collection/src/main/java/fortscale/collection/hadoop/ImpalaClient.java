@@ -1,5 +1,6 @@
 package fortscale.collection.hadoop;
 
+import org.apache.commons.lang.StringUtils;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,31 @@ public class ImpalaClient {
 		Assert.hasText(partition);
 		
 		String sql = String.format("alter table %s drop if exists partition (%s)", tableName, partition);
+		impalaJdbcTemplate.execute(sql);
+	}
+	
+	public void createTable(String tableName, String fields, String partition, String delimiter, String location){
+		Assert.hasText(tableName);
+		Assert.hasText(fields);
+		Assert.hasText(delimiter);
+		Assert.hasText(location);
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append("CREATE EXTERNAL TABLE ").append(tableName).append("(").append(fields).append(")");
+		if(!StringUtils.isEmpty(partition)){
+			builder.append(" ").append("PARTITIONED BY (").append(partition).append(")");
+		}
+		builder.append(" ").append("ROW FORMAT DELIMITED FIELDS TERMINATED BY '").append(delimiter).append("'");
+		builder.append(" ").append("STORED AS TEXTFILE");
+		builder.append(" ").append("LOCATION '").append(location).append("'");
+		logger.info(builder.toString());
+		impalaJdbcTemplate.execute(builder.toString());
+	}
+	
+	public void createTableView(String tableViewName, String selectStatement){
+		Assert.hasText(tableViewName);
+		Assert.hasText(selectStatement);
+		String sql = String.format("CREATE VIEW %s AS %s", tableViewName, selectStatement);
 		impalaJdbcTemplate.execute(sql);
 	}
 	

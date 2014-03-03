@@ -23,6 +23,15 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	private static Logger logger = Logger.getLogger(VpnDAOImpl.class);
 	
 	
+	@Value("${impala.data.table.fields.normalized_username}")
+	private String normalizedUsernameField;
+	
+	@Value("${impala.vpn.table.fields.status}")
+	private String statusFieldName;
+	
+	@Value("${impala.vpn.table.fields}")
+	private String impalaVpnScoringTableFields;
+	
 	@Autowired
 	private ImpalaParser impalaParser;
 	
@@ -37,6 +46,11 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Override
 	public String getTimestampFieldName() {
 		return VpnScore.TIMESTAMP_FIELD_NAME;
+	}
+	
+	@Override
+	public String getNormalizedUsernameField() {
+		return normalizedUsernameField;
 	}
 
 	@Override
@@ -55,13 +69,20 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	}
 
 	@Override
-	public VpnScore createAccessObject(String userName, double globalScore,
-			double eventScore, Date timestamp) {
+	public VpnScore createAccessObject(String normalizedUsername, double globalScore, double eventScore, Date timestamp) {
 		VpnScore ret = new VpnScore();
-		ret.setUserName(userName);
+		ret.setNormalizedUsername(normalizedUsername);
 		ret.setGlobalScore(globalScore);
 		ret.setEventScore(eventScore);
 		ret.setTimestamp(timestamp);
+		return ret;
+	}
+	
+	@Override
+	public VpnScore createAccessObject(String normalizedUsername, String username) {
+		VpnScore ret = new VpnScore();
+		ret.setNormalizedUsername(normalizedUsername);
+		ret.setUserName(username);
 		return ret;
 	}
 
@@ -76,7 +97,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 
 	@Override
 	public String getInputFileHeaderDesc() {
-		return VpnScore.implaValueTypeOrder;
+		return impalaVpnScoringTableFields;
 	}
 
 	
@@ -92,10 +113,11 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 				ret.setTimestamp(parseTimestampDate(rs.getLong(VpnScore.TIMESTAMP_FIELD_NAME)));
 				
 				ret.setEventTime(impalaParser.parseTimeDate(rs.getString(VpnScore.EVENT_TIME_FIELD_NAME)));
+				ret.setNormalizedUsername(rs.getString(normalizedUsernameField));
 				ret.setUserName(rs.getString(VpnScore.USERNAME_FIELD_NAME));
 				ret.setLocalIp(rs.getString(VpnScore.LOCAL_IP_FIELD_NAME));
 				ret.setSourceIp(rs.getString(VpnScore.SOURCE_IP_FIELD_NAME));
-				ret.setStatus(rs.getString(VpnScore.STATUS_FIELD_NAME));
+				ret.setStatus(rs.getString(statusFieldName));
 				try{
 					ret.setCountry(rs.getString(VpnScore.COUNTRY_FIELD_NAME));
 				} catch(Exception e){
@@ -135,7 +157,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 
 	@Override
 	public String getStatusFieldName() {
-		return VpnScore.STATUS_FIELD_NAME;
+		return statusFieldName;
 	}
 
 	@Override
