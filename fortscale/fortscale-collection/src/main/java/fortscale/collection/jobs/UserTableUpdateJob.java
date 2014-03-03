@@ -82,7 +82,7 @@ public class UserTableUpdateJob extends FortscaleJob {
 
 	@Override
 	protected void runSteps() throws Exception {
-		RemoteIterator<LocatedFileStatus> files = listOldFiles();
+		List<Path> files = listOldFiles();
 		
 		try{
 			
@@ -105,23 +105,32 @@ public class UserTableUpdateJob extends FortscaleJob {
 		
 	}
 	
-	private RemoteIterator<LocatedFileStatus> listOldFiles() throws IOException{
+	private List<Path> listOldFiles() throws IOException{
 		startNewStep("listOldFiles");
-		
-		RemoteIterator<LocatedFileStatus> ret =  hadoopFs.listFiles(new Path(hadoopDirPath), false);
+		List<Path> ret = new ArrayList<>();
+		RemoteIterator<LocatedFileStatus> files =  hadoopFs.listFiles(new Path(hadoopDirPath), false);
+		while(files.hasNext()){
+			ret.add(files.next().getPath());
+		}
 		
 		finishStep();
 		
 		return ret;
 	}
 	
-	private void deleteOldFiles(RemoteIterator<LocatedFileStatus> files) throws IOException{
+	private void deleteOldFiles(List<Path> files){
 		startNewStep("deleteOldFiles");
 		
-		while(files.hasNext()){
-			LocatedFileStatus fileStatus = files.next();
-			hadoopFs.delete(fileStatus.getPath(), true);
+		for(Path path: files){
+			try {
+				hadoopFs.delete(path, true);
+			} catch (IOException e) {
+				String message = String.format("got an exception while trying to delete the old file %s. The exception: %s", path.getName(), e.toString());
+				logger.warn(message, e);
+				addWarn(message);
+			}
 		}
+		
 		
 		finishStep();
 	}

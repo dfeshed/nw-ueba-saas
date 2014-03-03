@@ -210,6 +210,8 @@ public abstract class FortscaleJob implements Job {
 		monitor.finishStep(monitorId, stepName);
 	}
 
-	
+	public void addWarn(String message){
+		monitor.error(monitorId, stepName, message);
+	}
 	
 }
