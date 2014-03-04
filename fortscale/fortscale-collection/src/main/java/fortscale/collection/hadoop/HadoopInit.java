@@ -113,7 +113,7 @@ public class HadoopInit implements InitializingBean{
 	private String impalaAdUserTableDelimiter;
 	@Value("${impala.ldapusers.table.name}")
 	private String impalaAdUserTableName;
-	@Value("${hdfs.user.data.ldap.groups.path}")
+	@Value("${hdfs.user.data.ldap.users.path}")
 	private String impalaAdUserDirectory;
 	
 	//Group Membership Score table
