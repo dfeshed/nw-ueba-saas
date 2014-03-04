@@ -29,8 +29,8 @@ public class AdObject extends AbstractDocument{
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*20)
 	@Field(lastModifiedField)
 	private Date lastModified;
-	
-	private String timestamp;
+		
+	private String runtime;
 	
 //	public AdObject(String distinguishedName){
 //		Assert.hasText(distinguishedName);
@@ -77,12 +77,19 @@ public class AdObject extends AbstractDocument{
 		this.objectSid = objectSid;
 	}
 	
-	public String getTimestamp() {
-		return timestamp;
+	@Deprecated
+	//This is used for old documents which contains timestamp field instead of runtime
+	public void setTimestamp(String timestamp) {
+		this.runtime = timestamp;
 	}
 
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
+	public String getRuntime() {
+		return runtime;
 	}
+
+	public void setRuntime(String runtime) {
+		this.runtime = runtime;
+	}
+	
 	
 }

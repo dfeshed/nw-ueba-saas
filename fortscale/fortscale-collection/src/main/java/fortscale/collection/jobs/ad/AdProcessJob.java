@@ -12,6 +12,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
@@ -34,7 +35,10 @@ public abstract class AdProcessJob extends FortscaleJob {
 	@Autowired
 	private ImpalaParser impalaParser;
 	
-	
+	@Value("${ldap.tables.fields.timestampepoch}")
+	private String timestampepochFieldName;
+	@Value("${ldap.tables.fields.runtime}")
+	private String runtimeFieldName;
 
 
 	protected MorphlinesItemsProcessor morphline;
@@ -73,7 +77,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		
 
 		// build record to items processor
-		outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields").split(",");
+		outputFields = ImpalaParser.getTableFieldNamesAsArray(jobDataMapExtension.getJobDataMapStringValue(map, "outputFields"));
 		String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, outputFields);
 
@@ -161,15 +165,15 @@ public abstract class AdProcessJob extends FortscaleJob {
 			logger.warn("the following runtime ({}) was already processed.", runtime);
 			return false;
 		}
-		String timestamp = impalaParser.formatTimeDate(runtime);
+		String runtimeString = impalaParser.formatTimeDate(runtime);
 		String timestampepoch = Long.toString(impalaParser.getRuntime(runtime));
 		
 		String line = null;
 		while ((line = reader.readLine()) != null) {
 			Record record = morphlineProcessLine(line);
 			if(record != null){
-				record.put("timestamp", timestamp);
-				record.put("timestampepoch", timestampepoch);
+				record.put(runtimeFieldName, runtimeString);
+				record.put(timestampepochFieldName, timestampepoch);
 				if(updateDb(record)){
 					writeToHdfs(record, runtime.getTime());
 				}

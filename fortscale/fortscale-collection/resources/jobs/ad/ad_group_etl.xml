@@ -37,11 +37,11 @@
 				</entry>
 				<entry>
 					<key>outputFields</key>
-					<value>${collection.ad.group.output.fields}</value>
+					<value>${impala.ldapgroups.table.fields}</value>
 				</entry>
 				<entry>
 					<key>outputSeparator</key>
-					<value>|</value>
+					<value>${impala.ldapgroups.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
