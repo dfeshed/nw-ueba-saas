@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.analyst.Analyst;
@@ -61,12 +62,22 @@ public class ApiAdminAnalystController {
 		mongoUserDetailsService.disableUser(username.toString());
 	}
 	
+	@RequestMapping(value="/enableAnalyst", method=RequestMethod.POST)
+	@LogException
+	public void enableAnalyst(@Valid Username username, BindingResult result, Model model){
+		if (result.hasErrors()) {
+			throw new InvalidValueException(result.toString());
+		}
+		
+		mongoUserDetailsService.enableUser(username.toString());
+	}
+	
 	@RequestMapping(value="/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<AnalystBean>> details(Model model){
+	public DataBean<List<AnalystBean>> details(@RequestParam(defaultValue="true") Boolean onlyEnabled, Model model){
 		DataBean<List<AnalystBean>> ret = new DataBean<List<AnalystBean>>();
-		List<Analyst> analysts = analystService.findAllNonDisabledUsers();
+		List<Analyst> analysts = onlyEnabled ? analystService.findAllNonDisabledUsers() : analystService.findAll();
 		List<AnalystBean> analystBeans = new ArrayList<>();
 		for(Analyst analyst: analysts) {
 			UserDetails userDetails = mongoUserDetailsService.loadUserByUsername(analyst.getUserName());

@@ -38,4 +38,8 @@ public class AnalystBean {
 		}
 		return ret;
 	}
+	
+	public boolean isDisabled(){
+		return analyst.isDisabled();
+	}
 }

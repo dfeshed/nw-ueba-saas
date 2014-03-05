@@ -139,6 +139,24 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
     	analystAuth.setAccountNonExpired(false);
     	analystAuthRepository.save(analystAuth);
     }
+    
+    /**
+     * disable the user with the given login name.
+     */
+    public void enableUser(String username) {
+    	Analyst analyst = analystRepository.findByUserName(username);
+    	if(analyst == null){
+    		throw new UsernameNotFoundException(username);
+    	}
+    	if(analyst.isDisabled()){
+			analyst.setDisabled(false);
+			analystRepository.save(analyst);
+		
+	    	AnalystAuth analystAuth = analystAuthRepository.findByUsername(username);
+	    	analystAuth.setAccountNonExpired(true);
+	    	analystAuthRepository.save(analystAuth);
+    	}
+    }
 
     /**
      * Modify the current user's password. This should change the user's password in
