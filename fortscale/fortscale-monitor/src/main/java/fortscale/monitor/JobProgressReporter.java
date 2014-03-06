@@ -24,9 +24,10 @@ public interface JobProgressReporter {
 	 * @param sourceType the type of data the job handles, i.e. VPN, SSH
 	 * @param jobName the name of the job
 	 * @param numSteps the total number steps expected in the job
+	 * @param shouldReportData set a value indicating if a job is expected to report data counts
 	 * @return the job instance id
 	 */
-	public String startJob(String sourceType, String jobName, int numSteps);
+	public String startJob(String sourceType, String jobName, int numSteps, boolean shouldReportData);
 	
 	/**
 	 * Reports the time the job has finished executing

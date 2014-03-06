@@ -68,7 +68,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 		// get the job group name to be used using monitoring 
 		String sourceName = context.getJobDetail().getKey().getGroup();
 		String jobName = context.getJobDetail().getKey().getName();
-		String monitorId = monitor.startJob(sourceName, jobName, 3);
+		String monitorId = monitor.startJob(sourceName, jobName, 3, true);
 		
 		try {
 		

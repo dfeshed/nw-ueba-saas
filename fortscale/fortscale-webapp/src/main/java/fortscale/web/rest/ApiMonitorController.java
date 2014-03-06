@@ -122,7 +122,7 @@ public class ApiMonitorController {
 				runDetail.setSeverity("WARN");
 			} else if (report.getFinish()==null) {
 				runDetail.setSeverity("NOT_FINISHED");
-			} else if (!hasData(report)) {
+			} else if (report.isShouldReportDataReceived() && !hasData(report)) {
 				runDetail.setSeverity("NO_DATA");
 			} else {
 				runDetail.setSeverity("OK");

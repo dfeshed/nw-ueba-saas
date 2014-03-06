@@ -14,6 +14,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
@@ -169,6 +170,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		String timestampepoch = Long.toString(impalaParser.getRuntime(runtime));
 		
 		String line = null;
+		int counter = 0;
 		while ((line = reader.readLine()) != null) {
 			Record record = morphlineProcessLine(line);
 			if(record != null){
@@ -176,11 +178,12 @@ public abstract class AdProcessJob extends FortscaleJob {
 				record.put(timestampepochFieldName, timestampepoch);
 				if(updateDb(record)){
 					writeToHdfs(record, runtime.getTime());
+					counter++;
 				}
 			}
 		}
 
-
+		reportDataCount(counter);
 		if (reader.HasErrors()) {
 			monitor.error(getMonitorId(), getStepName(), reader.getException().toString());
 			return false;
@@ -192,7 +195,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		}
 	}
 	
-	
+	protected abstract void reportDataCount(int counter);
 	protected abstract boolean isTimestampAlreadyProcessed(Date runtime);
 	protected abstract boolean updateDb(Record record) throws Exception;
 	
@@ -276,6 +279,10 @@ public abstract class AdProcessJob extends FortscaleJob {
 		return outputFields;
 	}
 	
+	@Override
+	protected boolean shouldReportDataReceived() {
+		return true;
+	}
 	
 
 }

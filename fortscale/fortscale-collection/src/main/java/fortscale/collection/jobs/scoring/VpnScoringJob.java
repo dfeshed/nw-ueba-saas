@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.services.UserServiceFacade;
 
-public class VpnScoringJob extends EventScoringJob{
+public class VpnScoringJob extends EventScoringJob {
 	
 	@Autowired
 	private UserServiceFacade userServiceFacade;

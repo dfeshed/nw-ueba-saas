@@ -52,7 +52,7 @@ public class MongoJobProgressReporterTest {
 		report.setId("aaaa");
 		when(repository.save((JobReport)anyObject())).thenReturn(report);
 		
-		String id = subject.startJob("sourceA",  "jobA", 0);
+		String id = subject.startJob("sourceA",  "jobA", 0, false);
 		assertNotNull(id);
 		assertTrue(id.length()>0);
 	}
@@ -67,7 +67,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.save((JobReport)anyObject())).thenReturn(value);
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
-		String id = subject.startJob("sourceA", "jobA", 0);
+		String id = subject.startJob("sourceA", "jobA", 0, false);
 		JobReport report = subject.getByID(id);
 		
 		assertNotNull(report);
@@ -84,7 +84,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
 		
-		String id = subject.startJob("sourceA", "jobA", 0);
+		String id = subject.startJob("sourceA", "jobA", 0, false);
 		JobReport report = subject.getByID(id);
 		
 		Date start = report.getStart();
@@ -121,7 +121,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
 		
-		String id = subject.startJob("SourceA", "JobA", 0);
+		String id = subject.startJob("SourceA", "JobA", 0, false);
 		subject.finishJob(id);
 		
 		JobReport report = subject.getByID(id);
@@ -158,7 +158,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.save((JobReport)anyObject())).thenReturn(value);
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
-		String id = subject.startJob("SourceA",  "JobA", 0);
+		String id = subject.startJob("SourceA",  "JobA", 0, false);
 		subject.startStep(id, null, 0);
 		
 		// do nothing, ensure no exception is thrown
@@ -176,7 +176,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
 				
-		String id = subject.startJob("SourceA",  "JobA", 0);
+		String id = subject.startJob("SourceA",  "JobA", 0, false);
 		subject.startStep(id, "Step1", 0);
 		
 		JobReport report = subject.getByID(id);
@@ -195,7 +195,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
 		
-		String id = subject.startJob("SourceA",  "JobA", 0);
+		String id = subject.startJob("SourceA",  "JobA", 0, false);
 		subject.finishStep(id, "IgnoreMe");
 		
 		// do nothing, ensure no exception is thrown
@@ -216,7 +216,7 @@ public class MongoJobProgressReporterTest {
 		report.setId("aaaa");
 		when(repository.save((JobReport)anyObject())).thenReturn(report);
 		
-		String id = subject.startJob("SourceA",  "JobA", 0);
+		String id = subject.startJob("SourceA",  "JobA", 0, false);
 		subject.finishStep(id, null);
 		
 		// do nothing, ensure no exception is thrown
@@ -237,7 +237,7 @@ public class MongoJobProgressReporterTest {
 		when(repository.save((JobReport)anyObject())).thenReturn(value);
 		when(repository.findOne("aaaa")).thenReturn(value);
 		
-		String id = subject.startJob("SourceA",  "JobA", 0);
+		String id = subject.startJob("SourceA",  "JobA", 0, false);
 		subject.startStep(id, "StepA",  0);
 		subject.finishStep(id, "StepA");
 		

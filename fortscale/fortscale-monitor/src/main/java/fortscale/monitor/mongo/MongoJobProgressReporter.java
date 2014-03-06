@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.monitor.domain.JobMessage;
@@ -42,7 +43,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 	}
 
 	@Override
-	public String startJob(String sourceType, String jobName, int numSteps) {
+	public String startJob(String sourceType, String jobName, int numSteps, boolean shouldReportData) {
 		
 		if ((sourceType ==null) || (jobName == null)) {
 			logger.warn(String.format("startJob called with sourceType=%s, jobName=%s", sourceType, jobName));
@@ -54,6 +55,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 		report.setSourceType(sourceType);
 		report.setStart(new Date());
 		report.setTotalExceptedSteps(numSteps);
+		report.setShouldReportDataReceived(shouldReportData);
 		
 		JobReport saved = repository.save(report);
 		return saved.getId();

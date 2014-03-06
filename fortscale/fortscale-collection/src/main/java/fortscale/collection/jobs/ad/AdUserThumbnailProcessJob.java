@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.domain.ad.dao.AdUserThumbnailRepository;
+import fortscale.monitor.domain.JobDataReceived;
 
 @DisallowConcurrentExecution
 public class AdUserThumbnailProcessJob extends FortscaleJob {
@@ -56,7 +57,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		
 		Process pr =  runCmd(null, ldapUserThumbnail);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-		String line = "";			
+		String line = "";	
 		while ((line = reader.readLine())!= null) {
 			processLine(line);
 		}
@@ -83,8 +84,14 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	private void flushAdUserThumbnailBuffer(){
 		if(!adUserThumbnails.isEmpty()){
 			adUserThumbnailRepository.save(adUserThumbnails);
+			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", adUserThumbnails.size(), "Users"));
 			adUserThumbnails.clear();
 		}
+	}
+	
+	@Override
+	protected boolean shouldReportDataReceived() {
+		return true;
 	}
 
 }

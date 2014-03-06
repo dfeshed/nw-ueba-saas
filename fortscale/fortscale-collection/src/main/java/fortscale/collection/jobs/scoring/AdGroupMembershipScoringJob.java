@@ -160,4 +160,9 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 		impalaClient.refreshTable(impalaTableName);
 		finishStep();
 	}
+	
+	@Override
+	protected boolean shouldReportDataReceived() {
+		return false;
+	}
 }
