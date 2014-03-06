@@ -1,7 +1,13 @@
 package fortscale.services.impl;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 
 import fortscale.domain.analyst.ScoreConfiguration;
 import fortscale.domain.analyst.ScoreWeight;
@@ -10,21 +16,32 @@ import fortscale.domain.core.User;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.hdfs.HDFSWriter;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.logging.Logger;
 
 public class ImpalaTotalScoreWriter extends ImpalaWriter{
+	private static Logger logger = Logger.getLogger(ImpalaTotalScoreWriter.class);
 	
 	private static ScoreWeight TOTAL_SCORE_WEIGHT = new ScoreWeight(Classifier.total.getId(), 0.0);
 	
-	public ImpalaTotalScoreWriter(File file, ImpalaParser impalaParser){
+	private List<String> tableFieldsNames;
+	private String tableFieldsDelimiter;
+	
+	public ImpalaTotalScoreWriter(File file, ImpalaParser impalaParser, List<String> tableFieldsNames, String tableFieldsDelimiter){
 		super(file, impalaParser);
+		this.tableFieldsNames = tableFieldsNames;
+		this.tableFieldsDelimiter = tableFieldsDelimiter;
 	}
 	
-	public ImpalaTotalScoreWriter(ImpalaParser impalaParser) {
+	public ImpalaTotalScoreWriter(ImpalaParser impalaParser, List<String> tableFieldsNames, String tableFieldsDelimiter) {
 		super(impalaParser);
+		this.tableFieldsNames = tableFieldsNames;
+		this.tableFieldsDelimiter = tableFieldsDelimiter;
 	}
 	
-	public ImpalaTotalScoreWriter(HDFSWriter writer, ImpalaParser impalaParser) {
+	public ImpalaTotalScoreWriter(HDFSWriter writer, ImpalaParser impalaParser, List<String> tableFieldsNames, String tableFieldsDelimiter) {
 		super(writer, impalaParser);
+		this.tableFieldsNames = tableFieldsNames;
+		this.tableFieldsDelimiter = tableFieldsDelimiter;
 	}
 
 	public void writeScores(User user, Date timestamp, ScoreConfiguration scoreConfiguration){
@@ -55,10 +72,18 @@ public class ImpalaTotalScoreWriter extends ImpalaWriter{
 		if(classifierScore == null){
 			return;
 		}
-		String csvLineString = String.format("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s", getRuntime(timestamp), getRuntime(classifierScore.getTimestamp()),
-				user.getUsername(), scoreWeight.getId(), classifierScore.getScore(), scoreExplanation, classifierScore.getAvgScore(), classifierScore.getTrend(), scoreWeight.getWeight(),
-				user.getAdInfo().getDn(), user.getId());
-		writeLine(csvLineString, getRuntime(timestamp));
+		
+		TotalScoreView totalScoreView = new TotalScoreView(impalaParser, user, scoreWeight, timestamp, scoreExplanation, classifierScore);
+		List<String> values = new ArrayList<>();
+		for(String fieldName: tableFieldsNames){
+			try {
+				values.add(BeanUtils.getProperty(totalScoreView, fieldName));
+			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+				logger.warn(String.format("got the following exception while trying to read the field %s", fieldName), e);
+				values.add("NULL");
+			}
+		}
+		writeLine(StringUtils.join(values, tableFieldsDelimiter), totalScoreView.getRuntime());		
 	}
 	
 //	private void writeScore(User user, String classifierId){

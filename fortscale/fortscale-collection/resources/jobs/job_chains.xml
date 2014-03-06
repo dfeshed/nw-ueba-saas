@@ -70,4 +70,24 @@
 			<group>AD</group>
 		</second>
 	</chain>
+	<chain>
+		<first>
+			<name>Computer_Fetch</name>
+			<group>AD</group>
+		</first>
+		<second>
+			<name>Computer_ETL</name>
+			<group>AD</group>
+		</second>
+	</chain>
+	<chain>
+		<first>
+			<name>OU_Fetch</name>
+			<group>AD</group>
+		</first>
+		<second>
+			<name>OU_ETL</name>
+			<group>AD</group>
+		</second>
+	</chain>
 </chains-data>

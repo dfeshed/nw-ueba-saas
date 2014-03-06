@@ -97,6 +97,10 @@ public class BatchScheduler {
 	public void runFullCycle() throws Exception{
 		startSchedulerAndPauseAllJobs();
 		
+		startJob("Computer_Fetch", "AD");
+		startJob("Computer_ETL", "AD");
+		startJob("OU_Fetch", "AD");
+		startJob("OU_ETL", "AD");
 		startJob("Group_Fetch", "AD");
 		startJob("Group_ETL", "AD");
 		startJob("User_Fetch", "AD");

@@ -91,9 +91,9 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	public ImpalaTotalScoreWriter createImpalaTotalScoreWriter() {
 		ImpalaTotalScoreWriter writer = null;
 		if(totalScoreAppender != null){
-			writer = new ImpalaTotalScoreWriter(totalScoreAppender, impalaParser);
+			writer = new ImpalaTotalScoreWriter(totalScoreAppender, impalaParser, ImpalaParser.getTableFieldNames(impalaGroupMembershipScoringTableFields), impalaGroupMembershipScoringTableDelimiter);
 		} else{
-			writer = new ImpalaTotalScoreWriter(impalaParser);
+			writer = new ImpalaTotalScoreWriter(impalaParser, ImpalaParser.getTableFieldNames(impalaGroupMembershipScoringTableFields), impalaGroupMembershipScoringTableDelimiter);
 		}
 		return writer;
 	}
