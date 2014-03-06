@@ -57,7 +57,7 @@ public class FolderCleanupJob implements Job {
 			if (e instanceof JobExecutionException)
 				throw e;
 			else {
-				logger.error("un expected error during folder clean up job" + e.toString());
+				logger.error("un-expected error during folder clean up job" + e.toString());
 				throw new JobExecutionException(e);
 			}
 		} finally {
@@ -70,13 +70,13 @@ public class FolderCleanupJob implements Job {
 	public void cleanupFolder(File folderFile, int threshold, int maxFolderSize, boolean recursive) throws JobExecutionException {
 		if (!folderFile.exists()) {
 			// log warning and exit as there is nothing to do (some folders may not be created all the time, e.g. error)
-			logger.warn("folder {} does not exists", folderFile.getName());
-			monitor.warn(monitorId, "Cleanup", String.format("folder '%s' does not exists", folderFile.getName()));
+			logger.warn("folder {} does not exist", folderFile.getName());
+			monitor.warn(monitorId, "Cleanup", String.format("folder '%s' does not exist", folderFile.getName()));
 			return;
 		}
 		
 		if (!folderFile.isDirectory())
-			throw new JobExecutionException("folder '" + folderFile.getPath() + "' does not exists or not a folder", false);
+			throw new JobExecutionException("folder '" + folderFile.getPath() + "' does not exist or not a folder", false);
 		
 		// get the folder free space
 		long totalMB = (folderFile.getTotalSpace() / (1024 *1024));
