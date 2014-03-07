@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.dao.AdGroupRepository;
-import fortscale.monitor.domain.JobDataReceived;
 
 public class AdGroupProcessJob extends AdProcessJob {
 	
@@ -45,7 +44,7 @@ public class AdGroupProcessJob extends AdProcessJob {
 	}
 	
 	@Override
-	protected String getDateRecievedType() {
+	protected String getDataRecievedType() {
 		return "Groups";
 	}
 
