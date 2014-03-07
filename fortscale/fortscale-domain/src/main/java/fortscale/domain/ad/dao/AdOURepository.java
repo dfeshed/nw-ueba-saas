@@ -8,4 +8,5 @@ import fortscale.domain.ad.AdOU;
 
 public interface AdOURepository extends MongoRepository<AdOU, String>{
 	public List<AdOU> findByLastModifiedExists(boolean exists);
+	public long countByTimestampepoch(Long timestampepoch);
 }

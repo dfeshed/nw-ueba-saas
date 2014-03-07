@@ -27,7 +27,7 @@ public class AdFetchJob extends FortscaleJob {
 	//Job parameters:
 	private String filenameFormat;
 	private String outputPath;
-	private String ldapUserSearchShellScript;
+	private String ldapSearchShellScript;
 	
 	
 	
@@ -40,7 +40,7 @@ public class AdFetchJob extends FortscaleJob {
 		
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");	
-		ldapUserSearchShellScript = jobDataMapExtension.getJobDataMapStringValue(map, "ldapUserSearchShellScript");
+		ldapSearchShellScript = jobDataMapExtension.getJobDataMapStringValue(map, "ldapSearchShellScript");
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class AdFetchJob extends FortscaleJob {
 		startNewStep("Fetch and Write to file");
 		
 		//TODO: Handle errors
-		Process pr =  runCmd(null, ldapUserSearchShellScript, outputTempFile.getAbsolutePath());
+		Process pr =  runCmd(null, ldapSearchShellScript, outputTempFile.getAbsolutePath());
 		if(pr == null){
 			return false;
 		}

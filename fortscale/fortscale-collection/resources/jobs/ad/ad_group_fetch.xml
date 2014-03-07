@@ -24,7 +24,7 @@
 					<value>groups%d.csv</value>
 				</entry>
 				<entry>
-					<key>ldapUserSearchShellScript</key>
+					<key>ldapSearchShellScript</key>
 					<value>${collection.shell.scripts.dir.path}/ldapGroupSearch.sh</value>
 				</entry>
             </job-data-map>

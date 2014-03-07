@@ -22,7 +22,7 @@ public class HadoopInit implements InitializingBean{
 	@Autowired
 	protected ImpalaClient impalaClient;
 	
-	@Value("${hdfs.user.data.security.events.4769.path},${hdfs.user.data.ssh.path},${hdfs.user.data.vpn.path},${hdfs.user.data.ldap.users.path},${hdfs.user.data.ldap.groups.path},${hdfs.user.data.users.path},${hdfs.user.processeddata.security.events.4769.path},${hdfs.user.processeddata.sshscores.path},${hdfs.user.processeddata.vpnscores.path}, ${hdfs.user.processeddata.totalscore.path}, ${hdfs.user.processeddata.group.membership.score.path}")
+	@Value("${hdfs.user.data.security.events.4769.path},${hdfs.user.data.ssh.path},${hdfs.user.data.vpn.path},${hdfs.user.data.ldap.users.path},${hdfs.user.data.ldap.groups.path},${hdfs.user.data.ldap.computers.path},${hdfs.user.data.ldap.ous.path},${hdfs.user.data.users.path},${hdfs.user.processeddata.security.events.4769.path},${hdfs.user.processeddata.sshscores.path},${hdfs.user.processeddata.vpnscores.path}, ${hdfs.user.processeddata.totalscore.path}, ${hdfs.user.processeddata.group.membership.score.path}")
 	private String impalaDirectories;
 	
 	//Users table
@@ -95,6 +95,36 @@ public class HadoopInit implements InitializingBean{
 	@Value("${hdfs.user.processeddata.sshscores.path}")
 	private String impalaSshScoringDirectory;
 	
+	//Total Score table
+	@Value("${impala.total.scores.table.fields}")
+	private String impalaTotalScoringTableFields;
+	@Value("${impala.total.scores.table.delimiter}")
+	private String impalaTotalScoringTableDelimiter;
+	@Value("${impala.total.scores.table.name}")
+	private String impalaTotalScoringTableName;
+	@Value("${hdfs.user.processeddata.totalscore.path}")
+	private String impalaTotalScoringDirectory;
+	
+	
+	//AD Computers table
+	@Value("${impala.ldapcomputers.table.fields}")
+	private String impalaAdComputerTableFields;
+	@Value("${impala.ldapcomputers.table.delimiter}")
+	private String impalaAdComputerTableDelimiter;
+	@Value("${impala.ldapcomputers.table.name}")
+	private String impalaAdComputerTableName;
+	@Value("${hdfs.user.data.ldap.computers.path}")
+	private String impalaAdComputerDirectory;
+	
+	//AD OUs table
+	@Value("${impala.ldapous.table.fields}")
+	private String impalaAdOUTableFields;
+	@Value("${impala.ldapous.table.delimiter}")
+	private String impalaAdOUTableDelimiter;
+	@Value("${impala.ldapous.table.name}")
+	private String impalaAdOUTableName;
+	@Value("${hdfs.user.data.ldap.ous.path}")
+	private String impalaAdOUDirectory;
 	
 	//AD Group table
 	@Value("${impala.ldapgroups.table.fields}")
@@ -163,6 +193,15 @@ public class HadoopInit implements InitializingBean{
 		//SSH Scoring table
 		createTable(impalaSshScoringTableName, impalaSshScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaSshScoringTableDelimiter, impalaSshScoringDirectory);
 		
+		//Total Scoring table
+		createTable(impalaTotalScoringTableName, impalaTotalScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaTotalScoringTableDelimiter, impalaTotalScoringDirectory);
+		
+		//AD Computer table
+		createTable(impalaAdComputerTableName, impalaAdComputerTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaAdComputerTableDelimiter, impalaAdComputerDirectory);
+
+		//AD OU table
+		createTable(impalaAdOUTableName, impalaAdOUTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaAdOUTableDelimiter, impalaAdOUDirectory);
+				
 		//AD Group table
 		createTable(impalaAdGroupTableName, impalaAdGroupTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaAdGroupTableDelimiter, impalaAdGroupDirectory);
 		

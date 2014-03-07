@@ -8,4 +8,5 @@ import fortscale.domain.ad.AdComputer;
 
 public interface AdComputerRepository extends MongoRepository<AdComputer, String>{
 	public List<AdComputer> findByLastModifiedExists(boolean exists);
+	public long countByTimestampepoch(Long timestampepoch);
 }

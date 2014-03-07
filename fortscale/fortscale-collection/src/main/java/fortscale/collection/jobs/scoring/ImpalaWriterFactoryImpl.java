@@ -29,6 +29,11 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	@Value("${impala.ldap.group.membership.scores.table.delimiter}")
 	private String impalaGroupMembershipScoringTableDelimiter;
 	
+	@Value("${impala.total.scores.table.fields}")
+	private String impalaTotalScoringTableFields;
+	@Value("${impala.total.scores.table.delimiter}")
+	private String impalaTotalScoringTableDelimiter;
+	
 	private HDFSPartitionsWriter groupsScoreAppender;
 	private HDFSPartitionsWriter totalScoreAppender;
 	
@@ -91,9 +96,9 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	public ImpalaTotalScoreWriter createImpalaTotalScoreWriter() {
 		ImpalaTotalScoreWriter writer = null;
 		if(totalScoreAppender != null){
-			writer = new ImpalaTotalScoreWriter(totalScoreAppender, impalaParser);
+			writer = new ImpalaTotalScoreWriter(totalScoreAppender, impalaParser, ImpalaParser.getTableFieldNames(impalaTotalScoringTableFields), impalaTotalScoringTableDelimiter);
 		} else{
-			writer = new ImpalaTotalScoreWriter(impalaParser);
+			writer = new ImpalaTotalScoreWriter(impalaParser, ImpalaParser.getTableFieldNames(impalaTotalScoringTableFields), impalaTotalScoringTableDelimiter);
 		}
 		return writer;
 	}

@@ -1,4 +1,4 @@
-package fortscale.collection.jobs;
+package fortscale.domain.ad;
 
 import java.beans.PropertyDescriptor;
 import java.util.Date;
@@ -17,10 +17,10 @@ import fortscale.utils.properties.IllegalStructuredProperty;
 import fortscale.utils.properties.PropertiesResolver;
 import fortscale.utils.properties.PropertyNotExistException;
 
-public class AdGroupProcessJobTest {
+public class AdGroupTest {
 	
 	@Test
-	public void outputFieldsTest() throws PropertyNotExistException, IllegalStructuredProperty{
+	public void fieldsTest() throws PropertyNotExistException, IllegalStructuredProperty{
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.ldapgroups.table.fields");
 				
