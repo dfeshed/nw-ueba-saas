@@ -45,8 +45,8 @@ public class AdGroupProcessJob extends AdProcessJob {
 	}
 	
 	@Override
-	protected void reportDataCount(int counter) {
-		monitor.addDataReceived(getMonitorId(), new JobDataReceived("Groups", counter, ""));
+	protected String getDateRecievedType() {
+		return "Groups";
 	}
 
 }

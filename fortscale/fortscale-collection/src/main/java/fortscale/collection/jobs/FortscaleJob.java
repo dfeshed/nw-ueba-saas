@@ -42,7 +42,7 @@ public abstract class FortscaleJob implements Job {
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		init(jobExecutionContext);
 		
-		String monitorId = startMonitoring(jobExecutionContext, getTotalNumOfSteps(), shouldReportDataReceived());
+		String monitorId = startMonitoring(jobExecutionContext, getTotalNumOfSteps());
 		
 		setMonitorId(monitorId);
 		try{
@@ -178,11 +178,11 @@ public abstract class FortscaleJob implements Job {
 	}
 	
 
-	private String startMonitoring(JobExecutionContext jobExecutionContext, int numOfSteps, boolean shouldReportData){
+	private String startMonitoring(JobExecutionContext jobExecutionContext, int numOfSteps){
 		// get the job group name to be used using monitoring 
 		String sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
 		String jobName = jobExecutionContext.getJobDetail().getKey().getName();
-		String monitorId = monitor.startJob(sourceName, jobName, numOfSteps, shouldReportData);
+		String monitorId = monitor.startJob(sourceName, jobName, numOfSteps, shouldReportDataReceived());
 		
 		return monitorId;
 	}

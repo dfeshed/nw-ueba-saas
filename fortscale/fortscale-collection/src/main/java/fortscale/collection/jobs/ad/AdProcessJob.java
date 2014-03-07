@@ -182,8 +182,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 				}
 			}
 		}
-
-		reportDataCount(counter);
+		
+		monitor.addDataReceived(getMonitorId(), new JobDataReceived(getDateRecievedType(), counter, ""));
 		if (reader.HasErrors()) {
 			monitor.error(getMonitorId(), getStepName(), reader.getException().toString());
 			return false;
@@ -195,7 +195,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		}
 	}
 	
-	protected abstract void reportDataCount(int counter);
+	protected abstract String getDateRecievedType();
 	protected abstract boolean isTimestampAlreadyProcessed(Date runtime);
 	protected abstract boolean updateDb(Record record) throws Exception;
 	
