@@ -25,13 +25,7 @@ public class PigRunner implements InitializingBean {
 	private PigOperations  pigOperations;
 	
 	@Autowired
-	private PigServerFactory pigFactory;
-	
-	@Value("file:${collection.lib.dir}/beardedpig-1.0-SNAPSHOT.jar")
-	private Resource beardedpigJar;
-	@Value("file:${collection.lib.dir}/calibro-1.0-SNAPSHOT.jar")
-	private Resource calibroJar;
-	
+	private PigServerFactory pigFactory;	
 	
 	public ExecJob run(Resource pigScriptResource, Properties scriptParameters) throws NoPigJobExecutedException, ExecException, InterruptedException{
         PigScript pigScript = new PigScript(pigScriptResource, scriptParameters);
@@ -60,8 +54,14 @@ public class PigRunner implements InitializingBean {
 		// in the pig scripts. It is assumed this method is run only once since
 		// the PigRunner class is singleton
 		PigServer server = pigFactory.getPigServer();
-		server.registerJar(beardedpigJar.getFile().getAbsolutePath());
-		server.registerJar(calibroJar.getFile().getAbsolutePath());
+		
+		// get the jar location for calibro jar
+		String calibroJarLocation = fortscale.calibro.Calibration.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString();
+		server.registerJar(calibroJarLocation);
+		
+		// get the jar location for beardedpig jar
+		String beardedpigJarLocation = fortscale.ebs.EventBulkScorer.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString();
+		server.registerJar(beardedpigJarLocation);
 	}
 	
 }
