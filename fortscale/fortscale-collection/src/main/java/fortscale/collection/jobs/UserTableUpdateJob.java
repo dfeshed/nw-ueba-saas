@@ -79,6 +79,11 @@ public class UserTableUpdateJob extends FortscaleJob {
 	protected int getTotalNumOfSteps() {
 		return 5;
 	}
+	
+	@Override
+	protected boolean shouldReportDataReceived() {
+		return false;
+	}
 
 	@Override
 	protected void runSteps() throws Exception {

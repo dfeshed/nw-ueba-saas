@@ -69,6 +69,11 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 	}
 
 	@Override
+	protected boolean shouldReportDataReceived() {
+		return false;
+	}
+	
+	@Override
 	protected void runSteps() throws Exception {
 		if (!listHDFSDirectoriesStep()) return;
 		

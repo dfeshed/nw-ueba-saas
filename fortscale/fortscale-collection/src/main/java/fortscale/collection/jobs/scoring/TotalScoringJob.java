@@ -54,6 +54,11 @@ public class TotalScoringJob extends FortscaleJob {
 	}
 
 	@Override
+	protected boolean shouldReportDataReceived() {
+		return false;
+	}
+	
+	@Override
 	protected void runSteps() throws Exception {
 		
 		boolean isSucceeded = updateTotalScore();

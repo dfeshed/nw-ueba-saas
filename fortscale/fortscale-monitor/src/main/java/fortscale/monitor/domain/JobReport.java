@@ -24,15 +24,17 @@ public class JobReport {
 	private List<JobStep> steps;
 	private boolean hasErrors;
 	private boolean hasWarnings;
+	private boolean shouldReportDataReceived;
 	private List<JobDataReceived> dataReceived;
 	private int totalExceptedSteps;
 	
 
 	public JobReport() {}
 	
-	public JobReport(String sourceType, String jobName) {
+	public JobReport(String sourceType, String jobName, boolean shouldReportDataReceived) {
 		this.setSourceType(sourceType);
 		this.setJobName(jobName);
+		this.setShouldReportDataReceived(shouldReportDataReceived);
 		this.hasErrors = false;
 		this.hasWarnings = false;
 	}
@@ -144,6 +146,14 @@ public class JobReport {
 
 	public void setTotalExceptedSteps(int totalExceptedSteps) {
 		this.totalExceptedSteps = totalExceptedSteps;
+	}
+
+	public boolean isShouldReportDataReceived() {
+		return shouldReportDataReceived;
+	}
+
+	public void setShouldReportDataReceived(boolean shouldReportDataReceived) {
+		this.shouldReportDataReceived = shouldReportDataReceived;
 	}
 
 

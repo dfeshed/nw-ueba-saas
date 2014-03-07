@@ -65,7 +65,7 @@ public class JobProgressReportShellCommand {
 		// start job option
 		OptionBuilder.withArgName("source-type> <job-name> <num-steps");
 		OptionBuilder.withValueSeparator(' ');
-		OptionBuilder.hasArgs(3);
+		OptionBuilder.hasArgs(4);
 		OptionBuilder.withLongOpt("start-job");
 		OptionBuilder.withDescription("reports job start");
 		options.addOption(OptionBuilder.create("sj"));
@@ -147,13 +147,14 @@ public class JobProgressReportShellCommand {
 		if (cmd.hasOption("sj")) {
 			// handle start job
 			String[] args = cmd.getOptionValues("sj");
-			if (args.length == 3) {
+			if (args.length == 4) {
 				try {
 					String sourceType = args[0];
 					String jobName = args[1];
 					int numSteps = Integer.parseInt(args[2]);
+					boolean shouldReportData = Boolean.parseBoolean(args[3]);
 					
-					String id = reporter.startJob(sourceType, jobName, numSteps);
+					String id = reporter.startJob(sourceType, jobName, numSteps, shouldReportData);
 					System.out.print(id);
 				} catch (NumberFormatException e) {}
 			}

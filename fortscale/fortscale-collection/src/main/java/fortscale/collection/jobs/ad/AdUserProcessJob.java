@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.UserServiceFacade;
 
 public class AdUserProcessJob extends AdProcessJob {
@@ -47,5 +48,9 @@ public class AdUserProcessJob extends AdProcessJob {
 		return true;
 	}
 	
+	@Override
+	protected String getDateRecievedType() {
+		return "Users";
+	}
 	
 }

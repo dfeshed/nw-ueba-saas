@@ -42,6 +42,7 @@ public class ApiMonitorControllerTest {
 		report.setJobName("MyJob");
 		report.setFinish(new Date());
 		report.getDataReceived().add(new JobDataReceived("MyType", 0, "Events"));
+		report.setShouldReportDataReceived(true);
 		reports.add(report);
 		when(monitor.findLatestJobReports()).thenReturn(reports);
 		
