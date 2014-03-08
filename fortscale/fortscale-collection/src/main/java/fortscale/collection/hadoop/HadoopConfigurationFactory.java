@@ -9,7 +9,7 @@ import org.springframework.data.hadoop.configuration.ConfigurationFactoryBean;
 public class HadoopConfigurationFactory extends ConfigurationFactoryBean implements ResourceLoaderAware{
 
 	private ResourceLoader resourceLoader;
-	private String resources;
+	private String resourcesString;
 	
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
@@ -18,18 +18,18 @@ public class HadoopConfigurationFactory extends ConfigurationFactoryBean impleme
 	
 	
 	
-	public void setResources(String resources) {
-		this.resources = resources;
+	public void setResourcesString(String resourcesString) {
+		this.resourcesString = resourcesString;
 	}
 
 
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if(!StringUtils.isEmpty(resources)){
+		if(!StringUtils.isEmpty(resourcesString)){
 			Configuration internalConfig = createConfiguration(null);
 			setConfiguration(internalConfig);
-			for(String res: resources.split(",")){
+			for(String res: resourcesString.split(",")){
 				internalConfig.addResource(resourceLoader.getResource(res).getURL());
 			}
 		}
