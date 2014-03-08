@@ -16,7 +16,7 @@
  	</bean>
  	
  	<bean id="hadoopConfiguration" class="fortscale.collection.hadoop.HadoopConfigurationFactory">
- 		<property name="resources" value="${hdfs.configuration.resources}"/>
+ 		<property name="resourcesString" value="${hdfs.configuration.resources}"/>
  	</bean>
 
 	<hdp:pig-factory id="pigFactory" configuration-ref="hadoopConfiguration"/>
