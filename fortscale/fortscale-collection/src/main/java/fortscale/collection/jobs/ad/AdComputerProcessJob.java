@@ -43,4 +43,8 @@ public class AdComputerProcessJob extends AdProcessJob {
 		return true;
 	}
 
+	@Override
+	protected String getDataRecievedType() {
+		return "Computers";
+	}
 }

@@ -43,4 +43,8 @@ public class AdOUProcessJob extends AdProcessJob {
 		return true;
 	}
 
+	@Override
+	protected String getDataRecievedType() {
+		return "OU";
+	}
 }

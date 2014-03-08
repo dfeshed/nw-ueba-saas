@@ -267,5 +267,9 @@ public abstract class EventScoringJob extends FortscaleJob {
 		this.earliestEventTime = earliestEventTime;
 	}
 	
+	@Override
+	protected boolean shouldReportDataReceived() {
+		return false;
+	}
 	
 }

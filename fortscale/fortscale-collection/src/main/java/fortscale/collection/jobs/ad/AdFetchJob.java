@@ -103,4 +103,8 @@ public class AdFetchJob extends FortscaleJob {
 		return true;
 	}
 	
+	@Override
+	protected boolean shouldReportDataReceived() {
+		return true;
+	}
 }

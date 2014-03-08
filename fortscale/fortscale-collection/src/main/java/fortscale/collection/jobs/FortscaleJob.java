@@ -35,7 +35,7 @@ public abstract class FortscaleJob implements Job {
 	protected abstract void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException;
 	
 	protected abstract int getTotalNumOfSteps();
-	
+	protected abstract boolean shouldReportDataReceived();
 	protected abstract void runSteps() throws Exception;
 
 	@Override
@@ -182,7 +182,7 @@ public abstract class FortscaleJob implements Job {
 		// get the job group name to be used using monitoring 
 		String sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
 		String jobName = jobExecutionContext.getJobDetail().getKey().getName();
-		String monitorId = monitor.startJob(sourceName, jobName, numOfSteps);
+		String monitorId = monitor.startJob(sourceName, jobName, numOfSteps, shouldReportDataReceived());
 		
 		return monitorId;
 	}

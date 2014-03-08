@@ -47,5 +47,9 @@ public class AdUserProcessJob extends AdProcessJob {
 		return true;
 	}
 	
+	@Override
+	protected String getDataRecievedType() {
+		return "Users";
+	}
 	
 }

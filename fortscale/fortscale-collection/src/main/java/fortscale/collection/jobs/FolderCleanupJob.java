@@ -38,7 +38,7 @@ public class FolderCleanupJob implements Job {
 			// report monitor start
 			String sourceName = context.getJobDetail().getKey().getGroup();
 			String jobName = context.getJobDetail().getKey().getName();
-			monitorId = monitor.startJob(sourceName, jobName, 1);
+			monitorId = monitor.startJob(sourceName, jobName, 1, false);
 			monitor.startStep(monitorId, "Cleanup", 1);
 			
 			// get job parameters

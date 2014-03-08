@@ -42,5 +42,10 @@ public class AdGroupProcessJob extends AdProcessJob {
 		
 		return true;
 	}
+	
+	@Override
+	protected String getDataRecievedType() {
+		return "Groups";
+	}
 
 }

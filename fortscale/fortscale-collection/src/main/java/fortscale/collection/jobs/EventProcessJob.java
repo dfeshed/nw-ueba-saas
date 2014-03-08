@@ -113,7 +113,7 @@ public class EventProcessJob implements Job {
 		String jobName = context.getJobDetail().getKey().getName();
 		
 		logger.info("{} {} job started", jobName, sourceName);
-		monitorId = monitor.startJob(sourceName, jobName, 3);
+		monitorId = monitor.startJob(sourceName, jobName, 3, true);
 
 		
 		String currentStep = "Get Job Parameters";

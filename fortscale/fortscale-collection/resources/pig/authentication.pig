@@ -3,8 +3,6 @@ SET pig.tmpfilecompression.codec gz
 SET pig.tmpfilecompression.storage seqfile
 SET pig.maxCombinedSplitSize 2147483648
 
-REGISTER '$jarFilePath1';
-REGISTER '$jarFilePath2';
 raw             = LOAD '$inputData' USING PigStorage('|') AS (generatedTimeRaw:chararray,generatedTime:chararray,categoryString:chararray,eventCode:chararray,logfile:chararray,recordNumber:chararray,sourceName:chararray,account_name:chararray,account_domain:chararray,service_name:chararray,service_id:chararray,client_address:chararray,ticket_options:chararray,failure_code:chararray,source_network_address:chararray,generatedTimeUnixTime:long,computer_name:chararray,normalized_username:chararray);
 loginByTime     = FILTER raw by generatedTimeUnixTime > (long)'$deltaTime';
 onlyUsers       = FILTER loginByTime by NOT (LOWER(account_name) MATCHES LOWER('$accountRegex'));
