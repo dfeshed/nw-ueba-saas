@@ -57,7 +57,7 @@ public class FolderCleanupJob implements Job {
 			if (e instanceof JobExecutionException)
 				throw e;
 			else {
-				logger.error("un-expected error during folder clean up job" + e.toString());
+				logger.error("unexpected error during folder clean up job: " + e.toString());
 				throw new JobExecutionException(e);
 			}
 		} finally {
@@ -83,7 +83,7 @@ public class FolderCleanupJob implements Job {
 		long freespaceMB = (folderFile.getUsableSpace() / (1024 * 1024));
 		int precentFree = (int) (freespaceMB * 100 / totalMB);
 		
-		long folderSizeMB = (FileUtils.sizeOfDirectory(folderFile) / (1024 * 1024));
+		long folderSizeMB = getFolderSize(folderFile, recursive);
 		
 		if (precentFree <= threshold || folderSizeMB > maxFolderSize) {
 			logger.info("reached avaialbe size threshold, starting to delete files from " + folderFile.getPath());
@@ -105,7 +105,7 @@ public class FolderCleanupJob implements Job {
 					}
 					freespaceMB = (folderFile.getUsableSpace() / (1024 * 1024));
 					precentFree = (int) (freespaceMB * 100 / totalMB);
-					folderSizeMB = (FileUtils.sizeOfDirectory(folderFile) / (1024 * 1024));
+					folderSizeMB = getFolderSize(folderFile, recursive);
 				} catch (Exception e) {
 					logger.error("cannot delete file " + fileToDelete.getName(), e);
 					monitor.error(monitorId, "Cleanup", "cannot delete file " + fileToDelete.getName());
@@ -114,10 +114,25 @@ public class FolderCleanupJob implements Job {
 			
 			// if we still have not enough free space report as warning
 			if (precentFree <= threshold || folderSizeMB > maxFolderSize) {
-				String message = String.format("delete all that can be from % but still not enough free space", folderFile.getName());
+				String message = String.format("delete all that can be from %s but still not enough free space", folderFile.getName());
 				logger.warn(message);
 				monitor.warn(monitorId, "Cleanup", message);
 			}
 		}
 	}	
+	
+	private long getFolderSize(File folder, boolean recursive) {
+		if (recursive) {
+			return (FileUtils.sizeOfDirectory(folder) / (1024 * 1024));
+		} else {
+			File[] files = folder.listFiles();
+			long size = 0L;
+			for (File file : files) {
+				if (!file.isDirectory()) {
+					size += FileUtils.sizeOf(file);
+				}
+			}
+			return size / (1024 * 1024);
+		}
+	}
 }
