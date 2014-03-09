@@ -115,10 +115,10 @@ public class AnalystServiceImpl implements AnalystService{
 	}
 
 	@Override
-	public List<AnalystSavedSearch> find(String id){
+	public List<AnalystSavedSearch> findSavedSearch(String savedSearchId){
 		List<AnalystSavedSearch> ret = null;
-		if(id != null){
-			AnalystSavedSearch analystSavedSearch = analystSavedSearchRepository.findOne(id);
+		if(savedSearchId != null){
+			AnalystSavedSearch analystSavedSearch = analystSavedSearchRepository.findOne(savedSearchId);
 			if(analystSavedSearch != null){
 				ret = new ArrayList<>();
 				ret.add(analystSavedSearch);

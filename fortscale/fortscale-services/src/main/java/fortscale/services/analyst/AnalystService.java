@@ -15,5 +15,5 @@ public interface AnalystService {
 	public List<Analyst> findAllNonDisabledUsers();
 	public void followUser(AnalystAuth analystAuth, String userId, boolean follow);
 	public String createSavedSearch(AnalystAuth analystAuth, String name, String category, String filter, String description);
-	public List<AnalystSavedSearch> find(String id);
+	public List<AnalystSavedSearch> findSavedSearch(String savedSearchId);
 }

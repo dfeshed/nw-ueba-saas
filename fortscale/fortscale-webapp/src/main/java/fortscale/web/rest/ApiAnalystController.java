@@ -161,7 +161,7 @@ public class ApiAnalystController extends BaseController{
 		if(analystAuth == null) {
 			return null;
 		}
-		List<AnalystSavedSearch> analystSavedSearchs = analystService.find(id);
+		List<AnalystSavedSearch> analystSavedSearchs = analystService.findSavedSearch(id);
 		
 		DataBean<List<AnalystSavedSearch>> ret = new DataBean<>();
 		ret.setData(analystSavedSearchs);
