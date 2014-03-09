@@ -9,7 +9,7 @@
 	<artifactId>fortscale-utils</artifactId>
 	<name>fortscale-utils</name>
 	<packaging>jar</packaging>
-	<url>http://mirror.fortscale.dom:8082/artifactory/remote-repos</url>
+
 	<repositories>
 		<repository>
 			<id>all-remotes</id>

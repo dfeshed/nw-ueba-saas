@@ -8,24 +8,6 @@
 	</parent>
 	<artifactId>fortscale-domain</artifactId>
 
-	<properties>
-		<joda-time.version>2.2</joda-time.version>
-		<junit.version>4.8.2</junit.version>
-		<fs-utils.version>${project.version}</fs-utils.version>
-		<spring-data-mongodb.version>1.3.2.RELEASE</spring-data-mongodb.version>
-		<spring-data-hadoop.version>2.0.0.M2-cdh4yarn</spring-data-hadoop.version>
-		<hamcrest.version>1.3</hamcrest.version>
-		<hive.version>0.10.0-cdh4.4.0</hive.version>
-		<hadoop.version>2.0.0-cdh4.4.0</hadoop.version>
-		<hadoop-core.version>2.0.0-mr1-cdh4.4.0</hadoop-core.version>
-		<spring-data-commons.version>1.6.1.RELEASE</spring-data-commons.version>
-		<cglib.version>2.2</cglib.version>
-		<thrift.version>0.9.0</thrift.version>
-		<commons-pool.version>1.4</commons-pool.version>
-		<commons-codec.version>1.5</commons-codec.version>
-	</properties>
-
-
 	<repositories>
 		<repository>
 			<snapshots>
@@ -68,6 +50,23 @@
 			<url>http://mirror.fortscale.dom:8082/artifactory/plugins-snapshot</url>
 		</pluginRepository>
 	</pluginRepositories>
+
+	<properties>
+		<joda-time.version>2.2</joda-time.version>
+		<junit.version>4.8.2</junit.version>
+		<fs-utils.version>${project.version}</fs-utils.version>
+		<spring-data-mongodb.version>1.3.2.RELEASE</spring-data-mongodb.version>
+		<spring-data-hadoop.version>2.0.0.M2-cdh4yarn</spring-data-hadoop.version>
+		<hamcrest.version>1.3</hamcrest.version>
+		<hive.version>0.10.0-cdh4.4.0</hive.version>
+		<hadoop.version>2.0.0-cdh4.4.0</hadoop.version>
+		<hadoop-core.version>2.0.0-mr1-cdh4.4.0</hadoop-core.version>
+		<spring-data-commons.version>1.6.1.RELEASE</spring-data-commons.version>
+		<cglib.version>2.2</cglib.version>
+		<thrift.version>0.9.0</thrift.version>
+		<commons-pool.version>1.4</commons-pool.version>
+		<commons-codec.version>1.5</commons-codec.version>
+	</properties>
 
 	<dependencies>
 		<dependency>

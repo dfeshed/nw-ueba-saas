@@ -9,31 +9,6 @@
 
 	<name>fortscale</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<junit.version>4.8.2</junit.version>
-		<mockito.version>1.9.5</mockito.version>
-		<logback.version>1.0.13</logback.version>
-		<slf4j.version>1.7.2</slf4j.version>
-		<org.springframework-version>3.2.0.RELEASE</org.springframework-version>
-		<spring.security.core.version>3.1.3.RELEASE</spring.security.core.version>
-		<perf4j.version>0.9.16</perf4j.version>
-		<jackson.version>2.2.3</jackson.version>
-		<jackson.dataformat.version>2.2.3</jackson.dataformat.version>
-		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
-		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
-		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
-		<maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
-		<test.exclude>nothingToExlude</test.exclude>
-		<test.include>**/*Test.java</test.include>
-		<test.groups></test.groups>
-		<test.exgroup></test.exgroup>
-		<test.int.exclude>nothingToExlude</test.int.exclude>
-		<test.int.include>**/*TestInt.java</test.int.include>
-		<test.int.groups></test.int.groups>
-		<test.int.exgroups></test.int.exgroups>
-	</properties>
-
 	<repositories>
 		<repository>
 			<snapshots>
@@ -52,6 +27,15 @@
 			<url>http://mirror.fortscale.dom:8082/artifactory/libs-snapshot</url>
 		</repository>
 		<repository>
+			<!-- 
+			     all remote repos are here: cloudera, spring, splunk, etc.  
+			     adding more:
+			     1. login as artifactory admin
+			     2. goto admin -> repositories
+			     3. add new remote repository
+			     4. edit remote-repos virtual repository:
+			        4.1 add the new remote there
+			-->
 			<id>all-remotes</id>
 			<name>remote-repos</name>
 			<url>http://mirror.fortscale.dom:8082/artifactory/remote-repos</url>
@@ -77,6 +61,33 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+	<properties>
+		<!-- NOTE: ALL dependencies' versions should be here -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<junit.version>4.8.2</junit.version>
+		<junitparams.version>1.0.2</junitparams.version>
+		<mockito.version>1.9.5</mockito.version>
+		<logback.version>1.0.13</logback.version>
+		<slf4j.version>1.7.2</slf4j.version>
+		<org.springframework-version>3.2.0.RELEASE</org.springframework-version>
+		<spring.security.core.version>3.1.3.RELEASE</spring.security.core.version>
+		<perf4j.version>0.9.16</perf4j.version>
+		<jackson.version>2.2.3</jackson.version>
+		<jackson.dataformat.version>2.2.3</jackson.dataformat.version>
+		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
+		<maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
+		<test.exclude>nothingToExlude</test.exclude>
+		<test.include>**/*Test.java</test.include>
+		<test.groups></test.groups>
+		<test.exgroup></test.exgroup>
+		<test.int.exclude>nothingToExlude</test.int.exclude>
+		<test.int.include>**/*TestInt.java</test.int.include>
+		<test.int.groups></test.int.groups>
+		<test.int.exgroups></test.int.exgroups>
+	</properties>
+
 
 	<dependencies>
 		<dependency>
@@ -87,17 +98,9 @@
 		</dependency>
 		
 		<dependency>
-    <groupId>jdk.tools</groupId>
-    <artifactId>jdk.tools</artifactId>
-    <version>1.7.0_05</version>
-    <scope>system</scope>
-    <systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
-</dependency>
-
-		<dependency>
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
-			<version>1.0.2</version>
+			<version>${junitparams.version}</version>
 			<scope>test</scope>
 		</dependency>
 

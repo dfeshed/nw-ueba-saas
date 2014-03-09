@@ -9,13 +9,6 @@
 	<artifactId>fortscale-services</artifactId>
 	<name>fortscale-services</name>
 
-    <properties>
-		<hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
-		<beardedpig.version>1.0-SNAPSHOT</beardedpig.version>
-		<pigunit.version>0.11.0-cdh4.4.0</pigunit.version>
-		<calibro.version>1.0-SNAPSHOT</calibro.version>
-	</properties>
-
 	<repositories>
 		<repository>
 			<snapshots>
@@ -58,6 +51,13 @@
 			<url>http://mirror.fortscale.dom:8082/artifactory/plugins-snapshot</url>
 		</pluginRepository>
 	</pluginRepositories>
+
+    <properties>
+		<hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
+		<beardedpig.version>1.0-SNAPSHOT</beardedpig.version>
+		<pigunit.version>0.11.0-cdh4.4.0</pigunit.version>
+		<calibro.version>1.0-SNAPSHOT</calibro.version>
+	</properties>
 
 	<dependencies>
 		<dependency>
