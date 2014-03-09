@@ -371,7 +371,7 @@
 					<!-- copy dependency to target folder -->
 					<execution>
 						<id>copy</id>
-						<phase></phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>copy</goal>
 						</goals>
