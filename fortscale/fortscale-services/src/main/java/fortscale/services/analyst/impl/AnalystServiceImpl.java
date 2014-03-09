@@ -1,5 +1,7 @@
 package fortscale.services.analyst.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,21 +9,28 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
+
 import fortscale.domain.analyst.Analyst;
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.analyst.AnalystFollowUser;
+import fortscale.domain.analyst.AnalystSavedSearch;
 import fortscale.domain.analyst.dao.AnalystFollowUserRepository;
 import fortscale.domain.analyst.dao.AnalystRepository;
+import fortscale.domain.analyst.dao.AnalystSavedSearchRepository;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.analyst.AnalystService;
 import fortscale.services.exceptions.UnknownResourceException;
+import fortscale.utils.logging.Logger;
 
 
 
 @Service("analystService")
 public class AnalystServiceImpl implements AnalystService{
+	private static Logger logger = Logger.getLogger(AnalystServiceImpl.class);
 	
 	@Autowired
 	private AnalystRepository analystRepository;
@@ -32,6 +41,8 @@ public class AnalystServiceImpl implements AnalystService{
 	@Autowired
 	private AnalystFollowUserRepository analystFollowUserRepository;
 	
+	@Autowired
+	private AnalystSavedSearchRepository analystSavedSearchRepository;
 	
 
 	@Override
@@ -87,6 +98,39 @@ public class AnalystServiceImpl implements AnalystService{
 	}
 
 
+
+	@Override
+	public String createSavedSearch(AnalystAuth analystAuth, String name,	String category, String filter, String description) {
+		if(analystSavedSearchRepository.findByNameAndCategory(name, category) != null){
+			logger.info("a save search with name ({}) and category ({}) already exist", name, category);
+			throw new IllegalArgumentException(String.format("a save search with name (%s) and category (%s) already exist", name, category));
+		}
+		
+		DBObject filterDbObject = (DBObject) JSON.parse(filter);
+		AnalystSavedSearch analystSavedSearch = new AnalystSavedSearch(analystAuth.getId(), analystAuth.getUsername(), name, category, filterDbObject);
+		analystSavedSearch.setDescription(description);
+		analystSavedSearch = analystSavedSearchRepository.save(analystSavedSearch);
+		
+		return analystSavedSearch.getId();
+	}
+
+	@Override
+	public List<AnalystSavedSearch> find(String id){
+		List<AnalystSavedSearch> ret = null;
+		if(id != null){
+			AnalystSavedSearch analystSavedSearch = analystSavedSearchRepository.findOne(id);
+			if(analystSavedSearch != null){
+				ret = new ArrayList<>();
+				ret.add(analystSavedSearch);
+			} else{
+				ret = Collections.emptyList();
+			}
+		} else{
+			ret = analystSavedSearchRepository.findAll();
+		}
+		
+		return ret;
+	}
 
 
 }
