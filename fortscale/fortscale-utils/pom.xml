@@ -9,22 +9,7 @@
 	<artifactId>fortscale-utils</artifactId>
 	<name>fortscale-utils</name>
 	<packaging>jar</packaging>
-
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<junit.version>4.8.2</junit.version>
-		<jackson.version>2.2.2</jackson.version>
-		<splunk.version>1.2.0</splunk.version>
-		<org.springframework-version>3.2.0.RELEASE</org.springframework-version>
-		<spring.security.core.version>3.1.3.RELEASE</spring.security.core.version>
-		<commons-jexl.version>1.1</commons-jexl.version>
-		<spring.data.mongo.version>1.3.0.RC1</spring.data.mongo.version>
-		<pig.version>0.11.0-cdh4.4.0</pig.version>
-		<hadoop.version>2.0.0-cdh4.4.0</hadoop.version>
-		<hadoop-core.version>2.0.0-mr1-cdh4.4.0</hadoop-core.version>
-	</properties>
-
+	<url>http://mirror.fortscale.dom:8082/artifactory/remote-repos</url>
 	<repositories>
 		<repository>
 			<id>all-remotes</id>
@@ -69,21 +54,50 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<joda-time.version>2.2</joda-time.version>
+		<jackson-mapper-asl.version>1.8.8</jackson-mapper-asl.version>
+		<beardedpig.version>1.0-SNAPSHOT</beardedpig.version>
+		<pigunit.version>0.11.0-cdh4.4.0</pigunit.version>
+		<calibro.version>1.0-SNAPSHOT</calibro.version>
+		<commons-lang3.version>3.1</commons-lang3.version>
+		<commons-lang.version>2.6</commons-lang.version>
+		<commons-pool.version>1.4</commons-pool.version>
+		<splunk.version>1.2.0</splunk.version>
+		<jackson.version>2.2.2</jackson.version>
+		<janino.version>2.5.15</janino.version>
+		<org.springframework-version>3.2.0.RELEASE</org.springframework-version>
+		<spring.security.core.version>3.1.3.RELEASE</spring.security.core.version>
+		<spring-data-mongodb.version>1.3.2.RELEASE</spring-data-mongodb.version>
+		<servlet-api.version>2.5</servlet-api.version>
+		<perf4j.version>0.9.7</perf4j.version>
+		<commons-jexl.version>1.1</commons-jexl.version>
+		<commons-httpclient.version>3.0.1</commons-httpclient.version>
+		<hadoop.version>2.0.0-cdh4.4.0</hadoop.version>
+		<hadoop-core.version>2.0.0-mr1-cdh4.4.0</hadoop-core.version>
+		<!-- maven plugins -->
+		<maven-compiler-plugin.version>2.3.1</maven-compiler-plugin.version>
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<maven-source-plugin.version>2.1.1</maven-source-plugin.version>
+		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
+		<java-lang-config.version>1.7</java-lang-config.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.2</version>
+			<version>${joda-time.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.8.8</version>
+			<version>${jackson-mapper-asl.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fortscale.pig</groupId>
 			<artifactId>beardedpig</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${beardedpig.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.mortbay.jetty</groupId>
@@ -102,7 +116,7 @@
 		<dependency>
 			<groupId>org.apache.pig</groupId>
 			<artifactId>pigunit</artifactId>
-			<version>${pig.version}</version>
+			<version>${pigunit.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -117,25 +131,23 @@
 		<dependency>
 			<groupId>com.fortscale.toolkits</groupId>
 			<artifactId>calibro</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${calibro.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
+			<version>${commons-lang3.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<version>${commons-lang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
-			<version>1.4</version>
+			<version>${commons-pool.version}</version>
 		</dependency>
-
-
 		<dependency>
 			<groupId>com.splunk</groupId>
 			<artifactId>splunk</artifactId>
@@ -150,7 +162,7 @@
 		<dependency>
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
-			<version>2.5.15</version>
+			<version>${janino.version}</version>
 		</dependency>
 
 		<dependency>
@@ -193,29 +205,29 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
-			<version>${spring.data.mongo.version}</version>
+			<version>${spring-data-mongodb.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
+			<version>${servlet-api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.perf4j</groupId>
 			<artifactId>perf4j</artifactId>
-			<version>0.9.7</version>
+			<version>${perf4j.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-jexl</groupId>
 			<artifactId>commons-jexl</artifactId>
-			<version>1.1</version>
+			<version>${commons-jexl.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
-			<version>3.0.1</version>
+			<version>${commons-httpclient.version}</version>
 		</dependency>
 		
 		<!-- hadoop dependencies -->
@@ -284,16 +296,16 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.1</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${java-lang-config.version}</source>
+					<target>${java-lang-config.version}</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>${maven-jar-plugin.version}</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -306,8 +318,8 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<version>2.1.1</version>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -320,7 +332,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.8</version>
+				<version>${maven-dependency-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
