@@ -111,8 +111,11 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		double score = 0;
 		
 		DateTime dateTime = new DateTime(lastRun.getTime());
-		dateTime = dateTime.withTimeAtStartOfDay();
+		dateTime = dateTime.minusHours(24);//if for some reason a score was not calculated for more than 24 hours then it will not be accounted.
 		for(ClassifierScore classifierScore: classifierScoreMap.values()){
+			if(dateTime.isAfter(classifierScore.getTimestampEpoc())){
+				continue;
+			}
 			score = Math.max(score, classifierScore.getScore());
 		}
 		
