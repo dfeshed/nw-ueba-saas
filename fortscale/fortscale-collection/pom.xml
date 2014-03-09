@@ -327,7 +327,7 @@
 					<execution>
 						<id>copy-resources</id>
 						<!-- here the phase you need -->
-						<phase>prepare-package</phase>
+						<phase>prepare</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
@@ -357,7 +357,7 @@
 					<!-- copy dependencies to target lib folder -->
 					<execution>
 						<id>copy-dependencies</id>
-						<phase>prepare-package</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
@@ -371,7 +371,7 @@
 					<!-- copy dependency to target folder -->
 					<execution>
 						<id>copy</id>
-						<phase>prepare-package</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>copy</goal>
 						</goals>
