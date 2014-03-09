@@ -11,34 +11,90 @@
 	<description>data collection</description>
 	<packaging>jar</packaging>
 
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>libs-releases</id>
+			<name>libs-release</name>
+			<url>http://mirror.fortscale.dom:8082/artifactory/libs-release</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>libs-snapshots</id>
+			<name>libs-snapshot</name>
+			<url>http://mirror.fortscale.dom:8082/artifactory/libs-snapshot</url>
+		</repository>
+		<repository>
+            <!--
+				all remote repos are here: cloudera, spring, splunk, etc.
+				adding more:
+					1. login as artifactory admin
+					2. goto admin -> repositories
+					3. add new remote repository
+					4. edit remote-repos virtual repository:
+						4.1 add the new remote there
+			-->
+			<id>all-remotes</id>
+			<name>remote-repos</name>
+			<url>http://mirror.fortscale.dom:8082/artifactory/remote-repos</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>releases</id>
+			<name>plugins-release</name>
+			<url>http://mirror.fortscale.dom:8082/artifactory/plugins-release</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>snapshots</id>
+			<name>plugins-snapshot</name>
+			<url>http://mirror.fortscale.dom:8082/artifactory/plugins-snapshot</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.8.2</junit.version>
+		<junitparams.version>1.0.2</junitparams.version>
 		<mockito.version>1.9.5</mockito.version>
 		<org.springframework-version>3.2.0.RELEASE</org.springframework-version>
-		<spring.data.mongo.version>1.3.2.RELEASE</spring.data.mongo.version>
+		<spring-data-mongodb.version>1.3.2.RELEASE</spring-data-mongodb.version>
 		<commons-cli.version>1.2</commons-cli.version>
 		<kite-version>0.10.0</kite-version>
+		<joda-time.version>2.2</joda-time.version>
+		<geoip_service.version>0.0.1-SNAPSHOT</geoip_service.version>
 		<quartz.version>2.2.1</quartz.version>
 		<guava.version>15.0</guava.version>
 		<pig.version>0.11.0-cdh4.4.0</pig.version>
 		<hive.version>0.10.0-cdh4.4.0</hive.version>
 		<jmxterm.version>1.0-alpha-4</jmxterm.version>
+		<dnsjava.version>2.1.1</dnsjava.version>
+		<opencsv.version>2.0</opencsv.version>
+		<thrift.version>0.9.0</thrift.version>
+		<!-- maven plugins versions -->
+		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
+		<java-lang-config.version>1.7</java-lang-config.version>
 	</properties>
-
-	<repositories>
-		<repository>
-    <id>cloudera-repo-releases</id>
-    <url>https://repository.cloudera.com/artifactory/repo/</url>
-  </repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.2</version>
+			<version>${joda-time.version}</version>
 		</dependency>
 
 		<!-- quartz -->
@@ -69,7 +125,7 @@
 		<dependency>
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
-			<version>1.0.2</version>
+			<version>${junitparams.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -83,7 +139,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
-			<version>${spring.data.mongo.version}</version>
+			<version>${spring-data-mongodb.version}</version>
 		</dependency>
 
 		<!-- apache command line -->
@@ -103,7 +159,7 @@
 		<dependency>
 			<groupId>dnsjava</groupId>
 			<artifactId>dnsjava</artifactId>
-			<version>2.1.1</version>
+			<version>${dnsjava.version}</version>
 		</dependency>
 		
 		<dependency>
@@ -126,7 +182,7 @@
 		<dependency>
 			<groupId>com.fortscale.utils</groupId>
 			<artifactId>geoip_service</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${geoip_service.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fortscale</groupId>
@@ -159,7 +215,7 @@
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
-			<version>2.0</version>
+			<version>${opencsv.version}</version>
 		</dependency>            
 
 		<!-- required by init script (system) -->
@@ -172,6 +228,7 @@
 		</dependency>
 		
 		<!-- jdk tools is required by hadoop common, leaked dependency -->
+		<!--- TODO: Remove the below, resolved by maven-compiler-plugin params -->
 		<dependency>
     		<groupId>jdk.tools</groupId>
     		<artifactId>jdk.tools</artifactId>
@@ -226,12 +283,12 @@
 		<dependency>
 			<groupId>org.apache.thrift</groupId>
 			<artifactId>libfb303</artifactId>
-			<version>0.9.0</version>
+			<version>${thrift.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.thrift</groupId>
 			<artifactId>libthrift</artifactId>
-			<version>0.9.0</version>
+			<version>${thrift.version}</version>
 		</dependency>
 
 
@@ -249,16 +306,17 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.1</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${java-lang-config.version}</source>
+					<target>${java-lang-config.version}</target>
 				</configuration>
 			</plugin>
 			<!-- create executable batch -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -274,12 +332,12 @@
 			<!-- copy non packaged resources to target -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
+				<version>${maven-resources-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>copy-resources</id>
-						<!-- here the phase you need -->
-						<phase>package</phase>
+						<!-- here the phase you need (allows mvn compile to work) -->
+						<phase>prepare</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
@@ -304,7 +362,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.8</version>
+				<version>${maven-dependency-plugin.version}</version>
 				<executions>
 					<!-- copy dependencies to target lib folder -->
 					<execution>
