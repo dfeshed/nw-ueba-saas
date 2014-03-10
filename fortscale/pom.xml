@@ -9,9 +9,63 @@
 
 	<name>fortscale</name>
 
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>libs-releases</id>
+			<name>libs-release</name>
+			<url>http://mirror.fortscale.dom:8082/artifactory/libs-release</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>libs-snapshots</id>
+			<name>libs-snapshot</name>
+			<url>http://mirror.fortscale.dom:8082/artifactory/libs-snapshot</url>
+		</repository>
+		<repository>
+			<!-- 
+			     all remote repos are here: cloudera, spring, splunk, etc.  
+			     adding more:
+			     1. login as artifactory admin
+			     2. goto admin -> repositories
+			     3. add new remote repository
+			     4. edit remote-repos virtual repository:
+			        4.1 add the new remote there
+			-->
+			<id>all-remotes</id>
+			<name>remote-repos</name>
+			<url>http://mirror.fortscale.dom:8082/artifactory/remote-repos</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>releases</id>
+			<name>plugins-release</name>
+			<url>http://mirror.fortscale.dom:8082/artifactory/plugins-release</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>snapshots</id>
+			<name>plugins-snapshot</name>
+			<url>http://mirror.fortscale.dom:8082/artifactory/plugins-snapshot</url>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<properties>
+		<!-- NOTE: ALL dependencies' versions should be here -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.8.2</junit.version>
+		<junitparams.version>1.0.2</junitparams.version>
 		<mockito.version>1.9.5</mockito.version>
 		<logback.version>1.0.13</logback.version>
 		<slf4j.version>1.7.2</slf4j.version>
@@ -20,7 +74,10 @@
 		<perf4j.version>0.9.16</perf4j.version>
 		<jackson.version>2.2.3</jackson.version>
 		<jackson.dataformat.version>2.2.3</jackson.dataformat.version>
-
+		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
+		<maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
 		<test.exclude>nothingToExlude</test.exclude>
 		<test.include>**/*Test.java</test.include>
 		<test.groups></test.groups>
@@ -31,6 +88,7 @@
 		<test.int.exgroups></test.int.exgroups>
 	</properties>
 
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -40,17 +98,9 @@
 		</dependency>
 		
 		<dependency>
-    <groupId>jdk.tools</groupId>
-    <artifactId>jdk.tools</artifactId>
-    <version>1.7.0_05</version>
-    <scope>system</scope>
-    <systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
-</dependency>
-
-		<dependency>
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
-			<version>1.0.2</version>
+			<version>${junitparams.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -175,7 +225,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.1</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -184,7 +234,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>${maven-jar-plugin.version}</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -198,12 +248,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.16</version>
+				<version>${maven-surefire-plugin.version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven.surefire</groupId>
 						<artifactId>surefire-junit47</artifactId>
-						<version>2.16</version>
+						<version>${maven-surefire-plugin.version}</version>
 					</dependency>
 				</dependencies>
 				<configuration>
@@ -218,23 +268,23 @@
 				</configuration>
 				<executions>
 				  <execution>
-				    <id>default-test</id>
-				    <phase>test</phase>
-				    <goals>
-				      <goal>test</goal>
-				    </goals>
+					<id>default-test</id>
+					<phase>test</phase>
+					<goals>
+						<goal>test</goal>
+					</goals>
 				  </execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.16</version>
+				<version>${maven-surefire-plugin.version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven.surefire</groupId>
 						<artifactId>surefire-junit47</artifactId>
-						<version>2.16</version>
+						<version>${maven-surefire-plugin.version}</version>
 					</dependency>
 				</dependencies>
 				<configuration>

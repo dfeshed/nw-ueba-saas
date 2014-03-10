@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.analyst.Analyst;
 import fortscale.domain.analyst.AnalystAuth;
+import fortscale.domain.analyst.AnalystSavedSearch;
 import fortscale.services.analyst.AnalystService;
 import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.exceptions.InvalidValueException;
@@ -133,4 +134,39 @@ public class ApiAnalystController extends BaseController{
 		}
 	}
 	
+	@RequestMapping(value="/savedSearch/create", method=RequestMethod.POST)
+	@LogException
+	public DataBean<String> createSavedSearch(@RequestParam(required=true) String name,
+			@RequestParam(required=true) String category,
+			@RequestParam(required=false) String description,
+			@RequestParam(required=true) String filter,
+			Model model){
+		AnalystAuth analystAuth = getThisAnalystAuth();
+		if(analystAuth == null) {
+			return null;
+		}
+		String id = analystService.createSavedSearch(analystAuth, name, category, filter, description);
+		
+		DataBean<String> ret = new DataBean<>();
+		ret.setData(id);
+		
+		return ret;
+	}
+	
+	@RequestMapping(value="/savedSearch/find", method=RequestMethod.GET)
+	@LogException
+	public DataBean<List<AnalystSavedSearch>> findSavedSearch(@RequestParam(required=false) String id,
+			Model model){
+		AnalystAuth analystAuth = getThisAnalystAuth();
+		if(analystAuth == null) {
+			return null;
+		}
+		List<AnalystSavedSearch> analystSavedSearchs = analystService.findSavedSearch(id);
+		
+		DataBean<List<AnalystSavedSearch>> ret = new DataBean<>();
+		ret.setData(analystSavedSearchs);
+		ret.setTotal(analystSavedSearchs.size());
+		
+		return ret;
+	}	
 }
