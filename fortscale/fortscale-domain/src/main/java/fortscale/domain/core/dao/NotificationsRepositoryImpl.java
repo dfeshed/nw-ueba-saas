@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -28,6 +29,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	public List<Notification> findByFsIdExcludeComments(String fsid) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("fsId").is(fsid));
+		query.with(new Sort(Direction.DESC, "ts")).limit(10);
 		query.fields().exclude("comments");
 		return mongoTemplate.find(query, Notification.class);
 	}
