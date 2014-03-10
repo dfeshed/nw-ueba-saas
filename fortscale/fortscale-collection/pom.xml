@@ -337,7 +337,7 @@
 					<execution>
 						<id>copy-resources</id>
 						<!-- here the phase you need (allows mvn compile to work) -->
-						<phase>prepare</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
