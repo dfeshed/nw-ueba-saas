@@ -14,12 +14,7 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.mockito.Mockito.*;
-
 import org.mockito.*;
-import org.mockito.internal.matchers.Any;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,6 +27,7 @@ import fortscale.domain.core.Notification;
 import fortscale.domain.core.dao.NotificationResourcesRepository;
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.domain.core.NotificationResource;
+import fortscale.services.analyst.AnalystService;
 import fortscale.web.beans.DataBean;
 
 public class ApiNotificationsControllerTest {
@@ -40,6 +36,8 @@ public class ApiNotificationsControllerTest {
 	private NotificationsRepository notificationRepository;
 	@Mock
 	private NotificationResourcesRepository notificationResourcesRepository;
+	@Mock
+	private AnalystService analystService;
 	@InjectMocks
 	private ApiNotificationsController controller;
 	
@@ -51,12 +49,12 @@ public class ApiNotificationsControllerTest {
 		
 		// set up notification repository mocked behavior
 		List<Notification> notifications = new ArrayList<Notification>();
-		notifications.add(new Notification(1, "a", "a", "a", "a", "a", "a", "a", false));
-		notifications.add(new Notification(2, "b", "b", "b", "b", "b", "b", "b", false));
-		notifications.add(new Notification(3, "c", "c", "c", "c", "c", "c", "c", false));
-		notifications.add(new Notification(4, "d", "d", "d", "d", "d", "d", "d", false));
+		notifications.add(new Notification(1, "a", "a", "a", "a", "a", "a", "a", false, 0));
+		notifications.add(new Notification(2, "b", "b", "b", "b", "b", "b", "b", false, 0));
+		notifications.add(new Notification(3, "c", "c", "c", "c", "c", "c", "c", false, 0));
+		notifications.add(new Notification(4, "d", "d", "d", "d", "d", "d", "d", false, 0));
 		
-		when(notificationRepository.findByTsGreaterThan(anyInt(), any(Sort.class))).thenReturn(notifications);
+		when(notificationRepository.findByTsGreaterThanExcludeComments(anyInt(), any(Sort.class))).thenReturn(notifications);
 		
 		// set up notification resource repository mocked behavior
 		NotificationResource res = new NotificationResource("x", "x", "x");
@@ -143,7 +141,7 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void dismiss_should_succeed_with_valid_notification_id() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false);
+		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
 		when(notificationRepository.findOne(1L)).thenReturn(notification);
 		
 		// perform rest call to the controller
@@ -157,9 +155,33 @@ public class ApiNotificationsControllerTest {
 	}
 	
 	@Test
+	public void commentOnNotification_should_increment_comments_count() throws Exception {
+		// mock repository to return notification
+		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
+		when(notificationRepository.findOne(1L)).thenReturn(notification);
+		when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
+		
+		// mock user service to return analyst display name
+		when(analystService.getAnalystDisplayName(anyString())).thenReturn("John Doe");
+		
+		// perform rest call to the controller
+		mockMvc.perform(get("/api/notifications/1/comment?message=hello world").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"));
+		
+		// verify interactions with the repository
+		ArgumentCaptor<Notification> notificationCapture = ArgumentCaptor.forClass(Notification.class);
+		verify(notificationRepository).save(notificationCapture.capture());
+		assertTrue(notificationCapture.getValue().getCommentsCount()==1);
+		assertTrue(notificationCapture.getValue().getComments().get(0).getMessage().equals("hello world"));
+		assertTrue(notificationCapture.getValue().getComments().get(0).getAnalystDisplayName().equals("John Doe"));
+		assertTrue(notificationCapture.getValue().getComments().get(0).getBasedOn()==null);
+	}
+	
+	@Test
 	public void dismiss_should_not_save_already_dismissed_notification() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true);
+		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
 		when(notificationRepository.findOne(1L)).thenReturn(notification);
 		
 		// perform rest call to the controller
@@ -174,7 +196,7 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void undismiss_should_succeed_with_valid_notification_id() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true);
+		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
 		when(notificationRepository.findOne(1L)).thenReturn(notification);
 		
 		// perform rest call to the controller

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -24,12 +25,30 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	private MongoTemplate mongoTemplate;
 	
 	@Override
+	public List<Notification> findByFsIdExcludeComments(String fsid) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("fsId").is(fsid));
+		query.fields().exclude("comments");
+		return mongoTemplate.find(query, Notification.class);
+	}
+	
+	@Override
+	public List<Notification> findByTsGreaterThanExcludeComments(long ts, Sort sort) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("ts").gt(ts));
+		query.with(sort);
+		query.fields().exclude("comments");
+		return mongoTemplate.find(query, Notification.class);
+	}
+	
+	@Override
 	public List<NotificationAggregate> findAllAndAggregate(PageRequest request) {
 		HashMap<String, List<Notification>> aggMap = new HashMap<String, List<Notification>>(); 
 		List<NotificationAggregate> aggNotifications = new ArrayList<>();
 		
 		long current_unix_time = System.currentTimeMillis( ) / 1000L  ; // in seconds
 		Query query = new Query( ).with( request.getSort() );
+		query.fields().exclude("comments");
 		query.addCriteria( Criteria.where("ts").gte(  new Long( current_unix_time - OLD_EVENTS_THRESHOLD_IN_SEC ) ) );
 
 		List<Notification> notifications = mongoTemplate.find(query, Notification.class);
@@ -76,6 +95,9 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		
 		// set paging and sort parameters
 		query.with(request);
+		
+		// exclude comments
+		query.fields().exclude("comments");
 		
 		long total = mongoTemplate.count(query, Notification.class);
 		List<Notification> notifications = mongoTemplate.find(query, Notification.class);

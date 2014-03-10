@@ -21,23 +21,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.base.Optional;
 
+import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationAggregate;
+import fortscale.domain.core.NotificationComment;
 import fortscale.domain.core.NotificationResource;
 import fortscale.domain.core.dao.NotificationResourcesRepository;
 import fortscale.domain.core.dao.NotificationsRepository;
+import fortscale.services.analyst.AnalystService;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 
 @Controller
 @RequestMapping("/api/notifications")
-public class ApiNotificationsController {
+public class ApiNotificationsController extends BaseController {
 
 	private static final String TIME_STAMP = "ts";
 
 	@Autowired
 	private NotificationsRepository notificationsRepository;
 
+	@Autowired
+	private AnalystService analystService;
+	
 	@Autowired
 	private NotificationResourcesRepository notificationResourcesRepository;
 
@@ -109,7 +116,7 @@ public class ApiNotificationsController {
 	@ResponseBody
 	@LogException
 	public DataBean<List<Notification>> userNotifications(@PathVariable("fsid") String fsid) {
-		Iterable<Notification> userNotifications = notificationsRepository.findByFsId(fsid);
+		Iterable<Notification> userNotifications = notificationsRepository.findByFsIdExcludeComments(fsid);
 		return notificationsDataSingle(userNotifications, Optional.<Long>absent());
 	}
 
@@ -180,7 +187,7 @@ public class ApiNotificationsController {
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, TIME_STAMP));
 		
 		// pass the time stamp and paging to the repository to perform the query
-		Iterable<Notification> notifications = notificationsRepository.findByTsGreaterThan(ts, sort);
+		Iterable<Notification> notifications = notificationsRepository.findByTsGreaterThanExcludeComments(ts, sort);
 		return notificationsDataSingle(notifications,Optional.<Long>absent());
 	}
 	
@@ -226,6 +233,30 @@ public class ApiNotificationsController {
 				notificationsRepository.save(notification);
 			}
 		}
+	}
+	
+	/**
+	 * Adds a comment to a notification, setting the current user and time
+	 */
+	@RequestMapping(value = "/{id:.+}/comment")
+	@ResponseBody
+	@LogException
+	public Notification commentOnNotification(@PathVariable("id") Long id, 
+			@RequestParam(value="message", required=true) String message,
+			@RequestParam(value="basedOn", required=false) Long basedOnID) {
+		
+		Notification notification = notificationsRepository.findOne(id);		
+		if (notification!=null) {
+			// get the current user
+			AnalystAuth analyst = getThisAnalystAuth();
+			String username = (analyst!=null)? analyst.getUsername() : null;
+			String dispalyName = analystService.getAnalystDisplayName(username);
+			
+			// add new comment to notification
+			notification.addComment(new NotificationComment(username, dispalyName, new Date(), message, basedOnID));
+			notification = notificationsRepository.save(notification);
+		}
+		return notification;
 	}
 	
 	

@@ -67,6 +67,12 @@ public class AnalystServiceImpl implements AnalystService{
 	public Analyst findByUsername(String username) {
 		return analystRepository.findByUserName(username);
 	}
+	
+	@Override
+	public String getAnalystDisplayName(String username) {
+		Analyst analyst = analystRepository.findByUserName(username);
+		return (analyst!=null)? analyst.getFirstName() + " " + analyst.getLastName() : null;
+	}
 
 
 

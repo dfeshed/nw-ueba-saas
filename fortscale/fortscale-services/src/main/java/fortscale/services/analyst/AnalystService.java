@@ -16,4 +16,5 @@ public interface AnalystService {
 	public void followUser(AnalystAuth analystAuth, String userId, boolean follow);
 	public String createSavedSearch(AnalystAuth analystAuth, String name, String category, String filter, String description);
 	public List<AnalystSavedSearch> findSavedSearch(String savedSearchId);
+	public String getAnalystDisplayName(String username);
 }
