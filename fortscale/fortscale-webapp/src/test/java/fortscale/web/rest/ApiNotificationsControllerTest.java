@@ -140,6 +140,48 @@ public class ApiNotificationsControllerTest {
 		
 	}
 	
+	@Test
+	public void dismiss_should_succeed_with_valid_notification_id() throws Exception {
+		// mock repository to return notification
+		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false);
+		when(notificationRepository.findOne(1L)).thenReturn(notification);
+		
+		// perform rest call to the controller
+		mockMvc.perform(get("/api/notifications/dismiss/1").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+		
+		// verify interactions with the repository
+		ArgumentCaptor<Notification> notificationCapture = ArgumentCaptor.forClass(Notification.class);
+		verify(notificationRepository).save(notificationCapture.capture());
+		assertTrue(notificationCapture.getValue().isDismissed());
+	}
+	
+	@Test
+	public void dismiss_should_not_save_already_dismissed_notification() throws Exception {
+		// mock repository to return notification
+		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true);
+		when(notificationRepository.findOne(1L)).thenReturn(notification);
+		
+		// perform rest call to the controller
+		mockMvc.perform(get("/api/notifications/dismiss/1").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+		
+		// verify interactions with the repository
+		verify(notificationRepository, times(0)).save(any(Notification.class));		
+	}
+	
+	@Test
+	public void dismiss_should_not_save_notification_that_does_not_exists() throws Exception {
+		// mock repository to return notification
+		when(notificationRepository.findOne(1L)).thenReturn(null);
+		
+		// perform rest call to the controller
+		mockMvc.perform(get("/api/notifications/dismiss/1").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+		
+		// verify interactions with the repository
+		verify(notificationRepository, times(0)).save(any(Notification.class));		
+	}
 	
 	@Test
 	public void after_ZeroTimeStamp_ShouldReturnAllNotification() {

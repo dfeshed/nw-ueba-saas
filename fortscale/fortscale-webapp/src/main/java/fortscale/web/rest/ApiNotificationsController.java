@@ -196,6 +196,22 @@ public class ApiNotificationsController {
 	}
 
 
+	/**
+	 * Mark notification as dismissed
+	 */
+	@RequestMapping(value = "/dismiss/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public void dismissNotification(@PathVariable("id") Long id) {
+		Notification notification = notificationsRepository.findOne(id);
+		if (notification!=null) {
+			if (!notification.isDismissed()) {
+				notification.setDismissed(true);
+				notificationsRepository.save(notification);
+			}
+		}
+	}
+	
 	@RequestMapping(value = "/clearAll", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
