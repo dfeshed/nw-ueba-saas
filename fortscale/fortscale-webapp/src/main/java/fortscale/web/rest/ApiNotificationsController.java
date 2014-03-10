@@ -259,6 +259,16 @@ public class ApiNotificationsController extends BaseController {
 		return notification;
 	}
 	
+	/**
+	 * Get a specific notification with the comments
+	 */
+	@RequestMapping(value = "/{id:.+}")
+	@ResponseBody
+	@LogException
+	public Notification getNotification(@PathVariable("id") Long id) {
+		return notificationsRepository.findOne(id);
+	}
+	
 	
 	@RequestMapping(value = "/clearAll", method = RequestMethod.GET)
 	@ResponseBody
