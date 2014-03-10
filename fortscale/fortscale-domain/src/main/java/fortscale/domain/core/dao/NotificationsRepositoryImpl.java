@@ -52,6 +52,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		Query query = new Query( ).with( request.getSort() );
 		query.fields().exclude("comments");
 		query.addCriteria( Criteria.where("ts").gte(  new Long( current_unix_time - OLD_EVENTS_THRESHOLD_IN_SEC ) ) );
+		query.addCriteria(Criteria.where("dismissed").is(false).orOperator(Criteria.where("dismissed").exists(false)));
 
 		List<Notification> notifications = mongoTemplate.find(query, Notification.class);
 		
