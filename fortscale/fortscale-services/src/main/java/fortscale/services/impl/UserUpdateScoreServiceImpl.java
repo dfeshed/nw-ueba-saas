@@ -108,28 +108,20 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	}
 	
 	private ScoreInfo calculateTotalScore(Collection<ScoreWeight> scoreWeights, Map<String, ClassifierScore> classifierScoreMap, Date lastRun){
-		double totalWeights = 0.00001;
 		double score = 0;
-		double avgScore = 0;
 		
 		DateTime dateTime = new DateTime(lastRun.getTime());
-		dateTime = dateTime.withTimeAtStartOfDay();
-		for(ScoreWeight scoreWeight: scoreWeights){
-			ClassifierScore classifierScore = classifierScoreMap.get(scoreWeight.getId());
-			if(classifierScore != null){
-				if(dateTime.isAfter(classifierScore.getTimestampEpoc())){
-					continue;
-				}
-				totalWeights += scoreWeight.getWeight();
-				
-				score += classifierScore.getScore() * scoreWeight.getWeight();
-				avgScore += classifierScore.getAvgScore() * scoreWeight.getWeight();					
+		dateTime = dateTime.minusHours(24);//if for some reason a score was not calculated for more than 24 hours then it will not be accounted.
+		for(ClassifierScore classifierScore: classifierScoreMap.values()){
+			if(dateTime.isAfter(classifierScore.getTimestampEpoc())){
+				continue;
 			}
+			score = Math.max(score, classifierScore.getScore());
 		}
 		
 		ScoreInfo ret = new ScoreInfo();
-		ret.setScore(score/totalWeights);
-		ret.setAvgScore(avgScore/totalWeights);
+		ret.setScore(score);
+		ret.setAvgScore(0);
 		return ret;
 	}
 	
