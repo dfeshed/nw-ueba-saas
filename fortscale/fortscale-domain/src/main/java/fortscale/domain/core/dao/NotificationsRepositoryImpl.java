@@ -1,10 +1,14 @@
 package fortscale.domain.core.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -24,9 +28,9 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		HashMap<String, List<Notification>> aggMap = new HashMap<String, List<Notification>>(); 
 		List<NotificationAggregate> aggNotifications = new ArrayList<>();
 		
-    long current_unix_time = System.currentTimeMillis( ) / 1000L  ; // in seconds
+		long current_unix_time = System.currentTimeMillis( ) / 1000L  ; // in seconds
 		Query query = new Query( ).with( request.getSort() );
-    query.addCriteria( Criteria.where("ts").gte(  new Long( current_unix_time - OLD_EVENTS_THRESHOLD_IN_SEC ) ) );
+		query.addCriteria( Criteria.where("ts").gte(  new Long( current_unix_time - OLD_EVENTS_THRESHOLD_IN_SEC ) ) );
 
 		List<Notification> notifications = mongoTemplate.find(query, Notification.class);
 		
@@ -48,4 +52,34 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		return aggNotifications.subList(0, min);
 	}
 
+	
+	@Override
+	public Page<Notification> findByPredicates(Set<String> includeFsID, Set<String> excludeFsID, boolean includeDissmissed, 
+			Set<String> includeGenerators, Set<String> excludeGenerators, Date before, Date after, PageRequest request) {
+		
+		// build query object with the criterias
+		Query query = new Query();
+		if (includeFsID!=null && !includeFsID.isEmpty())
+			query.addCriteria(Criteria.where("fsId").in(includeFsID));
+		if (excludeFsID!=null && !excludeFsID.isEmpty())
+			query.addCriteria(Criteria.where("fsId").not().in(excludeFsID));
+		if (!includeDissmissed)
+			query.addCriteria(Criteria.where("dismissed").is(false).orOperator(Criteria.where("dismissed").exists(false)));
+		if (includeGenerators!=null && !includeGenerators.isEmpty())
+			query.addCriteria(Criteria.where("generator_name").in(includeGenerators));
+		if (excludeGenerators!=null && !includeGenerators.isEmpty())
+			query.addCriteria(Criteria.where("generator_name").not().in(excludeGenerators));
+		if (before!=null)
+			query.addCriteria(Criteria.where("ts").lte(before.getTime() / 1000L));
+		if (after!=null)
+			query.addCriteria(Criteria.where("ts").gte(after.getTime() / 1000L));
+		
+		// set paging and sort parameters
+		query.with(request);
+		
+		long total = mongoTemplate.count(query, Notification.class);
+		List<Notification> notifications = mongoTemplate.find(query, Notification.class);
+		
+		return new PageImpl<Notification>(notifications, request, total);
+	}
 }

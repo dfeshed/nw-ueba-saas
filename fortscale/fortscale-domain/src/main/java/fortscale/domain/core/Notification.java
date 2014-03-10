@@ -20,11 +20,12 @@ public class Notification extends AbstractDocument implements Serializable {
 	private String uuid;
 	private String fsId;
 	private String type;
+	private boolean dismissed;
 	private Map<String, String> attributes;
 	
 	public Notification() {}
 	
-	public Notification(long ts, String generator_name, String name, String cause, String displayName, String uuid, String fsId, String type) {
+	public Notification(long ts, String generator_name, String name, String cause, String displayName, String uuid, String fsId, String type, boolean dismissed) {
 		this.ts = ts;
 		this.generator_name = generator_name;
 		this.name = name;
@@ -33,6 +34,7 @@ public class Notification extends AbstractDocument implements Serializable {
 		this.uuid = uuid;
 		this.fsId = fsId;
 		this.type = type;
+		this.dismissed = dismissed;
 	}
 	
 	public Map<String, String> getAttributes(){
@@ -73,6 +75,14 @@ public class Notification extends AbstractDocument implements Serializable {
 
 	public String getType() {
 		return type;
+	}
+	
+	public boolean isDismissed() {
+		return dismissed;
+	}
+	
+	public void setDismissed(boolean dismissed) {
+		this.dismissed = dismissed;
 	}
 
 }

@@ -1,17 +1,25 @@
 package fortscale.web.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.common.base.Optional;
 
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationAggregate;
@@ -34,7 +42,7 @@ public class ApiNotificationsController {
 	private NotificationResourcesRepository notificationResourcesRepository;
 
 	private DataBean<List<Notification>> notificationsDataSingle(
-			Iterable<Notification> userNotifications) {
+			Iterable<Notification> userNotifications, Optional<Long> total) {
 		DataBean<List<Notification>> ret = new DataBean<List<Notification>>();
 
 		if (userNotifications != null) {
@@ -53,7 +61,10 @@ public class ApiNotificationsController {
 			}
 
 			ret.setData(array);
-			ret.setTotal(array.size());
+			if (total.isPresent())
+				ret.setTotal(total.get().intValue());
+			else
+				ret.setTotal(array.size());
 			return ret;
 		} else {
 			// No documents found, return empty response
@@ -99,20 +110,61 @@ public class ApiNotificationsController {
 	@LogException
 	public DataBean<List<Notification>> userNotifications(@PathVariable("fsid") String fsid) {
 		Iterable<Notification> userNotifications = notificationsRepository.findByFsId(fsid);
-		return notificationsDataSingle(userNotifications);
+		return notificationsDataSingle(userNotifications, Optional.<Long>absent());
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Notification>> list() {
-		// We return the list of notifications sorted by timestamp (descending),
-		// and limited to 10
-		Sort sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP));
-		PageRequest request = new PageRequest(0, 10, sortByTSDesc);
-
-		Iterable<Notification> overviewNotifications = notificationsRepository.findAll(request);
-		return notificationsDataSingle(overviewNotifications);
+	public DataBean<List<Notification>> list(
+			@RequestParam(defaultValue="0", required=false) int page,
+			@RequestParam(defaultValue="20", required=false) int size,
+			@RequestParam(required=false) final List<String> includeUsers,
+			@RequestParam(required=false) final List<String> excludeUsers,
+			@RequestParam(required=false) final List<String> includeHostnames,
+			@RequestParam(required=false) final List<String> excludeHostnames,
+			@RequestParam(defaultValue="True", required=false) boolean includeDissmissed,
+			@RequestParam(required=false) final List<String> includeGenerators,
+			@RequestParam(required=false) final List<String> excludeGenerators,
+			@RequestParam(required=false) Date after,
+			@RequestParam(required=false) Date before,
+			@RequestParam(defaultValue="True", required=false) boolean sortDesc) {
+		
+		// calculate the page request based on the parameters given
+		PageRequest request = new PageRequest(page, size, 
+				sortDesc ? Direction.DESC : Direction.ASC, TIME_STAMP);
+		
+		// calculate filter parameters 
+		Set<String> includeFsID = new HashSet<String>();
+		if (includeUsers!=null)
+			includeFsID.addAll(includeUsers);
+		if (includeHostnames!=null)
+			includeFsID.addAll(includeHostnames);
+		if (excludeUsers!=null)
+			includeFsID.removeAll(excludeUsers);
+		if (excludeHostnames!=null)
+			includeFsID.removeAll(excludeHostnames);
+		
+		Set<String> excludeFsID = new HashSet<String>();
+		if (excludeUsers!=null)
+			excludeFsID.addAll(excludeUsers);
+		if (excludeHostnames!=null)
+			excludeFsID.addAll(excludeHostnames);
+		
+		Set<String> includeGeneratorsSet = new HashSet<String>();
+		if (includeGenerators!=null)
+			includeGeneratorsSet.addAll(includeGenerators);
+		if (excludeGenerators!=null)
+			includeGeneratorsSet.removeAll(excludeGenerators);
+		
+		Set<String> excludeGeneratorsSet = new HashSet<String>();
+		if (excludeGenerators!=null)
+			excludeGeneratorsSet.addAll(excludeGenerators);
+			
+		
+		Page<Notification> notifications = notificationsRepository.findByPredicates(includeFsID, excludeFsID, includeDissmissed,
+				includeGeneratorsSet, excludeGeneratorsSet, before, after, request);
+		return notificationsDataSingle(notifications.getContent(), Optional.of(notifications.getTotalElements()));
 	}
 
 	
@@ -129,7 +181,7 @@ public class ApiNotificationsController {
 		
 		// pass the time stamp and paging to the repository to perform the query
 		Iterable<Notification> notifications = notificationsRepository.findByTsGreaterThan(ts, sort);
-		return notificationsDataSingle(notifications);
+		return notificationsDataSingle(notifications,Optional.<Long>absent());
 	}
 	
 	@RequestMapping(value = "/aggregate", method = RequestMethod.GET)
