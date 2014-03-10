@@ -20,7 +20,7 @@ import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationAggregate;
 
 public class NotificationsRepositoryImpl implements NotificationsRepositoryCustom {
-  private static final long OLD_EVENTS_THRESHOLD_IN_SEC = 60*60*24 ; // we will opt out older events; @todo move to configuration..
+  private static final long OLD_EVENTS_THRESHOLD_IN_SEC = 60*60*24*7 ; // get notifications from the last week
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -66,7 +66,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		
 		for (String key: aggMap.keySet()) {
 			NotificationAggregate agg = new NotificationAggregate(aggMap.get(key));
-			aggNotifications.add(agg);			
+			aggNotifications.add(agg);
 		}
 		
 		int min = Math.min(aggNotifications.size(), request.getPageSize());
