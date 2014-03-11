@@ -67,9 +67,7 @@ public class AnalystServiceImpl implements AnalystService{
 	public Analyst findByUsername(String username) {
 		return analystRepository.findByUserName(username);
 	}
-
-
-
+	
 	@Override
 	public List<Analyst> findAll() {
 		return analystRepository.findAll();

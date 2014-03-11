@@ -1,6 +1,8 @@
 package fortscale.domain.core;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,11 +22,14 @@ public class Notification extends AbstractDocument implements Serializable {
 	private String uuid;
 	private String fsId;
 	private String type;
+	private boolean dismissed;
+	private int commentsCount;
 	private Map<String, String> attributes;
+	private List<NotificationComment> comments = new LinkedList<NotificationComment>();
 	
 	public Notification() {}
 	
-	public Notification(long ts, String generator_name, String name, String cause, String displayName, String uuid, String fsId, String type) {
+	public Notification(long ts, String generator_name, String name, String cause, String displayName, String uuid, String fsId, String type, boolean dismissed, int commentsCount) {
 		this.ts = ts;
 		this.generator_name = generator_name;
 		this.name = name;
@@ -33,6 +38,8 @@ public class Notification extends AbstractDocument implements Serializable {
 		this.uuid = uuid;
 		this.fsId = fsId;
 		this.type = type;
+		this.dismissed = dismissed;
+		this.setCommentsCount(commentsCount);
 	}
 	
 	public Map<String, String> getAttributes(){
@@ -73,6 +80,36 @@ public class Notification extends AbstractDocument implements Serializable {
 
 	public String getType() {
 		return type;
+	}
+	
+	public boolean isDismissed() {
+		return dismissed;
+	}
+	
+	public void setDismissed(boolean dismissed) {
+		this.dismissed = dismissed;
+	}
+
+	public int getCommentsCount() {
+		return commentsCount;
+	}
+
+	public void setCommentsCount(int commentsCount) {
+		this.commentsCount = commentsCount;
+	}
+
+	public List<NotificationComment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<NotificationComment> comments) {
+		this.comments = (comments!=null)? comments : new LinkedList<NotificationComment>();
+		this.commentsCount = (comments!=null)? comments.size() : 0;
+	}
+	
+	public void addComment(NotificationComment comment) {
+		this.commentsCount++;
+		this.comments.add(comment);
 	}
 
 }

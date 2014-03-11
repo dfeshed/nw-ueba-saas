@@ -1,7 +1,6 @@
 package fortscale.web.rest;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
@@ -333,18 +334,31 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId,
-			@RequestParam(defaultValue="0") Integer offset,
-			@RequestParam(defaultValue="7") Integer limit,
+			@RequestParam(defaultValue="10") Integer limit,
+			@RequestParam(defaultValue="0") Integer tzShift,
 			Model model){
 		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
 		List<IUserScoreHistoryElement> userScores = new ArrayList<>();
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.DAY_OF_MONTH, -(limit-1));
-		for(IUserScoreHistoryElement element: userServiceFacade.getUserScoresHistory(uid, classifierId, offset, limit)){
-			if(calendar.getTime().after(element.getDate())){
+		int millisOffset = tzShift * 60 * 1000;
+		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
+		DateTime dateLimit = DateTime.now(dateTimeZone);
+		dateLimit = dateLimit.withTimeAtStartOfDay();
+		dateLimit = dateLimit.minusDays(limit-1);
+		DateTime prevElementStartDay = null;
+		for(IUserScoreHistoryElement element: userServiceFacade.getUserScoresHistory(uid, classifierId, 0, limit+1)){
+			DateTime curElementStartDay = new DateTime(element.getDate().getTime(), dateTimeZone);
+			curElementStartDay = curElementStartDay.withTimeAtStartOfDay();
+			if(prevElementStartDay != null && curElementStartDay.isEqual(prevElementStartDay.getMillis())){
+				continue;
+			}
+			if(dateLimit.isAfter(element.getDate().getTime())){
 				break;
 			}
 			userScores.add(element);
+			if(userScores.size() == limit){
+				break;
+			}
+			prevElementStartDay = curElementStartDay;
 		}
 		
 		Collections.reverse(userScores);
