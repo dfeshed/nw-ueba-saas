@@ -23,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import fortscale.domain.analyst.Analyst;
+import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.dao.NotificationResourcesRepository;
 import fortscale.domain.core.dao.NotificationsRepository;
@@ -161,9 +163,6 @@ public class ApiNotificationsControllerTest {
 		when(notificationRepository.findOne(1L)).thenReturn(notification);
 		when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 		
-		// mock user service to return analyst display name
-		when(analystService.getAnalystDisplayName(anyString())).thenReturn("John Doe");
-		
 		// perform rest call to the controller
 		mockMvc.perform(get("/api/notifications/1/comment?message=hello world").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -174,7 +173,6 @@ public class ApiNotificationsControllerTest {
 		verify(notificationRepository).save(notificationCapture.capture());
 		assertTrue(notificationCapture.getValue().getCommentsCount()==1);
 		assertTrue(notificationCapture.getValue().getComments().get(0).getMessage().equals("hello world"));
-		assertTrue(notificationCapture.getValue().getComments().get(0).getAnalystDisplayName().equals("John Doe"));
 		assertTrue(notificationCapture.getValue().getComments().get(0).getBasedOn()==null);
 	}
 	

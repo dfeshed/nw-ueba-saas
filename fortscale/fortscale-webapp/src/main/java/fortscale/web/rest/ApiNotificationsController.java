@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.base.Optional;
 
+import fortscale.domain.analyst.Analyst;
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationAggregate;
@@ -248,12 +249,13 @@ public class ApiNotificationsController extends BaseController {
 		Notification notification = notificationsRepository.findOne(id);		
 		if (notification!=null) {
 			// get the current user
-			AnalystAuth analyst = getThisAnalystAuth();
-			String username = (analyst!=null)? analyst.getUsername() : null;
-			String dispalyName = analystService.getAnalystDisplayName(username);
+			AnalystAuth analystAuth = getThisAnalystAuth();
+			Analyst analyst = (analystAuth!=null)? analystService.findByUsername(analystAuth.getUsername()) : null;
+			String analystId = (analyst!=null)? analyst.getId() : null;
+			String dispalyName = (analyst!=null)? analyst.getFirstName() + " " + analyst.getLastName() : null;
 			
 			// add new comment to notification
-			notification.addComment(new NotificationComment(username, dispalyName, new Date(), message, basedOnID));
+			notification.addComment(new NotificationComment(analystId, dispalyName, new Date(), message, basedOnID));
 			notification = notificationsRepository.save(notification);
 		}
 		return notification;

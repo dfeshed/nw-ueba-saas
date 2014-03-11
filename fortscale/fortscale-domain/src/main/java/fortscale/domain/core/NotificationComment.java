@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class NotificationComment  {
 
-	private String analystUserName;
+	private String analystId;
 	private String analystDisplayName;
 	private String message;
 	private Date when;
@@ -17,7 +17,7 @@ public class NotificationComment  {
 	}
 
 	public NotificationComment(String analyst, String analystDisplayName, Date when, String message, Long basedOn) {
-		this.setAnalystUserName(analyst);
+		this.setanalystId(analyst);
 		this.setAnalystDisplayName(analystDisplayName);
 		this.setWhen(when);
 		this.setMessage(message);
@@ -25,12 +25,12 @@ public class NotificationComment  {
 		this.basedOn = basedOn;
 	}
 	
-	public String getAnalystUserName() {
-		return analystUserName;
+	public String getanalystId() {
+		return analystId;
 	}
 
-	public void setAnalystUserName(String analystUserName) {
-		this.analystUserName = analystUserName;
+	public void setanalystId(String analystId) {
+		this.analystId = analystId;
 	}
 
 	public String getMessage() {
