@@ -255,6 +255,7 @@ public class UsernameService implements InitializingBean{
 		for(User user: users){
 			tmpMap.put(user.getUsername(), user.getId());
 		}
+		usernameToUserIdMap = tmpMap;
 		
 		for(LogEventsEnum logEventsEnum: LogEventsEnum.values()){
 			Set<String> logUsernameSet = new HashSet<>();
@@ -266,7 +267,6 @@ public class UsernameService implements InitializingBean{
 			}
 			logUsernameSetList.set(logEventsEnum.ordinal(), logUsernameSet);
 		}
-		usernameToUserIdMap = userRepository.findAllUsernames();
 		logger.debug("username set contain {} elements", usernameToUserIdMap.size());
 	}
 	

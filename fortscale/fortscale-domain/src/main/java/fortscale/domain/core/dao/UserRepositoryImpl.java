@@ -236,7 +236,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	@Override
 	public HashMap<String, String> findAllUsernames() {
 		Query query = new Query();
-		query.fields().include(User.usernameField).exclude(User.ID_FIELD);
+		query.fields().include(User.usernameField);
 		HashMap<String, String> ret = new HashMap<>();
 		for(UsernameWrapper username: mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)){
 			ret.put(username.getUsername(), username.getId());
