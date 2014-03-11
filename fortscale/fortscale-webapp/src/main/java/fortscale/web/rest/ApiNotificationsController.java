@@ -2,16 +2,16 @@ package fortscale.web.rest;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -124,55 +124,36 @@ public class ApiNotificationsController extends BaseController {
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Notification>> list(
+	public ResponseEntity<DataBean<List<Notification>>> list(
 			@RequestParam(defaultValue="0", required=false) int page,
 			@RequestParam(defaultValue="20", required=false) int size,
-			@RequestParam(required=false) final List<String> includeUsers,
-			@RequestParam(required=false) final List<String> excludeUsers,
-			@RequestParam(required=false) final List<String> includeHostnames,
-			@RequestParam(required=false) final List<String> excludeHostnames,
-			@RequestParam(defaultValue="True", required=false) boolean includeDissmissed,
+			@RequestParam(required=false) final List<String> includeFsIds,
+			@RequestParam(required=false) final List<String> excludeFsIds,
+			@RequestParam(defaultValue="True") boolean includeDissmissed,
 			@RequestParam(required=false) final List<String> includeGenerators,
 			@RequestParam(required=false) final List<String> excludeGenerators,
 			@RequestParam(required=false) Date after,
 			@RequestParam(required=false) Date before,
-			@RequestParam(defaultValue="True", required=false) boolean sortDesc) {
+			@RequestParam(defaultValue="True") boolean sortDesc) {
 		
 		// calculate the page request based on the parameters given
 		PageRequest request = new PageRequest(page, size, 
 				sortDesc ? Direction.DESC : Direction.ASC, TIME_STAMP);
 		
-		// calculate filter parameters 
-		Set<String> includeFsID = new HashSet<String>();
-		if (includeUsers!=null)
-			includeFsID.addAll(includeUsers);
-		if (includeHostnames!=null)
-			includeFsID.addAll(includeHostnames);
-		if (excludeUsers!=null)
-			includeFsID.removeAll(excludeUsers);
-		if (excludeHostnames!=null)
-			includeFsID.removeAll(excludeHostnames);
+		// ensure we didn't get both include and exclude fsid lists
+		if (includeFsIds!=null && !includeFsIds.isEmpty() &&
+			excludeFsIds!=null && !excludeFsIds.isEmpty())
+			return new ResponseEntity<DataBean<List<Notification>>>(HttpStatus.BAD_REQUEST);
 		
-		Set<String> excludeFsID = new HashSet<String>();
-		if (excludeUsers!=null)
-			excludeFsID.addAll(excludeUsers);
-		if (excludeHostnames!=null)
-			excludeFsID.addAll(excludeHostnames);
-		
-		Set<String> includeGeneratorsSet = new HashSet<String>();
-		if (includeGenerators!=null)
-			includeGeneratorsSet.addAll(includeGenerators);
-		if (excludeGenerators!=null)
-			includeGeneratorsSet.removeAll(excludeGenerators);
-		
-		Set<String> excludeGeneratorsSet = new HashSet<String>();
-		if (excludeGenerators!=null)
-			excludeGeneratorsSet.addAll(excludeGenerators);
-			
-		
-		Page<Notification> notifications = notificationsRepository.findByPredicates(includeFsID, excludeFsID, includeDissmissed,
-				includeGeneratorsSet, excludeGeneratorsSet, before, after, request);
-		return notificationsDataSingle(notifications.getContent(), Optional.of(notifications.getTotalElements()));
+		// ensure we didn't get both include and exclude generators lists
+		if (includeGenerators!=null && !includeGenerators.isEmpty() &&
+			excludeGenerators!=null && !excludeGenerators.isEmpty()) 
+			return new ResponseEntity<DataBean<List<Notification>>>(HttpStatus.BAD_REQUEST);
+				
+		Page<Notification> notifications = notificationsRepository.findByPredicates(includeFsIds, excludeFsIds, includeDissmissed,
+				includeGenerators, excludeGenerators, before, after, request);
+		DataBean<List<Notification>> value = notificationsDataSingle(notifications.getContent(), Optional.of(notifications.getTotalElements()));
+		return new ResponseEntity<DataBean<List<Notification>>>(value, HttpStatus.OK);
 	}
 
 	

@@ -7,10 +7,8 @@ import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,8 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import fortscale.domain.analyst.Analyst;
-import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.dao.NotificationResourcesRepository;
 import fortscale.domain.core.dao.NotificationsRepository;
@@ -70,8 +66,8 @@ public class ApiNotificationsControllerTest {
 	public void list_with_no_parameters_should_pass_default_settings_to_repository() throws Exception {
 
 		// mock repository to return empty results so the controller could continue and not fail
-		when(notificationRepository.findByPredicates(anySetOf(String.class), anySetOf(String.class), eq(true), anySetOf(String.class), 
-				anySetOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
+		when(notificationRepository.findByPredicates(anyListOf(String.class), anyListOf(String.class), eq(true), anyListOf(String.class), 
+				anyListOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
@@ -80,15 +76,15 @@ public class ApiNotificationsControllerTest {
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
 		// verify interaction with repository
-		verify(notificationRepository).findByPredicates(new HashSet<String>(), new HashSet<String>(), true, 
-				new HashSet<String>(), new HashSet<String>(), null, null, new PageRequest(0, 20, Direction.DESC, "ts"));
+		verify(notificationRepository).findByPredicates(null, null, true, 
+				null, null, null, null, new PageRequest(0, 20, Direction.DESC, "ts"));
 	}
 	
 	@Test
 	public void list_with_includeDissmissed_false_should_filter_out_dismissed_notifications() throws Exception {
 		// mock repository to return empty results so the controller could continue and not fail
-		when(notificationRepository.findByPredicates(anySetOf(String.class), anySetOf(String.class), eq(false), anySetOf(String.class), 
-				anySetOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
+		when(notificationRepository.findByPredicates(anyListOf(String.class), anyListOf(String.class), eq(false), anyListOf(String.class), 
+				anyListOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
@@ -97,16 +93,16 @@ public class ApiNotificationsControllerTest {
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
 		// verify interaction with repository
-		verify(notificationRepository).findByPredicates(new HashSet<String>(), new HashSet<String>(), false, 
-				new HashSet<String>(), new HashSet<String>(), null, null, new PageRequest(0, 20, Direction.DESC, "ts"));
+		verify(notificationRepository).findByPredicates(null, null, false, 
+				null, null, null, null, new PageRequest(0, 20, Direction.DESC, "ts"));
 	}
 	
 	
 	@Test
 	public void list_with_paging_parameters_should_pass_it_to_repository() throws Exception {
 		// mock repository to return empty results so the controller could continue and not fail
-		when(notificationRepository.findByPredicates(anySetOf(String.class), anySetOf(String.class), eq(true), anySetOf(String.class), 
-				anySetOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
+		when(notificationRepository.findByPredicates(anyListOf(String.class), anyListOf(String.class), eq(true), anyListOf(String.class), 
+				anyListOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
@@ -115,31 +111,38 @@ public class ApiNotificationsControllerTest {
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
 		// verify interaction with repository
-		verify(notificationRepository).findByPredicates(new HashSet<String>(), new HashSet<String>(), true, 
-				new HashSet<String>(), new HashSet<String>(), null, null, new PageRequest(2, 100, Direction.DESC, "ts"));
+		verify(notificationRepository).findByPredicates(null, null, true, 
+				null, null, null, null, new PageRequest(2, 100, Direction.DESC, "ts"));
 	}
 	
 	@Test
-	public void list_with_include_users_should_pass_collection_to_repository() throws Exception {
+	public void list_with_include_fsids_should_pass_collection_to_repository() throws Exception {
 		// mock repository to return empty results so the controller could continue and not fail
-		when(notificationRepository.findByPredicates(anySetOf(String.class), anySetOf(String.class), eq(true), anySetOf(String.class), 
-				anySetOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
+		when(notificationRepository.findByPredicates(anyListOf(String.class), anyListOf(String.class), eq(true), anyListOf(String.class), 
+				anyListOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications?includeUsers=xxx,yyy").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications?includeFsIds=xxx,yyy").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
 		// verify interaction with repository
-		Set<String> users = new HashSet<String>();
+		LinkedList<String> users = new LinkedList<String>();
 		users.add("xxx");
 		users.add("yyy");
-		verify(notificationRepository).findByPredicates(users, new HashSet<String>(), true, 
-				new HashSet<String>(), new HashSet<String>(), null, null, new PageRequest(0, 20, Direction.DESC, "ts"));
+		verify(notificationRepository).findByPredicates(users, null, true, 
+				null, null, null, null, new PageRequest(0, 20, Direction.DESC, "ts"));
 		
 	}
 	
+	@Test
+	public void list_with_both_include_and_exclude_fsids_should_return_error() throws Exception {
+		// perform rest call to the controller
+		mockMvc.perform(get("/api/notifications?includeFsIds=xxx,yyy&excludeFsIds=fff").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest());
+	}
+		
 	@Test
 	public void dismiss_should_succeed_with_valid_notification_id() throws Exception {
 		// mock repository to return notification
