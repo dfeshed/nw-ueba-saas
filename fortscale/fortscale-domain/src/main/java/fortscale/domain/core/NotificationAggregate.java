@@ -73,5 +73,14 @@ public class NotificationAggregate implements Serializable {
 	public List<Notification> getAggregated() {
 		return aggregated;
 	}
+	
+	public int getCommentsCount() {
+		// get aggregated count from all notifications
+		int sum = 0;
+		for (Notification notification: aggregated) {
+			sum += notification.getCommentsCount();
+		}
+		return sum;
+	}
 
 }
