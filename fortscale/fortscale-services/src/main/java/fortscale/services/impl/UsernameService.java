@@ -238,15 +238,23 @@ public class UsernameService implements InitializingBean{
 		return ret;
 	}
 	
-	public boolean isLogUsernameExist(LogEventsEnum eventId, String logUsername, boolean useCache){
+	public boolean isLogUsernameExist(LogEventsEnum eventId, String logUsername, String userId, boolean useCache){
+		boolean isExist = false;
 		if(useCache){
-			return logUsernameSetList.get(eventId.ordinal()).contains(logUsername);
+			isExist = logUsernameSetList.get(eventId.ordinal()).contains(formatUserIdWithLogUsername(userId, logUsername));
 		} else{
-			return userRepository.findByLogUsername(getLogname(eventId), logUsername) != null ? true : false;
+			User user = userRepository.findOne(userId);
+			if(user != null && logUsername.equals(user.getLogUserName(getLogname(eventId)))){
+				isExist = true;
+			}
 		}
+		
+		return isExist;
 	}
 	
-	
+	private String formatUserIdWithLogUsername(String userId, String logUsername){
+		return String.format("%s%s", userId, logUsername);
+	}
 	
 	public void update(){
 		HashMap<String, String> tmpMap = new HashMap<>();
@@ -264,7 +272,7 @@ public class UsernameService implements InitializingBean{
 			for(User user: users){
 				String logUsername = getLogUsername(logEventsEnum, user);
 				if(logUsername != null){
-					logUsernameSet.add(logUsername);
+					logUsernameSet.add(formatUserIdWithLogUsername(user.getId(), logUsername));
 				}
 			}
 			logUsernameSetList.set(logEventsEnum.ordinal(), logUsernameSet);
@@ -276,8 +284,8 @@ public class UsernameService implements InitializingBean{
 		logUsernameToUserIdMapList.get(eventId.ordinal()).put(username, userId);
 	}
 	
-	public void addLogUsername(LogEventsEnum eventId, String logUsername){
-		logUsernameSetList.get(eventId.ordinal()).add(logUsername);
+	public void addLogUsername(LogEventsEnum eventId, String logUsername, String userId){
+		logUsernameSetList.get(eventId.ordinal()).add(formatUserIdWithLogUsername(userId, logUsername));
 	}
 	
 	@Override
