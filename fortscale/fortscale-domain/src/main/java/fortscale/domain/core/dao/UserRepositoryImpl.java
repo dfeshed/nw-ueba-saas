@@ -6,6 +6,7 @@ import static org.springframework.data.mongodb.core.query.Update.update;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -232,5 +233,38 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		return mongoTemplate.find(query, User.class);
 	}
 
+	@Override
+	public HashMap<String, String> findAllUsernames() {
+		Query query = new Query();
+		query.fields().include(User.usernameField).exclude(User.ID_FIELD);
+		HashMap<String, String> ret = new HashMap<>();
+		for(UsernameWrapper username: mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)){
+			ret.put(username.getUsername(), username.getId());
+		}
+		
+		return ret;
+	}
+
 	
+	class UsernameWrapper{
+		private String id;
+		private String username;
+
+		
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+	}
 }

@@ -15,4 +15,5 @@
  		<property name="localOverride" value="true"/>
  	</bean>
 	<bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
+	<bean id="usernameService" class="fortscale.services.impl.UsernameService"/>
 </beans>

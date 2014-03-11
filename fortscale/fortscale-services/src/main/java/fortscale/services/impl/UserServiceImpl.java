@@ -4,7 +4,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,18 +79,12 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ImpalaWriterFactory impalaWriterFactory;
 	
+	@Autowired
+	private UsernameService usernameService;
+	
 	
 	@Autowired 
 	private ADUserParser adUserParser; 
-	
-	@Value("${vpn.to.ad.username.regex.format:^%s@.*(?i)}")
-	private String vpnToAdUsernameRegexFormat;
-	
-	@Value("${auth.to.ad.username.regex.format:^%s@.*(?i)}")
-	private String authToAdUsernameRegexFormat;
-	
-	@Value("${ssh.to.ad.username.regex.format:^%s@.*(?i)}")
-	private String sshToAdUsernameRegexFormat;
 	
 	
 	
@@ -116,43 +109,35 @@ public class UserServiceImpl implements UserService{
 	//NOTICE: The user of this method should check the status of the event if he doesn't want to add new users with fail status he should call with onlyUpdate=true
 	//        The same goes for cases like security events where we don't want to create new User if there is no correlation with the active directory.
 	@Override
-	public void updateOrCreateUserWithClassifierUsername(final Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate) {
+	public void updateOrCreateUserWithClassifierUsername(final Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
 		if(StringUtils.isEmpty(normalizedUsername)){
 			logger.warn("got a empty string {} username", classifier);
 			return;
 		}
 
-		User user = userRepository.findByUsername(normalizedUsername);
-		if(user == null && onlyUpdate){
+		LogEventsEnum eventId = classifier.getLogEventsEnum();
+		String userId = usernameService.getUserId(normalizedUsername, true, eventId);
+		if(userId == null && onlyUpdate){
 			return;
 		}
-		
-		if(user == null){
-			user = createUser(classifier.getUserApplication(), normalizedUsername, logUsername);
-		}
-		
-		String tablename = getTableName(classifier.getLogEventsEnum());
-		final boolean isNewLogUsername = (user.getLogUserName(tablename) == null) ? true : false;
-		boolean isNewAppUsername = false;
-		if(isNewLogUsername){
-			isNewAppUsername = createNewApplicationUserDetails(user, classifier.getUserApplication(), logUsername, false);
-			updateLogUsername(user, tablename, logUsername, false);
-		}
 			
-		if(user.getId() != null){
-			if(isNewLogUsername || isNewAppUsername){
+		if(userId != null){
+			if(usernameService.isLogUsernameExist(eventId, logUsername, true)){
 				Update update = new Update();
-				if(isNewLogUsername){
-					fillUpdateLogUsername(update, logUsername, tablename);
+				usernameService.fillUpdateLogUsername(update, logUsername, eventId);
+				if(updateAppUsername){
+					usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(classifier.getUserApplication(), logUsername), classifier);
 				}
-				if(isNewAppUsername){
-					fillUpdateAppUsername(update, user, classifier);
-				}
-				
-				updateUser(user, update);
+			
+				updateUser(userId, update);
+				usernameService.addLogUsername(eventId, logUsername);
 			}
 		} else{
-			userRepository.save(user);
+			User user = createUser(classifier.getUserApplication(), normalizedUsername, logUsername);
+			usernameService.updateLogUsername(user, eventId, logUsername);
+			user = userRepository.save(user);
+			usernameService.addLogNormalizedUsername(eventId, userId, normalizedUsername);
+			usernameService.addLogUsername(eventId, logUsername);
 		}		
 	}
 	
@@ -378,6 +363,10 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 	
+	public void updateUser(String userId, Update update){
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(userId)), update, User.class);
+	}
+	
 	private String createSearchField(UserAdInfo userAdInfo, String username){
 		StringBuilder sb = new StringBuilder();
 		if(userAdInfo != null){
@@ -424,95 +413,8 @@ public class UserServiceImpl implements UserService{
 	
 	
 	
-	@Override
-	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId){
-		List<String> usernames = new ArrayList<>();
-		for(User user: userRepository.findByFollowed(true)){
-			String username = getAuthLogUsername(eventId, user);
-			if(username != null){
-				usernames.add(username);
-			}
-		}
-		return usernames;
-	}
 	
-	@Override
-	public String getAuthLogUsername(LogEventsEnum eventId, User user){
-		AuthDAO authDAO = getAuthDAO(eventId);
-		return user.getLogUsernameMap().get(authDAO.getTableName());
-	}
-	
-	private AuthDAO getAuthDAO(LogEventsEnum eventId){
-		AuthDAO ret = null;
-		switch(eventId){
-			case login:
-				ret = loginDAO;
-				break;
-			case ssh:
-				ret = sshDAO;
-				break;
-		default:
-			break;
-		}
 		
-		return ret;
-	}
-	
-	@Override
-	public String getVpnLogUsername(User user){
-		return user.getLogUsernameMap().get(vpnDAO.getTableName());
-	}
-	
-	@Override
-	public List<String> getFollowedUsersVpnLogUsername(){
-		List<String> usernames = new ArrayList<>();
-		for(User user: userRepository.findByFollowed(true)){
-			String username = getVpnLogUsername(user);
-			if(username != null){
-				usernames.add(username);
-			}
-		}
-		return usernames;
-	}
-	
-	
-	
-	
-	@Override
-	public User findByAuthUsername(LogEventsEnum eventId, String username){
-		if(StringUtils.isEmpty(username)){
-			return null;
-		}
-		
-		User user = findByLogUsername(eventId, username);
-		
-		String usernameSplit[] = StringUtils.split(username, '@');
-		if(user == null && usernameSplit.length > 1){
-			user = userRepository.findByUsername(username);
-		}
-		
-		if(user == null){
-			user = userRepository.findByNoDomainUsername(usernameSplit[0]);
-			
-			if(user == null){
-				//tried to avoid this call since its performance is bad.
-				user = findByUsername(generateUsernameRegexByAuthUsername(eventId, usernameSplit[0]), username);
-			}
-		}
-		
-		return user;
-	}
-	
-	@Override
-	public User findByLogUsername(LogEventsEnum eventId, String username){
-		String tablename = getTableName(eventId);
-		
-		if(StringUtils.isEmpty(tablename)){
-			return null;
-		}
-		return userRepository.findByLogUsername(tablename, username);
-	}
-	
 	@Override
 	public String getTableName(LogEventsEnum eventId){
 		String tablename = null;
@@ -534,51 +436,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	
-	private User findByUsername(String regex, String username){
-		if(StringUtils.isEmpty(regex)){
-			return null;
-		}
-		
-		List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
-		if(tmpUsers == null || tmpUsers.size() == 0){
-			return null;
-		}
-		
-		if(tmpUsers.size() == 1){
-			return tmpUsers.get(0);
-		}
-		
-		for(User tmpUser: tmpUsers){
-			if(tmpUser.getUsername().equalsIgnoreCase(username)){
-				return tmpUser;
-			}
-		}
-		
-		return null;
-	}
 	
-	private String generateUsernameRegexByAuthUsername(LogEventsEnum eventId, String authUsername){
-		String regexFormat = null;
-		switch(eventId){
-		case login:
-			regexFormat = authToAdUsernameRegexFormat;
-			break;
-		case ssh:
-			regexFormat = sshToAdUsernameRegexFormat;
-			break;
-		case vpn:
-			regexFormat = vpnToAdUsernameRegexFormat;
-			break;
-		default:
-			break;
-		}
-		
-		if(StringUtils.isEmpty(regexFormat)){
-			return null;
-		}
-
-		return String.format(regexFormat, authUsername);
-	}
 	
 	
 	@Override
@@ -591,7 +449,11 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave){
-		return createNewApplicationUserDetails(user, new ApplicationUserDetails(userApplication.getId(), username), isSave);
+		return createNewApplicationUserDetails(user,createNewApplicationUserDetails(userApplication, username), isSave);
+	}
+	
+	private ApplicationUserDetails createNewApplicationUserDetails(UserApplication userApplication, String username){
+		return new ApplicationUserDetails(userApplication.getId(), username);
 	}
 	
 	public boolean createNewApplicationUserDetails(User user, ApplicationUserDetails applicationUserDetails, boolean isSave) {
@@ -606,14 +468,6 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		return isNewVal;
-	}
-	
-	@Override
-	public void updateLogUsername(User user, String logname, String username, boolean isSave) {
-		user.addLogUsername(logname, username);
-		if(isSave){
-			userRepository.save(user);
-		}
 	}
 	
 	@Override
@@ -645,14 +499,5 @@ public class UserServiceImpl implements UserService{
 	}
 
 
-	@Override
-	public void fillUpdateLogUsername(Update update, String username, String logname) {
-		update.set(User.getLogUserNameField(logname), username);
-	}
-
-
-	@Override
-	public void fillUpdateAppUsername(Update update, User user, Classifier classifier) {
-		update.set(User.getAppField(classifier.getUserApplication().getId()), user.getApplicationUserDetails().get(classifier.getUserApplication().getId()));
-	}
+	
 }

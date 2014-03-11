@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.services.UserServiceFacade;
+import fortscale.services.impl.UsernameService;
 
 public class AdUserProcessJob extends AdProcessJob {
 
@@ -20,12 +21,20 @@ public class AdUserProcessJob extends AdProcessJob {
 	@Autowired
 	private UserServiceFacade userServiceFacade;
 	
+	@Autowired
+	private UsernameService usernameService;
+	
 	private RecordToBeanItemConverter<AdUser> converter;
 	
 	@Override
 	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
 		super.init(jobExecutionContext);
 		converter = new RecordToBeanItemConverter<>(getOutputFields());
+	}
+	
+	@Override
+	protected int getTotalNumOfSteps() {
+		return 5;
 	}
 
 	@Override
@@ -52,4 +61,9 @@ public class AdUserProcessJob extends AdProcessJob {
 		return "Users";
 	}
 	
+	protected void runFinalStep(){
+		startNewStep("update username set");
+		usernameService.update();
+		finishStep();
+	}
 }

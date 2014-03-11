@@ -57,6 +57,7 @@ import fortscale.services.fe.IScoreDistribution;
 import fortscale.services.fe.ISuspiciousUserInfo;
 import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.services.impl.SeverityElement;
+import fortscale.services.impl.UsernameService;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
@@ -107,6 +108,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	@Autowired
 	private ThreadPoolTaskExecutor mongoDbWriterExecuter;
+	
+	@Autowired
+	private UsernameService usernameService;
 	
 	
 	@Value("${impala.vpn.table.fields.status}")
@@ -247,7 +251,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(timestamp == null){
 			timestamp = authDAO.getLastRunDate();
 		}
-		String logUsername = user.getLogUsernameMap().get(authDAO.getTableName());
+		String logUsername = usernameService.getAuthLogUsername(eventId, user);
 		if(logUsername != null){
 			return authDAO.countNumOfEventsByNormalizedUsername(timestamp, user.getUsername());
 		} else{
@@ -301,7 +305,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
-			usernames = userService.getFollowedUsersAuthLogUsername(eventId);
+			usernames = usernameService.getFollowedUsersAuthLogUsername(eventId);
 		}
 
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
@@ -313,7 +317,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				String username = authScore.getUserName();
 				User user = userMap.get(username);
 				if(user == null){
-					user = userService.findByAuthUsername(eventId, username);
+					user = usernameService.findByAuthUsername(eventId, username);
 					if(user == null){
 						logger.warn("username ({}) was not found in the user collection", username);
 						continue;
@@ -533,7 +537,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
-			usernames = userService.getFollowedUsersVpnLogUsername();
+			usernames = usernameService.getFollowedUsersVpnLogUsername();
 		}
 		
 		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestampGtEventScoreInUsernameList(timestamp, pageable, minScore, usernames);
@@ -544,7 +548,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				String username = vpnScore.getUserName();
 				User user = userMap.get(username);
 				if(user == null){
-					user = userService.findByAuthUsername(LogEventsEnum.vpn, username);
+					user = usernameService.findByAuthUsername(LogEventsEnum.vpn, username);
 					if(user == null){
 						logger.warn("vpn username ({}) was not found in the user collection", username);
 						continue;

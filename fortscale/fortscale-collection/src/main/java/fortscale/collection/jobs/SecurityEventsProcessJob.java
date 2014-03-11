@@ -46,7 +46,12 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	@Override
 	protected String normalizeUsername(Record record){
 		String username = extractUsernameFromRecord(record);
-		return secUsernameNormalizer.normalize(username);
+		String ret = secUsernameNormalizer.normalize(username);
+		if(ret == null){
+			ret = username;
+		}
+		
+		return ret;
 	}
 	
 	@Override
@@ -113,6 +118,11 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 				}
 			}
 		}
+		return false;
+	}
+	
+	@Override
+	protected boolean isUpdateAppUsername(){
 		return false;
 	}
 
