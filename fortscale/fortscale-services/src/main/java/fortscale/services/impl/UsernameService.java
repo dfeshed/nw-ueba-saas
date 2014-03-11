@@ -253,7 +253,9 @@ public class UsernameService implements InitializingBean{
 		
 		List<User> users = userRepository.findAllExcludeAdInfo();
 		for(User user: users){
-			tmpMap.put(user.getUsername(), user.getId());
+			if(user.getUsername() != null){
+				tmpMap.put(user.getUsername(), user.getId());
+			}
 		}
 		usernameToUserIdMap = tmpMap;
 		

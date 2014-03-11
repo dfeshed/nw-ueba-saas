@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService{
 		}
 			
 		if(userId != null){
-			if(usernameService.isLogUsernameExist(eventId, logUsername, true)){
+			if(!usernameService.isLogUsernameExist(eventId, logUsername, true)){
 				Update update = new Update();
 				usernameService.fillUpdateLogUsername(update, logUsername, eventId);
 				if(updateAppUsername){
@@ -136,8 +136,12 @@ public class UserServiceImpl implements UserService{
 			User user = createUser(classifier.getUserApplication(), normalizedUsername, logUsername);
 			usernameService.updateLogUsername(user, eventId, logUsername);
 			user = userRepository.save(user);
-			usernameService.addLogNormalizedUsername(eventId, userId, normalizedUsername);
-			usernameService.addLogUsername(eventId, logUsername);
+			if(user == null || user.getId() == null){
+				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifier, normalizedUsername, logUsername);
+			} else{
+				usernameService.addLogNormalizedUsername(eventId, user.getId(), normalizedUsername);
+				usernameService.addLogUsername(eventId, logUsername);
+			}
 		}		
 	}
 	
