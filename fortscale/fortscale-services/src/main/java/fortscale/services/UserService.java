@@ -24,28 +24,16 @@ public interface UserService {
 	public ApplicationUserDetails getApplicationUserDetails(User user, UserApplication userApplication);
 	
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
-		
-	public User findByAuthUsername(LogEventsEnum eventId, String username);
-	
+			
 	public void removeClassifierFromAllUsers(String classifierId);
-
-	public List<String> getFollowedUsersVpnLogUsername();
-
-	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId);
 	
 	public String getUserThumbnail(User user);
 
 	public void updateUserWithADInfo(AdUser adUser);
 
 	public void updateUser(User user, Update update);
-	
-	public String getAuthLogUsername(LogEventsEnum eventId, User user);
-	
-	public String getVpnLogUsername(User user);
-	
+		
 	public User findByUserId(String userId);
-
-	public void updateLogUsername(User user, String logname, String username, boolean isSave);
 
 	public User createUser(UserApplication userApplication, String username, String appUsername);
 
@@ -53,13 +41,7 @@ public interface UserService {
 	
 	public void fillUpdateUserScore(Update update, User user, Classifier classifier);
 	
-	public void fillUpdateLogUsername(Update update, String username, String logname);
-	
-	public void fillUpdateAppUsername(Update update,  User user, Classifier classifier);
-
-	public User findByLogUsername(LogEventsEnum eventId, String username);
-
 	public String getTableName(LogEventsEnum eventId);
 
-	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate);
+	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
 }

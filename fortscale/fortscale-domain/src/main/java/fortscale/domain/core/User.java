@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
 
 
 
-@Document
+@Document(collection=User.collectionName)
 @CompoundIndexes({
 		@CompoundIndex(name="ad_objectGUID_1", def = "{'adInfo.objectGUID': 1}", unique=true, sparse=true),
 		@CompoundIndex(name="ad_dn_1", def = "{'adInfo.dn': 1}"),
@@ -38,7 +38,8 @@ import org.springframework.util.Assert;
 		@CompoundIndex(name="vpnScoreCurScore", def = "{'scores.vpn.score': -1}"),
 		@CompoundIndex(name="vpnScoreCurTrend", def = "{'scores.vpn.trendScore': -1}"),
 })
-public class User extends AbstractDocument {	
+public class User extends AbstractDocument {
+	public static final String collectionName = "user";
 	public static final String appField = "app";
 	public static final String logUsernameField = "logUsername";
 	public static final String usernameField = "username";

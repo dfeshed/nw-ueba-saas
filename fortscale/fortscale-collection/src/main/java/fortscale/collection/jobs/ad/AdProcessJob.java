@@ -90,7 +90,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	@Override
 	protected int getTotalNumOfSteps() {
-		return 2;
+		return 4;
 	}
 
 	@Override
@@ -128,8 +128,15 @@ public abstract class AdProcessJob extends FortscaleJob {
 		}
 		
 		refreshImpala();
+		
+		runFinalStep();
 
 	}
+	
+	protected void runFinalStep(){
+		//by default do nothing
+	}
+	
 	
 	protected void processFile(File file) throws Exception {
 		startNewStep("process file");
