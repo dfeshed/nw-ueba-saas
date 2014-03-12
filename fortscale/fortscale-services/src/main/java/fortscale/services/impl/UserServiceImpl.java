@@ -239,13 +239,17 @@ public class UserServiceImpl implements UserService{
 		userAdInfo.setDisplayName(adUser.getDisplayName());
 		userAdInfo.setLogonHours(adUser.getLogonHours());
 		try {
-			userAdInfo.setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
+			if(!StringUtils.isEmpty(adUser.getWhenChanged())){
+				userAdInfo.setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
+			}
 		} catch (ParseException e) {
 			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
 		}
 		
 		try {
-			userAdInfo.setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
+			if(!StringUtils.isEmpty(adUser.getWhenCreated())){
+				userAdInfo.setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
+			}
 		} catch (ParseException e) {
 			logger.error(String.format("got and exception while trying to parse active directory when created field (%s)",adUser.getWhenCreated()), e);
 		}
