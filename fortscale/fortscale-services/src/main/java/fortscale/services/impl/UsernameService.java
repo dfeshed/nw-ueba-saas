@@ -120,12 +120,12 @@ public class UsernameService implements InitializingBean{
 		
 		User user = findByLogUsername(eventId, username);
 		
-		String usernameSplit[] = StringUtils.split(username, '@');
-		if(user == null && usernameSplit.length > 1){
+		if(user == null && username.contains("@")){
 			user = userRepository.findByUsername(username);
 		}
 		
 		if(user == null){
+			String usernameSplit[] = StringUtils.split(username, '@');
 			user = userRepository.findByNoDomainUsername(usernameSplit[0]);
 			
 			if(user == null){
