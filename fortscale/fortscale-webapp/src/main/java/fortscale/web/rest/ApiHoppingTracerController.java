@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
 import fortscale.domain.tracer.ScoreRange;
-import fortscale.domain.tracer.TracerRepository;
+import fortscale.services.tracer.HoppingTracerService;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
@@ -24,7 +25,7 @@ import fortscale.web.beans.DataBean;
 public class ApiHoppingTracerController extends BaseController {
 
 	@Autowired
-	private TracerRepository tracerRepository;
+	private HoppingTracerService hoppingTracerService;
 	
 	@RequestMapping("/{machine:.+}/expand")
 	@ResponseBody
@@ -59,7 +60,7 @@ public class ApiHoppingTracerController extends BaseController {
 		filter.setEnd(end);
 		
 		
-		List<Connection> connections = tracerRepository.expandConnections(machine, treatAsSource, filter);
+		List<Connection> connections = hoppingTracerService.expandConnections(machine, treatAsSource, filter);
 		
 		DataBean<List<Connection>> ret = new DataBean<List<Connection>>();
 		ret.setData(connections);

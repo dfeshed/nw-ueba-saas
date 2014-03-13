@@ -22,14 +22,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
-import fortscale.domain.tracer.TracerRepository;
+import fortscale.services.tracer.HoppingTracerService;
 
 public class ApiHoppingTracerControllerTest {
 
 	private static final double DELTA = 1e-15;
 	
 	@Mock
-	private TracerRepository tracerRepository;
+	private HoppingTracerService hoppingTracerService;
 	@InjectMocks
 	private ApiHoppingTracerController controller;
 	
@@ -38,7 +38,7 @@ public class ApiHoppingTracerControllerTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		when(tracerRepository.expandConnections(anyString(), anyBoolean(), any(FilterSettings.class)))
+		when(hoppingTracerService.expandConnections(anyString(), anyBoolean(), any(FilterSettings.class)))
 		.thenReturn(new LinkedList<Connection>());
 		
 		this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
@@ -55,7 +55,7 @@ public class ApiHoppingTracerControllerTest {
 		ArgumentCaptor<FilterSettings> filterCaptor = ArgumentCaptor.forClass(FilterSettings.class);
 		ArgumentCaptor<String> machineCaptor = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<Boolean> sourceCaptor = ArgumentCaptor.forClass(Boolean.class);
-		verify(tracerRepository).expandConnections(machineCaptor.capture(), sourceCaptor.capture(), filterCaptor.capture());
+		verify(hoppingTracerService).expandConnections(machineCaptor.capture(), sourceCaptor.capture(), filterCaptor.capture());
 		assertTrue(machineCaptor.getValue()!=null);
 		assertTrue(machineCaptor.getValue().equals("xxx"));
 		assertTrue(sourceCaptor.getValue()==true);
@@ -102,7 +102,7 @@ public class ApiHoppingTracerControllerTest {
 		ArgumentCaptor<FilterSettings> filterCaptor = ArgumentCaptor.forClass(FilterSettings.class);
 		ArgumentCaptor<String> machineCaptor = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<Boolean> sourceCaptor = ArgumentCaptor.forClass(Boolean.class);
-		verify(tracerRepository).expandConnections(machineCaptor.capture(), sourceCaptor.capture(), filterCaptor.capture());
+		verify(hoppingTracerService).expandConnections(machineCaptor.capture(), sourceCaptor.capture(), filterCaptor.capture());
 		assertEquals("xxx",machineCaptor.getValue());
 		assertTrue(sourceCaptor.getValue()==false);
 		assertTrue(filterCaptor.getValue()!=null);

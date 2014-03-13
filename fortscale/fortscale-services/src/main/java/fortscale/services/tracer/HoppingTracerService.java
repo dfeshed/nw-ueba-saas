@@ -1,21 +1,26 @@
-package fortscale.domain.tracer;
+package fortscale.services.tracer;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.stereotype.Service;
 
+import fortscale.domain.tracer.Connection;
+import fortscale.domain.tracer.FilterSettings;
+import fortscale.domain.tracer.ListMode;
 import fortscale.domain.tracer.sources.ConnectionsSource;
 import fortscale.domain.tracer.sources.LDAPConnectionsSource;
 import fortscale.domain.tracer.sources.SSHConnectionsSource;
 import fortscale.domain.tracer.sources.VPNConnectionsSource;
 import fortscale.utils.logging.Logger;
 
-public class TracerRepository {
+@Service("hoppingTracerService")
+public class HoppingTracerService {
 
-	private static final Logger logger = Logger.getLogger(TracerRepository.class);
-	
+	private static final Logger logger = Logger.getLogger(HoppingTracerService.class);
+
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
 	
