@@ -23,10 +23,19 @@ public class SSHEventProcessJob extends EventProcessJob {
 	@Value("${ssh.status.success.value:accepted}")
 	private String sshStatusSuccessValue;
 	
+	@Value("${impala.data.ssh.table.fields.target_machine}")
+	private String targetMachineField;
+	
 	@Override
 	protected String normalizeUsername(Record record){
 		String username = extractUsernameFromRecord(record);
-		return sshUsernameNormalizer.normalize(username);
+		String ret = sshUsernameNormalizer.normalize(username);
+		if(ret == null){
+			String targetMachine = RecordExtensions.getStringValue(record, targetMachineField);
+			ret = String.format("%s@%s", username, targetMachine);
+		}
+		
+		return ret;
 	}
 	
 	@Override

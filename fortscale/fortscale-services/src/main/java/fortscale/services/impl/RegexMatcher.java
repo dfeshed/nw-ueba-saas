@@ -1,5 +1,7 @@
 package fortscale.services.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,15 +18,16 @@ public class RegexMatcher {
 		}
 	}
 
-	public String match(String val) {
+	public List<String> match(String val) {
+		List<String> ret = new ArrayList<>();
 		for(int i = 0; i < patterns.length; i++){
 			Pattern p = patterns[i];
 			Matcher m = p.matcher(val);
 			if(m.matches()){
-				return m.replaceAll(replacements[i]);
+				ret.add( m.replaceAll(replacements[i]));
 			}
 		}
-		return null;
+		return ret;
 	}
 
 	
@@ -35,10 +38,9 @@ public class RegexMatcher {
 				{"([\\S]+)@[^ \\t\\n\\x0B\\f\\r]+\\.([^ \\t\\n\\x0B\\f\\r\\.]+)\\.([^ \\t\\n\\x0B\\f\\r\\.]+)", "$1@$2.$3"},
 			});
 		for(String s: strs){
-			
-		
-			String s1 = matcher.match(s);
-			System.out.println(s1);
+			for(String s1: matcher.match(s)){
+				System.out.println(s1);
+			}
 		}
 		
 	}

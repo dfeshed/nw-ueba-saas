@@ -22,7 +22,12 @@ public class VPNEventProcessJob extends EventProcessJob {
 	@Override
 	protected String normalizeUsername(Record record){
 		String username = extractUsernameFromRecord(record);
-		return vpnUsernameNormalizer.normalize(username);
+		String ret = vpnUsernameNormalizer.normalize(username);
+		if(ret == null){
+			ret = username;
+		}
+		
+		return ret;
 	}
 	
 	@Override

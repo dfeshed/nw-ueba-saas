@@ -265,7 +265,7 @@ public class EventProcessJob implements Job {
 		if(classifier != null){
 			String normalizedUsername = extractNormalizedUsernameFromRecord(record);
 			String logUsername = extractUsernameFromRecord(record);
-			userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, isOnlyUpdateUser(record));
+			userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, isOnlyUpdateUser(record), isUpdateAppUsername());
 		}
 	}
 	
@@ -277,7 +277,9 @@ public class EventProcessJob implements Job {
 		return true;
 	}
 	
-	
+	protected boolean isUpdateAppUsername(){
+		return true;
+	}
 	
 	protected void addNormalizedUsernameField(Record record){
 		record.put(normalizedUsernameField, normalizeUsername(record));
