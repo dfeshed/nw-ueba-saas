@@ -57,7 +57,7 @@ public class ApiHoppingTracerController extends BaseController {
 		filter.setScoreRange(new ScoreRange(minScore, maxScore));
 		filter.setStart(start);
 		filter.setEnd(end);
-			
+		
 		
 		List<Connection> connections = tracerRepository.expandConnections(machine, treatAsSource, filter);
 		

@@ -1,6 +1,7 @@
 package fortscale.utils.hdfs.partition;
 
 import static fortscale.utils.hdfs.partition.PartitionsUtils.*;
+import static fortscale.utils.TimestampUtils.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +25,13 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 	@Override
 	public String getImpalaPartitionName(long timestamp) {
 		return String.format("%s=%d",RUNTIME_PARTITION_FIELD_NAME, timestamp);
+	}
+	
+	/**
+	 * Gets the partition value in impala table column for a given timestamp
+	 */
+	public String getImpalaPartitionValue(long timestamp) {
+		return String.format("%d", timestamp);
 	}
 
 	/**

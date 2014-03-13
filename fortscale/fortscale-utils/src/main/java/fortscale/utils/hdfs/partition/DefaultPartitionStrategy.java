@@ -25,6 +25,12 @@ public class DefaultPartitionStrategy implements PartitionStrategy {
 		return null;
 	}
 
+	/**
+	 * Gets the partition value in impala table column for a given timestamp
+	 */
+	public String getImpalaPartitionValue(long timestamp) {
+		return null;
+	}
 	
 	/**
 	 * Gets the partition name extracted from the hdfs path given
