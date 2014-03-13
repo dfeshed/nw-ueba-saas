@@ -42,5 +42,10 @@ public interface PartitionStrategy {
 	 */
 	String getImpalaPartitionValue(long timestamp);
 	
+	/**
+	 * Gets the partition field name definition
+	 */
+	String getImpalaPartitionFieldName();
+	
 	String getTablePartitionDefinition();
 }

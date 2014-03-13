@@ -32,7 +32,7 @@ public class VPNConnectionsSource extends ConnectionsSource {
 	protected String buildQuery(String source, boolean isSource, FilterSettings filter) {
 		
 		ImpalaQuery query = new ImpalaQuery();
-		query.select("date_time_unix, username, source_ip, local_ip, status, country, hostname, yearmonth");
+		query.select("date_time_unix, username, source_ip, local_ip, status, country, hostname, " + partition.getImpalaPartitionFieldName());
 		query.from("vpndata");
 		
 		// add criteria for machine to pivot on
@@ -43,13 +43,13 @@ public class VPNConnectionsSource extends ConnectionsSource {
 		// add criteria for start
 		if (filter.getStart()!=0L) {
 			query.andWhere(gte("date_time_unix", Long.toString(convertToSeconds(filter.getStart()))));
-			query.andWhere(gte("yearmonth", partition.getImpalaPartitionValue(filter.getStart())));
+			query.andWhere(gte(partition.getImpalaPartitionFieldName(), partition.getImpalaPartitionValue(filter.getStart())));
 		}
 		
 		// add criteria for end
 		if (filter.getEnd()!=0L) {
 			query.andWhere(lte("date_time_unix", Long.toString(convertToSeconds(filter.getEnd()))));
-			query.andWhere(lte("yearmonth", partition.getImpalaPartitionValue(filter.getEnd())));
+			query.andWhere(lte(partition.getImpalaPartitionFieldName(), partition.getImpalaPartitionValue(filter.getEnd())));
 		}
 			
 		// add criteria for accounts

@@ -28,6 +28,14 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 	}
 	
 	/**
+	 * Gets the partition field name definition
+	 */
+	@Override
+	public String getImpalaPartitionFieldName() {
+		return RUNTIME_PARTITION_FIELD_NAME;
+	}
+	
+	/**
 	 * Gets the partition value in impala table column for a given timestamp
 	 */
 	public String getImpalaPartitionValue(long timestamp) {

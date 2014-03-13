@@ -32,7 +32,7 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 	protected String buildQuery(String source, boolean isSource, FilterSettings filter) {
 		
 		ImpalaQuery query = new ImpalaQuery();	
-		query.select("timegeneratedunixtime, account_name, client_address, machine_name, service_name, yearmonth");
+		query.select("timegeneratedunixtime, account_name, client_address, machine_name, service_name, " + partition.getImpalaPartitionFieldName());
 		query.from("wmievents4769");
 		
 		// add criteria for machine to pivot on
@@ -43,13 +43,13 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		// add criteria for start
 		if (filter.getStart()!=0L) {
 			query.andWhere(gte("timegeneratedunixtime", Long.toString(convertToSeconds(filter.getStart()))));
-			query.andWhere(gte("yearmonth", partition.getImpalaPartitionValue(filter.getStart())));
+			query.andWhere(gte(partition.getImpalaPartitionFieldName(), partition.getImpalaPartitionValue(filter.getStart())));
 		}
 		
 		// add criteria for end
 		if (filter.getEnd()!=0L) {
 			query.andWhere(lte("timegeneratedunixtime", Long.toString(convertToSeconds(filter.getEnd()))));
-			query.andWhere(lte("yearmonth", partition.getImpalaPartitionValue(filter.getEnd())));
+			query.andWhere(lte(partition.getImpalaPartitionFieldName(), partition.getImpalaPartitionValue(filter.getEnd())));
 		}
 			
 		// add criteria for accounts

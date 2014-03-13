@@ -37,6 +37,14 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 	}
 	
 	/**
+	 * Gets the partition field name definition
+	 */
+	@Override
+	public String getImpalaPartitionFieldName() {
+		return MONTHLY_PARTITION_FIELD_NAME;
+	}
+	
+	/**
 	 * Gets the partition value in impala table column for a given timestamp
 	 */
 	public String getImpalaPartitionValue(long timestamp) {
