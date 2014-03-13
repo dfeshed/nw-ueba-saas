@@ -167,15 +167,8 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
      * @throws InvalidCredentialsException 
      */
     public void changePassword(String username, String oldPassword, String newPassword) throws InvalidCredentialsException {
-    	AnalystAuth analystAuth = analystAuthRepository.findByUsername(username);
-    	if(analystAuth == null){
-    		throw new UsernameNotFoundException(username);
-    	}
+    	AnalystAuth analystAuth = getAnalystAuthByUsernameAndPassword(username, oldPassword);
     	
-    	if (!analystAuth.getPassword().equals(encodePassword(analystAuth, oldPassword))) {
-			throw new InvalidCredentialsException("wrong password");
-		}
-
     	analystAuth.setPassword(encodePassword(analystAuth, newPassword));
 		analystAuth.setCredentialsNonExpired(true);
     	analystAuthRepository.save(analystAuth);
@@ -197,6 +190,19 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
      */
     public boolean userExists(String username) {
     	return analystAuthRepository.findByUsername(username) != null ? true : false;
+    }
+    
+    public AnalystAuth getAnalystAuthByUsernameAndPassword(String username, String password) throws InvalidCredentialsException{
+    	AnalystAuth analystAuth = analystAuthRepository.findByUsername(username);
+    	if(analystAuth == null){
+    		throw new UsernameNotFoundException(username);
+    	}
+    	
+    	if(!encodePassword(analystAuth,password.toString()).equals(analystAuth.getPassword())){
+    		throw new InvalidCredentialsException("wrong password");
+    	}
+
+    	return analystAuth;
     }
 
 	@Override
