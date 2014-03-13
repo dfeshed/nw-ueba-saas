@@ -3,6 +3,8 @@ package fortscale.utils.impala;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.domain.Pageable;
 
+import com.google.common.base.Joiner;
+
 public class ImpalaQuery {
 	private String select[];
 	private String table;
@@ -24,8 +26,7 @@ public class ImpalaQuery {
 	}
 	
 	public ImpalaQuery where(ImpalaQueryElementInterface elem){
-		whereCriteria = ImpalaCriteriaContainer.andWhere(elem);
-		return this;
+		return andWhere(elem);
 	}
 	
 	public ImpalaQuery andWhere(ImpalaQueryElementInterface elem){
@@ -60,10 +61,7 @@ public class ImpalaQuery {
 		if(select == null){
 			builder.append("*");
 		} else{
-			builder.append(select[0]);
-			for(int i = 1; i < select.length; i++){
-				builder.append(", ").append(select[i]);
-			}
+			Joiner.on(",").appendTo(builder, select);
 		}
 		builder.append(" from ").append(table);
 		if(whereCriteria != null){

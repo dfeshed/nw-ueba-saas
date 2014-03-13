@@ -12,20 +12,17 @@ import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 
-public abstract class ConnectionsSource {
+public abstract class ConnectionsSource implements RowMapper<Connection> {
 
 	protected JdbcOperations impalaJdbcTemplate;
 	protected PartitionStrategy partition;
-	protected RowMapper<Connection> mapper;
 
-	public ConnectionsSource(JdbcOperations impalaJdbcTemplate, PartitionStrategy partition, RowMapper<Connection> mapper) {
+	public ConnectionsSource(JdbcOperations impalaJdbcTemplate, PartitionStrategy partition) {
 		checkNotNull(impalaJdbcTemplate);
 		checkNotNull(partition);
-		checkNotNull(mapper);
 		
 		this.impalaJdbcTemplate = impalaJdbcTemplate;
 		this.partition = partition;
-		this.mapper = mapper;
 	}
 	
 	public List<Connection> getConnections(String source, boolean isSource, FilterSettings filter) throws DataAccessException {
@@ -34,7 +31,7 @@ public abstract class ConnectionsSource {
 		String query = buildQuery(source, isSource, filter);
 		
 		// execute the query
-		return impalaJdbcTemplate.query(query, mapper);
+		return impalaJdbcTemplate.query(query, this);
 	}
 
 	public abstract String getSourceName();
