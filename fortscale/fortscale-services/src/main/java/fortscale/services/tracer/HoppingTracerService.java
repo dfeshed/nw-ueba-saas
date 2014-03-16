@@ -14,6 +14,7 @@ import fortscale.domain.tracer.sources.ConnectionsSource;
 import fortscale.domain.tracer.sources.LDAPConnectionsSource;
 import fortscale.domain.tracer.sources.SSHConnectionsSource;
 import fortscale.domain.tracer.sources.VPNConnectionsSource;
+import fortscale.utils.config.ServersListConfiguration;
 import fortscale.utils.logging.Logger;
 
 @Service("hoppingTracerService")
@@ -25,11 +26,7 @@ public class HoppingTracerService {
 	private JdbcOperations impalaJdbcTemplate;
 	
 	@Autowired
-	private LDAPConnectionsSource ldapConnectionsSource;
-	@Autowired
-	private SSHConnectionsSource sshConnectionsSource;
-	@Autowired
-	private VPNConnectionsSource vpnConnectionsSource;
+	private ServersListConfiguration serversListConfiguration;
 	
 	private List<ConnectionsSource> sources;
 		
@@ -55,9 +52,9 @@ public class HoppingTracerService {
 	private void fillConnectionsSources() {
 		if (sources==null) {
 			sources = new LinkedList<ConnectionsSource>();
-			sources.add(ldapConnectionsSource);
-			sources.add(sshConnectionsSource);
-			sources.add(vpnConnectionsSource);
+			sources.add(new LDAPConnectionsSource(impalaJdbcTemplate, serversListConfiguration));
+			sources.add(new SSHConnectionsSource(impalaJdbcTemplate));
+			sources.add(new VPNConnectionsSource(impalaJdbcTemplate));
 		}
 	}
 	

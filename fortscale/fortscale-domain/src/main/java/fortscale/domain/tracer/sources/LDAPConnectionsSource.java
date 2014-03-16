@@ -4,31 +4,29 @@ import static fortscale.utils.TimestampUtils.convertToMilliSeconds;
 import static fortscale.utils.TimestampUtils.convertToSeconds;
 import static fortscale.utils.impala.ImpalaCriteria.*;
 import static fortscale.utils.impala.ImpalaCriteriaString.statement;
+import static com.google.common.base.Preconditions.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.JdbcOperations;
 
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
 import fortscale.utils.config.ServersListConfiguration;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.impala.*;
 
-@Component
 public class LDAPConnectionsSource extends ConnectionsSource {
 
-	@Autowired
 	private ServersListConfiguration serversListConfiguration;
-	protected PartitionStrategy partition;
 	
-	public LDAPConnectionsSource() {
-		this.partition = new MonthlyPartitionStrategy();
+	public LDAPConnectionsSource(JdbcOperations impalaJdbcTemplate, ServersListConfiguration serversListConfiguration) {
+		super(impalaJdbcTemplate, new MonthlyPartitionStrategy());
+		checkNotNull(serversListConfiguration);
+		this.serversListConfiguration = serversListConfiguration;
 	}
 	
 	@Override
