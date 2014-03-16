@@ -36,9 +36,10 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		query.from("wmievents4769");
 		
 		// add criteria for machine to pivot on
-		query.andWhere(isSource? 
-				statement(String.format("(client_address='%s' OR machine_name='%s')", source, source)) :
-				equalsTo("service_name", source));
+		if (isSource)
+			query.andWhere(statement(String.format("(client_address='%s' OR machine_name='%s')", source, source)));
+		else
+			query.andWhere(equalsTo("service_name", source, true));
 		
 		// add criteria for start
 		if (filter.getStart()!=0L) {

@@ -36,9 +36,10 @@ public class VPNConnectionsSource extends ConnectionsSource {
 		query.from("vpndata");
 		
 		// add criteria for machine to pivot on
-		query.andWhere(isSource? 
-				statement(String.format("(source_ip='%s' OR hostname='%s')", source, source)) :
-				equalsTo("local_ip", source));
+		if (isSource)
+			query.andWhere(statement(String.format("(source_ip='%s' OR hostname='%s')", source, source)));
+		else
+			query.andWhere(equalsTo("local_ip", source, true));
 		
 		// add criteria for start
 		if (filter.getStart()!=0L) {

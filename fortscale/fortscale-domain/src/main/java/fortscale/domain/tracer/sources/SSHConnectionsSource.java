@@ -36,9 +36,10 @@ public class SSHConnectionsSource extends ConnectionsSource {
 		query.from("sshdata");
 		
 		// add criteria for machine to pivot on
-		query.andWhere(isSource? 
-				statement(String.format("(source_ip='%s' OR hostname='%s')", source, source)) :
-				equalsTo("target_machine", source));
+		if (isSource)
+			query.andWhere(statement(String.format("(source_ip='%s' OR hostname='%s')", source, source)));
+		else
+			query.andWhere(equalsTo("target_machine", source, true));
 		
 		// add criteria for start
 		if (filter.getStart()!=0L) {
