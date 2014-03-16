@@ -70,7 +70,7 @@ public class SSHConnectionsSource extends ConnectionsSource {
 			}
 		}
 		
-		return query.toString();
+		return query.toSQL();
 	}
 	
 	@Override

@@ -70,7 +70,7 @@ public class VPNConnectionsSource extends ConnectionsSource {
 			}
 		}
 		
-		return query.toString();
+		return query.toSQL();
 	}
 	
 	@Override

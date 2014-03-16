@@ -72,7 +72,7 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 			}
 		}
 		
-		return query.toString();
+		return query.toSQL();
 	}
 	
 	@Override
