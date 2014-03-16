@@ -57,6 +57,7 @@ import fortscale.services.fe.IScoreDistribution;
 import fortscale.services.fe.ISuspiciousUserInfo;
 import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.services.impl.SeverityElement;
+import fortscale.utils.config.ServersListConfiguration;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
@@ -101,6 +102,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	@Autowired
 	private ConfigurationService configurationService;
+	
+	@Autowired
+	private ServersListConfiguration serversListConfiguration;
 	
 	@Autowired
 	private ImpalaParser impalaParser;
@@ -1094,11 +1098,11 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		String loginAccountNameRegex = configurationService.getLoginAccountNameRegex();
+		String loginAccountNameRegex = serversListConfiguration.getLoginAccountNameRegex();
 		if(!StringUtils.isEmpty(loginAccountNameRegex)){
 			addFilter(WMIEVENTS_TABLE_NAME, ACCOUNT_NAME_FIELD, loginAccountNameRegex);
 		}
-		String loginServiceNameRegex = configurationService.getLoginServiceRegex();
+		String loginServiceNameRegex = serversListConfiguration.getLoginServiceRegex();
 		if(!StringUtils.isEmpty(loginServiceNameRegex)){
 			addFilter(WMIEVENTS_TABLE_NAME, SERVICE_NAME_FIELD, loginServiceNameRegex);
 		}

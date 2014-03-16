@@ -9,18 +9,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
+import fortscale.utils.config.ServersListConfiguration;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.impala.*;
 
+@Component
 public class LDAPConnectionsSource extends ConnectionsSource {
 
-	public LDAPConnectionsSource(JdbcOperations impalaJdbcTemplate) {
-		super(impalaJdbcTemplate, new MonthlyPartitionStrategy());
+	@Autowired
+	private ServersListConfiguration serversListConfiguration;
+	protected PartitionStrategy partition;
+	
+	public LDAPConnectionsSource() {
+		this.partition = new MonthlyPartitionStrategy();
 	}
 	
 	@Override
@@ -72,6 +80,13 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 				query.andWhere(notIn("lower(service_name)", filter.getMachines()));
 			}
 		}
+		
+		// filter out source that equals to destinations
+		query.andWhere(neq("lower(machine_name)", "lower(service_name)"));
+		
+		// filter out domain controllers destinations
+		String dcFilter = serversListConfiguration.getLoginServiceRegex();
+		query.andWhere(statement(String.format("not (lower(service_name) regexp lower('%s'))", dcFilter)));
 		
 		return query.toSQL();
 	}

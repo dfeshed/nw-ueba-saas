@@ -24,6 +24,13 @@ public class HoppingTracerService {
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
 	
+	@Autowired
+	private LDAPConnectionsSource ldapConnectionsSource;
+	@Autowired
+	private SSHConnectionsSource sshConnectionsSource;
+	@Autowired
+	private VPNConnectionsSource vpnConnectionsSource;
+	
 	private List<ConnectionsSource> sources;
 		
 	public List<Connection> expandConnections(String machine, boolean isSource, FilterSettings filter) {
@@ -48,9 +55,9 @@ public class HoppingTracerService {
 	private void fillConnectionsSources() {
 		if (sources==null) {
 			sources = new LinkedList<ConnectionsSource>();
-			sources.add(new LDAPConnectionsSource(impalaJdbcTemplate));
-			sources.add(new SSHConnectionsSource(impalaJdbcTemplate));
-			sources.add(new VPNConnectionsSource(impalaJdbcTemplate));
+			sources.add(ldapConnectionsSource);
+			sources.add(sshConnectionsSource);
+			sources.add(vpnConnectionsSource);
 		}
 	}
 	

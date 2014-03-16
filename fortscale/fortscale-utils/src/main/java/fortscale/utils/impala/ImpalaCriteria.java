@@ -19,11 +19,22 @@ public class ImpalaCriteria implements ImpalaQueryElementInterface{
 		return equalsTo(key, value, false);
 	}
 	
-	public static ImpalaCriteria equalsTo(String key, String value, boolean enclodeQuotes){
-		if (enclodeQuotes)
+	public static ImpalaCriteria equalsTo(String key, String value, boolean encloseQuotes){
+		if (encloseQuotes)
 			return compare(key, "=", "'" + value + "'");
 		else
 			return compare(key, "=", value);
+	}
+	
+	public static ImpalaCriteria neq(String key, String value) {
+		return neq(key, value, false);
+	}
+	
+	public static ImpalaCriteria neq(String key, String value, boolean encloseQuotes) {
+		if (encloseQuotes)
+			return compare(key, "!=", "'" + value + "'");
+		else
+			return compare(key, "!=", value);
 	}
 	
 	public static ImpalaCriteria gte(String key, String value){

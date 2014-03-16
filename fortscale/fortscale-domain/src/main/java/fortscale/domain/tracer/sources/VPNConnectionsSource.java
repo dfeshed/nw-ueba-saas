@@ -9,18 +9,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.stereotype.Component;
 
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.impala.ImpalaQuery;
 
+@Component
 public class VPNConnectionsSource extends ConnectionsSource {
 
-	public VPNConnectionsSource(JdbcOperations impalaJdbcTemplate) {
-		super(impalaJdbcTemplate, new MonthlyPartitionStrategy());
+	protected PartitionStrategy partition;
+	
+	public VPNConnectionsSource() {
+		this.partition = new MonthlyPartitionStrategy();
 	}
 	
 	@Override
