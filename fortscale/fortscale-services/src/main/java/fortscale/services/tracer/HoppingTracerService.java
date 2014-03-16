@@ -69,7 +69,7 @@ public class HoppingTracerService {
 			if (item.equalsIgnoreCase(source))
 				return true;
 		}
-		return true;
+		return false;
 	}
 	
 }
