@@ -212,12 +212,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		}
 		return usersMap;
 	}
-	
-	@SuppressWarnings("unused")
-	private User findByAuthUsername(LogEventsEnum eventId, String username){
-		return userService.findByAuthUsername(eventId, username);
-	}
-	
+		
 	private void updateUserWithAuthScore(AuthDAO authDAO, final Classifier classifier, Date lastRun) {		
 		logger.info("calculating avg score for {} events.", classifier);
 		double avg = 0;

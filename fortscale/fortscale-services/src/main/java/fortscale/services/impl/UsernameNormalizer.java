@@ -10,18 +10,27 @@ public class UsernameNormalizer implements InitializingBean{
 	private String matchersString;
 	private RegexMatcher regexMatcher;
 	
+	private UsernameService usernameService;
+	
+	
+	
+	public void setUsernameService(UsernameService usernameService) {
+		this.usernameService = usernameService;
+	}
+
 	public void setMatchersString(String matchersString) {
 		this.matchersString = matchersString;
 	}
-
+	
 	public String normalize(String username){
 		username = username.toLowerCase();
 		String ret = null;
 		if(regexMatcher != null){
-			ret = regexMatcher.match(username);
-		}
-		if(ret == null){
-			ret = username;
+			for(String normalizedUsername: regexMatcher.match(username)){
+				if(usernameService.isUsernameExist(normalizedUsername, true)){
+					ret = normalizedUsername;
+				}
+			}
 		}
 		
 		return ret;

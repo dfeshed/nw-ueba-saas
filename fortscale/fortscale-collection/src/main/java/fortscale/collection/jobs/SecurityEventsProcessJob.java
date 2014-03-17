@@ -14,6 +14,8 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.google.common.base.Objects;
+
 import fortscale.services.fe.Classifier;
 import fortscale.services.impl.UsernameNormalizer;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
@@ -46,7 +48,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	@Override
 	protected String normalizeUsername(Record record){
 		String username = extractUsernameFromRecord(record);
-		return secUsernameNormalizer.normalize(username);
+		String ret = Objects.firstNonNull(secUsernameNormalizer.normalize(username), username);
+		
+		return ret;
 	}
 	
 	@Override
@@ -113,6 +117,11 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 				}
 			}
 		}
+		return false;
+	}
+	
+	@Override
+	protected boolean isUpdateAppUsername(){
 		return false;
 	}
 

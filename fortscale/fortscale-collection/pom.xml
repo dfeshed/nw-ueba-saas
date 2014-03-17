@@ -82,6 +82,7 @@
 		<dnsjava.version>2.1.1</dnsjava.version>
 		<opencsv.version>2.0</opencsv.version>
 		<thrift.version>0.9.0</thrift.version>
+		<commons-io.version>2.1</commons-io.version>
 		<!-- maven plugins versions -->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
@@ -96,7 +97,12 @@
 			<artifactId>joda-time</artifactId>
 			<version>${joda-time.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
+            
 		<!-- quartz -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>

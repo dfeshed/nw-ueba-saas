@@ -31,6 +31,8 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	private UserUpdateScoreService userUpdateScoreService;
 	@Autowired
 	private UserScoreService userScoreService;
+	@Autowired
+	private UsernameService usernameService;
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
@@ -64,12 +66,12 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	
 	@Override
 	public List<String> getFollowedUsersVpnLogUsername() {
-		return userService.getFollowedUsersVpnLogUsername();
+		return usernameService.getFollowedUsersVpnLogUsername();
 	}
 	
 	@Override
 	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId) {
-		return userService.getFollowedUsersAuthLogUsername(eventId);
+		return usernameService.getFollowedUsersAuthLogUsername(eventId);
 	}
 	
 	@Override
@@ -158,8 +160,8 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	}
 
 	@Override
-	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate) {
-		userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, onlyUpdate);
+	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
+		userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, onlyUpdate, updateAppUsername);
 	}
 
 

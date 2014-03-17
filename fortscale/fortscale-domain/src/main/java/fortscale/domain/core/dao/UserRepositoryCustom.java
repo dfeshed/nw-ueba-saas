@@ -1,6 +1,7 @@
 package fortscale.domain.core.dao;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -39,5 +40,6 @@ public interface UserRepositoryCustom {
 	public User findByAdInfoDn(String adDn);
 	
 	public User findByAdInfoObjectGUID(String objectGUID);
-	User findByObjectGUID(String objectGUID);
+	public User findByObjectGUID(String objectGUID);
+	public HashMap<String, String> findAllUsernames();
 }

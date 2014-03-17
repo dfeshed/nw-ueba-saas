@@ -29,12 +29,7 @@
 	
 	<bean id="loginDAO" class="fortscale.domain.fe.dao.impl.LoginDAOImpl"/>
 	
-	<bean id="sshDAO" class="fortscale.domain.fe.dao.impl.SshDAOImpl"/>
-	
-<!-- 	<bean id="vpnDAO" class="fortscale.domain.fe.dao.impl.VpnDAOImpl"> -->
-<!-- 		<property name="tableName" value="${impala.vpn.table.name}"/> -->
-<!-- 	</bean> -->
-	
+	<bean id="sshDAO" class="fortscale.domain.fe.dao.impl.SshDAOImpl"/>	
 	
 	
 	
