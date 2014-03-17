@@ -37,5 +37,15 @@ public interface PartitionStrategy {
 	 */
 	int comparePartitionTo(String partitionPath, long ts);
 	
+	/**
+	 * Gets the partition value in impala table column for a given timestamp
+	 */
+	String getImpalaPartitionValue(long timestamp);
+	
+	/**
+	 * Gets the partition field name definition
+	 */
+	String getImpalaPartitionFieldName();
+	
 	String getTablePartitionDefinition();
 }

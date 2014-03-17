@@ -70,6 +70,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-global-config</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	
+		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>${joda-time.version}</version>
@@ -99,15 +105,8 @@
 
 		<dependency>
 			<groupId>fortscale</groupId>
-			<artifactId>fortscale-global-config</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>fortscale</groupId>
 			<artifactId>fortscale-utils</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		
 		<!-- hadoop dependencies -->

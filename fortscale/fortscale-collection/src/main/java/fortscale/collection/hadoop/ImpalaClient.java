@@ -72,7 +72,7 @@ public class ImpalaClient {
 		builder.append(" ").append("ROW FORMAT DELIMITED FIELDS TERMINATED BY '").append(delimiter).append("'");
 		builder.append(" ").append("STORED AS TEXTFILE");
 		builder.append(" ").append("LOCATION '").append(location).append("'");
-		logger.info(builder.toString());
+		logger.debug(builder.toString());
 		impalaJdbcTemplate.execute(builder.toString());
 	}
 	

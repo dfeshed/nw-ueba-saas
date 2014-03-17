@@ -153,73 +153,61 @@ public class VpnScoringJobTest {
 
 		@Override
 		public boolean hasCompleted() throws ExecException {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public Iterator<Tuple> getResults() throws ExecException {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getAlias() throws ExecException {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Properties getConfiguration() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public PigStats getStatistics() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public POStore getPOStore() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public void completionNotification(Object cookie) {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void kill() throws ExecException {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void getLogs(OutputStream log) throws ExecException {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void getSTDOut(OutputStream out) throws ExecException {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void getSTDError(OutputStream error) throws ExecException {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public Exception getException() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 		
@@ -242,49 +230,41 @@ public class VpnScoringJobTest {
 
 		@Override
 		public String getDescription() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Class<? extends Job> getJobClass() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public JobDataMap getJobDataMap() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public boolean isDurable() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public boolean isPersistJobDataAfterExecution() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public boolean isConcurrentExectionDisallowed() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public boolean requestsRecovery() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public JobBuilder getJobBuilder() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 		
@@ -299,37 +279,31 @@ public class VpnScoringJobTest {
 
 		@Override
 		public Scheduler getScheduler() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Trigger getTrigger() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Calendar getCalendar() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public boolean isRecovering() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public TriggerKey getRecoveringTriggerKey() throws IllegalStateException {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public int getRefireCount() {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
@@ -345,67 +319,56 @@ public class VpnScoringJobTest {
 
 		@Override
 		public Job getJobInstance() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Date getFireTime() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Date getScheduledFireTime() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Date getPreviousFireTime() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Date getNextFireTime() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getFireInstanceId() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Object getResult() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public void setResult(Object result) {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public long getJobRunTime() {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
 		public void put(Object key, Object value) {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public Object get(Object key) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 		
