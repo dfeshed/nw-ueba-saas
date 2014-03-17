@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fortscale.utils.geoip.GeoIPInfo;
 import com.fortscale.utils.geoip.GeoIPService;
+import com.fortscale.utils.geoip.MMGeoIPService;
 import com.typesafe.config.Config;
 
 /**
@@ -50,7 +51,7 @@ public class GeolocationBuilder implements CommandBuilder {
 
 			// Try to instantiate the GeoIP service
 			try {
-				this.geoIpService = new GeoIPService();
+				this.geoIpService = new MMGeoIPService();
 			} catch (IOException e) {
 				this.geoIpService = null;
 			}
