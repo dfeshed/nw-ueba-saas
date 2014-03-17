@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import fortscale.domain.schema.VpnEvents;
@@ -21,6 +22,9 @@ import fortscale.utils.impala.ImpalaQuery;
 @Component
 public class VPNConnectionsSource extends ConnectionsSource {
 
+	@Value("${vpn.default_session_legth_hours:10}")
+	private int sessionLength;
+	
 	@Autowired
 	private VpnEvents schema;
 	
@@ -92,7 +96,7 @@ public class VPNConnectionsSource extends ConnectionsSource {
 		connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX))));
 		connection.setSourceType("vpn");
 		// assume 10 hours session
-		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX)) + (1000*60*60*10)));
+		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX)) + (1000*60*60*sessionLength)));
 		
 		return connection;
 	}

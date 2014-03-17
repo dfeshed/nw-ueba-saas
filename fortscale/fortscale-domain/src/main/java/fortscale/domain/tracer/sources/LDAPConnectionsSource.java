@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import fortscale.domain.schema.LDAPEvents;
@@ -22,6 +23,9 @@ import fortscale.utils.impala.*;
 @Component
 public class LDAPConnectionsSource extends ConnectionsSource {
 
+	@Value("${ldap.default_session_legth_hours:10}")
+	private int sessionLength;
+	
 	@Autowired
 	private ServersListConfiguration serversListConfiguration;
 	
@@ -105,7 +109,7 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME))));
 		connection.setSourceType("ldap");
 		// assume 10 hours session
-		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME)) + (1000*60*60*10)));
+		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME)) + (1000*60*60*sessionLength)));
 		
 		return connection;
 	}
