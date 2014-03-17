@@ -40,6 +40,7 @@ public class GeolocationBuilder implements CommandBuilder {
 
 		private final String recordField;
 		private final String countryFieldName;
+		private final String regionFieldName;
 		private final String cityFieldName;
 		private final String ispFieldName;
 		private final String usageTypeFieldName;
@@ -51,6 +52,8 @@ public class GeolocationBuilder implements CommandBuilder {
 			this.recordField = getConfigs().getString(config, "ip_record_name");
 			// This is the field name we'll use to hold the country name
 			this.countryFieldName = getConfigs().getString(config, "country_record_name");
+			// This is the field name we'll use to hold the country name
+			this.regionFieldName = getConfigs().getString(config, "region_record_name");
 			// This is the field name we'll use to hold the city name
 			this.cityFieldName = getConfigs().getString(config, "city_record_name");
 			// This is the field name we'll use to hold the isp name
@@ -80,8 +83,9 @@ public class GeolocationBuilder implements CommandBuilder {
 						GeoIPInfo geoIPInfo = this.geoIpService.getGeoIPInfo(ipAddress);
 						// Write the ip info:  country, city, isp, usageType
 						inputRecord.put(this.countryFieldName, geoIPInfo.getCountryName());
+						inputRecord.put(this.regionFieldName, geoIPInfo.getRegionName());
 						inputRecord.put(this.cityFieldName, geoIPInfo.getCityName());
-						inputRecord.put(this.ispFieldName, geoIPInfo.getCountryName());
+						inputRecord.put(this.ispFieldName, geoIPInfo.getISP());
 						inputRecord.put(this.usageTypeFieldName, geoIPInfo.getUsageType());
 					} catch (IOException e) {
 						logger.warn("error resolving geo2ip for {}, exception: {}", ipAddress, e.toString());
