@@ -22,7 +22,7 @@ import fortscale.utils.impala.ImpalaQuery;
 @Component
 public class SSHConnectionsSource extends ConnectionsSource {
 
-	@Value("${ssh.default_session_legth_hours:10}")
+	@Value("${ssh.default_session_length_hours:10}")
 	private int sessionLength;
 	
 	@Autowired
