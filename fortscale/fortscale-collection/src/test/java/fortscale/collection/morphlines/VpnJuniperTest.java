@@ -45,7 +45,7 @@ public class VpnJuniperTest {
 //				"Regular (Internet) Successful VPN Authentication",
 //				"Nov 6 13:38:34 11.155.45.2 Juniper: 2012-11-06 13:38:34 - ive - [188.245.200.84] Root::thrghazas(Com2-Trusted-Linux-IKEv2)[Com2-Trusted-XXX-Linux-IKEv2] - VPN Tunneling: Session started for user with IP 10.84.255.160, hostname",
 //				"2012-11-06 13:38:34,1352209114,Root::thrghazas,188.245.200.84,10.84.255.160,SUCCESS,Nov 6 13:38:34 11.155.45.2 Juniper: 2012-11-06 13:38:34 - ive - [188.245.200.84] Root::thrghazas(Com2-Trusted-Linux-IKEv2)[Com2-Trusted-XXX-Linux-IKEv2] - VPN Tunneling: Session started for user with IP 10.84.255.160, hostname,Iran,"
-//				),
+//				)
 				$ (
 		        "Successful Empty Username VPN Authentication (Should be dropped)",
 		        "Nov 7 14:41:28 11.155.45.2 Juniper: 2013-11-07 14:41:28 - ive - [208.91.35.4] ser:gio-contractor(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.100, hostname victory.local",

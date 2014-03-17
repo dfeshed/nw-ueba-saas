@@ -19,7 +19,5 @@ public interface ConfigurationService {
 	public void setScoreDistribution(List<SeverityElement> severityList);
 	public Map<String, Classifier> getClassifiersMap();
 	public Range getRange(String severityId);
-	public List<String> getDCs();
-	public String getLoginServiceRegex();
-	public String getLoginAccountNameRegex();
+	
 }

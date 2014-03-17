@@ -43,6 +43,7 @@ import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.ebs.EBSPigUDF;
 import fortscale.ebs.EventBulkScorer;
+import fortscale.global.configuration.ServersListConfiguration;
 import fortscale.services.LogEventsEnum;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
@@ -102,6 +103,9 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	@Autowired
 	private ConfigurationService configurationService;
+	
+	@Autowired
+	private ServersListConfiguration serversListConfiguration;
 	
 	@Autowired
 	private ImpalaParser impalaParser;
@@ -1098,11 +1102,11 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		String loginAccountNameRegex = configurationService.getLoginAccountNameRegex();
+		String loginAccountNameRegex = serversListConfiguration.getLoginAccountNameRegex();
 		if(!StringUtils.isEmpty(loginAccountNameRegex)){
 			addFilter(WMIEVENTS_TABLE_NAME, ACCOUNT_NAME_FIELD, loginAccountNameRegex);
 		}
-		String loginServiceNameRegex = configurationService.getLoginServiceRegex();
+		String loginServiceNameRegex = serversListConfiguration.getLoginServiceRegex();
 		if(!StringUtils.isEmpty(loginServiceNameRegex)){
 			addFilter(WMIEVENTS_TABLE_NAME, SERVICE_NAME_FIELD, loginServiceNameRegex);
 		}

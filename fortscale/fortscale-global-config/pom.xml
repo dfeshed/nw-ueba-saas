@@ -52,6 +52,18 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+	<properties>
+		<commons-lang.version>2.6</commons-lang.version>
+		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons-lang.version}</version>
+		</dependency>
+	</dependencies>
 
 	<profiles>
 		<profile>
@@ -115,6 +127,20 @@
 		</profile>
 	</profiles>
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<compilerArgument>-Xlint:all</compilerArgument>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+				</configuration>
+			</plugin>
+		</plugins>
 		<filters>
 			<filter>src/filters/filter-${env}-application.properties</filter>
 		</filters>

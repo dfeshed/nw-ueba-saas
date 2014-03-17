@@ -5,16 +5,16 @@ import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.services.analyst.ConfigurationService;
+import fortscale.global.configuration.ServersListConfiguration;
 
 @Component("loginScoringPigRunner")
 public class LoginScoringPigRunner extends EventScoringPigRunner {
 	@Autowired
-	private ConfigurationService configurationService;
+	private ServersListConfiguration serversListConfiguration;
 	
 	@Override
 	protected void fillWithSpecificScriptParameters(Properties scriptParameters){
-		scriptParameters.put("accountRegex", configurationService.getLoginAccountNameRegex());
-		scriptParameters.put("dcRegex", configurationService.getLoginServiceRegex());
+		scriptParameters.put("accountRegex", serversListConfiguration.getLoginAccountNameRegex());
+		scriptParameters.put("dcRegex", serversListConfiguration.getLoginServiceRegex());
 	}
 }
