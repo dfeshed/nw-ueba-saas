@@ -23,7 +23,7 @@ import fortscale.utils.impala.*;
 @Component
 public class LDAPConnectionsSource extends ConnectionsSource {
 
-	@Value("${ldap.default_session_legth_hours:10}")
+	@Value("${ldap.default_session_length_hours:10}")
 	private int sessionLength;
 	
 	@Autowired
