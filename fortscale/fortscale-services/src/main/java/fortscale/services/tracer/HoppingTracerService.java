@@ -3,6 +3,7 @@ package fortscale.services.tracer;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import fortscale.global.configuration.ServersListConfiguration;
 import fortscale.utils.logging.Logger;
 
 @Service("hoppingTracerService")
-public class HoppingTracerService {
+public class HoppingTracerService implements InitializingBean {
 
 	private static final Logger logger = Logger.getLogger(HoppingTracerService.class);
 
@@ -30,11 +31,19 @@ public class HoppingTracerService {
 	
 	private List<ConnectionsSource> sources;
 		
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		sources = new LinkedList<ConnectionsSource>();
+		sources.add(new LDAPConnectionsSource(impalaJdbcTemplate, serversListConfiguration));
+		sources.add(new SSHConnectionsSource(impalaJdbcTemplate));
+		sources.add(new VPNConnectionsSource(impalaJdbcTemplate));
+	}
+	
 	public List<Connection> expandConnections(String machine, boolean isSource, FilterSettings filter) {
 		
 		List<Connection> connections = new LinkedList<Connection>();
 		
-		fillConnectionsSources();
 		for (ConnectionsSource source : sources) {
 			if (shouldIncludeSource(filter, source.getSourceName())) {
 				try {
@@ -49,14 +58,6 @@ public class HoppingTracerService {
 		return connections;
 	}
 	
-	private void fillConnectionsSources() {
-		if (sources==null) {
-			sources = new LinkedList<ConnectionsSource>();
-			sources.add(new LDAPConnectionsSource(impalaJdbcTemplate, serversListConfiguration));
-			sources.add(new SSHConnectionsSource(impalaJdbcTemplate));
-			sources.add(new VPNConnectionsSource(impalaJdbcTemplate));
-		}
-	}
 	
 	private boolean shouldIncludeSource(FilterSettings filter, String source) {
 		if (filter.getSources().isEmpty())
