@@ -39,15 +39,24 @@ public class GeolocationBuilder implements CommandBuilder {
 	private static final class Geolocation extends AbstractCommand {
 
 		private final String recordField;
-		private final String outputFieldName;
+		private final String countryFieldName;
+		private final String cityFieldName;
+		private final String ispFieldName;
+		private final String usageTypeFieldName;
 		private GeoIPService geoIpService;
 
 		public Geolocation(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			// Get the field which holds the IP addresses
-			this.recordField = getConfigs().getString(config, "input_record_name");
+			this.recordField = getConfigs().getString(config, "ip_record_name");
 			// This is the field name we'll use to hold the country name
-			this.outputFieldName = getConfigs().getString(config, "output_record_name");
+			this.countryFieldName = getConfigs().getString(config, "country_record_name");
+			// This is the field name we'll use to hold the city name
+			this.cityFieldName = getConfigs().getString(config, "city_record_name");
+			// This is the field name we'll use to hold the isp name
+			this.ispFieldName = getConfigs().getString(config, "isp_record_name");
+			// This is the field name we'll use to hold the usage type name
+			this.usageTypeFieldName = getConfigs().getString(config, "usage_type_record_name");
 
 			// Try to instantiate the GeoIP service
 			try {
@@ -69,9 +78,11 @@ public class GeolocationBuilder implements CommandBuilder {
 				if (this.geoIpService != null) {
 					try {
 						GeoIPInfo geoIPInfo = this.geoIpService.getGeoIPInfo(ipAddress);
-						String countryName = geoIPInfo.getCountryName();
-						// Write the country name
-						inputRecord.put(this.outputFieldName, countryName);
+						// Write the ip info:  country, city, isp, usageType
+						inputRecord.put(this.countryFieldName, geoIPInfo.getCountryName());
+						inputRecord.put(this.cityFieldName, geoIPInfo.getCityName());
+						inputRecord.put(this.ispFieldName, geoIPInfo.getCountryName());
+						inputRecord.put(this.usageTypeFieldName, geoIPInfo.getUsageType());
 					} catch (IOException e) {
 						logger.warn("error resolving geo2ip for {}, exception: {}", ipAddress, e.toString());
 					}
