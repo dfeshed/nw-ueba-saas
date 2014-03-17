@@ -10,11 +10,11 @@ import fortscale.utils.config.ServersListConfiguration;
 @Component("loginScoringPigRunner")
 public class LoginScoringPigRunner extends EventScoringPigRunner {
 	@Autowired
-	private ServersListConfiguration serversListConfiguratione;
+	private ServersListConfiguration serversListConfiguration;
 	
 	@Override
 	protected void fillWithSpecificScriptParameters(Properties scriptParameters){
-		scriptParameters.put("accountRegex", serversListConfiguratione.getLoginAccountNameRegex());
-		scriptParameters.put("dcRegex", serversListConfiguratione.getLoginServiceRegex());
+		scriptParameters.put("accountRegex", serversListConfiguration.getLoginAccountNameRegex());
+		scriptParameters.put("dcRegex", serversListConfiguration.getLoginServiceRegex());
 	}
 }
