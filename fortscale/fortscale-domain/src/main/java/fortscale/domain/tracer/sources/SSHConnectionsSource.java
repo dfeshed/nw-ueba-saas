@@ -20,8 +20,6 @@ import fortscale.utils.impala.ImpalaQuery;
 
 public class SSHConnectionsSource extends ConnectionsSource {
 
-	protected PartitionStrategy partition;
-	
 	public SSHConnectionsSource(JdbcOperations impalaJdbcTemplate) {
 		super(impalaJdbcTemplate, new MonthlyPartitionStrategy());
 	}
