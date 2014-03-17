@@ -1,4 +1,4 @@
-package fortscale.utils.config;
+package fortscale.global.configuration;
 
 import java.util.List;
 

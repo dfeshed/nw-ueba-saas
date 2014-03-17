@@ -15,7 +15,6 @@ import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.impala.ImpalaQuery;
 
 public class SSHConnectionsSource extends ConnectionsSource {

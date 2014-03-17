@@ -1,4 +1,4 @@
-package fortscale.utils.config;
+package fortscale.global.configuration;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -7,16 +7,16 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.slf4j.*;
 
-import fortscale.utils.logging.Logger;
+
 
 @Service("ServersListConfiguration")
 public class ServersListConfigurationImpl implements ServersListConfiguration {
 
-	private static Logger logger = Logger.getLogger(ServersListConfigurationImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(ServersListConfigurationImpl.class);
 	
 	@Value("${fortscale.home.dir}/fortscale-scripts/scripts/getDCs.sh")
 	private String getDCsScriptPath;
@@ -54,7 +54,7 @@ public class ServersListConfigurationImpl implements ServersListConfiguration {
 		}
 		
 		if(dcs.isEmpty()){
-			Log.warn("no dcs were recieved to the command: {}", StringUtils.join(commands, " "));
+			logger.warn("no dcs were recieved to the command: {}", StringUtils.join(commands, " "));
 		}
 		
 		return dcs;

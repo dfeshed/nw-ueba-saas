@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.JdbcOperations;
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
-import fortscale.utils.config.ServersListConfiguration;
+import fortscale.global.configuration.ServersListConfiguration;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.impala.*;
 
