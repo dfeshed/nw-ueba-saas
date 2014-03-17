@@ -61,6 +61,10 @@ public class ImpalaCriteria implements ImpalaQueryElementInterface{
 		return compare(key, " not in ", "(" + value + ")");
 	}
 	
+	public static String lower(String key) {
+		return String.format("lower(%s)", key);
+	}
+	
 	private static String listToString(Iterable<String> in) {
 		// convert in list to comma separated list
 		StringBuilder sb = new StringBuilder();

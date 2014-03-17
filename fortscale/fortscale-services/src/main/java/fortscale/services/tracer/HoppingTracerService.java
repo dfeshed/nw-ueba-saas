@@ -29,15 +29,22 @@ public class HoppingTracerService implements InitializingBean {
 	@Autowired
 	private ServersListConfiguration serversListConfiguration;
 	
+	@Autowired
+	private LDAPConnectionsSource ldapSource;
+	@Autowired
+	private SSHConnectionsSource sshSource;
+	@Autowired
+	private VPNConnectionsSource vpnSource;
+	
 	private List<ConnectionsSource> sources;
-		
+
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		sources = new LinkedList<ConnectionsSource>();
-		sources.add(new LDAPConnectionsSource(impalaJdbcTemplate, serversListConfiguration));
-		sources.add(new SSHConnectionsSource(impalaJdbcTemplate));
-		sources.add(new VPNConnectionsSource(impalaJdbcTemplate));
+		sources.add(ldapSource);
+		sources.add(sshSource);
+		sources.add(vpnSource);
 	}
 	
 	public List<Connection> expandConnections(String machine, boolean isSource, FilterSettings filter) {
