@@ -29,16 +29,18 @@ public class EventsJoinerCache implements Closeable {
 	
 	private static Map<Integer, EventsJoinerCache> instances = new HashMap<Integer, EventsJoinerCache>();
 	
+	/**
+	 * Get an instance of the EventsJoinerCache that is separate for each 
+	 * morphline execution instance
+	 */
 	public static EventsJoinerCache getInstance(Command command) {
 		checkNotNull(command);
 		
 		// get the root command's hash code and use it to construct 
 		// a shared EventsJoiner instance for each morphline instance
-		while (command.getParent()!=null)
-			command = command.getParent();
-		int hashCode = command.hashCode();
+		int hashCode = getRootCommandHash(command);
 		
-		// loopup the hash code in the instances map
+		// lookup the hash code in the instances map
 		if (!instances.containsKey(hashCode)) {
 			EventsJoinerCache instance = new EventsJoinerCache(hashCode);
 			instances.put(hashCode, instance);
@@ -46,6 +48,10 @@ public class EventsJoinerCache implements Closeable {
 		return instances.get(hashCode);
 	}
 	
+	/**
+	 * Generates a cache key to be used in the EventsJoinerCache according
+	 * to the fields values in the given record.
+	 */
 	public static String buildKey(Record inputRecord, List<String> fields) {
 		StringBuilder sb = new StringBuilder();
 		for (String key : fields) {
@@ -57,6 +63,20 @@ public class EventsJoinerCache implements Closeable {
 		return sb.toString();
 	}
 	
+	/**
+	 * get the root command's hash code and use it to construct 
+	 * a shared EventsJoiner instance for each morphline instance
+	 */
+	private static int getRootCommandHash(Command command) {
+		while (command.getParent()!=null)
+			command = command.getParent();
+		return command.hashCode();
+	}
+	
+	/**
+	 * Used by the HashJoinerCache instances to remove instances 
+	 * from the global static map once closed
+	 */
 	private static void removeInstance(int instanceId) {
 		if (instances.containsKey(instanceId))
 			instances.remove(instanceId);

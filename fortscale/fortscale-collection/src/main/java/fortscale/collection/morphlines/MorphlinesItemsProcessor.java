@@ -75,7 +75,7 @@ public class MorphlinesItemsProcessor implements Closeable {
 	}
 	
 	private void open() {
-		if (!isClosed) {
+		if (isClosed) {
 			Notifications.notifyBeginTransaction(morphline);
 			isClosed = false;
 		}
