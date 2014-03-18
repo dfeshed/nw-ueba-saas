@@ -38,7 +38,7 @@ public class GeolocationBuilder implements CommandBuilder {
 
 	private static final class Geolocation extends AbstractCommand {
 
-		private final String recordField;
+		private final String ipField;
 		private final String countryFieldName;
 		private final String regionFieldName;
 		private final String cityFieldName;
@@ -49,17 +49,17 @@ public class GeolocationBuilder implements CommandBuilder {
 		public Geolocation(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			// Get the field which holds the IP addresses
-			this.recordField = getConfigs().getString(config, "ip_record_name");
+			this.ipField = getConfigs().getString(config, "ip_field");
 			// This is the field name we'll use to hold the country name
-			this.countryFieldName = getConfigs().getString(config, "country_record_name");
+			this.countryFieldName = getConfigs().getString(config, "country_field");
 			// This is the field name we'll use to hold the country name
-			this.regionFieldName = getConfigs().getString(config, "region_record_name");
+			this.regionFieldName = getConfigs().getString(config, "region_field");
 			// This is the field name we'll use to hold the city name
-			this.cityFieldName = getConfigs().getString(config, "city_record_name");
+			this.cityFieldName = getConfigs().getString(config, "city_field");
 			// This is the field name we'll use to hold the isp name
-			this.ispFieldName = getConfigs().getString(config, "isp_record_name");
+			this.ispFieldName = getConfigs().getString(config, "isp_field");
 			// This is the field name we'll use to hold the usage type name
-			this.usageTypeFieldName = getConfigs().getString(config, "usage_type_record_name");
+			this.usageTypeFieldName = getConfigs().getString(config, "usage_type_field");
 
 			// Try to instantiate the GeoIP service
 			try {
@@ -73,7 +73,7 @@ public class GeolocationBuilder implements CommandBuilder {
 		@Override
 		protected boolean doProcess(Record inputRecord) {
 
-			List<?> tmp = inputRecord.get(this.recordField);
+			List<?> tmp = inputRecord.get(this.ipField);
 			if (tmp != null && tmp.size() > 0) {
 				// Get the IP Address
 				String ipAddress = (String) tmp.get(0);
