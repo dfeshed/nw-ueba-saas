@@ -36,6 +36,18 @@ public class VpnEvents implements TableSchema {
 	@Value("${impala.data.vpn.table.field.country}")
 	public String COUNTRY;
 	
+	@Value("${impala.data.vpn.table.field.region}")
+	public String REGION;
+	
+	@Value("${impala.data.vpn.table.field.city}")
+	public String CITY;
+	
+	@Value("${impala.data.vpn.table.field.isp}")
+	public String ISP;
+	
+	@Value("${impala.data.vpn.table.field.ipusage}")
+	public String IPUSAGE;
+	
 	@Value("${impala.data.vpn.table.field.hostname}")
 	public String HOSTNAME;
 	
