@@ -66,9 +66,16 @@
 		<thrift.version>0.9.0</thrift.version>
 		<commons-pool.version>1.4</commons-pool.version>
 		<commons-codec.version>1.5</commons-codec.version>
+		<kite-version>0.10.0</kite-version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.kitesdk</groupId>
+			<artifactId>kite-morphlines-core</artifactId>
+			<version>${kite-version}</version>
+		</dependency>
+	
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-global-config</artifactId>

@@ -17,7 +17,10 @@
 <!-- 	<context:property-placeholder location="classpath*:META-INF/fortscale-collection.properties" order="1" ignore-unresolvable="true"/> -->
 <!--     <context:property-placeholder location="classpath*:META-INF/*.properties" order="2"/> -->
 <!-- 	<context:property-placeholder location="classpath*:META-INF/spring/*.properties" order="3"/> -->
-<!--     <context:spring-configured/> -->
+<!-- 	<context:spring-configured/> -->
 
+	<context:spring-configured />
+    <context:annotation-config />
 	<context:component-scan base-package="fortscale" />
+	
 </beans>

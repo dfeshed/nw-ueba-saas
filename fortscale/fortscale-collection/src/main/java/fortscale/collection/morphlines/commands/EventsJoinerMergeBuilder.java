@@ -50,7 +50,8 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 			keys = getConfigs().getStringList(config, "keys");
 			mergeFields = getConfigs().getStringList(config, "mergeFields");
 			dropWhenNoMatch = getConfigs().getBoolean(config, "dropWhenNoMatch", true);
-			cache = EventsJoinerCache.getInstance(parent);
+			String cacheName = getConfigs().getString(config, "cacheName");
+			cache = EventsJoinerCache.getInstance(cacheName);
 		}
 		
 		@Override
