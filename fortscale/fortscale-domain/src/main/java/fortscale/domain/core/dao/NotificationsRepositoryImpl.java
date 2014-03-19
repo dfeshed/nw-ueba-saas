@@ -19,7 +19,6 @@ import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationAggregate;
 
 public class NotificationsRepositoryImpl implements NotificationsRepositoryCustom {
-  private static final long OLD_EVENTS_THRESHOLD_IN_SEC = 60*60*24*7 ; // get notifications from the last week
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -47,28 +46,50 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		HashMap<String, List<Notification>> aggMap = new HashMap<String, List<Notification>>(); 
 		List<NotificationAggregate> aggNotifications = new ArrayList<>();
 		
-		long current_unix_time = System.currentTimeMillis( ) / 1000L  ; // in seconds
-		Query query = new Query( ).with( request.getSort() );
-		query.fields().exclude("comments");
-		query.addCriteria( Criteria.where("ts").gte(  new Long( current_unix_time - OLD_EVENTS_THRESHOLD_IN_SEC ) ) );
-		query.addCriteria(Criteria.where("dismissed").is(false).orOperator(Criteria.where("dismissed").exists(false)));
-
-		List<Notification> notifications = mongoTemplate.find(query, Notification.class);
 		
-		for (Notification notification : notifications) {
-			String cause = notification.getCause();
-			if(aggMap.containsKey(cause) == false){
-				aggMap.put(cause, new ArrayList<Notification>());
+
+		int numAggregatesFound = 0;
+		int pageNum = 0;
+		boolean hasMoreData = true;
+		while (numAggregatesFound < request.getPageSize() && hasMoreData) {
+			// get the next page of notifications from mongo
+			Query query = new Query( ).with( request.getSort() );
+			query.fields().exclude("comments");
+			query.addCriteria(Criteria.where("dismissed").is(false).orOperator(Criteria.where("dismissed").exists(false)));
+			query.skip(pageNum * request.getPageSize()).limit(request.getPageSize());
+			
+			List<Notification> notifications = mongoTemplate.find(query, Notification.class);
+			
+			// build aggregates from the returned notifications
+			for (Notification notification : notifications) {
+				String cause = notification.getCause();
+				if (!aggMap.containsKey(cause)) {
+					if (numAggregatesFound==request.getPageSize()) {
+						// reach enough notifications aggregates, skip this notification
+						continue;
+					}
+					
+					aggMap.put(cause, new ArrayList<Notification>());
+					numAggregatesFound++;
+				}
+				aggMap.get(cause).add(notification);
 			}
 			
-			aggMap.get(cause).add(notification);
+			// check if we received less data than expected, hence no more data
+			if (notifications.size()<request.getPageSize())
+				hasMoreData = false;
+			
+			// advance to the next page
+			pageNum++;
 		}
 		
+		// build aggregates from the notifications received
 		for (String key: aggMap.keySet()) {
 			NotificationAggregate agg = new NotificationAggregate(aggMap.get(key));
 			aggNotifications.add(agg);
 		}
 		
+		// ensure we return only the first notifications requested
 		int min = Math.min(aggNotifications.size(), request.getPageSize());
 		return aggNotifications.subList(0, min);
 	}
