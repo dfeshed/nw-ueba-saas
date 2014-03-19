@@ -183,6 +183,8 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			try {
 				if (handlers.appender!=null)
 					handlers.appender.close();
+				if (handlers.morphline!=null)
+					handlers.morphline.close();
 			} catch (Exception e) {
 				logger.error("error closing hdfs partitions writer at " + handlers.hadoopPath, e);
 				monitor.error(monitorId, "Process Files", String.format("error closing hdfs partitions writer at %s: \n %s",  handlers.hadoopPath, e.toString()));

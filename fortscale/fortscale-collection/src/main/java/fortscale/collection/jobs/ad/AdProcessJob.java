@@ -124,6 +124,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		try {
 			processFile(files[files.length - 1]);
 		} finally{
+			morphline.close();
 			closeOutputAppender();
 		}
 		

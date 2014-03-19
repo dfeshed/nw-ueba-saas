@@ -7,6 +7,7 @@ import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,11 @@ public class SshSshdTest {
 		morphlineTester.init(confFile, sshOutputFields);
 	}
 
+	@After
+	public void tearDown() throws Exception {
+		morphlineTester.close();
+	}
+	
 	@Test
 	@Parameters
 	public void testSshSingleLines(String testCase, String inputLine, String expectedOutput) {
