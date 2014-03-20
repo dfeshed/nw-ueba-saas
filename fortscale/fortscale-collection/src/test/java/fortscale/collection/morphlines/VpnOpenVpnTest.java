@@ -55,8 +55,6 @@ public class VpnOpenVpnTest {
 			"Regular (FS) Failed VPN Authentication",
 			"Feb  8 19:12:47 vpnserver vpnserver: [-] OVPN 3 OUT: \"Sat Feb  8 17:12:47 2014 84.94.26.113:50976 SENT CONTROL [morgans]: 'AUTH_FAILED' (status=1)\"",
 			"2014-02-08 19:12:47,1391879567,morgans,84.94.26.113,,FAIL,Israel,,Tel Aviv,,,"
-//			TODO: When VPN failures are being processed, replace the expected null with the commented-out line			
-//			"2014-02-08 17:12:47,1391879567,morgans,84.94.26.113,,FAIL,Feb  8 19:12:47 vpnserver vpnserver: [-] OVPN 3 OUT: \"Sat Feb  8 17:12:47 2014 84.94.26.113:50976 SENT CONTROL [morgans]: 'AUTH_FAILED' (status=1)\",Israel,"
 			)
         );
     }	
