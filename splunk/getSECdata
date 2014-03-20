@@ -1,1 +1,1 @@
-﻿index="windows" source="wineventlog:security" EventCode=4769 Account_Name!=*$* earliest=$args.earliest$ latest=$args.latest$ | table TaskCategory EventCode LogName Message RecordNumber SourceName _time
+﻿index="windows" source="wineventlog:security" (EventCode="4769" OR EventCode="4768") Account_Name!=*$* earliest=$args.earliest$ latest=$args.latest$ | table _time _raw

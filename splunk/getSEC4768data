@@ -1,1 +1,0 @@
-﻿index="windows" source="wineventlog:security" EventCode=4768 Account_Name!=*$* earliest=$args.earliest$ latest=$args.latest$ | table _time _raw
