@@ -108,15 +108,6 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 		return vpnScore.getCityScore();
 	}
 
-	@Override
-	public double getIspScore() {
-		return vpnScore.getIspScore();
-	}
-
-	@Override
-	public double getIpusageScore() {
-		return vpnScore.getIpusageScore();
-	}
 
 	@Override
 	public Map<String, Object> createMap() {

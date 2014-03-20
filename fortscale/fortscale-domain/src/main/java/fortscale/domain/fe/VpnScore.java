@@ -6,23 +6,6 @@ import java.util.Map;
 
 
 public class VpnScore {	
-//	public static final String EVENT_TIME_FIELD_NAME = "date_time";
-//	public static final String USERNAME_FIELD_NAME = "username";
-//	public static final String SOURCE_IP_FIELD_NAME = "source_ip";
-//	public static final String LOCAL_IP_FIELD_NAME = "local_ip";
-//	public static final String COUNTRY_FIELD_NAME = "country";
-//	
-//	public static final String EVENT_TIME_SCORE_FIELD_NAME = "date_timescore";
-//	public static final String USERNAME_SCORE_FIELD_NAME = "usernamescore";
-//	public static final String SOURCE_IP_SCORE_FIELD_NAME = "source_ipscore";
-//	public static final String STATUS_SCORE_FIELD_NAME = "statusscore";
-//	public static final String COUNTRY_SCORE_FIELD_NAME = "countryscore";
-//	
-//	public static final String EVENT_SCORE_FIELD_NAME = "eventscore";
-//	public static final String GLOBAL_SCORE_FIELD_NAME = "globalscore";
-//	
-//	
-//	
 	public static final String TIMESTAMP_FIELD_NAME = "runtime";
 	
 	
@@ -43,8 +26,6 @@ public class VpnScore {
 	private Double countryScore;
 	private Double regionScore;
 	private Double cityScore;
-	private Double ispScore;
-	private Double ipusageScore;
 	
 	private Double eventScore;
 	private Double globalScore;
@@ -166,18 +147,6 @@ public class VpnScore {
 	}
 	public void setCityScore(Double cityScore) {
 		this.cityScore = cityScore;
-	}
-	public Double getIspScore() {
-		return ispScore;
-	}
-	public void setIspScore(Double ispScore) {
-		this.ispScore = ispScore;
-	}
-	public Double getIpusageScore() {
-		return ipusageScore;
-	}
-	public void setIpusageScore(Double ipusageScore) {
-		this.ipusageScore = ipusageScore;
 	}
 	
 	public Map<String, Object> allFields() {

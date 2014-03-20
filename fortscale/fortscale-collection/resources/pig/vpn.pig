@@ -7,5 +7,5 @@ raw             	= LOAD '$inputData' USING PigStorage('|') AS (date_time:chararr
 loginByTime     	= FILTER raw by date_time_unixTime > (long)'$deltaTime';
 loginOrdered 		= FOREACH loginByTime GENERATE date_time, LOWER(hostname) as hostname,LOWER(country_name) as country_name,LOWER(region_name) as region_name,LOWER(city_name) as city_name,LOWER(isp_name) as isp_name,LOWER(ipusage_name) as ipusage_name,normalized_username,LOWER(username) as username,source_ip,LOWER(status) as status,local_ip,date_time_unixTime;
 user     	= GROUP loginOrdered by normalized_username PARALLEL 1;
-finalResult        	= FOREACH user GENERATE FLATTEN( fortscale.ebs.EBSPigUDF( group,7,0,loginOrdered ) );
+finalResult        	= FOREACH user GENERATE FLATTEN( fortscale.ebs.EBSPigUDF( group,5,0,loginOrdered ) );
 store finalResult into '$outputData' using PigStorage(',','-noschema');

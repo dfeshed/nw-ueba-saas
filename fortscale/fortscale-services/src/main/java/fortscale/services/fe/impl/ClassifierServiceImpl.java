@@ -409,48 +409,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		String defaultOrderBy = vpnDAO.getEventScoreFieldName();
 		if(StringUtils.isEmpty(orderBy)){
 			orderBy = defaultOrderBy;
-		} else{
-			switch(orderBy){
-			case "username":
-				orderBy = vpnDAO.getUsernameFieldName();
-				break;
-			case "userScore":
-				orderBy = vpnDAO.getGlobalScoreFieldName();
-				break;
-			case "internalIP":
-				orderBy = vpnDAO.getLocalIpFieldName();
-				break;
-			case "sourceIp":
-				orderBy = vpnDAO.getSourceIpFieldName();
-				break;
-			case "eventTimeScore":
-				orderBy = vpnDAO.getEventTimeScoreFieldName();
-				break;
-			case "eventTime":
-				orderBy = vpnDAO.getEventTimeFieldName();
-				break;
-			case "status":
-				orderBy = vpnDAO.getStatusFieldName();
-				break;
-			case "country":
-				orderBy = vpnDAO.getCountryFieldName();
-				break;
-			case "region":
-				orderBy = vpnDAO.getRegionFieldName();
-				break;
-			case "city":
-				orderBy = vpnDAO.getCityFieldName();
-				break;
-			case "isp":
-				orderBy = vpnDAO.getIspFieldName();
-				break;
-			case "ipusage":
-				orderBy = vpnDAO.getIpusageFieldName();
-				break;
-			default:
-				orderBy = defaultOrderBy;
-				break;
-			}
 		}
 		
 		String ret[];
