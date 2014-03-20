@@ -50,8 +50,8 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		long current_unix_time = System.currentTimeMillis( ) / 1000L  ; // in seconds
 		Query query = new Query( ).with( request.getSort() );
 		query.fields().exclude("comments");
-		query.addCriteria( Criteria.where("ts").gte(  new Long( current_unix_time - OLD_EVENTS_THRESHOLD_IN_SEC ) ) );
-		query.addCriteria(Criteria.where("dismissed").is(false).orOperator(Criteria.where("dismissed").exists(false)));
+		query.addCriteria(Criteria.where("ts").gte(  new Long( current_unix_time - OLD_EVENTS_THRESHOLD_IN_SEC ) ) );
+		query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
 
 		List<Notification> notifications = mongoTemplate.find(query, Notification.class);
 		
@@ -85,7 +85,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		if (excludeFsID!=null && !excludeFsID.isEmpty())
 			query.addCriteria(Criteria.where("fsId").not().in(excludeFsID));
 		if (!includeDissmissed)
-			query.addCriteria(Criteria.where("dismissed").is(false).orOperator(Criteria.where("dismissed").exists(false)));
+			query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
 		if (includeGenerators!=null && !includeGenerators.isEmpty())
 			query.addCriteria(Criteria.where("generator_name").in(includeGenerators));
 		if (excludeGenerators!=null && !includeGenerators.isEmpty())
