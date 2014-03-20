@@ -1,4 +1,4 @@
-﻿package fortscale.domain.core.dao;
+package fortscale.domain.core.dao;
 
 import java.util.ArrayList;
 import java.util.Date;
