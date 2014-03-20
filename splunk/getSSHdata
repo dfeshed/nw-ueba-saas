@@ -1,0 +1,1 @@
+﻿index=syslog source=syslog-ng process=sshd (Accepted OR "Failed password") earliest=$args.earliest$ latest=$args.latest$ | eval eol="eolcursor" | table _raw,eol
