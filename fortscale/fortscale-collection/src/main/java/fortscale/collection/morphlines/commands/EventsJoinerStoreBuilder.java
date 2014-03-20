@@ -47,7 +47,8 @@ public class EventsJoinerStoreBuilder implements CommandBuilder {
 		public EventsJoinerStore(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			keys = getConfigs().getStringList(config, "keys");
-			cache = EventsJoinerCache.getInstance(parent);
+			String cacheName = getConfigs().getString(config, "cacheName");
+			cache = EventsJoinerCache.getInstance(cacheName);
 		}
 	
 		@Override
