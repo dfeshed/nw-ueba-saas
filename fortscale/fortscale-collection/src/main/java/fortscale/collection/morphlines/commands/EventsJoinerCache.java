@@ -136,9 +136,7 @@ public class EventsJoinerCache implements Closeable {
 	private void persist() {
 	
 		if (repository!=null) {
-			// store all cache records into mongo to a dedicated collection per cache
-			// this is to reduce contention on the mongo collection when performing
-			// insert or query and delete
+			// store all cache records into mongo
 			List<CachedRecord> batchToInsert = new LinkedList<CachedRecord>();
 			for (String key : records.keySet()) {
 				batchToInsert.add(new CachedRecord(instanceId, key, records.get(key)));
@@ -152,7 +150,6 @@ public class EventsJoinerCache implements Closeable {
 			
 		
 		this.records.clear();
-		this.records = new HashMap<String,Record>();
 	}
 	
 	/**
