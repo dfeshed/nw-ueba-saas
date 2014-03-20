@@ -118,7 +118,11 @@ public class ApiClassifierController extends BaseController {
 			eventScoreInfos = classifierService.getUserSuspiciousVpnEvents(uid, timestamp, offset, limit, orderBy, direction, minScore);
 			total = classifierService.countVpnEvents(uid, timestamp);
 		}
-		ret.setData(eventScoreInfos);
+		List<Map<String, Object>> data = new ArrayList<>();
+		for(IVpnEventScoreInfo eventScoreInfo: eventScoreInfos){
+			data.add(eventScoreInfo.createMap());
+		}
+		ret.setData(data);
 		ret.setOffset(offset);
 		ret.setTotal(total);
 		return ret;

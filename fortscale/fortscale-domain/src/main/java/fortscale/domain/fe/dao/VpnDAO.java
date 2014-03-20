@@ -61,4 +61,37 @@ public interface VpnDAO {
 	public List<VpnScore> getTopEventsAboveThreshold(Threshold threshold, Date timestamp, int limit);
 	
 	public List<Long> getDistinctRuntime();
+	
+	
+	
+	
+	public String getTimestampFieldName();
+	
+	public String getNormalizedUsernameField();
+
+	public String getUsernameFieldName();
+	
+	public String getStatusFieldName();
+	
+	public String getCountryFieldName();
+	
+	public String getRegionFieldName();
+	
+	public String getCityFieldName();
+	
+	public String getIspFieldName();
+		
+	public String getIpusageFieldName();
+	
+	public String getSourceIpFieldName();
+	
+	public String getLocalIpFieldName();
+	
+	public String getEventTimeFieldName();
+	
+	public String getEventTimeScoreFieldName();
+
+	public String getEventScoreFieldName();
+
+	public String getGlobalScoreFieldName();
 }
