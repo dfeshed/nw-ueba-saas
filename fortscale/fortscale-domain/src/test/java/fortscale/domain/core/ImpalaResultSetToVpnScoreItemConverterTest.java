@@ -30,7 +30,7 @@ public class ImpalaResultSetToVpnScoreItemConverterTest {
 		String normalizedUsernameField = "normalized_username";
 		String normalizedUsernameVal = "normalized_username_value";
 		when(rs.getObject(normalizedUsernameField)).thenReturn(normalizedUsernameVal);
-		String dateTimeScoreField = "date_timeScore";
+		String dateTimeScoreField = "date_timescore";
 		Double dateTimeScoreValue = 11.5D;
 		when(rs.getObject(dateTimeScoreField)).thenReturn(dateTimeScoreValue);
 		

@@ -31,11 +31,11 @@ public class ImpalaResultSetToBeanItemConverter<T extends Object> {
 				continue;
 			}
 			if(propertyDescriptor.getPropertyType().equals(Date.class)){
-				Date date = impalaParser.parseTimeDate(resultSet.getString(fieldName));
+				Date date = impalaParser.parseTimeDate(resultSet.getString(fieldName.toLowerCase()));
 				
 				BeanUtils.setProperty(bean, fieldName, date);
 			} else{
-				BeanUtils.setProperty(bean, fieldName, resultSet.getObject(fieldName));
+				BeanUtils.setProperty(bean, fieldName, resultSet.getObject(fieldName.toLowerCase()));
 			}
 		}
 	}

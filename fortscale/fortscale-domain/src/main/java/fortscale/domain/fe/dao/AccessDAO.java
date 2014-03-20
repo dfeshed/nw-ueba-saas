@@ -401,12 +401,12 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 			T ret = null;
 
 			try {
-				ret = createAccessObject(rs.getString(getNormalizedUsernameField()),
+				ret = createAccessObject(rs.getString(getNormalizedUsernameField().toLowerCase()),
 						Double.parseDouble(rs
-								.getString(getGlobalScoreFieldName())),
+								.getString(getGlobalScoreFieldName().toLowerCase())),
 						Double.parseDouble(rs
-								.getString(getEventScoreFieldName())),
-						parseTimestampDate(Long.parseLong(rs.getString(getTimestampFieldName()))));
+								.getString(getEventScoreFieldName().toLowerCase())),
+						parseTimestampDate(Long.parseLong(rs.getString(getTimestampFieldName().toLowerCase()))));
 			} catch (SQLException se){
 				throw se;
 			} catch (Exception e) {
