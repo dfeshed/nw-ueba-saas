@@ -6,6 +6,7 @@ import static org.springframework.data.mongodb.core.query.Update.update;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 
 	@Override
-	public List<User> findByClassifierIdAndScoreBetweenAndCurrentDay(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
+	public List<User> findByClassifierIdAndScoreBetweenAndTimeGte(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
 		DateTime dateTime = new DateTime();
 		dateTime = dateTime.withTimeAtStartOfDay();
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
@@ -79,28 +80,24 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 	
 	@Override
-	public List<User> findByClassifierIdAndFollowedAndScoreBetweenAndCurrentDay(String classifierId, int lowestVal, int upperVal, Pageable pageable) {
-		DateTime dateTime = new DateTime();
-		dateTime = dateTime.withTimeAtStartOfDay();
+	public List<User> findByClassifierIdAndFollowedAndScoreBetweenAndTimeGte(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
+		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
 		query.with(pageable);
 		return mongoTemplate.find(query, User.class);
 	}
 	
 	@Override
-	public List<User> findByClassifierIdAndCurrentDay(String classifierId, Pageable pageable) {
-		DateTime dateTime = new DateTime();
-		dateTime = dateTime.withTimeAtStartOfDay();
+	public List<User> findByClassifierIdAndTimeGte(String classifierId, Date time, Pageable pageable) {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
+		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(time));
 		query.with(pageable);
 		return mongoTemplate.find(query, User.class);
 	}
 
 	@Override
-	public List<User> findByClassifierIdAndFollowedAndCurrentDay(String classifierId, Pageable pageable) {
+	public List<User> findByClassifierIdAndFollowedAndTimeGte(String classifierId, Date time, Pageable pageable) {
 		DateTime dateTime = new DateTime();
 		dateTime = dateTime.withTimeAtStartOfDay();
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);

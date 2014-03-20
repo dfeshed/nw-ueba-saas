@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+
 import org.apache.commons.lang.math.IntRange;
 import org.apache.commons.lang.math.Range;
 import org.junit.Assert;
@@ -171,7 +174,7 @@ public class ClassifierServiceTest{
 		Mockito.when(configurationService.getRange(severityId)).thenReturn(severityRange);
 		String classifierId = Classifier.groups.getId();
 		Pageable pageable = new PageRequest(0, limit, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
-		Mockito.when(userRepository.findByClassifierIdAndScoreBetweenAndCurrentDay(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable)).thenReturn(users);
+		Mockito.when(userRepository.findByClassifierIdAndScoreBetweenAndTimeGte(eq(classifierId), eq(severityRange.getMinimumInteger()), eq(severityRange.getMaximumInteger()), any(Date.class), eq(pageable))).thenReturn(users);
 		List<ISuspiciousUserInfo> suspiciousUserInfos = classifierService.getSuspiciousUsersByScore(Classifier.groups.getId(), severityId, 0, limit, false);
 		Assert.assertEquals(limit, suspiciousUserInfos.size());
 		for(int i = 0; i < limit; i++){
