@@ -64,8 +64,10 @@
 		<jackson-mapper-asl.version>1.9.12</jackson-mapper-asl.version>
 		<commons-lang3.version>3.1</commons-lang3.version>
 		<!-- maven plugins versions -->
+		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+		<java-lang-config.version>1.7</java-lang-config.version>
 	</properties>
 
 	<dependencies>
@@ -173,7 +175,13 @@
 			<version>${commons-lang3.version}</version>
 		</dependency>
 		
-		
+		<!--  javax persistence needed by aspectj compile time depenceny injection with spring [SPR-6819] -->
+		<dependency>
+  			<groupId>javax.persistence</groupId>
+  			<artifactId>persistence-api</artifactId>
+  			<version>1.0</version>
+  			<scope>provided</scope>
+		</dependency>
 
 	</dependencies>
 	<build>
@@ -198,12 +206,38 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${java-lang-config.version}</source>
+					<target>${java-lang-config.version}</target>
 					<compilerArgument>-Xlint:all</compilerArgument>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 				</configuration>
+			</plugin>
+			<!-- Use aspectj compile load weaver to inject spring bean into non managed beans -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>${aspectj-maven-plugin.version}</version>
+				<configuration>
+					<source>${java-lang-config.version}</source>
+					<target>${java-lang-config.version}</target>
+					<complianceLevel>${java-lang-config.version}</complianceLevel>
+					<showWeaveInfo>false</showWeaveInfo>
+					<aspectLibraries>
+						<aspectLibrary>
+							<groupId>org.springframework</groupId>
+							<artifactId>spring-aspects</artifactId>
+						</aspectLibrary>
+					</aspectLibraries>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test-compile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<!-- <plugin> -->
 			<!-- <groupId>org.codehaus.mojo</groupId> -->

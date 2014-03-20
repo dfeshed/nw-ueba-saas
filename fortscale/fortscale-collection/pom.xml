@@ -150,31 +150,6 @@
 			<version>${spring-data-mongodb.version}</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aspects</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${org.aspectj-version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>${org.aspectj-version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjtools</artifactId>
-			<version>${org.aspectj-version}</version>
-		</dependency>
-
-
 		<!-- apache command line -->
 		<dependency>
 			<groupId>commons-cli</groupId>
@@ -353,7 +328,7 @@
 					<target>${java-lang-config.version}</target>
 				</configuration>
 			</plugin>
-			
+			<!-- Use aspectj compile load weaver to inject spring bean into non managed beans -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
