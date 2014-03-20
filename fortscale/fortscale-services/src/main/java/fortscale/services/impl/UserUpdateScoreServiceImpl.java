@@ -302,7 +302,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		List<Update> updates = new ArrayList<>();
 		List<User> users = new ArrayList<>();
 		for(VpnScore vpnScore: vpnScores){
-			String username = vpnScore.getNormalizedUsername();
+			String username = vpnScore.getNormalized_username();
 			if(StringUtils.isEmpty(username)){
 				logger.warn("got a empty string vpn username");
 				continue;

@@ -1,23 +1,28 @@
 package fortscale.services.fe;
 
 import java.util.Date;
+import java.util.Map;
 
 public interface IVpnEventScoreInfo {
 	public String getUserId();
 	public String getUsername();
 	public String getSourceIp();
-	public String getSourceHostname();
 	public Date getEventTime();
 	public String getInternalIP();
-	public String getInternalHostname();
 	public double getEventScore();
 	public double getUserScore();
 	public String getStatus();
 	public String getCountry();
+	public String getRegion();
+	public String getCity();
+	public String getIsp();
+	public String getIpusage();
 	public double getEventTimeScore();
-	public double getUserNameScore();
-	public double getSourceIpScore();
-	public double getStatusScore();
 	public double getCountryScore();
+	public double getRegionScore();
+	public double getCityScore();
+	public double getIspScore();
+	public double getIpusageScore();
 	public Boolean isUserFollowed();
+	public Map<String, Object> createMap();
 }

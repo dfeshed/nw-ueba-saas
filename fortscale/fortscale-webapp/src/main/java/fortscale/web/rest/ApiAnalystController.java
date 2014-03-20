@@ -26,8 +26,6 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.AnalystBean;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
-import fortscale.web.fields.FirstName;
-import fortscale.web.fields.LastName;
 import fortscale.web.fields.NewPassword;
 import fortscale.web.fields.Password;
 import fortscale.web.fields.Username;

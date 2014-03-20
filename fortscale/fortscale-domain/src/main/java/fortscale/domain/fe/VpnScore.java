@@ -1,82 +1,93 @@
 package fortscale.domain.fe;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class VpnScore {	
-	public static final String EVENT_TIME_FIELD_NAME = "date_time";
-	public static final String USERNAME_FIELD_NAME = "username";
-	public static final String SOURCE_IP_FIELD_NAME = "source_ip";
-	public static final String LOCAL_IP_FIELD_NAME = "local_ip";
-	public static final String COUNTRY_FIELD_NAME = "country";
-	
-	public static final String EVENT_TIME_SCORE_FIELD_NAME = "date_timescore";
-	public static final String USERNAME_SCORE_FIELD_NAME = "usernamescore";
-	public static final String SOURCE_IP_SCORE_FIELD_NAME = "source_ipscore";
-	public static final String STATUS_SCORE_FIELD_NAME = "statusscore";
-	public static final String COUNTRY_SCORE_FIELD_NAME = "countryscore";
-	
-	public static final String EVENT_SCORE_FIELD_NAME = "eventscore";
-	public static final String GLOBAL_SCORE_FIELD_NAME = "globalscore";
-	
-	
-	
+//	public static final String EVENT_TIME_FIELD_NAME = "date_time";
+//	public static final String USERNAME_FIELD_NAME = "username";
+//	public static final String SOURCE_IP_FIELD_NAME = "source_ip";
+//	public static final String LOCAL_IP_FIELD_NAME = "local_ip";
+//	public static final String COUNTRY_FIELD_NAME = "country";
+//	
+//	public static final String EVENT_TIME_SCORE_FIELD_NAME = "date_timescore";
+//	public static final String USERNAME_SCORE_FIELD_NAME = "usernamescore";
+//	public static final String SOURCE_IP_SCORE_FIELD_NAME = "source_ipscore";
+//	public static final String STATUS_SCORE_FIELD_NAME = "statusscore";
+//	public static final String COUNTRY_SCORE_FIELD_NAME = "countryscore";
+//	
+//	public static final String EVENT_SCORE_FIELD_NAME = "eventscore";
+//	public static final String GLOBAL_SCORE_FIELD_NAME = "globalscore";
+//	
+//	
+//	
 	public static final String TIMESTAMP_FIELD_NAME = "runtime";
 	
 	
 	
-	private String normalizedUsername;
-	private Date eventTime;
-	private String userName;
-	private String sourceIp;
-	private String localIp;
+	private String normalized_username;
+	private Date date_time;
+	private String username;
+	private String source_ip;
+	private String local_ip;
 	private String status;
 	private String country;
+	private String region;
+	private String city;
+	private String isp;
+	private String ipusage;
 	
-	private double eventTimeScore;
-	private double userNameScore;
-	private double sourceIpScore;
-	private double statusScore;
-	private double countryScore;
+	private Double date_timeScore;
+	private Double countryScore;
+	private Double regionScore;
+	private Double cityScore;
+	private Double ispScore;
+	private Double ipusageScore;
 	
-	private double eventScore;
-	private double globalScore;
-	
-	
-	
-	private Date timestamp;
+	private Double eventScore;
+	private Double globalScore;
 	
 	
 	
-	public String getNormalizedUsername() {
-		return normalizedUsername;
+	private Integer runtime;
+	
+	private Map<String, Object> allFields = new HashMap<String, Object>();
+	
+	
+	
+	
+	
+	public String getNormalized_username() {
+		return normalized_username;
 	}
-	public void setNormalizedUsername(String normalizedUsername) {
-		this.normalizedUsername = normalizedUsername;
+	public void setNormalized_username(String normalizedUsername) {
+		this.normalized_username = normalizedUsername;
 	}
-	public Date getEventTime() {
-		return eventTime;
+	public Date getDate_time() {
+		return date_time;
 	}
-	public void setEventTime(Date eventTime) {
-		this.eventTime = eventTime;
+	public void setDate_time(Date eventTime) {
+		this.date_time = eventTime;
 	}
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String userName) {
+		this.username = userName;
 	}
-	public String getSourceIp() {
-		return sourceIp;
+	public String getSource_ip() {
+		return source_ip;
 	}
-	public void setSourceIp(String sourceIp) {
-		this.sourceIp = sourceIp;
+	public void setSource_ip(String sourceIp) {
+		this.source_ip = sourceIp;
 	}
-	public String getLocalIp() {
-		return localIp;
+	public String getLocal_ip() {
+		return local_ip;
 	}
-	public void setLocalIp(String localIp) {
-		this.localIp = localIp;
+	public void setLocal_ip(String localIp) {
+		this.local_ip = localIp;
 	}
 	public String getStatus() {
 		return status;
@@ -84,47 +95,29 @@ public class VpnScore {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public double getEventScore() {
+	public Double getEventScore() {
 		return eventScore;
 	}
-	public void setEventScore(double eventScore) {
+	public void setEventScore(Double eventScore) {
 		this.eventScore = eventScore;
 	}
-	public double getGlobalScore() {
+	public Double getGlobalScore() {
 		return globalScore;
 	}
-	public void setGlobalScore(double globalScore) {
+	public void setGlobalScore(Double globalScore) {
 		this.globalScore = globalScore;
 	}
-	public Date getTimestamp() {
-		return timestamp;
+	public Integer getRuntime() {
+		return runtime;
 	}
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+	public void setRuntime(Integer runtime) {
+		this.runtime = runtime;
 	}
-	public double getEventTimeScore() {
-		return eventTimeScore;
+	public Double getDate_timeScore() {
+		return date_timeScore;
 	}
-	public void setEventTimeScore(double eventTimeScore) {
-		this.eventTimeScore = eventTimeScore;
-	}
-	public double getUserNameScore() {
-		return userNameScore;
-	}
-	public void setUserNameScore(double userNameScore) {
-		this.userNameScore = userNameScore;
-	}
-	public double getSourceIpScore() {
-		return sourceIpScore;
-	}
-	public void setSourceIpScore(double sourceIpScore) {
-		this.sourceIpScore = sourceIpScore;
-	}
-	public double getStatusScore() {
-		return statusScore;
-	}
-	public void setStatusScore(double statusScore) {
-		this.statusScore = statusScore;
+	public void setDate_timeScore(Double eventTimeScore) {
+		this.date_timeScore = eventTimeScore;
 	}
 	public String getCountry() {
 		return country;
@@ -132,13 +125,66 @@ public class VpnScore {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public double getCountryScore() {
+	public Double getCountryScore() {
 		return countryScore;
 	}
-	public void setCountryScore(double countryScore) {
+	public void setCountryScore(Double countryScore) {
 		this.countryScore = countryScore;
 	}
+	public String getRegion() {
+		return region;
+	}
+	public void setRegion(String region) {
+		this.region = region;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getIsp() {
+		return isp;
+	}
+	public void setIsp(String isp) {
+		this.isp = isp;
+	}
+	public String getIpusage() {
+		return ipusage;
+	}
+	public void setIpusage(String ipusage) {
+		this.ipusage = ipusage;
+	}
+	public Double getRegionScore() {
+		return regionScore;
+	}
+	public void setRegionScore(Double regionScore) {
+		this.regionScore = regionScore;
+	}
+	public Double getCityScore() {
+		return cityScore;
+	}
+	public void setCityScore(Double cityScore) {
+		this.cityScore = cityScore;
+	}
+	public Double getIspScore() {
+		return ispScore;
+	}
+	public void setIspScore(Double ispScore) {
+		this.ispScore = ispScore;
+	}
+	public Double getIpusageScore() {
+		return ipusageScore;
+	}
+	public void setIpusageScore(Double ipusageScore) {
+		this.ipusageScore = ipusageScore;
+	}
 	
-	
+	public Map<String, Object> allFields() {
+		return allFields;
+	}
+	public void putFieldValue(String fieldName, Object value) {
+		allFields.put(fieldName, value);
+	}
 	
 }

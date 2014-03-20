@@ -18,7 +18,6 @@ import org.apache.commons.lang.math.Range;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -116,9 +115,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	@Autowired
 	private UsernameService usernameService;
 	
-	
-	@Value("${impala.vpn.table.fields.status}")
-	private String vpnStatusFieldName;
 	
 	
 	
@@ -410,40 +406,46 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	private String[] processVpnScoreOrderByFieldName(String orderBy){
-		String defaultOrderBy = VpnScore.EVENT_SCORE_FIELD_NAME;
+		String defaultOrderBy = vpnDAO.getEventScoreFieldName();
 		if(StringUtils.isEmpty(orderBy)){
 			orderBy = defaultOrderBy;
 		} else{
 			switch(orderBy){
 			case "username":
-				orderBy = VpnScore.USERNAME_FIELD_NAME;
+				orderBy = vpnDAO.getUsernameFieldName();
 				break;
 			case "userScore":
-				orderBy = VpnScore.GLOBAL_SCORE_FIELD_NAME;
-				break;
-			case "userNameScore":
-				orderBy = VpnScore.USERNAME_SCORE_FIELD_NAME;
+				orderBy = vpnDAO.getGlobalScoreFieldName();
 				break;
 			case "internalIP":
-				orderBy = VpnScore.LOCAL_IP_FIELD_NAME;
-				break;
-			case "sourceIpScore":
-				orderBy = VpnScore.SOURCE_IP_SCORE_FIELD_NAME;
+				orderBy = vpnDAO.getLocalIpFieldName();
 				break;
 			case "sourceIp":
-				orderBy = VpnScore.SOURCE_IP_FIELD_NAME;
+				orderBy = vpnDAO.getSourceIpFieldName();
 				break;
 			case "eventTimeScore":
-				orderBy = VpnScore.EVENT_TIME_SCORE_FIELD_NAME;
+				orderBy = vpnDAO.getEventTimeScoreFieldName();
 				break;
 			case "eventTime":
-				orderBy = VpnScore.EVENT_TIME_FIELD_NAME;
-				break;
-			case "statusScore":
-				orderBy = VpnScore.STATUS_SCORE_FIELD_NAME;
+				orderBy = vpnDAO.getEventTimeFieldName();
 				break;
 			case "status":
-				orderBy = vpnStatusFieldName;
+				orderBy = vpnDAO.getStatusFieldName();
+				break;
+			case "country":
+				orderBy = vpnDAO.getCountryFieldName();
+				break;
+			case "region":
+				orderBy = vpnDAO.getRegionFieldName();
+				break;
+			case "city":
+				orderBy = vpnDAO.getCityFieldName();
+				break;
+			case "isp":
+				orderBy = vpnDAO.getIspFieldName();
+				break;
+			case "ipusage":
+				orderBy = vpnDAO.getIpusageFieldName();
 				break;
 			default:
 				orderBy = defaultOrderBy;
@@ -452,10 +454,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 		
 		String ret[];
-		if(!orderBy.equals(VpnScore.EVENT_TIME_FIELD_NAME)){
+		if(!orderBy.equals(vpnDAO.getEventTimeFieldName())){
 			ret = new String[2];
 			ret[0] = orderBy;
-			ret[1] = VpnScore.EVENT_TIME_FIELD_NAME;
+			ret[1] = vpnDAO.getEventTimeFieldName();
 		} else{
 			ret = new String[1];
 			ret[0] = orderBy;
@@ -549,7 +551,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(offset < vpnScores.size()){
 			Map<String, User> userMap = new HashMap<>();
 			for(VpnScore vpnScore: vpnScores.subList(offset, vpnScores.size())){
-				String username = vpnScore.getUserName();
+				String username = vpnScore.getUsername();
 				User user = userMap.get(username);
 				if(user == null){
 					user = usernameService.findByAuthUsername(LogEventsEnum.vpn, username);
@@ -841,11 +843,11 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			ebsResult = new EBSResult(tmp.getResultsList(), tmp.getGlobalScore(), 0, tmp.getResultsList().size());
 		} else if(sqlQuery.contains(VPN_DATA_TABLENAME)){
 			Set<String> fieldNamesFilterSet = new HashSet<>();
-			fieldNamesFilterSet.add(VpnScore.LOCAL_IP_FIELD_NAME);
+			fieldNamesFilterSet.add(vpnDAO.getLocalIpFieldName());
 			IQueryResultsScorer queryResultsScorer = new QueryResultsScorer();
 			Set<String> timeFieldNameSet = new HashSet<>();
 			timeFieldNameSet.add(timestampFieldName);
-			IEBSResult tmp = queryResultsScorer.runEBSOnQueryResults(resultsMap, rowFieldRegexFilter.get(VPN_DATA_TABLENAME), timeFieldNameSet, fieldNamesFilterSet, vpnStatusFieldName, VPN_STATUS_GLOBAL_SCORE_VALUE);
+			IEBSResult tmp = queryResultsScorer.runEBSOnQueryResults(resultsMap, rowFieldRegexFilter.get(VPN_DATA_TABLENAME), timeFieldNameSet, fieldNamesFilterSet, vpnDAO.getStatusFieldName(), VPN_STATUS_GLOBAL_SCORE_VALUE);
 			isRunThreadForSaving = false;
 			ebsResult = new EBSResult(tmp.getResultsList(), tmp.getGlobalScore(), 0, tmp.getResultsList().size());
 		} else{
