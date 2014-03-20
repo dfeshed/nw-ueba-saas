@@ -175,13 +175,17 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
     }
     
     public void changePassword(String username, String newPassword) throws InvalidCredentialsException {
+    	changePassword(username, newPassword, true);
+    }
+    
+    public void changePassword(String username, String newPassword, boolean isCredentialsNonExpired) throws InvalidCredentialsException {
     	AnalystAuth analystAuth = analystAuthRepository.findByUsername(username);
     	if(analystAuth == null){
     		throw new UsernameNotFoundException(username);
     	}
     	
     	analystAuth.setPassword(encodePassword(analystAuth, newPassword));
-		analystAuth.setCredentialsNonExpired(true);
+		analystAuth.setCredentialsNonExpired(isCredentialsNonExpired);
     	analystAuthRepository.save(analystAuth);
     }
 
@@ -203,6 +207,10 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
     	}
 
     	return analystAuth;
+    }
+    
+    public void validatePassword(String username, String password) throws InvalidCredentialsException{
+    	getAnalystAuthByUsernameAndPassword(username, password);
     }
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.httpclient.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.analyst.Analyst;
+import fortscale.domain.analyst.AnalystAuth;
 import fortscale.services.analyst.AnalystService;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.security.MongoUserDetailsService;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.BaseController;
 import fortscale.web.beans.AnalystBean;
 import fortscale.web.beans.DataBean;
 import fortscale.web.fields.FirstName;
@@ -30,7 +33,7 @@ import fortscale.web.fields.Username;
 
 @Controller
 @RequestMapping("/api/admin/analyst/**")
-public class ApiAdminAnalystController {
+public class ApiAdminAnalystController extends BaseController{
 	
 	@Autowired
 	private MongoUserDetailsService mongoUserDetailsService;
@@ -50,6 +53,18 @@ public class ApiAdminAnalystController {
 		}
 		
 		mongoUserDetailsService.create(username.toString(), password.toString(), username.toString(), firstName.toString(), lastName.toString());
+	}
+	
+	@RequestMapping(value="/renewPassword", method=RequestMethod.POST)
+	@LogException
+	public void renewPassword(@RequestParam(required=true) String password,
+			@RequestParam(required=true) String username,
+			@RequestParam(required=true) String newPassword,
+			Model model) throws InvalidCredentialsException{
+		AnalystAuth analystAuth = getThisAnalystAuth();
+		//getting analyst auth with credential.
+		mongoUserDetailsService.validatePassword(analystAuth.getUsername(), password);
+		mongoUserDetailsService.changePassword(username, newPassword, false);		
 	}
 	
 	@RequestMapping(value="/disableAnalyst", method=RequestMethod.POST)
