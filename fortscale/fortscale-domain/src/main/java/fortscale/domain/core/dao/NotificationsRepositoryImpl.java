@@ -45,19 +45,18 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	public List<NotificationAggregate> findAllAndAggregate(PageRequest request) {
 		HashMap<String, List<Notification>> aggMap = new HashMap<String, List<Notification>>(); 
 		List<NotificationAggregate> aggNotifications = new ArrayList<>();
-		
-		
+
+		Query query = new Query( ).with( request.getSort() );
+		query.fields().exclude("comments");
+		query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
+		query.limit(request.getPageSize());
 
 		int numAggregatesFound = 0;
 		int pageNum = 0;
 		boolean hasMoreData = true;
 		while (numAggregatesFound < request.getPageSize() && hasMoreData) {
 			// get the next page of notifications from mongo
-			Query query = new Query( ).with( request.getSort() );
-			query.fields().exclude("comments");
-			query.addCriteria(Criteria.where("dismissed").is(false).orOperator(Criteria.where("dismissed").exists(false)));
-			query.skip(pageNum * request.getPageSize()).limit(request.getPageSize());
-			
+			query.skip(pageNum * request.getPageSize());
 			List<Notification> notifications = mongoTemplate.find(query, Notification.class);
 			
 			// build aggregates from the returned notifications
@@ -106,7 +105,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		if (excludeFsID!=null && !excludeFsID.isEmpty())
 			query.addCriteria(Criteria.where("fsId").not().in(excludeFsID));
 		if (!includeDissmissed)
-			query.addCriteria(Criteria.where("dismissed").is(false).orOperator(Criteria.where("dismissed").exists(false)));
+			query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
 		if (includeGenerators!=null && !includeGenerators.isEmpty())
 			query.addCriteria(Criteria.where("generator_name").in(includeGenerators));
 		if (excludeGenerators!=null && !includeGenerators.isEmpty())
