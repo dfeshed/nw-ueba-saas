@@ -55,6 +55,24 @@ public class VpnJuniperTest {
 	@SuppressWarnings("unused")
 	private Object[] parametersForTest() {
         return	$(
+        	$(
+        		"Regular (Poza) Failure VPN Authentication",
+        		$(
+        			"Mar 20 07:11:35 192.168.199.2 Juniper: 2014-03-20 07:11:36 - ive - [84.94.86.213] dcr(SecID Users)[] - Login failed using auth server Poza SecurID (ACE Server). Reason: Failed"   
+        		),
+        		$(
+        			"2014-03-20 07:11:36,1395292296,dcr,84.94.86.213,,FAIL,Israel,,Ramla,,,"
+        		)
+        	),
+        	$(
+            	"Regular (Poza) Failure VPN Authentication",
+            	$(
+            		"Nov  7 14:36:10 11.155.45.2 Juniper: 2013-11-07 14:36:10 - ive - [72.193.146.27] bdes(Users)[] - Login failed using auth server server.mypozza.com (ACE Server).  Reason: Failed"   
+            	),
+        		$(
+        			"2013-11-07 14:36:10,1383827770,bdes,72.193.146.27,,FAIL,United States,,Las Vegas,,,"
+        		)
+        	),
     		$(
 	    		"Regular (Poza) Successful VPN Authentication",
 	    		$(
