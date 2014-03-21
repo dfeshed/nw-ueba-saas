@@ -29,37 +29,37 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Value("${impala.data.table.fields.normalized_username}")
 	private String normalizedUsernameField;
 	
-	@Value("${impala.vpn.table.field.status}")
+	@Value("${impala.score.vpn.table.field.status}")
 	private String statusFieldName;
 	
-	@Value("${impala.vpn.table.field.country}")
+	@Value("${impala.score.vpn.table.field.country}")
 	private String countryFieldName;
 	
-	@Value("${impala.vpn.table.field.region}")
+	@Value("${impala.score.vpn.table.field.region}")
 	private String regionFieldName;
 	
-	@Value("${impala.vpn.table.field.city}")
+	@Value("${impala.score.vpn.table.field.city}")
 	private String cityFieldName;
 	
-	@Value("${impala.vpn.table.field.isp}")
+	@Value("${impala.score.vpn.table.field.isp}")
 	private String ispFieldName;
 	
-	@Value("${impala.vpn.table.field.ipusage}")
+	@Value("${impala.score.vpn.table.field.ipusage}")
 	private String ipusageFieldName;
 	
 	@Value("${impala.table.fields.username}")
 	private String usernameFieldName;
 	
-	@Value("${impala.vpn.table.field.local_ip}")
+	@Value("${impala.score.vpn.table.field.local_ip}")
 	private String localIpFieldName;
 	
-	@Value("${impala.vpn.table.field.source_ip}")
+	@Value("${impala.score.vpn.table.field.source_ip}")
 	private String sourceIpFieldName;
 	
-	@Value("${impala.vpn.table.field.date_time}")
+	@Value("${impala.score.vpn.table.field.date_time}")
 	private String eventTimeFieldName;
 	
-	@Value("${impala.vpn.table.field.date_time.score}")
+	@Value("${impala.score.vpn.table.field.date_time.score}")
 	private String eventTimeScoreFieldName;
 	
 	@Value("${impala.table.field.event.score}")
@@ -68,13 +68,13 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Value("${impala.table.field.global.score}")
 	private String globalScoreFieldName;
 	
-	@Value("${impala.vpn.table.fields}")
+	@Value("${impala.score.vpn.table.fields}")
 	private String tableFieldDefinition;
 	
 	@Autowired
 	private ImpalaParser impalaParser;
 	
-	@Value("${impala.vpn.table.name}")
+	@Value("${impala.score.vpn.table.name}")
 	private String tableName;
 		
 	private ImpalaResultSetToBeanItemConverter<VpnScore> converter;

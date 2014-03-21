@@ -20,7 +20,7 @@ public class VpnScoreTest {
 	@Test
 	public void fieldsTest() throws PropertyNotExistException, IllegalStructuredProperty{
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
-		String impalaTableFields = propertiesResolver.getProperty("impala.vpn.table.fields");
+		String impalaTableFields = propertiesResolver.getProperty("impala.score.vpn.table.fields");
 				
 		HashMap<String, Class<?>> expectedFieldsMap = ImpalaParser.getTableFieldDefinitionMap(impalaTableFields);
 		

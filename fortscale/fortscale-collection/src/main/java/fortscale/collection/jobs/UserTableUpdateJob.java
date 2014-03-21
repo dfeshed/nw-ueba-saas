@@ -42,11 +42,11 @@ public class UserTableUpdateJob extends FortscaleJob {
 	@Autowired
 	private FileSystem hadoopFs;
 	
-	@Value("${impala.vpn.table.name}")
+	@Value("${impala.score.vpn.table.name}")
 	private String vpnTableName;
-	@Value("${impala.login.table.name}")
+	@Value("${impala.score.login.table.name}")
 	private String loginTableName;
-	@Value("${impala.ssh.table.name}")
+	@Value("${impala.score.ssh.table.name}")
 	private String sshTableName;
 	@Value("${impala.user.fields}")
 	private String impalaUserFields;
