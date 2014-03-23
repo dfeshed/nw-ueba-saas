@@ -2,6 +2,8 @@ package fortscale.domain.tracer.sources;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -12,6 +14,8 @@ import fortscale.domain.tracer.FilterSettings;
 
 public abstract class ConnectionsSource implements RowMapper<Connection> {
 
+	private static Logger logger = LoggerFactory.getLogger(ConnectionsSource.class);
+	
 	@Autowired
 	protected JdbcOperations impalaJdbcTemplate;
 	
@@ -19,6 +23,7 @@ public abstract class ConnectionsSource implements RowMapper<Connection> {
 		
 		// create sql query statement
 		String query = buildQuery(source, isSource, filter);
+		logger.debug("executing tracer query: " + query);		
 		
 		// execute the query
 		return impalaJdbcTemplate.query(query, this);
