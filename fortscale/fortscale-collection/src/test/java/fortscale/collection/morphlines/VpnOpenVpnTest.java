@@ -54,7 +54,7 @@ public class VpnOpenVpnTest {
 			$ (
 			"Regular (FS) Failed VPN Authentication",
 			"Feb  8 19:12:47 vpnserver vpnserver: [-] OVPN 3 OUT: \"Sat Feb  8 17:12:47 2014 84.94.26.113:50976 SENT CONTROL [morgans]: 'AUTH_FAILED' (status=1)\"",
-			"2014-02-08 19:12:47,1391879567,morgans,84.94.26.113,,FAIL,Israel,,Tel Aviv,,,"
+			"2014-02-08 19:12:47,1391879567,morgans,84.94.26.113,,FAIL,Israel,,Tel Aviv Yaffo,,,"
 			)
         );
     }	

@@ -74,7 +74,6 @@
 		<commons-cli.version>1.2</commons-cli.version>
 		<kite-version>0.10.0</kite-version>
 		<joda-time.version>2.2</joda-time.version>
-		<geoip_service.version>0.0.1-SNAPSHOT</geoip_service.version>
 		<quartz.version>2.2.1</quartz.version>
 		<guava.version>15.0</guava.version>
 		<pig.version>0.11.0-cdh4.4.0</pig.version>
@@ -188,9 +187,9 @@
 
 		<!--  fortscale dependencies -->
 		<dependency>
-			<groupId>com.fortscale.utils</groupId>
-			<artifactId>geoip_service</artifactId>
-			<version>${geoip_service.version}</version>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-geoip</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fortscale</groupId>

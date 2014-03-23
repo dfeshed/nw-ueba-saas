@@ -13,10 +13,11 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fortscale.utils.geoip.GeoIPInfo;
-import com.fortscale.utils.geoip.GeoIPService;
-import com.fortscale.utils.geoip.MMGeoIPService;
 import com.typesafe.config.Config;
+
+import fortscale.geoip.GeoIPInfo;
+import fortscale.geoip.GeoIPService;
+import fortscale.geoip.MMGeoIPService;
 
 /**
  * @author Rois This class is a Morphline command which takes as input a column
