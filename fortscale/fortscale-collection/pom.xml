@@ -240,7 +240,9 @@
 		<dependency>
     		<groupId>jdk.tools</groupId>
     		<artifactId>jdk.tools</artifactId>
-			<version>${java-lang-config.version}</version>
+    		<version>${java-lang-config.version}</version>
+    		<scope>system</scope>
+    		<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
 		</dependency>
 		
 
