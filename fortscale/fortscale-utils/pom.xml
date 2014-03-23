@@ -58,9 +58,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<joda-time.version>2.2</joda-time.version>
 		<jackson-mapper-asl.version>1.9.12</jackson-mapper-asl.version>
-		<beardedpig.version>${project.parent.version}</beardedpig.version>
 		<pigunit.version>0.11.0-cdh4.4.0</pigunit.version>
-		<calibro.version>${project.parent.version}</calibro.version>
 		<commons-lang3.version>3.1</commons-lang3.version>
 		<commons-lang.version>2.6</commons-lang.version>
 		<commons-pool.version>1.4</commons-pool.version>
@@ -97,7 +95,7 @@
 		<dependency>
 			<groupId>com.fortscale.pig</groupId>
 			<artifactId>beardedpig</artifactId>
-			<version>${beardedpig.version}</version>
+			<version>${project.parent.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.mortbay.jetty</groupId>
@@ -131,7 +129,7 @@
 		<dependency>
 			<groupId>com.fortscale.toolkits</groupId>
 			<artifactId>calibro</artifactId>
-			<version>${calibro.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
