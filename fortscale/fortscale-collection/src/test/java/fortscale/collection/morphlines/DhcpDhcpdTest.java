@@ -22,7 +22,7 @@ public class DhcpDhcpdTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		morphlineTester.init(confFile, Arrays.asList(dhcpOutputFields));
+		morphlineTester.init(new String[] { confFile }, Arrays.asList(dhcpOutputFields));
 	}
 	
 	@After

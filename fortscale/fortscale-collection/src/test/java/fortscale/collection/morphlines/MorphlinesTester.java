@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.kitesdk.morphline.api.Record;
+import org.kitesdk.morphline.base.Fields;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -14,17 +15,20 @@ import fortscale.utils.logging.Logger;
 
 public class MorphlinesTester {
 
-	private MorphlinesItemsProcessor subject;
+	private MorphlinesItemsProcessor[] subjects;
 	private List<String> outputFields;
 	private static final Logger logger = Logger.getLogger(MorphlinesTester.class);
 	
 	public MorphlinesTester() {
 	}
 
-	public void init(String confFile,List<String> outputFields) {
+	public void init(String[] confFiles,List<String> outputFields) {
 		try {
-			Resource conf = new FileSystemResource(confFile);
-			subject = new MorphlinesItemsProcessor(conf);
+			subjects = new MorphlinesItemsProcessor[confFiles.length];
+			for (int i=0;i<confFiles.length;i++) {
+				Resource conf = new FileSystemResource(confFiles[i]);
+				subjects[i] = new MorphlinesItemsProcessor(conf);
+			}
 			
 			this.outputFields = outputFields;
 		}
@@ -34,11 +38,17 @@ public class MorphlinesTester {
 	}
 	
 	public void close() throws IOException {
-		subject.close();
+		for (MorphlinesItemsProcessor subject : subjects)
+			subject.close();
 	}
 
 	public void testSingleLine(String testCase, String inputLine, String expectedOutput) {
-		Record parsedRecord = (Record) subject.process(inputLine);
+		Record parsedRecord = new Record();
+		parsedRecord.put(Fields.MESSAGE, inputLine);
+		for (MorphlinesItemsProcessor subject : subjects) {
+			if (parsedRecord!=null)
+				parsedRecord = (Record) subject.process(parsedRecord);
+		}
 		
 		if (null == expectedOutput) {
 			assertEquals("ETL error with " + testCase, null ,parsedRecord);
