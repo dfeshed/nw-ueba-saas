@@ -85,18 +85,18 @@ public class VPNConnectionsSource extends ConnectionsSource {
 		Connection connection = new Connection();
 
 		// try and get the hostname, if it does not exist use the ip address instead 
-		String hostname = rs.getString(schema.HOSTNAME);
+		String hostname = rs.getString(schema.HOSTNAME.toLowerCase());
 		if (hostname==null || hostname.isEmpty())
-			connection.setSource(rs.getString(schema.SOURCE_IP));
+			connection.setSource(rs.getString(schema.SOURCE_IP.toLowerCase()));
 		else
 			connection.setSource(hostname);
 		
-		connection.setDestination(rs.getString(schema.LOCAL_IP));
-		connection.setUserAccount(rs.getString(schema.USERNAME).toLowerCase());
-		connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX))));
+		connection.setDestination(rs.getString(schema.LOCAL_IP.toLowerCase()));
+		connection.setUserAccount(rs.getString(schema.USERNAME.toLowerCase()).toLowerCase());
+		connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX.toLowerCase()))));
 		connection.setSourceType("vpn");
 		// assume 10 hours session
-		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX)) + (1000*60*60*sessionLength)));
+		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX.toLowerCase())) + (1000*60*60*sessionLength)));
 		
 		return connection;
 	}

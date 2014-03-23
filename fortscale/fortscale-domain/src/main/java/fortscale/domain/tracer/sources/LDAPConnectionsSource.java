@@ -98,18 +98,19 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		Connection connection = new Connection();
 	
 		// try and get the hostname, if it does not exist use the ip address instead 
-		String hostname = rs.getString(schema.MACHINE_NAME);
+		String hostname = rs.getString(schema.MACHINE_NAME.toLowerCase());
 		if (hostname==null || hostname.isEmpty())
-			connection.setSource(rs.getString(schema.CLIENT_ADDRESS));
+			connection.setSource(rs.getString(schema.CLIENT_ADDRESS.toLowerCase()));
 		else
 			connection.setSource(hostname);
 		
-		connection.setDestination(rs.getString(schema.SERVICE_NAME));
-		connection.setUserAccount(rs.getString(schema.ACCOUNT_NAME).toLowerCase());
-		connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME))));
+		connection.setDestination(rs.getString(schema.SERVICE_NAME.toLowerCase()));
+		connection.setUserAccount(rs.getString(schema.ACCOUNT_NAME.toLowerCase()).toLowerCase());
+		
+		connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME.toLowerCase()))));
 		connection.setSourceType("ldap");
 		// assume 10 hours session
-		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME)) + (1000*60*60*sessionLength)));
+		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME.toLowerCase())) + (1000*60*60*sessionLength)));
 		
 		return connection;
 	}
