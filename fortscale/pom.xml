@@ -353,7 +353,7 @@
 		<module>fortscale-monitor</module>
 		<module>fortscale-collection</module>
 		<module>fortscale-utils</module>
-
+		<module>fortscale-geoip</module>
 		<!-- <module>fortscale-webapp-security</module> -->
 	</modules>
 </project>

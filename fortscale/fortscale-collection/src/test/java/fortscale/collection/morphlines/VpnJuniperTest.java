@@ -61,7 +61,7 @@ public class VpnJuniperTest {
         			"Mar 20 07:11:35 192.168.199.2 Juniper: 2014-03-20 07:11:36 - ive - [84.94.86.213] dcr(SecID Users)[] - Login failed using auth server Poza SecurID (ACE Server). Reason: Failed"   
         		),
         		$(
-        			"2014-03-20 07:11:36,1395292296,dcr,84.94.86.213,,FAIL,Israel,,Ramla,,,"
+        			"2014-03-20 07:11:36,1395292296,dcr,84.94.86.213,,FAIL,Israel,,Rishon LeZion,,,"
         		)
         	),
         	$(
