@@ -203,18 +203,20 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		
 		Pageable pageable = new PageRequest(page, size, Direction.DESC, sortingFieldsName);
 		List<User> users = null;
+		DateTime dateTime = new DateTime();
+		dateTime = dateTime.minusHours(24);
 		if(severityId != null){
 			Range severityRange = getRange(severityId);
 			if(followedOnly){
-				users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndCurrentDay(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+				users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndTimeGte(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
 			} else{
-				users = userRepository.findByClassifierIdAndScoreBetweenAndCurrentDay(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), pageable);
+				users = userRepository.findByClassifierIdAndScoreBetweenAndTimeGte(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
 			}
 		} else{
 			if(followedOnly){
-				users = userRepository.findByClassifierIdAndFollowedAndCurrentDay(classifierId, pageable);
+				users = userRepository.findByClassifierIdAndFollowedAndTimeGte(classifierId, dateTime.toDate(), pageable);
 			} else{
-				users = userRepository.findByClassifierIdAndCurrentDay(classifierId, pageable);
+				users = userRepository.findByClassifierIdAndTimeGte(classifierId, dateTime.toDate(), pageable);
 			}
 		}
 		List<ISuspiciousUserInfo> ret = new ArrayList<>();
