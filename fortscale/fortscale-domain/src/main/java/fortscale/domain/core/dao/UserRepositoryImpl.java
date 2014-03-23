@@ -70,11 +70,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 
 	@Override
 	public List<User> findByClassifierIdAndScoreBetweenAndTimeGte(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
-		DateTime dateTime = new DateTime();
-		dateTime = dateTime.withTimeAtStartOfDay();
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
+		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
 		query.with(pageable);
 		return mongoTemplate.find(query, User.class);
 	}
@@ -98,10 +96,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 
 	@Override
 	public List<User> findByClassifierIdAndFollowedAndTimeGte(String classifierId, Date time, Pageable pageable) {
-		DateTime dateTime = new DateTime();
-		dateTime = dateTime.withTimeAtStartOfDay();
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		Query query = new Query(where(User.followedField).is(true).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
+		Query query = new Query(where(User.followedField).is(true).and(classifierScoreCurrentTimestampField).gte(time));
 		query.with(pageable);
 		return mongoTemplate.find(query, User.class);
 	}
