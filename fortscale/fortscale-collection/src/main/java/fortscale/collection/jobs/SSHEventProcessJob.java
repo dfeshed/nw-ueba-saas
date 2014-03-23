@@ -17,13 +17,13 @@ public class SSHEventProcessJob extends EventProcessJob {
 	@Autowired
 	UsernameNormalizer sshUsernameNormalizer;
 	
-	@Value("${impala.ssh.table.fields.status}")
+	@Value("${impala.data.ssh.table.field.status}")
 	private String statusFieldName;
 	
 	@Value("${ssh.status.success.value:accepted}")
 	private String sshStatusSuccessValue;
 	
-	@Value("${impala.data.ssh.table.fields.target_machine}")
+	@Value("${impala.data.ssh.table.field.target_machine}")
 	private String targetMachineField;
 	
 	@Override

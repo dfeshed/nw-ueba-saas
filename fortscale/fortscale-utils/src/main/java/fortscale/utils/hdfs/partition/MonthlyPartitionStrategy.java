@@ -1,6 +1,7 @@
 package fortscale.utils.hdfs.partition;
 
 import static fortscale.utils.hdfs.partition.PartitionsUtils.*;
+import static fortscale.utils.TimestampUtils.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -32,12 +33,26 @@ public class MonthlyPartitionStrategy implements PartitionStrategy {
 	 */
 	@Override
 	public String getImpalaPartitionName(long timestamp) {	
+		return String.format("%s=%s",MONTHLY_PARTITION_FIELD_NAME, getImpalaPartitionValue(timestamp));
+	}
+	
+	/**
+	 * Gets the partition field name definition
+	 */
+	@Override
+	public String getImpalaPartitionFieldName() {
+		return MONTHLY_PARTITION_FIELD_NAME;
+	}
+	
+	/**
+	 * Gets the partition value in impala table column for a given timestamp
+	 */
+	public String getImpalaPartitionValue(long timestamp) {
 		// get the month and year from the timestamp
 		DateTime when = getDateForTimestamp(timestamp);
 		int year = when.getYear();
 		int month = when.getMonthOfYear();
-		
-		return String.format("%s=%s%02d",MONTHLY_PARTITION_FIELD_NAME, year, month);
+		return String.format("%s%02d", year, month);
 	}
 	
 	/**

@@ -9,6 +9,10 @@ public class ImpalaCriteriaString implements ImpalaQueryElementInterface{
 		this.criteria = criteria;
 	}
 
+	public static ImpalaCriteriaString statement(String criteria) {
+		return new ImpalaCriteriaString(criteria);
+	}
+		
 	@Override
 	public void appendTo(StringBuilder builder) {
 		builder.append(criteria);

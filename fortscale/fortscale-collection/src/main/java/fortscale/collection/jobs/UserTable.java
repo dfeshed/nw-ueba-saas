@@ -94,6 +94,9 @@ public class UserTable implements IUserTable {
 		ClassifierScore classifierScore = user.getScore(classifier.getId());
 		if(classifierScore != null){
 			ret = classifierScore.getScore();
+			if(ret != null){
+				ret = new Double(Math.round(ret));
+			}
 		}
 		
 		return ret;

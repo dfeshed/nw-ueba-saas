@@ -1,0 +1,1 @@
+﻿index=syslog sourcetype=juniper_sa_log earliest=$args.earliest$ latest=$args.latest$ | table _time,_raw

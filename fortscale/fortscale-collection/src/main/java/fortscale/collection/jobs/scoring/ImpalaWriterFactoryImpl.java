@@ -105,7 +105,6 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 
 	@Override
 	public ImpalaUseridToAppUsernameWriter createImpalaUseridToAppUsernameWriter() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

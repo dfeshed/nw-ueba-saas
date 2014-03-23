@@ -16,7 +16,7 @@
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.vpn.table.name}</value>
+					<value>${impala.score.vpn.table.name}</value>
 				</entry>
 				<entry>
 					<key>pigScriptResouce</key>

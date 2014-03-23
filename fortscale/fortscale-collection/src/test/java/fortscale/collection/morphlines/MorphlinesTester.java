@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Test;
 import org.kitesdk.morphline.api.Record;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -33,8 +32,11 @@ public class MorphlinesTester {
 			logger.error("Exception while initializing morphline test class",e);
 		}
 	}
+	
+	public void close() throws IOException {
+		subject.close();
+	}
 
-	@Test
 	public void testSingleLine(String testCase, String inputLine, String expectedOutput) {
 		Record parsedRecord = (Record) subject.process(inputLine);
 		
@@ -53,7 +55,19 @@ public class MorphlinesTester {
 			}
 			assertEquals("ETL error with " + testCase, expectedOutput ,parsedOutput);
 		}
-
+	}
+	
+	public void testMultipleLines(String testCase, List<String> lines, List<String> expectedOutput) {
+		assertNotNull("expected to recieve multiple lines to process", lines);		
+		assertEquals(lines.size(), expectedOutput.size());
+		
+		// process each line 
+		for (int i=0;i<lines.size(); i++) {
+			String input = lines.get(0);
+			String expected = expectedOutput.get(0);
+			
+			testSingleLine(testCase, input, expected);
+		}
 	}
 
 }

@@ -158,6 +158,7 @@ public class EventProcessJob implements Job {
 				monitor.error(monitorId, currentStep, e.toString());
 				throw new JobExecutionException("error processing files", e);
 			} finally {
+				morphline.close();
 				closeOutputAppender();
 			}
 			

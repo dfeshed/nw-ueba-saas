@@ -1,6 +1,8 @@
 package fortscale.services.fe.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import fortscale.domain.core.User;
 import fortscale.domain.fe.VpnScore;
@@ -9,21 +11,12 @@ import fortscale.services.fe.IVpnEventScoreInfo;
 public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	private User user;
 	private VpnScore vpnScore;
-	private String sourceHostname;
-	private String localHostname;
 	
 	public VpnEventScoreInfo(User user, VpnScore vpnScore){
 		this.vpnScore = vpnScore;
 		this.user = user;
 	}
 
-	public void setSourceHostname(String sourceHostname) {
-		this.sourceHostname = sourceHostname;
-	}
-
-	public void setDestinationIp(String localHostname) {
-		this.localHostname = localHostname;
-	}
 
 	@Override
 	public String getUserId() {
@@ -42,22 +35,17 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 
 	@Override
 	public String getSourceIp() {
-		return vpnScore.getSourceIp();
-	}
-
-	@Override
-	public String getSourceHostname() {
-		return sourceHostname;
+		return vpnScore.getSource_ip();
 	}
 
 	@Override
 	public Date getEventTime() {
-		return vpnScore.getEventTime();
+		return vpnScore.getDate_time();
 	}
 
 	@Override
 	public String getInternalIP() {
-		return vpnScore.getLocalIp();
+		return vpnScore.getLocal_ip();
 	}
 
 	@Override
@@ -71,33 +59,13 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	}
 
 	@Override
-	public String getInternalHostname() {
-		return localHostname;
-	}
-
-	@Override
 	public String getStatus() {
 		return vpnScore.getStatus();
 	}
 
 	@Override
 	public double getEventTimeScore() {
-		return vpnScore.getEventTimeScore();
-	}
-
-	@Override
-	public double getUserNameScore() {
-		return vpnScore.getUserNameScore();
-	}
-
-	@Override
-	public double getSourceIpScore() {
-		return vpnScore.getSourceIpScore();
-	}
-
-	@Override
-	public double getStatusScore() {
-		return vpnScore.getStatusScore();
+		return vpnScore.getDate_timeScore();
 	}
 
 	@Override
@@ -108,6 +76,47 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	@Override
 	public double getCountryScore() {
 		return vpnScore.getCountryScore();
+	}
+
+	@Override
+	public String getRegion() {
+		return vpnScore.getRegion();
+	}
+
+	@Override
+	public String getCity() {
+		return vpnScore.getCity();
+	}
+
+	@Override
+	public String getIsp() {
+		return vpnScore.getIsp();
+	}
+
+	@Override
+	public String getIpusage() {
+		return vpnScore.getIpusage();
+	}
+
+	@Override
+	public double getRegionScore() {
+		return vpnScore.getRegionScore();
+	}
+
+	@Override
+	public double getCityScore() {
+		return vpnScore.getCityScore();
+	}
+
+
+	@Override
+	public Map<String, Object> createMap() {
+		Map<String, Object> ret = new HashMap<>(vpnScore.allFields());
+		ret.put("userId", getUserId());
+		ret.put("username", getUsername());
+		ret.put("isUserFollowed", isUserFollowed());
+		
+		return ret;
 	}
 
 

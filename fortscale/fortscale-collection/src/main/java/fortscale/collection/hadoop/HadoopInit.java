@@ -46,11 +46,11 @@ public class HadoopInit implements InitializingBean{
 	private String impalaSecDataDirectory;
 	
 	//Security Events Scoring table
-	@Value("${impala.login.table.fields}")
+	@Value("${impala.score.login.table.fields}")
 	private String impalaSecScoringTableFields;
-	@Value("${impala.login.table.delimiter}")
+	@Value("${impala.score.login.table.delimiter}")
 	private String impalaSecScoringTableDelimiter;
-	@Value("${impala.login.table.name}")
+	@Value("${impala.score.login.table.name}")
 	private String impalaSecScoringTableName;
 	@Value("${hdfs.user.processeddata.security.events.4769.path}")
 	private String impalaSecScoringDirectory;
@@ -66,11 +66,11 @@ public class HadoopInit implements InitializingBean{
 	private String impalaVpnDataDirectory;
 	
 	//VPN Scoring table
-	@Value("${impala.vpn.table.fields}")
+	@Value("${impala.score.vpn.table.fields}")
 	private String impalaVpnScoringTableFields;
-	@Value("${impala.vpn.table.delimiter}")
+	@Value("${impala.score.vpn.table.delimiter}")
 	private String impalaVpnScoringTableDelimiter;
-	@Value("${impala.vpn.table.name}")
+	@Value("${impala.score.vpn.table.name}")
 	private String impalaVpnScoringTableName;
 	@Value("${hdfs.user.processeddata.vpnscores.path}")
 	private String impalaVpnScoringDirectory;
@@ -86,11 +86,11 @@ public class HadoopInit implements InitializingBean{
 	private String impalaSshDataDirectory;
 	
 	//SSH Scoring table
-	@Value("${impala.ssh.table.fields}")
+	@Value("${impala.score.ssh.table.fields}")
 	private String impalaSshScoringTableFields;
-	@Value("${impala.ssh.table.delimiter}")
+	@Value("${impala.score.ssh.table.delimiter}")
 	private String impalaSshScoringTableDelimiter;
-	@Value("${impala.ssh.table.name}")
+	@Value("${impala.score.ssh.table.name}")
 	private String impalaSshScoringTableName;
 	@Value("${hdfs.user.processeddata.sshscores.path}")
 	private String impalaSshScoringDirectory;

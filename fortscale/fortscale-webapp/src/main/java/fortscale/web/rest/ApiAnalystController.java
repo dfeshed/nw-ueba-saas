@@ -26,8 +26,6 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.AnalystBean;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
-import fortscale.web.fields.FirstName;
-import fortscale.web.fields.LastName;
 import fortscale.web.fields.NewPassword;
 import fortscale.web.fields.Password;
 import fortscale.web.fields.Username;
@@ -87,19 +85,16 @@ public class ApiAnalystController extends BaseController{
 	
 	@RequestMapping(value="/update", method=RequestMethod.POST)
 	@LogException
-	public void update(@Valid Password password,
-			@Valid Username username,
-			@Valid FirstName firstName,
-			@Valid LastName lastName,
-			@Valid Password newPassword,
+	public void update(@RequestParam(required=true) String password,
+			@RequestParam(required=false) String username,
+			@RequestParam(required=false) String firstName,
+			@RequestParam(required=false) String lastName,
+			@RequestParam(required=false) String newPassword,
 			Model model) throws InvalidCredentialsException{
 		AnalystAuth analystAuth = getThisAnalystAuth();
-		if(!analystAuth.getPassword().equals(mongoUserDetailsService.encodePassword(analystAuth,password.toString()))) {
-			throw new InvalidCredentialsException("wrong password");
-		} else {
-			mongoUserDetailsService.updateUser(analystAuth.getUsername(), username.toString(), newPassword.toString(), username.toString(), firstName.toString(), lastName.toString());
-		}
-		
+		//getting analyst auth with credential.
+		analystAuth = mongoUserDetailsService.getAnalystAuthByUsernameAndPassword(analystAuth.getUsername(), password);
+		mongoUserDetailsService.updateUser(analystAuth.getUsername(), username, newPassword, username, firstName, lastName);		
 	}
 	
 	@RequestMapping(value="/updateScoreDistribution", method=RequestMethod.GET)

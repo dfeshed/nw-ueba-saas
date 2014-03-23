@@ -10,11 +10,11 @@ import fortscale.utils.logging.Logger;
 public class SshDAOImpl extends AuthDAOImpl{
 	private static Logger logger = Logger.getLogger(SshDAOImpl.class);
 	
-	@Value("${impala.ssh.table.name}")
+	@Value("${impala.score.ssh.table.name}")
 	private String tableName;
-	@Value("${impala.ssh.table.fields}")
+	@Value("${impala.score.ssh.table.fields}")
 	private String impalaSshScoringTableFields;
-	@Value("${impala.ssh.table.fields.status}")
+	@Value("${impala.score.ssh.table.fields.status}")
 	private String statusFieldName;
 	
 	

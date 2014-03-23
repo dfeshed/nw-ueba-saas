@@ -7,6 +7,7 @@ import java.util.Arrays;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,11 @@ public class DhcpDhcpdTest {
 	@Before
 	public void setUp() throws Exception {
 		morphlineTester.init(confFile, Arrays.asList(dhcpOutputFields));
+	}
+	
+	@After
+	public void tearDown() throws Exception {
+		morphlineTester.close();
 	}
 
 	@Test

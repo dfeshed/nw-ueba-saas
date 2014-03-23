@@ -13,7 +13,7 @@ public class VPNEventProcessJob extends EventProcessJob {
 	@Autowired
 	UsernameNormalizer vpnUsernameNormalizer;
 	
-	@Value("${impala.vpn.table.fields.status}")
+	@Value("${impala.score.vpn.table.field.status}")
 	private String statusFieldName;
 	
 	@Value("${vpn.status.success.value:SUCCESS}")
