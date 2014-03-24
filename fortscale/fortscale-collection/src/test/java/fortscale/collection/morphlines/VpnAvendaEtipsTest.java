@@ -27,7 +27,6 @@ public class VpnAvendaEtipsTest {
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		morphlineTester.init(confFile, vpnOutputFields);
-		System.out.println(vpnOutputFields);
 	}
 
 	@Test
