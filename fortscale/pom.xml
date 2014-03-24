@@ -4,7 +4,7 @@
 
 	<groupId>fortscale</groupId>
 	<artifactId>fortscale</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>fortscale</name>
@@ -227,12 +227,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aspects</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
 			<version>${org.aspectj-version}</version>
@@ -346,6 +340,7 @@
 	</build>
 
 	<modules>
+		<module>fortscale-geoip</module>
 		<module>fortscale-global-config</module>
 		<module>fortscale-domain</module>
 		<module>fortscale-webapp</module>
@@ -353,7 +348,6 @@
 		<module>fortscale-monitor</module>
 		<module>fortscale-collection</module>
 		<module>fortscale-utils</module>
-		<module>fortscale-geoip</module>
 		<!-- <module>fortscale-webapp-security</module> -->
 	</modules>
 </project>

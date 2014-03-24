@@ -4,8 +4,9 @@
 	<parent>
 		<groupId>fortscale</groupId>
 		<artifactId>fortscale</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+
 	<artifactId>fortscale-monitor</artifactId>
 	<name>fortscale-monitor</name>
 	<packaging>jar</packaging>
