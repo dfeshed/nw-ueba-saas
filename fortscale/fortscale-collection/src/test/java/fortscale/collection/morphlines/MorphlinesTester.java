@@ -63,8 +63,8 @@ public class MorphlinesTester {
 		
 		// process each line 
 		for (int i=0;i<lines.size(); i++) {
-			String input = lines.get(0);
-			String expected = expectedOutput.get(0);
+			String input = lines.get(i);
+			String expected = expectedOutput.get(i);
 			
 			testSingleLine(testCase, input, expected);
 		}
