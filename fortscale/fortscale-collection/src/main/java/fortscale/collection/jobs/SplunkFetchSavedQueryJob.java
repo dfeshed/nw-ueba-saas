@@ -138,7 +138,7 @@ public class SplunkFetchSavedQueryJob implements Job {
 			}
 		} finally {
 			monitor.finishJob(monitorId);
-			logger.info("vpn fetch job finished");
+			logger.info("fetch job finished");
 		}
 	}
 	
