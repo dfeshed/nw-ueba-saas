@@ -129,11 +129,15 @@ public class BatchScheduler {
 		// register job listener to close the scheduler after job completion
 		NotifyJobFinishListener.FinishSignal monitor = NotifyJobFinishListener.waitOnJob(scheduler, jobKey);
 
-		scheduler.triggerJob(jobKey);
-		
-		
-		// wait for job completion
-		monitor.doWait();		
+		// check if job exists
+		if (scheduler.checkExists(jobKey)) {
+			scheduler.triggerJob(jobKey);
+			
+			// wait for job completion
+			monitor.doWait();		
+		} else {
+			System.out.println(String.format("job %s %s does not exist", jobName, group));
+		}
 	}
 	
 	public void shutdown() throws SchedulerException {
