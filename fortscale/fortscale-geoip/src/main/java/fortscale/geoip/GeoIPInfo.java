@@ -9,7 +9,7 @@ public class GeoIPInfo {
 	private String countryISOCode = "";
 	private String ip = "";
 	private String ISP = "";
-	private String UsageType = "";
+	private IpUsageTypeEnum UsageType = null;
 
 	public GeoIPInfo() {
 	}
@@ -66,11 +66,11 @@ public class GeoIPInfo {
 		ISP = iSP;
 	}
 
-	public String getUsageType() {
+	public IpUsageTypeEnum getUsageType() {
 		return UsageType;
 	}
 
-	public void setUsageType(String usageType) {
+	public void setUsageType(IpUsageTypeEnum usageType) {
 		UsageType = usageType;
 	}
 
