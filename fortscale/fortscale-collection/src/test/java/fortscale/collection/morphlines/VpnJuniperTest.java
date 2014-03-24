@@ -29,6 +29,7 @@ public class VpnJuniperTest {
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		morphlineTester.init(confFile, vpnOutputFields);
+		System.out.println(vpnOutputFields);
 	}
 
 	@After
@@ -81,7 +82,7 @@ public class VpnJuniperTest {
 				),
 	    		$(
     				(String)null,
-	    			"2014-03-16 04:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,Israel,ORI-PC"
+	    			"2014-03-16 04:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,Israel,,Baraq,,,ORI-PC"
 	    		)
     		),
     		$(
@@ -102,7 +103,7 @@ public class VpnJuniperTest {
     			),
 				$(
 					(String)null,
-					"2014-03-16 04:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,Israel,ORI-PC",
+					"2014-03-16 04:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,Israel,,Baraq,,,ORI-PC",
 					(String)null
 				)
 			),
@@ -116,9 +117,9 @@ public class VpnJuniperTest {
             	"Regular (PT) Successful VPN Authentication",
         		$(
         			"info - [62.219.118.133] - baxishk(Company Users)[Group a,Group b] - 2011/06/10 09:57:18 - Agent login succeeded for baxishk/Company Users from 62.219.118.133.",        				
-        			"info - [62.219.118.133] - baxishk(Company Users)[Group a,Group b] - 2011/06/10 09:57:18 - VPN Tunneling: Session started for user with IPv4 address 10.122.65.1 hostname SWAN"
+        			"info - [62.219.118.133] - baxishk(Company Users)[Group a,Group b] - 2011/06/10 09:57:18 - VPN Tunneling: Session started for user with IPv4 address 10.122.65.1, hostname SWAN"
         		),
-        		$((String)null, "2011-06-10 09:57:18,1307689038,baxishk,62.219.118.133,10.122.65.1,SUCCESS,Israel,SWAN")
+        		$((String)null, "2011-06-10 09:57:18,1307689038,baxishk,62.219.118.133,10.122.65.1,SUCCESS,Israel,,Tel Aviv Yaffo,,,SWAN")
             ),
             $ (
             	"Regular (Poza) Successful VPN Authentication",
@@ -126,7 +127,7 @@ public class VpnJuniperTest {
             		"Nov  7 14:37:04 11.155.45.2 Juniper: 2013-11-07 14:37:05 - ive - [72.193.146.27] bvaldes(Users)[Users] - Agent login succeeded for bvaldes/Users from 72.193.146.27.",
             		"Nov  7 14:37:04 11.155.45.2 Juniper: 2013-11-07 14:37:05 - ive - [72.193.146.27] bvaldes(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.113, hostname LAPTOP-20005507"
             	),
-            	$((String)null, "2013-11-07 14:37:05,1383827825,bvaldes,72.193.146.27,11.155.46.113,SUCCESS,United States,LAPTOP-20005507")
+            	$((String)null, "2013-11-07 14:37:05,1383827825,bvaldes,72.193.146.27,11.155.46.113,SUCCESS,United States,,Las Vegas,,,LAPTOP-20005507")
             )
 		);
     }
