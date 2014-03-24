@@ -106,14 +106,17 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			EventProcessHandlers handler = eventsMap.get(eventCode);
 			if (handler!=null) {
 				Record processedRecord = handler.morphline.process(record);
-				addNormalizedUsernameField(processedRecord);
-				String output = handler.recordToStringProcessor.process(processedRecord);
+				if (processedRecord!=null) {
+					addNormalizedUsernameField(processedRecord);
+					String output = handler.recordToStringProcessor.process(processedRecord);
 				
-				if (output!=null) {
-					Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
-					handler.appender.writeLine(output, timestamp.longValue());
-					updateOrCreateUserWithClassifierUsername(record);
-					return true;
+					if (output!=null) {
+						
+						Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
+						handler.appender.writeLine(output, timestamp.longValue());
+						updateOrCreateUserWithClassifierUsername(processedRecord);
+						return true;
+					}
 				}
 			}
 		}
