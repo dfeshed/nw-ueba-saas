@@ -1,6 +1,7 @@
 package fortscale.domain.core.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,10 +16,10 @@ public interface UserRepositoryCustom {
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails);
 	public List<User> findByApplicationUserName(String applicationName, List<String> usernames);
 	public User findByApplicationUserName(String applicationName, String username);
-	public List<User> findByClassifierIdAndScoreBetweenAndCurrentDay(String classifierId, int lowestVal, int upperVal, Pageable pageable);
-	public List<User> findByClassifierIdAndFollowedAndScoreBetweenAndCurrentDay(String classifierId, int lowestVal, int upperVal, Pageable pageable);
-	public List<User> findByClassifierIdAndCurrentDay(String classifierId, Pageable pageable);
-	public List<User> findByClassifierIdAndFollowedAndCurrentDay(String classifierId, Pageable pageable);
+	public List<User> findByClassifierIdAndScoreBetweenAndTimeGte(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable);
+	public List<User> findByClassifierIdAndFollowedAndScoreBetweenAndTimeGte(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable);
+	public List<User> findByClassifierIdAndTimeGte(String classifierId, Date time, Pageable pageable);
+	public List<User> findByClassifierIdAndFollowedAndTimeGte(String classifierId, Date time, Pageable pageable);
 	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold);
 	public int countNumOfUsers(String classifierId);
 	public User findByLogUsername(String logname, String username);

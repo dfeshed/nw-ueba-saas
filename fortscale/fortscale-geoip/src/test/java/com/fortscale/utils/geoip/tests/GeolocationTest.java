@@ -2,6 +2,7 @@ package com.fortscale.utils.geoip.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import com.maxmind.geoip2.exception.GeoIp2Exception;
 import fortscale.geoip.GeoIPInfo;
 import fortscale.geoip.MMGeoIPService;
 
-public class GeolocationTestCase {
+public class GeolocationTest {
 
 	private static final String US = "US";
 	private static final String UNITED_STATES = "United States";
@@ -22,7 +23,7 @@ public class GeolocationTestCase {
 
 	@BeforeClass
 	public static void ontTimeSetUp() throws Exception {
-		geoLocService = new MMGeoIPService();
+		geoLocService = new MMGeoIPService(new File("src/main/resources/GeoLite2-City.mmdb"));
 	}
 
 	@Test

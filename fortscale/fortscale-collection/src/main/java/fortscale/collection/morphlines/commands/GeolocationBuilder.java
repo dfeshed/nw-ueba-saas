@@ -87,7 +87,7 @@ public class GeolocationBuilder implements CommandBuilder {
 						inputRecord.put(this.regionFieldName, geoIPInfo.getRegionName());
 						inputRecord.put(this.cityFieldName, geoIPInfo.getCityName());
 						inputRecord.put(this.ispFieldName, geoIPInfo.getISP());
-						inputRecord.put(this.usageTypeFieldName, geoIPInfo.getUsageType());
+						inputRecord.put(this.usageTypeFieldName, geoIPInfo.getUsageType() != null ? geoIPInfo.getUsageType().getId() : "");
 					} catch (IOException e) {
 						logger.warn("error resolving geo2ip for {}, exception: {}", ipAddress, e.toString());
 					}

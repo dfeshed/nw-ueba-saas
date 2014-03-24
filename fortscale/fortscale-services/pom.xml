@@ -4,8 +4,10 @@
 	<parent>
 		<groupId>fortscale</groupId>
 		<artifactId>fortscale</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+
+	<groupId>fortscale</groupId>
 	<artifactId>fortscale-services</artifactId>
 	<name>fortscale-services</name>
 
@@ -54,31 +56,29 @@
 
     <properties>
 		<hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
-		<beardedpig.version>1.0-SNAPSHOT</beardedpig.version>
 		<pigunit.version>0.11.0-cdh4.4.0</pigunit.version>
-		<calibro.version>1.0-SNAPSHOT</calibro.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>fortscale</groupId>
+			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>fortscale-global-config</artifactId>
-			<version>${project.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fortscale</groupId>
+			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>fortscale-domain</artifactId>
-			<version>${project.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fortscale</groupId>
+			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>fortscale-utils</artifactId>
-			<version>${project.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fortscale.pig</groupId>
 			<artifactId>beardedpig</artifactId>
-			<version>${beardedpig.version}</version>
+			<version>${project.parent.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.mortbay.jetty</groupId>
@@ -102,7 +102,7 @@
 		<dependency>
 			<groupId>com.fortscale.toolkits</groupId>
 			<artifactId>calibro</artifactId>
-			<version>${calibro.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		
 		<!-- Hibernate Validator -->
