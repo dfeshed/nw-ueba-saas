@@ -26,7 +26,7 @@
 				</entry>
 				<entry>
 					<key>eventsToProcess</key>
-					<value>4769</value>
+					<value>4769,4768</value>
 				</entry>
 				<!--  4769 parameters  -->
 				<entry>
@@ -39,7 +39,7 @@
 				</entry>
 				<entry>
 					<key>timestampField4769</key>
-					<value>timeGeneratedUnixTime</value>
+					<value>${impala.data.security.events.4769.table.field.timeGeneratedUnixTime}</value>
 				</entry>
 				<entry>
 					<key>outputSeparator4769</key>
@@ -55,7 +55,36 @@
 				</entry>
 				<entry>
 					<key>impalaTableName4769</key>
-					<value>wmievents4769</value>
+					<value>${impala.data.security.events.4769.table.name}</value>
+				</entry>
+				<!--  4768 parameters -->
+				<entry>
+					<key>morphlineFile4768</key>
+					<value>file:resources/conf-files/processSecEvt4768.conf</value>
+				</entry>
+				<entry>
+					<key>outputFields4768</key>
+					<value>${impala.data.security.events.login.table.fields}</value>
+				</entry>
+				<entry>
+					<key>timestampField4768</key>
+					<value>${impala.data.security.events.login.table.field.timeGeneratedUnixTime}</value>
+				</entry>
+				<entry>
+					<key>outputSeparator4768</key>
+					<value>${impala.data.security.events.login.table.delimiter}</value>
+				</entry>
+				<entry>
+					<key>hadoopPath4768</key>
+					<value>${hdfs.user.data.security.events.login.path}</value>
+				</entry>
+				<entry>
+					<key>hadoopFilename4768</key>
+					<value>data4768.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableName4768</key>
+					<value>${impala.data.security.events.login.table.name}</value>
 				</entry>
 			</job-data-map>
 		</job>
