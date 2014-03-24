@@ -35,6 +35,16 @@ public class HadoopInit implements InitializingBean{
 	@Value("${hdfs.user.data.users.path}")
 	private String impalaUsersDirectory;
 	
+	// Security Events Login Data table
+	@Value("${impala.data.security.events.login.table.fields}")
+	private String impalaSecLoginTableFields;
+	@Value("${impala.data.security.events.login.table.delimiter}")
+	private String impalaSecLoginTableDelimiter;
+	@Value("${impala.data.security.events.login.table.name}")
+	private String impalaSecLoginTableName;
+	@Value("${hdfs.user.data.security.events.login.path}")
+	private String impalaSecLoginDirectory;
+	
 	//Security Events Data table
 	@Value("${impala.data.security.events.4769.table.fields}")
 	private String impalaSecDataTableFields;
@@ -174,6 +184,9 @@ public class HadoopInit implements InitializingBean{
 		
 		//Security Events Data table
 		createTable(impalaSecDataTableName, impalaSecDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSecDataTableDelimiter, impalaSecDataDirectory);
+		
+		//Security Events Login table
+		createTable(impalaSecLoginTableName, impalaSecLoginTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSecLoginTableDelimiter, impalaSecLoginDirectory);
 		
 		//Security Events Scoring table
 		createTable(impalaSecScoringTableName, impalaSecScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaSecScoringTableDelimiter, impalaSecScoringDirectory);
