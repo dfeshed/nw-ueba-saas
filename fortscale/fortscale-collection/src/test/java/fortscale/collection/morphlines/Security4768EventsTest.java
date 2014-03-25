@@ -47,7 +47,7 @@ public class Security4768EventsTest {
     		$ (
 	        "Successfull 4768 Event",
 	        "2014-03-21T23:24:58.000+02:00|03/21/2014 03:01:29 AM LogName=Security SourceName=Microsoft Windows security auditing. EventCode=4768 EventType=0 Type=Information ComputerName=Fs-DC-01.Fortscale.dom TaskCategory=Kerberos Authentication Service OpCode=Info RecordNumber=249225174 Keywords=Audit Success Message=A Kerberos authentication ticket (TGT) was requested.  Account Information: 	Account Name:		tomerl 	Supplied Realm Name:	FORTSCALE.DOM 	User ID:			FORTSCALE\tomerl  Service Information: 	Service Name:		krbtgt 	Service ID:		FORTSCALE\\krbtgt  Network Information: 	Client Address:		::ffff:192.168.100.157 	Client Port:		50129  Additional Information: 	Ticket Options:		0x40810010 	Result Code:		0x0 	Ticket Encryption Type:	0x12 	Pre-Authentication Type:	2  Certificate Information: 	Certificate Issuer Name:		 	Certificate Serial Number:	 	Certificate Thumbprint:		  Certificate information is only provided if a certificate was used for pre-authentication.  Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.",
-	    	"2014-03-21T23:24:58.000+02:00,2014-03-21 23:24:58,1395437098,tomerl,FORTSCALE.DOM,192.168.100.157,,SUCCESS,0x0,2,0x40810010,True,False,False,False,False,False"
+	    	"2014-03-21T23:24:58.000+02:00,2014-03-21 23:24:58,1395437098,tomerl,FORTSCALE.DOM,FORTSCALE\tomerl,192.168.100.157,,SUCCESS,0x0,2,0x40810010,True,False,False,False,False,False"
     		),
     		$ (
 	        "Event 4768 with no user name should return null",

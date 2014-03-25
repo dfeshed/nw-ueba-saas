@@ -2,9 +2,11 @@ package fortscale.collection.jobs;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
@@ -35,7 +37,8 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 
 	private static Logger logger = Logger.getLogger(SecurityEventsProcessJob.class);
 	
-	private Map<String, EventProcessHandlers> eventsMap;
+	private Map<String, EventTableHandlers> eventToTableHandlerMap;
+	private Map<String, MorphlinesItemsProcessor> eventToMorphlineMap;
 	
 	@Value("${impala.data.security.events.4769.table.morphline.fields.username}")
 	private String usernameField;
@@ -72,22 +75,34 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 		
 		// get the list of events to continue process config data
-		eventsMap = new HashMap<String, EventProcessHandlers>();
-		String[] eventsToProcessList = jobDataMapExtension.getJobDataMapStringValue(map, "eventsToProcess").split(",");
-		for (String eventToProcess : eventsToProcessList) {
-			EventProcessHandlers handler = new EventProcessHandlers();
-			handler.morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile" + eventToProcess);
-			handler.timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField" + eventToProcess);
+		eventToMorphlineMap = new HashMap<String, MorphlinesItemsProcessor>();
+		
+		
+		// get the list of events to continue process config data
+		eventToTableHandlerMap = new HashMap<String, EventTableHandlers>();
+		String[] impalaTablesList = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTables").split(",");
+		for (String impalaTable : impalaTablesList) {
+			EventTableHandlers handler = new EventTableHandlers();
+			
+			handler.timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField" + impalaTable);
 
-			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + eventToProcess);
-			String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + eventToProcess);
+			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + impalaTable);
+			String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + impalaTable);
 			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 			
-			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + eventToProcess);
-			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + eventToProcess);
-			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + eventToProcess);
+			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + impalaTable);
+			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
+			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + impalaTable);
 			
-			eventsMap.put(eventToProcess, handler);		
+			String[] eventsToProcessList = jobDataMapExtension.getJobDataMapStringValue(map, "eventsToProcess" + impalaTable).split(",");
+			for (String eventToProcess : eventsToProcessList) {
+				if(!eventToMorphlineMap.containsKey(eventToProcess)){
+					eventToMorphlineMap.put(eventToProcess, jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile" + eventToProcess));
+				}
+				eventToTableHandlerMap.put(eventToProcess, handler);
+			}
+			
+				
 		}
 	}
 
@@ -103,9 +118,10 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			String eventCode = eventCodeObj.toString();
 			
 			// get the event process handlers from the map
-			EventProcessHandlers handler = eventsMap.get(eventCode);
+			EventTableHandlers handler = eventToTableHandlerMap.get(eventCode);
+			MorphlinesItemsProcessor eventMorphlinesItemsProcessor = eventToMorphlineMap.get(eventCode);
 			if (handler!=null) {
-				Record processedRecord = handler.morphline.process(record);
+				Record processedRecord = eventMorphlinesItemsProcessor.process(record);
 				if (processedRecord!=null) {
 					addNormalizedUsernameField(processedRecord);
 					String output = handler.recordToStringProcessor.process(processedRecord);
@@ -131,7 +147,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	@Override protected void createOutputAppender() throws JobExecutionException {
 		// go over the events map and create an appender for each event
 		try {
-			for (EventProcessHandlers handler : eventsMap.values()) {
+			for (EventTableHandlers handler : eventToTableHandlerMap.values()) {
 				try {
 					// create partition strategy
 					logger.debug("opening hdfs file {} for append", handler.hadoopPath);
@@ -145,7 +161,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			}
 		} catch (JobExecutionException e) {
 			// close appenders that were opened if we throw exception
-			for (EventProcessHandlers handlers : eventsMap.values()) {
+			for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
 				try {
 					if (handlers.appender!=null)
 						handlers.appender.close();
@@ -162,7 +178,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		// throws exception than continue flushing the rest and throw
 		// the exception at the end
 		IOException exception = null;
-		for (EventProcessHandlers handlers : eventsMap.values()) {
+		for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
 			try {
 				if (handlers.appender!=null) 
 					handlers.appender.flush();
@@ -182,15 +198,26 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		// throws exception than continue closing the rest and throw
 		// the exception at the end
 		Exception exception = null;
-		for (EventProcessHandlers handlers : eventsMap.values()) {
+		for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
 			try {
 				if (handlers.appender!=null)
 					handlers.appender.close();
-				if (handlers.morphline!=null)
-					handlers.morphline.close();
 			} catch (Exception e) {
 				logger.error("error closing hdfs partitions writer at " + handlers.hadoopPath, e);
 				monitor.error(monitorId, "Process Files", String.format("error closing hdfs partitions writer at %s: \n %s",  handlers.hadoopPath, e.toString()));
+				exception = e;
+			}
+		}
+		
+		Iterator<Entry<String, MorphlinesItemsProcessor>> iters = eventToMorphlineMap.entrySet().iterator();
+		while (iters.hasNext()) {
+			Entry<String, MorphlinesItemsProcessor> iter = iters.next();
+			MorphlinesItemsProcessor processor = iter.getValue();
+			try {
+				processor.close();					
+			} catch (Exception e) {
+				logger.error(String.format("error closing morphline processor for event %s", iter.getKey()), e);
+				monitor.error(monitorId, "Process Files", String.format("error closing morphline processor for event %s. exception: %s", iter.getKey(), e.toString()));
 				exception = e;
 			}
 		}
@@ -204,7 +231,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		List<JobExecutionException> exceptions = new LinkedList<JobExecutionException>();
 		
 		// refresh all events tables
-		for (EventProcessHandlers handlers : eventsMap.values()) {
+		for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
 			// declare new partitions in impala
 			for (String partition : handlers.appender.getNewPartitions()) {
 				try {
@@ -231,8 +258,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	/**
 	 * Helper class to contain handlers for specific event type in the security event log
 	 */
-	class EventProcessHandlers {
-		public MorphlinesItemsProcessor morphline;
+	class EventTableHandlers {
 		public String hadoopPath;
 		public String hadoopFilename;
 		public String impalaTableName;

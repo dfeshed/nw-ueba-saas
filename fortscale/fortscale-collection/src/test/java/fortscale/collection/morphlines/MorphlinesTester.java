@@ -37,6 +37,10 @@ public class MorphlinesTester {
 		}
 	}
 	
+	public void init(String confFile,List<String> outputFields) {
+		init(new String[] { confFile }, outputFields);
+	}
+	
 	public void close() throws IOException {
 		for (MorphlinesItemsProcessor subject : subjects)
 			subject.close();

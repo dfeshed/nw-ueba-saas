@@ -21,10 +21,7 @@ public class HadoopInit implements InitializingBean{
 	
 	@Autowired
 	protected ImpalaClient impalaClient;
-	
-	@Value("${hdfs.user.data.security.events.4769.path},${hdfs.user.data.ssh.path},${hdfs.user.data.vpn.path},${hdfs.user.data.ldap.users.path},${hdfs.user.data.ldap.groups.path},${hdfs.user.data.ldap.computers.path},${hdfs.user.data.ldap.ous.path},${hdfs.user.data.users.path},${hdfs.user.processeddata.security.events.4769.path},${hdfs.user.processeddata.sshscores.path},${hdfs.user.processeddata.vpnscores.path}, ${hdfs.user.processeddata.totalscore.path}, ${hdfs.user.processeddata.group.membership.score.path}")
-	private String impalaDirectories;
-	
+		
 	//Users table
 	@Value("${impala.user.fields}")
 	private String impalaUserFields;
@@ -165,18 +162,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaGroupMembershipScoringTableName;
 	@Value("${hdfs.user.processeddata.group.membership.score.path}")
 	private String impalaGroupMembershipScoringDirectory;
-	
-	
-
-	public void createDirectories() throws IOException{
-		for(String dir: impalaDirectories.split(",")){
-			if(!hadoopFs.exists(new Path(dir))){
-				hadoopFs.mkdirs(new Path(dir));
-			}
-		}
-	}
-	
-	public void createImpalaTables(){
+		
+	public void createImpalaTables() throws IOException{
 		MonthlyPartitionStrategy monthlyPartitionStrategy = new MonthlyPartitionStrategy();
 		RuntimePartitionStrategy runtimePartitionStrategy = new RuntimePartitionStrategy();
 		//Users table
@@ -226,7 +213,10 @@ public class HadoopInit implements InitializingBean{
 		
 	}
 	
-	private void createTable(String tableName, String fields, String partition, String delimiter, String location){
+	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException{
+		if(!hadoopFs.exists(new Path(location))){
+			hadoopFs.mkdirs(new Path(location));
+		}
 		try{
 			impalaClient.createTable(tableName, fields, partition, delimiter, location);
 		} catch(Exception e){
@@ -243,9 +233,7 @@ public class HadoopInit implements InitializingBean{
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		createDirectories();
-		
+	public void afterPropertiesSet() throws Exception {	
 		createImpalaTables();
 	}
 }
