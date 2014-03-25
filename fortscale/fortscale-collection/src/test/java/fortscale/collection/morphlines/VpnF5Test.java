@@ -28,7 +28,7 @@ public class VpnF5Test {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
-		morphlineTester.init(confFile, vpnOutputFields);
+		morphlineTester.init(new String[] {confFile}, vpnOutputFields);
 	}
 
 	@After
@@ -66,6 +66,7 @@ public class VpnF5Test {
 	    			"2014-01-02 19:08:35,1388707715,chavier,75.26.245.200,172.10.10.10,SUCCESS,United States,,Morton Grove,,,"
 	    		)
     		),
+    		
     		$(
     	    	"Regular (BS) Failed VPN Authentication",
     	    	$(
@@ -77,6 +78,7 @@ public class VpnF5Test {
     	    		"2014-01-02 19:06:26,1388707586,bartra,69.141.27.100,172.10.11.12,FAIL,United States,,Jersey City,,,"
     	    	)
         	),
+        	
     		$(
 	    		"Only First Event of Regular (BS) Successful VPN Authentication",
 	    		$(
@@ -86,6 +88,7 @@ public class VpnF5Test {
     				(String)null
 	    		)
     		),
+    		
     		$(
 	    		"Only Second Event of Regular (BS) Successful VPN Authentication",
 	    		$(
@@ -93,6 +96,18 @@ public class VpnF5Test {
 				),
 	    		$(
     				(String)null
+	    		)
+    		),
+    		
+    		$(
+	    		"Regular (BS) Successful VPN Authentication From Last Year",
+	    		$(
+	    			"Dec  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc878f: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+	    			"Dec  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc878f: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
+				),
+	    		$(
+    				(String)null,
+	    			"2013-12-02 19:08:35,1386029315,chavier,75.26.245.200,172.10.10.10,SUCCESS,United States,,Morton Grove,,,"
 	    		)
     		)
 		);
