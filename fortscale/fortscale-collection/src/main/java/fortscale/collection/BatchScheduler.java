@@ -132,23 +132,28 @@ public class BatchScheduler {
 		// register job listener to close the scheduler after job completion
 		NotifyJobFinishListener.FinishSignal monitor = NotifyJobFinishListener.waitOnJob(scheduler, jobKey);
 
-		// build job data map if given
-		JobDataMap dataMap = new JobDataMap();
-		if (params!=null && params.length>0) {
-			for (String param : params) {
-				String[] entry = param.split("=");
-				dataMap.put(entry[0], entry[1]);
-			}
+		// check if job exists
+		if (scheduler.checkExists(jobKey)) {
+
+			// build job data map if given
+			JobDataMap dataMap = new JobDataMap();
+			if (params!=null && params.length>0) {
+				for (String param : params) {
+					String[] entry = param.split("=");
+					dataMap.put(entry[0], entry[1]);
+				}
+			}	
+
+			if (!dataMap.isEmpty())
+				scheduler.triggerJob(jobKey, dataMap);
+			else
+				scheduler.triggerJob(jobKey);
+			
+			// wait for job completion
+			monitor.doWait();		
+		} else {
+			System.out.println(String.format("job %s %s does not exist", jobName, group));
 		}
-		
-		if (!dataMap.isEmpty())
-			scheduler.triggerJob(jobKey, dataMap);
-		else
-			scheduler.triggerJob(jobKey);
-		
-		
-		// wait for job completion
-		monitor.doWait();		
 	}
 	
 	public void shutdown() throws SchedulerException {
