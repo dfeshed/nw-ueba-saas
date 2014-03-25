@@ -26,7 +26,7 @@ public class VpnOpenVpnTest {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
-		morphlineTester.init(confFile, vpnOutputFields);
+		morphlineTester.init(new String[] { confFile }, vpnOutputFields);
 	}
 	
 	@After

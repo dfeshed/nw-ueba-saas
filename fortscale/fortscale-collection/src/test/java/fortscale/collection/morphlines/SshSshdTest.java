@@ -27,7 +27,7 @@ public class SshSshdTest {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.ssh.table.morphline.fields");
 		List<String> sshOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
-		morphlineTester.init(confFile, sshOutputFields);
+		morphlineTester.init(new String[] { confFile }, sshOutputFields);
 	}
 
 	@After

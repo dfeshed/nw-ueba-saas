@@ -1,5 +1,8 @@
 package fortscale.collection;
 
+import java.util.Arrays;
+
+import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -27,14 +30,14 @@ public class BatchScheduler {
 			} else if (args[0].equals("pause")) {
 				// do nothing
 			} else if (args[0].equals("cycle")) {
-				batch.runFullCycle();
+				batch.runFullCycle(Arrays.copyOfRange(args, 1, args.length));
 				batch.shutdown();
-			} else if (args.length==2) {
+			} else if (args.length>=2) {
 				// run the given job only
 				String jobName = args[0];
 				String group = args[1];
 				
-				batch.startSchedulerWithOneJob(jobName, group);
+				batch.startSchedulerWithOneJob(jobName, group, Arrays.copyOfRange(args, 2, args.length));
 				batch.shutdown();
 			} else {
 				System.out.println("Usage:");
@@ -80,10 +83,10 @@ public class BatchScheduler {
 		scheduler.start();
 	}
 	
-	public void startSchedulerWithOneJob(String jobName, String group) throws Exception {
+	public void startSchedulerWithOneJob(String jobName, String group, String... params) throws Exception {
 		startSchedulerAndPauseAllJobs();
 
-		startJob(jobName, group);
+		startJob(jobName, group, params);
 	}
 	
 	private void startSchedulerAndPauseAllJobs() throws Exception{
@@ -94,46 +97,63 @@ public class BatchScheduler {
 		scheduler.pauseAll();
 	}
 	
-	public void runFullCycle() throws Exception{
+	public void runFullCycle(String... params) throws Exception{
 		startSchedulerAndPauseAllJobs();
 		
-		startJob("Computer_Fetch", "AD");
-		startJob("Computer_ETL", "AD");
-		startJob("OU_Fetch", "AD");
-		startJob("OU_ETL", "AD");
-		startJob("Group_Fetch", "AD");
-		startJob("Group_ETL", "AD");
-		startJob("User_Fetch", "AD");
-		startJob("User_ETL", "AD");
-		startJob("User_Thumbnail_ETL", "AD");
-		startJob("Group_Membership_Scoring", "AD");
-		startJob("Fetch", "DHCP");
-		startJob("ETL", "DHCP");
-		startJob("Fetch", "SecurityEvents");
-		startJob("ETL", "SecurityEvents");
-		startJob("Scoring", "SecurityEvents");
-		startJob("Fetch", "VPN");
-		startJob("ETL", "VPN");
-		startJob("Scoring", "VPN");
-		startJob("Fetch", "SSH");
-		startJob("ETL", "SSH");
-		startJob("Scoring", "SSH");
-		startJob("Scoring", "TOTAL");
-		startJob("Export", "USER");
+		startJob("Computer_Fetch", "AD", params);
+		startJob("Computer_ETL", "AD", params);
+		startJob("OU_Fetch", "AD", params);
+		startJob("OU_ETL", "AD", params);
+		startJob("Group_Fetch", "AD", params);
+		startJob("Group_ETL", "AD", params);
+		startJob("User_Fetch", "AD", params);
+		startJob("User_ETL", "AD", params);
+		startJob("User_Thumbnail_ETL", "AD", params);
+		startJob("Group_Membership_Scoring", "AD", params);
+		startJob("Fetch", "DHCP", params);
+		startJob("ETL", "DHCP", params);
+		startJob("Fetch", "SecurityEvents", params);
+		startJob("ETL", "SecurityEvents", params);
+		startJob("Scoring", "SecurityEvents", params);
+		startJob("Fetch", "VPN", params);
+		startJob("ETL", "VPN", params);
+		startJob("Scoring", "VPN", params);
+		startJob("Fetch", "SSH", params);
+		startJob("ETL", "SSH", params);
+		startJob("Scoring", "SSH", params);
+		startJob("Scoring", "TOTAL", params);
+		startJob("Export", "USER", params);
 	}
 	
-	private void startJob(String jobName, String group) throws Exception {
+	private void startJob(String jobName, String group, String... params) throws Exception {
 		
 		JobKey jobKey = new JobKey(jobName, group);
 		
 		// register job listener to close the scheduler after job completion
 		NotifyJobFinishListener.FinishSignal monitor = NotifyJobFinishListener.waitOnJob(scheduler, jobKey);
 
-		scheduler.triggerJob(jobKey);
-		
-		
-		// wait for job completion
-		monitor.doWait();		
+		// check if job exists
+		if (scheduler.checkExists(jobKey)) {
+
+			// build job data map if given
+			JobDataMap dataMap = new JobDataMap();
+			if (params!=null && params.length>0) {
+				for (String param : params) {
+					String[] entry = param.split("=");
+					dataMap.put(entry[0], entry[1]);
+				}
+			}	
+
+			if (!dataMap.isEmpty())
+				scheduler.triggerJob(jobKey, dataMap);
+			else
+				scheduler.triggerJob(jobKey);
+			
+			// wait for job completion
+			monitor.doWait();		
+		} else {
+			System.out.println(String.format("job %s %s does not exist", jobName, group));
+		}
 	}
 	
 	public void shutdown() throws SchedulerException {

@@ -28,8 +28,7 @@ public class VpnJuniperTest {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
-		morphlineTester.init(confFile, vpnOutputFields);
-		System.out.println(vpnOutputFields);
+		morphlineTester.init(new String[] { confFile }, vpnOutputFields);
 	}
 
 	@After
@@ -82,7 +81,7 @@ public class VpnJuniperTest {
 				),
 	    		$(
     				(String)null,
-	    			"2014-03-16 04:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,Israel,,Baraq,,,ORI-PC"
+    				"2014-03-16 04:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,Israel,,Baraq,,,ORI-PC"
 	    		)
     		),
     		$(
