@@ -18,7 +18,6 @@ import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 
 @RunWith(JUnitParamsRunner.class)
-@Ignore
 public class VpnJuniperTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
