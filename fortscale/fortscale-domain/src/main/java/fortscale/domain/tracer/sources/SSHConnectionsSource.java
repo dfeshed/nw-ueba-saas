@@ -43,9 +43,9 @@ public class SSHConnectionsSource extends ConnectionsSource {
 		
 		// add criteria for machine to pivot on
 		if (isSource)
-			query.andWhere(statement(String.format("(%s='%s' OR %s='%s')", schema.SOURCE_IP, source, schema.HOSTNAME, source)));
+			query.andWhere(statement(String.format("(%s='%s' OR lower(%s)=lower('%s'))", schema.SOURCE_IP, source, schema.HOSTNAME, source)));
 		else
-			query.andWhere(equalsTo(schema.TARGET_MACHINE, source, true));
+			query.andWhere(equalsTo(lower(schema.TARGET_MACHINE), source.toLowerCase(), true));
 		
 		// add criteria for start
 		if (filter.getStart()!=0L) {

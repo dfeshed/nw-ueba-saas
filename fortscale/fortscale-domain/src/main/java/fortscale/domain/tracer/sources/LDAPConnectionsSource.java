@@ -47,9 +47,9 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		
 		// add criteria for machine to pivot on
 		if (isSource)
-			query.andWhere(statement(String.format("(%s='%s' OR %s='%s')", schema.CLIENT_ADDRESS, source, schema.MACHINE_NAME, source)));
+			query.andWhere(statement(String.format("(%s='%s' OR lower(%s)=lower('%s'))", schema.CLIENT_ADDRESS, source, schema.MACHINE_NAME, source)));
 		else
-			query.andWhere(equalsTo(schema.SERVICE_NAME, source, true));
+			query.andWhere(equalsTo(lower(schema.SERVICE_NAME), source.toLowerCase(), true));
 		
 		// add criteria for start
 		if (filter.getStart()!=0L) {
@@ -87,8 +87,8 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		query.andWhere(neq(lower(schema.MACHINE_NAME), "lower(service_name)"));
 		
 		// filter out domain controllers destinations
-		String dcFilter = serversListConfiguration.getLoginServiceRegex();
-		query.andWhere(statement(String.format("not (lower(service_name) regexp lower('%s'))", dcFilter)));
+		String dcFilter = serversListConfiguration.getLoginServiceRegex().toLowerCase();
+		query.andWhere(statement(String.format("not (lower(service_name) regexp '%s')", dcFilter)));
 		
 		return query.toSQL();
 	}
