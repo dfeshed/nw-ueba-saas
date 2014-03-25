@@ -120,13 +120,13 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		};
 	}
 
-	protected String buildLookupQuery(String name, int start, int count) {
+	protected String buildLookupQuery(String name, int count) {
 		
 		return String.format("select name from (select distinct lower(%s) name from %s "
 				+ "where lower(%s) like '%s' "
 				+ "union select distinct lower(%s) name from %s "
-				+ "where lower(%s) like '%s') nested order by name asc limit %s offset %s", 
+				+ "where lower(%s) like '%s') nested order by name asc limit %s", 
 				schema.SERVICE_NAME, schema.getTableName(),schema.SERVICE_NAME, name.toLowerCase(), 
-				schema.MACHINE_NAME, schema.getTableName(), schema.MACHINE_NAME, name.toLowerCase(), count, start);
+				schema.MACHINE_NAME, schema.getTableName(), schema.MACHINE_NAME, name.toLowerCase(), count);
 	}
 }

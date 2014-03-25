@@ -30,12 +30,12 @@ public abstract class ConnectionsSource {
 		return impalaJdbcTemplate.query(query, getExpandQueryRowMapper());
 	}
 
-	public List<String> lookupMachines(String name, int start, int count) {
+	public List<String> lookupMachines(String name, int count) {
 		// add wildcard to name if not exist
 		name = (name.contains("%"))? name : name + "%";
 		
 		// create sql query statement
-		String query = buildLookupQuery(name, start, count);
+		String query = buildLookupQuery(name, count);
 		logger.debug("executing tracer name lookup query: " + query);		
 		
 		// execute the query
@@ -47,7 +47,7 @@ public abstract class ConnectionsSource {
 	
 	protected abstract String buildExpandQuery(String source, boolean isSource, FilterSettings filter);
 	protected abstract RowMapper<Connection> getExpandQueryRowMapper();
-	protected abstract String buildLookupQuery(String name, int start, int count);
+	protected abstract String buildLookupQuery(String name, int count);
 
 	protected RowMapper<String> getLookupQueryRowMapper() {
 		return new RowMapper<String>() {

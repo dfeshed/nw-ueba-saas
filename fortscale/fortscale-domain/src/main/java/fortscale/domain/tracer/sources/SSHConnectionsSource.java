@@ -106,14 +106,14 @@ public class SSHConnectionsSource extends ConnectionsSource {
 		};
 	}
 	
-	protected String buildLookupQuery(String name, int start, int count) {
+	protected String buildLookupQuery(String name, int count) {
 		
 		return String.format("select name from (select distinct lower(%s) name from %s "
 				+ "where lower(%s) like '%s' "
 				+ "union select distinct lower(%s) name from %s "
-				+ "where lower(%s) like '%s') nested order by name asc limit %s offset %s", 
+				+ "where lower(%s) like '%s') nested order by name asc limit %s", 
 				schema.TARGET_MACHINE, schema.getTableName(),schema.TARGET_MACHINE, name.toLowerCase(), 
-				schema.HOSTNAME, schema.getTableName(), schema.HOSTNAME, name.toLowerCase(), count, start);
+				schema.HOSTNAME, schema.getTableName(), schema.HOSTNAME, name.toLowerCase(), count);
 	}
 	
 }

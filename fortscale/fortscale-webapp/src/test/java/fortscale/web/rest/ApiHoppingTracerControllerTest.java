@@ -45,7 +45,7 @@ public class ApiHoppingTracerControllerTest {
 		
 		List<String> machines = new ArrayList<String>(1);
 		machines.add("myhost");
-		when(hoppingTracerService.lookupMachines(anyString(), anyInt(), anyInt())).thenReturn(machines);
+		when(hoppingTracerService.lookupMachines(anyString(), anyInt())).thenReturn(machines);
 		
 		this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 	}
@@ -139,7 +139,7 @@ public class ApiHoppingTracerControllerTest {
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 	
 		// verify parameters passed to tracer service
-		verify(hoppingTracerService).lookupMachines("myhost", 0, 10);
+		verify(hoppingTracerService).lookupMachines("myhost", 10);
 	}
 	
 	@Test
@@ -150,7 +150,7 @@ public class ApiHoppingTracerControllerTest {
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 	
 		// verify parameters passed to tracer service
-		verify(hoppingTracerService).lookupMachines("myhost", 0, 20);
+		verify(hoppingTracerService).lookupMachines("myhost",20);
 	}
 	
 	

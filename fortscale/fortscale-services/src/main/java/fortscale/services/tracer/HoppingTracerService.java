@@ -69,14 +69,14 @@ public class HoppingTracerService implements InitializingBean {
 		return connections;
 	}
 	
-	public List<String> lookupMachines(String name, int start, int count) {
+	public List<String> lookupMachines(String name, int count) {
 		
 		// get the first matching names from each source, then sort them 
 		// and return the first count from the merged collection
 		SortedSet<String> names = new TreeSet<String>();
 		for (ConnectionsSource source : sources) {
 			try {
-				List<String> sourceNames = source.lookupMachines(name, start, count);
+				List<String> sourceNames = source.lookupMachines(name, count);
 				names.addAll(sourceNames);
 			} catch (Exception e) {
 				logger.error("error looking up machine names from source: " + source.getSourceName(), e);

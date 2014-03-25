@@ -74,10 +74,9 @@ public class ApiHoppingTracerController extends BaseController {
 	@LogException
 	public ResponseEntity<DataBean<List<String>>> lookupMachine(
 			@RequestParam(value="machine", required=true) String name,
-			@RequestParam(value="count", defaultValue="10") int count,
-			@RequestParam(value="start", defaultValue="0") int start) {
+			@RequestParam(value="count", defaultValue="10") int count) {
 		
-		List<String> names = hoppingTracerService.lookupMachines(name, start, count);
+		List<String> names = hoppingTracerService.lookupMachines(name, count);
 		
 		DataBean<List<String>> ret = new DataBean<List<String>>();
 		ret.setData(names);
