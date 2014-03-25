@@ -43,7 +43,7 @@ public class VPNConnectionsSource extends ConnectionsSource {
 		
 		// add criteria for machine to pivot on
 		if (isSource)
-			query.andWhere(statement(String.format("(%s='%s' OR %s='%s')", schema.SOURCE_IP, source, schema.HOSTNAME, source)));
+			query.andWhere(statement(String.format("(%s='%s' OR lower(%s)=lower('%s'))", schema.SOURCE_IP, source, schema.HOSTNAME, source)));
 		else
 			query.andWhere(equalsTo(schema.LOCAL_IP, source, true));
 		
@@ -71,9 +71,9 @@ public class VPNConnectionsSource extends ConnectionsSource {
 		// add criteria for machines
 		if (!filter.getMachines().isEmpty()) {
 			if (filter.getMachinesListMode()==ListMode.Include) {
-				query.andWhere(in(lower(schema.USERNAME), filter.getMachines()));
+				query.andWhere(in(lower(schema.HOSTNAME), filter.getMachines()));
 			} else {
-				query.andWhere(notIn(lower(schema.USERNAME), filter.getMachines()));
+				query.andWhere(notIn(lower(schema.HOSTNAME), filter.getMachines()));
 			}
 		}
 		
