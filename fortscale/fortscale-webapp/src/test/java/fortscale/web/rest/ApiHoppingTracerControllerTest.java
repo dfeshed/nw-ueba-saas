@@ -5,8 +5,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
@@ -40,6 +42,10 @@ public class ApiHoppingTracerControllerTest {
 		MockitoAnnotations.initMocks(this);
 		when(hoppingTracerService.expandConnections(anyString(), anyBoolean(), any(FilterSettings.class)))
 		.thenReturn(new LinkedList<Connection>());
+		
+		List<String> machines = new ArrayList<String>(1);
+		machines.add("myhost");
+		when(hoppingTracerService.lookupMachines(anyString(), anyInt(), anyInt())).thenReturn(machines);
 		
 		this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 	}
@@ -117,6 +123,34 @@ public class ApiHoppingTracerControllerTest {
 		assertEquals(90.0d,filter.getScoreRange().getMinScore(), DELTA);
 		assertEquals(1394521686L,filter.getStart());
 		assertEquals(1394521686L,filter.getEnd());
+	}
+	
+	@Test
+	public void lookup_should_fail_when_machine_name_empty() throws Exception {
+		// perform rest call to controller
+		mockMvc.perform(get("/api/tracer//lookup")).andExpect(status().is(404));
+	}
+	
+	@Test
+	public void lookup_should_pass_machine_name_to_tracer_service() throws Exception {
+		// perform rest call to controller
+		mockMvc.perform(get("/api/tracer/myhost/lookup"))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"));
+	
+		// verify parameters passed to tracer service
+		verify(hoppingTracerService).lookupMachines("myhost", 0, 10);
+	}
+	
+	@Test
+	public void lookup_should_pass_count_to_tracer_service() throws Exception {
+		// perform rest call to controller
+		mockMvc.perform(get("/api/tracer/myhost/lookup").param("count", "20"))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"));
+	
+		// verify parameters passed to tracer service
+		verify(hoppingTracerService).lookupMachines("myhost", 0, 20);
 	}
 	
 	

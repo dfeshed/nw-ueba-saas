@@ -11,6 +11,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import fortscale.domain.schema.VpnEvents;
@@ -34,7 +35,7 @@ public class VPNConnectionsSource extends ConnectionsSource {
 	}
 	
 	@Override
-	protected String buildQuery(String source, boolean isSource, FilterSettings filter) {
+	protected String buildExpandQuery(String source, boolean isSource, FilterSettings filter) {
 		
 		ImpalaQuery query = new ImpalaQuery();
 		query.select(schema.DATE_TIME_UNIX, schema.USERNAME, schema.SOURCE_IP, schema.LOCAL_IP, schema.STATUS, 
@@ -80,25 +81,37 @@ public class VPNConnectionsSource extends ConnectionsSource {
 		return query.toSQL();
 	}
 	
-	@Override
-	public Connection mapRow(ResultSet rs, int rowNum) throws SQLException {
-		Connection connection = new Connection();
-
-		// try and get the hostname, if it does not exist use the ip address instead 
-		String hostname = rs.getString(schema.HOSTNAME.toLowerCase());
-		if (hostname==null || hostname.isEmpty())
-			connection.setSource(rs.getString(schema.SOURCE_IP.toLowerCase()));
-		else
-			connection.setSource(hostname);
+	protected RowMapper<Connection> getExpandQueryRowMapper() {
+		return new RowMapper<Connection>() {
+			@Override
+			public Connection mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Connection connection = new Connection();
 		
-		connection.setDestination(rs.getString(schema.LOCAL_IP.toLowerCase()));
-		connection.setUserAccount(rs.getString(schema.USERNAME.toLowerCase()).toLowerCase());
-		connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX.toLowerCase()))));
-		connection.setSourceType("vpn");
-		// assume 10 hours session
-		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX.toLowerCase())) + (1000*60*60*sessionLength)));
+				// try and get the hostname, if it does not exist use the ip address instead 
+				String hostname = rs.getString(schema.HOSTNAME.toLowerCase());
+				if (hostname==null || hostname.isEmpty())
+					connection.setSource(rs.getString(schema.SOURCE_IP.toLowerCase()));
+				else
+					connection.setSource(hostname);
+				
+				connection.setDestination(rs.getString(schema.LOCAL_IP.toLowerCase()));
+				connection.setUserAccount(rs.getString(schema.USERNAME.toLowerCase()).toLowerCase());
+				connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX.toLowerCase()))));
+				connection.setSourceType("vpn");
+				// assume 10 hours session
+				connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.DATE_TIME_UNIX.toLowerCase())) + (1000*60*60*sessionLength)));
+				
+				return connection;
+			}
+		};
+	}
+	
+	protected String buildLookupQuery(String name, int start, int count) {
 		
-		return connection;
+		return String.format("sekect distinct lower(%s) name from %s "
+				+ "where lower(%s) like '%s' order by %s asc limit %s offset %s", 
+				schema.HOSTNAME, schema.getTableName(), schema.HOSTNAME, name.toLowerCase(),
+				schema.HOSTNAME, count, start);
 	}
 	
 }

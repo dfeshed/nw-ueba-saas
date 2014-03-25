@@ -1,7 +1,11 @@
 package fortscale.services.tracer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +69,31 @@ public class HoppingTracerService implements InitializingBean {
 		return connections;
 	}
 	
+	public List<String> lookupMachines(String name, int start, int count) {
+		
+		// get the first matching names from each source, then sort them 
+		// and return the first count from the merged collection
+		SortedSet<String> names = new TreeSet<String>();
+		for (ConnectionsSource source : sources) {
+			try {
+				List<String> sourceNames = source.lookupMachines(name, start, count);
+				names.addAll(sourceNames);
+			} catch (Exception e) {
+				logger.error("error looking up machine names from source: " + source.getSourceName(), e);
+			}
+		}
+		
+		// get the top count names from the sorted set
+		List<String> topNames = new ArrayList<String>(count);
+		Iterator<String> iterator = names.iterator();
+		int taken = 0;
+		while (iterator.hasNext() && taken<count) {
+			topNames.add(iterator.next());
+			taken++;
+		}
+		
+		return topNames;
+	}
 	
 	private boolean shouldIncludeSource(FilterSettings filter, String source) {
 		if (filter.getSources().isEmpty())

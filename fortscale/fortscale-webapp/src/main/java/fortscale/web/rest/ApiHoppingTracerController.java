@@ -69,4 +69,22 @@ public class ApiHoppingTracerController extends BaseController {
 		return new ResponseEntity<DataBean<List<Connection>>>(ret, HttpStatus.OK);
 	}
 	
+	@RequestMapping("/{name:.+}/lookup")
+	@ResponseBody
+	@LogException
+	public ResponseEntity<DataBean<List<String>>> lookupMachine(
+			@PathVariable(value="name") String name,
+			@RequestParam(value="count", defaultValue="10") int count,
+			@RequestParam(value="start", defaultValue="0") int start
+			) {
+		
+		List<String> names = hoppingTracerService.lookupMachines(name, start, count);
+		
+		DataBean<List<String>> ret = new DataBean<List<String>>();
+		ret.setData(names);
+		ret.setTotal(names.size());
+		
+		return new ResponseEntity<DataBean<List<String>>>(ret, HttpStatus.OK);
+	}
+	
 }
