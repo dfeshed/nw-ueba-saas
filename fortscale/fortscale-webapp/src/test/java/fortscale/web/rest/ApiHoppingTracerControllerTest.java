@@ -54,7 +54,7 @@ public class ApiHoppingTracerControllerTest {
 	public void expand_should_pass_defualt_values_to_repository_when_called_with_no_params() throws Exception {
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/tracer/xxx/expand").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/tracer/expand/xxx").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 
 		// verify default parameters were passed to repository
@@ -77,7 +77,7 @@ public class ApiHoppingTracerControllerTest {
 	@Test
 	public void expand_should_fail_when_start_is_after_finish() throws Exception {
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/tracer/xxx/expand")
+		mockMvc.perform(get("/api/tracer/expand/xxx")
 				.param("start", "5000")
 				.param("end", "300")
 				.accept(MediaType.APPLICATION_JSON))
@@ -88,7 +88,7 @@ public class ApiHoppingTracerControllerTest {
 	@Test
 	public void expand_should_pass_all_parameters_values_to_repostiroy() throws Exception {
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/tracer/xxx/expand")
+		mockMvc.perform(get("/api/tracer/expand/xxx")
 				.param("treatAsSource", "false")
 				.param("start", "1394521686")
 				.param("end", "1394521686")
@@ -128,13 +128,13 @@ public class ApiHoppingTracerControllerTest {
 	@Test
 	public void lookup_should_fail_when_machine_name_empty() throws Exception {
 		// perform rest call to controller
-		mockMvc.perform(get("/api/tracer//lookup")).andExpect(status().is(404));
+		mockMvc.perform(get("/api/tracer/lookup")).andExpect(status().isBadRequest());
 	}
 	
 	@Test
 	public void lookup_should_pass_machine_name_to_tracer_service() throws Exception {
 		// perform rest call to controller
-		mockMvc.perform(get("/api/tracer/myhost/lookup"))
+		mockMvc.perform(get("/api/tracer/lookup?machine=myhost"))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 	
@@ -145,7 +145,7 @@ public class ApiHoppingTracerControllerTest {
 	@Test
 	public void lookup_should_pass_count_to_tracer_service() throws Exception {
 		// perform rest call to controller
-		mockMvc.perform(get("/api/tracer/myhost/lookup").param("count", "20"))
+		mockMvc.perform(get("/api/tracer/lookup?machine=myhost").param("count", "20"))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 	

@@ -27,7 +27,7 @@ public class ApiHoppingTracerController extends BaseController {
 	@Autowired
 	private HoppingTracerService hoppingTracerService;
 	
-	@RequestMapping("/{machine:.+}/expand")
+	@RequestMapping("/expand/{machine:.+}")
 	@ResponseBody
 	@LogException
 	public ResponseEntity<DataBean<List<Connection>>> expandConnections(
@@ -69,14 +69,13 @@ public class ApiHoppingTracerController extends BaseController {
 		return new ResponseEntity<DataBean<List<Connection>>>(ret, HttpStatus.OK);
 	}
 	
-	@RequestMapping("/{name:.+}/lookup")
+	@RequestMapping("/lookup")
 	@ResponseBody
 	@LogException
 	public ResponseEntity<DataBean<List<String>>> lookupMachine(
-			@PathVariable(value="name") String name,
+			@RequestParam(value="machine", required=true) String name,
 			@RequestParam(value="count", defaultValue="10") int count,
-			@RequestParam(value="start", defaultValue="0") int start
-			) {
+			@RequestParam(value="start", defaultValue="0") int start) {
 		
 		List<String> names = hoppingTracerService.lookupMachines(name, start, count);
 		
