@@ -29,6 +29,7 @@ public class UsernameNormalizer implements InitializingBean{
 			for(String normalizedUsername: regexMatcher.match(username)){
 				if(usernameService.isUsernameExist(normalizedUsername, true)){
 					ret = normalizedUsername;
+					break;
 				}
 			}
 		}

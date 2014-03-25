@@ -24,66 +24,84 @@
 					<key>morphlineFile</key>
 					<value>file:resources/conf-files/readSecEvt_splunk.conf</value>
 				</entry>
-				<entry>
-					<key>eventsToProcess</key>
-					<value>4769,4768</value>
-				</entry>
-				<!--  4769 parameters  -->
+								
+				<!--  4769 morphline  -->
 				<entry>
 					<key>morphlineFile4769</key>
 					<value>file:resources/conf-files/processSecEvt4769.conf</value>
 				</entry>
-				<entry>
-					<key>outputFields4769</key>
-					<value>${impala.data.security.events.4769.table.fields}</value>
-				</entry>
-				<entry>
-					<key>timestampField4769</key>
-					<value>${impala.data.security.events.4769.table.field.timeGeneratedUnixTime}</value>
-				</entry>
-				<entry>
-					<key>outputSeparator4769</key>
-					<value>${impala.data.security.events.4769.table.delimiter}</value>
-				</entry>
-				<entry>
-					<key>hadoopPath4769</key>
-					<value>${hdfs.user.data.security.events.4769.path}</value>
-				</entry>
-				<entry>
-					<key>hadoopFilename4769</key>
-					<value>data4769.csv</value>
-				</entry>
-				<entry>
-					<key>impalaTableName4769</key>
-					<value>${impala.data.security.events.4769.table.name}</value>
-				</entry>
-				<!--  4768 parameters -->
+				<!--  4768 morphline -->
 				<entry>
 					<key>morphlineFile4768</key>
 					<value>file:resources/conf-files/processSecEvt4768.conf</value>
 				</entry>
+				<!--  4771 morphline -->
 				<entry>
-					<key>outputFields4768</key>
+					<key>morphlineFile4771</key>
+					<value>file:resources/conf-files/processSecEvt4771.conf</value>
+				</entry>
+				
+				<entry>
+					<key>impalaTables</key>
+					<value>LoginEvt,SecEvt4769</value>
+				</entry>
+				<!--  secEvt4769 table parameters  -->
+				<entry>
+					<key>eventsToProcessSecEvt4769</key>
+					<value>4769</value>
+				</entry>				
+				<entry>
+					<key>outputFieldsSecEvt4769</key>
+					<value>${impala.data.security.events.4769.table.fields}</value>
+				</entry>
+				<entry>
+					<key>timestampFieldSecEvt4769</key>
+					<value>${impala.data.security.events.4769.table.field.timeGeneratedUnixTime}</value>
+				</entry>
+				<entry>
+					<key>outputSeparatorSecEvt4769</key>
+					<value>${impala.data.security.events.4769.table.delimiter}</value>
+				</entry>
+				<entry>
+					<key>hadoopPathSecEvt4769</key>
+					<value>${hdfs.user.data.security.events.4769.path}</value>
+				</entry>
+				<entry>
+					<key>hadoopFilenameSecEvt4769</key>
+					<value>data4769.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableNameSecEvt4769</key>
+					<value>${impala.data.security.events.4769.table.name}</value>
+				</entry>
+				
+				<!--  Login table parameters -->
+				<entry>
+					<key>eventsToProcessLoginEvt</key>
+					<value>4768,4771</value>
+				</entry>
+				<entry>
+					<key>outputFieldsLoginEvt</key>
 					<value>${impala.data.security.events.login.table.fields}</value>
 				</entry>
 				<entry>
-					<key>timestampField4768</key>
+					<key>timestampFieldLoginEvt</key>
 					<value>${impala.data.security.events.login.table.field.timeGeneratedUnixTime}</value>
 				</entry>
 				<entry>
-					<key>outputSeparator4768</key>
+					<key>outputSeparatorLoginEvt</key>
 					<value>${impala.data.security.events.login.table.delimiter}</value>
 				</entry>
 				<entry>
-					<key>hadoopPath4768</key>
+					<key>hadoopPathLoginEvt</key>
 					<value>${hdfs.user.data.security.events.login.path}</value>
 				</entry>
 				<entry>
-					<key>hadoopFilename4768</key>
-					<value>data4768.csv</value>
+					<key>hadoopFilenameLoginEvt</key>
+					<value>datalogindata.csv</value>
 				</entry>
 				<entry>
-					<key>impalaTableName4768</key>
+					<key>impalaTableNameLoginEvt</key>
 					<value>${impala.data.security.events.login.table.name}</value>
 				</entry>
 			</job-data-map>
