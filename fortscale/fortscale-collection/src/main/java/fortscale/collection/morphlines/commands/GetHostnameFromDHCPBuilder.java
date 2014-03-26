@@ -47,6 +47,7 @@ public class GetHostnameFromDHCPBuilder implements CommandBuilder {
 		private final String mongoCollection;
 		private int leaseTimeInMins = 0;
 		private int graceTimeInMins = 0;
+		private boolean shortName = true;
 
 		private static MongoClient mongoClient = null;
 		private static DBCollection dbCollection = null;
@@ -63,6 +64,7 @@ public class GetHostnameFromDHCPBuilder implements CommandBuilder {
 			this.mongoDB = getConfigs().getString(config, "db");
 			this.mongoCollection = getConfigs().getString(config, "collection");
 			this.leaseTimeInMins = getConfigs().getInt(config, "leaseTimeInMins");
+			this.shortName = getConfigs().getBoolean(config, "shortName", true);
 			if (getConfig().hasPath("graceTimeInMins")) {
 				this.graceTimeInMins = getConfigs().getInt(config, "graceTimeInMins");
 			}
@@ -151,7 +153,11 @@ public class GetHostnameFromDHCPBuilder implements CommandBuilder {
 							// Get the hostname, cache it and return it
 							String mongoHostname = String.valueOf(doc.get("hostname"));
 							if (mongoHostname != null && !mongoHostname.isEmpty()) {
-								return mongoHostname;
+								if (shortName && mongoHostname.contains(".")) {
+									return mongoHostname.substring(0, mongoHostname.indexOf("."));
+								} else {
+									return mongoHostname;
+								}
 							}
 						}
 					}

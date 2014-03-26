@@ -11,6 +11,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import fortscale.domain.schema.LDAPEvents;
@@ -38,7 +39,7 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 	}
 	
 	@Override
-	protected String buildQuery(String source, boolean isSource, FilterSettings filter) {
+	protected String buildExpandQuery(String source, boolean isSource, FilterSettings filter) {
 		
 		ImpalaQuery query = new ImpalaQuery();	
 		query.select(schema.TIMEGENERATEDUNIXTIME, schema.ACCOUNT_NAME, schema.CLIENT_ADDRESS, schema.MACHINE_NAME, 
@@ -93,25 +94,39 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		return query.toSQL();
 	}
 	
-	@Override
-	public Connection mapRow(ResultSet rs, int rowNum) throws SQLException {
-		Connection connection = new Connection();
-	
-		// try and get the hostname, if it does not exist use the ip address instead 
-		String hostname = rs.getString(schema.MACHINE_NAME.toLowerCase());
-		if (hostname==null || hostname.isEmpty())
-			connection.setSource(rs.getString(schema.CLIENT_ADDRESS.toLowerCase()));
-		else
-			connection.setSource(hostname);
+	protected RowMapper<Connection> getExpandQueryRowMapper() {
+		return new RowMapper<Connection>() {
+			@Override
+			public Connection mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Connection connection = new Connection();
+			
+				// try and get the hostname, if it does not exist use the ip address instead 
+				String hostname = rs.getString(schema.MACHINE_NAME.toLowerCase());
+				if (hostname==null || hostname.isEmpty())
+					connection.setSource(rs.getString(schema.CLIENT_ADDRESS.toLowerCase()));
+				else
+					connection.setSource(hostname);
+				
+				connection.setDestination(rs.getString(schema.SERVICE_NAME.toLowerCase()));
+				connection.setUserAccount(rs.getString(schema.ACCOUNT_NAME.toLowerCase()).toLowerCase());
+				
+				connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME.toLowerCase()))));
+				connection.setSourceType("ldap");
+				// assume 10 hours session
+				connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME.toLowerCase())) + (1000*60*60*sessionLength)));
+				
+				return connection;
+			}
+		};
+	}
+
+	protected String buildLookupQuery(String name, int count) {
 		
-		connection.setDestination(rs.getString(schema.SERVICE_NAME.toLowerCase()));
-		connection.setUserAccount(rs.getString(schema.ACCOUNT_NAME.toLowerCase()).toLowerCase());
-		
-		connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME.toLowerCase()))));
-		connection.setSourceType("ldap");
-		// assume 10 hours session
-		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME.toLowerCase())) + (1000*60*60*sessionLength)));
-		
-		return connection;
+		return String.format("select name from (select distinct lower(%s) name from %s "
+				+ "where lower(%s) like '%s' "
+				+ "union select distinct lower(%s) name from %s "
+				+ "where lower(%s) like '%s') nested order by name asc limit %s", 
+				schema.SERVICE_NAME, schema.getTableName(),schema.SERVICE_NAME, name.toLowerCase(), 
+				schema.MACHINE_NAME, schema.getTableName(), schema.MACHINE_NAME, name.toLowerCase(), count);
 	}
 }

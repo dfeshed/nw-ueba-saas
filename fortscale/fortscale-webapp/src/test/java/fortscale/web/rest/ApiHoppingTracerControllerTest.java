@@ -5,8 +5,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
@@ -41,6 +43,10 @@ public class ApiHoppingTracerControllerTest {
 		when(hoppingTracerService.expandConnections(anyString(), anyBoolean(), any(FilterSettings.class)))
 		.thenReturn(new LinkedList<Connection>());
 		
+		List<String> machines = new ArrayList<String>(1);
+		machines.add("myhost");
+		when(hoppingTracerService.lookupMachines(anyString(), anyInt())).thenReturn(machines);
+		
 		this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 	}
 	
@@ -48,7 +54,7 @@ public class ApiHoppingTracerControllerTest {
 	public void expand_should_pass_defualt_values_to_repository_when_called_with_no_params() throws Exception {
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/tracer/xxx/expand").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/tracer/expand/xxx").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 
 		// verify default parameters were passed to repository
@@ -71,7 +77,7 @@ public class ApiHoppingTracerControllerTest {
 	@Test
 	public void expand_should_fail_when_start_is_after_finish() throws Exception {
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/tracer/xxx/expand")
+		mockMvc.perform(get("/api/tracer/expand/xxx")
 				.param("start", "5000")
 				.param("end", "300")
 				.accept(MediaType.APPLICATION_JSON))
@@ -82,7 +88,7 @@ public class ApiHoppingTracerControllerTest {
 	@Test
 	public void expand_should_pass_all_parameters_values_to_repostiroy() throws Exception {
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/tracer/xxx/expand")
+		mockMvc.perform(get("/api/tracer/expand/xxx")
 				.param("treatAsSource", "false")
 				.param("start", "1394521686")
 				.param("end", "1394521686")
@@ -117,6 +123,34 @@ public class ApiHoppingTracerControllerTest {
 		assertEquals(90.0d,filter.getScoreRange().getMinScore(), DELTA);
 		assertEquals(1394521686L,filter.getStart());
 		assertEquals(1394521686L,filter.getEnd());
+	}
+	
+	@Test
+	public void lookup_should_fail_when_machine_name_empty() throws Exception {
+		// perform rest call to controller
+		mockMvc.perform(get("/api/tracer/lookup")).andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void lookup_should_pass_machine_name_to_tracer_service() throws Exception {
+		// perform rest call to controller
+		mockMvc.perform(get("/api/tracer/lookup?machine=myhost"))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"));
+	
+		// verify parameters passed to tracer service
+		verify(hoppingTracerService).lookupMachines("myhost", 10);
+	}
+	
+	@Test
+	public void lookup_should_pass_count_to_tracer_service() throws Exception {
+		// perform rest call to controller
+		mockMvc.perform(get("/api/tracer/lookup?machine=myhost").param("count", "20"))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"));
+	
+		// verify parameters passed to tracer service
+		verify(hoppingTracerService).lookupMachines("myhost",20);
 	}
 	
 	
