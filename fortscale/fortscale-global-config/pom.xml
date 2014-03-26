@@ -69,6 +69,18 @@
 
 	<profiles>
 		<profile>
+			<id>vm</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>vm</value>
+				</property>
+			</activation>
+			<properties>
+				<env>vm</env>
+			</properties>
+		</profile>
+		<profile>
 			<id>dev-local</id>
 			<activation>
 				<property>
