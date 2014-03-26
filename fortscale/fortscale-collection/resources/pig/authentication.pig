@@ -4,7 +4,7 @@ SET pig.tmpfilecompression.storage seqfile
 SET pig.maxCombinedSplitSize 2147483648
 
 -- calculate score for successful login events
-rawLogin        = LOAD '$inputDataLogin' USING PigStorage('|') AS  (generatedTimeRaw:chararray,generatedTime:chararray,generatedTimeUnixTime:long,accountName:chararray,accountDomain:chararray,clientAddress:chararray,machineName:chararray,status:chararray,failureCode:chararray,authenticationType:chararray,ticketOptions:chararray,forwardable:chararray,forwarded:chararray,proxied:chararray,postdated:chararray,renew_request:chararray,constraint_delegation:chararray,normalized_username:chararray);
+rawLogin        = LOAD '$inputDataLogin' USING PigStorage('|') AS  (generatedTimeRaw:chararray,generatedTime:chararray,generatedTimeUnixTime:long,accountName:chararray,accountDomain:chararray,userid:chararray,clientAddress:chararray,machineName:chararray,status:chararray,failureCode:chararray,authenticationType:chararray,ticketOptions:chararray,forwardable:chararray,forwarded:chararray,proxied:chararray,postdated:chararray,renew_request:chararray,constraint_delegation:chararray,normalized_username:chararray);
 loginByTime     = FILTER rawLogin by generatedTimeUnixTime > (long)'$deltaTime';
 loginUsersOnly  = FILTER loginByTime by NOT (LOWER(accountName) MATCHES LOWER('$accountRegex'));
 loginSucessOnly = FILTER loginUsersOnly by status=='SUCCESS';
