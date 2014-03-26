@@ -32,7 +32,7 @@ public class EventScoringPigRunner {
         scriptParameters.put("inputData", getInputDataParameter(inputData, earliestEventTime, runtime));
         scriptParameters.put("outputData", String.format("%sruntime=%s", outputDataPrefix,runtime));
         scriptParameters.put("deltaTime", earliestEventTime.toString());
-        fillWithSpecificScriptParameters(scriptParameters);
+        fillWithSpecificScriptParameters(scriptParameters, earliestEventTime, runtime);
 
         return pigRunner.run(pigScriptResource, scriptParameters);
 	}
@@ -56,5 +56,5 @@ public class EventScoringPigRunner {
 	
 	
 	
-	protected void fillWithSpecificScriptParameters(Properties scriptParameters){}
+	protected void fillWithSpecificScriptParameters(Properties scriptParameters, long earliestEventTime, long latestEventTime) throws IOException, NoPartitionExistException {}
 }
