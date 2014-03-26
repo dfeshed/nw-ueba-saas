@@ -11,6 +11,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import fortscale.domain.schema.SSHEvents;
@@ -34,7 +35,7 @@ public class SSHConnectionsSource extends ConnectionsSource {
 	}
 	
 	@Override
-	protected String buildQuery(String source, boolean isSource, FilterSettings filter) {
+	protected String buildExpandQuery(String source, boolean isSource, FilterSettings filter) {
 		
 		ImpalaQuery query = new ImpalaQuery();
 		query.select(schema.EPOCHTIME, schema.USERNAME, schema.SOURCE_IP, schema.TARGET_MACHINE, schema.STATUS, 
@@ -80,25 +81,39 @@ public class SSHConnectionsSource extends ConnectionsSource {
 		return query.toSQL();
 	}
 	
-	@Override
-	public Connection mapRow(ResultSet rs, int rowNum) throws SQLException {
-		Connection connection = new Connection();
+	protected RowMapper<Connection> getExpandQueryRowMapper() {
+		return new RowMapper<Connection>() {
+			@Override
+			public Connection mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Connection connection = new Connection();
+			
+				// try and get the hostname, if it does not exist use the ip address instead 
+				String hostname = rs.getString(schema.HOSTNAME.toLowerCase());
+				if (hostname==null || hostname.isEmpty())
+					connection.setSource(rs.getString(schema.SOURCE_IP.toLowerCase()));
+				else
+					connection.setSource(hostname);
+				
+				connection.setDestination(rs.getString(schema.TARGET_MACHINE.toLowerCase()));
+				connection.setUserAccount(rs.getString(schema.USERNAME.toLowerCase()).toLowerCase());
+				connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.EPOCHTIME.toLowerCase()))));
+				connection.setSourceType("ssh");
+				// assume 10 hours session
+				connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.EPOCHTIME.toLowerCase())) + (1000*60*60*sessionLength)));
+				
+				return connection;
+			}
+		};
+	}
 	
-		// try and get the hostname, if it does not exist use the ip address instead 
-		String hostname = rs.getString(schema.HOSTNAME.toLowerCase());
-		if (hostname==null || hostname.isEmpty())
-			connection.setSource(rs.getString(schema.SOURCE_IP.toLowerCase()));
-		else
-			connection.setSource(hostname);
+	protected String buildLookupQuery(String name, int count) {
 		
-		connection.setDestination(rs.getString(schema.TARGET_MACHINE.toLowerCase()));
-		connection.setUserAccount(rs.getString(schema.USERNAME.toLowerCase()).toLowerCase());
-		connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.EPOCHTIME.toLowerCase()))));
-		connection.setSourceType("ssh");
-		// assume 10 hours session
-		connection.setEnd(new Date(convertToMilliSeconds(rs.getLong(schema.EPOCHTIME.toLowerCase())) + (1000*60*60*sessionLength)));
-		
-		return connection;
+		return String.format("select name from (select distinct lower(%s) name from %s "
+				+ "where lower(%s) like '%s' "
+				+ "union select distinct lower(%s) name from %s "
+				+ "where lower(%s) like '%s') nested order by name asc limit %s", 
+				schema.TARGET_MACHINE, schema.getTableName(),schema.TARGET_MACHINE, name.toLowerCase(), 
+				schema.HOSTNAME, schema.getTableName(), schema.HOSTNAME, name.toLowerCase(), count);
 	}
 	
 }
