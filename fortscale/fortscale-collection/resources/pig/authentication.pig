@@ -25,5 +25,5 @@ user            = GROUP userWithComp by normalized_username PARALLEL 1;
 authScoringResult	= FOREACH user GENERATE FLATTEN( fortscale.ebs.EBSPigUDF( group,5,0,userWithComp ) );
 authFinalScoringResult = FOREACH authScoringResult GENERATE $0 as time,$1 as normalizedtime,$2 as userid,$3 as targetid,$4 as sourceip,$6 as errorcode,$7 as normalized_username,$8 as timescore,$9 as useridscore,$10 as targetidscore,$11 as sourceipscore,$12 as errorcodescore,$13 as eventscore,$14 as globalscore,$15 as entitygroupedbyid;
 
-result          = UNION loginScore, authFinalScoringResult;
+result          = UNION loginFinalScore, authFinalScoringResult;
 store result into '$outputData' using PigStorage(',','-noschema');
