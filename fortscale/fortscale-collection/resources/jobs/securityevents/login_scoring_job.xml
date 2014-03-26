@@ -27,6 +27,10 @@
 					<value>${hdfs.user.data.security.events.4769.path}</value>
 				</entry>
 				<entry>
+					<key>pigLoginInputData</key>
+					<value>${hdfs.user.data.security.events.login.path}</value>
+				</entry>
+				<entry>
 					<key>pigOutputDataPrefix</key>
 					<value>${hdfs.user.processeddata.security.events.4769.path}/</value>
 				</entry>
