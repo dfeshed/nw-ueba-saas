@@ -92,9 +92,9 @@ public class SSHConnectionsSource extends ConnectionsSource {
 				if (hostname==null || hostname.isEmpty())
 					connection.setSource(rs.getString(schema.SOURCE_IP.toLowerCase()));
 				else
-					connection.setSource(hostname);
+					connection.setSource(hostname.toUpperCase());
 				
-				connection.setDestination(rs.getString(schema.TARGET_MACHINE.toLowerCase()));
+				connection.setDestination(rs.getString(schema.TARGET_MACHINE.toLowerCase()).toUpperCase());
 				connection.setUserAccount(rs.getString(schema.USERNAME.toLowerCase()).toLowerCase());
 				connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.EPOCHTIME.toLowerCase()))));
 				connection.setSourceType("ssh");

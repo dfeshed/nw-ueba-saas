@@ -92,7 +92,7 @@ public class VPNConnectionsSource extends ConnectionsSource {
 				if (hostname==null || hostname.isEmpty())
 					connection.setSource(rs.getString(schema.SOURCE_IP.toLowerCase()));
 				else
-					connection.setSource(hostname);
+					connection.setSource(hostname.toUpperCase());
 				
 				connection.setDestination(rs.getString(schema.LOCAL_IP.toLowerCase()));
 				connection.setUserAccount(rs.getString(schema.USERNAME.toLowerCase()).toLowerCase());
