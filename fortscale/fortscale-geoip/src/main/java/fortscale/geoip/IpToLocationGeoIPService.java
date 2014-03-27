@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.util.ClassUtils;
 
 import com.ip2location.IP2Location;
 import com.ip2location.IPResult;
@@ -25,10 +27,10 @@ public class IpToLocationGeoIPService implements GeoIPService{
 	 * 
 	 * @throws IOException
 	 */
-	public IpToLocationGeoIPService(){
+	public IpToLocationGeoIPService() throws IOException{
 		loc = new IP2Location();
-		IP2Location.IPDatabasePath = String.format("/%s",DB_FILENAME);
-		IP2Location.IPDatabasePathIPv6 = String.format("/%s",DB_FILENAME);
+		IP2Location.IPDatabasePath = new PathMatchingResourcePatternResolver(ClassUtils.getDefaultClassLoader()).getResource(String.format("/%s",DB_FILENAME)).getFile().getAbsolutePath();
+		IP2Location.IPDatabasePathIPv6 = IP2Location.IPDatabasePath;
 	}
 
 	/**
@@ -102,7 +104,7 @@ public class IpToLocationGeoIPService implements GeoIPService{
 		return geoInfo;
 	}
 
-	public static void main(String[] args) throws UnknownHostException {
+	public static void main(String[] args) throws IOException {
 
 		IpToLocationGeoIPService gis = new IpToLocationGeoIPService();
 		GeoIPInfo info = gis.getGeoIPInfo("128.101.101.101");
