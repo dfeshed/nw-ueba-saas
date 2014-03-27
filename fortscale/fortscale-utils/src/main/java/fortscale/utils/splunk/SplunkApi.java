@@ -23,7 +23,6 @@ import com.splunk.Job;
 import com.splunk.JobArgs;
 import com.splunk.JobResultsArgs;
 import com.splunk.MonitorInput;
-import com.splunk.ResultsReaderCsv;
 import com.splunk.ResultsReaderXml;
 import com.splunk.Service;
 import com.splunk.ServiceArgs;
@@ -358,12 +357,12 @@ public class SplunkApi {
 		        JobResultsArgs resultsArgs = new JobResultsArgs();
 		        resultsArgs.setOffset(offset);
 		        resultsArgs.setCount(maxresults);
-		        resultsArgs.setOutputMode(JobResultsArgs.OutputMode.CSV);
-		        ResultsReaderCsv reader = null;
+		        resultsArgs.setOutputMode(JobResultsArgs.OutputMode.XML);
+		        ResultsReaderXml reader = null;
 		        try{
 			        // Display results in JSON using ResultsReaderJson
 			        InputStream results = job.getResults(resultsArgs);		        
-			        reader = new ResultsReaderCsv(results);
+			        reader = new ResultsReaderXml(results);
 	
 			        Event event = null;
 			        Event lastEvent = null;
