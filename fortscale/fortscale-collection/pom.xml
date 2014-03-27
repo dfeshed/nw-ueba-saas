@@ -7,7 +7,6 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>fortscale</groupId>
 	<artifactId>fortscale-collection</artifactId>
 	<name>fortscale-collection</name>
 	<description>data collection</description>

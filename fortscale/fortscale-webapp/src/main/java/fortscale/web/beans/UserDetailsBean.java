@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
-import fortscale.domain.core.dao.UserRepository;
 import fortscale.utils.actdir.ADUserParser;
 import fortscale.utils.logging.Logger;
 
@@ -21,9 +19,6 @@ public class UserDetailsBean implements Serializable{
 	private static Logger logger = Logger.getLogger(UserDetailsBean.class);
 	
 	private static final long serialVersionUID = 1L;
-
-	@Autowired
-	private UserRepository userRepository;
 
 	private User user;
 	private User manager;

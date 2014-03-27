@@ -1,10 +1,12 @@
 package fortscale.collection.morphlines.commands;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -17,6 +19,7 @@ import com.typesafe.config.Config;
 
 import fortscale.geoip.GeoIPInfo;
 import fortscale.geoip.GeoIPService;
+import fortscale.geoip.IpToLocationGeoIPService;
 import fortscale.geoip.MMGeoIPService;
 
 /**
@@ -45,7 +48,7 @@ public class GeolocationBuilder implements CommandBuilder {
 		private final String cityFieldName;
 		private final String ispFieldName;
 		private final String usageTypeFieldName;
-		private GeoIPService geoIpService;
+		private List<GeoIPService> geoIpServices;
 
 		public Geolocation(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -63,10 +66,19 @@ public class GeolocationBuilder implements CommandBuilder {
 			this.usageTypeFieldName = getConfigs().getString(config, "usage_type_field");
 
 			// Try to instantiate the GeoIP service
+			geoIpServices = new ArrayList<>();
 			try {
-				this.geoIpService = new MMGeoIPService();
-			} catch (IOException e) {
-				this.geoIpService = null;
+				GeoIPService geoIpService = new IpToLocationGeoIPService();
+				geoIpServices.add(geoIpService);
+			} catch (Exception e) {
+				logger.error("failed to load ip2location service", e);
+			}
+			
+			try {
+				GeoIPService geoIpService = new MMGeoIPService();
+				geoIpServices.add(geoIpService);
+			} catch (Exception e) {
+				logger.error("failed to load max mind geo service", e);
 			}
 			validateArguments();
 		}
@@ -79,15 +91,19 @@ public class GeolocationBuilder implements CommandBuilder {
 				// Get the IP Address
 				String ipAddress = (String) tmp.get(0);
 				// If the geo ip service is available
-				if (this.geoIpService != null) {
+				for(GeoIPService geoIpService: geoIpServices){
 					try {
-						GeoIPInfo geoIPInfo = this.geoIpService.getGeoIPInfo(ipAddress);
+						GeoIPInfo geoIPInfo = geoIpService.getGeoIPInfo(ipAddress);
+						if(StringUtils.isEmpty(geoIPInfo.getCountryName())){
+							continue;
+						}
 						// Write the ip info:  country, city, isp, usageType
 						inputRecord.put(this.countryFieldName, geoIPInfo.getCountryName());
 						inputRecord.put(this.regionFieldName, geoIPInfo.getRegionName());
 						inputRecord.put(this.cityFieldName, geoIPInfo.getCityName());
 						inputRecord.put(this.ispFieldName, geoIPInfo.getISP());
 						inputRecord.put(this.usageTypeFieldName, geoIPInfo.getUsageType() != null ? geoIPInfo.getUsageType().getId() : "");
+						break;
 					} catch (IOException e) {
 						logger.warn("error resolving geo2ip for {}, exception: {}", ipAddress, e.toString());
 					}
