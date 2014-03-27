@@ -105,9 +105,9 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 				if (hostname==null || hostname.isEmpty())
 					connection.setSource(rs.getString(schema.CLIENT_ADDRESS.toLowerCase()));
 				else
-					connection.setSource(hostname.toUpperCase());
+					connection.setSource(hostname);
 				
-				connection.setDestination(rs.getString(schema.SERVICE_NAME.toLowerCase()).toUpperCase());
+				connection.setDestination(rs.getString(schema.SERVICE_NAME.toLowerCase()));
 				connection.setUserAccount(rs.getString(schema.ACCOUNT_NAME.toLowerCase()).toLowerCase());
 				
 				connection.setStart(new Date(convertToMilliSeconds(rs.getLong(schema.TIMEGENERATEDUNIXTIME.toLowerCase()))));
