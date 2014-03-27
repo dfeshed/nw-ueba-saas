@@ -66,6 +66,18 @@ public class HoppingTracerService implements InitializingBean {
 			}
 		}
 		
+		// convert all connection hostnames to upper case to merge node 
+		// in the hopping tracer ui
+		for (Connection connection : connections) {
+			String source = connection.getSource();
+			if (source!=null)
+				connection.setSource(source.toUpperCase());
+			
+			String destination = connection.getDestination();
+			if (destination!=null)
+				connection.setDestination(destination.toUpperCase());
+		}
+		
 		return connections;
 	}
 	
