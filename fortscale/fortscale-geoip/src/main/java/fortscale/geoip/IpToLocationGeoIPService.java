@@ -5,8 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.util.ClassUtils;
+import org.springframework.core.io.Resource;
 
 import com.ip2location.IP2Location;
 import com.ip2location.IPResult;
@@ -17,21 +16,9 @@ import fortscale.utils.logging.Logger;
 public class IpToLocationGeoIPService implements GeoIPService{
 	private static Logger logger = Logger.getLogger(IpToLocationGeoIPService.class);
 
-	private static final String DB_FILENAME = "IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN";
 	private static final String MOBILE_USAGE_TYPE = "MOB";
 
 	private IP2Location loc = null;
-
-	/**
-	 * Default constructor - uses "IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN"
-	 * 
-	 * @throws IOException
-	 */
-	public IpToLocationGeoIPService() throws IOException{
-		loc = new IP2Location();
-		IP2Location.IPDatabasePath = new PathMatchingResourcePatternResolver(ClassUtils.getDefaultClassLoader()).getResource(String.format("/%s",DB_FILENAME)).getFile().getAbsolutePath();
-		IP2Location.IPDatabasePathIPv6 = IP2Location.IPDatabasePath;
-	}
 
 	/**
 	 * Constructor. Takes a path to to a GeoIP DB
@@ -45,6 +32,21 @@ public class IpToLocationGeoIPService implements GeoIPService{
 				loc = new IP2Location();
 				IP2Location.IPDatabasePath = fullPath;
 				IP2Location.IPDatabasePathIPv6 = fullPath;
+			}
+	}
+	
+	/**
+	 * Constructor. Takes a path to to a GeoIP DB
+	 * 
+	 * @param dbFileName
+	 *            - path to a GeoIP DB
+	 * @throws IOException
+	 */
+	public IpToLocationGeoIPService(Resource geoIpDbResource,Resource geoIpV6DbResource) throws IOException{
+			if (loc == null) {
+				loc = new IP2Location();
+				IP2Location.IPDatabasePath = geoIpDbResource.getFile().getAbsolutePath();
+				IP2Location.IPDatabasePathIPv6 = geoIpV6DbResource.getFile().getAbsolutePath();
 			}
 	}
 
@@ -104,10 +106,10 @@ public class IpToLocationGeoIPService implements GeoIPService{
 		return geoInfo;
 	}
 
-	public static void main(String[] args) throws IOException {
-
-		IpToLocationGeoIPService gis = new IpToLocationGeoIPService();
-		GeoIPInfo info = gis.getGeoIPInfo("128.101.101.101");
-		System.out.println(info.getCountryName());
-	}
+//	public static void main(String[] args) throws IOException {
+//
+//		IpToLocationGeoIPService gis = new IpToLocationGeoIPService();
+//		GeoIPInfo info = gis.getGeoIPInfo("128.101.101.101");
+//		System.out.println(info.getCountryName());
+//	}
 }

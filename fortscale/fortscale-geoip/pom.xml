@@ -149,7 +149,6 @@
 				<configuration>
 					<includes>
 						<include>**/*.mmdb</include>
-						<include>**/*.BIN</include>
 					</includes>
 				</configuration>
 			</plugin>
