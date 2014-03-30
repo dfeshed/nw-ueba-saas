@@ -12,6 +12,8 @@ public class NotificationComment  {
 	private Long id;
 	private Long basedOn;
 	
+	public NotificationComment() {}
+	
 	public NotificationComment(String analyst, String analystDisplayName, Date when, String message) {
 		this(analyst, analystDisplayName, when, message, null);
 	}

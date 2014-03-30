@@ -121,7 +121,7 @@ public class ApiNotificationsController extends BaseController {
 		return notificationsDataSingle(userNotifications, Optional.<Long>absent());
 	}
 
-	@RequestMapping(value="/all", method = RequestMethod.GET)
+	@RequestMapping(value="/list", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public ResponseEntity<DataBean<List<Notification>>> list(
@@ -132,8 +132,8 @@ public class ApiNotificationsController extends BaseController {
 			@RequestParam(defaultValue="True") boolean includeDissmissed,
 			@RequestParam(required=false) final List<String> includeGenerators,
 			@RequestParam(required=false) final List<String> excludeGenerators,
-			@RequestParam(required=false) Date after,
-			@RequestParam(required=false) Date before,
+			@RequestParam(required=false, defaultValue="0") long after,
+			@RequestParam(required=false, defaultValue="0") long before,
 			@RequestParam(defaultValue="True") boolean sortDesc) {
 		
 		// calculate the page request based on the parameters given
@@ -149,9 +149,12 @@ public class ApiNotificationsController extends BaseController {
 		if (includeGenerators!=null && !includeGenerators.isEmpty() &&
 			excludeGenerators!=null && !excludeGenerators.isEmpty()) 
 			return new ResponseEntity<DataBean<List<Notification>>>(HttpStatus.BAD_REQUEST);
-				
+		
+		Date afterDate = (after==0L)? null : new Date(after);
+		Date beforeDate = (before==0L)? null: new Date(before);
+		
 		Page<Notification> notifications = notificationsRepository.findByPredicates(includeFsIds, excludeFsIds, includeDissmissed,
-				includeGenerators, excludeGenerators, before, after, request);
+				includeGenerators, excludeGenerators, beforeDate, afterDate, request);
 		DataBean<List<Notification>> value = notificationsDataSingle(notifications.getContent(), Optional.of(notifications.getTotalElements()));
 		return new ResponseEntity<DataBean<List<Notification>>>(value, HttpStatus.OK);
 	}

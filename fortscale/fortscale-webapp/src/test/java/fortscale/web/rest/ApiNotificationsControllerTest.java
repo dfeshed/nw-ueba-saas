@@ -71,7 +71,7 @@ public class ApiNotificationsControllerTest {
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications/all").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/list").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
@@ -88,7 +88,7 @@ public class ApiNotificationsControllerTest {
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications/all?includeDissmissed=false").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/list?includeDissmissed=false").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
@@ -106,7 +106,7 @@ public class ApiNotificationsControllerTest {
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications/all?page=2&size=100").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/list?page=2&size=100").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
@@ -123,7 +123,7 @@ public class ApiNotificationsControllerTest {
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications/all?includeFsIds=xxx,yyy").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/list?includeFsIds=xxx,yyy").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
@@ -139,7 +139,7 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void list_with_both_include_and_exclude_fsids_should_return_error() throws Exception {
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications/all?includeFsIds=xxx,yyy&excludeFsIds=fff").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/list?includeFsIds=xxx,yyy&excludeFsIds=fff").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest());
 	}
 		
