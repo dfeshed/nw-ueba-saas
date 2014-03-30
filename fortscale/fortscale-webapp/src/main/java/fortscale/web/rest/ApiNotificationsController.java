@@ -150,11 +150,8 @@ public class ApiNotificationsController extends BaseController {
 			excludeGenerators!=null && !excludeGenerators.isEmpty()) 
 			return new ResponseEntity<DataBean<List<Notification>>>(HttpStatus.BAD_REQUEST);
 		
-		Date afterDate = (after==0L)? null : new Date(after);
-		Date beforeDate = (before==0L)? null: new Date(before);
-		
 		Page<Notification> notifications = notificationsRepository.findByPredicates(includeFsIds, excludeFsIds, includeDissmissed,
-				includeGenerators, excludeGenerators, beforeDate, afterDate, request);
+				includeGenerators, excludeGenerators, before, after, request);
 		DataBean<List<Notification>> value = notificationsDataSingle(notifications.getContent(), Optional.of(notifications.getTotalElements()));
 		return new ResponseEntity<DataBean<List<Notification>>>(value, HttpStatus.OK);
 	}

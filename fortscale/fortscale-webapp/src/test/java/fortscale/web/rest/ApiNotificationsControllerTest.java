@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -67,7 +66,7 @@ public class ApiNotificationsControllerTest {
 
 		// mock repository to return empty results so the controller could continue and not fail
 		when(notificationRepository.findByPredicates(anyListOf(String.class), anyListOf(String.class), eq(true), anyListOf(String.class), 
-				anyListOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
+				anyListOf(String.class), anyLong(), anyLong(), any(PageRequest.class)))
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
@@ -77,14 +76,14 @@ public class ApiNotificationsControllerTest {
 
 		// verify interaction with repository
 		verify(notificationRepository).findByPredicates(null, null, true, 
-				null, null, null, null, new PageRequest(0, 20, Direction.DESC, "ts"));
+				null, null, 0, 0, new PageRequest(0, 20, Direction.DESC, "ts"));
 	}
 	
 	@Test
 	public void list_with_includeDissmissed_false_should_filter_out_dismissed_notifications() throws Exception {
 		// mock repository to return empty results so the controller could continue and not fail
 		when(notificationRepository.findByPredicates(anyListOf(String.class), anyListOf(String.class), eq(false), anyListOf(String.class), 
-				anyListOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
+				anyListOf(String.class), anyLong(), anyLong(), any(PageRequest.class)))
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
@@ -94,7 +93,7 @@ public class ApiNotificationsControllerTest {
 
 		// verify interaction with repository
 		verify(notificationRepository).findByPredicates(null, null, false, 
-				null, null, null, null, new PageRequest(0, 20, Direction.DESC, "ts"));
+				null, null, 0, 0, new PageRequest(0, 20, Direction.DESC, "ts"));
 	}
 	
 	
@@ -102,7 +101,7 @@ public class ApiNotificationsControllerTest {
 	public void list_with_paging_parameters_should_pass_it_to_repository() throws Exception {
 		// mock repository to return empty results so the controller could continue and not fail
 		when(notificationRepository.findByPredicates(anyListOf(String.class), anyListOf(String.class), eq(true), anyListOf(String.class), 
-				anyListOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
+				anyListOf(String.class), anyLong(), anyLong(), any(PageRequest.class)))
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
@@ -112,14 +111,14 @@ public class ApiNotificationsControllerTest {
 
 		// verify interaction with repository
 		verify(notificationRepository).findByPredicates(null, null, true, 
-				null, null, null, null, new PageRequest(2, 100, Direction.DESC, "ts"));
+				null, null, 0, 0, new PageRequest(2, 100, Direction.DESC, "ts"));
 	}
 	
 	@Test
 	public void list_with_include_fsids_should_pass_collection_to_repository() throws Exception {
 		// mock repository to return empty results so the controller could continue and not fail
 		when(notificationRepository.findByPredicates(anyListOf(String.class), anyListOf(String.class), eq(true), anyListOf(String.class), 
-				anyListOf(String.class), any(Date.class), any(Date.class), any(PageRequest.class)))
+				anyListOf(String.class), anyLong(), anyLong(), any(PageRequest.class)))
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
@@ -132,7 +131,7 @@ public class ApiNotificationsControllerTest {
 		users.add("xxx");
 		users.add("yyy");
 		verify(notificationRepository).findByPredicates(users, null, true, 
-				null, null, null, null, new PageRequest(0, 20, Direction.DESC, "ts"));
+				null, null, 0, 0, new PageRequest(0, 20, Direction.DESC, "ts"));
 		
 	}
 	

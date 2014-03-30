@@ -1,7 +1,6 @@
 package fortscale.domain.core.dao;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationAggregate;
+import fortscale.utils.TimestampUtils;
 
 public class NotificationsRepositoryImpl implements NotificationsRepositoryCustom {
 
@@ -96,7 +96,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	
 	@Override
 	public Page<Notification> findByPredicates(List<String> includeFsID, List<String> excludeFsID, boolean includeDissmissed, 
-			List<String> includeGenerators, List<String> excludeGenerators, Date before, Date after, PageRequest request) {
+			List<String> includeGenerators, List<String> excludeGenerators, long before, long after, PageRequest request) {
 		
 		// build query object with the criterias
 		Query query = new Query();
@@ -110,10 +110,10 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 			query.addCriteria(Criteria.where("generator_name").in(includeGenerators));
 		if (excludeGenerators!=null && !includeGenerators.isEmpty())
 			query.addCriteria(Criteria.where("generator_name").not().in(excludeGenerators));
-		if (before!=null)
-			query.addCriteria(Criteria.where("ts").lte(before.getTime() / 1000L));
-		if (after!=null)
-			query.addCriteria(Criteria.where("ts").gte(after.getTime() / 1000L));
+		if (before!=0L)
+			query.addCriteria(Criteria.where("ts").lte(TimestampUtils.convertToSeconds(before)));
+		if (after!=0L)
+			query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(after)));
 		
 		// set paging and sort parameters
 		query.with(request);

@@ -1,6 +1,5 @@
 package fortscale.domain.core.dao;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -19,5 +18,5 @@ public interface NotificationsRepositoryCustom {
 	List<NotificationAggregate> findAllAndAggregate(PageRequest request);
 
 	Page<Notification> findByPredicates(List<String> includeFsID, List<String> excludeFsID, boolean includeDissmissed, 
-			List<String> includeGenerators, List<String> excludeGenerators, Date before, Date after, PageRequest request);
+			List<String> includeGenerators, List<String> excludeGenerators, long before, long after, PageRequest request);
 }
