@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = Notification.COLLECTION_NAME)
@@ -29,7 +30,7 @@ public class Notification extends AbstractDocument implements Serializable {
 	
 	public Notification() {}
 	
-	public Notification(long ts, String generator_name, String name, String cause, String displayName, String uuid, String fsId, String type, boolean dismissed, int commentsCount) {
+	public Notification(String id, long ts, String generator_name, String name, String cause, String displayName, String uuid, String fsId, String type, boolean dismissed, int commentsCount) {
 		this.ts = ts;
 		this.generator_name = generator_name;
 		this.name = name;
@@ -42,6 +43,7 @@ public class Notification extends AbstractDocument implements Serializable {
 		this.setCommentsCount(commentsCount);
 	}
 	
+	
 	public Map<String, String> getAttributes(){
 		return attributes;
 	}
@@ -49,7 +51,7 @@ public class Notification extends AbstractDocument implements Serializable {
 	public void setCause(String cause) {
 		this.cause = cause;
 	}
-
+	
 	public long getTs() {
 		return ts;
 	}

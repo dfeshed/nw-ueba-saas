@@ -113,7 +113,7 @@ public class ApiNotificationsController extends BaseController {
 		return dynamicCause;
 	}
 
-	@RequestMapping(value = "/{fsid:.+}/user", method = RequestMethod.GET)
+	@RequestMapping(value = "/byUser/{fsid:.+}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<Notification>> userNotifications(@PathVariable("fsid") String fsid) {
@@ -121,7 +121,7 @@ public class ApiNotificationsController extends BaseController {
 		return notificationsDataSingle(userNotifications, Optional.<Long>absent());
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value="/all", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public ResponseEntity<DataBean<List<Notification>>> list(
@@ -191,7 +191,7 @@ public class ApiNotificationsController extends BaseController {
 	@RequestMapping(value = "/dismiss/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public void dismissNotification(@PathVariable("id") Long id) {
+	public void dismissNotification(@PathVariable("id") String id) {
 		Notification notification = notificationsRepository.findOne(id);
 		if (notification!=null) {
 			if (!notification.isDismissed()) {
@@ -207,7 +207,7 @@ public class ApiNotificationsController extends BaseController {
 	@RequestMapping(value = "/undismiss/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public void undismissNotification(@PathVariable("id") Long id) {
+	public void undismissNotification(@PathVariable("id") String id) {
 		Notification notification = notificationsRepository.findOne(id);
 		if (notification!=null) {
 			if (notification.isDismissed()) {
@@ -220,10 +220,10 @@ public class ApiNotificationsController extends BaseController {
 	/**
 	 * Adds a comment to a notification, setting the current user and time
 	 */
-	@RequestMapping(value = "/{id:.+}/comment")
+	@RequestMapping(value = "/comment/{id:.+}")
 	@ResponseBody
 	@LogException
-	public Notification commentOnNotification(@PathVariable("id") Long id, 
+	public Notification commentOnNotification(@PathVariable("id") String id, 
 			@RequestParam(value="message", required=true) String message,
 			@RequestParam(value="basedOn", required=false) Long basedOnID) {
 		
@@ -245,10 +245,10 @@ public class ApiNotificationsController extends BaseController {
 	/**
 	 * Get a specific notification with the comments
 	 */
-	@RequestMapping(value = "/{id:.+}")
+	@RequestMapping(value = "/get/{id:.+}")
 	@ResponseBody
 	@LogException
-	public Notification getNotification(@PathVariable("id") Long id) {
+	public Notification getNotification(@PathVariable("id") String id) {
 		return notificationsRepository.findOne(id);
 	}
 	

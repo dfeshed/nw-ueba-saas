@@ -47,10 +47,10 @@ public class ApiNotificationsControllerTest {
 		
 		// set up notification repository mocked behavior
 		List<Notification> notifications = new ArrayList<Notification>();
-		notifications.add(new Notification(1, "a", "a", "a", "a", "a", "a", "a", false, 0));
-		notifications.add(new Notification(2, "b", "b", "b", "b", "b", "b", "b", false, 0));
-		notifications.add(new Notification(3, "c", "c", "c", "c", "c", "c", "c", false, 0));
-		notifications.add(new Notification(4, "d", "d", "d", "d", "d", "d", "d", false, 0));
+		notifications.add(new Notification("1", 1, "a", "a", "a", "a", "a", "a", "a", false, 0));
+		notifications.add(new Notification("2", 2, "b", "b", "b", "b", "b", "b", "b", false, 0));
+		notifications.add(new Notification("3", 3, "c", "c", "c", "c", "c", "c", "c", false, 0));
+		notifications.add(new Notification("4", 4, "d", "d", "d", "d", "d", "d", "d", false, 0));
 		
 		when(notificationRepository.findByTsGreaterThanExcludeComments(anyInt(), any(Sort.class))).thenReturn(notifications);
 		
@@ -71,7 +71,7 @@ public class ApiNotificationsControllerTest {
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/all").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
@@ -88,7 +88,7 @@ public class ApiNotificationsControllerTest {
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications?includeDissmissed=false").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/all?includeDissmissed=false").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
@@ -106,7 +106,7 @@ public class ApiNotificationsControllerTest {
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications?page=2&size=100").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/all?page=2&size=100").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
@@ -123,7 +123,7 @@ public class ApiNotificationsControllerTest {
 			.thenReturn(new PageImpl<Notification>(new LinkedList<Notification>()));
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications?includeFsIds=xxx,yyy").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/all?includeFsIds=xxx,yyy").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 
@@ -139,15 +139,15 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void list_with_both_include_and_exclude_fsids_should_return_error() throws Exception {
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications?includeFsIds=xxx,yyy&excludeFsIds=fff").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/all?includeFsIds=xxx,yyy&excludeFsIds=fff").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest());
 	}
 		
 	@Test
 	public void dismiss_should_succeed_with_valid_notification_id() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
-		when(notificationRepository.findOne(1L)).thenReturn(notification);
+		Notification notification = new Notification("1", 1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
+		when(notificationRepository.findOne("1")).thenReturn(notification);
 		
 		// perform rest call to the controller
 		mockMvc.perform(get("/api/notifications/dismiss/1").accept(MediaType.APPLICATION_JSON))
@@ -162,12 +162,12 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void commentOnNotification_should_increment_comments_count() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
-		when(notificationRepository.findOne(1L)).thenReturn(notification);
+		Notification notification = new Notification("1", 1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
+		when(notificationRepository.findOne("1")).thenReturn(notification);
 		when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 		
 		// perform rest call to the controller
-		mockMvc.perform(get("/api/notifications/1/comment?message=hello world").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/notifications/comment/1?message=hello world").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"));
 		
@@ -182,8 +182,8 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void dismiss_should_not_save_already_dismissed_notification() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
-		when(notificationRepository.findOne(1L)).thenReturn(notification);
+		Notification notification = new Notification("1", 1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
+		when(notificationRepository.findOne("1")).thenReturn(notification);
 		
 		// perform rest call to the controller
 		mockMvc.perform(get("/api/notifications/dismiss/1").accept(MediaType.APPLICATION_JSON))
@@ -197,8 +197,8 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void undismiss_should_succeed_with_valid_notification_id() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification(1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
-		when(notificationRepository.findOne(1L)).thenReturn(notification);
+		Notification notification = new Notification("1", 1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
+		when(notificationRepository.findOne("1")).thenReturn(notification);
 		
 		// perform rest call to the controller
 		mockMvc.perform(get("/api/notifications/undismiss/1").accept(MediaType.APPLICATION_JSON))
@@ -214,7 +214,7 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void dismiss_should_not_save_notification_that_does_not_exists() throws Exception {
 		// mock repository to return notification
-		when(notificationRepository.findOne(1L)).thenReturn(null);
+		when(notificationRepository.findOne("1")).thenReturn(null);
 		
 		// perform rest call to the controller
 		mockMvc.perform(get("/api/notifications/dismiss/1").accept(MediaType.APPLICATION_JSON))
