@@ -223,7 +223,7 @@ public class ApiNotificationsController extends BaseController {
 	@RequestMapping(value = "/comment/{id:.+}")
 	@ResponseBody
 	@LogException
-	public Notification commentOnNotification(@PathVariable("id") String id, 
+	public DataBean<List<Notification>> commentOnNotification(@PathVariable("id") String id, 
 			@RequestParam(value="message", required=true) String message,
 			@RequestParam(value="basedOn", required=false) Long basedOnID) {
 		
@@ -239,7 +239,10 @@ public class ApiNotificationsController extends BaseController {
 			notification.addComment(new NotificationComment(analystId, dispalyName, new Date(), message, basedOnID));
 			notification = notificationsRepository.save(notification);
 		}
-		return notification;
+		
+		List<Notification> notifications = new ArrayList<Notification>(1);
+		notifications.add(notification);
+		return notificationsDataSingle(notifications, Optional.<Long>absent());
 	}
 	
 	/**
@@ -248,8 +251,11 @@ public class ApiNotificationsController extends BaseController {
 	@RequestMapping(value = "/get/{id:.+}")
 	@ResponseBody
 	@LogException
-	public Notification getNotification(@PathVariable("id") String id) {
-		return notificationsRepository.findOne(id);
+	public DataBean<List<Notification>> getNotification(@PathVariable("id") String id) {
+		
+		List<Notification> notifications = new ArrayList<Notification>(1);
+		notifications.add(notificationsRepository.findOne(id));
+		return notificationsDataSingle(notifications, Optional.<Long>absent());
 	}
 	
 	
