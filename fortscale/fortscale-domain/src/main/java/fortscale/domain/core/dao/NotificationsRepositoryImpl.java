@@ -110,10 +110,16 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 			query.addCriteria(Criteria.where("generator_name").in(includeGenerators));
 		if (excludeGenerators!=null && !includeGenerators.isEmpty())
 			query.addCriteria(Criteria.where("generator_name").not().in(excludeGenerators));
-		if (before!=0L)
-			query.addCriteria(Criteria.where("ts").lte(TimestampUtils.convertToSeconds(before)));
-		if (after!=0L)
-			query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(after)));
+		
+		if (before!=0L && after!=0L) {
+			query.addCriteria(Criteria.where("ts").lte(TimestampUtils.convertToSeconds(before)).gte(TimestampUtils.convertToSeconds(after)));
+		} else {
+			if (before!=0L)
+				query.addCriteria(Criteria.where("ts").lte(TimestampUtils.convertToSeconds(before)));
+			if (after!=0L)
+				query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(after)));
+		}
+		
 		
 		// set paging and sort parameters
 		query.with(request);
