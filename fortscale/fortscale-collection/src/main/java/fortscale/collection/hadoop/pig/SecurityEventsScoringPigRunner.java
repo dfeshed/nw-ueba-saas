@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import fortscale.global.configuration.ServersListConfiguration;
