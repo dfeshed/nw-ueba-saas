@@ -90,10 +90,10 @@ public class ApiClassifierController extends BaseController {
 		int total = 0;
 		if (uid == null) {
 			eventScoreInfos = classifierService.getSuspiciousAuthEvents(id, timestamp, offset, limit, orderBy, direction, minScore, followedOnly);
-			total = classifierService.countAuthEvents(id, timestamp);
+			total = classifierService.countAuthEvents(id, timestamp, minScore, followedOnly);
 		} else {
 			eventScoreInfos = classifierService.getUserSuspiciousAuthEvents(id, uid, timestamp, offset, limit, orderBy, direction, minScore);
-			total = classifierService.countAuthEvents(id, uid, timestamp);
+			total = classifierService.countAuthEvents(id, timestamp, uid, minScore);
 		}
 		
 		List<Map<String, Object>> data = new ArrayList<>();
@@ -113,10 +113,10 @@ public class ApiClassifierController extends BaseController {
 		int total = 0;
 		if (uid == null) {
 			eventScoreInfos = classifierService.getSuspiciousVpnEvents(timestamp, offset, limit, orderBy, direction, minScore, followedOnly);
-			total = classifierService.countVpnEvents(timestamp);
+			total = classifierService.countAuthEvents(id, timestamp, minScore, followedOnly);
 		} else {
 			eventScoreInfos = classifierService.getUserSuspiciousVpnEvents(uid, timestamp, offset, limit, orderBy, direction, minScore);
-			total = classifierService.countVpnEvents(uid, timestamp);
+			total = classifierService.countAuthEvents(id, timestamp, uid, minScore);
 		}
 		List<Map<String, Object>> data = new ArrayList<>();
 		for(IVpnEventScoreInfo eventScoreInfo: eventScoreInfos){

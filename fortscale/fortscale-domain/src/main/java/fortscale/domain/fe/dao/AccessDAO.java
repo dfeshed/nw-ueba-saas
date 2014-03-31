@@ -267,6 +267,20 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForInt(query);
 	}
 	
+	public int countNumOfEventsByNormalizedUsernameAndGtEScore(Date timestamp, String username, int minScore){
+		ImpalaQuery impalaQuery = new ImpalaQuery();
+		impalaQuery.select("count(*)").from(getTableName()).andEq(getTimestampFieldName(), timestampDateToLong(timestamp)).andWhere(getNormalizedUserNameEqualComparison(username)).andGte(getEventScoreFieldName(), minScore);
+		
+		return impalaJdbcTemplate.queryForObject(impalaQuery.toSQL(), Integer.class);
+	}
+	
+	public int countNumOfEventsByGTEScoreAndNormalizedUsernameList(Date timestamp, int minScore, Collection<String> usernames){
+		ImpalaQuery impalaQuery = new ImpalaQuery();
+		impalaQuery.select("count(*)").from(getTableName()).andEq(getTimestampFieldName(), timestampDateToLong(timestamp)).andGte(getEventScoreFieldName(), minScore).andIn(getUsernameFieldName(), usernames);
+		
+		return impalaJdbcTemplate.queryForObject(impalaQuery.toSQL(), Integer.class);
+	}
+	
 	@SuppressWarnings("deprecation")
 	public int countNumOfEventsByNormalizedUsernameAndStatusRegex(Date timestamp, String username, String statusVal){
 		String query = String.format("select count(*) from %s where lower(%s) regexp \"%s\" and %s=%s and %s",
@@ -461,8 +475,11 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	}
 
 	protected static String formatTimestampDate(Date date) {
-		return Long.toString(date.getTime() / 1000);
-
+		return Long.toString(timestampDateToLong(date));
+	}
+	
+	protected static long timestampDateToLong(Date date) {
+		return date.getTime() / 1000;
 	}
 
 }

@@ -1,5 +1,7 @@
 package fortscale.utils.impala;
 
+import java.util.Collection;
+
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.domain.Pageable;
 
@@ -45,6 +47,35 @@ public class ImpalaQuery {
 			whereCriteria = whereCriteria.and(new ImpalaCriteriaString(criteria));
 		}
 		return this;
+	}
+	
+	public ImpalaQuery andIn(String fieldName, Collection<?> elems){
+		StringBuilder builder = new StringBuilder();
+		if(elems != null && !elems.isEmpty()){
+			builder.append(" and ");
+
+			builder.append(fieldName).append(" in (");
+			boolean isFirstUsername = true;
+			for(Object elem: elems){
+				if(isFirstUsername){
+					isFirstUsername = false;
+				} else{
+					builder.append(",");
+				}
+				builder.append("\"").append(elem.toString()).append("\"");
+			}
+			builder.append(")");
+		}
+		
+		return andWhere(builder.toString());
+	}
+	
+	public ImpalaQuery andGte(String fieldName, int elem){
+		return andWhere(String.format("%s >= %d", fieldName, elem));
+	}
+	
+	public ImpalaQuery andEq(String fieldName, Long elem){
+		return andWhere(String.format("%s = %d", fieldName, elem));
 	}
 	
 	public ImpalaQuery limitAndSort(Pageable pageable){
