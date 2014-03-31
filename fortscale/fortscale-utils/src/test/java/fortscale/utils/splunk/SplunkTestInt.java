@@ -3,6 +3,7 @@ package fortscale.utils.splunk;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 
 import com.splunk.HttpException;
@@ -55,6 +56,7 @@ public class SplunkTestInt {
 		SplunkApi splunkApi = new SplunkApi(host, port, user, password);
 	}
 	
+	@Ignore
 	@Category(SplunkTestCategory.class)
 	@Test
 	public void testWrongSplunkLoginParameters(){
