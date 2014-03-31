@@ -11,19 +11,24 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.typesafe.config.Config;
 
 import fortscale.geoip.GeoIPInfo;
+import fortscale.geoip.IpToLocationGeoIPService;
 
 /**
  * @author Rois This class is a Morphline command which takes as input a column
  *         of IPv4 addresses and adds a column with the IP's country names
  */
+@Configurable(preConstruction=true)
 public class GeolocationBuilder implements CommandBuilder {
-
 	private static Logger logger = LoggerFactory.getLogger(GeolocationBuilder.class);
 	
+	@Autowired
+	private IpToLocationGeoIPService ipToLocationGeoIPService;
 	
 	@Override
 	public Collection<String> getNames() {
@@ -35,7 +40,8 @@ public class GeolocationBuilder implements CommandBuilder {
 		return new Geolocation(this, config, parent, child, context);
 	}
 
-	private static final class Geolocation extends AbstractCommand {
+	
+	private class Geolocation extends AbstractCommand {
 
 		private final String ipField;
 		private final String countryFieldName;
@@ -43,7 +49,7 @@ public class GeolocationBuilder implements CommandBuilder {
 		private final String cityFieldName;
 		private final String ispFieldName;
 		private final String usageTypeFieldName;
-		private CollectionGoeIpService geoIpService = null;
+		
 		
 
 		public Geolocation(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
@@ -61,8 +67,6 @@ public class GeolocationBuilder implements CommandBuilder {
 			// This is the field name we'll use to hold the usage type name
 			this.usageTypeFieldName = getConfigs().getString(config, "usage_type_field");
 			
-			this.geoIpService = new CollectionGoeIpService();
-
 			validateArguments();
 		}
 
@@ -75,7 +79,7 @@ public class GeolocationBuilder implements CommandBuilder {
 				String ipAddress = (String) tmp.get(0);
 				// If the geo ip service is available
 				try {
-					GeoIPInfo geoIPInfo = geoIpService.getGeoIPInfo(ipAddress);
+					GeoIPInfo geoIPInfo = ipToLocationGeoIPService.getGeoIPInfo(ipAddress);
 
 					// Write the ip info:  country, city, isp, usageType
 					inputRecord.put(this.countryFieldName, geoIPInfo.getCountryName());

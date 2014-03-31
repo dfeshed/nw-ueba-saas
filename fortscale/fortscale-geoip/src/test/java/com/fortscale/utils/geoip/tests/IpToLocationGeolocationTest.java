@@ -19,7 +19,7 @@ public class IpToLocationGeolocationTest {
 
 	@BeforeClass
 	public static void ontTimeSetUp() throws Exception {
-		geoLocService = new IpToLocationGeoIPService("src/main/resources/data/iptolocationdata.bin");
+		geoLocService = new IpToLocationGeoIPService("src/test/resources/data/iptolocationdata.bin");
 	}
 
 	@Test
