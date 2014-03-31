@@ -37,10 +37,8 @@ import org.quartz.TriggerKey;
 import org.springframework.core.io.Resource;
 
 import fortscale.collection.JobDataMapExtension;
-import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.hadoop.pig.EventScoringPigRunner;
 import fortscale.monitor.JobProgressReporter;
-import fortscale.services.UserServiceFacade;
 
 
 
@@ -73,14 +71,8 @@ public class VpnScoringJobTest {
 	protected JobDataMapExtension jobDataMapExtension;
 	
 	@Mock
-	private ImpalaClient impalaClient;
-	
-	@Mock
 	private EventScoringPigRunner eventScoringPigRunner;
 	
-	@Mock
-	private UserServiceFacade userServiceFacade;
-		
 	@InjectMocks
 	private VpnScoringJob	vpnScoringJob;
 	

@@ -1,9 +1,17 @@
 package fortscale.web.rest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -11,7 +19,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,10 +32,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import fortscale.domain.core.Notification;
+import fortscale.domain.core.NotificationResource;
 import fortscale.domain.core.dao.NotificationResourcesRepository;
 import fortscale.domain.core.dao.NotificationsRepository;
-import fortscale.domain.core.NotificationResource;
-import fortscale.services.analyst.AnalystService;
 import fortscale.web.beans.DataBean;
 
 public class ApiNotificationsControllerTest {
@@ -33,8 +43,6 @@ public class ApiNotificationsControllerTest {
 	private NotificationsRepository notificationRepository;
 	@Mock
 	private NotificationResourcesRepository notificationResourcesRepository;
-	@Mock
-	private AnalystService analystService;
 	@InjectMocks
 	private ApiNotificationsController controller;
 	

@@ -15,7 +15,7 @@ import com.maxmind.geoip2.exception.GeoIp2Exception;
 import fortscale.geoip.GeoIPInfo;
 import fortscale.geoip.MMGeoIPService;
 
-public class GeolocationTest {
+public class MMGeolocationTest {
 
 	private static final String US = "US";
 	private static final String UNITED_STATES = "United States";

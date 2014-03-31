@@ -7,7 +7,6 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>fortscale</groupId>
 	<artifactId>fortscale-geoip</artifactId>
 	<name>fortscale-geoip</name>
 	<description>geoip service</description>
@@ -62,6 +61,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geoip2.version>0.7.0</geoip2.version>
+		<ip2location.version>1.0.0</ip2location.version>
 		<jcommander.version>1.30</jcommander.version>
 		<junit.version>4.8.1</junit.version>
 		<fortscale-utils.version>${project.parent.version}</fortscale-utils.version>
@@ -82,6 +82,11 @@
 			<groupId>com.maxmind.geoip2</groupId>
 			<artifactId>geoip2</artifactId>
 			<version>${geoip2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ip2location</groupId>
+			<artifactId>ip2location</artifactId>
+			<version>${ip2location.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.beust</groupId>
@@ -113,6 +118,19 @@
 						<configuration>
 							<url>http://mirror.fortscale.dom/GeoLite2/GeoLite2-City.mmdb</url>
 							<outputDirectory>src/main/resources</outputDirectory>
+							<skipCache>true</skipCache>
+						</configuration>
+					</execution>
+					<execution>
+						<id>download-iptolocation</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-SAMPLE.BIN</url>
+							<outputDirectory>src/test/resources/data</outputDirectory>
+							<outputFileName>iptolocationdata.bin</outputFileName>
 							<skipCache>true</skipCache>
 						</configuration>
 					</execution>
@@ -148,6 +166,19 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
+										<groupId>com.googlecode.maven-download-plugin</groupId>
+										<artifactId>maven-download-plugin</artifactId>
+										<versionRange>[${maven-download-plugin.version},)</versionRange>
+										<goals>
+											<goal>wget</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore/>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
 										<groupId>org.apache.maven.plugins</groupId>
 										<artifactId>maven-remote-resources-plugin</artifactId>
 										<versionRange>[${maven-remote-resources-plugin.version},)</versionRange>
@@ -155,16 +186,8 @@
 											<goal>bundle</goal>
 										</goals>
 									</pluginExecutionFilter>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-remote-resources-plugin</artifactId>
-										<versionRange>[${maven-download-plugin.version},)</versionRange>
-										<goals>
-											<goal>wget</goal>
-										</goals>
-									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore/>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
