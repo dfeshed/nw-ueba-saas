@@ -44,7 +44,7 @@ public class UserTableUpdateJob extends FortscaleJob {
 	
 	@Value("${impala.score.vpn.table.name}")
 	private String vpnTableName;
-	@Value("${impala.score.login.table.name}")
+	@Value("${impala.score.ldapauth.table.name}")
 	private String loginTableName;
 	@Value("${impala.score.ssh.table.name}")
 	private String sshTableName;

@@ -7,28 +7,28 @@
 
 	<schedule>
 		<job>
-			<name>LoginScoring</name>
+			<name>AuthScoring</name>
 			<group>SecurityEvents</group>
-			<description>Running login Scoring</description>
-			<job-class>fortscale.collection.jobs.scoring.LoginScoringJob</job-class>
+			<description>Running ldap authentication Scoring</description>
+			<job-class>fortscale.collection.jobs.scoring.LDAPAuthenticationScoringJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.score.login.table.name}</value>
+					<value>${impala.score.ldapauth.table.name}</value>
 				</entry>
 				<entry>
 					<key>pigScriptResouce</key>
-					<value>file:${collection.pig.scripts.dir.path}/login.pig</value>
+					<value>file:${collection.pig.scripts.dir.path}/authentication.pig</value>
 				</entry>
 				<entry>
 					<key>pigInputData</key>
-					<value>${hdfs.user.data.security.events.login.path}</value>
+					<value>${hdfs.user.data.security.events.4769.path}</value>
 				</entry>
 				<entry>
 					<key>pigOutputDataPrefix</key>
-					<value>${hdfs.user.processeddata.security.login.path}/</value>
+					<value>${hdfs.user.processeddata.security.events.4769.path}/</value>
 				</entry>
 			</job-data-map>
 			
@@ -36,11 +36,11 @@
 	
 		<trigger>
 			<cron>
-				<name>LOGIN_SCORING_HOURLY_TRIGGER</name>
+				<name>LDAP_AUTH_SCORING_HOURLY_TRIGGER</name>
 				<group>SecurityEvents</group>
-				<job-name>LoginScoring</job-name>
+				<job-name>AuthScoring</job-name>
 				<job-group>SecurityEvents</job-group>
-				<cron-expression>0 25 * * * ?</cron-expression>
+				<cron-expression>0 20 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 	

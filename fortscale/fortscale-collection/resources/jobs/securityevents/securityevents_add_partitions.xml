@@ -17,6 +17,34 @@
 	
 		<trigger>
 			<cron>
+				<name>wmievents4768_partition_sync_hourly_trigger</name>
+				<group>SecurityEvents</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>SecurityEvents</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.processeddata.security.login.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.score.login.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>runtime</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>8</value>
+					</entry>
+            	</job-data-map>
+ 				<cron-expression>0 55 3 * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+		<trigger>
+			<cron>
 				<name>wmievents4769_partition_sync_hourly_trigger</name>
 				<group>SecurityEvents</group>
 				<job-name>Add_Partitions</job-name>
@@ -28,7 +56,7 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>wmievents4769</value>
+						<value>${impala.data.security.events.4769.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
@@ -57,7 +85,7 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>authenticationScores</value>
+						<value>${impala.score.ldapauth.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
