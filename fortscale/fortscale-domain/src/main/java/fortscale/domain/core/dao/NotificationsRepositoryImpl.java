@@ -108,7 +108,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 			query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
 		if (includeGenerators!=null && !includeGenerators.isEmpty())
 			query.addCriteria(Criteria.where("generator_name").in(includeGenerators));
-		if (excludeGenerators!=null && !includeGenerators.isEmpty())
+		if (excludeGenerators!=null && !excludeGenerators.isEmpty())
 			query.addCriteria(Criteria.where("generator_name").not().in(excludeGenerators));
 		
 		if (before!=0L && after!=0L) {
