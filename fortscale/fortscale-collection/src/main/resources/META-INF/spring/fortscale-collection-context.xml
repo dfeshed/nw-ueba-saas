@@ -46,7 +46,7 @@
 	</bean>
 	
 	<bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
-		<constructor-arg name="geoIpDbResource" value="file:resources/geoip/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN"/>
-		<constructor-arg name="geoIpV6DbResource" value="file:resources/geoip/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN"/>
+		<constructor-arg name="geoIpDbResource" value="file:data/geoip/iptolocationdata.bin"/>
+		<constructor-arg name="geoIpV6DbResource" value="file:data/geoip/iptolocationdata.bin"/>
 	</bean>
 </beans>

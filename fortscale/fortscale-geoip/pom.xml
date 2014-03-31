@@ -128,8 +128,9 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</url>
-							<outputDirectory>src/main/resources</outputDirectory>
+							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-SAMPLE.BIN</url>
+							<outputDirectory>src/main/resources/data</outputDirectory>
+							<outputFileName>iptolocationdata.bin</outputFileName>
 							<skipCache>true</skipCache>
 						</configuration>
 					</execution>

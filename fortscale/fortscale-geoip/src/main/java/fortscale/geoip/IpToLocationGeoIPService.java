@@ -92,7 +92,7 @@ public class IpToLocationGeoIPService implements GeoIPService{
 					geoInfo.setRegionName(rec.getRegion());
 				}
 				if (!StringUtils.isEmpty(rec.getUsageType())) {
-					if(rec.getUsageType().equals(MOBILE_USAGE_TYPE)){
+					if(rec.getUsageType().contains(MOBILE_USAGE_TYPE)){
 						geoInfo.setUsageType(IpUsageTypeEnum.mob);
 					} else{
 						geoInfo.setUsageType(IpUsageTypeEnum.isp);
