@@ -53,14 +53,25 @@ public class HadoopInit implements InitializingBean{
 	private String impalaSecDataDirectory;
 	
 	//Security Events Scoring table
-	@Value("${impala.score.login.table.fields}")
+	@Value("${impala.score.ldapauth.table.fields}")
 	private String impalaSecScoringTableFields;
-	@Value("${impala.score.login.table.delimiter}")
+	@Value("${impala.score.ldapauth.table.delimiter}")
 	private String impalaSecScoringTableDelimiter;
-	@Value("${impala.score.login.table.name}")
+	@Value("${impala.score.ldapauth.table.name}")
 	private String impalaSecScoringTableName;
 	@Value("${hdfs.user.processeddata.security.events.4769.path}")
 	private String impalaSecScoringDirectory;
+	
+	// Security Events Login Scoring table
+	@Value("${impala.score.login.table.name}")
+	private String impalaLoginScoringTableName;
+	@Value("${impala.score.login.table.delimiter}")
+	private String impalaLoginScoringTableDelimiter;
+	@Value("${impala.score.login.table.fields}")
+	private String impalaLoginScoringTableFields;
+	@Value("${hdfs.user.processeddata.security.login.path}")
+	private String impalaLoginScoringDirectory;
+	
 	
 	//VPN Data table
 	@Value("${impala.data.vpn.table.fields}")
@@ -177,6 +188,9 @@ public class HadoopInit implements InitializingBean{
 		
 		//Security Events Scoring table
 		createTable(impalaSecScoringTableName, impalaSecScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaSecScoringTableDelimiter, impalaSecScoringDirectory);
+		
+		// Security Events Login Scoring table
+		createTable(impalaLoginScoringTableName, impalaLoginScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaLoginScoringTableDelimiter, impalaLoginScoringDirectory);
 		
 		//VPN Data table
 		createTable(impalaVpnDataTableName, impalaVpnDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaVpnDataTableDelimiter, impalaVpnDataDirectory);

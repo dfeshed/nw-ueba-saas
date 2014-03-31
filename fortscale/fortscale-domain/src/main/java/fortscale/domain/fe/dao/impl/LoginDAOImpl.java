@@ -11,12 +11,12 @@ import fortscale.utils.logging.Logger;
 public class LoginDAOImpl extends AuthDAOImpl{
 	private static Logger logger = Logger.getLogger(LoginDAOImpl.class);
 	
-	@Value("${impala.score.login.table.name}")
+	@Value("${impala.score.ldapauth.table.name}")
 	private String tableName;
 	
-	@Value("${impala.score.login.table.fields}")
+	@Value("${impala.score.ldapauth.table.fields}")
 	private String impalaSecScoringTableFields;
-	@Value("${impala.score.login.table.fields.errorcode}")
+	@Value("${impala.score.ldapauth.table.fields.errorcode}")
 	private String errorCodeName;
 	
 	

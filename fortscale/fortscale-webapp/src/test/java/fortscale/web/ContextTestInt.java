@@ -35,7 +35,7 @@ public class ContextTestInt {
 	@Value("${impala.score.vpn.table.name}")
 	private String vpnTableName;
 	
-	@Value("${impala.score.login.table.name}")
+	@Value("${impala.score.ldapauth.table.name}")
 	private String loginTableName;
 	
 	@Test
