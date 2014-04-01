@@ -39,7 +39,6 @@ import fortscale.web.beans.DataListWrapperBean;
 import fortscale.web.beans.FeatureBean;
 import fortscale.web.beans.UserContactInfoBean;
 import fortscale.web.beans.UserDetailsBean;
-import fortscale.web.beans.UserMachineBean;
 import fortscale.web.beans.UserMachinesBean;
 import fortscale.web.beans.UserSearchBean;
 
@@ -258,16 +257,13 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/{id}/machines", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<UserMachineBean>> userMachines(@PathVariable String id, Model model){
-		DataBean<List<UserMachineBean>> ret = new DataBean<List<UserMachineBean>>();
+	public DataBean<List<UserMachine>> userMachines(@PathVariable String id, Model model){
+		
 		List<UserMachine> userMachines = userServiceFacade.getUserMachines(id);
 		
-		List<UserMachineBean> userMachinesBean = new ArrayList<UserMachineBean>();
-		for(UserMachine userMachine: userMachines){
-			userMachinesBean.add(new UserMachineBean(userMachine));
-		}
-		ret.setData(userMachinesBean);
-		ret.setTotal(userMachinesBean.size());
+		DataBean<List<UserMachine>> ret = new DataBean<List<UserMachine>>();
+		ret.setData(userMachines);
+		ret.setTotal(userMachines.size());
 		return ret;
 	}
 	
@@ -292,11 +288,7 @@ public class ApiUserController extends BaseController{
 		for(User user: users) {
 			List<UserMachine> userMachines = userServiceFacade.getUserMachines(user.getId());
 			
-			List<UserMachineBean> userMachinesBean = new ArrayList<UserMachineBean>();
-			for(UserMachine userMachine: userMachines){
-				userMachinesBean.add(new UserMachineBean(userMachine));
-			}
-			usersMachinesList.add(new UserMachinesBean(user.getId(), userMachinesBean));
+			usersMachinesList.add(new UserMachinesBean(user.getId(), userMachines));
 		}
 		DataBean<List<UserMachinesBean>> ret = new DataBean<>();
 		ret.setData(usersMachinesList);

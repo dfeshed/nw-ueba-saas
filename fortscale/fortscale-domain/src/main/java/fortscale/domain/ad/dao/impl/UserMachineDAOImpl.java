@@ -1,144 +1,81 @@
 package fortscale.domain.ad.dao.impl;
 
+import static fortscale.utils.impala.ImpalaCriteria.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.UserMachineDAO;
-import fortscale.domain.impala.ImpalaDAO;
+import fortscale.domain.schema.LoginEvents;
+import fortscale.utils.TimestampUtils;
+import fortscale.utils.impala.ImpalaQuery;
 
-
-
-public class UserMachineDAOImpl extends ImpalaDAO<UserMachine> implements UserMachineDAO{
+public class UserMachineDAOImpl implements UserMachineDAO, RowMapper<UserMachine> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserMachineDAOImpl.class);
+	
+	private static final int DAYS_TO_CONSIDER = 14;
 	
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
 	
-	private String tableName = UserMachine.TABLE_NAME;
-	
-	
-	@Override
-	public String getTableName() {
-		return tableName;
-	}
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
-	
-	
-	@Override
-	public String getInputFileHeaderDesc() {
-		return UserMachine.implaValueTypeOrder;
-	}
-	
-	
-	@Override
-	public List<UserMachine> findAll(){
-		return findAll(null);
-	}
-	
-	@Override
-	public List<UserMachine> findAll(Pageable pageable){
-		return super.findAll(pageable, new UserMachineMapper());
-	}
+	@Autowired
+	private LoginEvents schema;
 		
 	@Override
 	public List<UserMachine> findByUsername(String username){
-		List<UserMachine> ret = new ArrayList<UserMachine>();
-
-		String query = String.format("select * from %s  where lower(%s)=\"%s\"", getTableName(), UserMachine.USERNAME_FIELD_NAME, username.toLowerCase());
-		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
+		// create a query to fetch all successful login events for a user in the last 30 days where the machine was not over NAT
+		ImpalaQuery query = new ImpalaQuery();
+		query.select(schema.NORMALIZED_USERNAME, lower(schema.MACHINE_NAME) + " as machine", "count(*) as login_count",  
+				String.format("max(%s) as last_login", schema.TIMEGENERATEDUNIXTIME));
+		query.from(schema.getTableName());
 		
-		return ret;
+		// filter login events for the requested user
+		query.where(equalsTo(lower(schema.NORMALIZED_USERNAME), lower(quote(username))));
+		
+		// filter events in the last X days
+		long since = TimestampUtils.convertToSeconds(DateTime.now().minusDays(DAYS_TO_CONSIDER).getMillis());
+		query.where(gte(schema.TIMEGENERATEDUNIXTIME, Long.toString(since)));
+		
+		// filter partitions
+		query.where(gte(schema.getPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(since)));
+		
+		// filter on success status
+		query.where(equalsTo(schema.STATUS, "SUCCESS", true));
+		
+		// filter out nat addresses
+		query.where(equalsTo(schema.IS_NAT, "false"));
+		
+		// add group by clause
+		query.groupBy(schema.NORMALIZED_USERNAME, lower(schema.MACHINE_NAME));
+
+		return impalaJdbcTemplate.query(query.toSQL(), this);
 	}
+
+	
 	@Override
-	public List<UserMachine> findByHostname(String hostname){
-		List<UserMachine> ret = new ArrayList<UserMachine>();
-
-		String query = String.format("select * from %s  where lower(%s)=\"%s\"", getTableName(), UserMachine.HOSTNAME_FIELD_NAME, hostname);
-		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
-		
-		return ret;
-	}
-	@Override
-	public List<UserMachine> findByHostnameip(String hostnameip){
-		List<UserMachine> ret = new ArrayList<UserMachine>();
-
-		String query = String.format("select * from %s  where %s=\"%s\"", getTableName(), UserMachine.HOSTNAMEIP_FIELD_NAME, hostnameip);
-		ret.addAll(impalaJdbcTemplate.query(query, new UserMachineMapper()));
-		
-		return ret;
-	}
-	
-	
-	
-	
-	class UserMachineMapper implements RowMapper<UserMachine>{
-
-		@Override
-		public UserMachine mapRow(ResultSet rs, int rowNum) throws SQLException {
-			UserMachine userMachine = new UserMachine();
-			try{
-				userMachine.setHostname(rs.getString(UserMachine.HOSTNAME_FIELD_NAME));
-				userMachine.setHostnameip(rs.getString(UserMachine.HOSTNAMEIP_FIELD_NAME));
-				userMachine.setLastlogon(parseDate(rs.getString(UserMachine.LASTLOGON_FIELD_NAME)));
-				userMachine.setLogoncount(Integer.parseInt(rs.getString(UserMachine.LOGONCOUNT_FIELD_NAME)));
-				userMachine.setUsername(rs.getString(UserMachine.USERNAME_FIELD_NAME));
-			} catch (NumberFormatException e) {
-				throw new SQLException(e.getMessage());
-			} catch (ParseException e) {
-				throw new SQLException(e.getMessage());
-			}
-			
-			return userMachine;
+	public UserMachine mapRow(ResultSet rs, int rowNum) throws SQLException {
+		UserMachine userMachine = new UserMachine();
+		try{
+			userMachine.setUsername(rs.getString(schema.NORMALIZED_USERNAME.toLowerCase()));
+			userMachine.setHostname(rs.getString("machine"));
+			userMachine.setLogonCount(rs.getInt("login_count"));
+			userMachine.setLastlogon(rs.getLong("last_login"));
+		} catch (Exception e) {
+			logger.error("error converting result set record to usermachine", e);
 		}
 		
+		return userMachine;
+	}
 		
-	}
-
-
-	public static String toCsvLine(UserMachine userMachine) {
-		StringBuilder builder = new StringBuilder();
-		appendValueToCsvLine(builder, userMachine.getUsername(), ",");
-		appendValueToCsvLine(builder, userMachine.getHostname(), ",");
-		appendValueToCsvLine(builder, Integer.toString(userMachine.getLogoncount()), ",");
-		appendValueToCsvLine(builder, fromatDate(userMachine.getLastlogon()), ",");
-		appendValueToCsvLine(builder, userMachine.getHostnameip(), "\n");
-		return builder.toString();
-	}
-	
-	public static String toCsvHeader() {
-		StringBuilder builder = new StringBuilder();
-		appendValueToCsvLine(builder, UserMachine.USERNAME_FIELD_NAME, ",");
-		appendValueToCsvLine(builder, UserMachine.HOSTNAME_FIELD_NAME, ",");
-		appendValueToCsvLine(builder, UserMachine.LOGONCOUNT_FIELD_NAME, ",");
-		appendValueToCsvLine(builder, UserMachine.LASTLOGON_FIELD_NAME, ",");
-		appendValueToCsvLine(builder, UserMachine.HOSTNAMEIP_FIELD_NAME, "\n");
-		return builder.toString();
-	}
-	
-	private static void appendValueToCsvLine(StringBuilder builder, String value, String deleimiter) {
-		builder.append(value).append(deleimiter);
-	}
-
-	private static Date parseDate(String dateString) throws ParseException {
-		SimpleDateFormat pattern = new SimpleDateFormat(UserMachine.DATE_FORMAT);
-		return pattern.parse(dateString);
-	}
-	
-	private static String fromatDate(Date date) {
-		SimpleDateFormat pattern = new SimpleDateFormat(UserMachine.DATE_FORMAT);
-		return pattern.format(date);
-	}
 }
 

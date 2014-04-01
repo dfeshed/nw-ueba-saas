@@ -27,7 +27,6 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
@@ -93,9 +92,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	@Autowired
 	private VpnDAO vpnDAO;
-	
-	@Autowired
-	private UserMachineDAO userMachineDAO;
 	
 	@Autowired
 	private UserService userService;
