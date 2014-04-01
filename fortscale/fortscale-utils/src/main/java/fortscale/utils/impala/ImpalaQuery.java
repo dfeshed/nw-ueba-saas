@@ -50,31 +50,19 @@ public class ImpalaQuery {
 	}
 	
 	public ImpalaQuery andIn(String fieldName, Collection<?> elems){
-		StringBuilder builder = new StringBuilder();
 		if(elems != null && !elems.isEmpty()){
-			builder.append(fieldName).append(" in (");
-			boolean isFirstUsername = true;
-			for(Object elem: elems){
-				if(isFirstUsername){
-					isFirstUsername = false;
-				} else{
-					builder.append(",");
-				}
-				builder.append("\"").append(elem.toString()).append("\"");
-			}
-			builder.append(")");
-			return andWhere(builder.toString());
+			return andWhere(ImpalaCriteria.in(fieldName, elems));
 		} else{
 			return this;
 		}
 	}
 	
 	public ImpalaQuery andGte(String fieldName, int elem){
-		return andWhere(String.format("%s >= %d", fieldName, elem));
+		return andWhere(ImpalaCriteria.gte(fieldName, Integer.toString(elem)));
 	}
 	
 	public ImpalaQuery andEq(String fieldName, Long elem){
-		return andWhere(String.format("%s = %d", fieldName, elem));
+		return andWhere(ImpalaCriteria.equalsTo(fieldName, elem.toString()));
 	}
 	
 	public ImpalaQuery limitAndSort(Pageable pageable){
