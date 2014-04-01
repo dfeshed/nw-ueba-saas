@@ -85,6 +85,7 @@
 		<opencsv.version>2.0</opencsv.version>
 		<thrift.version>0.9.0</thrift.version>
 		<commons-io.version>2.1</commons-io.version>
+		<commons-net.version>3.3</commons-net.version>
 		<!-- maven plugins versions -->
 		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
@@ -96,6 +97,13 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>${commons-net.version}</version>
+		</dependency>
+            
+	
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
