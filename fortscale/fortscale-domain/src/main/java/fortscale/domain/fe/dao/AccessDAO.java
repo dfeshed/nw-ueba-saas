@@ -133,50 +133,15 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return findEventsByTimestamp(timestamp, pageable, String.format("%s >= %d", getEventScoreFieldName(), minScore));
 	}
 	
-	public List<T> findEventsByTimestampGtEventScoreInUsernameList(Date timestamp, Pageable pageable, Integer minScore, Collection<String> usernames) {
-		StringBuilder builder = new StringBuilder();
-		boolean isFirst = true;
-		if(minScore != null){
-			builder.append(String.format("%s >= %d", getEventScoreFieldName(), minScore));
-			isFirst = false;
-		}
-		if(usernames != null && !usernames.isEmpty()){
-			if(!isFirst){
-				builder.append(" and ");
-			} else{
-				isFirst = false;
-			}
-			builder.append(getUsernameFieldName()).append(" in (");
-			boolean isFirstUsername = true;
-			for(String username: usernames){
-				if(isFirstUsername){
-					isFirstUsername = false;
-				} else{
-					builder.append(",");
-				}
-				builder.append("\"").append(username).append("\"");
-			}
-			builder.append(")");
-		}
-		String additionalWhereQuery = null;
-		if(!isFirst){
-			additionalWhereQuery = builder.toString();
-		}
-		return findEventsByTimestamp(timestamp, pageable, additionalWhereQuery);
-	}
+	
 
 	public List<T> findEventsByTimestamp(Date timestamp, Pageable pageable,
 			String additionalWhereQuery) {
 		
-		ImpalaQuery query = new ImpalaQuery();
-		query.select("*")
-				.from(getTableName())
-				.where(ImpalaCriteria.equalsTo(getTimestampFieldName(),
-						formatTimestampDate(timestamp)));
+		ImpalaQuery query = getFindEventsByTimestampQuery(timestamp, pageable);
 		if (additionalWhereQuery != null && additionalWhereQuery.length() > 0) {
 			query.andWhere(additionalWhereQuery);
 		}
-		query.limitAndSort(pageable);
 
 		return getListResults(query.toSQL());
 	}
@@ -276,9 +241,32 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	
 	public int countNumOfEventsByGTEScoreAndNormalizedUsernameList(Date timestamp, int minScore, Collection<String> usernames){
 		ImpalaQuery impalaQuery = new ImpalaQuery();
-		impalaQuery.select("count(*)").from(getTableName()).andEq(getTimestampFieldName(), timestampDateToLong(timestamp)).andGte(getEventScoreFieldName(), minScore).andIn(getUsernameFieldName(), usernames);
+		impalaQuery.select("count(*)").from(getTableName()).andEq(getTimestampFieldName(), timestampDateToLong(timestamp)).andGte(getEventScoreFieldName(), minScore).andIn(getNormalizedUsernameField(), usernames);
 		
 		return impalaJdbcTemplate.queryForObject(impalaQuery.toSQL(), Integer.class);
+	}
+	
+	public List<T> findEventsByTimestampGtEventScoreInUsernameList(Date timestamp, Pageable pageable, Integer minScore, Collection<String> usernames) {
+		ImpalaQuery query = getFindEventsByTimestampQuery(timestamp, pageable);
+		if(minScore != null){
+			query.andGte(getEventScoreFieldName(), minScore);
+		}
+		query.andIn(getNormalizedUsernameField(), usernames);
+		
+		return getListResults(query.toSQL());
+	}
+	
+	public ImpalaQuery getFindEventsByTimestampQuery(Date timestamp, Pageable pageable) {
+		
+		ImpalaQuery query = new ImpalaQuery();
+		query.select("*")
+				.from(getTableName())
+				.where(ImpalaCriteria.equalsTo(getTimestampFieldName(),
+						formatTimestampDate(timestamp)));
+		
+		query.limitAndSort(pageable);
+
+		return query;
 	}
 	
 	@SuppressWarnings("deprecation")

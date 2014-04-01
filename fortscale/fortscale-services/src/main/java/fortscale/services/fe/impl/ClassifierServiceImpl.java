@@ -289,7 +289,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
-			usernames = usernameService.getFollowedUsersAuthLogUsername(eventId);
+			usernames = usernameService.getFollowedUsersUsername(eventId);
+			if(usernames.isEmpty()){
+				return 0;
+			}
 		}
 		return eventScoreDAO.countNumOfEventsByGTEScoreAndNormalizedUsernameList(timestamp, minScore, usernames);
 	}
@@ -340,7 +343,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
-			usernames = usernameService.getFollowedUsersAuthLogUsername(eventId);
+			usernames = usernameService.getFollowedUsersUsername(eventId);
+			if(usernames.isEmpty()){
+				return Collections.emptyList();
+			}
 		}
 
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
@@ -531,7 +537,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
-			usernames = usernameService.getFollowedUsersVpnLogUsername();
+			usernames = usernameService.getFollowedUsersUsername(LogEventsEnum.vpn);
+			if(usernames.isEmpty()){
+				return Collections.emptyList();
+			}
 		}
 		
 		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestampGtEventScoreInUsernameList(timestamp, pageable, minScore, usernames);

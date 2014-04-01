@@ -52,8 +52,6 @@ public class ImpalaQuery {
 	public ImpalaQuery andIn(String fieldName, Collection<?> elems){
 		StringBuilder builder = new StringBuilder();
 		if(elems != null && !elems.isEmpty()){
-			builder.append(" and ");
-
 			builder.append(fieldName).append(" in (");
 			boolean isFirstUsername = true;
 			for(Object elem: elems){
@@ -65,9 +63,10 @@ public class ImpalaQuery {
 				builder.append("\"").append(elem.toString()).append("\"");
 			}
 			builder.append(")");
+			return andWhere(builder.toString());
+		} else{
+			return this;
 		}
-		
-		return andWhere(builder.toString());
 	}
 	
 	public ImpalaQuery andGte(String fieldName, int elem){
