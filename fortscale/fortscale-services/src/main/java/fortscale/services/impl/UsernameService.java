@@ -91,6 +91,17 @@ public class UsernameService implements InitializingBean{
 		return getTableName(eventId);
 	}
 	
+	public List<String> getFollowedUsersUsername(LogEventsEnum eventId){
+		List<String> usernames = new ArrayList<>();
+		for(User user: userRepository.findByFollowed(true)){
+			String username = user.getUsername();
+			if(username != null){
+				usernames.add(username);
+			}
+		}
+		return usernames;
+	}
+	
 	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId){
 		List<String> usernames = new ArrayList<>();
 		for(User user: userRepository.findByFollowed(true)){

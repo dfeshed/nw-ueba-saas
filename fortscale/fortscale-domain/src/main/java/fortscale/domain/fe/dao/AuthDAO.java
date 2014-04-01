@@ -8,13 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import fortscale.domain.fe.AuthScore;
 
-public interface AuthDAO {
-
-	public String getTableName();
-	
-	public int countNumOfRecords();
-	
-	public int countNumOfEventsByNormalizedUsernameAndStatusRegex(Date timestamp, String username, String statusVal);
+public interface AuthDAO extends EventScoreDAO{
 	
 	public List<AuthScore> findAll(Pageable pageable);
 	
@@ -39,26 +33,10 @@ public interface AuthDAO {
 	public List<AuthScore> findGlobalScoreByTimestamp(Date timestamp);
 	
 	public List<AuthScore> findUsernamesByTimestamp(Date timestamp);
-	
-	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp);
-	
-	public int countNumOfUsers(Date timestamp);
-	
-	public int countNumOfEvents(Date timestamp);
-	
-	public int countNumOfEventsByNormalizedUsername(Date timestamp, String username);
-	
-	public Date getLastRunDate();
-	
-	public Long getLastRuntime();
-	
-	public double calculateAvgScoreOfGlobalScore(Date timestamp);
-	
+		
 	public List<AuthScore> getTopUsersAboveThreshold(Threshold threshold, Date timestamp, int limit);
 	
 	public List<AuthScore> findByTimestampAndGlobalScoreBetweenSortByEventScore(Date timestamp, int lowestVal, int upperVal, int limit);
 	
-	public List<AuthScore> getTopEventsAboveThreshold(Threshold threshold, Date timestamp, int limit);
-	
-	public List<Long> getDistinctRuntime();
+	public List<AuthScore> getTopEventsAboveThreshold(Threshold threshold, Date timestamp, int limit);	
 }

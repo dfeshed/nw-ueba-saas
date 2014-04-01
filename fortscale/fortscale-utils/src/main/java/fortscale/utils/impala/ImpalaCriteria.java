@@ -49,7 +49,7 @@ public class ImpalaCriteria implements ImpalaQueryElementInterface{
 		return compare(key, " in ", "(" +  value + ")");
 	}
 	
-	public static ImpalaCriteria in(String key, Iterable<String> in){
+	public static ImpalaCriteria in(String key, Iterable<?> in){
 		return compare(key, " in ", listToString(in));
 	}
 	
@@ -65,14 +65,14 @@ public class ImpalaCriteria implements ImpalaQueryElementInterface{
 		return String.format("lower(%s)", key);
 	}
 	
-	private static String listToString(Iterable<String> in) {
+	private static String listToString(Iterable<?> in) {
 		// convert in list to comma separated list
 		StringBuilder sb = new StringBuilder();
 		sb.append("(");
-		for (String item : in) {
-			if (sb.length()>0)
+		for (Object item : in) {
+			if (sb.length()>1)
 				sb.append(",");
-			sb.append("'").append(item.toLowerCase()).append("'");
+			sb.append("'").append(item.toString().toLowerCase()).append("'");
 		}
 		sb.append(")");
 		return sb.toString();

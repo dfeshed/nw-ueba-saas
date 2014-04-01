@@ -17,12 +17,12 @@ public interface ClassifierService {
 	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly);
 	public List<ILoginEventScoreInfo> getUserSuspiciousAuthEvents(LogEventsEnum eventId, String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore);
 	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers);
-	public int countAuthEvents(LogEventsEnum eventId, Date timestamp);
+	public int countAuthEvents(LogEventsEnum eventId, Date timestamp, String userId, int minScore);
+	public int countAuthEvents(LogEventsEnum eventId, Date timestamp, int minScore, boolean onlyFollowedUsers);
 	public int countAuthEvents(LogEventsEnum eventId, String userId, Date timestamp);
+	public int countAuthEvents(LogEventsEnum eventId, Date timestamp);
 	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore);
 	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers);
-	public int countVpnEvents(Date timestampt);
-	public int countVpnEvents(String userId, Date timestamp);
 	
 	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection, Integer minScore);
 	public Long getLatestRuntime(String tableName);

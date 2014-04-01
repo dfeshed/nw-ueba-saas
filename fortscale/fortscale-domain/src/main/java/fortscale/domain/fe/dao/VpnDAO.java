@@ -8,15 +8,9 @@ import org.springframework.data.domain.Pageable;
 
 import fortscale.domain.fe.VpnScore;
 
-public interface VpnDAO {
-	
-	public String getTableName();
+public interface VpnDAO extends EventScoreDAO{
 	
 	public List<VpnScore> findAll(Pageable pageable);
-	
-	public int countNumOfRecords();
-	
-	public int countNumOfEventsByNormalizedUsernameAndStatusRegex(Date timestamp, String username, String statusVal);
 	
 	public VpnScore findCurrentByNormalizedUsername(String username);
 	
@@ -40,27 +34,13 @@ public interface VpnDAO {
 	
 	public List<VpnScore> findUsernamesByTimestamp(Date timestamp);
 	
-	public int countNumOfUsersAboveThreshold(Threshold threshold, Date timestamp);
 	
-	public int countNumOfUsers(Date timestamp);
-	
-	public int countNumOfEvents(Date timestamp);
-	
-	public int countNumOfEventsByNormalizedUsername(Date timestamp, String username);
-	
-	public Date getLastRunDate();
-	
-	public Long getLastRuntime();
-	
-	public double calculateAvgScoreOfGlobalScore(Date timestamp);
 	
 	public List<VpnScore> getTopUsersAboveThreshold(Threshold threshold, Date timestamp, int limit);
 	
 	public List<VpnScore> findByTimestampAndGlobalScoreBetweenSortByEventScore(Date timestamp, int lowestVal, int upperVal, int limit);
 	
 	public List<VpnScore> getTopEventsAboveThreshold(Threshold threshold, Date timestamp, int limit);
-	
-	public List<Long> getDistinctRuntime();
 	
 	
 	

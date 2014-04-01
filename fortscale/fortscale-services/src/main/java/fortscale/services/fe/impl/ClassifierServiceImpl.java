@@ -38,6 +38,7 @@ import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.EventResultRepository;
+import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.ebs.EBSPigUDF;
@@ -245,20 +246,55 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	@Override
 	public int countAuthEvents(LogEventsEnum eventId, String userId, Date timestamp){
-		AuthDAO authDAO = getAuthDAO(eventId);
+		EventScoreDAO eventScoreDAO = getEventScoreDAO(eventId);
 		User user = userRepository.findOne(userId);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
 		if(timestamp == null){
-			timestamp = authDAO.getLastRunDate();
+			timestamp = eventScoreDAO.getLastRunDate();
 		}
 		String logUsername = usernameService.getAuthLogUsername(eventId, user);
 		if(logUsername != null){
-			return authDAO.countNumOfEventsByNormalizedUsername(timestamp, user.getUsername());
+			return eventScoreDAO.countNumOfEventsByNormalizedUsername(timestamp, user.getUsername());
 		} else{
 			return 0;
 		}
+	}
+	
+	@Override
+	public int countAuthEvents(LogEventsEnum eventId, Date timestamp, String userId, int minScore){
+		EventScoreDAO eventScoreDAO = getEventScoreDAO(eventId);
+		User user = userRepository.findOne(userId);
+		if(user == null){
+			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
+		}
+		if(timestamp == null){
+			timestamp = eventScoreDAO.getLastRunDate();
+		}
+		String logUsername = usernameService.getAuthLogUsername(eventId, user);
+		if(logUsername != null){
+			return eventScoreDAO.countNumOfEventsByNormalizedUsernameAndGtEScore(timestamp, user.getUsername(), minScore);
+		} else{
+			return 0;
+		}
+	}
+	
+	@Override
+	public int countAuthEvents(LogEventsEnum eventId, Date timestamp, int minScore, boolean onlyFollowedUsers){
+		EventScoreDAO eventScoreDAO = getEventScoreDAO(eventId);
+		if(timestamp == null){
+			timestamp = eventScoreDAO.getLastRunDate();
+		}
+
+		List<String> usernames = null;
+		if(onlyFollowedUsers){
+			usernames = usernameService.getFollowedUsersUsername(eventId);
+			if(usernames.isEmpty()){
+				return 0;
+			}
+		}
+		return eventScoreDAO.countNumOfEventsByGTEScoreAndNormalizedUsernameList(timestamp, minScore, usernames);
 	}
 
 	@Override
@@ -307,7 +343,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
-			usernames = usernameService.getFollowedUsersAuthLogUsername(eventId);
+			usernames = usernameService.getFollowedUsersUsername(eventId);
+			if(usernames.isEmpty()){
+				return Collections.emptyList();
+			}
 		}
 
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
@@ -341,6 +380,25 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				break;
 			case ssh:
 				ret = sshDAO;
+				break;
+		default:
+			break;
+		}
+		
+		return ret;
+	}
+	
+	public EventScoreDAO getEventScoreDAO(LogEventsEnum eventId){
+		EventScoreDAO ret = null;
+		switch(eventId){
+			case login:
+				ret = loginDAO;
+				break;
+			case ssh:
+				ret = sshDAO;
+				break;
+			case vpn:
+				ret = vpnDAO;
 				break;
 		default:
 			break;
@@ -442,22 +500,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	
 	
-	@Override
-	public int countVpnEvents(String userId, Date timestamp){
-		User user = userRepository.findOne(userId);
-		if(user == null){
-			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
-		}
-		ApplicationUserDetails applicationUserDetails = userService.getApplicationUserDetails(user, UserApplication.vpn);
-		if(applicationUserDetails == null || applicationUserDetails.getUserName() == null) {
-			return 0;
-		}
-
-		if(timestamp == null){
-			timestamp = vpnDAO.getLastRunDate();
-		}
-		return vpnDAO.countNumOfEventsByNormalizedUsername(timestamp, user.getUsername());
-	}
 	
 	@Override
 	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
@@ -486,14 +528,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public int countVpnEvents(Date timestamp){
-		if(timestamp == null){
-			timestamp = vpnDAO.getLastRunDate();
-		}
-		return vpnDAO.countNumOfEvents(timestamp);
-	}
-
-	@Override
 	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
 		if(timestamp == null){
 			timestamp = vpnDAO.getLastRunDate();
@@ -503,7 +537,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
-			usernames = usernameService.getFollowedUsersVpnLogUsername();
+			usernames = usernameService.getFollowedUsersUsername(LogEventsEnum.vpn);
+			if(usernames.isEmpty()){
+				return Collections.emptyList();
+			}
 		}
 		
 		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestampGtEventScoreInUsernameList(timestamp, pageable, minScore, usernames);

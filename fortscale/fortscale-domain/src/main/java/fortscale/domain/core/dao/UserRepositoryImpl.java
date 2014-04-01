@@ -105,7 +105,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	@Override
 	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold) {
 		DateTime dateTime = new DateTime();
-		dateTime = dateTime.withTimeAtStartOfDay();
+		dateTime = dateTime.minusDays(1);
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
 		Query query = new Query(where(classifierCurScoreField).gte(threshold.getValue()).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
@@ -115,7 +115,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	@Override
 	public int countNumOfUsers(String classifierId) {
 		DateTime dateTime = new DateTime();
-		dateTime = dateTime.withTimeAtStartOfDay();
+		dateTime = dateTime.minusDays(1);
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
 		return (int) mongoTemplate.count(query, User.class);
