@@ -65,7 +65,12 @@ public class ImpalaCriteria implements ImpalaQueryElementInterface{
 		return String.format("lower(%s)", key);
 	}
 	
-	private static String listToString(Iterable<?> in) {
+
+	public static String quote(String value) {
+		return String.format("'%s'", value);
+	}
+
+	private static String listToString(Iterable<?> in) {	
 		// convert in list to comma separated list
 		StringBuilder sb = new StringBuilder();
 		sb.append("(");

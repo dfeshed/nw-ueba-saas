@@ -12,6 +12,7 @@ public class ImpalaQuery {
 	private String table;
 	private ImpalaCriteriaContainer whereCriteria;
 	private Pageable pageable;
+	private String[] groupBy;
 	
 	public ImpalaQuery(){
 		
@@ -70,6 +71,11 @@ public class ImpalaQuery {
 		return this;
 	}
 	
+	public ImpalaQuery groupBy(String... fields) {
+		groupBy = fields;		
+		return this;
+	}
+	
 	public String toSQL(){
 		if(table == null){
 			throw new InvalidDataAccessResourceUsageException("the query does not contain the table.");
@@ -85,6 +91,10 @@ public class ImpalaQuery {
 		if(whereCriteria != null){
 			builder.append(" where ");
 			whereCriteria.appendTo(builder);
+		}
+		if (groupBy != null) {
+			builder.append(" group by ");
+			Joiner.on(",").appendTo(builder, groupBy);
 		}
 		if(pageable != null) {
 			builder.append(" ").append(pageable.toString());

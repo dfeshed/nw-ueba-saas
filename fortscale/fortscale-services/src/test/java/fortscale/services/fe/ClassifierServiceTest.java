@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.JdbcOperations;
 
-import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
@@ -61,10 +60,7 @@ public class ClassifierServiceTest{
 	
 	@Mock
 	private VpnDAO vpnDAO;
-	
-	@Mock
-	private UserMachineDAO userMachineDAO;
-	
+		
 	@Mock
 	private ConfigurationService configurationService;
 	
