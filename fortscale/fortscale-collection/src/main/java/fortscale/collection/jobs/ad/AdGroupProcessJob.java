@@ -8,6 +8,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.dao.AdGroupRepository;
 
