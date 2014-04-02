@@ -54,6 +54,10 @@ public class PigRunner implements InitializingBean {
 		// the PigRunner class is singleton
 		PigServer server = pigFactory.getPigServer();
 		
+		// get the jar location for cuckoo clock jar
+		String cuckooJarLocation = fortscale.cuckooclock.SimpleCuckooClock.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString();
+		server.registerJar(cuckooJarLocation);
+		
 		// get the jar location for calibro jar
 		String calibroJarLocation = fortscale.calibro.Calibration.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString();
 		server.registerJar(calibroJarLocation);

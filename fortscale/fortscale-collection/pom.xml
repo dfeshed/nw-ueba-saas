@@ -228,6 +228,11 @@
 			<artifactId>fortscale-monitor</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fortscale.toolkits</groupId>
+			<artifactId>cuckoo_clock</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 		<!-- required by splunk api -->
 		<dependency>
