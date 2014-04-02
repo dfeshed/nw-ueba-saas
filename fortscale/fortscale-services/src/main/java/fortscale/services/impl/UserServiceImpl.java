@@ -415,7 +415,7 @@ public class UserServiceImpl implements UserService{
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
 		}
 		
-		String userName = user.getApplicationUserDetails(UserApplication.active_directory.getId()).getUserName();
+		String userName = user.getUsername();
 		return userMachineDAO.findByUsername(userName);
 	}
 	

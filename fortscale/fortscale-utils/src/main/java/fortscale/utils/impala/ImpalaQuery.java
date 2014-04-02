@@ -10,7 +10,7 @@ public class ImpalaQuery {
 	private String table;
 	private ImpalaCriteriaContainer whereCriteria;
 	private Pageable pageable;
-	private String groupBy;
+	private String[] groupBy;
 	
 	public ImpalaQuery(){
 		
@@ -54,7 +54,7 @@ public class ImpalaQuery {
 	}
 	
 	public ImpalaQuery groupBy(String... fields) {
-		groupBy = Joiner.on(",").join(fields);		
+		groupBy = fields;		
 		return this;
 	}
 	
@@ -75,7 +75,8 @@ public class ImpalaQuery {
 			whereCriteria.appendTo(builder);
 		}
 		if (groupBy != null) {
-			builder.append(" group by ").append(groupBy);
+			builder.append(" group by ");
+			Joiner.on(",").appendTo(builder, groupBy);
 		}
 		if(pageable != null) {
 			builder.append(" ").append(pageable.toString());
