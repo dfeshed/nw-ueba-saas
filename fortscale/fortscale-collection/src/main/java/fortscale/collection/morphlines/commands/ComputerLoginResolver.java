@@ -18,10 +18,10 @@ public class ComputerLoginResolver {
 	@Autowired
 	private ComputerLoginEventRepository computerLoginEventRepository;
 	
-	@Value("${computer.login.resolver.leaseTimeInMins}")
-	private int leaseTimeInMins = 2880;
-	@Value("${computer.login.resolver.leaseTimeInMins}")
-	private int graceTimeInMins = 1;
+	@Value("${computer.login.resolver.leaseTimeInMins:2880}")
+	private int leaseTimeInMins;
+	@Value("${computer.login.resolver.graceTimeInMins:1}")
+	private int graceTimeInMins;
 	
 	
 	public String getHostname(String ip, long ts) {

@@ -18,10 +18,10 @@ public class DhcpResolver {
 	@Autowired
 	private DhcpEventRepository dhcpEventRepository;
 	
-	@Value("${dhcp.resolver.leaseTimeInMins}")
-	private int leaseTimeInMins = 2880;
-	@Value("${dhcp.resolver.leaseTimeInMins}")
-	private int graceTimeInMins = 1;
+	@Value("${dhcp.resolver.leaseTimeInMins:2880}")
+	private int leaseTimeInMins;
+	@Value("${dhcp.resolver.leaseTimeInMins:1}")
+	private int graceTimeInMins;
 	
 	
 	public String getHostname(String ip, long ts) {
