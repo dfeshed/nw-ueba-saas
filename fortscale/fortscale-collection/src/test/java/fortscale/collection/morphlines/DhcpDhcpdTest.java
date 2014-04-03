@@ -17,7 +17,7 @@ public class DhcpDhcpdTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/read_DHCPD.conf";
-	private String[] dhcpOutputFields = new String[] {"date_time","date_time_epoch","ip","hostname","mac_address"};
+	private String[] dhcpOutputFields = new String[] {"timestampepoch","ipaddress","hostname","macAddress"};
 
 	
 	@Before
@@ -44,12 +44,12 @@ public class DhcpDhcpdTest {
         		$ (
         		"Regular dhcpack #1",
 				"Nov 19 23:59:54 server01 dhcpd: DHCPACK on 10.28.136.112 to 00:0d:0d:e8:72:c6 (APAC803F6) via eth0",
-				"2014-11-19 23:59:54,1416434394,10.28.136.112,APAC803F6,00:0d:0d:e8:72:c6"
+				"1416434394,10.28.136.112,APAC803F6,00:0d:0d:e8:72:c6"
 				),
         		$ (
         		"Regular dhcpack #2",
 				"Nov 19 23:59:56 server01 dhcpd: DHCPACK on 172.16.30.160 to e0:1d:41:04:7c:c0 (ML-retro-3cf-045dd0) via 10.136.76.250",
-				"2014-11-19 23:59:56,1416434396,172.16.30.160,ML-retro-3cf-045dd0,e0:1d:41:04:7c:c0"
+				"1416434396,172.16.30.160,ML-retro-3cf-045dd0,e0:1d:41:04:7c:c0"
 				),
         		$ (
         		"Regular dhcpack with no hostname. Drop the record",

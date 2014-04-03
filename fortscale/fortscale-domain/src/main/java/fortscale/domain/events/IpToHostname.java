@@ -11,7 +11,6 @@ public class IpToHostname extends AbstractDocument{
 
 	public static final String CREATED_AT_FIELD_NAME = "createdAt";
 	public static final String TIMESTAMP_EPOCH_FIELD_NAME = "timestampepoch";
-	public static final String DATETIME_FIELD_NAME = "datetime";
 	public static final String IP_ADDRESS_FIELD_NAME = "ipaddress";
 	public static final String HOSTNAME_FIELD_NAME = "hostname";
 	
@@ -22,9 +21,6 @@ public class IpToHostname extends AbstractDocument{
 	
 	@Field(TIMESTAMP_EPOCH_FIELD_NAME)
 	private Long timestampepoch;
-	
-	@Field(DATETIME_FIELD_NAME)
-	private DateTime datetime;
 	
 	@Field(IP_ADDRESS_FIELD_NAME)
 	private String ipaddress;
@@ -49,14 +45,6 @@ public class IpToHostname extends AbstractDocument{
 
 	public void setTimestampepoch(Long timestampepoch) {
 		this.timestampepoch = timestampepoch;
-	}
-
-	public DateTime getDatetime() {
-		return datetime;
-	}
-
-	public void setDatetime(DateTime datetime) {
-		this.datetime = datetime;
 	}
 
 	public String getIpaddress() {

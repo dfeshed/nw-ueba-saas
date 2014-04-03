@@ -30,7 +30,7 @@ public class DhcpResolver {
 		long upperLimitTs = (graceTimeInMins > 0)? ts + graceTimeInMins * 60 : ts;
 		long lowerLimitTs = ts - leaseTimeInMins * 60;
 		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME);
-		List<DhcpEvent> dhcpEvents = dhcpEventRepository.findByIpaddressAndTimestampepochGreaterThanEqualAndTimestampepochLessThanEqual(ip, lowerLimitTs, upperLimitTs, pageRequest);
+		List<DhcpEvent> dhcpEvents = dhcpEventRepository.findByIpaddressAndTimestampepochBetween(ip, lowerLimitTs, upperLimitTs, pageRequest);
 		if(!dhcpEvents.isEmpty()){
 			ret = dhcpEvents.get(0).getHostname();
 		}

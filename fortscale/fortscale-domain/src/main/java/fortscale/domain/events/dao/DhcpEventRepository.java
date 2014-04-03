@@ -9,6 +9,6 @@ import fortscale.domain.events.DhcpEvent;
 
 
 public interface DhcpEventRepository  extends MongoRepository<DhcpEvent, String>{
-	public List<DhcpEvent> findByIpaddressAndTimestampepochGreaterThanEqualAndTimestampepochLessThanEqual(String ipaddress, Long minTimestampepoch, Long maxTimestampepoch, Pageable pageable);
+	public List<DhcpEvent> findByIpaddressAndTimestampepochBetween(String ipaddress, Long minTimestampepoch, Long maxTimestampepoch, Pageable pageable);
 }
 

@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document(collection=DhcpEvent.collectionName)
 @CompoundIndexes({
 	@CompoundIndex(name="ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}"),
+	@CompoundIndex(name="hostnameTimeIdx", def = "{'hostname': 1, 'timestampepoch': -1}"),
 })
 public class DhcpEvent extends IpToHostname{
 	public static final String collectionName =  "DhcpEvent";
