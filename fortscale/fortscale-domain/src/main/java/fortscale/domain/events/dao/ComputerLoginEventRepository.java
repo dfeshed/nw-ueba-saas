@@ -9,5 +9,5 @@ import fortscale.domain.events.ComputerLoginEvent;
 
 public interface ComputerLoginEventRepository extends MongoRepository<ComputerLoginEvent, String>{
 
-	public List<ComputerLoginEvent> findByIpaddressAndTimestampepochGreaterThanEqualAndTimestampepochLessThanEqual(String ipaddress, Long minTimestampepoch, Long maxTimestampepoch, Pageable pageable);
+	public List<ComputerLoginEvent> findByIpaddressAndTimestampepochBetween(String ipaddress, Long minTimestampepoch, Long maxTimestampepoch, Pageable pageable);
 }

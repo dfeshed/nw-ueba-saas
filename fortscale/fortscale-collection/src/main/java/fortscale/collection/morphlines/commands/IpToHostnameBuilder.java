@@ -22,6 +22,8 @@ public class IpToHostnameBuilder implements CommandBuilder {
 	
 	private DnsResolver dnsResolver = new DnsResolver();
 	
+	private ComputerLoginResolver computerLoginResolver = new ComputerLoginResolver();
+	
 	@Override
 	public Collection<String> getNames() {
 		return Collections.singletonList("IpToHostname");
@@ -99,6 +101,7 @@ public class IpToHostnameBuilder implements CommandBuilder {
 					ret = dnsResolver.getHostname(ip);
 					break;
 				case "logins":
+					ret = computerLoginResolver.getHostname(ip, ts);
 					break;
 				}
 				
