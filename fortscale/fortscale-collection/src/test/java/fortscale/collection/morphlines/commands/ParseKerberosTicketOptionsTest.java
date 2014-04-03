@@ -180,7 +180,8 @@ public class ParseKerberosTicketOptionsTest {
 		"proxied,     0x08000000",
 		"postdated,   0x02000000",
 		"renewRequest,0x00000002",
-		"constraintDelegation,0x00020000"
+		"constraintDelegation,0x00020000",
+		"renewRequest,0x10002"
 	})
 	public void test_parse_ticket_with_field_option_set_bit(String field, String ticket) {
 		// build the parse kerberos command
