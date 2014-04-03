@@ -71,7 +71,8 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 				ComputerLoginEvent computerLoginEvent = new ComputerLoginEvent();
 				computerLoginEvent.setTimestampepoch(timestampepoch);
 				computerLoginEvent.setIpaddress(ipaddress);
-				computerLoginEvent.setHostname(String.format("%s.%s", hostname, domain));
+				hostname = hostname.substring(0, hostname.length() - 1);
+				computerLoginEvent.setHostname(String.format("%s.%s", hostname.toLowerCase(), domain.toLowerCase()));
 				computerLoginEventRepository.save(computerLoginEvent);
 			} catch(Exception e){
 				logger.error("Got an exception while processing morphline record", e);
