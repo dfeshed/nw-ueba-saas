@@ -22,23 +22,23 @@ import fortscale.services.machine.MachineInfo;
  * This morphline command receive a hostname and sets values indicating if it is
  * a server or endpoint in the morphline record
  */
-public class ClassifyMachineBuilder implements CommandBuilder {
+public class ClassifyHostBuilder implements CommandBuilder {
 
 	@Override
 	public Collection<String> getNames() {
-		return Collections.singletonList("ClassifyMachine");
+		return Collections.singletonList("ClassifyHost");
 	}
 	
 	@Override
 	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
-		return new ClassifyMachine(this, config, parent, child, context);
+		return new ClassifyHost(this, config, parent, child, context);
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable(preConstruction=true)
-	public static final class ClassifyMachine extends AbstractCommand {
+	public static final class ClassifyHost extends AbstractCommand {
 		
 		@Autowired
 		private EndpointDetectionService service;
@@ -47,7 +47,7 @@ public class ClassifyMachineBuilder implements CommandBuilder {
 		private String isEndpointField;
 		private String isServerField;
 		
-		public ClassifyMachine(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
+		public ClassifyHost(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			
 			this.hostnameField = getConfigs().getString(config, "hostnameField");
@@ -55,7 +55,7 @@ public class ClassifyMachineBuilder implements CommandBuilder {
 			this.isServerField = getConfigs().getString(config, "isServerField", null);
 		}
 		
-		public ClassifyMachine(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, EndpointDetectionService service) {
+		public ClassifyHost(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, EndpointDetectionService service) {
 			this(builder, config, parent, child, context);
 			
 			this.service = service;

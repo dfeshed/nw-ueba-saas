@@ -11,11 +11,11 @@ import org.kitesdk.morphline.api.Record;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
-import fortscale.collection.morphlines.commands.ClassifyMachineBuilder.ClassifyMachine;
+import fortscale.collection.morphlines.commands.ClassifyHostBuilder.ClassifyHost;
 import fortscale.services.machine.EndpointDetectionService;
 import fortscale.services.machine.MachineInfo;
 
-public class ClassifyMachineBuilderTest {
+public class ClassifyHostBuilderTest {
 
 	private RecordSinkCommand sink = new RecordSinkCommand();
 	private Config config;
@@ -38,11 +38,11 @@ public class ClassifyMachineBuilderTest {
 		return record;
 	}
 	
-	private ClassifyMachine getCommand() {
+	private ClassifyHost getCommand() {
 		// build the classify command
-		ClassifyMachineBuilder builder = new ClassifyMachineBuilder();
+		ClassifyHostBuilder builder = new ClassifyHostBuilder();
 		MorphlineContext morphlineContext = new MorphlineContext.Builder().build();
-		return  new ClassifyMachine(builder, config, sink, sink, morphlineContext, service);
+		return  new ClassifyHost(builder, config, sink, sink, morphlineContext, service);
 	}
 	
 	@Test
@@ -52,7 +52,7 @@ public class ClassifyMachineBuilderTest {
 		// build the classify command
 		when(config.hasPath("isEndpointField")).thenReturn(true);
 		when(config.getString("isEndpointField")).thenReturn("isEndpoint");
-		ClassifyMachine command = getCommand();
+		ClassifyHost command = getCommand();
 		Record record = getRecord(false, "my-pc");
 		
 		// execute the command
@@ -72,7 +72,7 @@ public class ClassifyMachineBuilderTest {
 		// build the classify command
 		when(config.hasPath("isServerField")).thenReturn(true);
 		when(config.getString("isServerField")).thenReturn("isServer");
-		ClassifyMachine command = getCommand();
+		ClassifyHost command = getCommand();
 		Record record = getRecord(false, "my-pc");
 		
 		// execute the command
@@ -90,7 +90,7 @@ public class ClassifyMachineBuilderTest {
 		when(service.getMachineInfo("my-pc")).thenReturn(new MachineInfo("my-pc", true, false));
 		
 		// build the classify command
-		ClassifyMachine command = getCommand();
+		ClassifyHost command = getCommand();
 		Record record = getRecord(false, "my-pc");
 		
 		// execute the command
@@ -112,7 +112,7 @@ public class ClassifyMachineBuilderTest {
 		when(config.hasPath("isServerField")).thenReturn(true);
 		when(config.getString("isEndpointField")).thenReturn("isEndpoint");
 		when(config.getString("isServerField")).thenReturn("isServer");
-		ClassifyMachine command = getCommand();
+		ClassifyHost command = getCommand();
 		Record record = getRecord(false, "my-pc");
 		
 		// execute the command
@@ -133,7 +133,7 @@ public class ClassifyMachineBuilderTest {
 		when(config.hasPath("isServerField")).thenReturn(true);
 		when(config.getString("isEndpointField")).thenReturn("isEndpoint");
 		when(config.getString("isServerField")).thenReturn("isServer");
-		ClassifyMachine command = getCommand();
+		ClassifyHost command = getCommand();
 		Record record = getRecord(true, null);
 		
 		// execute the command
@@ -156,7 +156,7 @@ public class ClassifyMachineBuilderTest {
 		when(config.hasPath("isServerField")).thenReturn(true);
 		when(config.getString("isEndpointField")).thenReturn("isEndpoint");
 		when(config.getString("isServerField")).thenReturn("isServer");
-		ClassifyMachine command = getCommand();
+		ClassifyHost command = getCommand();
 		Record record = getRecord(false, "");
 		
 		// execute the command
@@ -179,7 +179,7 @@ public class ClassifyMachineBuilderTest {
 		when(config.hasPath("isServerField")).thenReturn(true);
 		when(config.getString("isEndpointField")).thenReturn("isEndpoint");
 		when(config.getString("isServerField")).thenReturn("isServer");
-		ClassifyMachine command = getCommand();
+		ClassifyHost command = getCommand();
 		Record record = getRecord(false, "my-pc");
 		
 		// execute the command
