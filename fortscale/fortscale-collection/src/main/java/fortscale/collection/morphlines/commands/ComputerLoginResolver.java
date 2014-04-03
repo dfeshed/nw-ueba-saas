@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 
@@ -17,7 +18,9 @@ public class ComputerLoginResolver {
 	@Autowired
 	private ComputerLoginEventRepository computerLoginEventRepository;
 	
+	@Value("${computer.login.resolver.leaseTimeInMins}")
 	private int leaseTimeInMins = 2880;
+	@Value("${computer.login.resolver.leaseTimeInMins}")
 	private int graceTimeInMins = 1;
 	
 	
