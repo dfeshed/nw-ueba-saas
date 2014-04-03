@@ -1,13 +1,14 @@
 package fortscale.collection.morphlines.commands;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.xbill.DNS.DClass;
 import org.xbill.DNS.ExtendedResolver;
 import org.xbill.DNS.Message;
@@ -18,17 +19,24 @@ import org.xbill.DNS.Section;
 import org.xbill.DNS.Type;
 
 
-
+@Configurable(preConstruction=true)
 public class DnsResolver {
 	private static Logger logger = LoggerFactory.getLogger(DnsResolver.class);
+	
+	private static final char DNS_SERVERS_SEPERATOR = ',';
 	
 	private HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
 	private HashSet<String> blackIpHashSetCache = new HashSet<String>();
 	
-	private int maxQueries = 1000;
+	@Value("${dns.resolver.maxQueries}")
+	private int maxQueries;
+	@Value("${dns.resolver.dnsServers:}")
+	private String dnsServers;
+	@Value("${dns.resolver.timeoutInSeconds}")
+	private int timeoutInSeconds;
+	
 	private int dnsLookupCounter = 0;
-	private List<String> dnsServers;
-	private int timeoutInSeconds = -1;
+	
 	
 	public String getHostname(String ip_address) {	
 		if (!blackIpHashSetCache.isEmpty() && blackIpHashSetCache.contains(ip_address)) {
@@ -44,8 +52,8 @@ public class DnsResolver {
 		String resolvedHostname = null;
 		if ((this.maxQueries == -1) || (this.maxQueries > dnsLookupCounter)) {
 			String[] dnsServersArray = null;
-			if (this.dnsServers != null && this.dnsServers.size() > 0) {
-				dnsServersArray = Arrays.copyOf(this.dnsServers.toArray(), this.dnsServers.toArray().length, String[].class);
+			if (!StringUtils.isEmpty(dnsServers)) {
+				dnsServersArray = StringUtils.split(dnsServers, DNS_SERVERS_SEPERATOR);
 			}
 			dnsLookupCounter++;
 			try {
