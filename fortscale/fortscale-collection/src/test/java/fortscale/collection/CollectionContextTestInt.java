@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fortscale.collection.morphlines.commands.DnsResolver;
 import fortscale.utils.test.category.HadoopTestCategory;
 import fortscale.utils.test.category.IntegrationTestCategory;
 
@@ -19,7 +18,5 @@ public class CollectionContextTestInt {
 	@Test
 	@Category(IntegrationTestCategory.class)
 	public void testContext(){
-		DnsResolver dnsResolver = new DnsResolver();
-		dnsResolver.getHostname("sdfd");
 	}
 }

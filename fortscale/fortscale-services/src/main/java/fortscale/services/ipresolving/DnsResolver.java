@@ -1,4 +1,4 @@
-package fortscale.collection.morphlines.commands;
+package fortscale.services.ipresolving;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,11 +28,11 @@ public class DnsResolver {
 	private HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
 	private HashSet<String> blackIpHashSetCache = new HashSet<String>();
 	
-	@Value("${dns.resolver.maxQueries}")
+	@Value("${dns.resolver.maxQueries:1000}")
 	private int maxQueries;
 	@Value("${dns.resolver.dnsServers:}")
 	private String dnsServers;
-	@Value("${dns.resolver.timeoutInSeconds}")
+	@Value("${dns.resolver.timeoutInSeconds:-1}")
 	private int timeoutInSeconds;
 	
 	private int dnsLookupCounter = 0;

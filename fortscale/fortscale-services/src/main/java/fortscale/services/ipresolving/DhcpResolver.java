@@ -1,4 +1,4 @@
-package fortscale.collection.morphlines.commands;
+package fortscale.services.ipresolving;
 
 import java.util.List;
 

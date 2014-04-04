@@ -56,6 +56,7 @@
     <properties>
 		<hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
 		<pigunit.version>0.11.0-cdh4.4.0</pigunit.version>
+		<dnsjava.version>2.1.1</dnsjava.version>
 	</properties>
 
 	<dependencies>
@@ -102,6 +103,11 @@
 			<groupId>com.fortscale.toolkits</groupId>
 			<artifactId>calibro</artifactId>
 			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>dnsjava</groupId>
+			<artifactId>dnsjava</artifactId>
+			<version>${dnsjava.version}</version>
 		</dependency>
 		
 		<!-- Hibernate Validator -->

@@ -13,6 +13,9 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.services.ipresolving.ComputerLoginResolver;
+import fortscale.services.ipresolving.DhcpResolver;
+import fortscale.services.ipresolving.DnsResolver;
 
 
 
@@ -43,7 +46,9 @@ public class IpToHostnameBuilder implements CommandBuilder {
 		private static final String STRING_EMPTY = "";
 		private final String ipAddress;
 		private final String timeStamp;
-		private final List<String> resolvers;
+		private boolean useLoginResolver = false;
+		private boolean useDhcpResolver = false;
+		private boolean useDnsResolver = false;
 		private final String outputRecordName;
 		
 		private boolean shortName = true;
@@ -55,10 +60,30 @@ public class IpToHostnameBuilder implements CommandBuilder {
 			super(builder, config, parent, child, context);
 			this.ipAddress = getConfigs().getString(config, "ipAddress");
 			this.timeStamp = getConfigs().getString(config, "timeStamp");
-			this.resolvers = getConfigs().getStringList(config, "resolvers");
 			this.outputRecordName = getConfigs().getString(config, "outputRecordName");
 			this.shortName = getConfigs().getBoolean(config, "short_name", true);
 			this.isRemoveLastDot = getConfigs().getBoolean(config, "remove_last_dot", false);
+			
+			List<String> resolvers = getConfigs().getStringList(config, "resolvers");
+			if(resolvers == null || resolvers.isEmpty()){
+				useDhcpResolver = true;
+				useDnsResolver = true;
+				useLoginResolver = true;
+			} else{
+				for(String resolver: resolvers){
+					switch(resolver){
+					case "dhcp":
+						useDhcpResolver = true;
+						break;
+					case "dns":
+						useDnsResolver = true;
+						break;
+					case "logins":
+						useLoginResolver = true;
+						break;
+					}					
+				}
+			}
 			
 			validateArguments();
 		}
@@ -92,21 +117,19 @@ public class IpToHostnameBuilder implements CommandBuilder {
 				return STRING_EMPTY;
 			
 			String ret = null;
-			for(String resolver: resolvers){
-				switch(resolver){
-				case "dhcp":
-					ret = dhcpResolver.getHostname(ip, ts);
-					break;
-				case "dns":
-					ret = dnsResolver.getHostname(ip);
-					break;
-				case "logins":
+			if(ret == null || ret.isEmpty() ){
+				if(useLoginResolver){
 					ret = computerLoginResolver.getHostname(ip, ts);
-					break;
 				}
-				
-				if(ret != null && !ret.isEmpty()){
-					break;
+			}
+			if(ret == null || ret.isEmpty() ){
+				if(useDhcpResolver){
+					ret = dhcpResolver.getHostname(ip, ts);
+				}
+			}
+			if(ret == null || ret.isEmpty() ){
+				if(useDnsResolver){
+					ret = dnsResolver.getHostname(ip);
 				}
 			}
 			
