@@ -115,9 +115,8 @@ public class BatchScheduler {
 		startJob("Fetch", "SecurityEvents", params);
 		startJob("Route_ETL", "SecurityEvents", params);
 		startJob("Comp_ETL", "SecurityEvents", params);
-		String etlParams[] = Arrays.copyOf(params, params.length + 2);
-		etlParams[params.length] = "filesFilter";
-		etlParams[params.length+1] = "user_SEC_\\d+.csv$";
+		String etlParams[] = Arrays.copyOf(params, params.length + 1);
+		etlParams[params.length] = "filesFilter=user_SEC_\\d+.csv$";
 		startJob("ETL", "SecurityEvents", etlParams);
 		startJob("AuthScoring", "SecurityEvents", params);
 		startJob("LoginScoring", "SecurityEvents", params);
