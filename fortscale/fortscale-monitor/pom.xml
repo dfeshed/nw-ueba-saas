@@ -65,7 +65,7 @@
 		<commons-cli.version>1.2</commons-cli.version>
 		<!-- maven plugins versions -->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
-		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<maven-jar-plugin.version>2.5</maven-jar-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>
@@ -156,6 +156,9 @@
 							<classpathPrefix>lib-monitor/</classpathPrefix>
 							<useUniqueVersions>false</useUniqueVersions>
 						</manifest>
+						<manifestEntries>
+							<version>${project.parent.version}</version>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>

@@ -69,6 +69,8 @@
 		<commons-pool.version>1.4</commons-pool.version>
 		<commons-codec.version>1.5</commons-codec.version>
 		<kite-version>0.10.0</kite-version>
+		<!-- maven plugins versions -->
+		<maven-jar-plugin.version>2.5</maven-jar-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -280,4 +282,19 @@
 
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+				<archive>
+				<manifestEntries>
+					<version>${project.parent.version}</version>
+				</manifestEntries>
+				</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -76,7 +76,7 @@
 		<hadoop-core.version>2.0.0-mr1-cdh4.4.0</hadoop-core.version>
 		<!-- maven plugins -->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
-		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<maven-jar-plugin.version>2.5</maven-jar-plugin.version>
 		<maven-source-plugin.version>2.1.1</maven-source-plugin.version>
 		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>
@@ -311,6 +311,9 @@
 							<classpathPrefix>lib/</classpathPrefix>
 							<classpathLayoutType>repository</classpathLayoutType>
 						</manifest>
+						<manifestEntries>
+							<version>${project.parent.version}</version>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>

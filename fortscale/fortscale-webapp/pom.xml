@@ -69,6 +69,7 @@
 		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+		<maven-jar-plugin.version>2.5</maven-jar-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>
 	</properties>
 
@@ -240,6 +241,18 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<version>${project.parent.version}</version>
+						</manifestEntries>
+					</archive>
+				</configuration>
 			</plugin>
 			<!-- <plugin> -->
 			<!-- <groupId>org.codehaus.mojo</groupId> -->
