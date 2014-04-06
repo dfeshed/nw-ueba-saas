@@ -84,6 +84,7 @@
 		<thrift.version>0.9.0</thrift.version>
 		<commons-io.version>2.1</commons-io.version>
 		<commons-net.version>3.3</commons-net.version>
+		<minimal-json.version>0.9.1</minimal-json.version>
 		<!-- maven plugins versions -->
 		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
@@ -101,7 +102,11 @@
 			<artifactId>commons-net</artifactId>
 			<version>${commons-net.version}</version>
 		</dependency>
-            
+        <dependency>
+	        <groupId>com.eclipsesource.minimal-json</groupId>
+	        <artifactId>minimal-json</artifactId>
+	        <version>${minimal-json.version}</version>
+	    </dependency>
 	
 		<dependency>
 			<groupId>joda-time</groupId>
