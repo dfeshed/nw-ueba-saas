@@ -3,16 +3,16 @@ package fortscale.services.ipresolving;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.dao.ComputerLoginEventRepository;
 
 
-@Configurable(preConstruction=true)
+@Service("computerLoginResolver")
 public class ComputerLoginResolver {
 
 	@Autowired

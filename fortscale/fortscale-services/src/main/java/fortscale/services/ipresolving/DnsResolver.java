@@ -7,8 +7,8 @@ import java.util.HashSet;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.xbill.DNS.DClass;
 import org.xbill.DNS.ExtendedResolver;
 import org.xbill.DNS.Message;
@@ -19,7 +19,7 @@ import org.xbill.DNS.Section;
 import org.xbill.DNS.Type;
 
 
-@Configurable(preConstruction=true)
+@Service("dnsResolver")
 public class DnsResolver {
 	private static Logger logger = LoggerFactory.getLogger(DnsResolver.class);
 	

@@ -9,6 +9,8 @@ import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.typesafe.config.Config;
 
@@ -18,14 +20,14 @@ import fortscale.services.ipresolving.DhcpResolver;
 import fortscale.services.ipresolving.DnsResolver;
 
 
-
+@Configurable(preConstruction=true)
 public class IpToHostnameBuilder implements CommandBuilder {
-	
-	private DhcpResolver dhcpResolver = new DhcpResolver();
-	
-	private DnsResolver dnsResolver = new DnsResolver();
-	
-	private ComputerLoginResolver computerLoginResolver = new ComputerLoginResolver();
+	@Autowired
+	private DhcpResolver dhcpResolver;
+	@Autowired
+	private DnsResolver dnsResolver;
+	@Autowired
+	private ComputerLoginResolver computerLoginResolver;
 	
 	@Override
 	public Collection<String> getNames() {
