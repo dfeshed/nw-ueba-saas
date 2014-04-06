@@ -29,18 +29,7 @@
 				</entry>
 				
 			</job-data-map>
-		</job>
-		
-		<trigger>
-			<cron>
-				<name>comp_sec_etl_hourly_trigger</name>
-				<group>SecurityEvents</group>
-				<job-name>Comp_ETL</job-name>
-				<job-group>SecurityEvents</job-group>
-				<cron-expression>0 5 * * * ?</cron-expression>
-			</cron>
-		</trigger>
-		
+		</job>		
 	</schedule>
 	
 </job-scheduling-data>
