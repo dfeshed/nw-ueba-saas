@@ -14,7 +14,7 @@ import fortscale.domain.ad.AdComputer;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.ComputerService;
-import fortscale.utils.actdir.ADUserParser;
+import fortscale.utils.actdir.ADParser;
 
 
 @Service
@@ -25,7 +25,7 @@ public class ComputerServiceImpl implements ComputerService {
 	@Autowired
 	private ComputerRepository repository;
 	
-	private ADUserParser parser = new ADUserParser();
+	private ADParser parser = new ADParser();
 	
 	public void updateComputerWithADInfo(AdComputer computer) {
 		checkNotNull(computer);

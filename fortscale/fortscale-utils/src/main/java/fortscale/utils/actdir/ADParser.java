@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ADUserParser {
+public class ADParser {
 	public static final String DATE_FORMAT = "yyyy/MM/dd'T'HH:mm:ss" ;
 	public static final String TIMESTAMP_FORMAT = "yyyy/MM/dd'T'HH:mm" ;
 	public static final String ATTRIBUTE_OU_PREFIX = "OU=";

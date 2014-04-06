@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
-import fortscale.utils.actdir.ADUserParser;
+import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 
 @Configurable(preConstruction = true, autowire=Autowire.BY_NAME, dependencyCheck=true)
@@ -24,13 +24,13 @@ public class UserDetailsBean implements Serializable{
 	private User manager;
 	private List<User> directReports;
 	private String thumbnailPhoto;
-	private ADUserParser adUserParser;
+	private ADParser adUserParser;
 	
 	public UserDetailsBean(User user, User manager, List<User> directReports){
 		this.user = user;
 		this.manager = manager;
 		this.directReports = directReports;
-		this.adUserParser = new ADUserParser();
+		this.adUserParser = new ADParser();
 	}
 	
 	public void setThumbnailPhoto(String thumbnailPhoto) {

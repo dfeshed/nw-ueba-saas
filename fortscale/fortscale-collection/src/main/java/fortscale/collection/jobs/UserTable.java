@@ -8,7 +8,7 @@ import fortscale.domain.core.IUserTable;
 import fortscale.domain.core.User;
 import fortscale.services.UserApplication;
 import fortscale.services.fe.Classifier;
-import fortscale.utils.actdir.ADUserParser;
+import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 
 public class UserTable implements IUserTable {
@@ -16,7 +16,7 @@ public class UserTable implements IUserTable {
 	
 	private User user;
 	private User manager;
-	private ADUserParser adUserParser;
+	private ADParser adUserParser;
 	
 	private String secUsernames;
 	private String sshUsernames;
@@ -26,7 +26,7 @@ public class UserTable implements IUserTable {
 	public UserTable(User user, User manager){
 		this.user = user;
 		this.manager = manager;
-		this.adUserParser = new ADUserParser();
+		this.adUserParser = new ADParser();
 	}
 
 	@Override
