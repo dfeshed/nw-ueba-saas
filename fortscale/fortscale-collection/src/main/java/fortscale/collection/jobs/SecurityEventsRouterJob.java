@@ -19,6 +19,7 @@ public class SecurityEventsRouterJob extends GenericSecurityEventsJob{
 	
 	private static final String COMPUTER_PREFIX_FILE = "computer_";
 	private static final String USER_PREFIX_FILE = "user_";
+	private static final String TMP_FILE_SUFFIX = ".part";
 	
 	private BufferedWriter currentCompWriter = null;
 	private BufferedWriter currentUserWriter = null;
@@ -40,12 +41,23 @@ public class SecurityEventsRouterJob extends GenericSecurityEventsJob{
 			currentUserWriter.close();
 		}
 		
+		renameTmpFile(compTmpFile);
+		renameTmpFile(userTmpFile);
+		
 		return ret;
+	}
+	
+	private void renameTmpFile(File outputTempFile){
+		String filename = outputTempFile.getName();
+		filename = filename.substring(0, filename.length() - TMP_FILE_SUFFIX.length());
+		File outputFile = new File(new File(inputPath), filename);
+		renameOutput(outputTempFile, outputFile);
+		
 	}
 	
 	private File createTempOutputFile(String prefix, File inFile) throws JobExecutionException {	
 		// generate filename according to the job name and time
-		String filename = String.format("%s%s.part", prefix, inFile.getName());
+		String filename = String.format("%s%s%s", prefix, inFile.getName(),TMP_FILE_SUFFIX);
 		
 		File outputFile = new File(new File(inputPath), filename);
 		
