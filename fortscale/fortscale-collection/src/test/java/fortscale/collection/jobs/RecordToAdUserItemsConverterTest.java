@@ -5,7 +5,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.kitesdk.morphline.api.Record;
 
-import fortscale.collection.jobs.ad.RecordToBeanItemConverter;
+import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.ad.AdUser;
 
 public class RecordToAdUserItemsConverterTest {

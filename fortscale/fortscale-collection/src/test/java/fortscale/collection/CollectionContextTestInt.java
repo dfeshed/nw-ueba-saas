@@ -18,6 +18,5 @@ public class CollectionContextTestInt {
 	@Test
 	@Category(IntegrationTestCategory.class)
 	public void testContext(){
-
 	}
 }
