@@ -1,5 +1,6 @@
 package fortscale.collection.hadoop.pig;
 
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Properties;
 
@@ -55,16 +56,24 @@ public class PigRunner implements InitializingBean {
 		PigServer server = pigFactory.getPigServer();
 		
 		// get the jar location for cuckoo clock jar
-		String cuckooJarLocation = fortscale.cuckooclock.SimpleCuckooClock.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString();
+		String cuckooJarLocation = getJarLocation(fortscale.cuckooclock.SimpleCuckooClock.class);
 		server.registerJar(cuckooJarLocation);
 		
+		// get the jar location for jar dependencies of cuckoo clock jar
+		String jsonValueLocation = getJarLocation(com.eclipsesource.json.JsonValue.class);
+		server.registerJar(jsonValueLocation);
+		
 		// get the jar location for calibro jar
-		String calibroJarLocation = fortscale.calibro.Calibration.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString();
+		String calibroJarLocation = getJarLocation(fortscale.calibro.Calibration.class);
 		server.registerJar(calibroJarLocation);
 		
 		// get the jar location for beardedpig jar
-		String beardedpigJarLocation = fortscale.ebs.EventBulkScorer.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString();
+		String beardedpigJarLocation = getJarLocation(fortscale.ebs.EventBulkScorer.class);
 		server.registerJar(beardedpigJarLocation);
+	}
+	
+	private String getJarLocation(Class<?> jarClass) throws URISyntaxException{
+		return jarClass.getProtectionDomain().getCodeSource().getLocation().toURI().toString();
 	}
 	
 }
