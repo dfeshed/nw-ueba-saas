@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -104,6 +105,16 @@ public class Computer extends AbstractDocument {
 	}	
 	public void clearUsageClassifiers() {
 		this.usageClassifiers.clear();
+	}
+	public Collection<ComputerUsageClassifier> getUsageClassifiers() {
+		return this.usageClassifiers.values();
+	}
+	public ComputerUsageType getUsageType() {
+		// go over the usage classifiers and return the first one that is not unknown
+		for (ComputerUsageClassifier classifier : usageClassifiers.values())
+			if (classifier.getUsageType()!=ComputerUsageType.Unknown)
+				return classifier.getUsageType();
+		return ComputerUsageType.Unknown;
 	}
 	
 }

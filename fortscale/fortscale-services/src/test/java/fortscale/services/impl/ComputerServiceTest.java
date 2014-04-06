@@ -15,12 +15,16 @@ import org.mockito.MockitoAnnotations;
 import fortscale.domain.ad.AdComputer;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageClassifier;
+import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.dao.ComputerRepository;
+import fortscale.services.computer.EndpointDetectionService;
 
 public class ComputerServiceTest {
 
 	@Mock
 	private ComputerRepository repository;
+	@Mock
+	private EndpointDetectionService endpointDetectionService;
 	@InjectMocks
 	private ComputerServiceImpl service;
 	
@@ -48,7 +52,7 @@ public class ComputerServiceTest {
 		computer.setOperatingSystem("Windows 8.1 Enterprise N");
 		computer.setOperatingSystemServicePack(null);
 		computer.setOperatingSystemVersion("6.3 (8600)");
-		computer.putUsageClassifier(new ComputerUsageClassifier("login", false, true));
+		computer.putUsageClassifier(new ComputerUsageClassifier("login", ComputerUsageType.Desktop));
 		
 		return computer;
 	}

@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.typesafe.config.Config;
 
-import fortscale.services.machine.EndpointDetectionService;
-import fortscale.services.machine.MachineInfo;
+import fortscale.services.computer.EndpointDetectionService;
+import fortscale.services.computer.MachineInfo;
 
 /**
  * This morphline command receive a hostname and sets values indicating if it is

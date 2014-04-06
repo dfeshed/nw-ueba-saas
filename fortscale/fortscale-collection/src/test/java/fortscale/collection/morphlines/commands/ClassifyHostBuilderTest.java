@@ -12,8 +12,8 @@ import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
 import fortscale.collection.morphlines.commands.ClassifyHostBuilder.ClassifyHost;
-import fortscale.services.machine.EndpointDetectionService;
-import fortscale.services.machine.MachineInfo;
+import fortscale.services.computer.EndpointDetectionService;
+import fortscale.services.computer.MachineInfo;
 
 public class ClassifyHostBuilderTest {
 

@@ -14,6 +14,7 @@ import fortscale.domain.ad.AdComputer;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.ComputerService;
+import fortscale.services.computer.EndpointDetectionService;
 import fortscale.utils.actdir.ADParser;
 
 
@@ -24,6 +25,9 @@ public class ComputerServiceImpl implements ComputerService {
 	
 	@Autowired
 	private ComputerRepository repository;
+	
+	@Autowired
+	private EndpointDetectionService endpointDetectionService;
 	
 	private ADParser parser = new ADParser();
 	
@@ -36,26 +40,32 @@ public class ComputerServiceImpl implements ComputerService {
 		
 		Date latestWhenChanged = repository.getLatestWhenChanged();
 		
+		Date whenChanged = null;
 		try {
-			Date whenChanged = parser.parseDate(computer.getWhenChanged());
-			
-			if (latestWhenChanged!=null && latestWhenChanged.after(whenChanged)) {
-				// skip this record as we already have a newer snapshot in place
-				return;
-			}
-			
-			// check if the repository already contains such a computer
-			Computer saved = repository.findByName(computer.getCn());
-			if (saved==null)
-				saved = new Computer();
-			
-			mergeComputerInfo(saved, computer);
-			// TODO: consider to replace with update
-			repository.save(saved);
-			
+			whenChanged = parser.parseDate(computer.getWhenChanged());
 		} catch (ParseException e) {
 			logger.error("computer whenChanged field value '{}' not match expected format for computer {}", computer.getWhenChanged(), computer.getCn());
+			return;
 		}
+		
+		if (latestWhenChanged!=null && latestWhenChanged.after(whenChanged)) {
+			// skip this record as we already have a newer snapshot in place
+			return;
+		}
+		
+		// check if the repository already contains such a computer
+		Computer saved = repository.findByName(computer.getCn());
+		if (saved==null)
+			saved = new Computer();
+		
+		// merge new computer info into the saved computer
+		mergeComputerInfo(saved, computer);
+		
+		// re-calculate the computer classification for new or updated computer info
+		endpointDetectionService.classifyComputer(saved);
+		
+		// TODO: consider to replace with update
+		repository.save(saved);
 	}
 	
 	private void mergeComputerInfo(Computer computer, AdComputer adComputer) {

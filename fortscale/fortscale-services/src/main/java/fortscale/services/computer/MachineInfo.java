@@ -1,4 +1,4 @@
-package fortscale.services.machine;
+package fortscale.services.computer;
 
 /**
  * MachineInfo structure used by the EndpointDetectionService to return 
