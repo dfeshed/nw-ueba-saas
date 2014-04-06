@@ -21,8 +21,19 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 		query.with(new Sort(Direction.DESC, Computer.WHEN_CHANGED_FIELD));
 		query.limit(1);
 		
-		Date latest = mongoTemplate.findOne(query, Date.class, Computer.COLLECTION_NAME);
-		return latest;
+		DateWrapper latest = mongoTemplate.findOne(query, DateWrapper.class, Computer.COLLECTION_NAME);
+		return latest!=null ? latest.getLatest() : null;
+	}
+	
+	class DateWrapper {
+		private Date latest;
+
+		public Date getLatest() {
+			return latest;
+		}
+		public void setLatest(Date latest) {
+			this.latest = latest;
+		}	
 	}
 	
 }

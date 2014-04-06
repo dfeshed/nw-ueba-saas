@@ -39,7 +39,7 @@ public class ComputerServiceImpl implements ComputerService {
 		try {
 			Date whenChanged = parser.parseDate(computer.getWhenChanged());
 			
-			if (latestWhenChanged.after(whenChanged)) {
+			if (latestWhenChanged!=null && latestWhenChanged.after(whenChanged)) {
 				// skip this record as we already have a newer snapshot in place
 				return;
 			}
