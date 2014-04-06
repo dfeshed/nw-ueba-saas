@@ -1,1 +1,1 @@
-﻿index="windows" source="wineventlog:security" (EventCode="4769" OR EventCode="4768") Account_Name!=*$* earliest=$args.earliest$ latest=$args.latest$ | table _time _raw
+index="win_evt" source="wineventlog:security" (EventCode="4769" OR EventCode="4768" OR EventCode="4771") earliest=$args.earliest$ latest=$args.latest$ | table _time _raw
