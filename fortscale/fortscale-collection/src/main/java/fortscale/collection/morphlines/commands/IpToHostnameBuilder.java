@@ -120,17 +120,17 @@ public class IpToHostnameBuilder implements CommandBuilder {
 			
 			String ret = null;
 			if(ret == null || ret.isEmpty() ){
-				if(useLoginResolver){
+				if(useLoginResolver && computerLoginResolver != null){
 					ret = computerLoginResolver.getHostname(ip, ts);
 				}
 			}
 			if(ret == null || ret.isEmpty() ){
-				if(useDhcpResolver){
+				if(useDhcpResolver && dhcpResolver != null){
 					ret = dhcpResolver.getHostname(ip, ts);
 				}
 			}
 			if(ret == null || ret.isEmpty() ){
-				if(useDnsResolver){
+				if(useDnsResolver && dnsResolver != null){
 					ret = dnsResolver.getHostname(ip);
 				}
 			}
