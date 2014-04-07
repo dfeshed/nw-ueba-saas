@@ -20,7 +20,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.utils.logging.Logger;
 
 @DisallowConcurrentExecution
-public abstract class EventScoringJob extends FortscaleJob {
+public class EventScoringJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(EventScoringJob.class);
 	
 	public static int EVENTS_DELTA_TIME_IN_SEC_DEFAULT = 14*24*60*60;
@@ -155,7 +155,9 @@ public abstract class EventScoringJob extends FortscaleJob {
 		return isSucceeded;
 	}
 	
-	protected abstract boolean runUpdateUserWithEventScore(Date runtime);
+	protected boolean runUpdateUserWithEventScore(Date runtime){
+		return true;
+	}
 	
 	private boolean runScoringPig() throws Exception{
 		boolean ret = true;

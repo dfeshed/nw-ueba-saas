@@ -107,6 +107,16 @@ public class HadoopInit implements InitializingBean{
 	@Value("${hdfs.user.processeddata.vpnscores.path}")
 	private String impalaVpnScoringDirectory;
 	
+	//VPN Session Scoring table
+	@Value("${impala.score.vpn.session.table.fields}")
+	private String impalaVpnSessionScoringTableFields;
+	@Value("${impala.score.vpn.session.table.delimiter}")
+	private String impalaVpnSessionScoringTableDelimiter;
+	@Value("${impala.score.vpn.session.table.name}")
+	private String impalaVpnSessionScoringTableName;
+	@Value("${hdfs.user.processeddata.vpnscores.session.path}")
+	private String impalaVpnSessionScoringDirectory;
+	
 	//SSH Data table
 	@Value("${impala.data.ssh.table.fields}")
 	private String impalaSshDataTableFields;
@@ -215,6 +225,9 @@ public class HadoopInit implements InitializingBean{
 		
 		//VPN Scoring table
 		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
+		
+		//VPN Session Scoring table
+		createTable(impalaVpnSessionScoringTableName, impalaVpnSessionScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaVpnSessionScoringTableDelimiter, impalaVpnSessionScoringDirectory);
 		
 		//VPN View Table
 		createTableView("view_vpndata", "SELECT date_time,date_time_unix,username,if(hostname != \"\",hostname,source_ip) as source_ip,local_ip,status,country,yearmonth FROM vpndata");
