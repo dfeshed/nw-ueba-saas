@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.partition.RuntimePartitionStrategy;
 
 @Component
@@ -82,6 +84,18 @@ public class HadoopInit implements InitializingBean{
 	private String impalaVpnDataTableName;
 	@Value("${hdfs.user.data.vpn.path}")
 	private String impalaVpnDataDirectory;
+	
+	//VPN Session Data table
+	@Value("${impala.data.vpn.session.table.fields}")
+	private String impalaVpnSessionDataTableFields;
+	@Value("${impala.data.vpn.session.table.delimiter}")
+	private String impalaVpnSessionDataTableDelimiter;
+	@Value("${impala.data.vpn.session.table.name}")
+	private String impalaVpnSessionDataTableName;
+	@Value("${impala.data.vpn.session.table.partition.type}")
+	private String impalaVpnSessionDataTablePartitionType;
+	@Value("${hdfs.user.data.vpn.session.path}")
+	private String impalaVpnSessionDataDirectory;
 	
 	//VPN Scoring table
 	@Value("${impala.score.vpn.table.fields}")
@@ -194,6 +208,10 @@ public class HadoopInit implements InitializingBean{
 		
 		//VPN Data table
 		createTable(impalaVpnDataTableName, impalaVpnDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaVpnDataTableDelimiter, impalaVpnDataDirectory);
+		
+		//VPN Session Data table
+		PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnSessionDataTablePartitionType);
+		createTable(impalaVpnSessionDataTableName, impalaVpnSessionDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaVpnSessionDataTableDelimiter, impalaVpnSessionDataDirectory);
 		
 		//VPN Scoring table
 		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);

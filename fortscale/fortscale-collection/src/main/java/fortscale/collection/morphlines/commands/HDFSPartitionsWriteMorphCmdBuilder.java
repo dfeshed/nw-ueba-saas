@@ -74,21 +74,29 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 
 		public HDFSPartitionsWrite(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) throws PropertyNotExistException, IllegalStructuredProperty, IOException {
 			super(builder, config, parent, child, context);
-			this.timestampField = getStringValue(config, "timestampField");
-			this.hadoopPath = getStringValue(config, "hadoopPath");
-			this.hadoopFilename = getStringValue(config, "hadoopFilename");
-			this.impalaTableName = getStringValue(config, "impalaTableName");
-			String partitionType = getStringValue(config, "partitionType");
-			this.partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
-			String fileSplitStrategyType = getStringValue(config, "fileSplitStrategyType");
-			this.fileSplitStrategy = FileSplitUtils.getFileSplitStrategy(fileSplitStrategyType);
 			
-			// build record to items processor
-			String outputFields = getStringValue(config, "outputFields");
-			String outputSeparator = getStringValue(config, "outputSeparator");
-			recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
-			
-			createOutputAppender();
+			try{
+				this.timestampField = getStringValue(config, "timestampField");
+				this.hadoopPath = getStringValue(config, "hadoopPath");
+				this.hadoopFilename = getStringValue(config, "hadoopFilename");
+				this.impalaTableName = getStringValue(config, "impalaTableName");
+				String partitionType = getStringValue(config, "partitionType");
+				this.partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
+				String fileSplitStrategyType = getStringValue(config, "fileSplitStrategyType");
+				this.fileSplitStrategy = FileSplitUtils.getFileSplitStrategy(fileSplitStrategyType);
+				
+				// build record to items processor
+				String outputFields = getStringValue(config, "outputFields");
+				String outputSeparator = getStringValue(config, "outputSeparator");
+				recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
+				
+				createOutputAppender();
+			} catch(Exception e){
+				logger.error("got the following exception while try to create the morphline command HDFSPartitionsWrite", e);
+				if(appender != null){
+					appender.close();
+				}
+			}
 			
 			validateArguments();
 		}
@@ -99,6 +107,9 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+			if(appender == null){
+				return super.doProcess(inputRecord);
+			}
 			String output = recordToString.process(inputRecord);
 			
 			// append to hadoop, if there is data to be written
@@ -147,8 +158,10 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 		
 		private void closeOutputAppender() throws IOException {
 			try {
-				logger.debug("flushing hdfs paritions at {}", hadoopPath);
-				appender.close(); 
+				if(appender != null){
+					logger.debug("flushing hdfs paritions at {}", hadoopPath);
+					appender.close();
+				}
 			} catch (IOException e) {
 				String msg = String.format("error closing hdfs partitions writer at %s", hadoopPath);
 				logger.error(msg, e);
@@ -157,6 +170,14 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 		}
 		
 		protected void refreshImpala(){
+			if(impalaClient == null){
+				logger.error("impalaClient is null in command {}", HDFSPartitionsWrite.class);
+				return;
+			}
+			if(appender == null){
+				logger.error("appender is null in command {}", HDFSPartitionsWrite.class);
+				return;
+			}
 
 			List<Exception> exceptions = new LinkedList<Exception>();
 			
