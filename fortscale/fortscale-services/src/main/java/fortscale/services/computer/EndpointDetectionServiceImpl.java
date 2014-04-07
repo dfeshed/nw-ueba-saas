@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fortscale.domain.core.Computer;
+import fortscale.services.computer.classifier.LoginClassifier;
 import fortscale.services.computer.classifier.NameMatchingClassifier;
 import fortscale.services.computer.classifier.OperatingSystemClassifier;
 
@@ -18,33 +19,24 @@ public class EndpointDetectionServiceImpl implements EndpointDetectionService {
 	@Autowired
 	private NameMatchingClassifier nameMatchingClassifier;
 	
+	@Autowired
+	private LoginClassifier loginClassifier;
+	
 	/**
 	 * Attempts to classify the given computer as end-point or server.
 	 * Classification results will be updated in the computer instance 
 	 */
 	@Override
-	public void classifyComputer(Computer computer) {
+	public boolean classifyComputer(Computer computer) {
 		checkNotNull(computer);
 		
 		// pass the computer instance to every classifier
 		// and set the classification value result in the computer instance
-		operatingSystemClassifier.classify(computer);
-		nameMatchingClassifier.classify(computer);
-	}
-	
-	@Override
-	public MachineInfo getMachineInfo(String hostname) {
-		// lookup the machine info from the repository
-		if (true) {
-			// return the cached value for the machine if it was set
-		}
+		boolean changeMade = false;
+		changeMade |= operatingSystemClassifier.classify(computer);
+		changeMade |= nameMatchingClassifier.classify(computer);
+		changeMade |= loginClassifier.classify(computer);
 		
-		// if machine was not found or classifiers not set
-		// calculate classifiers
-		
-		// update the machine info in the repository 
-		
-		
-		return null;
+		return changeMade;
 	}
 }

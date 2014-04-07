@@ -14,7 +14,8 @@ public interface EndpointClassifier {
 	
 	/**
 	 * classify the given computer according to server or end-point usage
+	 * @return a value indicating if a classification change was made
 	 */
-	void classify(Computer computer);
+	boolean classify(Computer computer);
 	
 }

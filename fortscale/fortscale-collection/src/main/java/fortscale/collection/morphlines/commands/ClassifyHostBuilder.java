@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.typesafe.config.Config;
 
-import fortscale.services.computer.EndpointDetectionService;
-import fortscale.services.computer.MachineInfo;
+import fortscale.domain.core.ComputerUsageType;
+import fortscale.services.ComputerService;
 
 /**
  * This morphline command receive a hostname and sets values indicating if it is
@@ -40,46 +40,34 @@ public class ClassifyHostBuilder implements CommandBuilder {
 	public static final class ClassifyHost extends AbstractCommand {
 		
 		@Autowired
-		private EndpointDetectionService service;
+		private ComputerService service;
 		
 		private String hostnameField;
-		private String isEndpointField;
-		private String isServerField;
+		private String classificationField;
 		
 		public ClassifyHost(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			
 			this.hostnameField = getConfigs().getString(config, "hostnameField");
-			this.isEndpointField = getConfigs().getString(config, "isEndpointField", null);
-			this.isServerField = getConfigs().getString(config, "isServerField", null);
+			this.classificationField = getConfigs().getString(config, "classificationField");
 		}
 		
-		public ClassifyHost(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, EndpointDetectionService service) {
+		public ClassifyHost(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, ComputerService service) {
 			this(builder, config, parent, child, context);
 			
 			this.service = service;
 		}
 		
 		@Override
-		protected boolean doProcess(Record inputRecord) {
-			
-			// if both endpoint output field and server output field is missing do nothing
-			if (StringUtils.isNotEmpty(isEndpointField) || StringUtils.isNotEmpty(isServerField)) {
-				// get the hostname from the record
-				String hostname = (String)inputRecord.getFirstValue(hostnameField);
-				if (!StringUtils.isEmpty(hostname)) {
-					// lookup the hostname in the endpoint detection service
-					MachineInfo info = service.getMachineInfo(hostname);
-					if (info!=null) {
-						// put output values in the record
-						if (info.isEndpoint()!=null && StringUtils.isNotEmpty(isEndpointField)) 
-							inputRecord.put(isEndpointField, info.isEndpoint());
-						
-						if (info.isServer()!=null && StringUtils.isNotEmpty(isServerField))
-							inputRecord.put(isServerField, info.isServer());
-					}
-				}
+		protected boolean doProcess(Record inputRecord) {			
+			// get the hostname from the record
+			String hostname = (String)inputRecord.getFirstValue(hostnameField);
+			if (!StringUtils.isEmpty(hostname)) {
+				// lookup the hostname and get the usage type
+				ComputerUsageType usage = service.getComputerUsageType(hostname);
+				inputRecord.put(classificationField, usage);
 			}
+
 			return super.doProcess(inputRecord);
 		}
 	}

@@ -1,5 +1,6 @@
 package fortscale.services.computer.classifier;
 
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,15 +44,21 @@ public class NameMatchingClassifier implements EndpointClassifier {
 	}
 
 	@Override
-	public void classify(Computer computer) {
+	public boolean classify(Computer computer) {
 		if (!canClassify(computer))
-			return;
+			return false;
 		
 		// ensure patterns are compiled
 		if (desktopPattern==null && StringUtils.isNotEmpty(desktopRegex))
 			desktopPattern = Pattern.compile(desktopRegex, Pattern.CASE_INSENSITIVE);
 		if (serverPattern==null && StringUtils.isNotEmpty(serverRegex))
 			serverPattern = Pattern.compile(serverRegex, Pattern.CASE_INSENSITIVE);
+		
+		// check if we have a classifier already set that match the computer timestamp
+		Date computerTimestamp = computer.getTimestamp();
+		ComputerUsageClassifier classification = computer.getUsageClassifier(CLASSIFIER_NAME);
+		if (classification!=null && classification.getWhenComputed().equals(computerTimestamp))
+			return false;
 		
 		// check the name according to the regular expressions set
 		String name = computer.getName();
@@ -63,8 +70,8 @@ public class NameMatchingClassifier implements EndpointClassifier {
 				usageType = ComputerUsageType.Server;
 		}
 		
-		ComputerUsageClassifier classification = new ComputerUsageClassifier(CLASSIFIER_NAME, usageType);
-		computer.putUsageClassifier(classification);
+		computer.putUsageClassifier(new ComputerUsageClassifier(CLASSIFIER_NAME, usageType, computerTimestamp));
+		return true;
 	}
 
 }

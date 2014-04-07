@@ -1,5 +1,6 @@
 package fortscale.services.computer.classifier;
 
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,12 +35,18 @@ public class OperatingSystemClassifier implements EndpointClassifier {
 	}
 
 	@Override
-	public void classify(Computer computer) {
+	public boolean classify(Computer computer) {
 		if (!canClassify(computer))
-			return;
+			return false;
 		
 		// ensure regex patterns are set
 		ensurePatterns();
+		
+		// check if the computer already has a classification that match the computer timestamp
+		Date computerTimestamp = computer.getTimestamp();
+		ComputerUsageClassifier classification = computer.getUsageClassifier(CLASSIFIER_NAME);
+		if (classification!=null && classification.getWhenComputed().equals(computerTimestamp))
+			return false;
 		
 		// classify according to operating system name
 		String os = computer.getOperatingSystem().toUpperCase();
@@ -50,8 +57,8 @@ public class OperatingSystemClassifier implements EndpointClassifier {
 			usageType = ComputerUsageType.Desktop;
 		
 		// update classification is computer
-		ComputerUsageClassifier classification = new ComputerUsageClassifier(CLASSIFIER_NAME, usageType);
-		computer.putUsageClassifier(classification);
+		computer.putUsageClassifier(new ComputerUsageClassifier(CLASSIFIER_NAME, usageType, computer.getTimestamp()));
+		return true;
 	}
 
 	private void ensurePatterns() {

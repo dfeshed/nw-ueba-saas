@@ -24,6 +24,7 @@ public class Computer extends AbstractDocument {
 	public static final String WHEN_CHANGED_FIELD = "whenChanged";
 	public static final String WHEN_CREATED_FIELD = "whenCreated";
 	public static final String USAGE_CLASSIFIERS_FIELD = "usageClassifiers";
+	public static final String TIMESTAMP_FIELD = "timestamp";
 	
 	@Field(OPERATING_SYSTEM_FIELD)
 	private String operatingSystem;
@@ -51,6 +52,12 @@ public class Computer extends AbstractDocument {
 	@Field(USAGE_CLASSIFIERS_FIELD)
 	private Map<String, ComputerUsageClassifier> usageClassifiers = new HashMap<String, ComputerUsageClassifier>();
 	
+	@Field(TIMESTAMP_FIELD)
+	private Date timestamp;
+	
+	public Computer() {
+		this.timestamp = new Date();
+	}
 	
 	public String getOperatingSystem() {
 		return operatingSystem;
@@ -93,6 +100,12 @@ public class Computer extends AbstractDocument {
 	}
 	public void setWhenCreated(Date whenCreated) {
 		this.whenCreated = whenCreated;
+	}
+	public Date getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 	public ComputerUsageClassifier getUsageClassifier(String classifierName) {
 		return usageClassifiers.get(classifierName);

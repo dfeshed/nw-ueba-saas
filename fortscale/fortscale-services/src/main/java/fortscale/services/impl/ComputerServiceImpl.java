@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdComputer;
 import fortscale.domain.core.Computer;
+import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.EndpointDetectionService;
@@ -68,7 +69,27 @@ public class ComputerServiceImpl implements ComputerService {
 		repository.save(saved);
 	}
 	
+	public ComputerUsageType getComputerUsageType(String hostname) {
+		checkNotNull(hostname);
+		
+		// get the computer from the repository, use upper case for host name
+		// as we case insensitive search
+		Computer computer = repository.findByName(hostname.toUpperCase());
+		if (computer==null) {
+			logger.warn("could not find computer document for '{}'", hostname);
+			return ComputerUsageType.Unknown;
+		} else {
+			// check if classification update are needed, if so update it in the repository
+			// and return the usage type for the computer
+			boolean changed = endpointDetectionService.classifyComputer(computer);
+			if (changed)
+				repository.save(computer);
+			return computer.getUsageType();
+		}
+	}
+	
 	private void mergeComputerInfo(Computer computer, AdComputer adComputer) {
+		computer.setTimestamp(new Date());
 		computer.setName(adComputer.getCn());
 		computer.setDistinguishedName(adComputer.getDistinguishedName());
 		computer.setOperatingSystem(adComputer.getOperatingSystem());
