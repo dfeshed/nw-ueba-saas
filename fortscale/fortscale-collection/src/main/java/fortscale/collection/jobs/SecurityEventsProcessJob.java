@@ -13,20 +13,16 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.google.common.base.Objects;
-
+import fortscale.collection.morphlines.MorphlinesItemsProcessor;
+import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.services.fe.Classifier;
-import fortscale.services.impl.UsernameNormalizer;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
-import fortscale.collection.morphlines.MorphlinesItemsProcessor;
-import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.utils.logging.Logger;
 
 /**
@@ -43,18 +39,6 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	@Value("${impala.data.security.events.4769.table.morphline.fields.username}")
 	private String usernameField;
 	
-	@Autowired
-	UsernameNormalizer secUsernameNormalizer;
-	
-	
-	
-	@Override
-	protected String normalizeUsername(Record record){
-		String username = extractUsernameFromRecord(record);
-		String ret = Objects.firstNonNull(secUsernameNormalizer.normalize(username), username);
-		
-		return ret;
-	}
 	
 	@Override
 	public String getUsernameField(){
@@ -123,7 +107,6 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			if (handler!=null) {
 				Record processedRecord = eventMorphlinesItemsProcessor.process(record);
 				if (processedRecord!=null) {
-					addNormalizedUsernameField(processedRecord);
 					String output = handler.recordToStringProcessor.process(processedRecord);
 				
 					if (output!=null) {
