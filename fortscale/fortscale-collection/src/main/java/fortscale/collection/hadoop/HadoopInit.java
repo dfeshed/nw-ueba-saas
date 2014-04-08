@@ -84,19 +84,9 @@ public class HadoopInit implements InitializingBean{
 	private String impalaVpnDataTableName;
 	@Value("${hdfs.user.data.vpn.path}")
 	private String impalaVpnDataDirectory;
-	
-	//VPN Session Data table
-	@Value("${impala.data.vpn.session.table.fields}")
-	private String impalaVpnSessionDataTableFields;
-	@Value("${impala.data.vpn.session.table.delimiter}")
-	private String impalaVpnSessionDataTableDelimiter;
-	@Value("${impala.data.vpn.session.table.name}")
-	private String impalaVpnSessionDataTableName;
-	@Value("${impala.data.vpn.session.table.partition.type}")
-	private String impalaVpnSessionDataTablePartitionType;
-	@Value("${hdfs.user.data.vpn.session.path}")
-	private String impalaVpnSessionDataDirectory;
-	
+	@Value("${impala.data.vpn.table.partition.type}")
+	private String impalaVpnDataTablePartitionType;
+		
 	//VPN Scoring table
 	@Value("${impala.score.vpn.table.fields}")
 	private String impalaVpnScoringTableFields;
@@ -215,13 +205,10 @@ public class HadoopInit implements InitializingBean{
 		
 		// Security Events Login Scoring table
 		createTable(impalaLoginScoringTableName, impalaLoginScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaLoginScoringTableDelimiter, impalaLoginScoringDirectory);
-		
+				
 		//VPN Data table
-		createTable(impalaVpnDataTableName, impalaVpnDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaVpnDataTableDelimiter, impalaVpnDataDirectory);
-		
-		//VPN Session Data table
-		PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnSessionDataTablePartitionType);
-		createTable(impalaVpnSessionDataTableName, impalaVpnSessionDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaVpnSessionDataTableDelimiter, impalaVpnSessionDataDirectory);
+		PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
+		createTable(impalaVpnDataTableName, impalaVpnDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaVpnDataTableDelimiter, impalaVpnDataDirectory);
 		
 		//VPN Scoring table
 		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
