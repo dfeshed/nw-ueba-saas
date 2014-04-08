@@ -1,4 +1,4 @@
-﻿package fortscale.collection.morphlines;
+package fortscale.collection.morphlines;
 
 import static junitparams.JUnitParamsRunner.$;
 
