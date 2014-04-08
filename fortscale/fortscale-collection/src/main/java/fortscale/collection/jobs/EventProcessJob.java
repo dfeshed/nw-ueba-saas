@@ -247,7 +247,6 @@ public class EventProcessJob implements Job {
 		if(record == null){
 			return false;
 		}
-		addNormalizedUsernameField(record);
 		String output = recordToString.process(record);
 		
 		// append to hadoop, if there is data to be written
@@ -281,15 +280,7 @@ public class EventProcessJob implements Job {
 	protected boolean isUpdateAppUsername(){
 		return true;
 	}
-	
-	protected void addNormalizedUsernameField(Record record){
-		record.put(normalizedUsernameField, normalizeUsername(record));
-	}
-	
-	protected String normalizeUsername(Record record){
-		return extractUsernameFromRecord(record);
-	}
-	
+		
 	protected String extractUsernameFromRecord(Record record){
 		return RecordExtensions.getStringValue(record, getUsernameField());
 	}

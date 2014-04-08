@@ -1,9 +1,9 @@
 package fortscale.utils.hdfs.partition;
 
 
-class PartitionsUtils {
+public class PartitionsUtils {
 
-	static String normalizePath(String path) {
+	public static String normalizePath(String path) {
 		String normalized = path.replace('\\', '/');
 		if (normalized.endsWith("/"))
 			return normalized;
@@ -12,7 +12,7 @@ class PartitionsUtils {
 	}
 	
 	
-	static String getPartitionPartFromPath(String path) {
+	public static String getPartitionPartFromPath(String path) {
 		if (path==null)
 			return null;
 		
@@ -23,5 +23,13 @@ class PartitionsUtils {
 			return normalized.substring(normalized.lastIndexOf("/")+1);
 		else
 			return null;
+	}
+	
+	public static PartitionStrategy getPartitionStrategy(String partitionType){
+		switch(partitionType){
+		case "monthly" : return new MonthlyPartitionStrategy();
+		case "runtime" : return new RuntimePartitionStrategy();
+		default : return new DefaultPartitionStrategy();
+		}
 	}
 }
