@@ -71,21 +71,25 @@ public class ComputerServiceImpl implements ComputerService {
 	
 	public ComputerUsageType getComputerUsageType(String hostname) {
 		checkNotNull(hostname);
-		
+
 		// get the computer from the repository, use upper case for host name
 		// as we case insensitive search
 		Computer computer = repository.findByName(hostname.toUpperCase());
+		boolean created = false;
 		if (computer==null) {
-			logger.warn("could not find computer document for '{}'", hostname);
-			return ComputerUsageType.Unknown;
-		} else {
-			// check if classification update are needed, if so update it in the repository
-			// and return the usage type for the computer
-			boolean changed = endpointDetectionService.classifyComputer(computer);
-			if (changed)
-				repository.save(computer);
-			return computer.getUsageType();
-		}
+			// create a new computer instance type for the discovered host
+			computer = new Computer();
+			computer.setName(hostname.toUpperCase());
+			computer.setTimestamp(new Date());
+			
+			created = true;
+		} 
+		// check if classification update are needed, if so update it in the repository
+		// and return the usage type for the computer
+		boolean changed = endpointDetectionService.classifyComputer(computer);
+		if (created || changed)
+			repository.save(computer);
+		return computer.getUsageType();
 	}
 	
 	private void mergeComputerInfo(Computer computer, AdComputer adComputer) {
