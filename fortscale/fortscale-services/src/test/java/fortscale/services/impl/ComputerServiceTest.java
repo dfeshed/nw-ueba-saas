@@ -92,7 +92,7 @@ public class ComputerServiceTest {
 	public void update_should_not_clean_classifier_data_in_mongo() {
 		// arrange
 		when(repository.getLatestWhenChanged()).thenReturn(new Date(1396201240000L));
-		when(repository.findByName("my-pc")).thenReturn(getComputer());
+		when(repository.findByName("MY-PC")).thenReturn(getComputer());
 		when(repository.save(any(Computer.class))).thenReturn(null);
 		
 		// act
