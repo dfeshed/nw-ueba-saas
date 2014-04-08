@@ -3,6 +3,7 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -10,7 +11,9 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.DatatypeConverter;
+
 import com.typesafe.config.Config;
 
 public class ParseKerberosTicketOptionsBuilder implements CommandBuilder {
@@ -63,6 +66,9 @@ public class ParseKerberosTicketOptionsBuilder implements CommandBuilder {
 					// strip 0x from the start of the string
 					if (ticket.startsWith("0x"))
 						ticket = ticket.substring(2);
+					// pad the ticket with zero to have it in length of 8
+					ticket = StringUtils.leftPad(ticket, 8, '0');
+					
 					byte[] ticketBytes = DatatypeConverter.parseHexBinary(ticket);
 					
 					checkFieldMask(inputRecord, ticketBytes, 7, forwardableField);

@@ -13,7 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.collection.JobDataMapExtension;
-import fortscale.collection.mongo.DHCPEventsSink;
+import fortscale.collection.morphlines.RecordToBeanItemConverter;
+import fortscale.domain.events.DhcpEvent;
+import fortscale.domain.events.dao.DhcpEventRepository;
 
 /**
  * Scheduled job to process dhcp events into mongodb
@@ -24,10 +26,14 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	private static Logger logger = LoggerFactory.getLogger(DHCPEventsProcessJob.class);
 	
 	@Autowired
-	private DHCPEventsSink mongo;
+	private DhcpEventRepository dhcpEventRepository;
 	
 	@Autowired
 	private JobDataMapExtension jobDataMapExtension;
+	
+	
+	
+	private RecordToBeanItemConverter<DhcpEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent());
 	
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
@@ -50,7 +56,9 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 			return false;
 		
 		try {
-			mongo.writeToMongo(record);
+			DhcpEvent dhcpEvent = new DhcpEvent();
+			recordToBeanItemConverter.convert(record, dhcpEvent);
+			dhcpEventRepository.save(dhcpEvent);
 			return true;
 		} catch (Exception e) {
 			logger.warn(String.format("error writing record %s to mongo", record.toString()));
@@ -58,21 +66,8 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 		}			
 	}
 	
-	@Override protected void createOutputAppender() throws JobExecutionException {
-		try {
-			mongo.connect();
-		} catch (Exception e) {
-			throw new JobExecutionException(e);
-		}
-	}
+	@Override protected void createOutputAppender() throws JobExecutionException {}
 	@Override protected void flushOutputAppender() throws IOException {}
-	@Override protected void closeOutputAppender() throws JobExecutionException {
-		try {
-			mongo.postProcessIndexes();
-			mongo.close();
-		} catch (Exception e) {
-			throw new JobExecutionException(e);
-		}
-	}
+	@Override protected void closeOutputAppender() throws JobExecutionException {}
 	@Override protected void refreshImpala() throws JobExecutionException {}
 }
