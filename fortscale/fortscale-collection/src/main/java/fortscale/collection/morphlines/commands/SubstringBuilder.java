@@ -57,14 +57,19 @@ public class SubstringBuilder implements CommandBuilder {
 				Object next = iter.next();
 				if (next!=null) {
 					String str = next.toString();
+					
+					// ensure we are not out of bounds
+					int start = Math.min(startIndex, str.length());
+					int end = Math.min(endIndex, str.length());
+					
 					if (StringUtils.isNotEmpty(endCharacter)) {
 						if (str.contains(endCharacter))
-							str = str.substring(startIndex, str.indexOf(endCharacter));
+							str = str.substring(start, str.indexOf(endCharacter));
 					}
-					if (endIndex!=0)
-						str = str.substring(startIndex, endIndex);
-					if (startIndex!=0 && endIndex==0 && StringUtils.isEmpty(endCharacter))
-						str = str.substring(startIndex);
+					if (end!=0)
+						str = str.substring(start, end);
+					if (start!=0 && endIndex==0 && StringUtils.isEmpty(endCharacter))
+						str = str.substring(start);
 					iter.set(str);
 				}
 			}
