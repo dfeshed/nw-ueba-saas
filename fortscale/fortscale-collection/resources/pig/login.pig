@@ -14,8 +14,8 @@ loginUsersOnlyNoFailedDC = FILTER loginUsersOnly by NOT (status=='FAILURE' and L
 -- 0x12: Clients credentials have been revoked - Account disabled, expired, locked out, logon hours.
 -- 0x22: Request is a replay
 -- also, ignore logins from nat addresses
-loginFields     = FOREACH loginUsersOnlyNoFailedDC GENERATE generatedTime,(LOWER(is_nat)=='true'? '': LOWER(machineName)),((failureCode is null) or ((failureCode != '0x12') and (failureCode != '0x22')) ? '0x0' : generatedTime),failureCode,normalized_username,eventCode,LOWER(accountName) as account_name,LOWER(machineName) as source_machine;
+loginFields     = FOREACH loginUsersOnlyNoFailedDC GENERATE generatedTime,(LOWER(is_nat)=='true'? '': LOWER(machineName)),((failureCode is null) or ((failureCode != '0x12') and (failureCode != '0x22')) ? '0x0' : generatedTime),failureCode,normalized_username,eventCode,LOWER(accountName) as account_name,LOWER(machineName) as source_machine,src_class;
 loginPerUser    = GROUP loginFields by normalized_username PARALLEL 1;
 loginScore      = FOREACH loginPerUser GENERATE FLATTEN(fortscale.ebs.EBSPigUDF(group,3,0,loginFields));
-loginFinalScore	= FOREACH loginScore GENERATE $0 as time,$1 as normalizedtime,$8 as hostname,$4 as errorcode,$5 as normalized_username,$6 as eventCode,$7 as accountname, $9 as timescore,$10 as hostnamescore,$11 as errorcodescore,$12 as eventscore,$13 as globalscore,$14 as entitygroupedbyid;
+loginFinalScore	= FOREACH loginScore GENERATE $0 as time,$1 as normalizedtime,$8 as hostname,$9 as src_class,$4 as errorcode,$5 as normalized_username,$6 as eventCode,$7 as accountname, $10 as timescore,$11 as hostnamescore,$12 as errorcodescore,$13 as eventscore,$14 as globalscore,$15 as entitygroupedbyid;
 STORE loginFinalScore INTO '$outputData' USING PigStorage(',','-noschema');
