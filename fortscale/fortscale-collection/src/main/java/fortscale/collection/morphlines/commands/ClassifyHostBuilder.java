@@ -62,7 +62,7 @@ public class ClassifyHostBuilder implements CommandBuilder {
 		protected boolean doProcess(Record inputRecord) {			
 			// get the hostname from the record
 			String hostname = (String)inputRecord.getFirstValue(hostnameField);
-			if (!StringUtils.isEmpty(hostname)) {
+			if (!StringUtils.isEmpty(hostname) && service!=null) {
 				// lookup the hostname and get the usage type
 				ComputerUsageType usage = service.getComputerUsageType(hostname);
 				inputRecord.put(classificationField, usage);

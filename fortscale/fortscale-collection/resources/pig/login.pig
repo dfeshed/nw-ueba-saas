@@ -4,7 +4,7 @@ SET pig.tmpfilecompression.storage seqfile
 SET pig.maxCombinedSplitSize 2147483648
 
 -- calculate score for successful login events
-rawLogin        = LOAD '$inputData' USING PigStorage('|') AS  (generatedTimeRaw:chararray,generatedTime:chararray,generatedTimeUnixTime:long,accountName:chararray,accountDomain:chararray,userid:chararray,eventCode:chararray,clientAddress:chararray,machineName:chararray,status:chararray,failureCode:chararray,authenticationType:chararray,ticketOptions:chararray,forwardable:chararray,forwarded:chararray,proxied:chararray,postdated:chararray,renew_request:chararray,constraint_delegation:chararray,is_nat:chararray,normalized_username:chararray);
+rawLogin        = LOAD '$inputData' USING PigStorage('|') AS  (generatedTimeRaw:chararray,generatedTime:chararray,generatedTimeUnixTime:long,accountName:chararray,accountDomain:chararray,userid:chararray,eventCode:chararray,clientAddress:chararray,machineName:chararray,status:chararray,failureCode:chararray,authenticationType:chararray,ticketOptions:chararray,forwardable:chararray,forwarded:chararray,proxied:chararray,postdated:chararray,renew_request:chararray,constraint_delegation:chararray,is_nat:chararray,src_class:chararray,normalized_username:chararray);
 loginByTime     = FILTER rawLogin by generatedTimeUnixTime > (long)'$deltaTime';
 loginUsersOnly  = FILTER loginByTime by NOT (LOWER(accountName) MATCHES LOWER('$accountRegex'));
 -- Filtering failed login to dc machines with failure_code 0x18 and 0x17 
