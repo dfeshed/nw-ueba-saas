@@ -93,6 +93,7 @@ public class LoginClassifier implements EndpointClassifier {
 		for (UserMachine login : logins) {
 			int count = login.getLogonCount();
 			if (count>topMostLoginsCount) {
+				secondLoginsCount = topMostLoginsCount;
 				topMostLoginsCount = count;
 				topMostLogin = login;
 			} else {
