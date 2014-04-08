@@ -55,7 +55,7 @@ public class ComputerServiceImpl implements ComputerService {
 		}
 		
 		// check if the repository already contains such a computer
-		Computer saved = repository.findByName(computer.getCn());
+		Computer saved = repository.findByName(computer.getCn().toUpperCase());
 		if (saved==null)
 			saved = new Computer();
 		
