@@ -23,7 +23,13 @@ public class NotificationAggregate implements Serializable {
 		generator_name = notification.getGenerator_name();
 		aggregated.addAll(list);
 		cause = notification.getCause();
+		
+		// get put the earliest timestamp in the aggregation timestamp
 		ts = notification.getTs();
+		for (Notification item : list)
+			ts = Math.min(ts, item.getTs());
+		
+		
 		aggAttributes = getAttributes(aggregated);
 		type = "agg";
 	}
