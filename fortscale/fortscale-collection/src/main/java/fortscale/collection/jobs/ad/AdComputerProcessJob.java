@@ -11,12 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.ad.AdComputer;
 import fortscale.domain.ad.dao.AdComputerRepository;
+import fortscale.services.ComputerService;
 
 public class AdComputerProcessJob extends AdProcessJob {
 	
 	@Autowired
 	private AdComputerRepository adComputerRepository;
 		
+	@Autowired
+	private ComputerService service;
+	
 	private RecordToBeanItemConverter<AdComputer> converter;
 
 
@@ -40,6 +44,7 @@ public class AdComputerProcessJob extends AdProcessJob {
 		}
 		adComputer.setLastModified(new Date());
 		adComputerRepository.save(adComputer);
+		service.updateComputerWithADInfo(adComputer);
 		
 		return true;
 	}

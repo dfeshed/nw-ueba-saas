@@ -53,6 +53,11 @@ public class LDAPEvents implements TableSchema {
 	public String MACHINE_NAME;
 	@Value("${impala.data.security.events.4769.table.field.normalized_username}")
 	public String NORMALIZED_USERNAME;
+	@Value("${impala.data.security.events.4769.table.field.dst_class}")
+	public String DST_CLASS;
+	@Value("${impala.data.security.events.4769.table.field.src_class}")
+	public String SRC_CLASS;
+	
 	
 	private PartitionStrategy partition = new MonthlyPartitionStrategy();
 	

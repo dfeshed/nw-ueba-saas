@@ -25,7 +25,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.UserApplication;
-import fortscale.utils.actdir.ADUserParser;
+import fortscale.utils.actdir.ADParser;
 
 
 
@@ -66,7 +66,7 @@ public class UserServiceTest {
 	private ImpalaWriterFactory impalaWriterFactory;
 	
 	@Mock
-	private ADUserParser adUserParser; 
+	private ADParser adUserParser; 
 		
 	@InjectMocks
 	private UserServiceImpl	userService;

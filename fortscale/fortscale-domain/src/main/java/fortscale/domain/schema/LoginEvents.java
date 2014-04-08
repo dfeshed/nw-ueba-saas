@@ -59,6 +59,8 @@ public class LoginEvents implements TableSchema {
 	public String CONSTRAINT_DELEGATION;
 	@Value("${impala.data.security.events.login.table.field.is_nat}")
 	public String IS_NAT;
+	@Value("${impala.data.security.events.login.table.field.src_class}")
+	public String SRC_CLASS;
 	
 	
 	private PartitionStrategy partition = new MonthlyPartitionStrategy();

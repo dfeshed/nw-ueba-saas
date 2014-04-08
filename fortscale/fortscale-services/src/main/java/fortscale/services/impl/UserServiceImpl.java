@@ -39,7 +39,7 @@ import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
-import fortscale.utils.actdir.ADUserParser;
+import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 
 @Service("userService")
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService{
 	
 	
 	@Autowired 
-	private ADUserParser adUserParser; 
+	private ADParser adUserParser; 
 	
 	
 	
@@ -271,7 +271,7 @@ public class UserServiceImpl implements UserService{
 		}
 		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
 		
-		ADUserParser adUserParser = new ADUserParser();
+		ADParser adUserParser = new ADParser();
 		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
 		if(groups != null){
 			for(String groupDN: groups){

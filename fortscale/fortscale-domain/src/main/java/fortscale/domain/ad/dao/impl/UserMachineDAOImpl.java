@@ -60,6 +60,34 @@ public class UserMachineDAOImpl implements UserMachineDAO, RowMapper<UserMachine
 
 		return impalaJdbcTemplate.query(query.toSQL(), this);
 	}
+	
+	@Override
+	public List<UserMachine> findByHostname(String hostname, int daysToConsider) {
+	
+		// create a query to fetch all successful login events for the machine in the last days
+		ImpalaQuery query = new ImpalaQuery();
+		query.select(schema.NORMALIZED_USERNAME, String.format("'%s' as machine", hostname), "count(*) as login_count",  
+				String.format("max(%s) as last_login", schema.TIMEGENERATEDUNIXTIME));
+		query.from(schema.getTableName());
+		
+		// filter login events for the requested computer
+		query.where(equalsTo(lower(schema.MACHINE_NAME), lower(quote(hostname))));
+		
+		// filter events in the last x days
+		long since = TimestampUtils.convertToSeconds(DateTime.now().minusDays(daysToConsider).getMillis());
+		query.where(gte(schema.TIMEGENERATEDUNIXTIME, Long.toString(since)));
+
+		// filter partitions
+		query.where(gte(schema.getPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(since)));
+		
+		// filter on success status
+		query.where(equalsTo(schema.STATUS, "SUCCESS", true));
+
+		// add group by clause
+		query.groupBy(schema.NORMALIZED_USERNAME);
+		
+		return impalaJdbcTemplate.query(query.toSQL(), this);
+	}
 
 	
 	@Override
