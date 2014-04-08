@@ -35,6 +35,14 @@ public abstract class RecordExtensions {
 		}
 	}
 	
+	public static Long getLongValue(Record record, String field, Long defaultVal) throws IllegalArgumentException  {
+		try{
+			return getLongValue(record, field);
+		} catch(Exception e){
+			return defaultVal;
+		}
+	}
+	
 	public static Boolean getBooleanValue(Record record, String field) throws IllegalArgumentException  {
 		Object value = record.getFirstValue(field);
 		if (value!=null && value instanceof Boolean) {

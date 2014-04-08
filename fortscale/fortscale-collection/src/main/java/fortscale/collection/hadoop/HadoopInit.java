@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.partition.RuntimePartitionStrategy;
 
 @Component
@@ -82,7 +84,9 @@ public class HadoopInit implements InitializingBean{
 	private String impalaVpnDataTableName;
 	@Value("${hdfs.user.data.vpn.path}")
 	private String impalaVpnDataDirectory;
-	
+	@Value("${impala.data.vpn.table.partition.type}")
+	private String impalaVpnDataTablePartitionType;
+		
 	//VPN Scoring table
 	@Value("${impala.score.vpn.table.fields}")
 	private String impalaVpnScoringTableFields;
@@ -92,6 +96,16 @@ public class HadoopInit implements InitializingBean{
 	private String impalaVpnScoringTableName;
 	@Value("${hdfs.user.processeddata.vpnscores.path}")
 	private String impalaVpnScoringDirectory;
+	
+	//VPN Session Scoring table
+	@Value("${impala.score.vpn.session.table.fields}")
+	private String impalaVpnSessionScoringTableFields;
+	@Value("${impala.score.vpn.session.table.delimiter}")
+	private String impalaVpnSessionScoringTableDelimiter;
+	@Value("${impala.score.vpn.session.table.name}")
+	private String impalaVpnSessionScoringTableName;
+	@Value("${hdfs.user.processeddata.vpnscores.session.path}")
+	private String impalaVpnSessionScoringDirectory;
 	
 	//SSH Data table
 	@Value("${impala.data.ssh.table.fields}")
@@ -191,12 +205,16 @@ public class HadoopInit implements InitializingBean{
 		
 		// Security Events Login Scoring table
 		createTable(impalaLoginScoringTableName, impalaLoginScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaLoginScoringTableDelimiter, impalaLoginScoringDirectory);
-		
+				
 		//VPN Data table
-		createTable(impalaVpnDataTableName, impalaVpnDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaVpnDataTableDelimiter, impalaVpnDataDirectory);
+		PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
+		createTable(impalaVpnDataTableName, impalaVpnDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaVpnDataTableDelimiter, impalaVpnDataDirectory);
 		
 		//VPN Scoring table
 		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
+		
+		//VPN Session Scoring table
+		createTable(impalaVpnSessionScoringTableName, impalaVpnSessionScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaVpnSessionScoringTableDelimiter, impalaVpnSessionScoringDirectory);
 		
 		//VPN View Table
 		createTableView("view_vpndata", "SELECT date_time,date_time_unix,username,if(hostname != \"\",hostname,source_ip) as source_ip,local_ip,status,country,yearmonth FROM vpndata");

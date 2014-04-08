@@ -45,7 +45,7 @@
 				</entry>
 				<entry>
 					<key>impalaTableName</key>
-					<value>vpndata</value>
+					<value>${impala.data.vpn.table.name}</value>
 				</entry>
 			</job-data-map>
 			
