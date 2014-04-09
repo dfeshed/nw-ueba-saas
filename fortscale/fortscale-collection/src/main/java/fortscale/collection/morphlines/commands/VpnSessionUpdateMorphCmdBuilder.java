@@ -86,24 +86,24 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			}
 			
 			if(!isFailed){
-				vpnSession.setCity(RecordExtensions.getStringValue(inputRecord, vpnEvents.CITY));
-				vpnSession.setCountry(RecordExtensions.getStringValue(inputRecord, vpnEvents.COUNTRY));
-				vpnSession.setCountryIsoCode(RecordExtensions.getStringValue(inputRecord, countryIsoCodeFieldName));
-				vpnSession.setDataBucket(RecordExtensions.getIntegerValue(inputRecord, vpnEvents.DATA_BUCKET));
-				vpnSession.setDuration(RecordExtensions.getIntegerValue(inputRecord, vpnEvents.DURATION));
-				vpnSession.setHostname(RecordExtensions.getStringValue(inputRecord, vpnEvents.HOSTNAME));
-				vpnSession.setIsp(RecordExtensions.getStringValue(inputRecord, vpnEvents.ISP));
-				vpnSession.setIspUsage(RecordExtensions.getStringValue(inputRecord, vpnEvents.IPUSAGE));
-				vpnSession.setLocalIp(RecordExtensions.getStringValue(inputRecord, vpnEvents.LOCAL_IP));
+				vpnSession.setCity(RecordExtensions.getStringValue(inputRecord, vpnEvents.CITY, null));
+				vpnSession.setCountry(RecordExtensions.getStringValue(inputRecord, vpnEvents.COUNTRY, null));
+				vpnSession.setCountryIsoCode(RecordExtensions.getStringValue(inputRecord, countryIsoCodeFieldName, null));
+				vpnSession.setDataBucket(RecordExtensions.getIntegerValue(inputRecord, vpnEvents.DATA_BUCKET, null));
+				vpnSession.setDuration(RecordExtensions.getIntegerValue(inputRecord, vpnEvents.DURATION, null));
+				vpnSession.setHostname(RecordExtensions.getStringValue(inputRecord, vpnEvents.HOSTNAME, null));
+				vpnSession.setIsp(RecordExtensions.getStringValue(inputRecord, vpnEvents.ISP, null));
+				vpnSession.setIspUsage(RecordExtensions.getStringValue(inputRecord, vpnEvents.IPUSAGE, null));
+				vpnSession.setLocalIp(RecordExtensions.getStringValue(inputRecord, vpnEvents.LOCAL_IP, null));
 				vpnSession.setNormalizeUsername(RecordExtensions.getStringValue(inputRecord, vpnEvents.NORMALIZED_USERNAME));
-				vpnSession.setReadBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.READ_BYTES));
-				vpnSession.setRegion(RecordExtensions.getStringValue(inputRecord, vpnEvents.REGION));
+				vpnSession.setReadBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.READ_BYTES, null));
+				vpnSession.setRegion(RecordExtensions.getStringValue(inputRecord, vpnEvents.REGION, null));
 				vpnSession.setSourceIp(RecordExtensions.getStringValue(inputRecord, vpnEvents.SOURCE_IP));
-				vpnSession.setTotalBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.TOTAL_BYTES));
-				vpnSession.setUsername(RecordExtensions.getStringValue(inputRecord, vpnEvents.USERNAME));
-				vpnSession.setWriteBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.WRITE_BYTES));
-				vpnSession.setLatitude(RecordExtensions.getDoubleValue(inputRecord,latitudeFieldName));
-				vpnSession.setLongtitude(RecordExtensions.getDoubleValue(inputRecord,longtitudeFieldName));
+				vpnSession.setTotalBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.TOTAL_BYTES, null));
+				vpnSession.setUsername(RecordExtensions.getStringValue(inputRecord, vpnEvents.USERNAME, null));
+				vpnSession.setWriteBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.WRITE_BYTES, null));
+				vpnSession.setLatitude(RecordExtensions.getDoubleValue(inputRecord,latitudeFieldName, null));
+				vpnSession.setLongtitude(RecordExtensions.getDoubleValue(inputRecord,longtitudeFieldName, null));
 			}
 			
 			if(status.equals("SUCCESS")){

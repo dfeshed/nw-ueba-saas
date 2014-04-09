@@ -18,6 +18,14 @@ public abstract class RecordExtensions {
 		}
 	}
 	
+	public static String getStringValue(Record record, String field, String defaultVal) throws IllegalArgumentException  {
+		try{
+			return getStringValue(record, field);
+		} catch(Exception e){
+			return defaultVal;
+		}
+	}
+	
 	public static Long getLongValue(Record record, String field) throws IllegalArgumentException  {
 		Object value = record.getFirstValue(field);
 		if (value!=null && value instanceof Long) {
