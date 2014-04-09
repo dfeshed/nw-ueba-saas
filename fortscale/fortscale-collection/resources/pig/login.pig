@@ -17,5 +17,5 @@ loginUsersOnlyNoFailedDC = FILTER loginUsersOnly by NOT (status=='FAILURE' and L
 loginFields     = FOREACH loginUsersOnlyNoFailedDC GENERATE generatedTime,(LOWER(is_nat)=='true'? '': LOWER(normalized_src_machine)),((failureCode is null) or ((failureCode != '0x12') and (failureCode != '0x22')) ? '0x0' : generatedTime),failureCode,normalized_username,eventCode,LOWER(accountName) as account_name,LOWER(machineName) as source_machine,src_class,normalized_src_machine;
 loginPerUser    = GROUP loginFields by normalized_username PARALLEL 1;
 loginScore      = FOREACH loginPerUser GENERATE FLATTEN(fortscale.ebs.EBSPigUDF(group,3,0,loginFields));
-loginFinalScore	= FOREACH loginScore GENERATE $0 as time,$1 as normalizedtime,$8 as hostname,$9 as src_class,$4 as errorcode,$5 as normalized_username,$6 as eventCode,$7 as accountname, $10 as timescore,$11 as hostnamescore,$12 as errorcodescore,$13 as eventscore,$14 as globalscore,$15 as entitygroupedbyid;
+loginFinalScore = FOREACH loginScore GENERATE $0 as time,$1 as normalizedtime,$8 as hostname,$9 as src_class,$4 as errorcode,$5 as normalized_username,$6 as eventCode,$7 as accountname, $11 as timescore,$12 as hostnamescore,$13 as errorcodescore,$14 as eventscore,$15 as globalscore,$16 as entitygroupedbyid;
 STORE loginFinalScore INTO '$outputData' USING PigStorage(',','-noschema');
