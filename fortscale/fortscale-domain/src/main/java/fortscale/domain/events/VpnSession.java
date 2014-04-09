@@ -67,6 +67,10 @@ public class VpnSession extends AbstractDocument{
 	private Integer duration;
 	
 	private Integer dataBucket;
+	
+	private Double longtitude;
+	
+	private Double latitude;
 
 	public String getNormalizeUsername() {
 		return normalizeUsername;
@@ -234,5 +238,21 @@ public class VpnSession extends AbstractDocument{
 
 	public void setDataBucket(Integer dataBucket) {
 		this.dataBucket = dataBucket;
+	}
+
+	public Double getLongtitude() {
+		return longtitude;
+	}
+
+	public void setLongtitude(Double longtitude) {
+		this.longtitude = longtitude;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
 	}
 }

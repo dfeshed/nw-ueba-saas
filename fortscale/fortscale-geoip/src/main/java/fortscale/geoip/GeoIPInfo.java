@@ -10,6 +10,8 @@ public class GeoIPInfo {
 	private String ip = "";
 	private String ISP = "";
 	private IpUsageTypeEnum UsageType = null;
+	private Double latitude;
+	private Double longitude;
 
 	public GeoIPInfo() {
 	}
@@ -72,6 +74,24 @@ public class GeoIPInfo {
 
 	public void setUsageType(IpUsageTypeEnum usageType) {
 		UsageType = usageType;
+	}
+	
+	
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 
 	@Override
