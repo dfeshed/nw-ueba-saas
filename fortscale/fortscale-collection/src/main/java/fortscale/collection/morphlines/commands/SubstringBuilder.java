@@ -65,11 +65,11 @@ public class SubstringBuilder implements CommandBuilder {
 					if (StringUtils.isNotEmpty(endCharacter)) {
 						if (str.contains(endCharacter))
 							str = str.substring(start, str.indexOf(endCharacter));
-					}
-					if (end!=0)
+					} else if (end!=0) {
 						str = str.substring(start, end);
-					if (start!=0 && endIndex==0 && StringUtils.isEmpty(endCharacter))
+					} else if (start!=0 && endIndex==0 && StringUtils.isEmpty(endCharacter)) {
 						str = str.substring(start);
+					}
 					iter.set(str);
 				}
 			}
