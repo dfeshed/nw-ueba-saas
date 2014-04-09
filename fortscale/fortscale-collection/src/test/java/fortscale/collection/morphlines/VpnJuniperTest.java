@@ -127,6 +127,14 @@ public class VpnJuniperTest {
             		"Nov  7 14:37:04 11.155.45.2 Juniper: 2013-11-07 14:37:05 - ive - [72.193.146.27] bvaldes(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.113, hostname LAPTOP-20005507"
             	),
             	$((String)null, "2013-11-07 14:37:05,1383827825,bvaldes,72.193.146.27,11.155.46.113,SUCCESS,,,,,,LAPTOP-20005507,,,,,")
+            ),
+             $ (
+            	"Regular (Poza) Successful VPN Authentication for mac with dns suffix",
+            	$(
+            		"Nov  7 14:37:04 11.155.45.2 Juniper: 2013-11-07 14:37:05 - ive - [72.193.146.27] bvaldes(Users)[Users] - Agent login succeeded for bvaldes/Users from 72.193.146.27.",
+            		"Nov  7 14:37:04 11.155.45.2 Juniper: 2013-11-07 14:37:05 - ive - [72.193.146.27] bvaldes(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.113, hostname LAPTOP-20005507.local"
+            	),
+            	$((String)null, "2013-11-07 14:37:05,1383827825,bvaldes,72.193.146.27,11.155.46.113,SUCCESS,,,,,,LAPTOP-20005507,,,,,")
             )
 		);
     }
