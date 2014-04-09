@@ -107,6 +107,13 @@ public class ComputerServiceTest {
 		assertEquals("6.3 (9600)", captor.getValue().getOperatingSystemVersion());
 	}
 	
-	
+	@Test
+	public void getClusterGroupNameForHostname_should_replace_string_according_to_regex() {
+		service.setClusterGroupsRegexProperty("(?i)FS-DC-\\d\\d# # #FS-DC");
+		
+		String actual = service.getClusterGroupNameForHostname("fs-dc-01.fortscale.com");
+		
+		assertEquals("FS-DC", actual);
+	}
 	
 }
