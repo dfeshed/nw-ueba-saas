@@ -8,6 +8,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdComputer;
@@ -16,6 +17,7 @@ import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.EndpointDetectionService;
+import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.actdir.ADParser;
 
 
@@ -29,6 +31,11 @@ public class ComputerServiceImpl implements ComputerService {
 	
 	@Autowired
 	private EndpointDetectionService endpointDetectionService;
+	
+	@Value("${computer.cluster.regex.patterns:}")
+	private String clusterGroupsRegexProperty;
+	
+	private RegexMatcher clusterMatcher;
 	
 	private ADParser parser = new ADParser();
 	
@@ -111,5 +118,34 @@ public class ComputerServiceImpl implements ComputerService {
 		}	
 	}
 
+	
+	/**
+	 * Gets the cluster group name for the given hostname. The cluster 
+	 * group name is a virtual name used to depict all hosts that are 
+	 * part of a cluster of hosts and serve a common functionality 
+	 * in the system.
+	 */
+	public String getClusterGroupNameForHostname(String hostname) {
+		checkNotNull(hostname);
+		
+		// strip the hostname up to the first .
+		if (hostname.contains("."))
+			hostname = hostname.substring(0, hostname.indexOf("."));
+				
+		RegexMatcher matcher = getClusterGroupsRegexMatcher();
+		return matcher.replaceInPlace(hostname).toUpperCase();
+	}
+	
+	private RegexMatcher getClusterGroupsRegexMatcher() {
+		if (clusterMatcher==null) {
+			String[][] configPatternsArray = ConfigurationUtils.getStringArrays(clusterGroupsRegexProperty);
+			clusterMatcher = new RegexMatcher(configPatternsArray);
+		}
+		return clusterMatcher;
+	}
+	
+	public void setClusterGroupsRegexProperty(String val) {
+		this.clusterGroupsRegexProperty = val;
+	}
 	
 }

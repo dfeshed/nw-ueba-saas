@@ -29,6 +29,20 @@ public class RegexMatcher {
 		}
 		return ret;
 	}
+	
+	public String replaceInPlace(String val) {
+		// test all patterns against the value passed
+		// and replaced matched occurrences
+		for (int i=0;i<patterns.length; i++) {
+			Pattern pattern = patterns[i];
+			String replacement = replacements[i];
+			
+			Matcher matcher = pattern.matcher(val);
+			val = matcher.replaceAll(replacement);
+		}
+		
+		return val;
+	}
 
 	
 	public static void main(String args[]){
