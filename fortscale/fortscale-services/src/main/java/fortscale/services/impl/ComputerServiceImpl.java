@@ -65,8 +65,12 @@ public class ComputerServiceImpl implements ComputerService {
 		// re-calculate the computer classification for new or updated computer info
 		endpointDetectionService.classifyComputer(saved);
 		
-		// TODO: consider to replace with update
-		repository.save(saved);
+		try {
+			repository.save(saved);
+		} catch (org.springframework.dao.DuplicateKeyException e) {
+			// safe to ignore as it will be saved in the next ETL run
+			logger.warn("race condition encountered when trying to save computer {}", saved.getName());
+		}
 	}
 	
 	public ComputerUsageType getComputerUsageType(String hostname) {
@@ -87,8 +91,14 @@ public class ComputerServiceImpl implements ComputerService {
 		// check if classification update are needed, if so update it in the repository
 		// and return the usage type for the computer
 		boolean changed = endpointDetectionService.classifyComputer(computer);
-		if (created || changed)
-			repository.save(computer);
+		if (created || changed) {
+			try {
+				repository.save(computer);
+			} catch (org.springframework.dao.DuplicateKeyException e) {
+				// safe to ignore as it is saved by some thread that beat us to it
+				logger.warn("race condition encountered when trying to save computer {}", computer.getName());
+			}
+		}
 		return computer.getUsageType();
 	}
 	

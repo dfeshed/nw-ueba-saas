@@ -35,7 +35,7 @@ public class Computer extends AbstractDocument {
 	@Field(OPERATING_SYSTEM_VERSION_FIELD)
 	private String operatingSystemVersion;
 	
-	@Indexed
+	@Indexed(unique = true)
 	@Field(NAME_FIELD)
 	private String name;
 	
