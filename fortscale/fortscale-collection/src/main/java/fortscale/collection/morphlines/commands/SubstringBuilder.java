@@ -59,7 +59,7 @@ public class SubstringBuilder implements CommandBuilder {
 					String str = next.toString();
 					
 					// ensure we are not out of bounds
-					int start = Math.min(startIndex, str.length());
+					int start = Math.min(startIndex, str.length()-1);
 					int end = Math.min(endIndex, str.length());
 					
 					if (StringUtils.isNotEmpty(endCharacter)) {
