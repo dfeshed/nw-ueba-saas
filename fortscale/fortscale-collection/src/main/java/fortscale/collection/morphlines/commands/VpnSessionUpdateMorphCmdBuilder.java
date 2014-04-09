@@ -20,6 +20,7 @@ import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
 import fortscale.services.event.VpnService;
+import fortscale.utils.TimestampUtils;
 
 
 
@@ -72,14 +73,16 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			
 			String status = RecordExtensions.getStringValue(inputRecord, vpnEvents.STATUS);
 			boolean isFailed = false;
+			Long epochtime = RecordExtensions.getLongValue(inputRecord, vpnEvents.DATE_TIME_UNIX);
+			epochtime = TimestampUtils.convertToMilliSeconds(epochtime);
 			switch(status){
 			case "CLOSED":
-				vpnSession.setClosedAtEpoch(RecordExtensions.getLongValue(inputRecord, vpnEvents.DATE_TIME_UNIX));
-				vpnSession.setClosedAt(new DateTime(vpnSession.getClosedAtEpoch()));
+				vpnSession.setClosedAtEpoch(epochtime);
+				vpnSession.setClosedAt(new DateTime(epochtime));
 				break;
 			case "SUCCESS":
-				vpnSession.setCreatedAtEpoch(RecordExtensions.getLongValue(inputRecord, vpnEvents.DATE_TIME_UNIX));
-				vpnSession.setCreatedAt(new DateTime(vpnSession.getCreatedAtEpoch()));
+				vpnSession.setCreatedAtEpoch(epochtime);
+				vpnSession.setCreatedAt(new DateTime(epochtime));
 				break;
 			default:
 				isFailed = true;

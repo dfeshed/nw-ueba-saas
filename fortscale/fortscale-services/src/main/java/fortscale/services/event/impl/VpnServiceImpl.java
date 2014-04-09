@@ -50,7 +50,11 @@ public class VpnServiceImpl implements VpnService{
 	
 	private void updateVpnSessionData(VpnSession vpnSession, VpnSession vpnSessionUpdate) {
 		vpnSession.setClosedAt(vpnSessionUpdate.getClosedAt());
-		vpnSession.setClosedAtEpoch(vpnSession.getClosedAt().getMillis());
+		if(vpnSession.getClosedAt() != null){
+			vpnSession.setClosedAtEpoch(vpnSession.getClosedAt().getMillis());
+		} else{
+			vpnSession.setClosedAtEpoch(null);
+		}
 		vpnSession.setCity(vpnSessionUpdate.getCity());
 		vpnSession.setCountry(vpnSessionUpdate.getCountry());
 		vpnSession.setCountryIsoCode(vpnSessionUpdate.getCountryIsoCode());
