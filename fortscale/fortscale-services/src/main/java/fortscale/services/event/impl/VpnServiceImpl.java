@@ -1,7 +1,15 @@
 package fortscale.services.event.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.events.VpnSession;
@@ -15,6 +23,16 @@ public class VpnServiceImpl implements VpnService{
 	
 	@Autowired
 	private VpnSessionRepository vpnSessionRepository;
+	
+	private HashMap<String, GeoHoppingData> userToGeoHoppingData = new HashMap<>();
+	
+	
+	
+	
+	@Override
+	public void saveVpnSession(VpnSession vpnSession){
+		vpnSessionRepository.save(vpnSession);
+	}
 
 	@Override
 	public void createOrUpdateOpenVpnSession(VpnSession vpnSessionUpdate) {
@@ -23,6 +41,7 @@ public class VpnServiceImpl implements VpnService{
 			vpnSession = vpnSessionUpdate;
 		} else{
 			vpnSession.setCreatedAt(vpnSessionUpdate.getCreatedAt());
+			vpnSession.setGeoHopping(false);
 			updateVpnSessionData(vpnSession, vpnSessionUpdate);
 		}
 		
@@ -72,5 +91,108 @@ public class VpnServiceImpl implements VpnService{
 	}
 
 	
+	//if goe hopping exist then the given curVpnSession is updated and a list of vpn session that needed to be updated too.
+	@Override
+	public List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession){
+		GeoHoppingData geoHoppingData = getGeoHoppingData(curVpnSession);
+		List<VpnSession> vpnSessions = Collections.emptyList();
+		if(geoHoppingData == null){
+			geoHoppingData = new GeoHoppingData();
+			geoHoppingData.curCountry = curVpnSession.getCountry();
+			geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
+			userToGeoHoppingData.put(curVpnSession.getNormalizeUsername(), geoHoppingData);
+		} else if(geoHoppingData.curCountry.equals(curVpnSession.getCountry())){
+			geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
+			if(geoHoppingData.otherOpenSessionCountryTime != null){
+				if(curVpnSession.getCreatedAt().minusDays(2).isAfter(geoHoppingData.otherOpenSessionCountryTime)){
+					geoHoppingData.otherOpenSessionCountryTime = null;
+				} else{
+					curVpnSession.setGeoHopping(true);
+				}
+			}
+			if(!curVpnSession.getGeoHopping() && geoHoppingData.otherCloseSessionCountryTime != null){
+				if(curVpnSession.getCreatedAt().minusHours(1).isAfter(geoHoppingData.otherCloseSessionCountryTime)){
+					geoHoppingData.otherCloseSessionCountryTime = null;
+				} else{
+					curVpnSession.setGeoHopping(true);
+				}
+			}
+		} else{
+			geoHoppingData.otherOpenSessionCountryTime = geoHoppingData.curCountryTime;
+			geoHoppingData.otherCloseSessionCountryTime = null;
+			if(curVpnSession.getCreatedAt().minusDays(2).isBefore(geoHoppingData.curCountryTime)){
+				vpnSessions = getGeoHoppingVpnSessions(curVpnSession, geoHoppingData.curCountry);
+				if(!vpnSessions.isEmpty()){
+					curVpnSession.setGeoHopping(true);
+				}
+				for(VpnSession vpnSession: vpnSessions){
+					if(vpnSession.getClosedAt() != null){
+						if(geoHoppingData.otherCloseSessionCountryTime == null || vpnSession.getClosedAt().isAfter(geoHoppingData.otherCloseSessionCountryTime)){
+							geoHoppingData.otherCloseSessionCountryTime = vpnSession.getClosedAt();
+						}
+					}
+				}
+			}
+			geoHoppingData.curCountry = curVpnSession.getCountry();
+			geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
+		}
+		
+		return vpnSessions;
+	}
 	
+	private List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, String prevCountry){
+		PageRequest pageRequest = new PageRequest(0, 10, Direction.DESC, VpnSession.createdAtEpochFieldName);
+		List<VpnSession> vpnSessions = vpnSessionRepository.findByNormalizeUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusDays(2).getMillis(), pageRequest);
+		List<VpnSession> ret = new ArrayList<>();
+		for(VpnSession vpnSession: vpnSessions){
+			if(StringUtils.isEmpty(vpnSession.getCountry())){
+				continue;
+			}
+			if(!vpnSession.getCountry().equals(prevCountry)){
+				break;
+			} else if(vpnSession.getClosedAt() == null || vpnSession.getClosedAt().plusHours(1).isAfter(curVpnSession.getCreatedAt())){
+				ret.add(vpnSession);
+			}
+		}
+		
+		return ret;
+	}
+	
+	
+	private GeoHoppingData getGeoHoppingData(VpnSession curVpnSession){
+		GeoHoppingData ret = userToGeoHoppingData.get(curVpnSession.getNormalizeUsername());
+		if(ret == null){
+			PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
+			List<VpnSession> vpnSessions = vpnSessionRepository.findByNormalizeUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusDays(2).getMillis(), pageRequest);
+			if(!vpnSessions.isEmpty()){
+				ret = new GeoHoppingData();
+				for(VpnSession vpnSession: vpnSessions){
+					if(StringUtils.isEmpty(vpnSession.getCountry())){
+						continue;
+					}
+					if(ret.curCountry == null){
+						ret.curCountry = vpnSession.getCountry();
+						ret.curCountryTime = vpnSession.getCreatedAt();
+					}
+					if(ret.otherOpenSessionCountryTime == null && vpnSession.getClosedAt() == null && !vpnSession.getCountry().equals(ret.curCountry)){
+						ret.otherOpenSessionCountryTime = vpnSession.getCreatedAt();
+					}
+					if(vpnSession.getClosedAt() != null && 
+							(ret.otherCloseSessionCountryTime == null || ret.otherCloseSessionCountryTime.isBefore(vpnSession.getClosedAt()))){
+						ret.otherCloseSessionCountryTime = vpnSession.getClosedAt();
+					}
+				}
+			}
+		}
+		
+		return ret;
+	}
+	
+	
+	private class GeoHoppingData{
+		public String curCountry;
+		public DateTime curCountryTime;
+		public DateTime otherOpenSessionCountryTime;
+		public DateTime otherCloseSessionCountryTime;
+	}
 }

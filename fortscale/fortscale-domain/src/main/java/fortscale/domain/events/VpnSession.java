@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import fortscale.domain.core.AbstractDocument;
 
@@ -18,7 +19,7 @@ import fortscale.domain.core.AbstractDocument;
 public class VpnSession extends AbstractDocument{
 	public static final String collectionName =  "VpnSession";
 	
-	
+	public static final String createdAtEpochFieldName = "createdAtEpoch";
 	
 	
 	
@@ -29,7 +30,7 @@ public class VpnSession extends AbstractDocument{
 	private String sourceIp;
 	
 	private DateTime createdAt;
-	
+	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
 	
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*4)
@@ -71,6 +72,8 @@ public class VpnSession extends AbstractDocument{
 	private Double longtitude;
 	
 	private Double latitude;
+	
+	private Boolean geoHopping = false;
 
 	public String getNormalizeUsername() {
 		return normalizeUsername;
@@ -254,5 +257,13 @@ public class VpnSession extends AbstractDocument{
 
 	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
+	}
+
+	public Boolean getGeoHopping() {
+		return geoHopping;
+	}
+
+	public void setGeoHopping(Boolean geoHopping) {
+		this.geoHopping = geoHopping;
 	}
 }

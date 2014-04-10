@@ -1,9 +1,11 @@
 package fortscale.collection.morphlines.commands;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
-import org.joda.time.DateTime;
+import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -16,11 +18,10 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.typesafe.config.Config;
 
-import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.collection.morphlines.RecordToVpnSessionConverter;
 import fortscale.domain.events.VpnSession;
-import fortscale.domain.schema.VpnEvents;
 import fortscale.services.event.VpnService;
-import fortscale.utils.TimestampUtils;
+import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
 
 
 
@@ -39,12 +40,12 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 
 	@Configurable(preConstruction=true)
 	public class VpnSessionUpdate extends AbstractCommand {
-		
 		@Autowired
-		private VpnEvents vpnEvents;
-		
+		private RecordToVpnSessionConverter recordToVpnSessionConverter;
 		@Autowired
 		private VpnService vpnService;
+		@Autowired
+		private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
 		
 		private final String countryIsoCodeFieldName;
 		private final String longtitudeFieldName;
@@ -69,47 +70,11 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 				return super.doProcess(inputRecord);
 			}
 			
-			VpnSession vpnSession = new VpnSession();
+			VpnSession vpnSession = recordToVpnSessionConverter.convert(inputRecord, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName);
 			
-			String status = RecordExtensions.getStringValue(inputRecord, vpnEvents.STATUS);
-			boolean isFailed = false;
-			Long epochtime = RecordExtensions.getLongValue(inputRecord, vpnEvents.DATE_TIME_UNIX);
-			epochtime = TimestampUtils.convertToMilliSeconds(epochtime);
-			switch(status){
-			case "CLOSED":
-				vpnSession.setClosedAtEpoch(epochtime);
-				vpnSession.setClosedAt(new DateTime(epochtime));
-				break;
-			case "SUCCESS":
-				vpnSession.setCreatedAtEpoch(epochtime);
-				vpnSession.setCreatedAt(new DateTime(epochtime));
-				break;
-			default:
-				isFailed = true;
-			}
+			processGeoHopping(vpnSession);
 			
-			if(!isFailed){
-				vpnSession.setCity(RecordExtensions.getStringValue(inputRecord, vpnEvents.CITY, null));
-				vpnSession.setCountry(RecordExtensions.getStringValue(inputRecord, vpnEvents.COUNTRY, null));
-				vpnSession.setCountryIsoCode(RecordExtensions.getStringValue(inputRecord, countryIsoCodeFieldName, null));
-				vpnSession.setDataBucket(RecordExtensions.getIntegerValue(inputRecord, vpnEvents.DATA_BUCKET, null));
-				vpnSession.setDuration(RecordExtensions.getIntegerValue(inputRecord, vpnEvents.DURATION, null));
-				vpnSession.setHostname(RecordExtensions.getStringValue(inputRecord, vpnEvents.HOSTNAME, null));
-				vpnSession.setIsp(RecordExtensions.getStringValue(inputRecord, vpnEvents.ISP, null));
-				vpnSession.setIspUsage(RecordExtensions.getStringValue(inputRecord, vpnEvents.IPUSAGE, null));
-				vpnSession.setLocalIp(RecordExtensions.getStringValue(inputRecord, vpnEvents.LOCAL_IP, null));
-				vpnSession.setNormalizeUsername(RecordExtensions.getStringValue(inputRecord, vpnEvents.NORMALIZED_USERNAME));
-				vpnSession.setReadBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.READ_BYTES, null));
-				vpnSession.setRegion(RecordExtensions.getStringValue(inputRecord, vpnEvents.REGION, null));
-				vpnSession.setSourceIp(RecordExtensions.getStringValue(inputRecord, vpnEvents.SOURCE_IP));
-				vpnSession.setTotalBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.TOTAL_BYTES, null));
-				vpnSession.setUsername(RecordExtensions.getStringValue(inputRecord, vpnEvents.USERNAME, null));
-				vpnSession.setWriteBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.WRITE_BYTES, null));
-				vpnSession.setLatitude(RecordExtensions.getDoubleValue(inputRecord,latitudeFieldName, null));
-				vpnSession.setLongtitude(RecordExtensions.getDoubleValue(inputRecord,longtitudeFieldName, null));
-			}
-			
-			if(status.equals("SUCCESS")){
+			if(vpnSession.getCreatedAt() != null){
 				vpnService.createOrUpdateOpenVpnSession(vpnSession);
 			} else{
 				vpnService.updateCloseVpnSession(vpnSession);
@@ -118,5 +83,28 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			return super.doProcess(inputRecord);
 
 		}
+		
+		private void processGeoHopping(VpnSession curVpnSession){
+			if(curVpnSession.getClosedAt() == null && StringUtils.isNotEmpty(curVpnSession.getCountry())){
+				List<VpnSession> vpnSessions = vpnService.getGeoHoppingVpnSessions(curVpnSession);
+				if(curVpnSession.getGeoHopping()){
+					List<VpnSession> notificationList = new ArrayList<>();
+					notificationList.add(curVpnSession);
+					for(VpnSession vpnSession: vpnSessions){
+						if(!vpnSession.getGeoHopping()){
+							vpnSession.setGeoHopping(true);
+							vpnService.saveVpnSession(vpnSession);
+							notificationList.add(vpnSession);
+						}
+					}
+					
+					//create notifications for the vpn sessions
+					vpnGeoHoppingNotificationGenerator.createNotifications(notificationList);
+				}
+				
+				
+			}
+		}
 	}
 }
+

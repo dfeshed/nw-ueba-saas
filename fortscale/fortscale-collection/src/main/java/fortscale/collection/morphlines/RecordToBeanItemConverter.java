@@ -43,8 +43,8 @@ public class RecordToBeanItemConverter<T> {
 			try {
 				BeanUtils.setProperty(bean, field, value);
 			} catch (Exception e) {
-				logger.debug("while converting Record to AdUser got an exception for the field {} with the value {}.", field, value);
-				logger.debug("while converting Record to AdUser got an exception", e);
+				logger.debug("while converting Record to {} got an exception for the field {} with the value {}.", bean.getClass(), field, value);
+				logger.debug("while converting Record got an exception", e);
 				//TODO: save statistics.
 			}
 		}
