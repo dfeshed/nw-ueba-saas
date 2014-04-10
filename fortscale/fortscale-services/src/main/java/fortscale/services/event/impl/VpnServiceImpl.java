@@ -90,6 +90,8 @@ public class VpnServiceImpl implements VpnService{
 			return;
 		}
 
+		vpnSession.setClosedAt(vpnSessionUpdate.getClosedAt());
+		vpnSession.setClosedAtEpoch(vpnSession.getClosedAt().getMillis());
 		vpnSession.setDataBucket(vpnSessionUpdate.getDataBucket());
 		vpnSession.setDuration(vpnSessionUpdate.getDuration());
 		vpnSession.setReadBytes(vpnSessionUpdate.getReadBytes());
