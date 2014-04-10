@@ -85,7 +85,7 @@ public class VpnDataBucketBuilder implements CommandBuilder {
 			}
 
 			
-			long readDataPerDurationBucket = readBytes/(durationBucket * MEGA_BYTE);
+			int readDataPerDurationBucket = (int) (readBytes/(durationBucket * MEGA_BYTE));
 			long bucketValue = bucketDefinitionList.get(bucketDefinitionList.size()-1) * 2;
 			for(Long bucketMax: bucketDefinitionList){
 				if(bucketMax >= readDataPerDurationBucket){

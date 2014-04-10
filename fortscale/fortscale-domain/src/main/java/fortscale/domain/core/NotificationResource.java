@@ -2,6 +2,7 @@ package fortscale.domain.core;
 
 import java.io.Serializable;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = NotificationResource.COLLECTION_NAME)
@@ -11,6 +12,7 @@ public class NotificationResource extends AbstractDocument implements Serializab
 
 	public static final String COLLECTION_NAME = "notification_resources";
 
+	@Indexed(unique=true)
 	private String msg_name;
 	private String single;
 	private String agg;
