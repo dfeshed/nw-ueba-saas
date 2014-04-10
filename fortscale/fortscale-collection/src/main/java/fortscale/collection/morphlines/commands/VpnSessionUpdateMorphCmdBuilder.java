@@ -85,7 +85,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 		}
 		
 		private void processGeoHopping(VpnSession curVpnSession){
-			if(curVpnSession.getClosedAt() == null && StringUtils.isNotEmpty(curVpnSession.getCountry())){
+			if(curVpnSession.getClosedAt() == null){
 				List<VpnSession> vpnSessions = vpnService.getGeoHoppingVpnSessions(curVpnSession);
 				if(curVpnSession.getGeoHopping()){
 					List<VpnSession> notificationList = new ArrayList<>();
