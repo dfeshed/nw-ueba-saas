@@ -33,7 +33,6 @@ public class VpnSession extends AbstractDocument{
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
 	
-	@Indexed(unique = false, expireAfterSeconds=60*60*24*4)
 	private DateTime closedAt;
 	
 	private Long closedAtEpoch;
