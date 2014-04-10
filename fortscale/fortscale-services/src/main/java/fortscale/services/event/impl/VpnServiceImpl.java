@@ -104,10 +104,7 @@ public class VpnServiceImpl implements VpnService{
 		GeoHoppingData geoHoppingData = getGeoHoppingData(curVpnSession);
 		List<VpnSession> vpnSessions = Collections.emptyList();
 		if(geoHoppingData == null){
-			geoHoppingData = new GeoHoppingData();
-			geoHoppingData.curCountry = curVpnSession.getCountry();
-			geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
-			userToGeoHoppingData.put(curVpnSession.getNormalizeUsername(), geoHoppingData);
+			addNewGeoHoppingData(curVpnSession);
 		} else if(geoHoppingData.curCountry.equals(curVpnSession.getCountry())){
 			geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
 			if(geoHoppingData.otherOpenSessionCountryTime != null){
@@ -187,10 +184,20 @@ public class VpnServiceImpl implements VpnService{
 						ret.otherCloseSessionCountryTime = vpnSession.getClosedAt();
 					}
 				}
+				if(ret != null){
+					userToGeoHoppingData.put(curVpnSession.getNormalizeUsername(), ret);
+				}
 			}
 		}
 		
 		return ret;
+	}
+	
+	private void addNewGeoHoppingData(VpnSession curVpnSession){
+		GeoHoppingData geoHoppingData = new GeoHoppingData();
+		geoHoppingData.curCountry = curVpnSession.getCountry();
+		geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
+		userToGeoHoppingData.put(curVpnSession.getNormalizeUsername(), geoHoppingData);
 	}
 	
 	
