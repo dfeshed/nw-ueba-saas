@@ -70,6 +70,7 @@
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<mavanagaiata.version>0.7.0</mavanagaiata.version>		
 		<java-lang-config.version>1.7</java-lang-config.version>
 	</properties>
 
@@ -250,6 +251,7 @@
 					<archive>
 						<manifestEntries>
 							<version>${project.parent.version}</version>
+							<git-commit-id>${mvngit.commit.id}</git-commit-id>
 						</manifestEntries>
 					</archive>
 				</configuration>
