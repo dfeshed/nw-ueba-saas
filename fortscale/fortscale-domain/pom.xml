@@ -71,6 +71,7 @@
 		<kite-version>0.10.0</kite-version>
 		<!-- maven plugins versions -->
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<mavanagaiata.version>0.7.0</mavanagaiata.version>
 	</properties>
 
 	<dependencies>
@@ -291,6 +292,7 @@
 				<archive>
 				<manifestEntries>
 					<version>${project.parent.version}</version>
+					<git-commit-id>${mvngit.commit.id}</git-commit-id>
 				</manifestEntries>
 				</archive>
 				</configuration>
