@@ -49,6 +49,9 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 		private final String countryIsoCodeFieldName;
 		private final String longtitudeFieldName;
 		private final String latitudeFieldName;
+		private final Integer vpnGeoHoppingCloseSessionThresholdInHours;
+		private final Integer vpnGeoHoppingOpenSessionThresholdInHours;
+		private final Boolean runGeoHopping;
 		
 
 		public VpnSessionUpdate(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
@@ -56,6 +59,9 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			this.longtitudeFieldName = getConfigs().getString(config, "longtitude_field");
 			this.latitudeFieldName = getConfigs().getString(config, "latitude_field");
 			this.countryIsoCodeFieldName = getConfigs().getString(config, "country_code_field");
+			this.vpnGeoHoppingCloseSessionThresholdInHours = getConfigs().getInt(config, "geo_hopping_close_session_threshold");
+			this.vpnGeoHoppingOpenSessionThresholdInHours = getConfigs().getInt(config, "geo_hopping_open_session_threshold");
+			this.runGeoHopping = getConfigs().getBoolean(config, "runGeoHopping", true);
 			
 			validateArguments();
 		}
@@ -71,7 +77,9 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			
 			VpnSession vpnSession = recordToVpnSessionConverter.convert(inputRecord, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName);
 			
-			processGeoHopping(vpnSession);
+			if(runGeoHopping){
+				processGeoHopping(vpnSession);
+			}
 			
 			if(vpnSession.getCreatedAt() != null){
 				vpnService.createOrUpdateOpenVpnSession(vpnSession);
@@ -85,7 +93,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 		
 		private void processGeoHopping(VpnSession curVpnSession){
 			if(curVpnSession.getClosedAt() == null){
-				List<VpnSession> vpnSessions = vpnService.getGeoHoppingVpnSessions(curVpnSession);
+				List<VpnSession> vpnSessions = vpnService.getGeoHoppingVpnSessions(curVpnSession, vpnGeoHoppingCloseSessionThresholdInHours, vpnGeoHoppingOpenSessionThresholdInHours);;
 				if(curVpnSession.getGeoHopping()){
 					List<VpnSession> notificationList = new ArrayList<>();
 					notificationList.add(curVpnSession);

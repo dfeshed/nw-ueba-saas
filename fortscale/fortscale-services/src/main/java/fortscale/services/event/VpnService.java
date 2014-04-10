@@ -12,4 +12,5 @@ public interface VpnService {
 	void updateCloseVpnSession(VpnSession vpnSessionUpdate);
 	void saveVpnSession(VpnSession vpnSession);
 	List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession);
+	List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours);
 }
