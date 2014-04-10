@@ -22,6 +22,8 @@ public class Notification extends AbstractDocument implements Serializable {
 	private String uuid;
 	private String fsId;
 	private String type;
+	private Long eventsStart;
+	private Long eventsEnd;
 	private boolean dismissed;
 	private int commentsCount;
 	private Map<String, String> attributes;
@@ -111,6 +113,22 @@ public class Notification extends AbstractDocument implements Serializable {
 	public void addComment(NotificationComment comment) {
 		this.commentsCount++;
 		this.comments.add(comment);
+	}
+
+	public Long getEventsStart() {
+		return eventsStart;
+	}
+
+	public void setEventsStart(Long eventsStart) {
+		this.eventsStart = eventsStart;
+	}
+
+	public Long getEventsEnd() {
+		return eventsEnd;
+	}
+
+	public void setEventsEnd(Long eventsEnd) {
+		this.eventsEnd = eventsEnd;
 	}
 
 }
