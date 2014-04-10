@@ -29,6 +29,9 @@ public class VpnSession extends AbstractDocument{
 	@Indexed
 	private String sourceIp;
 	
+	@Indexed
+	private String sessionId;
+	
 	private DateTime createdAt;
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
@@ -88,6 +91,14 @@ public class VpnSession extends AbstractDocument{
 
 	public void setSourceIp(String sourceIp) {
 		this.sourceIp = sourceIp;
+	}
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
 	}
 
 	public DateTime getCreatedAt() {

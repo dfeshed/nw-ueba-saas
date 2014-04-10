@@ -19,6 +19,7 @@ import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordToVpnSessionConverter;
 import fortscale.domain.events.VpnSession;
+import fortscale.domain.schema.VpnEvents;
 import fortscale.services.event.VpnService;
 import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
 
@@ -40,6 +41,8 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 	@Configurable(preConstruction=true)
 	public class VpnSessionUpdate extends AbstractCommand {
 		@Autowired
+		private VpnEvents vpnEvents;
+		@Autowired
 		private RecordToVpnSessionConverter recordToVpnSessionConverter;
 		@Autowired
 		private VpnService vpnService;
@@ -49,9 +52,11 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 		private final String countryIsoCodeFieldName;
 		private final String longtitudeFieldName;
 		private final String latitudeFieldName;
+		private final String sessionIdFieldName;
 		private final Integer vpnGeoHoppingCloseSessionThresholdInHours;
 		private final Integer vpnGeoHoppingOpenSessionThresholdInHours;
 		private final Boolean runGeoHopping;
+		private final Boolean addSessionData;
 		
 
 		public VpnSessionUpdate(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
@@ -59,9 +64,11 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			this.longtitudeFieldName = getConfigs().getString(config, "longtitude_field");
 			this.latitudeFieldName = getConfigs().getString(config, "latitude_field");
 			this.countryIsoCodeFieldName = getConfigs().getString(config, "country_code_field");
+			this.sessionIdFieldName = getConfigs().getString(config, "session_id_field");
 			this.vpnGeoHoppingCloseSessionThresholdInHours = getConfigs().getInt(config, "geo_hopping_close_session_threshold");
 			this.vpnGeoHoppingOpenSessionThresholdInHours = getConfigs().getInt(config, "geo_hopping_open_session_threshold");
-			this.runGeoHopping = getConfigs().getBoolean(config, "runGeoHopping", true);
+			this.runGeoHopping = getConfigs().getBoolean(config, "run_geo_hopping", true);
+			this.addSessionData = getConfigs().getBoolean(config, "add_session_data", true);
 			
 			validateArguments();
 		}
@@ -75,7 +82,10 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 				return super.doProcess(inputRecord);
 			}
 			
-			VpnSession vpnSession = recordToVpnSessionConverter.convert(inputRecord, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName);
+			VpnSession vpnSession = recordToVpnSessionConverter.convert(inputRecord, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName, sessionIdFieldName);
+			if(vpnSession.getClosedAt() != null && addSessionData){
+				addOpenSessionDataToRecord(inputRecord, vpnSession);
+			}
 			
 			if(runGeoHopping){
 				processGeoHopping(vpnSession);
@@ -89,6 +99,42 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			
 			return super.doProcess(inputRecord);
 
+		}
+		
+		private void addOpenSessionDataToRecord(Record record, VpnSession closeVpnSessionData){
+			VpnSession vpnSession = null;
+			if(closeVpnSessionData.getSessionId() != null){
+				vpnSession = vpnService.findBySessionId(closeVpnSessionData.getSessionId());
+			} else{
+				vpnSession = vpnService.findByNormalizeUsernameAndSourceIp(closeVpnSessionData.getNormalizeUsername(), closeVpnSessionData.getSourceIp());
+			}
+			
+			if(vpnSession == null){
+				logger.info("got close vpn session for non existing session");
+			} else{
+				if(record.get(vpnEvents.NORMALIZED_USERNAME).isEmpty()){
+					record.put(vpnEvents.NORMALIZED_USERNAME, vpnSession.getNormalizeUsername());
+				}
+				if(record.get(vpnEvents.USERNAME).isEmpty()){
+					record.put(vpnEvents.USERNAME, vpnSession.getUsername());
+				}
+				if(record.get(vpnEvents.HOSTNAME).isEmpty()){
+					record.put(vpnEvents.HOSTNAME, vpnSession.getHostname());
+				}
+				if(record.get(vpnEvents.SOURCE_IP).isEmpty()){
+					record.put(vpnEvents.SOURCE_IP, vpnSession.getSourceIp());
+					record.put(vpnEvents.CITY, vpnSession.getCity());
+					record.put(vpnEvents.COUNTRY, vpnSession.getCountry());
+					record.put(vpnEvents.ISP, vpnSession.getIsp());
+					record.put(vpnEvents.IPUSAGE, vpnSession.getIspUsage());
+					record.put(vpnEvents.REGION, vpnSession.getRegion());
+					record.put(longtitudeFieldName, vpnSession.getLongtitude());
+					record.put(latitudeFieldName, vpnSession.getLatitude());
+				}
+				if(record.get(vpnEvents.LOCAL_IP).isEmpty()){
+					record.put(vpnEvents.LOCAL_IP, vpnSession.getLocalIp());
+				}
+			}
 		}
 		
 		private void processGeoHopping(VpnSession curVpnSession){

@@ -13,4 +13,6 @@ public interface VpnService {
 	void saveVpnSession(VpnSession vpnSession);
 	List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession);
 	List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours);
+	VpnSession findBySessionId(String sessionId);
+	VpnSession findByNormalizeUsernameAndSourceIp(String normalizeUsername, String sourceIp);
 }
