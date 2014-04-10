@@ -16,6 +16,8 @@ public class NotificationAggregate implements Serializable {
 	private String cause;
 	private String type;
 	private long ts;
+	private Long eventsStart;
+	private Long eventsEnd;
 	private HashMap<String, List<String>> aggAttributes;
 
 	public NotificationAggregate(List<Notification> list) {
@@ -52,6 +54,14 @@ public class NotificationAggregate implements Serializable {
 					aggAtt.get(key).add(entry.getValue());
 				}
 			}
+			if (n.getEventsStart()!=null) {
+				if (eventsStart==null || eventsStart > n.getEventsStart())
+					eventsStart = n.getEventsStart();
+			}
+			if (n.getEventsEnd()!=null) {
+				if (eventsEnd==null || eventsEnd < n.getEventsEnd())
+					eventsEnd = n.getEventsEnd();
+			}
 		}
 		return aggAtt;
 	}
@@ -87,6 +97,14 @@ public class NotificationAggregate implements Serializable {
 			sum += notification.getCommentsCount();
 		}
 		return sum;
+	}
+
+	public Long getEventsStart() {
+		return eventsStart;
+	}
+
+	public Long getEventsEnd() {
+		return eventsEnd;
 	}
 
 }
