@@ -17,7 +17,7 @@ public class RecordToVpnSessionConverter {
 	
 	
 
-	public VpnSession convert(Record inputRecord, String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName){
+	public VpnSession convert(Record inputRecord, String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, String sessionIdFieldName){
 		String status = RecordExtensions.getStringValue(inputRecord, vpnEvents.STATUS);
 		boolean isFailed = false;
 		Long epochtime = RecordExtensions.getLongValue(inputRecord, vpnEvents.DATE_TIME_UNIX);
@@ -55,6 +55,7 @@ public class RecordToVpnSessionConverter {
 			vpnSession.setWriteBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.WRITE_BYTES, null));
 			vpnSession.setLatitude(RecordExtensions.getDoubleValue(inputRecord,latitudeFieldName, null));
 			vpnSession.setLongtitude(RecordExtensions.getDoubleValue(inputRecord,longtitudeFieldName, null));
+			vpnSession.setSessionId(RecordExtensions.getStringValue(inputRecord, sessionIdFieldName, null));
 		}
 		
 		return vpnSession;

@@ -10,4 +10,5 @@ import fortscale.domain.events.VpnSession;
 public interface VpnSessionRepository extends MongoRepository<VpnSession,String>{
 	public VpnSession findByNormalizeUsernameAndSourceIp(String normalizeUsername, String sourceIp);
 	public List<VpnSession> findByNormalizeUsernameAndCreatedAtEpochGreaterThan(String normalizeUsername, Long createdAtEpoch, Pageable pageable);
+	public VpnSession findBySessionId(String sessionId);
 }

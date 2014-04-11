@@ -34,6 +34,16 @@ public class VpnServiceImpl implements VpnService{
 	
 	
 	@Override
+	public VpnSession findBySessionId(String sessionId){
+		return vpnSessionRepository.findBySessionId(sessionId);
+	}
+	
+	@Override
+	public VpnSession findByNormalizeUsernameAndSourceIp(String normalizeUsername, String sourceIp){
+		return vpnSessionRepository.findByNormalizeUsernameAndSourceIp(normalizeUsername, sourceIp);
+	}
+	
+	@Override
 	public void saveVpnSession(VpnSession vpnSession){
 		vpnSessionRepository.save(vpnSession);
 	}
@@ -44,9 +54,25 @@ public class VpnServiceImpl implements VpnService{
 		if(vpnSession == null){
 			vpnSession = vpnSessionUpdate;
 		} else{
+			vpnSession.setSessionId(vpnSessionUpdate.getSessionId());
 			vpnSession.setCreatedAt(vpnSessionUpdate.getCreatedAt());
+			vpnSession.setClosedAtEpoch(null);
+			vpnSession.setClosedAt(null);
 			vpnSession.setGeoHopping(false);
-			updateVpnSessionData(vpnSession, vpnSessionUpdate);
+			vpnSession.setCity(vpnSessionUpdate.getCity());
+			vpnSession.setCountry(vpnSessionUpdate.getCountry());
+			vpnSession.setCountryIsoCode(vpnSessionUpdate.getCountryIsoCode());
+			vpnSession.setDataBucket(null);
+			vpnSession.setDuration(null);
+			vpnSession.setHostname(vpnSessionUpdate.getHostname());
+			vpnSession.setIsp(vpnSessionUpdate.getIsp());
+			vpnSession.setIspUsage(vpnSessionUpdate.getIspUsage());
+			vpnSession.setLocalIp(vpnSessionUpdate.getLocalIp());
+			vpnSession.setReadBytes(null);
+			vpnSession.setRegion(vpnSessionUpdate.getRegion());
+			vpnSession.setTotalBytes(null);
+			vpnSession.setUsername(vpnSessionUpdate.getUsername());
+			vpnSession.setWriteBytes(null);
 		}
 		
 		vpnSession.setCreatedAtEpoch(vpnSession.getCreatedAt().getMillis());
@@ -64,36 +90,18 @@ public class VpnServiceImpl implements VpnService{
 			return;
 		}
 
-		updateVpnSessionData(vpnSession, vpnSessionUpdate);
+		vpnSession.setClosedAt(vpnSessionUpdate.getClosedAt());
+		vpnSession.setClosedAtEpoch(vpnSession.getClosedAt().getMillis());
+		vpnSession.setDataBucket(vpnSessionUpdate.getDataBucket());
+		vpnSession.setDuration(vpnSessionUpdate.getDuration());
+		vpnSession.setReadBytes(vpnSessionUpdate.getReadBytes());
+		vpnSession.setWriteBytes(vpnSessionUpdate.getWriteBytes());
+		vpnSession.setTotalBytes(vpnSessionUpdate.getTotalBytes());
 				
 		vpnSession.setModifiedAt(new DateTime());
 		
 		vpnSessionRepository.save(vpnSession);
 	}
-	
-	private void updateVpnSessionData(VpnSession vpnSession, VpnSession vpnSessionUpdate) {
-		vpnSession.setClosedAt(vpnSessionUpdate.getClosedAt());
-		if(vpnSession.getClosedAt() != null){
-			vpnSession.setClosedAtEpoch(vpnSession.getClosedAt().getMillis());
-		} else{
-			vpnSession.setClosedAtEpoch(null);
-		}
-		vpnSession.setCity(vpnSessionUpdate.getCity());
-		vpnSession.setCountry(vpnSessionUpdate.getCountry());
-		vpnSession.setCountryIsoCode(vpnSessionUpdate.getCountryIsoCode());
-		vpnSession.setDataBucket(vpnSessionUpdate.getDataBucket());
-		vpnSession.setDuration(vpnSessionUpdate.getDuration());
-		vpnSession.setHostname(vpnSessionUpdate.getHostname());
-		vpnSession.setIsp(vpnSessionUpdate.getIsp());
-		vpnSession.setIspUsage(vpnSessionUpdate.getIspUsage());
-		vpnSession.setLocalIp(vpnSessionUpdate.getLocalIp());
-		vpnSession.setReadBytes(vpnSessionUpdate.getReadBytes());
-		vpnSession.setRegion(vpnSessionUpdate.getRegion());
-		vpnSession.setTotalBytes(vpnSessionUpdate.getTotalBytes());
-		vpnSession.setUsername(vpnSessionUpdate.getUsername());
-		vpnSession.setWriteBytes(vpnSessionUpdate.getWriteBytes());
-	}
-
 	
 	//if goe hopping exist then the given curVpnSession is updated and a list of vpn session that needed to be updated too.
 	@Override
