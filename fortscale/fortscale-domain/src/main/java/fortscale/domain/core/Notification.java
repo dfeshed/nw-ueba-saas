@@ -113,4 +113,35 @@ public class Notification extends AbstractDocument implements Serializable {
 		this.comments.add(comment);
 	}
 
+	public void setTs(long ts) {
+		this.ts = ts;
+	}
+
+	public void setGenerator_name(String generator_name) {
+		this.generator_name = generator_name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public void setFsId(String fsId) {
+		this.fsId = fsId;
+	}
+
+	public void setAttributes(Map<String, String> attributes) {
+		this.attributes = attributes;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

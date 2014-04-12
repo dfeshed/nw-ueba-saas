@@ -65,6 +65,15 @@ public class VpnJuniperTest {
         		)
         	),
         	$(
+    		"Regular (Poza) Close VPN",
+    		$(
+    			"Feb 12 11:56:32 10.1.150.10 Juniper: 2014-02-12 11:56:36 - ch-vpn-prilly - [85.132.48.198] cfankhause(Employees-OTP)[Employees_Common, Employees_Pulse] - Closed connection to 10.1.151.24 after 55 seconds, with 119991 bytes read and 110702 bytes written"   
+    		),
+    		$(
+    			"2014-02-12 11:56:36,1392198996,cfankhause,85.132.48.198,10.1.151.24,CLOSED,,,,,,,230693,119991,110702,55,50"
+    		)
+        	),
+        	$(
             	"Regular (Poza) Failure VPN Authentication",
             	$(
             		"Nov  7 14:36:10 11.155.45.2 Juniper: 2013-11-07 14:36:10 - ive - [72.193.146.27] bdes(Users)[] - Login failed using auth server server.mypozza.com (ACE Server).  Reason: Failed"   

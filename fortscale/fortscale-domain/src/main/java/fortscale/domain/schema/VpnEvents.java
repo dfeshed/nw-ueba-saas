@@ -51,6 +51,21 @@ public class VpnEvents implements TableSchema {
 	@Value("${impala.data.vpn.table.field.hostname}")
 	public String HOSTNAME;
 	
+	@Value("${impala.data.vpn.table.field.totalbytes}")
+	public String TOTAL_BYTES;
+	
+	@Value("${impala.data.vpn.table.field.readbytes}")
+	public String READ_BYTES;
+	
+	@Value("${impala.data.vpn.table.field.writebytes}")
+	public String WRITE_BYTES;
+	
+	@Value("${impala.data.vpn.table.field.duration}")
+	public String DURATION;
+	
+	@Value("${impala.data.vpn.table.field.databucket}")
+	public String DATA_BUCKET;
+	
 	@Value("${impala.data.vpn.table.field.normalized_username}")
 	public String NORMALIZED_USERNAME;
 	
