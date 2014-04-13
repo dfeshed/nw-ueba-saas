@@ -26,16 +26,6 @@
 			</job-data-map>
 		</job>
 		
-		<trigger>
-			<cron>
-				<name>dhcp_etl_hourly_trigger</name>
-				<group>DHCP</group>
-				<job-name>ETL</job-name>
-				<job-group>DHCP</job-group>
-				<cron-expression>0 1/15 * * * ?</cron-expression>
-			</cron>
-		</trigger>
-		
 	</schedule>
 	
 </job-scheduling-data>
