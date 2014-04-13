@@ -1,5 +1,7 @@
 package fortscale.geoip;
 
+import org.springframework.util.StringUtils;
+
 public class GeoIPInfo {
 	public static String RESERVED_RANGE = "Reserved Range";
 
@@ -25,7 +27,7 @@ public class GeoIPInfo {
 	}
 
 	public void setCountryName(String countryName) {
-		this.countryName = countryName;
+		this.countryName = normalizeName(countryName);
 	}
 
 	public String getRegionName() {
@@ -33,7 +35,7 @@ public class GeoIPInfo {
 	}
 
 	public void setRegionName(String regionName) {
-		this.regionName = regionName;
+		this.regionName = normalizeName(regionName);
 	}
 
 	public String getCityName() {
@@ -41,7 +43,7 @@ public class GeoIPInfo {
 	}
 
 	public void setCityName(String cityName) {
-		this.cityName = cityName;
+		this.cityName = normalizeName(cityName);
 	}
 
 	public String getCountryISOCode() {
@@ -65,7 +67,7 @@ public class GeoIPInfo {
 	}
 
 	public void setISP(String iSP) {
-		ISP = iSP;
+		ISP = normalizeName(iSP);
 	}
 
 	public IpUsageTypeEnum getUsageType() {
@@ -110,6 +112,28 @@ public class GeoIPInfo {
 		GeoIPInfo other = (GeoIPInfo) obj;
 
 		return ip.equals(other.ip);
+	}
+	
+	private String normalizeName(String name){
+		StringBuilder builder = new StringBuilder();
+		boolean isSpace = true;
+		for(char ch: name.toCharArray()){
+			if(Character.isWhitespace(ch)){
+				isSpace = true;
+			} else{
+				if(isSpace){
+					if(builder.length() > 0){
+						builder.append(" ");
+					}
+					builder.append(Character.toUpperCase(ch));
+					isSpace = false;
+				} else{
+					builder.append(Character.toLowerCase(ch));
+				}
+			}
+		}
+		
+		return builder.toString();
 	}
 
 }
