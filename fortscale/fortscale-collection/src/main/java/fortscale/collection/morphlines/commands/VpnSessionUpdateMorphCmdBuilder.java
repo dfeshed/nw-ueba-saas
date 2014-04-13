@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -83,8 +84,19 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			}
 			
 			VpnSession vpnSession = recordToVpnSessionConverter.convert(inputRecord, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName, sessionIdFieldName);
+			if (StringUtils.isEmpty(vpnSession.getSessionId()) && (StringUtils.isEmpty(vpnSession.getNormalizeUsername()) || StringUtils.isEmpty(vpnSession.getSourceIp()))) {
+				logger.warn("vpnSession should have either sessionId or username and sourceIP. Original record is: {}", inputRecord.toString());
+				return super.doProcess(inputRecord);
+			}
+			
 			if(vpnSession.getClosedAt() != null && addSessionData){
-				addOpenSessionDataToRecord(inputRecord, vpnSession);
+				VpnSession vpnOpenSession = getOpenSessionDataToRecord(vpnSession);
+				if(vpnOpenSession == null){
+					logger.info("got close vpn session for non existing session");
+					return false;
+				} else{
+					addOpenSessionDataToRecord(inputRecord, vpnOpenSession);
+				}
 			}
 			
 			if(runGeoHopping){
@@ -101,39 +113,39 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 
 		}
 		
-		private void addOpenSessionDataToRecord(Record record, VpnSession closeVpnSessionData){
-			VpnSession vpnSession = null;
+		private VpnSession getOpenSessionDataToRecord(VpnSession closeVpnSessionData){
+			VpnSession vpnOpenSession = null;
 			if(closeVpnSessionData.getSessionId() != null){
-				vpnSession = vpnService.findBySessionId(closeVpnSessionData.getSessionId());
+				vpnOpenSession = vpnService.findBySessionId(closeVpnSessionData.getSessionId());
 			} else{
-				vpnSession = vpnService.findByNormalizeUsernameAndSourceIp(closeVpnSessionData.getNormalizeUsername(), closeVpnSessionData.getSourceIp());
+				vpnOpenSession = vpnService.findByNormalizeUsernameAndSourceIp(closeVpnSessionData.getNormalizeUsername(), closeVpnSessionData.getSourceIp());
 			}
-			
-			if(vpnSession == null){
-				logger.info("got close vpn session for non existing session");
-			} else{
-				if(record.get(vpnEvents.NORMALIZED_USERNAME).isEmpty()){
-					record.put(vpnEvents.NORMALIZED_USERNAME, vpnSession.getNormalizeUsername());
-				}
-				if(record.get(vpnEvents.USERNAME).isEmpty()){
-					record.put(vpnEvents.USERNAME, vpnSession.getUsername());
-				}
-				if(record.get(vpnEvents.HOSTNAME).isEmpty()){
-					record.put(vpnEvents.HOSTNAME, vpnSession.getHostname());
-				}
-				if(record.get(vpnEvents.SOURCE_IP).isEmpty()){
-					record.put(vpnEvents.SOURCE_IP, vpnSession.getSourceIp());
-					record.put(vpnEvents.CITY, vpnSession.getCity());
-					record.put(vpnEvents.COUNTRY, vpnSession.getCountry());
-					record.put(vpnEvents.ISP, vpnSession.getIsp());
-					record.put(vpnEvents.IPUSAGE, vpnSession.getIspUsage());
-					record.put(vpnEvents.REGION, vpnSession.getRegion());
-					record.put(longtitudeFieldName, vpnSession.getLongtitude());
-					record.put(latitudeFieldName, vpnSession.getLatitude());
-				}
-				if(record.get(vpnEvents.LOCAL_IP).isEmpty()){
-					record.put(vpnEvents.LOCAL_IP, vpnSession.getLocalIp());
-				}
+			return vpnOpenSession;
+		}
+		
+		
+		private void addOpenSessionDataToRecord(Record record, VpnSession openVpnSessionData){
+			if(record.get(vpnEvents.NORMALIZED_USERNAME).isEmpty()){
+				record.put(vpnEvents.NORMALIZED_USERNAME, openVpnSessionData.getNormalizeUsername());
+			}
+			if(record.get(vpnEvents.USERNAME).isEmpty()){
+				record.put(vpnEvents.USERNAME, openVpnSessionData.getUsername());
+			}
+			if(record.get(vpnEvents.HOSTNAME).isEmpty()){
+				record.put(vpnEvents.HOSTNAME, openVpnSessionData.getHostname());
+			}
+			if(record.get(vpnEvents.SOURCE_IP).isEmpty()){
+				record.put(vpnEvents.SOURCE_IP, openVpnSessionData.getSourceIp());
+				record.put(vpnEvents.CITY, openVpnSessionData.getCity());
+				record.put(vpnEvents.COUNTRY, openVpnSessionData.getCountry());
+				record.put(vpnEvents.ISP, openVpnSessionData.getIsp());
+				record.put(vpnEvents.IPUSAGE, openVpnSessionData.getIspUsage());
+				record.put(vpnEvents.REGION, openVpnSessionData.getRegion());
+				record.put(longtitudeFieldName, openVpnSessionData.getLongtitude());
+				record.put(latitudeFieldName, openVpnSessionData.getLatitude());
+			}
+			if(record.get(vpnEvents.LOCAL_IP).isEmpty()){
+				record.put(vpnEvents.LOCAL_IP, openVpnSessionData.getLocalIp());
 			}
 		}
 		

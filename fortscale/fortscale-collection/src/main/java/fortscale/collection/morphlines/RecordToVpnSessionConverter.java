@@ -46,10 +46,10 @@ public class RecordToVpnSessionConverter {
 			vpnSession.setIsp(RecordExtensions.getStringValue(inputRecord, vpnEvents.ISP, null));
 			vpnSession.setIspUsage(RecordExtensions.getStringValue(inputRecord, vpnEvents.IPUSAGE, null));
 			vpnSession.setLocalIp(RecordExtensions.getStringValue(inputRecord, vpnEvents.LOCAL_IP, null));
-			vpnSession.setNormalizeUsername(RecordExtensions.getStringValue(inputRecord, vpnEvents.NORMALIZED_USERNAME));
+			vpnSession.setNormalizeUsername(RecordExtensions.getStringValue(inputRecord, vpnEvents.NORMALIZED_USERNAME, null));
 			vpnSession.setReadBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.READ_BYTES, null));
 			vpnSession.setRegion(RecordExtensions.getStringValue(inputRecord, vpnEvents.REGION, null));
-			vpnSession.setSourceIp(RecordExtensions.getStringValue(inputRecord, vpnEvents.SOURCE_IP));
+			vpnSession.setSourceIp(RecordExtensions.getStringValue(inputRecord, vpnEvents.SOURCE_IP, null));
 			vpnSession.setTotalBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.TOTAL_BYTES, null));
 			vpnSession.setUsername(RecordExtensions.getStringValue(inputRecord, vpnEvents.USERNAME, null));
 			vpnSession.setWriteBytes(RecordExtensions.getLongValue(inputRecord, vpnEvents.WRITE_BYTES, null));
