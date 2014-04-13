@@ -9,28 +9,38 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContextManager;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 
 @RunWith(JUnitParamsRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context.xml"})
+//@ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context.xml"})
 public class VpnF5Test {
 
-	private TestContextManager testContextManager;
+	private static ClassPathXmlApplicationContext testContextManager;
 	
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readVPN_F5.conf";
+		
+	@BeforeClass
+	public static void setUpClass(){
+		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
+	}
+	
+	@AfterClass
+	public static void finalizeTestClass(){
+		testContextManager.close();
+		testContextManager = null;
+	}
 	 
 	@Before
 	public void setUp() throws Exception {
-		this.testContextManager = new TestContextManager(getClass());
-	    this.testContextManager.prepareTestInstance(this);
 
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
