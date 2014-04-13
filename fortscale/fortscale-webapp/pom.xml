@@ -68,6 +68,8 @@
 		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<mavanagaiata.version>0.7.0</mavanagaiata.version>		
 		<java-lang-config.version>1.7</java-lang-config.version>
 	</properties>
 
@@ -239,6 +241,33 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.github.koraktor</groupId>
+				<artifactId>mavanagaiata</artifactId>
+				<version>${mavanagaiata.version}</version>
+				<executions>
+					<execution>
+						<id>git-commit</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>commit</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<version>${project.parent.version}</version>
+							<git-commit-id>${mvngit.commit.id}</git-commit-id>
+						</manifestEntries>
+					</archive>
+				</configuration>
 			</plugin>
 			<!-- <plugin> -->
 			<!-- <groupId>org.codehaus.mojo</groupId> -->

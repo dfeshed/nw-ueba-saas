@@ -68,6 +68,9 @@
 		<commons-pool.version>1.4</commons-pool.version>
 		<commons-codec.version>1.5</commons-codec.version>
 		<kite-version>0.10.0</kite-version>
+		<!-- maven plugins versions -->
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<mavanagaiata.version>0.7.0</mavanagaiata.version>
 	</properties>
 
 	<dependencies>
@@ -279,4 +282,34 @@
 
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.koraktor</groupId>
+				<artifactId>mavanagaiata</artifactId>
+				<version>${mavanagaiata.version}</version>
+				<executions>
+					<execution>
+						<id>git-commit</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>commit</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+				<archive>
+				<manifestEntries>
+					<version>${project.parent.version}</version>
+					<git-commit-id>${mvngit.commit.id}</git-commit-id>
+				</manifestEntries>
+				</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

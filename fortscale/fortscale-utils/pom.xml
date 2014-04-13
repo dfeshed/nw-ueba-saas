@@ -77,6 +77,7 @@
 		<!-- maven plugins -->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<mavanagaiata.version>0.7.0</mavanagaiata.version>
 		<maven-source-plugin.version>2.1.1</maven-source-plugin.version>
 		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>
@@ -301,6 +302,20 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>com.github.koraktor</groupId>
+				<artifactId>mavanagaiata</artifactId>
+				<version>${mavanagaiata.version}</version>
+				<executions>
+					<execution>
+						<id>git-commit</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>commit</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${maven-jar-plugin.version}</version>
@@ -311,6 +326,10 @@
 							<classpathPrefix>lib/</classpathPrefix>
 							<classpathLayoutType>repository</classpathLayoutType>
 						</manifest>
+						<manifestEntries>
+							<version>${project.parent.version}</version>
+							<git-commit-id>${mvngit.commit.id}</git-commit-id>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>

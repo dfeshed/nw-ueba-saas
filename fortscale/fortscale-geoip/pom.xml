@@ -68,6 +68,8 @@
 		<!-- maven plugins versions -->
 		<maven-remote-resources-plugin.version>1.5</maven-remote-resources-plugin.version>
 		<maven-download-plugin.version>1.1.0</maven-download-plugin.version>
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<mavanagaiata.version>0.7.0</mavanagaiata.version>
 		<!-- eclipse plugins versions -->
 		<lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
 	</properties>
@@ -151,6 +153,33 @@
 					<includes>
 						<include>**/*.mmdb</include>
 					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.koraktor</groupId>
+				<artifactId>mavanagaiata</artifactId>
+				<version>${mavanagaiata.version}</version>
+				<executions>
+					<execution>
+						<id>git-commit</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>commit</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<version>${project.parent.version}</version>
+							<git-commit-id>${mvngit.commit.id}</git-commit-id>
+						</manifestEntries>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
