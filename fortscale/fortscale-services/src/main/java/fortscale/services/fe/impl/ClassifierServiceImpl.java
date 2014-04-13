@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.ClassifierScore;
+import fortscale.domain.core.Data;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.AuthScore;
@@ -186,44 +187,51 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size, boolean followedOnly) {
+	public Data<List<ISuspiciousUserInfo>> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size, boolean followedOnly) {
 		return getTopUsers(classifierId, severityId, new ThresholdNoFilter(),page,size, followedOnly, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
 	}
 	
 	@Override
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly) {
+	public Data<List<ISuspiciousUserInfo>> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly) {
 		return getTopUsers(classifierId, severityId, new ThresholdTrendFilter(),page,size, followedOnly, User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
 	}
 
-	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, int page, int size, boolean followedOnly, String... sortingFieldsName) {
+	private Data<List<ISuspiciousUserInfo>> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, int page, int size, boolean followedOnly, String... sortingFieldsName) {
 		Classifier.validateClassifierId(classifierId);
 		
 		Pageable pageable = new PageRequest(page, size, Direction.DESC, sortingFieldsName);
-		List<User> users = null;
+		Data<List<User>> users = null;
 		DateTime dateTime = new DateTime();
 		dateTime = dateTime.minusHours(24);
 		if(severityId != null){
 			Range severityRange = getRange(severityId);
 			if(followedOnly){
-				users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndTimeGte(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
+				users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
 			} else{
-				users = userRepository.findByClassifierIdAndScoreBetweenAndTimeGte(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
+				users = userRepository.findByClassifierIdAndScoreBetweenAndTimeGteAsData(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
 			}
 		} else{
 			if(followedOnly){
-				users = userRepository.findByClassifierIdAndFollowedAndTimeGte(classifierId, dateTime.toDate(), pageable);
+				users = userRepository.findByClassifierIdAndFollowedAndTimeGteAsData(classifierId, dateTime.toDate(), pageable);
 			} else{
-				users = userRepository.findByClassifierIdAndTimeGte(classifierId, dateTime.toDate(), pageable);
+				users = userRepository.findByClassifierIdAndTimeGteAsData(classifierId, dateTime.toDate(), pageable);
 			}
 		}
-		List<ISuspiciousUserInfo> ret = new ArrayList<>();
-		for(User user: users){
+		
+		Data<List<ISuspiciousUserInfo>> ret = new Data<>();
+		List<ISuspiciousUserInfo> retList = new ArrayList<>();
+		for(User user: users.getData()){
 			ISuspiciousUserInfo suspiciousUserInfo = createSuspiciousUserInfo(classifierId, user);
 			if(!thresholdFilter.hasPassed(suspiciousUserInfo)){
 				break;
 			}
-			ret.add(suspiciousUserInfo);
+			retList.add(suspiciousUserInfo);
 		}
+		
+		ret.setData(retList);
+		ret.setOffset(users.getOffset());
+		ret.setTotal(users.getTotal());
+		
 		return ret;		
 	}
 		

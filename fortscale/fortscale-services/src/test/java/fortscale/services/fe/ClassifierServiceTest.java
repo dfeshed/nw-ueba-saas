@@ -25,6 +25,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.JdbcOperations;
 
 import fortscale.domain.core.ClassifierScore;
+import fortscale.domain.core.Data;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -170,11 +171,13 @@ public class ClassifierServiceTest{
 		Mockito.when(configurationService.getRange(severityId)).thenReturn(severityRange);
 		String classifierId = Classifier.groups.getId();
 		Pageable pageable = new PageRequest(0, limit, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
-		Mockito.when(userRepository.findByClassifierIdAndScoreBetweenAndTimeGte(eq(classifierId), eq(severityRange.getMinimumInteger()), eq(severityRange.getMaximumInteger()), any(Date.class), eq(pageable))).thenReturn(users);
-		List<ISuspiciousUserInfo> suspiciousUserInfos = classifierService.getSuspiciousUsersByScore(Classifier.groups.getId(), severityId, 0, limit, false);
-		Assert.assertEquals(limit, suspiciousUserInfos.size());
+		Data<List<User>> usersData = new Data<>();
+		usersData.setData(users);
+		Mockito.when(userRepository.findByClassifierIdAndScoreBetweenAndTimeGteAsData(eq(classifierId), eq(severityRange.getMinimumInteger()), eq(severityRange.getMaximumInteger()), any(Date.class), eq(pageable))).thenReturn(usersData);
+		Data<List<ISuspiciousUserInfo>> suspiciousUserInfos = classifierService.getSuspiciousUsersByScore(Classifier.groups.getId(), severityId, 0, limit, false);
+		Assert.assertEquals(limit, suspiciousUserInfos.getData().size());
 		for(int i = 0; i < limit; i++){
-			ISuspiciousUserInfo suspiciousUserInfo = suspiciousUserInfos.get(i);
+			ISuspiciousUserInfo suspiciousUserInfo = suspiciousUserInfos.getData().get(i);
 			User user = users.get(i);
 			Assert.assertEquals(user.getId(), suspiciousUserInfo.getUserId());
 			Assert.assertEquals((int)Math.floor(user.getScore(classifierId).getScore()), suspiciousUserInfo.getScore());
