@@ -144,6 +144,20 @@
 					<target>${java-lang-config.version}</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.github.koraktor</groupId>
+				<artifactId>mavanagaiata</artifactId>
+				<version>${mavanagaiata.version}</version>
+				<executions>
+					<execution>
+						<id>git-commit</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>commit</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- create executable batch  -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
