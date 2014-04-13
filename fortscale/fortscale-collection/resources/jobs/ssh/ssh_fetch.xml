@@ -38,6 +38,15 @@
             </job-data-map>
 		</job>
 
+		<trigger>
+			<cron>
+				<name>ssh_fetch_hourly_trigger</name>
+				<group>SSH</group>
+				<job-name>Fetch</job-name>
+				<job-group>SSH</job-group>
+ 				<cron-expression>0 15 * * * ?</cron-expression>
+			</cron>
+		</trigger>
 				
 	</schedule>
 	
