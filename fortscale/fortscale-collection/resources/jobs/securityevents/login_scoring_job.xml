@@ -40,7 +40,7 @@
 				<group>SecurityEvents</group>
 				<job-name>LoginScoring</job-name>
 				<job-group>SecurityEvents</job-group>
-				<cron-expression>0 25 * * * ?</cron-expression>
+				<cron-expression>0 15 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 	
