@@ -302,6 +302,20 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>com.github.koraktor</groupId>
+				<artifactId>mavanagaiata</artifactId>
+				<version>${mavanagaiata.version}</version>
+				<executions>
+					<execution>
+						<id>git-commit</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>commit</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${maven-jar-plugin.version}</version>
