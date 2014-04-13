@@ -21,7 +21,7 @@ import fortscale.utils.logging.Logger;
 public class VpnServiceImpl implements VpnService{
 	private static Logger logger = Logger.getLogger(VpnServiceImpl.class);
 	
-	public static final int VPN_GEO_HOPPING_OPEN_THRESHOLD_IN_HOURS = 48;
+	public static final int VPN_GEO_HOPPING_OPEN_THRESHOLD_IN_HOURS = 6;
 	public static final int VPN_GEO_HOPPING_CLOSE_THRESHOLD_IN_HOURS = 1;
 	
 	
