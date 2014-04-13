@@ -116,15 +116,24 @@ public class GeoIPInfo {
 	
 	private String normalizeName(String name){
 		StringBuilder builder = new StringBuilder();
-		for(String subname: name.toLowerCase().split(" ")){
-			if(subname.isEmpty()){
-				continue;
+		boolean isSpace = true;
+		for(char ch: name.toCharArray()){
+			if(Character.isWhitespace(ch)){
+				isSpace = true;
+			} else{
+				if(isSpace){
+					if(builder.length() > 0){
+						builder.append(" ");
+					}
+					builder.append(Character.toUpperCase(ch));
+					isSpace = false;
+				} else{
+					builder.append(Character.toLowerCase(ch));
+				}
 			}
-			builder.append(StringUtils.capitalize(subname));
-			builder.append(" ");
 		}
 		
-		return builder.substring(0, builder.length() -1).toString();
+		return builder.toString();
 	}
 
 }
