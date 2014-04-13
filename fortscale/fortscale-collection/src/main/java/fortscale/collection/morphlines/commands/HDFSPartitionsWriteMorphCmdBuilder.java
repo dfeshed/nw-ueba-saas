@@ -149,7 +149,7 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 						closeOutputAppender();
 						refreshImpala();
 					} catch (IOException e) {
-						logger.error("error closing EventsJoinerCache", e);
+						logger.error("error closing appender", e);
 					}
 					appender = null;
 				}

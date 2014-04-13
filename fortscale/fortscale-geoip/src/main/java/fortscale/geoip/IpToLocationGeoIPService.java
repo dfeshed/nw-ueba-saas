@@ -98,7 +98,8 @@ public class IpToLocationGeoIPService implements GeoIPService{
 						geoInfo.setUsageType(IpUsageTypeEnum.isp);
 					}
 				}
-				
+				geoInfo.setLatitude((double) rec.getLatitude());
+				geoInfo.setLongitude((double) rec.getLongitude());
 			}
 		} catch (Exception e) {
 			logger.warn(String.format("Failed to perform GeoIP lookup for IP %s", IPAddress), e);
