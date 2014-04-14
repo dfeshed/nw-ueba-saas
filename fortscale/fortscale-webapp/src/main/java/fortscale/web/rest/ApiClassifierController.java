@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import fortscale.domain.core.Data;
 import fortscale.services.LogEventsEnum;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
@@ -161,7 +161,7 @@ public class ApiClassifierController extends BaseController {
 	public DataBean<List<ISuspiciousUserInfo>> suspiciousUser(@PathVariable String id, @RequestParam(defaultValue = SUSPICIOUS_USERS_BY_SCORE) String sortby, @RequestParam(defaultValue = "0") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(defaultValue = "false") Boolean followedOnly, Model model) {
 		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
-		Data<List<ISuspiciousUserInfo>> users;
+		Page<ISuspiciousUserInfo> users;
 		if (SUSPICIOUS_USERS_BY_SCORE.equals(sortby)) {
 			users = classifierService.getSuspiciousUsersByScore(id, null, page, size,followedOnly);
 		} else if (SUSPICIOUS_USERS_BY_TREND.equals(sortby)) {
@@ -170,9 +170,9 @@ public class ApiClassifierController extends BaseController {
 			throw new InvalidValueException(String.format("no such sorting field [%s]", sortby));
 		}
 
-		ret.setData(users.getData());
-		ret.setOffset(users.getOffset());
-		ret.setTotal((int) users.getTotal());
+		ret.setData(users.getContent());
+		ret.setOffset(users.getNumber()*users.getSize());
+		ret.setTotal((int) users.getTotalElements());
 		return ret;
 	}
 

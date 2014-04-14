@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.Data;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.fe.dao.Threshold;
@@ -17,10 +17,10 @@ public interface UserRepositoryCustom {
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails);
 	public List<User> findByApplicationUserName(String applicationName, List<String> usernames);
 	public User findByApplicationUserName(String applicationName, String username);
-	public Data<List<User>> findByClassifierIdAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable);
-	public Data<List<User>> findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable);
-	public Data<List<User>> findByClassifierIdAndTimeGteAsData(String classifierId, Date time, Pageable pageable);
-	public Data<List<User>> findByClassifierIdAndFollowedAndTimeGteAsData(String classifierId, Date time, Pageable pageable);
+	public Page<User> findByClassifierIdAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable);
+	public Page<User> findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable);
+	public Page<User> findByClassifierIdAndTimeGteAsData(String classifierId, Date time, Pageable pageable);
+	public Page<User> findByClassifierIdAndFollowedAndTimeGteAsData(String classifierId, Date time, Pageable pageable);
 	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold);
 	public int countNumOfUsers(String classifierId);
 	public User findByLogUsername(String logname, String username);

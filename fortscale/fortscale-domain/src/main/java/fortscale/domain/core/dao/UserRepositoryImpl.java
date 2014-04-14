@@ -12,6 +12,8 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -19,7 +21,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.Data;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
@@ -70,47 +71,45 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 
 	@Override
-	public Data<List<User>> findByClassifierIdAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
+	public Page<User> findByClassifierIdAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
 		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
 
-		return getData(query, pageable, User.class);
+		return getPage(query, pageable, User.class);
 	}
 	
 	@Override
-	public Data<List<User>> findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
+	public Page<User> findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
 		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
 		
-		return getData(query, pageable, User.class);
+		return getPage(query, pageable, User.class);
 	}
 	
-	private <T> Data<List<T>> getData(Query query, Pageable pageable, Class<T> entityClass){
+	private <T> Page<T> getPage(Query query, Pageable pageable, Class<T> entityClass){
 		query.with(pageable);
-		Data<List<T>> ret = new Data<>();
-		ret.setOffset(pageable.getOffset());
-		ret.setData(mongoTemplate.find(query, entityClass));
-		ret.setTotal(mongoTemplate.count(query, entityClass));
+		List<T> content = mongoTemplate.find(query, entityClass);
+		long total = mongoTemplate.count(query, entityClass);
 		
-		return ret;
+		return new PageImpl<>(content, pageable, total);
 	}
 	
 	@Override
-	public Data<List<User>> findByClassifierIdAndTimeGteAsData(String classifierId, Date time, Pageable pageable) {
+	public Page<User> findByClassifierIdAndTimeGteAsData(String classifierId, Date time, Pageable pageable) {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(time));
 
-		return getData(query, pageable, User.class);
+		return getPage(query, pageable, User.class);
 	}
 
 	@Override
-	public Data<List<User>> findByClassifierIdAndFollowedAndTimeGteAsData(String classifierId, Date time, Pageable pageable) {
+	public Page<User> findByClassifierIdAndFollowedAndTimeGteAsData(String classifierId, Date time, Pageable pageable) {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		Query query = new Query(where(User.followedField).is(true).and(classifierScoreCurrentTimestampField).gte(time));
 
-		return getData(query, pageable, User.class);
+		return getPage(query, pageable, User.class);
 	}
 
 	@Override
