@@ -253,14 +253,6 @@ public class HadoopInit implements InitializingBean{
 		}
 	}
 	
-	private void createTableView(String tableViewName, String selectStatement){
-		try{
-			impalaClient.createTableView(tableViewName, selectStatement);
-		} catch(Exception e){
-			//Nothing to do. just making sure that the table exist.
-		}
-	}
-
 	@Override
 	public void afterPropertiesSet() throws Exception {	
 		createImpalaTables();
