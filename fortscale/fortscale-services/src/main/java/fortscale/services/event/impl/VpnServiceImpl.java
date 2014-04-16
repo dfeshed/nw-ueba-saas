@@ -84,7 +84,7 @@ public class VpnServiceImpl implements VpnService{
 	private VpnSession findVpnSession(VpnSession vpnSessionUpdate){
 		VpnSession ret = null;
 		if(StringUtils.isNotEmpty(vpnSessionUpdate.getSessionId())){
-			vpnSessionRepository.findBySessionId(vpnSessionUpdate.getSessionId());
+			ret = vpnSessionRepository.findBySessionId(vpnSessionUpdate.getSessionId());
 		}
 		if(ret == null && StringUtils.isNotEmpty(vpnSessionUpdate.getNormalizeUsername()) && StringUtils.isNotEmpty(vpnSessionUpdate.getSourceIp())){
 			ret = vpnSessionRepository.findByNormalizeUsernameAndSourceIp(vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
