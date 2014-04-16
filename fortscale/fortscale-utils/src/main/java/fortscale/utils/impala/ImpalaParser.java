@@ -10,6 +10,8 @@ import org.joda.time.DateTime;
 
 public class ImpalaParser {
 	
+	public static final String IMPALA_NULL_VALUE = "\\N";
+	
 	private static final String TABLE_FIELD_DEFINITION_DELIMITER = ",";
 	private static final String FIELD_DEFINITION_DELIMITER = " ";
 	
