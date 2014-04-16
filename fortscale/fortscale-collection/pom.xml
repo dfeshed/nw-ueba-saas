@@ -553,25 +553,6 @@
 										<ignore/>
 									</action>
 								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											com.github.koraktor
-										</groupId>
-										<artifactId>
-											mavanagaiata
-										</artifactId>
-										<versionRange>
-											[0.7.0,)
-										</versionRange>
-										<goals>
-											<goal>commit</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>

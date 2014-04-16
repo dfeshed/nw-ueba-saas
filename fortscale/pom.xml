@@ -363,6 +363,35 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+			<!-- ignore copy dependencies plugin in m2e as it is not supported -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.github.koraktor</groupId>
+										<artifactId>mavanagaiata</artifactId>
+										<versionRange>[0.7.0,)</versionRange>
+										<goals>
+											<goal>commit</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<modules>
