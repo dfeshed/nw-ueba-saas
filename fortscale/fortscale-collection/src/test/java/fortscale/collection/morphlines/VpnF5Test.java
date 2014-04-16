@@ -30,7 +30,7 @@ public class VpnF5Test {
 		
 	@BeforeClass
 	public static void setUpClass(){
-		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
+		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
 	}
 	
 	@AfterClass
@@ -121,12 +121,12 @@ public class VpnF5Test {
     		$(
 	    		"Regular (BS) Successful VPN Authentication From Last Year",
 	    		$(
-	    			"Dec  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8784: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+	    			"Dec  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8784: New session from client IP 75.26.245.201 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
 	    			"Dec  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8784: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
 				),
 	    		$(
     				(String)null,
-	    			"2013-12-02 19:08:35,1386029315,chavier,75.26.245.200,172.10.10.10,SUCCESS,,,,,,,,,,,"
+	    			"2013-12-02 19:08:35,1386029315,chavier,75.26.245.201,172.10.10.10,SUCCESS,,,,,,,,,,,"
 	    		)
     		),
 
