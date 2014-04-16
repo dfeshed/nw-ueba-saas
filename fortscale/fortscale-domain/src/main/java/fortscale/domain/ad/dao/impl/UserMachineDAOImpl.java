@@ -55,6 +55,9 @@ public class UserMachineDAOImpl implements UserMachineDAO, RowMapper<UserMachine
 		// filter out nat addresses
 		query.where(equalsTo(schema.IS_NAT, "false"));
 		
+		// filter out empty hostnames
+		query.where(neq(schema.MACHINE_NAME, "''"));
+		
 		// add group by clause
 		query.groupBy(schema.NORMALIZED_USERNAME, lower(schema.MACHINE_NAME));
 
