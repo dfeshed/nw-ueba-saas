@@ -50,7 +50,7 @@ public class VpnServiceImpl implements VpnService{
 
 	@Override
 	public void createOrUpdateOpenVpnSession(VpnSession vpnSessionUpdate) {
-		VpnSession vpnSession = vpnSessionRepository.findByNormalizeUsernameAndSourceIp(vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
+		VpnSession vpnSession = findVpnSession(vpnSessionUpdate);
 		if(vpnSession == null){
 			vpnSession = vpnSessionUpdate;
 		} else{
@@ -81,10 +81,21 @@ public class VpnServiceImpl implements VpnService{
 		
 		vpnSessionRepository.save(vpnSession);
 	}
+	private VpnSession findVpnSession(VpnSession vpnSessionUpdate){
+		VpnSession ret = null;
+		if(StringUtils.isNotEmpty(vpnSessionUpdate.getSessionId())){
+			ret = vpnSessionRepository.findBySessionId(vpnSessionUpdate.getSessionId());
+		}
+		if(ret == null && StringUtils.isNotEmpty(vpnSessionUpdate.getNormalizeUsername()) && StringUtils.isNotEmpty(vpnSessionUpdate.getSourceIp())){
+			ret = vpnSessionRepository.findByNormalizeUsernameAndSourceIp(vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
+		}
+		
+		return ret;
+	}
 	
 	@Override
 	public void updateCloseVpnSession(VpnSession vpnSessionUpdate) {
-		VpnSession vpnSession = vpnSessionRepository.findByNormalizeUsernameAndSourceIp(vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
+		VpnSession vpnSession = findVpnSession(vpnSessionUpdate);
 		if(vpnSession == null){
 			logger.warn("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
 			return;
