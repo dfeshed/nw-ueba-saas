@@ -24,9 +24,11 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	private MongoTemplate mongoTemplate;
 	
 	@Override
-	public List<Notification> findByFsIdExcludeComments(String fsid) {
+	public List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("fsId").is(fsid));
+		if (!includeDissmissed)
+			query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
 		query.with(new Sort(Direction.DESC, "ts")).limit(10);
 		query.fields().exclude("comments");
 		return mongoTemplate.find(query, Notification.class);

@@ -116,8 +116,9 @@ public class ApiNotificationsController extends BaseController {
 	@RequestMapping(value = "/byUser/{fsid:.+}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Notification>> userNotifications(@PathVariable("fsid") String fsid) {
-		Iterable<Notification> userNotifications = notificationsRepository.findByFsIdExcludeComments(fsid);
+	public DataBean<List<Notification>> userNotifications(@PathVariable("fsid") String fsid,
+			@RequestParam(defaultValue="False") boolean includeDissmissed) {
+		Iterable<Notification> userNotifications = notificationsRepository.findByFsIdExcludeComments(fsid, includeDissmissed);
 		return notificationsDataSingle(userNotifications, Optional.<Long>absent());
 	}
 
