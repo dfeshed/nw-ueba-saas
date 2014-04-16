@@ -5,9 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = Notification.COLLECTION_NAME)
+@CompoundIndexes({
+	@CompoundIndex(name="fsId_ts_desc", def = "{'fsId': 1, 'ts': -1}"),
+	@CompoundIndex(name="ts_desc", def = "{'ts': -1}"),
+	@CompoundIndex(name="dismissed_ts_desc", def = "{'dismissed': 1, 'ts': -1}", sparse=true)
+})
 public class Notification extends AbstractDocument implements Serializable {
 	
 	private static final long serialVersionUID = 4314533976059073710L;
