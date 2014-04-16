@@ -32,6 +32,10 @@ public class FeatureBean{
 		return feature.getFeatureScore().intValue();
 	}
 	
+	public boolean getIsDistList() {
+		return feature.getIsGroupDistributionList() != null ? feature.getIsGroupDistributionList() : false;
+	}
+	
 	public FeatureExlanationBean getExplanation(){
 		FeatureExlanationBean ret = null;
 		if(feature.getFeatureExplanation() != null){
