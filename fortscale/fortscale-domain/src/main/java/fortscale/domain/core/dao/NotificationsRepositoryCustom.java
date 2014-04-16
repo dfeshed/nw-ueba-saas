@@ -11,7 +11,7 @@ import fortscale.domain.core.NotificationAggregate;
 
 public interface NotificationsRepositoryCustom {
 
-	List<Notification> findByFsIdExcludeComments(String fsid);
+	List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed);
 	
 	List<Notification> findByTsGreaterThanExcludeComments(long ts, Sort sort);
 	
