@@ -1,6 +1,5 @@
 package fortscale.geoip;
 
-import org.springframework.util.StringUtils;
 
 public class GeoIPInfo {
 	public static String RESERVED_RANGE = "Reserved Range";
