@@ -26,6 +26,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.utils.hdfs.HDFSLineAppender;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
+import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 
 
@@ -186,7 +187,11 @@ public class UserTableUpdateJob extends FortscaleJob {
 		for(String fieldDef: impalaUserFields.split(",")){
 			String fieldDefSplit[] = fieldDef.split(" ");
 			try {
-				values.add(BeanUtils.getProperty(userTable, fieldDefSplit[0]));
+				String val = BeanUtils.getProperty(userTable, fieldDefSplit[0]);
+				if(StringUtils.isEmpty(val)){
+					val = ImpalaParser.IMPALA_NULL_VALUE;
+				}
+				values.add(val);
 			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				logger.warn(String.format("got the following exception while trying to read the field %s", fieldDef), e);
 				values.add("NULL");
