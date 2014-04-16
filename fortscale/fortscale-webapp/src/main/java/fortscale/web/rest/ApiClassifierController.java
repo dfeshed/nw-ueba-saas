@@ -159,13 +159,13 @@ public class ApiClassifierController extends BaseController {
 	@ResponseBody
 	@LogException
 	public DataBean<List<ISuspiciousUserInfo>> suspiciousUser(@PathVariable String id, @RequestParam(defaultValue = SUSPICIOUS_USERS_BY_SCORE) String sortby, @RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "10") Integer size, @RequestParam(defaultValue = "false") Boolean followedOnly, Model model) {
+			@RequestParam(defaultValue = "10") Integer size, @RequestParam(defaultValue = "80") Integer minScore, @RequestParam(defaultValue = "100") Integer maxScore, @RequestParam(defaultValue = "false") Boolean followedOnly, Model model) {
 		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
 		Page<ISuspiciousUserInfo> users;
 		if (SUSPICIOUS_USERS_BY_SCORE.equals(sortby)) {
-			users = classifierService.getSuspiciousUsersByScore(id, null, page, size,followedOnly);
+			users = classifierService.getSuspiciousUsersByScore(id, page, size, minScore, maxScore, followedOnly);
 		} else if (SUSPICIOUS_USERS_BY_TREND.equals(sortby)) {
-			users = classifierService.getSuspiciousUsersByTrend(id, null, page, size,followedOnly);
+			users = classifierService.getSuspiciousUsersByTrend(id, page, size, minScore, maxScore, followedOnly);
 		} else {
 			throw new InvalidValueException(String.format("no such sorting field [%s]", sortby));
 		}

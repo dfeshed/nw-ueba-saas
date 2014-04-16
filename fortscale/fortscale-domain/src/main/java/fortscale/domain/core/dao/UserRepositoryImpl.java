@@ -74,7 +74,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	public Page<User> findByClassifierIdAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
+		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lte(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
 
 		return getPage(query, pageable, User.class);
 	}
@@ -83,7 +83,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	public Page<User> findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lt(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
+		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lte(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
 		
 		return getPage(query, pageable, User.class);
 	}

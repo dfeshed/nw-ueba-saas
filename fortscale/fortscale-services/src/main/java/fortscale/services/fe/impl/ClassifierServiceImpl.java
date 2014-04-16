@@ -189,34 +189,38 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	@Override
 	public Page<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size, boolean followedOnly) {
-		return getTopUsers(classifierId, severityId, new ThresholdNoFilter(),page,size, followedOnly, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
+		Range severityRange = getRange(severityId);
+		return getTopUsers(classifierId, new ThresholdNoFilter(),page,size, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), followedOnly, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
 	}
 	
 	@Override
 	public Page<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly) {
-		return getTopUsers(classifierId, severityId, new ThresholdTrendFilter(),page,size, followedOnly, User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
+		Range severityRange = getRange(severityId);
+		return getTopUsers(classifierId, new ThresholdTrendFilter(), page, size, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), followedOnly, User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
+	}
+	
+	@Override
+	public Page<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, int page, int size, Integer minScore, Integer maxScore, boolean followedOnly) {
+		return getTopUsers(classifierId, new ThresholdNoFilter(),page,size, minScore, maxScore, followedOnly, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
+	}
+	
+	@Override
+	public Page<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, int page, int size, Integer minScore, Integer maxScore, boolean followedOnly) {
+		return getTopUsers(classifierId, new ThresholdTrendFilter(),page,size, minScore, maxScore, followedOnly, User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
 	}
 
-	private Page<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, int page, int size, boolean followedOnly, String... sortingFieldsName) {
+	private Page<ISuspiciousUserInfo> getTopUsers(String classifierId, ThresholdFilter thresholdFilter, int page, int size, Integer minScore, Integer maxScore, boolean followedOnly, String... sortingFieldsName) {
 		Classifier.validateClassifierId(classifierId);
 		
 		Pageable pageable = new PageRequest(page, size, Direction.DESC, sortingFieldsName);
 		Page<User> users = null;
 		DateTime dateTime = new DateTime();
 		dateTime = dateTime.minusHours(24);
-		if(severityId != null){
-			Range severityRange = getRange(severityId);
-			if(followedOnly){
-				users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
-			} else{
-				users = userRepository.findByClassifierIdAndScoreBetweenAndTimeGteAsData(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
-			}
+			
+		if(followedOnly){
+			users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(classifierId, minScore, maxScore, dateTime.toDate(), pageable);
 		} else{
-			if(followedOnly){
-				users = userRepository.findByClassifierIdAndFollowedAndTimeGteAsData(classifierId, dateTime.toDate(), pageable);
-			} else{
-				users = userRepository.findByClassifierIdAndTimeGteAsData(classifierId, dateTime.toDate(), pageable);
-			}
+			users = userRepository.findByClassifierIdAndScoreBetweenAndTimeGteAsData(classifierId, minScore, maxScore, dateTime.toDate(), pageable);
 		}
 		
 		List<ISuspiciousUserInfo> retList = new ArrayList<>();
