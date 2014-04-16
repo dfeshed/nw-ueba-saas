@@ -16,14 +16,12 @@ import org.kitesdk.morphline.api.Record;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
-import fortscale.collection.morphlines.commands.ParseKerberosTicketOptionsBuilder.ParseKerberosTicketOptions;
 import fortscale.collection.morphlines.commands.SubstringBuilder.SubString;
 
 @RunWith(JUnitParamsRunner.class)
 public class SubstringBuilderTest {
 
 	private RecordSinkCommand sink;
-	private SubString command;
 	private Config config;
 	private MorphlineContext morphlineContext;
 	
