@@ -1,14 +1,14 @@
 package fortscale.services.fe;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 
 import org.apache.commons.lang.math.IntRange;
 import org.apache.commons.lang.math.Range;
@@ -19,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -170,11 +172,12 @@ public class ClassifierServiceTest{
 		Mockito.when(configurationService.getRange(severityId)).thenReturn(severityRange);
 		String classifierId = Classifier.groups.getId();
 		Pageable pageable = new PageRequest(0, limit, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
-		Mockito.when(userRepository.findByClassifierIdAndScoreBetweenAndTimeGte(eq(classifierId), eq(severityRange.getMinimumInteger()), eq(severityRange.getMaximumInteger()), any(Date.class), eq(pageable))).thenReturn(users);
-		List<ISuspiciousUserInfo> suspiciousUserInfos = classifierService.getSuspiciousUsersByScore(Classifier.groups.getId(), severityId, 0, limit, false);
-		Assert.assertEquals(limit, suspiciousUserInfos.size());
+		PageImpl<User> usersPage = new PageImpl<>(users, pageable, users.size());
+		Mockito.when(userRepository.findByClassifierIdAndScoreBetweenAndTimeGteAsData(eq(classifierId), eq(severityRange.getMinimumInteger()), eq(severityRange.getMaximumInteger()), any(Date.class), eq(pageable))).thenReturn(usersPage);
+		Page<ISuspiciousUserInfo> suspiciousUserInfos = classifierService.getSuspiciousUsersByScore(Classifier.groups.getId(), severityId, 0, limit, false);
+		Assert.assertEquals(limit, suspiciousUserInfos.getNumberOfElements());
 		for(int i = 0; i < limit; i++){
-			ISuspiciousUserInfo suspiciousUserInfo = suspiciousUserInfos.get(i);
+			ISuspiciousUserInfo suspiciousUserInfo = suspiciousUserInfos.getContent().get(i);
 			User user = users.get(i);
 			Assert.assertEquals(user.getId(), suspiciousUserInfo.getUserId());
 			Assert.assertEquals((int)Math.floor(user.getScore(classifierId).getScore()), suspiciousUserInfo.getScore());

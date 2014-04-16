@@ -18,6 +18,8 @@ import org.apache.commons.lang.math.Range;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -186,45 +188,47 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size, boolean followedOnly) {
+	public Page<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size, boolean followedOnly) {
 		return getTopUsers(classifierId, severityId, new ThresholdNoFilter(),page,size, followedOnly, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
 	}
 	
 	@Override
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly) {
+	public Page<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly) {
 		return getTopUsers(classifierId, severityId, new ThresholdTrendFilter(),page,size, followedOnly, User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
 	}
 
-	private List<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, int page, int size, boolean followedOnly, String... sortingFieldsName) {
+	private Page<ISuspiciousUserInfo> getTopUsers(String classifierId, String severityId, ThresholdFilter thresholdFilter, int page, int size, boolean followedOnly, String... sortingFieldsName) {
 		Classifier.validateClassifierId(classifierId);
 		
 		Pageable pageable = new PageRequest(page, size, Direction.DESC, sortingFieldsName);
-		List<User> users = null;
+		Page<User> users = null;
 		DateTime dateTime = new DateTime();
 		dateTime = dateTime.minusHours(24);
 		if(severityId != null){
 			Range severityRange = getRange(severityId);
 			if(followedOnly){
-				users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndTimeGte(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
+				users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
 			} else{
-				users = userRepository.findByClassifierIdAndScoreBetweenAndTimeGte(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
+				users = userRepository.findByClassifierIdAndScoreBetweenAndTimeGteAsData(classifierId, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), dateTime.toDate(), pageable);
 			}
 		} else{
 			if(followedOnly){
-				users = userRepository.findByClassifierIdAndFollowedAndTimeGte(classifierId, dateTime.toDate(), pageable);
+				users = userRepository.findByClassifierIdAndFollowedAndTimeGteAsData(classifierId, dateTime.toDate(), pageable);
 			} else{
-				users = userRepository.findByClassifierIdAndTimeGte(classifierId, dateTime.toDate(), pageable);
+				users = userRepository.findByClassifierIdAndTimeGteAsData(classifierId, dateTime.toDate(), pageable);
 			}
 		}
-		List<ISuspiciousUserInfo> ret = new ArrayList<>();
-		for(User user: users){
+		
+		List<ISuspiciousUserInfo> retList = new ArrayList<>();
+		for(User user: users.getContent()){
 			ISuspiciousUserInfo suspiciousUserInfo = createSuspiciousUserInfo(classifierId, user);
 			if(!thresholdFilter.hasPassed(suspiciousUserInfo)){
 				break;
 			}
-			ret.add(suspiciousUserInfo);
+			retList.add(suspiciousUserInfo);
 		}
-		return ret;		
+				
+		return new PageImpl<>(retList, pageable, users.getTotalElements());		
 	}
 		
 	private SuspiciousUserInfo createSuspiciousUserInfo(String classifierId, User user){

@@ -3,6 +3,7 @@ package fortscale.services.fe;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 
 import fortscale.services.LogEventsEnum;
@@ -13,8 +14,8 @@ public interface ClassifierService {
 	public Classifier getClassifier(String classifierId);
 	public List<IScoreDistribution> getScoreDistribution(String classifierId); 
 	public int countUsers(String classifierId);
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size, boolean followedOnly);
-	public List<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly);
+	public Page<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size, boolean followedOnly);
+	public Page<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly);
 	public List<ILoginEventScoreInfo> getUserSuspiciousAuthEvents(LogEventsEnum eventId, String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore);
 	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers);
 	public int countAuthEvents(LogEventsEnum eventId, Date timestamp, String userId, int minScore);
