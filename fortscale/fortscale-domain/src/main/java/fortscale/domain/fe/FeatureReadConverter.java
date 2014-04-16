@@ -15,6 +15,7 @@ public class FeatureReadConverter implements Converter<DBObject, IFeature>{
 	public IFeature convert(DBObject source) {
 		Double score = (Double)source.get(ADFeature.FEATURE_SCORE_FIELD);
 		Double value = (Double)source.get(ADFeature.FEATURE_VALUE_FIELD);
+		Boolean isGroupDistributionList = (Boolean) source.get(ADFeature.FEATURE_AD_IS_GROUP_DISTRIBUTION_LIST_FIELD);
 		
 		DBObject explanation = (DBObject)source.get(ADFeature.FEATURE_EXPLANATION_FIELD);
 		FeatureExplanation featureExplanation = null;
@@ -25,7 +26,7 @@ public class FeatureReadConverter implements Converter<DBObject, IFeature>{
 			featureExplanation = new FeatureExplanation(featureDistribution, featureCount, getReferences(explanation), score);
 		}
 		
-		ADFeature adFeature = new ADFeature((String)source.get(ADFeature.UNIQUE_NAME_FIELD), (String)source.get(ADFeature.DISPLAY_NAME_FIELD), value, score, featureExplanation);
+		ADFeature adFeature = new ADFeature((String)source.get(ADFeature.UNIQUE_NAME_FIELD), (String)source.get(ADFeature.DISPLAY_NAME_FIELD), value, score, isGroupDistributionList, featureExplanation);
 		
 		return adFeature;
 	}

@@ -16,6 +16,8 @@ public interface IFeature {
 
 	public Double getFeatureScore();
 	
+	public Boolean getIsGroupDistributionList();
+	
 	public IFeatureExplanation getFeatureExplanation();
 	
 	public static class OrderByFeatureScore implements Comparator<IFeature>{
