@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +26,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.AnalystBean;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.request.RenewPasswordRequest;
 import fortscale.web.fields.FirstName;
 import fortscale.web.fields.LastName;
 import fortscale.web.fields.Password;
@@ -57,14 +59,11 @@ public class ApiAdminAnalystController extends BaseController{
 	
 	@RequestMapping(value="/renewPassword", method=RequestMethod.POST)
 	@LogException
-	public void renewPassword(@RequestParam(required=true) String password,
-			@RequestParam(required=true) String username,
-			@RequestParam(required=true) String newPassword,
-			Model model) throws InvalidCredentialsException{
+	public void renewPassword(@RequestBody RenewPasswordRequest renewPasswordRequest) throws InvalidCredentialsException{
 		AnalystAuth analystAuth = getThisAnalystAuth();
 		//getting analyst auth with credential.
-		mongoUserDetailsService.validatePassword(analystAuth.getUsername(), password);
-		mongoUserDetailsService.changePassword(username, newPassword, false);		
+		mongoUserDetailsService.validatePassword(analystAuth.getUsername(), renewPasswordRequest.getPassword());
+		mongoUserDetailsService.changePassword(renewPasswordRequest.getUsername(), renewPasswordRequest.getNewPassword(), false);		
 	}
 	
 	@RequestMapping(value="/disableAnalyst", method=RequestMethod.POST)
