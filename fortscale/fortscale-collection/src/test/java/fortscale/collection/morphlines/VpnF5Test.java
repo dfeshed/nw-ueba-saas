@@ -85,6 +85,30 @@ public class VpnF5Test {
 	    			"2014-01-02 19:11:09,1388707869,chavier,75.26.245.200,172.10.10.10,CLOSED,,,,,,,3282545,2649665,632880,,50"
 	    		)
     		),
+    		$(
+	    		"Regular (BS) Successful VPN Authentication in reverse order",
+	    		$(
+	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8781: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+				),
+	    		$(
+    				(String)null,
+	    			"2014-01-02 19:08:35,1388707715,chavier,75.26.245.200,172.10.10.10,SUCCESS,,,,,,,,,,,"
+	    		)
+    		),
+    		$(
+	    		"Regular (BS) Successful VPN Authentication in reverse order with end session",
+	    		$(
+	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8781: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+	    			"Jan  2 19:11:09 server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8781: Session statistics - bytes in: 632880, bytes out: 2649665"
+				),
+	    		$(
+    				(String)null,
+	    			"2014-01-02 19:08:35,1388707715,chavier,75.26.245.200,172.10.10.10,SUCCESS,,,,,,,,,,,",
+	    			"2014-01-02 19:11:09,1388707869,chavier,75.26.245.200,172.10.10.10,CLOSED,,,,,,,3282545,2649665,632880,,50"
+	    		)
+    		),
     		
     		$(
     	    	"Regular (BS) Failed VPN Authentication",
