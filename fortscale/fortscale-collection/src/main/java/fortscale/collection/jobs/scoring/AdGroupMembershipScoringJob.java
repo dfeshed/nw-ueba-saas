@@ -137,6 +137,11 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 				logger.info(line);
 			}
 			
+			if(pr.exitValue() != 0){
+				handleCmdFailure(pr, runProfRankRubyScript);
+				throw new JobExecutionException(String.format("got error while running shell command %s", runProfRankRubyScript));
+			}
+			
 			if (reader.HasErrors()) {
 				monitor.error(getMonitorId(), getStepName(), reader.getException().toString());
 			} else {

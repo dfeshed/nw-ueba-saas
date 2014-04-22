@@ -94,6 +94,12 @@ public class AdFetchJob extends FortscaleJob {
 		}
 		pr.waitFor();
 		
+		if(pr.exitValue() != 0){
+			handleCmdFailure(pr, ldapSearchShellScript);
+			return false;
+		}
+		
+		
 		renameOutput(outputTempFile, outputFile);
 		
 		monitorDataReceived(outputFile, "Ad");
