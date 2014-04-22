@@ -1,5 +1,9 @@
 package fortscale.collection.morphlines.commands;
 
+
+import static fortscale.collection.morphlines.RecordExtensions.getLongValue;
+import static fortscale.utils.TimestampUtils.convertToSeconds;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +17,7 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Notifications;
 
 import com.typesafe.config.Config;
+
 
 /**
  * EventsJoiner command is used as a command that can do both join and merge for records
@@ -38,11 +43,17 @@ public class EventsJoinerBuilder implements CommandBuilder {
 		
 		private List<String> keys;
 		private List<String> mergeFields;
+		private String currentRecordDateField;
+		private String cachedRecordDateField;
+		private long timeThreshold;
 		private EventsJoinerCache cache;
 		
 		public EventsJoiner(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			keys = getConfigs().getStringList(config, "keys");
+			currentRecordDateField = getConfigs().getString(config, "currentRecordDateField");
+			cachedRecordDateField = getConfigs().getString(config, "cachedRecordDateField");
+			timeThreshold = getConfigs().getLong(config, "timeThreshold");
 			mergeFields = getConfigs().getStringList(config, "mergeFields");
 			String cacheName = getConfigs().getString(config, "cacheName");
 			cache = EventsJoinerCache.getInstance(cacheName);
@@ -63,20 +74,32 @@ public class EventsJoinerBuilder implements CommandBuilder {
 				// to chained child command to halt execution
 				return true;
 			} else {
-				// get the fields to merge from the previous record and put them 
-				// into the current record
-				for (String field : mergeFields) {
-					@SuppressWarnings("rawtypes")
-					List values = previousEvent.get(field);
-					// add all values to the input record
-					inputRecord.removeAll(field);
-					for (Object value : values) {
-						inputRecord.put(field, value);
+				// check if the time delta between the events is within the 
+				// tolerated threshold
+				long currentTime = convertToSeconds(getLongValue(inputRecord, currentRecordDateField, 0L));
+				long cachedTime = convertToSeconds(getLongValue(previousEvent, cachedRecordDateField, 0L));
+				long delta = (currentTime < cachedTime)? cachedTime - currentTime : currentTime - cachedTime;
+				
+				if (delta > timeThreshold) {
+					// replace the cached record as we encountered a new one that should be saved
+					cache.store(key, inputRecord);
+					return true;
+				} else {
+					// get the fields to merge from the previous record and put them 
+					// into the current record
+					for (String field : mergeFields) {
+						@SuppressWarnings("rawtypes")
+						List values = previousEvent.get(field);
+						// add all values to the input record
+						inputRecord.removeAll(field);
+						for (Object value : values) {
+							inputRecord.put(field, value);
+						}
 					}
+	
+					// continue processing in the command chain
+					return super.doProcess(inputRecord);
 				}
-
-				// continue processing in the command chain
-				return super.doProcess(inputRecord);
 			}
 		}
 		

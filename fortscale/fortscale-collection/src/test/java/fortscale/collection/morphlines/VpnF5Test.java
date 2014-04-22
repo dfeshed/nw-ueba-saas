@@ -88,8 +88,8 @@ public class VpnF5Test {
     		$(
 	    		"Regular (BS) Successful VPN Authentication in reverse order",
 	    		$(
-	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8781: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
-	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8782: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8782: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
 				),
 	    		$(
     				(String)null,
@@ -97,11 +97,22 @@ public class VpnF5Test {
 	    		)
     		),
     		$(
+	    		"Regular (BS) Successful VPN Authentication in reverse order more than day apart",
+	    		$(
+	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8788: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+	    			"Jan  4 19:08:28 server.bs.dom Jan  4 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8788: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+				),
+	    		$(
+    				(String)null,
+    				(String)null
+	    		)
+    		),
+    		$(
 	    		"Regular (BS) Successful VPN Authentication in reverse order with end session",
 	    		$(
-	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8781: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
-	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
-	    			"Jan  2 19:11:09 server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8781: Session statistics - bytes in: 632880, bytes out: 2649665"
+	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8784: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8784: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+	    			"Jan  2 19:11:09 server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8784: Session statistics - bytes in: 632880, bytes out: 2649665"
 				),
 	    		$(
     				(String)null,
@@ -113,8 +124,8 @@ public class VpnF5Test {
     		$(
     	    	"Regular (BS) Failed VPN Authentication",
     	    	$(
-    	    		"Jan  2 19:06:14 server.bs.dom Jan  2 19:07:42 server notice tmm2[20226]: 01490500:5: 8a38fa11: New session from client IP 69.141.27.100 (ST=New Jersey/CC=US/C=NA) at VIP 172.10.11.12 Listener /DETAILS/details (Reputation=Unknown)",
-    	    		"Jan  2 19:06:26 server.bs.dom Jan  2 19:07:54 server info apd[18544]: 01490017:6: 8a38fa11: AD agent: Auth (logon attempt:0): authenticate with 'bartra' failed"
+    	    		"Jan  2 19:06:14 server.bs.dom Jan  2 19:07:42 server notice tmm2[20226]: 01490500:5: 8a38fa18: New session from client IP 69.141.27.100 (ST=New Jersey/CC=US/C=NA) at VIP 172.10.11.12 Listener /DETAILS/details (Reputation=Unknown)",
+    	    		"Jan  2 19:06:26 server.bs.dom Jan  2 19:07:54 server info apd[18544]: 01490017:6: 8a38fa18: AD agent: Auth (logon attempt:0): authenticate with 'bartra' failed"
     			),
     	    	$(
         			(String)null,
@@ -125,7 +136,7 @@ public class VpnF5Test {
     		$(
 	    		"Only First Event of Regular (BS) Successful VPN Authentication",
 	    		$(
-	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8782: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8783: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
 				),
 	    		$(
     				(String)null
@@ -135,7 +146,7 @@ public class VpnF5Test {
     		$(
 	    		"Only Second Event of Regular (BS) Successful VPN Authentication",
 	    		$(
-	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8783: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
+	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8798: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
 				),
 	    		$(
     				(String)null
@@ -145,8 +156,8 @@ public class VpnF5Test {
     		$(
 	    		"Regular (BS) Successful VPN Authentication From Last Year",
 	    		$(
-	    			"Dec  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8784: New session from client IP 75.26.245.201 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
-	    			"Dec  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8784: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
+	    			"Dec  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8785: New session from client IP 75.26.245.201 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+	    			"Dec  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8785: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
 				),
 	    		$(
     				(String)null,
