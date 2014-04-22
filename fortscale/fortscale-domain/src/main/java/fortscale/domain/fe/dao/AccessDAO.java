@@ -283,13 +283,13 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	public Date getLastRunDate() {
 		Long lastRun = getLastRuntime();
 		if(lastRun == null){
-			String message;
 			if(countNumOfRecords() > 0){
-				message = String.format("run time in the table (%s) is null", getTableName());
+				logger.debug("run time in the table {} is null", getTableName());
+				throw new RuntimeException(String.format("run time in the table (%s) is null", getTableName()));
 			} else{
-				message = String.format("the table (%s) is empty", getTableName());
+				logger.debug("the table {} is empty", getTableName());
+				throw new EmptyTableException(getTableName());
 			}
-			throw new RuntimeException(message);
 		}
 		Date retDate = parseTimestampDate(lastRun);
 		lastRunDate = retDate;
