@@ -1,12 +1,26 @@
 package fortscale.web;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import fortscale.domain.analyst.AnalystAuth;
+import fortscale.web.beans.DataBean;
 
 public class BaseController {
 	private static final String ME = "me";
+	protected static final DataBean<List<?>> emptyData = getEmptyData();
+	
+	private static DataBean<List<?>> getEmptyData(){
+		DataBean<List<?>> ret = new DataBean<List<?>>();
+		ret.setData(Collections.emptyList());
+		ret.setOffset(0);
+		ret.setTotal(0);
+		
+		return ret;
+	}
 	
 	protected boolean isThisAnalystAuth() {
 		return getAnalystAuth(ME) != null;

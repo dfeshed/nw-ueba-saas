@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import fortscale.domain.fe.dao.EmptyTableException;
 import fortscale.services.LogEventsEnum;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
@@ -67,18 +68,22 @@ public class ApiClassifierController extends BaseController {
 
 		Direction direction = convertStringToDirection(orderByDirection);
 
-		DataBean<List<?>> ret = new DataBean<List<?>>();
-		ret.setTotal(0);
+		DataBean<List<?>> ret = null;
 
-		switch (id) {
-		case ssh:
-		case login:
-			ret = authEvents(id, timestamp, uid, offset, limit, orderBy, direction, minScore, followedOnly);
-			break;
-		case vpn:
-			ret = vpnEvents(id, timestamp, uid, offset, limit, orderBy, direction, minScore, followedOnly);
-		default:
-			break;
+		try{
+			switch (id) {
+			case ssh:
+			case login:
+				ret = authEvents(id, timestamp, uid, offset, limit, orderBy, direction, minScore, followedOnly);
+				break;
+			case vpn:
+				ret = vpnEvents(id, timestamp, uid, offset, limit, orderBy, direction, minScore, followedOnly);
+				break;
+			default:
+				return emptyData;
+			}
+		} catch(EmptyTableException e){
+			return emptyData;
 		}
 
 		return ret;
