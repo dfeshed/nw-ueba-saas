@@ -21,6 +21,7 @@ import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
 
 
@@ -55,7 +56,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 			User user = userRepository.findByUsername(vpnSession.getNormalizeUsername());
 			Notification notification = new Notification();
 			long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() : vpnSession.getCreatedAtEpoch();
-			notification.setTs(ts);
+			notification.setTs(TimestampUtils.convertToSeconds(ts));
 			notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
 			notification.setName(vpnSession.getNormalizeUsername());
 			notification.setCause(VPN_GEO_HOPPING_CAUSE);
