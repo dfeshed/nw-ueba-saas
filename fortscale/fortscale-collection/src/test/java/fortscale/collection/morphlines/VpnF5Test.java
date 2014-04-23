@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import fortscale.domain.events.dao.VpnSessionRepository;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 
@@ -31,6 +32,8 @@ public class VpnF5Test {
 	@BeforeClass
 	public static void setUpClass(){
 		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
+		VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
+		vpnSessionRepository.deleteAll();
 	}
 	
 	@AfterClass
@@ -41,7 +44,6 @@ public class VpnF5Test {
 	 
 	@Before
 	public void setUp() throws Exception {
-
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
@@ -51,6 +53,8 @@ public class VpnF5Test {
 	@After
 	public void tearDown() throws Exception {
 		morphlineTester.close();
+		VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
+		vpnSessionRepository.deleteAll();
 	}
 	
 	@Test
