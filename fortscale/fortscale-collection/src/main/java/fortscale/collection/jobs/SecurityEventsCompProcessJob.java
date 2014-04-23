@@ -32,7 +32,12 @@ public class SecurityEventsCompProcessJob extends GenericSecurityEventsJob{
 		if(record == null){
 			return null;
 		}
-		
-		return loginMorphline.process(record);		
+		Object eventCodeObj = record.getFirstValue("eventCode");
+		if ("4768".equals(eventCodeObj)) {
+			return loginMorphline.process(record);
+		} else {
+			return null;
+		}
+			
 	}
 }
