@@ -8,7 +8,7 @@ rawAuth         = LOAD '$inputData' USING PigStorage('|') AS (generatedTimeRaw:c
 authByTime      = FILTER rawAuth by generatedTimeUnixTime > (long)'$deltaTime';
 onlyUsers       = FILTER authByTime by NOT (LOWER(account_name) MATCHES LOWER('$accountRegex'));
 onlyUsersNoDC   = FILTER onlyUsers  by NOT (LOWER(service_name) MATCHES LOWER('$dcRegex'));
-notSameHost		= FILTER onlyUsersNoDC by NOT ( STARTSWITH(LOWER(computer_name),LOWER(service_name)) );
+notSameHost		= FILTER onlyUsersNoDC by computer_name is null OR service_name is null OR NOT ( STARTSWITH(LOWER(computer_name),LOWER(service_name)) );
 -- all failure codes except the list below are counted as success in the scoring algorithm.
 -- the failure codes 0x12 and 0x22 are sent to the scoring algorithm with the event time value in order to get high score for them.
 -- in case of source ip address which is nat, put don't care value for scoring
