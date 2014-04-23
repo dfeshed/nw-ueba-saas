@@ -1,8 +1,10 @@
 package fortscale.collection.jobs;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
@@ -78,6 +80,21 @@ public abstract class FortscaleJob implements Job {
 		}		
 		
 		return pr;
+	}
+	
+	protected void handleCmdFailure(Process pr, String cmd){
+		try {
+			BufferedReader stdError = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+			StringBuilder builder = new StringBuilder();
+			String s = null;
+			while ((s = stdError.readLine()) != null) {
+				builder.append(s);
+			}
+			logger.error("got the following error while running the shell command {}. {}.",cmd, builder.toString());
+			addError(String.format("got the following error while running the shell command %s. %s.",cmd, builder.toString()));
+		} catch (Exception e) {
+			logger.error("got an exception while trying to read std error", e);
+		}
 	}
 	
 	protected File ensureOutputDirectoryExists(String outputPath) throws JobExecutionException {
@@ -211,7 +228,10 @@ public abstract class FortscaleJob implements Job {
 	}
 
 	public void addWarn(String message){
-		monitor.error(monitorId, stepName, message);
+		monitor.warn(monitorId, stepName, message);
 	}
 	
+	public void addError(String message){
+		monitor.error(monitorId, stepName, message);
+	}
 }
