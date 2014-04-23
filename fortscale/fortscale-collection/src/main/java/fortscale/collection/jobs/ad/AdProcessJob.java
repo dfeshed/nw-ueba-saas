@@ -152,7 +152,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 			// transform events in file
 			processFile(reader, runtime);
 			
-			if(pr.exitValue() != 0){
+			if(pr.waitFor() != 0){
 				handleCmdFailure(pr, ldiftocsv);
 				throw new JobExecutionException(String.format("got error while running shell command %s", ldiftocsv));
 			}

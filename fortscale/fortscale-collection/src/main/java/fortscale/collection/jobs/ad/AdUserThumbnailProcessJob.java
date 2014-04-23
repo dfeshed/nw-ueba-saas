@@ -62,7 +62,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 			processLine(line);
 		}
 		
-		if(pr.exitValue() != 0){
+		if(pr.waitFor() != 0){
 			handleCmdFailure(pr, ldapUserThumbnail);
 			throw new JobExecutionException(String.format("got error while running shell command %s", ldapUserThumbnail));
 		}
