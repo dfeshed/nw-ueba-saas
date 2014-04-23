@@ -96,7 +96,7 @@ public class DnsResolver {
 
 		org.xbill.DNS.Record[] answers = response.getSectionArray(Section.ANSWER);
 		if (answers.length == 0)
-			return hostIp;
+			return null;
 		else
 			return answers[0].rdataToString();
 	}
