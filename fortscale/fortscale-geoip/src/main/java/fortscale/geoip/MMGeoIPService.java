@@ -71,7 +71,7 @@ public class MMGeoIPService implements GeoIPService{
 				// Populate out Geo IP info class
 				String cityName = response.getCity().getName();
 				if (cityName != null && cityName.length() > 0) {
-					geoInfo.setCityName(cityName);
+					geoInfo.setCityName(cityName.replace(",", ""));
 				}
 
 				String countryIsoCode = response.getCountry().getIsoCode();
@@ -81,7 +81,7 @@ public class MMGeoIPService implements GeoIPService{
 
 				String countryName = response.getCountry().getName();
 				if (countryName != null && countryName.length() > 0) {
-					geoInfo.setCountryName(countryName);
+					geoInfo.setCountryName(countryName.replace(",", ""));
 				}
 			}
 		} catch (Exception e) {

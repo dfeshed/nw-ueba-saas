@@ -151,6 +151,11 @@ public abstract class AdProcessJob extends FortscaleJob {
 			reader = new BufferedLineReader( new BufferedReader(new InputStreamReader(pr.getInputStream())));
 			// transform events in file
 			processFile(reader, runtime);
+			
+			if(pr.waitFor() != 0){
+				handleCmdFailure(pr, ldiftocsv);
+				throw new JobExecutionException(String.format("got error while running shell command %s", ldiftocsv));
+			}
 
 			logger.info("finished processing {}", file.getName());
 

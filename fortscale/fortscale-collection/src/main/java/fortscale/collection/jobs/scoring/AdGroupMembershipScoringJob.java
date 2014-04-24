@@ -126,7 +126,7 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 		return true;
 	}
 	
-	private boolean runGroupMembershipScoring() throws JobExecutionException, IOException{
+	private boolean runGroupMembershipScoring() throws JobExecutionException, IOException, InterruptedException{
 		startNewStep("scoring");
 		BufferedLineReader reader = null;
 		try {
@@ -135,6 +135,11 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				logger.info(line);
+			}
+			
+			if(pr.waitFor() != 0){
+				handleCmdFailure(pr, runProfRankRubyScript);
+				throw new JobExecutionException(String.format("got error while running shell command %s", runProfRankRubyScript));
 			}
 			
 			if (reader.HasErrors()) {

@@ -59,7 +59,7 @@ public class VpnOpenVpnTest {
 			$ (
 			"Regular (FS) Closed VPN",
 			"<14>Apr  6 08:40:28 openvpnas openvpnas: [-] OVPN 3 OUT: 'Sun Apr  6 05:40:28 2014 YaronDL/77.126.216.55:64441 TLS: soft reset sec=-1 bytes=314561084/0 pkts=727457/0'",
-			"2014-04-06 08:40:28,1396762828,YaronDL,77.126.216.55,,CLOSED,,,,,,,314561084,,,,400"
+			"2014-04-06 08:40:28,1396762828,YaronDL,77.126.216.55,,CLOSED,,,,,,,314561084,314561084,,,400"
 			),
 			$ (
 			"Closed VPN",
