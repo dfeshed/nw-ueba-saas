@@ -177,6 +177,16 @@ public class VpnF5Test {
 	    		$(
 	    			(String) null
 	    		)
+    		),
+    		
+    		$(
+    			"HTTP Agent authentication event should be dropped", // As we are using the AD agent authentication event to recognize this action
+    			$(
+    				"Mar  2 22:32:16 server.bs.dom Mar  2 22:32:16 server info apd[5904]: 01490139:6: 2275c32c: HTTP agent: authenticate with 'pinto' successful"
+    			),
+    			$(
+    				(String)null
+    			)
     		)
 		);
     }
