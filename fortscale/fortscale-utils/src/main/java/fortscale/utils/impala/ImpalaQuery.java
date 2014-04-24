@@ -66,6 +66,14 @@ public class ImpalaQuery {
 		return andWhere(ImpalaCriteria.equalsTo(fieldName, elem.toString()));
 	}
 	
+	public ImpalaQuery andEq(String fieldName, String elem){
+		return andWhere(ImpalaCriteria.equalsTo(fieldName, elem));
+	}
+	
+	public ImpalaQuery andEqInQuote(String fieldName, String elem){
+		return andWhere(ImpalaCriteria.equalsTo(fieldName, String.format("'%s'", elem)));
+	}
+	
 	public ImpalaQuery limitAndSort(Pageable pageable){
 		this.pageable = pageable;
 		return this;

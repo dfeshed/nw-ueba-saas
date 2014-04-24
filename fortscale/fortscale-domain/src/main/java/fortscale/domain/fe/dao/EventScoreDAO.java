@@ -30,4 +30,6 @@ public interface EventScoreDAO {
 	public double calculateAvgScoreOfGlobalScore(Date timestamp);
 	
 	public List<Long> getDistinctRuntime();
+	
+	public List<EventLoginDayCount> getEventLoginDayCount(String username, int numberOfDays);
 }

@@ -38,6 +38,7 @@ import fortscale.domain.fe.EventResult;
 import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
+import fortscale.domain.fe.dao.EventLoginDayCount;
 import fortscale.domain.fe.dao.EventResultRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.Threshold;
@@ -264,6 +265,12 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		} else{
 			return 0;
 		}
+	}
+	
+	@Override
+	public List<EventLoginDayCount> getEventLoginDayCount(LogEventsEnum eventId, String username, int numberOfDays){
+		EventScoreDAO eventScoreDAO = getEventScoreDAO(eventId);
+		return eventScoreDAO.getEventLoginDayCount(username, numberOfDays);
 	}
 	
 	@Override

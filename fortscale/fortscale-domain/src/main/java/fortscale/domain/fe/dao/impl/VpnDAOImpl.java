@@ -92,7 +92,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	
 	@Override
 	public String getNormalizedUsernameField() {
-		return normalizedUsernameField;
+		return normalizedUsernameField.toLowerCase();
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	
 	@Override
 	public String getStatusFieldName(){
-		return statusFieldName;
+		return statusFieldName.toLowerCase();
 	}
 	
 	@Override
@@ -141,7 +141,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	}
 	
 	public String getEventTimeFieldName(){
-		return eventTimeFieldName;
+		return eventTimeFieldName.toLowerCase();
 	}
 	
 	public String getEventTimeScoreFieldName(){
@@ -260,6 +260,11 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 		//Adding runtime. TODO: Add this by using partition definition.
 		fieldsToClassMap.put(VpnScore.TIMESTAMP_FIELD_NAME, String.class);
 		converter =  new ImpalaResultSetToBeanItemConverter<>(new VpnScore());
+	}
+
+	@Override
+	public String getStatusSuccessValue() {
+		return "success";
 	}
 	
 }

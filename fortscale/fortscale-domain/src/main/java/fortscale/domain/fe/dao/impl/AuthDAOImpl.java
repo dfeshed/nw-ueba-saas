@@ -42,7 +42,7 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 
 	@Override
 	public String getNormalizedUsernameField() {
-		return normalizedUsernameField;
+		return normalizedUsernameField.toLowerCase();
 	}
 
 	@Override

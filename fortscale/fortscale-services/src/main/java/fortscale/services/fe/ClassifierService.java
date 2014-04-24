@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 
+import fortscale.domain.fe.dao.EventLoginDayCount;
 import fortscale.services.LogEventsEnum;
 
 
@@ -20,6 +21,7 @@ public interface ClassifierService {
 	public Page<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, int page, int size, Integer minScore, Integer maxScore, boolean followedOnly);
 	public List<ILoginEventScoreInfo> getUserSuspiciousAuthEvents(LogEventsEnum eventId, String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore);
 	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers);
+	public List<EventLoginDayCount> getEventLoginDayCount(LogEventsEnum eventId, String username, int numberOfDays);
 	public int countAuthEvents(LogEventsEnum eventId, Date timestamp, String userId, int minScore);
 	public int countAuthEvents(LogEventsEnum eventId, Date timestamp, int minScore, boolean onlyFollowedUsers);
 	public int countAuthEvents(LogEventsEnum eventId, String userId, Date timestamp);
