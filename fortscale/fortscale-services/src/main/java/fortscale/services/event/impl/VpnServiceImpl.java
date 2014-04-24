@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.events.dao.VpnSessionRepository;
+import fortscale.geoip.GeoIPInfo;
 import fortscale.services.event.VpnService;
 import fortscale.utils.logging.Logger;
 
@@ -122,9 +123,10 @@ public class VpnServiceImpl implements VpnService{
 	
 	@Override
 	public List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
-		if(StringUtils.isEmpty(curVpnSession.getCountry())){
+		if(!isCountryValid(curVpnSession)){
 			return Collections.emptyList();
 		}
+
 		GeoHoppingData geoHoppingData = getGeoHoppingData(curVpnSession, vpnGeoHoppingOpenSessionThresholdInHours);
 		List<VpnSession> vpnSessions = Collections.emptyList();
 		if(geoHoppingData == null){
@@ -194,7 +196,7 @@ public class VpnServiceImpl implements VpnService{
 			List<VpnSession> vpnSessions = vpnSessionRepository.findByNormalizeUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
 			if(!vpnSessions.isEmpty()){
 				for(VpnSession vpnSession: vpnSessions){
-					if(StringUtils.isEmpty(vpnSession.getCountry())){
+					if(!isCountryValid(vpnSession)){
 						continue;
 					}
 					if(ret == null){
@@ -224,6 +226,9 @@ public class VpnServiceImpl implements VpnService{
 		userToGeoHoppingData.put(curVpnSession.getNormalizeUsername(), geoHoppingData);
 	}
 	
+	private boolean isCountryValid(VpnSession vpnSession){
+		return StringUtils.isNotEmpty(vpnSession.getCountry()) && !GeoIPInfo.RESERVED_RANGE.equalsIgnoreCase(vpnSession.getCountry());
+	}
 	
 	private class GeoHoppingData{
 		public String curCountry = null;
