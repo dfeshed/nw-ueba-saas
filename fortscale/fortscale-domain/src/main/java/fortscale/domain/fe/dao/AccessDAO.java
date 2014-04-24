@@ -22,12 +22,19 @@ import fortscale.utils.logging.Logger;
 
 public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	private static Logger logger = Logger.getLogger(AccessDAO.class);
+	
+	protected static final String EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME = "day";
+	protected static final String EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME = "status";
+	protected static final String EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME = "eventcount";
+	
 
 	private Date lastRunDate = null;
 
 	public abstract RowMapper<T> getMapper();
 
 	public abstract String getTimestampFieldName();
+	
+	public abstract String getEventTimeFieldName();
 	
 	public abstract String getNormalizedUsernameField();
 
@@ -38,9 +45,29 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	public abstract String getGlobalScoreFieldName();
 	
 	public abstract String getStatusFieldName();
+	
+	public abstract String getStatusSuccessValue();
+	
 
 	public abstract T createAccessObject(String normalizedUsername, double globalScore,	double eventScore, Date timestamp);
 	public abstract T createAccessObject(String normalizedUsername, String username);
+	
+	
+	
+	public String getEventLoginDayCountSqlQuery(String username, int numberOfDays) {
+		ImpalaQuery query = new ImpalaQuery();
+		Date timestamp = getLastRunDate();
+		
+		String selectArgs = String.format("to_date(%s) as %s, if(%s='%s','%s','%s') as %s, count(*) as %s", getEventTimeFieldName(), EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME, getStatusFieldName(), getStatusSuccessValue(), EventLoginDayCount.STATUS_SUCCESS, EventLoginDayCount.STATUS_FAILURE, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME, EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME);
+		query.select(selectArgs).from(getTableName()).andEq(getTimestampFieldName(), formatTimestampDate(timestamp)).andWhere(getNormalizedUserNameEqualComparison(username)).andWhere(String.format("datediff(to_date(now()),%s)<%d", getEventTimeFieldName(), numberOfDays))
+				.groupBy(EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME).limitAndSort(new ImpalaPageRequest(numberOfDays*2, new Sort(Direction.DESC, EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME)));
+		
+		return query.toSQL();
+	}
+	
+	public List<EventLoginDayCount> getEventLoginDayCount(String username, int numberOfDays) {
+		return impalaJdbcTemplate.query(getEventLoginDayCountSqlQuery(username, numberOfDays), new EventLoginDayCountMapper());
+	}
 
 	public List<T> findAll(Pageable pageable) {
 		return super.findAll(pageable, getMapper());
@@ -422,6 +449,17 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 			}
 
 			return ret;
+		}
+	}
+	
+	class EventLoginDayCountMapper implements RowMapper<EventLoginDayCount> {
+		@Override
+		public EventLoginDayCount mapRow(ResultSet rs, int rowNum) throws SQLException {
+			String day = rs.getString(EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME);
+			String status = rs.getString(EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME);
+			int count = rs.getInt(EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME);
+
+			return new EventLoginDayCount(day, status, count);
 		}
 	}
 	

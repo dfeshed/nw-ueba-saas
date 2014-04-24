@@ -16,8 +16,10 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	
 	@Value("${impala.score.ldapauth.table.fields}")
 	private String impalaSecScoringTableFields;
+	@Value("${impala.score.ldapauth.table.fields.time}")
+	private String timeFieldName;
 	@Value("${impala.score.ldapauth.table.fields.errorcode}")
-	private String errorCodeName;
+	private String errorCodeFieldName;
 	
 	
 	@Override
@@ -30,7 +32,7 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	@Override
 	protected void setStatus(ResultSet rs, AuthScore authScore) {
 		try {
-			authScore.setStatus(rs.getString(errorCodeName));
+			authScore.setStatus(rs.getString(errorCodeFieldName));
 		} catch (Exception e) {
 			logger.info("no status found in the login event");
 			authScore.setStatus("");
@@ -38,10 +40,20 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	}
 	@Override
 	public String getStatusFieldName() {
-		return errorCodeName;
+		return errorCodeFieldName.toLowerCase();
 	}
 	@Override
 	public String getInputFileHeaderDesc() {
 		return impalaSecScoringTableFields;
 	}
+	@Override
+	public String getEventTimeFieldName() {
+		return timeFieldName.toLowerCase();
+	}
+	@Override
+	public String getStatusSuccessValue() {
+		return "0x0";
+	}
+	
+	
 }

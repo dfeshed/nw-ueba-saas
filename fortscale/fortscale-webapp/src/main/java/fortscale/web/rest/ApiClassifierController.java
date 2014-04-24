@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.domain.fe.dao.EmptyTableException;
+import fortscale.domain.fe.dao.EventLoginDayCount;
 import fortscale.services.LogEventsEnum;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
@@ -53,6 +54,19 @@ public class ApiClassifierController extends BaseController {
 			Model model){
 		
 		return events(LogEventsEnum.login, date, uid, offset, limit, orderBy, orderByDirection, minScore, false, model);
+	}
+	
+	@RequestMapping(value = "/{id}/eventsLoginCount", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<EventLoginDayCount>> eventsLoginCount(@PathVariable LogEventsEnum id, @RequestParam(required = true) String username, @RequestParam(defaultValue = "7") Integer numberOfDays) {
+		DataBean<List<EventLoginDayCount>> ret = new DataBean<>();
+		List<EventLoginDayCount> eventLoginDayCounts = classifierService.getEventLoginDayCount(id, username, numberOfDays);
+		
+		ret.setData(eventLoginDayCounts);
+		ret.setTotal(eventLoginDayCounts.size());
+		
+		return ret;
 	}
 
 	@RequestMapping(value = "/{id}/events", method = RequestMethod.GET)

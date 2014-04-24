@@ -16,6 +16,8 @@ public class SshDAOImpl extends AuthDAOImpl{
 	private String impalaSshScoringTableFields;
 	@Value("${impala.score.ssh.table.fields.status}")
 	private String statusFieldName;
+	@Value("${impala.score.ssh.table.fields.time}")
+	private String eventTimeFieldName;
 	
 	
 	@Override
@@ -37,10 +39,18 @@ public class SshDAOImpl extends AuthDAOImpl{
 	}
 	@Override
 	public String getStatusFieldName() {
-		return statusFieldName;
+		return statusFieldName.toLowerCase();
 	}
 	@Override
 	public String getInputFileHeaderDesc() {
 		return impalaSshScoringTableFields;
+	}
+	@Override
+	public String getEventTimeFieldName() {
+		return eventTimeFieldName.toLowerCase();
+	}
+	@Override
+	public String getStatusSuccessValue() {
+		return "Accepted";
 	}
 }
