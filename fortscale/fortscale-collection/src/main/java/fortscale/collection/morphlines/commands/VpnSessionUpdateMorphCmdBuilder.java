@@ -138,6 +138,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 				record.put(vpnEvents.SOURCE_IP, openVpnSessionData.getSourceIp());
 				record.put(vpnEvents.CITY, openVpnSessionData.getCity());
 				record.put(vpnEvents.COUNTRY, openVpnSessionData.getCountry());
+				record.put(countryIsoCodeFieldName, openVpnSessionData.getCountryIsoCode());
 				record.put(vpnEvents.ISP, openVpnSessionData.getIsp());
 				record.put(vpnEvents.IPUSAGE, openVpnSessionData.getIspUsage());
 				record.put(vpnEvents.REGION, openVpnSessionData.getRegion());
