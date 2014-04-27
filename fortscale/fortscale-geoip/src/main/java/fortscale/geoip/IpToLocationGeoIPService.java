@@ -86,7 +86,7 @@ public class IpToLocationGeoIPService implements GeoIPService{
 					geoInfo.setCountryName(rec.getCountryLong().replace(",", ""));
 				}
 				if (!StringUtils.isEmpty(rec.getISP())) {
-					geoInfo.setISP(rec.getISP().replace(",", ""));
+					geoInfo.setISP(rec.getDomain().replace(",", ""));
 				}
 				if (!StringUtils.isEmpty(rec.getRegion())) {
 					geoInfo.setRegionName(rec.getRegion().replace(",", ""));
