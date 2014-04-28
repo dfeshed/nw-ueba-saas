@@ -41,6 +41,7 @@ public class SSHConnectionsSource extends ConnectionsSource {
 		query.select(schema.EPOCHTIME, schema.USERNAME, schema.SOURCE_IP, schema.TARGET_MACHINE, schema.STATUS, 
 				schema.HOSTNAME, schema.getPartitionFieldName());
 		query.from(schema.getTableName());
+		query.andEq(schema.STATUS, "Accepted");
 		
 		// add criteria for machine to pivot on
 		if (isSource)

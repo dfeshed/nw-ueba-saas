@@ -41,6 +41,7 @@ public class VPNConnectionsSource extends ConnectionsSource {
 		query.select(schema.DATE_TIME_UNIX, schema.USERNAME, schema.SOURCE_IP, schema.LOCAL_IP, schema.STATUS, 
 				schema.COUNTRY, schema.HOSTNAME, schema.getPartitionFieldName());
 		query.from(schema.getTableName());
+		query.andEq(schema.STATUS, "SUCCESS");
 		
 		// add criteria for machine to pivot on
 		if (isSource)
