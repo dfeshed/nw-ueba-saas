@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.xbill.DNS.DClass;
 import org.xbill.DNS.ExtendedResolver;
@@ -20,6 +21,7 @@ import org.xbill.DNS.Type;
 
 
 @Service("dnsResolver")
+@Scope("prototype")
 public class DnsResolver {
 	private static Logger logger = LoggerFactory.getLogger(DnsResolver.class);
 	
@@ -28,7 +30,7 @@ public class DnsResolver {
 	private HashMap<String,String> dnsCacheMap = new HashMap<String,String>();
 	private HashSet<String> blackIpHashSetCache = new HashSet<String>();
 	
-	@Value("${dns.resolver.maxQueries:1000}")
+	@Value("${dns.resolver.maxQueries:30000}")
 	private int maxQueries;
 	@Value("${dns.resolver.dnsServers:}")
 	private String dnsServers;
@@ -58,6 +60,8 @@ public class DnsResolver {
 			dnsLookupCounter++;
 			try {
 				resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
+				if (StringUtils.isNotEmpty(resolvedHostname))
+					dnsCacheMap.put(ip_address, resolvedHostname);
 			}
 			catch (Exception e) {
 				logger.debug("Exception while running reverseDns resolving for IP: {}. Adding it to black list.", ip_address);

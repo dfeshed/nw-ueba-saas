@@ -19,15 +19,7 @@ import fortscale.services.ipresolving.ComputerLoginResolver;
 import fortscale.services.ipresolving.DhcpResolver;
 import fortscale.services.ipresolving.DnsResolver;
 
-
-@Configurable(preConstruction=true)
 public class IpToHostnameBuilder implements CommandBuilder {
-	@Autowired
-	private DhcpResolver dhcpResolver;
-	@Autowired
-	private DnsResolver dnsResolver;
-	@Autowired
-	private ComputerLoginResolver computerLoginResolver;
 	
 	@Override
 	public Collection<String> getNames() {
@@ -42,7 +34,15 @@ public class IpToHostnameBuilder implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
-	private class IpToHostname extends AbstractCommand {
+	@Configurable(preConstruction=true)
+	public class IpToHostname extends AbstractCommand {
+		
+		@Autowired
+		private DhcpResolver dhcpResolver;
+		@Autowired
+		private DnsResolver dnsResolver;
+		@Autowired
+		private ComputerLoginResolver computerLoginResolver;
 		
 		
 		private static final String STRING_EMPTY = "";
