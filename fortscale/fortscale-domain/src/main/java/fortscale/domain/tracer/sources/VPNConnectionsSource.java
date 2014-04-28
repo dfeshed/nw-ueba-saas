@@ -112,7 +112,7 @@ public class VPNConnectionsSource extends ConnectionsSource {
 	
 	protected String buildLookupQuery(String name, int count) {
 		
-		return String.format("sekect distinct lower(%s) name from %s "
+		return String.format("select distinct lower(%s) name from %s "
 				+ "where lower(%s) like '%s' order by %s asc limit %s", 
 				schema.HOSTNAME, schema.getTableName(), schema.HOSTNAME, name.toLowerCase(),
 				schema.HOSTNAME, count);
