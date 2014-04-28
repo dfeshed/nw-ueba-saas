@@ -45,7 +45,7 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		query.select(schema.TIMEGENERATEDUNIXTIME, schema.ACCOUNT_NAME, schema.CLIENT_ADDRESS, schema.MACHINE_NAME, 
 				schema.SERVICE_NAME, schema.getPartitionFieldName());
 		query.from(schema.getTableName());
-		query.andEq(schema.EVENTCODE, "0x0");
+		query.andEq(schema.EVENTCODE, "'0x0'");
 		
 		// add criteria for machine to pivot on
 		if (isSource)
