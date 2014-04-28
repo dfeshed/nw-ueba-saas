@@ -50,13 +50,16 @@ public class SSHConnectionsSource extends ConnectionsSource {
 		
 		// add criteria for start
 		if (filter.getStart()!=0L) {
-			query.andWhere(gte(schema.EPOCHTIME, Long.toString(convertToSeconds(filter.getStart()))));
+			// assuming ssh session is 10 hours, look for all events that their probable
+			// end time is after the start date
+			long timeBoundry = convertToSeconds(filter.getStart()) + (60*60*sessionLength);
+			query.andWhere(gte(schema.EPOCHTIME, Long.toString(timeBoundry)));
 			query.andWhere(gte(schema.getPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(filter.getStart())));
 		}
 		
 		// add criteria for end
 		if (filter.getEnd()!=0L) {
-			query.andWhere(lte("date_time_unix", Long.toString(convertToSeconds(filter.getEnd()))));
+			query.andWhere(lte(schema.EPOCHTIME, Long.toString(convertToSeconds(filter.getEnd()))));
 			query.andWhere(lte(schema.getPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(filter.getEnd())));
 		}
 			
