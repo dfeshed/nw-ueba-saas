@@ -46,7 +46,8 @@
 	</bean>
 	
 	<bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
-		<constructor-arg name="geoIpDbResource" value="file:data/geoip/iptolocationdata.bin"/>
-		<constructor-arg name="geoIpV6DbResource" value="file:data/geoip/iptolocationdata.bin"/>
+		<constructor-arg name="geoIpDbResource" value="file:${ip.to.location.db.full.path}"/>
+		<constructor-arg name="geoIpV6DbResource" value="file:${ip.to.location.db.full.path}"/>
+		<constructor-arg name="fullLicenseKeyResource" value="file:${ip.to.location.license.key.full.path}"/>
 	</bean>
 </beans>

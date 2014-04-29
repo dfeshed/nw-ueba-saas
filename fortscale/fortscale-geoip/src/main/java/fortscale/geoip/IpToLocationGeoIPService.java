@@ -27,11 +27,14 @@ public class IpToLocationGeoIPService implements GeoIPService{
 	 *            - path to a GeoIP DB
 	 * @throws IOException
 	 */
-	public IpToLocationGeoIPService(String fullPath){
+	public IpToLocationGeoIPService(String fullDbPath, String fullLicenseKeyPath){
 			if (loc == null) {
 				loc = new IP2Location();
-				IP2Location.IPDatabasePath = fullPath;
-				IP2Location.IPDatabasePathIPv6 = fullPath;
+				IP2Location.IPDatabasePath = fullDbPath;
+				IP2Location.IPDatabasePathIPv6 = fullDbPath;
+				if(StringUtils.isNotEmpty(fullLicenseKeyPath)){
+					IP2Location.IPLicensePath = fullLicenseKeyPath;
+				}
 			}
 	}
 	
@@ -42,11 +45,32 @@ public class IpToLocationGeoIPService implements GeoIPService{
 	 *            - path to a GeoIP DB
 	 * @throws IOException
 	 */
-	public IpToLocationGeoIPService(Resource geoIpDbResource,Resource geoIpV6DbResource) throws IOException{
+	public IpToLocationGeoIPService(Resource geoIpDbResource,Resource geoIpV6DbResource, Resource fullLicenseKeyResource) throws IOException{
 			if (loc == null) {
 				loc = new IP2Location();
-				IP2Location.IPDatabasePath = geoIpDbResource.getFile().getAbsolutePath();
-				IP2Location.IPDatabasePathIPv6 = geoIpV6DbResource.getFile().getAbsolutePath();
+				if(geoIpDbResource != null && geoIpDbResource.exists()){
+					IP2Location.IPDatabasePath = geoIpDbResource.getFile().getAbsolutePath();
+				} else{
+					if(geoIpDbResource == null){
+						logger.error("ipv4 db full path was not recieved.");
+					} else{
+						logger.error("ipv4 db full path {} does not exist", geoIpDbResource.getFile().getAbsolutePath());
+					}
+				}
+				
+				if(geoIpV6DbResource != null && geoIpV6DbResource.exists()){
+					IP2Location.IPDatabasePathIPv6 = geoIpV6DbResource.getFile().getAbsolutePath();
+				} else{
+					if(geoIpV6DbResource == null){
+						logger.error("ipv6 db full path was not recieved.");
+					} else{
+						logger.error("ipv6 db full path {} does not exist", geoIpV6DbResource.getFile().getAbsolutePath());
+					}
+				}
+				
+				if(fullLicenseKeyResource != null && fullLicenseKeyResource.exists()){
+					IP2Location.IPLicensePath = fullLicenseKeyResource.getFile().getAbsolutePath();
+				}
 			}
 	}
 
