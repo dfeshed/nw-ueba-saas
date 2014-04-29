@@ -53,7 +53,7 @@ public class SSHConnectionsSource extends ConnectionsSource {
 		if (filter.getStart()!=0L) {
 			// assuming ssh session is 10 hours, look for all events that their probable
 			// end time is after the start date
-			long timeBoundry = convertToSeconds(filter.getStart()) + (60*60*sessionLength);
+			long timeBoundry = convertToSeconds(filter.getStart()) - (60*60*sessionLength);
 			query.andWhere(gte(schema.EPOCHTIME, Long.toString(timeBoundry)));
 			query.andWhere(gte(schema.getPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(filter.getStart())));
 		}
