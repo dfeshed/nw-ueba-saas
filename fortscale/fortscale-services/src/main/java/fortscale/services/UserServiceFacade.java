@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort.Direction;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.IFeature;
 import fortscale.services.fe.Classifier;
 

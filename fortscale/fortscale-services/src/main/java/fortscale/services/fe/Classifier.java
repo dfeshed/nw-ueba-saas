@@ -1,6 +1,6 @@
 package fortscale.services.fe;
 
-import fortscale.services.LogEventsEnum;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.UserApplication;
 import fortscale.services.exceptions.InvalidValueException;
 

@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.EventLoginDayCount;
-import fortscale.services.LogEventsEnum;
 
 
 public interface ClassifierService {

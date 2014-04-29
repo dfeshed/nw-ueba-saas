@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.EmptyTableException;
 import fortscale.domain.fe.dao.EventLoginDayCount;
-import fortscale.services.LogEventsEnum;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.IClassifierScoreDistribution;
