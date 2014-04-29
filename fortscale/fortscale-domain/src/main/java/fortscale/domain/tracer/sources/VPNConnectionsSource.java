@@ -41,6 +41,7 @@ public class VPNConnectionsSource extends ConnectionsSource {
 		query.select(schema.DATE_TIME_UNIX, schema.USERNAME, schema.SOURCE_IP, schema.LOCAL_IP, schema.STATUS, 
 				schema.COUNTRY, schema.HOSTNAME, schema.getPartitionFieldName());
 		query.from(schema.getTableName());
+		query.andEq(schema.STATUS, "'SUCCESS'");
 		
 		// add criteria for machine to pivot on
 		if (isSource)
@@ -50,7 +51,10 @@ public class VPNConnectionsSource extends ConnectionsSource {
 		
 		// add criteria for start
 		if (filter.getStart()!=0L) {
-			query.andWhere(gte(schema.DATE_TIME_UNIX, Long.toString(convertToSeconds(filter.getStart()))));
+			// assuming ldap session is 10 hours, look for all events that their probable
+			// end time is after the start date
+			long timeBoundry = convertToSeconds(filter.getStart()) + (60*60*sessionLength);
+			query.andWhere(gte(schema.DATE_TIME_UNIX, Long.toString(timeBoundry)));
 			query.andWhere(gte(schema.getPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(filter.getStart())));
 		}
 		
@@ -108,7 +112,7 @@ public class VPNConnectionsSource extends ConnectionsSource {
 	
 	protected String buildLookupQuery(String name, int count) {
 		
-		return String.format("sekect distinct lower(%s) name from %s "
+		return String.format("select distinct lower(%s) name from %s "
 				+ "where lower(%s) like '%s' order by %s asc limit %s", 
 				schema.HOSTNAME, schema.getTableName(), schema.HOSTNAME, name.toLowerCase(),
 				schema.HOSTNAME, count);

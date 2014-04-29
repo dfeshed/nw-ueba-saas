@@ -24,7 +24,7 @@ public abstract class ConnectionsSource {
 	public List<Connection> getConnections(String source, boolean isSource, FilterSettings filter) throws DataAccessException {
 		// create sql query statement
 		String query = buildExpandQuery(source, isSource, filter);
-		logger.debug("executing tracer query: " + query);		
+		logger.info("executing tracer query: " + query);		
 		
 		// execute the query
 		return impalaJdbcTemplate.query(query, getExpandQueryRowMapper());

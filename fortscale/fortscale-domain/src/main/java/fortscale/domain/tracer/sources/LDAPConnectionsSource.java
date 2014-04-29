@@ -45,6 +45,7 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		query.select(schema.TIMEGENERATEDUNIXTIME, schema.ACCOUNT_NAME, schema.CLIENT_ADDRESS, schema.MACHINE_NAME, 
 				schema.SERVICE_NAME, schema.getPartitionFieldName());
 		query.from(schema.getTableName());
+		query.andEq(schema.FAILURE_CODE, "'0x0'");
 		
 		// add criteria for machine to pivot on
 		if (isSource)
@@ -54,7 +55,10 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 		
 		// add criteria for start
 		if (filter.getStart()!=0L) {
-			query.andWhere(gte(schema.TIMEGENERATEDUNIXTIME, Long.toString(convertToSeconds(filter.getStart()))));
+			// assuming ldap session is 10 hours, look for all events that their probable
+			// end time is after the start date
+			long timeBoundry = convertToSeconds(filter.getStart()) + (60*60*sessionLength);
+			query.andWhere(gte(schema.TIMEGENERATEDUNIXTIME, Long.toString(timeBoundry)));
 			query.andWhere(gte(schema.getPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(filter.getStart())));
 		}
 		
