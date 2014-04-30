@@ -19,7 +19,7 @@ import fortscale.domain.tracer.sources.ConnectionsSource;
 import fortscale.domain.tracer.sources.LDAPConnectionsSource;
 import fortscale.domain.tracer.sources.SSHConnectionsSource;
 import fortscale.domain.tracer.sources.VPNConnectionsSource;
-import fortscale.global.configuration.ServersListConfiguration;
+import fortscale.services.configuration.ServersListConfiguration;
 import fortscale.utils.logging.Logger;
 
 @Service("hoppingTracerService")

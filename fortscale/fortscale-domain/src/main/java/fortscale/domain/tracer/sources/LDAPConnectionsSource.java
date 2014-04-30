@@ -18,7 +18,7 @@ import fortscale.domain.schema.LDAPEvents;
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
-import fortscale.global.configuration.ServersListConfiguration;
+import fortscale.services.configuration.ServersListConfiguration;
 import fortscale.utils.impala.*;
 
 @Component

@@ -92,9 +92,8 @@ public class AdFetchJob extends FortscaleJob {
 		if(pr == null){
 			return false;
 		}
-		pr.waitFor();
 		
-		if(pr.exitValue() != 0){
+		if(pr.waitFor() != 0){
 			handleCmdFailure(pr, ldapSearchShellScript);
 			return false;
 		}
