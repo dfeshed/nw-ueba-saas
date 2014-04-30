@@ -74,7 +74,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		query.andWhere(getNormalizedUserNameEqualComparison(username));
 		query.andEq(getTimestampFieldName(), formatTimestampDate(timestamp));
 		query.andWhere(String.format("datediff(to_date(now()),%s)<%d", getEventTimeFieldName(), daysBack));
-		query.limitAndSort(new PageRequest(0, limit, Direction.DESC, getEventTimeFieldName()));
+		query.limitAndSort(new ImpalaPageRequest(limit, new Sort(Direction.DESC, getEventTimeFieldName())));
 		
 		// perform query
 		return impalaJdbcTemplate.query(query.toSQL(), new EventScoreMapper());
@@ -492,10 +492,10 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	class EventScoreMapper implements RowMapper<EventScore> {
 		@Override
 		public EventScore mapRow(ResultSet rs, int rowNum) throws SQLException {
-			long ts = rs.getTime(getEventTimeFieldName()).getTime();
-			String source = rs.getString(getSourceFieldName());
-			String destination = rs.getString(getDestinationFieldName());
-			String status = rs.getString(EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME);
+			long ts = rs.getTimestamp(getEventTimeFieldName()).getTime();
+			String source = rs.getString(1);
+			String destination = rs.getString(2);
+			String status = rs.getString(3);
 			
 			return new EventScore(getLogEventsEnum(), ts, source, destination, status); 
 		}
