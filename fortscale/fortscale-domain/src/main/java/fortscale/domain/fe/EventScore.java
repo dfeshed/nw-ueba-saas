@@ -9,13 +9,15 @@ public class EventScore {
 	private String source;
 	private String target;
 	private String status;
+	private int score;
 	
-	public EventScore(LogEventsEnum eventType, long time, String source, String target, String status) {
+	public EventScore(LogEventsEnum eventType, long time, String source, String target, String status, int score) {
 		this.eventType = eventType;
 		this.time = time;
 		this.source = source;
 		this.target = target;
 		this.status = status;
+		this.score = score;
 	}
 	
 	public LogEventsEnum getEventType() {
@@ -48,5 +50,10 @@ public class EventScore {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+	public int getScore() {
+		return this.score;
+	}
+	public void setScore(int score) {
+		this.score = score;
+	}
 }

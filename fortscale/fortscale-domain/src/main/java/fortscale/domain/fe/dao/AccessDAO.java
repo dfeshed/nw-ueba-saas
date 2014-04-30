@@ -69,12 +69,15 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		// build query
 		ImpalaQuery query = new ImpalaQuery();
 		query.select(getEventTimeFieldName(), getSourceFieldName(), getDestinationFieldName(),
-				String.format("if(%s='%s','%s','%s') as %s", getStatusFieldName(), getStatusSuccessValue(), EventLoginDayCount.STATUS_SUCCESS, EventLoginDayCount.STATUS_FAILURE, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME));
+				String.format("if(%s='%s','%s','%s') as %s", getStatusFieldName(), getStatusSuccessValue(), EventLoginDayCount.STATUS_SUCCESS, EventLoginDayCount.STATUS_FAILURE, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME),
+				getEventScoreFieldName());
 		query.from(getTableName());
 		query.andWhere(getNormalizedUserNameEqualComparison(username));
 		query.andEq(getTimestampFieldName(), formatTimestampDate(timestamp));
 		query.andWhere(String.format("datediff(to_date(now()),%s)<%d", getEventTimeFieldName(), daysBack));
-		query.limitAndSort(new PageRequest(0, limit, Direction.DESC, getEventTimeFieldName()));
+		query.limitAndSort(new ImpalaPageRequest(limit, new Sort(Direction.DESC, getEventTimeFieldName())));
+		
+		logger.info("event score query: " + query.toSQL());
 		
 		// perform query
 		return impalaJdbcTemplate.query(query.toSQL(), new EventScoreMapper());
@@ -492,12 +495,13 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	class EventScoreMapper implements RowMapper<EventScore> {
 		@Override
 		public EventScore mapRow(ResultSet rs, int rowNum) throws SQLException {
-			long ts = rs.getTime(getEventTimeFieldName()).getTime();
-			String source = rs.getString(getSourceFieldName());
-			String destination = rs.getString(getDestinationFieldName());
+			long ts = rs.getTimestamp(getEventTimeFieldName()).getTime();
+			String source = rs.getString(getSourceFieldName().toLowerCase());
+			String destination = rs.getString(getDestinationFieldName().toLowerCase());
 			String status = rs.getString(EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME);
+			int score = rs.getInt(getEventScoreFieldName().toLowerCase());
 			
-			return new EventScore(getLogEventsEnum(), ts, source, destination, status); 
+			return new EventScore(getLogEventsEnum(), ts, source, destination, status, score); 
 		}
 	}
 	
