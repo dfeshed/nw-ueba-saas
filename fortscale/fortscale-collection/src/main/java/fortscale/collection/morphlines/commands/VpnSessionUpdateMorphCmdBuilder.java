@@ -93,7 +93,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 				VpnSession vpnOpenSession = getOpenSessionDataToRecord(vpnSession);
 				if(vpnOpenSession == null){
 					logger.info("got close vpn session for non existing session");
-					return false;
+					return true;
 				} else{
 					addOpenSessionDataToRecord(inputRecord, vpnOpenSession);
 				}
