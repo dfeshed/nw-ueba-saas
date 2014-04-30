@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.EventScore;
+
 public interface EventScoreDAO {
 	public String getTableName();
 	
@@ -32,4 +35,6 @@ public interface EventScoreDAO {
 	public List<Long> getDistinctRuntime();
 	
 	public List<EventLoginDayCount> getEventLoginDayCount(String username, int numberOfDays);
+	
+	public List<EventScore> getEventScores(String username, int daysBack, int limit);
 }

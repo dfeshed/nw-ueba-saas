@@ -5,6 +5,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.AuthScore;
+import fortscale.domain.fe.EventScore;
 import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.utils.impala.ImpalaParser;
@@ -26,7 +29,6 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 	
 	@Value("${impala.data.table.fields.normalized_username}")
 	private String normalizedUsernameField;
-	
 	
 	
 

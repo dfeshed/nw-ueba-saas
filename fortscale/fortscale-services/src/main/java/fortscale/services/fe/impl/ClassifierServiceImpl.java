@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,6 +37,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.AuthScore;
 import fortscale.domain.fe.EventResult;
+import fortscale.domain.fe.EventScore;
 import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
@@ -265,6 +267,18 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		} else{
 			return 0;
 		}
+	}
+	
+	
+	@Override
+	public List<EventScore> getEventScores(List<LogEventsEnum> classifierIds, String username, int daysBack, int limit) {
+		
+		List<EventScore> eventScores = new LinkedList<EventScore>();
+		for (LogEventsEnum  classifierId : classifierIds) {
+			EventScoreDAO eventScoreDAO = getEventScoreDAO(classifierId);
+			eventScores.addAll(eventScoreDAO.getEventScores(username, daysBack, limit));
+		}
+		return eventScores;
 	}
 	
 	@Override

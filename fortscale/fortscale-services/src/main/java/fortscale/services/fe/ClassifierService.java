@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 
 import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.EventScore;
 import fortscale.domain.fe.dao.EventLoginDayCount;
 
 
@@ -33,4 +34,6 @@ public interface ClassifierService {
 	public Long getLatestRuntime(String tableName);
 	public void addFilter(String collectionName, String fieldName, String regex);
 	public String getFilterRegex(String collectionName, String fieldName);
+	
+	public List<EventScore> getEventScores(List<LogEventsEnum> classifierId, String username, int daysBack, int limit);
 }
