@@ -76,9 +76,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		query.andEq(getTimestampFieldName(), formatTimestampDate(timestamp));
 		query.andWhere(String.format("datediff(to_date(now()),%s)<%d", getEventTimeFieldName(), daysBack));
 		query.limitAndSort(new ImpalaPageRequest(limit, new Sort(Direction.DESC, getEventTimeFieldName())));
-		
-		logger.info("event score query: " + query.toSQL());
-		
+				
 		// perform query
 		return impalaJdbcTemplate.query(query.toSQL(), new EventScoreMapper());
 	}
