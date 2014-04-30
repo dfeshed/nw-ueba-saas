@@ -99,10 +99,7 @@ public class ServersListConfigurationImpl implements ServersListConfiguration {
 		}
 		
 		if(retrieveFromDB){
-			SystemConfiguration systemConfiguration = findDcConfiguration();
-			if(systemConfiguration != null){
-				dcs = retrieveDCsFromDB();
-			}
+			dcs = retrieveDCsFromDB();
 		}
 		
 		return dcs;
