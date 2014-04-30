@@ -15,9 +15,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.VpnDAO;
-import fortscale.services.LogEventsEnum;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.logging.Logger;
 

@@ -1,4 +1,4 @@
-package fortscale.services;
+package fortscale.domain.events;
 
 public enum LogEventsEnum {
 	login("login","login"),

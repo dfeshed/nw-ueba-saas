@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.EventScore;
 import fortscale.domain.fe.dao.EmptyTableException;
 import fortscale.domain.fe.dao.EventLoginDayCount;
-import fortscale.services.LogEventsEnum;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.IClassifierScoreDistribution;
@@ -54,6 +55,23 @@ public class ApiClassifierController extends BaseController {
 			Model model){
 		
 		return events(LogEventsEnum.login, date, uid, offset, limit, orderBy, orderByDirection, minScore, false, model);
+	}
+	
+	@RequestMapping(value="/eventsTimeline", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<EventScore>> eventsTimeline(
+			@RequestParam(required = true) String username, 
+			@RequestParam(defaultValue="31") int daysBack,
+			@RequestParam(defaultValue="200") int limit, 
+			@RequestParam(defaultValue="vpn,login,ssh") List<LogEventsEnum> eventTypes) {
+	
+		List<EventScore> events = classifierService.getEventScores(eventTypes, username, daysBack, limit);
+		
+		DataBean<List<EventScore>> ret = new DataBean<>();
+		ret.setData(events);
+		ret.setTotal(events.size());
+		return ret;
 	}
 	
 	@RequestMapping(value = "/{id}/eventsLoginCount", method = RequestMethod.GET)

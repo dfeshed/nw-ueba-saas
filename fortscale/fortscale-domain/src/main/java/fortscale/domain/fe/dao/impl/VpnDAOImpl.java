@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import fortscale.domain.core.ImpalaResultSetToBeanItemConverter;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.VpnDAO;
@@ -71,6 +72,9 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Value("${impala.score.vpn.table.fields}")
 	private String tableFieldDefinition;
 	
+	@Value("${impala.score.vpn.table.field.hostname}")
+	private String hostnameFieldName;
+	
 	@Autowired
 	private ImpalaParser impalaParser;
 	
@@ -80,6 +84,10 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	private ImpalaResultSetToBeanItemConverter<VpnScore> converter;
 	
 
+	@Override
+	public LogEventsEnum getLogEventsEnum() {
+		return LogEventsEnum.vpn;
+	}
 	@Override
 	public RowMapper<VpnScore> getMapper() {
 		return new VpnScoreMapper();
@@ -156,6 +164,16 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Override
 	public String getGlobalScoreFieldName() {
 		return globalScoreFieldName;
+	}
+	
+	@Override
+	public String getSourceFieldName() {
+		return hostnameFieldName;
+	}
+	
+	@Override
+	public String getDestinationFieldName() {
+		return localIpFieldName;
 	}
 
 	@Override
