@@ -3,6 +3,7 @@ package fortscale.domain.system;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -74,15 +75,21 @@ public class ServersListConfigurationImpl implements ServersListConfiguration {
 					logger.warn("no dcs were recieved to the command: {}", StringUtils.join(commands, " "));
 					retrieveFromDB = true;
 				} else{
-					SystemConfiguration systemConfiguration = systemConfigurationRepository.findByType(SystemConfigurationEnum.dc.getId());
+					SystemConfiguration systemConfiguration = findDcConfiguration();
+					boolean isSave = true;
 					if(systemConfiguration == null){
-						systemConfiguration = new SystemConfiguration();
-						systemConfiguration.setType(SystemConfigurationEnum.dc.getId());
+						systemConfiguration = createDcSystemConfiguration(dcs);
+					} else{
+						DcConfiguration dcConfiguration = (DcConfiguration)systemConfiguration.getConf();
+						if(dcConfiguration.getDcs().equals(dcs)){
+							isSave = false;
+						} else{
+							dcConfiguration.setDcs(dcs);
+						}
 					}
-					DcConfiguration dcConfiguration = new DcConfiguration();
-					dcConfiguration.setDcs(dcs);
-					systemConfiguration.setConf(dcConfiguration);
-					systemConfigurationRepository.save(systemConfiguration);
+					if(isSave){
+						systemConfigurationRepository.save(systemConfiguration);
+					}
 				}
 			}
 
@@ -92,13 +99,36 @@ public class ServersListConfigurationImpl implements ServersListConfiguration {
 		}
 		
 		if(retrieveFromDB){
-			DcSystemConfiguraion dcSystemConfiguraion = systemConfigurationRepository.findDcConfiguration();
-			if(dcSystemConfiguraion != null){
-				dcs = dcSystemConfiguraion.getConf().getDcs();
+			SystemConfiguration systemConfiguration = findDcConfiguration();
+			if(systemConfiguration != null){
+				dcs = retrieveDCsFromDB();
 			}
 		}
 		
 		return dcs;
+	}
+	
+	private SystemConfiguration createDcSystemConfiguration(List<String> dcs){
+		SystemConfiguration systemConfiguration = new SystemConfiguration();
+		systemConfiguration.setType(SystemConfigurationEnum.dc.getId());
+		DcConfiguration dcConfiguration = new DcConfiguration();
+		dcConfiguration.setDcs(dcs);
+		systemConfiguration.setConf(dcConfiguration);
+		
+		return systemConfiguration;
+	}
+	
+	private SystemConfiguration findDcConfiguration(){
+		return systemConfigurationRepository.findByType(SystemConfigurationEnum.dc.getId());
+	}
+	
+	private List<String> retrieveDCsFromDB(){
+		SystemConfiguration systemConfiguration = findDcConfiguration();
+		if(systemConfiguration != null){
+			return ((DcConfiguration)systemConfiguration.getConf()).getDcs();
+		} else{
+			return Collections.emptyList();
+		}
 	}
 	
 	@Override
