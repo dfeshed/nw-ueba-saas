@@ -35,7 +35,7 @@
 	
 		<syslogHost>localhost</syslogHost>
 		<facility>USER</facility>
-		<suffixPattern>fortscale-collection: %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</suffixPattern>
+		<suffixPattern>fortscale-webapp: %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</suffixPattern>
 	</appender>
 	
 
