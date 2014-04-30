@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Service;
 
+import fortscale.domain.system.ServersListConfiguration;
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
@@ -19,7 +20,6 @@ import fortscale.domain.tracer.sources.ConnectionsSource;
 import fortscale.domain.tracer.sources.LDAPConnectionsSource;
 import fortscale.domain.tracer.sources.SSHConnectionsSource;
 import fortscale.domain.tracer.sources.VPNConnectionsSource;
-import fortscale.services.configuration.ServersListConfiguration;
 import fortscale.utils.logging.Logger;
 
 @Service("hoppingTracerService")

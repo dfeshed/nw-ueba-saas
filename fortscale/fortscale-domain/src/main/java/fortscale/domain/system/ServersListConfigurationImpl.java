@@ -1,4 +1,4 @@
-package fortscale.services.configuration;
+package fortscale.domain.system;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,10 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.system.DcConfiguration;
-import fortscale.domain.system.DcSystemConfiguraion;
-import fortscale.domain.system.SystemConfiguration;
-import fortscale.domain.system.SystemConfigurationEnum;
 import fortscale.domain.system.dao.SystemConfigurationRepository;
 
 
