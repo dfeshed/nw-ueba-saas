@@ -12,7 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 
 public class AbstractAuditableDocument extends AbstractDocument{
-	
+	private static final long serialVersionUID = -4585812347688862037L;
+
 	public static final String VERSION_FIELD_NAME = "version";
 	public static final String LAST_MODIFIED_FIELD_NAME = "lastModified";
 	public static final String CREATED_AT_FIELD_NAME = "createdAt";

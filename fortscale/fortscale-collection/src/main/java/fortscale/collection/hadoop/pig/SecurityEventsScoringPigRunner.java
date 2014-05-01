@@ -6,7 +6,7 @@ import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.global.configuration.ServersListConfiguration;
+import fortscale.domain.system.ServersListConfiguration;
 
 @Component("secevtScoringPigRunner")
 public class SecurityEventsScoringPigRunner extends EventScoringPigRunner {
