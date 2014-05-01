@@ -187,6 +187,19 @@ public class VpnF5Test {
     			$(
     				(String)null
     			)
+    		),
+    		$(
+    			"Failed and Success Regular (BS) VPN Authentications",
+    			$(
+					"Apr 14 01:50:05 server Apr 14 01:50:26 server notice tmm[20226]: 01490500:5: e83f3a7c: New session from client IP 71.125.52.63 (ST=New York/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+					"Apr 14 01:50:26 server Apr 14 01:50:47 server info apd[18544]: 01490017:6: e83f3a7c: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
+					"Apr 14 01:50:42 server Apr 14 01:51:04 server info apd[18544]: 01490017:6: e83f3a7c: AD agent: Auth (logon attempt:1): authenticate with 'kamalij' successful"
+    			),
+    			$(
+    				(String)null,
+    				"2014-04-14 01:50:26,1397458226,kamali123,71.125.52.63,172.17.135.10,FAIL,United States,,Not_supported,Not_supported,Not_supported,isp,,,,,,",
+    				"2014-04-14 01:50:42,1397458242,kamalij,71.125.52.63,172.17.135.10,SUCCESS,United States,,Not_supported,Not_supported,Not_supported,isp,,,,,,"
+    			)
     		)
 		);
     }
