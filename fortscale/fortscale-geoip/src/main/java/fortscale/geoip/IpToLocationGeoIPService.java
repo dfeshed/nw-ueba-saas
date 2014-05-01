@@ -98,7 +98,7 @@ public class IpToLocationGeoIPService implements GeoIPService{
 				}
 
 				// Populate out Geo IP info class
-				if (!StringUtils.isEmpty(rec.getCity())) {
+				if (!StringUtils.isEmpty(rec.getCity()) && !rec.getCity().trim().equals("-")) {
 					geoInfo.setCityName(rec.getCity().replace(",", ""));
 				}
 
@@ -109,13 +109,13 @@ public class IpToLocationGeoIPService implements GeoIPService{
 				if (!StringUtils.isEmpty(rec.getCountryLong())) {
 					geoInfo.setCountryName(rec.getCountryLong().replace(",", ""));
 				}
-				if (!StringUtils.isEmpty(rec.getISP())) {
+				if (!StringUtils.isEmpty(rec.getISP()) && !rec.getDomain().trim().equals("-")) {
 					geoInfo.setISP(rec.getDomain().replace(",", ""));
 				}
-				if (!StringUtils.isEmpty(rec.getRegion())) {
+				if (!StringUtils.isEmpty(rec.getRegion()) && !rec.getRegion().trim().equals("-")) {
 					geoInfo.setRegionName(rec.getRegion().replace(",", ""));
 				}
-				if (!StringUtils.isEmpty(rec.getUsageType())) {
+				if (!StringUtils.isEmpty(rec.getUsageType()) && !rec.getUsageType().trim().equals("-")) {
 					if(rec.getUsageType().contains(MOBILE_USAGE_TYPE)){
 						geoInfo.setUsageType(IpUsageTypeEnum.mob);
 					} else{
