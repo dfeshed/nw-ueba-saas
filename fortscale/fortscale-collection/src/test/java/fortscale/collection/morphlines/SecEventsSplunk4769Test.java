@@ -17,7 +17,7 @@ import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 
 @RunWith(JUnitParamsRunner.class)
-public class SplunkSecEventsTest {
+public class SecEventsSplunk4769Test {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readSecEvt_splunk.conf";
