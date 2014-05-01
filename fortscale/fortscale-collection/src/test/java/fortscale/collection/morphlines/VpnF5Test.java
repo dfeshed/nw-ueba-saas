@@ -77,6 +77,21 @@ public class VpnF5Test {
 	private Object[] parametersForTest() {
         return	$(
     		$(
+    			"Several new session with authentication (BS) VPN",
+    			$(
+					"Apr 14 00:17:42 va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+					"Apr 14 00:17:42 va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+					"Apr 14 01:50:26 server Apr 14 01:50:47 server info apd[18544]: 01490500:5: 18648c83: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
+					"Apr 14 00:23:29 va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c83: Session statistics - bytes in: 0, bytes out: 0"
+    			),
+    			$(
+    				(String)null,
+    				(String)null,
+    				"2014-04-14 01:50:26,1397458226,kamali123,66.249.64.46,172.17.135.10,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,",
+    				(String)null
+    			)
+    		),
+    		$(
 	    		"Regular (BS) Successful VPN Authentication",
 	    		$(
 	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
@@ -133,7 +148,7 @@ public class VpnF5Test {
     			),
     	    	$(
         			(String)null,
-    	    		"2014-01-02 19:06:26,1388707586,bartra,69.141.27.100,172.10.11.12,FAIL,United States,,Not_supported,Not_supported,Not_supported,isp,,,,,,"
+    	    		"2014-01-02 19:06:26,1388707586,bartra,69.141.27.100,172.10.11.12,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,"
     	    	)
         	),
         	
@@ -197,8 +212,21 @@ public class VpnF5Test {
     			),
     			$(
     				(String)null,
-    				"2014-04-14 01:50:26,1397458226,kamali123,71.125.52.63,172.17.135.10,FAIL,United States,,Not_supported,Not_supported,Not_supported,isp,,,,,,",
-    				"2014-04-14 01:50:42,1397458242,kamalij,71.125.52.63,172.17.135.10,SUCCESS,United States,,Not_supported,Not_supported,Not_supported,isp,,,,,,"
+    				"2014-04-14 01:50:26,1397458226,kamali123,71.125.52.63,172.17.135.10,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,",
+    				"2014-04-14 01:50:42,1397458242,kamalij,71.125.52.63,172.17.135.10,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,"
+    			)
+    		),
+    		$(
+    			"New session without authentication (BS) VPN",
+    			$(
+					"Apr 14 00:17:42 va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c73: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+					"Apr 14 00:17:42 va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c73: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+					"Apr 14 00:23:29 va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c73: Session statistics - bytes in: 0, bytes out: 0"
+    			),
+    			$(
+    				(String)null,
+    				(String)null,
+    				(String)null
     			)
     		)
 		);
