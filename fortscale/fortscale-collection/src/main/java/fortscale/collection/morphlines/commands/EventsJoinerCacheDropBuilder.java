@@ -58,7 +58,7 @@ public class EventsJoinerCacheDropBuilder implements CommandBuilder {
 			// remove previous record by that key from the cache
 			boolean removed = cache.remove(key);
 			if (!removed) {
-				logger.info("cannot remove record {} from {} cache", key, cacheName);
+				logger.debug("cannot remove record {} from {} cache", key, cacheName);
 			}
 			
 			// continue processing in the command chain
