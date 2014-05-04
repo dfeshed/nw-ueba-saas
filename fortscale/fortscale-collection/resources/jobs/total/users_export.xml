@@ -8,7 +8,7 @@
 	<schedule>
 		<job>
 			<name>Export</name>
-			<group>USER</group>
+			<group>AD</group>
 			<description>Exporting user information to impala</description>
 			<job-class>fortscale.collection.jobs.UserTableUpdateJob</job-class>
 			<durability>true</durability>
@@ -33,7 +33,7 @@
 		<trigger>
 			<cron>
 				<name>USER_Export_HOURLY_TRIGGER</name>
-				<group>USER</group>
+				<group>AD</group>
 				<job-name>Export</job-name>
 				<job-group>USER</job-group>
 				<cron-expression>0 55 * * * ?</cron-expression>
