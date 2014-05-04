@@ -46,6 +46,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
 		private String currentRecordDateField;
 		private String cachedRecordDateField;
 		private long timeThreshold;
+		private boolean dropFromCache;
 		private EventsJoinerCache cache;
 		
 		public EventsJoiner(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
@@ -55,6 +56,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
 			cachedRecordDateField = getConfigs().getString(config, "cachedRecordDateField");
 			timeThreshold = getConfigs().getLong(config, "timeThreshold");
 			mergeFields = getConfigs().getStringList(config, "mergeFields");
+			dropFromCache = getConfigs().getBoolean(config, "dropFromCache");
 			String cacheName = getConfigs().getString(config, "cacheName");
 			cache = EventsJoinerCache.getInstance(cacheName);
 		}
@@ -64,7 +66,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
 			
 			// get the key fields from the record and look for the record to merge from
 			String key = EventsJoinerCache.buildKey(inputRecord, keys);
-			Record previousEvent = cache.fetch(key);
+			Record previousEvent = (dropFromCache)? cache.fetch(key) : cache.peek(key);
 			
 			if (previousEvent==null) {
 				// store the record for later merge
@@ -82,6 +84,8 @@ public class EventsJoinerBuilder implements CommandBuilder {
 				
 				if (delta > timeThreshold) {
 					// replace the cached record as we encountered a new one that should be saved
+					// if the delta is greater than the threshold we assume that the new events belongs
+					// to a new session
 					cache.store(key, inputRecord);
 					return true;
 				} else {

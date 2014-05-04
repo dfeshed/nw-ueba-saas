@@ -108,12 +108,24 @@ public class EventsJoinerCache implements Closeable {
 		records.put(key, record);
 	}
 	
+	public Record peek(String key) {
+		checkNotNull(key);
+		if (isClosed)
+			throw new IllegalStateException("EventsJoinerCache is closed");
+		
+		return records.get(key);
+	}
+	
 	public Record fetch(String key) {
 		checkNotNull(key);
 		if (isClosed)
 			throw new IllegalStateException("EventsJoinerCache is closed");
 		
 		return records.remove(key);
+	}
+	
+	public boolean remove(String key) {
+		return fetch(key) != null;
 	}
 	
 	

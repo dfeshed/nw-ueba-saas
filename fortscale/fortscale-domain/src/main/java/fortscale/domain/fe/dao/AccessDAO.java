@@ -8,12 +8,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
+
+import com.google.common.collect.Lists;
 
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.EventScore;
@@ -64,7 +65,13 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	
 	public List<EventScore> getEventScores(String username, int daysBack, int limit) {
 		// get latest runtime
-		Date timestamp = getLastRunDate();
+		Date timestamp;
+		try {
+			timestamp = getLastRunDate();
+		} catch (EmptyTableException e) {
+			// return empty list as the table is empty and no need to query it  
+			return Lists.newArrayList();
+		}
 		
 		// build query
 		ImpalaQuery query = new ImpalaQuery();
