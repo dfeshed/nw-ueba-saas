@@ -3,7 +3,7 @@ SET pig.tmpfilecompression.codec gz
 SET pig.tmpfilecompression.storage seqfile
 SET pig.maxCombinedSplitSize 2147483648
 
-raw             = LOAD '$inputData' USING PigStorage(',') AS (date_time:chararray,date_time_epoch:long,ip:chararray,target_machine:chararray,user_name:chararray,status:chararray,auth_method:chararray,client_hostname:chararray,normalized_src_machine:chararray,normalized_dst_machine:chararray,normalized_username:chararray);
+raw             = LOAD '$inputData' USING PigStorage(',') AS (date_time:chararray,date_time_epoch:long,ip:chararray,target_machine:chararray,user_name:chararray,status:chararray,auth_method:chararray,client_hostname:chararray,normalized_src_machine:chararray,normalized_dst_machine:chararray,normalized_username:chararray,is_nat:chararray);
 loginByTime     = FILTER raw by date_time_epoch > (long)'$deltaTime';
 selectedFields = FOREACH loginByTime GENERATE date_time,LOWER(user_name) as user_name,LOWER(normalized_dst_machine) as score_target_machine,(normalized_src_machine is null? '' : LOWER(normalized_src_machine)) as normalized_src_machine,LOWER(status) as status,LOWER(auth_method) as auth_method,normalized_username,target_machine,(client_hostname is null? ip : (client_hostname=='' ? ip : LOWER(client_hostname))) as client_hostname;
 user            = GROUP selectedFields by normalized_username PARALLEL 1;
