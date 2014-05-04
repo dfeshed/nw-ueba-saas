@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Document(collection = Notification.COLLECTION_NAME)
 @CompoundIndexes({
 	@CompoundIndex(name="fsId_ts_desc", def = "{'fsId': 1, 'ts': -1}"),
@@ -24,11 +26,13 @@ public class Notification extends AbstractDocument implements Serializable {
 
 	private long ts;
 	@Indexed(unique=true)
+	@JsonIgnore
 	private String index;
 	private String generator_name;
 	private String name;
 	private String cause;
 	private String displayName;
+	@JsonIgnore
 	private String uuid;
 	private String fsId;
 	private String type;
