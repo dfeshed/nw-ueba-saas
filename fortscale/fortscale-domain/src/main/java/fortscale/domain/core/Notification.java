@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = Notification.COLLECTION_NAME)
@@ -22,6 +23,8 @@ public class Notification extends AbstractDocument implements Serializable {
 	public static final String COLLECTION_NAME = "notifications";
 
 	private long ts;
+	@Indexed(unique=true)
+	private String index;
 	private String generator_name;
 	private String name;
 	private String cause;
@@ -38,8 +41,9 @@ public class Notification extends AbstractDocument implements Serializable {
 	
 	public Notification() {}
 	
-	public Notification(String id, long ts, String generator_name, String name, String cause, String displayName, String uuid, String fsId, String type, boolean dismissed, int commentsCount) {
+	public Notification(String id, long ts, String index, String generator_name, String name, String cause, String displayName, String uuid, String fsId, String type, boolean dismissed, int commentsCount) {
 		this.ts = ts;
+		this.index = index;
 		this.generator_name = generator_name;
 		this.name = name;
 		this.cause = cause;
@@ -56,6 +60,16 @@ public class Notification extends AbstractDocument implements Serializable {
 		return attributes;
 	}
 	
+	
+	
+	public String getIndex() {
+		return index;
+	}
+
+	public void setIndex(String index) {
+		this.index = index;
+	}
+
 	public void setCause(String cause) {
 		this.cause = cause;
 	}
