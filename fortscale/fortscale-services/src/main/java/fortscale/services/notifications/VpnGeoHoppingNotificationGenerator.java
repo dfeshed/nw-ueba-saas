@@ -57,6 +57,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 			Notification notification = new Notification();
 			long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() : vpnSession.getCreatedAtEpoch();
 			notification.setTs(TimestampUtils.convertToSeconds(ts));
+			notification.setIndex(buildIndex(vpnSession));
 			notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
 			notification.setName(vpnSession.getNormalizeUsername());
 			notification.setCause(VPN_GEO_HOPPING_CAUSE);
@@ -75,6 +76,13 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 		
 		
 		notificationsRepository.save(notifications);
+	}
+	
+	private String buildIndex(VpnSession vpnSession){
+		StringBuilder builder = new StringBuilder();
+		builder.append(VPN_GEO_HOPPING_CAUSE).append("_").append(vpnSession.getNormalizeUsername()).append("_").append(vpnSession.getCountry()).append("_").append(vpnSession.getCreatedAtEpoch());
+		
+		return builder.toString();
 	}
 	
 	private Map<String, String> getVpnSessionAttributes(VpnSession vpnSession){

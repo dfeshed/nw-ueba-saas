@@ -50,10 +50,10 @@ public class ApiNotificationsControllerTest {
 		
 		// set up notification repository mocked behavior
 		List<Notification> notifications = new ArrayList<Notification>();
-		notifications.add(new Notification("1", 1, "a", "a", "a", "a", "a", "a", "a", false, 0));
-		notifications.add(new Notification("2", 2, "b", "b", "b", "b", "b", "b", "b", false, 0));
-		notifications.add(new Notification("3", 3, "c", "c", "c", "c", "c", "c", "c", false, 0));
-		notifications.add(new Notification("4", 4, "d", "d", "d", "d", "d", "d", "d", false, 0));
+		notifications.add(new Notification("1", 1, "a", "a", "a", "a", "a", "a", "a", "a", false, 0));
+		notifications.add(new Notification("2", 2, "b", "b", "b", "b", "b", "b", "b", "b", false, 0));
+		notifications.add(new Notification("3", 3, "c", "c", "c", "c", "c", "c", "c", "c", false, 0));
+		notifications.add(new Notification("4", 4, "d", "d", "d", "d", "d", "d", "d", "d", false, 0));
 		
 		when(notificationRepository.findByTsGreaterThanExcludeComments(anyInt(), any(Sort.class))).thenReturn(notifications);
 		
@@ -149,7 +149,7 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void dismiss_should_succeed_with_valid_notification_id() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification("1", 1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
+		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
 		when(notificationRepository.findOne("1")).thenReturn(notification);
 		
 		// perform rest call to the controller
@@ -165,7 +165,7 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void commentOnNotification_should_increment_comments_count() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification("1", 1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
+		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", false, 0);
 		when(notificationRepository.findOne("1")).thenReturn(notification);
 		when(notificationRepository.save(any(Notification.class))).thenReturn(notification);
 		
@@ -185,7 +185,7 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void dismiss_should_not_save_already_dismissed_notification() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification("1", 1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
+		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
 		when(notificationRepository.findOne("1")).thenReturn(notification);
 		
 		// perform rest call to the controller
@@ -200,7 +200,7 @@ public class ApiNotificationsControllerTest {
 	@Test
 	public void undismiss_should_succeed_with_valid_notification_id() throws Exception {
 		// mock repository to return notification
-		Notification notification = new Notification("1", 1L, "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
+		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
 		when(notificationRepository.findOne("1")).thenReturn(notification);
 		
 		// perform rest call to the controller
