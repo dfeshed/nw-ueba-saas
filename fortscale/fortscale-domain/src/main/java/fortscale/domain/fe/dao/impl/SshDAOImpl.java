@@ -70,4 +70,8 @@ public class SshDAOImpl extends AuthDAOImpl{
 	public LogEventsEnum getLogEventsEnum() {
 		return LogEventsEnum.ssh;
 	}
+	@Override
+	public String getSourceIpFieldName() {
+		return sourceIpFieldName;
+	}
 }
