@@ -30,7 +30,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	protected static final String EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME = "day";
 	protected static final String EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME = "status";
 	protected static final String EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME = "eventcount";
-	
+	protected static final String EVENT_SOURCE_COALESCED_FIELD_NAME = "source";
 
 	private Date lastRunDate = null;
 
@@ -56,6 +56,8 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	
 	public abstract String getStatusSuccessValue();
 	
+	public abstract String getSourceIpFieldName();
+	
 	public abstract LogEventsEnum getLogEventsEnum();
 	
 
@@ -75,7 +77,9 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		
 		// build query
 		ImpalaQuery query = new ImpalaQuery();
-		query.select(getEventTimeFieldName(), getSourceFieldName(), getDestinationFieldName(),
+		query.select(getEventTimeFieldName(),
+				String.format("if (%s='', %s, %s) as %s", getSourceFieldName(), getSourceIpFieldName(), getSourceFieldName(), EVENT_SOURCE_COALESCED_FIELD_NAME),
+				getDestinationFieldName(),
 				String.format("if(%s='%s','%s','%s') as %s", getStatusFieldName(), getStatusSuccessValue(), EventLoginDayCount.STATUS_SUCCESS, EventLoginDayCount.STATUS_FAILURE, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME),
 				getEventScoreFieldName());
 		query.from(getTableName());
@@ -501,7 +505,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		@Override
 		public EventScore mapRow(ResultSet rs, int rowNum) throws SQLException {
 			long ts = rs.getTimestamp(getEventTimeFieldName()).getTime();
-			String source = rs.getString(getSourceFieldName().toLowerCase());
+			String source = rs.getString(EVENT_SOURCE_COALESCED_FIELD_NAME);
 			String destination = rs.getString(getDestinationFieldName().toLowerCase());
 			String status = rs.getString(EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME);
 			int score = rs.getInt(getEventScoreFieldName().toLowerCase());
