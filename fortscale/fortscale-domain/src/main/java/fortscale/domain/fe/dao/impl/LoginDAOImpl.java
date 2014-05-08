@@ -74,6 +74,9 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	public String getStatusSuccessValue() {
 		return "0x0";
 	}
-	
+	@Override
+	public String getSourceIpFieldName() {
+		return sourceFieldName;
+	}
 	
 }
