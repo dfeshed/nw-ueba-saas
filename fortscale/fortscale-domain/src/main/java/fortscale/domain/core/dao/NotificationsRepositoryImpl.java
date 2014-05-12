@@ -35,7 +35,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		// limit the days to fetch is a criteria is given
 		if (daysToFetch.isPresent()) {
 			long earliest = (new DateTime()).minusDays(daysToFetch.get()).getMillis();
-			query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(TimestampUtils.convertToSeconds(earliest))));
+			query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(earliest)));
 		}
 		
 		query.with(new Sort(Direction.DESC, "ts")).limit(10);
@@ -64,7 +64,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		// limit the days to fetch is a criteria is given
 		if (daysToFetch.isPresent()) {
 			long earliest = (new DateTime()).minusDays(daysToFetch.get()).getMillis();
-			query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(TimestampUtils.convertToSeconds(earliest))));
+			query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(earliest)));
 		}
 		
 		query.limit(request.getPageSize());
