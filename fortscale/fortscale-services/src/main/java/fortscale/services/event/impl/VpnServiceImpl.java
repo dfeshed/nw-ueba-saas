@@ -55,7 +55,8 @@ public class VpnServiceImpl implements VpnService{
 		if(vpnSession == null){
 			vpnSession = vpnSessionUpdate;
 		} else{
-			vpnSession.setSessionId(vpnSessionUpdate.getSessionId());
+			vpnSession.setSourceIp(vpnSessionUpdate.getSourceIp());
+			vpnSession.setNormalizeUsername(vpnSessionUpdate.getNormalizeUsername());
 			vpnSession.setCreatedAt(vpnSessionUpdate.getCreatedAt());
 			vpnSession.setClosedAtEpoch(null);
 			vpnSession.setClosedAt(null);
@@ -86,8 +87,7 @@ public class VpnServiceImpl implements VpnService{
 		VpnSession ret = null;
 		if(StringUtils.isNotEmpty(vpnSessionUpdate.getSessionId())){
 			ret = vpnSessionRepository.findBySessionId(vpnSessionUpdate.getSessionId());
-		}
-		if(ret == null && StringUtils.isNotEmpty(vpnSessionUpdate.getNormalizeUsername()) && StringUtils.isNotEmpty(vpnSessionUpdate.getSourceIp())){
+		} else if(StringUtils.isNotEmpty(vpnSessionUpdate.getNormalizeUsername()) && StringUtils.isNotEmpty(vpnSessionUpdate.getSourceIp())){
 			ret = vpnSessionRepository.findByNormalizeUsernameAndSourceIp(vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
 		}
 		
