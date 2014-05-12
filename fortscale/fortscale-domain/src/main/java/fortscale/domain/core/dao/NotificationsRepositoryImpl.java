@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Criteria;
+
+import com.google.common.base.Optional;
 
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationAggregate;
@@ -24,11 +27,17 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	private MongoTemplate mongoTemplate;
 	
 	@Override
-	public List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed) {
+	public List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed, Optional<Integer> daysToFetch) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("fsId").is(fsid));
 		if (!includeDissmissed)
 			query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
+		// limit the days to fetch is a criteria is given
+		if (daysToFetch.isPresent()) {
+			long earliest = (new DateTime()).minusDays(daysToFetch.get()).getMillis();
+			query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(TimestampUtils.convertToSeconds(earliest))));
+		}
+		
 		query.with(new Sort(Direction.DESC, "ts")).limit(10);
 		query.fields().exclude("comments");
 		return mongoTemplate.find(query, Notification.class);
@@ -44,13 +53,20 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	}
 	
 	@Override
-	public List<NotificationAggregate> findAllAndAggregate(PageRequest request) {
+	public List<NotificationAggregate> findAllAndAggregate(Optional<Integer> daysToFetch, PageRequest request) {
 		HashMap<String, List<Notification>> aggMap = new HashMap<String, List<Notification>>(); 
 		List<NotificationAggregate> aggNotifications = new ArrayList<>();
 
 		Query query = new Query( ).with( request.getSort() );
 		query.fields().exclude("comments");
 		query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
+		
+		// limit the days to fetch is a criteria is given
+		if (daysToFetch.isPresent()) {
+			long earliest = (new DateTime()).minusDays(daysToFetch.get()).getMillis();
+			query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(TimestampUtils.convertToSeconds(earliest))));
+		}
+		
 		query.limit(request.getPageSize());
 
 		int numAggregatesFound = 0;
