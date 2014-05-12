@@ -71,6 +71,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 			
 			notification.setAttributes(getVpnSessionAttributes(vpnSession));
 			
+			logger.info("adding geo hopping notification with the index {}", notification.getIndex());
 			notifications.add(notification);
 		}
 		
