@@ -18,6 +18,8 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Joiner;
+
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.ad.AdUserThumbnail;
@@ -236,7 +238,7 @@ public class UserServiceImpl implements UserService{
 		userAdInfo.setHomePhone(adUser.getHomePhone());
 		userAdInfo.setDepartment(adUser.getDepartment());
 		userAdInfo.setPosition(adUser.getTitle());
-		userAdInfo.setDisplayName(adUser.getDisplayName());
+		userAdInfo.setDisplayName(Joiner.on(" ").skipNulls().join(adUser.getGivenName(), adUser.getSn()));
 		userAdInfo.setLogonHours(adUser.getLogonHours());
 		try {
 			if(!StringUtils.isEmpty(adUser.getWhenChanged())){
