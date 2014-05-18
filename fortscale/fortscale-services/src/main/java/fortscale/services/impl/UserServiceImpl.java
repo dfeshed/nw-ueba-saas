@@ -238,7 +238,7 @@ public class UserServiceImpl implements UserService{
 		userAdInfo.setHomePhone(adUser.getHomePhone());
 		userAdInfo.setDepartment(adUser.getDepartment());
 		userAdInfo.setPosition(adUser.getTitle());
-		userAdInfo.setDisplayName(Joiner.on(" ").skipNulls().join(adUser.getGivenName(), adUser.getSn()));
+		userAdInfo.setDisplayName(adUser.getDisplayName());
 		userAdInfo.setLogonHours(adUser.getLogonHours());
 		try {
 			if(!StringUtils.isEmpty(adUser.getWhenChanged())){
@@ -313,6 +313,7 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		user.setAdInfo(userAdInfo);
+		user.setDisplayName(Joiner.on(" ").skipNulls().join(adUser.getGivenName(), adUser.getSn()));
 		
 		String username = adUser.getUserPrincipalName();
 		if(StringUtils.isEmpty(username)) {

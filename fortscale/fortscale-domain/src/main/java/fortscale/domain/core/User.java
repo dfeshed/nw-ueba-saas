@@ -44,11 +44,15 @@ public class User extends AbstractDocument {
 	public static final String logUsernameField = "logUsername";
 	public static final String usernameField = "username";
 	public static final String noDomainUsernameField = "noDomainUsername";
+	public static final String displayNameField = "displayName";
 	public static final String searchFieldName = "sf";
 	public static final String classifierScoreField = "scores";
 	public static final String followedField = "followed";
 	public static final String adInfoField = "adInfo";
 	
+	@Indexed
+	@Field(displayNameField)
+	private String displayName;
 	
 	@Indexed
 	@Field(usernameField)
@@ -134,6 +138,14 @@ public class User extends AbstractDocument {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+	
+	public String getDisplayName() {
+		return displayName;
 	}
 	
 	public String getNoDomainUsername() {
