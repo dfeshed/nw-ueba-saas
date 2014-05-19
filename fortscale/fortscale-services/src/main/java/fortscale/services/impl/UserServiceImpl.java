@@ -18,6 +18,8 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Joiner;
+
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.ad.AdUserThumbnail;
