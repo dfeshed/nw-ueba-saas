@@ -61,11 +61,12 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 			notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
 			notification.setName(vpnSession.getNormalizeUsername());
 			notification.setCause(VPN_GEO_HOPPING_CAUSE);
-			notification.setDisplayName(vpnSession.getNormalizeUsername());
 			notification.setUuid(UUID.randomUUID().toString());
 			if(user != null){
+				notification.setDisplayName(user.getDisplayName());
 				notification.setFsId(user.getId());
 			} else{
+				notification.setDisplayName(vpnSession.getNormalizeUsername());
 				notification.setFsId(vpnSession.getNormalizeUsername());
 			}
 			
