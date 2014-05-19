@@ -115,6 +115,8 @@ public class User extends AbstractDocument {
 
 	public void setAdInfo(UserAdInfo adInfo) {
 		this.adInfo = adInfo;
+		// populate display name field with updated user ad info
+		populateDisplayName();
 	}
 	
 	public String getUsername() {
@@ -123,6 +125,8 @@ public class User extends AbstractDocument {
 
 	public void setUsername(String username) {
 		this.username = username;
+		// populate display name field with updated user ad info
+		populateDisplayName();
 	}
 	
 	private void populateDisplayName() {
