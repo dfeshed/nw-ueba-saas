@@ -331,6 +331,7 @@
 	</dependencies>
 
 	<build>
+		<pluginManagement>
 		<plugins>
 			<!-- Tells maven to use the Java 7 JDK instead of its default -->
 			<plugin>
@@ -516,9 +517,6 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
-		<pluginManagement>
-			<plugins>
 				<!-- ignore copy dependencies plugin in m2e as it is not supported -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
