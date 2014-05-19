@@ -194,7 +194,7 @@ public class UserTableUpdateJob extends FortscaleJob {
 				if(StringUtils.isEmpty(val)){
 					val = ImpalaParser.IMPALA_NULL_VALUE;
 				} else if(impalaUserFieldsMap.get(fieldDef).equals(ImpalaDateTime.class)){
-					val = ImpalaDateTime.formatTimeDate(new DateTime(Long.parseLong(fieldDef)));
+					val = ImpalaDateTime.formatTimeDate(new DateTime(Long.parseLong(val)));
 				}
 				values.add(val);
 			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | NumberFormatException e) {
