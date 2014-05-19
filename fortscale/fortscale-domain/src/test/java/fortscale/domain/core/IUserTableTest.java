@@ -11,6 +11,7 @@ import junit.framework.Assert;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Test;
 
+import fortscale.utils.impala.ImpalaDateTime;
 import fortscale.utils.impala.ImpalaParser;
 
 public class IUserTableTest {
@@ -31,6 +32,9 @@ public class IUserTableTest {
 		for(PropertyDescriptor propertyDescriptor: propertyDescriptors){
 			Assert.assertTrue(expectedFieldsMap.containsKey(propertyDescriptor.getName()));
 			Class<?> type = expectedFieldsMap.get(propertyDescriptor.getName());
+			if(type.equals(ImpalaDateTime.class)){
+				type = Long.class;
+			}
 			Class<?> actualType = propertyDescriptor.getPropertyType();
 			Assert.assertEquals(type, actualType);
 		}
