@@ -313,7 +313,6 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		user.setAdInfo(userAdInfo);
-		user.setDisplayName(Joiner.on(" ").skipNulls().join(adUser.getGivenName(), adUser.getSn()));
 		
 		String username = adUser.getUserPrincipalName();
 		if(StringUtils.isEmpty(username)) {

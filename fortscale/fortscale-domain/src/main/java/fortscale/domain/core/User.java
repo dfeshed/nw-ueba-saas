@@ -104,23 +104,7 @@ public class User extends AbstractDocument {
 		this.adObjectGUID = adObjectGUID;
 	}
 		
-	
-
-	/**
-	 * Creates a new {@link User} from the given adDn.
-	 * 
-	 * @param adDn must not be {@literal null} or empty.
-	 */
-//	@PersistenceConstructor
-//	@JsonCreator
-//	public User(@JsonProperty("adDn") String adDn) {
-//
-//		Assert.hasText(adDn);
-//
-//		this.adDn = adDn;
-//	}
-	
-	
+		
 	public UserAdInfo getAdInfo() {
 		if(adInfo == null){
 			adInfo = new UserAdInfo();
@@ -130,6 +114,7 @@ public class User extends AbstractDocument {
 
 	public void setAdInfo(UserAdInfo adInfo) {
 		this.adInfo = adInfo;
+		setDisplayName();
 	}
 	
 	public String getUsername() {
@@ -140,8 +125,14 @@ public class User extends AbstractDocument {
 		this.username = username;
 	}
 	
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
+	private void setDisplayName() {
+		if(getAdInfo().getFirstname() != null && getAdInfo().getLastname() != null){
+			this.displayName = getAdInfo().getFirstname() + " " + getAdInfo().getLastname();
+		} else if(getAdInfo().getDisplayName() != null){
+			this.displayName = getAdInfo().getDisplayName();
+		} else{
+			this.displayName = getUsername();
+		}
 	}
 	
 	public String getDisplayName() {
