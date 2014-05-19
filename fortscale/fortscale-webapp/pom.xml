@@ -188,7 +188,6 @@
 
 	</dependencies>
 	<build>
-		<pluginManagement>
 		<!-- <finalName>fortscale-webapp</finalName> -->
 		<plugins>
 			<!-- <plugin> -->
@@ -304,6 +303,5 @@
 				</executions>
 			</plugin>
  		</plugins>
- 		</pluginManagement>
 	</build>
 </project>
