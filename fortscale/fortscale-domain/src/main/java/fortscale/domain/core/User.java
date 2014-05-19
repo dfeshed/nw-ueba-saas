@@ -3,6 +3,7 @@ package fortscale.domain.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -114,7 +115,6 @@ public class User extends AbstractDocument {
 
 	public void setAdInfo(UserAdInfo adInfo) {
 		this.adInfo = adInfo;
-		setDisplayName();
 	}
 	
 	public String getUsername() {
@@ -125,7 +125,7 @@ public class User extends AbstractDocument {
 		this.username = username;
 	}
 	
-	private void setDisplayName() {
+	private void populateDisplayName() {
 		if(getAdInfo().getFirstname() != null && getAdInfo().getLastname() != null){
 			this.displayName = getAdInfo().getFirstname() + " " + getAdInfo().getLastname();
 		} else if(getAdInfo().getDisplayName() != null){
@@ -136,6 +136,9 @@ public class User extends AbstractDocument {
 	}
 	
 	public String getDisplayName() {
+		// ensure display name was set
+		if (StringUtils.isEmpty(displayName))
+			populateDisplayName();
 		return displayName;
 	}
 	
