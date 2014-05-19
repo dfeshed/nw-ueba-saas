@@ -320,4 +320,34 @@ public class UserTable implements IUserTable {
 		return manager != null ? manager.getId() : null;
 	}
 
+	@Override
+	public Long getDisableAccountTime() {
+		// TODO Auto-generated method stub
+		return System.currentTimeMillis();
+	}
+
+	@Override
+	public Long getLastActivityTime() {
+		// TODO Auto-generated method stub
+		return System.currentTimeMillis();
+	}
+
+	@Override
+	public Long getSshLastActivityTime() {
+		// TODO Auto-generated method stub
+		return System.currentTimeMillis();
+	}
+
+	@Override
+	public Long getVpnLastActivityTime() {
+		// TODO Auto-generated method stub
+		return System.currentTimeMillis();
+	}
+
+	@Override
+	public Long getLoginLastActivityTime() {
+		// TODO Auto-generated method stub
+		return System.currentTimeMillis();
+	}
+
 }

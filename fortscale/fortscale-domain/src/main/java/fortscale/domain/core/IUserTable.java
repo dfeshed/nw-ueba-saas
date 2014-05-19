@@ -44,4 +44,9 @@ public interface IUserTable {
 	public String getManagerUsername();
 	public String getManagerName();
 	public String getManagerEmployeeId();
+	public Long getDisableAccountTime();
+	public Long getLastActivityTime();
+	public Long getSshLastActivityTime();
+	public Long getVpnLastActivityTime();
+	public Long getLoginLastActivityTime();
 }
