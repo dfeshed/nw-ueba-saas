@@ -4,6 +4,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +18,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-
-import com.google.common.base.Joiner;
 
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
@@ -211,7 +210,19 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		
+		User user =  findUserByObjectGUID(adUser.getObjectGUID());
+		Date whenChanged = null;
+		try {
+			if(!StringUtils.isEmpty(adUser.getWhenChanged())){
+				whenChanged = adUserParser.parseDate(adUser.getWhenChanged());
+			}
+		} catch (ParseException e) {
+			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
+		}
 		
+		if(whenChanged != null && !user.getAdInfo().getWhenChanged().before(whenChanged)){
+			return;
+		}
 		
 		final UserAdInfo userAdInfo = new UserAdInfo();
 		userAdInfo.setObjectGUID(adUser.getObjectGUID());
@@ -240,13 +251,8 @@ public class UserServiceImpl implements UserService{
 		userAdInfo.setPosition(adUser.getTitle());
 		userAdInfo.setDisplayName(adUser.getDisplayName());
 		userAdInfo.setLogonHours(adUser.getLogonHours());
-		try {
-			if(!StringUtils.isEmpty(adUser.getWhenChanged())){
-				userAdInfo.setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
-			}
-		} catch (ParseException e) {
-			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
-		}
+
+		userAdInfo.setWhenChanged(whenChanged);
 		
 		try {
 			if(!StringUtils.isEmpty(adUser.getWhenCreated())){
@@ -305,7 +311,7 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		
-		User user =  findUserByObjectGUID(adUser.getObjectGUID());
+		
 		boolean isSaveUser = false;
 		if(user == null){
 			user = new User();
