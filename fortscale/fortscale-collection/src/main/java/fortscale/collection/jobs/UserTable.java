@@ -199,14 +199,8 @@ public class UserTable implements IUserTable {
 	}
 
 	@Override
-	public Boolean getAccountIsDisabled() {
-		try {
-			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(user.getAdInfo().getUserAccountControl()) : null;
-		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
-		}
-			
-		return null;
+	public Boolean getAccountIsDisabled() {			
+		return user.getAdInfo().getIsAccountDisabled();
 	}
 
 	@Override
@@ -322,8 +316,7 @@ public class UserTable implements IUserTable {
 
 	@Override
 	public Long getDisableAccountTime() {
-		// TODO Auto-generated method stub
-		return System.currentTimeMillis();
+		return user.getAdInfo().getDisableAccountTime().getTime();
 	}
 
 	@Override
