@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -19,6 +20,7 @@ import com.typesafe.config.Config;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.UserService;
+import fortscale.utils.TimestampUtils;
 
 public class UserLastActivityUpdateMorphCmdBuilder implements CommandBuilder {
 	
@@ -47,6 +49,7 @@ public class UserLastActivityUpdateMorphCmdBuilder implements CommandBuilder {
 		private final LogEventsEnum logEventsType;
 		private final String normalizedUsernameField;
 		private final String epochtimestampField;
+		private final long lastActivityEpochTimeInSecInPrevJob ;
 		
 		public UserLastActivityUpdate(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -54,15 +57,23 @@ public class UserLastActivityUpdateMorphCmdBuilder implements CommandBuilder {
 			this.normalizedUsernameField = getConfigs().getString(config, "normalizedUsernameField");
 			this.epochtimestampField = getConfigs().getString(config, "epochtimestampField");
 			
+			DateTime dateTime = null;
+			if(userService != null){
+				dateTime = userService.findLastActiveTime(logEventsType);
+			}
+			lastActivityEpochTimeInSecInPrevJob = dateTime == null ? 0 : TimestampUtils.convertToSeconds(dateTime.getMillis());
+			
 			validateArguments();
 		}
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
 			String normalizedUsername = RecordExtensions.getStringValue(inputRecord, normalizedUsernameField);
-			Long epochtime = RecordExtensions.getLongValue(inputRecord, epochtimestampField);
+			Long epochtime = TimestampUtils.convertToSeconds(RecordExtensions.getLongValue(inputRecord, epochtimestampField));
 			
-			this.userLastActivityMap.put(normalizedUsername, epochtime);
+			if(lastActivityEpochTimeInSecInPrevJob < epochtime){
+				this.userLastActivityMap.put(normalizedUsername, epochtime);
+			}
 
 			return super.doProcess(inputRecord);
 

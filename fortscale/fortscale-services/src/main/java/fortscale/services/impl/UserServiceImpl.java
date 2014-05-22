@@ -549,6 +549,10 @@ public class UserServiceImpl implements UserService{
 		update.set(User.getClassifierScoreField(classifier.getId()), user.getScore(classifier.getId()));
 	}
 
-
+	@Override
+	public DateTime findLastActiveTime(LogEventsEnum eventId){
+		User user = userRepository.findLastActiveUser(eventId);
+		return user == null ? null : user.getLogLastActivity(eventId);
+	}
 	
 }

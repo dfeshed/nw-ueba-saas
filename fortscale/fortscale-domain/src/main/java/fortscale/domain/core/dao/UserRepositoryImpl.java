@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -24,12 +25,24 @@ import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.Threshold;
 
 public class UserRepositoryImpl implements UserRepositoryCustom{
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	
+	
+	
+	@Override
+	public User findLastActiveUser(LogEventsEnum eventId){
+		String logLastActiveField = User.getLogLastActivityField(eventId);
+		Pageable pageable = new PageRequest(0, 1, Direction.DESC, logLastActiveField);
+		Query query = new Query();
+		query.with(pageable);
+		return mongoTemplate.findOne(query, User.class);
+	}
 	
 	@Override
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails) {
