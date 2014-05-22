@@ -57,20 +57,6 @@ public class ComputerServiceTest {
 		return computer;
 	}
 	
-	@Test
-	public void update_should_not_lookup_mongo_if_the_latest_changed_is_newer_than_the_given_computer() {
-		// arrange
-		when(repository.getLatestWhenChanged()).thenReturn(new Date(1397201240000L));
-		
-		// act
-		AdComputer computer = getAdComputer();
-		service.updateComputerWithADInfo(computer);
-		
-		// assert
-		verify(repository, times(0)).findByName(anyString());
-		verify(repository, times(0)).save(any(Computer.class));
-	}
-	
 	
 	@Test
 	public void update_should_lookup_mongo_if_the_latest_changed_is_same_as_the_given_computer() {
@@ -84,7 +70,6 @@ public class ComputerServiceTest {
 		service.updateComputerWithADInfo(computer);
 		
 		// assert
-		verify(repository, times(1)).findByName(anyString());
 		verify(repository, times(1)).save(any(Computer.class));
 	}
 	
