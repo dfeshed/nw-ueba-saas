@@ -199,7 +199,7 @@ public class UserTableUpdateJob extends FortscaleJob {
 				values.add(val);
 			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | NumberFormatException e) {
 				logger.warn(String.format("got the following exception while trying to read the field %s", fieldDef), e);
-				values.add("NULL");
+				values.add(ImpalaParser.IMPALA_NULL_VALUE);
 			}
 		}
 		

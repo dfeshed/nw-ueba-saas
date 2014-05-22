@@ -40,6 +40,8 @@ import org.springframework.util.Assert;
 		@CompoundIndex(name="vpnScoreCurTrend", def = "{'scores.vpn.trendScore': -1}"),
 })
 public class User extends AbstractDocument {
+	private static final long serialVersionUID = -2544779887545246880L;
+	
 	public static final String collectionName = "user";
 	public static final String appField = "app";
 	public static final String logUsernameField = "logUsername";

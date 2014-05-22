@@ -140,13 +140,7 @@ public class UserDetailsBean implements Serializable{
 	}
 		
 	public Boolean isAccountIsDisabled() {
-		try {
-			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(user.getAdInfo().getUserAccountControl()) : null;
-		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
-		}
-			
-		return null;
+		return user.getAdInfo().getIsAccountDisabled();
 	}
 	
 	public Boolean isLockout() {

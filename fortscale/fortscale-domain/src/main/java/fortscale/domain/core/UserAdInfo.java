@@ -87,6 +87,10 @@ public class UserAdInfo {
 	
 	private String roomNumber;
 	
+	private Date disableAccountTime;
+	
+	private Boolean isAccountDisabled;
+	
 	
 	
 	
@@ -401,6 +405,22 @@ public class UserAdInfo {
 	
 	public void clearDirectReport(){
 		directReports.clear();
+	}
+
+	public Date getDisableAccountTime() {
+		return disableAccountTime;
+	}
+
+	public void setDisableAccountTime(Date disableAccountTime) {
+		this.disableAccountTime = disableAccountTime;
+	}
+
+	public Boolean getIsAccountDisabled() {
+		return isAccountDisabled;
+	}
+
+	public void setIsAccountDisabled(Boolean isAccountIsDisabled) {
+		this.isAccountDisabled = isAccountIsDisabled;
 	}
 	
 	
