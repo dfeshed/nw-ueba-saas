@@ -220,7 +220,7 @@ public class UserServiceImpl implements UserService{
 			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
 		}
 		
-		if(whenChanged != null && !user.getAdInfo().getWhenChanged().before(whenChanged)){
+		if(user != null && whenChanged != null && !user.getAdInfo().getWhenChanged().before(whenChanged)){
 			return;
 		}
 		
