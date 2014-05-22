@@ -18,7 +18,7 @@ public class ComputerLoginResolver {
 	@Autowired
 	private ComputerLoginEventRepository computerLoginEventRepository;
 	
-	@Value("${computer.login.resolver.leaseTimeInMins:2880}")
+	@Value("${computer.login.resolver.leaseTimeInMins:600}") // TGT lease time is default to 10 hours
 	private int leaseTimeInMins;
 	@Value("${computer.login.resolver.graceTimeInMins:1}")
 	private int graceTimeInMins;

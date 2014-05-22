@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -12,6 +13,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
+import org.joda.time.DateTime;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -26,6 +28,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.utils.hdfs.HDFSLineAppender;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
+import fortscale.utils.impala.ImpalaDateTime;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 
@@ -184,17 +187,19 @@ public class UserTableUpdateJob extends FortscaleJob {
 		userTable.setVpnUsernames(user.getLogUserName(vpnTableName));
 		
 		List<String> values = new ArrayList<>();
-		for(String fieldDef: impalaUserFields.split(",")){
-			String fieldDefSplit[] = fieldDef.split(" ");
+		HashMap<String, Class<?>> impalaUserFieldsMap = ImpalaParser.getTableFieldDefinitionMap(impalaUserFields);
+		for(String fieldDef: ImpalaParser.getTableFieldNames(impalaUserFields)){
 			try {
-				String val = BeanUtils.getProperty(userTable, fieldDefSplit[0]);
+				String val = BeanUtils.getProperty(userTable, fieldDef);
 				if(StringUtils.isEmpty(val)){
 					val = ImpalaParser.IMPALA_NULL_VALUE;
+				} else if(impalaUserFieldsMap.get(fieldDef).equals(ImpalaDateTime.class)){
+					val = ImpalaDateTime.formatTimeDate(new DateTime(Long.parseLong(val)));
 				}
 				values.add(val);
-			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | NumberFormatException e) {
 				logger.warn(String.format("got the following exception while trying to read the field %s", fieldDef), e);
-				values.add("NULL");
+				values.add(ImpalaParser.IMPALA_NULL_VALUE);
 			}
 		}
 		

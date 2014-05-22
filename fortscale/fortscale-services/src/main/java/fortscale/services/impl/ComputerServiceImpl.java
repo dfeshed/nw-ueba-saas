@@ -42,12 +42,6 @@ public class ComputerServiceImpl implements ComputerService {
 	public void updateComputerWithADInfo(AdComputer computer) {
 		checkNotNull(computer);
 		
-		// find out if the AD computer record is newer than what we have, 
-		// if not skip the whole process. Otherwise, look for the existing
-		// document in mongo, create one if not exist or update the existing 
-		
-		Date latestWhenChanged = repository.getLatestWhenChanged();
-		
 		Date whenChanged = null;
 		try {
 			whenChanged = parser.parseDate(computer.getWhenChanged());
@@ -55,14 +49,18 @@ public class ComputerServiceImpl implements ComputerService {
 			logger.error("computer whenChanged field value '{}' not match expected format for computer {}", computer.getWhenChanged(), computer.getCn());
 			return;
 		}
+
 		
-		if (latestWhenChanged!=null && latestWhenChanged.after(whenChanged)) {
+		// find out if the AD computer record is newer than what we have, 
+		// if not skip the whole process. Otherwise, look for the existing
+		// document in mongo, create one if not exist or update the existing 
+		Computer saved = repository.findByName(computer.getCn().toUpperCase());
+		if (saved!=null && saved.getWhenChanged()!=null && !saved.getWhenChanged().before(whenChanged)) {
 			// skip this record as we already have a newer snapshot in place
 			return;
 		}
 		
 		// check if the repository already contains such a computer
-		Computer saved = repository.findByName(computer.getCn().toUpperCase());
 		if (saved==null)
 			saved = new Computer();
 		

@@ -117,8 +117,11 @@ public class ApiNotificationsController extends BaseController {
 	@ResponseBody
 	@LogException
 	public DataBean<List<Notification>> userNotifications(@PathVariable("fsid") String fsid,
-			@RequestParam(defaultValue="False") boolean includeDissmissed) {
-		Iterable<Notification> userNotifications = notificationsRepository.findByFsIdExcludeComments(fsid, includeDissmissed);
+			@RequestParam(defaultValue="False") boolean includeDissmissed,
+			@RequestParam(defaultValue="0") int daysToFetch) {
+		
+		Optional<Integer> earliest = (daysToFetch==0)? Optional.<Integer>absent() : Optional.of(daysToFetch);
+		Iterable<Notification> userNotifications = notificationsRepository.findByFsIdExcludeComments(fsid, includeDissmissed, earliest);
 		return notificationsDataSingle(userNotifications, Optional.<Long>absent());
 	}
 
@@ -177,11 +180,13 @@ public class ApiNotificationsController extends BaseController {
 	@RequestMapping(value = "/aggregate", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Object>> agg() {
+	public DataBean<List<Object>> agg(@RequestParam(defaultValue="0") int daysToFetch) {
+		
 		Sort sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP));
 		PageRequest request = new PageRequest(0, 10, sortByTSDesc);
 
-		Iterable<NotificationAggregate> overviewNotificationsAgg = notificationsRepository.findAllAndAggregate(request);
+		Optional<Integer> earliest = (daysToFetch==0)? Optional.<Integer>absent() : Optional.of(daysToFetch);
+		Iterable<NotificationAggregate> overviewNotificationsAgg = notificationsRepository.findAllAndAggregate(earliest,request);
 		return notificationDataAgg(overviewNotificationsAgg);
 	}
 

@@ -59,7 +59,7 @@ public class UserDetailsBean implements Serializable{
 
 
 	public String getName() {
-		return getUserName(user);
+		return user.getDisplayName();
 	}
 
 	public String getJobTitle() {
@@ -140,13 +140,7 @@ public class UserDetailsBean implements Serializable{
 	}
 		
 	public Boolean isAccountIsDisabled() {
-		try {
-			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(user.getAdInfo().getUserAccountControl()) : null;
-		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
-		}
-			
-		return null;
+		return user.getAdInfo().getIsAccountDisabled();
 	}
 	
 	public Boolean isLockout() {
@@ -375,7 +369,7 @@ public class UserDetailsBean implements Serializable{
 		}
 		
 		public String getName() {
-			return getUserName(managerUser);
+			return managerUser.getDisplayName();
 		}
 		public String getWorkerId() {
 			return managerUser.getAdInfo().getEmployeeID();
@@ -397,7 +391,7 @@ public class UserDetailsBean implements Serializable{
 		}
 		
 		public String getName() {
-			return getUserName(adUserDirectReport);
+			return adUserDirectReport.getDisplayName();
 		}
 		public String getUsername() {
 			return adUserDirectReport.getUsername();
@@ -410,16 +404,6 @@ public class UserDetailsBean implements Serializable{
 		}
 	}
 	
-	private static String getUserName(User user){
-		if(user.getAdInfo().getFirstname() != null && user.getAdInfo().getLastname() != null){
-			return user.getAdInfo().getFirstname() + " " + user.getAdInfo().getLastname();
-		} else if(user.getAdInfo().getDisplayName() != null){
-			return user.getAdInfo().getDisplayName();
-		} else{
-			return user.getUsername();
-		}
-	}
-
 	public class UserGroupBean{
 		private AdUserGroup adUserGroup;
 		

@@ -4,6 +4,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,7 +210,19 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		
+		User user =  findUserByObjectGUID(adUser.getObjectGUID());
+		Date whenChanged = null;
+		try {
+			if(!StringUtils.isEmpty(adUser.getWhenChanged())){
+				whenChanged = adUserParser.parseDate(adUser.getWhenChanged());
+			}
+		} catch (ParseException e) {
+			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
+		}
 		
+		if(user != null && whenChanged != null && !user.getAdInfo().getWhenChanged().before(whenChanged)){
+			return;
+		}
 		
 		final UserAdInfo userAdInfo = new UserAdInfo();
 		userAdInfo.setObjectGUID(adUser.getObjectGUID());
@@ -238,13 +251,8 @@ public class UserServiceImpl implements UserService{
 		userAdInfo.setPosition(adUser.getTitle());
 		userAdInfo.setDisplayName(adUser.getDisplayName());
 		userAdInfo.setLogonHours(adUser.getLogonHours());
-		try {
-			if(!StringUtils.isEmpty(adUser.getWhenChanged())){
-				userAdInfo.setWhenChanged(adUserParser.parseDate(adUser.getWhenChanged()));
-			}
-		} catch (ParseException e) {
-			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
-		}
+
+		userAdInfo.setWhenChanged(whenChanged);
 		
 		try {
 			if(!StringUtils.isEmpty(adUser.getWhenCreated())){
@@ -270,6 +278,13 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
+		Boolean isAccountDisable = null;
+		try {
+			isAccountDisable = userAdInfo.getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(user.getAdInfo().getUserAccountControl()) : null;
+		} catch (NumberFormatException e) {
+			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
+		}
+		userAdInfo.setIsAccountDisabled(isAccountDisable);
 		
 		ADParser adUserParser = new ADParser();
 		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
@@ -303,7 +318,17 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		
-		User user =  findUserByObjectGUID(adUser.getObjectGUID());
+		
+		if(user != null){
+			if(userAdInfo.getIsAccountDisabled() == null || !userAdInfo.getIsAccountDisabled()){
+				userAdInfo.setDisableAccountTime(null);
+			} else if(!user.getAdInfo().getIsAccountDisabled()){
+				userAdInfo.setDisableAccountTime(whenChanged);
+			}
+		} else if(userAdInfo.getIsAccountDisabled() != null && userAdInfo.getIsAccountDisabled()){
+			userAdInfo.setDisableAccountTime(whenChanged);
+		}
+		
 		boolean isSaveUser = false;
 		if(user == null){
 			user = new User();

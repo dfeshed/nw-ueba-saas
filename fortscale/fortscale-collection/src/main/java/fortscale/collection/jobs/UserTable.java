@@ -199,14 +199,8 @@ public class UserTable implements IUserTable {
 	}
 
 	@Override
-	public Boolean getAccountIsDisabled() {
-		try {
-			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(user.getAdInfo().getUserAccountControl()) : null;
-		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
-		}
-			
-		return null;
+	public Boolean getAccountIsDisabled() {			
+		return user.getAdInfo().getIsAccountDisabled();
 	}
 
 	@Override
@@ -318,6 +312,35 @@ public class UserTable implements IUserTable {
 	@Override
 	public String getManagerId() {
 		return manager != null ? manager.getId() : null;
+	}
+
+	@Override
+	public Long getDisableAccountTime() {
+		return user.getAdInfo().getDisableAccountTime().getTime();
+	}
+
+	@Override
+	public Long getLastActivityTime() {
+		// TODO Auto-generated method stub
+		return System.currentTimeMillis();
+	}
+
+	@Override
+	public Long getSshLastActivityTime() {
+		// TODO Auto-generated method stub
+		return System.currentTimeMillis();
+	}
+
+	@Override
+	public Long getVpnLastActivityTime() {
+		// TODO Auto-generated method stub
+		return System.currentTimeMillis();
+	}
+
+	@Override
+	public Long getLoginLastActivityTime() {
+		// TODO Auto-generated method stub
+		return System.currentTimeMillis();
 	}
 
 }

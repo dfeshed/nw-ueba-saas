@@ -3,6 +3,7 @@ package fortscale.domain.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -39,16 +40,22 @@ import org.springframework.util.Assert;
 		@CompoundIndex(name="vpnScoreCurTrend", def = "{'scores.vpn.trendScore': -1}"),
 })
 public class User extends AbstractDocument {
+	private static final long serialVersionUID = -2544779887545246880L;
+	
 	public static final String collectionName = "user";
 	public static final String appField = "app";
 	public static final String logUsernameField = "logUsername";
 	public static final String usernameField = "username";
 	public static final String noDomainUsernameField = "noDomainUsername";
+	public static final String displayNameField = "displayName";
 	public static final String searchFieldName = "sf";
 	public static final String classifierScoreField = "scores";
 	public static final String followedField = "followed";
 	public static final String adInfoField = "adInfo";
 	
+	@Indexed
+	@Field(displayNameField)
+	private String displayName;
 	
 	@Indexed
 	@Field(usernameField)
@@ -100,23 +107,7 @@ public class User extends AbstractDocument {
 		this.adObjectGUID = adObjectGUID;
 	}
 		
-	
-
-	/**
-	 * Creates a new {@link User} from the given adDn.
-	 * 
-	 * @param adDn must not be {@literal null} or empty.
-	 */
-//	@PersistenceConstructor
-//	@JsonCreator
-//	public User(@JsonProperty("adDn") String adDn) {
-//
-//		Assert.hasText(adDn);
-//
-//		this.adDn = adDn;
-//	}
-	
-	
+		
 	public UserAdInfo getAdInfo() {
 		if(adInfo == null){
 			adInfo = new UserAdInfo();
@@ -126,6 +117,8 @@ public class User extends AbstractDocument {
 
 	public void setAdInfo(UserAdInfo adInfo) {
 		this.adInfo = adInfo;
+		// populate display name field with updated user ad info
+		populateDisplayName();
 	}
 	
 	public String getUsername() {
@@ -134,6 +127,25 @@ public class User extends AbstractDocument {
 
 	public void setUsername(String username) {
 		this.username = username;
+		// populate display name field with updated user ad info
+		populateDisplayName();
+	}
+	
+	private void populateDisplayName() {
+		if(getAdInfo().getFirstname() != null && getAdInfo().getLastname() != null){
+			this.displayName = getAdInfo().getFirstname() + " " + getAdInfo().getLastname();
+		} else if(getAdInfo().getDisplayName() != null){
+			this.displayName = getAdInfo().getDisplayName();
+		} else{
+			this.displayName = getUsername();
+		}
+	}
+	
+	public String getDisplayName() {
+		// ensure display name was set
+		if (StringUtils.isEmpty(displayName))
+			populateDisplayName();
+		return displayName;
 	}
 	
 	public String getNoDomainUsername() {
