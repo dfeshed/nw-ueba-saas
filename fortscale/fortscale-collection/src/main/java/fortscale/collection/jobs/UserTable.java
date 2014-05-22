@@ -11,7 +11,6 @@ import fortscale.domain.core.User;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.UserApplication;
 import fortscale.services.fe.Classifier;
-import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 
@@ -320,7 +319,7 @@ public class UserTable implements IUserTable {
 
 	@Override
 	public Long getDisableAccountTime() {
-		return convertToSeconds(user.getAdInfo().getDisableAccountTime());
+		return convertToEpochTime(user.getAdInfo().getDisableAccountTime());
 	}
 
 	@Override
@@ -332,12 +331,12 @@ public class UserTable implements IUserTable {
 			}
 		}
 		
-		return convertToSeconds(ret);
+		return convertToEpochTime(ret);
 	}
 	
-	private Long convertToSeconds(DateTime time){
+	private Long convertToEpochTime(DateTime time){
 		if(time != null){
-			return TimestampUtils.convertToSeconds(time.getMillis());
+			return time.getMillis();
 		} else{
 			return null;
 		}
@@ -345,17 +344,17 @@ public class UserTable implements IUserTable {
 
 	@Override
 	public Long getSshLastActivityTime() {
-		return convertToSeconds(user.getLogLastActivity(LogEventsEnum.ssh));
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.ssh));
 	}
 
 	@Override
 	public Long getVpnLastActivityTime() {
-		return convertToSeconds(user.getLogLastActivity(LogEventsEnum.vpn));
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.vpn));
 	}
 
 	@Override
 	public Long getLoginLastActivityTime() {
-		return convertToSeconds(user.getLogLastActivity(LogEventsEnum.login));
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.login));
 	}
 
 }
