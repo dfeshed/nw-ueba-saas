@@ -6,10 +6,13 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +43,7 @@ import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 
@@ -146,6 +150,21 @@ public class UserServiceImpl implements UserService{
 		}		
 	}
 	
+	@Override
+	public void updateUserLastActivity(LogEventsEnum eventId, String username, DateTime dateTime){
+		Update update = new Update();
+		update.set(User.getLogLastActivityField(eventId), dateTime);
+		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
+	}
+	
+	@Override
+	public void updateUsersLastActivity(LogEventsEnum eventId, Map<String, Long> userLastActivityMap){
+		Iterator<Entry<String, Long>> entries = userLastActivityMap.entrySet().iterator();
+		while(entries.hasNext()){
+			Entry<String, Long> entry = entries.next();
+			updateUserLastActivity(eventId, entry.getKey(), new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue())));
+		}
+	}
 	
 	@Override
 	public String getUserThumbnail(User user) {
@@ -280,9 +299,9 @@ public class UserServiceImpl implements UserService{
 		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
 		Boolean isAccountDisable = null;
 		try {
-			isAccountDisable = userAdInfo.getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(user.getAdInfo().getUserAccountControl()) : null;
+			isAccountDisable = userAdInfo.getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(userAdInfo.getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", userAdInfo.getUserAccountControl());
 		}
 		userAdInfo.setIsAccountDisabled(isAccountDisable);
 		

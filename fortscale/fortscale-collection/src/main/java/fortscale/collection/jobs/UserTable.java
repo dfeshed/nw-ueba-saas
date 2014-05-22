@@ -1,13 +1,17 @@
 package fortscale.collection.jobs;
 
+import org.joda.time.DateTime;
+
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.IUserTable;
 import fortscale.domain.core.User;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.UserApplication;
 import fortscale.services.fe.Classifier;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 
@@ -321,26 +325,28 @@ public class UserTable implements IUserTable {
 
 	@Override
 	public Long getLastActivityTime() {
-		// TODO Auto-generated method stub
-		return System.currentTimeMillis();
+		Long ret = null;
+		for(DateTime dateTime: user.getLogLastActivityMap().values()){
+			if(ret == null || ret < dateTime.getMillis()){
+				ret = dateTime.getMillis();
+			}
+		}
+		return TimestampUtils.convertToSeconds(ret);
 	}
 
 	@Override
 	public Long getSshLastActivityTime() {
-		// TODO Auto-generated method stub
-		return System.currentTimeMillis();
+		return TimestampUtils.convertToSeconds(user.getLogLastActivity(LogEventsEnum.ssh).getMillis());
 	}
 
 	@Override
 	public Long getVpnLastActivityTime() {
-		// TODO Auto-generated method stub
-		return System.currentTimeMillis();
+		return TimestampUtils.convertToSeconds(user.getLogLastActivity(LogEventsEnum.vpn).getMillis());
 	}
 
 	@Override
 	public Long getLoginLastActivityTime() {
-		// TODO Auto-generated method stub
-		return System.currentTimeMillis();
+		return TimestampUtils.convertToSeconds(user.getLogLastActivity(LogEventsEnum.login).getMillis());
 	}
 
 }

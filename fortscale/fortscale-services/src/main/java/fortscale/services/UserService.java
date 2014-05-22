@@ -1,7 +1,9 @@
 package fortscale.services;
 
 import java.util.List;
+import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.query.Update;
 
 import fortscale.domain.ad.AdUser;
@@ -45,4 +47,8 @@ public interface UserService {
 	public String getTableName(LogEventsEnum eventId);
 
 	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
+
+	public void updateUserLastActivity(LogEventsEnum eventId, String username,	DateTime dateTime);
+	
+	public void updateUsersLastActivity(LogEventsEnum eventId, Map<String, Long> userLastActivityMap);
 }
