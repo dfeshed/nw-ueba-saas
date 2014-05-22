@@ -55,7 +55,7 @@ public class ComputerServiceImpl implements ComputerService {
 		// if not skip the whole process. Otherwise, look for the existing
 		// document in mongo, create one if not exist or update the existing 
 		Computer saved = repository.findByName(computer.getCn().toUpperCase());
-		if (saved!=null && saved.getWhenChanged()!=null && saved.getWhenChanged().after(whenChanged)) {
+		if (saved!=null && saved.getWhenChanged()!=null && !saved.getWhenChanged().before(whenChanged)) {
 			// skip this record as we already have a newer snapshot in place
 			return;
 		}
