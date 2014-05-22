@@ -337,17 +337,16 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		
-		
-		if(user != null){
-			if(userAdInfo.getIsAccountDisabled() == null || !userAdInfo.getIsAccountDisabled()){
-				userAdInfo.setDisableAccountTime(null);
-			} else if(!user.getAdInfo().getIsAccountDisabled()){
-				userAdInfo.setDisableAccountTime(whenChanged);
+		DateTime disableAccountTime = null;
+		if(userAdInfo.getIsAccountDisabled() != null && userAdInfo.getIsAccountDisabled()){
+			if(user == null || !user.getAdInfo().getIsAccountDisabled()){
+				disableAccountTime = new DateTime(whenChanged);
+			} else{
+				disableAccountTime = user.getAdInfo().getDisableAccountTime();
 			}
-		} else if(userAdInfo.getIsAccountDisabled() != null && userAdInfo.getIsAccountDisabled()){
-			userAdInfo.setDisableAccountTime(whenChanged);
 		}
-		
+		userAdInfo.setDisableAccountTime(disableAccountTime);
+				
 		boolean isSaveUser = false;
 		if(user == null){
 			user = new User();

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
@@ -87,7 +88,7 @@ public class UserAdInfo {
 	
 	private String roomNumber;
 	
-	private Date disableAccountTime;
+	private DateTime disableAccountTime;
 	
 	private Boolean isAccountDisabled;
 	
@@ -407,11 +408,11 @@ public class UserAdInfo {
 		directReports.clear();
 	}
 
-	public Date getDisableAccountTime() {
+	public DateTime getDisableAccountTime() {
 		return disableAccountTime;
 	}
 
-	public void setDisableAccountTime(Date disableAccountTime) {
+	public void setDisableAccountTime(DateTime disableAccountTime) {
 		this.disableAccountTime = disableAccountTime;
 	}
 

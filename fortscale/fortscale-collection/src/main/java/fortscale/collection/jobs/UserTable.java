@@ -320,33 +320,42 @@ public class UserTable implements IUserTable {
 
 	@Override
 	public Long getDisableAccountTime() {
-		return user.getAdInfo().getDisableAccountTime().getTime();
+		return convertToSeconds(user.getAdInfo().getDisableAccountTime());
 	}
 
 	@Override
 	public Long getLastActivityTime() {
-		Long ret = null;
+		DateTime ret = null;
 		for(DateTime dateTime: user.getLogLastActivityMap().values()){
-			if(ret == null || ret < dateTime.getMillis()){
-				ret = dateTime.getMillis();
+			if(ret == null || ret.isBefore(dateTime)){
+				ret = dateTime;
 			}
 		}
-		return TimestampUtils.convertToSeconds(ret);
+		
+		return convertToSeconds(ret);
+	}
+	
+	private Long convertToSeconds(DateTime time){
+		if(time != null){
+			return TimestampUtils.convertToSeconds(time.getMillis());
+		} else{
+			return null;
+		}
 	}
 
 	@Override
 	public Long getSshLastActivityTime() {
-		return TimestampUtils.convertToSeconds(user.getLogLastActivity(LogEventsEnum.ssh).getMillis());
+		return convertToSeconds(user.getLogLastActivity(LogEventsEnum.ssh));
 	}
 
 	@Override
 	public Long getVpnLastActivityTime() {
-		return TimestampUtils.convertToSeconds(user.getLogLastActivity(LogEventsEnum.vpn).getMillis());
+		return convertToSeconds(user.getLogLastActivity(LogEventsEnum.vpn));
 	}
 
 	@Override
 	public Long getLoginLastActivityTime() {
-		return TimestampUtils.convertToSeconds(user.getLogLastActivity(LogEventsEnum.login).getMillis());
+		return convertToSeconds(user.getLogLastActivity(LogEventsEnum.login));
 	}
 
 }
