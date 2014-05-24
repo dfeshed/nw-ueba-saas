@@ -5,12 +5,15 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
+
+import fortscale.domain.events.LogEventsEnum;
 
 
 
@@ -45,6 +48,7 @@ public class User extends AbstractDocument {
 	public static final String collectionName = "user";
 	public static final String appField = "app";
 	public static final String logUsernameField = "logUsername";
+	public static final String logLastActivityField = "logLastActivity";
 	public static final String usernameField = "username";
 	public static final String noDomainUsernameField = "noDomainUsername";
 	public static final String displayNameField = "displayName";
@@ -88,6 +92,11 @@ public class User extends AbstractDocument {
 	private UserAdInfo adInfo;
 	
 	private String adDn;
+	
+	@Field(logLastActivityField)
+	Map<String, DateTime> logLastActivityMap = new HashMap<>();
+	
+	
 	
 	public String getAdDn() {
 		return adDn;
@@ -207,6 +216,16 @@ public class User extends AbstractDocument {
 	public Map<String, String> getLogUsernameMap(){
 		return logUsernameMap;
 	}
+		
+	public DateTime getLogLastActivity(LogEventsEnum eventId){
+		return logLastActivityMap.get(eventId.getId());
+	}
+	
+	public Map<String, DateTime> getLogLastActivityMap(){
+		return logLastActivityMap;
+	}
+	
+	
 
 	public HashMap<String, ClassifierScore> getScores() {
 		return scores;
@@ -267,6 +286,10 @@ public class User extends AbstractDocument {
 	
 	public static String getLogUserNameField(String logname) {
 		return String.format("%s.%s", User.logUsernameField,logname);
+	}
+	
+	public static String getLogLastActivityField(LogEventsEnum eventId) {
+		return String.format("%s.%s", User.logLastActivityField,eventId.getId());
 	}
 	
 	public static String getAdInfoField(String adInfoFieldName) {

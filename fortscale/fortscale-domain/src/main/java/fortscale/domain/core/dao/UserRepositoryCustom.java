@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.Threshold;
 
 public interface UserRepositoryCustom {
@@ -44,4 +45,6 @@ public interface UserRepositoryCustom {
 	public User findByAdInfoObjectGUID(String objectGUID);
 	public User findByObjectGUID(String objectGUID);
 	public HashMap<String, String> findAllUsernames();
+	
+	public User findLastActiveUser(LogEventsEnum eventId);
 }
