@@ -71,8 +71,11 @@ public class UserLastActivityUpdateMorphCmdBuilder implements CommandBuilder {
 			String normalizedUsername = RecordExtensions.getStringValue(inputRecord, normalizedUsernameField);
 			Long epochtime = TimestampUtils.convertToSeconds(RecordExtensions.getLongValue(inputRecord, epochtimestampField));
 			
-			if(lastActivityEpochTimeInSecInPrevJob < epochtime){
-				this.userLastActivityMap.put(normalizedUsername, epochtime);
+			if(lastActivityEpochTimeInSecInPrevJob < epochtime ){
+				Long userLastActivity = userLastActivityMap.get(normalizedUsername);
+				if(userLastActivity == null || userLastActivity < epochtime){
+					this.userLastActivityMap.put(normalizedUsername, epochtime);
+				}
 			}
 
 			return super.doProcess(inputRecord);
