@@ -80,5 +80,22 @@ public class RecordToStringItemsProcessorTest {
 		// assert
 		assertEquals("AAA", output);
 	}
+	
+	@Test
+	public void tojson_should_output_all_fields() {
+		// arrange
+		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(";", "fieldA", "fieldB", "fieldC", "fieldD");
+		Record record = new Record();
+		record.put("fieldA", "AAA");
+		record.put("fieldB", "BBB");
+		record.put("fieldC", 5000000000L);
+		record.put("fieldD", true);
+		
+		// act
+		String output = subject.toJSON(record);
+		
+		// assert
+		assertEquals("{\"fieldA\":\"AAA\",\"fieldB\":\"BBB\",\"fieldC\":5000000000,\"fieldD\":true}", output);
+	}
 
 }
