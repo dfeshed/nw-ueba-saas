@@ -283,4 +283,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 			this.username = username;
 		}
 	}
+
+
+	@Override
+	public void updateUserServiceAccount(User user, boolean isUserServiceAccount) {
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.userServiceAccountField, isUserServiceAccount), User.class);		
+	}
 }

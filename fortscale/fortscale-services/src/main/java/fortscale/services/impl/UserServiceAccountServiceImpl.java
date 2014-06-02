@@ -2,26 +2,36 @@ package fortscale.services.impl;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-	
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.UserServiceAccountService;
 
 
 @Service("userServiceAccountService")
 public class UserServiceAccountServiceImpl implements UserServiceAccountService,InitializingBean {
 
+	@Autowired
+	private UserRepository userRepository;
+	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceAccountServiceImpl.class);
 	
 	@Value("${user.list.service_account.path:}")
 	private String filePath;
+	
+	@Value("${user.list.service_account.deletion_symbol:}")
+	private String deletionSymbol;
 	
 	private Set<String> serviceAccounts = null;
 
@@ -38,10 +48,11 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		serviceAccounts = loadUserServiceAccountTagFromMongo();
 		if(!StringUtils.isEmpty(filePath)){
 			File f = new File(filePath);
 			if(f.exists() && !f.isDirectory()) {
-				serviceAccounts = new HashSet<String>(FileUtils.readLines(new File(filePath)));
+				serviceAccounts = updateMongoUserServiceAccountTag(new HashSet<String>(FileUtils.readLines(new File(filePath))));
 			}
 			else {
 				logger.warn("ServiceAccount file not found in path: %s",filePath);
@@ -50,5 +61,29 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 		else {
 			logger.info("ServiceAccount file path not configured");		
 		}		
-	}		
+	}
+	
+	private Set<String> loadUserServiceAccountTagFromMongo() {
+		Set<String> result = new HashSet<String>();
+		List<User> users = userRepository.findByUserServiceAccount(true);
+		for (User user : users) {
+			result.add(user.getUsername());
+		}
+		return result;
+	}
+	
+	private Set<String> updateMongoUserServiceAccountTag(Set<String> serviceAccounts) {
+		for (String serviceAccountUser : serviceAccounts) {
+			boolean isUserServiceAccount;
+			if (serviceAccountUser.startsWith(deletionSymbol)) {
+				// Remove tag from user.
+				isUserServiceAccount = false;
+			}
+			else {
+				isUserServiceAccount = true;
+			}
+			userRepository.updateUserServiceAccount(userRepository.findByUsername(serviceAccountUser), isUserServiceAccount);
+		}
+		return null;
+	}	
 }
