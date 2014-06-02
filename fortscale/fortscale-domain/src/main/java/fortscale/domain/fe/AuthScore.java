@@ -21,11 +21,9 @@ public class AuthScore {
 	
 	
 	public static final String EVENT_SCORE_FIELD_NAME = "eventscore";
-	public static final String GLOBAL_SCORE_FIELD_NAME = "globalscore";
 	
 	
 	
-	public static final String TIMESTAMP_FIELD_NAME = "runtime";
 		
 	private String normalizedUsername;
 	private String userName;
@@ -39,8 +37,6 @@ public class AuthScore {
 	private double eventTimeScore;
 	
 	private double eventScore;
-	private double globalScore;
-	private Date timestamp;
 	
 	private String status;
 	
@@ -79,18 +75,6 @@ public class AuthScore {
 	}
 	public void setEventScore(double eventScore) {
 		this.eventScore = eventScore;
-	}
-	public double getGlobalScore() {
-		return globalScore;
-	}
-	public void setGlobalScore(double globalScore) {
-		this.globalScore = globalScore;
-	}
-	public Date getTimestamp() {
-		return timestamp;
-	}
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
 	}
 	public Date getEventTime() {
 		return eventTime;

@@ -3,7 +3,6 @@ package fortscale.domain.fe.dao.impl;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,11 +34,6 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 	}
 
 	@Override
-	public String getTimestampFieldName() {
-		return AuthScore.TIMESTAMP_FIELD_NAME;
-	}
-
-	@Override
 	public String getNormalizedUsernameField() {
 		return normalizedUsernameField.toLowerCase();
 	}
@@ -54,20 +48,6 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 		return AuthScore.EVENT_SCORE_FIELD_NAME;
 	}
 
-	@Override
-	public String getGlobalScoreFieldName() {
-		return AuthScore.GLOBAL_SCORE_FIELD_NAME;
-	}
-
-	@Override
-	public AuthScore createAccessObject(String normalizedUsername, double globalScore, double eventScore, Date timestamp) {
-		AuthScore ret = new AuthScore();
-		ret.setNormalizedUsername(normalizedUsername);
-		ret.setGlobalScore(globalScore);
-		ret.setEventScore(eventScore);
-		ret.setTimestamp(timestamp);
-		return ret;
-	}
 	
 	@Override
 	public AuthScore createAccessObject(String normalizedUsername, String username) {
@@ -90,9 +70,7 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 		public AuthScore mapRow(ResultSet rs, int rowNum) throws SQLException {
 			AuthScore ret = new AuthScore();
 			
-			try{
-				ret.setTimestamp(parseTimestampDate(rs.getLong(AuthScore.TIMESTAMP_FIELD_NAME)));
-				
+			try{				
 				ret.setNormalizedUsername(rs.getString(normalizedUsernameField));
 				ret.setUserName(rs.getString(AuthScore.USERNAME_FIELD_NAME));
 				ret.setTargetId(rs.getString(AuthScore.TARGET_ID_FIELD_NAME));
@@ -106,7 +84,6 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 				
 				
 				ret.setEventScore(Double.parseDouble(rs.getString(AuthScore.EVENT_SCORE_FIELD_NAME)));
-				ret.setGlobalScore(Double.parseDouble(rs.getString(AuthScore.GLOBAL_SCORE_FIELD_NAME)));
 				
 				setStatus(rs, ret);
 				
@@ -134,8 +111,6 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 						columnName = "destinationHostname";
 					} else if(AuthScore.TARGET_ID_SCORE_FIELD_NAME.equals(columnName)){
 						columnName = "targetIdScore";
-					} else if(AuthScore.TIMESTAMP_FIELD_NAME.equals(columnName)){
-						columnName = "timestamp";
 					} else if(AuthScore.USERNAME_SCORE_FIELD_NAME.equals(columnName)){
 						columnName = "userNameScore";
 					}

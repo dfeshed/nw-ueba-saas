@@ -54,11 +54,6 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	}
 
 	@Override
-	public double getUserScore() {
-		return vpnScore.getGlobalScore();
-	}
-
-	@Override
 	public String getStatus() {
 		return vpnScore.getStatus();
 	}

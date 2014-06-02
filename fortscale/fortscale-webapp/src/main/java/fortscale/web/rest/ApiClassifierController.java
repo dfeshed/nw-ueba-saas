@@ -2,7 +2,6 @@ package fortscale.web.rest;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -93,11 +92,6 @@ public class ApiClassifierController extends BaseController {
 	public DataBean<List<?>> events(@PathVariable LogEventsEnum id, @RequestParam(required = false) Long date, @RequestParam(required = false) String uid, @RequestParam(defaultValue = "0") Integer offset,
 			@RequestParam(defaultValue = "10") Integer limit, @RequestParam(required = false) String orderBy, @RequestParam(defaultValue = "DESC") String orderByDirection,
 			@RequestParam(defaultValue = "0") Integer minScore, @RequestParam(defaultValue = "false") Boolean followedOnly, Model model) {
-		Date timestamp = null;
-		if (date != null) {
-			timestamp = new Date(date);
-		}
-
 		Direction direction = convertStringToDirection(orderByDirection);
 
 		DataBean<List<?>> ret = null;
@@ -106,10 +100,10 @@ public class ApiClassifierController extends BaseController {
 			switch (id) {
 			case ssh:
 			case login:
-				ret = authEvents(id, timestamp, uid, offset, limit, orderBy, direction, minScore, followedOnly);
+				ret = authEvents(id, uid, offset, limit, orderBy, direction, minScore, followedOnly);
 				break;
 			case vpn:
-				ret = vpnEvents(id, timestamp, uid, offset, limit, orderBy, direction, minScore, followedOnly);
+				ret = vpnEvents(id, uid, offset, limit, orderBy, direction, minScore, followedOnly);
 				break;
 			default:
 				return emptyData;
@@ -121,17 +115,17 @@ public class ApiClassifierController extends BaseController {
 		return ret;
 	}
 
-	private DataBean<List<?>> authEvents(LogEventsEnum id, Date timestamp, String uid, Integer offset, Integer limit, String orderBy, Direction direction, Integer minScore, boolean followedOnly) {
+	private DataBean<List<?>> authEvents(LogEventsEnum id, String uid, Integer offset, Integer limit, String orderBy, Direction direction, Integer minScore, boolean followedOnly) {
 		DataBean<List<?>> ret = new DataBean<List<?>>();
 
 		List<ILoginEventScoreInfo> eventScoreInfos = Collections.emptyList();
 		int total = 0;
 		if (uid == null) {
-			eventScoreInfos = classifierService.getSuspiciousAuthEvents(id, timestamp, offset, limit, orderBy, direction, minScore, followedOnly);
-			total = classifierService.countAuthEvents(id, timestamp, minScore, followedOnly);
+			eventScoreInfos = classifierService.getSuspiciousAuthEvents(id, offset, limit, orderBy, direction, minScore, followedOnly);
+			total = classifierService.countAuthEvents(id, minScore, followedOnly);
 		} else {
-			eventScoreInfos = classifierService.getUserSuspiciousAuthEvents(id, uid, timestamp, offset, limit, orderBy, direction, minScore);
-			total = classifierService.countAuthEvents(id, timestamp, uid, minScore);
+			eventScoreInfos = classifierService.getUserSuspiciousAuthEvents(id, uid, offset, limit, orderBy, direction, minScore);
+			total = classifierService.countAuthEvents(id, uid, minScore);
 		}
 		
 		List<Map<String, Object>> data = new ArrayList<>();
@@ -144,17 +138,17 @@ public class ApiClassifierController extends BaseController {
 		return ret;
 	}
 
-	private DataBean<List<?>> vpnEvents(LogEventsEnum id, Date timestamp, String uid, Integer offset, Integer limit, String orderBy, Direction direction, Integer minScore, boolean followedOnly) {
+	private DataBean<List<?>> vpnEvents(LogEventsEnum id, String uid, Integer offset, Integer limit, String orderBy, Direction direction, Integer minScore, boolean followedOnly) {
 		DataBean<List<?>> ret = new DataBean<List<?>>();
 
 		List<IVpnEventScoreInfo> eventScoreInfos = Collections.emptyList();
 		int total = 0;
 		if (uid == null) {
-			eventScoreInfos = classifierService.getSuspiciousVpnEvents(timestamp, offset, limit, orderBy, direction, minScore, followedOnly);
-			total = classifierService.countAuthEvents(id, timestamp, minScore, followedOnly);
+			eventScoreInfos = classifierService.getSuspiciousVpnEvents(offset, limit, orderBy, direction, minScore, followedOnly);
+			total = classifierService.countAuthEvents(id, minScore, followedOnly);
 		} else {
-			eventScoreInfos = classifierService.getUserSuspiciousVpnEvents(uid, timestamp, offset, limit, orderBy, direction, minScore);
-			total = classifierService.countAuthEvents(id, timestamp, uid, minScore);
+			eventScoreInfos = classifierService.getUserSuspiciousVpnEvents(uid, offset, limit, orderBy, direction, minScore);
+			total = classifierService.countAuthEvents(id, uid, minScore);
 		}
 		List<Map<String, Object>> data = new ArrayList<>();
 		for(IVpnEventScoreInfo eventScoreInfo: eventScoreInfos){

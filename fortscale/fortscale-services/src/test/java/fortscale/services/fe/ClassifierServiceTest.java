@@ -224,6 +224,7 @@ public class ClassifierServiceTest{
 	
 	
 	public class TestUser extends User{
+		private static final long serialVersionUID = 1L;
 
 		public TestUser(String adDn) {
 			setAdDn(adDn);

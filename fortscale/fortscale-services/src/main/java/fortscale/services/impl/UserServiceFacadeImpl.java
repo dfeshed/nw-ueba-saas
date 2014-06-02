@@ -1,6 +1,5 @@
 package fortscale.services.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -125,28 +124,13 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	}
 
 	@Override
-	public void updateUserWithAuthScore(Classifier classifier, Date lastRun) {
-		userUpdateScoreService.updateUserWithAuthScore(classifier, lastRun);
-	}
-
-	@Override
 	public void updateUserWithVpnScore() {
 		userUpdateScoreService.updateUserWithVpnScore();
 	}
 
 	@Override
-	public void updateUserWithVpnScore(Date lastRun) {
-		userUpdateScoreService.updateUserWithVpnScore(lastRun);
-	}
-
-	@Override
 	public void updateUserWithGroupMembershipScore() {
 		userUpdateScoreService.updateUserWithGroupMembershipScore();
-	}
-
-	@Override
-	public void recalculateUsersScores() {
-		userUpdateScoreService.recalculateUsersScores();
 	}
 
 	@Override
