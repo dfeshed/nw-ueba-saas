@@ -49,4 +49,5 @@ public interface IUserTable {
 	public Long getSshLastActivityTime();
 	public Long getVpnLastActivityTime();
 	public Long getLoginLastActivityTime();
+	public Boolean getIsUserAccountService();
 }
