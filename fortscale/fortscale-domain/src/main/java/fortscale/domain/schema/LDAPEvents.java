@@ -57,7 +57,8 @@ public class LDAPEvents implements TableSchema {
 	public String DST_CLASS;
 	@Value("${impala.data.security.events.4769.table.field.src_class}")
 	public String SRC_CLASS;
-	
+	@Value("${impala.data.security.events.4769.table.field.is_user_serivce_account}")
+	public String IS_USER_SERVICE_ACCOUNT;	
 	
 	private PartitionStrategy partition = new MonthlyPartitionStrategy();
 	
