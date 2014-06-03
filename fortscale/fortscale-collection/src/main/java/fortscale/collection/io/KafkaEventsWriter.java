@@ -12,7 +12,7 @@ import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 
-@Configurable
+@Configurable(preConstruction=true)
 public class KafkaEventsWriter implements Closeable {
 
 	@Value("${kafka.broker.list}")
@@ -21,7 +21,7 @@ public class KafkaEventsWriter implements Closeable {
 	private String requiredAcks;
 	@Value("${kafka.producer.type:sync}")
 	private String producerType;
-	@Value("${kafka.serializer.class:kafka.serializer.DefaultEncoder}")
+	@Value("${kafka.serializer.class:kafka.serializer.StringEncoder}")
 	private String serializer;
 	@Value("${kafka.partitioner.class:kafka.producer.DefaultPartitioner}")
 	private String partitionerClass;
