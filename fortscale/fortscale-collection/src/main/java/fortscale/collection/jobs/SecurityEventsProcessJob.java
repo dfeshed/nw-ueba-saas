@@ -248,6 +248,20 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		}
 	}
 	
+	/*** Initialize the streaming appender upon job start to be able to produce messages to */ 
+	@Override protected void initializeStreamingAppender() throws JobExecutionException {}
+	
+	/*** Send the message produced by the morphline ETL to the streaming platform */
+	@Override protected void streamMessage(String message) throws IOException {}
+	
+	/*** Close the streaming appender upon job finish to free resources */
+	@Override protected void closeStreamingAppender() throws JobExecutionException {
+		for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
+			if (handlers.streamWriter!=null)
+				handlers.streamWriter.close();
+		}
+	}
+	
 	/**
 	 * Helper class to contain handlers for specific event type in the security event log
 	 */
