@@ -15,6 +15,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
+import fortscale.collection.io.KafkaEventsWriter;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -78,6 +79,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
 			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + impalaTable);
 			
+			String streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic" + impalaTable);
+			handler.streamWriter = new KafkaEventsWriter(streamingTopic);
+			
 			String[] eventsToProcessList = jobDataMapExtension.getJobDataMapStringValue(map, "eventsToProcess" + impalaTable).split(",");
 			for (String eventToProcess : eventsToProcessList) {
 				if(!eventToMorphlineMap.containsKey(eventToProcess)){
@@ -110,10 +114,16 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 					String output = handler.recordToStringProcessor.process(processedRecord);
 				
 					if (output!=null) {
-						
+						// append to hadoop
 						Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
 						handler.appender.writeLine(output, timestamp.longValue());
+						
+						// ensure user exists in mongodb
 						updateOrCreateUserWithClassifierUsername(processedRecord);
+						
+						// output event to streaming platform
+						handler.streamWriter.send(handler.recordToStringProcessor.toJSON(processedRecord));
+						
 						return true;
 					}
 				}
@@ -248,6 +258,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public String timestampField;
 		public HDFSPartitionsWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
+		public KafkaEventsWriter streamWriter;
 	}
 	
 }
