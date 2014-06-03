@@ -9,8 +9,12 @@ public interface UserUpdateScoreService {
 	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore);
 	
 	public void updateUserWithAuthScore(Classifier classifier);
+	
+	public void updateUserWithAuthScore(Classifier classifier, Date runtime);
 		
 	public void updateUserWithVpnScore();
+	
+	public void updateUserWithVpnScore(Date runtime);
 		
 	public void updateUserWithGroupMembershipScore();
 	

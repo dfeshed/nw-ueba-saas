@@ -166,8 +166,13 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		return ret;
 	}
 
+	public void updateUserWithAuthScore(Classifier classifier){
+		Date runtime = new Date();
+		updateUserWithAuthScore(classifier, runtime);
+	}
+	
 	@Override
-	public void updateUserWithAuthScore(Classifier classifier) {
+	public void updateUserWithAuthScore(Classifier classifier, Date runtime) {
 		AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
 		
 		double sum = 0;
@@ -177,7 +182,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		
 		logger.info("calculating {} scores for all users", classifier);
 		PageRequest pageable = new ImpalaPageRequest(5, new Sort(Direction.DESC, authDAO.getEventScoreFieldName()));
-		Date snapshotTime = new Date();
+		
 		Map<String, Double> userIdToScoreMap = new HashMap<>();
 		for(User user: users){
 			List<AuthScore> authScores = authDAO.findEventsByNormalizedUsername(user.getUsername(), pageable);
@@ -194,7 +199,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		double avg = sum / users.size();
 		for(User user: users){
 			double userScore = userIdToScoreMap.get(user.getId());
-			User updatedUser = updateUserScore(user, snapshotTime, classifier.getId(), userScore, avg, false, false);
+			User updatedUser = updateUserScore(user, runtime, classifier.getId(), userScore, avg, false, false);
 			if(updatedUser != null){
 				Update update = new Update();
 				userService.fillUpdateUserScore(update, user, classifier);
@@ -206,10 +211,14 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	}
 		
 	
-	
-	
 	@Override
 	public void updateUserWithVpnScore() {
+		Date runtime = new Date();
+		updateUserWithVpnScore(runtime);
+	}
+	
+	@Override
+	public void updateUserWithVpnScore(Date runtime) {
 		double sum = 0;
 		
 		logger.info("getting all users");
@@ -217,7 +226,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		
 		logger.info("calculating scores for all users");
 		PageRequest pageable = new ImpalaPageRequest(5, new Sort(Direction.DESC, vpnDAO.getEventScoreFieldName()));
-		Date snapshotTime = new Date();
+		
 		Map<String, Double> userIdToScoreMap = new HashMap<>();
 		for(User user: users){
 			List<VpnScore> vpnScores = vpnDAO.findEventsByNormalizedUsername(user.getUsername(), pageable);
@@ -234,7 +243,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		double avg = sum / users.size();
 		for(User user: users){
 			double userScore = userIdToScoreMap.get(user.getId());
-			User updatedUser = updateUserScore(user, snapshotTime, Classifier.vpn.getId(), userScore, avg, false, false);
+			User updatedUser = updateUserScore(user, runtime, Classifier.vpn.getId(), userScore, avg, false, false);
 			if(updatedUser != null){
 				Update update = new Update();
 				userService.fillUpdateUserScore(update, updatedUser, Classifier.vpn);
