@@ -6,7 +6,6 @@ import java.util.Map;
 
 
 public class VpnScore {	
-	public static final String TIMESTAMP_FIELD_NAME = "runtime";
 	
 	
 	
@@ -28,11 +27,9 @@ public class VpnScore {
 	private Double cityScore;
 	
 	private Double eventScore;
-	private Double globalScore;
 	
 	
 	
-	private Integer runtime;
 	
 	private Map<String, Object> allFields = new HashMap<String, Object>();
 	
@@ -81,18 +78,6 @@ public class VpnScore {
 	}
 	public void setEventScore(Double eventScore) {
 		this.eventScore = eventScore;
-	}
-	public Double getGlobalScore() {
-		return globalScore;
-	}
-	public void setGlobalScore(Double globalScore) {
-		this.globalScore = globalScore;
-	}
-	public Integer getRuntime() {
-		return runtime;
-	}
-	public void setRuntime(Integer runtime) {
-		this.runtime = runtime;
 	}
 	public Double getDate_timeScore() {
 		return date_timeScore;

@@ -10,16 +10,14 @@ public interface UserUpdateScoreService {
 	
 	public void updateUserWithAuthScore(Classifier classifier);
 	
-	public void updateUserWithAuthScore(Classifier classifier, Date lastRun);
-	
+	public void updateUserWithAuthScore(Classifier classifier, Date runtime);
+		
 	public void updateUserWithVpnScore();
 	
-	public void updateUserWithVpnScore(Date lastRun);
-	
+	public void updateUserWithVpnScore(Date runtime);
+		
 	public void updateUserWithGroupMembershipScore();
 	
-	public void recalculateUsersScores();
-
 	public void recalculateTotalScore();
 	
 	public void updateUserTotalScore();

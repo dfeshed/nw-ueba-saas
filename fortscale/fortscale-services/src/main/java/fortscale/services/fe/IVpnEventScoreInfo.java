@@ -10,7 +10,6 @@ public interface IVpnEventScoreInfo {
 	public Date getEventTime();
 	public String getInternalIP();
 	public double getEventScore();
-	public double getUserScore();
 	public String getStatus();
 	public String getCountry();
 	public String getRegion();
