@@ -149,7 +149,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	public List<T> findUsernames() {
 		
 		String query = String
-				.format("select %s, %s from %s group by %s, %s",
+				.format("select distinct %s, %s from %s",
 						getNormalizedUsernameField(), getUsernameFieldName(),
 						getTableName(),
 						getNormalizedUsernameField(), getUsernameFieldName());

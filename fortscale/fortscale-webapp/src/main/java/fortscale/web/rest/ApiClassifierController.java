@@ -41,20 +41,6 @@ public class ApiClassifierController extends BaseController {
 	@Autowired
 	private ClassifierService classifierService;
 	
-	@RequestMapping(value="/loginsEvents", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<?>> loginsEvents(@RequestParam(required=false) Long date,
-			@RequestParam(required=false) String uid,
-			@RequestParam(defaultValue="0") Integer offset,
-			@RequestParam(defaultValue="10") Integer limit,
-			@RequestParam(required=false) String orderBy,
-			@RequestParam(defaultValue="DESC") String orderByDirection,
-			@RequestParam(defaultValue="0") Integer minScore,
-			Model model){
-		
-		return events(LogEventsEnum.login, date, uid, offset, limit, orderBy, orderByDirection, minScore, false, model);
-	}
 	
 	@RequestMapping(value="/eventsTimeline", method=RequestMethod.GET)
 	@ResponseBody
@@ -89,7 +75,7 @@ public class ApiClassifierController extends BaseController {
 	@RequestMapping(value = "/{id}/events", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<?>> events(@PathVariable LogEventsEnum id, @RequestParam(required = false) Long date, @RequestParam(required = false) String uid, @RequestParam(defaultValue = "0") Integer offset,
+	public DataBean<List<?>> events(@PathVariable LogEventsEnum id, @RequestParam(required = false) String uid, @RequestParam(defaultValue = "0") Integer offset,
 			@RequestParam(defaultValue = "10") Integer limit, @RequestParam(required = false) String orderBy, @RequestParam(defaultValue = "DESC") String orderByDirection,
 			@RequestParam(defaultValue = "0") Integer minScore, @RequestParam(defaultValue = "false") Boolean followedOnly, Model model) {
 		Direction direction = convertStringToDirection(orderByDirection);
