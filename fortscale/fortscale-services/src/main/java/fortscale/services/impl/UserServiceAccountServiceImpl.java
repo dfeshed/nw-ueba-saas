@@ -24,6 +24,8 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UsernameNormalizer userNormalizer;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceAccountServiceImpl.class);
 	
@@ -53,6 +55,7 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 			File f = new File(filePath);
 			if(f.exists() && !f.isDirectory()) {
 				serviceAccounts = updateMongoUserServiceAccountTag(new HashSet<String>(FileUtils.readLines(new File(filePath))));
+				logger.info("ServiceAccount file loaded from path: %s",filePath);
 			}
 			else {
 				logger.warn("ServiceAccount file not found in path: %s",filePath);
@@ -82,7 +85,8 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 			else {
 				isUserServiceAccount = true;
 			}
-			userRepository.updateUserServiceAccount(userRepository.findByUsername(serviceAccountUser), isUserServiceAccount);
+			userRepository.updateUserServiceAccount(userRepository.findByUsername(userNormalizer.normalize(serviceAccountUser)),
+					isUserServiceAccount);
 		}
 		return null;
 	}	

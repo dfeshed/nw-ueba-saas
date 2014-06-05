@@ -30,7 +30,7 @@ public class UserServiceMorphCmdTest {
 	public void setUp() throws Exception {	
 		// mock morphline command parameters configuration
 		config = mock(Config.class);
-		when(config.getString("usernameField")).thenReturn("account_name");
+		when(config.getString("usernameField")).thenReturn("normalized_username");
 		when(config.getString("isUserServiceAccountField")).thenReturn("isUserServiceAccount");
 		
 		// mock service
@@ -40,7 +40,7 @@ public class UserServiceMorphCmdTest {
 	private Record getRecord(boolean skipUsername, String username) {
 		Record record = new Record();
 		if (!skipUsername)
-			record.put("account_name", username);
+			record.put("normalized_username", username);
 		return record;
 	}
 	
@@ -63,7 +63,7 @@ public class UserServiceMorphCmdTest {
 		
 		assertTrue(result);
 		assertNotNull(output);
-		assertEquals("test-user", output.getFirstValue("account_name"));
+		assertEquals("test-user", output.getFirstValue("normalized_username"));
 		assertEquals(true, output.getFirstValue("isUserServiceAccount"));		
 	}
 
