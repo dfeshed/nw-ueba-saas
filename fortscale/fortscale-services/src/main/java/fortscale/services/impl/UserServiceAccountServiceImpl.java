@@ -30,10 +30,10 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 	private static Logger logger = LoggerFactory.getLogger(UserServiceAccountServiceImpl.class);
 	
 	@Value("${user.list.service_account.path:}")
-	private String filePath;
+	public String filePath;
 	
 	@Value("${user.list.service_account.deletion_symbol:}")
-	private String deletionSymbol;
+	public String deletionSymbol;
 	
 	private Set<String> serviceAccounts = null;
 
@@ -55,10 +55,10 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 			File f = new File(filePath);
 			if(f.exists() && !f.isDirectory()) {
 				serviceAccounts = updateMongoUserServiceAccountTag(new HashSet<String>(FileUtils.readLines(new File(filePath))));
-				logger.info("ServiceAccount file loaded from path: %s",filePath);
+				logger.info("ServiceAccount file loaded from path: {}",filePath);
 			}
 			else {
-				logger.warn("ServiceAccount file not found in path: %s",filePath);
+				logger.warn("ServiceAccount file not found in path: {}",filePath);
 			}
 		}
 		else {
@@ -77,17 +77,24 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 	
 	private Set<String> updateMongoUserServiceAccountTag(Set<String> serviceAccounts) {
 		for (String serviceAccountUser : serviceAccounts) {
+			String username = userNormalizer.normalize(serviceAccountUser);
 			boolean isUserServiceAccount;
 			if (serviceAccountUser.startsWith(deletionSymbol)) {
 				// Remove tag from user.
 				isUserServiceAccount = false;
+				username = userNormalizer.normalize(serviceAccountUser.substring(1,serviceAccountUser.length()));
 			}
 			else {
 				isUserServiceAccount = true;
 			}
-			userRepository.updateUserServiceAccount(userRepository.findByUsername(userNormalizer.normalize(serviceAccountUser)),
+			if ((userRepository.findByUsername(username) != null)) {				
+				userRepository.updateUserServiceAccount(userRepository.findByUsername(username),
 					isUserServiceAccount);
+			}
+			else {
+				logger.warn("User {} isn't in the user repository.",serviceAccountUser);
+			}
 		}
-		return null;
+		return loadUserServiceAccountTagFromMongo();
 	}	
 }
