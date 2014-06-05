@@ -16,42 +16,42 @@ import com.typesafe.config.Config;
 
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.ComputerService;
-import fortscale.services.SensetiveMachineService;
+import fortscale.services.SensitiveMachineService;
 
-public class SensetiveMachineMorphCmdBuilder implements CommandBuilder {
+public class SensitiveMachineMorphCmdBuilder implements CommandBuilder {
 
 	@Override
 	public Command build(Config config, Command parent, Command child,
 			MorphlineContext context) {
-		return new IsSensetiveMachine(this, config, parent, child, context);
+		return new IsSensitiveMachine(this, config, parent, child, context);
 	}
 
 	@Override
 	public Collection<String> getNames() {
-		return Collections.singletonList("IsSensetiveMachine");
+		return Collections.singletonList("IsSensitiveMachine");
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable(preConstruction = true)
-	public static class IsSensetiveMachine extends AbstractCommand {
+	public static class IsSensitiveMachine extends AbstractCommand {
 		@Autowired
-		private SensetiveMachineService service;
+		private SensitiveMachineService service;
 
 		private String machineNameField;
-		private String isSensetiveMachineField;
+		private String isSensitiveMachineField;
 
-		public IsSensetiveMachine(CommandBuilder builder, Config config,
+		public IsSensitiveMachine(CommandBuilder builder, Config config,
 				Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			this.machineNameField = getConfigs().getString(config,
 					"machineNameField");
-			this.isSensetiveMachineField = getConfigs().getString(config,
-					"isSensetiveMachineField");
+			this.isSensitiveMachineField = getConfigs().getString(config,
+					"isSensitiveMachineField");
 		}
 		
-		public IsSensetiveMachine(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, SensetiveMachineService service) {
+		public IsSensitiveMachine(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, SensitiveMachineService service) {
 			this(builder, config, parent, child, context);
 			
 			this.service = service;
@@ -63,8 +63,8 @@ public class SensetiveMachineMorphCmdBuilder implements CommandBuilder {
 			String machineName = (String) inputRecord
 					.getFirstValue(this.machineNameField);
 			if (!StringUtils.isEmpty(machineName) && service != null) {
-				boolean isSensetive = service.isMachineSensitive(machineName);
-				inputRecord.put(this.isSensetiveMachineField, isSensetive);
+				boolean isSensitive = service.isMachineSensitive(machineName);
+				inputRecord.put(this.isSensitiveMachineField, isSensitive);
 			}
 			return super.doProcess(inputRecord);
 		}

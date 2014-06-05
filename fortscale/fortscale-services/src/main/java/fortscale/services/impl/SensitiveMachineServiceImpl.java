@@ -14,17 +14,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
-import fortscale.services.SensetiveMachineService;
+import fortscale.services.SensitiveMachineService;
 
-@Service("sensetiveMachineService")
-public class SensetiveMachineServiceImpl implements SensetiveMachineService,
+@Service("sensitiveMachineService")
+public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 		InitializingBean {
 
 	private static Logger logger = LoggerFactory
-			.getLogger(SensetiveMachineServiceImpl.class);
+			.getLogger(SensitiveMachineServiceImpl.class);
 
-	private Set<String> sensetiveMachines = null;
-	@Value("${user.list.service_sensetive_machine.path:}")
+	private Set<String> sensitiveMachines = null;
+	@Value("${user.list.service_sensitive_machine.path:}")
 	private String filePath;
 
 	@Override
@@ -32,22 +32,22 @@ public class SensetiveMachineServiceImpl implements SensetiveMachineService,
 		if (!StringUtils.isEmpty(filePath)) {
 			File machinesFile = new File(filePath);
 			if (machinesFile.exists() && machinesFile.isFile()) {
-				sensetiveMachines = new HashSet<String>(
+				sensitiveMachines = new HashSet<String>(
 						FileUtils.readLines(machinesFile));
 			} else {
-				logger.warn("SensetiveMachine file not found in path: %s",
+				logger.warn("SensitiveMachine file not found in path: %s",
 						filePath);
 			}
 		} else {
-			logger.info("SensetiveMachine file path not configured");
+			logger.info("SensitiveMachine file path not configured");
 		}
 	}
 
 	@Override
 	public boolean isMachineSensitive(String machineName) {
 
-		if (sensetiveMachines != null) {
-			return sensetiveMachines.contains(machineName);
+		if (sensitiveMachines != null) {
+			return sensitiveMachines.contains(machineName);
 		}
 		return false;
 	}

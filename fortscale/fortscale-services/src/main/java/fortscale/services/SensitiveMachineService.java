@@ -1,6 +1,6 @@
 package fortscale.services;
 
-public interface SensetiveMachineService {
+public interface SensitiveMachineService {
 	
 	boolean isMachineSensitive(String machineName);
 }
