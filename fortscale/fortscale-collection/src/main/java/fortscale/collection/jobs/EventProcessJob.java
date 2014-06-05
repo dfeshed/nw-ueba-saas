@@ -30,6 +30,7 @@ import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.collection.io.BufferedLineReader;
+import fortscale.collection.io.KafkaEventsWriter;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -68,6 +69,8 @@ public class EventProcessJob implements Job {
 	protected String partitionType;
 	protected String fileSplitType;
 	protected String timestampField;
+	protected String streamingTopic;
+	protected KafkaEventsWriter streamWriter;
 	
 	@Autowired
 	protected ImpalaClient impalaClient;
@@ -97,6 +100,7 @@ public class EventProcessJob implements Job {
 		hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename");
 		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
 		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
+		streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic");
 		
 		// build record to items processor
 		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
@@ -134,8 +138,9 @@ public class EventProcessJob implements Job {
 			currentStep = "Process Files";
 			monitor.startStep(monitorId, currentStep, 3);
 
-			// get hadoop file writer
+			// get hadoop file writer and streaming sink
 			createOutputAppender();
+			initializeStreamingAppender();
 			
 			// read each file and process lines
 			try {
@@ -158,8 +163,16 @@ public class EventProcessJob implements Job {
 				monitor.error(monitorId, currentStep, e.toString());
 				throw new JobExecutionException("error processing files", e);
 			} finally {
-				morphline.close();
-				closeOutputAppender();
+				// make sure all close are called, hence the horror below of nested finally blocks
+				try {
+					morphline.close();
+				} finally {
+					try {
+						closeOutputAppender();
+					} finally {
+						closeStreamingAppender();
+					}
+				}
 			}
 			
 			refreshImpala();
@@ -251,9 +264,16 @@ public class EventProcessJob implements Job {
 		
 		// append to hadoop, if there is data to be written
 		if (output!=null) {
+			// append to hadoop
 			Long timestamp = RecordExtensions.getLongValue(record, timestampField);
 			appender.writeLine(output, timestamp.longValue());
+			
+			// ensure user exists in mongodb
 			updateOrCreateUserWithClassifierUsername(record);
+			
+			// output event to streaming platform
+			streamMessage(recordToString.toJSON(record));
+			
 			return true;
 		} else {
 			return false;
@@ -328,6 +348,23 @@ public class EventProcessJob implements Job {
 			monitor.error(monitorId, "Process Files", String.format("error creating hdfs partitions writer at %s: \n %s",  hadoopPath, e.toString()));
 			throw new JobExecutionException("error creating hdfs partitions writer at " + hadoopPath, e);
 		}
+	}
+	
+	/*** Initialize the streaming appender upon job start to be able to produce messages to */ 
+	protected void initializeStreamingAppender() throws JobExecutionException {
+		streamWriter = new KafkaEventsWriter(streamingTopic);
+	}
+	
+	/*** Send the message produced by the morphline ETL to the streaming platform */
+	protected void streamMessage(String message) throws IOException {
+		if (streamWriter!=null)
+			streamWriter.send(message);
+	}
+	
+	/*** Close the streaming appender upon job finish to free resources */
+	protected void closeStreamingAppender() throws JobExecutionException {
+		if (streamWriter!=null)
+			streamWriter.close();
 	}
 	
 	protected PartitionStrategy getPartitionStrategy(){

@@ -15,6 +15,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
+import fortscale.collection.io.KafkaEventsWriter;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -78,6 +79,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
 			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + impalaTable);
 			
+			String streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic" + impalaTable);
+			handler.streamWriter = new KafkaEventsWriter(streamingTopic);
+			
 			String[] eventsToProcessList = jobDataMapExtension.getJobDataMapStringValue(map, "eventsToProcess" + impalaTable).split(",");
 			for (String eventToProcess : eventsToProcessList) {
 				if(!eventToMorphlineMap.containsKey(eventToProcess)){
@@ -110,10 +114,16 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 					String output = handler.recordToStringProcessor.process(processedRecord);
 				
 					if (output!=null) {
-						
+						// append to hadoop
 						Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
 						handler.appender.writeLine(output, timestamp.longValue());
+						
+						// ensure user exists in mongodb
 						updateOrCreateUserWithClassifierUsername(processedRecord);
+						
+						// output event to streaming platform
+						handler.streamWriter.send(handler.recordToStringProcessor.toJSON(processedRecord));
+						
 						return true;
 					}
 				}
@@ -238,6 +248,20 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		}
 	}
 	
+	/*** Initialize the streaming appender upon job start to be able to produce messages to */ 
+	@Override protected void initializeStreamingAppender() throws JobExecutionException {}
+	
+	/*** Send the message produced by the morphline ETL to the streaming platform */
+	@Override protected void streamMessage(String message) throws IOException {}
+	
+	/*** Close the streaming appender upon job finish to free resources */
+	@Override protected void closeStreamingAppender() throws JobExecutionException {
+		for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
+			if (handlers.streamWriter!=null)
+				handlers.streamWriter.close();
+		}
+	}
+	
 	/**
 	 * Helper class to contain handlers for specific event type in the security event log
 	 */
@@ -248,6 +272,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public String timestampField;
 		public HDFSPartitionsWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
+		public KafkaEventsWriter streamWriter;
 	}
 	
 }

@@ -1,5 +1,6 @@
 package fortscale.collection.jobs;
 
+
 import org.kitesdk.morphline.api.Record;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -14,7 +15,6 @@ public class VPNEventProcessJob extends EventProcessJob {
 	@Value("${vpn.status.success.value:SUCCESS}")
 	private String vpnStatusSuccessValue;
 	
-
 	
 	@Override
 	protected Classifier getClassifier(){
@@ -31,4 +31,5 @@ public class VPNEventProcessJob extends EventProcessJob {
 		
 		return ret;
 	}
+		
 }

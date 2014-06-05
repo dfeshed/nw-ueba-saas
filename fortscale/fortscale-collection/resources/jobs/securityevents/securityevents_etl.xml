@@ -74,6 +74,10 @@
 					<key>impalaTableNameSecEvt4769</key>
 					<value>${impala.data.security.events.4769.table.name}</value>
 				</entry>
+				<entry>
+					<key>streamingTopicSecEvt4769</key>
+					<value>${kafka.4769.struc.topic}</value>
+				</entry>
 				
 				<!--  Login table parameters -->
 				<entry>
@@ -103,6 +107,10 @@
 				<entry>
 					<key>impalaTableNameLoginEvt</key>
 					<value>${impala.data.security.events.login.table.name}</value>
+				</entry>
+				<entry>
+					<key>streamingTopicLoginEvt</key>
+					<value>${kafka.4768.struc.topic}</value>
 				</entry>
 			</job-data-map>
 		</job>
