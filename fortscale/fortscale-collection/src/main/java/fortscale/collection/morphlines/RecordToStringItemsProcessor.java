@@ -1,9 +1,10 @@
 package fortscale.collection.morphlines;
 
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
+
 import org.kitesdk.morphline.api.Record;
 import org.springframework.util.Assert;
-
-import com.eclipsesource.json.JsonObject;
 
 
 /**
@@ -54,26 +55,13 @@ public class RecordToStringItemsProcessor {
 		if (record==null)
 			return null;
 			
-		JsonObject json = new JsonObject();
+		JSONObject json = new JSONObject();
 		for (String field : fields) {
 			Object value = record.getFirstValue(field);
 			if (value!=null) {
-				if (value instanceof Boolean)
-					json.add(field, (boolean)value);
-				else if (value instanceof Double)
-					json.add(field, (double)value);
-				else if (value instanceof Float)
-					json.add(field, (float)value);
-				else if (value instanceof Integer)
-					json.add(field, (int)value);
-				else if (value instanceof Long)
-					json.add(field, (long)value);
-				else if (value instanceof String)
-					json.add(field, (String)value);
-				else
-					json.add(field, value.toString());				
+				json.put(field, value);				
 			}
 		}
-		return json.toString();
+		return json.toJSONString(JSONStyle.MAX_COMPRESS);
 	}
 }

@@ -95,7 +95,7 @@ public class RecordToStringItemsProcessorTest {
 		String output = subject.toJSON(record);
 		
 		// assert
-		assertEquals("{\"fieldA\":\"AAA\",\"fieldB\":\"BBB\",\"fieldC\":5000000000,\"fieldD\":true}", output);
+		assertEquals("{fieldA:AAA,fieldC:5000000000,fieldB:BBB,fieldD:true}", output);
 	}
 
 }

@@ -97,6 +97,7 @@
 		<maven-download-plugin.version>1.1.0</maven-download-plugin.version>
 		<kafka.version>0.8.1.1</kafka.version>
 		<scala.version>2.9.2</scala.version>
+		<json-smart.version>1.2</json-smart.version>
 	</properties>
 
 	<dependencies>
@@ -136,10 +137,10 @@
 			<version>${commons-net.version}</version>
 		</dependency>
         <dependency>
-	        <groupId>com.eclipsesource.minimal-json</groupId>
-	        <artifactId>minimal-json</artifactId>
-	        <version>${minimal-json.version}</version>
-	    </dependency>
+  			<groupId>net.minidev</groupId>
+  			<artifactId>json-smart</artifactId>
+  			<version>${json-smart.version}</version>
+ 		</dependency>
 	
 		<dependency>
 			<groupId>joda-time</groupId>
