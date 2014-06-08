@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.impl.UserServiceAccountServiceImpl;
+import fortscale.services.UserServiceAccountService;
 
 public class UserServiceMorphCmdBuilder implements CommandBuilder {
 	
@@ -37,7 +37,7 @@ public class UserServiceMorphCmdBuilder implements CommandBuilder {
 		protected String usernameField;
 		private String isUserServiceAccountField;
 		@Autowired
-		private UserServiceAccountServiceImpl service;
+		private UserServiceAccountService userServiceAccountService;
 		
 		public IsUserServiceAccount(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -47,17 +47,17 @@ public class UserServiceMorphCmdBuilder implements CommandBuilder {
 			//validateArguments();
 		}
 
-		public IsUserServiceAccount(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, UserServiceAccountServiceImpl service) {
+		public IsUserServiceAccount(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, UserServiceAccountService service) {
 			this(builder, config, parent, child, context);
-			this.service = service;
+			this.userServiceAccountService = service;
 		}
 
 
 		protected boolean isUserServiceAccount(Record record){
 			if (record.getFirstValue(usernameField) != null) {
 				String ret = RecordExtensions.getStringValue(record, usernameField);
-				if(service != null && ret != null && ret != ""){
-					return service.isUserServiceAccount(ret);
+				if(userServiceAccountService != null && ret != null && ret != ""){
+					return userServiceAccountService.isUserServiceAccount(ret);
 				}
 			}				
 			return false;

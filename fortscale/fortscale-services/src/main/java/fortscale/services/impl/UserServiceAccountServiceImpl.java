@@ -7,8 +7,6 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.UserServiceAccountService;
+import fortscale.utils.logging.Logger;
 
 
 @Service("userServiceAccountService")
@@ -27,7 +26,7 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 	@Autowired
 	private UsernameNormalizer secUsernameNormalizer;
 	
-	private static Logger logger = LoggerFactory.getLogger(UserServiceAccountServiceImpl.class);
+	private static Logger logger = Logger.getLogger(UserServiceAccountServiceImpl.class);
 	
 	@Value("${user.list.service_account.path:}")
 	public String filePath;
