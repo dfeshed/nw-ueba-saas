@@ -49,4 +49,5 @@ public interface UserRepositoryCustom {
 	public User findLastActiveUser(LogEventsEnum eventId);
 	
 	public void updateUserServiceAccount(User user, boolean isUserServiceAccount);
+	public List<User> findByUserInGroup(String[] groups);
 }

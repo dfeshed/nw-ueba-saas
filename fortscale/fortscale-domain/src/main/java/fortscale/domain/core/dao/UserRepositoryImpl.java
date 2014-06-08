@@ -289,4 +289,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	public void updateUserServiceAccount(User user, boolean isUserServiceAccount) {
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.userServiceAccountField, isUserServiceAccount), User.class);		
 	}
+
+	@Override
+	public List<User> findByUserInGroup(String[] groups) {
+		Query query = new Query(Criteria.where(UserAdInfo.groupsField).in(groups));
+		return mongoTemplate.find(query, User.class);
+	}
 }
