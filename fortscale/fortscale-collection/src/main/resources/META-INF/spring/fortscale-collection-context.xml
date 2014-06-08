@@ -29,22 +29,6 @@
 		<property name="jobFactory" ref="autowiringSpringBeanJobFactory"/>
 	</bean>
 	
-	<bean id="usernameService" class="fortscale.services.impl.UsernameService">
-		<property name="lazy" value="false"/>
-	</bean>
-	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
-		<property name="matchersString" value="${collection.vpn.etl.username.normalize.matchers}"/>
-		<property name="usernameService" ref="usernameService"/>
-	</bean>
-	<bean id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
-		<property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
-		<property name="usernameService" ref="usernameService"/>
-	</bean>
-	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
-		<property name="matchersString" value="${collection.ssh.etl.username.normalize.matchers}"/>
-		<property name="usernameService" ref="usernameService"/>
-	</bean>
-	
 	<bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
 		<constructor-arg name="geoIpDbResource" value="file:${ip.to.location.db.full.path}"/>
 		<constructor-arg name="geoIpV6DbResource" value="file:${ip.to.location.db.full.path}"/>

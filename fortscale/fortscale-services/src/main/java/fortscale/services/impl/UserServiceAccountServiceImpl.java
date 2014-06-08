@@ -25,7 +25,7 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	private UsernameNormalizer userNormalizer;
+	private UsernameNormalizer secUsernameNormalizer;
 	
 	private static Logger logger = LoggerFactory.getLogger(UserServiceAccountServiceImpl.class);
 	
@@ -77,12 +77,12 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 	
 	private Set<String> updateMongoUserServiceAccountTag(Set<String> serviceAccounts) {
 		for (String serviceAccountUser : serviceAccounts) {
-			String username = userNormalizer.normalize(serviceAccountUser);
+			String username = secUsernameNormalizer.normalize(serviceAccountUser);
 			boolean isUserServiceAccount;
 			if (serviceAccountUser.startsWith(deletionSymbol)) {
 				// Remove tag from user.
 				isUserServiceAccount = false;
-				username = userNormalizer.normalize(serviceAccountUser.substring(1,serviceAccountUser.length()));
+				username = secUsernameNormalizer.normalize(serviceAccountUser.substring(1,serviceAccountUser.length()));
 			}
 			else {
 				isUserServiceAccount = true;
