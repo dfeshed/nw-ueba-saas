@@ -51,21 +51,16 @@ public class SensitiveMachineMorphCmdBuilder implements CommandBuilder {
 					"isSensitiveMachineField");
 		}
 		
-		public IsSensitiveMachine(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, SensitiveMachineService service) {
-			this(builder, config, parent, child, context);
-			
-			this.service = service;
-		}
-
 		@Override
 		protected boolean doProcess(Record inputRecord) {
 			// get the machine_name from the record
 			String machineName = (String) inputRecord
 					.getFirstValue(this.machineNameField);
+			boolean isSensitive = false;
 			if (!StringUtils.isEmpty(machineName) && service != null) {
-				boolean isSensitive = service.isMachineSensitive(machineName);
-				inputRecord.put(this.isSensitiveMachineField, isSensitive);
+				isSensitive = service.isMachineSensitive(machineName);
 			}
+			inputRecord.put(this.isSensitiveMachineField, isSensitive);
 			return super.doProcess(inputRecord);
 		}
 
