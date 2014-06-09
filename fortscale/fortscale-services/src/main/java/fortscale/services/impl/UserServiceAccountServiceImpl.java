@@ -49,6 +49,10 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		update()
+	}
+
+	public void update() throws Exception {
 		serviceAccounts = loadUserServiceAccountTagFromMongo();
 		if(!StringUtils.isEmpty(filePath)){
 			File f = new File(filePath);
