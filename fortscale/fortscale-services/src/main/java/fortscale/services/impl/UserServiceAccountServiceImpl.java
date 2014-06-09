@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,10 +30,10 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 	private static Logger logger = Logger.getLogger(UserServiceAccountServiceImpl.class);
 	
 	@Value("${user.list.service_account.path:}")
-	public String filePath;
+	private String filePath;
 	
 	@Value("${user.list.service_account.deletion_symbol:}")
-	public String deletionSymbol;
+	private String deletionSymbol;
 	
 	private Set<String> serviceAccounts = null;
 
@@ -49,24 +50,29 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		update()
+		update();
 	}
-
+	
 	public void update() throws Exception {
-		serviceAccounts = loadUserServiceAccountTagFromMongo();
-		if(!StringUtils.isEmpty(filePath)){
-			File f = new File(filePath);
+		boolean isFileOk = true;
+		if(!StringUtils.isEmpty(getFilePath())){
+			File f = new File(getFilePath());
 			if(f.exists() && !f.isDirectory()) {
-				serviceAccounts = updateMongoUserServiceAccountTag(new HashSet<String>(FileUtils.readLines(new File(filePath))));
-				logger.info("ServiceAccount file loaded from path: {}",filePath);
+				serviceAccounts = updateMongoUserServiceAccountTag(new HashSet<String>(FileUtils.readLines(new File(getFilePath()))));
+				logger.info("ServiceAccount file loaded from path: {}",getFilePath());
 			}
 			else {
-				logger.warn("ServiceAccount file not found in path: {}",filePath);
+				isFileOk = false;
+				logger.warn("ServiceAccount file not found in path: {}",getFilePath());
 			}
 		}
 		else {
+			isFileOk = false;
 			logger.info("ServiceAccount file path not configured");		
-		}		
+		}
+		if (!isFileOk) {
+			serviceAccounts = loadUserServiceAccountTagFromMongo();
+		}
 	}
 	
 	private Set<String> loadUserServiceAccountTagFromMongo() {
@@ -80,24 +86,41 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 	
 	private Set<String> updateMongoUserServiceAccountTag(Set<String> serviceAccounts) {
 		for (String serviceAccountUser : serviceAccounts) {
-			String username = secUsernameNormalizer.normalize(serviceAccountUser);
+			String username;
 			boolean isUserServiceAccount;
-			if (serviceAccountUser.startsWith(deletionSymbol)) {
+			if (serviceAccountUser.startsWith(getDeletionSymbol())) {
 				// Remove tag from user.
 				isUserServiceAccount = false;
 				username = secUsernameNormalizer.normalize(serviceAccountUser.substring(1,serviceAccountUser.length()));
 			}
 			else {
 				isUserServiceAccount = true;
+				username = secUsernameNormalizer.normalize(serviceAccountUser);
 			}
-			if ((userRepository.findByUsername(username) != null)) {				
-				userRepository.updateUserServiceAccount(userRepository.findByUsername(username),
-					isUserServiceAccount);
+			User user = userRepository.findByUsername(username);
+			if ((user != null)) {				
+				userRepository.updateUserServiceAccount(user,isUserServiceAccount);
 			}
 			else {
 				logger.warn("User {} isn't in the user repository.",serviceAccountUser);
 			}
 		}
 		return loadUserServiceAccountTagFromMongo();
+	}
+
+	public String getDeletionSymbol() {
+		return deletionSymbol;
+	}
+
+	public void setDeletionSymbol(String deletionSymbol) {
+		this.deletionSymbol = deletionSymbol;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}	
 }
