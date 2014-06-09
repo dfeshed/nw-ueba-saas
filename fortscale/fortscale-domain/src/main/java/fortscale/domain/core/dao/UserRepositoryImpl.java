@@ -291,8 +291,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 
 	@Override
-	public List<User> findByUserInGroup(String[] groups) {
-		Query query = new Query(Criteria.where(UserAdInfo.groupsField).in(groups));
-		return mongoTemplate.find(query, User.class);
+	public List<User> findByUserInGroup(Collection<String> groups) {
+		return findByUniqueField(UserAdInfo.groupsField, groups);
 	}
 }
