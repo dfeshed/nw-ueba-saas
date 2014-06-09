@@ -34,7 +34,7 @@ public class UserServiceMorphCmdBuilder implements CommandBuilder {
 	@Configurable(preConstruction=true)
 	public static class IsUserServiceAccount extends AbstractCommand {
 		
-		protected String usernameField;
+		private String usernameField;
 		private String isUserServiceAccountField;
 		@Autowired
 		private UserServiceAccountService userServiceAccountService;
@@ -42,9 +42,7 @@ public class UserServiceMorphCmdBuilder implements CommandBuilder {
 		public IsUserServiceAccount(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			this.usernameField = getConfigs().getString(config, "usernameField");
-			this.isUserServiceAccountField = getConfigs().getString(config, "isUserServiceAccountField");
-			
-			//validateArguments();
+			this.isUserServiceAccountField = getConfigs().getString(config, "isUserServiceAccountField");			
 		}
 
 		public IsUserServiceAccount(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, UserServiceAccountService service) {
