@@ -1,8 +1,6 @@
 package fortscale.services.impl;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +28,7 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 	private static Logger logger = LoggerFactory.getLogger(AdministratorAccountServiceImpl.class);
 
 	private Set<String> adminUsers = null;
-	private Collection<String> adminGroups = null;
+	private List<String> adminGroups = null;
 
 	@Override
 	public boolean isUserAdministrator(String username) {
@@ -47,8 +45,7 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 		if(!StringUtils.isEmpty(filePath)){
 			File f = new File(filePath);
 			if(f.exists() && !f.isDirectory()) {
-				List<String> groups = FileUtils.readLines(new File(filePath));
-				adminGroups = new ArrayList<String>(groups);
+				adminGroups = FileUtils.readLines(new File(filePath));
 				List<User> adminUsersList = userRepository.findByUserInGroup(adminGroups);
 				for (User user : adminUsersList) {
 					adminUsers.add(user.getUsername());
