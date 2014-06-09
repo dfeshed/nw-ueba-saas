@@ -40,8 +40,6 @@ public class UserServiceAccountServiceTest {
 	@InjectMocks
 	private UserServiceAccountServiceImpl service;
 	
-	//@Captor
-	//private ArgumentCaptor<User> captorUser = ArgumentCaptor.forClass(User.class);
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -71,21 +69,14 @@ public class UserServiceAccountServiceTest {
 	
 	
 	@Test
-	public void first_run_mongo_is_empty() {
+	public void first_run_mongo_is_empty() throws Exception {
 		// arrange
 		when(repository.findByUserServiceAccount(true)).thenReturn( new ArrayList<User>());
 		when(userNormalizer.normalize("user2")).thenReturn("user2");
-		try {
-			service.filePath = getFile("user1\nuser2\nuser3\nuser4");
-			service.deletionSymbol = "-";
-			service.afterPropertiesSet();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-			
-		service.isUserServiceAccount("user2");
-		
+		service.setFilePath(getFile("user1\nuser2\nuser3\nuser4"));
+		service.setDeletionSymbol("-");
+		service.afterPropertiesSet();
+				
 		ArgumentCaptor<String> captorUser = ArgumentCaptor.forClass(String.class);
 		verify(repository,times(4)).findByUsername(captorUser.capture());		
 		assertEquals(true, captorUser.getAllValues().contains("user2"));
@@ -93,43 +84,29 @@ public class UserServiceAccountServiceTest {
 	}
 	
 	@Test
-	public void mongo_has_some_data_add_new_user() {
+	public void mongo_has_some_data_add_new_user() throws Exception {
 		// arrange
 		when(repository.findByUserServiceAccount(true)).thenReturn(getUsersList("user1,user2,user3,user4"));
 		when(userNormalizer.normalize("user5")).thenReturn("user5");
-		try {
-			service.filePath = getFile("user5");
-			service.deletionSymbol = "-";
-			service.afterPropertiesSet();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		service.isUserServiceAccount("user5");
-		
+		service.setFilePath(getFile("user5"));
+		service.setDeletionSymbol("-");
+		service.afterPropertiesSet();
+			
 		ArgumentCaptor<String> captorUser = ArgumentCaptor.forClass(String.class);
 		verify(repository).findByUsername(captorUser.capture());		
 		assertEquals("user5", captorUser.getValue());
 	}
 	
 	@Test
-	public void mongo_has_some_data_remove_user() {
+	public void mongo_has_some_data_remove_user() throws Exception {
 		// arrange
 		when(repository.findByUsername(anyString())).thenReturn( new User());
 		when(repository.findByUserServiceAccount(true)).thenReturn(getUsersList("user1,user2,user3,user4"));
 		when(userNormalizer.normalize("user3")).thenReturn("user3");
-		try {
-			service.filePath = getFile("-user3");
-			service.deletionSymbol = "-";
-			service.afterPropertiesSet();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		service.isUserServiceAccount("user3");
-		
+		service.setFilePath(getFile("-user3"));
+		service.setDeletionSymbol("-");
+		service.afterPropertiesSet();
+			
 		ArgumentCaptor<User> captorUser = ArgumentCaptor.forClass(User.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);
 		verify(repository,times(1)).updateUserServiceAccount(captorUser.capture(),captorBool.capture());		
