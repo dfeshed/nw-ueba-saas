@@ -16,6 +16,7 @@ public class UserAdInfo {
 	public static final String emailAddressField = "email";
 	public static final String lastnameField = "lastname";
 	public static final String userPrincipalNameField = "userPrincipalName";
+	public static final String groupsField = "groups";	
 	
 	@Field(objectGUIDField)
 	private String objectGUID;
@@ -110,6 +111,7 @@ public class UserAdInfo {
 
 	private Set<AdUserDirectReport> directReports = new HashSet<AdUserDirectReport>();
 	
+	@Field(groupsField)
 	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
 
 	public String getDn() {

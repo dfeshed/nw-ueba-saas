@@ -33,6 +33,11 @@ public class UserTable implements IUserTable {
 	}
 
 	@Override
+	public Boolean getIsUserAccountService() {
+		return user.getUserServiceAccount();
+	}
+	
+	@Override
 	public String getId() {
 		return user.getId();
 	}

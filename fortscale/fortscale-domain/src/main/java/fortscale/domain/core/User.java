@@ -56,6 +56,11 @@ public class User extends AbstractDocument {
 	public static final String classifierScoreField = "scores";
 	public static final String followedField = "followed";
 	public static final String adInfoField = "adInfo";
+	public static final String userServiceAccountField = "userServiceAccount";
+
+	@Indexed
+	@Field(userServiceAccountField)
+	private Boolean userServiceAccount;
 	
 	@Indexed
 	@Field(displayNameField)
@@ -294,5 +299,13 @@ public class User extends AbstractDocument {
 	
 	public static String getAdInfoField(String adInfoFieldName) {
 		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
+	}
+
+	public Boolean getUserServiceAccount() {
+		return userServiceAccount;
+	}
+
+	public void setUserServiceAccount(Boolean userServiceAccount) {
+		this.userServiceAccount = userServiceAccount;
 	}
 }
