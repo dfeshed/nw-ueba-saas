@@ -21,7 +21,6 @@ import com.google.common.collect.Iterables;
 
 import fortscale.streaming.model.PrevalanceModel;
 import fortscale.streaming.model.PrevalanceModelBuilder;
-import fortscale.utils.ConversionUtils;
 import fortscale.utils.StringPredicates;
 
 
