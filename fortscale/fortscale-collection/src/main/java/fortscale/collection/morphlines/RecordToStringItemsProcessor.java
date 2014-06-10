@@ -62,6 +62,6 @@ public class RecordToStringItemsProcessor {
 				json.put(field, value);				
 			}
 		}
-		return json.toJSONString(JSONStyle.MAX_COMPRESS);
+		return json.toJSONString(JSONStyle.NO_COMPRESS);
 	}
 }

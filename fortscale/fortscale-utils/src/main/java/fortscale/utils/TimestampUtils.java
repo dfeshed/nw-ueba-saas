@@ -1,5 +1,7 @@
 package fortscale.utils;
 
+import org.joda.time.DateTime;
+
 /**
  * Utility class to handle timestamp conversions
  */
@@ -22,6 +24,11 @@ public final class TimestampUtils {
 		if (timestamp>100000000000L)
 			timestamp = timestamp / 1000;
 		return timestamp;
+	}
+	
+	public static long toStartOfDay(long timestamp) {
+		DateTime when = new DateTime(convertToMilliSeconds(timestamp));
+		return when.withTimeAtStartOfDay().getMillis();
 	}
 	
 }
