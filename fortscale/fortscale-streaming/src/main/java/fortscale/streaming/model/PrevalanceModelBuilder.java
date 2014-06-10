@@ -41,4 +41,7 @@ public final class PrevalanceModelBuilder {
 		return model;
 	}
 	
+	public String getModelName() {
+		return name;
+	}
 }

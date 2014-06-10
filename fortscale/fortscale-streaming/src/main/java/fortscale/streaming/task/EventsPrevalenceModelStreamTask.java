@@ -9,11 +9,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.ClosableTask;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.StreamTask;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.apache.samza.task.InitableTask;
+import org.apache.samza.task.WindowableTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +23,7 @@ import com.google.common.collect.Iterables;
 
 import fortscale.streaming.model.PrevalanceModel;
 import fortscale.streaming.model.PrevalanceModelBuilder;
+import fortscale.streaming.service.PrevalanceModelService;
 import fortscale.utils.StringPredicates;
 
 
@@ -28,15 +31,14 @@ import fortscale.utils.StringPredicates;
  * Streaming task that receive events and build a model that aggregated prevalence of fields 
  * extracted from the events. 
  */
-public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask {
+public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask, WindowableTask, ClosableTask {
 
 	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTask.class);
 	
 	private String usernameField;
 	private String timestampField;
-	private KeyValueStore<String, PrevalanceModel> store;
 	private String modelName;
-	private PrevalanceModelBuilder modelBuilder;
+	private PrevalanceModelService modelService;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -52,17 +54,20 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 		// get the store that holds models
 		String storeName = config.get("fortscale.store.name");
 		checkNotNull(storeName, "fortscale.store.name is missing");
-		store = (KeyValueStore<String, PrevalanceModel>)context.getStore(storeName);
+		KeyValueStore<String, PrevalanceModel> store = (KeyValueStore<String, PrevalanceModel>)context.getStore(storeName);
 		
 		// create a model builder based on fields configuration
-		createModelBuilder(config);
+		PrevalanceModelBuilder builder = createModelBuilder(config);
+		
+		// create model service based on the store and model builder
+		modelService = new PrevalanceModelService(store, builder);
 	}
 	
-	private void createModelBuilder(Config config) throws Exception {
+	private PrevalanceModelBuilder createModelBuilder(Config config) throws Exception {
 		// get the model name and fields to include from configuration
 		modelName = config.get("fortscale.model.name");
 		checkNotNull(modelName, "fortscale.model.name is missing");
-		modelBuilder = PrevalanceModelBuilder.createModel(modelName);
+		PrevalanceModelBuilder modelBuilder = PrevalanceModelBuilder.createModel(modelName);
 		
 		Config fieldsSubset = config.subset("fortscale.fields.");		
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".model"))) {
@@ -72,6 +77,7 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 			
 			modelBuilder.withField(fieldName, fieldModel);
 		}
+		return modelBuilder;
 	}
 	
 	@Override
@@ -100,25 +106,31 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 			}
 			
 			// go over each field in the event and add it to the model
-			PrevalanceModel model = getUserModel(username);
+			PrevalanceModel model = modelService.getModelForUser(username);
 			for (String fieldName : model.getFieldNames()) {
 				Object value = message.get(fieldName);
 				model.getFieldModel(fieldName).add(value, timestamp);
 			}
-			updateUserModel(username, model);
+			modelService.updateUserModel(username, model);
 		} catch (Exception e) {
-			logger.error("error while building model for " + modelName + " with mesage " + envelope.getMessage(), e);
+			logger.error("error while computing model for " + modelName + " with mesage " + envelope.getMessage(), e);
 		}
 	}
 
-	/** get the user model from the store, create a new model if not exist in store */
-	private PrevalanceModel getUserModel(String username) throws Exception {
-		PrevalanceModel model = store.get(username);
-		return (model!=null) ? model : modelBuilder.build();
+	
+	
+	/** periodically save the state to mongodb as a secondary backing store */
+	@Override public void window(MessageCollector collector, TaskCoordinator coordinator) {
+		if (modelService!=null)
+			modelService.exportModels();
+	}
+
+	/** save the state to mongodb when the job shutsdown */
+	@Override public void close() throws Exception {
+		if (modelService!=null)
+			modelService.exportModels();
+		modelService = null;
 	}
 	
-	private void updateUserModel(String username, PrevalanceModel model) {
-		store.put(username, model);
-	}
 	
 }
