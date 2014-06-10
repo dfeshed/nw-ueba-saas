@@ -7,6 +7,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import static org.springframework.data.mongodb.core.query.Query.query;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Update.update;
 
 import fortscale.domain.core.Computer;
 
@@ -34,6 +37,13 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 		public void setLatest(Date latest) {
 			this.latest = latest;
 		}	
+	}
+
+	@Override
+	public void updateSensitiveMachine(Computer computer,
+			boolean isSensitiveMachine) {
+
+		mongoTemplate.updateFirst(query(where(Computer.NAME_FIELD).is(computer.getName())), update(Computer.SENSITIVE_MACHINE_FIELD, isSensitiveMachine), Computer.class);
 	}
 	
 }

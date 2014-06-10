@@ -25,6 +25,7 @@ public class Computer extends AbstractDocument {
 	public static final String WHEN_CREATED_FIELD = "whenCreated";
 	public static final String USAGE_CLASSIFIERS_FIELD = "usageClassifiers";
 	public static final String TIMESTAMP_FIELD = "timestamp";
+	public static final String SENSITIVE_MACHINE_FIELD = "sensitive";
 	
 	@Field(OPERATING_SYSTEM_FIELD)
 	private String operatingSystem;
@@ -54,6 +55,10 @@ public class Computer extends AbstractDocument {
 	
 	@Field(TIMESTAMP_FIELD)
 	private Date timestamp;
+	
+	@Field(SENSITIVE_MACHINE_FIELD)
+	@Indexed
+	private Boolean isSensitive;
 	
 	public Computer() {
 		this.timestamp = new Date();
