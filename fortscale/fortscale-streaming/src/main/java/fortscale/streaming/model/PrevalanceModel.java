@@ -34,7 +34,7 @@ public class PrevalanceModel {
 		fields.put(field, model);
 	}
 	
-	public FieldModel forField(String field) {
+	public FieldModel getFieldModel(String field) {
 		checkNotNull(field);
 		return fields.get(field);
 	}

@@ -103,7 +103,7 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 			PrevalanceModel model = getUserModel(username);
 			for (String fieldName : model.getFieldNames()) {
 				Object value = message.get(fieldName);
-				model.forField(fieldName).add(value, timestamp);
+				model.getFieldModel(fieldName).add(value, timestamp);
 			}
 			updateUserModel(username, model);
 		} catch (Exception e) {
