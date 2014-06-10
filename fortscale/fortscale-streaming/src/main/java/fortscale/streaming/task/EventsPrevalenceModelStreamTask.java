@@ -16,6 +16,7 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.apache.samza.task.InitableTask;
 import org.apache.samza.task.WindowableTask;
+import org.apache.samza.metrics.Counter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 	private String timestampField;
 	private String modelName;
 	private PrevalanceModelService modelService;
+	private Counter messageCount;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -61,6 +63,9 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 		
 		// create model service based on the store and model builder
 		modelService = new PrevalanceModelService(store, builder);
+		
+		// create counter metric for processed messages
+		messageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-message-count", modelName));
 	}
 	
 	private PrevalanceModelBuilder createModelBuilder(Config config) throws Exception {
@@ -80,8 +85,8 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 		return modelBuilder;
 	}
 	
-	@Override
-	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	/** Process incoming events and update the user models stats */
+	@Override public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try {
 			// parse the message into json 
 			String messageText = (String)envelope.getMessage();
@@ -111,6 +116,7 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 				Object value = message.get(fieldName);
 				model.getFieldModel(fieldName).add(value, timestamp);
 			}
+			messageCount.inc();
 			modelService.updateUserModel(username, model);
 		} catch (Exception e) {
 			logger.error("error while computing model for " + modelName + " with mesage " + envelope.getMessage(), e);
