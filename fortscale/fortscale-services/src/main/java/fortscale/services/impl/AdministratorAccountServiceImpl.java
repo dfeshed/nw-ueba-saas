@@ -42,6 +42,11 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		updateAdminList();
+		updateUserTag();
+	}
+	
+	private void updateAdminList() throws Exception {
 		if(!StringUtils.isEmpty(filePath)){
 			File f = new File(filePath);
 			if(f.exists() && !f.isDirectory()) {
@@ -57,7 +62,26 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 		}
 		else {
 			logger.info("AdministratorGroups file path not configured");	
-		}			
+		}
+	}
+	
+	private void updateUserTag() {
+		List<User> users = userRepository.findAll();
+		for (User user : users) {
+			if (adminUsers.contains(user.getUsername())) {
+				userRepository.updateAdministratorAccount(user, true);
+			}				
+		}		
+	}
+
+	@Override
+	public void update() {
+		try {
+			afterPropertiesSet();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			e.printStackTrace();
+		}
 	}
 
 }

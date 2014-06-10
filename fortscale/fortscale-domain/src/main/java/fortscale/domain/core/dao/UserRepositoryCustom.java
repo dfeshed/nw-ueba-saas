@@ -50,4 +50,5 @@ public interface UserRepositoryCustom {
 	
 	public void updateUserServiceAccount(User user, boolean isUserServiceAccount);
 	public List<User> findByUserInGroup(Collection<String> groups);
+	public void updateAdministratorAccount(User user, boolean isAdministratorAccount);
 }
