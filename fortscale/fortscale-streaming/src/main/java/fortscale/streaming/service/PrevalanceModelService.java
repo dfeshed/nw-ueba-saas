@@ -72,7 +72,7 @@ public class PrevalanceModelService {
 				PrevalanceModel model = entry.getValue();
 				try {
 					Model dto = repository.findByUserNameAndModelName(username, modelBuilder.getModelName());
-					if (dto.getHighTimeMark() > model.getHighTimeMark()) {
+					if (dto.getHighTimeMark() > model.getTimeMark()) {
 						// replace the model in store
 						PrevalanceModel updatedModel = convertToPrevalanceModel(dto);
 						store.put(username, updatedModel);
@@ -114,7 +114,7 @@ public class PrevalanceModelService {
 	
 	private Model convertToDTO(String username, PrevalanceModel model) {
 		String modelJson = serializer.toString(model);
-		Model dto = new Model(modelBuilder.getModelName(), username, modelJson, model.getHighTimeMark());
+		Model dto = new Model(modelBuilder.getModelName(), username, modelJson, model.getTimeMark());
 		return dto;
 	}
 	

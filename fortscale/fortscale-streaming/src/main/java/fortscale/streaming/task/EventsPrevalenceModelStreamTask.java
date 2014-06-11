@@ -40,7 +40,8 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 	private String timestampField;
 	private String modelName;
 	private PrevalanceModelService modelService;
-	private Counter messageCount;
+	private Counter processedMessageCount;
+	private Counter skippedMessageCount;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -65,7 +66,8 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 		modelService = new PrevalanceModelService(store, builder);
 		
 		// create counter metric for processed messages
-		messageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-message-count", modelName));
+		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-message-count", modelName));
+		skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-skip-count", modelName));
 	}
 	
 	private PrevalanceModelBuilder createModelBuilder(Config config) throws Exception {
@@ -117,11 +119,13 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 			if (!model.isTimeMarkAfter(timestamp)) {
 				for (String fieldName : model.getFieldNames()) {
 					Object value = message.get(fieldName);
-					model.getFieldModel(fieldName).add(value, timestamp);
+					model.addFieldValue(fieldName, value, timestamp);
 				}
 				modelService.updateUserModelInStore(username, model);
+				processedMessageCount.inc();
+			} else {
+				skippedMessageCount.inc();
 			}
-			messageCount.inc();
 		} catch (Exception e) {
 			logger.error("error while computing model for " + modelName + " with mesage " + envelope.getMessage(), e);
 		}

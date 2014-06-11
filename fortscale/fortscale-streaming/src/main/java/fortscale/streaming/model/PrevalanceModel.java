@@ -1,6 +1,7 @@
 package fortscale.streaming.model;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.utils.TimestampUtils.convertToMilliSeconds;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class PrevalanceModel {
 	
 	private Map<String, FieldModel> fields = new HashMap<String, FieldModel>();
 	private String modelName;
+	private long timeMark;
 	
 	@JsonCreator
 	public PrevalanceModel(@JsonProperty("modelName") String modelName) {
@@ -35,30 +37,31 @@ public class PrevalanceModel {
 		fields.put(field, model);
 	}
 	
-	public FieldModel getFieldModel(String field) {
-		checkNotNull(field);
-		return fields.get(field);
+	public long getTimeMark() {
+		return timeMark;
 	}
 	
-	public boolean isTimeMarkAfter(long time) {
-		// check if the given time is before all field marks
-		// do so by going over all field models and see if we 
-		// have at least one model whose mark is before the 
-		// given time
-		for (FieldModel model : fields.values()) {
-			if (model.isTimeMarkAfter(time))
-				return true;
-		}
-		// if no models were found with time mark after the given time,
-		// consider the given time as after the marks if we have field models
-		return (fields.size()!=0);
+	public void addFieldValue(String fieldName, Object value, long timestamp) {
+		checkNotNull(fieldName);
+		if (value==null || !fields.containsKey(fieldName))
+			return; 
+		
+		// check that the value time stamp is not before the time mark
+		long millis = convertToMilliSeconds(timestamp);
+		if (isTimeMarkAfter(timestamp))
+			return;
+		
+		// add the value to the field model
+		FieldModel model = fields.get(fieldName);
+		model.add(value, millis);
+		
+		// update the time mark
+		timeMark = Math.max(timeMark, millis);
 	}
 	
-	public long getHighTimeMark() {
-		long highMark = 0L;
-		for (FieldModel model : fields.values()) {
-			highMark = Math.max(highMark, model.getTimeMark());
-		}
-		return highMark;
+	public boolean isTimeMarkAfter(long timestamp) {
+		// check that the value time stamp is not before the time mark
+		return (convertToMilliSeconds(timestamp) < timeMark);
 	}
+	
 }
