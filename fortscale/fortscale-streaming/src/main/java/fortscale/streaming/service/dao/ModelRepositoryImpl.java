@@ -21,10 +21,9 @@ public class ModelRepositoryImpl implements ModelRepositoryCustom {
 		if (existing==null) {
 			mongoTemplate.save(model);
 		} else {
-			if (existing.getHighTimeMark() < model.getHighTimeMark()) {
+			if (existing.getModel().getTimeMark() < model.getModel().getTimeMark()) {
 				// update existing model
-				existing.setHighTimeMark(model.getHighTimeMark());
-				existing.setModelJson(model.getModelJson());
+				existing.setModel(model.getModel());
 				mongoTemplate.save(existing);
 			}
 		}

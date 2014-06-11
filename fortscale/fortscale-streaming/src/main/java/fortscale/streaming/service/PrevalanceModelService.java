@@ -11,7 +11,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fortscale.streaming.model.PrevalanceModel;
 import fortscale.streaming.model.PrevalanceModelBuilder;
-import fortscale.streaming.serialization.PrevalanceModelSerde;
 import fortscale.streaming.service.dao.Model;
 import fortscale.streaming.service.dao.ModelRepository;
 
@@ -25,14 +24,12 @@ public class PrevalanceModelService {
 	private KeyValueStore<String, PrevalanceModel> store;
 	private PrevalanceModelBuilder modelBuilder;
 	private ModelRepository repository;
-	private PrevalanceModelSerde serializer;
 	
 	public PrevalanceModelService(KeyValueStore<String, PrevalanceModel> store, PrevalanceModelBuilder modelBuilder) {
 		checkNotNull(store);
 		checkNotNull(modelBuilder);
 		this.store = store;
 		this.modelBuilder = modelBuilder;
-		this.serializer = new PrevalanceModelSerde();
 		
 		// get the repository from spring context implicitly, as I has a horrible 
 		// experience using compile time weaving to work here....
@@ -51,7 +48,7 @@ public class PrevalanceModelService {
 		// lookup the model in the repository
 		Model dto = repository.findByUserNameAndModelName(username, modelBuilder.getModelName());
 		if (dto!=null) 
-			return convertToPrevalanceModel(dto);
+			return dto.getModel();
 		
 		// create a new model
 		return modelBuilder.build();
@@ -72,9 +69,9 @@ public class PrevalanceModelService {
 				PrevalanceModel model = entry.getValue();
 				try {
 					Model dto = repository.findByUserNameAndModelName(username, modelBuilder.getModelName());
-					if (dto.getHighTimeMark() > model.getTimeMark()) {
+					if (dto.getModel().getTimeMark() > model.getTimeMark()) {
 						// replace the model in store
-						PrevalanceModel updatedModel = convertToPrevalanceModel(dto);
+						PrevalanceModel updatedModel = dto.getModel();
 						store.put(username, updatedModel);
 					}
 
@@ -113,13 +110,8 @@ public class PrevalanceModelService {
 	
 	
 	private Model convertToDTO(String username, PrevalanceModel model) {
-		String modelJson = serializer.toString(model);
-		Model dto = new Model(modelBuilder.getModelName(), username, modelJson, model.getTimeMark());
+		Model dto = new Model(modelBuilder.getModelName(), username, model);
 		return dto;
 	}
 	
-	private PrevalanceModel convertToPrevalanceModel(Model dto) {
-		PrevalanceModel model = serializer.fromString(dto.getModelJson());
-		return model;
-	}
 }
