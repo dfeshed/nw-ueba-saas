@@ -26,7 +26,7 @@ public class PrevalanceModelTest {
 
 		//{"fields":{"fieldA":{"@class":"fortscale.streaming.model.field.DiscreetValuesModel","counters":{"counts":[500]}}},"modelName":"my-model"}
 		Assert.assertNotNull(json);
-		Assert.assertTrue(json.contains("\"timeMark\":0"));
+		Assert.assertTrue(json.contains("\"timeMark\":"));
 		Assert.assertTrue(json.contains("\"modelName\":\"my-model\""));
 		Assert.assertTrue(json.contains("\"fields\":"));
 		Assert.assertTrue(json.contains("\"fieldA\":"));
