@@ -44,5 +44,23 @@ public class PrevalanceModelSerde implements Serde<PrevalanceModel> {
 			return null;
 		}
 	}
+	
+	public String toString(PrevalanceModel model) {
+		try {
+			return mapper.writeValueAsString(model);
+		} catch (JsonProcessingException e) {
+			logger.error("error converting model to bytes",  e);
+			return null;
+		}
+	}
+	
+	public PrevalanceModel fromString(String json) {
+		try {
+			return mapper.readValue(json, PrevalanceModel.class);
+		} catch (IOException e) {
+			logger.error("error converting bytes to model ",  e);
+			return null;
+		}
+	}
 
 }

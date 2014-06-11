@@ -117,7 +117,7 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 				model.getFieldModel(fieldName).add(value, timestamp);
 			}
 			messageCount.inc();
-			modelService.updateUserModel(username, model);
+			modelService.updateUserModelInStore(username, model);
 		} catch (Exception e) {
 			logger.error("error while computing model for " + modelName + " with mesage " + envelope.getMessage(), e);
 		}
