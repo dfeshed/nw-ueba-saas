@@ -15,6 +15,7 @@ public class Model {
 	public static final String MODEL_NAME_FIELD = "modelName";
 	public static final String USER_NAME_FIELD = "userName";
 	public static final String JSON_MODEL_FIELD = "modelJson";
+	public static final String HIGH_TIME_MARK_FIELD = "highTimeMark";
 	
 	@Id
 	private String id;
@@ -24,11 +25,14 @@ public class Model {
 	private String userName;
 	@Field(JSON_MODEL_FIELD)
 	private String modelJson;
+	@Field(HIGH_TIME_MARK_FIELD)
+	private long highTimeMark;
 	
-	public Model(String modelName, String userName, String modelJson) {
+	public Model(String modelName, String userName, String modelJson, long highTimeMark) {
 		this.modelName = modelName;
 		this.userName = userName;
 		this.modelJson = modelJson;
+		this.highTimeMark = highTimeMark;
 	}
 	
 	public String getModelName() {
@@ -48,6 +52,12 @@ public class Model {
 	}
 	public void setModelJson(String modelJson) {
 		this.modelJson = modelJson;
+	}
+	public long getHighTimeMark() {
+		return highTimeMark;
+	}
+	public void setHighTimeMark(long highTimeMark) {
+		this.highTimeMark = highTimeMark;
 	}
 	
 }

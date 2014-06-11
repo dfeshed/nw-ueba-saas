@@ -112,12 +112,16 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 			
 			// go over each field in the event and add it to the model
 			PrevalanceModel model = modelService.getModelForUser(username);
-			for (String fieldName : model.getFieldNames()) {
-				Object value = message.get(fieldName);
-				model.getFieldModel(fieldName).add(value, timestamp);
+				
+			// skip events that occur before the model mark
+			if (!model.isTimeMarkAfter(timestamp)) {
+				for (String fieldName : model.getFieldNames()) {
+					Object value = message.get(fieldName);
+					model.getFieldModel(fieldName).add(value, timestamp);
+				}
+				modelService.updateUserModelInStore(username, model);
 			}
 			messageCount.inc();
-			modelService.updateUserModelInStore(username, model);
 		} catch (Exception e) {
 			logger.error("error while computing model for " + modelName + " with mesage " + envelope.getMessage(), e);
 		}

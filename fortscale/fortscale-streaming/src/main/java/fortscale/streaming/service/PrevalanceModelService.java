@@ -8,8 +8,6 @@ import org.apache.samza.storage.kv.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import fortscale.streaming.model.PrevalanceModel;
 import fortscale.streaming.model.PrevalanceModelBuilder;
@@ -23,8 +21,6 @@ import fortscale.streaming.service.dao.ModelRepository;
 public class PrevalanceModelService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PrevalanceModelService.class);
-	
-	private static final int PAGE_SIZE=25;
 	
 	private KeyValueStore<String, PrevalanceModel> store;
 	private PrevalanceModelBuilder modelBuilder;
@@ -66,28 +62,30 @@ public class PrevalanceModelService {
 		store.put(username, model);
 	}
 	
-	/** import all models from mongodb as a secondary backing store */
-	public void importModels() {
-		// go over the models in mongodb in pages
-		int page = 0;
-		Page<Model> modelsPage;
-		do {
-			modelsPage = repository.findByModelName(modelBuilder.getModelName(), new PageRequest(page, PAGE_SIZE));
-			
-			// convert all models in page to PrevalanceModel and add to state store
-			for (Model modelDTO : modelsPage) {
+	/** sync all models in samza store with the models in the mongodb */ 
+	public void syncModelsWithRepository() {
+		KeyValueIterator<String, PrevalanceModel> iterator = store.all();
+		try { 
+			while (iterator.hasNext()) {
+				Entry<String, PrevalanceModel> entry = iterator.next();
+				String username = entry.getKey();
+				PrevalanceModel model = entry.getValue();
 				try {
-					PrevalanceModel model = convertToPrevalanceModel(modelDTO);
-					String username = modelDTO.getUserName();
-					store.put(username, model);
+					Model dto = repository.findByUserNameAndModelName(username, modelBuilder.getModelName());
+					if (dto.getHighTimeMark() > model.getHighTimeMark()) {
+						// replace the model in store
+						PrevalanceModel updatedModel = convertToPrevalanceModel(dto);
+						store.put(username, updatedModel);
+					}
+
 				} catch (Exception e) {
-					logger.error("error adding model {} for user {} into store", modelDTO.getModelName(), modelDTO.getUserName());
+					logger.error("error adding model {} for user {} into store", modelBuilder.getModelName(), username);
 				}
 			}
-			
-			page++;
-		} while (modelsPage.hasNextPage());
-		
+		} finally {
+			if (iterator!=null)
+				iterator.close();
+		}
 	}
 	
 	
@@ -111,13 +109,12 @@ public class PrevalanceModelService {
 			if (iterator!=null)
 				iterator.close();
 		}
-		
 	}
 	
 	
 	private Model convertToDTO(String username, PrevalanceModel model) {
 		String modelJson = serializer.toString(model);
-		Model dto = new Model(modelBuilder.getModelName(), username, modelJson);
+		Model dto = new Model(modelBuilder.getModelName(), username, modelJson, model.getHighTimeMark());
 		return dto;
 	}
 	

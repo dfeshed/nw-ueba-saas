@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 
 public class ModelRepositoryImpl implements ModelRepositoryCustom {
 
@@ -18,10 +17,17 @@ public class ModelRepositoryImpl implements ModelRepositoryCustom {
 		query.addCriteria(Criteria.where(Model.MODEL_NAME_FIELD).is(model.getModelName()));
 		query.addCriteria(Criteria.where(Model.USER_NAME_FIELD).is(model.getUserName()));
 		
-		Update update = new Update();
-		update.set(Model.JSON_MODEL_FIELD, model.getModelJson());
-		
-		mongoTemplate.upsert(query, update, Model.class);
+		Model existing = mongoTemplate.findOne(query, Model.class);
+		if (existing==null) {
+			mongoTemplate.save(model);
+		} else {
+			if (existing.getHighTimeMark() < model.getHighTimeMark()) {
+				// update existing model
+				existing.setHighTimeMark(model.getHighTimeMark());
+				existing.setModelJson(model.getModelJson());
+				mongoTemplate.save(existing);
+			}
+		}
 	}
 
 }
