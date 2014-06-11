@@ -55,7 +55,7 @@ public class FeatureCalibrationTest {
 		featureValueToCountMap.put("test101", 12D);
 		calibration.init(featureValueToCountMap);
 		score = calibration.score( "test101" );
-		Assert.assertEquals(0.84, score, 0.01);
+		Assert.assertEquals(0.86, score, 0.01);
 		
 		featureValueToCountMap.put("test101", 28D);
 		calibration.init(featureValueToCountMap);

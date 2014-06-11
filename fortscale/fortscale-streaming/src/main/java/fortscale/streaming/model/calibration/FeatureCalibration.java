@@ -47,7 +47,6 @@ public class FeatureCalibration{
 			}
 			this.featureValueToCountMap.put(featureValueToCountEntry.getKey(), featureValueToCountEntry.getValue());
 		}
-		this.featureValueToCountMap.putAll(featureValueToCountMap);
 		
 		reinit();
 	}
