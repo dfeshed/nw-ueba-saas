@@ -1,8 +1,10 @@
 package fortscale.streaming.model.field;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.google.common.collect.HashMultiset;
 
 /**
  * Counts values based on time with eviction policy that 
@@ -11,24 +13,27 @@ import com.google.common.collect.HashMultiset;
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class EvictingCountingMap {
 
-	private HashMultiset<Object> counts = HashMultiset.create();
-	
-	public EvictingCountingMap() {
-	}
-	
-	
+	private Map<Object, Long> counts = new HashMap<Object, Long>();
+		
 	public void add(Object value) {
 		if (value==null || "".equals(value))
 			return;
 		
-		counts.add(value);
+		// increment value counter
+		if (counts.containsKey(value)) {
+			Long count = counts.get(value);
+			counts.put(value, ++count);
+		} else {
+			counts.put(value, 1L);
+		}
 	}
 	
-	public int count(Object value) {
+	public long count(Object value) {
 		if (value==null || "".equals(value))
 			return 0;
 		
-		return counts.count(value);
+		Long count = counts.get(value);
+		return (count==null)? 0L : count;
 	}
 	
 }

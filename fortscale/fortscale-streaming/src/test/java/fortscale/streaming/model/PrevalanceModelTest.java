@@ -24,7 +24,7 @@ public class PrevalanceModelTest {
 		
 		String json = mapper.writeValueAsString(model);
 
-		//{"fields":{"fieldA":{"@class":"fortscale.streaming.model.field.DiscreetValuesModel","counters":{"counts":[500]}}},"modelName":"my-model"}
+		//{"modelName":"my-model","fields":{"fieldA":{"@class":"fortscale.streaming.model.field.DiscreetValuesModel","counters":{"counts":{"500":1}}}},"timeMark":0}
 		Assert.assertNotNull(json);
 		Assert.assertTrue(json.contains("\"timeMark\":"));
 		Assert.assertTrue(json.contains("\"modelName\":\"my-model\""));
@@ -35,7 +35,7 @@ public class PrevalanceModelTest {
 	@Test
 	public void model_should_deserialize_from_json() throws Exception {
 		
-        byte[] json = "{\"fields\":{\"fieldA\":{\"@class\":\"fortscale.streaming.model.field.DiscreetValuesModel\",\"counters\":{\"counts\":[500,500]}}},\"modelName\":\"my-model\"}".getBytes("UTF-8");
+        byte[] json = "{\"modelName\":\"my-model\",\"fields\":{\"fieldA\":{\"@class\":\"fortscale.streaming.model.field.DiscreetValuesModel\",\"counters\":{\"counts\":{\"500\":1}}}},\"timeMark\":0}".getBytes("UTF-8");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		PrevalanceModel model = mapper.readValue(json, PrevalanceModel.class);
