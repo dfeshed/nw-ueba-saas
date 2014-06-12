@@ -134,11 +134,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-api</artifactId>
-			<version>${samza.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.samza</groupId>
 			<artifactId>samza-core_2.10</artifactId>
 			<version>${samza.version}</version>
 		</dependency>
