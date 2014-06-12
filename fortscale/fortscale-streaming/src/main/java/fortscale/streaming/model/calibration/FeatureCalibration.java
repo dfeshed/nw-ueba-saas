@@ -13,8 +13,7 @@ public class FeatureCalibration{
 	private ArrayList<Double> scoreBucketsAggr = null;
 	private ArrayList<IFeatureCalibrationBucketScorer> bucketScorerList = null;
 	private Map<Object, Double> featureValueToCountMap = new HashMap<>();
-	private double addedValue = 0;
-	private int minusIndex = 2;
+	private double addedValue = 1;
 	private double total = 0;
 	private Double minCount = null;
 	private Object featureValueWithMinCount = null;
@@ -88,7 +87,7 @@ public class FeatureCalibration{
 		}
 
 		//There was no need to reinit the calibration for this update.
-		int bucketIndex = (int)getBucketIndex(count) - minusIndex;
+		int bucketIndex = (int)getBucketIndex(count);
 		Double reducedCount = reduceCount(count);
 		IFeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
 		double prevScore = bucketScorer.getScore();
@@ -96,7 +95,7 @@ public class FeatureCalibration{
 		Double diffCount = score - prevScore;
 
 		if(prevCount != null){
-			int prevBucketIndex = (int)getBucketIndex(prevCount) - minusIndex;
+			int prevBucketIndex = (int)getBucketIndex(prevCount);
 			if(prevBucketIndex != bucketIndex){
 				bucketScorer = bucketScorerList.get(prevBucketIndex);
 				prevScore = bucketScorer.getScore();
@@ -126,8 +125,6 @@ public class FeatureCalibration{
 	}
 	
 	private void reinit() throws Exception{
-		addedValue = 0;
-		minusIndex = 2;
 		total = 0;
 		minCount = null;
 		featureValueWithMinCount = null;
@@ -142,11 +139,6 @@ public class FeatureCalibration{
 			}
 		}
 
-		//Deciding the smallest bucket index and the value which need to be added such that no count will
-		//fall in a smaller bucket.
-		long minValueIndex = (long)(Math.ceil(Math.log(minCount) / Math.log(2)));
-		long minValueStartBucket = Math.max(4,(int)Math.pow(2, minValueIndex));
-		addedValue = minValueStartBucket - minCount;
 		
 		//Filling the buckets with all the feature values counts.
 		//while doing so the counts are getting reduced in the method reduceCount
@@ -183,13 +175,9 @@ public class FeatureCalibration{
 			bucketScorer.updateFeatureValueCount(featureValueToCountEntry.getKey(), reducedCount);
 		}
 		
-		minusIndex = minIndex;
-		if(minusIndex > 0){
-			for(int i = 0; i < minusIndex; i++){
-				bucketScorerList.remove(0);
-			}
-			for(int i = 0; i < bucketScorerList.size(); i++){
-				bucketScorerList.get(i).setBucketIndex(i);
+		if(minIndex > 0){
+			for(int i = minIndex; i < bucketScorerList.size(); i++){
+				bucketScorerList.get(i).setBucketIndex(i-minIndex);
 			}
 		}
 	}
@@ -205,7 +193,7 @@ public class FeatureCalibration{
 			featureCount = 1D;
 		}
 		
-		double bucketIndex = getBucketIndex(featureCount) - minusIndex;
+		double bucketIndex = getBucketIndex(featureCount);
 		if(bucketIndex + 1 >= scoreBucketsAggr.size()){
 			return 0;
 		}
@@ -218,7 +206,8 @@ public class FeatureCalibration{
 	}
 	
 	private double getBucketIndex(double rscore){
-		return Math.min(Math.log(rscore + addedValue) / Math.log(2),MAX_NUM_OF_BUCKETS-1); 
+		double num = rscore + addedValue;
+		return num < 2 ? 0 : Math.min((Math.log(num) / Math.log(2)) - 1,MAX_NUM_OF_BUCKETS-1); 
 	}
 	
 	private double reduceCount(double count){

@@ -62,7 +62,7 @@ public class DailyTimeModelScoringTest {
 		score = timeModel.score(60000);
 		Assert.assertEquals(0.98, score,0.01);
 		score = timeModel.score(500);
-		Assert.assertEquals(0.07, score,0.01);
+		Assert.assertEquals(0.13, score,0.01);
 	}
 	
 	@Test
@@ -80,11 +80,11 @@ public class DailyTimeModelScoringTest {
 		
 		timeModel.update(9000);
 		score = timeModel.score(9000);
-		Assert.assertEquals(0.74, score,0.01);
+		Assert.assertEquals(0.84, score,0.01);
 		
 		timeModel.update(7500);
 		score = timeModel.score(7500);
-		Assert.assertEquals(0.4, score,0.01);
+		Assert.assertEquals(0.38, score,0.01);
 		
 		
 	}
