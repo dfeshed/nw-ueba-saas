@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
 import fortscale.streaming.model.calibration.FeatureCalibration;
 import fortscale.streaming.model.calibration.TimeFeatureCalibrationBucketScorer;
 
+
+@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class TimeModel {
 	private static final int MASK_SIZE = 10;
 	private static final double MASK_EXPONENT = 1.25;

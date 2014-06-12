@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 import fortscale.streaming.model.FieldModel;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
@@ -20,7 +21,11 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 	@Override
 	public void add(Object value, long timestamp){
 		try {
-			super.update((Long) value);
+			if(value instanceof Long){
+				super.update(TimestampUtils.convertToSeconds((Long) value));
+			} else{
+				logger.error("got value {} of instance {} instead of Long", value, value.getClass());
+			}
 		} catch (Exception e) {
 			logger.warn("got an exception while trying to add {} to the DailyTimeModel", value);
 			logger.warn("got an exception while trying to add value to the DailyTimeModel", e);
