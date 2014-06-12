@@ -112,6 +112,11 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 				return;
 			}
 			
+			if (!acceptMessage(message)) {
+				skippedMessageCount.inc();
+				return;
+			}
+			
 			// go over each field in the event and add it to the model
 			PrevalanceModel model = modelService.getModelForUser(username);
 				
@@ -146,5 +151,8 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 		modelService = null;
 	}
 	
-	
+	/** Auxiliary method to enable filtering messages on specific events types */
+	protected boolean acceptMessage(JSONObject message) {
+		return true;
+	}
 }
