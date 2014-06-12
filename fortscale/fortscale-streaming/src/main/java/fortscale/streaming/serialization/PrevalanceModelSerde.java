@@ -44,5 +44,5 @@ public class PrevalanceModelSerde implements Serde<PrevalanceModel> {
 			return null;
 		}
 	}
-
+	
 }

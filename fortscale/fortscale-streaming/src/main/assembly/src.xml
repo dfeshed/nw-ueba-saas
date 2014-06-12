@@ -36,6 +36,7 @@
         <include>org.apache.kafka:kafka_2.10</include>
         <include>fortscale:fortscale-streaming</include>
         <include>fortscale:fortscale-utils</include>
+        <include>fortscale:fortscale-domain</include>
       </includes>
       <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>

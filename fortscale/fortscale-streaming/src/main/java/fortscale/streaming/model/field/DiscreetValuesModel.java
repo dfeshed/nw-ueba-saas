@@ -14,5 +14,4 @@ public class DiscreetValuesModel implements FieldModel {
 	public void add(Object value, long timestamp) {
 		counters.add(value);
 	}
-	
 }
