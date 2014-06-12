@@ -14,7 +14,7 @@ import org.junit.runners.JUnit4;
 public class FeatureCalibrationTest {
 
 	private FeatureCalibration createNewFeatureCalibration(){
-		return new FeatureCalibration(FeatureCalibrationBucketScorer.class);
+		return new FeatureCalibration(TimeFeatureCalibrationBucketScorer.class);
 	}
 	@Test
 	public void elementarycheckForFeatureCalibration() throws Exception {
@@ -42,25 +42,25 @@ public class FeatureCalibrationTest {
 		}
 		
 		
-		featureValueToCountMap.put("test101", 3D);
+		featureValueToCountMap.put("test101", 1D);
 		calibration.init(featureValueToCountMap);
 		double score = calibration.score( "test101" );
-		Assert.assertEquals(0.98, score, 0.01);
+		Assert.assertEquals(0.85, score, 0.01);
 		
 		featureValueToCountMap.put("test101", 11D);
 		calibration.init(featureValueToCountMap);
 		score = calibration.score( "test101" );
-		Assert.assertEquals(0.86, score, 0.01);
+		Assert.assertEquals(0.61, score, 0.01);
 		
 		featureValueToCountMap.put("test101", 12D);
 		calibration.init(featureValueToCountMap);
 		score = calibration.score( "test101" );
-		Assert.assertEquals(0.86, score, 0.01);
+		Assert.assertEquals(0.6, score, 0.01);
 		
 		featureValueToCountMap.put("test101", 28D);
 		calibration.init(featureValueToCountMap);
 		score = calibration.score( "test101" );
-		Assert.assertEquals(0.96, score, 0.52);
+		Assert.assertEquals(0.33, score, 0.01);
 		
 		featureValueToCountMap.put("test101", 64D);
 		calibration.init(featureValueToCountMap);
@@ -79,24 +79,24 @@ public class FeatureCalibrationTest {
 		}
 		
 		String featureValue = String.format("test%d", i++);
-		calibration.updateFeatureValueCount(featureValue, 3D);
+		calibration.updateFeatureValueCount(featureValue, 1D);
 		double score = calibration.score( featureValue );
-		Assert.assertEquals(0.98, score, 0.01);
+		Assert.assertEquals(0.85, score, 0.01);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 11D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0.87, score, 0.01);
+		Assert.assertEquals(0.61, score, 0.01);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 12D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0.85, score, 0.01);
+		Assert.assertEquals(0.6, score, 0.01);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 28D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0.52, score, 0.01);
+		Assert.assertEquals(0.33, score, 0.01);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 64D);
@@ -125,13 +125,21 @@ public class FeatureCalibrationTest {
 		double score1 = calibration.score( featureValue1 );
 		Assert.assertEquals(score, score1, 0.01);
 		
-		for(int j = 0; j < 4; j++){
+		for(int j = 0; j < 2; j++){
 			featureValue = String.format("test%d", i++);
 			calibration.updateFeatureValueCount(featureValue, 1D);
 		}
 		
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0.81, score, 0.01);
+		Assert.assertEquals(0.76, score, 0.01);
+		
+		for(int j = 0; j < 6; j++){
+			featureValue = String.format("test%d", i++);
+			calibration.updateFeatureValueCount(featureValue, 1D);
+		}
+		
+		score = calibration.score( featureValue );
+		Assert.assertEquals(0.16, score, 0.01);
 	}
 	
 	@Test
@@ -160,7 +168,7 @@ public class FeatureCalibrationTest {
 		}
 		
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0.55, score, 0.01);
+		Assert.assertEquals(0.54, score, 0.01);
 		
 	}
 	
@@ -214,7 +222,7 @@ public class FeatureCalibrationTest {
 		}
 		
 		double score = calibration.score( featureValue );
-		Assert.assertEquals(0.49, score, 0.01);
+		Assert.assertEquals(0.48, score, 0.01);
 	}
 	
 	@Test

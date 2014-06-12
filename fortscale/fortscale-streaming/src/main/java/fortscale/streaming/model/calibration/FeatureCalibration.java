@@ -13,7 +13,7 @@ public class FeatureCalibration{
 	private ArrayList<Double> scoreBucketsAggr = null;
 	private ArrayList<IFeatureCalibrationBucketScorer> bucketScorerList = null;
 	private Map<Object, Double> featureValueToCountMap = new HashMap<>();
-	private int addedValue = 0;
+	private double addedValue = 0;
 	private int minusIndex = 2;
 	private double total = 0;
 	private Double minCount = null;
@@ -146,7 +146,7 @@ public class FeatureCalibration{
 		//fall in a smaller bucket.
 		long minValueIndex = (long)(Math.ceil(Math.log(minCount) / Math.log(2)));
 		long minValueStartBucket = Math.max(4,(int)Math.pow(2, minValueIndex));
-		addedValue = (int)(minValueStartBucket - minCount);
+		addedValue = minValueStartBucket - minCount;
 		
 		//Filling the buckets with all the feature values counts.
 		//while doing so the counts are getting reduced in the method reduceCount
@@ -222,7 +222,7 @@ public class FeatureCalibration{
 	}
 	
 	private double reduceCount(double count){
-		double ret = Math.log1p(count) / Math.log(2);
+		double ret = Math.log(count+1) / Math.log(2);
 		ret = Math.pow(ret, 2);
 		
 		return ret;

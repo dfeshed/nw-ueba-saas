@@ -43,14 +43,14 @@ public class DailyTimeModelScoringTest {
 		Assert.assertEquals(0.0, score,0.01);
 		timeModel.update(24600);
 		score = timeModel.score(24600);
-		Assert.assertEquals(0.02, score,0.01);
+		Assert.assertEquals(0.0, score,0.01);
 	}
 	
 	@Test
 	public void testScoreOfIsolateTime() throws Exception{
 		Random rnd = new Random(1);
 		DailyTimeModel timeModel = new DailyTimeModel();
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 50; i++) {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 6000);
 			timeModel.update(epochSeconds);
 		}
@@ -58,17 +58,18 @@ public class DailyTimeModelScoringTest {
 		timeModel.update(30000);
 		double score = timeModel.score(30000);
 		Assert.assertEquals(0.98, score,0.01);
+		timeModel.update(60000);
 		score = timeModel.score(60000);
 		Assert.assertEquals(0.98, score,0.01);
 		score = timeModel.score(500);
-		Assert.assertEquals(0.05, score,0.01);
+		Assert.assertEquals(0.07, score,0.01);
 	}
 	
 	@Test
 	public void testScoresInDifferentDistancesFromTheCluster() throws Exception{
 		Random rnd = new Random(1);
 		DailyTimeModel timeModel = new DailyTimeModel();
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 50; i++) {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 6000);
 			timeModel.update(epochSeconds);
 		}
@@ -79,11 +80,11 @@ public class DailyTimeModelScoringTest {
 		
 		timeModel.update(9000);
 		score = timeModel.score(9000);
-		Assert.assertEquals(0.6, score,0.01);
+		Assert.assertEquals(0.74, score,0.01);
 		
 		timeModel.update(7500);
 		score = timeModel.score(7500);
-		Assert.assertEquals(0.18, score,0.01);
+		Assert.assertEquals(0.4, score,0.01);
 		
 		
 	}
@@ -97,16 +98,25 @@ public class DailyTimeModelScoringTest {
 			timeModel.update(epochSeconds);
 		}
 		
-		long dispersedTimes[] = new long[10];
-		for (int i = 0; i < 10; i++) {
+		long dispersedTimes[] = new long[4];
+		int i = 0;
+		for (; i < 4; i++) {
 			long epochSeconds = 3000 + ((i+1) * 6000);
 			timeModel.update(epochSeconds);
 			dispersedTimes[i] = epochSeconds;
 		}
 		
-		for (int i = 0; i < 10; i++) {
-			double score = timeModel.score(dispersedTimes[i]);
-			Assert.assertEquals(0.71, score, 0.01);
+		for (int j = 0; j < 4; j++) {
+			double score = timeModel.score(dispersedTimes[j]);
+			Assert.assertEquals(0.86, score, 0.01);
 		}
+		
+		for (; i < 10; i++) {
+			long epochSeconds = 3000 + ((i+1) * 6000);
+			timeModel.update(epochSeconds);
+		}
+		
+		double score = timeModel.score(dispersedTimes[0]);
+		Assert.assertEquals(0.28, score, 0.01);
 	}
 }

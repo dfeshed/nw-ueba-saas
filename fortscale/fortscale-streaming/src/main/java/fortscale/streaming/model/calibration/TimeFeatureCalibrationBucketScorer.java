@@ -18,7 +18,11 @@ private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 	
 	@Override
 	public double getScore(){
-		return score * Math.max(1, featureValueToScoreMap.size() / (bucketIndex+1));
+		if(bucketIndex == 0){
+			return score * Math.pow(4, featureValueToScoreMap.size()/3);
+		} else{
+			return score;
+		}
 	}
 	
 	private void updateMaxScore(){
