@@ -14,7 +14,7 @@ import org.junit.runners.JUnit4;
 public class FeatureCalibrationTest {
 
 	private FeatureCalibration createNewFeatureCalibration(){
-		return new FeatureCalibration(TimeFeatureCalibrationBucketScorer.class);
+		return new FeatureCalibration(FeatureCalibrationBucketScorer.class);
 	}
 	@Test
 	public void elementarycheckForFeatureCalibration() throws Exception {

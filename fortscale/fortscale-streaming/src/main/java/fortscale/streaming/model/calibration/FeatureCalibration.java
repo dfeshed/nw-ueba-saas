@@ -10,7 +10,7 @@ public class FeatureCalibration{
 	
 	private static int MAX_NUM_OF_BUCKETS = 30;
 	
-	private ArrayList<Double> scoreBucketsAggr = null;
+	private Double scoreBucketsAggr[];
 	private ArrayList<IFeatureCalibrationBucketScorer> bucketScorerList = null;
 	private Map<Object, Double> featureValueToCountMap = new HashMap<>();
 	private double addedValue = 1;
@@ -88,33 +88,18 @@ public class FeatureCalibration{
 
 		//There was no need to reinit the calibration for this update.
 		int bucketIndex = (int)getBucketIndex(count);
-		Double reducedCount = reduceCount(count);
 		IFeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
-		double prevScore = bucketScorer.getScore();
-		double score = bucketScorer.updateFeatureValueCount(featureValue, reducedCount);
-		Double diffCount = score - prevScore;
+		bucketScorer.updateFeatureValueCount(featureValue, count);
 
 		if(prevCount != null){
 			int prevBucketIndex = (int)getBucketIndex(prevCount);
 			if(prevBucketIndex != bucketIndex){
 				bucketScorer = bucketScorerList.get(prevBucketIndex);
-				prevScore = bucketScorer.getScore();
-				score = bucketScorer.removeFeatureValue(featureValue);
-				Double prevDiffCount = score - prevScore;
-				diffCount += prevDiffCount;
-				
-				for(int i = prevBucketIndex; i < bucketIndex; i++){
-					scoreBucketsAggr.set(i, scoreBucketsAggr.get(i) + prevDiffCount);
-				}
+				bucketScorer.removeFeatureValue(featureValue);
 			}
 		}
-		
-		total += diffCount;
-		
-		for(int i = bucketIndex; i < scoreBucketsAggr.size(); i++){
-			scoreBucketsAggr.set(i, scoreBucketsAggr.get(i) + diffCount);
-		}
-		
+				
+		fillScoreBucketAggr();
 		
 	}
 		
@@ -145,11 +130,15 @@ public class FeatureCalibration{
 		initBucketScoreList();
 		
 		//Filling the an aggregated histogram of the buckets.
-		scoreBucketsAggr = new ArrayList<>(MAX_NUM_OF_BUCKETS);
+		scoreBucketsAggr = new Double[MAX_NUM_OF_BUCKETS];
+		fillScoreBucketAggr();
+	}
+	
+	private void fillScoreBucketAggr(){
 		double sum = 0;
 		for(int i = 0; i < bucketScorerList.size(); i++){
 			sum += bucketScorerList.get(i).getScore();
-			scoreBucketsAggr.add(sum);
+			scoreBucketsAggr[i] = sum;
 		}
 		total = sum;
 	}
@@ -160,7 +149,6 @@ public class FeatureCalibration{
 		bucketScorerList = new ArrayList<>(MAX_NUM_OF_BUCKETS);
 		for(int i = 0; i < MAX_NUM_OF_BUCKETS; i++){
 			IFeatureCalibrationBucketScorer bucketScorer = createFeatureCalibrationBucketScorer();
-			bucketScorer.setBucketIndex(i);
 			bucketScorerList.add(bucketScorer);
 		}
 		
@@ -170,16 +158,10 @@ public class FeatureCalibration{
 			Entry<Object, Double> featureValueToCountEntry = featureValueToCountIter.next();
 			int bucketIndex = (int)getBucketIndex(featureValueToCountEntry.getValue());
 			minIndex = Math.min(minIndex, bucketIndex);
-			Double reducedCount = reduceCount(featureValueToCountEntry.getValue());
 			IFeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
-			bucketScorer.updateFeatureValueCount(featureValueToCountEntry.getKey(), reducedCount);
+			bucketScorer.updateFeatureValueCount(featureValueToCountEntry.getKey(), featureValueToCountEntry.getValue());
 		}
-		
-		if(minIndex > 0){
-			for(int i = minIndex; i < bucketScorerList.size(); i++){
-				bucketScorerList.get(i).setBucketIndex(i-minIndex);
-			}
-		}
+		bucketScorerList.get(minIndex).setIsFirstBucket(true);		
 	}
 
 	
@@ -194,27 +176,22 @@ public class FeatureCalibration{
 		}
 		
 		double bucketIndex = getBucketIndex(featureCount);
-		if(bucketIndex + 1 >= scoreBucketsAggr.size()){
+		if(bucketIndex + 1 >= scoreBucketsAggr.length){
 			return 0;
 		}
 		
 		int lowerBucketIndex = (int) bucketIndex;
-		
-		double ret = (scoreBucketsAggr.get(lowerBucketIndex) * (lowerBucketIndex + 1 - bucketIndex)) +
-				(scoreBucketsAggr.get(lowerBucketIndex+1) * (bucketIndex - lowerBucketIndex));
+		double ret = scoreBucketsAggr[lowerBucketIndex];
+		if(lowerBucketIndex != bucketIndex){
+			ret = (scoreBucketsAggr[lowerBucketIndex] * (lowerBucketIndex + 1 - bucketIndex)) +
+					(scoreBucketsAggr[lowerBucketIndex+1] * (bucketIndex - lowerBucketIndex));
+		}
 		return 1 - (ret / total);
 	}
 	
 	private double getBucketIndex(double rscore){
 		double num = rscore + addedValue;
 		return num < 2 ? 0 : Math.min((Math.log(num) / Math.log(2)) - 1,MAX_NUM_OF_BUCKETS-1); 
-	}
-	
-	private double reduceCount(double count){
-		double ret = Math.log(count+1) / Math.log(2);
-		ret = Math.pow(ret, 2);
-		
-		return ret;
 	}
 
 }

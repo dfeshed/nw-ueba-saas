@@ -5,12 +5,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class TimeFeatureCalibrationBucketScorer implements
+public class FeatureCalibrationBucketScorer implements
 		IFeatureCalibrationBucketScorer {
 
 private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 	
-	private int bucketIndex;
+	private boolean isFirstBucket = false;
 	
 	private double score = 0;
 	private Object scoreFeatureValue;
@@ -18,7 +18,7 @@ private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 	
 	@Override
 	public double getScore(){
-		if(bucketIndex == 0){
+		if(isFirstBucket){
 			return score * Math.pow(4, featureValueToScoreMap.size()/3);
 		} else{
 			return score;
@@ -38,7 +38,8 @@ private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 	}
 	
 	@Override
-	public double updateFeatureValueCount(Object featureValue, double featureScore){
+	public double updateFeatureValueCount(Object featureValue, double featureCount){
+		double featureScore = reduceCount(featureCount);
 		featureValueToScoreMap.put(featureValue, featureScore);
 		if(scoreFeatureValue == null){
 			score = featureScore;
@@ -59,6 +60,13 @@ private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 		return getScore();
 	}
 	
+	private double reduceCount(double count){
+		double ret = Math.log(count+1) / Math.log(2);
+		ret = Math.pow(ret, 2);
+		
+		return ret;
+	}
+	
 	@Override
 	public double removeFeatureValue(Object featureValue){
 		featureValueToScoreMap.remove(featureValue);
@@ -70,13 +78,13 @@ private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 	}
 
 	@Override
-	public int getBucketIndex() {
-		return bucketIndex;
+	public boolean getIsFirstBucket() {
+		return isFirstBucket;
 	}
 
 	@Override
-	public void setBucketIndex(int bucketIndex) {
-		this.bucketIndex = bucketIndex;
+	public void setIsFirstBucket(boolean isFirstBucket) {
+		this.isFirstBucket = isFirstBucket;
 	}
 
 }

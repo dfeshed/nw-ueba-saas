@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 import fortscale.streaming.model.calibration.FeatureCalibration;
-import fortscale.streaming.model.calibration.TimeFeatureCalibrationBucketScorer;
+import fortscale.streaming.model.calibration.FeatureCalibrationBucketScorer;
 
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
@@ -42,7 +42,7 @@ public class TimeModel {
 	}
 	
 	public double score(long epochSeconds){
-		String bucketName = getBucketName(epochSeconds);
+		Integer bucketName = new Integer(getBucketIndex(epochSeconds));
 		
 		return calibration != null ? calibration.score(bucketName) : 0;
 	}
@@ -50,15 +50,7 @@ public class TimeModel {
 	public int getBucketIndex(long epochSeconds){
 		return (int) ( (epochSeconds % timeResolution) / bucketSize );
 	}
-	
-	public String getBucketName(int bucketIndex){
-		return Integer.toString(bucketIndex);
-	}
-	
-	public String getBucketName(long epochSeconds){
-		return Integer.toString(getBucketIndex(epochSeconds));
-	}
-	
+			
 	public void update(long epochSeconds) throws Exception{
 		int pivot = getBucketIndex(epochSeconds);
 		buckets.set(pivot, buckets.get(pivot)+1);
@@ -70,7 +62,7 @@ public class TimeModel {
 			buckets.set(downIndex % numOfBuckets, buckets.get(downIndex % numOfBuckets) + addVal);
 		}
 		
-		setNorm(getNorm() + 1);
+		norm++;
 		
 		updateCalibration(pivot, buckets.get(pivot));
 	}
@@ -79,12 +71,12 @@ public class TimeModel {
 		if(calibration == null){
 			initCalibration();
 		} else{
-			calibration.updateFeatureValueCount(getBucketName(bucketIndex), val);
+			calibration.updateFeatureValueCount(new Integer(bucketIndex), val);
 		}
 	}
 	
 	private void initCalibration() throws Exception{
-		calibration = new FeatureCalibration(TimeFeatureCalibrationBucketScorer.class);
+		calibration = new FeatureCalibration(FeatureCalibrationBucketScorer.class);
 		Map<Object, Double> tmp = new HashMap<>();
 		
 		for(int i = 0; i < numOfBuckets; i++){
@@ -93,7 +85,7 @@ public class TimeModel {
 				continue;
 			}
 			
-			tmp.put(getBucketName(i), val);
+			tmp.put(new Integer(i), val);
 		}
 		
 		calibration.init(tmp);

@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 import fortscale.streaming.model.FieldModel;
 import fortscale.streaming.model.calibration.FeatureCalibration;
-import fortscale.streaming.model.calibration.TimeFeatureCalibrationBucketScorer;
+import fortscale.streaming.model.calibration.FeatureCalibrationBucketScorer;
 import fortscale.utils.logging.Logger;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class DiscreetValuesCalibratedModel implements FieldModel{
 	private static Logger logger = Logger.getLogger(DiscreetValuesCalibratedModel.class);
 
-	private FeatureCalibration featureCalibration = new FeatureCalibration(TimeFeatureCalibrationBucketScorer.class);
+	private FeatureCalibration featureCalibration = new FeatureCalibration(FeatureCalibrationBucketScorer.class);
 	
 	@Override
 	public void add(Object value, long timestamp) {

@@ -2,8 +2,8 @@ package fortscale.streaming.model.calibration;
 
 public interface IFeatureCalibrationBucketScorer {
 	public double getScore();
-	public double updateFeatureValueCount(Object featureValue, double featureScore);
+	public double updateFeatureValueCount(Object featureValue, double featureCount);
 	public double removeFeatureValue(Object featureValue);
-	public int getBucketIndex();
-	public void setBucketIndex(int bucketIndex);
+	public boolean getIsFirstBucket();
+	public void setIsFirstBucket(boolean isFirstBucket);
 }
