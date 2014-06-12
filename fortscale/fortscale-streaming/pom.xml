@@ -68,8 +68,6 @@
 		<spring-data-mongodb.version>1.3.2.RELEASE</spring-data-mongodb.version>
 		<org.aspectj-version>1.7.3</org.aspectj-version>
 		<guava.version>15.0</guava.version>
-		<kafka.version>0.8.1.1</kafka.version>
-		<scala.version>2.10.2</scala.version>
 		<json-smart.version>1.2</json-smart.version>
 		<samza.version>0.7.0</samza.version>
 		<slf4j.version>1.7.2</slf4j.version>
@@ -86,7 +84,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_2.10</artifactId>
+			<artifactId>kafka_${scala-kafka.version}</artifactId>
 			<version>${kafka.version}</version>
 			<exclusions>
 				<exclusion>
@@ -129,17 +127,17 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-kv_2.10</artifactId>
+			<artifactId>samza-kv_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-core_2.10</artifactId>
+			<artifactId>samza-core_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-serializers_2.10</artifactId>
+			<artifactId>samza-serializers_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
 		</dependency>
 		<dependency>
@@ -151,12 +149,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-yarn_2.10</artifactId>
+			<artifactId>samza-yarn_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-kafka_2.10</artifactId>
+			<artifactId>samza-kafka_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
 		</dependency>
 

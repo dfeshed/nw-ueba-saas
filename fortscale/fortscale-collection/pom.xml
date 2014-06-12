@@ -95,15 +95,13 @@
 		<maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>
 		<maven-download-plugin.version>1.1.0</maven-download-plugin.version>
-		<kafka.version>0.8.1.1</kafka.version>
-		<scala.version>2.9.2</scala.version>
 		<json-smart.version>1.2</json-smart.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_2.9.2</artifactId>
+			<artifactId>kafka_${scala-kafka.version}</artifactId>
 			<version>${kafka.version}</version>
 			<exclusions>
 				<exclusion>
