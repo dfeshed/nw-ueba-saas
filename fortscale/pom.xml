@@ -90,6 +90,9 @@
 		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
 		<maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>
+		<scala.version>2.10.2</scala.version>
+		<kafka.version>0.8.1.1</kafka.version>
+		<scala-kafka.version>2.10</scala-kafka.version>
 		<!-- eclipse plugins versions -->
 		
 	</properties>
