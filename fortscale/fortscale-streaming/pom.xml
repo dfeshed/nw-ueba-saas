@@ -395,6 +395,7 @@
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>${maven-assembly-plugin.version}</version>
 					<configuration>
+						<outputDirectory>deploy</outputDirectory>
 						<descriptors>
 							<descriptor>src/main/assembly/src.xml</descriptor>
 						</descriptors>
