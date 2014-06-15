@@ -1,7 +1,5 @@
 package fortscale.domain.ad;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import fortscale.domain.core.ComputerUsageClassifier;

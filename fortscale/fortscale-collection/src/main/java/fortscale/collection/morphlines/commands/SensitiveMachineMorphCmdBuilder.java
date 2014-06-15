@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.typesafe.config.Config;
 
-import fortscale.domain.core.ComputerUsageType;
-import fortscale.services.ComputerService;
 import fortscale.services.SensitiveMachineService;
 
 public class SensitiveMachineMorphCmdBuilder implements CommandBuilder {
