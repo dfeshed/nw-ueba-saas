@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
@@ -100,7 +101,7 @@ public class EventProcessJob implements Job {
 		hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename");
 		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
 		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
-		streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic");
+		streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic", "");
 		
 		// build record to items processor
 		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
@@ -352,7 +353,8 @@ public class EventProcessJob implements Job {
 	
 	/*** Initialize the streaming appender upon job start to be able to produce messages to */ 
 	protected void initializeStreamingAppender() throws JobExecutionException {
-		streamWriter = new KafkaEventsWriter(streamingTopic);
+		if (StringUtils.isNotEmpty(streamingTopic))
+			streamWriter = new KafkaEventsWriter(streamingTopic);
 	}
 	
 	/*** Send the message produced by the morphline ETL to the streaming platform */
