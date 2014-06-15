@@ -32,17 +32,19 @@ public class SensitiveMachineServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Set<String> sensitiveMachines = new HashSet<String>();
-		sensitiveMachines.add("MY-PC");
-		service.setSensitiveMachines(sensitiveMachines);
+		
 		Computer computer1 = mock(Computer.class);
 		Computer computer2 = mock(Computer.class);
 		List<Computer> computers = new ArrayList<Computer>();
 		computers.add(computer1);
 		computers.add(computer2);
 		when(computerRepository.findByIsSensitive(true)).thenReturn(computers);
-		when(computer1.getName()).thenReturn("comp1");
-		when(computer2.getName()).thenReturn("comp2");
+		when(computer1.getName()).thenReturn("MY-PC");
+		when(computer2.getName()).thenReturn("ANOTHER-PC");
+		Set<String> sensitiveMachines = new HashSet<String>();
+		sensitiveMachines.add("MY-PC");
+		sensitiveMachines.add("ANOTHER-PC");
+		service.setSensitiveMachines(sensitiveMachines);
 		service.setDeletionSymbol("-");
 
 	}
@@ -60,8 +62,8 @@ public class SensitiveMachineServiceTest {
 	@Test
 	public void test_loadSensitiveMachinesFromMongo_output() {
 		Set<String> out = new HashSet<String>();
-		out.add("comp1");
-		out.add("comp2");
+		out.add("MY-PC");
+		out.add("ANOTHER-PC");
 		assertEquals(service.loadSensitiveMachinesFromMongo(), out);
 	}
 
