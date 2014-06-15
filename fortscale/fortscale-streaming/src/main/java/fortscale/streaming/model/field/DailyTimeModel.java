@@ -31,4 +31,22 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 			logger.warn("got an exception while trying to add value to the DailyTimeModel", e);
 		}
 	}
+
+	@Override
+	public double calculateScore(Object value) {
+		double ret = 0;
+		try {
+			if(value instanceof Long){
+				long epochSeconds=TimestampUtils.convertToSeconds((Long) value);
+				super.score(epochSeconds);
+			} else{
+				logger.error("got value {} of instance {} instead of Long", value, value.getClass());
+			}
+		} catch (Exception e) {
+			logger.warn("got an exception while trying to add {} to the DailyTimeModel", value);
+			logger.warn("got an exception while trying to add value to the DailyTimeModel", e);
+		}
+		
+		return ret;
+	}
 }

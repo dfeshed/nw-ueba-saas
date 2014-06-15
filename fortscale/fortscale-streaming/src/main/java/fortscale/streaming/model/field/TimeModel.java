@@ -76,7 +76,7 @@ public class TimeModel {
 	}
 	
 	private void initCalibration() throws Exception{
-		calibration = new FeatureCalibration(FeatureCalibrationBucketScorer.class);
+		calibration = new FeatureCalibration();
 		Map<Object, Double> tmp = new HashMap<>();
 		
 		for(int i = 0; i < numOfBuckets; i++){

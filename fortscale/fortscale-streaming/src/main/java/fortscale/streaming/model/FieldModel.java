@@ -13,4 +13,10 @@ public interface FieldModel {
 	 * Count the field value in the model, set at the given time stamp
 	 */
 	void add(Object value, long timestamp);
+	
+	
+	/**
+	 * calculate the score of the feature value.
+	 */
+	double calculateScore(Object value);
 }

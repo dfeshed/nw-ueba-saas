@@ -125,6 +125,8 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 				for (String fieldName : model.getFieldNames()) {
 					Object value = message.get(fieldName);
 					model.addFieldValue(fieldName, value, timestamp);
+					double score = model.calculateScore(fieldName, value);
+					message.put(String.format("%sscore", fieldName), score);
 				}
 				modelService.updateUserModelInStore(username, model);
 				processedMessageCount.inc();

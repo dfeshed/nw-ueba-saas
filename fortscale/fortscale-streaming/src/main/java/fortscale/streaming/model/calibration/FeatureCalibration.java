@@ -6,24 +6,25 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
+
+@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class FeatureCalibration{
 	
 	private static int MAX_NUM_OF_BUCKETS = 30;
 	
 	private Double scoreBucketsAggr[];
-	private ArrayList<IFeatureCalibrationBucketScorer> bucketScorerList = null;
+	private ArrayList<FeatureCalibrationBucketScorer> bucketScorerList = null;
 	private Map<Object, Double> featureValueToCountMap = new HashMap<>();
 	private double addedValue = 1;
 	private double total = 0;
 	private Double minCount = null;
 	private Object featureValueWithMinCount = null;
-	private Class<?> featureCalibrationBucketScorerClass = null;
 	
+		
 	
-	
-	public FeatureCalibration(Class<?> featureCalibrationBucketScorerClass){
-		this.featureCalibrationBucketScorerClass = featureCalibrationBucketScorerClass;
-	}
 	
 	public Double getFeatureValueCount(Object featureValue){
 		return featureValueToCountMap.get(featureValue);
@@ -88,7 +89,7 @@ public class FeatureCalibration{
 
 		//There was no need to reinit the calibration for this update.
 		int bucketIndex = (int)getBucketIndex(count);
-		IFeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
+		FeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
 		bucketScorer.updateFeatureValueCount(featureValue, count);
 
 		if(prevCount != null){
@@ -105,8 +106,8 @@ public class FeatureCalibration{
 		
 	
 	
-	private IFeatureCalibrationBucketScorer createFeatureCalibrationBucketScorer() throws Exception{
-		return (IFeatureCalibrationBucketScorer) featureCalibrationBucketScorerClass.newInstance();
+	private FeatureCalibrationBucketScorer createFeatureCalibrationBucketScorer() throws Exception{
+		return new FeatureCalibrationBucketScorer();
 	}
 	
 	private void reinit() throws Exception{
@@ -148,7 +149,7 @@ public class FeatureCalibration{
 	private void initBucketScoreList() throws Exception{
 		bucketScorerList = new ArrayList<>(MAX_NUM_OF_BUCKETS);
 		for(int i = 0; i < MAX_NUM_OF_BUCKETS; i++){
-			IFeatureCalibrationBucketScorer bucketScorer = createFeatureCalibrationBucketScorer();
+			FeatureCalibrationBucketScorer bucketScorer = createFeatureCalibrationBucketScorer();
 			bucketScorerList.add(bucketScorer);
 		}
 		
@@ -158,7 +159,7 @@ public class FeatureCalibration{
 			Entry<Object, Double> featureValueToCountEntry = featureValueToCountIter.next();
 			int bucketIndex = (int)getBucketIndex(featureValueToCountEntry.getValue());
 			minIndex = Math.min(minIndex, bucketIndex);
-			IFeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
+			FeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
 			bucketScorer.updateFeatureValueCount(featureValueToCountEntry.getKey(), featureValueToCountEntry.getValue());
 		}
 		bucketScorerList.get(minIndex).setIsFirstBucket(true);		
