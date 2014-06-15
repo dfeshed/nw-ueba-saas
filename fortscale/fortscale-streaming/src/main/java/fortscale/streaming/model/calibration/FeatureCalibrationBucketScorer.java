@@ -19,7 +19,7 @@ private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 	@Override
 	public double getScore(){
 		if(isFirstBucket){
-			return score * Math.pow(4, featureValueToScoreMap.size()/3);
+			return Math.max(score + featureValueToScoreMap.size() - 1,score*0.5*featureValueToScoreMap.size()) * Math.pow(2, (featureValueToScoreMap.size()-1)/3.0);
 		} else{
 			return score;
 		}

@@ -57,17 +57,17 @@ public class FeatureCalibrationTest {
 		featureValueToCountMap.put("test101", 1D);
 		calibration.init(featureValueToCountMap);
 		double score = calibration.score( "test101" );
-		Assert.assertEquals(0.89, score, 0.01);
+		Assert.assertEquals(0.93, score, 0.01);
 		
 		featureValueToCountMap.put("test101", 11D);
 		calibration.init(featureValueToCountMap);
 		score = calibration.score( "test101" );
-		Assert.assertEquals(0.7, score, 0.01);
+		Assert.assertEquals(0.69, score, 0.01);
 		
 		featureValueToCountMap.put("test101", 12D);
 		calibration.init(featureValueToCountMap);
 		score = calibration.score( "test101" );
-		Assert.assertEquals(0.68, score, 0.01);
+		Assert.assertEquals(0.67, score, 0.01);
 		
 		featureValueToCountMap.put("test101", 28D);
 		calibration.init(featureValueToCountMap);
@@ -93,22 +93,22 @@ public class FeatureCalibrationTest {
 		String featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 1D);
 		double score = calibration.score( featureValue );
-		Assert.assertEquals(0.89, score, 0.01);
+		Assert.assertEquals(0.93, score, 0.01);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 11D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0.64, score, 0.01);
+		Assert.assertEquals(0.67, score, 0.01);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 12D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0.62, score, 0.01);
+		Assert.assertEquals(0.65, score, 0.01);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 28D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0.35, score, 0.01);
+		Assert.assertEquals(0.37, score, 0.01);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 64D);
@@ -136,14 +136,17 @@ public class FeatureCalibrationTest {
 		score = calibration.score( featureValue );
 		double score1 = calibration.score( featureValue1 );
 		Assert.assertEquals(score, score1, 0.01);
+		Assert.assertEquals(0.87, score, 0.01);
 		
-		for(int j = 0; j < 2; j++){
-			featureValue = String.format("test%d", i++);
-			calibration.updateFeatureValueCount(featureValue, 1D);
-		}
-		
+		featureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(featureValue, 1D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0.76, score, 0.01);
+		Assert.assertEquals(0.82, score, 0.01);
+		
+		featureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(featureValue, 1D);
+		score = calibration.score( featureValue );
+		Assert.assertEquals(0.74, score, 0.01);
 		
 		for(int j = 0; j < 6; j++){
 			featureValue = String.format("test%d", i++);
@@ -151,7 +154,7 @@ public class FeatureCalibrationTest {
 		}
 		
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0.16, score, 0.01);
+		Assert.assertEquals(0.25, score, 0.01);
 	}
 	
 	@Test
@@ -199,7 +202,7 @@ public class FeatureCalibrationTest {
 		}
 		
 		double score = calibration.score( featureValue );
-		Assert.assertEquals(0.35, score, 0.01);
+		Assert.assertEquals(0.43, score, 0.01);
 	}
 	
 	@Test
