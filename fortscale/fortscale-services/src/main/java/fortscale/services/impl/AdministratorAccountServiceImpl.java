@@ -30,7 +30,7 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 
 	private static Logger logger = LoggerFactory.getLogger(AdministratorAccountServiceImpl.class);
 
-	private Set<String> adminUsers = new HashSet<String>();;
+	private Set<String> adminUsers = new HashSet<String>();
 	private List<String> adminGroups = null;
 
 	@Override
@@ -55,13 +55,8 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 			if(f.exists() && !f.isDirectory()) {
 				adminGroups = FileUtils.readLines(new File(getFilePath()));
 				List<User> adminUsersList = userRepository.findByUserInGroup(adminGroups);
-				if (adminUsersList !=null) {
-					adminUsers.clear();
-					for (User user : adminUsersList) {
-						adminUsers.add(user.getUsername());
-					}
-				}
-				else {
+				adminUsers = getUsernameList(adminUsersList);				
+				if (adminUsersList ==null) {
 					logger.warn("AdministratorGroups no users found in the user repository for groups {}",adminGroups);
 				}
 			}
@@ -75,20 +70,37 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 	}
 
 	private void updateUserTag() {
-		
-		int pageSize = 100;		
-		int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
-		for(int i = 0; i < numOfPages; i++){
-			PageRequest pageRequest = new PageRequest(i, pageSize);
-			for(User user: userRepository.findAll(pageRequest).getContent()){
-				if (adminUsers.contains(user.getUsername())) {
-					userRepository.updateAdministratorAccount(user, true);
-				}
-				else if (user.getAdministratorAccount() == null || user.getAdministratorAccount()) {
-					userRepository.updateAdministratorAccount(user, false);
+		if (adminUsers != null && adminUsers.size() !=0) {
+			int pageSize = 100;		
+			int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
+			for(int i = 0; i < numOfPages; i++){
+				PageRequest pageRequest = new PageRequest(i, pageSize);
+				for(User user: userRepository.findAll(pageRequest).getContent()){
+					if (adminUsers.contains(user.getUsername())) {
+						userRepository.updateAdministratorAccount(user, true);
+					}
+					else if (user.getAdministratorAccount() == null || user.getAdministratorAccount()) {
+						userRepository.updateAdministratorAccount(user, false);
+					}
 				}
 			}
-		}		
+		}
+	}
+	
+	private void refreshAdminList() {
+		List<User> adminUsersList = userRepository.findByAdministratorAccount(true);
+		adminUsers = getUsernameList(adminUsersList);
+	}
+	
+	private Set<String> getUsernameList(List<User> users) {
+		Set<String> result = new HashSet<String>();
+		if (users !=null) {
+			adminUsers.clear();
+			for (User user : users) {
+				adminUsers.add(user.getUsername());
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -100,14 +112,9 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void refresh() {
-		try {
-			updateAdminList();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			e.printStackTrace();
-		}
+		refreshAdminList();
 	}
 
 	public String getFilePath() {
