@@ -1,6 +1,7 @@
 package fortscale.domain.core.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -44,6 +45,11 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 			boolean isSensitiveMachine) {
 
 		mongoTemplate.updateFirst(query(where(Computer.NAME_FIELD).is(computer.getName())), update(Computer.SENSITIVE_MACHINE_FIELD, isSensitiveMachine), Computer.class);
+	}
+
+	@Override
+	public List<Computer> getComputersFromNames(List<String> machineNames) {
+		return mongoTemplate.find(query(where(Computer.NAME_FIELD).in(machineNames)), Computer.class);
 	}
 	
 }

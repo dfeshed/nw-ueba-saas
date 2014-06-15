@@ -64,6 +64,10 @@ public class Computer extends AbstractDocument {
 		this.timestamp = new Date();
 	}
 	
+	public Boolean getIsSensitive() {
+		return isSensitive;
+	}
+
 	public String getOperatingSystem() {
 		return operatingSystem;
 	}
@@ -124,15 +128,21 @@ public class Computer extends AbstractDocument {
 	public void clearUsageClassifiers() {
 		this.usageClassifiers.clear();
 	}
-	public Collection<ComputerUsageClassifier> getUsageClassifiers() {
-		return this.usageClassifiers.values();
-	}
+	
 	public ComputerUsageType getUsageType() {
 		// go over the usage classifiers and return the first one that is not unknown
 		for (ComputerUsageClassifier classifier : usageClassifiers.values())
 			if (classifier.getUsageType()!=ComputerUsageType.Unknown)
 				return classifier.getUsageType();
 		return ComputerUsageType.Unknown;
+	}
+	
+	public Collection<ComputerUsageClassifier> getUsageClassifiers() {
+		return this.usageClassifiers.values();
+	}
+	
+	public Map<String, ComputerUsageClassifier> getUsageClassifiersMap() {
+		return usageClassifiers;
 	}
 	
 }

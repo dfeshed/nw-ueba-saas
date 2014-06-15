@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,24 +38,60 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 	@Value("${user.list.service_sensitive_machine.deletion_symbol:}")
 	private String deletionSymbol;
 
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		updateSensitiveMachines();
+	}
 
+
+	@Override
+	public boolean isMachineSensitive(String machineName) {
+		if (sensitiveMachines != null) {
+			return sensitiveMachines.contains(machineName);
+		}
+		return false;
+	}
+
+	public Set<String> loadSensitiveMachinesFromMongo() {
+		Set<String> res = new HashSet<String>();
+		List<Computer> computers = computerRepository.findByIsSensitive(true);
+		for (Computer c : computers) {
+			res.add(c.getName());
+		}
+		return res;
+	}
+
+	public void updateSensitiveMachines() {
 		sensitiveMachines = loadSensitiveMachinesFromMongo();
 		if (!StringUtils.isEmpty(filePath)) {
 			File machinesFile = new File(filePath);
 			if (machinesFile.exists() && machinesFile.isFile()) {
-				Set<String> machinesFromFile = new HashSet<String>(
-						FileUtils.readLines(machinesFile));
+				Set<String> machinesFromFile = null;
+				try {
+					machinesFromFile = new HashSet<String>(
+							FileUtils.readLines(machinesFile));
+				} catch (IOException e) {
+					logger.error("Error reading lines from file: " + filePath,
+							e);
+				}
 				for (String machineLine : machinesFromFile) {
 					if (machineLine.startsWith(deletionSymbol)) {
 						String machine = machineLine.substring(1);
-						if (sensitiveMachines.contains(machine)) {
-							computerRepository.updateSensitiveMachine(computerRepository.findByName(machine), false);
+						Computer computer = computerRepository
+								.findByName(machine);
+						if (computer != null
+								&& sensitiveMachines.contains(machine)) {
+							computerRepository.updateSensitiveMachine(
+									computerRepository.findByName(machine),
+									false);
 							sensitiveMachines.remove(machine);
 						}
 					} else {
-						if (!sensitiveMachines.contains(machineLine)) {
+						Computer computer = computerRepository
+								.findByName(machineLine);
+						if (computer != null
+								&& !sensitiveMachines.contains(machineLine)) {
 							computerRepository.updateSensitiveMachine(
 									computerRepository.findByName(machineLine),
 									true);
@@ -71,21 +108,27 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 		}
 	}
 
-	@Override
-	public boolean isMachineSensitive(String machineName) {
-		if (sensitiveMachines != null) {
-			return sensitiveMachines.contains(machineName);
-		}
-		return false;
+	public String getFilePath() {
+		return filePath;
 	}
 
-	private Set<String> loadSensitiveMachinesFromMongo() {
-		Set<String> res = new HashSet<String>();
-		List<Computer> computers = computerRepository.findByIsSensitive(true);
-		for (Computer c : computers) {
-			res.add(c.getName());
-		}
-		return res;
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
+	public Set<String> getSensitiveMachines() {
+		return sensitiveMachines;
+	}
+	
+	public void setSensitiveMachines(Set<String> sensitiveMachines) {
+		this.sensitiveMachines = sensitiveMachines;
+	}
+	
+	public String getDeletionSymbol() {
+		return deletionSymbol;
+	}
+
+	public void setDeletionSymbol(String deletionSymbol) {
+		this.deletionSymbol = deletionSymbol;
+	}
 }

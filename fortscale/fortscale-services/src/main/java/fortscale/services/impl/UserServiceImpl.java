@@ -4,12 +4,16 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -32,9 +36,11 @@ import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.Computer;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
+import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.AuthDAO;
@@ -68,6 +74,9 @@ public class UserServiceImpl implements UserService{
 		
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private ComputerRepository computerRepository;
 	
 	@Autowired
 	private UserMachineDAO userMachineDAO;
@@ -459,13 +468,28 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		String userName = user.getUsername();
-		return userMachineDAO.findByUsername(userName);
+		List<UserMachine> userMachines = userMachineDAO.findByUsername(userName);
+		List<String> machinesNames = new ArrayList<String>();
+		for(UserMachine userMachine : userMachines){
+			machinesNames.add(userMachine.getHostname().toUpperCase());
+		}
+		// get from computers repository
+		List<Computer> computers = computerRepository.getComputersFromNames(machinesNames);
+		for (Computer comp : computers){
+			for(UserMachine machine : userMachines){
+				if(machine.getHostname().toUpperCase().equals(comp.getName())){
+					machine.setIsSensitive(comp.getIsSensitive());
+					machine.setOperatingSystem(comp.getOperatingSystem());
+					machine.setUsageClassifiers(comp.getUsageClassifiersMap());
+				}
+			}
+		}
+		return userMachines;
 	}
 	
 	
 	
 	
-		
 	@Override
 	public String getTableName(LogEventsEnum eventId){
 		String tablename = null;
