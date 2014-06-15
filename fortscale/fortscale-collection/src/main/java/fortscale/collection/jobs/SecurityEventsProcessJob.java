@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -79,8 +80,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
 			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + impalaTable);
 			
-			String streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic" + impalaTable);
-			handler.streamWriter = new KafkaEventsWriter(streamingTopic);
+			String streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic" + impalaTable, "");
+			if (StringUtils.isNotEmpty(streamingTopic))
+				handler.streamWriter = new KafkaEventsWriter(streamingTopic);
 			
 			String[] eventsToProcessList = jobDataMapExtension.getJobDataMapStringValue(map, "eventsToProcess" + impalaTable).split(",");
 			for (String eventToProcess : eventsToProcessList) {
@@ -122,7 +124,8 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 						updateOrCreateUserWithClassifierUsername(processedRecord);
 						
 						// output event to streaming platform
-						handler.streamWriter.send(handler.recordToStringProcessor.toJSON(processedRecord));
+						if (handler.streamWriter!=null)
+							handler.streamWriter.send(handler.recordToStringProcessor.toJSON(processedRecord));
 						
 						return true;
 					}
