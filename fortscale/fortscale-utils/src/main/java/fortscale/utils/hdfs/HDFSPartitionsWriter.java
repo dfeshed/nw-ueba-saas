@@ -147,6 +147,15 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 		return newPartitions;
 	}
 	
+	public void clearNewPartitions() {
+		newPartitions = new LinkedList<String>();
+	}
+	
+	public void removeNewPartition(String partitionName) {
+		newPartitions.remove(partitionName);
+	}
+	
+	
 	private BufferedWriter ensureWriter(long timestamp) throws IOException {
 		// get the file path for the writer needed
 		String partitionPath = partitionStrategy.getPartitionPath(timestamp, basePath);
