@@ -21,10 +21,20 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 	@Override
 	public void add(Object value, long timestamp){
 		try {
+			Long epoch = null;
 			if(value instanceof Long){
-				super.update(TimestampUtils.convertToSeconds((Long) value));
+				epoch = TimestampUtils.convertToSeconds((Long) value);
+			} else if(value instanceof String){
+				try{
+					epoch = Long.parseLong((String) value);
+				} catch(NumberFormatException nfe){
+					logger.warn("got the String value ({}) which is not a Long as expected.");
+				}
 			} else{
-				logger.error("got value {} of instance {} instead of Long", value, value.getClass());
+				logger.warn("got value {} of instance {} instead of Long or String", value, value.getClass());
+			}
+			if(epoch != null){
+				super.update(epoch);
 			}
 		} catch (Exception e) {
 			logger.warn("got an exception while trying to add {} to the DailyTimeModel", value);
