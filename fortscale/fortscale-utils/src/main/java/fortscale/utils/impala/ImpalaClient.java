@@ -1,7 +1,6 @@
-package fortscale.collection.hadoop;
+package fortscale.utils.impala;
 
 import org.apache.commons.lang.StringUtils;
-import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class ImpalaClient {
 	@Autowired
 	protected JdbcOperations impalaJdbcTemplate;
 	
-	public void refreshTable(String tableName) throws JobExecutionException {
+	public void refreshTable(String tableName) throws Exception {
 		Assert.hasText(tableName);
 			
 		String sql = String.format("REFRESH %s", tableName);
@@ -26,17 +25,17 @@ public class ImpalaClient {
 			impalaJdbcTemplate.execute(sql);
 		} catch (Exception e) {
 			logger.error("error refreshing impala table " + tableName, e);
-			throw new JobExecutionException("error refreshing impala table " + tableName, e);
+			throw new Exception("error refreshing impala table " + tableName, e);
 		}
 	}
 	
-	public void addPartitionToTable(String tableName, Long runtime) throws JobExecutionException{
+	public void addPartitionToTable(String tableName, Long runtime) throws Exception{
 		Assert.hasText(tableName);
 		Assert.notNull(runtime);
 		addPartitionToTable(tableName, String.format("runtime=%s", runtime.toString()));
 	}
 	
-	public void addPartitionToTable(String tableName, String partition) throws JobExecutionException {
+	public void addPartitionToTable(String tableName, String partition) throws Exception {
 		Assert.hasText(tableName);
 		Assert.hasText(partition);
 		
@@ -46,7 +45,7 @@ public class ImpalaClient {
 		} catch (Exception e) {
 			String errorMessage = String.format("failed to to run the following  sql command: %s", sql);
 			logger.error(errorMessage, e);
-			throw new JobExecutionException(errorMessage, e);
+			throw new Exception(errorMessage, e);
 		}
 	}
 	

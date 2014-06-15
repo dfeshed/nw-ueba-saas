@@ -8,5 +8,6 @@
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
 	<bean id="impalaParser" class="fortscale.utils.impala.ImpalaParser" />
+	<bean id="impalaClient" class="fortscale.utils.impala.ImpalaClient" />
 
 </beans>

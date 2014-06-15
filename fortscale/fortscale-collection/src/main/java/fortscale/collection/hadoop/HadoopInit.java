@@ -13,6 +13,7 @@ import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.partition.RuntimePartitionStrategy;
+import fortscale.utils.impala.ImpalaClient;
 
 @Component
 public class HadoopInit implements InitializingBean{

@@ -221,7 +221,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	
 	@Override protected void refreshImpala() throws JobExecutionException {
 		
-		List<JobExecutionException> exceptions = new LinkedList<JobExecutionException>();
+		List<Exception> exceptions = new LinkedList<Exception>();
 		
 		// refresh all events tables
 		for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
@@ -229,22 +229,25 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			for (String partition : handlers.appender.getNewPartitions()) {
 				try {
 					impalaClient.addPartitionToTable(handlers.impalaTableName, partition);
-				} catch (JobExecutionException e) {
+				} catch (Exception e) {
 					exceptions.add(e);
 				}
 			}
 			
 			try {
 				impalaClient.refreshTable(handlers.impalaTableName);
-			} catch (JobExecutionException e) {
+			} catch (Exception e) {
 				exceptions.add(e);
 			}
 		}
 		
 		// log all errors if any
-		for (JobExecutionException e : exceptions) {
-			logger.error("", e);
-			monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+		if (!exceptions.isEmpty()) {
+			for (Exception e : exceptions) {
+				logger.error("", e);
+				monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+			}
+			throw new JobExecutionException(exceptions.get(0).getMessage(), exceptions.get(0).getCause());
 		}
 	}
 	

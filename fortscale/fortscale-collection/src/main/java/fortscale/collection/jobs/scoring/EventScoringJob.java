@@ -13,10 +13,10 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 
-import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.hadoop.pig.EventScoringPigRunner;
 import fortscale.collection.hadoop.pig.NoPartitionExistException;
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
 
 @DisallowConcurrentExecution
@@ -190,8 +190,12 @@ public class EventScoringJob extends FortscaleJob {
 	private boolean runAddPartitionQuery() throws JobExecutionException{	
 		startNewStep(String.format("%s add partition ", getTableName()));
 		
-		impalaClient.addPartitionToTable(getTableName(), runtime);
-
+		try {
+			impalaClient.addPartitionToTable(getTableName(), runtime);
+		} catch (Exception e) {
+			throw new JobExecutionException(e);
+		}
+			
 		finishStep();
 		
 		
@@ -200,8 +204,11 @@ public class EventScoringJob extends FortscaleJob {
 	
 	private boolean runRefreshTable() throws JobExecutionException{	
 		startNewStep(String.format("%s refresh table", getTableName()));
-		
-		impalaClient.refreshTable(getTableName());
+		try {
+			impalaClient.refreshTable(getTableName());
+		} catch (Exception e) {
+			throw new JobExecutionException(e);
+		}
 
 		finishStep();
 		

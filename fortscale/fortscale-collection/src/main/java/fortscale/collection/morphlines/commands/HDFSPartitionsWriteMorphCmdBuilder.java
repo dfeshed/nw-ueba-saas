@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.typesafe.config.Config;
 
-import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.morphlines.MorphlineConfigService;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -28,6 +27,7 @@ import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.hdfs.split.FileSplitUtils;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.IllegalStructuredProperty;
 import fortscale.utils.properties.PropertyNotExistException;
