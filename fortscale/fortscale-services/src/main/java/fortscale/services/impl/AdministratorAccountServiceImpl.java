@@ -100,6 +100,15 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 			e.printStackTrace();
 		}
 	}
+	
+	public void refresh() {
+		try {
+			updateAdminList();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			e.printStackTrace();
+		}
+	}
 
 	public String getFilePath() {
 		return filePath;

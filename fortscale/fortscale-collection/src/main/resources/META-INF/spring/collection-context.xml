@@ -2,7 +2,8 @@
 <beans 
 	xmlns="http://www.springframework.org/schema/beans" 
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task"  
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
@@ -22,5 +23,9 @@
 	<context:spring-configured />
     <context:annotation-config />
 	<context:component-scan base-package="fortscale" />
-	
+
+    <task:scheduler id="dataRetrievalScheduler" pool-size="1" />
+    <task:scheduled-tasks scheduler="dataRetrievalScheduler">
+    	<task:scheduled ref="administratorAccountService" method="update" cron="0 * * * * ?" />
+    </task:scheduled-tasks>	
 </beans>

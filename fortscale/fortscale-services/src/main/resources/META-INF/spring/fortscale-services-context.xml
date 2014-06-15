@@ -37,5 +37,6 @@
     <task:scheduler id="dataRetrievalScheduler" pool-size="1" />
     <task:scheduled-tasks scheduler="dataRetrievalScheduler">
     	<task:scheduled ref="userServiceAccountService" method="update" cron="0 * * * * ?" />
-     </task:scheduled-tasks>	
+    	<task:scheduled ref="administratorAccountService" method="refresh" cron="0 * * * * ?" />
+    </task:scheduled-tasks>
 </beans>
