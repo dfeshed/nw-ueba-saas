@@ -84,7 +84,7 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 				if (adminUsers.contains(user.getUsername())) {
 					userRepository.updateAdministratorAccount(user, true);
 				}
-				else if (user.getAdministratorAccount()) {
+				else if (user.getAdministratorAccount() == null || user.getAdministratorAccount()) {
 					userRepository.updateAdministratorAccount(user, false);
 				}
 			}
