@@ -32,7 +32,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>90</value>
+						<value>14</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
@@ -60,11 +60,11 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>runtime</value>
+						<value>monthly</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>8</value>
+						<value>90</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 51 3 * * ?</cron-expression>
