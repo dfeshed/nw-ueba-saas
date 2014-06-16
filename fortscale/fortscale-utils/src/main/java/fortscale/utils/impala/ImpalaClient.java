@@ -66,11 +66,11 @@ public class ImpalaClient {
 		StringBuilder builder = new StringBuilder();
 		builder.append("CREATE EXTERNAL TABLE ").append(tableName).append("(").append(fields).append(")");
 		if(!StringUtils.isEmpty(partition)){
-			builder.append(" ").append("PARTITIONED BY (").append(partition).append(")");
+			builder.append(" PARTITIONED BY (").append(partition).append(")");
 		}
-		builder.append(" ").append("ROW FORMAT DELIMITED FIELDS TERMINATED BY '").append(delimiter).append("'");
-		builder.append(" ").append("STORED AS TEXTFILE");
-		builder.append(" ").append("LOCATION '").append(location).append("'");
+		builder.append(" ROW FORMAT DELIMITED FIELDS TERMINATED BY '").append(delimiter).append("'");
+		builder.append(" STORED AS TEXTFILE");
+		builder.append(" LOCATION '").append(location).append("'");
 		logger.debug(builder.toString());
 		impalaJdbcTemplate.execute(builder.toString());
 	}

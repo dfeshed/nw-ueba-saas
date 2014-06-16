@@ -7,7 +7,6 @@ import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.storage.kv.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fortscale.streaming.model.PrevalanceModel;
 import fortscale.streaming.model.PrevalanceModelBuilder;
@@ -33,9 +32,7 @@ public class PrevalanceModelService {
 		
 		// get the repository from spring context implicitly, as I has a horrible 
 		// experience using compile time weaving to work here....
-		@SuppressWarnings("resource")
-		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/streaming-context.xml");
-		repository = context.getBean(ModelRepository.class);
+		repository = SpringService.getInstance().resolve(ModelRepository.class);
 	}
 	
 	/** Get the model for the user first from the samza store, if not exists look for it in the repository or build a new model */

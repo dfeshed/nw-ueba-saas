@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fortscale.streaming.service.HdfsService;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 
@@ -89,14 +90,14 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 		StringBuilder line = new StringBuilder();
 		boolean first = true;
 		for (String field : fields) {
-			if (!first) {
-				line.append(separator);
+			if (first)
 				first = false;
-			}
+			else
+				line.append(separator);
+
 			Object value = message.get(field);
 			if (value!=null)
 				line.append(value.toString());
-			line.append(separator);
 		}
 		return line.toString();
 	}

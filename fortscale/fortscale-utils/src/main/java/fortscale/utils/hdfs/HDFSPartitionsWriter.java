@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 
@@ -157,9 +158,12 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 	
 	
 	private BufferedWriter ensureWriter(long timestamp) throws IOException {
+		// ensure timestamp is in millis format
+		long millis = TimestampUtils.convertToMilliSeconds(timestamp);
+		
 		// get the file path for the writer needed
-		String partitionPath = partitionStrategy.getPartitionPath(timestamp, basePath);
-		String filePath = fileSplitStrategy.getFilePath(partitionPath, fileName, timestamp);
+		String partitionPath = partitionStrategy.getPartitionPath(millis, basePath);
+		String filePath = fileSplitStrategy.getFilePath(partitionPath, fileName, millis);
 		
 		// keep track of new partitions that we create
 		if (!fs.exists(new Path(partitionPath))) {
@@ -168,7 +172,7 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 				throw new IOException("cannot create hdfs path " + partitionPath);
 
 			// stored the new partition to be used later for impala refresh
-			String partitionName = partitionStrategy.getImpalaPartitionName(timestamp);
+			String partitionName = partitionStrategy.getImpalaPartitionName(millis);
 			if (partitionName!=null)
 				newPartitions.add(partitionName);
 		}
