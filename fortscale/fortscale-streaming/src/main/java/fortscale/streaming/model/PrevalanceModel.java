@@ -59,6 +59,15 @@ public class PrevalanceModel {
 		timeMark = Math.max(timeMark, millis);
 	}
 	
+	public double calculateScore(String fieldName, Object value){
+		checkNotNull(fieldName);
+		if (value==null || !fields.containsKey(fieldName))
+			return 0 ; 
+		
+		FieldModel model = fields.get(fieldName);
+		return model.calculateScore(value);
+	}
+	
 	public boolean isTimeMarkAfter(long timestamp) {
 		// check that the value time stamp is not before the time mark
 		return (convertToMilliSeconds(timestamp) < timeMark);

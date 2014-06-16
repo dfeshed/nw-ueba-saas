@@ -14,17 +14,17 @@ import org.junit.runners.JUnit4;
 public class FeatureCalibrationTest {
 
 	private FeatureCalibration createNewFeatureCalibration(){
-		return new FeatureCalibration(FeatureCalibrationBucketScorer.class);
+		return new FeatureCalibration();
 	}
 	@Test
 	public void elementarycheckForFeatureCalibration() throws Exception {
 		FeatureCalibration calibration = createNewFeatureCalibration();
-		Map<Object, Double> featureValueToCountMap = new HashMap<Object, Double>();
+		Map<String, Double> featureValueToCountMap = new HashMap<String, Double>();
 		for (int i = 0; i < 100; i++) {
 			featureValueToCountMap.put(String.format("test%d", i), 100D);
 		}
 		calibration.init(featureValueToCountMap);
-		for (Object featureValue : featureValueToCountMap.keySet()) {
+		for (String featureValue : featureValueToCountMap.keySet()) {
 			double score = calibration.score(featureValue);
 			Assert.assertEquals(0.0, score);
 			
@@ -34,7 +34,7 @@ public class FeatureCalibrationTest {
 	@Test
 	public void testScoreOfNewFeatureValueWhichWasNotUpdatedInTheCalibration() throws Exception {
 		FeatureCalibration calibration = createNewFeatureCalibration();
-		Map<Object, Double> featureValueToCountMap = new HashMap<Object, Double>();
+		Map<String, Double> featureValueToCountMap = new HashMap<String, Double>();
 		for (int i = 0; i < 100; i++) {
 			featureValueToCountMap.put(String.format("test%d", i), 100D);
 		}
@@ -47,7 +47,7 @@ public class FeatureCalibrationTest {
 	public void simpleInputOutputForFeatureCalibration() throws Exception{
 		Random rnd = new Random(1);
 		FeatureCalibration calibration = createNewFeatureCalibration();
-		Map<Object, Double> featureValueToCountMap = new HashMap<Object, Double>();
+		Map<String, Double> featureValueToCountMap = new HashMap<String, Double>();
 		for (int i = 0; i < 100; i++) {
 			double val = Math.min( 100.0, rnd.nextDouble( ) * 100 );
 			featureValueToCountMap.put(String.format("test%d", i), val);

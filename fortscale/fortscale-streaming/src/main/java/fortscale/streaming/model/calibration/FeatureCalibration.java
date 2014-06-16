@@ -6,41 +6,42 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
+
+@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class FeatureCalibration{
 	
 	private static int MAX_NUM_OF_BUCKETS = 30;
 	
 	private Double scoreBucketsAggr[];
-	private ArrayList<IFeatureCalibrationBucketScorer> bucketScorerList = null;
-	private Map<Object, Double> featureValueToCountMap = new HashMap<>();
+	private ArrayList<FeatureCalibrationBucketScorer> bucketScorerList = null;
+	private Map<String, Double> featureValueToCountMap = new HashMap<>();
 	private double addedValue = 1;
 	private double total = 0;
 	private Double minCount = null;
-	private Object featureValueWithMinCount = null;
-	private Class<?> featureCalibrationBucketScorerClass = null;
+	private String featureValueWithMinCount = null;
+	
+		
 	
 	
-	
-	public FeatureCalibration(Class<?> featureCalibrationBucketScorerClass){
-		this.featureCalibrationBucketScorerClass = featureCalibrationBucketScorerClass;
-	}
-	
-	public Double getFeatureValueCount(Object featureValue){
+	public Double getFeatureValueCount(String featureValue){
 		return featureValueToCountMap.get(featureValue);
 	}
 	
 	//Filling the feature values to count map with the given map
 	//The values in the map expected to be above 1. Hence values below 1 are not added.
-	public void init(Map<Object, Double> featureValueToCountMap) throws Exception {
+	public void init(Map<String, Double> featureValueToCountMap) throws Exception {
 		if(featureValueToCountMap.size() == 0){
 			return;
 		}
 		
 		
 		this.featureValueToCountMap = new HashMap<>();
-		Iterator<Entry<Object, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
+		Iterator<Entry<String, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
 		while(featureValueToCountIter.hasNext()){
-			Entry<Object, Double> featureValueToCountEntry = featureValueToCountIter.next();
+			Entry<String, Double> featureValueToCountEntry = featureValueToCountIter.next();
 			if(featureValueToCountEntry.getValue() < 1){
 				continue;
 			}
@@ -50,7 +51,7 @@ public class FeatureCalibration{
 		reinit();
 	}
 	
-	public void incrementFeatureValue(Object featureValue) throws Exception{
+	public void incrementFeatureValue(String featureValue) throws Exception{
 		Double count = featureValueToCountMap.get(featureValue);
 		if(count == null){
 			count = 1D;
@@ -63,7 +64,7 @@ public class FeatureCalibration{
 	
 	//updating feature value with a new count.
 	//the value is expected to be >= 1
-	public void updateFeatureValueCount(Object featureValue, Double count) throws Exception{
+	public void updateFeatureValueCount(String featureValue, Double count) throws Exception{
 		if(count < 1){
 			return;
 		}
@@ -77,7 +78,7 @@ public class FeatureCalibration{
 				isReinit = true;
 			}
 		} else if(featureValue.equals(featureValueWithMinCount)){
-			isReinit = true;
+			recalculateFeatureValueWithMinCount();
 		}
 		
 		if(isReinit){
@@ -88,14 +89,17 @@ public class FeatureCalibration{
 
 		//There was no need to reinit the calibration for this update.
 		int bucketIndex = (int)getBucketIndex(count);
-		IFeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
+		FeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
 		bucketScorer.updateFeatureValueCount(featureValue, count);
 
 		if(prevCount != null){
 			int prevBucketIndex = (int)getBucketIndex(prevCount);
 			if(prevBucketIndex != bucketIndex){
-				bucketScorer = bucketScorerList.get(prevBucketIndex);
-				bucketScorer.removeFeatureValue(featureValue);
+				FeatureCalibrationBucketScorer prevBucketScorer = bucketScorerList.get(prevBucketIndex);
+				prevBucketScorer.removeFeatureValue(featureValue);
+				if(prevBucketScorer.size() == 0 && prevBucketScorer.getIsFirstBucket()){
+					bucketScorer.setIsFirstBucket(true);
+				}
 			}
 		}
 				
@@ -105,25 +109,15 @@ public class FeatureCalibration{
 		
 	
 	
-	private IFeatureCalibrationBucketScorer createFeatureCalibrationBucketScorer() throws Exception{
-		return (IFeatureCalibrationBucketScorer) featureCalibrationBucketScorerClass.newInstance();
+	private FeatureCalibrationBucketScorer createFeatureCalibrationBucketScorer() throws Exception{
+		return new FeatureCalibrationBucketScorer();
 	}
 	
 	private void reinit() throws Exception{
 		total = 0;
-		minCount = null;
-		featureValueWithMinCount = null;
+		
 		//Finding the smaller count of all the feature values
-		Iterator<Entry<Object, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
-		while(featureValueToCountIter.hasNext()){
-			Entry<Object, Double> featureValueToCountEntry = featureValueToCountIter.next();
-			Double val = featureValueToCountEntry.getValue();
-			if(minCount == null || val < minCount){
-				minCount = val;
-				featureValueWithMinCount = featureValueToCountEntry.getKey();
-			}
-		}
-
+		recalculateFeatureValueWithMinCount();
 		
 		//Filling the buckets with all the feature values counts.
 		//while doing so the counts are getting reduced in the method reduceCount
@@ -132,6 +126,21 @@ public class FeatureCalibration{
 		//Filling the an aggregated histogram of the buckets.
 		scoreBucketsAggr = new Double[MAX_NUM_OF_BUCKETS];
 		fillScoreBucketAggr();
+	}
+	
+	//Finding the smaller count of all the feature values
+	private void recalculateFeatureValueWithMinCount(){
+		minCount = null;
+		featureValueWithMinCount = null;
+		Iterator<Entry<String, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
+		while(featureValueToCountIter.hasNext()){
+			Entry<String, Double> featureValueToCountEntry = featureValueToCountIter.next();
+			Double val = featureValueToCountEntry.getValue();
+			if(minCount == null || val < minCount){
+				minCount = val;
+				featureValueWithMinCount = featureValueToCountEntry.getKey();
+			}
+		}
 	}
 	
 	private void fillScoreBucketAggr(){
@@ -148,24 +157,24 @@ public class FeatureCalibration{
 	private void initBucketScoreList() throws Exception{
 		bucketScorerList = new ArrayList<>(MAX_NUM_OF_BUCKETS);
 		for(int i = 0; i < MAX_NUM_OF_BUCKETS; i++){
-			IFeatureCalibrationBucketScorer bucketScorer = createFeatureCalibrationBucketScorer();
+			FeatureCalibrationBucketScorer bucketScorer = createFeatureCalibrationBucketScorer();
 			bucketScorerList.add(bucketScorer);
 		}
 		
 		int minIndex = MAX_NUM_OF_BUCKETS;
-		Iterator<Entry<Object, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
+		Iterator<Entry<String, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
 		while(featureValueToCountIter.hasNext()){
-			Entry<Object, Double> featureValueToCountEntry = featureValueToCountIter.next();
+			Entry<String, Double> featureValueToCountEntry = featureValueToCountIter.next();
 			int bucketIndex = (int)getBucketIndex(featureValueToCountEntry.getValue());
 			minIndex = Math.min(minIndex, bucketIndex);
-			IFeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
+			FeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
 			bucketScorer.updateFeatureValueCount(featureValueToCountEntry.getKey(), featureValueToCountEntry.getValue());
 		}
 		bucketScorerList.get(minIndex).setIsFirstBucket(true);		
 	}
 
 	
-	public double score(Object featureValue) {
+	public double score(String featureValue) {
 		if(scoreBucketsAggr == null){
 			return 0;
 		}

@@ -1,5 +1,7 @@
 package fortscale.streaming.model.field;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
@@ -21,14 +23,52 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 	@Override
 	public void add(Object value, long timestamp){
 		try {
-			if(value instanceof Long){
-				super.update(TimestampUtils.convertToSeconds((Long) value));
-			} else{
-				logger.error("got value {} of instance {} instead of Long", value, value.getClass());
+			Long epoch = convertToLong(value);
+			if(epoch != null){
+				super.update(epoch);
 			}
 		} catch (Exception e) {
 			logger.warn("got an exception while trying to add {} to the DailyTimeModel", value);
 			logger.warn("got an exception while trying to add value to the DailyTimeModel", e);
 		}
+	}
+	
+	private Long convertToLong(Object value){
+		if(value == null){
+			return null;
+		}
+		
+		Long ret = null;
+		if(value instanceof Long || value instanceof Integer){
+			ret = TimestampUtils.convertToSeconds((Long) value);
+		} else if(value instanceof String){
+			try{
+				if(StringUtils.isNotEmpty((String) value)){
+					ret = Long.parseLong((String) value);
+				}
+			} catch(NumberFormatException nfe){
+				logger.warn("got the String value ({}) which is not a Long as expected.");
+			}
+		} else{
+			logger.warn("got value {} of instance {} instead of Long or String", value, value.getClass());
+		}
+		
+		return ret;
+	}
+
+	@Override
+	public double calculateScore(Object value) {
+		double ret = 0;
+		try {
+			Long epoch = convertToLong(value);
+			if(epoch != null){
+				super.score(epoch);
+			}
+		} catch (Exception e) {
+			logger.warn("got an exception while trying to add {} to the DailyTimeModel", value);
+			logger.warn("got an exception while trying to add value to the DailyTimeModel", e);
+		}
+		
+		return ret;
 	}
 }
