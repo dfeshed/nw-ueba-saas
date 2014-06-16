@@ -247,7 +247,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 				logger.error("", e);
 				monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
 			}
-			throw new JobExecutionException(exceptions.get(0).getMessage(), exceptions.get(0).getCause());
+			throw new JobExecutionException("got error while refreshing impala", exceptions.get(0));
 		}
 	}
 	

@@ -334,7 +334,7 @@ public class EventProcessJob implements Job {
 			monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
 		}
 		if (!exceptions.isEmpty())
-			throw new JobExecutionException(exceptions.get(0).getMessage(), exceptions.get(0).getCause());
+			throw new JobExecutionException("got exception while refreshing impala", exceptions.get(0));
 	}
 	
 	protected void createOutputAppender() throws JobExecutionException {

@@ -251,7 +251,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		}
 		
 		if (lastException!=null)
-			throw new JobExecutionException(lastException.getMessage(), lastException.getCause());
+			throw new JobExecutionException("got exception while refreshing impala", lastException);
 		
 		finishStep();
 	}
