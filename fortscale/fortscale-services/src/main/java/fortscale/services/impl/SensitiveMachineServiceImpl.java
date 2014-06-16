@@ -47,6 +47,7 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 
 	@Override
 	public boolean isMachineSensitive(String machineName) {
+		machineName = machineName.toUpperCase();
 		if (sensitiveMachines != null) {
 			return sensitiveMachines.contains(machineName);
 		}
@@ -77,7 +78,7 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 				}
 				for (String machineLine : machinesFromFile) {
 					if (machineLine.startsWith(deletionSymbol)) {
-						String machine = machineLine.substring(1);
+						String machine = machineLine.substring(1).toUpperCase();
 						Computer computer = computerRepository
 								.findByName(machine);
 						if (computer != null
@@ -88,14 +89,15 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 							sensitiveMachines.remove(machine);
 						}
 					} else {
+						String machine = machineLine.toUpperCase();
 						Computer computer = computerRepository
-								.findByName(machineLine);
+								.findByName(machine);
 						if (computer != null
-								&& !sensitiveMachines.contains(machineLine)) {
+								&& !sensitiveMachines.contains(machine)) {
 							computerRepository.updateSensitiveMachine(
-									computerRepository.findByName(machineLine),
+									computerRepository.findByName(machine),
 									true);
-							sensitiveMachines.add(machineLine);
+							sensitiveMachines.add(machine);
 						}
 					}
 				}

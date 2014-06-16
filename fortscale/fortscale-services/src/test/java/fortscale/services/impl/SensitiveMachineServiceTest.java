@@ -51,7 +51,7 @@ public class SensitiveMachineServiceTest {
 
 	@Test
 	public void isSensitive_should_return_true() {
-		assertTrue(service.isMachineSensitive("MY-PC") == true);
+		assertTrue(service.isMachineSensitive("my-pc") == true);
 	}
 
 	@Test
@@ -78,7 +78,7 @@ public class SensitiveMachineServiceTest {
 	
 	@Test
 	public void test_adding_three_sensitiveMachines_to_sensitivemachines() {
-		creatingMachinesFile("DUMMY-PC\nX-PC\nY-PC");
+		creatingMachinesFile("dummy-pc\nX-PC\nY-PC");
 		when(computerRepository.findByName(anyString())).thenReturn(
 				new Computer());
 		service.updateSensitiveMachines();
