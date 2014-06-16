@@ -95,9 +95,9 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 	private Set<String> getUsernameList(List<User> users) {
 		Set<String> result = new HashSet<String>();
 		if (users !=null) {
-			adminUsers.clear();
+			result.clear();
 			for (User user : users) {
-				adminUsers.add(user.getUsername());
+				result.add(user.getUsername());
 			}
 		}
 		return result;
