@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
+import fortscale.services.AdministratorAccountService;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.impl.UsernameService;
 
@@ -25,6 +26,9 @@ public class AdUserProcessJob extends AdProcessJob {
 	@Autowired
 	private UsernameService usernameService;
 	
+	@Autowired
+	private AdministratorAccountService administratorAccountService;
+
 	private RecordToBeanItemConverter<AdUser> converter;
 	
 	@Override
@@ -65,6 +69,8 @@ public class AdUserProcessJob extends AdProcessJob {
 	protected void runFinalStep(){
 		startNewStep("update username set");
 		usernameService.update();
+		// Update admin tag
+		administratorAccountService.update();
 		finishStep();
 	}
 }

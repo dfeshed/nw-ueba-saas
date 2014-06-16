@@ -50,4 +50,5 @@ public interface IUserTable {
 	public Long getVpnLastActivityTime();
 	public Long getLoginLastActivityTime();
 	public Boolean getIsUserAccountService();
+	public Boolean getIsAdministratorAccount();
 }

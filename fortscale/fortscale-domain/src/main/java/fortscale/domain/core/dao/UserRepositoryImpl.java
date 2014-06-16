@@ -292,6 +292,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 
 	@Override
 	public List<User> findByUserInGroup(Collection<String> groups) {
-		return findByUniqueField(UserAdInfo.groupsField, groups);
+		return findByUniqueField(User.getAdInfoField(String.format("%s.%s",UserAdInfo.groupsField,UserAdInfo.adDnField)), groups);
+	}
+
+	@Override
+	public void updateAdministratorAccount(User user,
+			boolean isAdministratorAccount) {
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.administratorAccountField, isAdministratorAccount), User.class);
 	}
 }
