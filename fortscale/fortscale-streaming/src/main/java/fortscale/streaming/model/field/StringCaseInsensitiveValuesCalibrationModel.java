@@ -1,5 +1,7 @@
 package fortscale.streaming.model.field;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
@@ -11,9 +13,11 @@ public class StringCaseInsensitiveValuesCalibrationModel extends DiscreetValuesC
 
 	@Override
 	public void add(Object value, long timestamp) {
-		if (isValueValid(value)){		
-			String str = (String)value;
-			super.add(str.toLowerCase(), timestamp);
+		if (isValueValid(value)){
+			if(value != null && StringUtils.isNotEmpty((String) value)){
+				String str = (String)value;
+				super.add(str.toLowerCase(), timestamp);
+			}
 		} else{
 			logger.warn("given value ({}) is not valid", value);
 		}
@@ -23,8 +27,10 @@ public class StringCaseInsensitiveValuesCalibrationModel extends DiscreetValuesC
 	public double calculateScore(Object value) {
 		double ret = 0;
 		if (isValueValid(value)){
-			String str = (String)value;
-			 ret = super.calculateScore(str.toLowerCase());
+			if(value != null && StringUtils.isNotEmpty((String) value)){
+				String str = (String)value;
+				ret = super.calculateScore(str.toLowerCase());
+			}
 		} else{
 			logger.warn("given value ({}) is not valid", value);
 		}
@@ -33,6 +39,6 @@ public class StringCaseInsensitiveValuesCalibrationModel extends DiscreetValuesC
 	}
 	
 	private boolean isValueValid(Object value){
-		return !(value==null || !(value instanceof String) || "".equals(value));
+		return value instanceof String;
 	}
 }

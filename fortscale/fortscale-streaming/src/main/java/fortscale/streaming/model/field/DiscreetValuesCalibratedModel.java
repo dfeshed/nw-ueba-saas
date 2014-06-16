@@ -16,7 +16,10 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 	@Override
 	public void add(Object value, long timestamp) {
 		try {
-			featureCalibration.incrementFeatureValue(value.toString());
+			String featureValue = getFeatureValue(value);
+			if(featureValue != null){
+				featureCalibration.incrementFeatureValue(featureValue);
+			}
 		} catch (Exception e) {
 			logger.warn("got an exception while trying to add {} to the DiscreetValuesCalibratedModel", value);
 			logger.warn("got an exception while trying to add value to the DailyTimeModel", e);
@@ -25,6 +28,18 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 
 	@Override
 	public double calculateScore(Object value) {
-		return featureCalibration.score(value.toString());
+		String featureValue = getFeatureValue(value);
+		if(featureValue != null){
+			return featureCalibration.score(value.toString());
+		} else{
+			return 0;
+		}
+	}
+	
+	private String getFeatureValue(Object value){
+		if(value == null){
+			return null;
+		}
+		return value.toString();
 	}
 }

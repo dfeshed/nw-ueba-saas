@@ -1,5 +1,7 @@
 package fortscale.streaming.model.field;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
@@ -32,12 +34,18 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 	}
 	
 	private Long convertToLong(Object value){
+		if(value == null){
+			return null;
+		}
+		
 		Long ret = null;
-		if(value instanceof Long){
+		if(value instanceof Long || value instanceof Integer){
 			ret = TimestampUtils.convertToSeconds((Long) value);
 		} else if(value instanceof String){
 			try{
-				ret = Long.parseLong((String) value);
+				if(StringUtils.isNotEmpty((String) value)){
+					ret = Long.parseLong((String) value);
+				}
 			} catch(NumberFormatException nfe){
 				logger.warn("got the String value ({}) which is not a Long as expected.");
 			}
