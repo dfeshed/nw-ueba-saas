@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 import fortscale.streaming.model.calibration.FeatureCalibration;
-import fortscale.streaming.model.calibration.FeatureCalibrationBucketScorer;
 
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
@@ -42,7 +41,7 @@ public class TimeModel {
 	}
 	
 	public double score(long epochSeconds){
-		Integer bucketName = new Integer(getBucketIndex(epochSeconds));
+		String bucketName = Integer.toString(getBucketIndex(epochSeconds));
 		
 		return calibration != null ? calibration.score(bucketName) : 0;
 	}
@@ -71,13 +70,13 @@ public class TimeModel {
 		if(calibration == null){
 			initCalibration();
 		} else{
-			calibration.updateFeatureValueCount(new Integer(bucketIndex), val);
+			calibration.updateFeatureValueCount(Integer.toString(bucketIndex), val);
 		}
 	}
 	
 	private void initCalibration() throws Exception{
 		calibration = new FeatureCalibration();
-		Map<Object, Double> tmp = new HashMap<>();
+		Map<String, Double> tmp = new HashMap<>();
 		
 		for(int i = 0; i < numOfBuckets; i++){
 			Double val = buckets.get(i);
@@ -85,7 +84,7 @@ public class TimeModel {
 				continue;
 			}
 			
-			tmp.put(new Integer(i), val);
+			tmp.put(Integer.toString(i), val);
 		}
 		
 		calibration.init(tmp);

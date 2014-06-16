@@ -17,31 +17,31 @@ public class FeatureCalibration{
 	
 	private Double scoreBucketsAggr[];
 	private ArrayList<FeatureCalibrationBucketScorer> bucketScorerList = null;
-	private Map<Object, Double> featureValueToCountMap = new HashMap<>();
+	private Map<String, Double> featureValueToCountMap = new HashMap<>();
 	private double addedValue = 1;
 	private double total = 0;
 	private Double minCount = null;
-	private Object featureValueWithMinCount = null;
+	private String featureValueWithMinCount = null;
 	
 		
 	
 	
-	public Double getFeatureValueCount(Object featureValue){
+	public Double getFeatureValueCount(String featureValue){
 		return featureValueToCountMap.get(featureValue);
 	}
 	
 	//Filling the feature values to count map with the given map
 	//The values in the map expected to be above 1. Hence values below 1 are not added.
-	public void init(Map<Object, Double> featureValueToCountMap) throws Exception {
+	public void init(Map<String, Double> featureValueToCountMap) throws Exception {
 		if(featureValueToCountMap.size() == 0){
 			return;
 		}
 		
 		
 		this.featureValueToCountMap = new HashMap<>();
-		Iterator<Entry<Object, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
+		Iterator<Entry<String, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
 		while(featureValueToCountIter.hasNext()){
-			Entry<Object, Double> featureValueToCountEntry = featureValueToCountIter.next();
+			Entry<String, Double> featureValueToCountEntry = featureValueToCountIter.next();
 			if(featureValueToCountEntry.getValue() < 1){
 				continue;
 			}
@@ -51,7 +51,7 @@ public class FeatureCalibration{
 		reinit();
 	}
 	
-	public void incrementFeatureValue(Object featureValue) throws Exception{
+	public void incrementFeatureValue(String featureValue) throws Exception{
 		Double count = featureValueToCountMap.get(featureValue);
 		if(count == null){
 			count = 1D;
@@ -64,7 +64,7 @@ public class FeatureCalibration{
 	
 	//updating feature value with a new count.
 	//the value is expected to be >= 1
-	public void updateFeatureValueCount(Object featureValue, Double count) throws Exception{
+	public void updateFeatureValueCount(String featureValue, Double count) throws Exception{
 		if(count < 1){
 			return;
 		}
@@ -132,9 +132,9 @@ public class FeatureCalibration{
 	private void recalculateFeatureValueWithMinCount(){
 		minCount = null;
 		featureValueWithMinCount = null;
-		Iterator<Entry<Object, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
+		Iterator<Entry<String, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
 		while(featureValueToCountIter.hasNext()){
-			Entry<Object, Double> featureValueToCountEntry = featureValueToCountIter.next();
+			Entry<String, Double> featureValueToCountEntry = featureValueToCountIter.next();
 			Double val = featureValueToCountEntry.getValue();
 			if(minCount == null || val < minCount){
 				minCount = val;
@@ -162,9 +162,9 @@ public class FeatureCalibration{
 		}
 		
 		int minIndex = MAX_NUM_OF_BUCKETS;
-		Iterator<Entry<Object, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
+		Iterator<Entry<String, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
 		while(featureValueToCountIter.hasNext()){
-			Entry<Object, Double> featureValueToCountEntry = featureValueToCountIter.next();
+			Entry<String, Double> featureValueToCountEntry = featureValueToCountIter.next();
 			int bucketIndex = (int)getBucketIndex(featureValueToCountEntry.getValue());
 			minIndex = Math.min(minIndex, bucketIndex);
 			FeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
@@ -174,7 +174,7 @@ public class FeatureCalibration{
 	}
 
 	
-	public double score(Object featureValue) {
+	public double score(String featureValue) {
 		if(scoreBucketsAggr == null){
 			return 0;
 		}

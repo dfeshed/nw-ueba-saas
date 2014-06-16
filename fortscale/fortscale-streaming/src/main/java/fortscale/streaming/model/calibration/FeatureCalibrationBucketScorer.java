@@ -12,12 +12,12 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 public class FeatureCalibrationBucketScorer implements
 		IFeatureCalibrationBucketScorer {
 
-private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
+private Map<String, Double> featureValueToScoreMap = new HashMap<>();
 	
 	private boolean isFirstBucket = false;
 	
 	private double score = 0;
-	private Object scoreFeatureValue;
+	private String scoreFeatureValue;
 	
 	
 	@Override
@@ -31,9 +31,9 @@ private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 	
 	private void updateMaxScore(){
 		score = 0;
-		Iterator<Entry<Object, Double>> featureValueToCountIter = featureValueToScoreMap.entrySet().iterator();
+		Iterator<Entry<String, Double>> featureValueToCountIter = featureValueToScoreMap.entrySet().iterator();
 		while(featureValueToCountIter.hasNext()){
-			Entry<Object, Double> featureValueToCountEntry = featureValueToCountIter.next();
+			Entry<String, Double> featureValueToCountEntry = featureValueToCountIter.next();
 			if(score < featureValueToCountEntry.getValue()){
 				score = featureValueToCountEntry.getValue();
 				scoreFeatureValue = featureValueToCountEntry.getKey();
@@ -42,7 +42,7 @@ private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 	}
 	
 	@Override
-	public double updateFeatureValueCount(Object featureValue, double featureCount){
+	public double updateFeatureValueCount(String featureValue, double featureCount){
 		double featureScore = reduceCount(featureCount);
 		featureValueToScoreMap.put(featureValue, featureScore);
 		if(scoreFeatureValue == null){
@@ -72,7 +72,7 @@ private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 	}
 	
 	@Override
-	public double removeFeatureValue(Object featureValue){
+	public double removeFeatureValue(String featureValue){
 		featureValueToScoreMap.remove(featureValue);
 		if(featureValue.equals(scoreFeatureValue)){
 			updateMaxScore();
