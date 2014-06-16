@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -116,6 +118,20 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		
 
 		return getListResults(query);
+	}
+	
+	public List<T> findTopEventsByNormalizedUsername(String username, int limit, DateTime oldestEventTime, String decayScoreFieldName) {
+//		String decayScoreFieldName = "decayscore";
+		ImpalaQuery query = new ImpalaQuery();
+		
+		query.select(String.format("*, exp(-(unix_timestamp()-unix_timestamp(%s))/(60*60*24*50))*%s as %s", getEventTimeFieldName(),getEventScoreFieldName(),decayScoreFieldName));
+		query.from(getTableName());
+		query.andWhere(getNormalizedUserNameEqualComparison(username));
+		query.andWhere(String.format("unix_timestamp(%s) >= %d", getEventTimeFieldName(), oldestEventTime.getMillis()/1000));
+		PageRequest pageable = new ImpalaPageRequest(limit, new Sort(Direction.DESC, decayScoreFieldName));
+		query.limitAndSort(pageable);
+
+		return getListResults(query.toSQL());
 	}
 	
 	public List<T> findEventsByNormalizedUsernameAndGtEventScore(String username, int minScore, Pageable pageable) {
