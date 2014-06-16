@@ -78,7 +78,7 @@ public class FeatureCalibration{
 				isReinit = true;
 			}
 		} else if(featureValue.equals(featureValueWithMinCount)){
-			isReinit = true;
+			recalculateFeatureValueWithMinCount();
 		}
 		
 		if(isReinit){
@@ -95,8 +95,11 @@ public class FeatureCalibration{
 		if(prevCount != null){
 			int prevBucketIndex = (int)getBucketIndex(prevCount);
 			if(prevBucketIndex != bucketIndex){
-				bucketScorer = bucketScorerList.get(prevBucketIndex);
-				bucketScorer.removeFeatureValue(featureValue);
+				FeatureCalibrationBucketScorer prevBucketScorer = bucketScorerList.get(prevBucketIndex);
+				prevBucketScorer.removeFeatureValue(featureValue);
+				if(prevBucketScorer.size() == 0 && prevBucketScorer.getIsFirstBucket()){
+					bucketScorer.setIsFirstBucket(true);
+				}
 			}
 		}
 				
@@ -112,9 +115,23 @@ public class FeatureCalibration{
 	
 	private void reinit() throws Exception{
 		total = 0;
+		
+		//Finding the smaller count of all the feature values
+		recalculateFeatureValueWithMinCount();
+		
+		//Filling the buckets with all the feature values counts.
+		//while doing so the counts are getting reduced in the method reduceCount
+		initBucketScoreList();
+		
+		//Filling the an aggregated histogram of the buckets.
+		scoreBucketsAggr = new Double[MAX_NUM_OF_BUCKETS];
+		fillScoreBucketAggr();
+	}
+	
+	//Finding the smaller count of all the feature values
+	private void recalculateFeatureValueWithMinCount(){
 		minCount = null;
 		featureValueWithMinCount = null;
-		//Finding the smaller count of all the feature values
 		Iterator<Entry<Object, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
 		while(featureValueToCountIter.hasNext()){
 			Entry<Object, Double> featureValueToCountEntry = featureValueToCountIter.next();
@@ -124,15 +141,6 @@ public class FeatureCalibration{
 				featureValueWithMinCount = featureValueToCountEntry.getKey();
 			}
 		}
-
-		
-		//Filling the buckets with all the feature values counts.
-		//while doing so the counts are getting reduced in the method reduceCount
-		initBucketScoreList();
-		
-		//Filling the an aggregated histogram of the buckets.
-		scoreBucketsAggr = new Double[MAX_NUM_OF_BUCKETS];
-		fillScoreBucketAggr();
 	}
 	
 	private void fillScoreBucketAggr(){

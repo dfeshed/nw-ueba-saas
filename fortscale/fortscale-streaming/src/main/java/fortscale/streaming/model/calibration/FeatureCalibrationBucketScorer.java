@@ -90,5 +90,11 @@ private Map<Object, Double> featureValueToScoreMap = new HashMap<>();
 	public void setIsFirstBucket(boolean isFirstBucket) {
 		this.isFirstBucket = isFirstBucket;
 	}
+	
+	
+	@Override
+	public int size(){
+		return featureValueToScoreMap.size();
+	}
 
 }

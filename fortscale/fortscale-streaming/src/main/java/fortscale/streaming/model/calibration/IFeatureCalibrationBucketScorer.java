@@ -6,4 +6,5 @@ public interface IFeatureCalibrationBucketScorer {
 	public double removeFeatureValue(Object featureValue);
 	public boolean getIsFirstBucket();
 	public void setIsFirstBucket(boolean isFirstBucket);
+	public int size();
 }
