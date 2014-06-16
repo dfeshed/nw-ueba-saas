@@ -13,8 +13,6 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +34,6 @@ import fortscale.services.UserService;
 import fortscale.services.UserUpdateScoreService;
 import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.fe.Classifier;
-import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.logging.Logger;
 
 @Service("userUpdateScoreService")
@@ -44,6 +41,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	private static Logger logger = Logger.getLogger(UserUpdateScoreServiceImpl.class);
 	
 	public static int MAX_NUM_OF_PREV_SCORES = 14;
+	public static String SCORE_DECAY_FIELD_NAME = "scoredecay";
 
 	@Autowired
 	private UserRepository userRepository;
@@ -73,6 +71,12 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	private ConfigurationService configurationService; 
 	
 	
+	
+	@Value("${user.score.oldest.event.diff.in.sec:1209600}")
+	private int userScoreOldestEventDiffFromNowInSeconds;
+	
+	@Value("${user.score.num.of.top.events:5}")
+	private int userScoreNumOfTopEvents;
 	
 	@Value("${group.membership.score.page.size}")
 	private int groupMembershipScorePageSize;
@@ -181,14 +185,15 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		List<User> users = userRepository.findAllExcludeAdInfo();
 		
 		logger.info("calculating {} scores for all users", classifier);
-		PageRequest pageable = new ImpalaPageRequest(5, new Sort(Direction.DESC, authDAO.getEventScoreFieldName()));
 		
 		Map<String, Double> userIdToScoreMap = new HashMap<>();
+		DateTime oldestEventDateTime = new DateTime();
+		oldestEventDateTime = oldestEventDateTime.minusSeconds(userScoreOldestEventDiffFromNowInSeconds);
 		for(User user: users){
-			List<AuthScore> authScores = authDAO.findEventsByNormalizedUsername(user.getUsername(), pageable);
+			List<AuthScore> authScores = authDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
 			double userSum = 0;
 			for(AuthScore authScore: authScores){
-				userSum += authScore.getEventScore();
+				userSum += (Double)authScore.getAllFields().get(SCORE_DECAY_FIELD_NAME);
 			}
 			double userScore = userSum/5;
 			userIdToScoreMap.put(user.getId(), userScore);
@@ -225,14 +230,15 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		List<User> users = userRepository.findAllExcludeAdInfo();
 		
 		logger.info("calculating scores for all users");
-		PageRequest pageable = new ImpalaPageRequest(5, new Sort(Direction.DESC, vpnDAO.getEventScoreFieldName()));
 		
 		Map<String, Double> userIdToScoreMap = new HashMap<>();
+		DateTime oldestEventDateTime = new DateTime();
+		oldestEventDateTime = oldestEventDateTime.minusSeconds(userScoreOldestEventDiffFromNowInSeconds);
 		for(User user: users){
-			List<VpnScore> vpnScores = vpnDAO.findEventsByNormalizedUsername(user.getUsername(), pageable);
+			List<VpnScore> vpnScores = vpnDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
 			double userSum = 0;
 			for(VpnScore vpnScore: vpnScores){
-				userSum += vpnScore.getEventScore();
+				userSum += (Double)vpnScore.allFields().get(SCORE_DECAY_FIELD_NAME);
 			}
 			double userScore = userSum/5;
 			userIdToScoreMap.put(user.getId(), userScore);
