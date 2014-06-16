@@ -2,6 +2,11 @@ package fortscale.streaming.task;
 
 import static com.google.common.base.Preconditions.*;
 import static fortscale.utils.ConversionUtils.*;
+import static fortscale.streaming.ConfigUtils.getConfigString;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
@@ -9,6 +14,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.system.OutgoingMessageEnvelope;
+import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.ClosableTask;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.StreamTask;
@@ -36,27 +43,26 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 
 	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTask.class);
 	
+	private String outputTopic;
 	private String usernameField;
 	private String timestampField;
 	private String modelName;
 	private PrevalanceModelService modelService;
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
-	
+	private Map<String, String> outputFields = new HashMap<String, String>();
+	private String eventScoreField;
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config, TaskContext context) throws Exception {
 		// get task configuration parameters
-		usernameField = config.get("fortscale.username.field");
-		checkNotNull(usernameField, "fortscale.username.field is missing");
-		
-		timestampField = config.get("fortscale.timestamp.field");
-		checkNotNull(timestampField, "fortscale.timestamp.field is missing");
+		usernameField = getConfigString(config, "fortscale.username.field");
+		timestampField = getConfigString(config, "fortscale.timestamp.field");
+		outputTopic = config.get("fortscale.output.topic", "");
 		
 		// get the store that holds models
-		String storeName = config.get("fortscale.store.name");
-		checkNotNull(storeName, "fortscale.store.name is missing");
+		String storeName = getConfigString(config, "fortscale.store.name");
 		KeyValueStore<String, PrevalanceModel> store = (KeyValueStore<String, PrevalanceModel>)context.getStore(storeName);
 		
 		// create a model builder based on fields configuration
@@ -72,17 +78,18 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 	
 	private PrevalanceModelBuilder createModelBuilder(Config config) throws Exception {
 		// get the model name and fields to include from configuration
-		modelName = config.get("fortscale.model.name");
-		checkNotNull(modelName, "fortscale.model.name is missing");
+		modelName = getConfigString(config, "fortscale.model.name");
+		eventScoreField = getConfigString(config, "fortscale.event.score.field");
 		PrevalanceModelBuilder modelBuilder = PrevalanceModelBuilder.createModel(modelName);
 		
 		Config fieldsSubset = config.subset("fortscale.fields.");		
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".model"))) {
 			String fieldName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".model"));
-			String fieldModel = config.get(String.format("fortscale.fields.%s.model", fieldName));
-			checkNotNull(fieldModel, String.format("fortscale.fields.%s.model", fieldName) + " is missing");
+			String fieldModel = getConfigString(config, String.format("fortscale.fields.%s.model", fieldName));
+			String outputField = getConfigString(config, String.format("fortscale.fields.%s.output", fieldName));
 			
 			modelBuilder.withField(fieldName, fieldModel);
+			outputFields.put(fieldName, outputField);
 		}
 		return modelBuilder;
 	}
@@ -122,12 +129,25 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 				
 			// skip events that occur before the model mark
 			if (!model.isTimeMarkAfter(timestamp)) {
+				double eventScore = 0;
 				for (String fieldName : model.getFieldNames()) {
 					Object value = message.get(fieldName);
 					model.addFieldValue(fieldName, value, timestamp);
 					double score = model.calculateScore(fieldName, value);
-					message.put(String.format("%sscore", fieldName), score);
+					
+					// set the max field score as the event score
+					eventScore = Math.max(eventScore, score);
+					
+					// store the field score in the message
+					message.put(outputFields.get(fieldName), score);
 				}
+				// put the event score in the message
+				message.put(eventScoreField, eventScore);
+				
+				// publish the event with score to the subsequent topic in the topology
+				if (StringUtils.isNotEmpty(outputTopic))
+					collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
+				
 				modelService.updateUserModelInStore(username, model);
 				processedMessageCount.inc();
 			} else {
