@@ -52,6 +52,8 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 	private Counter skippedMessageCount;
 	private Map<String, String> outputFields = new HashMap<String, String>();
 	private String eventScoreField;
+	private boolean skipScore;
+	private boolean skipModel;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -60,6 +62,8 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 		usernameField = getConfigString(config, "fortscale.username.field");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		outputTopic = config.get("fortscale.output.topic", "");
+		skipScore = config.getBoolean("fortscale.skip.score", false);
+		skipModel = config.getBoolean("fortscale.skip.model", false);
 		
 		// get the store that holds models
 		String storeName = getConfigString(config, "fortscale.store.name");
@@ -132,23 +136,31 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 				double eventScore = 0;
 				for (String fieldName : model.getFieldNames()) {
 					Object value = message.get(fieldName);
-					model.addFieldValue(fieldName, value, timestamp);
-					double score = model.calculateScore(fieldName, value);
+					if (!skipModel)
+						model.addFieldValue(fieldName, value, timestamp);
 					
-					// set the max field score as the event score
-					eventScore = Math.max(eventScore, score);
+					if (!skipScore) {
+						double score = model.calculateScore(fieldName, value);
 					
-					// store the field score in the message
-					message.put(outputFields.get(fieldName), score);
+						// set the max field score as the event score
+						eventScore = Math.max(eventScore, score);
+						
+						// store the field score in the message
+						message.put(outputFields.get(fieldName), score);
+					}
 				}
-				// put the event score in the message
-				message.put(eventScoreField, eventScore);
+				if (!skipScore) {
+					// put the event score in the message
+					message.put(eventScoreField, eventScore);
+					
+					// publish the event with score to the subsequent topic in the topology
+					if (StringUtils.isNotEmpty(outputTopic))
+						collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
+				}
 				
-				// publish the event with score to the subsequent topic in the topology
-				if (StringUtils.isNotEmpty(outputTopic))
-					collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
+				if (!skipModel)
+					modelService.updateUserModelInStore(username, model);
 				
-				modelService.updateUserModelInStore(username, model);
 				processedMessageCount.inc();
 			} else {
 				skippedMessageCount.inc();
