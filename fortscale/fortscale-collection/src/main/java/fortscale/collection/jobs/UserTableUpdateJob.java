@@ -22,12 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 
-import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.jobs.ad.AdProcessJob;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.utils.hdfs.HDFSLineAppender;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaDateTime;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
@@ -208,7 +208,7 @@ public class UserTableUpdateJob extends FortscaleJob {
 		
 	
 	
-	protected void refreshImpala() throws JobExecutionException {
+	protected void refreshImpala() throws Exception {
 		startNewStep("impala refresh");
 		impalaClient.refreshTable(impalaTableName);
 		finishStep();

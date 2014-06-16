@@ -18,11 +18,11 @@ import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
-import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 
@@ -234,20 +234,24 @@ public abstract class AdProcessJob extends FortscaleJob {
 		startNewStep("impala refresh");
 		
 		// add any new partition created during write to hdfs
-		JobExecutionException lastException = null;
+		Exception lastException = null;
 		for (String partition : appender.getNewPartitions()) {
 			try {
 				impalaClient.addPartitionToTable(impalaTableName, partition);
-			} catch (JobExecutionException e) {
+			} catch (Exception e) {
 				logger.error(String.format("error adding partition '%s' to table '%s'", partition, impalaTableName), e);
 				lastException = e;
 			}
 		}
 		
-		impalaClient.refreshTable(impalaTableName);
+		try {
+			impalaClient.refreshTable(impalaTableName);
+		} catch (Exception e) {
+			lastException = e;
+		}
 		
 		if (lastException!=null)
-			throw lastException;
+			throw new JobExecutionException("got exception while refreshing impala", lastException);
 		
 		finishStep();
 	}

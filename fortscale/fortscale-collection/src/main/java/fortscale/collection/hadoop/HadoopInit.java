@@ -13,6 +13,7 @@ import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.partition.RuntimePartitionStrategy;
+import fortscale.utils.impala.ImpalaClient;
 
 @Component
 public class HadoopInit implements InitializingBean{
@@ -211,7 +212,7 @@ public class HadoopInit implements InitializingBean{
 		createTable(impalaVpnDataTableName, impalaVpnDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaVpnDataTableDelimiter, impalaVpnDataDirectory);
 		
 		//VPN Scoring table
-		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
+		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
 		
 		//VPN Session Scoring table
 		createTable(impalaVpnSessionScoringTableName, impalaVpnSessionScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaVpnSessionScoringTableDelimiter, impalaVpnSessionScoringDirectory);

@@ -24,11 +24,11 @@ import fortscale.collection.JobDataMapExtension;
 import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
-import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.io.KafkaEventsWriter;
@@ -312,28 +312,30 @@ public class EventProcessJob implements Job {
 	
 	protected void refreshImpala() throws JobExecutionException {
 
-		List<JobExecutionException> exceptions = new LinkedList<JobExecutionException>();
+		List<Exception> exceptions = new LinkedList<Exception>();
 		
 		// declare new partitions for impala
 		for (String partition : appender.getNewPartitions()) {
 			try {
 				impalaClient.addPartitionToTable(impalaTableName, partition); 
-			} catch (JobExecutionException e) {
+			} catch (Exception e) {
 				exceptions.add(e);
 			}
 		}
 		
 		try {
 			impalaClient.refreshTable(impalaTableName);
-		} catch (JobExecutionException e) {
+		} catch (Exception e) {
 			exceptions.add(e);
 		}
 		
 		// log all errors if any
-		for (JobExecutionException e : exceptions) {
+		for (Exception e : exceptions) {
 			logger.error("error refreshing impala", e);
 			monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
 		}
+		if (!exceptions.isEmpty())
+			throw new JobExecutionException("got exception while refreshing impala", exceptions.get(0));
 	}
 	
 	protected void createOutputAppender() throws JobExecutionException {

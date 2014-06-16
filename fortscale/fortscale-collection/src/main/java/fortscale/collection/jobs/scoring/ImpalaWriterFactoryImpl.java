@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.services.impl.ImpalaGroupsScoreWriter;
 import fortscale.services.impl.ImpalaTotalScoreWriter;
 import fortscale.services.impl.ImpalaUseridToAppUsernameWriter;
@@ -16,6 +15,7 @@ import fortscale.services.impl.ImpalaWriterFactory;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 
 @Component

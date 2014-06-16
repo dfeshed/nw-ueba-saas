@@ -151,6 +151,12 @@
 			<groupId>org.apache.samza</groupId>
 			<artifactId>samza-yarn_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.hadoop</groupId>
+					<artifactId>hadoop-common</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.samza</groupId>
