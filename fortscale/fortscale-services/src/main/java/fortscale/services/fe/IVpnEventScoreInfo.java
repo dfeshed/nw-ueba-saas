@@ -18,8 +18,7 @@ public interface IVpnEventScoreInfo {
 	public String getIpusage();
 	public double getEventTimeScore();
 	public double getCountryScore();
-	public double getRegionScore();
-	public double getCityScore();
+	public double getHostnameScore();
 	public Boolean isUserFollowed();
 	public Map<String, Object> createMap();
 }
