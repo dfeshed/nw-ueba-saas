@@ -109,6 +109,10 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 			logger.info("SensitiveMachine file path not configured");
 		}
 	}
+	
+	public void refreshSensitiveMachines(){
+		this.sensitiveMachines = loadSensitiveMachinesFromMongo();
+	}
 
 	public String getFilePath() {
 		return filePath;

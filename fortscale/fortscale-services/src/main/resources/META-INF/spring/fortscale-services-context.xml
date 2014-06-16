@@ -18,4 +18,8 @@
 
 	<task:executor id="mongoDbReaderExecuter" pool-size="0-3" keep-alive="5"/>
 	<task:executor id="mongoDbWriterExecuter" pool-size="0-8" keep-alive="5"/>
+	<task:scheduler id="dataRetrievalScheduler" pool-size="1" />
+    <task:scheduled-tasks scheduler="dataRetrievalScheduler">
+    	<task:scheduled ref="sensitiveMachineService" method="refreshSensitiveMachines" cron="0 * * * * ?" />
+    </task:scheduled-tasks>
 </beans>
