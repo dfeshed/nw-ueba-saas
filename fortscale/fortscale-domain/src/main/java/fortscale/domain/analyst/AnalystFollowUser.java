@@ -13,6 +13,11 @@ import fortscale.domain.core.AbstractDocument;
 @Document
 public class AnalystFollowUser extends AbstractDocument{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3665687584296152439L;
+
 	public static final String CREATED_AT_FIELD_NAME = "createdAt";
 	
 	@CreatedDate

@@ -11,6 +11,10 @@ import fortscale.domain.core.AbstractDocument;
 
 @Document(collection=AdUserThumbnail.COLLECTION_NAME)
 public class AdUserThumbnail extends AbstractDocument{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4984590283062489036L;
 	public static final String COLLECTION_NAME = "ad_user_thumb";
 	public static final String objectGUIDField = "objectGUID";
 	public static final String thumbnailPhotoField = "thumbnailPhoto";

@@ -9,6 +9,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class AdOU extends AdObject{
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7154327202343258119L;
 	private String isCriticalSystemObject;
 	private String isDeleted;
 	private String defaultGroup;

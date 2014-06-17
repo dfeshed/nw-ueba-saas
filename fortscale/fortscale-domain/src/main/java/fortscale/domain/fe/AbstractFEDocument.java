@@ -8,6 +8,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import fortscale.domain.core.AbstractDocument;
 
 public class AbstractFEDocument extends AbstractDocument {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5499978312534471157L;
 	public static final String timestampField = "timestamp";
 	public static final String lastModifiedField = "lastModified";
 

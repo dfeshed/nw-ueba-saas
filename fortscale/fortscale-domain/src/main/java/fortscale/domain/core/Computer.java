@@ -15,6 +15,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @TypeAlias(value="Computer")
 public class Computer extends AbstractDocument {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3605143007220943382L;
 	public static final String COLLECTION_NAME = "computer";
 	public static final String OPERATING_SYSTEM_FIELD = "operatingSystem";
 	public static final String OPERATING_SYSTEM_SERVICE_PACK_FIELD = "operatingSystemServicePack";

@@ -13,6 +13,12 @@ import org.springframework.data.mongodb.core.mapping.Field;
 	@CompoundIndex(name="hostnameTimeIdx", def = "{'hostname': 1, 'timestampepoch': -1}"),
 })
 public class DhcpEvent extends IpToHostname{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8351203425124420491L;
+
+
 	public static final String collectionName =  "DhcpEvent";
 	
 	

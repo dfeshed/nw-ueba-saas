@@ -8,38 +8,20 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 import org.junit.Test;
 import org.junit.Before;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
-import fortscale.domain.ad.AdComputer;
-import fortscale.domain.core.Computer;
-import fortscale.domain.core.ComputerUsageClassifier;
-import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.User;
-import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.computer.EndpointDetectionService;
 
 public class AdministratorAccountServiceTest {
 
@@ -76,14 +58,6 @@ public class AdministratorAccountServiceTest {
 		return u;
 	}
 	
-	private List<User> getUsersList(String userList) {
-		List<User> users = new ArrayList<User>();
-		for (String user : userList.split(",")) {
-			users.add(getNewUser(user));	
-		}
-		return users;
-	}
-	
 	private List<User> getUsersList(String userList,String adminList) {
 		List<User> result = new ArrayList<User>();
 		String[] users = userList.split(",");
@@ -99,6 +73,7 @@ public class AdministratorAccountServiceTest {
 	public void no_admin_file() throws Exception {
 		// arrange
 		when(adminUsers.contains("user2")).thenReturn(false);
+		@SuppressWarnings("unchecked")
 		Page<User> pages = mock(Page.class);
 		when(pages.getContent()).thenReturn(new ArrayList<User>());
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
@@ -113,7 +88,8 @@ public class AdministratorAccountServiceTest {
 	@Test
 	public void group_not_in_repository() throws Exception {
 		// arrange
-		when(repository.findByUserInGroup(anyList())).thenReturn(new ArrayList<User>());
+		when(repository.findByUserInGroup(anyListOf(String.class))).thenReturn(new ArrayList<User>());
+		@SuppressWarnings("unchecked")
 		Page<User> pages = mock(Page.class);
 		when(pages.getContent()).thenReturn(new ArrayList<User>());
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);		
@@ -127,11 +103,12 @@ public class AdministratorAccountServiceTest {
 	public void add_admin_tag_to_user() throws Exception {
 		// arrange		
 		List<User> users1 = getUsersList("user1,user2,user3","true,true,false");
-		when((repository.findByUserInGroup(anyList()))).thenReturn(users1);
+		when((repository.findByUserInGroup(anyListOf(String.class)))).thenReturn(users1);
 		when(adminUsers.contains("user1")).thenReturn(true);
 		when(adminUsers.contains("user2")).thenReturn(true);
 		when(adminUsers.contains("user3")).thenReturn(true);
 		List<User> users2 = getUsersList("user1,user2,user3,user4,user5","true,true,false,false,false");
+		@SuppressWarnings("unchecked")
 		Page<User> pages = mock(Page.class);
 		when(pages.getContent()).thenReturn(users2);
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
@@ -153,11 +130,12 @@ public class AdministratorAccountServiceTest {
 	public void user_removed_from_group() throws Exception {
 		// arrange		
 		List<User> users1 = getUsersList("user1,user2","true,true");
-		when((repository.findByUserInGroup(anyList()))).thenReturn(users1);
+		when((repository.findByUserInGroup(anyListOf(String.class)))).thenReturn(users1);
 		when(adminUsers.contains("user1")).thenReturn(true);
 		when(adminUsers.contains("user2")).thenReturn(true);
 		when(adminUsers.contains("user3")).thenReturn(false);
 		List<User> users2 = getUsersList("user1,user2,user3,user4,user5","true,true,true,false,false");
+		@SuppressWarnings("unchecked")
 		Page<User> pages = mock(Page.class);
 		when(pages.getContent()).thenReturn(users2);
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);

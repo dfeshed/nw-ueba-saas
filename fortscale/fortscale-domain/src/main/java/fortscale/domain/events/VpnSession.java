@@ -17,6 +17,11 @@ import fortscale.domain.core.AbstractDocument;
 	@CompoundIndex(name="normalizeUsernameCreatedAtEpochIdx", def = "{'normalizeUsername': 1, 'createdAtEpoch': -1}"),
 })
 public class VpnSession extends AbstractDocument{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1247127683048664797L;
+
 	public static final String collectionName =  "VpnSession";
 	
 	public static final String createdAtEpochFieldName = "createdAtEpoch";

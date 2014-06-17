@@ -7,6 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection=AdUser.COLLECTION_NAME)
 public class AdUser extends AdObject{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6525814925127992179L;
 	public static final String COLLECTION_NAME = "ad_user";
 	public static final String thumbnailPhotoField = "thumbnailPhoto";
 	

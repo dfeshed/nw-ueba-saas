@@ -6,6 +6,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection=AdGroup.COLLECTION_NAME)
 public class AdGroup extends AdObject{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3353026905733393166L;
+
 	public static final String COLLECTION_NAME = "ad_group";
 
 	private String name;
