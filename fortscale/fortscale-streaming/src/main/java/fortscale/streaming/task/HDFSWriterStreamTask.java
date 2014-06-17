@@ -38,6 +38,8 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	private String separator;
 	private HdfsService service;
 	private String tableName;
+	private int eventsCountFlushThreshold;
+	private int nonFlushedEventsCounter = 0;
 	
 	/** reads task configuration from job config and initialize hdfs appender */
 	@Override public void init(Config config, TaskContext context) throws Exception {
@@ -48,6 +50,7 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		fields = getConfigStringList(config, "fortscale.fields");
 		tableName = getConfigString(config, "fortscale.table.name");
+		eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
 		
 		String partitionClassName = getConfigString(config, "fortscale.partition.strategy");
 		PartitionStrategy partitionStrategy = (PartitionStrategy) Class.forName(partitionClassName).newInstance();
@@ -80,6 +83,11 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 			String eventLine = buildEventLine(message);
 			service.writeLineToHdfs(eventLine, timestamp.longValue());
 			
+			nonFlushedEventsCounter++;
+			if (nonFlushedEventsCounter>=eventsCountFlushThreshold) {
+				flushEvents();
+			}
+			
 		} catch (Exception e) {
 			logger.error("error while writing events to " + tableName + " with mesage " + envelope.getMessage(), e);
 		}
@@ -101,10 +109,15 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 		return line.toString();
 	}
 
-	/** Periodically flush data to hdfs */
-	@Override public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	private void flushEvents() throws Exception {
 		// flush writes to hdfs and refresh impala
 		service.flushHdfs();
+		nonFlushedEventsCounter = 0;		
+	}
+	
+	/** Periodically flush data to hdfs */
+	@Override public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		flushEvents();
 	}
 
 	/** Close the hdfs writer when job shuts down */
