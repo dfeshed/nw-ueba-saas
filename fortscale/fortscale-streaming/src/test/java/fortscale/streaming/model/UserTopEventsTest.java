@@ -32,7 +32,7 @@ public class UserTopEventsTest {
 		Assert.assertNotNull(json);
 		Assert.assertTrue(json.contains("\"score\":80.0"));
 		Assert.assertTrue(json.contains("\"score\":82.0"));
-		Assert.assertFalse(json.contains("\"score\":84.0"));
+		Assert.assertFalse(json.contains("\"score\":86.0"));
 	}
 	
 	@Test
