@@ -79,6 +79,7 @@
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
+		<mavanagaiata.version>0.7.0</mavanagaiata.version>
 	</properties>
 
 	<dependencies>
@@ -279,6 +280,20 @@
 						<goals>
 							<goal>compile</goal>
 							<goal>test-compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.github.koraktor</groupId>
+				<artifactId>mavanagaiata</artifactId>
+				<version>${mavanagaiata.version}</version>
+				<executions>
+					<execution>
+						<id>git-commit</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>commit</goal>
 						</goals>
 					</execution>
 				</executions>
