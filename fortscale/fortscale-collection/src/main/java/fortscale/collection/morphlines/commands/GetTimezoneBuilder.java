@@ -84,7 +84,7 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 			}
 			else if (tzConfig == null) {
 				// ####################################################################################################
-				// TEMP: Please refred to jira XXXX
+				// TEMP: Please refer to jira FV-3191
 				// ####################################################################################################
 				record.put(this.timezoneField, "Asia/Jerusalem");
 			}
