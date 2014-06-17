@@ -12,7 +12,6 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.streaming.user.UserScoreSnapshot;
 import fortscale.domain.streaming.user.dao.UserScoreSnapshotRepository;
-import fortscale.streaming.model.PrevalanceModel;
 
 @Service
 public class UserScoreStreamingService {
@@ -60,17 +59,19 @@ public class UserScoreStreamingService {
 		
 		if(hasToUpdateUserRepository){
 			User user = userRepository.findByUsername(username);
-			ClassifierScore cScore = user.getScore(classifierId);
-			double prevScore = 0;
-			if(cScore.getPrevScores().size() >=2){
-				prevScore = cScore.getPrevScores().get(1).getScore();
+			if(user != null){
+				ClassifierScore cScore = user.getScore(classifierId);
+				double prevScore = 0;
+				if(cScore.getPrevScores().size() >=2){
+					prevScore = cScore.getPrevScores().get(1).getScore();
+				}
+				
+				double trendScore = curScore - prevScore;
+				userRepository.updateCurrentUserScore(user, classifierId, curScore, trendScore, lastUpdateTime);
+				userTopEvents.setLastUpdatedScore(curScore);
+				userTopEvents.setLastUpdateScoreEpochTime(lastUpdateTime.getMillis());
+				hasToUpdateStore = true;
 			}
-			
-			double trendScore = curScore - prevScore;
-			userRepository.updateCurrentUserScore(user, classifierId, curScore, trendScore, lastUpdateTime);
-			userTopEvents.setLastUpdatedScore(curScore);
-			userTopEvents.setLastUpdateScoreEpochTime(lastUpdateTime.getMillis());
-			hasToUpdateStore = true;
 		}
 		
 		if(hasToUpdateStore){
