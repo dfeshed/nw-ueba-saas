@@ -33,14 +33,10 @@ public class SensitiveMachineServiceTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		
-		Computer computer1 = mock(Computer.class);
-		Computer computer2 = mock(Computer.class);
-		List<Computer> computers = new ArrayList<Computer>();
-		computers.add(computer1);
-		computers.add(computer2);
-		when(computerRepository.findByIsSensitive(true)).thenReturn(computers);
-		when(computer1.getName()).thenReturn("MY-PC");
-		when(computer2.getName()).thenReturn("ANOTHER-PC");
+		List<String> computers = new ArrayList<String>();
+		computers.add("MY-PC");
+		computers.add("ANOTHER-PC");
+		when(computerRepository.findNameByIsSensitive(true)).thenReturn(computers);
 		Set<String> sensitiveMachines = new HashSet<String>();
 		sensitiveMachines.add("MY-PC");
 		sensitiveMachines.add("ANOTHER-PC");
