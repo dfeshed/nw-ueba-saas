@@ -1,5 +1,6 @@
 package fortscale.domain.core.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import static org.springframework.data.mongodb.core.query.Query.query;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -51,5 +53,29 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 	public List<Computer> getComputersFromNames(List<String> machineNames) {
 		return mongoTemplate.find(query(where(Computer.NAME_FIELD).in(machineNames)), Computer.class);
 	}
+
+	@Override
+	public List<String> findNameByIsSensitive(Boolean isSensitiveMachine) {
+		Query query = new Query();
+		Criteria criteria = where(Computer.SENSITIVE_MACHINE_FIELD).is(isSensitiveMachine);
+		query.fields().include(Computer.NAME_FIELD).exclude(Computer.ID_FIELD);
+		query.addCriteria(criteria);
+		ArrayList<String> res = new ArrayList<String>();
+		for(ComputerNameWrapper computerNameWrapper : mongoTemplate.find(query, ComputerNameWrapper.class, Computer.COLLECTION_NAME)){
+			res.add(computerNameWrapper.getName());
+		}
+		return res;
+	}
 	
+	class ComputerNameWrapper{
+		private String name;
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+	}
 }

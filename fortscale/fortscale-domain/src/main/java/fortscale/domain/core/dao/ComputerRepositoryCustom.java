@@ -10,4 +10,5 @@ public interface ComputerRepositoryCustom {
 	Date getLatestWhenChanged();
 	void updateSensitiveMachine(Computer computer, boolean isSensitiveMachine);
 	List<Computer> getComputersFromNames(List<String> machinesNames);
+	List<String> findNameByIsSensitive(Boolean isSensitiveMachine);
 }

@@ -9,5 +9,4 @@ import fortscale.domain.core.Computer;
 public interface ComputerRepository extends MongoRepository<Computer, String>, ComputerRepositoryCustom {
 
 	Computer findByName(String name);
-	List<Computer> findByIsSensitive(Boolean isSensitiveMachine);
 }

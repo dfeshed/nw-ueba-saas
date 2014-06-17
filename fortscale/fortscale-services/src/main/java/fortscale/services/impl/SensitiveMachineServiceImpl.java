@@ -32,10 +32,10 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 
 	private Set<String> sensitiveMachines = null;
 
-	@Value("${user.list.service_sensitive_machine.path:}")
+	@Value("${user.list.service_sensitive_machine.path}")
 	private String filePath;
 
-	@Value("${user.list.service_sensitive_machine.deletion_symbol:}")
+	@Value("${user.list.service_sensitive_machine.deletion_symbol:-}")
 	private String deletionSymbol;
 
 
@@ -55,12 +55,8 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 	}
 
 	public Set<String> loadSensitiveMachinesFromMongo() {
-		Set<String> res = new HashSet<String>();
-		List<Computer> computers = computerRepository.findByIsSensitive(true);
-		for (Computer c : computers) {
-			res.add(c.getName());
-		}
-		return res;
+		List<String> computers = computerRepository.findNameByIsSensitive(true);
+		return new HashSet<String>(computers);
 	}
 
 	public void updateSensitiveMachines() {
@@ -102,7 +98,7 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 					}
 				}
 			} else {
-				logger.warn("SensitiveMachine file not found in path: %s",
+				logger.warn("SensitiveMachine file not found in path: {}",
 						filePath);
 			}
 		} else {
