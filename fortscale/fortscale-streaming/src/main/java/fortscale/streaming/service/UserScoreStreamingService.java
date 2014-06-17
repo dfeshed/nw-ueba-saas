@@ -167,8 +167,9 @@ public class UserScoreStreamingService {
 					}
 				}
 			}
-			
-			avgScore = avgScore / users.size();
+			if(users.size() > 1){
+				avgScore = avgScore / users.size();
+			}
 			
 			
 			for(User user: users){
