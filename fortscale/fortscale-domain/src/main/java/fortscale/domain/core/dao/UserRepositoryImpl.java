@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
@@ -296,8 +297,16 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 
 	@Override
-	public void updateAdministratorAccount(User user,
-			boolean isAdministratorAccount) {
+	public void updateAdministratorAccount(User user, boolean isAdministratorAccount) {
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.administratorAccountField, isAdministratorAccount), User.class);
+	}
+	
+	@Override
+	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime){
+		Update update = new Update();
+		update.set(User.getClassifierScoreCurrentScoreField(classifierId), score);
+		update.set(User.getClassifierScoreCurrentTrendScoreField(classifierId), trendScore);
+		update.set(User.getClassifierScoreCurrentTimestampField(classifierId), calculationTime.toDate());
+		update.set(User.getClassifierScoreCurrentTimestampEpochField(classifierId), calculationTime.getMillis());
 	}
 }

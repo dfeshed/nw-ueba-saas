@@ -384,7 +384,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 			prevScores.add(scoreInfo);
 			cScore.setPrevScores(prevScores);
 		}else{
-			boolean isOnSameDay = userScoreService.isOnSameDay(timestamp, cScore.getTimestamp());
+			boolean isOnSameDay = userScoreService.isOnSameDay(timestamp, cScore.getPrevScores().get(0).getTimestamp());
 			if(!isOnSameDay && timestamp.before(cScore.getTimestamp())){
 				logger.warn("Got a score that belong to the past. classifierId ({}), current timestamp ({}), new score timestamp ({})", classifierId, cScore.getTimestamp(), timestamp);
 				return null;
