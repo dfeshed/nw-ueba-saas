@@ -10,8 +10,7 @@ public class UserTopEventsSerdeFactory implements SerdeFactory<UserTopEvents>{
 
 	@Override
 	public Serde<UserTopEvents> getSerde(String arg0, Config arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return new UserTopEventsSerde();
 	}
 
 }
