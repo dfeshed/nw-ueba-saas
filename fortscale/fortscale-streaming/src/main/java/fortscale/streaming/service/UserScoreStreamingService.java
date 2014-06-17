@@ -62,7 +62,7 @@ public class UserScoreStreamingService {
 			if(user != null){
 				ClassifierScore cScore = user.getScore(classifierId);
 				double prevScore = 0;
-				if(cScore.getPrevScores().size() >=2){
+				if(cScore != null && cScore.getPrevScores().size() >=2){
 					prevScore = cScore.getPrevScores().get(1).getScore();
 				}
 				
