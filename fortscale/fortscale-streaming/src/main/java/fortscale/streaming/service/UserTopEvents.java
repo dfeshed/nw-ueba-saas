@@ -60,7 +60,7 @@ public class UserTopEvents {
 	}
 	
 	public double timeDecayScore(double score, long eventTimeInMillis){
-		return score * Math.min( Math.exp( - ( System.currentTimeMillis() - eventTimeInMillis )/(MILLIS_IN_DAY*50.0) ), 1.0 );
+		return score * (1 - (System.currentTimeMillis() - eventTimeInMillis )/(MILLIS_IN_DAY*14.0));//Math.min( Math.exp( - ( System.currentTimeMillis() - eventTimeInMillis )/(MILLIS_IN_DAY*50.0) ), 1.0 );
 	}
 
 	public String getEventType() {

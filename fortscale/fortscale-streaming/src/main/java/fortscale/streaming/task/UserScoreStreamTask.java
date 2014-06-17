@@ -17,6 +17,7 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.StreamTask;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.apache.samza.task.WindowableTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ import fortscale.streaming.service.UserScoreStreamingService;
 import fortscale.streaming.service.UserTopEvents;
 import fortscale.utils.TimestampUtils;
 
-public class UserScoreStreamTask implements StreamTask, InitableTask, ClosableTask{
+public class UserScoreStreamTask implements StreamTask, InitableTask, WindowableTask, ClosableTask{
 	private static final Logger logger = LoggerFactory.getLogger(UserScoreStreamTask.class);
 	
 	
@@ -89,6 +90,14 @@ public class UserScoreStreamTask implements StreamTask, InitableTask, ClosableTa
 		}
 		
 		userScoreStreamingService.updateUserWithEventScore(username, eventScore, TimestampUtils.convertToMilliSeconds(timestamp));
+	}
+	
+	/** periodically save the state to mongodb as a secondary backing store and update the user score in mongodb*/
+	@Override public void window(MessageCollector collector, TaskCoordinator coordinator) {
+		if (userScoreStreamingService!=null){
+			userScoreStreamingService.updateDb();
+			userScoreStreamingService.exportSnapshot();
+		}
 	}
 	
 	/** save the state to mongodb when the job shutsdown */

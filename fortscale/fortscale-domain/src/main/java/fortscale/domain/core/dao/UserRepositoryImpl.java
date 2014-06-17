@@ -308,5 +308,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		update.set(User.getClassifierScoreCurrentTrendScoreField(classifierId), trendScore);
 		update.set(User.getClassifierScoreCurrentTimestampField(classifierId), calculationTime.toDate());
 		update.set(User.getClassifierScoreCurrentTimestampEpochField(classifierId), calculationTime.getMillis());
+		
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
 	}
 }
