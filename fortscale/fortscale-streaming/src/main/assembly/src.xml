@@ -22,7 +22,7 @@
       <filtered>true</filtered>
     </file>
     <file>
-      <source>${basedir}/src/main/config/ssh-prevalence-stats.properties</source>
+      <source>${basedir}/src/main/config/ssh-prevalance-stats.properties</source>
       <outputDirectory>config</outputDirectory>
       <filtered>true</filtered>
     </file>
