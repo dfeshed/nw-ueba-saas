@@ -66,7 +66,7 @@ public class SecEventsSA4768Test {
         	$ (
         	"Successful 4768 Event Type 2",
         	"May  1 10:14:31 roee-hd5 %NICWIN-4-Security_4768_Microsoft-Windows-Security-Auditing: Security,rn=462908116 cid=6992 eid=560,Mon Mar 17 13:48:37 2014,4768,Microsoft-Windows-Security-Auditing,,Audit Success,BG-DC2.bg.playtech.corp,Kerberos Authentication Service,,A Kerberos authentication ticket (TGT) was requested.  Account Information:  Account Name:  deannek  Supplied Realm Name: bg  User ID:   S-1-5-21-3421828858-1269048617-336047487-1435  Service Information:  Service Name:  krbtgt  Service ID:  S-1-5-21-3421828858-1269048617-336047487-502  Network Information:  Client Address:  ::ffff:192.168.203.147  Client Port:  50670  Additional Information:  Ticket Options:  0x40810010  Result Code:  0x0  Ticket Encryption Type: 0x12  Pre-Authentication Type: 2  Certificate Information:  Certificate Issuer Name:    Certificate Serial Number:   Certificate Thumbprint:    Certificate information is only provided if a certificate was used for pre-authentication.  Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.",
-        	"2014-03-17T15:48:37.000+02:00,2014-03-17 15:48:37,1395064117,deannek,bg,S-1-5-21-3421828858-1269048617-336047487-1435,4768,192.168.203.147,SUCCESS,0x0,2,0x40810010,True,False,False,False,False,False,false,,"
+        	"2014-03-17T13:48:37.000+02:00,2014-03-17 13:48:37,1395056917,deannek,bg,S-1-5-21-3421828858-1269048617-336047487-1435,4768,192.168.203.147,SUCCESS,0x0,2,0x40810010,True,False,False,False,False,False,false,,"
         	)
 
         );
