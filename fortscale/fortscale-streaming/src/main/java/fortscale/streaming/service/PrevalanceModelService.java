@@ -92,11 +92,15 @@ public class PrevalanceModelService {
 				Entry<String, PrevalanceModel> entry = iterator.next();
 				String username = entry.getKey();
 				PrevalanceModel model = entry.getValue();
-				try {
-					Model dto = convertToDTO(username, model);
-					repository.upsertModel(dto);
-				} catch (Exception e) {
-					logger.error("error persisting model {} for user {} into repository", modelBuilder.getModelName(), username, e);
+				if (model!=null) {
+					// model might be null in case of a serialization error, in that case
+					// we don't want to fail here and the error is logged in the serde implementation 
+					try {
+						Model dto = convertToDTO(username, model);
+						repository.upsertModel(dto);
+					} catch (Exception e) {
+						logger.error("error persisting model {} for user {} into repository", modelBuilder.getModelName(), username, e);
+					}
 				}
 			}
 		} finally {

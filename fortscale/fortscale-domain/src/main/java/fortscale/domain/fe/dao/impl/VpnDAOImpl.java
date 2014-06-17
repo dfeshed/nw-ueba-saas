@@ -24,7 +24,18 @@ import fortscale.utils.logging.Logger;
 public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, InitializingBean{
 	private static Logger logger = Logger.getLogger(VpnDAOImpl.class);
 	
-	
+	@Value("${impala.score.vpn.table.field.date_time_unix}")
+	private String dateTimeUnixFieldName;
+			
+	@Value("${impala.score.vpn.table.field.hostname.score}")
+	private String hostnameScoreFieldName;
+
+	@Value("${impala.score.vpn.table.field.country.score}")
+	private String countryScoreFieldName;
+			
+	@Value("${impala.score.vpn.table.field.countrycode}")
+	private String countryCodeFieldName;
+			
 	@Value("${impala.data.table.fields.normalized_username}")
 	private String normalizedUsernameField;
 	
@@ -58,10 +69,10 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Value("${impala.score.vpn.table.field.date_time}")
 	private String eventTimeFieldName;
 	
-	@Value("${impala.score.vpn.table.field.date_time.score}")
+	@Value("${impala.score.vpn.table.field.date_timeScore}")
 	private String eventTimeScoreFieldName;
 	
-	@Value("${impala.table.field.event.score}")
+	@Value("${impala.score.vpn.table.field.event.score}")
 	private String eventScoreFieldName;
 	
 	@Value("${impala.score.vpn.table.fields}")
@@ -160,6 +171,22 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Override
 	public String getDestinationFieldName() {
 		return localIpFieldName;
+	}
+	
+	public String getCountryCodeFieldName() {
+		return countryCodeFieldName;
+	}
+	
+	public String getCountryScoreFieldName() { 
+		return countryScoreFieldName;
+	}
+	
+	public String getHostnameScoreFieldName() {
+		return hostnameScoreFieldName;
+	}
+	
+	public String getDateTimeUnixFieldName() {
+		return dateTimeUnixFieldName;
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package fortscale.streaming.task;
 
-import static com.google.common.base.Preconditions.*;
 import static fortscale.utils.ConversionUtils.*;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 

@@ -92,15 +92,10 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	public String getIpusage() {
 		return vpnScore.getIpusage();
 	}
-
+	
 	@Override
-	public double getRegionScore() {
-		return vpnScore.getRegionScore();
-	}
-
-	@Override
-	public double getCityScore() {
-		return vpnScore.getCityScore();
+	public double getHostnameScore() {
+		return vpnScore.getHostnameScore();
 	}
 
 
