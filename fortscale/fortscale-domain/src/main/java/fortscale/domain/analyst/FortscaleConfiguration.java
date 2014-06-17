@@ -14,6 +14,10 @@ import fortscale.domain.core.AbstractAuditableDocument;
 @Document(collection="fortscale_configuration")
 public class FortscaleConfiguration extends AbstractAuditableDocument{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3731751327585262212L;
 	@Indexed
 	private String configId = "score";
 	@Field("conf")

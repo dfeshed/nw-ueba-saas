@@ -17,6 +17,11 @@ import fortscale.domain.core.User;
 public class Analyst extends AbstractDocument{
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5268282649328230835L;
+
 	@Indexed(unique=true)
 	private String userName;
 	

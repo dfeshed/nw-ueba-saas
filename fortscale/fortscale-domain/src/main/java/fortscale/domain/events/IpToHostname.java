@@ -9,6 +9,10 @@ import fortscale.domain.core.AbstractDocument;
 
 public class IpToHostname extends AbstractDocument{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4135830670048978765L;
 	public static final String CREATED_AT_FIELD_NAME = "createdAt";
 	public static final String TIMESTAMP_EPOCH_FIELD_NAME = "timestampepoch";
 	public static final String IP_ADDRESS_FIELD_NAME = "ipaddress";

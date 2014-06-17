@@ -8,28 +8,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.junit.Test;
 import org.junit.Before;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
-import fortscale.domain.ad.AdComputer;
-import fortscale.domain.core.Computer;
-import fortscale.domain.core.ComputerUsageClassifier;
-import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.User;
-import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.computer.EndpointDetectionService;
 
 public class UserServiceAccountServiceTest {
 
