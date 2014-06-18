@@ -62,7 +62,7 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 		try {
 			Long epoch = convertToLong(value);
 			if(epoch != null){
-				super.score(epoch);
+				ret = super.score(epoch);
 			}
 		} catch (Exception e) {
 			logger.warn("got an exception while trying to add {} to the DailyTimeModel", value);
