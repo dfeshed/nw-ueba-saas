@@ -20,6 +20,7 @@ public class UserTopEvents {
 	private long lastUpdateEpochTime = 0;
 	private long lastUpdateScoreEpochTime = 0;
 	private List<EventScore> eventScores = new ArrayList<EventScore>();
+	private long latestRecievedEventEpochTime = 0;
 	
 	@JsonCreator
 	public UserTopEvents(@JsonProperty("eventType") String eventType) {
@@ -35,6 +36,10 @@ public class UserTopEvents {
 	}
 
 	public boolean updateEventScores(double score, long eventTimeInMillis) {
+		if(eventTimeInMillis <= latestRecievedEventEpochTime){
+			return false;
+		}
+		latestRecievedEventEpochTime = eventTimeInMillis;
 		boolean isUpdated = false;
 		if(eventScores.size() < MAX_NUM_OF_EVENTS_IN_LIST){
 			eventScores.add(new EventScore(eventTimeInMillis, score));

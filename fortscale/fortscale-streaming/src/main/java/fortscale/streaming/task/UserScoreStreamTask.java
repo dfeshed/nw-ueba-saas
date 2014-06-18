@@ -21,7 +21,7 @@ import org.apache.samza.task.WindowableTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fortscale.streaming.service.SpringUserScoreService;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserScoreStreamingService;
 import fortscale.streaming.service.UserTopEvents;
 import fortscale.utils.TimestampUtils;
@@ -46,15 +46,17 @@ public class UserScoreStreamTask implements StreamTask, InitableTask, Windowable
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		eventScoreField = getConfigString(config, "fortscale.event.score.field");
 		classifierId = getConfigString(config, "fortscale.classifier.id");
+		boolean isUseLatestEventTimeAsCurrentTime = config.getBoolean("fortscale.use.latest.event.time.as.current.time", false);
 		
 		// get the store that holds user top events
 		String storeName = getConfigString(config, "fortscale.store.name");
 		KeyValueStore<String, UserTopEvents> store = (KeyValueStore<String, UserTopEvents>)context.getStore(storeName);
 		
 		//get the user score streaming service and set it with the store and the classifier id.
-		userScoreStreamingService = SpringUserScoreService.getInstance("classpath*:META-INF/spring/streaming-user-score-context.xml").resolve(UserScoreStreamingService.class);
+		userScoreStreamingService = SpringService.getInstance("classpath*:META-INF/spring/streaming-user-score-context.xml").resolve(UserScoreStreamingService.class);
 		userScoreStreamingService.setClassifierId(classifierId);
 		userScoreStreamingService.setStore(store);
+		userScoreStreamingService.setUseLatestEventTimeAsCurrentTime(isUseLatestEventTimeAsCurrentTime);
 	}
 	
 	/** Process incoming events and update the user models stats */

@@ -39,13 +39,36 @@ public class UserScoreStreamingService {
 	
 	private KeyValueStore<String, UserTopEvents> store;
 	private String classifierId;
+	private long latestEventTimeInMillis = 0;
+	
+	private boolean isUseLatestEventTimeAsCurrentTime = false;
 
 	public void setStore(KeyValueStore<String, UserTopEvents> store) {
 		this.store = store;
 	}
 	
+	private long getCurrentEpochTimeInMillis(){
+		if(isUseLatestEventTimeAsCurrentTime){
+			return latestEventTimeInMillis;
+		} else{
+			return System.currentTimeMillis();
+		}
+	}
+	
+	private void updateLatestEventTime(long eventTimeInMillis){
+		if(latestEventTimeInMillis < eventTimeInMillis){
+			if(isUseLatestEventTimeAsCurrentTime && !isOnSameDay(eventTimeInMillis, latestEventTimeInMillis)){
+				updateDb();
+				exportSnapshot();
+			}
+			latestEventTimeInMillis = eventTimeInMillis;
+		}
+	}
+	
 	public void updateUserWithEventScore(String username, double score, long eventTimeInMillis){
-		DateTime lastUpdateTime = new DateTime();
+		updateLatestEventTime(eventTimeInMillis);
+		
+		long currentEpochTime = getCurrentEpochTimeInMillis();
 		
 		UserTopEvents userTopEvents = store.get(username);
 		
@@ -73,31 +96,32 @@ public class UserScoreStreamingService {
 		}
 		
 		if(hasToUpdateUserRepository){
-			if(updateDb(username, userTopEvents, lastUpdateTime, curScore)){
+			if(updateDb(username, userTopEvents, currentEpochTime, curScore)){
 				hasToUpdateStore = true;
 			}
 		}
 		
 		if(hasToUpdateStore){
-			userTopEvents.setLastUpdateEpochTime(lastUpdateTime.getMillis());
+			userTopEvents.setLastUpdateEpochTime(currentEpochTime);
 			store.put(username, userTopEvents);
 		}
 	}
 	
-	private boolean updateDb(String username, UserTopEvents userTopEvents, DateTime lastUpdateTime, double curScore){
+	private boolean updateDb(String username, UserTopEvents userTopEvents, long lastUpdateTime, double curScore){
 		boolean ret = false;
 		User user = userRepository.findByUsername(username);
-		if(user != null){
+		if(user != null && user.getScore(classifierId) != null){
 			ClassifierScore cScore = user.getScore(classifierId);
+			
 			double prevScore = 0;
-			if(cScore != null && cScore.getPrevScores().size() >=2){
+			if(cScore.getPrevScores().size() > 1){
 				prevScore = cScore.getPrevScores().get(1).getScore();
 			}
 			
 			double trendScore = curScore - prevScore;
-			userRepository.updateCurrentUserScore(user, classifierId, curScore, trendScore, lastUpdateTime);
+			userRepository.updateCurrentUserScore(user, classifierId, curScore, trendScore, new DateTime(lastUpdateTime));
 			userTopEvents.setLastUpdatedScore(curScore);
-			userTopEvents.setLastUpdateScoreEpochTime(lastUpdateTime.getMillis());
+			userTopEvents.setLastUpdateScoreEpochTime(lastUpdateTime);
 			ret = true;
 		}
 		return ret;
@@ -140,8 +164,13 @@ public class UserScoreStreamingService {
 	}
 	
 	public void updateDb(){
+		
+		long lastUpdateEpochTime = getCurrentEpochTimeInMillis();
+		if(lastUpdateEpochTime == 0){
+			return; //This happens when no event was recieved yet and the current time is taken out of the latest event.
+		}
+		
 		// go over all users top events in the store and persist them to mongodb
-		DateTime lastUpdateTime = new DateTime();
 		KeyValueIterator<String, UserTopEvents> iterator = store.all();
 		List<User> users = new ArrayList<>();
 		double avgScore = 0;
@@ -157,12 +186,12 @@ public class UserScoreStreamingService {
 					
 					User user = userRepository.findByUsername(username);
 					if(user != null){
-						updateUserScore(user, lastUpdateTime.toDate(), classifierId, curScore);
+						updateUserScore(user, lastUpdateEpochTime, classifierId, curScore);
 						avgScore += user.getScore(classifierId).getScore();
 						users.add(user);
 						
 						userTopEvents.setLastUpdatedScore(curScore);
-						userTopEvents.setLastUpdateScoreEpochTime(lastUpdateTime.getMillis());
+						userTopEvents.setLastUpdateScoreEpochTime(lastUpdateEpochTime);
 						store.put(username, userTopEvents);
 					}
 				}
@@ -190,7 +219,7 @@ public class UserScoreStreamingService {
 		cScore.getPrevScores().get(0).setAvgScore(avgScore);
 	}
 	
-	private void updateUserScore(User user, Date timestamp, String classifierId, double value){
+	private void updateUserScore(User user, long epochtime, String classifierId, double value){
 		ClassifierScore cScore = user.getScore(classifierId);
 		
 		
@@ -202,13 +231,13 @@ public class UserScoreStreamingService {
 			cScore.setClassifierId(classifierId);
 			ScoreInfo scoreInfo = new ScoreInfo();
 			scoreInfo.setScore(value);
-			scoreInfo.setTimestamp(timestamp);
-			scoreInfo.setTimestampEpoc(timestamp.getTime());
+			scoreInfo.setTimestamp(new Date(epochtime));
+			scoreInfo.setTimestampEpoc(epochtime);
 			List<ScoreInfo> prevScores = new ArrayList<ScoreInfo>();
 			prevScores.add(scoreInfo);
 			cScore.setPrevScores(prevScores);
 		}else{
-			boolean isOnSameDay = isOnSameDay(timestamp, cScore.getPrevScores().get(0).getTimestamp());
+			boolean isOnSameDay = isOnSameDay(epochtime, cScore.getPrevScores().get(0).getTimestamp().getTime());
 			if(cScore.getPrevScores().size() > 1){
 				double prevScore = cScore.getPrevScores().get(1).getScore() + 0.00001;
 				double curScore = value + 0.00001;
@@ -218,8 +247,8 @@ public class UserScoreStreamingService {
 			
 			ScoreInfo scoreInfo = new ScoreInfo();
 			scoreInfo.setScore(value);
-			scoreInfo.setTimestamp(timestamp);
-			scoreInfo.setTimestampEpoc(timestamp.getTime());
+			scoreInfo.setTimestamp(new Date(epochtime));
+			scoreInfo.setTimestampEpoc(epochtime);
 			scoreInfo.setTrend(trend);
 			scoreInfo.setTrendScore(diffScore);
 			if (isOnSameDay) {
@@ -239,23 +268,32 @@ public class UserScoreStreamingService {
 		if(isReplaceCurrentScore) {
 			
 			cScore.setScore(value);
-			cScore.setTimestamp(timestamp);
-			cScore.setTimestampEpoc(timestamp.getTime());
+			cScore.setTimestamp(new Date(epochtime));
+			cScore.setTimestampEpoc(epochtime);
 			cScore.setTrend(trend);
 			cScore.setTrendScore(Math.abs(diffScore));
 		}
 		user.putClassifierScore(cScore);
 	}
 	
-	private boolean isOnSameDay(Date date1, Date date2){
-		DateTime dateTime1 = new DateTime(date1.getTime());
+	private boolean isOnSameDay(long epochtime1, long epochtime2){
+		DateTime dateTime1 = new DateTime(epochtime1);
 		dateTime1 = dateTime1.withTimeAtStartOfDay();
-		DateTime dateTime2 = new DateTime(date2.getTime());
+		DateTime dateTime2 = new DateTime(epochtime2);
 		dateTime2 = dateTime2.withTimeAtStartOfDay();
 		if(dateTime1.equals(dateTime2)){
 			return true;
 		}
 		
 		return false;
+	}
+
+	public boolean isUseLatestEventTimeAsCurrentTime() {
+		return isUseLatestEventTimeAsCurrentTime;
+	}
+
+	public void setUseLatestEventTimeAsCurrentTime(
+			boolean isUseLatestEventTimeAsCurrentTime) {
+		this.isUseLatestEventTimeAsCurrentTime = isUseLatestEventTimeAsCurrentTime;
 	}
 }
