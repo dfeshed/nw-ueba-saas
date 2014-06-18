@@ -9,6 +9,7 @@ import org.apache.samza.config.Config;
 import org.apache.samza.task.TaskContext;
 
 import fortscale.domain.system.ServersListConfiguration;
+import fortscale.domain.system.ServersListConfigurationImpl;
 import fortscale.streaming.service.SpringService;
 import net.minidev.json.JSONObject;
 
@@ -25,7 +26,7 @@ public class Sec4769EventsModelStreamTask extends EventsPrevalenceModelStreamTas
 		super.init(config, context);
 		
 		// get the account name and dc regex patterns from configuration
-		ServersListConfiguration serversListConfiguration = SpringService.getInstance().resolve(ServersListConfiguration.class);
+		ServersListConfiguration serversListConfiguration = SpringService.getInstance().resolve(ServersListConfigurationImpl.class);
 		
 		String loginRegex = serversListConfiguration.getLoginAccountNameRegex();
 		if (StringUtils.isNotBlank(loginRegex))
