@@ -3,8 +3,6 @@ package fortscale.domain.fe.dao.impl;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,18 @@ import fortscale.utils.logging.Logger;
 public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, InitializingBean{
 	private static Logger logger = Logger.getLogger(VpnDAOImpl.class);
 	
-	
+	@Value("${impala.score.vpn.table.field.date_time_unix}")
+	private String dateTimeUnixFieldName;
+			
+	@Value("${impala.score.vpn.table.field.hostname.score}")
+	private String hostnameScoreFieldName;
+
+	@Value("${impala.score.vpn.table.field.country.score}")
+	private String countryScoreFieldName;
+			
+	@Value("${impala.score.vpn.table.field.countrycode}")
+	private String countryCodeFieldName;
+			
 	@Value("${impala.data.table.fields.normalized_username}")
 	private String normalizedUsernameField;
 	
@@ -60,14 +69,11 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Value("${impala.score.vpn.table.field.date_time}")
 	private String eventTimeFieldName;
 	
-	@Value("${impala.score.vpn.table.field.date_time.score}")
+	@Value("${impala.score.vpn.table.field.date_timeScore}")
 	private String eventTimeScoreFieldName;
 	
-	@Value("${impala.table.field.event.score}")
+	@Value("${impala.score.vpn.table.field.event.score}")
 	private String eventScoreFieldName;
-	
-	@Value("${impala.table.field.global.score}")
-	private String globalScoreFieldName;
 	
 	@Value("${impala.score.vpn.table.fields}")
 	private String tableFieldDefinition;
@@ -93,10 +99,6 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 		return new VpnScoreMapper();
 	}
 
-	@Override
-	public String getTimestampFieldName() {
-		return VpnScore.TIMESTAMP_FIELD_NAME;
-	}
 	
 	@Override
 	public String getNormalizedUsernameField() {
@@ -160,11 +162,6 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	public String getEventScoreFieldName() {
 		return eventScoreFieldName;
 	}
-
-	@Override
-	public String getGlobalScoreFieldName() {
-		return globalScoreFieldName;
-	}
 	
 	@Override
 	public String getSourceFieldName() {
@@ -175,15 +172,21 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	public String getDestinationFieldName() {
 		return localIpFieldName;
 	}
-
-	@Override
-	public VpnScore createAccessObject(String normalizedUsername, double globalScore, double eventScore, Date timestamp) {
-		VpnScore ret = new VpnScore();
-		ret.setNormalized_username(normalizedUsername);
-		ret.setGlobalScore(globalScore);
-		ret.setEventScore(eventScore);
-		ret.setRuntime((int) (timestamp.getTime()/1000));
-		return ret;
+	
+	public String getCountryCodeFieldName() {
+		return countryCodeFieldName;
+	}
+	
+	public String getCountryScoreFieldName() { 
+		return countryScoreFieldName;
+	}
+	
+	public String getHostnameScoreFieldName() {
+		return hostnameScoreFieldName;
+	}
+	
+	public String getDateTimeUnixFieldName() {
+		return dateTimeUnixFieldName;
 	}
 	
 	@Override
@@ -225,36 +228,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 				for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
 					String columnName = resultSetMetaData.getColumnName(i);
 					ret.putFieldValue(columnName, rs.getObject(i));
-				}
-				
-//				ret.setTimestamp(parseTimestampDate(rs.getLong(VpnScore.TIMESTAMP_FIELD_NAME)));
-//				
-//				ret.setEventTime(impalaParser.parseTimeDate(rs.getString(VpnScore.EVENT_TIME_FIELD_NAME)));
-//				ret.setNormalizedUsername(rs.getString(normalizedUsernameField));
-//				ret.setUserName(rs.getString(VpnScore.USERNAME_FIELD_NAME));
-//				ret.setLocalIp(rs.getString(VpnScore.LOCAL_IP_FIELD_NAME));
-//				ret.setSourceIp(rs.getString(VpnScore.SOURCE_IP_FIELD_NAME));
-//				ret.setStatus(rs.getString(statusFieldName));
-//				try{
-//					ret.setCountry(rs.getString(VpnScore.COUNTRY_FIELD_NAME));
-//				} catch(Exception e){
-//					logger.warn("got the following exception while trying to retrieve the country from the vpn score results table",e);
-//				}
-//				
-//				ret.setEventTimeScore(rs.getDouble(VpnScore.EVENT_TIME_SCORE_FIELD_NAME));
-//				ret.setUserNameScore(rs.getDouble(VpnScore.USERNAME_SCORE_FIELD_NAME));
-//				ret.setSourceIpScore(rs.getDouble(VpnScore.SOURCE_IP_SCORE_FIELD_NAME));
-//				ret.setStatusScore(rs.getDouble(VpnScore.STATUS_SCORE_FIELD_NAME));
-//				try{
-//					ret.setCountryScore(rs.getDouble(VpnScore.COUNTRY_SCORE_FIELD_NAME));
-//				} catch(Exception e){
-//					logger.warn("got the following exception while trying to retrieve the country score from the vpn score results table",e);
-//				}
-//				
-//				
-//				ret.setEventScore(rs.getDouble(VpnScore.EVENT_SCORE_FIELD_NAME));
-//				ret.setGlobalScore(rs.getDouble(VpnScore.GLOBAL_SCORE_FIELD_NAME));
-				
+				}				
 			} catch (SQLException se){
 				throw se;
 			} catch (Exception e)  {
@@ -274,9 +248,6 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		Assert.hasText(tableName);
-		HashMap<String, Class<?>> fieldsToClassMap = ImpalaParser.getTableFieldDefinitionMap(tableFieldDefinition);
-		//Adding runtime. TODO: Add this by using partition definition.
-		fieldsToClassMap.put(VpnScore.TIMESTAMP_FIELD_NAME, String.class);
 		converter =  new ImpalaResultSetToBeanItemConverter<>(new VpnScore());
 	}
 

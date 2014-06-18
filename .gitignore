@@ -6,3 +6,5 @@
 /Servers
 target
 testFile.log
+*.iml
+.idea

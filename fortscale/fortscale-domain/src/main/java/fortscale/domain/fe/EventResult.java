@@ -20,6 +20,10 @@ import fortscale.domain.core.AbstractDocument;
 	@CompoundIndex(name="sqleventTimeCreatedAt", def = "{'sqlQuery': -1, 'eventTime': -1}"),
 })
 public class EventResult  extends AbstractDocument{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2782328179769622118L;
 	public static final String collectionName =  "event_result";
 	public static final String sqlQueryField = "sqlQuery";
 	public static final String globalScoreField = "globalScore";

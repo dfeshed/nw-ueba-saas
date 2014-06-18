@@ -9,10 +9,10 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.jobs.ad.AdProcessJob;
 import fortscale.services.UserServiceFacade;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
 
 @DisallowConcurrentExecution
@@ -78,7 +78,7 @@ public class TotalScoringJob extends FortscaleJob {
 		for (String partition : impalaWriterFactory.getTotalScoreNewPartitions()) {
 			try {
 				impalaClient.addPartitionToTable(impalaTableName, partition); 
-			} catch (JobExecutionException e) {
+			} catch (Exception e) {
 				logger.error(String.format("got exception while trying to add total score partition %s.", partition), e);
 				monitor.warn(getMonitorId(), getStepName(), String.format("got exception while trying to add total score partition %s. exception: %s", partition, e.toString()));
 			}
@@ -122,7 +122,11 @@ public class TotalScoringJob extends FortscaleJob {
 	
 	protected void refreshImpala() throws JobExecutionException {
 		startNewStep("impala refresh");
-		impalaClient.refreshTable(impalaTableName);
+		try {
+			impalaClient.refreshTable(impalaTableName);
+		} catch (Exception e) {
+			throw new JobExecutionException(e);
+		}
 		finishStep();
 	}
 }

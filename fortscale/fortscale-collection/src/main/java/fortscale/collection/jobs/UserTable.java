@@ -1,11 +1,14 @@
 package fortscale.collection.jobs;
 
+import org.joda.time.DateTime;
+
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.IUserTable;
 import fortscale.domain.core.User;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.UserApplication;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.actdir.ADParser;
@@ -29,6 +32,16 @@ public class UserTable implements IUserTable {
 		this.adUserParser = new ADParser();
 	}
 
+	@Override
+	public Boolean getIsAdministratorAccount() {
+		return user.getAdministratorAccount();
+	}
+	
+	@Override
+	public Boolean getIsUserAccountService() {
+		return user.getUserServiceAccount();
+	}
+	
 	@Override
 	public String getId() {
 		return user.getId();
@@ -316,31 +329,42 @@ public class UserTable implements IUserTable {
 
 	@Override
 	public Long getDisableAccountTime() {
-		return user.getAdInfo().getDisableAccountTime().getTime();
+		return convertToEpochTime(user.getAdInfo().getDisableAccountTime());
 	}
 
 	@Override
 	public Long getLastActivityTime() {
-		// TODO Auto-generated method stub
-		return System.currentTimeMillis();
+		DateTime ret = null;
+		for(DateTime dateTime: user.getLogLastActivityMap().values()){
+			if(ret == null || ret.isBefore(dateTime)){
+				ret = dateTime;
+			}
+		}
+		
+		return convertToEpochTime(ret);
+	}
+	
+	private Long convertToEpochTime(DateTime time){
+		if(time != null){
+			return time.getMillis();
+		} else{
+			return null;
+		}
 	}
 
 	@Override
 	public Long getSshLastActivityTime() {
-		// TODO Auto-generated method stub
-		return System.currentTimeMillis();
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.ssh));
 	}
 
 	@Override
 	public Long getVpnLastActivityTime() {
-		// TODO Auto-generated method stub
-		return System.currentTimeMillis();
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.vpn));
 	}
 
 	@Override
 	public Long getLoginLastActivityTime() {
-		// TODO Auto-generated method stub
-		return System.currentTimeMillis();
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.login));
 	}
 
 }

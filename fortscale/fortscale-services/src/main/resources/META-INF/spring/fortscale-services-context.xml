@@ -16,6 +16,29 @@
 	</bean>
 	<bean id="saltSource" class="fortscale.services.security.FortscaleSaltSource"/>
 
+	<bean id="usernameService" class="fortscale.services.impl.UsernameService">
+		<property name="lazy" value="false"/>
+	</bean>
+	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
+		<property name="matchersString" value="${collection.vpn.etl.username.normalize.matchers}"/>
+		<property name="usernameService" ref="usernameService"/>
+	</bean>
+	<bean id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
+		<property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
+		<property name="usernameService" ref="usernameService"/>
+	</bean>
+	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
+		<property name="matchersString" value="${collection.ssh.etl.username.normalize.matchers}"/>
+		<property name="usernameService" ref="usernameService"/>
+	</bean>
+	
 	<task:executor id="mongoDbReaderExecuter" pool-size="0-3" keep-alive="5"/>
 	<task:executor id="mongoDbWriterExecuter" pool-size="0-8" keep-alive="5"/>
+	
+    <task:scheduler id="dataRetrievalScheduler" pool-size="1" />
+    
+    <task:scheduled-tasks scheduler="dataRetrievalScheduler">
+    	<task:scheduled ref="administratorAccountService" method="refresh" cron="0 0 * * * *" />
+    	<task:scheduled ref="sensitiveMachineService" method="refreshSensitiveMachines" cron="0 0 * * * *" />
+    </task:scheduled-tasks>
 </beans>

@@ -6,12 +6,15 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 public class ScoreInfo {
 	public static final String scoreField = "score";
+	public static final String avgScoreField = "avgScore";
 	public static final String trendField = "trend";
 	public static final String trendScoreField = "trendScore";
 	public static final String timestampField = "timestamp";
+	public static final String timestampEpocField = "timestampEpoc";
 	
 	@Field(scoreField)
 	private double score;
+	@Field(avgScoreField)
 	private double avgScore;
 	@Field(trendField)
 	private double trend = 0.0;
@@ -19,6 +22,7 @@ public class ScoreInfo {
 	private double trendScore = 0.0;
 	@Field(timestampField)
 	private Date timestamp;
+	@Field(timestampEpocField)
 	private Long timestampEpoc;
 	
 	

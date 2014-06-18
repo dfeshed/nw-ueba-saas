@@ -4,12 +4,16 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,9 +33,11 @@ import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.Computer;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
+import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.AuthDAO;
@@ -40,6 +46,7 @@ import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 
@@ -64,6 +71,9 @@ public class UserServiceImpl implements UserService{
 		
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private ComputerRepository computerRepository;
 	
 	@Autowired
 	private UserMachineDAO userMachineDAO;
@@ -146,6 +156,21 @@ public class UserServiceImpl implements UserService{
 		}		
 	}
 	
+	@Override
+	public void updateUserLastActivity(LogEventsEnum eventId, String username, DateTime dateTime){
+		Update update = new Update();
+		update.set(User.getLogLastActivityField(eventId), dateTime);
+		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
+	}
+	
+	@Override
+	public void updateUsersLastActivity(LogEventsEnum eventId, Map<String, Long> userLastActivityMap){
+		Iterator<Entry<String, Long>> entries = userLastActivityMap.entrySet().iterator();
+		while(entries.hasNext()){
+			Entry<String, Long> entry = entries.next();
+			updateUserLastActivity(eventId, entry.getKey(), new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue())));
+		}
+	}
 	
 	@Override
 	public String getUserThumbnail(User user) {
@@ -280,9 +305,9 @@ public class UserServiceImpl implements UserService{
 		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
 		Boolean isAccountDisable = null;
 		try {
-			isAccountDisable = userAdInfo.getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(user.getAdInfo().getUserAccountControl()) : null;
+			isAccountDisable = userAdInfo.getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(userAdInfo.getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", user.getAdInfo().getUserAccountControl());
+			logger.warn("got NumberFormatException while trying to parse user account control.", userAdInfo.getUserAccountControl());
 		}
 		userAdInfo.setIsAccountDisabled(isAccountDisable);
 		
@@ -318,17 +343,16 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		
-		
-		if(user != null){
-			if(userAdInfo.getIsAccountDisabled() == null || !userAdInfo.getIsAccountDisabled()){
-				userAdInfo.setDisableAccountTime(null);
-			} else if(!user.getAdInfo().getIsAccountDisabled()){
-				userAdInfo.setDisableAccountTime(whenChanged);
+		DateTime disableAccountTime = null;
+		if(userAdInfo.getIsAccountDisabled() != null && userAdInfo.getIsAccountDisabled()){
+			if(user == null || !user.getAdInfo().getIsAccountDisabled()){
+				disableAccountTime = new DateTime(whenChanged);
+			} else{
+				disableAccountTime = user.getAdInfo().getDisableAccountTime();
 			}
-		} else if(userAdInfo.getIsAccountDisabled() != null && userAdInfo.getIsAccountDisabled()){
-			userAdInfo.setDisableAccountTime(whenChanged);
 		}
-		
+		userAdInfo.setDisableAccountTime(disableAccountTime);
+				
 		boolean isSaveUser = false;
 		if(user == null){
 			user = new User();
@@ -441,13 +465,28 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		String userName = user.getUsername();
-		return userMachineDAO.findByUsername(userName);
+		List<UserMachine> userMachines = userMachineDAO.findByUsername(userName);
+		List<String> machinesNames = new ArrayList<String>();
+		for(UserMachine userMachine : userMachines){
+			machinesNames.add(userMachine.getHostname().toUpperCase());
+		}
+		// get from computers repository
+		List<Computer> computers = computerRepository.getComputersFromNames(machinesNames);
+		for (Computer comp : computers){
+			for(UserMachine machine : userMachines){
+				if(machine.getHostname().toUpperCase().equals(comp.getName())){
+					machine.setIsSensitive(comp.getIsSensitive());
+					machine.setOperatingSystem(comp.getOperatingSystem());
+					machine.setUsageClassifiers(comp.getUsageClassifiersMap());
+				}
+			}
+		}
+		return userMachines;
 	}
 	
 	
 	
 	
-		
 	@Override
 	public String getTableName(LogEventsEnum eventId){
 		String tablename = null;
@@ -531,6 +570,10 @@ public class UserServiceImpl implements UserService{
 		update.set(User.getClassifierScoreField(classifier.getId()), user.getScore(classifier.getId()));
 	}
 
-
+	@Override
+	public DateTime findLastActiveTime(LogEventsEnum eventId){
+		User user = userRepository.findLastActiveUser(eventId);
+		return user == null ? null : user.getLogLastActivity(eventId);
+	}
 	
 }

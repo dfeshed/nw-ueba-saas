@@ -6,9 +6,6 @@ import java.util.Map;
 
 
 public class VpnScore {	
-	public static final String TIMESTAMP_FIELD_NAME = "runtime";
-	
-	
 	
 	private String normalized_username;
 	private Date date_time;
@@ -21,24 +18,18 @@ public class VpnScore {
 	private String city;
 	private String isp;
 	private String ipusage;
+	private String countrycode;
+	private String hostname;
+	private Long date_time_unix;
 	
+	private Double hostnameScore;
 	private Double date_timeScore;
 	private Double countryScore;
-	private Double regionScore;
-	private Double cityScore;
 	
 	private Double eventScore;
-	private Double globalScore;
 	
-	
-	
-	private Integer runtime;
 	
 	private Map<String, Object> allFields = new HashMap<String, Object>();
-	
-	
-	
-	
 	
 	public String getNormalized_username() {
 		return normalized_username;
@@ -82,18 +73,6 @@ public class VpnScore {
 	public void setEventScore(Double eventScore) {
 		this.eventScore = eventScore;
 	}
-	public Double getGlobalScore() {
-		return globalScore;
-	}
-	public void setGlobalScore(Double globalScore) {
-		this.globalScore = globalScore;
-	}
-	public Integer getRuntime() {
-		return runtime;
-	}
-	public void setRuntime(Integer runtime) {
-		this.runtime = runtime;
-	}
 	public Double getDate_timeScore() {
 		return date_timeScore;
 	}
@@ -136,24 +115,36 @@ public class VpnScore {
 	public void setIpusage(String ipusage) {
 		this.ipusage = ipusage;
 	}
-	public Double getRegionScore() {
-		return regionScore;
-	}
-	public void setRegionScore(Double regionScore) {
-		this.regionScore = regionScore;
-	}
-	public Double getCityScore() {
-		return cityScore;
-	}
-	public void setCityScore(Double cityScore) {
-		this.cityScore = cityScore;
-	}
 	
 	public Map<String, Object> allFields() {
 		return allFields;
 	}
 	public void putFieldValue(String fieldName, Object value) {
 		allFields.put(fieldName, value);
+	}
+	public String getCountrycode() {
+		return countrycode;
+	}
+	public void setCountrycode(String countrycode) {
+		this.countrycode = countrycode;
+	}
+	public String getHostname() {
+		return hostname;
+	}
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+	public Long getDate_time_unix() {
+		return date_time_unix;
+	}
+	public void setDate_time_unix(Long date_time_unix) {
+		this.date_time_unix = date_time_unix;
+	}
+	public Double getHostnameScore() {
+		return hostnameScore;
+	}
+	public void setHostnameScore(Double hostnameScore) {
+		this.hostnameScore = hostnameScore;
 	}
 	
 }

@@ -14,6 +14,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection=AdUserFeaturesExtraction.collectionName)
 public class AdUserFeaturesExtraction extends AbstractFEDocument{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1878154991546450072L;
 	public static final String collectionName =  "ad_user_features_extraction";
 	public static final String classifierIdField = "classifierId";
 	public static final String userIdField = "userId";

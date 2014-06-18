@@ -28,7 +28,7 @@ public class VpnScoreTest {
 		
 		for(PropertyDescriptor propertyDescriptor: propertyDescriptors){
 			String fieldName = propertyDescriptor.getName();
-			if(fieldName.equals("class") || fieldName.equals(VpnScore.TIMESTAMP_FIELD_NAME)){
+			if(fieldName.equals("class")){
 				continue;
 			}
 			Assert.assertTrue(expectedFieldsMap.containsKey(fieldName));

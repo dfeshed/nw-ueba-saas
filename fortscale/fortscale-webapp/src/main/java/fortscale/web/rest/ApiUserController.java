@@ -81,12 +81,7 @@ public class ApiUserController extends BaseController{
 	public void updateGroupsScore(Model model){
 		userServiceFacade.updateUserWithGroupMembershipScore();
 	}
-	
-	@RequestMapping(value="/recalculateScores", method=RequestMethod.GET)
-	public void recalculateScores(Model model){
-		userServiceFacade.recalculateUsersScores();
-	}
-	
+		
 	@RequestMapping(value="/recalculateTotalScores", method=RequestMethod.GET)
 	public void recalculateTotalScores(Model model){
 		userServiceFacade.recalculateTotalScore();

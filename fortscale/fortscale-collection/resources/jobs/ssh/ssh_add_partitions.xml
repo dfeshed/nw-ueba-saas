@@ -15,7 +15,7 @@
 			<recover>true</recover>
 		</job>
 	
-		<!-- <trigger>
+		<trigger>
 			<cron>
 				<name>ssh_partitions_hourly_trigger</name>
 				<group>SSH</group>
@@ -46,7 +46,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>90</value>
+						<value>14</value>
 					</entry>
 	            </job-data-map>
  				<cron-expression>0 36 3 * * ?</cron-expression>
@@ -70,16 +70,16 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>runtime</value>
+						<value>monthly</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>14</value>
+						<value>90</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 52 3 * * ?</cron-expression>
 			</cron>
-		</trigger>-->
+		</trigger>
 		
 	</schedule>
 

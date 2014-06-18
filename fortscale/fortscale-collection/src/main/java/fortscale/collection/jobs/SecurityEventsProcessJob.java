@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -15,6 +16,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
+import fortscale.collection.io.KafkaEventsWriter;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -78,6 +80,10 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
 			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + impalaTable);
 			
+			String streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic" + impalaTable, "");
+			if (StringUtils.isNotEmpty(streamingTopic))
+				handler.streamWriter = new KafkaEventsWriter(streamingTopic);
+			
 			String[] eventsToProcessList = jobDataMapExtension.getJobDataMapStringValue(map, "eventsToProcess" + impalaTable).split(",");
 			for (String eventToProcess : eventsToProcessList) {
 				if(!eventToMorphlineMap.containsKey(eventToProcess)){
@@ -110,10 +116,17 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 					String output = handler.recordToStringProcessor.process(processedRecord);
 				
 					if (output!=null) {
-						
+						// append to hadoop
 						Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
 						handler.appender.writeLine(output, timestamp.longValue());
+						
+						// ensure user exists in mongodb
 						updateOrCreateUserWithClassifierUsername(processedRecord);
+						
+						// output event to streaming platform
+						if (handler.streamWriter!=null)
+							handler.streamWriter.send(handler.recordToStringProcessor.toJSON(processedRecord));
+						
 						return true;
 					}
 				}
@@ -211,7 +224,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	
 	@Override protected void refreshImpala() throws JobExecutionException {
 		
-		List<JobExecutionException> exceptions = new LinkedList<JobExecutionException>();
+		List<Exception> exceptions = new LinkedList<Exception>();
 		
 		// refresh all events tables
 		for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
@@ -219,22 +232,39 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			for (String partition : handlers.appender.getNewPartitions()) {
 				try {
 					impalaClient.addPartitionToTable(handlers.impalaTableName, partition);
-				} catch (JobExecutionException e) {
+				} catch (Exception e) {
 					exceptions.add(e);
 				}
 			}
 			
 			try {
 				impalaClient.refreshTable(handlers.impalaTableName);
-			} catch (JobExecutionException e) {
+			} catch (Exception e) {
 				exceptions.add(e);
 			}
 		}
 		
 		// log all errors if any
-		for (JobExecutionException e : exceptions) {
-			logger.error("", e);
-			monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+		if (!exceptions.isEmpty()) {
+			for (Exception e : exceptions) {
+				logger.error("", e);
+				monitor.warn(monitorId, "Process Files", "error refreshing impala - " + e.toString());
+			}
+			throw new JobExecutionException("got error while refreshing impala", exceptions.get(0));
+		}
+	}
+	
+	/*** Initialize the streaming appender upon job start to be able to produce messages to */ 
+	@Override protected void initializeStreamingAppender() throws JobExecutionException {}
+	
+	/*** Send the message produced by the morphline ETL to the streaming platform */
+	@Override protected void streamMessage(String message) throws IOException {}
+	
+	/*** Close the streaming appender upon job finish to free resources */
+	@Override protected void closeStreamingAppender() throws JobExecutionException {
+		for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
+			if (handlers.streamWriter!=null)
+				handlers.streamWriter.close();
 		}
 	}
 	
@@ -248,6 +278,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public String timestampField;
 		public HDFSPartitionsWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
+		public KafkaEventsWriter streamWriter;
 	}
 	
 }

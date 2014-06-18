@@ -1,7 +1,6 @@
 package fortscale.services.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +41,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	private static Logger logger = Logger.getLogger(UserUpdateScoreServiceImpl.class);
 	
 	public static int MAX_NUM_OF_PREV_SCORES = 14;
+	public static String SCORE_DECAY_FIELD_NAME = "scoredecay";
 
 	@Autowired
 	private UserRepository userRepository;
@@ -72,6 +71,12 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	private ConfigurationService configurationService; 
 	
 	
+	
+	@Value("${user.score.oldest.event.diff.in.sec:1209600}")
+	private int userScoreOldestEventDiffFromNowInSeconds;
+	
+	@Value("${user.score.num.of.top.events:5}")
+	private int userScoreNumOfTopEvents;
 	
 	@Value("${group.membership.score.page.size}")
 	private int groupMembershipScorePageSize;
@@ -148,19 +153,6 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 			}
 		}
 	}
-
-	@Override
-	public void updateUserWithAuthScore(Classifier classifier) {
-		AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
-		Date lastRun = authDAO.getLastRunDate();
-		updateUserWithAuthScore(authDAO, classifier, lastRun);
-	}
-	
-	@Override
-	public void updateUserWithAuthScore(Classifier classifier, Date lastRun) {
-		AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
-		updateUserWithAuthScore(authDAO, classifier, lastRun);
-	}
 	
 	private AuthDAO getAuthDAO(LogEventsEnum eventId){
 		AuthDAO ret = null;
@@ -177,162 +169,95 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		
 		return ret;
 	}
-	
-	//This code is left for possible use in the near future.
-	@SuppressWarnings("unused")
-	private Map<String, List<User>> getUsernameToUsersMap(String tablename){
-		logger.info("getting all users");
-		Map<String, List<User>> usersMap = new HashMap<>();
-		for(User user: userRepository.findAllExcludeAdInfo()){
-			String logUsername = user.getLogUserName(tablename);
-			if(logUsername != null){
-				List<User> tmp = usersMap.get(logUsername.toLowerCase());
-				if(tmp == null){
-					tmp = new ArrayList<>();
-					usersMap.put(logUsername.toLowerCase(), tmp);
-				}
-				tmp.add(user);
-			} else{
-				List<User> tmp = usersMap.get(user.getUsername().toLowerCase());
-				if(tmp == null){
-					tmp = new ArrayList<>();
-					usersMap.put(user.getUsername().toLowerCase(), tmp);
-				}
-				tmp.add(user);
-				String usernameSplit[] = StringUtils.split(user.getUsername(), "@");
-				if(usernameSplit.length > 1){
-					tmp = usersMap.get(usernameSplit[0].toLowerCase());
-					if(tmp == null){
-						tmp = new ArrayList<>();
-						usersMap.put(usernameSplit[0].toLowerCase(), tmp);
-					}
-					tmp.add(user);
-				}
-			}
-		}
-		return usersMap;
-	}
-		
-	private void updateUserWithAuthScore(AuthDAO authDAO, final Classifier classifier, Date lastRun) {		
-		logger.info("calculating avg score for {} events.", classifier);
-		double avg = 0;
-		try{
-			avg = authDAO.calculateAvgScoreOfGlobalScore(lastRun);
-		} catch(Exception e){
-			int count = authDAO.countNumOfEvents(lastRun);
-			String message;
-			if(count > 0){
-				message = String.format("while running calculateAvgScoreOfGlobalScore on the table (%s) with runtime (%s) got an exception.", authDAO.getTableName(), lastRun);
-				throw new RuntimeException(message,e);
-			} else{
-				logger.info("no events found on runtime: {}", lastRun);
-				return;
-			}
-		}
-		logger.info("getting all {} scores", classifier);
-		List<AuthScore> authScores = authDAO.findGlobalScoreByTimestamp(lastRun);
-		
-				
-		logger.info("going over all {} {} scores", authScores.size(), classifier);
-		List<Update> updates = new ArrayList<>();
-		List<User> users = new ArrayList<>();
-		for(AuthScore authScore: authScores){
-			final String username = authScore.getNormalizedUsername();
-			if(StringUtils.isEmpty(username)){
-				logger.warn("got a empty string {} username", classifier);
-				continue;
-			}
 
-			User user = userRepository.findByUsername(username);
-			if(user == null){
-				logger.warn("no user was found with the username {}", username);
-				continue;
+	public void updateUserWithAuthScore(Classifier classifier){
+		Date runtime = new Date();
+		updateUserWithAuthScore(classifier, runtime);
+	}
+	
+	@Override
+	public void updateUserWithAuthScore(Classifier classifier, Date runtime) {
+		AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
+		
+		double sum = 0;
+		
+		logger.info("getting all users");
+		List<User> users = userRepository.findAllExcludeAdInfo();
+		
+		logger.info("calculating {} scores for all users", classifier);
+		
+		Map<String, Double> userIdToScoreMap = new HashMap<>();
+		DateTime oldestEventDateTime = new DateTime();
+		oldestEventDateTime = oldestEventDateTime.minusSeconds(userScoreOldestEventDiffFromNowInSeconds);
+		for(User user: users){
+			List<AuthScore> authScores = authDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
+			double userSum = 0;
+			for(AuthScore authScore: authScores){
+				userSum += (Double)authScore.getAllFields().get(SCORE_DECAY_FIELD_NAME);
 			}
-			
-			user = updateUserScore(user, lastRun, classifier.getId(), authScore.getGlobalScore(), avg, false, false);
-			if(user != null){
+			double userScore = userSum/5;
+			userIdToScoreMap.put(user.getId(), userScore);
+			sum += userScore;
+		}
+		
+		logger.info("updating all the {} users with new scores.", users.size());
+		double avg = sum / users.size();
+		for(User user: users){
+			double userScore = userIdToScoreMap.get(user.getId());
+			User updatedUser = updateUserScore(user, runtime, classifier.getId(), userScore, avg, false, false);
+			if(updatedUser != null){
 				Update update = new Update();
 				userService.fillUpdateUserScore(update, user, classifier);
-				updates.add(update);
-				users.add(user);
+				userService.updateUser(user, update);
 			}
 		}
 		
-		logger.info("finished processing {} {} scores.",	authScores.size(), classifier);
+		logger.info("finished updating the user collection with {} score.", classifier);
+	}
 		
-		logger.info("updating all the {} users.", users.size());
-		for(int i = 0; i < users.size(); i++){
-			Update update = updates.get(i);
-			User user = users.get(i);
-			userService.updateUser(user, update);
-		}
-				
-		logger.info("finished updating the user collection. with {} score and total score.", classifier);
-	}	
-	
 	
 	@Override
 	public void updateUserWithVpnScore() {
-		Date lastRun = vpnDAO.getLastRunDate();
-		updateUserWithVpnScore(lastRun);
+		Date runtime = new Date();
+		updateUserWithVpnScore(runtime);
 	}
 	
-	
 	@Override
-	public void updateUserWithVpnScore(Date lastRun) {
-		logger.info("calculating avg score for vpn events.");
-		double avg = 0;
-		try{
-			avg = vpnDAO.calculateAvgScoreOfGlobalScore(lastRun);
-		} catch(Exception e){
-			int count = vpnDAO.countNumOfRecords();
-			String message;
-			if(count > 0){
-				message = String.format("while running calculateAvgScoreOfGlobalScore on the table (%s) with runtime (%s) got an exception.", vpnDAO.getTableName(), lastRun);
-			} else{
-				message = String.format("the table (%s) is empty", vpnDAO.getTableName());
+	public void updateUserWithVpnScore(Date runtime) {
+		double sum = 0;
+		
+		logger.info("getting all users");
+		List<User> users = userRepository.findAllExcludeAdInfo();
+		
+		logger.info("calculating scores for all users");
+		
+		Map<String, Double> userIdToScoreMap = new HashMap<>();
+		DateTime oldestEventDateTime = new DateTime();
+		oldestEventDateTime = oldestEventDateTime.minusSeconds(userScoreOldestEventDiffFromNowInSeconds);
+		for(User user: users){
+			List<VpnScore> vpnScores = vpnDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
+			double userSum = 0;
+			for(VpnScore vpnScore: vpnScores){
+				userSum += (Double)vpnScore.allFields().get(SCORE_DECAY_FIELD_NAME);
 			}
-			throw new RuntimeException(message,e);
+			double userScore = userSum/5;
+			userIdToScoreMap.put(user.getId(), userScore);
+			sum += userScore;
 		}
 		
-		logger.info("getting all vpn scores");
-		List<VpnScore> vpnScores = vpnDAO.findGlobalScoreByTimestamp(lastRun);
-						
-		logger.info("going over all {} vpn scores", vpnScores.size());
-		List<Update> updates = new ArrayList<>();
-		List<User> users = new ArrayList<>();
-		for(VpnScore vpnScore: vpnScores){
-			String username = vpnScore.getNormalized_username();
-			if(StringUtils.isEmpty(username)){
-				logger.warn("got a empty string vpn username");
-				continue;
-			}
-			
-			User user = userRepository.findByUsername(username);
-			if(user == null){
-				logger.info("no user was found with vpn username ({})", username);
-				continue;
-			}
-						
-			user = updateUserScore(user, lastRun, Classifier.vpn.getId(), vpnScore.getGlobalScore(), avg, false, false);
-			if(user != null){
+		logger.info("updating all the {} users with new scores.", users.size());
+		double avg = sum / users.size();
+		for(User user: users){
+			double userScore = userIdToScoreMap.get(user.getId());
+			User updatedUser = updateUserScore(user, runtime, Classifier.vpn.getId(), userScore, avg, false, false);
+			if(updatedUser != null){
 				Update update = new Update();
-				update.set(User.getClassifierScoreField(Classifier.vpn.getId()), user.getScore(Classifier.vpn.getId()));
-				updates.add(update);
-				users.add(user);
+				userService.fillUpdateUserScore(update, updatedUser, Classifier.vpn);
+				userService.updateUser(user, update);
 			}
 		}
 		
-		logger.info("finished processing {} vpn scores.",	vpnScores.size());
-		
-		logger.info("updating all the {} users.", users.size());
-		for(int i = 0; i < users.size(); i++){
-			Update update = updates.get(i);
-			User user = users.get(i);
-			userService.updateUser(user, update);
-		}
-						
-		logger.info("finished updating the user collection with vpn score.");		
+		logger.info("finished updating the user collection with vpn score.");
 	}
 		
 	@Override
@@ -459,7 +384,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 			prevScores.add(scoreInfo);
 			cScore.setPrevScores(prevScores);
 		}else{
-			boolean isOnSameDay = userScoreService.isOnSameDay(timestamp, cScore.getTimestamp());
+			boolean isOnSameDay = userScoreService.isOnSameDay(timestamp, cScore.getPrevScores().get(0).getTimestamp());
 			if(!isOnSameDay && timestamp.before(cScore.getTimestamp())){
 				logger.warn("Got a score that belong to the past. classifierId ({}), current timestamp ({}), new score timestamp ({})", classifierId, cScore.getTimestamp(), timestamp);
 				return null;
@@ -509,119 +434,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	}
 	
 	
-	@Override
-	public void recalculateUsersScores() {
-		Calendar oldestTime = Calendar.getInstance();
-		oldestTime.add(Calendar.DAY_OF_MONTH, -7);
-		List<ClassifierRuntime> classifierRuntimes = new ArrayList<>();
-		List<User> users = userRepository.findAll();
-		for(User user: users){
-			user.removeAllScores();
-		}
-		userRepository.save(users);
 		
-		List<Date> distinctDates = adUsersFeaturesExtractionRepository.getDistinctRuntime(Classifier.groups.getId());
-		for(Date date: distinctDates){
-			if(date.getTime() < oldestTime.getTimeInMillis()){
-				continue;
-			}
-			classifierRuntimes.add(new ClassifierRuntime(Classifier.groups, date.getTime()));
-		}
-		
-		List<Long> distinctRuntimes = null;
-		
-		Classifier classifiers[] = {Classifier.auth, Classifier.ssh};
-		for(Classifier classifier: classifiers){
-			AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
-			distinctRuntimes = authDAO.getDistinctRuntime();
-			for(Long runtime: distinctRuntimes){
-				if(runtime == null){
-					logger.warn("got runtime null in the vpndatares table.");
-					continue;
-				}
-				runtime = runtime*1000;
-				if(runtime < oldestTime.getTimeInMillis()){
-					continue;
-				}
-				classifierRuntimes.add(new ClassifierRuntime(classifier, runtime));
-			}
-		}
-		
-		distinctRuntimes = vpnDAO.getDistinctRuntime();
-		for(Long runtime: distinctRuntimes){
-			if(runtime == null){
-				logger.warn("got runtime null in the vpndatares table.");
-				continue;
-			}
-			runtime = runtime*1000;
-			if(runtime < oldestTime.getTimeInMillis()){
-				continue;
-			}
-			classifierRuntimes.add(new ClassifierRuntime(Classifier.vpn, runtime));
-		}
-		
-		Collections.sort(classifierRuntimes);
-		
-		for(ClassifierRuntime classifierRuntime: classifierRuntimes){
-			try{
-				switch (classifierRuntime.getClassifier()) {
-				case auth:
-					updateUserWithAuthScore(loginDAO, Classifier.auth, new Date(classifierRuntime.getRuntime()));
-					break;
-				case ssh:
-					updateUserWithAuthScore(sshDAO, Classifier.ssh, new Date(classifierRuntime.getRuntime()));
-					break;
-				case vpn:
-					updateUserWithVpnScore(new Date(classifierRuntime.getRuntime()));
-					break;
-				case groups:
-					updateUserWithGroupMembershipScore(new Date(classifierRuntime.getRuntime()));
-					break;
-				default:
-					break;
-				}
-			} catch(Exception e){
-				logger.error("failed to update classifier {} on runtime{}", classifierRuntime.classifier, classifierRuntime.getRuntime());
-				logger.error(e.getMessage(),e);
-			}
-		}
-	}
-	
-	class ClassifierRuntime implements Comparable<ClassifierRuntime>{
-		private Classifier classifier;
-		private long runtime;
-		
-		public ClassifierRuntime(Classifier classifier, long runtime) {
-			this.classifier = classifier;
-			this.runtime = runtime;
-		}
-
-		@Override
-		public int compareTo(ClassifierRuntime o) {
-			long diff = (int)(this.runtime - o.runtime);
-			int ret = (diff > 0 ? 1 : diff < 0 ? -1 : 0);
-			return ret;
-		}
-
-		public Classifier getClassifier() {
-			return classifier;
-		}
-
-		public void setClassifier(Classifier classifier) {
-			this.classifier = classifier;
-		}
-
-		public long getRuntime() {
-			return runtime;
-		}
-
-		public void setRuntime(long runtime) {
-			this.runtime = runtime;
-		}
-
-		
-	}
-	
 	public static class OrderByClassifierScoreTimestempAsc implements Comparator<ClassifierScore>{
 
 		@Override

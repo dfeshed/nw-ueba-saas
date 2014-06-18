@@ -16,10 +16,10 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
-import fortscale.collection.hadoop.ImpalaClient;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.RuntimePartitionStrategy;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
 
 @DisallowConcurrentExecution
@@ -234,7 +234,7 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 				if (partitionName!=null)
 					impalaClient.addPartitionToTable(tableName, partitionName);
 
-			} catch (JobExecutionException e) {
+			} catch (Exception e) {
 				String message = String.format("error addition partition '%s' to table '%s'", partition, tableName);
 				logger.error(message, e);
 				monitor.error(getMonitorId(), getStepName(), message + "\n" + e.toString());

@@ -7,6 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection="ad_computer")
 public class AdComputer extends AdObject{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4210757717351979604L;
 	private String operatingSystem;
 	private String operatingSystemHotfix;
 	private String operatingSystemServicePack;

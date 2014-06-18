@@ -16,20 +16,34 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.Threshold;
 
 public class UserRepositoryImpl implements UserRepositoryCustom{
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	
+	
+	
+	@Override
+	public User findLastActiveUser(LogEventsEnum eventId){
+		String logLastActiveField = User.getLogLastActivityField(eventId);
+		Pageable pageable = new PageRequest(0, 1, Direction.DESC, logLastActiveField);
+		Query query = new Query();
+		query.with(pageable);
+		return mongoTemplate.findOne(query, User.class);
+	}
 	
 	@Override
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails) {
@@ -269,5 +283,32 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 		public void setUsername(String username) {
 			this.username = username;
 		}
+	}
+
+
+	@Override
+	public void updateUserServiceAccount(User user, boolean isUserServiceAccount) {
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.userServiceAccountField, isUserServiceAccount), User.class);		
+	}
+
+	@Override
+	public List<User> findByUserInGroup(Collection<String> groups) {
+		return findByUniqueField(User.getAdInfoField(String.format("%s.%s",UserAdInfo.groupsField,UserAdInfo.adDnField)), groups);
+	}
+
+	@Override
+	public void updateAdministratorAccount(User user, boolean isAdministratorAccount) {
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.administratorAccountField, isAdministratorAccount), User.class);
+	}
+	
+	@Override
+	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime){
+		Update update = new Update();
+		update.set(User.getClassifierScoreCurrentScoreField(classifierId), score);
+		update.set(User.getClassifierScoreCurrentTrendScoreField(classifierId), trendScore);
+		update.set(User.getClassifierScoreCurrentTimestampField(classifierId), calculationTime.toDate());
+		update.set(User.getClassifierScoreCurrentTimestampEpochField(classifierId), calculationTime.getMillis());
+		
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
 	}
 }

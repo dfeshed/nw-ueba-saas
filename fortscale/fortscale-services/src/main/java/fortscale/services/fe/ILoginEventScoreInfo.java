@@ -10,7 +10,6 @@ public interface ILoginEventScoreInfo {
 	public Date getEventTime();
 	public String getDestinationHostname();
 	public double getEventScore();
-	public double getUserScore();
 	public double getUserNameScore();
 	public double getTargetIdScore();
 	public double getSourceIpScore();

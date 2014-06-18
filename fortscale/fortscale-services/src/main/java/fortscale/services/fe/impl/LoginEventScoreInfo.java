@@ -56,12 +56,6 @@ public class LoginEventScoreInfo implements ILoginEventScoreInfo {
 	}
 
 	@Override
-	public double getUserScore() {
-		return authScore.getGlobalScore();
-	}
-
-
-	@Override
 	public double getUserNameScore() {
 		return authScore.getUserNameScore();
 	}

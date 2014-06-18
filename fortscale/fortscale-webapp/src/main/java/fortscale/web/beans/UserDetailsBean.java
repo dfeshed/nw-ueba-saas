@@ -32,7 +32,15 @@ public class UserDetailsBean implements Serializable{
 		this.directReports = directReports;
 		this.adUserParser = new ADParser();
 	}
-	
+
+	public Boolean getAdministratorccount() {
+		return user.getAdministratorAccount();
+	}	
+
+	public Boolean getUserServiceAccount() {
+		return user.getUserServiceAccount();
+	}	
+		
 	public void setThumbnailPhoto(String thumbnailPhoto) {
 		this.thumbnailPhoto = thumbnailPhoto;
 	}

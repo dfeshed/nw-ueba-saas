@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -252,18 +251,15 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public int countAuthEvents(LogEventsEnum eventId, String userId, Date timestamp){
+	public int countAuthEvents(LogEventsEnum eventId, String userId){
 		EventScoreDAO eventScoreDAO = getEventScoreDAO(eventId);
 		User user = userRepository.findOne(userId);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
-		if(timestamp == null){
-			timestamp = eventScoreDAO.getLastRunDate();
-		}
 		String logUsername = usernameService.getAuthLogUsername(eventId, user);
 		if(logUsername != null){
-			return eventScoreDAO.countNumOfEventsByNormalizedUsername(timestamp, user.getUsername());
+			return eventScoreDAO.countNumOfEventsByNormalizedUsername(user.getUsername());
 		} else{
 			return 0;
 		}
@@ -288,29 +284,23 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public int countAuthEvents(LogEventsEnum eventId, Date timestamp, String userId, int minScore){
+	public int countAuthEvents(LogEventsEnum eventId, String userId, int minScore){
 		EventScoreDAO eventScoreDAO = getEventScoreDAO(eventId);
 		User user = userRepository.findOne(userId);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
-		if(timestamp == null){
-			timestamp = eventScoreDAO.getLastRunDate();
-		}
 		String logUsername = usernameService.getAuthLogUsername(eventId, user);
 		if(logUsername != null){
-			return eventScoreDAO.countNumOfEventsByNormalizedUsernameAndGtEScore(timestamp, user.getUsername(), minScore);
+			return eventScoreDAO.countNumOfEventsByNormalizedUsernameAndGtEScore(user.getUsername(), minScore);
 		} else{
 			return 0;
 		}
 	}
 	
 	@Override
-	public int countAuthEvents(LogEventsEnum eventId, Date timestamp, int minScore, boolean onlyFollowedUsers){
+	public int countAuthEvents(LogEventsEnum eventId, int minScore, boolean onlyFollowedUsers){
 		EventScoreDAO eventScoreDAO = getEventScoreDAO(eventId);
-		if(timestamp == null){
-			timestamp = eventScoreDAO.getLastRunDate();
-		}
 
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
@@ -319,15 +309,12 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 				return 0;
 			}
 		}
-		return eventScoreDAO.countNumOfEventsByGTEScoreAndNormalizedUsernameList(timestamp, minScore, usernames);
+		return eventScoreDAO.countNumOfEventsByGTEScoreAndNormalizedUsernameList(minScore, usernames);
 	}
 
 	@Override
-	public List<ILoginEventScoreInfo> getUserSuspiciousAuthEvents(LogEventsEnum eventId, String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
+	public List<ILoginEventScoreInfo> getUserSuspiciousAuthEvents(LogEventsEnum eventId, String userId, int offset, int limit, String orderBy, Direction direction, int minScore) {
 		AuthDAO authDAO = getAuthDAO(eventId);
-		if(timestamp == null){
-			timestamp = authDAO.getLastRunDate();
-		}
 		
 		User user = userRepository.findOne(userId);
 		if(user == null){
@@ -339,7 +326,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<AuthScore> authScores = authDAO.findEventsByNormalizedUsernameAndTimestampGtEventScore(user.getUsername(), timestamp, minScore, pageable);
+		List<AuthScore> authScores = authDAO.findEventsByNormalizedUsernameAndGtEventScore(user.getUsername(), minScore, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
 			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
@@ -350,20 +337,14 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public int countAuthEvents(LogEventsEnum eventId, Date timestamp){
+	public int countAuthEvents(LogEventsEnum eventId){
 		AuthDAO authDAO = getAuthDAO(eventId);
-		if(timestamp == null){
-			timestamp = authDAO.getLastRunDate();
-		}
-		return authDAO.countNumOfEvents(timestamp);
+		return authDAO.countNumOfEvents();
 	}
 
 	@Override
-	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
+	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
 		AuthDAO authDAO = getAuthDAO(eventId);
-		if(timestamp == null){
-			timestamp = authDAO.getLastRunDate();
-		}
 		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
 		
 		List<String> usernames = null;
@@ -375,7 +356,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<AuthScore> authScores = authDAO.findEventsByTimestampGtEventScoreInUsernameList(timestamp, pageable, minScore, usernames);
+		List<AuthScore> authScores = authDAO.findEventsByGtEventScoreInUsernameList(pageable, minScore, usernames);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
 			Map<String, User> userMap = new HashMap<>();
@@ -440,9 +421,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			switch(orderBy){
 			case "username":
 				orderBy = AuthScore.USERNAME_FIELD_NAME;
-				break;
-			case "userScore":
-				orderBy = AuthScore.GLOBAL_SCORE_FIELD_NAME;
 				break;
 			case "userNameScore":
 				orderBy = AuthScore.USERNAME_SCORE_FIELD_NAME;
@@ -527,10 +505,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	
 	@Override
-	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, Date timestamp, int offset, int limit, String orderBy, Direction direction, int minScore) {
-		if(timestamp == null){
-			timestamp = vpnDAO.getLastRunDate();
-		}
+	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, int offset, int limit, String orderBy, Direction direction, int minScore) {
 		User user = userRepository.findOne(userId);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
@@ -542,7 +517,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		String orderByArray[] = processVpnScoreOrderByFieldName(orderBy);
 		String vpnUserNameString = user.getUsername();//applicationUserDetails.getUserName();
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<VpnScore> vpnScores = vpnDAO.findEventsByNormalizedUsernameAndTimestampGtEventScore(vpnUserNameString, timestamp, minScore, pageable);
+		List<VpnScore> vpnScores = vpnDAO.findEventsByNormalizedUsernameAndGtEventScore(vpnUserNameString, minScore, pageable);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
 			for(VpnScore vpnScore: vpnScores.subList(offset, vpnScores.size())){
@@ -553,10 +528,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	@Override
-	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Date timestamp, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
-		if(timestamp == null){
-			timestamp = vpnDAO.getLastRunDate();
-		}
+	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
 		String orderByArray[] = processVpnScoreOrderByFieldName(orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
 		
@@ -568,7 +540,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			}
 		}
 		
-		List<VpnScore> vpnScores = vpnDAO.findEventsByTimestampGtEventScoreInUsernameList(timestamp, pageable, minScore, usernames);
+		List<VpnScore> vpnScores = vpnDAO.findEventsByGtEventScoreInUsernameList(pageable, minScore, usernames);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
 			Map<String, User> userMap = new HashMap<>();
@@ -1056,20 +1028,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			int ret = val2.compareToIgnoreCase(val1);
 			return ret*isDesc;
 		}		
-	}
-	
-	@Override
-	public Long getLatestRuntime(String tableName) {
-		Long retLong = null;
-		if(loginDAO.getTableName().equals(tableName)) {
-			retLong = loginDAO.getLastRuntime();
-		} else if(sshDAO.getTableName().equals(tableName)) {
-			retLong = sshDAO.getLastRuntime();
-		} else if (vpnDAO.getTableName().equals(tableName)) {
-			retLong = vpnDAO.getLastRuntime();
-		}
-		return retLong;
-	}
+	}	
 	
 	interface ThresholdFilter{
 		public boolean hasPassed(ISuspiciousUserInfo suspiciousUserInfo);

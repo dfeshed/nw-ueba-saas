@@ -216,7 +216,7 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
         //support response.sendError ?
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes", "resource" })
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private ModelAndView handleResponseBody(Object body, ServletWebRequest webRequest) throws ServletException, IOException {
 
         HttpInputMessage inputMessage = new ServletServerHttpRequest(webRequest.getRequest());

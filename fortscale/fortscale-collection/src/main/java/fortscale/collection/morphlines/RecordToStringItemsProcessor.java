@@ -1,7 +1,11 @@
 package fortscale.collection.morphlines;
 
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
+
 import org.kitesdk.morphline.api.Record;
 import org.springframework.util.Assert;
+
 
 /**
  * Converts morphline record into string line
@@ -45,5 +49,19 @@ public class RecordToStringItemsProcessor {
 			return null;
 		else
 			return sb.toString();
+	}
+	
+	public String toJSON(Record record) {
+		if (record==null)
+			return null;
+			
+		JSONObject json = new JSONObject();
+		for (String field : fields) {
+			Object value = record.getFirstValue(field);
+			if (value!=null) {
+				json.put(field, value);				
+			}
+		}
+		return json.toJSONString(JSONStyle.NO_COMPRESS);
 	}
 }

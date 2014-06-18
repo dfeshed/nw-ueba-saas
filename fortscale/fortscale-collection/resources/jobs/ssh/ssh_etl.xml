@@ -47,6 +47,10 @@
 					<key>impalaTableName</key>
 					<value>sshdata</value>
 				</entry>
+				<entry>
+					<key>streamingTopic</key>
+					<value>${kafka.ssh.struct.topic}</value>
+				</entry>
 			</job-data-map>
 		</job>
 		

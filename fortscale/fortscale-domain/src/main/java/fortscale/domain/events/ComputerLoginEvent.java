@@ -11,6 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 	@CompoundIndex(name="hostnameTimeIdx", def = "{'hostname': 1, 'timestampepoch': -1}"),
 })
 public class ComputerLoginEvent extends IpToHostname{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8490137402047557595L;
 	public static final String collectionName =  "ComputerLogin";
 	
 	

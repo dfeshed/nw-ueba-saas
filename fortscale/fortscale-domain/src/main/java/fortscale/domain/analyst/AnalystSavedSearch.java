@@ -12,6 +12,11 @@ import fortscale.domain.core.AbstractAuditableDocument;
 @Document
 public class AnalystSavedSearch extends AbstractAuditableDocument{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 952384145712999807L;
+
 	private String analystId;
 	
 	private String analystUsername;

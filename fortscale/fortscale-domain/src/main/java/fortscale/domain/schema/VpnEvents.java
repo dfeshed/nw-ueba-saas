@@ -68,7 +68,10 @@ public class VpnEvents implements TableSchema {
 	
 	@Value("${impala.data.vpn.table.field.normalized_username}")
 	public String NORMALIZED_USERNAME;
-	
+
+	@Value("${impala.data.vpn.table.field.is_administrator_account}")
+	public String IS_ADMINISTRATOR_ACCOUNT;
+
 	private PartitionStrategy partition = new MonthlyPartitionStrategy();	
 	
 	@Override

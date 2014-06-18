@@ -40,7 +40,6 @@ public class ImpalaResultSetToVpnScoreItemConverterTest {
 		converter.convert(rs, vpnScore);
 		
 		ImpalaParser impalaParser = new ImpalaParser();
-		Assert.assertEquals(new Integer(timestampValue), vpnScore.getRuntime());
 		Assert.assertEquals(impalaParser.parseTimeDate(dateTimeValue), vpnScore.getDate_time());
 		Assert.assertEquals(normalizedUsernameVal, vpnScore.getNormalized_username());
 		Assert.assertEquals(dateTimeScoreValue, vpnScore.getDate_timeScore());

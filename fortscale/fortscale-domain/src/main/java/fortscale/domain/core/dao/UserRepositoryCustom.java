@@ -5,12 +5,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
+import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.Threshold;
 
 public interface UserRepositoryCustom {
@@ -44,4 +46,11 @@ public interface UserRepositoryCustom {
 	public User findByAdInfoObjectGUID(String objectGUID);
 	public User findByObjectGUID(String objectGUID);
 	public HashMap<String, String> findAllUsernames();
+	
+	public User findLastActiveUser(LogEventsEnum eventId);
+	
+	public void updateUserServiceAccount(User user, boolean isUserServiceAccount);
+	public List<User> findByUserInGroup(Collection<String> groups);
+	public void updateAdministratorAccount(User user, boolean isAdministratorAccount);
+	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime);
 }
