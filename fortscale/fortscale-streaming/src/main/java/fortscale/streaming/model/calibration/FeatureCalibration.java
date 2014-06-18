@@ -195,7 +195,7 @@ public class FeatureCalibration{
 			ret = (scoreBucketsAggr[lowerBucketIndex] * (lowerBucketIndex + 1 - bucketIndex)) +
 					(scoreBucketsAggr[lowerBucketIndex+1] * (bucketIndex - lowerBucketIndex));
 		}
-		return 1 - (ret / total);
+		return (int) ((1 - (ret / total))*100);
 	}
 	
 	private double getBucketIndex(double rscore){
