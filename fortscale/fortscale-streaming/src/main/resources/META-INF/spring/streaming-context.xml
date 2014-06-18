@@ -38,5 +38,8 @@
 	</bean>
 	
 	<mongo:repositories base-package="fortscale.streaming.service.dao" />
+	<mongo:repositories base-package="fortscale.domain.system.dao" />
+	
+	<bean class="fortscale.domain.system.ServersListConfigurationImpl" />
 	
 </beans>
