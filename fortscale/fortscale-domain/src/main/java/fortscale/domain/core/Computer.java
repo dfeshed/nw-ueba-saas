@@ -29,6 +29,7 @@ public class Computer extends AbstractDocument {
 	public static final String WHEN_CREATED_FIELD = "whenCreated";
 	public static final String USAGE_CLASSIFIERS_FIELD = "usageClassifiers";
 	public static final String TIMESTAMP_FIELD = "timestamp";
+	public static final String SENSITIVE_MACHINE_FIELD = "sensitive";
 	
 	@Field(OPERATING_SYSTEM_FIELD)
 	private String operatingSystem;
@@ -59,10 +60,18 @@ public class Computer extends AbstractDocument {
 	@Field(TIMESTAMP_FIELD)
 	private Date timestamp;
 	
+	@Field(SENSITIVE_MACHINE_FIELD)
+	@Indexed
+	private Boolean isSensitive;
+	
 	public Computer() {
 		this.timestamp = new Date();
 	}
 	
+	public Boolean getIsSensitive() {
+		return isSensitive;
+	}
+
 	public String getOperatingSystem() {
 		return operatingSystem;
 	}
@@ -123,15 +132,21 @@ public class Computer extends AbstractDocument {
 	public void clearUsageClassifiers() {
 		this.usageClassifiers.clear();
 	}
-	public Collection<ComputerUsageClassifier> getUsageClassifiers() {
-		return this.usageClassifiers.values();
-	}
+	
 	public ComputerUsageType getUsageType() {
 		// go over the usage classifiers and return the first one that is not unknown
 		for (ComputerUsageClassifier classifier : usageClassifiers.values())
 			if (classifier.getUsageType()!=ComputerUsageType.Unknown)
 				return classifier.getUsageType();
 		return ComputerUsageType.Unknown;
+	}
+	
+	public Collection<ComputerUsageClassifier> getUsageClassifiers() {
+		return this.usageClassifiers.values();
+	}
+	
+	public Map<String, ComputerUsageClassifier> getUsageClassifiersMap() {
+		return usageClassifiers;
 	}
 	
 }

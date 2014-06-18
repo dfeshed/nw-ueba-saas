@@ -61,6 +61,8 @@ public class LDAPEvents implements TableSchema {
 	public String IS_USER_SERVICE_ACCOUNT;	
 	@Value("${impala.data.security.events.4769.table.field.is_administrator_account}")
 	public String IS_ADMINISTRATOR_ACCOUNT;	
+	@Value("${impala.data.security.events.4769.table.field.is_sensitive_machine}")
+	public String IS_SENSITIVE_MACHINE;
 	
 	private PartitionStrategy partition = new MonthlyPartitionStrategy();
 	

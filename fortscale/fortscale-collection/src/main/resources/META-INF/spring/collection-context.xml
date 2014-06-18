@@ -26,6 +26,7 @@
 	<context:component-scan base-package="fortscale" />
 
     <task:scheduled-tasks scheduler="dataRetrievalScheduler">
-    	<task:scheduled ref="administratorAccountService" method="update" cron="0 0 */1 * * *" />
+    	<task:scheduled ref="administratorAccountService" method="update" cron="0 0 * * * *" />
+		<task:scheduled ref="sensitiveMachineService" method="updateSensitiveMachines" cron="0 0 * * * *" />
     </task:scheduled-tasks>	
 </beans>
