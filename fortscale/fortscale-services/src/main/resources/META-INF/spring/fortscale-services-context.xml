@@ -34,14 +34,11 @@
 	
 	<task:executor id="mongoDbReaderExecuter" pool-size="0-3" keep-alive="5"/>
 	<task:executor id="mongoDbWriterExecuter" pool-size="0-8" keep-alive="5"/>
-<<<<<<< HEAD
+	
     <task:scheduler id="dataRetrievalScheduler" pool-size="1" />
+    
     <task:scheduled-tasks scheduler="dataRetrievalScheduler">
-    	<task:scheduled ref="administratorAccountService" method="refresh" cron="0 0 */1 * * *" />
-=======
-	<task:scheduler id="dataRetrievalScheduler" pool-size="1" />
-    <task:scheduled-tasks scheduler="dataRetrievalScheduler">
-    	<task:scheduled ref="sensitiveMachineService" method="refreshSensitiveMachines" cron="0 0 */1 * * *" />
->>>>>>> feature/FV-3046_sensetive_resource_tag
+    	<task:scheduled ref="administratorAccountService" method="refresh" cron="0 0 * * * *" />
+    	<task:scheduled ref="sensitiveMachineService" method="refreshSensitiveMachines" cron="0 0 * * * *" />
     </task:scheduled-tasks>
 </beans>
