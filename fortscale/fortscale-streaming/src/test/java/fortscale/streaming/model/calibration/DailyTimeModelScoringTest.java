@@ -40,10 +40,10 @@ public class DailyTimeModelScoringTest {
 		
 		timeModel.update(10);
 		double score = timeModel.score(10);
-		Assert.assertEquals(0.0, score,0.01);
+		Assert.assertEquals(0, score,1);
 		timeModel.update(24600);
 		score = timeModel.score(24600);
-		Assert.assertEquals(0.0, score,0.01);
+		Assert.assertEquals(0, score,1);
 	}
 	
 	@Test
@@ -57,12 +57,12 @@ public class DailyTimeModelScoringTest {
 		
 		timeModel.update(30000);
 		double score = timeModel.score(30000);
-		Assert.assertEquals(0.98, score,0.01);
+		Assert.assertEquals(98, score,1);
 		timeModel.update(60000);
 		score = timeModel.score(60000);
-		Assert.assertEquals(0.95, score,0.01);
+		Assert.assertEquals(95, score,1);
 		score = timeModel.score(500);
-		Assert.assertEquals(0.13, score,0.01);
+		Assert.assertEquals(13, score,1);
 	}
 	
 	@Test
@@ -76,15 +76,15 @@ public class DailyTimeModelScoringTest {
 		
 		timeModel.update(12000);
 		double score = timeModel.score(12000);
-		Assert.assertEquals(0.98, score,0.01);
+		Assert.assertEquals(98, score,1);
 		
 		timeModel.update(9000);
 		score = timeModel.score(9000);
-		Assert.assertEquals(0.84, score,0.01);
+		Assert.assertEquals(84, score,1);
 		
 		timeModel.update(7500);
 		score = timeModel.score(7500);
-		Assert.assertEquals(0.38, score,0.01);
+		Assert.assertEquals(38, score,1);
 		
 		
 	}
@@ -105,21 +105,21 @@ public class DailyTimeModelScoringTest {
 		timeModel.update(epochSeconds);
 		dispersedTimes[i] = epochSeconds;
 		double score = timeModel.score(dispersedTimes[i]);
-		Assert.assertEquals(0.97, score, 0.01);
+		Assert.assertEquals(97, score, 1);
 		i++;
 		
 		epochSeconds = 3000 + ((i+1) * 6000);
 		timeModel.update(epochSeconds);
 		dispersedTimes[i] = epochSeconds;
 		score = timeModel.score(dispersedTimes[i]);
-		Assert.assertEquals(0.92, score, 0.01);
+		Assert.assertEquals(92, score, 1);
 		i++;
 		
 		epochSeconds = 3000 + ((i+1) * 6000);
 		timeModel.update(epochSeconds);
 		dispersedTimes[i] = epochSeconds;
 		score = timeModel.score(dispersedTimes[i]);
-		Assert.assertEquals(0.86, score, 0.01);
+		Assert.assertEquals(86, score, 1);
 		i++;
 		
 		epochSeconds = 3000 + ((i+1) * 6000);
@@ -129,7 +129,7 @@ public class DailyTimeModelScoringTest {
 		
 		for (int j = 0; j < 4; j++) {
 			score = timeModel.score(dispersedTimes[j]);
-			Assert.assertEquals(0.79, score, 0.01);
+			Assert.assertEquals(79, score, 1);
 		}
 		
 		for (; i < 10; i++) {
@@ -138,6 +138,6 @@ public class DailyTimeModelScoringTest {
 		}
 		
 		score = timeModel.score(dispersedTimes[0]);
-		Assert.assertEquals(0.27, score, 0.01);
+		Assert.assertEquals(27, score, 1);
 	}
 }
