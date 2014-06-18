@@ -125,7 +125,6 @@ public class BatchScheduler {
 		startJob("SessionScoring", "VPN", params);
 		startJob("Fetch", "SSH", params);
 		startJob("ETL", "SSH", params);
-		startJob("Scoring", "SSH", params);
 		startJob("Scoring", "TOTAL", params);
 		startJob("Export", "USER", params);
 	}

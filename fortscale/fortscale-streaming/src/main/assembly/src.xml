@@ -21,7 +21,16 @@
       <outputDirectory>config</outputDirectory>
       <filtered>true</filtered>
     </file>
-    
+    <file>
+      <source>${basedir}/src/main/config/ssh-prevalance-stats.properties</source>
+      <outputDirectory>config</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>${basedir}/src/main/config/ssh-events-write.properties</source>     
+      <outputDirectory>config</outputDirectory>
+      <filtered>true</filtered>
+    </file>
   </files>
   <dependencySets>
     <dependencySet>
