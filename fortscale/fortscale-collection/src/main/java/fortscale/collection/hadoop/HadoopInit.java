@@ -202,7 +202,7 @@ public class HadoopInit implements InitializingBean{
 		createTable(impalaSecLoginTableName, impalaSecLoginTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSecLoginTableDelimiter, impalaSecLoginDirectory);
 		
 		//Security Events Scoring table
-		createTable(impalaSecScoringTableName, impalaSecScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaSecScoringTableDelimiter, impalaSecScoringDirectory);
+		createTable(impalaSecScoringTableName, impalaSecScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSecScoringTableDelimiter, impalaSecScoringDirectory);
 		
 		// Security Events Login Scoring table
 		createTable(impalaLoginScoringTableName, impalaLoginScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaLoginScoringTableDelimiter, impalaLoginScoringDirectory);
