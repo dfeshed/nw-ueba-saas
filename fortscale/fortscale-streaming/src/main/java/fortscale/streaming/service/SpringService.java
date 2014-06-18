@@ -20,10 +20,7 @@ public class SpringService {
 	}
 	
 	public static SpringService getInstance(String contextPath) {
-		if (instance==null) {
-			instance = new SpringService(contextPath);
-		}
-		return instance;
+		return new SpringService(contextPath);
 	}
 	
 	
@@ -32,7 +29,7 @@ public class SpringService {
 	private ApplicationContext context;
 	
 	private SpringService(String contextPath) {
-		context = new ClassPathXmlApplicationContext(contextPath);//("classpath*:streaming-user-score-context.xml");
+		context = new ClassPathXmlApplicationContext(contextPath);
 	}
 	
 	public <T> T resolve(Class<T> requiredType) {
