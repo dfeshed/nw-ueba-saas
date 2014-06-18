@@ -274,8 +274,16 @@ public class User extends AbstractDocument {
 		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.timestampField);
 	}
 	
+	public static String getClassifierScoreCurrentTimestampEpochField(String classifierId) {
+		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.timestampEpocField);
+	}
+	
 	public static String getClassifierScoreCurrentScoreField(String classifierId) {
 		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.scoreField);
+	}
+	
+	public static String getClassifierScoreCurrentAvgScoreField(String classifierId) {
+		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.avgScoreField);
 	}
 	
 	public static String getClassifierScoreCurrentTrendField(String classifierId) {

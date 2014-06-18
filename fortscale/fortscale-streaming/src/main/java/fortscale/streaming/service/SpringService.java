@@ -14,7 +14,14 @@ public class SpringService {
 	
 	public static SpringService getInstance() {
 		if (instance==null) {
-			instance = new SpringService();
+			instance = new SpringService("classpath*:META-INF/spring/streaming-context.xml");
+		}
+		return instance;
+	}
+	
+	public static SpringService getInstance(String contextPath) {
+		if (instance==null) {
+			instance = new SpringService(contextPath);
 		}
 		return instance;
 	}
@@ -24,8 +31,8 @@ public class SpringService {
 	
 	private ApplicationContext context;
 	
-	private SpringService() {
-		context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/streaming-context.xml");
+	private SpringService(String contextPath) {
+		context = new ClassPathXmlApplicationContext(contextPath);//("classpath*:streaming-user-score-context.xml");
 	}
 	
 	public <T> T resolve(Class<T> requiredType) {

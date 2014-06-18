@@ -20,6 +20,21 @@ public final class ConversionUtils {
 		}
 	}
 	
+	public static Double convertToDouble(Object value) {
+		try {
+			if (value==null)
+				return null;
+			
+			if (value instanceof Double)
+				return (Double)value;
+			
+			String str = value.toString();
+			return Double.valueOf(str);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
 
 	public static String convertToString(Object value) {
 		if (value==null)

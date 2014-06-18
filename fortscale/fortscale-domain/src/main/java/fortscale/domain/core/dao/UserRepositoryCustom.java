@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -51,4 +52,5 @@ public interface UserRepositoryCustom {
 	public void updateUserServiceAccount(User user, boolean isUserServiceAccount);
 	public List<User> findByUserInGroup(Collection<String> groups);
 	public void updateAdministratorAccount(User user, boolean isAdministratorAccount);
+	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime);
 }
