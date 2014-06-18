@@ -10,6 +10,7 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
 import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.ClosableTask;
 import org.apache.samza.task.InitableTask;
@@ -40,6 +41,7 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	private String tableName;
 	private int eventsCountFlushThreshold;
 	private int nonFlushedEventsCounter = 0;
+	private Counter processedMessageCount;
 	
 	/** reads task configuration from job config and initialize hdfs appender */
 	@Override public void init(Config config, TaskContext context) throws Exception {
@@ -59,6 +61,9 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 		
 		// create HDFS appender service
 		service = new HdfsService(hdfsRootPath, fileName, partitionStrategy, splitStrategy, tableName);
+		
+		// create counter metric for processed messages
+		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", tableName));
 	}
 	
 	/** Write the incoming message fields to hdfs */
@@ -83,6 +88,7 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 			String eventLine = buildEventLine(message);
 			service.writeLineToHdfs(eventLine, timestamp.longValue());
 			
+			processedMessageCount.inc();
 			nonFlushedEventsCounter++;
 			if (nonFlushedEventsCounter>=eventsCountFlushThreshold) {
 				flushEvents();
