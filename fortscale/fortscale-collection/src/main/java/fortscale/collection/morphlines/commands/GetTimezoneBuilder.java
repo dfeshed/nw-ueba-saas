@@ -43,7 +43,7 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 	@Configurable(preConstruction=true)
 	public static final class GetTimezone extends AbstractCommand {
 
-		private final String sourceTypeField;
+		private final String sourceType;
 		private final String hostnameField;
 		private final String timezoneField;
 		private TimzoneConfig tzConfig;
@@ -57,7 +57,7 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 		public GetTimezone(CommandBuilder builder, Config config, Command parent,
 				Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
-			this.sourceTypeField = getConfigs().getString(config, "sourceType");
+			this.sourceType = getConfigs().getString(config, "sourceType");
 			this.hostnameField = getConfigs().getString(config, "hostnameField");
 			this.timezoneField = getConfigs().getString(config, "timezoneOutputField");
 			if (timezones != null && timezones.length() >0) {
@@ -77,7 +77,6 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record record) {
-			String sourceType = (String)record.getFirstValue(sourceTypeField);
 			String hostname = (String)record.getFirstValue(hostnameField);
 			if (sourceType != null && hostname != null && tzConfig != null) {
 				record.put(this.timezoneField, tzConfig.getTimeZone(sourceType, hostname));
