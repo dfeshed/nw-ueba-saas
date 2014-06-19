@@ -215,7 +215,7 @@ public class HadoopInit implements InitializingBean{
 		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
 		
 		//VPN Session Scoring table
-		createTable(impalaVpnSessionScoringTableName, impalaVpnSessionScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaVpnSessionScoringTableDelimiter, impalaVpnSessionScoringDirectory);
+		createTable(impalaVpnSessionScoringTableName, impalaVpnSessionScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaVpnSessionScoringTableDelimiter, impalaVpnSessionScoringDirectory);
 		
 		//SSH Data table
 		createTable(impalaSshDataTableName, impalaSshDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSshDataTableDelimiter, impalaSshDataDirectory);
