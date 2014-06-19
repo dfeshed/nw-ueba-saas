@@ -43,6 +43,21 @@ public final class ConversionUtils {
 			return value.toString();
 	}
 	
+	public static Boolean convertToBoolean(Object value) {
+		if (value==null)
+			return null;
+		
+		try {
+			if (value instanceof Boolean)
+				return (Boolean)value;
+			
+			if (value instanceof String)
+				return Boolean.valueOf((String)value);
+			
+		} catch (Exception e) {}
+		return false;
+		
+	}
 	
 		
 }

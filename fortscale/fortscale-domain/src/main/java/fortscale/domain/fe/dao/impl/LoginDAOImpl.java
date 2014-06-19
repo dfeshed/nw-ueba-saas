@@ -17,15 +17,20 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	
 	@Value("${impala.score.ldapauth.table.fields}")
 	private String impalaSecScoringTableFields;
-	@Value("${impala.score.ldapauth.table.fields.time}")
+	@Value("${impala.score.ldapauth.table.fields.timeGenerated}")
 	private String timeFieldName;
-	@Value("${impala.score.ldapauth.table.fields.errorcode}")
+	@Value("${impala.score.ldapauth.table.fields.failure_code}")
 	private String errorCodeFieldName;
-	@Value("${impala.score.ldapauth.table.fields.SourceIp}")
+	@Value("${impala.score.ldapauth.table.fields.machine_name}")
 	private String sourceFieldName;
-	@Value("${impala.score.ldapauth.table.fields.TargetId}")
+	@Value("${impala.score.ldapauth.table.fields.service_name}")
 	private String destinationFieldName;
-			
+	@Value("${impala.score.ldapauth.table.fields.account_name}")
+	private String usernameFieldName;
+	@Value("${impala.score.ldapauth.table.fields.eventscore}")
+	private String eventScoreFieldName;
+	@Value("${impala.score.ldapauth.table.fields.client_address}")
+	private String sourceIpFieldName;
 	
 	
 	@Override
@@ -76,7 +81,16 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	}
 	@Override
 	public String getSourceIpFieldName() {
-		return sourceFieldName;
+		return sourceIpFieldName;
 	}
+	@Override
+	public String getUsernameFieldName() {
+		return usernameFieldName;
+	}
+	@Override
+	public String getEventScoreFieldName() {
+		return eventScoreFieldName.toLowerCase();
+	}
+
 	
 }
