@@ -130,35 +130,36 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 			// go over each field in the event and add it to the model
 			PrevalanceModel model = modelService.getModelForUser(username);
 				
-			// skip events that occur before the model mark
-			if (!model.isTimeMarkAfter(timestamp)) {
+			// skip events that occur before the model mark, or in case the task is configured to
+			// perform only scoring and not model computation 
+			if (!model.isTimeMarkAfter(timestamp) && !skipModel) {
+				for (String fieldName : model.getFieldNames()) {
+					Object value = message.get(fieldName);
+					model.addFieldValue(fieldName, value, timestamp);
+				}
+				modelService.updateUserModelInStore(username, model);
+			}
+			
+			// compute score for the event fields
+			if (!skipScore) {
 				double eventScore = 0;
 				for (String fieldName : model.getFieldNames()) {
 					Object value = message.get(fieldName);
-					if (!skipModel)
-						model.addFieldValue(fieldName, value, timestamp);
-					
-					if (!skipScore) {
-						double score = model.calculateScore(fieldName, value);
-					
-						// set the max field score as the event score
-						eventScore = Math.max(eventScore, score);
-						
-						// store the field score in the message
-						message.put(outputFields.get(fieldName), score);
-					}
-				}
-				if (!skipScore) {
-					// put the event score in the message
-					message.put(eventScoreField, eventScore);
-					
-					// publish the event with score to the subsequent topic in the topology
-					if (StringUtils.isNotEmpty(outputTopic))
-						collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
-				}
+					double score = model.calculateScore(fieldName, value);
 				
-				if (!skipModel)
-					modelService.updateUserModelInStore(username, model);
+					// set the max field score as the event score
+					eventScore = Math.max(eventScore, score);
+					
+					// store the field score in the message
+					message.put(outputFields.get(fieldName), score);
+				}
+			
+				// put the event score in the message
+				message.put(eventScoreField, eventScore);
+					
+				// publish the event with score to the subsequent topic in the topology
+				if (StringUtils.isNotEmpty(outputTopic))
+					collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
 				
 				processedMessageCount.inc();
 			} else {
