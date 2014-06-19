@@ -122,7 +122,6 @@ public class BatchScheduler {
 		startJob("LoginScoring", "SecurityEvents", params);
 		startJob("Fetch", "VPN", params);
 		startJob("ETL", "VPN", params);
-		startJob("SessionScoring", "VPN", params);
 		startJob("Fetch", "SSH", params);
 		startJob("ETL", "SSH", params);
 		startJob("Scoring", "TOTAL", params);
