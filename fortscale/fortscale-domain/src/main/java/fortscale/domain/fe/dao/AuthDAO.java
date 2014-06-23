@@ -30,5 +30,7 @@ public interface AuthDAO extends EventScoreDAO{
 	
 	
 	
+	public String getEventTimeFieldName();
+	
 	public String getEventScoreFieldName();
 }
