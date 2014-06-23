@@ -76,7 +76,6 @@
 		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
-		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
 		<mavanagaiata.version>0.7.0</mavanagaiata.version>
@@ -317,35 +316,6 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>${maven-resources-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<!-- here the phase you need (allows mvn compile to work) -->
-						<phase>package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/resources</outputDirectory>
-							<resources>
-								<resource>
-									<directory>resources</directory>
-									<filtering>true</filtering>
-								</resource>
-								<resource>
-									<directory>src/main/resources</directory>
-									<includes>
-										<include>logback.xml</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
