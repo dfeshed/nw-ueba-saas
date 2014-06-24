@@ -42,7 +42,8 @@ public class Sec4769EventsModelStreamTask extends EventsPrevalenceModelStreamTas
 				
 		// filter events with account_name that match $account_regex parameter
 		String account_name = convertToString(message.get("account_name"));
-		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && accountNamePattern.matcher(account_name).matches())
+		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && 
+				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt"))
 			return false;
 		
 		// filter events with service_name that match $dcRegex
