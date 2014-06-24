@@ -24,177 +24,76 @@ import fortscale.utils.logging.Logger;
 public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, InitializingBean{
 	private static Logger logger = Logger.getLogger(VpnDAOImpl.class);
 	
-	@Value("${impala.score.vpn.table.field.date_time_unix}")
-	private String dateTimeUnixFieldName;
-			
-	@Value("${impala.score.vpn.table.field.hostname.score}")
-	private String hostnameScoreFieldName;
-
-	@Value("${impala.score.vpn.table.field.country.score}")
-	private String countryScoreFieldName;
-			
-	@Value("${impala.score.vpn.table.field.countrycode}")
-	private String countryCodeFieldName;
-			
-	@Value("${impala.data.table.fields.normalized_username}")
-	private String normalizedUsernameField;
-	
-	@Value("${impala.score.vpn.table.field.status}")
-	private String statusFieldName;
-	
-	@Value("${impala.score.vpn.table.field.country}")
-	private String countryFieldName;
-	
-	@Value("${impala.score.vpn.table.field.region}")
-	private String regionFieldName;
-	
-	@Value("${impala.score.vpn.table.field.city}")
-	private String cityFieldName;
-	
-	@Value("${impala.score.vpn.table.field.isp}")
-	private String ispFieldName;
-	
-	@Value("${impala.score.vpn.table.field.ipusage}")
-	private String ipusageFieldName;
-	
-	@Value("${impala.table.fields.username}")
-	private String usernameFieldName;
-	
-	@Value("${impala.score.vpn.table.field.local_ip}")
-	private String localIpFieldName;
-	
-	@Value("${impala.score.vpn.table.field.source_ip}")
-	private String sourceIpFieldName;
-	
-	@Value("${impala.score.vpn.table.field.date_time}")
-	private String eventTimeFieldName;
-	
-	@Value("${impala.score.vpn.table.field.date_timeScore}")
-	private String eventTimeScoreFieldName;
-	
-	@Value("${impala.score.vpn.table.field.event.score}")
-	private String eventScoreFieldName;
-	
-	@Value("${impala.score.vpn.table.fields}")
-	private String tableFieldDefinition;
-	
-	@Value("${impala.score.vpn.table.field.hostname}")
-	private String hostnameFieldName;
-	
 	@Autowired
 	private ImpalaParser impalaParser;
 	
 	@Value("${impala.score.vpn.table.name}")
 	private String tableName;
+	
+	@Value("${impala.score.vpn.table.fields}")
+	private String tableFieldDefinition;
 		
+	
+	@Value("${impala.score.vpn.table.field.date_time_unix}")
+	public String DATE_TIME_UNIX;
+			
+	@Value("${impala.score.vpn.table.field.hostname.score}")
+	public String HOSTNAME_SCORE;
+
+	@Value("${impala.score.vpn.table.field.country.score}")
+	public String COUNTRY_SCORE;
+			
+	@Value("${impala.score.vpn.table.field.countrycode}")
+	public String COUNTRY_CODE;
+			
+	@Value("${impala.data.table.fields.normalized_username}")
+	public String NORMALIZED_USERNAME;
+	
+	@Value("${impala.score.vpn.table.field.status}")
+	public String STATUS;
+	
+	@Value("${impala.score.vpn.table.field.country}")
+	public String COUNTRY;
+	
+	@Value("${impala.score.vpn.table.field.region}")
+	public String REGION;
+	
+	@Value("${impala.score.vpn.table.field.city}")
+	public String CITY;
+	
+	@Value("${impala.score.vpn.table.field.isp}")
+	public String ISP;
+	
+	@Value("${impala.score.vpn.table.field.ipusage}")
+	public String IP_USAGE;
+	
+	@Value("${impala.table.fields.username}")
+	public String USERNAME;
+	
+	@Value("${impala.score.vpn.table.field.local_ip}")
+	public String LOCAL_IP;
+	
+	@Value("${impala.score.vpn.table.field.source_ip}")
+	public String SOURCE_IP;
+	
+	@Value("${impala.score.vpn.table.field.date_time}")
+	public String DATE_TIME;
+	
+	@Value("${impala.score.vpn.table.field.date_timeScore}")
+	public String TIME_SCORE;
+	
+	@Value("${impala.score.vpn.table.field.event.score}")
+	public String EVENT_SCORE;
+	
+	@Value("${impala.score.vpn.table.field.hostname}")
+	public String HOSTNAME;
+	
 	private ImpalaResultSetToBeanItemConverter<VpnScore> converter;
 	
 
 	@Override
 	public LogEventsEnum getLogEventsEnum() {
 		return LogEventsEnum.vpn;
-	}
-	@Override
-	public RowMapper<VpnScore> getMapper() {
-		return new VpnScoreMapper();
-	}
-
-	
-	@Override
-	public String getNormalizedUsernameField() {
-		return normalizedUsernameField.toLowerCase();
-	}
-
-	@Override
-	public String getUsernameFieldName() {
-		return usernameFieldName;
-	}
-	
-	@Override
-	public String getStatusFieldName(){
-		return statusFieldName.toLowerCase();
-	}
-	
-	@Override
-	public String getCountryFieldName(){
-		return countryFieldName;
-	}
-	
-	@Override
-	public String getRegionFieldName(){
-		return regionFieldName;
-	}
-	
-	@Override
-	public String getCityFieldName(){
-		return cityFieldName;
-	}
-	
-	@Override
-	public String getIspFieldName(){
-		return ispFieldName;
-	}
-	
-	@Override
-	public String getIpusageFieldName(){
-		return ipusageFieldName;
-	}
-	
-	@Override
-	public String getSourceIpFieldName(){
-		return sourceIpFieldName;
-	}
-	
-	@Override
-	public String getLocalIpFieldName(){
-		return localIpFieldName;
-	}
-	
-	public String getEventTimeFieldName(){
-		return eventTimeFieldName.toLowerCase();
-	}
-	
-	public String getEventTimeScoreFieldName(){
-		return eventTimeScoreFieldName;
-	}
-
-	@Override
-	public String getEventScoreFieldName() {
-		return eventScoreFieldName;
-	}
-	
-	@Override
-	public String getSourceFieldName() {
-		return hostnameFieldName;
-	}
-	
-	@Override
-	public String getDestinationFieldName() {
-		return localIpFieldName;
-	}
-	
-	public String getCountryCodeFieldName() {
-		return countryCodeFieldName;
-	}
-	
-	public String getCountryScoreFieldName() { 
-		return countryScoreFieldName;
-	}
-	
-	public String getHostnameScoreFieldName() {
-		return hostnameScoreFieldName;
-	}
-	
-	public String getDateTimeUnixFieldName() {
-		return dateTimeUnixFieldName;
-	}
-	
-	@Override
-	public VpnScore createAccessObject(String normalizedUsername, String username) {
-		VpnScore ret = new VpnScore();
-		ret.setNormalized_username(normalizedUsername);
-		ret.setUsername(username);
-		return ret;
 	}
 
 	@Override
@@ -209,6 +108,107 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Override
 	public String getInputFileHeaderDesc() {
 		return tableFieldDefinition;
+	}
+	
+
+	@Override
+	public String getCountryFieldName() {
+		return COUNTRY;
+	}
+
+	@Override
+	public String getRegionFieldName() {
+		return REGION;
+	}
+
+	@Override
+	public String getCityFieldName() {
+		return CITY;
+	}
+
+	@Override
+	public String getIspFieldName() {
+		return ISP;
+	}
+
+	@Override
+	public String getIpusageFieldName() {
+		return IP_USAGE;
+	}
+
+	@Override
+	public String getLocalIpFieldName() {
+		return LOCAL_IP;
+	}
+
+	@Override
+	public String getEventTimeScoreFieldName() {
+		return TIME_SCORE;
+	}
+
+	@Override
+	public String getEventTimeFieldName() {
+		return DATE_TIME;
+	}
+
+	@Override
+	public String getNormalizedUsernameField() {
+		return NORMALIZED_USERNAME;
+	}
+
+	@Override
+	public String getUsernameFieldName() {
+		return USERNAME;
+	}
+
+	@Override
+	public String getEventScoreFieldName() {
+		return EVENT_SCORE;
+	}
+
+	@Override
+	public String getSourceFieldName() {
+		return HOSTNAME;
+	}
+
+	@Override
+	public String getDestinationFieldName() {
+		return LOCAL_IP;
+	}
+
+	@Override
+	public String getStatusFieldName() {
+		return STATUS;
+	}
+
+	@Override
+	public String getStatusSuccessValue() {
+		return "success";
+	}
+
+	@Override
+	public String getSourceIpFieldName() {
+		return SOURCE_IP;
+	}
+	
+	@Override
+	public RowMapper<VpnScore> getMapper() {
+		return new VpnScoreMapper();
+	}
+
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.hasText(tableName);
+		converter =  new ImpalaResultSetToBeanItemConverter<>(new VpnScore());
+	}
+	
+	@Override
+	public VpnScore createAccessObject(String normalizedUsername, String username) {
+		VpnScore ret = new VpnScore();
+		ret.setNormalized_username(normalizedUsername);
+		ret.setUsername(username);
+		return ret;
 	}
 
 	
@@ -244,16 +244,4 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 			return ret;
 		}
 	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		Assert.hasText(tableName);
-		converter =  new ImpalaResultSetToBeanItemConverter<>(new VpnScore());
-	}
-
-	@Override
-	public String getStatusSuccessValue() {
-		return "success";
-	}
-	
 }

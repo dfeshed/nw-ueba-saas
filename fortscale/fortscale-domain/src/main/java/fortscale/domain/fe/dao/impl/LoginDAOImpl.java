@@ -18,19 +18,19 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	@Value("${impala.score.ldapauth.table.fields}")
 	private String impalaSecScoringTableFields;
 	@Value("${impala.score.ldapauth.table.fields.timeGenerated}")
-	private String timeFieldName;
+	public String TIMEGENERATED;
 	@Value("${impala.score.ldapauth.table.fields.failure_code}")
-	private String errorCodeFieldName;
+	public String FAILURE_CODE;
 	@Value("${impala.score.ldapauth.table.fields.machine_name}")
-	private String sourceFieldName;
+	public String MACHINE_NAME;
 	@Value("${impala.score.ldapauth.table.fields.service_name}")
-	private String destinationFieldName;
+	public String SERVICE_NAME;
 	@Value("${impala.score.ldapauth.table.fields.account_name}")
-	private String usernameFieldName;
+	public String ACCOUNT_NAME;
 	@Value("${impala.score.ldapauth.table.fields.eventscore}")
-	private String eventScoreFieldName;
+	public String EVENT_SCORE;
 	@Value("${impala.score.ldapauth.table.fields.client_address}")
-	private String sourceIpFieldName;
+	public String SOURCE_IP;
 	
 	
 	@Override
@@ -48,32 +48,27 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	@Override
 	protected void setStatus(ResultSet rs, AuthScore authScore) {
 		try {
-			authScore.setStatus(rs.getString(errorCodeFieldName));
+			authScore.setStatus(rs.getString(FAILURE_CODE));
 		} catch (Exception e) {
 			logger.info("no status found in the login event");
 			authScore.setStatus("");
 		}
 	}
-	
+	@Override
+	public String getEventTimeFieldName() {
+		return TIMEGENERATED.toLowerCase();
+	}
 	@Override
 	public String getSourceFieldName() {
-		return sourceFieldName;
+		return MACHINE_NAME;
 	}
 	@Override
 	public String getDestinationFieldName() {
-		return destinationFieldName;
+		return SERVICE_NAME;
 	}
 	@Override
 	public String getStatusFieldName() {
-		return errorCodeFieldName.toLowerCase();
-	}
-	@Override
-	public String getInputFileHeaderDesc() {
-		return impalaSecScoringTableFields;
-	}
-	@Override
-	public String getEventTimeFieldName() {
-		return timeFieldName.toLowerCase();
+		return FAILURE_CODE.toLowerCase();
 	}
 	@Override
 	public String getStatusSuccessValue() {
@@ -81,16 +76,10 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	}
 	@Override
 	public String getSourceIpFieldName() {
-		return sourceIpFieldName;
+		return SOURCE_IP;
 	}
 	@Override
-	public String getUsernameFieldName() {
-		return usernameFieldName;
+	public String getInputFileHeaderDesc() {
+		return impalaSecScoringTableFields;
 	}
-	@Override
-	public String getEventScoreFieldName() {
-		return eventScoreFieldName.toLowerCase();
-	}
-
-	
 }
