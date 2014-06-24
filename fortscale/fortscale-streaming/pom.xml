@@ -368,6 +368,26 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- plugin to build the tar.gz file filled with examples -->
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>${maven-assembly-plugin.version}</version>
+					<configuration>
+						<outputDirectory>deploy</outputDirectory>
+						<descriptors>
+							<descriptor>src/main/assembly/src.xml</descriptor>
+						</descriptors>
+					</configuration>
+					<executions>
+						<execution>
+							<id>make-assembly</id>
+							<phase>package</phase>
+							<goals>
+								<goal>single</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -408,26 +428,6 @@
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
-				</plugin>
-				<!-- plugin to build the tar.gz file filled with examples -->
-				<plugin>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>${maven-assembly-plugin.version}</version>
-					<configuration>
-						<outputDirectory>deploy</outputDirectory>
-						<descriptors>
-							<descriptor>src/main/assembly/src.xml</descriptor>
-						</descriptors>
-					</configuration>
-					<executions>
-						<execution>
-							<id>make-assembly</id>
-							<phase>package</phase>
-							<goals>
-								<goal>single</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
