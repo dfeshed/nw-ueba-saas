@@ -324,7 +324,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(StringUtils.isEmpty(logUsername)){
 			return Collections.emptyList();
 		}
-		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
+		String orderByArray[] = processAuthScoreOrderByFieldName(authDAO, orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
 		List<AuthScore> authScores = authDAO.findEventsByNormalizedUsernameAndGtEventScore(user.getUsername(), minScore, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
@@ -345,7 +345,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	@Override
 	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
 		AuthDAO authDAO = getAuthDAO(eventId);
-		String orderByArray[] = processAuthScoreOrderByFieldName(orderBy);
+		String orderByArray[] = processAuthScoreOrderByFieldName(authDAO, orderBy);
 		
 		List<String> usernames = null;
 		if(onlyFollowedUsers){
@@ -413,53 +413,16 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		return ret;
 	}
 	
-	private String[] processAuthScoreOrderByFieldName(String orderBy){
-		String defaultOrderBy = AuthScore.EVENT_SCORE_FIELD_NAME;
+	private String[] processAuthScoreOrderByFieldName(AuthDAO authDAO, String orderBy){
 		if(StringUtils.isEmpty(orderBy)){
-			orderBy = defaultOrderBy;
-		} else{
-			switch(orderBy){
-			case "username":
-				orderBy = AuthScore.USERNAME_FIELD_NAME;
-				break;
-			case "userNameScore":
-				orderBy = AuthScore.USERNAME_SCORE_FIELD_NAME;
-				break;
-			case "targetIdScore":
-				orderBy = AuthScore.TARGET_ID_SCORE_FIELD_NAME;
-				break;
-			case "destinationHostname":
-				orderBy = AuthScore.TARGET_ID_FIELD_NAME;
-				break;
-			case "sourceIpScore":
-				orderBy = AuthScore.SOURCE_IP_SCORE_FIELD_NAME;
-				break;
-			case "sourceIp":
-				orderBy = AuthScore.SOURCE_IP_FIELD_NAME;
-				break;
-			case "eventTimeScore":
-				orderBy = AuthScore.EVENT_TIME_SCORE_FIELD_NAME;
-				break;
-			case "eventTime":
-				orderBy = AuthScore.EVENT_TIME_FIELD_NAME;
-				break;
-			case "errorCodeScore":
-				orderBy = AuthScore.ERROR_CODE_SCORE_FIELD_NAME;
-				break;
-			case "errorCode":
-				orderBy = AuthScore.ERROR_CODE_FIELD_NAME;
-				break;
-			default:
-				orderBy = defaultOrderBy;
-				break;
-			}
+			orderBy = authDAO.getEventScoreFieldName();
 		}
 		
 		String ret[];
-		if(!orderBy.equals(AuthScore.EVENT_TIME_FIELD_NAME)){
+		if(!orderBy.equals(authDAO.getEventTimeFieldName())){
 			ret = new String[2];
 			ret[0] = orderBy;
-			ret[1] = AuthScore.EVENT_TIME_FIELD_NAME;
+			ret[1] = authDAO.getEventTimeFieldName();
 		} else{
 			ret = new String[1];
 			ret[0] = orderBy;
