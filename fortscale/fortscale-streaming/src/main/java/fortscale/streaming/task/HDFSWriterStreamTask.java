@@ -35,7 +35,7 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 
 	private static final Logger logger = LoggerFactory.getLogger(HDFSWriterStreamTask.class);
 	
-	private static final String storeName = "hdfs-write";
+	private static final String storeNamePrefix = "hdfs-write-";
 	
 	private String timestampField;
 	private List<String> fields;
@@ -47,6 +47,7 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	private Counter processedMessageCount;
 	private KeyValueStore<String, Long> store;
 	private long barrier = 0;
+    private String storeName;
 	
 	/** reads task configuration from job config and initialize hdfs appender */
 	@Override public void init(Config config, TaskContext context) throws Exception {
@@ -58,7 +59,8 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 		fields = getConfigStringList(config, "fortscale.fields");
 		tableName = getConfigString(config, "fortscale.table.name");
 		eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
-		
+		storeName = storeNamePrefix + tableName;
+
 		String partitionClassName = getConfigString(config, "fortscale.partition.strategy");
 		PartitionStrategy partitionStrategy = (PartitionStrategy) Class.forName(partitionClassName).newInstance();
 		String splitClassName = getConfigString(config, "fortscale.split.strategy");
