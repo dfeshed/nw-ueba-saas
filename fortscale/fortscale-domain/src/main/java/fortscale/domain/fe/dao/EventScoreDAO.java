@@ -12,9 +12,9 @@ public interface EventScoreDAO {
 	
 	public int countNumOfEventsByNormalizedUsernameAndStatusRegex(String username, String statusVal);
 	
-	public int countNumOfEventsByNormalizedUsernameAndGtEScore(String username, int minScore);
+	public int countNumOfEventsByNormalizedUsernameAndGtEScoreAndBetweenTimes(String username, int minScore, Long latestDate, Long earliestDate);
 	
-	public int countNumOfEventsByGTEScoreAndNormalizedUsernameList(int minScore, Collection<String> usernames);
+	public int countNumOfEventsByGTEScoreAndBetweenTimesAndNormalizedUsernameList(int minScore, Long latestDate, Long earliestDate, Collection<String> usernames);
 		
 	public int countNumOfUsers();
 	

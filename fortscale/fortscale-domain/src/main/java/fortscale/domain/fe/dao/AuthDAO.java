@@ -16,11 +16,11 @@ public interface AuthDAO extends EventScoreDAO{
 	
 	public List<AuthScore> findTopEventsByNormalizedUsername(String username, int limit, DateTime oldestEventTime, String decayScoreFieldName);
 		
-	public List<AuthScore> findEventsByNormalizedUsernameAndGtEventScore(String username, int minScore, Pageable pageable);
+	public List<AuthScore> findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(String username, int minScore, Long latestDate, Long earliestDate, Pageable pageable);
 		
 	public List<AuthScore> findEventsByGtEventScore(Pageable pageable, int minScore);
 	
-	public List<AuthScore> findEventsByGtEventScoreInUsernameList(Pageable pageable, Integer minScore, Collection<String> usernames);
+	public List<AuthScore> findEventsByGtEventScoreBetweenTimeInUsernameList(Pageable pageable, Integer minScore, Long latestDate, Long earliestDate, Collection<String> usernames);
 	
 	public List<AuthScore> findEvents(Pageable pageable, String additionalWhereQuery);
 		

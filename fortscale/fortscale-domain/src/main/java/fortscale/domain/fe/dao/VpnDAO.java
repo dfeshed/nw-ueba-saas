@@ -16,11 +16,11 @@ public interface VpnDAO extends EventScoreDAO{
 	
 	public List<VpnScore> findEventsByNormalizedUsername(String username, Pageable pageable);
 		
-	public List<VpnScore> findEventsByNormalizedUsernameAndGtEventScore(String username, int minScore, Pageable pageable);
+	public List<VpnScore> findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(String username, int minScore, Long latestDate, Long earliestDate, Pageable pageable);
 		
 	public List<VpnScore> findEventsByGtEventScore(Pageable pageable, int minScore);
 	
-	public List<VpnScore> findEventsByGtEventScoreInUsernameList(Pageable pageable, Integer minScore, Collection<String> usernames);
+	public List<VpnScore> findEventsByGtEventScoreBetweenTimeInUsernameList(Pageable pageable, Integer minScore, Long latestDate, Long earliestDate, Collection<String> usernames);
 	
 	public List<VpnScore> findEvents(Pageable pageable, String additionalWhereQuery);
 		
