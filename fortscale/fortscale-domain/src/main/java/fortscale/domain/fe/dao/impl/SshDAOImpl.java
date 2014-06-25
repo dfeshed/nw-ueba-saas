@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.AuthScore;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.logging.Logger;
 
 public class SshDAOImpl extends AuthDAOImpl{
@@ -15,6 +17,8 @@ public class SshDAOImpl extends AuthDAOImpl{
 	private String tableName;
 	@Value("${impala.score.ssh.table.fields}")
 	private String impalaSshScoringTableFields;
+	@Value("${impala.score.ssh.table.partition.type}")
+	private String partitionName;
 	
 	@Value("${impala.score.ssh.table.fields.date_time}")
 	public String DATE_TIME;
@@ -45,6 +49,9 @@ public class SshDAOImpl extends AuthDAOImpl{
 																			
 	@Value("${impala.score.ssh.table.field.is_nat}")
 	public String IS_NAT;
+	
+	@Value("${impala.score.ssh.table.field.hostname}")
+	public String HOSTNAME;
 																					
 	@Value("${impala.score.ssh.table.field.normalized_src_machine}")
 	public String NORMALIZED_SRC_MACHINE;
@@ -114,5 +121,9 @@ public class SshDAOImpl extends AuthDAOImpl{
 	@Override
 	public String getInputFileHeaderDesc() {
 		return impalaSshScoringTableFields;
+	}
+	@Override
+	public PartitionStrategy getPartitionStrategy() {
+		return PartitionsUtils.getPartitionStrategy(partitionName);
 	}
 }

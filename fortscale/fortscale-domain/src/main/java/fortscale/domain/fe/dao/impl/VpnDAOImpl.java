@@ -17,6 +17,8 @@ import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 
@@ -32,7 +34,9 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	
 	@Value("${impala.score.vpn.table.fields}")
 	private String tableFieldDefinition;
-		
+	
+	@Value("${impala.score.vpn.table.partition.type}")
+	private String partitionName;
 	
 	@Value("${impala.score.vpn.table.field.date_time_unix}")
 	public String DATE_TIME_UNIX;
@@ -209,6 +213,11 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 		ret.setNormalized_username(normalizedUsername);
 		ret.setUsername(username);
 		return ret;
+	}
+	
+	@Override
+	public PartitionStrategy getPartitionStrategy() {
+		return PartitionsUtils.getPartitionStrategy(partitionName);
 	}
 
 	

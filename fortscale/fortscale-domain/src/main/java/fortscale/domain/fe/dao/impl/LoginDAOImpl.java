@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.AuthScore;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.logging.Logger;
 
 
@@ -13,10 +15,11 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	private static Logger logger = Logger.getLogger(LoginDAOImpl.class);
 	
 	@Value("${impala.score.ldapauth.table.name}")
-	private String tableName;
-	
+	private String tableName;	
 	@Value("${impala.score.ldapauth.table.fields}")
 	private String impalaSecScoringTableFields;
+	@Value("${impala.score.ldapauth.table.partition.type}")
+	private String partitionName;
 	@Value("${impala.score.ldapauth.table.fields.timeGenerated}")
 	public String TIMEGENERATED;
 	@Value("${impala.score.ldapauth.table.fields.failure_code}")
@@ -31,8 +34,10 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	public String EVENT_SCORE;
 	@Value("${impala.score.ldapauth.table.fields.client_address}")
 	public String SOURCE_IP;
+	@Value("${impala.score.ldapauth.table.fields.client_address}")
+	public String CLIENT_ADDRESS;
 	
-	
+		
 	@Override
 	public String getTableName() {
 		return tableName;
@@ -81,5 +86,9 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	@Override
 	public String getInputFileHeaderDesc() {
 		return impalaSecScoringTableFields;
+	}
+	@Override
+	public PartitionStrategy getPartitionStrategy() {
+		return PartitionsUtils.getPartitionStrategy(partitionName);
 	}
 }

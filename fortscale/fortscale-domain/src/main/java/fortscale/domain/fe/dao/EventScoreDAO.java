@@ -4,9 +4,12 @@ import java.util.Collection;
 import java.util.List;
 
 import fortscale.domain.fe.EventScore;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
 
 public interface EventScoreDAO {
 	public String getTableName();
+	
+	PartitionStrategy getPartitionStrategy();
 	
 	public int countNumOfRecords();
 	
