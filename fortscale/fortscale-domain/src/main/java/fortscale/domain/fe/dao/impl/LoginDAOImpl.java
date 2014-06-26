@@ -36,8 +36,6 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	public String EVENT_SCORE;
 	@Value("${impala.score.ldapauth.table.fields.client_address}")
 	public String SOURCE_IP;
-	@Value("${impala.score.ldapauth.table.fields.client_address}")
-	public String CLIENT_ADDRESS;
 	
 		
 	@Override

@@ -49,14 +49,14 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 	protected String buildExpandQuery(String source, boolean isSource, FilterSettings filter) {
 		
 		ImpalaQuery query = new ImpalaQuery();	
-		query.select(schema.TIMEGENERATED_UNIX, schema.ACCOUNT_NAME, schema.CLIENT_ADDRESS, schema.MACHINE_NAME, 
+		query.select(schema.TIMEGENERATED_UNIX, schema.ACCOUNT_NAME, schema.SOURCE_IP, schema.MACHINE_NAME, 
 				schema.SERVICE_NAME, schema.getPartitionStrategy().getImpalaPartitionFieldName());
 		query.from(schema.getTableName());
 		query.andEq(schema.FAILURE_CODE, "'0x0'");
 		
 		// add criteria for machine to pivot on
 		if (isSource)
-			query.andWhere(statement(String.format("(%s='%s' OR lower(%s)=lower('%s'))", schema.CLIENT_ADDRESS, source, schema.MACHINE_NAME, source)));
+			query.andWhere(statement(String.format("(%s='%s' OR lower(%s)=lower('%s'))", schema.SOURCE_IP, source, schema.MACHINE_NAME, source)));
 		else
 			query.andWhere(equalsTo(lower(schema.SERVICE_NAME), source.toLowerCase(), true));
 		
@@ -114,7 +114,7 @@ public class LDAPConnectionsSource extends ConnectionsSource {
 				// try and get the hostname, if it does not exist use the ip address instead 
 				String hostname = rs.getString(schema.MACHINE_NAME.toLowerCase());
 				if (hostname==null || hostname.isEmpty())
-					connection.setSource(rs.getString(schema.CLIENT_ADDRESS.toLowerCase()));
+					connection.setSource(rs.getString(schema.SOURCE_IP.toLowerCase()));
 				else
 					connection.setSource(hostname);
 				
