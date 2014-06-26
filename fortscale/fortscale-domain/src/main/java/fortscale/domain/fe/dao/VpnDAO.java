@@ -30,9 +30,7 @@ public interface VpnDAO extends EventScoreDAO{
 	
 	
 		
-	public String getNormalizedUsernameField();
-
-	public String getUsernameFieldName();
+	
 	
 	public String getStatusFieldName();
 	
@@ -50,9 +48,5 @@ public interface VpnDAO extends EventScoreDAO{
 	
 	public String getLocalIpFieldName();
 	
-	public String getEventTimeFieldName();
 	
-	public String getEventTimeScoreFieldName();
-
-	public String getEventScoreFieldName();
 }

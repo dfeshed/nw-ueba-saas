@@ -37,23 +37,13 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 	public String getNormalizedUsernameField() {
 		return normalizedUsernameField.toLowerCase();
 	}
-
-	@Override
-	public String getUsernameFieldName() {
-		return AuthScore.USERNAME_FIELD_NAME;
-	}
-
-	@Override
-	public String getEventScoreFieldName() {
-		return AuthScore.EVENT_SCORE_FIELD_NAME;
-	}
-
 	
 	@Override
 	public AuthScore createAccessObject(String normalizedUsername, String username) {
 		AuthScore ret = new AuthScore();
-		ret.setNormalizedUsername(normalizedUsername);
-		ret.setUserName(username);
+		Map<String, Object> allFields = new HashMap<String, Object>();
+		allFields.put(getNormalizedUsernameField(), normalizedUsername);
+		allFields.put(getUsernameFieldName(), username);
 		return ret;
 	}
 
@@ -71,50 +61,10 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 			AuthScore ret = new AuthScore();
 			
 			try{				
-				ret.setNormalizedUsername(rs.getString(normalizedUsernameField));
-				ret.setUserName(rs.getString(AuthScore.USERNAME_FIELD_NAME));
-				ret.setTargetId(rs.getString(AuthScore.TARGET_ID_FIELD_NAME));
-				ret.setSourceIp(rs.getString(AuthScore.SOURCE_IP_FIELD_NAME));
-				ret.setEventTime(impalaParser.parseTimeDate(rs.getString(AuthScore.EVENT_TIME_FIELD_NAME)));
-				
-				ret.setUserNameScore(Double.parseDouble(rs.getString(AuthScore.USERNAME_SCORE_FIELD_NAME)));
-				ret.setTargetIdScore(Double.parseDouble(rs.getString(AuthScore.TARGET_ID_SCORE_FIELD_NAME)));
-				ret.setSourceIpScore(Double.parseDouble(rs.getString(AuthScore.SOURCE_IP_SCORE_FIELD_NAME)));
-				ret.setEventTimeScore(Double.parseDouble(rs.getString(AuthScore.EVENT_TIME_SCORE_FIELD_NAME)));
-				
-				
-				ret.setEventScore(Double.parseDouble(rs.getString(AuthScore.EVENT_SCORE_FIELD_NAME)));
-				
-				setStatus(rs, ret);
-				
 				ResultSetMetaData resultSetMetaData = rs.getMetaData();
 				Map<String, Object> allFields = new HashMap<String, Object>(resultSetMetaData.getColumnCount());
 				for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
-					String columnName = resultSetMetaData.getColumnName(i);
-					if(AuthScore.ERROR_CODE_FIELD_NAME.equals(columnName)){
-						columnName = "errorCode";
-					} else if(AuthScore.USERNAME_FIELD_NAME.equals(columnName)){
-						columnName = "username";
-					} else if(AuthScore.ERROR_CODE_SCORE_FIELD_NAME.equals(columnName)){
-						columnName = "errorCodeScore";
-					} else if(AuthScore.EVENT_SCORE_FIELD_NAME.equals(columnName)){
-						columnName = "eventScore";
-					} else if(AuthScore.EVENT_TIME_FIELD_NAME.equals(columnName)){
-						columnName = "eventTime";
-					} else if(AuthScore.EVENT_TIME_SCORE_FIELD_NAME.equals(columnName)){
-						columnName = "eventTimeScore";
-					} else if(AuthScore.SOURCE_IP_FIELD_NAME.equals(columnName)){
-						columnName = "sourceIp";
-					} else if(AuthScore.SOURCE_IP_SCORE_FIELD_NAME.equals(columnName)){
-						columnName = "sourceIpScore";
-					} else if(AuthScore.TARGET_ID_FIELD_NAME.equals(columnName)){
-						columnName = "destinationHostname";
-					} else if(AuthScore.TARGET_ID_SCORE_FIELD_NAME.equals(columnName)){
-						columnName = "targetIdScore";
-					} else if(AuthScore.USERNAME_SCORE_FIELD_NAME.equals(columnName)){
-						columnName = "userNameScore";
-					}
-					allFields.put(columnName, rs.getObject(i));
+					allFields.put(resultSetMetaData.getColumnName(i), rs.getObject(i));
 				}
 				ret.setAllFields(allFields);
 				
@@ -133,43 +83,5 @@ public abstract class AuthDAOImpl extends AccessDAO<AuthScore> implements AuthDA
 			
 			return ret;
 		}
-	}
-	
-	protected abstract void setStatus(ResultSet rs, AuthScore authScore);
-	
-	
-	
-	
-	
-
-//	public static String toCsvLine(AuthScore authScore) {
-//		StringBuilder builder = new StringBuilder();
-//		appendValueToCsvLine(builder, authScore.getErrorCode(), ",");
-//		appendValueToCsvLine(builder, authScore.getSourceIp(), ",");
-//		appendValueToCsvLine(builder, authScore.getTargetId(), ",");
-//		appendValueToCsvLine(builder, authScore.getUserName(), ",");
-//		appendValueToCsvLine(builder, Double.toString(authScore.getEventScore()), ",");
-//		appendValueToCsvLine(builder, ImpalaParser.formatTimeDate(authScore.getEventTime()), ",");
-//		appendValueToCsvLine(builder, Double.toString(authScore.getGlobalScore()), ",");
-//		appendValueToCsvLine(builder, formatTimestampDate(authScore.getTimestamp()), "\n");
-//
-//		return builder.toString();
-//	}
-//	
-//	public static String toCsvHeader() {
-//		StringBuilder builder = new StringBuilder();
-//		appendValueToCsvLine(builder, AuthScore.ERROR_CODE_FIELD_NAME, ",");
-//		appendValueToCsvLine(builder, AuthScore.SOURCE_IP_FIELD_NAME, ",");
-//		appendValueToCsvLine(builder, AuthScore.TARGET_ID_FIELD_NAME, ",");
-//		appendValueToCsvLine(builder, AuthScore.USERNAME_FIELD_NAME, ",");
-//		appendValueToCsvLine(builder, AuthScore.EVENT_SCORE_FIELD_NAME, ",");
-//		appendValueToCsvLine(builder, AuthScore.EVENT_TIME_FIELD_NAME, ",");
-//		appendValueToCsvLine(builder, AuthScore.GLOBAL_SCORE_FIELD_NAME, ",");
-//		appendValueToCsvLine(builder, AuthScore.TIMESTAMP_FIELD_NAME, "\n");
-//		return builder.toString();
-//	}
-	
-//	private static void appendValueToCsvLine(StringBuilder builder, String value, String deleimiter) {
-//		builder.append(value).append(deleimiter);
-//	}
+	}	
 }

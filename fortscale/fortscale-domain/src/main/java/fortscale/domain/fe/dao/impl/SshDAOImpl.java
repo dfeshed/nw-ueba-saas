@@ -1,17 +1,12 @@
 package fortscale.domain.fe.dao.impl;
 
-import java.sql.ResultSet;
-
 import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.AuthScore;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
-import fortscale.utils.logging.Logger;
 
 public class SshDAOImpl extends AuthDAOImpl{
-	private static Logger logger = Logger.getLogger(SshDAOImpl.class);
 	
 	@Value("${impala.score.ssh.table.name}")
 	private String tableName;
@@ -81,15 +76,6 @@ public class SshDAOImpl extends AuthDAOImpl{
 	}
 	
 	@Override
-	protected void setStatus(ResultSet rs, AuthScore authScore) {
-		try {
-			authScore.setStatus(rs.getString(STATUS));
-		} catch (Exception e) {
-			logger.info("no status found in the login event");
-			authScore.setStatus("");
-		}
-	}
-	@Override
 	public String getEventTimeFieldName() {
 		return DATE_TIME.toLowerCase();
 	}
@@ -125,5 +111,17 @@ public class SshDAOImpl extends AuthDAOImpl{
 	@Override
 	public PartitionStrategy getPartitionStrategy() {
 		return PartitionsUtils.getPartitionStrategy(partitionName);
+	}
+	@Override
+	public String getEventTimeScoreFieldName() {
+		return DATE_TIME_SCORE.toLowerCase();
+	}
+	@Override
+	public String getUsernameFieldName() {
+		return USERNAME;
+	}
+	@Override
+	public String getEventScoreFieldName() {
+		return EVENT_SCORE.toLowerCase();
 	}
 }

@@ -26,11 +26,5 @@ public interface AuthDAO extends EventScoreDAO{
 		
 	public List<AuthScore> findUsernames();
 		
-	public List<AuthScore> getTopEventsAboveThreshold(Threshold threshold, int limit);	
-	
-	
-	
-	public String getEventTimeFieldName();
-	
-	public String getEventScoreFieldName();
+	public List<AuthScore> getTopEventsAboveThreshold(Threshold threshold, int limit);		
 }

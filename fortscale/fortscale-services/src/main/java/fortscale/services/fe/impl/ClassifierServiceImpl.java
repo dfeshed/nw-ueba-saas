@@ -361,10 +361,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		if(offset < authScores.size()){
 			Map<String, User> userMap = new HashMap<>();
 			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
-				String username = authScore.getUserName();
+				String username = (String) authScore.getAllFields().get(authDAO.getNormalizedUsernameField());
 				User user = userMap.get(username);
 				if(user == null){
-					user = usernameService.findByAuthUsername(eventId, username);
+					user = userRepository.findByUsername(username);
 					if(user == null){
 						logger.warn("username ({}) was not found in the user collection", username);
 						continue;
@@ -451,7 +451,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 	
 	private ILoginEventScoreInfo createLoginEventScoreInfo(User user, AuthScore authScore){
-		LoginEventScoreInfo ret = new LoginEventScoreInfo(user, authScore);
+		LoginEventScoreInfo ret = new LoginEventScoreInfo(user, authScore.getAllFields());
 		
 		return ret;
 	}
