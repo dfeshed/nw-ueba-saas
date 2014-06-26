@@ -22,6 +22,8 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	private String partitionName;
 	@Value("${impala.score.ldapauth.table.fields.timeGenerated}")
 	public String TIMEGENERATED;
+	@Value("${impala.score.ldapauth.table.fields.timeGeneratedUnixTime}")
+	public String TIMEGENERATED_UNIX;
 	@Value("${impala.score.ldapauth.table.fields.failure_code}")
 	public String FAILURE_CODE;
 	@Value("${impala.score.ldapauth.table.fields.machine_name}")
