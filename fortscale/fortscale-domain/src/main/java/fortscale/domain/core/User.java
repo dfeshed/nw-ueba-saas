@@ -58,10 +58,14 @@ public class User extends AbstractDocument {
 	public static final String adInfoField = "adInfo";
 	public static final String userServiceAccountField = "userServiceAccount";
 	public static final String administratorAccountField = "administratorAccount";
+	public static final String executiveAccountField = "executiveAccount";
 
 	@Indexed
 	@Field(administratorAccountField)
 	private Boolean administratorAccount;
+	
+	@Field(executiveAccountField)
+	private Boolean executiveAccount;
 	
 	@Indexed
 	@Field(userServiceAccountField)
@@ -329,4 +333,13 @@ public class User extends AbstractDocument {
 	public void setAdministratorAccount(Boolean administratorAccount) {
 		this.administratorAccount = administratorAccount;
 	}
+	
+	public Boolean getExecutiveAccount() {
+		return executiveAccount;
+	}
+
+	public void setExecutiveAccount(Boolean administratorAccount) {
+		this.executiveAccount = administratorAccount;
+	}
+	
 }

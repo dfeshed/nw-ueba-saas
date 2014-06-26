@@ -24,18 +24,18 @@ public class ExecutiveAccountServiceImpl implements ExecutiveAccountService,Init
 
 	@Autowired
 	private UserRepository userRepository;
-	@Value("${user.list.admin_groups.path:}")
+	@Value("${user.list.executive_groups.path:}")
 	private String filePath;
 
-	private static Logger logger = LoggerFactory.getLogger(AdministratorAccountServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(ExecutiveAccountServiceImpl.class);
 
-	private Set<String> adminUsers = new HashSet<String>();
-	private List<String> adminGroups = null;
+	private Set<String> executiveUsers = new HashSet<String>();
+	private List<String> executiveGroups = null;
 
-	@Override
+	@Override 
 	public boolean isUserExecutive(String username) {
-		if (adminUsers !=  null) {
-			return adminUsers.contains(username);
+		if (executiveUsers !=  null) {
+			return executiveUsers.contains(username);
 		}
 		else{
 			return false;
@@ -44,51 +44,51 @@ public class ExecutiveAccountServiceImpl implements ExecutiveAccountService,Init
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		updateAdminList();
+		updateExsecutvieList();
 		updateUserTag();
 	}
 
-	private void updateAdminList() throws Exception {
+	private void updateExsecutvieList() throws Exception {
 		if(!StringUtils.isEmpty(getFilePath())){
 			File f = new File(getFilePath());
 			if(f.exists() && !f.isDirectory()) {
-				adminGroups = FileUtils.readLines(new File(getFilePath()));
-				List<User> adminUsersList = userRepository.findByUserInGroup(adminGroups);
-				adminUsers = getUsernameList(adminUsersList);				
-				if (adminUsersList ==null) {
-					logger.warn("AdministratorGroups no users found in the user repository for groups {}",adminGroups);
+				executiveGroups = FileUtils.readLines(new File(getFilePath()));
+				List<User> executiveUsersList = userRepository.findByUserInGroup(executiveGroups);
+				executiveUsers = getUsernameList(executiveUsersList);				
+				if (executiveUsersList ==null) {
+					logger.warn("ExecutiveGroups no users found in the user repository for groups {}",executiveGroups);
 				}
 			}
 			else {
-				logger.warn("AdministratorGroups file not found in path: {}",getFilePath());
+				logger.warn("ExecutiveGroups file not found in path: {}",getFilePath());
 			}
 		}
 		else {
-			logger.info("AdministratorGroups file path not configured");	
+			logger.info("ExecutiveGroups file path not configured");	
 		}
 	}
 
 	private void updateUserTag() {
-		if (adminUsers != null && adminUsers.size() !=0) {
+		if (executiveUsers != null && executiveUsers.size() !=0) {
 			int pageSize = 100;		
 			int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
 			for(int i = 0; i < numOfPages; i++){
 				PageRequest pageRequest = new PageRequest(i, pageSize);
 				for(User user: userRepository.findAll(pageRequest).getContent()){
-					if (adminUsers.contains(user.getUsername())) {
-						userRepository.updateAdministratorAccount(user, true);
+					if (executiveUsers.contains(user.getUsername())) {
+						userRepository.updateExecutiveAccount(user, true);
 					}
-					else if (user.getAdministratorAccount() == null || user.getAdministratorAccount()) {
-						userRepository.updateAdministratorAccount(user, false);
+					else if (user.getExecutiveAccount() == null || user.getExecutiveAccount()) {
+						userRepository.updateExecutiveAccount(user, false);
 					}
 				}
 			}
 		}
 	}
 	
-	private void refreshAdminList() {
-		List<User> adminUsersList = userRepository.findByAdministratorAccount(true);
-		adminUsers = getUsernameList(adminUsersList);
+	private void refreshExecutiveList() {
+		List<User> executiveUsersList = userRepository.findByExecutiveAccount(true);
+		executiveUsers = getUsernameList(executiveUsersList);
 	}
 	
 	private Set<String> getUsernameList(List<User> users) {
@@ -114,7 +114,7 @@ public class ExecutiveAccountServiceImpl implements ExecutiveAccountService,Init
 
 	@Override
 	public void refresh() {
-		refreshAdminList();
+		refreshExecutiveList();
 	}
 
 	public String getFilePath() {
