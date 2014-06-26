@@ -38,6 +38,7 @@
         <include>fortscale:fortscale-streaming</include>
         <include>fortscale:fortscale-utils</include>
         <include>fortscale:fortscale-domain</include>
+        <include>org.apache.hadoop:hadoop-hdfs</include>
       </includes>
       <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>
