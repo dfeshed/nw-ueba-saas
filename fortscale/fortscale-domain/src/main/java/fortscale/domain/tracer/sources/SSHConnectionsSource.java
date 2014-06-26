@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import fortscale.domain.schema.SSHEvents;
+import fortscale.domain.fe.dao.impl.SshDAOImpl;
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
 import fortscale.domain.tracer.ListMode;
@@ -27,7 +27,7 @@ public class SSHConnectionsSource extends ConnectionsSource {
 	private int sessionLength;
 	
 	@Autowired
-	private SSHEvents schema;
+	private SshDAOImpl schema;
 	
 	@Override
 	public String getSourceName() {
@@ -39,7 +39,7 @@ public class SSHConnectionsSource extends ConnectionsSource {
 		
 		ImpalaQuery query = new ImpalaQuery();
 		query.select(schema.EPOCHTIME, schema.USERNAME, schema.SOURCE_IP, schema.TARGET_MACHINE, schema.STATUS, 
-				schema.HOSTNAME, schema.getPartitionFieldName());
+				schema.HOSTNAME, schema.getPartitionStrategy().getImpalaPartitionFieldName());
 		query.from(schema.getTableName());
 		query.andEq(schema.STATUS, "'Accepted'");
 		
@@ -55,13 +55,13 @@ public class SSHConnectionsSource extends ConnectionsSource {
 			// end time is after the start date
 			long timeBoundry = convertToSeconds(filter.getStart()) - (60*60*sessionLength);
 			query.andWhere(gte(schema.EPOCHTIME, Long.toString(timeBoundry)));
-			query.andWhere(gte(schema.getPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(filter.getStart())));
+			query.andWhere(gte(schema.getPartitionStrategy().getImpalaPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(filter.getStart())));
 		}
 		
 		// add criteria for end
 		if (filter.getEnd()!=0L) {
 			query.andWhere(lte(schema.EPOCHTIME, Long.toString(convertToSeconds(filter.getEnd()))));
-			query.andWhere(lte(schema.getPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(filter.getEnd())));
+			query.andWhere(lte(schema.getPartitionStrategy().getImpalaPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(filter.getEnd())));
 		}
 			
 		// add criteria for accounts
