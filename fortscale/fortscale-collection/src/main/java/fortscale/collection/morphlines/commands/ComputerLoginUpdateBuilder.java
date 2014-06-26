@@ -1,13 +1,16 @@
 package fortscale.collection.morphlines.commands;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+import org.kitesdk.morphline.base.Notifications;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +24,9 @@ import fortscale.domain.events.dao.ComputerLoginEventRepository;
 
 
 
-@Configurable(preConstruction=true)
+
 public class ComputerLoginUpdateBuilder implements CommandBuilder{
 	private static Logger logger = LoggerFactory.getLogger(ComputerLoginUpdateBuilder.class);
-
-	@Autowired
-	private ComputerLoginEventRepository computerLoginEventRepository;
 	
 	
 	@Override
@@ -39,14 +39,19 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 		return new ComputerLoginUpdate(this, config, parent, child, context);
 	}
 
-	
-	private class ComputerLoginUpdate extends AbstractCommand {
+	@Configurable(preConstruction=true)
+	public static final class ComputerLoginUpdate extends AbstractCommand {
+		
+		@Autowired
+		private ComputerLoginEventRepository computerLoginEventRepository;
 		
 
 		private final String timestampepochFieldName;
 		private final String ipaddressFieldName;
 		private final String hostnameFieldName;
 		private final String domainFieldName;
+		private final int maxBatchSize;
+		private List<ComputerLoginEvent> computerLoginEvents;
 		
 		
 
@@ -56,6 +61,10 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 			this.ipaddressFieldName = getConfigs().getString(config, "ipaddress_field");
 			this.hostnameFieldName = getConfigs().getString(config, "hostname_field");
 			this.domainFieldName = getConfigs().getString(config, "domain_field");
+			this.maxBatchSize = getConfigs().getInt(config, "max_batch_size", 1);
+			if(maxBatchSize > 1){
+				computerLoginEvents = new ArrayList<>();
+			}
 			
 			validateArguments();
 		}
@@ -73,7 +82,15 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 				computerLoginEvent.setIpaddress(ipaddress);
 				hostname = hostname.substring(0, hostname.length() - 1);
 				computerLoginEvent.setHostname(String.format("%s.%s", hostname.toLowerCase(), domain.toLowerCase()));
-				computerLoginEventRepository.save(computerLoginEvent);
+				if(maxBatchSize > 1){
+					computerLoginEvents.add(computerLoginEvent);
+					if(computerLoginEvents.size() >= maxBatchSize){
+						computerLoginEventRepository.save(computerLoginEvents);
+						computerLoginEvents.clear();
+					}
+				} else{
+					computerLoginEventRepository.save(computerLoginEvent);
+				}
 			} catch(Exception e){
 				logger.error("Got an exception while processing morphline record", e);
 			}
@@ -81,5 +98,18 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 			return super.doProcess(inputRecord);
 
 		}
+		
+		@Override
+		protected void doNotify(Record notification) {
+			for (Object event : Notifications.getLifecycleEvents(notification)) {
+				if (event == Notifications.LifecycleEvent.SHUTDOWN && computerLoginEventRepository!=null && computerLoginEvents != null) {
+					if(computerLoginEvents.size() > 0){
+						computerLoginEventRepository.save(computerLoginEvents);
+					}
+				}
+			}
+		}
 	}
+	
+	
 }

@@ -21,7 +21,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>file:resources/conf-files/readSecEvt_splunk.conf</value>
+					<value>file:resources/conf-files/readSecEvtRouter_splunk.conf</value>
 				</entry>				
 			</job-data-map>
 		</job>		

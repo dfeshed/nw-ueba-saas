@@ -118,11 +118,8 @@ public class BatchScheduler {
 		String etlParams[] = Arrays.copyOf(params, params.length + 1);
 		etlParams[params.length] = "filesFilter=user_SEC_\\d+.csv$";
 		startJob("ETL", "SecurityEvents", etlParams);
-		startJob("AuthScoring", "SecurityEvents", params);
-		startJob("LoginScoring", "SecurityEvents", params);
 		startJob("Fetch", "VPN", params);
 		startJob("ETL", "VPN", params);
-		startJob("SessionScoring", "VPN", params);
 		startJob("Fetch", "SSH", params);
 		startJob("ETL", "SSH", params);
 		startJob("Scoring", "TOTAL", params);

@@ -11,6 +11,7 @@ import net.minidev.json.JSONValue;
 
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
+import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.ClosableTask;
 import org.apache.samza.task.InitableTask;
@@ -34,6 +35,8 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 
 	private static final Logger logger = LoggerFactory.getLogger(HDFSWriterStreamTask.class);
 	
+	private static final String storeNamePrefix = "hdfs-write-";
+	
 	private String timestampField;
 	private List<String> fields;
 	private String separator;
@@ -42,6 +45,9 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	private int eventsCountFlushThreshold;
 	private int nonFlushedEventsCounter = 0;
 	private Counter processedMessageCount;
+	private KeyValueStore<String, Long> store;
+	private long barrier = 0;
+    private String storeName;
 	
 	/** reads task configuration from job config and initialize hdfs appender */
 	@Override public void init(Config config, TaskContext context) throws Exception {
@@ -53,7 +59,8 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 		fields = getConfigStringList(config, "fortscale.fields");
 		tableName = getConfigString(config, "fortscale.table.name");
 		eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
-		
+		storeName = storeNamePrefix + tableName;
+
 		String partitionClassName = getConfigString(config, "fortscale.partition.strategy");
 		PartitionStrategy partitionStrategy = (PartitionStrategy) Class.forName(partitionClassName).newInstance();
 		String splitClassName = getConfigString(config, "fortscale.split.strategy");
@@ -64,6 +71,9 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 		
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", tableName));
+		
+		// get write time stamp barrier store
+		loadBarrier(context);
 	}
 	
 	/** Write the incoming message fields to hdfs */
@@ -84,14 +94,20 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 				return;
 			}
 
-			// write the event to hdfs
-			String eventLine = buildEventLine(message);
-			service.writeLineToHdfs(eventLine, timestamp.longValue());
+			// check if the event is before the time stamp barrier
+			if (!isEventBeforeBarrier(timestamp)) {
 			
-			processedMessageCount.inc();
-			nonFlushedEventsCounter++;
-			if (nonFlushedEventsCounter>=eventsCountFlushThreshold) {
-				flushEvents();
+				// write the event to hdfs
+				String eventLine = buildEventLine(message);
+				service.writeLineToHdfs(eventLine, timestamp.longValue());
+				
+				updateBarrier(timestamp);
+				processedMessageCount.inc();
+				nonFlushedEventsCounter++;
+				
+				if (nonFlushedEventsCounter>=eventsCountFlushThreshold) {
+					flushEvents();
+				}
 			}
 			
 		} catch (Exception e) {
@@ -118,7 +134,8 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	private void flushEvents() throws Exception {
 		// flush writes to hdfs and refresh impala
 		service.flushHdfs();
-		nonFlushedEventsCounter = 0;		
+		nonFlushedEventsCounter = 0;
+		flushBarrier();
 	}
 	
 	/** Periodically flush data to hdfs */
@@ -129,9 +146,32 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	/** Close the hdfs writer when job shuts down */
 	@Override public void close() throws Exception {
 		// close hdfs appender
-		if (service!=null)
+		if (service!=null) {
 			service.close();
+			flushBarrier();
+		}
 		service = null;
 	}	
-
+	
+	////////////// events time stamp write barrier methods
+	
+	private boolean isEventBeforeBarrier(long timestamp) {
+		// get the barrier from the state, stored by table name
+		Long barrier = store.get(tableName);
+		return (barrier!=null &&  timestamp<barrier);
+	}
+	
+	private void updateBarrier(long timestamp) {
+		barrier = Math.max(barrier, timestamp);
+	}
+	
+	private void flushBarrier() {
+		store.put(tableName, barrier);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void loadBarrier(TaskContext context) {
+		store = (KeyValueStore<String, Long>)context.getStore(storeName);
+		barrier = (store.get(tableName)==null) ? 0 : (long)store.get(tableName);
+	}
 }

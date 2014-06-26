@@ -86,6 +86,10 @@ public class SecurityEventsRouterJob extends GenericSecurityEventsJob{
 		Boolean isComputer = RecordExtensions.getBooleanValue(record, "isComputer");
 		BufferedWriter writer = null;
 		if(isComputer){
+			Object eventCodeObj = record.getFirstValue("eventCode");
+			if (!"4768".equals(eventCodeObj)) {
+				return null;
+			}
 			writer = currentCompWriter;
 		} else{
 			writer = currentUserWriter;

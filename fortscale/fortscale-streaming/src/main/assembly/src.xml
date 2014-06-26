@@ -7,36 +7,17 @@
   <formats>
     <format>tar.gz</format>
   </formats>
+  <fileSets>
+  	<fileSet>
+  		<outputDirectory>config</outputDirectory>
+  		<directory>${basedir}/src/main/config</directory>
+  		<includes>
+  			<include>*.properties</include>
+  		</includes>
+  		<filtered>true</filtered>
+  	</fileSet>
+  </fileSets>
   <includeBaseDirectory>false</includeBaseDirectory>
-  <files>
-    <!-- filtered=true, so we do variable expansion so the yarn package path 
-      always points to the correct spot on any machine -->
-    <file>
-      <source>${basedir}/src/main/config/vpn-prevalence-stats.properties</source>
-      <outputDirectory>config</outputDirectory>
-      <filtered>true</filtered>
-    </file>
-    <file>
-      <source>${basedir}/src/main/config/vpn-events-write.properties</source>     
-      <outputDirectory>config</outputDirectory>
-      <filtered>true</filtered>
-    </file>
-     <file>
-      <source>${basedir}/src/main/config/vpn-user-score.properties</source>     
-      <outputDirectory>config</outputDirectory>
-      <filtered>true</filtered>
-    </file>
-    <file>
-      <source>${basedir}/src/main/config/ssh-prevalance-stats.properties</source>
-      <outputDirectory>config</outputDirectory>
-      <filtered>true</filtered>
-    </file>
-    <file>
-      <source>${basedir}/src/main/config/ssh-events-write.properties</source>     
-      <outputDirectory>config</outputDirectory>
-      <filtered>true</filtered>
-    </file>
-  </files>
   <dependencySets>
     <dependencySet>
       <outputDirectory>bin</outputDirectory>

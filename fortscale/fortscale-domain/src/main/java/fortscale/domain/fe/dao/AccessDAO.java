@@ -17,6 +17,7 @@ import org.springframework.jdbc.core.RowMapper;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.EventScore;
 import fortscale.domain.impala.ImpalaDAO;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.logging.Logger;
@@ -134,16 +135,14 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return getListResults(query.toSQL());
 	}
 	
-	public List<T> findEventsByNormalizedUsernameAndGtEventScore(String username, int minScore, Pageable pageable) {
+	public List<T> findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(String username, int minScore, Long latestDate, Long earliestDate, Pageable pageable) {		
+		ImpalaQuery query = getFindAllEventsQuery(pageable);
+		query.andGte(getEventScoreFieldName(), minScore);
+		query.andWhere(getNormalizedUserNameEqualComparison(username));
+		query.andWhere(String.format("unix_timestamp(%s) >= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(earliestDate)));
+		query.andWhere(String.format("unix_timestamp(%s) <= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(latestDate)));
 		
-		String query = String.format("select * from %s where %s and %s >= %d %s",
-				getTableName(), 
-				getNormalizedUserNameEqualComparison(username),
-				getEventScoreFieldName(), minScore,
-				pageable.toString());
-		
-
-		return getListResults(query);
+		return getListResults(query.toSQL());
 	}
 	
 	public List<T> findEventsByGtEventScore(Pageable pageable, int minScore) {
@@ -197,26 +196,33 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForObject(query, Integer.class);
 	}
 	
-	public int countNumOfEventsByNormalizedUsernameAndGtEScore(String username, int minScore){
+	public int countNumOfEventsByNormalizedUsernameAndGtEScoreAndBetweenTimes(String username, int minScore, Long latestDate, Long earliestDate){
 		ImpalaQuery impalaQuery = new ImpalaQuery();
 		impalaQuery.select("count(*)").from(getTableName()).andWhere(getNormalizedUserNameEqualComparison(username)).andGte(getEventScoreFieldName(), minScore);
+		impalaQuery.andWhere(String.format("unix_timestamp(%s) >= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(earliestDate)));
+		impalaQuery.andWhere(String.format("unix_timestamp(%s) <= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(latestDate)));
 		
 		return impalaJdbcTemplate.queryForObject(impalaQuery.toSQL(), Integer.class);
 	}
 	
-	public int countNumOfEventsByGTEScoreAndNormalizedUsernameList(int minScore, Collection<String> usernames){
+	public int countNumOfEventsByGTEScoreAndBetweenTimesAndNormalizedUsernameList(int minScore, Long latestDate, Long earliestDate, Collection<String> usernames){
 		ImpalaQuery impalaQuery = new ImpalaQuery();
-		impalaQuery.select("count(*)").from(getTableName()).andGte(getEventScoreFieldName(), minScore).andIn(getNormalizedUsernameField(), usernames);
+		impalaQuery.select("count(*)").from(getTableName()).andGte(getEventScoreFieldName(), minScore);
+		impalaQuery.andWhere(String.format("unix_timestamp(%s) >= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(earliestDate)));
+		impalaQuery.andWhere(String.format("unix_timestamp(%s) <= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(latestDate)));
+		impalaQuery.andIn(getNormalizedUsernameField(), usernames);
 		
 		return impalaJdbcTemplate.queryForObject(impalaQuery.toSQL(), Integer.class);
 	}
 	
-	public List<T> findEventsByGtEventScoreInUsernameList(Pageable pageable, Integer minScore, Collection<String> usernames) {
+	public List<T> findEventsByGtEventScoreBetweenTimeInUsernameList(Pageable pageable, Integer minScore, Long latestDate, Long earliestDate, Collection<String> usernames) {
 		ImpalaQuery query = getFindAllEventsQuery(pageable);
 		if(minScore != null){
 			query.andGte(getEventScoreFieldName(), minScore);
 		}
 		query.andIn(getNormalizedUsernameField(), usernames);
+		query.andWhere(String.format("unix_timestamp(%s) >= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(earliestDate)));
+		query.andWhere(String.format("unix_timestamp(%s) <= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(latestDate)));
 		
 		return getListResults(query.toSQL());
 	}

@@ -60,19 +60,23 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	private void runProcessFilesStep(File[] files) throws IOException, JobExecutionException{
 		startNewStep("Process files");
 		
-		for (File file : files) {
-			logger.info("starting to process {}", file.getName()); 
-			
-			// transform events in file
-			boolean success = processFile(file);
-			
-			if (success) {
-				moveFileToFolder(file, finishPath);
-			} else {
-				moveFileToFolder(file, errorPath);
+		try{
+			for (File file : files) {
+				logger.info("starting to process {}", file.getName()); 
+				
+				// transform events in file
+				boolean success = processFile(file);
+				
+				if (success) {
+					moveFileToFolder(file, finishPath);
+				} else {
+					moveFileToFolder(file, errorPath);
+				}
+	
+				logger.info("finished processing {}", file.getName());
 			}
-
-			logger.info("finished processing {}", file.getName());
+		} finally{
+			morphline.close();
 		}
 		
 		finishStep();
