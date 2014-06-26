@@ -1,10 +1,13 @@
 package fortscale.domain.fe.dao;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +25,7 @@ import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.logging.Logger;
 
-public abstract class AccessDAO<T> extends ImpalaDAO<T> {
+public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> {
 	private static Logger logger = Logger.getLogger(AccessDAO.class);
 	
 	protected static final String EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME = "day";
@@ -30,7 +33,6 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	protected static final String EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME = "eventcount";
 	protected static final String EVENT_SOURCE_COALESCED_FIELD_NAME = "source";
 
-	public abstract RowMapper<T> getMapper();
 	
 	public abstract String getEventTimeFieldName();
 	
@@ -53,7 +55,8 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 	public abstract LogEventsEnum getLogEventsEnum();
 	
 
-	public abstract T createAccessObject(String normalizedUsername, String username);
+	
+
 	
 	
 	public List<EventScore> getEventScores(String username, int daysBack, int limit) {
@@ -87,13 +90,13 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.query(getEventLoginDayCountSqlQuery(username, numberOfDays), new EventLoginDayCountMapper());
 	}
 
-	public List<T> findAll(Pageable pageable) {
+	public List<Map<String, Object>> findAll(Pageable pageable) {
 		return super.findAll(pageable, getMapper());
 	}
 
-	private List<T> getListResults(String query){
-		List<T> ret = new ArrayList<>();
-		for(T res: impalaJdbcTemplate.query(query, getMapper())){
+	private List<Map<String, Object>> getListResults(String query){
+		List<Map<String, Object>> ret = new ArrayList<>();
+		for(Map<String, Object> res: impalaJdbcTemplate.query(query, getMapper())){
 			if(res != null){
 				ret.add(res);
 			}
@@ -101,9 +104,9 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return ret;
 	}
 	
-	private List<T> getListUsernamesResults(String query){
-		List<T> ret = new ArrayList<>();
-		for(T res: impalaJdbcTemplate.query(query, new UsernameMapper())){
+	private List<Map<String, Object>> getListUsernamesResults(String query){
+		List<Map<String, Object>> ret = new ArrayList<>();
+		for(Map<String, Object> res: impalaJdbcTemplate.query(query, new UsernameMapper())){
 			if(res != null){
 				ret.add(res);
 			}
@@ -111,7 +114,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return ret;
 	}
 
-	public List<T> findEventsByNormalizedUsername(String username, Pageable pageable) {
+	public List<Map<String, Object>> findEventsByNormalizedUsername(String username, Pageable pageable) {
 		
 		String query = String.format("select * from %s where %s %s",
 				getTableName(),
@@ -121,7 +124,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return getListResults(query);
 	}
 	
-	public List<T> findTopEventsByNormalizedUsername(String username, int limit, DateTime oldestEventTime, String decayScoreFieldName) {
+	public List<Map<String, Object>> findTopEventsByNormalizedUsername(String username, int limit, DateTime oldestEventTime, String decayScoreFieldName) {
 //		String decayScoreFieldName = "decayscore";
 		ImpalaQuery query = new ImpalaQuery();
 		
@@ -135,7 +138,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return getListResults(query.toSQL());
 	}
 	
-	public List<T> findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(String username, int minScore, Long latestDate, Long earliestDate, Pageable pageable) {		
+	public List<Map<String, Object>> findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(String username, int minScore, Long latestDate, Long earliestDate, Pageable pageable) {		
 		ImpalaQuery query = getFindAllEventsQuery(pageable);
 		query.andGte(getEventScoreFieldName(), minScore);
 		query.andWhere(getNormalizedUserNameEqualComparison(username));
@@ -145,13 +148,13 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return getListResults(query.toSQL());
 	}
 	
-	public List<T> findEventsByGtEventScore(Pageable pageable, int minScore) {
+	public List<Map<String, Object>> findEventsByGtEventScore(Pageable pageable, int minScore) {
 		return findEvents(pageable, String.format("%s >= %d", getEventScoreFieldName(), minScore));
 	}
 	
 	
 
-	public List<T> findEvents(Pageable pageable, String additionalWhereQuery) {
+	public List<Map<String, Object>> findEvents(Pageable pageable, String additionalWhereQuery) {
 		
 		ImpalaQuery query = getFindAllEventsQuery(pageable);
 		if (additionalWhereQuery != null && additionalWhereQuery.length() > 0) {
@@ -161,7 +164,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return getListResults(query.toSQL());
 	}
 	
-	public List<T> findUsernames() {
+	public List<Map<String, Object>> findUsernames() {
 		
 		String query = String
 				.format("select distinct %s, %s from %s",
@@ -215,7 +218,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForObject(impalaQuery.toSQL(), Integer.class);
 	}
 	
-	public List<T> findEventsByGtEventScoreBetweenTimeInUsernameList(Pageable pageable, Integer minScore, Long latestDate, Long earliestDate, Collection<String> usernames) {
+	public List<Map<String, Object>> findEventsByGtEventScoreBetweenTimeInUsernameList(Pageable pageable, Integer minScore, Long latestDate, Long earliestDate, Collection<String> usernames) {
 		ImpalaQuery query = getFindAllEventsQuery(pageable);
 		if(minScore != null){
 			query.andGte(getEventScoreFieldName(), minScore);
@@ -252,7 +255,7 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		return impalaJdbcTemplate.queryForObject(query, Integer.class);
 	}
 	
-	public List<T> getTopEventsAboveThreshold(Threshold threshold,int limit) {
+	public List<Map<String, Object>> getTopEventsAboveThreshold(Threshold threshold,int limit) {
 		
 		Pageable pageable = new ImpalaPageRequest(limit, new Sort(Direction.DESC, getEventScoreFieldName()));
 		String query = String.format(
@@ -262,6 +265,49 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		
 
 		return getListResults(query);
+	}
+	
+	
+	private Map<String, Object> createAccessObject(String normalizedUsername, String username) {
+		Map<String, Object> allFields = new HashMap<String, Object>();
+		allFields.put(getNormalizedUsernameField(), normalizedUsername);
+		allFields.put(getUsernameFieldName(), username);
+		return allFields;
+	}
+	
+	public RowMapper<Map<String, Object>> getMapper() {
+		return new AuthScoreMapper();
+	}
+	
+	class AuthScoreMapper implements RowMapper<Map<String, Object>>{
+		
+		private int numOfErrors = 0;
+
+		@Override
+		public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Map<String, Object> allFields;
+			try{				
+				ResultSetMetaData resultSetMetaData = rs.getMetaData();
+				allFields = new HashMap<String, Object>(resultSetMetaData.getColumnCount());
+				for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
+					allFields.put(resultSetMetaData.getColumnName(i), rs.getObject(i));
+				}
+				
+				
+			} catch (SQLException se){
+				throw se;
+			} catch (Exception e)  {
+				numOfErrors++;
+				if(numOfErrors < 5){
+					ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper();
+					logger.error("the following record caused an excption. record: {}", columnMapRowMapper.mapRow(rs, rowNum));
+					logger.error("here is the exception",e);
+				}
+				return null;
+			}
+			
+			return allFields;
+		}
 	}
 	
 	class EventLoginDayCountMapper implements RowMapper<EventLoginDayCount> {
@@ -288,13 +334,13 @@ public abstract class AccessDAO<T> extends ImpalaDAO<T> {
 		}
 	}
 	
-	class UsernameMapper implements RowMapper<T> {
+	class UsernameMapper implements RowMapper<Map<String, Object>> {
 		
 		private int numOfErrors = 0;
 
 		@Override
-		public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-			T ret = null;
+		public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Map<String, Object> ret = null;
 
 			try {
 				ret = createAccessObject(rs.getString(getNormalizedUsernameField()), rs.getString(getUsernameFieldName()));

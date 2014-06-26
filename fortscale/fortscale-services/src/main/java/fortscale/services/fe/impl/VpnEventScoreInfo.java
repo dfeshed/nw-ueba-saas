@@ -1,18 +1,16 @@
 package fortscale.services.fe.impl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import fortscale.domain.core.User;
-import fortscale.domain.fe.VpnScore;
 import fortscale.services.fe.IVpnEventScoreInfo;
 
 public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	private User user;
-	private VpnScore vpnScore;
+	private Map<String, Object> vpnScore;
 	
-	public VpnEventScoreInfo(User user, VpnScore vpnScore){
+	public VpnEventScoreInfo(User user, Map<String, Object> vpnScore){
 		this.vpnScore = vpnScore;
 		this.user = user;
 	}
@@ -34,74 +32,8 @@ public class VpnEventScoreInfo implements IVpnEventScoreInfo{
 	}
 
 	@Override
-	public String getSourceIp() {
-		return vpnScore.getSource_ip();
-	}
-
-	@Override
-	public Date getEventTime() {
-		return vpnScore.getDate_time();
-	}
-
-	@Override
-	public String getInternalIP() {
-		return vpnScore.getLocal_ip();
-	}
-
-	@Override
-	public double getEventScore() {
-		return vpnScore.getEventScore();
-	}
-
-	@Override
-	public String getStatus() {
-		return vpnScore.getStatus();
-	}
-
-	@Override
-	public double getEventTimeScore() {
-		return vpnScore.getDate_timeScore();
-	}
-
-	@Override
-	public String getCountry() {
-		return vpnScore.getCountry();
-	}
-
-	@Override
-	public double getCountryScore() {
-		return vpnScore.getCountryScore();
-	}
-
-	@Override
-	public String getRegion() {
-		return vpnScore.getRegion();
-	}
-
-	@Override
-	public String getCity() {
-		return vpnScore.getCity();
-	}
-
-	@Override
-	public String getIsp() {
-		return vpnScore.getIsp();
-	}
-
-	@Override
-	public String getIpusage() {
-		return vpnScore.getIpusage();
-	}
-	
-	@Override
-	public double getHostnameScore() {
-		return vpnScore.getHostnameScore();
-	}
-
-
-	@Override
 	public Map<String, Object> createMap() {
-		Map<String, Object> ret = new HashMap<>(vpnScore.allFields());
+		Map<String, Object> ret = new HashMap<>(vpnScore);
 		ret.put("userId", getUserId());
 		ret.put("username", getUsername());
 		ret.put("isUserFollowed", isUserFollowed());

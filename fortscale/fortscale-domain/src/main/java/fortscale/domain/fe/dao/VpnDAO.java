@@ -1,52 +1,23 @@
 package fortscale.domain.fe.dao;
 
-import java.util.Collection;
-import java.util.List;
 
-import org.joda.time.DateTime;
-import org.springframework.data.domain.Pageable;
-
-import fortscale.domain.fe.VpnScore;
-
-public interface VpnDAO extends EventScoreDAO{
+public abstract class VpnDAO extends AccessDAO implements EventScoreDAO{
 	
-	public List<VpnScore> findAll(Pageable pageable);
+	public abstract String getStatusFieldName();
 	
-	public List<VpnScore> findTopEventsByNormalizedUsername(String username, int limit, DateTime oldestEventTime, String decayScoreFieldName);
+	public abstract String getCountryFieldName();
 	
-	public List<VpnScore> findEventsByNormalizedUsername(String username, Pageable pageable);
+	public abstract String getRegionFieldName();
+	
+	public abstract String getCityFieldName();
+	
+	public abstract String getIspFieldName();
 		
-	public List<VpnScore> findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(String username, int minScore, Long latestDate, Long earliestDate, Pageable pageable);
-		
-	public List<VpnScore> findEventsByGtEventScore(Pageable pageable, int minScore);
+	public abstract String getIpusageFieldName();
 	
-	public List<VpnScore> findEventsByGtEventScoreBetweenTimeInUsernameList(Pageable pageable, Integer minScore, Long latestDate, Long earliestDate, Collection<String> usernames);
+	public abstract String getSourceIpFieldName();
 	
-	public List<VpnScore> findEvents(Pageable pageable, String additionalWhereQuery);
-		
-	public List<VpnScore> findUsernames();
-		
-	public List<VpnScore> getTopEventsAboveThreshold(Threshold threshold, int limit);
-	
-	
-		
-	
-	
-	public String getStatusFieldName();
-	
-	public String getCountryFieldName();
-	
-	public String getRegionFieldName();
-	
-	public String getCityFieldName();
-	
-	public String getIspFieldName();
-		
-	public String getIpusageFieldName();
-	
-	public String getSourceIpFieldName();
-	
-	public String getLocalIpFieldName();
+	public abstract String getLocalIpFieldName();
 	
 	
 }

@@ -34,10 +34,8 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.AuthScore;
 import fortscale.domain.fe.EventResult;
 import fortscale.domain.fe.EventScore;
-import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.EventLoginDayCount;
@@ -326,10 +324,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 		String orderByArray[] = processAuthScoreOrderByFieldName(authDAO, orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<AuthScore> authScores = authDAO.findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(user.getUsername(), minScore, latestDate, earliestDate, pageable);
+		List<Map<String, Object>> authScores = authDAO.findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(user.getUsername(), minScore, latestDate, earliestDate, pageable);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
-			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
+			for(Map<String, Object> authScore: authScores.subList(offset, authScores.size())){
 				ret.add(createLoginEventScoreInfo(user, authScore));
 			}
 		}
@@ -356,12 +354,12 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<AuthScore> authScores = authDAO.findEventsByGtEventScoreBetweenTimeInUsernameList(pageable, minScore, latestDate, earliestDate, usernames);
+		List<Map<String, Object>> authScores = authDAO.findEventsByGtEventScoreBetweenTimeInUsernameList(pageable, minScore, latestDate, earliestDate, usernames);
 		List<ILoginEventScoreInfo> ret = new ArrayList<>();
 		if(offset < authScores.size()){
 			Map<String, User> userMap = new HashMap<>();
-			for(AuthScore authScore: authScores.subList(offset, authScores.size())){
-				String username = (String) authScore.getAllFields().get(authDAO.getNormalizedUsernameField());
+			for(Map<String, Object> authScore: authScores.subList(offset, authScores.size())){
+				String username = (String) authScore.get(authDAO.getNormalizedUsernameField());
 				User user = userMap.get(username);
 				if(user == null){
 					user = userRepository.findByUsername(username);
@@ -450,8 +448,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		return ret;
 	}
 	
-	private ILoginEventScoreInfo createLoginEventScoreInfo(User user, AuthScore authScore){
-		LoginEventScoreInfo ret = new LoginEventScoreInfo(user, authScore.getAllFields());
+	private ILoginEventScoreInfo createLoginEventScoreInfo(User user, Map<String, Object> authScore){
+		LoginEventScoreInfo ret = new LoginEventScoreInfo(user, authScore);
 		
 		return ret;
 	}
@@ -480,10 +478,10 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		String orderByArray[] = processVpnScoreOrderByFieldName(orderBy);
 		String vpnUserNameString = user.getUsername();//applicationUserDetails.getUserName();
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<VpnScore> vpnScores = vpnDAO.findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(vpnUserNameString, minScore, latestDate, earliestDate, pageable);
+		List<Map<String, Object>> vpnScores = vpnDAO.findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(vpnUserNameString, minScore, latestDate, earliestDate, pageable);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
-			for(VpnScore vpnScore: vpnScores.subList(offset, vpnScores.size())){
+			for(Map<String, Object> vpnScore: vpnScores.subList(offset, vpnScores.size())){
 				ret.add(createVpnEventScoreInfo(user, vpnScore));
 			}
 		}
@@ -503,15 +501,15 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			}
 		}
 		
-		List<VpnScore> vpnScores = vpnDAO.findEventsByGtEventScoreBetweenTimeInUsernameList(pageable, minScore, latestDate, earliestDate, usernames);
+		List<Map<String, Object>> vpnScores = vpnDAO.findEventsByGtEventScoreBetweenTimeInUsernameList(pageable, minScore, latestDate, earliestDate, usernames);
 		List<IVpnEventScoreInfo> ret = new ArrayList<>();
 		if(offset < vpnScores.size()){
 			Map<String, User> userMap = new HashMap<>();
-			for(VpnScore vpnScore: vpnScores.subList(offset, vpnScores.size())){
-				String username = vpnScore.getUsername();
+			for(Map<String, Object> vpnScore: vpnScores.subList(offset, vpnScores.size())){
+				String username = (String) vpnScore.get(vpnDAO.getNormalizedUsernameField());
 				User user = userMap.get(username);
 				if(user == null){
-					user = usernameService.findByAuthUsername(LogEventsEnum.vpn, username);
+					user = userRepository.findByUsername(username);
 					if(user == null){
 						logger.warn("vpn username ({}) was not found in the user collection", username);
 						continue;
@@ -525,7 +523,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		return ret;
 	}
 	
-	private IVpnEventScoreInfo createVpnEventScoreInfo(User user, VpnScore vpnScore){
+	private IVpnEventScoreInfo createVpnEventScoreInfo(User user, Map<String, Object> vpnScore){
 		IVpnEventScoreInfo ret = new VpnEventScoreInfo(user, vpnScore);
 		
 		return ret;

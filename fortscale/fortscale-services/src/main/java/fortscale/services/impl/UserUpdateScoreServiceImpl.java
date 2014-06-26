@@ -24,8 +24,6 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
-import fortscale.domain.fe.AuthScore;
-import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.VpnDAO;
@@ -190,10 +188,10 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		DateTime oldestEventDateTime = new DateTime();
 		oldestEventDateTime = oldestEventDateTime.minusSeconds(userScoreOldestEventDiffFromNowInSeconds);
 		for(User user: users){
-			List<AuthScore> authScores = authDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
+			List<Map<String, Object>> authScores = authDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
 			double userSum = 0;
-			for(AuthScore authScore: authScores){
-				userSum += (Double)authScore.getAllFields().get(SCORE_DECAY_FIELD_NAME);
+			for(Map<String, Object> authScore: authScores){
+				userSum += (Double)authScore.get(SCORE_DECAY_FIELD_NAME);
 			}
 			double userScore = userSum/5;
 			userIdToScoreMap.put(user.getId(), userScore);
@@ -235,10 +233,10 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		DateTime oldestEventDateTime = new DateTime();
 		oldestEventDateTime = oldestEventDateTime.minusSeconds(userScoreOldestEventDiffFromNowInSeconds);
 		for(User user: users){
-			List<VpnScore> vpnScores = vpnDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
+			List<Map<String, Object>> vpnScores = vpnDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
 			double userSum = 0;
-			for(VpnScore vpnScore: vpnScores){
-				userSum += (Double)vpnScore.allFields().get(SCORE_DECAY_FIELD_NAME);
+			for(Map<String, Object> vpnScore: vpnScores){
+				userSum += (Double)vpnScore.get(SCORE_DECAY_FIELD_NAME);
 			}
 			double userScore = userSum/5;
 			userIdToScoreMap.put(user.getId(), userScore);

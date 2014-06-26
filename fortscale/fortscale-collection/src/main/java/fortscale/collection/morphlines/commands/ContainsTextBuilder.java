@@ -54,11 +54,11 @@ public class ContainsTextBuilder implements CommandBuilder {
 		protected boolean doProcess(Record record) {
 			for (Map.Entry<String, Object> entry : entrySet) {
 				String fieldName = entry.getKey();
-				List values = record.get(fieldName);
+				List<?> values = record.get(fieldName);
 				Object entryValue = entry.getValue();
-				Collection results;
+				Collection<?> results;
 				if (entryValue instanceof Collection) {
-					results = (Collection) entryValue;
+					results = (Collection<?>) entryValue;
 				} else {
 					results = ((FieldExpression) entryValue).evaluate(record);
 				}
