@@ -144,6 +144,17 @@ public class VpnJuniperTest {
             		"Nov  7 14:37:04 11.155.45.2 Juniper: 2013-11-07 14:37:05 - ive - [72.193.146.27] bvaldes(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.113, hostname LAPTOP-20005507.local"
             	),
             	$((String)null, "2013-11-07 14:37:05,1383827825,bvaldes,72.193.146.27,11.155.46.113,SUCCESS,,,,,,,LAPTOP-20005507,,,,,,false")
+            ),
+            $(
+            		"Regular (Poza) Successful VPN Authentication",
+            		$(
+            				"Jun 25 02:30:44 192.168.199.2 Juniper: 2014-06-25 02:30:44 - ive - [127.0.0.1] System()[] - Agent login succeeded for scarletj/SecurID Users + Machine Cert Host Check from 87.247.232.212.",
+            				"Jun 25 02:30:44 192.168.199.2 Juniper: 2014-06-25 02:30:45 - ive - [87.247.232.212] scarletj(SecurID Users + Machine Cert Host Check)[Users, Fortscale Users] - VPN Tunneling: Session started for user with IP 11.29.253.18, hostname L-25002436"
+            		),
+            		$(
+            				(String)null,
+            				"2014-06-25 02:30:44,1403652644,scarletj,87.247.232.212,11.29.253.18,SUCCESS,,,,,,,L-25002436,,,,,,false"
+            		)
             )
 		);
     }
