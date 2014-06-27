@@ -54,10 +54,8 @@ import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.EBSResult;
 import fortscale.services.fe.IClassifierScoreDistribution;
-import fortscale.services.fe.ILoginEventScoreInfo;
 import fortscale.services.fe.IScoreDistribution;
 import fortscale.services.fe.ISuspiciousUserInfo;
-import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.services.impl.SeverityElement;
 import fortscale.services.impl.UsernameService;
 import fortscale.utils.impala.ImpalaPageRequest;
@@ -311,7 +309,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 
 	@Override
-	public List<ILoginEventScoreInfo> getUserSuspiciousAuthEvents(LogEventsEnum eventId, Long latestDate, Long earliestDate, String userId, int offset, int limit, String orderBy, Direction direction, int minScore) {
+	public List<Map<String, Object>> getUserSuspiciousAuthEvents(LogEventsEnum eventId, Long latestDate, Long earliestDate, String userId, int offset, int limit, String orderBy, Direction direction, int minScore) {
 		AuthDAO authDAO = getAuthDAO(eventId);
 		
 		User user = userRepository.findOne(userId);
@@ -325,10 +323,11 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		String orderByArray[] = processAuthScoreOrderByFieldName(authDAO, orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
 		List<Map<String, Object>> authScores = authDAO.findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(user.getUsername(), minScore, latestDate, earliestDate, pageable);
-		List<ILoginEventScoreInfo> ret = new ArrayList<>();
+		List<Map<String, Object>> ret = new ArrayList<>();
 		if(offset < authScores.size()){
-			for(Map<String, Object> authScore: authScores.subList(offset, authScores.size())){
-				ret.add(createLoginEventScoreInfo(user, authScore));
+			for(Map<String, Object> row: authScores.subList(offset, authScores.size())){
+				addUserInfoToAuthEventScoreInfo(user, row);
+				ret.add(row);
 			}
 		}
 		return ret;
@@ -341,7 +340,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	}
 
 	@Override
-	public List<ILoginEventScoreInfo> getSuspiciousAuthEvents(LogEventsEnum eventId, Long latestDate, Long earliestDate, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
+	public List<Map<String, Object>> getSuspiciousAuthEvents(LogEventsEnum eventId, Long latestDate, Long earliestDate, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
 		AuthDAO authDAO = getAuthDAO(eventId);
 		String orderByArray[] = processAuthScoreOrderByFieldName(authDAO, orderBy);
 		
@@ -354,12 +353,12 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		}
 
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<Map<String, Object>> authScores = authDAO.findEventsByGtEventScoreBetweenTimeInUsernameList(pageable, minScore, latestDate, earliestDate, usernames);
-		List<ILoginEventScoreInfo> ret = new ArrayList<>();
-		if(offset < authScores.size()){
+		List<Map<String, Object>> results = authDAO.findEventsByGtEventScoreBetweenTimeInUsernameList(pageable, minScore, latestDate, earliestDate, usernames);
+		List<Map<String, Object>> ret = new ArrayList<>();
+		if(offset < results.size()){
 			Map<String, User> userMap = new HashMap<>();
-			for(Map<String, Object> authScore: authScores.subList(offset, authScores.size())){
-				String username = (String) authScore.get(authDAO.getNormalizedUsernameField());
+			for(Map<String, Object> row: results.subList(offset, results.size())){
+				String username = (String) row.get(authDAO.getNormalizedUsernameField());
 				User user = userMap.get(username);
 				if(user == null){
 					user = userRepository.findByUsername(username);
@@ -370,7 +369,8 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 					
 					userMap.put(username, user);
 				}
-				ret.add(createLoginEventScoreInfo(user, authScore));
+				addUserInfoToAuthEventScoreInfo(user, row);
+				ret.add(row);
 			}
 		}
 		return ret;
@@ -448,11 +448,6 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		return ret;
 	}
 	
-	private ILoginEventScoreInfo createLoginEventScoreInfo(User user, Map<String, Object> authScore){
-		LoginEventScoreInfo ret = new LoginEventScoreInfo(user, authScore);
-		
-		return ret;
-	}
 	
 	
 	
@@ -466,7 +461,7 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 	
 	
 	@Override
-	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(Long latestDate, Long earliestDate, String userId, int offset, int limit, String orderBy, Direction direction, int minScore) {
+	public List<Map<String, Object>> getUserSuspiciousVpnEvents(Long latestDate, Long earliestDate, String userId, int offset, int limit, String orderBy, Direction direction, int minScore) {
 		User user = userRepository.findOne(userId);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
@@ -478,18 +473,19 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 		String orderByArray[] = processVpnScoreOrderByFieldName(orderBy);
 		String vpnUserNameString = user.getUsername();//applicationUserDetails.getUserName();
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
-		List<Map<String, Object>> vpnScores = vpnDAO.findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(vpnUserNameString, minScore, latestDate, earliestDate, pageable);
-		List<IVpnEventScoreInfo> ret = new ArrayList<>();
-		if(offset < vpnScores.size()){
-			for(Map<String, Object> vpnScore: vpnScores.subList(offset, vpnScores.size())){
-				ret.add(createVpnEventScoreInfo(user, vpnScore));
+		List<Map<String, Object>> results = vpnDAO.findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(vpnUserNameString, minScore, latestDate, earliestDate, pageable);
+		List<Map<String, Object>> ret = new ArrayList<>();
+		if(offset < results.size()){
+			for(Map<String, Object> row: results.subList(offset, results.size())){
+				addUserInfoToAuthEventScoreInfo(user, row);
+				ret.add(row);
 			}
 		}
 		return ret;
 	}
 	
 	@Override
-	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(Long latestDate, Long earliestDate, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
+	public List<Map<String, Object>> getSuspiciousVpnEvents(Long latestDate, Long earliestDate, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers) {
 		String orderByArray[] = processVpnScoreOrderByFieldName(orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
 		
@@ -501,12 +497,12 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 			}
 		}
 		
-		List<Map<String, Object>> vpnScores = vpnDAO.findEventsByGtEventScoreBetweenTimeInUsernameList(pageable, minScore, latestDate, earliestDate, usernames);
-		List<IVpnEventScoreInfo> ret = new ArrayList<>();
-		if(offset < vpnScores.size()){
+		List<Map<String, Object>> results = vpnDAO.findEventsByGtEventScoreBetweenTimeInUsernameList(pageable, minScore, latestDate, earliestDate, usernames);
+		List<Map<String, Object>> ret = new ArrayList<>();
+		if(offset < results.size()){
 			Map<String, User> userMap = new HashMap<>();
-			for(Map<String, Object> vpnScore: vpnScores.subList(offset, vpnScores.size())){
-				String username = (String) vpnScore.get(vpnDAO.getNormalizedUsernameField());
+			for(Map<String, Object> row: results.subList(offset, results.size())){
+				String username = (String) row.get(vpnDAO.getNormalizedUsernameField());
 				User user = userMap.get(username);
 				if(user == null){
 					user = userRepository.findByUsername(username);
@@ -516,17 +512,18 @@ public class ClassifierServiceImpl implements ClassifierService, InitializingBea
 					}
 					userMap.put(username, user);
 				}
-
-				ret.add(createVpnEventScoreInfo(user, vpnScore));
+				
+				addUserInfoToAuthEventScoreInfo(user, row);
+				ret.add(row);
 			}
 		}
 		return ret;
 	}
 	
-	private IVpnEventScoreInfo createVpnEventScoreInfo(User user, Map<String, Object> vpnScore){
-		IVpnEventScoreInfo ret = new VpnEventScoreInfo(user, vpnScore);
-		
-		return ret;
+	private void addUserInfoToAuthEventScoreInfo(User user, Map<String, Object> authEventScoreInfoMap){
+		authEventScoreInfoMap.put("userId", user.getId());
+		authEventScoreInfoMap.put("username", user.getUsername());
+		authEventScoreInfoMap.put("isUserFollowed", user.getFollowed());
 	}
 	
 	

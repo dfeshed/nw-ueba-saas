@@ -11,7 +11,6 @@ import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.logging.Logger;
 
 @Component("vpnDAO")
 public class VpnDAOImpl extends VpnDAO implements InitializingBean{	
