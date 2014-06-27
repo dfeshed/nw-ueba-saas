@@ -27,12 +27,6 @@ public interface ClassifierService {
 	public int countAuthEvents(LogEventsEnum eventId, Long latestDate, Long earliestDate, int minScore, boolean onlyFollowedUsers);
 	public int countAuthEvents(LogEventsEnum eventId, String userId);
 	public int countAuthEvents(LogEventsEnum eventId);
-	public List<Map<String, Object>> getUserSuspiciousVpnEvents(Long latestDate, Long earliestDate, String userId, int offset, int limit, String orderBy, Direction direction, int minScore);
-	public List<Map<String, Object>> getSuspiciousVpnEvents(Long latestDate, Long earliestDate, int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers);
-	
-	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection, Integer minScore);
-	public void addFilter(String collectionName, String fieldName, String regex);
-	public String getFilterRegex(String collectionName, String fieldName);
-	
+		
 	public List<EventScore> getEventScores(List<LogEventsEnum> classifierId, String username, int daysBack, int limit);
 }
