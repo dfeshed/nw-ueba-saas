@@ -3,13 +3,13 @@ package fortscale.domain.fe.dao;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,38 +25,32 @@ import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.logging.Logger;
 
-public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> {
+public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implements EventScoreDAO{
 	private static Logger logger = Logger.getLogger(AccessDAO.class);
 	
 	protected static final String EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME = "day";
 	protected static final String EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME = "status";
 	protected static final String EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME = "eventcount";
 	protected static final String EVENT_SOURCE_COALESCED_FIELD_NAME = "source";
+	
+	@Value("${impala.data.table.fields.normalized_username}")
+	public String NORMALIZED_USERNAME;
 
-	
-	public abstract String getEventTimeFieldName();
-	
-	public abstract String getNormalizedUsernameField();
-
-	public abstract String getUsernameFieldName();
-
-	public abstract String getEventScoreFieldName();
-	
-	public abstract String getSourceFieldName();
-	
+		
 	public abstract String getDestinationFieldName();
 	
 	public abstract String getStatusFieldName();
 	
 	public abstract String getStatusSuccessValue();
-	
-	public abstract String getSourceIpFieldName();
-	
+		
 	public abstract LogEventsEnum getLogEventsEnum();
 	
 
 	
-
+	@Override
+	public String getNormalizedUsernameField() {
+		return NORMALIZED_USERNAME.toLowerCase();
+	}
 	
 	
 	public List<EventScore> getEventScores(String username, int daysBack, int limit) {
@@ -95,23 +89,11 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> {
 	}
 
 	private List<Map<String, Object>> getListResults(String query){
-		List<Map<String, Object>> ret = new ArrayList<>();
-		for(Map<String, Object> res: impalaJdbcTemplate.query(query, getMapper())){
-			if(res != null){
-				ret.add(res);
-			}
-		}
-		return ret;
+		return impalaJdbcTemplate.query(query, getMapper());
 	}
 	
 	private List<Map<String, Object>> getListUsernamesResults(String query){
-		List<Map<String, Object>> ret = new ArrayList<>();
-		for(Map<String, Object> res: impalaJdbcTemplate.query(query, new UsernameMapper())){
-			if(res != null){
-				ret.add(res);
-			}
-		}
-		return ret;
+		return impalaJdbcTemplate.query(query, new UsernameMapper());
 	}
 
 	public List<Map<String, Object>> findEventsByNormalizedUsername(String username, Pageable pageable) {

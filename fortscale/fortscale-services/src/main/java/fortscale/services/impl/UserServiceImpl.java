@@ -40,8 +40,7 @@ import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.dao.AuthDAO;
-import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.exceptions.UnknownResourceException;
@@ -79,13 +78,13 @@ public class UserServiceImpl implements UserService{
 	private UserMachineDAO userMachineDAO;
 	
 	@Autowired
-	private AuthDAO loginDAO;
+	private EventScoreDAO loginDAO;
 	
 	@Autowired
-	private AuthDAO sshDAO;
+	private EventScoreDAO sshDAO;
 	
 	@Autowired
-	private VpnDAO vpnDAO;
+	private EventScoreDAO vpnDAO;
 	
 	@Autowired
 	private ImpalaWriterFactory impalaWriterFactory;

@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaParser;
 
 @Component("vpnDAO")
-public class VpnDAOImpl extends VpnDAO implements InitializingBean{	
+public class VpnDAOImpl extends AccessDAO implements InitializingBean{	
 	@Autowired
 	private ImpalaParser impalaParser;
 	
@@ -37,10 +37,7 @@ public class VpnDAOImpl extends VpnDAO implements InitializingBean{
 			
 	@Value("${impala.score.vpn.table.field.countrycode}")
 	public String COUNTRY_CODE;
-			
-	@Value("${impala.data.table.fields.normalized_username}")
-	public String NORMALIZED_USERNAME;
-	
+		
 	@Value("${impala.score.vpn.table.field.status}")
 	public String STATUS;
 	
@@ -100,37 +97,30 @@ public class VpnDAOImpl extends VpnDAO implements InitializingBean{
 	}
 	
 
-	@Override
 	public String getCountryFieldName() {
 		return COUNTRY;
 	}
 
-	@Override
 	public String getRegionFieldName() {
 		return REGION;
 	}
 
-	@Override
 	public String getCityFieldName() {
 		return CITY;
 	}
 
-	@Override
 	public String getIspFieldName() {
 		return ISP;
 	}
 
-	@Override
 	public String getIpusageFieldName() {
 		return IP_USAGE;
 	}
 
-	@Override
 	public String getLocalIpFieldName() {
 		return LOCAL_IP;
 	}
 
-	@Override
 	public String getEventTimeScoreFieldName() {
 		return TIME_SCORE;
 	}
@@ -138,11 +128,6 @@ public class VpnDAOImpl extends VpnDAO implements InitializingBean{
 	@Override
 	public String getEventTimeFieldName() {
 		return DATE_TIME;
-	}
-
-	@Override
-	public String getNormalizedUsernameField() {
-		return NORMALIZED_USERNAME;
 	}
 
 	@Override

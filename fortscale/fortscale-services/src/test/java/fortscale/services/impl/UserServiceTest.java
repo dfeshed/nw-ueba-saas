@@ -1,9 +1,13 @@
 package fortscale.services.impl;
 
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +32,7 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.dao.AuthDAO;
-import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.UserApplication;
 import fortscale.utils.actdir.ADParser;
 
@@ -63,13 +66,13 @@ public class UserServiceTest {
 	private UserMachineDAO userMachineDAO;
 	
 	@Mock
-	private AuthDAO loginDAO;
+	private EventScoreDAO loginDAO;
 				
 	@Mock
-	private AuthDAO sshDAO;
+	private EventScoreDAO sshDAO;
 	
 	@Mock
-	private VpnDAO vpnDAO;
+	private EventScoreDAO vpnDAO;
 	
 	@Mock
 	private ImpalaWriterFactory impalaWriterFactory;
@@ -110,6 +113,7 @@ public class UserServiceTest {
 		verify(userRepository, never()).save((User)any());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void getUserMachinesTest(){
 		User user = new User();

@@ -3,10 +3,11 @@ package fortscale.domain.fe.dao.impl;
 import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 
-public class SshDAOImpl extends AuthDAOImpl{
+public class SshDAOImpl extends AccessDAO{
 	
 	@Value("${impala.score.ssh.table.name}")
 	private String tableName;

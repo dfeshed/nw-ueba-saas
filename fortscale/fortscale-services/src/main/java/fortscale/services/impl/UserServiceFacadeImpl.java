@@ -128,17 +128,7 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	public void updateUserWithAuthScore(Classifier classifier, Date runtime) {
 		userUpdateScoreService.updateUserWithAuthScore(classifier, runtime);
 	}
-
-	@Override
-	public void updateUserWithVpnScore() {
-		userUpdateScoreService.updateUserWithVpnScore();
-	}
 	
-	@Override
-	public void updateUserWithVpnScore(Date runtime) {
-		userUpdateScoreService.updateUserWithVpnScore(runtime);
-	}
-
 	@Override
 	public void updateUserWithGroupMembershipScore() {
 		userUpdateScoreService.updateUserWithGroupMembershipScore();

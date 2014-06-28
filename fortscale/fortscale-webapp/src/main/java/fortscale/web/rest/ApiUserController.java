@@ -74,7 +74,7 @@ public class ApiUserController extends BaseController{
 	
 	@RequestMapping(value="/updateVpnScore", method=RequestMethod.GET)
 	public void updateVpnScore(Model model){
-		userServiceFacade.updateUserWithVpnScore();
+		userServiceFacade.updateUserWithAuthScore(Classifier.vpn);
 	}
 	
 	@RequestMapping(value="/updateGroupsScore", method=RequestMethod.GET)
