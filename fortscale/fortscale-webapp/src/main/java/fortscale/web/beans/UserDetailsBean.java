@@ -35,7 +35,8 @@ public class UserDetailsBean implements Serializable{
 
 	public Boolean getAdministratorccount() {
 		return user.getAdministratorAccount();
-	}	
+	}
+	
 	public Boolean getExecutiveAccount() {
 		return user.getExecutiveAccount();
 	}

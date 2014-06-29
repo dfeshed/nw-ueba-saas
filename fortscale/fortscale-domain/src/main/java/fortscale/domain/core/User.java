@@ -338,8 +338,8 @@ public class User extends AbstractDocument {
 		return executiveAccount;
 	}
 
-	public void setExecutiveAccount(Boolean administratorAccount) {
-		this.executiveAccount = administratorAccount;
+	public void setExecutiveAccount(Boolean executiveAccount) {
+		this.executiveAccount = executiveAccount;
 	}
 	
 }

@@ -4,7 +4,7 @@ public class DataBean<T> {
 	private T data;
 	private int total = 1;
 	private int offset = 0;
-	
+
 	public T getData() {
 		return data;
 	}
@@ -28,6 +28,5 @@ public class DataBean<T> {
 	public void setOffset(int offset) {
 		this.offset = offset;
 	}
-	
-	
+
 }
