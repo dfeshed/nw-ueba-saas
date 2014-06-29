@@ -1,9 +1,10 @@
 package fortscale.web;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fortscale.domain.fe.dao.AuthDAO;
-import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.utils.test.category.IntegrationTestCategory;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -21,13 +21,13 @@ import fortscale.utils.test.category.IntegrationTestCategory;
 public class ContextTestInt {
 
 	@Autowired
-	private VpnDAO vpnDAO;
+	private AccessDAO vpnDAO;
 	
 	@Autowired
-	private AuthDAO loginDAO;
+	private AccessDAO loginDAO;
 	
 	@Autowired
-	private AuthDAO sshDAO;
+	private AccessDAO sshDAO;
 	
 	@Value("${impala.score.ssh.table.name}")
 	private String sshTableName;
@@ -37,6 +37,9 @@ public class ContextTestInt {
 	
 	@Value("${impala.score.ldapauth.table.name}")
 	private String loginTableName;
+	
+	@Value("${impala.data.table.fields.normalized_username}")
+	public String normalizedUsername;
 	
 	@Test
 	@Category(IntegrationTestCategory.class)
@@ -53,5 +56,9 @@ public class ContextTestInt {
 		assertNotNull(sshDAO.getTableName());
 		assertFalse(sshDAO.getTableName().isEmpty());
 		assertEquals(sshTableName, sshDAO.getTableName());
+		
+		assertNotNull(sshDAO.NORMALIZED_USERNAME);
+		assertFalse(sshDAO.NORMALIZED_USERNAME.isEmpty());
+		assertEquals(normalizedUsername, sshDAO.NORMALIZED_USERNAME);
 	}
 }

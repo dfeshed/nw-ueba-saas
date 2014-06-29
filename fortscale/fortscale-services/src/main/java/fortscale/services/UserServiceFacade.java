@@ -37,10 +37,6 @@ public void updateUserWithCurrentADInfo();
 	
 	public void updateUserWithAuthScore(Classifier classifier, Date runtime);
 		
-	public void updateUserWithVpnScore();
-
-	public void updateUserWithVpnScore(Date runtime);
-	
 	public void updateUserWithGroupMembershipScore();
 		
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);

@@ -1,31 +1,19 @@
 package fortscale.domain.fe.dao.impl;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.ColumnMapRowMapper;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import fortscale.domain.core.ImpalaResultSetToBeanItemConverter;
 import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.VpnScore;
 import fortscale.domain.fe.dao.AccessDAO;
-import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.logging.Logger;
 
 @Component("vpnDAO")
-public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, InitializingBean{
-	private static Logger logger = Logger.getLogger(VpnDAOImpl.class);
-	
+public class VpnDAOImpl extends AccessDAO implements InitializingBean{	
 	@Autowired
 	private ImpalaParser impalaParser;
 	
@@ -49,10 +37,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 			
 	@Value("${impala.score.vpn.table.field.countrycode}")
 	public String COUNTRY_CODE;
-			
-	@Value("${impala.data.table.fields.normalized_username}")
-	public String NORMALIZED_USERNAME;
-	
+		
 	@Value("${impala.score.vpn.table.field.status}")
 	public String STATUS;
 	
@@ -90,10 +75,7 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	public String EVENT_SCORE;
 	
 	@Value("${impala.score.vpn.table.field.hostname}")
-	public String HOSTNAME;
-	
-	private ImpalaResultSetToBeanItemConverter<VpnScore> converter;
-	
+	public String HOSTNAME;	
 
 	@Override
 	public LogEventsEnum getLogEventsEnum() {
@@ -115,37 +97,30 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	}
 	
 
-	@Override
 	public String getCountryFieldName() {
 		return COUNTRY;
 	}
 
-	@Override
 	public String getRegionFieldName() {
 		return REGION;
 	}
 
-	@Override
 	public String getCityFieldName() {
 		return CITY;
 	}
 
-	@Override
 	public String getIspFieldName() {
 		return ISP;
 	}
 
-	@Override
 	public String getIpusageFieldName() {
 		return IP_USAGE;
 	}
 
-	@Override
 	public String getLocalIpFieldName() {
 		return LOCAL_IP;
 	}
 
-	@Override
 	public String getEventTimeScoreFieldName() {
 		return TIME_SCORE;
 	}
@@ -153,11 +128,6 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	@Override
 	public String getEventTimeFieldName() {
 		return DATE_TIME;
-	}
-
-	@Override
-	public String getNormalizedUsernameField() {
-		return NORMALIZED_USERNAME;
 	}
 
 	@Override
@@ -194,63 +164,15 @@ public class VpnDAOImpl extends AccessDAO<VpnScore> implements VpnDAO, Initializ
 	public String getSourceIpFieldName() {
 		return SOURCE_IP;
 	}
-	
-	@Override
-	public RowMapper<VpnScore> getMapper() {
-		return new VpnScoreMapper();
-	}
 
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		Assert.hasText(tableName);
-		converter =  new ImpalaResultSetToBeanItemConverter<>(new VpnScore());
 	}
-	
-	@Override
-	public VpnScore createAccessObject(String normalizedUsername, String username) {
-		VpnScore ret = new VpnScore();
-		ret.setNormalized_username(normalizedUsername);
-		ret.setUsername(username);
-		return ret;
-	}
-	
+		
 	@Override
 	public PartitionStrategy getPartitionStrategy() {
 		return PartitionsUtils.getPartitionStrategy(partitionName);
-	}
-
-	
-	class VpnScoreMapper implements RowMapper<VpnScore>{
-		
-		private int numOfErrors = 0;
-
-		@Override
-		public VpnScore mapRow(ResultSet rs, int rowNum) throws SQLException {
-			VpnScore ret = new VpnScore();
-			
-			
-			try{
-				converter.convert(rs, ret);
-				
-				ResultSetMetaData resultSetMetaData = rs.getMetaData();
-				for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
-					String columnName = resultSetMetaData.getColumnName(i);
-					ret.putFieldValue(columnName, rs.getObject(i));
-				}				
-			} catch (SQLException se){
-				throw se;
-			} catch (Exception e)  {
-				numOfErrors++;
-				if(numOfErrors < 5){
-					ColumnMapRowMapper columnMapRowMapper = new ColumnMapRowMapper();
-					logger.error("the following record caused an excption. record: {}", columnMapRowMapper.mapRow(rs, rowNum));
-					logger.error("here is the exception",e);
-				}
-				return null;
-			}
-			
-			return ret;
-		}
 	}
 }

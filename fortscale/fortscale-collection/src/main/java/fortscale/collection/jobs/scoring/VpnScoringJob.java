@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.services.UserServiceFacade;
+import fortscale.services.fe.Classifier;
 
 public class VpnScoringJob extends EventScoringJob {
 	
@@ -13,7 +14,7 @@ public class VpnScoringJob extends EventScoringJob {
 			
 	@Override
 	protected boolean runUpdateUserWithEventScore(Date runtime){
-		userServiceFacade.updateUserWithVpnScore(runtime);
+		userServiceFacade.updateUserWithAuthScore(Classifier.vpn);
 		
 		return true;
 	}

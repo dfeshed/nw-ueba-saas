@@ -24,29 +24,23 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.jdbc.core.JdbcOperations;
 
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
-import fortscale.domain.fe.dao.AuthDAO;
 import fortscale.domain.fe.dao.EventResultRepository;
 import fortscale.domain.fe.dao.Threshold;
-import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.fe.impl.ClassifierServiceImpl;
 import fortscale.services.fe.impl.ScoreDistribution;
 import fortscale.services.impl.SeverityElement;
-import fortscale.utils.impala.ImpalaParser;
 
 public class ClassifierServiceTest{
 	@Mock
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
-	
-	@Mock
-	private JdbcOperations impalaJdbcTemplate;
 	
 	@Mock
 	private UserRepository userRepository;
@@ -55,20 +49,17 @@ public class ClassifierServiceTest{
 	private EventResultRepository eventResultRepository;
 	
 	@Mock
-	private AuthDAO loginDAO;
+	private AccessDAO loginDAO;
 	
 	@Mock
-	private AuthDAO sshDAO;
+	private AccessDAO sshDAO;
 	
 	@Mock
-	private VpnDAO vpnDAO;
+	private AccessDAO vpnDAO;
 		
 	@Mock
 	private ConfigurationService configurationService;
-	
-	@Mock
-	private ImpalaParser impalaParser;
-	
+		
 	@InjectMocks
 	private ClassifierServiceImpl classifierService;
 	

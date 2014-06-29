@@ -28,4 +28,20 @@ public interface EventScoreDAO {
 	public List<EventLoginDayCount> getEventLoginDayCount(String username, int numberOfDays);
 	
 	public List<EventScore> getEventScores(String username, int daysBack, int limit);
+	
+	
+	
+	public String getNormalizedUsernameField();
+
+	public String getUsernameFieldName();
+	
+	public String getEventTimeFieldName();
+	
+	public String getEventTimeScoreFieldName();
+
+	public String getEventScoreFieldName();
+	
+	public String getSourceFieldName();
+	
+	public String getSourceIpFieldName();
 }

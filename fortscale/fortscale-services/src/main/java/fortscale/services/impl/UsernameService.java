@@ -16,8 +16,7 @@ import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.dao.AuthDAO;
-import fortscale.domain.fe.dao.VpnDAO;
+import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.logging.Logger;
 
@@ -32,13 +31,13 @@ public class UsernameService implements InitializingBean{
 	private UserRepository userRepository;
 	
 	@Autowired
-	private AuthDAO loginDAO;
+	private EventScoreDAO loginDAO;
 	
 	@Autowired
-	private AuthDAO sshDAO;
+	private EventScoreDAO sshDAO;
 	
 	@Autowired
-	private VpnDAO vpnDAO;
+	private EventScoreDAO vpnDAO;
 	
 	private boolean isLazy = true;
 	

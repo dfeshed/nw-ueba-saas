@@ -22,9 +22,8 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
-import fortscale.domain.fe.dao.AuthDAO;
-import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 import fortscale.services.analyst.ConfigurationService;
@@ -46,13 +45,13 @@ public class UserUpdateScoreServiceTest {
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
 	
 	@Mock
-	private AuthDAO loginDAO;
+	private AccessDAO loginDAO;
 	
 	@Mock
-	private AuthDAO sshDAO;
+	private AccessDAO sshDAO;
 	
 	@Mock
-	private VpnDAO vpnDAO;
+	private AccessDAO vpnDAO;
 				
 	@Mock
 	private ImpalaWriterFactory impalaWriterFactory;

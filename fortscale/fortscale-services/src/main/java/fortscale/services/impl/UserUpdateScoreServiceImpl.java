@@ -24,11 +24,8 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
-import fortscale.domain.fe.AuthScore;
-import fortscale.domain.fe.VpnScore;
+import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
-import fortscale.domain.fe.dao.AuthDAO;
-import fortscale.domain.fe.dao.VpnDAO;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 import fortscale.services.UserUpdateScoreService;
@@ -56,13 +53,13 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
 	
 	@Autowired
-	private AuthDAO loginDAO;
+	private AccessDAO loginDAO;
 	
 	@Autowired
-	private AuthDAO sshDAO;
+	private AccessDAO sshDAO;
 	
 	@Autowired
-	private VpnDAO vpnDAO;
+	private AccessDAO vpnDAO;
 	
 	@Autowired
 	private ImpalaWriterFactory impalaWriterFactory;
@@ -154,14 +151,17 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		}
 	}
 	
-	private AuthDAO getAuthDAO(LogEventsEnum eventId){
-		AuthDAO ret = null;
+	private AccessDAO getAccessDAO(LogEventsEnum eventId){
+		AccessDAO ret = null;
 		switch(eventId){
 			case login:
 				ret = loginDAO;
 				break;
 			case ssh:
 				ret = sshDAO;
+				break;
+			case vpn:
+				ret = vpnDAO;
 				break;
 		default:
 			break;
@@ -177,7 +177,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	
 	@Override
 	public void updateUserWithAuthScore(Classifier classifier, Date runtime) {
-		AuthDAO authDAO = getAuthDAO(classifier.getLogEventsEnum());
+		AccessDAO accessDAO = getAccessDAO(classifier.getLogEventsEnum());
 		
 		double sum = 0;
 		
@@ -190,10 +190,10 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		DateTime oldestEventDateTime = new DateTime();
 		oldestEventDateTime = oldestEventDateTime.minusSeconds(userScoreOldestEventDiffFromNowInSeconds);
 		for(User user: users){
-			List<AuthScore> authScores = authDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
+			List<Map<String, Object>> authScores = accessDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
 			double userSum = 0;
-			for(AuthScore authScore: authScores){
-				userSum += (Double)authScore.getAllFields().get(SCORE_DECAY_FIELD_NAME);
+			for(Map<String, Object> authScore: authScores){
+				userSum += (Double)authScore.get(SCORE_DECAY_FIELD_NAME);
 			}
 			double userScore = userSum/5;
 			userIdToScoreMap.put(user.getId(), userScore);
@@ -213,52 +213,8 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		}
 		
 		logger.info("finished updating the user collection with {} score.", classifier);
-	}
-		
+	}	
 	
-	@Override
-	public void updateUserWithVpnScore() {
-		Date runtime = new Date();
-		updateUserWithVpnScore(runtime);
-	}
-	
-	@Override
-	public void updateUserWithVpnScore(Date runtime) {
-		double sum = 0;
-		
-		logger.info("getting all users");
-		List<User> users = userRepository.findAllExcludeAdInfo();
-		
-		logger.info("calculating scores for all users");
-		
-		Map<String, Double> userIdToScoreMap = new HashMap<>();
-		DateTime oldestEventDateTime = new DateTime();
-		oldestEventDateTime = oldestEventDateTime.minusSeconds(userScoreOldestEventDiffFromNowInSeconds);
-		for(User user: users){
-			List<VpnScore> vpnScores = vpnDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
-			double userSum = 0;
-			for(VpnScore vpnScore: vpnScores){
-				userSum += (Double)vpnScore.allFields().get(SCORE_DECAY_FIELD_NAME);
-			}
-			double userScore = userSum/5;
-			userIdToScoreMap.put(user.getId(), userScore);
-			sum += userScore;
-		}
-		
-		logger.info("updating all the {} users with new scores.", users.size());
-		double avg = sum / users.size();
-		for(User user: users){
-			double userScore = userIdToScoreMap.get(user.getId());
-			User updatedUser = updateUserScore(user, runtime, Classifier.vpn.getId(), userScore, avg, false, false);
-			if(updatedUser != null){
-				Update update = new Update();
-				userService.fillUpdateUserScore(update, updatedUser, Classifier.vpn);
-				userService.updateUser(user, update);
-			}
-		}
-		
-		logger.info("finished updating the user collection with vpn score.");
-	}
 		
 	@Override
 	public void updateUserWithGroupMembershipScore(){

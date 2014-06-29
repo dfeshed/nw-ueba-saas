@@ -1,6 +1,5 @@
 package fortscale.web.rest;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +23,8 @@ import fortscale.domain.fe.dao.EventLoginDayCount;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.IClassifierScoreDistribution;
-import fortscale.services.fe.ILoginEventScoreInfo;
 import fortscale.services.fe.IScoreDistribution;
 import fortscale.services.fe.ISuspiciousUserInfo;
-import fortscale.services.fe.IVpnEventScoreInfo;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
@@ -76,84 +73,43 @@ public class ApiClassifierController extends BaseController {
 	@RequestMapping(value = "/{id}/events", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<?>> events(@PathVariable LogEventsEnum id, @RequestParam(required = false) Long date, @RequestParam(required = false) Long earliestDate, @RequestParam(required = false) String uid, @RequestParam(defaultValue = "0") Integer offset,
+	public DataBean<List<?>> events(@PathVariable LogEventsEnum id, @RequestParam(required = false) Long latestDate, @RequestParam(required = false) Long earliestDate, @RequestParam(required = false) String uid, @RequestParam(defaultValue = "0") Integer offset,
 			@RequestParam(defaultValue = "10") Integer limit, @RequestParam(required = false) String orderBy, @RequestParam(defaultValue = "DESC") String orderByDirection,
 			@RequestParam(defaultValue = "0") Integer minScore, @RequestParam(defaultValue = "false") Boolean followedOnly, Model model) {
 		Direction direction = convertStringToDirection(orderByDirection);
 
 		DataBean<List<?>> ret = null;
 		
-		if(date == null){
-			date = System.currentTimeMillis();
+		if(latestDate == null){
+			latestDate = System.currentTimeMillis();
 		}
 		
 		if(earliestDate == null){
-			earliestDate = (new DateTime(date)).minusDays(14).getMillis();
+			earliestDate = (new DateTime(latestDate)).minusDays(14).getMillis();
 		}
 
 		try{
-			switch (id) {
-			case ssh:
-			case login:
-				ret = authEvents(id, date, earliestDate, uid, offset, limit, orderBy, direction, minScore, followedOnly);
-				break;
-			case vpn:
-				ret = vpnEvents(id, date, earliestDate, uid, offset, limit, orderBy, direction, minScore, followedOnly);
-				break;
-			default:
-				return emptyData;
+			ret = new DataBean<List<?>>();
+			List<Map<String, Object>> eventScoreInfos = Collections.emptyList();
+			int total = 0;
+			if (uid == null) {
+				eventScoreInfos = classifierService.getSuspiciousAuthEvents(id, latestDate, earliestDate, offset, limit, orderBy, direction, minScore, followedOnly);
+				total = classifierService.countAuthEvents(id, latestDate, earliestDate, minScore, followedOnly);
+			} else {
+				eventScoreInfos = classifierService.getUserSuspiciousAuthEvents(id, latestDate, earliestDate, uid, offset, limit, orderBy, direction, minScore);
+				total = classifierService.countAuthEvents(id, latestDate, earliestDate, uid, minScore);
 			}
+			
+			ret.setData(eventScoreInfos);
+			ret.setOffset(offset);
+			ret.setTotal(total);
 		} catch(EmptyTableException e){
 			return emptyData;
 		}
 
 		return ret;
 	}
-
-	private DataBean<List<?>> authEvents(LogEventsEnum id, Long latestDate, Long earliestDate, String uid, Integer offset, Integer limit, String orderBy, Direction direction, Integer minScore, boolean followedOnly) {
-		DataBean<List<?>> ret = new DataBean<List<?>>();
-
-		List<ILoginEventScoreInfo> eventScoreInfos = Collections.emptyList();
-		int total = 0;
-		if (uid == null) {
-			eventScoreInfos = classifierService.getSuspiciousAuthEvents(id, latestDate, earliestDate, offset, limit, orderBy, direction, minScore, followedOnly);
-			total = classifierService.countAuthEvents(id, latestDate, earliestDate, minScore, followedOnly);
-		} else {
-			eventScoreInfos = classifierService.getUserSuspiciousAuthEvents(id, latestDate, earliestDate, uid, offset, limit, orderBy, direction, minScore);
-			total = classifierService.countAuthEvents(id, latestDate, earliestDate, uid, minScore);
-		}
-		
-		List<Map<String, Object>> data = new ArrayList<>();
-		for(ILoginEventScoreInfo eventScoreInfo: eventScoreInfos){
-			data.add(eventScoreInfo.createMap());
-		}
-		ret.setData(data);
-		ret.setOffset(offset);
-		ret.setTotal(total);
-		return ret;
-	}
-
-	private DataBean<List<?>> vpnEvents(LogEventsEnum id, Long latestDate, Long earliestDate, String uid, Integer offset, Integer limit, String orderBy, Direction direction, Integer minScore, boolean followedOnly) {
-		DataBean<List<?>> ret = new DataBean<List<?>>();
-
-		List<IVpnEventScoreInfo> eventScoreInfos = Collections.emptyList();
-		int total = 0;
-		if (uid == null) {
-			eventScoreInfos = classifierService.getSuspiciousVpnEvents(latestDate, earliestDate, offset, limit, orderBy, direction, minScore, followedOnly);
-			total = classifierService.countAuthEvents(id, latestDate, earliestDate, minScore, followedOnly);
-		} else {
-			eventScoreInfos = classifierService.getUserSuspiciousVpnEvents(latestDate, earliestDate, uid, offset, limit, orderBy, direction, minScore);
-			total = classifierService.countAuthEvents(id, latestDate, earliestDate, uid, minScore);
-		}
-		List<Map<String, Object>> data = new ArrayList<>();
-		for(IVpnEventScoreInfo eventScoreInfo: eventScoreInfos){
-			data.add(eventScoreInfo.createMap());
-		}
-		ret.setData(data);
-		ret.setOffset(offset);
-		ret.setTotal(total);
-		return ret;
-	}
+	
 
 	@RequestMapping(value = "/{id}/dist", method = RequestMethod.GET)
 	@ResponseBody

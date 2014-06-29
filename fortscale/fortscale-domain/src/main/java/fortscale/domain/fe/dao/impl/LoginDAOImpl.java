@@ -1,18 +1,14 @@
 package fortscale.domain.fe.dao.impl;
 
-import java.sql.ResultSet;
-
 import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.AuthScore;
+import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
-import fortscale.utils.logging.Logger;
 
 
-public class LoginDAOImpl extends AuthDAOImpl{
-	private static Logger logger = Logger.getLogger(LoginDAOImpl.class);
+public class LoginDAOImpl extends AccessDAO{
 	
 	@Value("${impala.score.ldapauth.table.name}")
 	private String tableName;	
@@ -24,6 +20,8 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	public String TIMEGENERATED;
 	@Value("${impala.score.ldapauth.table.fields.timeGeneratedUnixTime}")
 	public String TIMEGENERATED_UNIX;
+	@Value("${impala.score.ldapauth.table.fields.date_timeScore}")
+	public String EVENT_TIME_SCORE;
 	@Value("${impala.score.ldapauth.table.fields.failure_code}")
 	public String FAILURE_CODE;
 	@Value("${impala.score.ldapauth.table.fields.machine_name}")
@@ -50,15 +48,6 @@ public class LoginDAOImpl extends AuthDAOImpl{
 		return LogEventsEnum.login;
 	}
 	
-	@Override
-	protected void setStatus(ResultSet rs, AuthScore authScore) {
-		try {
-			authScore.setStatus(rs.getString(FAILURE_CODE));
-		} catch (Exception e) {
-			logger.info("no status found in the login event");
-			authScore.setStatus("");
-		}
-	}
 	@Override
 	public String getEventTimeFieldName() {
 		return TIMEGENERATED.toLowerCase();
@@ -90,5 +79,17 @@ public class LoginDAOImpl extends AuthDAOImpl{
 	@Override
 	public PartitionStrategy getPartitionStrategy() {
 		return PartitionsUtils.getPartitionStrategy(partitionName);
+	}
+	@Override
+	public String getEventTimeScoreFieldName() {
+		return EVENT_TIME_SCORE.toLowerCase();
+	}
+	@Override
+	public String getUsernameFieldName() {
+		return ACCOUNT_NAME;
+	}
+	@Override
+	public String getEventScoreFieldName() {
+		return EVENT_SCORE.toLowerCase();
 	}
 }

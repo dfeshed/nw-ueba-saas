@@ -58,7 +58,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     
     
     
-    private final List<SimpleDateFormat> inputFormats = new ArrayList();
+    private final List<SimpleDateFormat> inputFormats = new ArrayList<SimpleDateFormat>();
     private SimpleDateFormat outputFormat = null;
     private String inputFormatsDebugString = null;
     
@@ -107,7 +107,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
         }
         this.outputFormat = dateFormat;
 
-        List<String> inputFormatsStringList = new ArrayList();
+        List<String> inputFormatsStringList = new ArrayList<String>();
         for (SimpleDateFormat inputFormat : inputFormats) {
           // SimpleDateFormat.toString() doesn't print anything useful
           inputFormatsStringList.add(inputFormat.toPattern()); 

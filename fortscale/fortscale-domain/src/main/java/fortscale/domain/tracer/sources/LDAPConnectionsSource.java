@@ -21,7 +21,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import fortscale.domain.fe.dao.impl.LoginDAOImpl;
-import fortscale.domain.schema.LDAPEvents;
 import fortscale.domain.system.ServersListConfiguration;
 import fortscale.domain.tracer.Connection;
 import fortscale.domain.tracer.FilterSettings;
