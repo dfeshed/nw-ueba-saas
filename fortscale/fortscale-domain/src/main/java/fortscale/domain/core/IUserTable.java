@@ -51,4 +51,5 @@ public interface IUserTable {
 	public Long getLoginLastActivityTime();
 	public Boolean getIsUserAccountService();
 	public Boolean getIsAdministratorAccount();
+	public Boolean getIsExecutiveAccount();
 }
