@@ -51,7 +51,7 @@ public interface UserRepositoryCustom {
 	
 	public void updateUserServiceAccount(User user, boolean isUserServiceAccount);
 	public List<User> findByUserInGroup(Collection<String> groups);
-	public void updateAdministratorAccount(User user, boolean isAdministratorAccount);
+	public void updateAdministratorAccount(User user, boolean isAdministratorAccount); 
 	public void updateExecutiveAccount(User user, boolean isExecutiveAccount);
 	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime);
 }
