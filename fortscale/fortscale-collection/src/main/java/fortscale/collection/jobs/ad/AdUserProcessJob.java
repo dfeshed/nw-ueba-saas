@@ -12,6 +12,7 @@ import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.services.AdministratorAccountService;
+import fortscale.services.ExecutiveAccountService;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.impl.UsernameService;
 
@@ -28,6 +29,9 @@ public class AdUserProcessJob extends AdProcessJob {
 	
 	@Autowired
 	private AdministratorAccountService administratorAccountService;
+	
+	@Autowired
+	private ExecutiveAccountService executiveAccountService;
 
 	private RecordToBeanItemConverter<AdUser> converter;
 	
@@ -71,6 +75,7 @@ public class AdUserProcessJob extends AdProcessJob {
 		usernameService.update();
 		// Update admin tag
 		administratorAccountService.update();
+		executiveAccountService.update();
 		finishStep();
 	}
 }
