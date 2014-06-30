@@ -87,7 +87,7 @@ public class VpnF5Test {
     			$(
     				(String)null,
     				(String)null,
-    				"2014-04-14 01:50:26,1397429426,kamali123,66.249.64.46,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,",
+    				"2014-04-14 01:50:26,1397429426,kamali123,66.249.64.46,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
     				(String)null
     			)
     		),
@@ -100,8 +100,8 @@ public class VpnF5Test {
 				),
 	    		$(
     				(String)null,
-	    			"2014-01-02 19:08:35,1388682515,chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,",
-	    			"2014-01-02 19:11:09,1388682669,chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,50,false,"
+	    			"2014-01-02 19:08:35,1388682515,chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false",
+	    			"2014-01-02 19:11:09,1388682669,chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,50,false,false"
 	    		)
     		),
     		$(
@@ -112,7 +112,7 @@ public class VpnF5Test {
 				),
 	    		$(
     				(String)null,
-	    			"2014-01-02 19:08:35,1388682515,chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,"
+	    			"2014-01-02 19:08:35,1388682515,chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false"
 	    		)
     		),
     		$(
@@ -135,8 +135,8 @@ public class VpnF5Test {
 				),
 	    		$(
     				(String)null,
-	    			"2014-01-02 19:08:35,1388682515,chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,",
-	    			"2014-01-02 21:11:09,1388682669,chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,50,false,"
+	    			"2014-01-02 19:08:35,1388682515,chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false",
+	    			"2014-01-02 21:11:09,1388682669,chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,50,false,false"
 	    		)
     		),
     		
@@ -148,7 +148,7 @@ public class VpnF5Test {
     			),
     	    	$(
         			(String)null,
-    	    		"2014-01-02 19:06:26,1388682386,bartra,69.141.27.100,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,"
+    	    		"2014-01-02 19:06:26,1388682386,bartra,69.141.27.100,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
     	    	)
         	),
         	
@@ -180,7 +180,7 @@ public class VpnF5Test {
 				),
 	    		$(
     				(String)null,
-	    			"2013-12-02 19:08:35,1386004115,chavier,75.26.245.201,,SUCCESS,,,,,,,,,,,,,false,"
+	    			"2013-12-02 19:08:35,1386004115,chavier,75.26.245.201,,SUCCESS,,,,,,,,,,,,,false,false"
 	    		)
     		),
 
@@ -212,8 +212,8 @@ public class VpnF5Test {
     			),
     			$(
     				(String)null,
-    				"2014-04-14 01:50:26,1397429426,kamali123,71.125.52.63,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,",
-    				"2014-04-14 01:50:42,1397429442,kamalij,71.125.52.63,,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,"
+    				"2014-04-14 01:50:26,1397429426,kamali123,71.125.52.63,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
+    				"2014-04-14 01:50:42,1397429442,kamalij,71.125.52.63,,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
     			)
     		),
     		$(
