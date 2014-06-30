@@ -61,9 +61,12 @@ public class Sec4769EventsModelStreamTask extends EventsPrevalenceModelStreamTas
 		Boolean is_nat = convertToBoolean(message.get("is_nat"));
 		message.put(NAT_SRC_MACHINE, (Boolean.TRUE.equals(is_nat))? "" : normalized_src_machine);
 		
-		// the failure codes 0x12 and 0x22 are sent to the scoring algorithm with the event time value in order to get high score for them
+		// the followin failure codes are sent to the scoring algorithm with the event time value in order to get high score for them:
+		// 0x12 - Clients credentials have been revoked: Account disabled, expired, locked out, logon hours.
+		// 0x22 - Request is a replay
+		// 0x6 - Client not found in Kerberos database: Bad user name, or new computer/user account has not replicated to DC yet
 		String failureCode = convertToString(message.get("failure_code"));
-		message.put(FAILURE_AUGEMENTED, ("0x12".equals(failureCode) || "0x22".equals(failureCode))? System.currentTimeMillis() : "0x0");
+		message.put(FAILURE_AUGEMENTED, ("0x12".equals(failureCode) || "0x22".equals(failureCode) || "0x6".equals(failureCode))? System.currentTimeMillis() : "0x0");
 		
 		
 		return true;
