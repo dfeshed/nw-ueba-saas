@@ -51,9 +51,9 @@ public class Sec4769EventsModelStreamTask extends EventsPrevalenceModelStreamTas
 		if (destinationPattern!=null && StringUtils.isNotBlank(service_name) && destinationPattern.matcher(service_name).matches())
 			return false;
 		
-		// filter events with no computer_name or no service_name or service_name that match the computer_name
+		// filter events with service_name that match the computer_name
 		String machine_name = convertToString(message.get("machine_name"));
-		if (machine_name==null || service_name==null || machine_name.equalsIgnoreCase(service_name))
+		if (StringUtils.isNotBlank(machine_name) && machine_name.equalsIgnoreCase(service_name))
 			return false;
 		
 		// set field for source ip address only is it not nat, otherwise put don't care value in the event
