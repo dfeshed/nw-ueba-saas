@@ -29,7 +29,6 @@ public interface ClassifierService {
 	public List<IVpnEventScoreInfo> getUserSuspiciousVpnEvents(String userId, int offset, int limit, String orderBy, Direction direction, int minScore);
 	public List<IVpnEventScoreInfo> getSuspiciousVpnEvents(int offset, int limit, String orderBy, Direction direction, Integer minScore, boolean onlyFollowedUsers);
 	
-	public EBSResult getEBSAlgOnQuery(String query, int offset, int limit, String orderBy, String orderByDirection, Integer minScore);
 	public void addFilter(String collectionName, String fieldName, String regex);
 	public String getFilterRegex(String collectionName, String fieldName);
 	

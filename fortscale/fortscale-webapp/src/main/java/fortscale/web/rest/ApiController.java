@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.services.exceptions.UnknownResourceException;
-import fortscale.services.fe.ClassifierService;
-import fortscale.services.fe.EBSResult;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 
@@ -35,9 +33,7 @@ public class ApiController {
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
 	
-	@Autowired
-	private ClassifierService classifierService;
-	
+
 	@RequestMapping("/**")
 	@LogException
     public void unmappedRequest(HttpServletRequest request) {
@@ -74,24 +70,7 @@ public class ApiController {
 		return retBean;
 	}
 	
-	@RequestMapping(value="/investigateWithEBS", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<Map<String, Object>>> investigateWithEBS(@RequestParam(required=true) String query,
-			@RequestParam(defaultValue="0") Integer offset,
-			@RequestParam(defaultValue="50") Integer limit,
-			@RequestParam(required=false) String orderBy,
-			@RequestParam(defaultValue="DESC") String orderByDirection,
-			@RequestParam(required=false) Integer minScore,
-			Model model){
-		DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
-		EBSResult ebsResult = classifierService.getEBSAlgOnQuery(query, offset, limit, orderBy, orderByDirection,minScore);
-		retBean.setData(ebsResult.getResultsList());
-		retBean.setOffset(ebsResult.getOffset());
-		retBean.setTotal(ebsResult.getTotal());
-		return retBean;
-	}
-		
+	
 	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
