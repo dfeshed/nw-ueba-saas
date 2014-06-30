@@ -35,7 +35,7 @@
     </logger>
 
 
-    <logger name="fortscale.collection.morphlines.commands" dditivity="false" level="ERROR">
+    <logger name="fortscale.collection.morphlines.commands" additivity="false" level="ERROR">
 		<appender-ref ref="LogFile" />
     </logger>
 	
