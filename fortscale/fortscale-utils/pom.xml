@@ -14,7 +14,7 @@
 		<repository>
 			<id>all-remotes</id>
 			<name>remote-repos</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/remote-repos</url>
+			<url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
 		</repository>
 
 		<repository>
@@ -23,7 +23,7 @@
 			</snapshots>
 			<id>libs-releases</id>
 			<name>libs-release</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/libs-release</url>
+			<url>http://mirror.fortscale.dom/artifactory/libs-release</url>
 		</repository>
 		<repository>
 			<snapshots>
@@ -31,7 +31,7 @@
 			</snapshots>
 			<id>libs-snapshots</id>
 			<name>libs-snapshot</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/libs-snapshot</url>
+			<url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>
 		</repository>
 	</repositories>
 
@@ -42,7 +42,7 @@
 			</snapshots>
 			<id>releases</id>
 			<name>plugins-release</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/plugins-release</url>
+			<url>http://mirror.fortscale.dom/artifactory/plugins-release</url>
 		</pluginRepository>
 		<pluginRepository>
 			<snapshots>
@@ -50,7 +50,7 @@
 			</snapshots>
 			<id>snapshots</id>
 			<name>plugins-snapshot</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/plugins-snapshot</url>
+			<url>http://mirror.fortscale.dom/artifactory/plugins-snapshot</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -385,7 +385,7 @@
 		<snapshotRepository>
 			<id>mirror.fortscale.dom</id>
 			<name>mirror.fortscale.dom-snapshots</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/ext-snapshot-local</url>
+			<url>http://mirror.fortscale.dom/artifactory/ext-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
 
