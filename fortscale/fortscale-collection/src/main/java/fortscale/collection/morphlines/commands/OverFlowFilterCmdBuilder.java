@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.avro.data.RecordBuilder;
+import org.apache.derby.iapi.util.StringUtil;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -36,7 +38,7 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
 	public class OverFlowFilter extends AbstractCommand {
-		HashMap<String, Long> counterMap = new HashMap<String, Long>();
+		HashMap<String, Integer> counterMap = new HashMap<String, Integer>();
 		HashMap<String, Long> passedThreshold = new HashMap<String, Long>();
 		List<String> criteriaFields = null;
 		Integer threshold = Integer.MAX_VALUE;
@@ -52,36 +54,34 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
-			String key = null;
+			String key = "/";
 			if (criteriaFields.size() != 0) {
 				StringBuilder strBuilder = new StringBuilder("");
 				for (String field : criteriaFields) {
-					if (inputRecord.get(field).size() != 0) {
-						String fieldValue = (String) inputRecord
-								.getFirstValue(field);
+					String fieldValue = (String) inputRecord
+							.getFirstValue(field);
+					if (fieldValue != null) {
 						strBuilder.append("/").append(fieldValue);
 					} else {
 						logger.warn("input record do not contain {}", field);
 					}
 				}
 				key = strBuilder.toString();
-			} else {
-				key = "/";
 			}
 			Long counter = new Long(1);
 			if (counterMap.containsKey(key)) {
-				counter = counterMap.get(key) + 1;
+				counter = new Long(counterMap.get(key) + 1);
 				if (counter > threshold) {
 					counterMap.remove(key);
 					passedThreshold.put(key, counter);
 				} else {
-					counterMap.put(key, counter);
+					counterMap.put(key, counter.intValue());
 				}
 			} else if (passedThreshold.containsKey(key)) {
 				counter = passedThreshold.get(key) + 1;
 				passedThreshold.put(key, counter);
 			} else { // new key
-				counterMap.put(key, counter);
+				counterMap.put(key, 1);
 			}
 			if (counter > threshold) {
 				// drop record
@@ -99,7 +99,8 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 							.entrySet()) {
 						logger.info(
 								"Event type {} with criteria {} passed the threshold. Number of records {} : threshold {}",
-								eventType, entry.getKey(), entry.getValue(), threshold);
+								eventType, entry.getKey(), entry.getValue(),
+								threshold);
 					}
 				}
 			}
