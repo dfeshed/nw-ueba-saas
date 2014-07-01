@@ -53,6 +53,9 @@ public class ExecutiveAccountServiceImpl implements ExecutiveAccountService,Init
 			File f = new File(getFilePath());
 			if(f.exists() && !f.isDirectory()) {
 				executiveGroups = FileUtils.readLines(new File(getFilePath()));
+				if(isFileEmptyFromGroups()){
+					logger.warn("ExecutiveGroups file is Empty: {}",getFilePath());
+				}
 				List<User> executiveUsersList = userRepository.findByUserInGroup(executiveGroups);
 				executiveUsers = getUsernameList(executiveUsersList);				
 				if (executiveUsersList ==null) {
@@ -61,10 +64,32 @@ public class ExecutiveAccountServiceImpl implements ExecutiveAccountService,Init
 			}
 			else {
 				logger.warn("ExecutiveGroups file not found in path: {}",getFilePath());
+				
 			}
 		}
 		else {
 			logger.info("ExecutiveGroups file path not configured");	
+		}
+	}
+	
+	private boolean isFileEmptyFromGroups(){
+		if(executiveGroups.contains("")){
+			executiveGroups.remove("");
+		}
+		if(executiveGroups.size() > 0){
+			return false; // file is not empty
+		}
+		return true; // file is empty
+	}
+	
+	private void resetAllUsers(){
+		int pageSize = 100;		
+		int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
+		for(int i = 0; i < numOfPages; i++){
+			PageRequest pageRequest = new PageRequest(i, pageSize);
+			for(User user: userRepository.findAll(pageRequest).getContent()){
+					userRepository.updateExecutiveAccount(user, false);
+			}
 		}
 	}
 
@@ -83,6 +108,8 @@ public class ExecutiveAccountServiceImpl implements ExecutiveAccountService,Init
 					}
 				}
 			}
+		}else{
+			resetAllUsers();
 		}
 	}
 	

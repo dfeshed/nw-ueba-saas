@@ -53,11 +53,9 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 			File f = new File(getFilePath());
 			if(f.exists() && !f.isDirectory()) {
 				adminGroups = FileUtils.readLines(new File(getFilePath()));
-				
-				if( !isFileEmptyFromGroups()){
-					logger.warn("AdministratorGroups is Empty: {}",getFilePath());
+				if(isFileEmptyFromGroups()){
+					logger.warn("AdministratorGroups file is Empty: {}",getFilePath());
 				}
-
 				List<User> adminUsersList = userRepository.findByUserInGroup(adminGroups);
 				adminUsers = getUsernameList(adminUsersList);				
 				if (adminUsersList ==null) {
@@ -73,20 +71,30 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 		}
 	}
 	
+	
 	private boolean isFileEmptyFromGroups(){
-		for(String group : adminGroups){
-			if(group.trim() == ""){
-				adminGroups.remove(group); // we removing all empty groups [To handle when there is groups in the file and empty rows between them]
-			}
+		if(adminGroups.contains("")){
+			adminGroups.remove("");
 		}
 		if(adminGroups.size() > 0){
-			return false;
+			return false; // file is not empty
 		}
-		return true;
+		return true; // file is empty
+	}
+	
+	private void resetAllUsers(){
+		int pageSize = 100;		
+		int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
+		for(int i = 0; i < numOfPages; i++){
+			PageRequest pageRequest = new PageRequest(i, pageSize);
+			for(User user: userRepository.findAll(pageRequest).getContent()){
+					userRepository.updateAdministratorAccount(user, false);
+			}
+		}
 	}
 	
 	private void updateUserTag() {
-		//if (adminUsers != null && adminUsers.size() !=0) {
+		if (adminUsers != null && adminUsers.size() > 0) {
 			int pageSize = 100;		
 			int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
 			for(int i = 0; i < numOfPages; i++){
@@ -100,7 +108,9 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 					}
 				}
 			}
-		//}
+		}else{
+			resetAllUsers();
+		}
 	}
 	
 	private void refreshAdminList() {
