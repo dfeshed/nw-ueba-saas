@@ -53,17 +53,16 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 			File f = new File(getFilePath());
 			if(f.exists() && !f.isDirectory()) {
 				adminGroups = FileUtils.readLines(new File(getFilePath()));
-				if(adminGroups.size() > 0){
-					List<User> adminUsersList = userRepository.findByUserInGroup(adminGroups);
-					adminUsers = getUsernameList(adminUsersList);				
-					if (adminUsersList ==null) {
-						logger.warn("AdministratorGroups no users found in the user repository for groups {}",adminGroups);
-					}					
-				}else{
-					logger.warn("AdministratorGroups is Empty: {}",getFilePath());
-					resetAllUsers();					
-				}
 				
+				if( !isFileEmptyFromGroups()){
+					logger.warn("AdministratorGroups is Empty: {}",getFilePath());
+				}
+
+				List<User> adminUsersList = userRepository.findByUserInGroup(adminGroups);
+				adminUsers = getUsernameList(adminUsersList);				
+				if (adminUsersList ==null) {
+					logger.warn("AdministratorGroups no users found in the user repository for groups {}",adminGroups);
+				}					
 			}
 			else {
 				logger.warn("AdministratorGroups file not found in path: {}",getFilePath());
@@ -74,19 +73,20 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 		}
 	}
 	
-	private void resetAllUsers(){
-		int pageSize = 100;		
-		int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
-		for(int i = 0; i < numOfPages; i++){
-			PageRequest pageRequest = new PageRequest(i, pageSize);
-			for(User user: userRepository.findAll(pageRequest).getContent()){
-					userRepository.updateAdministratorAccount(user, false);
+	private boolean isFileEmptyFromGroups(){
+		for(String group : adminGroups){
+			if(group.trim() == ""){
+				adminGroups.remove(group); // we removing all empty groups [To handle when there is groups in the file and empty rows between them]
 			}
 		}
+		if(adminGroups.size() > 0){
+			return false;
+		}
+		return true;
 	}
-
+	
 	private void updateUserTag() {
-		if (adminUsers != null && adminUsers.size() !=0) {
+		//if (adminUsers != null && adminUsers.size() !=0) {
 			int pageSize = 100;		
 			int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
 			for(int i = 0; i < numOfPages; i++){
@@ -100,7 +100,7 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 					}
 				}
 			}
-		}
+		//}
 	}
 	
 	private void refreshAdminList() {
