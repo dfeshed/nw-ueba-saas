@@ -65,7 +65,10 @@ public class UserTopEvents {
 	}
 	
 	public double timeDecayScore(double score, long eventTimeInMillis){
-		return score * (1 - (System.currentTimeMillis() - eventTimeInMillis )/(MILLIS_IN_DAY*14.0));//Math.min( Math.exp( - ( System.currentTimeMillis() - eventTimeInMillis )/(MILLIS_IN_DAY*50.0) ), 1.0 );
+		// in order to maintain a fixed linear decay for all events, we reduce
+		// half a point from the score of an events for each passing day
+		double decayVal = (System.currentTimeMillis() - eventTimeInMillis) / (MILLIS_IN_DAY*2.0);
+		return Math.max(0.0, score - decayVal);//Math.min( Math.exp( - ( System.currentTimeMillis() - eventTimeInMillis )/(MILLIS_IN_DAY*50.0) ), 1.0 );
 	}
 
 	public String getEventType() {
