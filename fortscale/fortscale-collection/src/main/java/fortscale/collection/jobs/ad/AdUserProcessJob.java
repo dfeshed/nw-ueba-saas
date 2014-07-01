@@ -74,8 +74,9 @@ public class AdUserProcessJob extends AdProcessJob {
 		startNewStep("update username set");
 		usernameService.update();
 		// Update admin tag
-		administratorAccountService.update();
 		executiveAccountService.update();
+		administratorAccountService.update();
+		
 		finishStep();
 	}
 }

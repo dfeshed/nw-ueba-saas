@@ -66,7 +66,6 @@ public class UserAdministratorMorphCmdBuilder implements CommandBuilder {
 		protected boolean doProcess(Record inputRecord) {
 		
 			inputRecord.put(isUserAdministratorField, isUserAdministrator(inputRecord));
-
 			return super.doProcess(inputRecord);
 
 		}
