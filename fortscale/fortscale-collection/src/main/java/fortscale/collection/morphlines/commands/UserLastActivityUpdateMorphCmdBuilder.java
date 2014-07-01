@@ -86,7 +86,7 @@ public class UserLastActivityUpdateMorphCmdBuilder implements CommandBuilder {
 		protected void doNotify(Record notification) {
 			for (Object event : Notifications.getLifecycleEvents(notification)) {
 				if (event == Notifications.LifecycleEvent.SHUTDOWN && userService!=null) {
-					userService.updateUsersLastActivity(logEventsType, userLastActivityMap);
+					userService.updateUsersLastActivityOfType(logEventsType, userLastActivityMap);
 				}
 			}
 		}

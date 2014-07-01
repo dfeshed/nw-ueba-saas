@@ -1,9 +1,11 @@
 package fortscale.domain.core.dao;
 
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -15,6 +17,8 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Update.update;
 
 import fortscale.domain.core.Computer;
+import fortscale.domain.core.ComputerUsageClassifier;
+import fortscale.domain.core.ComputerUsageType;
 
 public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 
@@ -78,4 +82,26 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 			this.name = name;
 		}
 	}
+	@Override
+	public long getNumberOfMachinesOfType(ComputerUsageType type){
+		return mongoTemplate.count(query(where(Computer.getUsageClassfierField(ComputerUsageClassifier.USAGE_TYPE_FIELD)).is(type)), Computer.class);
+	}
+	@Override
+	public long getNumberOfMachinesOfTypeBeforeTime(ComputerUsageType type, DateTime time){
+		return mongoTemplate.count(query(where(Computer.getUsageClassfierField(ComputerUsageClassifier.USAGE_TYPE_FIELD)).is(type).andOperator(where(Computer.WHEN_CREATED_FIELD).lt(time))), Computer.class);
+	}
+	@Override
+	public long getNumberOfMachinesBeforeTime(DateTime time){
+		return mongoTemplate.count(query(where(Computer.WHEN_CREATED_FIELD).lt(time)), Computer.class);
+	}
+	@Override
+	public long getNumberOfSensitiveMachinesBeforeTime(DateTime time){ 
+		return mongoTemplate.count(query(where(Computer.SENSITIVE_MACHINE_FIELD).is(true).andOperator(where(Computer.WHEN_CREATED_FIELD).lt(time))), Computer.class);
+	}
+	@Override
+	public long getNumberOfSensitiveMachines(){
+		return mongoTemplate.count(query(where(Computer.SENSITIVE_MACHINE_FIELD).is(true)), Computer.class);
+	}
+	
+	
 }
