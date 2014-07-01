@@ -53,11 +53,17 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 			File f = new File(getFilePath());
 			if(f.exists() && !f.isDirectory()) {
 				adminGroups = FileUtils.readLines(new File(getFilePath()));
-				List<User> adminUsersList = userRepository.findByUserInGroup(adminGroups);
-				adminUsers = getUsernameList(adminUsersList);				
-				if (adminUsersList ==null) {
-					logger.warn("AdministratorGroups no users found in the user repository for groups {}",adminGroups);
+				if(adminGroups.size() > 0){
+					List<User> adminUsersList = userRepository.findByUserInGroup(adminGroups);
+					adminUsers = getUsernameList(adminUsersList);				
+					if (adminUsersList ==null) {
+						logger.warn("AdministratorGroups no users found in the user repository for groups {}",adminGroups);
+					}					
+				}else{
+					logger.warn("AdministratorGroups is Empty: {}",getFilePath());
+					resetAllUsers();					
 				}
+				
 			}
 			else {
 				logger.warn("AdministratorGroups file not found in path: {}",getFilePath());
@@ -65,6 +71,17 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 		}
 		else {
 			logger.info("AdministratorGroups file path not configured");	
+		}
+	}
+	
+	private void resetAllUsers(){
+		int pageSize = 100;		
+		int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
+		for(int i = 0; i < numOfPages; i++){
+			PageRequest pageRequest = new PageRequest(i, pageSize);
+			for(User user: userRepository.findAll(pageRequest).getContent()){
+					userRepository.updateAdministratorAccount(user, false);
+			}
 		}
 	}
 
