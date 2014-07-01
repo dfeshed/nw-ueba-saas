@@ -130,9 +130,17 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 			// go over each field in the event and add it to the model
 			PrevalanceModel model = modelService.getModelForUser(username);
 				
-			// skip events that occur before the model mark, or in case the task is configured to
-			// perform only scoring and not model computation 
-			if (!model.isTimeMarkAfter(timestamp) && !skipModel) {
+			// skip events that occur before the model time mark in case the task is configured
+			// to perform both model computation and scoring (the normal case)
+			boolean afterTimeMark = model.isTimeMarkAfter(timestamp);
+			if (!afterTimeMark && !skipModel && !skipScore) {
+				skippedMessageCount.inc();
+				return;
+			}
+			
+			// skip events that occur before the model mark in case the task is configured to
+			// perform only model computation and not event scoring 
+			if (afterTimeMark && !skipModel) {
 				for (String fieldName : model.getFieldNames()) {
 					Object value = message.get(fieldName);
 					model.addFieldValue(fieldName, value, timestamp);
@@ -140,7 +148,9 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 				modelService.updateUserModelInStore(username, model);
 			}
 			
-			// compute score for the event fields
+			// compute score for the event fields. don't enforce time mark here
+			// so we can deal with a scenario where events are passed through twice - 
+			// once for model computation and a second time for scoring
 			if (!skipScore) {
 				double eventScore = 0;
 				for (String fieldName : model.getFieldNames()) {
