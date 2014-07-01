@@ -3,6 +3,7 @@ package fortscale.streaming.task;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	private static final String storeNamePrefix = "hdfs-write-";
 	
 	private String timestampField;
+    private String usernameField;
 	private List<String> fields;
 	private String separator;
 	private HdfsService service;
@@ -56,6 +58,7 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 		String fileName = getConfigString(config, "fortscale.file.name");
 		separator = config.get("fortscale.separator", ",");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
+        usernameField = getConfigString(config, "fortscale.username.field");
 		fields = getConfigStringList(config, "fortscale.fields");
 		tableName = getConfigString(config, "fortscale.table.name");
 		eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
@@ -94,14 +97,17 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 				return;
 			}
 
+            // get the username from the message
+            String username = convertToString(message.get(usernameField));
+
 			// check if the event is before the time stamp barrier
-			if (!isEventBeforeBarrier(timestamp)) {
+			if (!isEventBeforeBarrier(username, timestamp)) {
 			
 				// write the event to hdfs
 				String eventLine = buildEventLine(message);
 				service.writeLineToHdfs(eventLine, timestamp.longValue());
 				
-				updateBarrier(timestamp);
+				updateBarrier(username, timestamp);
 				processedMessageCount.inc();
 				nonFlushedEventsCounter++;
 				
@@ -155,23 +161,24 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	
 	////////////// events time stamp write barrier methods
 	
-	private boolean isEventBeforeBarrier(long timestamp) {
+	private boolean isEventBeforeBarrier(String username, long timestamp) {
 		// get the barrier from the state, stored by table name
-		Long barrier = store.get(tableName);
-		return (barrier!=null &&  timestamp<barrier);
+		Long barrier = store.get(username);
+		return (barrier!=null &&  timestamp < barrier);
 	}
 	
-	private void updateBarrier(long timestamp) {
-		barrier = Math.max(barrier, timestamp);
+	private void updateBarrier(String username, long timestamp) {
+        Long current = store.get(username);
+        if (current==null || current < timestamp)
+            store.put(username, timestamp);
 	}
 	
 	private void flushBarrier() {
-		store.put(tableName, barrier);
+        store.flush();
 	}
 	
 	@SuppressWarnings("unchecked")
 	private void loadBarrier(TaskContext context) {
 		store = (KeyValueStore<String, Long>)context.getStore(storeName);
-		barrier = (store.get(tableName)==null) ? 0 : (long)store.get(tableName);
 	}
 }
