@@ -85,6 +85,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-distcp</artifactId>
+			<version>${hadoop.version}</version>
+		</dependency>
+	
+		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka_${scala-kafka.version}</artifactId>
 			<version>${kafka.version}</version>
