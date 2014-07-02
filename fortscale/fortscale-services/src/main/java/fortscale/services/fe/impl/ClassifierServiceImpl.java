@@ -48,8 +48,6 @@ import fortscale.utils.logging.Logger;
 public class ClassifierServiceImpl implements ClassifierService{
 	private static Logger logger = Logger.getLogger(ClassifierServiceImpl.class);
 		
-	
-	
 	@Autowired
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
 	
@@ -374,34 +372,12 @@ public class ClassifierServiceImpl implements ClassifierService{
 		return ret;
 	}
 	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	private void addUserInfoToAuthEventScoreInfo(User user, Map<String, Object> authEventScoreInfoMap){
 		authEventScoreInfoMap.put("userId", user.getId());
 		authEventScoreInfoMap.put("username", user.getUsername());
 		authEventScoreInfoMap.put("isUserFollowed", user.getFollowed());
 	}
 	
-	
-	
-	
-	
-	
-
 	interface ThresholdFilter{
 		public boolean hasPassed(ISuspiciousUserInfo suspiciousUserInfo);
 	}

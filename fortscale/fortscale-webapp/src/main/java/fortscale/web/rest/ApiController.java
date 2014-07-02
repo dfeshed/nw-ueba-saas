@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fortscale.services.exceptions.UnknownResourceException;
-import fortscale.services.fe.ClassifierService;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 
@@ -34,8 +33,6 @@ public class ApiController {
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
 	
-	@Autowired
-	private ClassifierService classifierService;
 	
 	@RequestMapping("/**")
 	@LogException

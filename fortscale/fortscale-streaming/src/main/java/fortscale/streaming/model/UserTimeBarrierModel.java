@@ -1,12 +1,6 @@
 package fortscale.streaming.model;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Task state the hold a runtime barrier and event discriminator encountered for each user

@@ -19,7 +19,7 @@
 			</snapshots>
 			<id>libs-releases</id>
 			<name>libs-release</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/libs-release</url>
+			<url>http://mirror.fortscale.dom/artifactory/libs-release</url>
 		</repository>
 		<repository>
 			<snapshots>
@@ -27,7 +27,7 @@
 			</snapshots>
 			<id>libs-snapshots</id>
 			<name>libs-snapshot</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/libs-snapshot</url>
+			<url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>
 		</repository>
 		<repository>
             <!--
@@ -41,7 +41,7 @@
 			-->
 			<id>all-remotes</id>
 			<name>remote-repos</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/remote-repos</url>
+			<url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
 		</repository>
 	</repositories>
 
@@ -52,7 +52,7 @@
 			</snapshots>
 			<id>releases</id>
 			<name>plugins-release</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/plugins-release</url>
+			<url>http://mirror.fortscale.dom/artifactory/plugins-release</url>
 		</pluginRepository>
 		<pluginRepository>
 			<snapshots>
@@ -60,7 +60,7 @@
 			</snapshots>
 			<id>snapshots</id>
 			<name>plugins-snapshot</name>
-			<url>http://mirror.fortscale.dom:8082/artifactory/plugins-snapshot</url>
+			<url>http://mirror.fortscale.dom/artifactory/plugins-snapshot</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -77,8 +77,6 @@
 		<joda-time.version>2.2</joda-time.version>
 		<quartz.version>2.2.1</quartz.version>
 		<guava.version>15.0</guava.version>
-		<pig.version>0.11.0-cdh4.4.0</pig.version>
-		<hive.version>0.10.0-cdh4.4.0</hive.version>
 		<jmxterm.version>1.0-alpha-4</jmxterm.version>
 		<opencsv.version>2.0</opencsv.version>
 		<thrift.version>0.9.0</thrift.version>
@@ -100,6 +98,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-distcp</artifactId>
+			<version>${hadoop.version}</version>
+		</dependency>
+	
+		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka_${scala-kafka.version}</artifactId>
 			<version>${kafka.version}</version>
@@ -119,6 +123,10 @@
                 <exclusion>
                     <groupId>javax.jms</groupId>
                     <artifactId>jms</artifactId>
+                </exclusion>
+                <exclusion>
+                	<groupId>org.apache.zookeeper</groupId>
+                	<artifactId>zookeeper</artifactId>
                 </exclusion>
 			</exclusions>
 		</dependency>
@@ -256,11 +264,6 @@
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-monitor</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fortscale.toolkits</groupId>
-			<artifactId>cuckoo_clock</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		

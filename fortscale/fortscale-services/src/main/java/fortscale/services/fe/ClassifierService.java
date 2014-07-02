@@ -28,5 +28,6 @@ public interface ClassifierService {
 	public int countAuthEvents(LogEventsEnum eventId, String userId);
 	public int countAuthEvents(LogEventsEnum eventId);
 		
+
 	public List<EventScore> getEventScores(List<LogEventsEnum> classifierId, String username, int daysBack, int limit);
 }

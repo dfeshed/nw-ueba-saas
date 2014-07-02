@@ -22,7 +22,6 @@ import org.apache.samza.task.StreamTask;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.apache.samza.task.WindowableTask;
-import org.datanucleus.store.rdbms.sql.SQLStatementHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,6 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	private int nonFlushedEventsCounter = 0;
 	private Counter processedMessageCount;
 	private KeyValueStore<String, UserTimeBarrierModel> store;
-	private long barrier = 0;
     private String storeName;
 	
 	/** reads task configuration from job config and initialize hdfs appender */
