@@ -27,7 +27,7 @@
 
     <task:scheduled-tasks scheduler="dataRetrievalScheduler">
     	<task:scheduled ref="administratorAccountService" method="update" cron="0 0 * * * *" />
-    	<task:scheduled ref="executiveAccountService" method="update" cron="0 0 * * * *" />
-		<task:scheduled ref="sensitiveMachineService" method="updateSensitiveMachines" cron="0 0 * * * *" />
+    	<task:scheduled ref="executiveAccountService" method="update" cron="0 5 * * * *" />
+		<task:scheduled ref="sensitiveMachineService" method="updateSensitiveMachines" cron="0 10 * * * *" />
     </task:scheduled-tasks>	
 </beans>
