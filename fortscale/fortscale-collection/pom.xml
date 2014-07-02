@@ -118,6 +118,10 @@
                     <groupId>javax.jms</groupId>
                     <artifactId>jms</artifactId>
                 </exclusion>
+                <exclusion>
+                	<groupId>org.apache.zookeeper</groupId>
+                	<artifactId>zookeeper</artifactId>
+                </exclusion>
 			</exclusions>
 		</dependency>
 		<!-- scala library required for kafka client -->

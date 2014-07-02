@@ -105,6 +105,10 @@
 					<groupId>javax.jms</groupId>
 					<artifactId>jms</artifactId>
 				</exclusion>
+				<exclusion>
+                	<groupId>org.apache.zookeeper</groupId>
+                	<artifactId>zookeeper</artifactId>
+                </exclusion>
 			</exclusions>
 		</dependency>
 		<!-- scala library required for kafka client -->
@@ -164,6 +168,12 @@
 			<groupId>org.apache.samza</groupId>
 			<artifactId>samza-kafka_${scala-kafka.version}</artifactId>
 			<version>${samza.version}</version>
+			<exclusions>
+				<exclusion>
+                	<groupId>org.apache.zookeeper</groupId>
+                	<artifactId>zookeeper</artifactId>
+                </exclusion>
+			</exclusions>
 		</dependency>
 
 		<!--  hadoop dependencies -->
