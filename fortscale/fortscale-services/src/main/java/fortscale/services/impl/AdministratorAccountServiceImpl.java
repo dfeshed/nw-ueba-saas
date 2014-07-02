@@ -38,9 +38,7 @@ public class AdministratorAccountServiceImpl extends HigePrivilegedServiceAbstra
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		super.setLogger(logger);
-		super.setHigePrivilegedType(higePrivilegedType);
-		super.setFilePath(filePath);
+		super.setVariables(higePrivilegedType, userRepository, filePath, logger);
 		super.updateHigePrivilegedListsAndUserTag();
 	}
 	
@@ -60,6 +58,10 @@ public class AdministratorAccountServiceImpl extends HigePrivilegedServiceAbstra
 	public void refresh() {
 		List<User> administratorUsersList= userRepository.findByAdministratorAccount(true);
 		super.refreshHigePrivilegedList(administratorUsersList);
+	}
+	
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 	

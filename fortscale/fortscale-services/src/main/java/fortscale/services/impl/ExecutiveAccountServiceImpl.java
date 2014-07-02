@@ -40,9 +40,7 @@ public class ExecutiveAccountServiceImpl extends HigePrivilegedServiceAbstract i
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		super.setLogger(logger);
-		super.setHigePrivilegedType(higePrivilegedType);
-		super.setFilePath(filePath);
+		super.setVariables(higePrivilegedType, userRepository, filePath, logger);
 		super.updateHigePrivilegedListsAndUserTag();
 	}
 	
@@ -62,6 +60,10 @@ public class ExecutiveAccountServiceImpl extends HigePrivilegedServiceAbstract i
 	public void refresh() {
 		List<User> executiveUsersList= userRepository.findByExecutiveAccount(true);
 		super.refreshHigePrivilegedList(executiveUsersList);
+	}
+	
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 }

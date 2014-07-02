@@ -14,7 +14,6 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 
 public abstract class HigePrivilegedServiceAbstract {
-	@Autowired
 	private UserRepository userRepository;
 	private Set<String> higePrivilegedUsers;
 	private List<String> higePrivilegedGroups;
@@ -24,19 +23,12 @@ public abstract class HigePrivilegedServiceAbstract {
 	
 
 	// ------- Setters ----------
-	public void setLogger(Logger logger){
+	public void setVariables(String higePrivilegedType, UserRepository userRepository,String filePath, Logger logger ){
+		this.higePrivilegedType = higePrivilegedType;
+		this.userRepository = userRepository;
+		this.filePath = filePath;
 		this.logger = logger;
 	}
-	
-	public void setHigePrivilegedType(String type){
-		this.higePrivilegedType = type;
-	}
-	
-	
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
-	
 
 	// -------- Private functions ---------
 
@@ -52,10 +44,10 @@ public abstract class HigePrivilegedServiceAbstract {
 	private void updateHigePrivilegedAccount(User user, boolean isHigePrivilegedAccount){
 		switch (higePrivilegedType){
 			case "administrator":
-				userRepository.updateAdministratorAccount(user, false);
+				userRepository.updateAdministratorAccount(user, isHigePrivilegedAccount);
 				break;
 			case "executive":
-				userRepository.updateExecutiveAccount(user, false);					
+				userRepository.updateExecutiveAccount(user, isHigePrivilegedAccount);					
 				break;
 		}
 	}

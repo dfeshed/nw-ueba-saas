@@ -78,7 +78,7 @@ public class HigePrivilegedAccountServiceTest {
 	
 
 	
-/*	@Test
+	@Test
 	public void no_admin_file() throws Exception {
 		// arrange
 		when(adminUsers.contains("user2")).thenReturn(false);
@@ -167,5 +167,5 @@ public class HigePrivilegedAccountServiceTest {
 		}
 		
 		
-	}*/
+	}
 }
