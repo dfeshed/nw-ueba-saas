@@ -9,6 +9,6 @@ public class UserTimeBarrierModelSerdeFactory implements SerdeFactory<UserTimeBa
 
     @Override
     public Serde<UserTimeBarrierModel> getSerde(String s, Config config) {
-        return new UserTimeBarrierModelSerde();
+        return new GenericJacksonSerde<UserTimeBarrierModel>(UserTimeBarrierModel.class);
     }
 }
