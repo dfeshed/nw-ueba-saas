@@ -10,7 +10,7 @@ public class UserTopEventsSerdeFactory implements SerdeFactory<UserTopEvents>{
 
 	@Override
 	public Serde<UserTopEvents> getSerde(String arg0, Config arg1) {
-		return new UserTopEventsSerde();
+		return new GenericJacksonSerde<UserTopEvents>(UserTopEvents.class);
 	}
 
 }

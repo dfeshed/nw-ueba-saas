@@ -10,7 +10,7 @@ public class PrevalanceModelSerdeFactory implements SerdeFactory<PrevalanceModel
 
 	@Override
 	public Serde<PrevalanceModel> getSerde(String name, Config config) {
-		return new PrevalanceModelSerde();
+		return new GenericJacksonSerde<PrevalanceModel>(PrevalanceModel.class);
 	}
 
 }

@@ -3,9 +3,11 @@ package fortscale.streaming.task;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 import java.util.List;
 
+import fortscale.streaming.model.UserTimeBarrierModel;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
@@ -20,6 +22,7 @@ import org.apache.samza.task.StreamTask;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.apache.samza.task.WindowableTask;
+import org.datanucleus.store.rdbms.sql.SQLStatementHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,14 +41,16 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	private static final String storeNamePrefix = "hdfs-write-";
 	
 	private String timestampField;
+    private String usernameField;
 	private List<String> fields;
+    private List<String> discriminatorsFields;
 	private String separator;
 	private HdfsService service;
 	private String tableName;
 	private int eventsCountFlushThreshold;
 	private int nonFlushedEventsCounter = 0;
 	private Counter processedMessageCount;
-	private KeyValueStore<String, Long> store;
+	private KeyValueStore<String, UserTimeBarrierModel> store;
 	private long barrier = 0;
     private String storeName;
 	
@@ -56,7 +61,9 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 		String fileName = getConfigString(config, "fortscale.file.name");
 		separator = config.get("fortscale.separator", ",");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
+        usernameField = getConfigString(config, "fortscale.username.field");
 		fields = getConfigStringList(config, "fortscale.fields");
+        discriminatorsFields = getConfigStringList(config, "fortscale.discriminator.fields");
 		tableName = getConfigString(config, "fortscale.table.name");
 		eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
 		storeName = storeNamePrefix + tableName;
@@ -94,14 +101,18 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 				return;
 			}
 
+            // get the username from the message
+            String username = convertToString(message.get(usernameField));
+            String discriminator = calculateDiscriminator(message);
+
 			// check if the event is before the time stamp barrier
-			if (!isEventBeforeBarrier(timestamp)) {
+			if (isEventAfterBarrier(username, timestamp, discriminator)) {
 			
 				// write the event to hdfs
 				String eventLine = buildEventLine(message);
 				service.writeLineToHdfs(eventLine, timestamp.longValue());
 				
-				updateBarrier(timestamp);
+				updateBarrier(username, timestamp, discriminator);
 				processedMessageCount.inc();
 				nonFlushedEventsCounter++;
 				
@@ -154,24 +165,44 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	}	
 	
 	////////////// events time stamp write barrier methods
-	
-	private boolean isEventBeforeBarrier(long timestamp) {
+
+    private String calculateDiscriminator(JSONObject message) {
+        StringBuilder sb = new StringBuilder();
+        for (String field : discriminatorsFields) {
+            sb.append(convertToString(message.get(field)));
+            sb.append(";");
+        }
+        return sb.toString();
+    }
+
+	private boolean isEventAfterBarrier(String username, long timestamp, String discriminator) {
 		// get the barrier from the state, stored by table name
-		Long barrier = store.get(tableName);
-		return (barrier!=null &&  timestamp<barrier);
+        UserTimeBarrierModel barrier = store.get(username);
+        if (barrier==null)
+            return true;
+
+        return ((timestamp > barrier.getTimestamp()) ||
+                (timestamp == barrier.getTimestamp() && !barrier.getDiscriminator().equals(discriminator)));
 	}
 	
-	private void updateBarrier(long timestamp) {
-		barrier = Math.max(barrier, timestamp);
+	private void updateBarrier(String username, long timestamp, String discriminator) {
+        if (username==null) return;
+
+        UserTimeBarrierModel barrier = store.get(username);
+        if (barrier==null)
+            barrier = new UserTimeBarrierModel();
+
+        barrier.setTimestamp(timestamp);
+        barrier.setDiscriminator(discriminator);
+        store.put(username, barrier);
 	}
 	
 	private void flushBarrier() {
-		store.put(tableName, barrier);
+        store.flush();
 	}
 	
 	@SuppressWarnings("unchecked")
 	private void loadBarrier(TaskContext context) {
-		store = (KeyValueStore<String, Long>)context.getStore(storeName);
-		barrier = (store.get(tableName)==null) ? 0 : (long)store.get(tableName);
+		store = (KeyValueStore<String, UserTimeBarrierModel>)context.getStore(storeName);
 	}
 }
