@@ -25,7 +25,8 @@ public class KafkaEventsWriter implements Closeable {
 	private String serializer;
 	@Value("${kafka.partitioner.class:kafka.producer.DefaultPartitioner}")
 	private String partitionerClass;
-	
+	@Value("${kafka.partitioner.retry.backoff.ms:10000}")
+	private String retryBackoff;
 	
 	private Producer<String, String> producer;
 	private String topic;
@@ -41,6 +42,7 @@ public class KafkaEventsWriter implements Closeable {
 		props.put("partitioner.class", partitionerClass);
 		props.put("request.required.acks", requiredAcks);
 		props.put("producer.type", producerType);
+		props.put("retry.backoff.ms", retryBackoff);
 		ProducerConfig config = new ProducerConfig(props);
 		
 		producer = new Producer<String, String>(config);
