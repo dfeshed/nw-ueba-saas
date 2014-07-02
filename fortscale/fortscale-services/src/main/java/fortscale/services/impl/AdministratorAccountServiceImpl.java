@@ -1,18 +1,12 @@
 package fortscale.services.impl;
-
-import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.core.User;
@@ -20,18 +14,17 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.AdministratorAccountService;
 
 @Service("administratorAccountService")
-public class AdministratorAccountServiceImpl implements AdministratorAccountService,InitializingBean{
+public class AdministratorAccountServiceImpl extends HigePrivilegedServiceAbstract implements AdministratorAccountService,InitializingBean{
 
 	@Autowired
 	private UserRepository userRepository;
+	private Set<String> adminUsers = new HashSet<String>();
+
 	@Value("${user.list.admin_groups.path:}")
 	private String filePath;
-
-	private static Logger logger = LoggerFactory.getLogger(AdministratorAccountServiceImpl.class);
-
-	private Set<String> adminUsers = new HashSet<String>();
-	private List<String> adminGroups = null;
-
+	private String higePrivilegedType = "administrator";
+	private Logger logger = LoggerFactory.getLogger(AdministratorAccountServiceImpl.class);
+	
 	@Override
 	public boolean isUserAdministrator(String username) {
 		if (adminUsers !=  null) {
@@ -41,6 +34,38 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 			return false;
 		}
 	}
+	
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		super.setLogger(logger);
+		super.setHigePrivilegedType(higePrivilegedType);
+		super.setFilePath(filePath);
+		super.updateHigePrivilegedListsAndUserTag();
+	}
+	
+
+	@Override
+	public void update() {
+		try {
+			afterPropertiesSet();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			e.printStackTrace();
+		}
+	}
+	
+
+	@Override
+	public void refresh() {
+		List<User> administratorUsersList= userRepository.findByAdministratorAccount(true);
+		super.refreshHigePrivilegedList(administratorUsersList);
+	}
+
+	
+	/*
+	
+	private List<String> adminGroups = null;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -70,7 +95,6 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 			logger.info("AdministratorGroups file path not configured");	
 		}
 	}
-	
 	
 	private boolean isFileEmptyFromGroups(){
 		if(adminGroups.contains("")){
@@ -151,5 +175,5 @@ public class AdministratorAccountServiceImpl implements AdministratorAccountServ
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
-
+*/
 }

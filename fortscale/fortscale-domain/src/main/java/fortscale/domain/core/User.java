@@ -337,9 +337,21 @@ public class User extends AbstractDocument {
 	public Boolean getExecutiveAccount() {
 		return executiveAccount;
 	}
-
+	
 	public void setExecutiveAccount(Boolean executiveAccount) {
 		this.executiveAccount = executiveAccount;
 	}
+	
+	public Boolean getHigePrivilegedAccount(String accountType){
+		switch(accountType){
+		case "administrator":
+			return administratorAccount;
+		case "executive":
+			return executiveAccount;
+		default:
+			return false;
+		}
+	}
+
 	
 }

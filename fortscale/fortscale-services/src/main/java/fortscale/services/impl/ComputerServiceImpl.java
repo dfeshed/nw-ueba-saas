@@ -68,12 +68,12 @@ public class ComputerServiceImpl implements ComputerService {
 		mergeComputerInfo(saved, computer);
 		
 		// re-calculate the computer classification for new or updated computer info
-		endpointDetectionService.classifyComputer(saved);
+		endpointDetectionService.classifyComputer(saved); 
 		
 		try {
 			repository.save(saved);
 		} catch (org.springframework.dao.DuplicateKeyException e) {
-			// safe to ignore as it will be saved in the next ETL run
+			// safe to ignore as it will be saved in the next ETL run  
 			logger.warn("race condition encountered when trying to save computer {}", saved.getName());
 		}
 	}
