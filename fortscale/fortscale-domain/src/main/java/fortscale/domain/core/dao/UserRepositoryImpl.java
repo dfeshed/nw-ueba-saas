@@ -23,7 +23,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.Computer;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
@@ -373,8 +372,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public User getLastActivityByUserName(String userName) {
-		Criteria criteria = new Criteria();
-		criteria.where(User.usernameField).is(userName);
+		Criteria criteria = Criteria.where(User.usernameField).is(userName);
 		Query query = new Query(criteria);
 		query.fields().include(User.lastActivityField);
 		List<User> users = mongoTemplate.find(query, User.class);
@@ -387,33 +385,48 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public long getNumberOfAccountsCreatedBefore(DateTime time) {
-		Criteria criteria = new Criteria();
-		criteria.where(User.getAdInfoField(UserAdInfo.whenCreatedField)).lt(
+	public long getNumberOfAccountsCreatedBefore(DateTime time){
+		Criteria criteria = Criteria.where(User.getAdInfoField(UserAdInfo.whenCreatedField)).lt(
 				time);
 		Query query = new Query(criteria);
 		return mongoTemplate.count(query, User.class);
 	}
-	
+
 	@Override
 	public long getNumberOfDisabledAccounts() {
-		Criteria criteria = new Criteria();
-
-		criteria.where(User.getAdInfoField(UserAdInfo.isAccountDisabledField))
-				.is(true);
-		Query query = new Query(criteria);
+		//temporary fix
+		Query query = new Query(Criteria.where(
+				User.getAdInfoField(UserAdInfo.isAccountDisabledField))
+				.is(true).and(User.getAdInfoField(UserAdInfo.disableAccountTimeField))
+				.ne(null));
 		return mongoTemplate.count(query, User.class);
 	}
 
 	@Override
 	public long getNumberOfDisabledAccountsBeforeTime(DateTime time) {
-		Criteria criteria = new Criteria();
-
-		criteria.where(User.getAdInfoField(UserAdInfo.isAccountDisabledField))
+		Criteria criteria = Criteria
+				.where(User.getAdInfoField(UserAdInfo.isAccountDisabledField))
 				.is(true)
 				.and(User.getAdInfoField(UserAdInfo.disableAccountTimeField))
 				.lt(time);
 		Query query = new Query(criteria);
+		return mongoTemplate.count(query, User.class);
+	}
+
+	@Override
+	public long getNumberOfAccounts() {
+		Criteria criteria = Criteria.where(User.getAdInfoField(UserAdInfo.whenCreatedField)).ne(
+				null);
+		Query query = new Query(criteria);
+		return mongoTemplate.count(query, User.class);
+	}
+	
+	@Override
+	public long getNumberOfInactiveAccounts() {
+		//temporary implementation
+		Query query = new Query(Criteria.where(
+				User.lastActivityField)
+				.is(null));
 		return mongoTemplate.count(query, User.class);
 	}
 

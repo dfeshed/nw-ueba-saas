@@ -55,8 +55,10 @@ public interface UserRepositoryCustom {
 	public List<User> findByUserInGroup(Collection<String> groups);
 	public void updateAdministratorAccount(User user, boolean isAdministratorAccount);
 	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime);
-	
+
+	public long getNumberOfAccounts();
 	public long getNumberOfAccountsCreatedBefore(DateTime time);
 	public long getNumberOfDisabledAccounts();
 	public long getNumberOfDisabledAccountsBeforeTime(DateTime time);
+	public long getNumberOfInactiveAccounts();
 }

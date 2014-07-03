@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService{
 			User user = userRepository.getLastActivityByUserName(entry.getKey());
 			DateTime userCurrLast = user.getLastActivity();
 			DateTime currTime = new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue()));
-			if(currTime.isAfter(userCurrLast)){
+			if(userCurrLast == null || currTime.isAfter(userCurrLast)){
 				updateUserLastActivity(entry.getKey(), currTime);
 			}
 		}

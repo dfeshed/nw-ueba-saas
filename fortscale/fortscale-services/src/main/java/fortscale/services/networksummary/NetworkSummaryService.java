@@ -18,20 +18,20 @@ public class NetworkSummaryService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	final private static int historyPeriodInHours = 24;
 	private DateTime time;
-	private DateTime previousTime;
-	
+	private DateTime previousTime;	
 	
 	public NetworkSummaryService() {
 		time = DateTime.now();
-		previousTime = time.minusHours(24);
+		previousTime = time.minusHours(historyPeriodInHours);
 	}
 
 	public Map<String, NetworkSummaryDTO> getNetworkSummary(){
 		HashMap<String, NetworkSummaryDTO> res = new HashMap<>();
 		
 		//machines summary
-		long machinesNum = computerRepository.count();
+		long machinesNum = computerRepository.getNumberOfMachines();
 		long prevMachinesNum = computerRepository.getNumberOfMachinesBeforeTime(previousTime);
 		res.put("machines", new NetworkSummaryDTO(machinesNum, prevMachinesNum));
 		
@@ -51,15 +51,18 @@ public class NetworkSummaryService {
 		res.put("sensitiveMachines", new NetworkSummaryDTO(sensitiveMachinesNum, prevSensitiveMachinesNum));
 		
 		//accounts summary
-		long accountsNum = userRepository.count();
+		long accountsNum = userRepository.getNumberOfAccounts();
 		long prevAccountsNum = userRepository.getNumberOfAccountsCreatedBefore(previousTime);
 		res.put("accounts", new NetworkSummaryDTO(accountsNum, prevAccountsNum));
 		
 		//disabled accounts summary
-		long diabledAccountsNum = userRepository.getNumberOfDisabledAccounts();
+		long disabledAccountsNum = userRepository.getNumberOfDisabledAccounts();
 		long prevDisabledAccountsNum = userRepository.getNumberOfDisabledAccountsBeforeTime(previousTime);
-		res.put("disabledAccounts", new NetworkSummaryDTO(diabledAccountsNum, prevDisabledAccountsNum));
-		
+		res.put("disabledAccounts", new NetworkSummaryDTO(disabledAccountsNum, prevDisabledAccountsNum));
+
+		//inactive accounts summary
+		long inactiveAccountsNum = userRepository.getNumberOfInactiveAccounts();
+		res.put("inactiveAccounts", new NetworkSummaryDTO(inactiveAccountsNum,-1));
 		
 		return res;
 	}
