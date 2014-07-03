@@ -68,12 +68,13 @@ public abstract class UserTaggingServiceAbstract {
 	 * @throws Exception
 	 */
 	private void updateTaggedUsersList() throws Exception {
-		if(!StringUtils.isEmpty(getFilePath())){
-			File f = new File(getFilePath());
+		String filePath =  getFilePath();
+		if(!StringUtils.isEmpty(filePath)){
+			File f = new File(filePath);
 			if(f.exists() && !f.isDirectory()) {
-				groupsToTag = FileUtils.readLines(new File(getFilePath()));
+				groupsToTag = FileUtils.readLines(new File(filePath));
 				if(isFileEmptyFromGroups()){
-					logger.warn("Users Tagging [{}] file is Empty: {}",getTagName(), getFilePath());
+					logger.warn("Users Tagging [{}] file is Empty: {}",getTagName(), filePath);
 				}
 				List<User> taggedUsersList = getUserRepository().findByUserInGroup(groupsToTag);
 				taggedUsers = getUsernameList(taggedUsersList);				
@@ -82,7 +83,7 @@ public abstract class UserTaggingServiceAbstract {
 				}
 			}
 			else {
-				logger.warn("Users Tagging [{}] file not found in path: {}",getTagName(),getFilePath());
+				logger.warn("Users Tagging [{}] file not found in path: {}",getTagName(),filePath);
 			}
 		}
 		else {
@@ -98,7 +99,7 @@ public abstract class UserTaggingServiceAbstract {
 	 */
 	private void updateAllUsersTags() {
 		if (taggedUsers != null && taggedUsers.size() !=0) {
-			int pageSize = 100;		
+			int pageSize = 100;
 			int numOfPages = (int) (((getUserRepository().count() -1) / pageSize) + 1); 
 			for(int i = 0; i < numOfPages; i++){
 				PageRequest pageRequest = new PageRequest(i, pageSize);

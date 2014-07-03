@@ -41,7 +41,7 @@ public class AdministratorAccountServiceImpl extends UserTaggingServiceAbstract 
 	
 	@Override
 	public void updateUserTag(User user, boolean isTagTheUser){
-		userRepository.updateExecutiveAccount(user, isTagTheUser);
+		userRepository.updateAdministratorAccount(user, isTagTheUser);
 	}
 	
 	@Override
