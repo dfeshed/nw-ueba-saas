@@ -69,8 +69,8 @@ public class PrevalanceModel {
 	}
 	
 	public boolean isTimeMarkAfter(long timestamp) {
-		// check that the value time stamp is not before the time mark
-		return (convertToMilliSeconds(timestamp) < timeMark);
+		// check that the value time stamp is after the time mark
+		return (timeMark < convertToMilliSeconds(timestamp));
 	}
 	
 }
