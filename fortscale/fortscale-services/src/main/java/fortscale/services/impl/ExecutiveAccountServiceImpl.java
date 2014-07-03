@@ -13,8 +13,7 @@ import fortscale.services.ExecutiveAccountService;
 public class ExecutiveAccountServiceImpl extends UserTaggingServiceAbstract implements ExecutiveAccountService,InitializingBean{
 	@Value("${user.list.executive_groups.path:}")
 	private String filePath;
-	@Autowired
-	private UserRepository userRepository;
+	
 	private String tagName = "executive";
 	
 	@Override
@@ -25,11 +24,6 @@ public class ExecutiveAccountServiceImpl extends UserTaggingServiceAbstract impl
 	@Override
 	public String getTagName(){
 		return tagName;
-	}
-	
-	@Override
-	public UserRepository getUserRepository(){
-		return userRepository;
 	}
 	
 	public void setFilePath(String filePath) {

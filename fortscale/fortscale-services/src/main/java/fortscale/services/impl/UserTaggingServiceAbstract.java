@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -12,6 +13,8 @@ import fortscale.utils.logging.Logger;
 
 public abstract class UserTaggingServiceAbstract {
 	private static Logger logger = Logger.getLogger(UserTaggingServiceAbstract.class);
+	@Autowired
+	protected UserRepository userRepository;
 	
 	private List<String> groupsToTag;
 	private Set<String> taggedUsers = new HashSet<String>();
@@ -24,7 +27,6 @@ public abstract class UserTaggingServiceAbstract {
 	protected abstract String getFilePath();
 	protected abstract void updateUserTag(User user, boolean isTagTheUser);
 	protected abstract String getTagName();
-	protected abstract UserRepository getUserRepository();
 	protected abstract Boolean isUserTagged(User user);
 	
 	
@@ -76,7 +78,7 @@ public abstract class UserTaggingServiceAbstract {
 				if(isFileEmptyFromGroups()){
 					logger.warn("Users Tagging [{}] file is Empty: {}",getTagName(), filePath);
 				}
-				List<User> taggedUsersList = getUserRepository().findByUserInGroup(groupsToTag);
+				List<User> taggedUsersList = userRepository.findByUserInGroup(groupsToTag);
 				taggedUsers = getUsernameList(taggedUsersList);				
 				if (taggedUsersList ==null) {
 					logger.warn("Users Tagging [{}] no users found in the user repository for groups {}",getTagName() ,groupsToTag);
@@ -100,10 +102,10 @@ public abstract class UserTaggingServiceAbstract {
 	private void updateAllUsersTags() {
 		if (taggedUsers != null && taggedUsers.size() !=0) {
 			int pageSize = 100;
-			int numOfPages = (int) (((getUserRepository().count() -1) / pageSize) + 1); 
+			int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
 			for(int i = 0; i < numOfPages; i++){
 				PageRequest pageRequest = new PageRequest(i, pageSize);
-				for(User user: getUserRepository().findAll(pageRequest).getContent()){
+				for(User user: userRepository.findAll(pageRequest).getContent()){
 					if (taggedUsers.contains(user.getUsername())) {
 						updateUserTag(user, true);
 					}
@@ -124,10 +126,10 @@ public abstract class UserTaggingServiceAbstract {
 	 */
 	private void resetAllUsers(){
 		int pageSize = 100;		
-		int numOfPages = (int) (((getUserRepository().count() -1) / pageSize) + 1); 
+		int numOfPages = (int) (((userRepository.count() -1) / pageSize) + 1); 
 		for(int i = 0; i < numOfPages; i++){
 			PageRequest pageRequest = new PageRequest(i, pageSize);
-			for(User user: getUserRepository().findAll(pageRequest).getContent()){
+			for(User user: userRepository.findAll(pageRequest).getContent()){
 				if (isUserTagged(user) == null || isUserTagged(user)) {
 					updateUserTag(user, false);
 				}

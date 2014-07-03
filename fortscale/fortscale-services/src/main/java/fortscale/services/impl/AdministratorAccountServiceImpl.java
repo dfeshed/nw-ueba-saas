@@ -12,8 +12,6 @@ import fortscale.services.AdministratorAccountService;
 public class AdministratorAccountServiceImpl extends UserTaggingServiceAbstract implements AdministratorAccountService,InitializingBean{
 	@Value("${user.list.admin_groups.path:}")
 	private String filePath;
-	@Autowired
-	private UserRepository userRepository;
 	private String tagName = "administrator";
 	
 	@Override
@@ -24,11 +22,6 @@ public class AdministratorAccountServiceImpl extends UserTaggingServiceAbstract 
 	@Override
 	public String getTagName(){
 		return tagName;
-	}
-	
-	@Override
-	public UserRepository getUserRepository(){
-		return userRepository;
 	}
 	
 	public void setFilePath(String filePath) {
