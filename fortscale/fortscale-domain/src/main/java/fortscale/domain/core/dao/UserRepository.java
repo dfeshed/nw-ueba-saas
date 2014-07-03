@@ -23,5 +23,6 @@ public interface UserRepository extends MongoRepository<User, String>, UserRepos
 	public List<User> findByFollowed(Boolean followed);
 	public List<User> findByUserServiceAccount(Boolean isUserServiceAccount);
 	public List<User> findByAdministratorAccount(Boolean isAdministratorAccount);
+	public List<User> findByExecutiveAccount(Boolean isExecutiveAccount);
 
 }

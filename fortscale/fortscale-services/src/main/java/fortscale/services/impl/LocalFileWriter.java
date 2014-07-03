@@ -46,9 +46,9 @@ public class LocalFileWriter implements HDFSWriter {
 	@Override
 	public void close() throws IOException {
 		if (writer != null) {
-			writer.close();
+			writer.close(); 
+			writer = null;
 		}
-		writer = null;
 	}
 
 	@Override

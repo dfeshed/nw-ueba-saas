@@ -302,6 +302,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
 	}
 	
 	@Override
+	public void updateExecutiveAccount(User user, boolean isExecutiveAccount) {
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.executiveAccountField, isExecutiveAccount), User.class);
+	}
+	
+	@Override
 	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime){
 		Update update = new Update();
 		update.set(User.getClassifierScoreCurrentScoreField(classifierId), score);

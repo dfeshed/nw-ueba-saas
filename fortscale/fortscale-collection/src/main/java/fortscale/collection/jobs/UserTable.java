@@ -33,6 +33,11 @@ public class UserTable implements IUserTable {
 	}
 
 	@Override
+	public Boolean getIsExecutiveAccount() {
+		return user.getExecutiveAccount();
+	}
+	
+	@Override
 	public Boolean getIsAdministratorAccount() {
 		return user.getAdministratorAccount();
 	}

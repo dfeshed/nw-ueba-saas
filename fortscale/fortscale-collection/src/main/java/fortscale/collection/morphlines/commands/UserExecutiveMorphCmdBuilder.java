@@ -14,48 +14,48 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.AdministratorAccountService;
+import fortscale.services.ExecutiveAccountService;
 
-public class UserAdministratorMorphCmdBuilder implements CommandBuilder {
+public class UserExecutiveMorphCmdBuilder implements CommandBuilder {
 	
 	@Override
 	public Collection<String> getNames() {
-		return Collections.singletonList("IsUserAdministrator");
+		return Collections.singletonList("IsUserExecutive");
 	}
 
 	@Override
 	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
-		return new IsUserAdministrator(this, config, parent, child, context);
+		return new IsUserExecutive(this, config, parent, child, context);
 	}
 		
 	// /////////////////////////////////////////////////////////////////////////////
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable(preConstruction=true)
-	public static class IsUserAdministrator extends AbstractCommand {
+	public static class IsUserExecutive extends AbstractCommand {
 		
 		protected String usernameField;
-		private String isUserAdministratorField;
+		private String isUserExecutiveField;
 		@Autowired
-		private AdministratorAccountService administratorAccountService;
+		private ExecutiveAccountService executiveAccountService;
 		
-		public IsUserAdministrator(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
+		public IsUserExecutive(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			this.usernameField = getConfigs().getString(config, "usernameField");
-			this.isUserAdministratorField = getConfigs().getString(config, "isUserAdministratorField");			
+			this.isUserExecutiveField = getConfigs().getString(config, "isUserExecutiveField");			
 		}
 
-		public IsUserAdministrator(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, AdministratorAccountService service) {
+		public IsUserExecutive(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, ExecutiveAccountService service) {
 			this(builder, config, parent, child, context);
-			this.administratorAccountService = service;
+			this.executiveAccountService = service;
 		}
 
 
-		protected boolean isUserAdministrator(Record record){
+		protected boolean isUserExecutive(Record record){
 			if (record.getFirstValue(usernameField) != null) {
 				String ret = RecordExtensions.getStringValue(record, usernameField);
-				if(administratorAccountService != null && ret != null && ret != ""){
-					return administratorAccountService.isUserAdministrator(ret);
+				if(executiveAccountService != null && ret != null && ret != ""){
+					return executiveAccountService.isUserExecutive(ret);
 				}
 			}				
 			return false;
@@ -64,8 +64,7 @@ public class UserAdministratorMorphCmdBuilder implements CommandBuilder {
 		
 		@Override
 		protected boolean doProcess(Record inputRecord) {
-		
-			inputRecord.put(isUserAdministratorField, isUserAdministrator(inputRecord));
+			inputRecord.put(isUserExecutiveField, isUserExecutive(inputRecord));
 			return super.doProcess(inputRecord);
 
 		}

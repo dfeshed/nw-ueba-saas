@@ -71,6 +71,9 @@ public class VpnEvents implements TableSchema {
 
 	@Value("${impala.data.vpn.table.field.is_administrator_account}")
 	public String IS_ADMINISTRATOR_ACCOUNT;
+	
+	@Value("${impala.data.vpn.table.field.is_executive_account}")
+	public String IS_EXECUTIVE_ACCOUNT;
 
 	private PartitionStrategy partition = new MonthlyPartitionStrategy();	
 	
