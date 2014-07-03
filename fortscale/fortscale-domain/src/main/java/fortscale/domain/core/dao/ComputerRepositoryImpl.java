@@ -105,6 +105,7 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 
 	@Override
 	public long getNumberOfMachines() {
+		//temporary implementation
 		return mongoTemplate.count(query(where(Computer.WHEN_CREATED_FIELD).ne(null)), Computer.class);
 	}
 	
