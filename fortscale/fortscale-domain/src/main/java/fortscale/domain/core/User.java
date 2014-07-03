@@ -342,16 +342,4 @@ public class User extends AbstractDocument {
 		this.executiveAccount = executiveAccount;
 	}
 	
-	public Boolean getHigePrivilegedAccount(String accountType){
-		switch(accountType){
-		case "administrator":
-			return administratorAccount;
-		case "executive":
-			return executiveAccount;
-		default:
-			return false;
-		}
-	}
-
-	
 }
