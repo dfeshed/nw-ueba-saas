@@ -184,6 +184,9 @@ public class UserServiceImpl implements UserService{
 		while(entries.hasNext()){
 			Entry<String, Long> entry = entries.next();
 			User user = userRepository.getLastActivityByUserName(entry.getKey());
+			if(user == null){
+				return;
+			}
 			DateTime userCurrLast = user.getLastActivity();
 			DateTime currTime = new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue()));
 			if(userCurrLast == null || currTime.isAfter(userCurrLast)){
