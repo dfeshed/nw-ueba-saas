@@ -12,6 +12,8 @@
 
 	<appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
 		<param name="append" value="true" />
+		<param name="MaxFileSize" value="25MB" />
+		<param name="MaxBackupIndex" value="3" />
 		<param name="file" value="log/logFile-${STREAM_TASK_NAME}.log4j.log" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n" />
