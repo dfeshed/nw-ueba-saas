@@ -3,7 +3,7 @@
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</Pattern>
+			<Pattern>%d [%thread] %-5level %logger{36} - %msg%n%xEx{full}</Pattern>
 		</encoder>
 	</appender>
 
@@ -20,7 +20,7 @@
 		</triggeringPolicy>
 		
 		<encoder>
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}
+			<Pattern>%d [%thread] %-5level %logger{36} - %msg%n%xEx{full}
 			</Pattern>
 		</encoder>
 	</appender>
@@ -32,7 +32,7 @@
 	
 		<syslogHost>localhost</syslogHost>
 		<facility>USER</facility>
-		<suffixPattern>fortscale-collection: %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</suffixPattern>
+		<suffixPattern>fortscale-collection: %d [%thread] %-5level %logger{36} - %msg%n%xEx{full}</suffixPattern>
 	</appender>
 
 	<root level="info">

@@ -13,7 +13,7 @@
       		<onMismatch>ACCEPT</onMismatch>
     	</filter>
 		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level  %logger{36} - %msg%n%xEx{full}%n
+			<Pattern>%d [%thread] %-5level  %logger{36} - %msg%n%xEx{full}%n
 			</Pattern>
 		</layout>
 	</appender>
@@ -24,7 +24,7 @@
       		<onMismatch>ACCEPT</onMismatch>
     	</filter>
 		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level  - %X{req.remoteHost} %X{req.requestURI}  %X{req.user} -  %logger{36} - %msg%n%xEx{full}%n
+			<Pattern>%d [%thread] %-5level  - %X{req.remoteHost} %X{req.requestURI}  %X{req.user} -  %logger{36} - %msg%n%xEx{full}%n
 			</Pattern>
 		</layout>
 	</appender>
@@ -35,7 +35,7 @@
 	
 		<syslogHost>localhost</syslogHost>
 		<facility>USER</facility>
-		<suffixPattern>fortscale-webapp: %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx{full}</suffixPattern>
+		<suffixPattern>fortscale-webapp: %d [%thread] %-5level %logger{36} - %msg%n%xEx{full}</suffixPattern>
 	</appender>
 	
 
