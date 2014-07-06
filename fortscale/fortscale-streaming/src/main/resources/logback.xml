@@ -7,7 +7,7 @@
 		</encoder>
 	</appender>
 
-	<appender name="LogFile" appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>log/logFile-${STREAM_TASK_NAME}.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
 			<fileNamePattern>log/logFile-${STREAM_TASK_NAME}.log.%i</fileNamePattern>
