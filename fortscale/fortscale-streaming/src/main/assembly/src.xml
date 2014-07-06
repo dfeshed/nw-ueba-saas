@@ -16,6 +16,13 @@
   		</includes>
   		<filtered>true</filtered>
   	</fileSet>
+  	<fileSet>
+  		<outputDirectory>lib</outputDirectory>
+  		<directory>${basedir}/src/main/resources</directory>
+  		<includes>
+  			<include>log4j.xml</include>
+  		</includes>
+  	</fileSet>
   </fileSets>
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
