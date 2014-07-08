@@ -16,6 +16,7 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Notifications;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.typesafe.config.Config;
 
@@ -43,6 +44,8 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 		List<String> criteriaFields = null;
 		Integer threshold = Integer.MAX_VALUE;
 		String eventType = "";
+		@Value("${mophline.cmd.overflow:false}")
+		private String runCmd;
 
 		protected OverFlowFilter(CommandBuilder builder, Config config,
 				Command parent, Command child, MorphlineContext context) {
@@ -54,6 +57,9 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+			if(runCmd.equals("false")){
+				return super.doProcess(inputRecord);
+			}
 			String key = "/";
 			if (criteriaFields.size() != 0) {
 				StringBuilder strBuilder = new StringBuilder("");
