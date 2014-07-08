@@ -8,11 +8,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
 import org.kitesdk.morphline.api.Command;
@@ -23,7 +21,6 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Fields;
 
-import com.google.common.base.Joiner;
 import com.typesafe.config.Config;
 
 /**

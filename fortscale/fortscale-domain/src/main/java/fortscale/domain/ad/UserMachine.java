@@ -1,7 +1,6 @@
 package fortscale.domain.ad;
 
 import java.util.List;
-import java.util.Map;
 
 import fortscale.domain.core.ComputerUsageClassifier;
 
