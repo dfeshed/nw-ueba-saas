@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import fortscale.streaming.model.PrevalanceModel;
+import fortscale.streaming.model.prevalance.PrevalanceModel;
 
 @Document(collection="streaming_models")
 @CompoundIndexes({

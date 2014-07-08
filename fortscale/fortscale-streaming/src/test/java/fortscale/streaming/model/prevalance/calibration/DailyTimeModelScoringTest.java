@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import fortscale.streaming.model.field.DailyTimeModel;
+import fortscale.streaming.model.prevalance.field.DailyTimeModel;
 
 
 @RunWith(JUnit4.class)

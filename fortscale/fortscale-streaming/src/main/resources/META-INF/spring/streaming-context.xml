@@ -41,5 +41,19 @@
 	<mongo:repositories base-package="fortscale.domain.system.dao" />
 	
 	<bean class="fortscale.domain.system.ServersListConfigurationImpl" />
-	
+
+    <!--List of Tagging service implementation -->
+    <bean name="TaggingImpList" class ="fortscale.streaming.service.tagging.TagService">
+        <property name="list">
+            <list>
+                <ref bean="sweeperImpl"></ref>
+            </list>
+        </property>
+
+    </bean>
+
+    <bean id = "sweeperImpl" class="fortscale.streaming.service.tagging.SweeperTagImpl"></bean>
+
+    <!--****************************************-->
+
 </beans>

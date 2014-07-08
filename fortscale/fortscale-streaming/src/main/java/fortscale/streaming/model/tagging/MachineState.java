@@ -53,28 +53,7 @@ public class MachineState {
     }
 
 
-    //override to hashCode due to the equal overriding
-    // ( equal objects must have the same hashCode, we change the equal logic there for we need to change the hashCode logic)
-    public int hashCode() {
-        return new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
-                // if deriving: appendSuper(super.hashCode()).
-                append(hostName).
-                append(type).
-                toHashCode();
-    }
 
-    public boolean equals(Object obj) {
-        if (!(obj instanceof MachineState))
-            return false;
-        if (obj == this)
-            return true;
-
-        MachineState rhs = (MachineState) obj;
-        return new EqualsBuilder().
-                   append(hostName, rhs.hostName).
-                   append(type, rhs.type).
-                   isEquals();
-    }
 
 
 

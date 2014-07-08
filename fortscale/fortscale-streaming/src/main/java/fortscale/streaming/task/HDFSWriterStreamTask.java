@@ -7,7 +7,7 @@ import static fortscale.utils.ConversionUtils.convertToString;
 
 import java.util.List;
 
-import fortscale.streaming.model.UserTimeBarrierModel;
+import fortscale.streaming.model.prevalance.UserTimeBarrierModel;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 

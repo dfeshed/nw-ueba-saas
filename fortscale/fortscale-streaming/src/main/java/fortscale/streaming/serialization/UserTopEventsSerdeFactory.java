@@ -4,7 +4,7 @@ import org.apache.samza.config.Config;
 import org.apache.samza.serializers.Serde;
 import org.apache.samza.serializers.SerdeFactory;
 
-import fortscale.streaming.service.UserTopEvents;
+import fortscale.streaming.model.UserTopEvents;
 
 public class UserTopEventsSerdeFactory implements SerdeFactory<UserTopEvents>{
 
