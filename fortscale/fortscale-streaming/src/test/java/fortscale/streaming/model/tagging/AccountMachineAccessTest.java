@@ -19,19 +19,19 @@ public class AccountMachineAccessTest {
 
         amc.addTag(tag);
 
-        assertTrue(amc.getTags().contains(tag) && amc.getIsDirty());
+        assertTrue(amc.getTags().get(tag).booleanValue() && amc.getIsDirty());
 
 
         //case 2 - adding tag that already exist (ignore it )
         amc.setIsDirty(false);
         amc.addTag(tag);
 
-        assertTrue(amc.getTags().contains(tag) && amc.getTags().size() == 1 && !amc.getIsDirty());
+        assertTrue(amc.getTags().get(tag).booleanValue() && !amc.getIsDirty());
 
         //case 3 - Remove tag
         amc.removeTag(tag);
 
-        assertTrue(amc.getTags().size() == 0 && amc.getIsDirty());
+        assertTrue(!amc.getTags().get(tag).booleanValue() && amc.getIsDirty());
 
 
     }

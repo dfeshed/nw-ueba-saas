@@ -22,7 +22,7 @@ public class AccountMachineAccess {
     private String userName;
     private Map<String,MachineState> sources;
     private Map<String,MachineState> destinations;
-    private List<String> tags;
+    private Map<String,Boolean> tags;
     private boolean isDirty;
 
 
@@ -32,7 +32,7 @@ public class AccountMachineAccess {
     public AccountMachineAccess(@JsonProperty("userName") String userName) {
 
         this.userName = userName;
-        this.tags = new ArrayList<String>();
+        this.tags = new HashMap<String,Boolean>();
         this.sources =new HashMap<String,MachineState>();
         this.destinations = new HashMap<String,MachineState>();
 
@@ -65,11 +65,11 @@ public class AccountMachineAccess {
         this.destinations = destinations;
     }
 
-    public List<String> getTags() {
+    public  Map<String,Boolean> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags( Map<String,Boolean> tags) {
         this.tags = tags;
     }
 
@@ -85,10 +85,18 @@ public class AccountMachineAccess {
     //Add tag to the tag set
     public void addTag(String tag)
     {
+        if(this.tags.get(tag) != null ) {
 
-        if(!this.tags.contains(tag)) {
-            this.tags.add(tag);
-            this.isDirty = true;
+            if (!this.tags.get(tag).booleanValue()) {
+                this.tags.put(tag, true);
+                this.isDirty = true;
+            }
+        }
+
+        else
+        {
+            this.tags.put(tag,true);
+            this.setIsDirty(true);
         }
 
     }
@@ -96,10 +104,13 @@ public class AccountMachineAccess {
     //Remove Tag
     public void removeTag(String tag)
     {
-        if(this.tags.contains(tag)) {
-            this.tags.remove(tag);
-            this.isDirty = true;
+        if(this.tags.get(tag) != null ) {
+            if (this.tags.get(tag).booleanValue()) {
+                this.tags.put(tag,false);
+                this.isDirty = true;
+            }
         }
+
     }
 
     //Add new machine to the source list
