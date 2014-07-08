@@ -42,7 +42,9 @@
 	
 	<bean class="fortscale.domain.system.ServersListConfigurationImpl" />
 
+
     <!--List of Tagging service implementation -->
+    <!--
     <bean name="TaggingImpList" class ="fortscale.streaming.service.tagging.TagService">
         <property name="list">
             <list>
@@ -53,6 +55,8 @@
     </bean>
 
     <bean id = "sweeperImpl" class="fortscale.streaming.service.tagging.SweeperTagImpl"></bean>
+    -->
+
 
     <!--****************************************-->
 
