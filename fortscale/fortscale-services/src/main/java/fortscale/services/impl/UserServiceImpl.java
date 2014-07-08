@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -597,6 +598,23 @@ public class UserServiceImpl implements UserService{
 	public DateTime findLastActiveTime(LogEventsEnum eventId){
 		User user = userRepository.findLastActiveUser(eventId);
 		return user == null ? null : user.getLogLastActivity(eventId);
+	}
+	
+	
+	public void updateTags(String username, Map<String, Boolean> tagSettings) {
+		
+		// construct lists of tags to remove and tags to add from the map
+		List<String> tagsToAdd = new LinkedList<String>();
+		List<String> tagsToRemove = new LinkedList<String>();
+		for (String tag : tagSettings.keySet()) {
+			if (tagSettings.get(tag)) 
+				tagsToAdd.add(tag);
+			else
+				tagsToRemove.add(tag);
+		}
+		
+		// call the repository to update mongodb with the tags settings
+		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 	}
 	
 }

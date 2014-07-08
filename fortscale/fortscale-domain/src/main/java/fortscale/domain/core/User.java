@@ -1,7 +1,11 @@
 package fortscale.domain.core;
 
+import static com.google.common.base.Preconditions.checkNotNull; 
+
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -14,11 +18,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
 import fortscale.domain.events.LogEventsEnum;
-
-
-
-
-
 
 
 @Document(collection=User.collectionName)
@@ -60,6 +59,7 @@ public class User extends AbstractDocument {
 	public static final String userServiceAccountField = "userServiceAccount";
 	public static final String administratorAccountField = "administratorAccount";
 	public static final String executiveAccountField = "executiveAccount";
+	public static final String tagsField = "tags";
 
 	@Indexed
 	@Field(administratorAccountField)
@@ -113,6 +113,9 @@ public class User extends AbstractDocument {
 	
 	@Field(lastActivityField)
 	DateTime lastActivity;
+	
+	@Field(tagsField)
+	private Set<String> tags = new HashSet<String>();
 	
 	public String getAdDn() {
 		return adDn;
@@ -264,11 +267,20 @@ public class User extends AbstractDocument {
 	}
 	
 	
+	public void addTag(String tag) {
+		checkNotNull(tag);
+		tags.add(tag);
+	}
 	
-	
-	
+	public boolean hasTag(String tag) {
+		checkNotNull(tag);
+		return tags.contains(tag);
+	}
 
-	
+	public void removeTag(String tag) {
+		checkNotNull(tag);
+		tags.remove(tag);
+	}
 	
 	
 	
