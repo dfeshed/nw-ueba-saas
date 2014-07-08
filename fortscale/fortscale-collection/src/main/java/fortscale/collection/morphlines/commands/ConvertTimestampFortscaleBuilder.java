@@ -57,7 +57,6 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     private final String outputLocaleField;
     private final String outputFormatField;
     
-    private TimeZone lastTimeZone;
     
     Locale inputLocale = null;
     Locale outputLocale = null;
@@ -182,17 +181,14 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     }
     
     private TimeZone getTimeZone(String timeZoneID) {
-    	if (lastTimeZone!=null && lastTimeZone.getID().equals(timeZoneID))
-    		return lastTimeZone;
-    	
-    	TimeZone zone = TimeZone.getTimeZone(timeZoneID);
-    	// check if the zone is GMT and the timeZoneID is not GMT than it means that the 
-    	// TimeZone.getTimeZone did not recieve a valid id
-    	if (!zone.getID().equals(timeZoneID)) {
-    		throw new MorphlineCompilationException("Unknown timezone: " + timeZoneID, getConfig());
-    	} else {
-    		return zone;
-    	}
+      TimeZone zone = TimeZone.getTimeZone(timeZoneID);
+      // check if the zone is GMT and the timeZoneID is not GMT than it means that the 
+      // TimeZone.getTimeZone did not recieve a valid id
+      if (!zone.getID().equalsIgnoreCase(timeZoneID)) {
+    	  throw new MorphlineCompilationException("Unknown timezone: " + timeZoneID, getConfig());
+      } else {
+    	  return zone;
+      }
     }
     
     private Locale getLocale(String name) {
