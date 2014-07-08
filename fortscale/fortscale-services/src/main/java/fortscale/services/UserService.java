@@ -57,4 +57,6 @@ public interface UserService {
 	public void updateUserLastActivity(String username, DateTime dateTime);
 
 	public DateTime findLastActiveTime(LogEventsEnum eventId);
+	
+	public void updateTags(String username, Map<String, Boolean> tagSettings);
 }

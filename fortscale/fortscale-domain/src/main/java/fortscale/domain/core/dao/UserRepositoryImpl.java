@@ -371,5 +371,21 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 				.is(null));
 		return mongoTemplate.count(query, User.class);
 	}
+	
+	
+	public void syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove) {
+		// construct the criteria to filter according to user name
+		Query usernameCriteria = new Query(Criteria.where(User.usernameField).is(username));
+
+		// construct the update that adds and removes tags
+		Update update = new Update();
+		if (!tagsToAdd.isEmpty())
+			update.pushAll(User.tagsField, tagsToAdd.toArray());
+		if (!tagsToRemove.isEmpty())
+			update.pullAll(User.tagsField, tagsToRemove.toArray());
+		
+		// perform the update on mongodb
+		mongoTemplate.updateMulti(usernameCriteria, update, User.class);
+	}
 
 }

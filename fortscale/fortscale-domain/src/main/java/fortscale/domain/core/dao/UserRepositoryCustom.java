@@ -62,4 +62,9 @@ public interface UserRepositoryCustom {
 	public long getNumberOfDisabledAccounts();
 	public long getNumberOfDisabledAccountsBeforeTime(DateTime time);
 	public long getNumberOfInactiveAccounts();
+	
+	/**
+	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
+	 */
+	void syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
 }
