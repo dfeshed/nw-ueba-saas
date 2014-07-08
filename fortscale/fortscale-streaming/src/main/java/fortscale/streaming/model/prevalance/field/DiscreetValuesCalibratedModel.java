@@ -1,10 +1,10 @@
-package fortscale.streaming.model.field;
+package fortscale.streaming.model.prevalance.field;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
-import fortscale.streaming.model.FieldModel;
-import fortscale.streaming.model.calibration.FeatureCalibration;
+import fortscale.streaming.model.prevalance.FieldModel;
+import fortscale.streaming.model.prevalance.calibration.FeatureCalibration;
 import fortscale.utils.logging.Logger;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)

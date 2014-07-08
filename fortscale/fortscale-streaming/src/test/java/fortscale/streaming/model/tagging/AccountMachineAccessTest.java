@@ -1,5 +1,6 @@
 package fortscale.streaming.model.tagging;
 
+import fortscale.domain.core.ComputerUsageType;
 import org.junit.Test;
 
 import java.util.Date;
@@ -27,17 +28,11 @@ public class AccountMachineAccessTest {
 
         assertTrue(amc.getTags().contains(tag) && amc.getTags().size() == 1 && !amc.getIsDirty());
 
-        //case 3 - adding server tag when Desktops tag already exist (switch between them)
-        amc.setIsDirty(false);
-        amc.addTag("Servers");
+        //case 3 - Remove tag
+        amc.removeTag(tag);
 
-        assertTrue(amc.getTags().contains("Servers") && !amc.getTags().contains(tag) && amc.getIsDirty());
+        assertTrue(amc.getTags().size() == 0 && amc.getIsDirty());
 
-        //case 4 - adding desktops tag when server tag already exist (switch between them)
-        amc.setIsDirty(false);
-        amc.addTag(tag);
-
-        assertTrue(amc.getTags().contains(tag) && !amc.getTags().contains("Servers") && amc.getIsDirty());
 
     }
 
@@ -46,31 +41,40 @@ public class AccountMachineAccessTest {
 
         AccountMachineAccess amc = new AccountMachineAccess("testAccount");
 
-        MachineState ms = new MachineState("testHost");
+        String hostName="testHost";
         long currentTime = new Date().getTime();
-        ms.setLastEventTimeStamp(currentTime);
+        ComputerUsageType type = ComputerUsageType.Desktop;
+
 
 
         //case 1 - add new source to sources list
-        amc.addSource(ms);
-        assertTrue(amc.getSources().contains(ms) && amc.getIsDirty());
+        amc.addSource(hostName,currentTime,type);
+        assertTrue(amc.getSources().get(hostName).getHostName() == hostName);
+        assertTrue(amc.getSources().get(hostName).getLastEventTimeStamp() == currentTime);
+        assertTrue(amc.getSources().get(hostName).getType() == type);
+
 
         //case 2 - add source that already existing with newer time stamp (update time stamp)
         amc.setIsDirty(false);
-        ms  =  new MachineState("testHost");
-        ms.setLastEventTimeStamp(currentTime+60000);
-        amc.addSource(ms);
+        long newTime = currentTime + 60000;
+        amc.addSource(hostName,newTime,type);
 
-        assertTrue(amc.getSources().size() == 1 && amc.getSources().get(0).getLastEventTimeStamp() == currentTime + 60000 && amc.getIsDirty());
+        assertTrue(amc.getSources().get(hostName).getHostName() == hostName);
+        assertTrue(amc.getSources().get(hostName).getLastEventTimeStamp() == newTime);
+        assertTrue(amc.getSources().get(hostName).getType() == type);
+
+
+
 
 
         //case 3 - add source that already exist with oldest time stamp (ignore)
-        amc.setIsDirty(false);
-        ms  =  new MachineState("testHost");
-        ms.setLastEventTimeStamp(currentTime - 120000);
-        amc.addSource(ms);
+        long oldTime = currentTime - 120000;
+        amc.addSource(hostName,oldTime,type);
 
-        assertTrue(amc.getSources().size() == 1 && amc.getSources().get(0).getLastEventTimeStamp() == currentTime + 60000 && !amc.getIsDirty());
+        assertTrue(amc.getSources().get(hostName).getHostName() == hostName);
+        assertTrue(amc.getSources().get(hostName).getLastEventTimeStamp() == newTime);
+        assertTrue(amc.getSources().get(hostName).getType() == type);
+
 
     }
 
@@ -79,31 +83,40 @@ public class AccountMachineAccessTest {
 
         AccountMachineAccess amc = new AccountMachineAccess("testAccount");
 
-        MachineState ms = new MachineState("testHost");
+        String hostName="testHost";
         long currentTime = new Date().getTime();
-        ms.setLastEventTimeStamp(currentTime);
+        ComputerUsageType type = ComputerUsageType.Desktop;
 
 
-        //case 1 - add new source to sources list
-        amc.addDestination(ms);
-        assertTrue(amc.getDestinations().contains(ms) && amc.getIsDirty());
 
-        //case 2 - add source that already existing with newer time stamp (update time stamp)
+        //case 1 - add new destination to sources list
+        amc.addDestination(hostName,currentTime,type);
+        assertTrue(amc.getDestinations().get(hostName).getHostName() == hostName);
+        assertTrue(amc.getDestinations().get(hostName).getLastEventTimeStamp() == currentTime);
+        assertTrue(amc.getDestinations().get(hostName).getType() == type);
+
+
+        //case 2 - add destination that already existing with newer time stamp (update time stamp)
         amc.setIsDirty(false);
-        ms  =  new MachineState("testHost");
-        ms.setLastEventTimeStamp(currentTime+60000);
-        amc.addDestination(ms);
+        long newTime = currentTime + 60000;
+        amc.addDestination(hostName,newTime,type);
 
-        assertTrue(amc.getDestinations().size() == 1 && amc.getDestinations().get(0).getLastEventTimeStamp() == currentTime + 60000 && amc.getIsDirty());
+        assertTrue(amc.getDestinations().get(hostName).getHostName() == hostName);
+        assertTrue(amc.getDestinations().get(hostName).getLastEventTimeStamp() == newTime);
+        assertTrue(amc.getDestinations().get(hostName).getType() == type);
 
 
-        //case 3 - add source that already exist with oldest time stamp (ignore)
-        amc.setIsDirty(false);
-        ms  =  new MachineState("testHost");
-        ms.setLastEventTimeStamp(currentTime - 120000);
-        amc.addDestination(ms);
 
-        assertTrue(amc.getDestinations().size() == 1 && amc.getDestinations().get(0).getLastEventTimeStamp() == currentTime + 60000 && !amc.getIsDirty());
+
+
+        //case 3 - add destination that already exist with oldest time stamp (ignore)
+        long oldTime = currentTime - 120000;
+        amc.addDestination(hostName,oldTime,type);
+
+        assertTrue(amc.getDestinations().get(hostName).getHostName() == hostName);
+        assertTrue(amc.getDestinations().get(hostName).getLastEventTimeStamp() == newTime);
+        assertTrue(amc.getDestinations().get(hostName).getType() == type);
+
 
     }
 }

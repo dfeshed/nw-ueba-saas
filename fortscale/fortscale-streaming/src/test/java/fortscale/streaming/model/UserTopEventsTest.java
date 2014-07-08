@@ -1,4 +1,4 @@
-package fortscale.streaming.model.prevalance;
+package fortscale.streaming.model;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;

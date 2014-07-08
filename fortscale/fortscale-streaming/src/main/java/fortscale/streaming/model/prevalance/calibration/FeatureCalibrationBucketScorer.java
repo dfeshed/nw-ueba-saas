@@ -1,4 +1,4 @@
-package fortscale.streaming.model.calibration;
+package fortscale.streaming.model.prevalance.calibration;
 
 import java.util.HashMap;
 import java.util.Iterator;

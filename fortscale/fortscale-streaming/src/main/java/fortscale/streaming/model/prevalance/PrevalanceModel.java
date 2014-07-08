@@ -1,4 +1,4 @@
-package fortscale.streaming.model;
+package fortscale.streaming.model.prevalance;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.utils.TimestampUtils.convertToMilliSeconds;

@@ -3,8 +3,10 @@ package fortscale.streaming.model.tagging;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.domain.core.ComputerUsageType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +20,8 @@ import java.util.Map;
 public class AccountMachineAccess {
 
     private String userName;
-    private List<MachineState> sources;
-    private List<MachineState> destinations;
+    private Map<String,MachineState> sources;
+    private Map<String,MachineState> destinations;
     private List<String> tags;
     private boolean isDirty;
 
@@ -31,8 +33,10 @@ public class AccountMachineAccess {
 
         this.userName = userName;
         this.tags = new ArrayList<String>();
-        this.destinations = new ArrayList<MachineState>();
-        this.sources = new ArrayList<MachineState>();
+        this.sources =new HashMap<String,MachineState>();
+        this.destinations = new HashMap<String,MachineState>();
+
+
 
     }
 
@@ -45,19 +49,19 @@ public class AccountMachineAccess {
         this.userName = userName;
     }
 
-    public List<MachineState> getSources() {
+    public Map<String,MachineState> getSources() {
         return sources;
     }
 
-    public void setSources(List<MachineState> sources) {
+    public void setSources(Map<String,MachineState> sources) {
         this.sources = sources;
     }
 
-    public List<MachineState> getDestinations() {
+    public Map<String,MachineState> getDestinations() {
         return destinations;
     }
 
-    public void setDestinations(List<MachineState> destinations) {
+    public void setDestinations(Map<String,MachineState> destinations) {
         this.destinations = destinations;
     }
 
@@ -81,111 +85,70 @@ public class AccountMachineAccess {
     //Add tag to the tag set
     public void addTag(String tag)
     {
-        switch(tag)
-        {
-            case "Desktops":
-            {
-                //in case that the tagging switch from "Servers" to "Desktops"
-                if (this.tags.contains("Servers"))
-                    this.tags.remove("Servers");
-                if(!this.tags.contains(tag)) {
-                    this.tags.add(tag);
-                    this.isDirty = true;
-                }
 
-                //can add here some notification handling for switching between those two tags
-                break;
-            }
-
-            case "Servers":
-            {
-                //in case that the tagging switch from "Desktops" to "Servers"
-                if (this.tags.contains("Desktops"))
-                    this.tags.remove("Desktops");
-                if(!this.tags.contains(tag)) {
-                    this.tags.add(tag);
-                    this.isDirty = true;
-                }
-
-                //can add here some notification handling for switching between those two tags
-                break;
-            }
-
-            default:
-            {
-                if(!this.tags.contains(tag)) {
-                    this.tags.add(tag);
-                    this.isDirty = true;
-                }
-
-                break;
-            }
-
-
+        if(!this.tags.contains(tag)) {
+            this.tags.add(tag);
+            this.isDirty = true;
         }
 
+    }
 
+    //Remove Tag
+    public void removeTag(String tag)
+    {
+        if(this.tags.contains(tag)) {
+            this.tags.remove(tag);
+            this.isDirty = true;
+        }
     }
 
     //Add new machine to the source list
-    public void addSource(MachineState machine)
+    public void addSource(String hostName , long timeStamp, ComputerUsageType type)
     {
-        int instanceIndex = this.sources.indexOf(machine);
-        //if the machine already exist in the list than compare the timestamps
-        if(instanceIndex != -1)
+        //retrieve the machine state from the source map by hostName
+        MachineState machineState =  this.sources.get(hostName);
+
+        if (machineState != null)
         {
-
-            MachineState existing = this.sources.get(instanceIndex);
-
-            //switch the existing with the current machine cause its newer
-            if(existing.getLastEventTimeStamp() < machine.getLastEventTimeStamp())
-            {
-                this.sources.remove(existing);
-                this.sources.add(machine);
-
-                this.isDirty=true;
-            }
+            //in case that the machine exist compare the time stamps
+            if(machineState.getLastEventTimeStamp() < timeStamp)
+                machineState.setLastEventTimeStamp(timeStamp);
 
         }
-
-        //else insert the new machine to the list
         else
         {
-            this.sources.add(machine);
-            this.isDirty = true;
+            MachineState newMachineState = new MachineState(hostName);
+            newMachineState.setLastEventTimeStamp(timeStamp);
+            newMachineState.setType(type);
+            this.sources.put(hostName,newMachineState);
+
         }
+
     }
 
     //Add new machine to the destination list
-    public void addDestination(MachineState machine)
+    public void addDestination(String hostName , long timeStamp, ComputerUsageType type)
     {
-        int instanceIndex = this.destinations.indexOf(machine);
 
+        //retrive the machine state from the destination map by hostName
+        MachineState machineState =  this.destinations.get(hostName);
 
-        //if the machine already exist in the list than compare the timestamps
-        if(instanceIndex != -1)
+        if (machineState != null)
         {
-
-            MachineState existing = this.destinations.get(instanceIndex);
-
-            //switch the existing with the current machine cause its newer
-            if(existing.getLastEventTimeStamp() < machine.getLastEventTimeStamp())
-            {
-                this.destinations.remove(existing);
-                this.destinations.add(machine);
-
-                this.isDirty = true;
-            }
+            //in case that the machine exist compare the time stamps
+            if(machineState.getLastEventTimeStamp() < timeStamp)
+                machineState.setLastEventTimeStamp(timeStamp);
 
         }
-
-
-        //else insert the new machine to the list
         else
         {
-            this.destinations.add(machine);
-            this.isDirty = true;
+            MachineState newMachineState = new MachineState(hostName);
+            newMachineState.setLastEventTimeStamp(timeStamp);
+            newMachineState.setType(type);
+            this.destinations.put(hostName,newMachineState);
+
         }
+
     }
 
 

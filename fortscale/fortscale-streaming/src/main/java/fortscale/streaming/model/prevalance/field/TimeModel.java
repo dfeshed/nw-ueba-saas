@@ -1,4 +1,4 @@
-package fortscale.streaming.model.field;
+package fortscale.streaming.model.prevalance.field;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
-import fortscale.streaming.model.calibration.FeatureCalibration;
+import fortscale.streaming.model.prevalance.calibration.FeatureCalibration;
 
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)

@@ -1,4 +1,4 @@
-package fortscale.streaming.model;
+package fortscale.streaming.model.prevalance;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 

@@ -1,4 +1,4 @@
-package fortscale.streaming.model.field;
+package fortscale.streaming.model.prevalance.field;
 
 import java.util.HashMap;
 import java.util.Map;
