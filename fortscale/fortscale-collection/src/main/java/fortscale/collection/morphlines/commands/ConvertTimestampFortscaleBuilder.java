@@ -58,9 +58,8 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     private final String outputFormatField;
     
     
-    
-    
     Locale inputLocale = null;
+    Locale outputLocale = null;
     
     private static final String NATIVE_SOLR_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; // e.g. 2007-04-26T08:05:04.789Z
     private static final SimpleDateFormat UNIX_TIME_IN_MILLIS = new SimpleDateFormat("'unixTimeInMillis'");
@@ -79,12 +78,11 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       this.inputFormatsField = getConfigs().getStringList(config, "inputFormats", DateUtil.DEFAULT_DATE_FORMATS);
       this.outputTimezoneField= config.hasPath("outputTimezoneField") ? getConfigs().getString(config, "outputTimezoneField") : "UTC";
       this.outputLocaleField=getConfigs().getString(config, "outputLocale", "");  
-     this.outputFormatField = getConfigs().getString(config, "outputFormat", NATIVE_SOLR_FORMAT);
-     inputLocale = getLocale(this.inputLocaleField);
+      this.outputFormatField = getConfigs().getString(config, "outputFormat", NATIVE_SOLR_FORMAT);
+      inputLocale = getLocale(this.inputLocaleField);
+      outputLocale = getLocale(this.outputLocaleField);
      
-     validateArguments();
-     
-     
+      validateArguments();
     }
         
     @Override
@@ -104,7 +102,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
         }
     	String tzOutput = (String)record.getFirstValue(this.outputTimezoneField);
         TimeZone outputTimeZone = getTimeZone(tzOutput == null ? "UTC" : tzOutput);
-        Locale outputLocale = getLocale(this.outputLocaleField);
+        
         String outputFormatStr = this.outputFormatField;
         SimpleDateFormat outputFormat = getUnixTimeFormat(outputFormatStr, outputTimeZone);
         if (outputFormat == null) {
@@ -183,22 +181,26 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     }
     
     private TimeZone getTimeZone(String timeZoneID) {
-      if (!Arrays.asList(TimeZone.getAvailableIDs()).contains(timeZoneID)) {
-        throw new MorphlineCompilationException("Unknown timezone: " + timeZoneID, getConfig());
+      TimeZone zone = TimeZone.getTimeZone(timeZoneID);
+      // check if the zone is GMT and the timeZoneID is not GMT than it means that the 
+      // TimeZone.getTimeZone did not recieve a valid id
+      if (!zone.getID().equalsIgnoreCase(timeZoneID)) {
+    	  throw new MorphlineCompilationException("Unknown timezone: " + timeZoneID, getConfig());
+      } else {
+    	  return zone;
       }
-      return TimeZone.getTimeZone(timeZoneID);
     }
     
     private Locale getLocale(String name) {
-      for (Locale locale : Locale.getAvailableLocales()) {
-        if (locale.toString().equals(name)) {
-          return locale;
+    	if (name.equals(Locale.ROOT.toString())) {
+    		return Locale.ROOT;
+        } else {
+        	for (Locale locale : Locale.getAvailableLocales()) {
+        		if (locale.toString().equals(name)) {
+        			return locale;
+        		}
+        	}
         }
-      }
-      assert Locale.ROOT.toString().equals("");
-      if (name.equals(Locale.ROOT.toString())) {
-        return Locale.ROOT;
-      }
       throw new MorphlineCompilationException("Unknown locale: " + name, getConfig());
     }
     
