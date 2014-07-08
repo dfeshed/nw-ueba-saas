@@ -16,6 +16,7 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Notifications;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.typesafe.config.Config;
@@ -38,6 +39,7 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
+	@Configurable(preConstruction = true)
 	public class OverFlowFilter extends AbstractCommand {
 		HashMap<String, Integer> counterMap = new HashMap<String, Integer>();
 		HashMap<String, Long> passedThreshold = new HashMap<String, Long>();
@@ -45,7 +47,7 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 		Integer threshold = Integer.MAX_VALUE;
 		String eventType = "";
 		@Value("${mophline.cmd.overflow:false}")
-		private String runCmd;
+		private String runCmd = "false";
 
 		protected OverFlowFilter(CommandBuilder builder, Config config,
 				Command parent, Command child, MorphlineContext context) {
