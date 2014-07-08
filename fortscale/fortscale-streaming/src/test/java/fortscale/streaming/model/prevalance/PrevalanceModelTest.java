@@ -1,5 +1,7 @@
-package fortscale.streaming.model;
+package fortscale.streaming.model.prevalance;
 
+import fortscale.streaming.model.FieldModel;
+import fortscale.streaming.model.PrevalanceModel;
 import org.junit.Assert;
 import org.junit.Test;
 

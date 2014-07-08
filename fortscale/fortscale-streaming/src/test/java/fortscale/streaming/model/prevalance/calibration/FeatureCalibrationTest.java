@@ -1,9 +1,10 @@
-package fortscale.streaming.model.calibration;
+package fortscale.streaming.model.prevalance.calibration;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import fortscale.streaming.model.calibration.FeatureCalibration;
 import junit.framework.Assert;
 
 import org.junit.Test;
