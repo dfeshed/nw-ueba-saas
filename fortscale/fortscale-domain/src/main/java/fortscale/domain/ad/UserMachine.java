@@ -1,5 +1,6 @@
 package fortscale.domain.ad;
 
+import java.util.List;
 import java.util.Map;
 
 import fortscale.domain.core.ComputerUsageClassifier;
@@ -13,7 +14,7 @@ public class UserMachine {
 	private long lastLogon;
 	private Boolean isSensitive;
 	private String operatingSystem;
-	private Map<String, ComputerUsageClassifier> usageClassifiers;
+	private List<ComputerUsageClassifier> usageClassifiers;
 
 	public UserMachine() {}
 	
@@ -72,12 +73,12 @@ public class UserMachine {
 		this.operatingSystem = operatingSystem;
 	}
 	
-	public Map<String, ComputerUsageClassifier> getUsageClassifiers() {
+	public List<ComputerUsageClassifier> getUsageClassifiers() {
 		return usageClassifiers;
 	}
 	
 	public void setUsageClassifiers(
-			Map<String, ComputerUsageClassifier> usageClassifiers) {
+			List<ComputerUsageClassifier> usageClassifiers) {
 		this.usageClassifiers = usageClassifiers;
 	}
 

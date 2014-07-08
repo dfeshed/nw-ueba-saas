@@ -132,13 +132,13 @@ public class UserServiceTest {
 		comp1.setName("HOSTNAME1");
 		comp1.setOperatingSystem("WIN");
 		when(comp1.getIsSensitive()).thenReturn(false);
-		when(comp1.getUsageClassifiersMap()).thenReturn(null);
+		when(comp1.getUsageClassifiers()).thenReturn(null);
 
 		Computer comp2 = spy(new Computer());
 		comp2.setName("HOSTNAME2");
 		comp2.setOperatingSystem("LINUX");
 		when(comp2.getIsSensitive()).thenReturn(true);
-		when(comp2.getUsageClassifiersMap()).thenReturn(null);		
+		when(comp2.getUsageClassifiers()).thenReturn(null);		
 		ArrayList<Computer> computersList = new ArrayList<Computer>();
 		computersList.add(comp1);
 		computersList.add(comp2);

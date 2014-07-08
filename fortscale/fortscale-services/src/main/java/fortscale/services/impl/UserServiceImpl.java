@@ -156,18 +156,42 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public void updateUserLastActivity(LogEventsEnum eventId, String username, DateTime dateTime){
+	public void updateUserLastActivityOfType(LogEventsEnum eventId, String username, DateTime dateTime){
 		Update update = new Update();
 		update.set(User.getLogLastActivityField(eventId), dateTime);
 		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
 	}
 	
 	@Override
-	public void updateUsersLastActivity(LogEventsEnum eventId, Map<String, Long> userLastActivityMap){
+	public void updateUsersLastActivityOfType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap){
 		Iterator<Entry<String, Long>> entries = userLastActivityMap.entrySet().iterator();
 		while(entries.hasNext()){
 			Entry<String, Long> entry = entries.next();
-			updateUserLastActivity(eventId, entry.getKey(), new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue())));
+			updateUserLastActivityOfType(eventId, entry.getKey(), new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue())));
+		}
+	}
+	
+	@Override
+	public void updateUserLastActivity(String username, DateTime maxTime){
+		Update update = new Update();
+		update.set(User.lastActivityField, maxTime);
+		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
+	}
+	
+	@Override
+	public void updateUsersLastActivity(Map<String, Long> userLastActivityMap){
+		Iterator<Entry<String, Long>> entries = userLastActivityMap.entrySet().iterator();
+		while(entries.hasNext()){
+			Entry<String, Long> entry = entries.next();
+			User user = userRepository.getLastActivityByUserName(entry.getKey());
+			if(user == null){
+				return;
+			}
+			DateTime userCurrLast = user.getLastActivity();
+			DateTime currTime = new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue()));
+			if(userCurrLast == null || currTime.isAfter(userCurrLast)){
+				updateUserLastActivity(entry.getKey(), currTime);
+			}
 		}
 	}
 	
@@ -476,7 +500,7 @@ public class UserServiceImpl implements UserService{
 				if(machine.getHostname().toUpperCase().equals(comp.getName())){
 					machine.setIsSensitive(comp.getIsSensitive());
 					machine.setOperatingSystem(comp.getOperatingSystem());
-					machine.setUsageClassifiers(comp.getUsageClassifiersMap());
+					machine.setUsageClassifiers(comp.getUsageClassifiers());
 				}
 			}
 		}

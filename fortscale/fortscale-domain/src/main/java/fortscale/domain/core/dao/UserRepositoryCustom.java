@@ -32,8 +32,10 @@ public interface UserRepositoryCustom {
 	public List<User> findByIds(Collection<String> ids);
 	public List<User> findByUsernames(Collection<String> usernames);
 	public List<User> findAllExcludeAdInfo();
-
+	
 	public User findByAdEmailAddress(EmailAddress emailAddress);
+	
+	public User getLastActivityByUserName(String userName);
 	
 	public List<User> findByAdLastnameContaining(String lastNamePrefix);
 	
@@ -54,4 +56,10 @@ public interface UserRepositoryCustom {
 	public void updateAdministratorAccount(User user, boolean isAdministratorAccount);
 	public void updateExecutiveAccount(User user, boolean isExecutiveAccount);
 	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime);
+
+	public long getNumberOfAccounts();
+	public long getNumberOfAccountsCreatedBefore(DateTime time);
+	public long getNumberOfDisabledAccounts();
+	public long getNumberOfDisabledAccountsBeforeTime(DateTime time);
+	public long getNumberOfInactiveAccounts();
 }

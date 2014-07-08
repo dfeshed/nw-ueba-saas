@@ -49,6 +49,7 @@ public class User extends AbstractDocument {
 	public static final String appField = "app";
 	public static final String logUsernameField = "logUsername";
 	public static final String logLastActivityField = "logLastActivity";
+	public static final String lastActivityField = "lastActivity";
 	public static final String usernameField = "username";
 	public static final String noDomainUsernameField = "noDomainUsername";
 	public static final String displayNameField = "displayName";
@@ -110,7 +111,8 @@ public class User extends AbstractDocument {
 	@Field(logLastActivityField)
 	Map<String, DateTime> logLastActivityMap = new HashMap<>();
 	
-	
+	@Field(lastActivityField)
+	DateTime lastActivity;
 	
 	public String getAdDn() {
 		return adDn;
@@ -314,6 +316,10 @@ public class User extends AbstractDocument {
 		return String.format("%s.%s", User.logLastActivityField,eventId.getId());
 	}
 	
+	public DateTime getLastActivity() {
+		return lastActivity;
+	}
+
 	public static String getAdInfoField(String adInfoFieldName) {
 		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
 	}
