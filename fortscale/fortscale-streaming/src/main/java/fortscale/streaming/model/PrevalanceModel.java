@@ -48,7 +48,7 @@ public class PrevalanceModel {
 		
 		// check that the value time stamp is not before the time mark
 		long millis = convertToMilliSeconds(timestamp);
-		if (isTimeMarkAfter(timestamp))
+		if (isBeforeTimeMark(timestamp))
 			return;
 		
 		// add the value to the field model
@@ -68,9 +68,14 @@ public class PrevalanceModel {
 		return model.calculateScore(value);
 	}
 	
-	public boolean isTimeMarkAfter(long timestamp) {
+	public boolean isAfterTimeMark(long timestamp) {
 		// check that the value time stamp is after the time mark
 		return (timeMark < convertToMilliSeconds(timestamp));
+	}
+	
+	public boolean isBeforeTimeMark(long timestamp) {
+		// check that the value time stamp is before the time mark
+		return (convertToMilliSeconds(timestamp) < timeMark);
 	}
 	
 }

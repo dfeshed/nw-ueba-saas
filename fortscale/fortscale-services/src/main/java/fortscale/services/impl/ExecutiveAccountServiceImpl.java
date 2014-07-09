@@ -1,12 +1,10 @@
 package fortscale.services.impl;
 import java.util.List;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.core.User;
-import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.ExecutiveAccountService;
 
 @Service("executiveAccountService")
