@@ -30,13 +30,13 @@ public class IUserTableTest {
 
 		Assert.assertEquals(expectedFieldsMap.size(), propertyDescriptors.length);
 		for(PropertyDescriptor propertyDescriptor: propertyDescriptors){
-			Assert.assertTrue(expectedFieldsMap.containsKey(propertyDescriptor.getName()));
+			Assert.assertTrue(propertyDescriptor.getName() + " is not valid", expectedFieldsMap.containsKey(propertyDescriptor.getName()));
 			Class<?> type = expectedFieldsMap.get(propertyDescriptor.getName());
 			if(type.equals(ImpalaDateTime.class)){
 				type = Long.class;
 			}
 			Class<?> actualType = propertyDescriptor.getPropertyType();
-			Assert.assertEquals(type, actualType);
+			Assert.assertEquals(propertyDescriptor.getName() + " is not of expected type", type, actualType);
 		}
 	}
 	
