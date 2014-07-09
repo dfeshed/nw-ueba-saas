@@ -80,6 +80,7 @@
 		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
 		<mavanagaiata.version>0.7.0</mavanagaiata.version>
+        <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -270,6 +271,33 @@
 
 	<build>
 		<plugins>
+
+            <!-- copy non packaged resources to target -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <!-- here the phase you need (allows mvn compile to work) -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/config</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/config</directory>
+                                    <include>*.properties</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
 			<!-- Tells maven to use the Java 7 JDK instead of its default -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -382,6 +410,9 @@
 						</execution>
 					</executions>
 				</plugin>
+
+
+
 		</plugins>
 		<pluginManagement>
 			<plugins>
