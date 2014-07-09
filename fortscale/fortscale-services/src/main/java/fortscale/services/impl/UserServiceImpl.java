@@ -112,6 +112,7 @@ public class UserServiceImpl implements UserService{
 		User user = new User();
 		user.setUsername(username);
 		user.setSearchField(createSearchField(null, username));
+		user.setWhenCreated(new Date());
 		createNewApplicationUserDetails(user, new ApplicationUserDetails(userApplication.getId(), appUsername), false);
 		return user;
 	}
@@ -411,11 +412,13 @@ public class UserServiceImpl implements UserService{
 				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
 			}
 			user.setSearchField(searchField);
+			user.setWhenCreated(userAdInfo.getWhenCreated());
 			
 			userRepository.save(user);			
 		} else{
 			Update update = new Update();
 			update.set(User.adInfoField, userAdInfo);
+			update.set(User.whenCreatedField, userAdInfo.getWhenCreated());
 			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
 				update.set(User.usernameField, username);
 			}

@@ -2,6 +2,7 @@ package fortscale.domain.core;
 
 import static com.google.common.base.Preconditions.checkNotNull; 
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -56,6 +57,7 @@ public class User extends AbstractDocument {
 	public static final String classifierScoreField = "scores";
 	public static final String followedField = "followed";
 	public static final String adInfoField = "adInfo";
+	public static final String whenCreatedField = "whenCreated";
 	public static final String userServiceAccountField = "userServiceAccount";
 	public static final String administratorAccountField = "administratorAccount";
 	public static final String executiveAccountField = "executiveAccount";
@@ -106,6 +108,9 @@ public class User extends AbstractDocument {
 	@Field(adInfoField)
 	private UserAdInfo adInfo;
 	
+	@Field(whenCreatedField)
+	private Date whenCreated;
+
 	private String adDn;
 	
 	@Field(logLastActivityField)
@@ -282,7 +287,13 @@ public class User extends AbstractDocument {
 		tags.remove(tag);
 	}
 	
-	
+	public Date getWhenCreated() {
+		return whenCreated;
+	}
+
+	public void setWhenCreated(Date whenCreated) {
+		this.whenCreated = whenCreated;
+	}
 	
 	public static String getClassifierScoreField(String classifierId) {
 		return String.format("%s.%s", User.classifierScoreField, classifierId);

@@ -89,6 +89,7 @@ public class ComputerServiceImpl implements ComputerService {
 			computer = new Computer();
 			computer.setName(hostname.toUpperCase());
 			computer.setTimestamp(new Date());
+			computer.setWhenCreated(computer.getTimestamp());
 			
 			// classify the new computer
 			endpointDetectionService.classifyComputer(computer);
