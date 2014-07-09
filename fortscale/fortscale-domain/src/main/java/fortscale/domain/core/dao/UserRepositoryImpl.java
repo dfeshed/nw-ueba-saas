@@ -401,15 +401,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		public EachAddToSetUpdate addToSetEach(String key, List<String> values) {
 			// build a bson array from values
 			BasicDBList eachList = new BasicDBList();
-	        for (String value : values) {
-	            BasicDBObject dbObject = (BasicDBObject)com.mongodb.util.JSON.parse(value);
-	            eachList.add(dbObject);
-	        }
-	        
-	        // create a custom addToSet operator
-	        this.addToSet(key, BasicDBObjectBuilder.start("$each", eachList).get());
-	        
-	        return this;
+			for (String value : values) {
+				BasicDBObject dbObject = (BasicDBObject)com.mongodb.util.JSON.parse(value);
+				eachList.add(dbObject);
+			}
+			
+			// create a custom addToSet operator
+			this.addToSet(key, BasicDBObjectBuilder.start("$each", eachList).get());
+			
+			return this;
 		}
 	}
 
