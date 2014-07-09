@@ -280,7 +280,8 @@
                     <execution>
                         <id>copy-resources</id>
                         <!-- here the phase you need (allows mvn compile to work) -->
-                        <phase>package</phase>
+                        <!-- phase clean create the folder at target-->
+                        <phase>clean</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -289,7 +290,6 @@
                             <resources>
                                 <resource>
                                     <directory>src/main/config</directory>
-                                    <include>*.properties</include>
                                 </resource>
                             </resources>
                         </configuration>
