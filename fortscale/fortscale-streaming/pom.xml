@@ -272,32 +272,6 @@
 	<build>
 		<plugins>
 
-            <!-- copy non packaged resources to target -->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <!-- here the phase you need (allows mvn compile to work) -->
-                        <!-- phase clean create the folder at target-->
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/config</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/config</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-
 			<!-- Tells maven to use the Java 7 JDK instead of its default -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
