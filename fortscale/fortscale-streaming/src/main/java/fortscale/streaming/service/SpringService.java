@@ -3,6 +3,8 @@ package fortscale.streaming.service;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.Collection;
+
 /**
  * Singleton spring context service wrapper
  */
@@ -38,5 +40,11 @@ public class SpringService {
 	public <T> T resolve(Class<T> requiredType) {
 		return context.getBean(requiredType);
 	}
+
+    public <T> Collection<T> resolveAll(Class<T> requiredType) {
+        return context.getBeansOfType(requiredType).values();
+    }
+
+
 	
 }
