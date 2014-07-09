@@ -385,7 +385,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			update.pullAll(User.tagsField, tagsToRemove.toArray());
 		
 		// perform the update on mongodb
-		mongoTemplate.updateMulti(usernameCriteria, update, User.class);
+		mongoTemplate.updateFirst(usernameCriteria, update, User.class);
 	}
 
 }
