@@ -84,21 +84,18 @@ public class ComputerServiceImpl implements ComputerService {
 		// get the computer from the repository, use upper case for host name
 		// as we case insensitive search
 		Computer computer = repository.findByName(hostname.toUpperCase());
-		boolean created = false;
 		if (computer==null) {
 			// create a new computer instance type for the discovered host
 			computer = new Computer();
 			computer.setName(hostname.toUpperCase());
 			computer.setTimestamp(new Date());
 			
-			created = true;
-		} 
-		// check if classification update are needed, if so update it in the repository
-		// and return the usage type for the computer
-		boolean changed = endpointDetectionService.classifyComputer(computer);
-		if (created || changed) {
+			// classify the new computer
+			endpointDetectionService.classifyComputer(computer);
+			
+			// save the new computer
 			try {
-				repository.save(computer);
+				computer = repository.save(computer);
 			} catch (org.springframework.dao.DuplicateKeyException e) {
 				// safe to ignore as it is saved by some thread that beat us to it
 				logger.warn("race condition encountered when trying to save computer {}", computer.getName());
