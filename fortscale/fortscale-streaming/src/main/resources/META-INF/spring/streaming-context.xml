@@ -14,7 +14,7 @@
 	<context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
 
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
- 		<property name="location" value="file:config/fortscale-overriding-streaming.properties"/>
+ 		<property name="location" value="file:./config/fortscale-overriding-streaming.properties"/>
  		<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
  		<property name="ignoreUnresolvablePlaceholders" value="true"/>
  		<property name="localOverride" value="true"/>
