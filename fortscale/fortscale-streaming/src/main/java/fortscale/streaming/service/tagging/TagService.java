@@ -1,12 +1,18 @@
 package fortscale.streaming.service.tagging;
 
 import fortscale.domain.core.ComputerUsageType;
+import fortscale.services.UserService;
+import fortscale.streaming.model.prevalance.PrevalanceModel;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.SpringService;
+import org.apache.samza.storage.kv.Entry;
+import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by idanp on 7/8/2014.
@@ -17,6 +23,9 @@ public class TagService {
     private Collection<ServiceAccountTagging> implementationList;
     private KeyValueStore<String, AccountMachineAccess> store;
     private Long daysBackForArchive;
+
+    @Autowired
+    private UserService userHandler;
 
 
 
@@ -59,5 +68,29 @@ public class TagService {
         {
             impl.tag(targetAccount);
         }
+    }
+
+    public void exportTags()
+    {
+
+        KeyValueIterator iter =  this.store.all();
+
+        while (iter.hasNext())
+        {
+            Entry<String, AccountMachineAccess> entry  = ( Entry<String, AccountMachineAccess>) iter.next();
+            if(entry.getValue().getIsDirty())
+            {
+                this.userHandler.updateTags(entry.getKey(),entry.getValue().getTags());
+            }
+        }
+
+
+
+        AccountMachineAccess ama = this.store.get(userName);
+        if(ama == null)
+            return null;
+        return ama.getTagsIfDirty();
+
+
     }
 }
