@@ -57,7 +57,6 @@ public interface UserRepositoryCustom {
 	public void updateExecutiveAccount(User user, boolean isExecutiveAccount);
 	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime);
 
-	public long getNumberOfAccounts();
 	public long getNumberOfAccountsCreatedBefore(DateTime time);
 	public long getNumberOfDisabledAccounts();
 	public long getNumberOfDisabledAccountsBeforeTime(DateTime time);

@@ -101,13 +101,6 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 	@Override
 	public long getNumberOfSensitiveMachines(){
 		return mongoTemplate.count(query(where(Computer.SENSITIVE_MACHINE_FIELD).is(true)), Computer.class);
-	}
-
-	@Override
-	public long getNumberOfMachines() {
-		//temporary implementation
-		return mongoTemplate.count(query(where(Computer.WHEN_CREATED_FIELD).ne(null)), Computer.class);
-	}
-	
+	}	
 	
 }
