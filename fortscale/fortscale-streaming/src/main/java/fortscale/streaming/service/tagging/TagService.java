@@ -84,13 +84,5 @@ public class TagService {
             }
         }
 
-
-
-        AccountMachineAccess ama = this.store.get(userName);
-        if(ama == null)
-            return null;
-        return ama.getTagsIfDirty();
-
-
     }
 }
