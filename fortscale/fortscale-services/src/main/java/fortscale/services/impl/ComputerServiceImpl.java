@@ -73,7 +73,7 @@ public class ComputerServiceImpl implements ComputerService {
 		mergeComputerInfo(saved, computer);
 		
 		// re-calculate the computer classification for new or updated computer info
-		endpointDetectionService.classifyComputer(saved); 
+		endpointDetectionService.classifyNewComputer(saved); 
 		
 		try {
 			repository.save(saved);
@@ -96,7 +96,7 @@ public class ComputerServiceImpl implements ComputerService {
 			computer.setTimestamp(new Date());
 			
 			// classify the new computer
-			endpointDetectionService.classifyComputer(computer);
+			endpointDetectionService.classifyNewComputer(computer);
 			
 			// save the new computer
 			try {
