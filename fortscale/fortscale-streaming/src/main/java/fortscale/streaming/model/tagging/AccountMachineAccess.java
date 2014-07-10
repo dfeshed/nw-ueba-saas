@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.domain.core.ComputerUsageType;
+import fortscale.domain.core.User;
+import fortscale.services.UserService;
+import fortscale.utils.TimestampUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by idanp on 7/7/2014.
@@ -24,6 +25,9 @@ public class AccountMachineAccess {
     private Map<String,MachineState> destinations;
     private Map<String,Boolean> tags;
     private boolean isDirty;
+    private long lastEventTimeStamp;
+
+
 
 
 
@@ -80,6 +84,12 @@ public class AccountMachineAccess {
     public void setIsDirty(boolean isDirty) {
         this.isDirty = isDirty;
     }
+
+    public void setLastEventTimeStamp(long lastEventTimeStamp) {
+
+        this.lastEventTimeStamp =   TimestampUtils.convertToMilliSeconds(lastEventTimeStamp);
+    }
+
 
 
     //Add tag to the tag set
@@ -161,6 +171,47 @@ public class AccountMachineAccess {
         }
 
     }
+
+
+
+    public void dilutionLists(Long daysBack)
+    {
+        long startTimeStampToKeep = this.lastEventTimeStamp - (daysBack*24*60*60*1000);
+
+        //dilution of the source list
+        Iterator<Map.Entry<String, MachineState>> sourceIter = sources.entrySet().iterator();
+
+        while(sourceIter.hasNext())
+        {
+            Map.Entry<String, MachineState> entry  = sourceIter.next();
+
+            //remove  the source if he below the startTimeStampToKeep
+            if(entry.getValue().getLastEventTimeStamp() < startTimeStampToKeep)
+            {
+                this.sources.remove(entry.getKey());
+            }
+
+        }
+
+        //dilution of the destination list
+        Iterator<Map.Entry<String, MachineState>> destIter = destinations.entrySet().iterator();
+
+        while(destIter.hasNext())
+        {
+            Map.Entry<String, MachineState> entry  = destIter.next();
+
+            //remove  the source if he below the startTimeStampToKeep
+            if(entry.getValue().getLastEventTimeStamp() < startTimeStampToKeep)
+            {
+                this.sources.remove(entry.getKey());
+            }
+
+        }
+
+
+    }
+
+
 
 
 }
