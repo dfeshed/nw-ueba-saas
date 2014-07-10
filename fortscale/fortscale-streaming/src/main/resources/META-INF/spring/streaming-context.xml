@@ -59,6 +59,8 @@
         <property name="localOverride" value="true"/>
     </bean>
 
+    <context:annotation-config />
+
     -->
 
 
