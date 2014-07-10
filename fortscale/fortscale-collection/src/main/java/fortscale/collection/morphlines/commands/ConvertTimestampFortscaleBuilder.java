@@ -21,7 +21,6 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Fields;
 
-import com.google.common.base.Joiner;
 import com.typesafe.config.Config;
 
 /**
@@ -56,11 +55,8 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     private final String outputFormatField;
     
     
-    
-    
-    private final List<SimpleDateFormat> inputFormats = new ArrayList<SimpleDateFormat>();
-    private SimpleDateFormat outputFormat = null;
-    private String inputFormatsDebugString = null;
+    Locale inputLocale = null;
+    Locale outputLocale = null;
     
     private static final String NATIVE_SOLR_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; // e.g. 2007-04-26T08:05:04.789Z
     private static final SimpleDateFormat UNIX_TIME_IN_MILLIS = new SimpleDateFormat("'unixTimeInMillis'");
@@ -79,14 +75,19 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       this.inputFormatsField = getConfigs().getStringList(config, "inputFormats", DateUtil.DEFAULT_DATE_FORMATS);
       this.outputTimezoneField= config.hasPath("outputTimezoneField") ? getConfigs().getString(config, "outputTimezoneField") : "UTC";
       this.outputLocaleField=getConfigs().getString(config, "outputLocale", "");  
-     this.outputFormatField = getConfigs().getString(config, "outputFormat", NATIVE_SOLR_FORMAT);
+      this.outputFormatField = getConfigs().getString(config, "outputFormat", NATIVE_SOLR_FORMAT);
+      inputLocale = getLocale(this.inputLocaleField);
+      outputLocale = getLocale(this.outputLocaleField);
+     
+      validateArguments();
     }
         
     @Override
     protected boolean doProcess(Record record) {
     	String tzInput = (String)record.getFirstValue(this.inputTimezoneField);
         TimeZone inputTimeZone = getTimeZone(tzInput == null ? "UTC" : tzInput);
-        Locale inputLocale = getLocale(this.inputLocaleField);
+        
+        List<SimpleDateFormat> inputFormats = new ArrayList<SimpleDateFormat>();
         for (String inputFormat : this.inputFormatsField) {
           SimpleDateFormat dateFormat = getUnixTimeFormat(inputFormat, inputTimeZone);
           if (dateFormat == null) {
@@ -94,31 +95,19 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
             dateFormat.setTimeZone(inputTimeZone);
             dateFormat.set2DigitYearStart(DateUtil.DEFAULT_TWO_DIGIT_YEAR_START);
           }
-          this.inputFormats.add(dateFormat);
+          inputFormats.add(dateFormat);
         }
     	String tzOutput = (String)record.getFirstValue(this.outputTimezoneField);
         TimeZone outputTimeZone = getTimeZone(tzOutput == null ? "UTC" : tzOutput);
-        Locale outputLocale = getLocale(this.outputLocaleField);
+        
         String outputFormatStr = this.outputFormatField;
-        SimpleDateFormat dateFormat = getUnixTimeFormat(outputFormatStr, outputTimeZone);
-        if (dateFormat == null) {
-          dateFormat = new SimpleDateFormat(outputFormatStr, outputLocale);
-          dateFormat.setTimeZone(outputTimeZone);
+        SimpleDateFormat outputFormat = getUnixTimeFormat(outputFormatStr, outputTimeZone);
+        if (outputFormat == null) {
+        	outputFormat = new SimpleDateFormat(outputFormatStr, outputLocale);
+        	outputFormat.setTimeZone(outputTimeZone);
         }
-        this.outputFormat = dateFormat;
 
-        List<String> inputFormatsStringList = new ArrayList<String>();
-        for (SimpleDateFormat inputFormat : inputFormats) {
-          // SimpleDateFormat.toString() doesn't print anything useful
-          inputFormatsStringList.add(inputFormat.toPattern()); 
-        }
-        this.inputFormatsDebugString = inputFormatsStringList.toString();
-
-        if (LOG.isTraceEnabled()) {
-          LOG.trace("inputFormatsDebugString: {}", inputFormatsDebugString);
-          LOG.trace("availableTimeZoneIDs: {}", Joiner.on("\n").join(TimeZone.getAvailableIDs()));
-          LOG.trace("availableLocales: {}", Joiner.on("\n").join(Locale.getAvailableLocales()));
-        }    	
+        
       ParsePosition pos = new ParsePosition(0);
       ListIterator iter = record.get(fieldName).listIterator();
       while (iter.hasNext()) {
@@ -153,7 +142,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
           }
         }
         if (!foundMatchingFormat) {
-          LOG.debug("Cannot parse timestamp '{}' with any of these input formats: {}", timestamp, inputFormatsDebugString);
+          LOG.debug("Cannot parse timestamp '{}' ", timestamp);
           return false;
         }
       }
@@ -189,22 +178,26 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     }
     
     private TimeZone getTimeZone(String timeZoneID) {
-      if (!Arrays.asList(TimeZone.getAvailableIDs()).contains(timeZoneID)) {
-        throw new MorphlineCompilationException("Unknown timezone: " + timeZoneID, getConfig());
+      TimeZone zone = TimeZone.getTimeZone(timeZoneID);
+      // check if the zone is GMT and the timeZoneID is not GMT than it means that the 
+      // TimeZone.getTimeZone did not recieve a valid id
+      if (!zone.getID().equalsIgnoreCase(timeZoneID)) {
+    	  throw new MorphlineCompilationException("Unknown timezone: " + timeZoneID, getConfig());
+      } else {
+    	  return zone;
       }
-      return TimeZone.getTimeZone(timeZoneID);
     }
     
     private Locale getLocale(String name) {
-      for (Locale locale : Locale.getAvailableLocales()) {
-        if (locale.toString().equals(name)) {
-          return locale;
+    	if (name.equals(Locale.ROOT.toString())) {
+    		return Locale.ROOT;
+        } else {
+        	for (Locale locale : Locale.getAvailableLocales()) {
+        		if (locale.toString().equals(name)) {
+        			return locale;
+        		}
+        	}
         }
-      }
-      assert Locale.ROOT.toString().equals("");
-      if (name.equals(Locale.ROOT.toString())) {
-        return Locale.ROOT;
-      }
       throw new MorphlineCompilationException("Unknown locale: " + name, getConfig());
     }
     

@@ -132,7 +132,7 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 				
 			// skip events that occur before the model time mark in case the task is configured
 			// to perform both model computation and scoring (the normal case)
-			boolean afterTimeMark = model.isTimeMarkAfter(timestamp);
+			boolean afterTimeMark = model.isAfterTimeMark(timestamp);
 			if (!afterTimeMark && !skipModel) {
 				skippedMessageCount.inc();
 				return;

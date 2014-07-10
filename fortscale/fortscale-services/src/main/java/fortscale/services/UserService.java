@@ -48,9 +48,15 @@ public interface UserService {
 
 	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
 
-	public void updateUserLastActivity(LogEventsEnum eventId, String username,	DateTime dateTime);
+	public void updateUserLastActivityOfType(LogEventsEnum eventId, String username,	DateTime dateTime);
 	
-	public void updateUsersLastActivity(LogEventsEnum eventId, Map<String, Long> userLastActivityMap);
+	public void updateUsersLastActivityOfType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap);
+	
+	public void updateUsersLastActivity(Map<String, Long> userLastActivityMap);
+	
+	public void updateUserLastActivity(String username, DateTime dateTime);
 
 	public DateTime findLastActiveTime(LogEventsEnum eventId);
+	
+	public void updateTags(String username, Map<String, Boolean> tagSettings);
 }

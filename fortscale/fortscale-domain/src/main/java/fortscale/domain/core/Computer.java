@@ -1,9 +1,8 @@
 package fortscale.domain.core;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.IndexDirection;
@@ -55,7 +54,7 @@ public class Computer extends AbstractDocument {
 	private Date whenCreated;
 	
 	@Field(USAGE_CLASSIFIERS_FIELD)
-	private Map<String, ComputerUsageClassifier> usageClassifiers = new HashMap<String, ComputerUsageClassifier>();
+	private List<ComputerUsageClassifier> usageClassifiers = new ArrayList<ComputerUsageClassifier>();
 	
 	@Field(TIMESTAMP_FIELD)
 	private Date timestamp;
@@ -121,10 +120,18 @@ public class Computer extends AbstractDocument {
 		this.timestamp = timestamp;
 	}
 	public ComputerUsageClassifier getUsageClassifier(String classifierName) {
-		return usageClassifiers.get(classifierName);
+		for (ComputerUsageClassifier compUsageClassifier : usageClassifiers){
+			if(compUsageClassifier.getClassifierName().equals(classifierName)){
+				return compUsageClassifier;
+			}
+		}
+		return null;
+	}
+	public static String getUsageClassfierField (String classifierFieldName ) {
+		return String.format("%s.%s", Computer.USAGE_CLASSIFIERS_FIELD, classifierFieldName);
 	}
 	public void putUsageClassifier(ComputerUsageClassifier classifier) {
-		this.usageClassifiers.put(classifier.getClassifierName(), classifier);
+		this.usageClassifiers.add(classifier);
 	}	
 	public void removeUsageClassifier(String classifier) {
 		this.usageClassifiers.remove(classifier);
@@ -135,18 +142,13 @@ public class Computer extends AbstractDocument {
 	
 	public ComputerUsageType getUsageType() {
 		// go over the usage classifiers and return the first one that is not unknown
-		for (ComputerUsageClassifier classifier : usageClassifiers.values())
+		for (ComputerUsageClassifier classifier : usageClassifiers)
 			if (classifier.getUsageType()!=ComputerUsageType.Unknown)
 				return classifier.getUsageType();
 		return ComputerUsageType.Unknown;
 	}
 	
-	public Collection<ComputerUsageClassifier> getUsageClassifiers() {
-		return this.usageClassifiers.values();
-	}
-	
-	public Map<String, ComputerUsageClassifier> getUsageClassifiersMap() {
+	public List<ComputerUsageClassifier> getUsageClassifiers() {
 		return usageClassifiers;
 	}
-	
 }
