@@ -40,14 +40,13 @@ public class TagService {
 
     }
 
-    public void handleAccount (String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType )
+    public void handleAccount(String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType )
     {
         //add or update the account at the store key value
         //check if need to create instance of AccountAccessMachine for that account
         AccountMachineAccess  currentAccount = store.get(userName);
         if (currentAccount == null) {
             currentAccount = new AccountMachineAccess(userName);
-            this.store.put(userName, currentAccount);
         }
 
         currentAccount.setLastEventTimeStamp(timeStamp);
@@ -60,9 +59,11 @@ public class TagService {
 
         //tag the account
         tagAccount(currentAccount);
+        
+        this.store.put(userName, currentAccount);
     }
 
-    public void tagAccount(AccountMachineAccess targetAccount)
+    private void tagAccount(AccountMachineAccess targetAccount)
     {
         for(ServiceAccountTagging impl : this.implementationList)
         {
@@ -72,14 +73,11 @@ public class TagService {
 
     public void exportTags()
     {
-
         KeyValueIterator iter =  this.store.all();
 
-        while (iter.hasNext())
-        {
-            Entry<String, AccountMachineAccess> entry  = ( Entry<String, AccountMachineAccess>) iter.next();
-            if(entry.getValue().getIsDirty())
-            {
+        while (iter.hasNext()) {
+            Entry<String, AccountMachineAccess> entry  = (Entry<String, AccountMachineAccess>) iter.next();
+            if(entry.getValue().getIsDirty()) {
                 this.userHandler.updateTags(entry.getKey(),entry.getValue().getTags());
             }
         }

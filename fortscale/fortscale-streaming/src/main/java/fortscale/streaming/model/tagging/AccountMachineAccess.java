@@ -87,7 +87,7 @@ public class AccountMachineAccess {
 
     public void setLastEventTimeStamp(long lastEventTimeStamp) {
 
-        this.lastEventTimeStamp =   TimestampUtils.convertToMilliSeconds(lastEventTimeStamp);
+        this.lastEventTimeStamp = Math.max(lastEventTimeStamp, TimestampUtils.convertToMilliSeconds(lastEventTimeStamp));
     }
 
 
@@ -178,23 +178,14 @@ public class AccountMachineAccess {
     {
         long startTimeStampToKeep = this.lastEventTimeStamp - (daysBack*24*60*60*1000);
 
-        //dilution of the source list
-        Iterator<Map.Entry<String, MachineState>> sourceIter = sources.entrySet().iterator();
-
-        while(sourceIter.hasNext())
-        {
-            Map.Entry<String, MachineState> entry  = sourceIter.next();
-
-            //remove  the source if he below the startTimeStampToKeep
-            if(entry.getValue().getLastEventTimeStamp() < startTimeStampToKeep)
-            {
-                this.sources.remove(entry.getKey());
-            }
-
-        }
-
-        //dilution of the destination list
-        Iterator<Map.Entry<String, MachineState>> destIter = destinations.entrySet().iterator();
+        diluateList(sources, startTimeStampToKeep);
+        diluateList(destinations, startTimeStampToKeep);
+    }
+    
+    private void diluateList(Map<String, MachineState> list, long startTimeStampToKeep) {
+    	
+    	Iterator<Map.Entry<String, MachineState>> destIter = list.entrySet().iterator();
+    	List<String> keysToRemove = new LinkedList<String>();
 
         while(destIter.hasNext())
         {
@@ -202,13 +193,13 @@ public class AccountMachineAccess {
 
             //remove  the source if he below the startTimeStampToKeep
             if(entry.getValue().getLastEventTimeStamp() < startTimeStampToKeep)
-            {
-                this.sources.remove(entry.getKey());
-            }
-
+            	keysToRemove.add(entry.getKey());
         }
-
-
+        
+        if (!keysToRemove.isEmpty()) {
+        	for (String key : keysToRemove) 
+        		list.remove(key);
+        }
     }
 
 
