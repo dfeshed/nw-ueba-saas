@@ -32,16 +32,6 @@
 	</chain>
 	<chain>
 		<first>
-			<name>Fetch</name>
-			<group>DHCP</group>
-		</first>
-		<second>
-			<name>ETL</name>
-			<group>DHCP</group>
-		</second>
-	</chain>
-	<chain>
-		<first>
 			<name>User_Fetch</name>
 			<group>AD</group>
 		</first>
