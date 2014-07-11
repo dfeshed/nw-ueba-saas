@@ -16,4 +16,9 @@ public interface ComputerService {
 	 * in the system.
 	 */
 	String getClusterGroupNameForHostname(String hostname);
+	
+	/**
+	 * Run classification on all computers
+	 */
+	void classifyAllComputers();
 }
