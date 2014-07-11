@@ -46,17 +46,16 @@ public class UserTopEvents {
 			eventScores.add(new EventScore(eventTimeInMillis, score));
 			isUpdated = true;
 		} else{
-			double newEventScoreWithTimeDecay = timeDecayScore(score, eventTimeInMillis);
-			double minScoreWithTimeDecay = timeDecayScore(eventScores.get(0).getScore(), eventScores.get(0).getEventTime());
+			double minScoreWithTimeDecay = timeDecayScore(eventScores.get(0).getScore(), eventScores.get(0).getEventTime(), eventTimeInMillis);
 			int eventWithMinScoreIndex = 0;
 			for(int i = 1; i < eventScores.size(); i++){
-				double scoreWithTimeDecay = timeDecayScore(eventScores.get(i).getScore(), eventScores.get(i).getEventTime());
+				double scoreWithTimeDecay = timeDecayScore(eventScores.get(i).getScore(), eventScores.get(i).getEventTime(), eventTimeInMillis);
 				if(scoreWithTimeDecay < minScoreWithTimeDecay){
 					minScoreWithTimeDecay = scoreWithTimeDecay;
 					eventWithMinScoreIndex = i;
 				}
 			}
-			if(minScoreWithTimeDecay < newEventScoreWithTimeDecay){
+			if(minScoreWithTimeDecay < score){
 				eventScores.set(eventWithMinScoreIndex, new EventScore(eventTimeInMillis, score));
 				isUpdated = true;
 			}
@@ -65,10 +64,10 @@ public class UserTopEvents {
 		return isUpdated;
 	}
 	
-	public double timeDecayScore(double score, long eventTimeInMillis){
+	public double timeDecayScore(double score, long eventTimeInMillis, long currentTimeInMillis){
 		// in order to maintain a fixed linear decay for all events, we reduce
 		// half a point from the score of an events for each passing day
-		double decayVal = (System.currentTimeMillis() - eventTimeInMillis) / (MILLIS_IN_DAY*2.0);
+		double decayVal = (currentTimeInMillis - eventTimeInMillis) / (MILLIS_IN_DAY*2.0);
 		return Math.max(0.0, score - decayVal);//Math.min( Math.exp( - ( System.currentTimeMillis() - eventTimeInMillis )/(MILLIS_IN_DAY*50.0) ), 1.0 );
 	}
 
@@ -80,17 +79,19 @@ public class UserTopEvents {
 		this.eventType = eventType;
 	}
 	
-	public double calculateUserScore(){
+	public double calculateUserScore(long curTimeInMillis){
 		if(eventScores.size() == 0){
 			return 0;
 		}
 		double sum = 0;
 		for(EventScore eventScore: eventScores){
-			sum += timeDecayScore(eventScore.getScore(), eventScore.getEventTime());
+			sum += timeDecayScore(eventScore.getScore(), eventScore.getEventTime(), System.currentTimeMillis());
 		}
 		
 		return sum / eventScores.size();
 	}
+	
+	
 
 	public double getLastUpdatedScore() {
 		return lastUpdatedScore;
