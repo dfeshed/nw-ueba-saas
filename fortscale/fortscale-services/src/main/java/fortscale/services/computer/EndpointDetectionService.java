@@ -10,4 +10,9 @@ public interface EndpointDetectionService {
 	 * @return a value indicating if a change to computer classification was made 
 	 */
 	boolean classifyComputer(Computer computer);
+	
+	/**
+	 * Classify a new computer using configuration based heuristics only
+	 */
+	boolean classifyNewComputer(Computer computer);
 }
