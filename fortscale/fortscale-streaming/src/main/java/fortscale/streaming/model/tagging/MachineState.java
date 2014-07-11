@@ -19,6 +19,7 @@ public class MachineState {
     private String hostName;
     private ComputerUsageType type;
     private long lastEventTimeStamp;
+    private boolean isSensitiveMachine;
 
 
 
@@ -52,9 +53,11 @@ public class MachineState {
         this.lastEventTimeStamp = lastEventTimeStamp;
     }
 
+    public boolean isSensitiveMachine() {
+        return isSensitiveMachine;
+    }
 
-
-
-
-
+    public void setSensitiveMachine(boolean isSensitiveMachine) {
+        this.isSensitiveMachine = isSensitiveMachine;
+    }
 }

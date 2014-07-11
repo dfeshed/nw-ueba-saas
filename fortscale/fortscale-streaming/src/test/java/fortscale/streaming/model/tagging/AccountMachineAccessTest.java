@@ -21,14 +21,14 @@ public class AccountMachineAccessTest {
 
         String tag = "Desktops";
 
-        amc.addTag(tag);
+        amc.addTag(tag,true);
 
         assertTrue(amc.getTags().get(tag).booleanValue() && amc.getIsDirty());
 
 
         //case 2 - adding tag that already exist (ignore it )
         amc.setIsDirty(false);
-        amc.addTag(tag);
+        amc.addTag(tag,true);
 
         assertTrue(amc.getTags().get(tag).booleanValue() && !amc.getIsDirty());
 
@@ -94,7 +94,7 @@ public class AccountMachineAccessTest {
 
 
         //case 1 - add new destination to sources list
-        amc.addDestination(hostName,currentTime,type);
+        amc.addDestination(hostName,currentTime,type,false);
         assertTrue(amc.getDestinations().get(hostName).getHostName() == hostName);
         assertTrue(amc.getDestinations().get(hostName).getLastEventTimeStamp() == currentTime);
         assertTrue(amc.getDestinations().get(hostName).getType() == type);
@@ -103,7 +103,7 @@ public class AccountMachineAccessTest {
         //case 2 - add destination that already existing with newer time stamp (update time stamp)
         amc.setIsDirty(false);
         long newTime = currentTime + 60000;
-        amc.addDestination(hostName,newTime,type);
+        amc.addDestination(hostName,newTime,type,false);
 
         assertTrue(amc.getDestinations().get(hostName).getHostName() == hostName);
         assertTrue(amc.getDestinations().get(hostName).getLastEventTimeStamp() == newTime);
@@ -115,7 +115,7 @@ public class AccountMachineAccessTest {
 
         //case 3 - add destination that already exist with oldest time stamp (ignore)
         long oldTime = currentTime - 120000;
-        amc.addDestination(hostName,oldTime,type);
+        amc.addDestination(hostName,oldTime,type,false);
 
         assertTrue(amc.getDestinations().get(hostName).getHostName() == hostName);
         assertTrue(amc.getDestinations().get(hostName).getLastEventTimeStamp() == newTime);
@@ -144,17 +144,17 @@ public class AccountMachineAccessTest {
         amc.addSource("sourceHost3",timestamp,ComputerUsageType.Desktop);
 
         //create 6 old dest ( 3 days back )
-        amc.addDestination("destHost1",threeDaysBack,ComputerUsageType.Desktop);
-        amc.addDestination("destHost2",threeDaysBack,ComputerUsageType.Desktop);
-        amc.addDestination("destHost3",threeDaysBack,ComputerUsageType.Desktop);
-        amc.addDestination("destHost4",threeDaysBack,ComputerUsageType.Desktop);
-        amc.addDestination("destHost5",threeDaysBack,ComputerUsageType.Desktop);
-        amc.addDestination("destHost6",threeDaysBack,ComputerUsageType.Desktop);
+        amc.addDestination("destHost1",threeDaysBack,ComputerUsageType.Desktop,false);
+        amc.addDestination("destHost2",threeDaysBack,ComputerUsageType.Desktop,false);
+        amc.addDestination("destHost3",threeDaysBack,ComputerUsageType.Desktop,false);
+        amc.addDestination("destHost4",threeDaysBack,ComputerUsageType.Desktop,false);
+        amc.addDestination("destHost5",threeDaysBack,ComputerUsageType.Desktop,false);
+        amc.addDestination("destHost6",threeDaysBack,ComputerUsageType.Desktop,false);
 
         //create 3 new dest
-        amc.addDestination("destHost1",timestamp,ComputerUsageType.Desktop);
-        amc.addDestination("destHost2",timestamp,ComputerUsageType.Desktop);
-        amc.addDestination("destHost3",timestamp,ComputerUsageType.Desktop);
+        amc.addDestination("destHost1",timestamp,ComputerUsageType.Desktop,false);
+        amc.addDestination("destHost2",timestamp,ComputerUsageType.Desktop,false);
+        amc.addDestination("destHost3",timestamp,ComputerUsageType.Desktop,false);
 
         amc.dilutionLists(0l);
 

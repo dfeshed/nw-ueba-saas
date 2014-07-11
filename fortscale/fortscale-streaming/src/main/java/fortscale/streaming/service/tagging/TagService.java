@@ -5,6 +5,8 @@ import fortscale.services.UserService;
 import fortscale.streaming.model.prevalance.PrevalanceModel;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.dao.Model;
+import fortscale.streaming.service.dao.State;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -40,7 +42,7 @@ public class TagService {
 
     }
 
-    public void handleAccount(String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType )
+    public void handleAccount(String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType,boolean isSensetiveMachine )
     {
         //add or update the account at the store key value
         //check if need to create instance of AccountAccessMachine for that account
@@ -53,7 +55,7 @@ public class TagService {
 
         //Add source and destination machines to the account
         currentAccount.addSource(sourceHostName,timeStamp , sourceComputerType);
-        currentAccount.addDestination(destHostName, timeStamp, destComputerType);
+        currentAccount.addDestination(destHostName, timeStamp, destComputerType,isSensetiveMachine);
         currentAccount.dilutionLists(this.daysBackForArchive);
 
 
@@ -82,5 +84,11 @@ public class TagService {
             }
         }
 
+    }
+
+
+    private State convertToDTO(String username, AccountMachineAccess state) {
+        State dto = new State( username, state);
+        return dto;
     }
 }

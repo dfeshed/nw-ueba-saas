@@ -90,24 +90,18 @@ public class AccountMachineAccess {
         this.lastEventTimeStamp = Math.max(lastEventTimeStamp, TimestampUtils.convertToMilliSeconds(lastEventTimeStamp));
     }
 
-
+    public long getLastEventTimeStamp() {
+        return lastEventTimeStamp;
+    }
 
     //Add tag to the tag set
-    public void addTag(String tag)
+    public void addTag(String tag, boolean flag)
     {
-        if(this.tags.get(tag) != null ) {
+        if(this.tags.get(tag) == null || (this.tags.get(tag) != null && this.tags.get(tag) != flag))
+            this.isDirty = true;
 
-            if (!this.tags.get(tag).booleanValue()) {
-                this.tags.put(tag, true);
-                this.isDirty = true;
-            }
-        }
+        this.tags.put(tag,flag);
 
-        else
-        {
-            this.tags.put(tag,true);
-            this.setIsDirty(true);
-        }
 
     }
 
@@ -148,7 +142,7 @@ public class AccountMachineAccess {
     }
 
     //Add new machine to the destination list
-    public void addDestination(String hostName , long timeStamp, ComputerUsageType type)
+    public void addDestination(String hostName , long timeStamp, ComputerUsageType type,boolean isSensetiveMachine)
     {
 
         //retrive the machine state from the destination map by hostName
@@ -160,18 +154,23 @@ public class AccountMachineAccess {
             if(machineState.getLastEventTimeStamp() < timeStamp)
                 machineState.setLastEventTimeStamp(timeStamp);
 
+            //update the isSensetiveMachine flag (if the machine was sensitive in the past dont change the flag
+            //else update the flag
+            if(!machineState.isSensitiveMachine())
+                machineState.setSensitiveMachine(isSensetiveMachine);
+
         }
         else
         {
             MachineState newMachineState = new MachineState(hostName);
             newMachineState.setLastEventTimeStamp(timeStamp);
             newMachineState.setType(type);
+            newMachineState.setSensitiveMachine(isSensetiveMachine);
             this.destinations.put(hostName,newMachineState);
 
         }
 
     }
-
 
 
     public void dilutionLists(Long daysBack)

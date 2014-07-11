@@ -9,11 +9,21 @@ import org.springframework.beans.factory.annotation.Value;
 public class SweeperTagImpl implements ServiceAccountTagging {
 
 
+
+
     @Value("${sweeperThreshold}") //get the value from fortscale-overriding-streaming.properties file
     private Double threshold;
 
     public SweeperTagImpl() {
 
+    }
+
+    public Double getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(Double threshold) {
+        this.threshold = threshold;
     }
 
 
@@ -26,8 +36,7 @@ public class SweeperTagImpl implements ServiceAccountTagging {
         //Get the number of destination for that account (the distinct forced at the insertion )
         int numOfDistinctDestinations = account.getDestinations().size();
 
-        if(numOfDistinctDestinations >= threshold)
-            account.addTag("Sweeper");
+        account.addTag("Sweeper",(numOfDistinctDestinations >= threshold));
 
 
 
