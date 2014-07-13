@@ -588,7 +588,7 @@ public class UserServiceImpl implements UserService{
 		return userRepository.findByApplicationUserName(userApplication.getId(), usernames);
 	}
 	
-	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet) {
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues) {
 		// get the destinations from 4769 events and ssh events
 		Map<String, EventsToMachineCount> destinationsCount = new HashMap<String, EventsToMachineCount>();
 		
@@ -608,6 +608,11 @@ public class UserServiceImpl implements UserService{
 		
 		// calculate distribution for every operating systems and return the result
 		distribution.calculateValuesDistribution();
+		
+		// in case we return more than a certain amount of values distribution, mark result as not conclusive
+		if (distribution.getNumberOfValues() > maxValues)
+			distribution.setConclusive(false);
+		
 		return distribution;
 	}
 	

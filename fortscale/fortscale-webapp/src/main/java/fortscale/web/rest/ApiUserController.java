@@ -445,20 +445,22 @@ public class ApiUserController extends BaseController{
 	 */
 	@RequestMapping(value="/{uid}/destination/{param}/distribution", method=RequestMethod.GET)
 	@LogException
-	public DataBean<Collection<PropertyEntry>> getDestinationOSDistribution(
+	public DataBean<Collection<PropertyEntry>> getDestinationPropertyDistribution(
 			@PathVariable String uid,
 			@PathVariable String param,
-			@RequestParam(defaultValue="14") int daysToGet) {
+			@RequestParam(defaultValue="14") int daysToGet,
+			@RequestParam(defaultValue="10") int maxValues) {
 		
 		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param, daysToGet);
 
 		// convert the distribution properties to data bean
 		DataBean<Collection<PropertyEntry>> ret = new DataBean<Collection<PropertyEntry>>();
-		ret.setData(distribution.getPropertyValues());
-		ret.setTotal(distribution.getNumberOfValues());
-		if (!distribution.isConclusive())
+		if (distribution.isConclusive()) {
+			ret.setData(distribution.getPropertyValues());
+			ret.setTotal(distribution.getNumberOfValues());
+		} else {
 			ret.setWarning(DataWarningsEnum.NonCoclusiveData);
-		
+		}
 		return ret;
 	}	
 }
