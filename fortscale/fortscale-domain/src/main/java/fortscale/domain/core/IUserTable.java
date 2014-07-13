@@ -50,6 +50,6 @@ public interface IUserTable {
 	public Long getVpnLastActivityTime();
 	public Long getLoginLastActivityTime();
 	public Boolean getIsUserAccountService();
-	public Boolean getIsAdministratorAccount();
-	public Boolean getIsExecutiveAccount();
+	public Boolean getIsUserAdministrator();
+	public Boolean getIsUserExecutive();
 }

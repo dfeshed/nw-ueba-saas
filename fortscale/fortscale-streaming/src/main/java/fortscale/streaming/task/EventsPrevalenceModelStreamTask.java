@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
 
-import fortscale.streaming.model.PrevalanceModel;
-import fortscale.streaming.model.PrevalanceModelBuilder;
+import fortscale.streaming.model.prevalance.PrevalanceModel;
+import fortscale.streaming.model.prevalance.PrevalanceModelBuilder;
 import fortscale.streaming.service.PrevalanceModelService;
 import fortscale.utils.StringPredicates;
 

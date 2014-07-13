@@ -4,11 +4,16 @@ import static org.python.google.common.base.Preconditions.checkNotNull;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.ad.AdComputer;
@@ -68,7 +73,7 @@ public class ComputerServiceImpl implements ComputerService {
 		mergeComputerInfo(saved, computer);
 		
 		// re-calculate the computer classification for new or updated computer info
-		endpointDetectionService.classifyComputer(saved); 
+		endpointDetectionService.classifyNewComputer(saved); 
 		
 		try {
 			repository.save(saved);
@@ -91,7 +96,7 @@ public class ComputerServiceImpl implements ComputerService {
 			computer.setTimestamp(new Date());
 			
 			// classify the new computer
-			endpointDetectionService.classifyComputer(computer);
+			endpointDetectionService.classifyNewComputer(computer);
 			
 			// save the new computer
 			try {
@@ -152,6 +157,30 @@ public class ComputerServiceImpl implements ComputerService {
 	
 	public void setClusterGroupsRegexProperty(String val) {
 		this.clusterGroupsRegexProperty = val;
+	}
+	
+	public void classifyAllComputers() {
+		// go over the computers in the repository in pages 
+		// and classify all of them 
+		Pageable pageRequest = new PageRequest(0, 50);
+		Page<Computer> computers = repository.findAll(pageRequest);
+		while (computers!=null && computers.hasContent()) {
+			// classify all computers in the page
+			List<Computer> changedComptuers = new LinkedList<Computer>();
+			for (Computer computer : computers) {
+				boolean changed = endpointDetectionService.classifyComputer(computer);
+				if (changed)
+					changedComptuers.add(computer);
+			}
+			
+			// save all changed computers
+			repository.save(changedComptuers);
+			changedComptuers.clear();
+			
+			// get next page
+			pageRequest = pageRequest.next();
+			computers = repository.findAll(pageRequest);
+		}
 	}
 	
 }

@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserScoreStreamingService;
-import fortscale.streaming.service.UserTopEvents;
+import fortscale.streaming.model.UserTopEvents;
 import fortscale.utils.TimestampUtils;
 
 public class UserScoreStreamTask implements StreamTask, InitableTask, WindowableTask, ClosableTask{

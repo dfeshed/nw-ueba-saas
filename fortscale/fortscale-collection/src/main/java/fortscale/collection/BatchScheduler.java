@@ -102,6 +102,7 @@ public class BatchScheduler {
 		
 		startJob("Computer_Fetch", "AD", params);
 		startJob("Computer_ETL", "AD", params);
+		startJob("Classify_Computers", "AD", params);
 		startJob("OU_Fetch", "AD", params);
 		startJob("OU_ETL", "AD", params);
 		startJob("Group_Fetch", "AD", params);
