@@ -6,7 +6,7 @@ import fortscale.streaming.model.prevalance.PrevalanceModel;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.dao.Model;
-import fortscale.streaming.service.dao.State;
+//import fortscale.streaming.service.dao.State;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
