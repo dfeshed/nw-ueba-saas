@@ -48,32 +48,16 @@ public class AccountMachineAccess {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public Map<String,MachineState> getSources() {
         return sources;
-    }
-
-    public void setSources(Map<String,MachineState> sources) {
-        this.sources = sources;
     }
 
     public Map<String,MachineState> getDestinations() {
         return destinations;
     }
 
-    public void setDestinations(Map<String,MachineState> destinations) {
-        this.destinations = destinations;
-    }
-
     public  Map<String,Boolean> getTags() {
         return tags;
-    }
-
-    public void setTags( Map<String,Boolean> tags) {
-        this.tags = tags;
     }
 
     public boolean getIsDirty() {
@@ -100,6 +84,8 @@ public class AccountMachineAccess {
     public long getFirstEventTimestamp() {
         return firstEventTimestamp;
     }
+
+
 
     //Add tag to the tag set
     public void addTag(String tag, boolean flag)
