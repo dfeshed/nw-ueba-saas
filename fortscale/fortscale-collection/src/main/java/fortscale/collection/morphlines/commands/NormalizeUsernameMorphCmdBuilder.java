@@ -8,6 +8,7 @@ import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.google.common.base.Objects;
 import com.typesafe.config.Config;
@@ -19,6 +20,9 @@ import fortscale.services.impl.UsernameNormalizer;
 public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 	
 	protected String usernameField;
+    @Value("${normalizedUser.fail.filter:}")
+    private String dropOnFail;
+
 	
 	@Override
 	public Collection<String> getNames() {
@@ -35,12 +39,18 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 	}
 	
 	protected String normalizeUsername(Record record){
+        //if ou users filter is on, this function returns null if user does not exit in OU
 		String ret = RecordExtensions.getStringValue(record, usernameField).toLowerCase();
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
-			ret = Objects.firstNonNull(usernameNormalizer.normalize(ret), ret);
-		}
-			
+            String normalizedName = usernameNormalizer.normalize(ret);
+            if(dropOnFail.equals("true")){
+                ret = normalizedName;
+            }else{
+                ret = Objects.firstNonNull(normalizedName, ret);
+            }
+        }  
+        
 		return ret;
 	}
 	
@@ -67,7 +77,11 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 			// If we weren't able to connect or access the collection,
 			// return an empty string
 			
-			inputRecord.put(normalizedUsernameField, normalizeUsername(inputRecord));
+            String normalizedUserName = normalizeUsername(inputRecord);
+            if (normalizedUserName == null){
+                return true;
+            }
+            inputRecord.put(normalizedUsernameField, normalizedUserName);
 
 			return super.doProcess(inputRecord);
 

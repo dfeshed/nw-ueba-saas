@@ -68,5 +68,16 @@ ad_fields=(
     "objectGUID"
 )
 ## Adding filter:
+if [ ! -z "$2" ]
+    then
+        ou_filter=$2
+        search_cmd=(
+            ldapsearch -LLL -x -H ldap://${dc_address}
+            -D "${domain_username}"
+            -w "${domain_password}"
+            -E pr=1000/noprompt
+            -b "OU=${ou_filter},${domain_base_search}"
+        )
+fi
 search_cmd+=( "(&(objectclass=user)(!(objectclass=computer))) ${ad_fields[@]}" )
 ${search_cmd[@]} > ${out} 

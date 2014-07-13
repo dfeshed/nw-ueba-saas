@@ -18,6 +18,7 @@ import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.services.ipresolving.ComputerLoginResolver;
 import fortscale.services.ipresolving.DhcpResolver;
 import fortscale.services.ipresolving.DnsResolver;
+import fortscale.utils.actdir.LogsToADConversions;
 
 public class IpToHostnameBuilder implements CommandBuilder {
 	
@@ -43,7 +44,7 @@ public class IpToHostnameBuilder implements CommandBuilder {
 		private DnsResolver dnsResolver;
 		@Autowired
 		private ComputerLoginResolver computerLoginResolver;
-		
+
 		
 		private static final String STRING_EMPTY = "";
 		private final String ipAddress;
@@ -101,7 +102,8 @@ public class IpToHostnameBuilder implements CommandBuilder {
 				Long ts = RecordExtensions.getLongValue(inputRecord, this.timeStamp);
 				
 				// Try and get a hostname to the IP
-				inputRecord.put(this.outputRecordName, getHostname(ip, ts));
+                inputRecord.put(this.outputRecordName, getHostname(ip, ts));
+
 				
 			} catch (IllegalArgumentException e) {
 				// did not found ip or ts fields in input record
@@ -137,7 +139,7 @@ public class IpToHostnameBuilder implements CommandBuilder {
 			
 			if (ret != null) {
 				if (shortName ) {
-					ret = getShortName(ret);
+                    ret = LogsToADConversions.getHostShortName(ret);
 				} else if(isRemoveLastDot){
 					ret = removeLastDot(ret);
 				}
@@ -150,9 +152,5 @@ public class IpToHostnameBuilder implements CommandBuilder {
 			return input.endsWith(".") ? input.substring(0, input.length()-1) : input ; 
 		}
 		
-		private String getShortName(String input) {
-			int firstDotIndex = input.indexOf('.') ;
-			return (firstDotIndex > 0) ? input.substring(0, firstDotIndex) : input; 
-		}
 	}
 }
