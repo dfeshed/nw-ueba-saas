@@ -85,7 +85,7 @@ public class UserTopEvents {
 		}
 		double sum = 0;
 		for(EventScore eventScore: eventScores){
-			sum += timeDecayScore(eventScore.getScore(), eventScore.getEventTime(), System.currentTimeMillis());
+			sum += timeDecayScore(eventScore.getScore(), eventScore.getEventTime(), curTimeInMillis);
 		}
 		
 		return sum / eventScores.size();

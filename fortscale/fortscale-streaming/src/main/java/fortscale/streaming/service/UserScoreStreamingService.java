@@ -60,7 +60,7 @@ public class UserScoreStreamingService {
 		if(latestEventTimeInMillis < eventTimeInMillis){
 			if(isUseLatestEventTimeAsCurrentTime && !isOnSameDay(eventTimeInMillis, latestEventTimeInMillis)){
 				if(latestEventTimeInMillis > 0){
-					DateTime dateTime = new DateTime(latestEventTimeInMillis).withTimeAtStartOfDay().plusHours(23);
+					DateTime dateTime = new DateTime(latestEventTimeInMillis).withTimeAtStartOfDay().plusDays(1).minusSeconds(1);
 					while(!isOnSameDay(eventTimeInMillis, dateTime.getMillis())){
 						updateDb(dateTime.getMillis());
 						dateTime = dateTime.plusDays(1);
