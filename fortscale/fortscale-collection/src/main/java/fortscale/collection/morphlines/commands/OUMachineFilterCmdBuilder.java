@@ -46,8 +46,8 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
     			.getLogger(FilterOUMachine.class);
     	@Autowired
         private ComputerRepository computerRepository;
-        @Value("${machines.ou.filter}")
-        private String ouName;
+        @Value("${machines.ou.filter:}")
+        private String ouName; 
         private String hostnameField;
         private String regex;
         private Pattern regexMatcher;
@@ -75,6 +75,9 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         
         @Override
         protected boolean doProcess(Record inputRecord) {
+        	if(ouName == null || ouName.equals("")){
+        		return super.doProcess(inputRecord);
+        	}
         	// get the machine_name from the record
         	String computerName = null;
         	if(regex != null){
