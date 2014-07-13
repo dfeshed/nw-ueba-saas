@@ -22,10 +22,7 @@ import com.typesafe.config.Config;
 
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
-import fortscale.services.impl.RegexMatcher;
-import fortscale.services.impl.SensitiveMachineServiceImpl;
 import fortscale.utils.actdir.ADParser;
-import fortscale.utils.actdir.LogsToADConversions;
 
 public class OUMachineFilterCmdBuilder implements CommandBuilder {
 
@@ -87,7 +84,7 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         		if(m.matches()){
         			computerName = m.replaceAll(regexReplacement);
         		}else{
-        			logger.error("could not match hostname to the regex [] : []",regex, hostname );
+        			logger.error("could not match hostname to the regex {} : {}",regex, hostname );
         			return true;
         		}
         	} 
