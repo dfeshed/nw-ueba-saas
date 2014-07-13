@@ -131,7 +131,13 @@ public class Computer extends AbstractDocument {
 		return String.format("%s.%s", Computer.USAGE_CLASSIFIERS_FIELD, classifierFieldName);
 	}
 	public void putUsageClassifier(ComputerUsageClassifier classifier) {
-		this.usageClassifiers.add(classifier);
+		ComputerUsageClassifier prevClassifier = getUsageClassifier(classifier.getClassifierName());
+		if(prevClassifier == null){
+			this.usageClassifiers.add(classifier);
+		} else{
+			prevClassifier.setUsageType(classifier.getUsageType());
+			prevClassifier.setWhenComputed(classifier.getWhenComputed());
+		}
 	}	
 	public void removeUsageClassifier(String classifier) {
 		this.usageClassifiers.remove(classifier);
