@@ -29,6 +29,7 @@ public class Computer extends AbstractDocument {
 	public static final String USAGE_CLASSIFIERS_FIELD = "usageClassifiers";
 	public static final String TIMESTAMP_FIELD = "timestamp";
 	public static final String SENSITIVE_MACHINE_FIELD = "sensitive";
+	public static final String OU_FIELD = "ou";
 	
 	@Field(OPERATING_SYSTEM_FIELD)
 	private String operatingSystem;
@@ -62,6 +63,9 @@ public class Computer extends AbstractDocument {
 	@Field(SENSITIVE_MACHINE_FIELD)
 	@Indexed
 	private Boolean isSensitive;
+	
+	@Field(OU_FIELD)
+	private String ou;
 	
 	public Computer() {
 		this.timestamp = new Date();
@@ -119,6 +123,12 @@ public class Computer extends AbstractDocument {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
+	public String getOU() {
+		return ou;
+	}
+	public void setOU(String ou) {
+		this.ou = ou;
+	}
 	public ComputerUsageClassifier getUsageClassifier(String classifierName) {
 		for (ComputerUsageClassifier compUsageClassifier : usageClassifiers){
 			if(compUsageClassifier.getClassifierName().equals(classifierName)){
@@ -150,5 +160,23 @@ public class Computer extends AbstractDocument {
 	
 	public List<ComputerUsageClassifier> getUsageClassifiers() {
 		return usageClassifiers;
+	}
+	
+	public Object getPropertyValue(String propertyName) {
+		switch (propertyName) {
+		case Computer.DISTINGUISHED_NAME_FIELD : return getDistinguishedName();
+		case Computer.NAME_FIELD : return getName();
+		case Computer.OPERATING_SYSTEM_FIELD : return getOperatingSystem();
+		case Computer.OPERATING_SYSTEM_SERVICE_PACK_FIELD : return getOperatingSystemServicePack();
+		case Computer.OPERATING_SYSTEM_VERSION_FIELD : return getOperatingSystemVersion();
+		case Computer.SENSITIVE_MACHINE_FIELD : return getIsSensitive();
+		case Computer.TIMESTAMP_FIELD : return getTimestamp();
+		case Computer.USAGE_CLASSIFIERS_FIELD : return getUsageClassifiers();
+		case Computer.WHEN_CHANGED_FIELD : return getWhenChanged();
+		case Computer.WHEN_CREATED_FIELD : return getWhenCreated();
+		case Computer.ID_FIELD : return getId();
+		case Computer.OU_FIELD : return getOU();
+		}
+		throw new IllegalArgumentException(propertyName);
 	}
 }
