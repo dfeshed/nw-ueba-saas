@@ -62,7 +62,7 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
             OUmachines = new HashMap<String, Boolean>();
             this.hostnameField = getConfigs().getString(config,
                     "hostnameField");
-            this.regex = getConfigs().getString(config, "regex");
+            this.regex = getConfigs().getString(config, "regex", null);
             if(regex != null){
             	String[] regexArray = regex.split("# #");
             	//TODO: add check for array size
