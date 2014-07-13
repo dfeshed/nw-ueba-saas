@@ -59,9 +59,12 @@ public class UserScoreStreamingService {
 	private void updateLatestEventTime(long eventTimeInMillis){
 		if(latestEventTimeInMillis < eventTimeInMillis){
 			if(isUseLatestEventTimeAsCurrentTime && !isOnSameDay(eventTimeInMillis, latestEventTimeInMillis)){
-				DateTime dateTime = new DateTime(latestEventTimeInMillis);
-				while(!isOnSameDay(eventTimeInMillis, dateTime.withTimeAtStartOfDay().plusHours(23).getMillis())){
-					updateDb(dateTime.withTimeAtStartOfDay().plusHours(23).getMillis());
+				if(latestEventTimeInMillis > 0){
+					DateTime dateTime = new DateTime(latestEventTimeInMillis).withTimeAtStartOfDay().plusHours(23);
+					while(!isOnSameDay(eventTimeInMillis, dateTime.getMillis())){
+						updateDb(dateTime.getMillis());
+						dateTime = dateTime.plusDays(1);
+					}
 				}
 				updateDb(eventTimeInMillis);
 				exportSnapshot();
