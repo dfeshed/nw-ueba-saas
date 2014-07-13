@@ -37,7 +37,7 @@ public class TagService {
         this.daysBackForArchive = daysBack;
 
         //retrieve the implementation list from spring
-       this.implementationList = SpringService.getInstance().resolveAll(ServiceAccountTagging.class);
+       this.implementationList = SpringService.getInstance("classpath*:META-INF/spring/streaming-TaggingTask-context.xml").resolveAll(ServiceAccountTagging.class);
 
 
     }
@@ -49,6 +49,8 @@ public class TagService {
         AccountMachineAccess  currentAccount = store.get(userName);
         if (currentAccount == null) {
             currentAccount = new AccountMachineAccess(userName);
+            currentAccount.setFirstEventTimestamp(timeStamp);
+
         }
 
         currentAccount.setLastEventTimeStamp(timeStamp);

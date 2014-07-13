@@ -26,6 +26,7 @@ public class AccountMachineAccess {
     private Map<String,Boolean> tags;
     private boolean isDirty;
     private long lastEventTimeStamp;
+    private long firstEventTimestamp;
 
 
 
@@ -39,8 +40,6 @@ public class AccountMachineAccess {
         this.tags = new HashMap<String,Boolean>();
         this.sources =new HashMap<String,MachineState>();
         this.destinations = new HashMap<String,MachineState>();
-
-
 
     }
 
@@ -94,6 +93,14 @@ public class AccountMachineAccess {
         return lastEventTimeStamp;
     }
 
+    public void setFirstEventTimestamp(long firstEventTimestamp) {
+        this.firstEventTimestamp = firstEventTimestamp;
+    }
+
+    public long getFirstEventTimestamp() {
+        return firstEventTimestamp;
+    }
+
     //Add tag to the tag set
     public void addTag(String tag, boolean flag)
     {
@@ -105,17 +112,7 @@ public class AccountMachineAccess {
 
     }
 
-    //Remove Tag
-    public void removeTag(String tag)
-    {
-        if(this.tags.get(tag) != null ) {
-            if (this.tags.get(tag).booleanValue()) {
-                this.tags.put(tag,false);
-                this.isDirty = true;
-            }
-        }
 
-    }
 
     //Add new machine to the source list
     public void addSource(String hostName , long timeStamp, ComputerUsageType type)

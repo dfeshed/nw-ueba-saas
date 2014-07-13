@@ -16,8 +16,12 @@ public class AccountMachineAccessTest {
     @Test
     public void testAddTag() throws Exception {
 
+        long timestamp = new Date().getTime();
+
         //case 1 -  adding new tag that docent exist
         AccountMachineAccess amc = new AccountMachineAccess("testAccount");
+        amc.setLastEventTimeStamp(timestamp);
+        amc.setFirstEventTimestamp(timestamp);
 
         String tag = "Desktops";
 
@@ -32,10 +36,7 @@ public class AccountMachineAccessTest {
 
         assertTrue(amc.getTags().get(tag).booleanValue() && !amc.getIsDirty());
 
-        //case 3 - Remove tag
-        amc.removeTag(tag);
 
-        assertTrue(!amc.getTags().get(tag).booleanValue() && amc.getIsDirty());
 
 
     }
@@ -43,7 +44,11 @@ public class AccountMachineAccessTest {
     @Test
     public void testAddSource() throws Exception {
 
+        long timestamp = new Date().getTime();
+
         AccountMachineAccess amc = new AccountMachineAccess("testAccount");
+        amc.setFirstEventTimestamp(timestamp);
+        amc.setLastEventTimeStamp(timestamp);
 
         String hostName="testHost";
         long currentTime = new Date().getTime();
@@ -85,7 +90,11 @@ public class AccountMachineAccessTest {
     @Test
     public void testAddDestination() throws Exception {
 
+        long timestamp = new Date().getTime();
+
         AccountMachineAccess amc = new AccountMachineAccess("testAccount");
+        amc.setFirstEventTimestamp(timestamp);
+        amc.setLastEventTimeStamp(timestamp);
 
         String hostName="testHost";
         long currentTime = new Date().getTime();
@@ -127,8 +136,13 @@ public class AccountMachineAccessTest {
     @Test
     public void testDilutionLists () throws Exception
     {
-        AccountMachineAccess amc = new AccountMachineAccess("testAccount");
         long timestamp = new Date().getTime();
+
+
+        AccountMachineAccess amc = new AccountMachineAccess("testAccount");
+        amc.setLastEventTimeStamp(timestamp);
+        amc.setFirstEventTimestamp(timestamp);
+
 
         amc.setLastEventTimeStamp(timestamp);
 
