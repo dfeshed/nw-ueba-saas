@@ -2,10 +2,8 @@ package fortscale.streaming.service.tagging;
 
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.UserService;
-import fortscale.streaming.model.prevalance.PrevalanceModel;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.dao.Model;
 //import fortscale.streaming.service.dao.State;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -13,8 +11,6 @@ import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by idanp on 7/8/2014.
@@ -27,7 +23,7 @@ public class TagService {
     private Long daysBackForArchive;
 
     @Autowired
-    private UserService userHandler;
+    private UserService userService;
 
 
 
@@ -82,7 +78,7 @@ public class TagService {
         while (iter.hasNext()) {
             Entry<String, AccountMachineAccess> entry  = (Entry<String, AccountMachineAccess>) iter.next();
             if(entry.getValue().getIsDirty()) {
-                this.userHandler.updateTags(entry.getKey(),entry.getValue().getTags());
+                this.userService.updateTags(entry.getKey(), entry.getValue().getTags());
                 entry.getValue().setIsDirty(false);
             }
         }

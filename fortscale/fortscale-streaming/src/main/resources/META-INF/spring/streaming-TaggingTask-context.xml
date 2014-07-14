@@ -25,6 +25,9 @@
     <import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
 
 
+    <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
+
+
 
     <context:spring-configured />
     <context:annotation-config />
@@ -45,12 +48,6 @@
 
 
 -->
-
-
-
-
-    <!--bean class="fortscale.domain.system.ServersListConfigurationImpl" /-->
-
 
     <!--List of Tagging service implementation -->
     <bean id = "sweeperImpl" class="fortscale.streaming.service.tagging.SweeperTagImpl"></bean>
