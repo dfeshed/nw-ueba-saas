@@ -193,10 +193,10 @@ public class AccountTaggingTask  implements StreamTask, InitableTask, Windowable
 
     @Override
     public void close() throws Exception {
-        if(this.taggingService!=null)
+        if(this.taggingService!=null) {
             this.taggingService.exportTags();
-
-        this.taggingService.closeContext();
+            this.taggingService.closeContext();
+        }
         this.taggingService = null;
 
 
