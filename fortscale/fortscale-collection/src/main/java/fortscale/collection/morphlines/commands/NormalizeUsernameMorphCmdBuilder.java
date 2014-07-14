@@ -35,7 +35,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 	}
 	
 	protected String normalizeUsername(Record record){
-		String ret = RecordExtensions.getStringValue(record, usernameField);
+		String ret = RecordExtensions.getStringValue(record, usernameField).toLowerCase();
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
 			ret = Objects.firstNonNull(usernameNormalizer.normalize(ret), ret);

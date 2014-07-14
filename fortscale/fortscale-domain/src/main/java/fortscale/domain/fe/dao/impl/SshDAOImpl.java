@@ -64,7 +64,7 @@ public class SshDAOImpl extends AccessDAO{
 	@Value("${impala.score.ssh.table.field.normalized_dst_machine_score}")
 	public String NORMALIZED_DST_MACHINE_SCORE;
 	
-	@Value("${impala.score.ssh.table.fields.EventScore}")
+	@Value("${impala.score.ssh.table.field.EventScore}")
 	public String EVENT_SCORE;
 	
 	

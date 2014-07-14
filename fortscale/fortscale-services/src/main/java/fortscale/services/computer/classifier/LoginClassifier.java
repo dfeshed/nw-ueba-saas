@@ -46,6 +46,10 @@ public class LoginClassifier implements EndpointClassifier {
 	public boolean classify(Computer computer) {
 		if (!canClassify(computer))
 			return false;
+		
+		// skip classification in case other classifier already decided on classification
+		if (hasOtherClassifications(computer))
+			return false;
 				
 		// check if we already have a classification that is not stale
 		Date desktopThresholdDate = new Date( (new Date()).getTime() - desktopStaleThreshold*1000*60*60*24 ); 
@@ -83,6 +87,16 @@ public class LoginClassifier implements EndpointClassifier {
 		return true;
 	}
 
+	
+	private boolean hasOtherClassifications(Computer computer) {
+		for (ComputerUsageClassifier classification : computer.getUsageClassifiers()) {
+			if (!classification.getClassifierName().equals(CLASSIFIER_NAME)) {
+				if (classification.getUsageType()!=null && !ComputerUsageType.Unknown.equals(classification.getUsageType()))
+					return true;
+			}
+		}
+		return false;
+	}
 	
 	private UserMachine getDominatingLogin(List<UserMachine> logins) {
 		

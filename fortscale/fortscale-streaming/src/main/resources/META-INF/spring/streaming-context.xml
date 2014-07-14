@@ -8,6 +8,8 @@
 						http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+
+
 	<context:property-placeholder location="classpath*:META-INF/*.properties" />
 	<context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
 
@@ -41,5 +43,31 @@
 	<mongo:repositories base-package="fortscale.domain.system.dao" />
 	
 	<bean class="fortscale.domain.system.ServersListConfigurationImpl" />
-	
+
+
+    <!--List of Tagging service implementation -->
+
+
+    <!-- for local debug mark this out and all the above mark on
+    <context:property-placeholder location="classpath*:META-INF/*.properties" />
+    <context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="file:fortscale-streaming/src/main/config/fortscale-overriding-streaming.properties"/>
+        <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="localOverride" value="true"/>
+    </bean>
+
+    <context:annotation-config />
+
+    -->
+
+
+
+    <bean id = "sweeperImpl" class="fortscale.streaming.service.tagging.SweeperTagImpl"></bean>
+
+
+    <!--****************************************-->
+
 </beans>

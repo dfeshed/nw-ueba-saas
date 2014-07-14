@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import fortscale.streaming.model.UserTopEvents;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -58,7 +59,14 @@ public class UserScoreStreamingService {
 	private void updateLatestEventTime(long eventTimeInMillis){
 		if(latestEventTimeInMillis < eventTimeInMillis){
 			if(isUseLatestEventTimeAsCurrentTime && !isOnSameDay(eventTimeInMillis, latestEventTimeInMillis)){
-				updateDb();
+				if(latestEventTimeInMillis > 0){
+					DateTime dateTime = new DateTime(latestEventTimeInMillis).withTimeAtStartOfDay().plusDays(1).minusSeconds(1);
+					while(!isOnSameDay(eventTimeInMillis, dateTime.getMillis())){
+						updateDb(dateTime.getMillis());
+						dateTime = dateTime.plusDays(1);
+					}
+				}
+				updateDb(eventTimeInMillis);
 				exportSnapshot();
 			}
 			latestEventTimeInMillis = eventTimeInMillis;
@@ -86,7 +94,7 @@ public class UserScoreStreamingService {
 			hasToUpdateStore = true;
 		}
 		
-		double curScore = userTopEvents.calculateUserScore();
+		double curScore = userTopEvents.calculateUserScore(currentEpochTime);
 		
 		if(!hasToUpdateUserRepository ){
 			double ratio = (1-userTopEvents.getLastUpdatedScore()) / (1-curScore);
@@ -164,8 +172,10 @@ public class UserScoreStreamingService {
 	}
 	
 	public void updateDb(){
-		
-		long lastUpdateEpochTime = getCurrentEpochTimeInMillis();
+		updateDb(getCurrentEpochTimeInMillis());
+	}
+	
+	public void updateDb(long lastUpdateEpochTime){
 		if(lastUpdateEpochTime == 0){
 			return; //This happens when no event was recieved yet and the current time is taken out of the latest event.
 		}
@@ -182,7 +192,7 @@ public class UserScoreStreamingService {
 					// model might be null in case of a serialization error, in that case
 					// we don't want to fail here and the error is logged in the serde implementation
 					String username = entry.getKey();
-					double curScore = userTopEvents.calculateUserScore();
+					double curScore = userTopEvents.calculateUserScore(lastUpdateEpochTime);
 					
 					User user = userRepository.findByUsername(username);
 					if(user != null){

@@ -72,7 +72,7 @@
 		<samza.version>0.7.0</samza.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<logback.version>1.0.13</logback.version>
-		<hadoop-hdfs.version>2.3.0-cdh5.0.2</hadoop-hdfs.version>
+		<grizzled-slf4j.version>1.0.1</grizzled-slf4j.version>
 		<!-- maven plugins versions -->
 		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
@@ -80,6 +80,7 @@
 		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
 		<mavanagaiata.version>0.7.0</mavanagaiata.version>
+        <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -180,13 +181,14 @@
                 </exclusion>
 			</exclusions>
 		</dependency>
-
-		<!--  hadoop dependencies -->
+		
+		<!-- grizzled slf4j dependency needed in order to extend samza scala classes -->
 		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-hdfs</artifactId>
-			<version>${hadoop-hdfs.version}</version>
+			<groupId>org.clapper</groupId>
+			<artifactId>grizzled-slf4j_2.10</artifactId>
+			<version>${grizzled-slf4j.version}</version>
 		</dependency>
+		
 
 		<!-- test -->
 		<dependency>
@@ -237,6 +239,11 @@
 			<artifactId>fortscale-domain</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-services</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 
 		<!-- javax persistence needed by aspectj compile time depenceny injection 
@@ -270,6 +277,7 @@
 
 	<build>
 		<plugins>
+
 			<!-- Tells maven to use the Java 7 JDK instead of its default -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -382,6 +390,9 @@
 						</execution>
 					</executions>
 				</plugin>
+
+
+
 		</plugins>
 		<pluginManagement>
 			<plugins>

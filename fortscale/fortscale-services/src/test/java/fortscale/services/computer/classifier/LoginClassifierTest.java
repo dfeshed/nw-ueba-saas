@@ -48,6 +48,43 @@ public class LoginClassifierTest {
 	}
 	
 	@Test
+	public void classifier_should_do_nothing_when_other_classification_exists() {
+		List<UserMachine> logins = new LinkedList<UserMachine>();
+		logins.add(new UserMachine("me", "my-pc", 20, 0L));
+		when(dao.findByHostname("my-pc", 30)).thenReturn(logins);
+		when(dao.findByUsername("me")).thenReturn(logins);
+		
+		Computer computer = new Computer();
+		computer.setName("my-pc");
+		computer.putUsageClassifier(new ComputerUsageClassifier("TestClassifier", ComputerUsageType.Desktop, new Date()));
+		
+		classifier.classify(computer);
+		
+		// verify no interactions are made with the dao
+		verify(dao, times(0)).findByHostname(anyString(), anyInt());
+		verify(dao, times(0)).findByUsername(anyString());
+		assertTrue(computer.getUsageClassifiers().size()==1);
+	}
+	
+	@Test
+	public void classifier_should_compute_when_other_classification_set_unknown() {
+		List<UserMachine> logins = new LinkedList<UserMachine>();
+		logins.add(new UserMachine("me", "my-pc", 20, 0L));
+		when(dao.findByHostname("my-pc", 30)).thenReturn(logins);
+		when(dao.findByUsername("me")).thenReturn(logins);
+		
+		Computer computer = new Computer();
+		computer.setName("my-pc");
+		computer.putUsageClassifier(new ComputerUsageClassifier("TestClassifier", ComputerUsageType.Unknown, new Date()));
+		
+		classifier.classify(computer);
+		
+		ComputerUsageClassifier classification = computer.getUsageClassifier(LoginClassifier.CLASSIFIER_NAME);
+		assertNotNull(classification);
+		assertTrue(computer.getUsageClassifiers().size()==2);
+	}
+	
+	@Test
 	public void classifier_should_not_compute_when_previous_dekstop_classification_is_not_stale() {
 		Computer computer = new Computer();
 		Date whenComputed = new Date();

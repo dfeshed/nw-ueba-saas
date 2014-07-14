@@ -17,7 +17,9 @@ public class UserAdInfo {
 	public static final String lastnameField = "lastname";
 	public static final String userPrincipalNameField = "userPrincipalName";
 	public static final String groupsField = "groups";	
-	
+	public static final String whenCreatedField = "whenCreated";
+	public static final String disableAccountTimeField = "disableAccountTime";
+	public static final String isAccountDisabledField = "isAccountDisabled";
 	@Field(objectGUIDField)
 	private String objectGUID;
 
@@ -71,6 +73,7 @@ public class UserAdInfo {
 	
 	private Date whenChanged;
 	
+	@Field(whenCreatedField)
 	private Date whenCreated;
 	
 	private String description;
@@ -88,9 +91,10 @@ public class UserAdInfo {
 	private String o;
 	
 	private String roomNumber;
-	
+
+	@Field(disableAccountTimeField)
 	private DateTime disableAccountTime;
-	
+	@Field(isAccountDisabledField)
 	private Boolean isAccountDisabled;
 	
 	

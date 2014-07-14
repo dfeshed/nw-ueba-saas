@@ -8,8 +8,8 @@ import org.apache.samza.storage.kv.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fortscale.streaming.model.PrevalanceModel;
-import fortscale.streaming.model.PrevalanceModelBuilder;
+import fortscale.streaming.model.prevalance.PrevalanceModel;
+import fortscale.streaming.model.prevalance.PrevalanceModelBuilder;
 import fortscale.streaming.service.dao.Model;
 import fortscale.streaming.service.dao.ModelRepository;
 
@@ -107,6 +107,10 @@ public class PrevalanceModelService {
 			if (iterator!=null)
 				iterator.close();
 		}
+	}
+	
+	public void close() {
+		SpringService.getInstance().shutdown();
 	}
 	
 	

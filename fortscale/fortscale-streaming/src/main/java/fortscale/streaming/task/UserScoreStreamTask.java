@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserScoreStreamingService;
-import fortscale.streaming.service.UserTopEvents;
+import fortscale.streaming.model.UserTopEvents;
 import fortscale.utils.TimestampUtils;
 
 public class UserScoreStreamTask implements StreamTask, InitableTask, WindowableTask, ClosableTask{
@@ -105,8 +105,10 @@ public class UserScoreStreamTask implements StreamTask, InitableTask, Windowable
 	/** save the state to mongodb when the job shutsdown */
 	@Override 
 	public void close() throws Exception {
-		if (userScoreStreamingService!=null)
+		if (userScoreStreamingService!=null) {
 			userScoreStreamingService.exportSnapshot();
+			SpringService.getInstance().shutdown();
+		}
 		userScoreStreamingService = null;
 	}
 }

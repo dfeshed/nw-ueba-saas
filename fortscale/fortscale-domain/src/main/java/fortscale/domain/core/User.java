@@ -1,7 +1,11 @@
 package fortscale.domain.core;
 
+import static com.google.common.base.Preconditions.checkNotNull; 
+
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -14,11 +18,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
 import fortscale.domain.events.LogEventsEnum;
-
-
-
-
-
 
 
 @Document(collection=User.collectionName)
@@ -49,6 +48,7 @@ public class User extends AbstractDocument {
 	public static final String appField = "app";
 	public static final String logUsernameField = "logUsername";
 	public static final String logLastActivityField = "logLastActivity";
+	public static final String lastActivityField = "lastActivity";
 	public static final String usernameField = "username";
 	public static final String noDomainUsernameField = "noDomainUsername";
 	public static final String displayNameField = "displayName";
@@ -59,6 +59,7 @@ public class User extends AbstractDocument {
 	public static final String userServiceAccountField = "userServiceAccount";
 	public static final String administratorAccountField = "administratorAccount";
 	public static final String executiveAccountField = "executiveAccount";
+	public static final String tagsField = "tags";
 
 	@Indexed
 	@Field(administratorAccountField)
@@ -110,7 +111,11 @@ public class User extends AbstractDocument {
 	@Field(logLastActivityField)
 	Map<String, DateTime> logLastActivityMap = new HashMap<>();
 	
+	@Field(lastActivityField)
+	DateTime lastActivity;
 	
+	@Field(tagsField)
+	private Set<String> tags = new HashSet<String>();
 	
 	public String getAdDn() {
 		return adDn;
@@ -262,11 +267,20 @@ public class User extends AbstractDocument {
 	}
 	
 	
+	public void addTag(String tag) {
+		checkNotNull(tag);
+		tags.add(tag);
+	}
 	
-	
-	
+	public boolean hasTag(String tag) {
+		checkNotNull(tag);
+		return tags.contains(tag);
+	}
 
-	
+	public void removeTag(String tag) {
+		checkNotNull(tag);
+		tags.remove(tag);
+	}
 	
 	
 	
@@ -314,6 +328,10 @@ public class User extends AbstractDocument {
 		return String.format("%s.%s", User.logLastActivityField,eventId.getId());
 	}
 	
+	public DateTime getLastActivity() {
+		return lastActivity;
+	}
+
 	public static String getAdInfoField(String adInfoFieldName) {
 		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
 	}

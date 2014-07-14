@@ -10,7 +10,7 @@
   <fileSets>
   	<fileSet>
   		<outputDirectory>config</outputDirectory>
-  		<directory>${basedir}/src/main/config</directory>
+  		<directory>${basedir}/config</directory>
   		<includes>
   			<include>*.properties</include>
   		</includes>

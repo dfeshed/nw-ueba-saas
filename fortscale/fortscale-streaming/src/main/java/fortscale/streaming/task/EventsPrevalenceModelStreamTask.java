@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
 
-import fortscale.streaming.model.PrevalanceModel;
-import fortscale.streaming.model.PrevalanceModelBuilder;
+import fortscale.streaming.model.prevalance.PrevalanceModel;
+import fortscale.streaming.model.prevalance.PrevalanceModelBuilder;
 import fortscale.streaming.service.PrevalanceModelService;
 import fortscale.utils.StringPredicates;
 
@@ -132,7 +132,7 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 				
 			// skip events that occur before the model time mark in case the task is configured
 			// to perform both model computation and scoring (the normal case)
-			boolean afterTimeMark = model.isTimeMarkAfter(timestamp);
+			boolean afterTimeMark = model.isAfterTimeMark(timestamp);
 			if (!afterTimeMark && !skipModel) {
 				skippedMessageCount.inc();
 				return;
@@ -190,8 +190,10 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 
 	/** save the state to mongodb when the job shutsdown */
 	@Override public void close() throws Exception {
-		if (modelService!=null)
+		if (modelService!=null) {
 			modelService.exportModels();
+			modelService.close();
+		}
 		modelService = null;
 	}
 	

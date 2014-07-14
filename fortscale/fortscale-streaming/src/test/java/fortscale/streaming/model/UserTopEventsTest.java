@@ -7,8 +7,6 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import fortscale.streaming.service.UserTopEvents;
-
 public class UserTopEventsTest {
 	@Test
 	public void model_should_serialize_to_json() throws Exception {
