@@ -1,6 +1,7 @@
 package fortscale.streaming.service;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Collection;
@@ -43,6 +44,11 @@ public class SpringService {
 
     public <T> Collection<T> resolveAll(Class<T> requiredType) {
         return context.getBeansOfType(requiredType).values();
+    }
+
+    public void CloseContext()
+    {
+        ((ConfigurableApplicationContext) this.context).close();
     }
 
 

@@ -13,10 +13,12 @@ import java.util.regex.Pattern;
  */
 public class IsSensetiveTagImpl implements ServiceAccountTagging {
 
-    @Value("${IsSensitiveRegEx}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${IsSensitive.RegEx}") //get the value from fortscale-overriding-streaming.properties file
     private String IsSensitiveRegExMachines;
 
     private Pattern regExpPattern;
+
+    private static final String SensetiveTag = "Sensitive";
 
 
 
@@ -37,15 +39,16 @@ public class IsSensetiveTagImpl implements ServiceAccountTagging {
         if(account == null ||account.getDestinations() == null)
             return;
 
-        if(account.getTags().size() > 0 &&  account.getTags().get("Sensitive") != null &&  account.getTags().get("Sensitive"))
+        if(isTheAccountIsTagged(account))
             return;
+
 
         Matcher match= regExpPattern.matcher(account.getUserName());
 
         //check first if the account is configure at the regex list
         if(match.matches())
         {
-            account.addTag("Sensitive",true);
+            account.addTag(SensetiveTag,true);
             return;
 
         }
@@ -55,7 +58,13 @@ public class IsSensetiveTagImpl implements ServiceAccountTagging {
         for(Map.Entry<String,MachineState> entry : account.getDestinations().entrySet())
         {
             if(entry.getValue().isSensitiveMachine())
-                account.addTag("Sensitive",true);
+                account.addTag(SensetiveTag,true);
         }
+    }
+
+
+    private boolean isTheAccountIsTagged(AccountMachineAccess account)
+    {
+        return account.getTags().size() > 0 &&  account.getTags().get(SensetiveTag) != null &&  account.getTags().get(SensetiveTag);
     }
 }

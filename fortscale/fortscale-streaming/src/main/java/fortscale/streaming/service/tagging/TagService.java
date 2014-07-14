@@ -83,15 +83,16 @@ public class TagService {
             Entry<String, AccountMachineAccess> entry  = (Entry<String, AccountMachineAccess>) iter.next();
             if(entry.getValue().getIsDirty()) {
                 this.userHandler.updateTags(entry.getKey(),entry.getValue().getTags());
+                entry.getValue().setIsDirty(false);
             }
         }
 
     }
 
-/*
-    private State convertToDTO(String username, AccountMachineAccess state) {
-        State dto = new State( username, state);
-        return dto;
+    public void closeContext()
+    {
+        SpringService.getInstance("classpath*:META-INF/spring/streaming-TaggingTask-context.xml").CloseContext();
     }
-    */
+
+
 }

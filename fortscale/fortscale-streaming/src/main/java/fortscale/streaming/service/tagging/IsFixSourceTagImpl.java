@@ -12,16 +12,18 @@ import java.util.regex.Pattern;
 public class IsFixSourceTagImpl implements ServiceAccountTagging {
 
 
-    @Value("${FixSourceTagThreshold}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${FixSource.max.source.count.Threshold}") //get the value from fortscale-overriding-streaming.properties file
     private Double threshold;
 
-    @Value("${FixSourceTagDaysBack}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${FixSource.min.daysBack.toWatch}") //get the value from fortscale-overriding-streaming.properties file
     private long dayBack;
 
-    @Value("${FixSourceRegExp}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${FixSource.RegExp}") //get the value from fortscale-overriding-streaming.properties file
     private String isFixSourceRegExpMachines;
 
     private Pattern regExpPattern;
+
+    private static final String FixTag = "Fixed Source";
 
 
     public IsFixSourceTagImpl() {
@@ -66,7 +68,7 @@ public class IsFixSourceTagImpl implements ServiceAccountTagging {
         //check first if the account is configure at the regex list
         if(match.matches())
         {
-            account.addTag("Fixed Source",true);
+            account.addTag(FixTag,true);
             return;
 
         }
@@ -88,7 +90,7 @@ public class IsFixSourceTagImpl implements ServiceAccountTagging {
                     machineCounter++;
             }
 
-            account.addTag("Fixed Source", machineCounter >= this.threshold);
+            account.addTag(FixTag, machineCounter >= this.threshold);
         }
 
 

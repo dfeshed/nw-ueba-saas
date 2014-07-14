@@ -14,16 +14,16 @@ import java.util.regex.Pattern;
  */
 public class UseServerDesktopTagImpl implements ServiceAccountTagging {
 
-    @Value("${ServerDesktopThreshold}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${ServerDesktop.rate.threshold}") //get the value from fortscale-overriding-streaming.properties file
     private Double threshold;
 
-    @Value("${ServersRegExp}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${Servers.RegExp}") //get the value from fortscale-overriding-streaming.properties file
     private String ServerRegExpMachines;
 
-    @Value("${DesktopsRegExp}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${Desktops.RegExp}") //get the value from fortscale-overriding-streaming.properties file
     private String DesktopsRegExpMachines;
 
-    @Value("${ServerDesktopMinimumDaysBack}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${ServerDesktop.min.daysBack.toWatch}") //get the value from fortscale-overriding-streaming.properties file
     private Long daysBack;
 
     private Pattern ServerRegExpPattern;
@@ -74,37 +74,35 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
         //Calculate the date of start counting in millisec
         long theStartDateToCheckFrom = account.getLastEventTimeStamp() - this.daysBack*24*60*60*1000;
 
+        //Validate if the current account configure as reg exp
+        if (this.ServerRegExpPattern != null) {
+            ServerMatcher = this.ServerRegExpPattern.matcher(account.getUserName());
+            if (ServerMatcher.matches()) {
+                account.addTag(ComputerUsageType.Server.toString(), true);
+                return;
+            }
+
+        }
+
+        if (this.DesktopsRegExpPattern != null) {
+            DesktopsMatcher = this.DesktopsRegExpPattern.matcher(account.getUserName());
+            if (DesktopsMatcher.matches()) {
+                account.addTag(ComputerUsageType.Desktop.toString(), true);
+                return;
+            }
+        }
+
 
         //Validate that you have enough time of data (the first event for that account occur at least "dayBack" from the current one)
         if(account.getFirstEventTimestamp() <=  theStartDateToCheckFrom) {
+            tagPerType(account);
 
-            //Validate if the current account configure as reg exp
-            if (this.ServerRegExpPattern != null) {
-                ServerMatcher = this.ServerRegExpPattern.matcher(account.getUserName());
-                if (ServerMatcher.matches()) {
-                    account.addTag(ComputerUsageType.Server.toString(), true);
-                    return;
-                }
-
-            }
-
-            if (this.DesktopsRegExpPattern != null) {
-                DesktopsMatcher = this.DesktopsRegExpPattern.matcher(account.getUserName());
-                if (DesktopsMatcher.matches()) {
-                    account.addTag(ComputerUsageType.Desktop.toString(), true);
-                    return;
-                }
-            }
-
-
-            tagPerType(account, ComputerUsageType.Desktop);
-            tagPerType(account, ComputerUsageType.Server);
         }
 
 
     }
 
-    private void tagPerType(AccountMachineAccess account,ComputerUsageType type)
+    private void tagPerType(AccountMachineAccess account)
     {
 
         int numOfDistinctDestinations = account.getDestinations().size();
@@ -112,17 +110,22 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
         //calculate the number that represent the thershold precent round down (for example 0.9 from 8 destination will be 7 cause the true value is 7.2)
         int breakPointValue  =  (numOfDistinctDestinations == 1 ? 1 : (numOfDistinctDestinations  == 2 ? 2 : ((int) Math.floor(threshold*numOfDistinctDestinations))));
 
-        int numOfTagType=0;
+        int numOfServersMachines=0;
+        int numOfDesdktopsMachines = 0;
 
         for(Map.Entry<String,MachineState> entry : account.getDestinations().entrySet())
         {
-            if(entry.getValue().getType() == type)
-                numOfTagType++;
+            if(entry.getValue().getType().equals(ComputerUsageType.Server.toString()))
+                numOfServersMachines++;
+            else if (entry.getValue().getType().equals(ComputerUsageType.Desktop.toString()))
+                numOfDesdktopsMachines++;
 
         }
 
 
-        account.addTag(type.toString(),(numOfTagType >= breakPointValue));
+
+        account.addTag(ComputerUsageType.Desktop.toString(),(numOfDesdktopsMachines >= breakPointValue));
+        account.addTag(ComputerUsageType.Server.toString(),(numOfServersMachines >= breakPointValue));
 
 
     }

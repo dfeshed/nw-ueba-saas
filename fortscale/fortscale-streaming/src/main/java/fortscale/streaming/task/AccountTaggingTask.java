@@ -5,6 +5,7 @@ import fortscale.services.UserService;
 import fortscale.streaming.model.prevalance.PrevalanceModel;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.model.tagging.MachineState;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.tagging.TagService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -43,6 +45,7 @@ public class AccountTaggingTask  implements StreamTask, InitableTask, Windowable
     private String destComputerTypeField;
     private String isServiceAccountField;
     private String failureCodeField;
+    private List<String> failureCodes;
     private String isSensetiveMachineField;
     private String daysBackField;
 
@@ -59,6 +62,7 @@ public class AccountTaggingTask  implements StreamTask, InitableTask, Windowable
         destComputerTypeField = config.get("fortscale.destComputerType.field");
         isServiceAccountField = config.get("fortscale.isServiceAccount.field");
         failureCodeField = config.get("fortscale.failureCode.field");
+        failureCodes = config.getList("fortscale.failureCodes");
         isSensetiveMachineField= config.get("fortscale.isSensetiveMachine.field");
         daysBackField = config.get("fortscale.daysBack");
 
@@ -68,14 +72,14 @@ public class AccountTaggingTask  implements StreamTask, InitableTask, Windowable
         KeyValueStore<String, AccountMachineAccess> store = (KeyValueStore<String, AccountMachineAccess>)context.getStore(storeName);
 
         //validate that daysBackField is number
-        Long dyasBack = convertToLong(daysBackField);
+        Long daysBack = convertToLong(daysBackField);
 
-        if(dyasBack == null) {
+        if(daysBack == null) {
             logger.error("the days back parameter at the proprieties file is invalid -  {}", daysBackField);
             return;
         }
 
-        this.taggingService = new TagService(store,dyasBack);
+        this.taggingService = new TagService(store,daysBack);
 
     }
 
@@ -87,7 +91,7 @@ public class AccountTaggingTask  implements StreamTask, InitableTask, Windowable
         ComputerUsageType sourceComputerType;
         ComputerUsageType destComputerType;
         AccountMachineAccess currentAccount;
-        boolean  isEventSuccess;
+        boolean  isEventSuccess = false;
 
 
         // parse the message into json
@@ -104,11 +108,14 @@ public class AccountTaggingTask  implements StreamTask, InitableTask, Windowable
 
         // get the failure code  and manipulate it for define the isEventSuccess flag
         String failureCode = convertToString(message.get(failureCodeField));
-        if (StringUtils.isEmpty(failureCode) || failureCode == "0x0") {
-            isEventSuccess = true;
-        } else
-            isEventSuccess = false;
+        for ( String failCode : failureCodes)
+        {
+            if (StringUtils.isEmpty(failureCode) || failureCode == failCode) {
+                isEventSuccess = true;
+                break;
+            }
 
+        }
 
 
         //Filter the non service accounts
@@ -188,7 +195,10 @@ public class AccountTaggingTask  implements StreamTask, InitableTask, Windowable
     public void close() throws Exception {
         if(this.taggingService!=null)
             this.taggingService.exportTags();
+
+        this.taggingService.closeContext();
         this.taggingService = null;
+
 
     }
 

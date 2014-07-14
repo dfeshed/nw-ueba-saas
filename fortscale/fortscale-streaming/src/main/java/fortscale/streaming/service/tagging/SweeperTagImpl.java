@@ -15,16 +15,18 @@ public class SweeperTagImpl implements ServiceAccountTagging {
 
 
 
-    @Value("${sweeperThreshold}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${sweeper.min.destinations.count.threshold}") //get the value from fortscale-overriding-streaming.properties file
     private Double threshold;
 
-    @Value("${sweeperDaysBack}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${sweeper.daysBack.toWatch}") //get the value from fortscale-overriding-streaming.properties file
     private long daysBack;
 
-    @Value("${SweeperRegExp}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${sweeper.RegExp}") //get the value from fortscale-overriding-streaming.properties file
     private String regExpMachines;
 
     private Pattern regExpPattern;
+
+    private static final String SweeperTag =  "Sweeper";
 
 
     public SweeperTagImpl() {
@@ -64,7 +66,7 @@ public class SweeperTagImpl implements ServiceAccountTagging {
         //check first if the account is configure at the regex list
         if(match.matches())
         {
-            account.addTag("Sweeper",true);
+            account.addTag(SweeperTag,true);
             return;
 
         }
@@ -82,7 +84,7 @@ public class SweeperTagImpl implements ServiceAccountTagging {
                 machineCounter++;
         }
 
-        account.addTag("Sweeper",(machineCounter >= threshold));
+        account.addTag(SweeperTag,(machineCounter >= threshold));
 
 
 
