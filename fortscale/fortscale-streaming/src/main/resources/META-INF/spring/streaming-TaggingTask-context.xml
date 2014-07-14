@@ -11,10 +11,6 @@
 
 
 
-    <context:property-placeholder location="classpath*:META-INF/*.properties" />
-    <context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
-
-
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="file:config/fortscale-overriding-streaming.properties"/>
         <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
@@ -22,10 +18,11 @@
         <property name="localOverride" value="true"/>
     </bean>
 
-    <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
-    <import resource="classpath*MEAT-INF/spring/fortscale-domain-context.xml"/>
-    <import resource="classpath*MEAT-INF/spring/fortscale-services-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
 
 
 
@@ -52,7 +49,7 @@
 
 
 
-    <bean class="fortscale.domain.system.ServersListConfigurationImpl" />
+    <!--bean class="fortscale.domain.system.ServersListConfigurationImpl" /-->
 
 
     <!--List of Tagging service implementation -->
