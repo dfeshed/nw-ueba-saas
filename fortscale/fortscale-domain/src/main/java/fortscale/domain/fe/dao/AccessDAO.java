@@ -371,7 +371,7 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		
 		@Override
 		public EventsToMachineCount mapRow(ResultSet rs, int rowNum) throws SQLException {
-			String hostname = rs.getString(1);
+			String hostname = rs.getString(HostnameField);
 			int count = rs.getInt(EventsCountField);
 			return new EventsToMachineCount(hostname, count);
 		}
