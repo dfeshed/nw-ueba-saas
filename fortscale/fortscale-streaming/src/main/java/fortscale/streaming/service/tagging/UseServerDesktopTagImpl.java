@@ -68,6 +68,12 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
         Matcher ServerMatcher;
         Matcher DesktopsMatcher;
 
+        if(ServerRegExpPattern == null && ServerRegExpMachines!= null )
+            ServerRegExpPattern =  Pattern.compile(this.ServerRegExpMachines); // generate the reg excretion pattern
+
+        if(DesktopsRegExpPattern == null && DesktopsRegExpMachines!= null )
+            DesktopsRegExpPattern =  Pattern.compile(this.DesktopsRegExpMachines); // generate the reg excretion pattern
+
         if(account == null ||account.getDestinations() == null)
             return;
 

@@ -42,6 +42,9 @@ public class IsSensetiveTagImpl implements ServiceAccountTagging {
         if(isTheAccountIsTagged(account))
             return;
 
+        if(regExpPattern==null && IsSensitiveRegExMachines !=null)
+            regExpPattern = Pattern.compile(IsSensitiveRegExMachines);
+
 
         Matcher match= regExpPattern.matcher(account.getUserName());
 

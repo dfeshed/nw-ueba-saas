@@ -63,6 +63,9 @@ public class IsFixSourceTagImpl implements ServiceAccountTagging {
         if(account == null ||account.getSources() == null)
             return;
 
+        if(regExpPattern == null && isFixSourceRegExpMachines !=null )
+            regExpPattern = Pattern.compile(this.isFixSourceRegExpMachines);
+
         Matcher match= regExpPattern.matcher(account.getUserName());
 
         //check first if the account is configure at the regex list

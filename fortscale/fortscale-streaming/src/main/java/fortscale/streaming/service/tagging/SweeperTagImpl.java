@@ -60,6 +60,9 @@ public class SweeperTagImpl implements ServiceAccountTagging {
         if(account == null ||account.getDestinations() == null)
             return;
 
+        if(regExpPattern == null && regExpMachines!= null )
+            regExpPattern =  Pattern.compile(this.regExpMachines); // generate the reg excretion pattern
+
         Matcher match= regExpPattern.matcher(account.getUserName());
 
 
