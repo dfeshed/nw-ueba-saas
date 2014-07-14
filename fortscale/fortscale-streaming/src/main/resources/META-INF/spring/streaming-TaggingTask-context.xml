@@ -13,7 +13,7 @@
 
     <context:property-placeholder location="classpath*:META-INF/*.properties" />
     <context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
-    <context:annotation-config />
+
 
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="file:config/fortscale-overriding-streaming.properties"/>
@@ -26,6 +26,11 @@
     <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
     <import resource="classpath*MEAT-INF/spring/fortscale-services-context.xml"/>
     <import resource="classpath*MEAT-INF/spring/fortscale-domain-context.xml"/>
+
+
+    <context:spring-configured />
+    <context:annotation-config />
+    <context:component-scan base-package="fortscale" />
 
  <!-- for local debug mark this out and all the above mark on
 <context:property-placeholder location="classpath*:META-INF/*.properties" />
