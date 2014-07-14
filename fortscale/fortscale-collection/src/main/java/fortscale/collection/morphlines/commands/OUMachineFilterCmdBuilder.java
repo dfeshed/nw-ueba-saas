@@ -22,7 +22,6 @@ import com.typesafe.config.Config;
 
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
-import fortscale.utils.actdir.ADParser;
 
 public class OUMachineFilterCmdBuilder implements CommandBuilder {
 
@@ -60,6 +59,7 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
             super(builder, config, parent, child, context);
             
             OUmachines = new HashMap<String, Boolean>();
+
             this.hostnameField = getConfigs().getString(config,
                     "hostnameField");
             this.regex = getConfigs().getString(config, "regex", null);
@@ -71,7 +71,6 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
             }
 
         }
-        
         
         @Override
         protected boolean doProcess(Record inputRecord) {
@@ -103,9 +102,7 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
                     return true;
                 }else{
                     String dn = computer.getDistinguishedName();
-                    ADParser parser = new ADParser();
-                    String computerOU = parser.parseOUFromDN(dn);
-                    if(computerOU != null && computerOU.split("=")[1].equals(ouName)){
+                    if(dn.endsWith(ouName)){
                         OUmachines.put(computerName, true);
                     }else{
                         OUmachines.put(computerName, false);

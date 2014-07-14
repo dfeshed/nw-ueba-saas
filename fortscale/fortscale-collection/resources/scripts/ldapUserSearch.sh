@@ -76,7 +76,7 @@ if [ ! -z "$2" ]
             -D "${domain_username}"
             -w "${domain_password}"
             -E pr=1000/noprompt
-            -b "OU=${ou_filter},${domain_base_search}"
+            -b "${ou_filter},${domain_base_search}"
         )
 fi
 search_cmd+=( "(&(objectclass=user)(!(objectclass=computer))) ${ad_fields[@]}" )

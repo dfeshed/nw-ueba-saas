@@ -8,6 +8,7 @@ import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.google.common.base.Objects;
@@ -16,7 +17,7 @@ import com.typesafe.config.Config;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.services.impl.UsernameNormalizer;
 
-
+@Configurable()
 public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 	
 	protected String usernameField;
