@@ -451,7 +451,7 @@ public class ApiUserController extends BaseController{
 			@RequestParam(defaultValue="14") int daysToGet,
 			@RequestParam(defaultValue="10") int maxValues) {
 		
-		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param, daysToGet);
+		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param, daysToGet, maxValues);
 
 		// convert the distribution properties to data bean
 		DataBean<Collection<PropertyEntry>> ret = new DataBean<Collection<PropertyEntry>>();
