@@ -14,7 +14,8 @@ public class SamzaContainerShutdownErrorFilter extends Filter<ILoggingEvent> {
 	@Override
 	public FilterReply decide(ILoggingEvent event) {
 		
-		if ("org.apache.samza.container.SamzaContainer".equals(event.getLoggerName()) &&
+		if (("org.apache.samza.container.SamzaContainer".equals(event.getLoggerName()) ||
+			 "org.apache.samza.job.local.ThreadJob".equals(event.getLoggerName())) &&
 			"java.lang.InterruptedException".equals(event.getThrowableProxy().getClassName())) {
 			
 			return FilterReply.DENY;

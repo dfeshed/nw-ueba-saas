@@ -20,8 +20,10 @@ public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 			@Override
 			public void run() {
 				// go over jobs and kill them all
-				for (ThreadJob job : jobs) 
+				for (ThreadJob job : jobs) { 
 					job.kill();
+					job.waitForFinish(10000);
+				}
 			}
 		});
 	}
