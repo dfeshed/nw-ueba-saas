@@ -59,11 +59,4 @@
     <bean id = "IsFixedImpl" class="fortscale.streaming.service.tagging.IsFixSourceTagImpl"></bean>
     <!--****************************************-->
 
-
-    <!--The path to the user handler service -->
-    <bean id="userHandler" class="fortscale.services.impl.UserServiceImpl"/>
-
-
-
-
 </beans>
