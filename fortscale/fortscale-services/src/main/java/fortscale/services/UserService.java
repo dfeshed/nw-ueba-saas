@@ -12,6 +12,7 @@ import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.fe.Classifier;
+import fortscale.services.types.PropertiesDistribution;
 
 public interface UserService {
 	public void updateUserWithCurrentADInfo();
@@ -59,4 +60,6 @@ public interface UserService {
 	public DateTime findLastActiveTime(LogEventsEnum eventId);
 	
 	public void updateTags(String username, Map<String, Boolean> tagSettings);
+	
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues);
 }

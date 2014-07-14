@@ -21,6 +21,7 @@ import fortscale.services.UserService;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.UserUpdateScoreService;
 import fortscale.services.fe.Classifier;
+import fortscale.services.types.PropertiesDistribution;
 
 @Service("userServiceFacade")
 public class UserServiceFacadeImpl implements UserServiceFacade{
@@ -149,5 +150,8 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 		userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, onlyUpdate, updateAppUsername);
 	}
 
-
+	@Override
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues) {
+		return userService.getDestinationComputerPropertyDistribution(uid, propertyName, daysToGet, maxValues);
+	}
 }
