@@ -37,6 +37,12 @@ public class SpringService {
 		context = new ClassPathXmlApplicationContext(contextPath);//("classpath*:streaming-user-score-context.xml");
 	}
 	
+	public void shutdown() {
+		if (context!=null)
+			((ClassPathXmlApplicationContext)context).close();
+	}
+
+	
 	public <T> T resolve(Class<T> requiredType) {
 		return context.getBean(requiredType);
 	}

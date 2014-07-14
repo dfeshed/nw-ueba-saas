@@ -190,8 +190,10 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 
 	/** save the state to mongodb when the job shutsdown */
 	@Override public void close() throws Exception {
-		if (modelService!=null)
+		if (modelService!=null) {
 			modelService.exportModels();
+			modelService.close();
+		}
 		modelService = null;
 	}
 	
