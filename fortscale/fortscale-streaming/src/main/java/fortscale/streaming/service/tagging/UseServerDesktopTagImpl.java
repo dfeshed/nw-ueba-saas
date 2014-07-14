@@ -115,9 +115,9 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
 
         for(Map.Entry<String,MachineState> entry : account.getDestinations().entrySet())
         {
-            if(entry.getValue().getType().equals(ComputerUsageType.Server.toString()))
+            if(entry.getValue().getType() == ComputerUsageType.Server)
                 numOfServersMachines++;
-            else if (entry.getValue().getType().equals(ComputerUsageType.Desktop.toString()))
+            else if (entry.getValue().getType() == ComputerUsageType.Desktop)
                 numOfDesdktopsMachines++;
 
         }
