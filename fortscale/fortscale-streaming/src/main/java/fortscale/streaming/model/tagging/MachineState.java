@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.domain.core.ComputerUsageType;
+import fortscale.utils.TimestampUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -50,7 +51,7 @@ public class MachineState {
     }
 
     public void setLastEventTimeStamp(long lastEventTimeStamp) {
-        this.lastEventTimeStamp = lastEventTimeStamp;
+        this.lastEventTimeStamp = TimestampUtils.convertToMilliSeconds(lastEventTimeStamp);
     }
 
     public boolean isSensitiveMachine() {

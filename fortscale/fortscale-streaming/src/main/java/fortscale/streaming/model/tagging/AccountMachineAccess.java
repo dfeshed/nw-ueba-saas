@@ -78,7 +78,7 @@ public class AccountMachineAccess {
     }
 
     public void setFirstEventTimestamp(long firstEventTimestamp) {
-        this.firstEventTimestamp = firstEventTimestamp;
+        this.firstEventTimestamp = TimestampUtils.convertToMilliSeconds(firstEventTimestamp);
     }
 
     public long getFirstEventTimestamp() {
