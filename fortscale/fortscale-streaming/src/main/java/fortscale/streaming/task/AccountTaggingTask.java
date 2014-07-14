@@ -108,14 +108,11 @@ public class AccountTaggingTask  implements StreamTask, InitableTask, Windowable
 
         // get the failure code  and manipulate it for define the isEventSuccess flag
         String failureCode = convertToString(message.get(failureCodeField));
-        for ( String failCode : failureCodes)
-        {
-            if (StringUtils.isEmpty(failureCode) || failureCode == failCode) {
-                isEventSuccess = true;
-                break;
-            }
 
-        }
+
+        if(failureCodes.contains(failureCode))
+            isEventSuccess = true;
+
 
 
         //Filter the non service accounts
