@@ -25,7 +25,7 @@
 				</entry>
 				<entry>
                     <key>ouFilter</key>
-                    <value>${users.ou.filter:}</value>
+                    <value>${users.ou.filter}</value>
                 </entry>
 				
 				<entry>

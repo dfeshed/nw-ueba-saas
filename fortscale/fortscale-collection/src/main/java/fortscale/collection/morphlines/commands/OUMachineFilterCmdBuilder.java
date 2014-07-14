@@ -79,19 +79,18 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         		return super.doProcess(inputRecord);
         	}
         	// get the machine_name from the record
-        	String computerName = null;
-        	if(regex != null){
-        		String hostname = (String) inputRecord
+        	String computerName = (String) inputRecord
                     .getFirstValue(this.hostnameField);
-        		Matcher m = regexMatcher.matcher(hostname);
+        	if(regex != null){
+        		Matcher m = regexMatcher.matcher(computerName);
         		if(m.matches()){
         			computerName = m.replaceAll(regexReplacement);
         		}else{
-        			logger.error("could not match hostname to the regex {} : {}",regex, hostname );
+        			logger.error("could not match hostname to the regex {} : {}",regex, computerName);
         			return true;
         		}
         	} 
-        	computerName = this.hostnameField.toUpperCase();
+        	computerName = computerName.toUpperCase();
         	
             if(OUmachines.containsKey(computerName)){ //drop record
                 if(OUmachines.get(computerName).equals(false)){
@@ -106,7 +105,7 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
                     String dn = computer.getDistinguishedName();
                     ADParser parser = new ADParser();
                     String computerOU = parser.parseOUFromDN(dn);
-                    if(computerOU.equals(ouName)){
+                    if(computerOU != null && computerOU.split("=")[1].equals(ouName)){
                         OUmachines.put(computerName, true);
                     }else{
                         OUmachines.put(computerName, false);

@@ -44,7 +44,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
             String normalizedName = usernameNormalizer.normalize(ret);
-            if(dropOnFail.equals("true")){
+            if(dropOnFail != null && dropOnFail.equals("true")){
                 ret = normalizedName;
             }else{
                 ret = Objects.firstNonNull(normalizedName, ret);

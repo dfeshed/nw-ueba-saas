@@ -14,7 +14,7 @@ import fortscale.services.impl.UsernameNormalizer;
 
 @Configurable(preConstruction=true)
 public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphCmdBuilder {
-
+	
 	@Autowired
 	UsernameNormalizer sshUsernameNormalizer;
 	

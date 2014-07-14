@@ -93,7 +93,7 @@ public class AdFetchJob extends FortscaleJob {
 		
 		//TODO: Handle errors
         Process pr = null;
-        if(ouUsersFilter == null || ouUsersFilter.equals("")){
+        if(ouUsersFilter == null){
             pr =  runCmd(null, ldapSearchShellScript, outputTempFile.getAbsolutePath());
         }else{
             pr =  runCmd(null, ldapSearchShellScript, outputTempFile.getAbsolutePath(), ouUsersFilter);
