@@ -601,17 +601,22 @@ public class UserServiceImpl implements UserService{
 		PropertiesDistribution distribution = new PropertiesDistribution(propertyName);
 		
 		// go over the computers returned by events and get the operating system for each one
+		int numberOfDestinations = 0;
 		for (EventsToMachineCount destMachine : destinationsCount.values()) {
 			Computer computer = computerRepository.getComputerWithPartialFields(destMachine.getHostname(), propertyName);
 			distribution.incValueCount(computer.getPropertyValue(propertyName).toString(), destMachine.getEventsCount());
+			numberOfDestinations++;
+			
+			// in case we return more than a certain amount of values distribution, mark result as not conclusive
+			if (numberOfDestinations > maxValues) {
+				distribution.setConclusive(false);
+				break;
+			}
 		}
 		
 		// calculate distribution for every operating systems and return the result
-		distribution.calculateValuesDistribution();
-		
-		// in case we return more than a certain amount of values distribution, mark result as not conclusive
-		if (distribution.getNumberOfValues() > maxValues)
-			distribution.setConclusive(false);
+		if (distribution.isConclusive())
+			distribution.calculateValuesDistribution();
 		
 		return distribution;
 	}
