@@ -38,12 +38,12 @@ public class FilterMachinesServiceImpl implements FilterMachinesService, Initial
       	       .build(
       	           new CacheLoader<String, Boolean>() {
       	             public Boolean load(String key){
-      	               return getIsBelongToOU(key);
+      	               return getIfBelongToOU(key);
       	             }
       	           });
 	}
 	
-	private Boolean getIsBelongToOU(String computerName){
+	private Boolean getIfBelongToOU(String computerName){
     	Computer computer = computerRepository.findByName(computerName);
         if(computer == null){
             return false;

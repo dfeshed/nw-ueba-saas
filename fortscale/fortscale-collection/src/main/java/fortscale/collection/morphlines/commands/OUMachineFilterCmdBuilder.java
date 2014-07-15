@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 
 import com.typesafe.config.Config;
@@ -42,6 +43,8 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
     			.getLogger(FilterOUMachine.class);
 		@Autowired
 		private FilterMachinesService service;
+	    @Value("${machines.ou.filter:}")
+	    private String ouName; 
         private String hostnameField;
         private String regex;
         private Pattern regexMatcher;
@@ -67,6 +70,9 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         
         @Override
         protected boolean doProcess(Record inputRecord) {
+        	if(ouName == null || ouName.equals("")){
+        		return false;
+        	}
         	// get the machine_name from the record
         	String computerName = (String) inputRecord
                     .getFirstValue(this.hostnameField);

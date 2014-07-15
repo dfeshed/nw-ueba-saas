@@ -4,6 +4,7 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -46,7 +47,7 @@ public class FilterUnresolvedMachineCmdBuilder  implements CommandBuilder {
 		protected boolean doProcess(Record inputRecord) {
 			String machineName = (String) inputRecord
 					.getFirstValue(this.machineNameField);
-			if(filterOnFail.equals("true") && (machineName == null || machineName.equals(""))){
+			if(filterOnFail.equals("true") && StringUtils.isEmpty(machineName)){
 				return true;
 			}
 			return super.doProcess(inputRecord);

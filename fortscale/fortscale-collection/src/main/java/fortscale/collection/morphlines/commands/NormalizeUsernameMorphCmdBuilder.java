@@ -40,7 +40,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 	}
 	
 	protected String normalizeUsername(Record record){
-        //if ou users filter is on, this function returns null if user does not exit in OU
+        //if normalizedUsers.fail filter is set: function returns null if username normalization failed.
 		String ret = RecordExtensions.getStringValue(record, usernameField).toLowerCase();
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
@@ -79,7 +79,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 			// return an empty string
 			
             String normalizedUserName = normalizeUsername(inputRecord);
-            if (normalizedUserName == null){
+            if (normalizedUserName == null && dropOnFail != null && dropOnFail.equals("true")){
                 return true;
             }
             inputRecord.put(normalizedUsernameField, normalizedUserName);
