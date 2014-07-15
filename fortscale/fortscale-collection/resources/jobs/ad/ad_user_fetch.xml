@@ -24,11 +24,6 @@
 					<value>users%d.csv</value>
 				</entry>
 				<entry>
-                    <key>ouFilter</key>
-                    <value>${users.ou.filter}</value>
-                </entry>
-				
-				<entry>
 					<key>ldapSearchShellScript</key>
 					<value>${collection.shell.scripts.dir.path}/ldapUserSearch.sh</value>
 				</entry>
