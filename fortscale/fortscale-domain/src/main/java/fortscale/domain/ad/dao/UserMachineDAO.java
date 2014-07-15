@@ -17,4 +17,9 @@ public interface UserMachineDAO {
 	 * Get logins to the given machine
 	 */
 	List<UserMachine> findByHostname(String hostname, int daysToConsider);
+	
+	/**
+	 * Get the events count in the last days
+	 */
+	int count(int daysToConsider);
 }

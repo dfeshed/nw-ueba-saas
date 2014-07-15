@@ -37,11 +37,40 @@ public class LoginClassifier implements EndpointClassifier {
 	@Value("${endpoint.login.pattern.period:30}")
 	private int loginPeriod;
 	
+	@Value("${endpoint.login.min.events.required:50}")
+	private int minimunEventsRequired;
+	
+	@Value("${enpoint.login.min.events.backoff.hours:1}")
+	private int hoursToBackoff;
+	
+	private long lastTimeCheckedForMinimumEvents;
+	private boolean hasMinimumEvents = true;
+	
 	@Override
 	public boolean canClassify(Computer computer) {
-		return computer!=null && StringUtils.isNotEmpty(computer.getName());
+		return computer!=null && StringUtils.isNotEmpty(computer.getName()) && haveMinimumEvents();
 	}
 
+	/**
+	 * Checks if the table contains the minimum number of events to operate.
+	 * If not, we will not check this again for some time. 
+	 */
+	private boolean haveMinimumEvents() {
+		// check if the last time checked for minimum events was recently
+		if (minimunEventsRequired!=0 && lastTimeCheckedForMinimumEvents < (System.currentTimeMillis() - (hoursToBackoff*1000*60*60*24))) {
+			// get the events count in the table and check if it passes the min required
+			int eventsCount = dao.count(loginPeriod);
+			hasMinimumEvents = (eventsCount > minimunEventsRequired);
+			lastTimeCheckedForMinimumEvents = System.currentTimeMillis();
+		}
+		
+		return hasMinimumEvents;
+	}
+	
+	public void setMinimumEventsRequired(int minRequired) {
+		this.minimunEventsRequired = minRequired;
+	}
+	
 	@Override
 	public boolean classify(Computer computer) {
 		if (!canClassify(computer))

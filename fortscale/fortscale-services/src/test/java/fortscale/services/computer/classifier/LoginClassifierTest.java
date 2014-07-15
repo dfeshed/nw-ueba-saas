@@ -32,6 +32,29 @@ public class LoginClassifierTest {
 		classifier.setDesktopStaleThreshold(3);
 		classifier.setUnknownStaleThreshold(1);
 		classifier.setLoginPeriod(30);
+		when(dao.count(30)).thenReturn(800000);
+	}
+
+	@Test
+	public void classifier_should_do_nothing_when_there_is_too_little_events() {
+		when(dao.count(30)).thenReturn(0);
+		
+		List<UserMachine> logins = new LinkedList<UserMachine>();
+		logins.add(new UserMachine("me", "my-pc", 20, 0L));
+		when(dao.findByHostname("my-pc", 30)).thenReturn(logins);
+		when(dao.findByUsername("me")).thenReturn(logins);
+		
+		Computer computer = new Computer();
+		computer.setName("my-pc");
+		
+		classifier.setMinimumEventsRequired(300);
+		classifier.classify(computer);
+		
+		// verify no interactions are made with the dao
+		verify(dao, times(0)).findByHostname(anyString(), anyInt());
+		verify(dao, times(0)).findByUsername(anyString());
+		
+		assertTrue(computer.getUsageClassifiers().size()==0);
 	}
 	
 
