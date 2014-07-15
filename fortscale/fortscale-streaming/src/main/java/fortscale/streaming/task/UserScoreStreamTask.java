@@ -107,7 +107,7 @@ public class UserScoreStreamTask implements StreamTask, InitableTask, Windowable
 	public void close() throws Exception {
 		if (userScoreStreamingService!=null) {
 			userScoreStreamingService.exportSnapshot();
-			SpringService.getInstance().shutdown();
+			SpringService.shutdown();
 		}
 		userScoreStreamingService = null;
 	}

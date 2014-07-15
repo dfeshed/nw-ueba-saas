@@ -110,7 +110,7 @@ public class PrevalanceModelService {
 	}
 	
 	public void close() {
-		SpringService.getInstance().shutdown();
+		SpringService.shutdown();
 	}
 	
 	
