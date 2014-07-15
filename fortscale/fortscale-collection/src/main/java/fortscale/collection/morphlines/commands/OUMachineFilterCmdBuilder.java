@@ -71,7 +71,7 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         @Override
         protected boolean doProcess(Record inputRecord) {
         	if(ouName == null || ouName.equals("")){
-        		return false;
+        		return super.doProcess(inputRecord);
         	}
         	// get the machine_name from the record
         	String computerName = (String) inputRecord
