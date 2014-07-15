@@ -399,15 +399,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	class EachAddToSetUpdate extends Update {
 		
 		public EachAddToSetUpdate addToSetEach(String key, List<String> values) {
-			// build a bson array from values
-			BasicDBList eachList = new BasicDBList();
-			for (String value : values) {
-				eachList.add(value);
-			}
-			
 			// create a custom addToSet operator
-			this.addToSet(key, BasicDBObjectBuilder.start("$each", eachList).get());
-			
+			this.addToSet(key, BasicDBObjectBuilder.start("$each", values).get());
 			return this;
 		}
 	}
