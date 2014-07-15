@@ -22,10 +22,7 @@ public class TagService {
     private KeyValueStore<String, AccountMachineAccess> store;
     private Long daysBackForArchive;
 
-
     private UserService userService;
-
-
 
     public TagService(KeyValueStore<String, AccountMachineAccess> store, long daysBack) {
 
@@ -35,8 +32,6 @@ public class TagService {
         //retrieve the implementation list from spring
        this.implementationList = SpringService.getInstance("classpath*:META-INF/spring/streaming-TaggingTask-context.xml").resolveAll(ServiceAccountTagging.class);
        this.userService = SpringService.getInstance("classpath*:META-INF/spring/streaming-TaggingTask-context.xml").resolve(UserService.class);
-
-
     }
 
     public void handleAccount(String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType,boolean isSensetiveMachine )
@@ -47,7 +42,6 @@ public class TagService {
         if (currentAccount == null) {
             currentAccount = new AccountMachineAccess(userName);
             currentAccount.setFirstEventTimestamp(timeStamp);
-
         }
 
         currentAccount.setLastEventTimeStamp(timeStamp);
@@ -57,7 +51,6 @@ public class TagService {
         currentAccount.addDestination(destHostName, timeStamp, destComputerType,isSensetiveMachine);
         currentAccount.dilutionLists(this.daysBackForArchive);
 
-
         //tag the account
         tagAccount(currentAccount);
         
@@ -66,8 +59,7 @@ public class TagService {
 
     private void tagAccount(AccountMachineAccess targetAccount)
     {
-        for(ServiceAccountTagging impl : this.implementationList)
-        {
+        for(ServiceAccountTagging impl : this.implementationList) {
             impl.tag(targetAccount);
         }
     }
@@ -86,9 +78,8 @@ public class TagService {
 
     }
 
-    public void closeContext()
-    {
-        SpringService.getInstance("classpath*:META-INF/spring/streaming-TaggingTask-context.xml").CloseContext();
+    public void closeContext() {
+        SpringService.shutdown();
     }
 
 

@@ -78,6 +78,7 @@ public class HdfsService {
 		// call flush to ensure that all partitions were added to impala
 		flushHdfs();
 		appender.close();
+		SpringService.shutdown();
 	}
 	
 	

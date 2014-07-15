@@ -80,6 +80,10 @@ public class SshDAOImpl extends AccessDAO{
 	public String getEventTimeFieldName() {
 		return DATE_TIME.toLowerCase();
 	}
+	@Override
+	public String getEventEpochTimeFieldName() {
+		return EPOCHTIME.toLowerCase();
+	}
 
 	@Override
 	public String getDestinationFieldName() {

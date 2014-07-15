@@ -42,10 +42,12 @@ import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.EventScoreDAO;
+import fortscale.domain.fe.dao.EventsToMachineCount;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
+import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
@@ -477,18 +479,20 @@ public class UserServiceImpl implements UserService{
 		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX+prefix.toLowerCase(), new PageRequest(page, size));
 	}
 
-	
-	
-	
-
-	@Override
-	public List<UserMachine> getUserMachines(String uid) {
+	private String getUserNameFromID(String uid) {
 		User user = userRepository.findOne(uid);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
 		}
 		
-		String userName = user.getUsername();
+		return user.getUsername();
+	}
+	
+	
+
+	@Override
+	public List<UserMachine> getUserMachines(String uid) {
+		String userName = getUserNameFromID(uid);
 		List<UserMachine> userMachines = userMachineDAO.findByUsername(userName);
 		List<String> machinesNames = new ArrayList<String>();
 		for(UserMachine userMachine : userMachines){
@@ -584,8 +588,51 @@ public class UserServiceImpl implements UserService{
 		return userRepository.findByApplicationUserName(userApplication.getId(), usernames);
 	}
 	
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues) {
+		// get the destinations from 4769 events and ssh events
+		Map<String, EventsToMachineCount> destinationsCount = new HashMap<String, EventsToMachineCount>();
+		
+		String username = getUserNameFromID(uid);
+		
+		addEventsToMachineCountToMap(destinationsCount, loginDAO.getEventsToTargetMachineCount(username, daysToGet));
+		addEventsToMachineCountToMap(destinationsCount, sshDAO.getEventsToTargetMachineCount(username, daysToGet));
 	
+		// create a properties distribution object
+		PropertiesDistribution distribution = new PropertiesDistribution(propertyName);
+		
+		// go over the computers returned by events and get the operating system for each one
+		int numberOfDestinations = 0;
+		for (EventsToMachineCount destMachine : destinationsCount.values()) {
+			Computer computer = computerRepository.getComputerWithPartialFields(destMachine.getHostname(), propertyName);
+			distribution.incValueCount(computer.getPropertyValue(propertyName).toString(), destMachine.getEventsCount());
+			numberOfDestinations++;
+			
+			// in case we return more than a certain amount of values distribution, mark result as not conclusive
+			if (numberOfDestinations > maxValues) {
+				distribution.setConclusive(false);
+				break;
+			}
+		}
+		
+		// calculate distribution for every operating systems and return the result
+		if (distribution.isConclusive())
+			distribution.calculateValuesDistribution();
+		
+		return distribution;
+	}
 	
+	private void addEventsToMachineCountToMap(Map<String, EventsToMachineCount> total, List<EventsToMachineCount> toAdd) {
+		for (EventsToMachineCount machine : toAdd) {
+			String hostname = machine.getHostname();
+			if (StringUtils.isNotEmpty(hostname)) {
+				if (total.containsKey(hostname)) {
+					total.get(hostname).incEventsCount(machine.getEventsCount());
+				} else {
+					total.put(hostname, machine);
+				}
+			}
+		}
+	}
 	
 	
 

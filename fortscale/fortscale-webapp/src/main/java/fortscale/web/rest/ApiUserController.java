@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,11 +32,14 @@ import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.fe.Classifier;
+import fortscale.services.types.PropertiesDistribution;
+import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
+import fortscale.web.beans.DataWarningsEnum;
 import fortscale.web.beans.FeatureBean;
 import fortscale.web.beans.UserContactInfoBean;
 import fortscale.web.beans.UserDetailsBean;
@@ -434,5 +438,29 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public void removeClassifierFromAllUsers(@RequestParam(required=true) String classifierId, Model model){
 		userServiceFacade.removeClassifierFromAllUsers(classifierId);
+	}	
+	
+	/**
+	 * Gets the destination machines operating systems distribution for a user
+	 */
+	@RequestMapping(value="/{uid}/destination/{param}/distribution", method=RequestMethod.GET)
+	@LogException
+	public DataBean<Collection<PropertyEntry>> getDestinationPropertyDistribution(
+			@PathVariable String uid,
+			@PathVariable String param,
+			@RequestParam(defaultValue="14") int daysToGet,
+			@RequestParam(defaultValue="10") int maxValues) {
+		
+		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param, daysToGet, maxValues);
+
+		// convert the distribution properties to data bean
+		DataBean<Collection<PropertyEntry>> ret = new DataBean<Collection<PropertyEntry>>();
+		if (distribution.isConclusive()) {
+			ret.setData(distribution.getPropertyValues());
+			ret.setTotal(distribution.getNumberOfValues());
+		} else {
+			ret.setWarning(DataWarningsEnum.NonCoclusiveData);
+		}
+		return ret;
 	}	
 }

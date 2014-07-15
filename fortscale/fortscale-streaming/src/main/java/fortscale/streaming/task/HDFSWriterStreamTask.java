@@ -21,6 +21,7 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.StreamTask;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.apache.samza.task.TaskCoordinator.RequestScope;
 import org.apache.samza.task.WindowableTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,6 +117,8 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 				
 				if (nonFlushedEventsCounter>=eventsCountFlushThreshold) {
 					flushEvents();
+					// commit the checkpoint in the kafka topic when flushing events, not to write them twice
+					coordinator.commit(RequestScope.CURRENT_TASK);
 				}
 			}
 			
@@ -150,6 +153,8 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	/** Periodically flush data to hdfs */
 	@Override public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		flushEvents();
+		// commit the checkpoint in the kafka topic when flushing events, not to write them twice
+		coordinator.commit(RequestScope.CURRENT_TASK);
 	}
 
 	/** Close the hdfs writer when job shuts down */

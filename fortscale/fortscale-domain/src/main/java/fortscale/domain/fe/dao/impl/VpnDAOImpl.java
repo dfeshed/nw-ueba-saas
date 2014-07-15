@@ -129,7 +129,10 @@ public class VpnDAOImpl extends AccessDAO implements InitializingBean{
 	public String getEventTimeFieldName() {
 		return DATE_TIME;
 	}
-
+	@Override
+	public String getEventEpochTimeFieldName() {
+		return DATE_TIME_UNIX.toLowerCase();
+	}
 	@Override
 	public String getUsernameFieldName() {
 		return USERNAME;

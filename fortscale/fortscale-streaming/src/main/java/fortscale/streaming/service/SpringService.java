@@ -29,6 +29,13 @@ public class SpringService {
 		return instance;
 	}
 	
+	public static void shutdown() {
+		if (instance!=null) {
+			if (instance.context!=null)
+				((ClassPathXmlApplicationContext)instance.context).close();
+			instance = null;
+		}
+	}
 	
 	/// instance section
 	
@@ -37,7 +44,7 @@ public class SpringService {
 	private SpringService(String contextPath) {
 		context = new ClassPathXmlApplicationContext(contextPath);//("classpath*:streaming-user-score-context.xml");
 	}
-	
+		
 	public <T> T resolve(Class<T> requiredType) {
 		return context.getBean(requiredType);
 	}
@@ -45,12 +52,4 @@ public class SpringService {
     public <T> Collection<T> resolveAll(Class<T> requiredType) {
         return context.getBeansOfType(requiredType).values();
     }
-
-    public void CloseContext()
-    {
-        ((ConfigurableApplicationContext) this.context).close();
-    }
-
-
-	
 }

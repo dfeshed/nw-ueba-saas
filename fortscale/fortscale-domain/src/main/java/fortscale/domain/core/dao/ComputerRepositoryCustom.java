@@ -21,4 +21,7 @@ public interface ComputerRepositoryCustom {
 	long getNumberOfSensitiveMachinesBeforeTime(DateTime time);
 	long getNumberOfMachines();
 	long getNumberOfMachinesBeforeTime(DateTime time);
+	
+	List<Computer> getComputersWithPartialFields(List<String> machineNames, String... includeFields);
+	Computer getComputerWithPartialFields(String machineName, String... includeFields);
 }
