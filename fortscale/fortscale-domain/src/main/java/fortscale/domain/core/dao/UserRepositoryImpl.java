@@ -402,8 +402,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			// build a bson array from values
 			BasicDBList eachList = new BasicDBList();
 			for (String value : values) {
-				BasicDBObject dbObject = (BasicDBObject)com.mongodb.util.JSON.parse(value);
-				eachList.add(dbObject);
+				eachList.add(value);
 			}
 			
 			// create a custom addToSet operator
