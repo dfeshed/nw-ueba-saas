@@ -22,7 +22,7 @@ public class TagService {
     private KeyValueStore<String, AccountMachineAccess> store;
     private Long daysBackForArchive;
 
-    @Autowired
+
     private UserService userService;
 
 
@@ -34,6 +34,7 @@ public class TagService {
 
         //retrieve the implementation list from spring
        this.implementationList = SpringService.getInstance("classpath*:META-INF/spring/streaming-TaggingTask-context.xml").resolveAll(ServiceAccountTagging.class);
+       this.userService = SpringService.getInstance("classpath*:META-INF/spring/streaming-TaggingTask-context.xml").resolve(UserService.class);
 
 
     }
