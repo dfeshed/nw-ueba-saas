@@ -288,10 +288,12 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	
 	@Override
 	public void recalculateTotalScore(){
-		List<User> users = userRepository.findAll();
+		List<User> users = userRepository.findAllExcludeAdInfo();
 		for(User user: users){
 			recalculateTotalScore(user);
-			userRepository.save(user);
+			Update update = new Update();
+			update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+			userService.updateUser(user, update);
 		}
 	}
 	

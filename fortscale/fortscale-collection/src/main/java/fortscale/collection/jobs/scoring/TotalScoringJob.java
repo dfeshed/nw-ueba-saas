@@ -10,7 +10,6 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.collection.jobs.ad.AdProcessJob;
 import fortscale.services.UserServiceFacade;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
@@ -18,7 +17,7 @@ import fortscale.utils.logging.Logger;
 @DisallowConcurrentExecution
 public class TotalScoringJob extends FortscaleJob {
 	
-	private static Logger logger = Logger.getLogger(AdProcessJob.class);
+	private static Logger logger = Logger.getLogger(TotalScoringJob.class);
 
 	@Autowired
 	protected ImpalaClient impalaClient;
