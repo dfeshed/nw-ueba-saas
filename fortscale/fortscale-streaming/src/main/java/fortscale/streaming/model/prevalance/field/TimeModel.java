@@ -10,13 +10,15 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.streaming.model.prevalance.calibration.FeatureCalibration;
 
 
+
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class TimeModel {
 	private static final int MASK_SIZE = 10;
 	private static final double MASK_EXPONENT = 1.25;
 	
 	private ArrayList<Double> buckets;
-	private double norm;
+	private ArrayList<Integer> bucketsRealCount;
+	private int total;
 	
 	private int timeResolution;
 	private int bucketSize;
@@ -37,7 +39,11 @@ public class TimeModel {
 		for(int i = 0; i < numOfBuckets; i++){
 			buckets.add(0D);
 		}
-		setNorm(0);
+		bucketsRealCount = new ArrayList<>(numOfBuckets);
+		for(int i = 0; i < numOfBuckets; i++){
+			bucketsRealCount.add(0);
+		}
+		total = 0;
 	}
 	
 	public double score(long epochSeconds){
@@ -52,18 +58,32 @@ public class TimeModel {
 			
 	public void update(long epochSeconds) throws Exception{
 		int pivot = getBucketIndex(epochSeconds);
-		buckets.set(pivot, buckets.get(pivot)+1);
+		bucketsRealCount.set(pivot, bucketsRealCount.get(pivot) + 1);
+		double val = buckets.get(pivot)+1;
+		buckets.set(pivot, val);
+		updateCalibration(pivot, val);
 		int upIndex = pivot + 1;
 		int downIndex = pivot - 1 + numOfBuckets;
 		for(int i = 0; i < MASK_SIZE; i++,upIndex++,downIndex--){
 			double addVal = Math.pow(MASK_EXPONENT, 0-i);
-			buckets.set(upIndex % numOfBuckets, buckets.get(upIndex % numOfBuckets) + addVal);
-			buckets.set(downIndex % numOfBuckets, buckets.get(downIndex % numOfBuckets) + addVal);
+			int index = upIndex % numOfBuckets;
+			val = buckets.get(index) + addVal;
+			buckets.set(index, val);
+			if(bucketsRealCount.get(index) > 0){
+				updateCalibration(index, val);
+			}
+			
+			index = downIndex % numOfBuckets;
+			val = buckets.get(index) + addVal;
+			buckets.set(index, val);
+			if(bucketsRealCount.get(index) > 0){
+				updateCalibration(index, val);
+			}
 		}
 		
-		norm++;
+		total++;
 		
-		updateCalibration(pivot, buckets.get(pivot));
+		
 	}
 	
 	private void updateCalibration(int bucketIndex, double val) throws Exception{
@@ -90,12 +110,8 @@ public class TimeModel {
 		calibration.init(tmp);
 	}
 
-	public double getNorm() {
-		return norm;
-	}
-
-	public void setNorm(double norm) {
-		this.norm = norm;
+	public int getTotal() {
+		return total;
 	}
 
 	public int getTimeResolution() {
