@@ -53,6 +53,10 @@ public class LoginDAOImpl extends AccessDAO{
 		return TIMEGENERATED.toLowerCase();
 	}
 	@Override
+	public String getEventEpochTimeFieldName() {
+		return TIMEGENERATED_UNIX.toLowerCase();
+	}
+	@Override
 	public String getSourceFieldName() {
 		return MACHINE_NAME;
 	}

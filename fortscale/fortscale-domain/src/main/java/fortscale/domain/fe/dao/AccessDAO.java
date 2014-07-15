@@ -1,5 +1,7 @@
 package fortscale.domain.fe.dao;
 
+import static fortscale.utils.impala.ImpalaCriteria.gte;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -21,6 +23,7 @@ import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.EventScore;
 import fortscale.domain.impala.ImpalaDAO;
 import fortscale.utils.TimestampUtils;
+import fortscale.utils.impala.ImpalaCriteria;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.logging.Logger;
@@ -84,6 +87,26 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		return impalaJdbcTemplate.query(getEventLoginDayCountSqlQuery(username, numberOfDays), new EventLoginDayCountMapper());
 	}
 
+	public List<EventsToMachineCount> getEventsToTargetMachineCount(String username, int daysBack) {
+		long startOfTime = (new DateTime()).minusDays(daysBack).getMillis();
+		
+		///build query for events in the last X days to each distinct target machine by the username
+		ImpalaQuery query = new ImpalaQuery();
+		query.select(getDestinationFieldName() + " as " + EventsToMachineCountRowMapper.HostnameField, "count(*) as " + EventsToMachineCountRowMapper.EventsCountField)
+			.from(getTableName())
+			// get only success events
+			.andWhere(ImpalaCriteria.equalsTo(getStatusFieldName(), getStatusSuccessValue(), true))
+			// for the given user
+			.andWhere(getNormalizedUserNameEqualComparison(username))
+			// in the number of days that were requested
+			.andWhere(gte(getEventEpochTimeFieldName(), Long.toString(startOfTime)))
+			.andWhere(gte(getPartitionStrategy().getImpalaPartitionFieldName(), getPartitionStrategy().getImpalaPartitionValue(startOfTime)))
+			// group by target
+			.groupBy(getDestinationFieldName());
+		
+		return impalaJdbcTemplate.query(query.toSQL(), new EventsToMachineCountRowMapper());
+	}
+	
 	public List<Map<String, Object>> findAll(Pageable pageable) {
 		return super.findAll(pageable, getMapper());
 	}
@@ -339,6 +362,18 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 			}
 
 			return ret;
+		}
+	}
+	
+	class EventsToMachineCountRowMapper implements RowMapper<EventsToMachineCount> {
+		public static final String EventsCountField = "eventscount";
+		public static final String HostnameField = "hostname";
+		
+		@Override
+		public EventsToMachineCount mapRow(ResultSet rs, int rowNum) throws SQLException {
+			String hostname = rs.getString(HostnameField);
+			int count = rs.getInt(EventsCountField);
+			return new EventsToMachineCount(hostname, count);
 		}
 	}
 

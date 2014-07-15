@@ -25,6 +25,7 @@ public class AdComputer extends AdObject{
 	private String description;
 	private String pwdLastSet;
 	private String memberOf;
+	private String ou;
 	
 	
 	
@@ -204,6 +205,18 @@ public class AdComputer extends AdObject{
 
 	public void setMemberOf(String memberOf) {
 		this.memberOf = memberOf;
+	}
+
+
+
+	public String getOu() {
+		return ou;
+	}
+
+
+
+	public void setOu(String ou) {
+		this.ou = ou;
 	}
 	
 	

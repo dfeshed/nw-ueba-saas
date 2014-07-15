@@ -39,4 +39,16 @@ public class EndpointDetectionServiceImpl implements EndpointDetectionService {
 		
 		return changeMade;
 	}
+	
+	public boolean classifyNewComputer(Computer computer) {
+		checkNotNull(computer);
+		
+		// pass the computer instance to every classifier
+		// and set the classification value result in the computer instance
+		boolean changeMade = false;
+		changeMade |= operatingSystemClassifier.classify(computer);
+		changeMade |= nameMatchingClassifier.classify(computer);
+		
+		return changeMade;
+	}
 }

@@ -29,13 +29,15 @@ public interface EventScoreDAO {
 	
 	public List<EventScore> getEventScores(String username, int daysBack, int limit);
 	
-	
+	public List<EventsToMachineCount> getEventsToTargetMachineCount(String username, int daysBack);
 	
 	public String getNormalizedUsernameField();
 
 	public String getUsernameFieldName();
 	
 	public String getEventTimeFieldName();
+	
+	public String getEventEpochTimeFieldName();
 	
 	public String getEventTimeScoreFieldName();
 

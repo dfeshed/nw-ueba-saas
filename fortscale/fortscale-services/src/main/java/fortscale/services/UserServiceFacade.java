@@ -12,6 +12,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.IFeature;
 import fortscale.services.fe.Classifier;
+import fortscale.services.types.PropertiesDistribution;
 
 
 public interface UserServiceFacade {
@@ -60,4 +61,6 @@ public void updateUserWithCurrentADInfo();
 	public void updateUserTotalScore();
 	
 	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
+	
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues);
 }

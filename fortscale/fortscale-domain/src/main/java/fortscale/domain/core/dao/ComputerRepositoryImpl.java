@@ -1,7 +1,7 @@
 package fortscale.domain.core.dao;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -12,10 +12,10 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+
 import static org.springframework.data.mongodb.core.query.Query.query;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Update.update;
-
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageClassifier;
 import fortscale.domain.core.ComputerUsageType;
@@ -109,5 +109,19 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 		return mongoTemplate.count(query(where(Computer.WHEN_CREATED_FIELD).ne(null)), Computer.class);
 	}
 	
+	public Computer getComputerWithPartialFields(String machineName, String... includeFields) {
+		List<Computer> computers = getComputersWithPartialFields(Arrays.asList(machineName), includeFields);
+		return (computers==null || computers.isEmpty())? null : computers.get(0);
+	}
 	
+	public List<Computer> getComputersWithPartialFields(List<String> machineNames, String... includeFields) {
+		Query query = new Query();
+		query.addCriteria(where(Computer.NAME_FIELD).in(machineNames));
+		query.fields().include(Computer.NAME_FIELD);
+		for (String includeField : includeFields)
+			query.fields().include(includeField);
+		
+		return mongoTemplate.find(query, Computer.class);
+		
+	}
 }
