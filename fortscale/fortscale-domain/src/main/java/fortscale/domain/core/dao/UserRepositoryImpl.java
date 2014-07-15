@@ -332,7 +332,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public long getNumberOfAccountsCreatedBefore(DateTime time){
-		Criteria criteria = Criteria.where(User.getAdInfoField(UserAdInfo.whenCreatedField)).lt(
+		Criteria criteria = Criteria.where(User.whenCreatedField).lt(
 				time);
 		Query query = new Query(criteria);
 		return mongoTemplate.count(query, User.class);
@@ -340,7 +340,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public long getNumberOfDisabledAccounts() {
-		//temporary fix
 		Query query = new Query(Criteria.where(
 				User.getAdInfoField(UserAdInfo.isAccountDisabledField))
 				.is(true).and(User.getAdInfoField(UserAdInfo.disableAccountTimeField))
@@ -359,14 +358,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return mongoTemplate.count(query, User.class);
 	}
 
-	@Override
-	public long getNumberOfAccounts() {
-		Criteria criteria = Criteria.where(User.getAdInfoField(UserAdInfo.whenCreatedField)).ne(
-				null);
-		Query query = new Query(criteria);
-		return mongoTemplate.count(query, User.class);
-	}
-	
 	@Override
 	public long getNumberOfInactiveAccounts() {
 		//temporary implementation

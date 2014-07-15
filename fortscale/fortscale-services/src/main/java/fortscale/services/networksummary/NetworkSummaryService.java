@@ -31,7 +31,7 @@ public class NetworkSummaryService {
 		HashMap<String, NetworkSummaryDTO> res = new HashMap<>();
 		
 		//machines summary
-		long machinesNum = computerRepository.getNumberOfMachines();
+		long machinesNum = computerRepository.count();
 		long prevMachinesNum = computerRepository.getNumberOfMachinesBeforeTime(previousTime);
 		res.put("machines", new NetworkSummaryDTO(machinesNum, prevMachinesNum));
 		
@@ -51,7 +51,7 @@ public class NetworkSummaryService {
 		res.put("sensitiveMachines", new NetworkSummaryDTO(sensitiveMachinesNum, prevSensitiveMachinesNum));
 		
 		//accounts summary
-		long accountsNum = userRepository.getNumberOfAccounts();
+		long accountsNum = userRepository.count();
 		long prevAccountsNum = userRepository.getNumberOfAccountsCreatedBefore(previousTime);
 		res.put("accounts", new NetworkSummaryDTO(accountsNum, prevAccountsNum));
 		
