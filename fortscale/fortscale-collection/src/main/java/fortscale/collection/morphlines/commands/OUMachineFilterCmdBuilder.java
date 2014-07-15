@@ -15,13 +15,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 
 
+import com.google.common.cache.LoadingCache;
 import com.typesafe.config.Config;
 
-import fortscale.domain.core.Computer;
-import fortscale.domain.core.dao.ComputerRepository;
+import fortscale.services.FilterMachinesService;
 
 public class OUMachineFilterCmdBuilder implements CommandBuilder {
 
@@ -43,22 +42,19 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
     public static class FilterOUMachine extends AbstractCommand {
     	private static Logger logger = LoggerFactory
     			.getLogger(FilterOUMachine.class);
-    	@Autowired
-        private ComputerRepository computerRepository;
-        @Value("${machines.ou.filter:}")
-        private String ouName; 
+		@Autowired
+		private FilterMachinesService service;
         private String hostnameField;
         private String regex;
         private Pattern regexMatcher;
         private String regexReplacement;
+        LoadingCache<String, Boolean> OUMachinesCache;
         
         
         HashMap<String, Boolean> OUmachines = null;
         public FilterOUMachine(CommandBuilder builder, Config config,
                 Command parent, Command child, MorphlineContext context) {
             super(builder, config, parent, child, context);
-            
-            OUmachines = new HashMap<String, Boolean>();
 
             this.hostnameField = getConfigs().getString(config,
                     "hostnameField");
@@ -72,11 +68,9 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
 
         }
         
+        
         @Override
         protected boolean doProcess(Record inputRecord) {
-        	if(ouName == null || ouName.equals("")){
-        		return super.doProcess(inputRecord);
-        	}
         	// get the machine_name from the record
         	String computerName = (String) inputRecord
                     .getFirstValue(this.hostnameField);
@@ -90,29 +84,13 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         		}
         	} 
         	computerName = computerName.toUpperCase();
-        	
-            if(OUmachines.containsKey(computerName)){ //drop record
-                if(OUmachines.get(computerName).equals(false)){
-                    return true;
-                }
-            }else{
-                Computer computer = computerRepository.findByName(computerName);
-                if(computer == null){
-                    OUmachines.put(computerName, false);
-                    return true;
-                }else{
-                    String dn = computer.getDistinguishedName();
-                    if(dn.endsWith(ouName)){
-                        OUmachines.put(computerName, true);
-                    }else{
-                        OUmachines.put(computerName, false);
-                        return true;
-                    }
-                }
-            }
-            return super.doProcess(inputRecord);
+        	boolean filter = service.toFilter(computerName);
+        	if (filter){
+        		return true;
+        	}else{
+        		return super.doProcess(inputRecord);
+        	}
         }
-
     }
 }
 
