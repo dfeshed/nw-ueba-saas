@@ -8,10 +8,13 @@ import java.util.Date;
 import java.util.List;
 
 import fortscale.streaming.model.UserTopEvents;
+
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
@@ -26,6 +29,8 @@ import fortscale.domain.streaming.user.dao.UserScoreSnapshotRepository;
 
 @Service
 public class UserScoreStreamingService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserScoreStreamingService.class);
 	
 	public static int MAX_NUM_OF_PREV_SCORES = 14;
 	
@@ -117,20 +122,24 @@ public class UserScoreStreamingService {
 	
 	private boolean updateDb(String username, UserTopEvents userTopEvents, long lastUpdateTime, double curScore){
 		boolean ret = false;
-		User user = userRepository.findByUsername(username);
-		if(user != null && user.getScore(classifierId) != null){
-			ClassifierScore cScore = user.getScore(classifierId);
-			
-			double prevScore = 0;
-			if(cScore.getPrevScores().size() > 1){
-				prevScore = cScore.getPrevScores().get(1).getScore();
+		try {
+			User user = userRepository.findByUsername(username);
+			if(user != null && user.getScore(classifierId) != null){
+				ClassifierScore cScore = user.getScore(classifierId);
+				
+				double prevScore = 0;
+				if(cScore.getPrevScores().size() > 1){
+					prevScore = cScore.getPrevScores().get(1).getScore();
+				}
+				
+				double trendScore = curScore - prevScore;
+				userRepository.updateCurrentUserScore(user, classifierId, curScore, trendScore, new DateTime(lastUpdateTime));
+				userTopEvents.setLastUpdatedScore(curScore);
+				userTopEvents.setLastUpdateScoreEpochTime(lastUpdateTime);
+				ret = true;
 			}
-			
-			double trendScore = curScore - prevScore;
-			userRepository.updateCurrentUserScore(user, classifierId, curScore, trendScore, new DateTime(lastUpdateTime));
-			userTopEvents.setLastUpdatedScore(curScore);
-			userTopEvents.setLastUpdateScoreEpochTime(lastUpdateTime);
-			ret = true;
+		} catch (Exception e) {
+			logger.error("error updating score for user {} in mongodb from user score stream task", username, e);
 		}
 		return ret;
 	}
@@ -165,6 +174,8 @@ public class UserScoreStreamingService {
 					userScoreSnapshotRepository.save(userScoreSnapshot);
 				}
 			}
+		} catch (Exception e) {
+			logger.error("error exporting state snapshot for user scores", e);
 		} finally {
 			if (iterator!=null)
 				iterator.close();
@@ -217,6 +228,8 @@ public class UserScoreStreamingService {
 				update.set(User.getClassifierScoreField(classifierId), user.getScore(classifierId));
 				mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
 			}
+		} catch (Exception e) {
+			logger.error("error updating mongo with users scores", e);
 		} finally {
 			if (iterator!=null)
 				iterator.close();
