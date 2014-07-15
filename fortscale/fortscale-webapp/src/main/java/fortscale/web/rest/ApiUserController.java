@@ -444,6 +444,7 @@ public class ApiUserController extends BaseController{
 	 * Gets the destination machines operating systems distribution for a user
 	 */
 	@RequestMapping(value="/{uid}/destination/{param}/distribution", method=RequestMethod.GET)
+	@ResponseBody
 	@LogException
 	public DataBean<Collection<PropertyEntry>> getDestinationPropertyDistribution(
 			@PathVariable String uid,
