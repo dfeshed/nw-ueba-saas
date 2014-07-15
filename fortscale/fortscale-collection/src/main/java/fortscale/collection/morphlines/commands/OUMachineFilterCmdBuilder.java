@@ -2,7 +2,6 @@ package fortscale.collection.morphlines.commands;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 
-import com.google.common.cache.LoadingCache;
 import com.typesafe.config.Config;
 
 import fortscale.services.FilterMachinesService;
@@ -48,10 +46,8 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         private String regex;
         private Pattern regexMatcher;
         private String regexReplacement;
-        LoadingCache<String, Boolean> OUMachinesCache;
         
-        
-        HashMap<String, Boolean> OUmachines = null;
+
         public FilterOUMachine(CommandBuilder builder, Config config,
                 Command parent, Command child, MorphlineContext context) {
             super(builder, config, parent, child, context);
@@ -84,6 +80,9 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         		}
         	} 
         	computerName = computerName.toUpperCase();
+        	if(service == null){
+        		return super.doProcess(inputRecord);
+        	}
         	boolean filter = service.toFilter(computerName);
         	if (filter){
         		return true;

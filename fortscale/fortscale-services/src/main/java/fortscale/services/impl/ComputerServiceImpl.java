@@ -36,9 +36,10 @@ public class ComputerServiceImpl implements ComputerService {
 	
 	@Autowired
 	private EndpointDetectionService endpointDetectionService;
-	
+    
 	@Value("${computer.cluster.regex.patterns:}")
 	private String clusterGroupsRegexProperty;
+	
 	
 	private RegexMatcher clusterMatcher;
 	
@@ -64,7 +65,7 @@ public class ComputerServiceImpl implements ComputerService {
 			// skip this record as we already have a newer snapshot in place
 			return;
 		}
-		
+
 		// check if the repository already contains such a computer
 		if (saved==null)
 			saved = new Computer();
