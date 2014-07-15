@@ -373,14 +373,21 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Query usernameCriteria = new Query(Criteria.where(User.usernameField).is(username));
 
 		// construct the update that adds and removes tags
-		EachAddToSetUpdate update = new EachAddToSetUpdate();
-		if (!tagsToAdd.isEmpty())
-			update.addToSetEach(User.tagsField, tagsToAdd);
-		if (!tagsToRemove.isEmpty())
-			update.pullAll(User.tagsField, tagsToRemove.toArray());
-		
-		// perform the update on mongodb
-		mongoTemplate.updateFirst(usernameCriteria, update, User.class);
+		if (!tagsToAdd.isEmpty()) {
+            EachAddToSetUpdate update = new EachAddToSetUpdate();
+            update.addToSetEach(User.tagsField, tagsToAdd);
+
+            // perform the update on mongodb
+            mongoTemplate.updateFirst(usernameCriteria, update, User.class);
+        }
+
+		if (!tagsToRemove.isEmpty()) {
+            EachAddToSetUpdate update = new EachAddToSetUpdate();
+            update.pullAll(User.tagsField, tagsToRemove.toArray());
+
+            // perform the update on mongodb
+            mongoTemplate.updateFirst(usernameCriteria, update, User.class);
+        }
 	}
 	
 	/**
@@ -390,16 +397,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	class EachAddToSetUpdate extends Update {
 		
 		public EachAddToSetUpdate addToSetEach(String key, List<String> values) {
-			// build a bson array from values
-			BasicDBList eachList = new BasicDBList();
-			for (String value : values) {
-				BasicDBObject dbObject = (BasicDBObject)com.mongodb.util.JSON.parse(value);
-				eachList.add(dbObject);
-			}
-			
 			// create a custom addToSet operator
-			this.addToSet(key, BasicDBObjectBuilder.start("$each", eachList).get());
-			
+			this.addToSet(key, BasicDBObjectBuilder.start("$each", values).get());
 			return this;
 		}
 	}

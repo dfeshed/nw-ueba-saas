@@ -26,6 +26,7 @@ public class AccountMachineAccess {
     private Map<String,Boolean> tags;
     private boolean isDirty;
     private long lastEventTimeStamp;
+    private long firstEventTimestamp;
 
 
 
@@ -40,8 +41,6 @@ public class AccountMachineAccess {
         this.sources =new HashMap<String,MachineState>();
         this.destinations = new HashMap<String,MachineState>();
 
-
-
     }
 
 
@@ -49,32 +48,16 @@ public class AccountMachineAccess {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public Map<String,MachineState> getSources() {
         return sources;
-    }
-
-    public void setSources(Map<String,MachineState> sources) {
-        this.sources = sources;
     }
 
     public Map<String,MachineState> getDestinations() {
         return destinations;
     }
 
-    public void setDestinations(Map<String,MachineState> destinations) {
-        this.destinations = destinations;
-    }
-
     public  Map<String,Boolean> getTags() {
         return tags;
-    }
-
-    public void setTags( Map<String,Boolean> tags) {
-        this.tags = tags;
     }
 
     public boolean getIsDirty() {
@@ -90,38 +73,32 @@ public class AccountMachineAccess {
         this.lastEventTimeStamp = Math.max(lastEventTimeStamp, TimestampUtils.convertToMilliSeconds(lastEventTimeStamp));
     }
 
+    public long getLastEventTimeStamp() {
+        return lastEventTimeStamp;
+    }
+
+    public void setFirstEventTimestamp(long firstEventTimestamp) {
+        this.firstEventTimestamp = TimestampUtils.convertToMilliSeconds(firstEventTimestamp);
+    }
+
+    public long getFirstEventTimestamp() {
+        return firstEventTimestamp;
+    }
+
 
 
     //Add tag to the tag set
-    public void addTag(String tag)
+    public void addTag(String tag, boolean flag)
     {
-        if(this.tags.get(tag) != null ) {
+        if(this.tags.get(tag) == null || (this.tags.get(tag) != null && this.tags.get(tag) != flag))
+            this.isDirty = true;
 
-            if (!this.tags.get(tag).booleanValue()) {
-                this.tags.put(tag, true);
-                this.isDirty = true;
-            }
-        }
+        this.tags.put(tag,flag);
 
-        else
-        {
-            this.tags.put(tag,true);
-            this.setIsDirty(true);
-        }
 
     }
 
-    //Remove Tag
-    public void removeTag(String tag)
-    {
-        if(this.tags.get(tag) != null ) {
-            if (this.tags.get(tag).booleanValue()) {
-                this.tags.put(tag,false);
-                this.isDirty = true;
-            }
-        }
 
-    }
 
     //Add new machine to the source list
     public void addSource(String hostName , long timeStamp, ComputerUsageType type)
@@ -148,7 +125,7 @@ public class AccountMachineAccess {
     }
 
     //Add new machine to the destination list
-    public void addDestination(String hostName , long timeStamp, ComputerUsageType type)
+    public void addDestination(String hostName , long timeStamp, ComputerUsageType type,boolean isSensetiveMachine)
     {
 
         //retrive the machine state from the destination map by hostName
@@ -160,18 +137,23 @@ public class AccountMachineAccess {
             if(machineState.getLastEventTimeStamp() < timeStamp)
                 machineState.setLastEventTimeStamp(timeStamp);
 
+            //update the isSensetiveMachine flag (if the machine was sensitive in the past dont change the flag
+            //else update the flag
+            if(!machineState.isSensitiveMachine())
+                machineState.setSensitiveMachine(isSensetiveMachine);
+
         }
         else
         {
             MachineState newMachineState = new MachineState(hostName);
             newMachineState.setLastEventTimeStamp(timeStamp);
             newMachineState.setType(type);
+            newMachineState.setSensitiveMachine(isSensetiveMachine);
             this.destinations.put(hostName,newMachineState);
 
         }
 
     }
-
 
 
     public void dilutionLists(Long daysBack)
