@@ -104,8 +104,6 @@ public class UserServiceImpl implements UserService{
 	@Value("${ad.info.update.read.page.size:1000}")
 	private int readPageSize;
 	
-	@Value("${users.ou.filter:}")
-	private String usersOUfilter;
 	
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
 	
@@ -148,7 +146,7 @@ public class UserServiceImpl implements UserService{
 				updateUser(userId, update);
 				usernameService.addLogUsername(eventId, logUsername, userId);
 			}
-		} else if(StringUtils.isEmpty(usersOUfilter)){
+		} else{
 			User user = createUser(classifier.getUserApplication(), normalizedUsername, logUsername);
 			usernameService.updateLogUsername(user, eventId, logUsername);
 			user = userRepository.save(user);
