@@ -29,6 +29,9 @@ public class BatchScheduler {
 				batch.startAll();
 			} else if (args[0].equals("pause")) {
 				// do nothing
+			} else if (args[0].equals("createTables")) {
+				//tables were created in loadScheduler when creating the spring context.
+				batch.shutdown();
 			} else if (args[0].equals("cycle")) {
 				batch.runFullCycle(Arrays.copyOfRange(args, 1, args.length));
 				batch.shutdown();
