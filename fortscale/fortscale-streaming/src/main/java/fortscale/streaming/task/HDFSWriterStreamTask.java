@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fortscale.streaming.service.HdfsService;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 
@@ -105,6 +106,7 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
             String discriminator = calculateDiscriminator(message);
 
 			// check if the event is before the time stamp barrier
+            timestamp = TimestampUtils.convertToMilliSeconds(timestamp);
 			if (isEventAfterBarrier(username, timestamp, discriminator)) {
 			
 				// write the event to hdfs
@@ -195,9 +197,12 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
         if (barrier==null)
             barrier = new UserTimeBarrierModel();
 
-        barrier.setTimestamp(timestamp);
-        barrier.setDiscriminator(discriminator);
-        store.put(username, barrier);
+        // update barrier in case it is not too much in the future
+        if (!TimestampUtils.isFutureTimestamp(timestamp, 24)) {
+        	barrier.setTimestamp(timestamp);
+        	barrier.setDiscriminator(discriminator);
+        	store.put(username, barrier);
+        }
 	}
 	
 	private void flushBarrier() {

@@ -69,8 +69,9 @@ public class AccountMachineAccess {
     }
 
     public void setLastEventTimeStamp(long lastEventTimeStamp) {
-
-        this.lastEventTimeStamp = Math.max(lastEventTimeStamp, TimestampUtils.convertToMilliSeconds(lastEventTimeStamp));
+    	long millis = TimestampUtils.convertToMilliSeconds(lastEventTimeStamp);
+    	if (!TimestampUtils.isFutureTimestamp(millis, 24))
+    		this.lastEventTimeStamp = Math.max(lastEventTimeStamp, millis);
     }
 
     public long getLastEventTimeStamp() {
@@ -94,8 +95,6 @@ public class AccountMachineAccess {
             this.isDirty = true;
 
         this.tags.put(tag,flag);
-
-
     }
 
 
