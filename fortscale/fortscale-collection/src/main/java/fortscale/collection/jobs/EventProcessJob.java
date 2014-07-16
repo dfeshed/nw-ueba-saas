@@ -164,8 +164,6 @@ public class EventProcessJob implements Job {
 
 						logger.error("error processing file " + file.getName(), e);
 						monitor.error(monitorId, currentStep, e.toString());
-						
-						throw new JobExecutionException("error processing files", e);
 					}
 				}
 			} finally {

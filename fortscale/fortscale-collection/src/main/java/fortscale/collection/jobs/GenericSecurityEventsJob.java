@@ -80,8 +80,6 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 
 					logger.error("error processing file " + file.getName(), e);
 					monitor.error(getMonitorId(), getStepName(), e.toString());
-					
-					throw new JobExecutionException("error processing files", e);
 				}
 			}
 		} finally{
