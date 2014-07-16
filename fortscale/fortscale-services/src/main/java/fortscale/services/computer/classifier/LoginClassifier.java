@@ -57,7 +57,7 @@ public class LoginClassifier implements EndpointClassifier {
 	 */
 	private boolean haveMinimumEvents() {
 		// check if the last time checked for minimum events was recently
-		if (minimunEventsRequired!=0 && lastTimeCheckedForMinimumEvents < (System.currentTimeMillis() - (hoursToBackoff*1000*60*60*24))) {
+		if (minimunEventsRequired!=0 && lastTimeCheckedForMinimumEvents < (System.currentTimeMillis() - (hoursToBackoff*1000*60*60))) {
 			// get the events count in the table and check if it passes the min required
 			int eventsCount = dao.count(loginPeriod);
 			hasMinimumEvents = (eventsCount > minimunEventsRequired);
