@@ -112,6 +112,30 @@ public class UserMachineDAOImpl implements UserMachineDAO, RowMapper<UserMachine
 	}
 
 	
+	public int count(int daysToConsider) {
+		try {
+			// create a count query for events
+			ImpalaQuery query = new ImpalaQuery();
+			query.select("count(*)");
+			query.from(schema.getTableName());
+			
+			// filter events in the last x days
+			long since = TimestampUtils.convertToSeconds(DateTime.now().minusDays(daysToConsider).getMillis());
+			query.where(gte(schema.TIMEGENERATEDUNIXTIME, Long.toString(since)));
+	
+			// filter partitions
+			query.where(gte(schema.getPartitionFieldName(), schema.getPartitionStrategy().getImpalaPartitionValue(since)));
+			
+			// filter on success status
+	        query.where(equalsTo(schema.STATUS, "SUCCESS", true));
+	        
+	        return impalaJdbcTemplate.queryForObject(query.toSQL(), Integer.class);
+		} catch (Exception e) {
+			logger.error("error counting events in " + schema.getTableName(), e);
+			return 0;
+		}
+	}
+	
 	@Override
 	public UserMachine mapRow(ResultSet rs, int rowNum) throws SQLException {
 		UserMachine userMachine = new UserMachine();
