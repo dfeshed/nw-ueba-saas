@@ -68,6 +68,7 @@ public class BatchScheduler {
 		context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
 			
 		scheduler = (Scheduler) context.getBean("jobScheduler");
+		scheduler.getListenerManager().addSchedulerListener(new SchedulerShutdownListener(context));
 	}
 	
 	
