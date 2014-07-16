@@ -62,18 +62,25 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 		
 		try{
 			for (File file : files) {
-				logger.info("starting to process {}", file.getName()); 
-				
-				// transform events in file
-				boolean success = processFile(file);
-				
-				if (success) {
-					moveFileToFolder(file, finishPath);
-				} else {
+				try {
+					logger.info("starting to process {}", file.getName()); 
+					
+					// transform events in file
+					boolean success = processFile(file);
+					
+					if (success) {
+						moveFileToFolder(file, finishPath);
+					} else {
+						moveFileToFolder(file, errorPath);
+					}
+		
+					logger.info("finished processing {}", file.getName());
+				} catch (Exception e) {
 					moveFileToFolder(file, errorPath);
+
+					logger.error("error processing file " + file.getName(), e);
+					monitor.error(getMonitorId(), getStepName(), e.toString());
 				}
-	
-				logger.info("finished processing {}", file.getName());
 			}
 		} finally{
 			morphline.close();

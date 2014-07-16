@@ -146,23 +146,26 @@ public class EventProcessJob implements Job {
 			// read each file and process lines
 			try {
 				for (File file : files) {
-					logger.info("starting to process {}", file.getName()); 
-					
-					// transform events in file
-					boolean success = processFile(file);
-					
-					if (success) {
-						moveFileToFolder(file, finishPath);
-					} else {
+					try {
+						logger.info("starting to process {}", file.getName()); 
+						
+						// transform events in file
+						boolean success = processFile(file);
+						
+						if (success) {
+							moveFileToFolder(file, finishPath);
+						} else {
+							moveFileToFolder(file, errorPath);	
+						}
+			
+						logger.info("finished processing {}", file.getName());
+					} catch (Exception e) {
 						moveFileToFolder(file, errorPath);
+
+						logger.error("error processing file " + file.getName(), e);
+						monitor.error(monitorId, currentStep, e.toString());
 					}
-		
-					logger.info("finished processing {}", file.getName());
 				}
-			} catch (IOException e) {
-				logger.error("error processing files", e);
-				monitor.error(monitorId, currentStep, e.toString());
-				throw new JobExecutionException("error processing files", e);
 			} finally {
 				// make sure all close are called, hence the horror below of nested finally blocks
 				try {
