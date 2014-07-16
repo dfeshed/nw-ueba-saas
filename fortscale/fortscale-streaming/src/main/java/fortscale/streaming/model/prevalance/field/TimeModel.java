@@ -14,7 +14,6 @@ import fortscale.streaming.model.prevalance.calibration.FeatureCalibration;
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class TimeModel {
 	private static final int MASK_SIZE = 10;
-	private static final double MASK_EXPONENT = 1.25;
 	
 	private ArrayList<Double> buckets;
 	private ArrayList<Integer> bucketsRealCount;
@@ -65,7 +64,7 @@ public class TimeModel {
 		int upIndex = pivot + 1;
 		int downIndex = pivot - 1 + numOfBuckets;
 		for(int i = 0; i < MASK_SIZE; i++,upIndex++,downIndex--){
-			double addVal = Math.pow(MASK_EXPONENT, 0-i);
+			double addVal = 1 - i/((double)MASK_SIZE);
 			int index = upIndex % numOfBuckets;
 			val = buckets.get(index) + addVal;
 			buckets.set(index, val);
