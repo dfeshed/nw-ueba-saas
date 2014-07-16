@@ -3,6 +3,7 @@ package fortscale.services.impl;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,52 +19,51 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.FilterMachinesService;
 
-
 @Service("filterMachinesService")
-public class FilterMachinesServiceImpl implements FilterMachinesService, InitializingBean{
-    LoadingCache<String, Boolean> OUMachinesCache;
+public class FilterMachinesServiceImpl implements FilterMachinesService,
+		InitializingBean {
+	LoadingCache<String, Boolean> OUMachinesCache;
 	@Autowired
-    private ComputerRepository computerRepository;
-    @Value("${machines.ou.filter:}")
-    private String ouName; 
+	private ComputerRepository computerRepository;
+	@Value("${machines.ou.filter:}")
+	private String ouName;
 	private static Logger logger = LoggerFactory
 			.getLogger(FilterMachinesServiceImpl.class);
-    
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 
-        OUMachinesCache = CacheBuilder.newBuilder()
-      	       .maximumSize(100000)
-      	       .expireAfterWrite(1, TimeUnit.HOURS)
-      	       .build(
-      	           new CacheLoader<String, Boolean>() {
-      	             public Boolean load(String key){
-      	               return getIfBelongToOU(key);
-      	             }
-      	           });
+		OUMachinesCache = CacheBuilder.newBuilder().maximumSize(100000)
+				.expireAfterWrite(1, TimeUnit.HOURS)
+				.build(new CacheLoader<String, Boolean>() {
+					public Boolean load(String key) {
+						return getIfBelongToOU(key);
+					}
+				});
 	}
-	
-	private Boolean getIfBelongToOU(String computerName){
-    	Computer computer = computerRepository.findByName(computerName);
-        if(computer == null){
-            return false;
-        }else{
-            String dn = computer.getDistinguishedName();
-            if(dn != null && dn.endsWith(ouName)){
-                return true;
-            }else{
-                return false;
-            }
-        }
-    }
-	public boolean toFilter(String computerName){
-    	if(ouName == null || ouName.equals("")){
-    		return false;
-    	}
-    	try {
-			if (OUMachinesCache.get(computerName)){
-				 return false;
-			}else{
+
+	private Boolean getIfBelongToOU(String computerName) {
+		Computer computer = computerRepository.findByName(computerName);
+		if (computer == null) {
+			return false;
+		} else {
+			String dn = computer.getDistinguishedName();
+			if (dn != null && dn.endsWith(ouName)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
+	public boolean toFilter(String computerName) {
+		if (StringUtils.isEmpty(ouName)) {
+			return false;
+		}
+		try {
+			if (OUMachinesCache.get(computerName)) {
+				return false;
+			} else {
 				return true;
 			}
 		} catch (ExecutionException e) {
@@ -71,5 +71,13 @@ public class FilterMachinesServiceImpl implements FilterMachinesService, Initial
 			return true;
 		}
 	}
-}
 
+	@Override
+	public void invalidateKey(String computerName) {
+		if (StringUtils.isEmpty(ouName)) {
+			return;
+		}
+		OUMachinesCache.invalidate(computerName);
+	}
+
+}
