@@ -68,6 +68,12 @@ public class PrevalanceModel {
 		return model.calculateScore(value);
 	}
 	
+	public boolean shouldAffectEventScore(String fieldName) {
+		checkNotNull(fieldName);
+		FieldModel model = fields.get(fieldName);
+		return (model!=null && model.shouldAffectEventScore());
+	}
+	
 	public boolean isAfterTimeMark(long timestamp) {
 		// check that the value time stamp is after the time mark
 		return (timeMark < convertToMilliSeconds(timestamp));

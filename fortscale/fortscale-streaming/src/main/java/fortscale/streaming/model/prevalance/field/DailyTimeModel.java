@@ -71,4 +71,9 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 		
 		return ret;
 	}
+
+	@Override
+	public boolean shouldAffectEventScore() {
+		return true;
+	}
 }

@@ -42,4 +42,9 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 		}
 		return value.toString();
 	}
+
+	@Override
+	public boolean shouldAffectEventScore() {
+		return true;
+	}
 }

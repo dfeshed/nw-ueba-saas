@@ -19,4 +19,9 @@ public interface FieldModel {
 	 * calculate the score of the feature value.
 	 */
 	double calculateScore(Object value);
+	
+	/**
+	 * Determines if the field model should participate in event score
+	 */
+	boolean shouldAffectEventScore();
 }
