@@ -85,6 +85,9 @@ public class FilterWhenServiceNameIsUserCmdBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+			if (computerRepository == null){
+				return super.doProcess(inputRecord);
+			}
 			String serviceName = (String) inputRecord
 					.getFirstValue(this.serviceNameField);
 			Matcher m = regexMatcher.matcher(serviceName);
