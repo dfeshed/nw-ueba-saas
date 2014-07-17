@@ -21,8 +21,8 @@ import fortscale.services.impl.UsernameNormalizer;
 public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 	
 	protected String usernameField;
-    @Value("${normalizedUser.fail.filter:}")
-    private String dropOnFail;
+    @Value("${normalizedUser.fail.filter:false}")
+    private boolean dropOnFail;
 
 	
 	@Override
@@ -45,7 +45,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
             String normalizedName = usernameNormalizer.normalize(ret);
-            if(dropOnFail != null && dropOnFail.equals("true")){
+            if(dropOnFail == true){
                 ret = normalizedName;
             }else{
                 ret = Objects.firstNonNull(normalizedName, ret);
@@ -79,7 +79,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 			// return an empty string
 			
             String normalizedUserName = normalizeUsername(inputRecord);
-            if (normalizedUserName == null && dropOnFail != null && dropOnFail.equals("true")){
+            if (normalizedUserName == null && dropOnFail == true){
                 return true;
             }
             inputRecord.put(normalizedUsernameField, normalizedUserName);

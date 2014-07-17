@@ -33,8 +33,8 @@ public class FilterUnresolvedMachineCmdBuilder  implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable()
 	public static class FilterUnresolvedMachine extends AbstractCommand {
-		@Value("${ipresolving.fail.filter:}") 
-		private String filterOnFail = "";
+		@Value("${ipresolving.fail.filter:false}") 
+		private boolean filterOnFail = false;
 		private String machineNameField;
 		public FilterUnresolvedMachine(CommandBuilder builder,
 				Config config, Command parent, Command child,
@@ -47,7 +47,7 @@ public class FilterUnresolvedMachineCmdBuilder  implements CommandBuilder {
 		protected boolean doProcess(Record inputRecord) {
 			String machineName = (String) inputRecord
 					.getFirstValue(this.machineNameField);
-			if(filterOnFail.equals("true") && StringUtils.isEmpty(machineName)){
+			if(filterOnFail == true && StringUtils.isEmpty(machineName)){
 				return true;
 			}
 			return super.doProcess(inputRecord);

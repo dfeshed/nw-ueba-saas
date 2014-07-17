@@ -60,7 +60,9 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
             this.regex = getConfigs().getString(config, "regex", null);
             if(regex != null){
             	String[] regexArray = regex.split("# #");
-            	//TODO: add check for array size
+            	if(regexArray.length != 2){
+            		throw new IllegalArgumentException("regex must be in format: (.*)# #(.*)");
+            	}
             	regexMatcher = Pattern.compile(regexArray[0]);
             	regexReplacement = regexArray[1];
             }
