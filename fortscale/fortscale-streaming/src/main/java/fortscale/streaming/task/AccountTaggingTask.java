@@ -1,37 +1,37 @@
 package fortscale.streaming.task;
 
-import fortscale.domain.core.ComputerUsageType;
-import fortscale.services.UserService;
-import fortscale.streaming.model.prevalance.PrevalanceModel;
-import fortscale.streaming.model.tagging.AccountMachineAccess;
-import fortscale.streaming.model.tagging.MachineState;
-import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.tagging.TagService;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-import org.apache.commons.lang.StringUtils;
-import org.apache.samza.config.Config;
-import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToBoolean;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
+import java.util.List;
+
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.samza.config.Config;
+import org.apache.samza.storage.kv.KeyValueStore;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.ClosableTask;
+import org.apache.samza.task.InitableTask;
+import org.apache.samza.task.MessageCollector;
+import org.apache.samza.task.TaskContext;
+import org.apache.samza.task.TaskCoordinator;
+import org.apache.samza.task.WindowableTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fortscale.domain.core.ComputerUsageType;
+import fortscale.streaming.model.tagging.AccountMachineAccess;
+import fortscale.streaming.service.tagging.TagService;
+
 /**
  * Created by idanp on 7/7/2014.
  * Streaming task that get an event and made some heretics that tags the account related to that event
  */
-public class AccountTaggingTask  implements StreamTask, InitableTask, WindowableTask, ClosableTask {
+public class AccountTaggingTask extends AbstractStreamTask  implements InitableTask, WindowableTask, ClosableTask {
 
     private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTask.class);
 
@@ -85,12 +85,11 @@ public class AccountTaggingTask  implements StreamTask, InitableTask, Windowable
 
 
     @Override
-    public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception
+    public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception
     {
 
         ComputerUsageType sourceComputerType;
         ComputerUsageType destComputerType;
-        AccountMachineAccess currentAccount;
         boolean  isEventSuccess = false;
 
 
