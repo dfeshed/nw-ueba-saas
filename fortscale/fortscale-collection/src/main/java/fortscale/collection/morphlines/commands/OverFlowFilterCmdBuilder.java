@@ -45,7 +45,7 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 		Integer threshold = Integer.MAX_VALUE;
 		String eventType = "";
 		@Value("${mophline.cmd.overflow:false}")
-		private String runCmd = "false";
+		private boolean runCmd;
 
 		protected OverFlowFilter(CommandBuilder builder, Config config,
 				Command parent, Command child, MorphlineContext context) {
@@ -57,7 +57,7 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
-			if(runCmd.equals("false")){
+			if(runCmd == false){
 				return super.doProcess(inputRecord);
 			}
 			String key = "/";
