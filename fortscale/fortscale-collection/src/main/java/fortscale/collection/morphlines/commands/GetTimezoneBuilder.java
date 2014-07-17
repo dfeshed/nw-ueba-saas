@@ -94,13 +94,13 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 				record.put(this.timezoneField, "Asia/Jerusalem");
 			}
 
-            else if(hostname == null)
+            else if(hostname == null && sourceType != null )
             {
                 record.put(this.timezoneField, tzConfig.getTimeZone(sourceType, hostname));
             }
 			else {
 				logger.error(" sourceType  is null, NO timezone forwarded to morphline! "
-						+ "hostname is null: {}, sourceType is null: {}, timezones is : {}, tzConfig is null: {}",
+						+ " sourceType is null: {}, timezones is : {}",
 						hostname == null ? "true" :"false" ,sourceType == null ? "true" : "false" ,
 						timezones, tzConfig == null ? "true" : "false" );
 			}

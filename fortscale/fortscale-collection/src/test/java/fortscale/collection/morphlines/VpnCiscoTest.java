@@ -35,14 +35,14 @@ public class VpnCiscoTest {
 
     @BeforeClass
     public static void setUpClass(){
-//        testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
-//        VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
-//        vpnSessionRepository.deleteAll();
+                testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
+                VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
+                vpnSessionRepository.deleteAll();
     }
 
     @AfterClass
     public static void finalizeTestClass(){
-//        testContextManager.close();
+        testContextManager.close();
         testContextManager = null;
     }
 
@@ -57,8 +57,8 @@ public class VpnCiscoTest {
     @After
     public void tearDown() throws Exception {
         morphlineTester.close();
-//        VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
-//        vpnSessionRepository.deleteAll();
+        VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
+        vpnSessionRepository.deleteAll();
     }
 
     @Test
