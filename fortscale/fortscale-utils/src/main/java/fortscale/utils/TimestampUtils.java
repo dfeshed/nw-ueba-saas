@@ -1,6 +1,7 @@
 package fortscale.utils;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 /**
  * Utility class to handle timestamp conversions
@@ -29,6 +30,16 @@ public final class TimestampUtils {
 	public static long toStartOfDay(long timestamp) {
 		DateTime when = new DateTime(convertToMilliSeconds(timestamp));
 		return when.withTimeAtStartOfDay().getMillis();
+	}
+	
+	public static boolean isFutureTimestamp(long timestamp) {
+		return isFutureTimestamp(timestamp, 0);
+	}
+	
+	public static boolean isFutureTimestamp(long timestamp, int gapInHours) {
+		DateTime now = new DateTime(DateTimeZone.UTC);
+		now = now.plusHours(gapInHours);
+		return now.isBefore(convertToMilliSeconds(timestamp));
 	}
 	
 }

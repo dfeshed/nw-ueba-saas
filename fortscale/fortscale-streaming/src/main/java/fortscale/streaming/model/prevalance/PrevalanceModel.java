@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
+import fortscale.utils.TimestampUtils;
+
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class PrevalanceModel {
@@ -55,8 +57,9 @@ public class PrevalanceModel {
 		FieldModel model = fields.get(fieldName);
 		model.add(value, millis);
 		
-		// update the time mark
-		timeMark = Math.max(timeMark, millis);
+		// update the time mark, but check that it is not in the future (more than 24 hours
+		if (!TimestampUtils.isFutureTimestamp(millis, 24))
+			timeMark = Math.max(timeMark, millis);
 	}
 	
 	public double calculateScore(String fieldName, Object value){
