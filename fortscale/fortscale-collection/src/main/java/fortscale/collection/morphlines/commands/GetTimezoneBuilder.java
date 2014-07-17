@@ -57,8 +57,12 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 		public GetTimezone(CommandBuilder builder, Config config, Command parent,
 				Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
+
+
+
+
 			this.sourceType = getConfigs().getString(config, "sourceType");
-			this.hostnameField = getConfigs().getString(config, "hostnameField");
+			this.hostnameField = getConfigs().getString(config, "hostnameField","");
 			this.timezoneField = getConfigs().getString(config, "timezoneOutputField");
 			if (timezones != null && timezones.length() >0) {
 				tzConfig = getTimeZoneConfig(timezones);
@@ -77,6 +81,8 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record record) {
+
+
 			String hostname = (String)record.getFirstValue(hostnameField);
 			if (sourceType != null && hostname != null && tzConfig != null) {
 				record.put(this.timezoneField, tzConfig.getTimeZone(sourceType, hostname));
@@ -87,10 +93,15 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 				// ####################################################################################################
 				record.put(this.timezoneField, "Asia/Jerusalem");
 			}
+
+            else if(hostname == null && sourceType != null )
+            {
+                record.put(this.timezoneField, tzConfig.getTimeZone(sourceType, hostname));
+            }
 			else {
-				logger.error("Hostname or sourceType or timezone config is null, NO timezone forwarded to morphline! "
-						+ "hostname is null: {}, sourceType is null: {}, timezones is : {}, tzConfig is null: {}",
-						hostname == null ? "true" :"false" ,sourceType == null ? "true" : "false" ,
+				logger.error(" sourceType  is null, NO timezone forwarded to morphline! "
+						+ " sourceType is null: {}, timezones is : {}",
+						sourceType == null ? "true" : "false" ,
 						timezones, tzConfig == null ? "true" : "false" );
 			}
 			// pass record to next command in chain:
@@ -121,6 +132,13 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 		public String defaultTimezone;
 
 		public String getTimeZone(String type,String host) {
+
+
+            //in case that the host is null return the first time zone the config list have
+            if (host == null)
+            {
+                return regexpList.get(0).timezone;
+            }
 			for (TimezoneUnit tzUnit : regexpList) {				
 				if (tzUnit.type.equals(type)) {
 					Matcher matcher = tzUnit.hostPattern.matcher(host);

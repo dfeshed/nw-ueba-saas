@@ -15,18 +15,23 @@ import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
 import fortscale.collection.morphlines.commands.GetTimezoneBuilder.GetTimezone;
+import org.kitesdk.morphline.base.Configs;
 
 public class GetTimezoneBuilderTest {
 
 	private RecordSinkCommand sink = new RecordSinkCommand();
 	private Config config;
 
+
 	@Before
 	public void setUp() throws Exception {	
 		// mock morphline command parameters configuration
 		config = mock(Config.class);
+
 		when(config.getString("sourceType")).thenReturn("sourceType");
+        when(config.hasPath("hostnameField")).thenReturn(true);
 		when(config.getString("hostnameField")).thenReturn("hostname");
+        when(config.getString("")).thenReturn("hostname");
 		when(config.getString("timezoneOutputField")).thenReturn("timezoneOutput");
 		
 	}
@@ -43,12 +48,14 @@ public class GetTimezoneBuilderTest {
 		MorphlineContext morphlineContext = new MorphlineContext.Builder().build();
 		return new GetTimezone(builder, config, sink, sink, morphlineContext,timezones);
 	}
-	
+
+
+
 	@Test
-	public void command_returns_vpn_timezone() {		
+	public void command_returns_vpn_timezone() {
+        Record record = getRecord("il.srvvpn01");
 		GetTimezone command = getCommand("vpn","{  \"regexpList\": [    {\"type\" : \"vpn\" , \"host\" : \"il.srv.+\" , \"timezone\" : \"Asia/Jerusalem\"},    {\"type\" : \"4769\" , \"host\" : \"sm.srv.+\" , \"timezone\" : \"Pacific/Samoa\"}  ], \"defaultTimezone\" : \"UTC\" }");
-		Record record = getRecord("il.srvvpn01");
-		
+
 		// execute the command
 		boolean result = command.doProcess(record);
 		Record output = sink.popRecord();
@@ -59,9 +66,10 @@ public class GetTimezoneBuilderTest {
 	}
 
 	@Test
-	public void command_returns_4769_timezone() {		
+	public void command_returns_4769_timezone() {
 		GetTimezone command = getCommand("4769", "{  \"regexpList\": [    {\"type\" : \"vpn\" , \"host\" : \"il.srv.+\" , \"timezone\" : \"Asia/Jerusalem\"},    {\"type\" : \"4769\" , \"host\" : \"sm.srv.+\" , \"timezone\" : \"Pacific/Samoa\"}  ], \"defaultTimezone\" : \"UTC\" }");
-		Record record = getRecord("sm.srvvpn01");
+        Record record = getRecord("sm.srvvpn01");
+
 		
 		// execute the command
 		boolean result = command.doProcess(record);
@@ -97,7 +105,7 @@ public class GetTimezoneBuilderTest {
 		
 		assertTrue(result);
 		assertNotNull(output);
-		assertEquals("UTC", output.getFirstValue("timezoneOutput"));	
+		assertEquals("UTC", output.getFirstValue("timezoneOutput"));
 	}
 
 	@Test
@@ -126,7 +134,7 @@ public class GetTimezoneBuilderTest {
 		
 		assertTrue(result);
 		assertNotNull(output);
-		assertEquals(null, output.getFirstValue("timezoneOutput"));	
+		assertEquals("Asia/Jerusalem", output.getFirstValue("timezoneOutput"));
 	}
 
 	@Test
