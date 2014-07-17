@@ -39,20 +39,21 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 		return null;
 	}
 	
-	protected String normalizeUsername(Record record){
+	protected String normalizeUsername(Record inputRecord){
         //if normalizedUsers.fail filter is set: function returns null if username normalization failed.
-		String ret = RecordExtensions.getStringValue(record, usernameField).toLowerCase();
+		String ret = null;
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
-            String normalizedName = usernameNormalizer.normalize(ret);
-            if(dropOnFail == true){
-                ret = normalizedName;
-            }else{
-                ret = Objects.firstNonNull(normalizedName, ret);
-            }
+            ret = usernameNormalizer.normalize(RecordExtensions.getStringValue(inputRecord, usernameField).toLowerCase());
         }  
         
 		return ret;
+	}
+	protected boolean toDropRecord(String normalizedUsername){
+		 if (normalizedUsername == null && dropOnFail == true){
+             return true;
+         }
+		 return false;
 	}
 	
 	// /////////////////////////////////////////////////////////////////////////////
@@ -77,11 +78,12 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 		protected boolean doProcess(Record inputRecord) {
 			// If we weren't able to connect or access the collection,
 			// return an empty string
-			
             String normalizedUserName = normalizeUsername(inputRecord);
-            if (normalizedUserName == null && dropOnFail == true){
-                return true;
+            if(toDropRecord(normalizedUserName)){
+            	return true;
             }
+            String username = RecordExtensions.getStringValue(inputRecord, usernameField).toLowerCase();
+            normalizedUserName = Objects.firstNonNull(normalizedUserName, username);
             inputRecord.put(normalizedUsernameField, normalizedUserName);
 
 			return super.doProcess(inputRecord);
