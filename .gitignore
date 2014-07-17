@@ -9,3 +9,4 @@ target
 testFile.log
 *.iml
 .idea
+fortscale/fortscale-streaming/log/

@@ -158,7 +158,8 @@ public class EventsPrevalenceModelStreamTask implements StreamTask, InitableTask
 					double score = model.calculateScore(fieldName, value);
 				
 					// set the max field score as the event score
-					eventScore = Math.max(eventScore, score);
+					if (model.shouldAffectEventScore(fieldName))
+						eventScore = Math.max(eventScore, score);
 					
 					// store the field score in the message
 					message.put(outputFields.get(fieldName), score);
