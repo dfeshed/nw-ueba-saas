@@ -25,7 +25,7 @@ public class CumulativeAverageFieldModel implements FieldModel{
 			int valN = (int)value;
 			
 			// advance average
-			average = (valN / (count + 1)) + (average / (count + 1))*count;
+			average = ((double) valN / (count + 1)) + (average / (count + 1))*count;
 			count++;
 			
 			// prevent integer oveflow
