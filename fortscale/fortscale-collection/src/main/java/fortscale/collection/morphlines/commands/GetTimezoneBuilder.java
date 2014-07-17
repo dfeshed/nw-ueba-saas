@@ -101,7 +101,7 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 			else {
 				logger.error(" sourceType  is null, NO timezone forwarded to morphline! "
 						+ " sourceType is null: {}, timezones is : {}",
-						hostname == null ? "true" :"false" ,sourceType == null ? "true" : "false" ,
+						sourceType == null ? "true" : "false" ,
 						timezones, tzConfig == null ? "true" : "false" );
 			}
 			// pass record to next command in chain:
