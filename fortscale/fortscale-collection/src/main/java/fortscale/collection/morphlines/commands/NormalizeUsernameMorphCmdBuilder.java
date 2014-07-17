@@ -8,6 +8,8 @@ import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.google.common.base.Objects;
 import com.typesafe.config.Config;
@@ -15,10 +17,13 @@ import com.typesafe.config.Config;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.services.impl.UsernameNormalizer;
 
-
+@Configurable()
 public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 	
 	protected String usernameField;
+    @Value("${normalizedUser.fail.filter:false}")
+    private boolean dropOnFail;
+
 	
 	@Override
 	public Collection<String> getNames() {
@@ -34,14 +39,21 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 		return null;
 	}
 	
-	protected String normalizeUsername(Record record){
-		String ret = RecordExtensions.getStringValue(record, usernameField).toLowerCase();
+	protected String normalizeUsername(Record inputRecord){
+        //if normalizedUsers.fail filter is set: function returns null if username normalization failed.
+		String ret = null;
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
-			ret = Objects.firstNonNull(usernameNormalizer.normalize(ret), ret);
-		}
-			
+            ret = usernameNormalizer.normalize(RecordExtensions.getStringValue(inputRecord, usernameField).toLowerCase());
+        }  
+        
 		return ret;
+	}
+	protected boolean toDropRecord(String normalizedUsername){
+		 if (normalizedUsername == null && dropOnFail == true){
+             return true;
+         }
+		 return false;
 	}
 	
 	// /////////////////////////////////////////////////////////////////////////////
@@ -66,8 +78,13 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 		protected boolean doProcess(Record inputRecord) {
 			// If we weren't able to connect or access the collection,
 			// return an empty string
-			
-			inputRecord.put(normalizedUsernameField, normalizeUsername(inputRecord));
+            String normalizedUserName = normalizeUsername(inputRecord);
+            if(toDropRecord(normalizedUserName)){
+            	return true;
+            }
+            String username = RecordExtensions.getStringValue(inputRecord, usernameField).toLowerCase();
+            normalizedUserName = Objects.firstNonNull(normalizedUserName, username);
+            inputRecord.put(normalizedUsernameField, normalizedUserName);
 
 			return super.doProcess(inputRecord);
 

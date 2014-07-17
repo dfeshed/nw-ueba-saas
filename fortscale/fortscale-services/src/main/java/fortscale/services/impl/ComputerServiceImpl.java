@@ -21,6 +21,7 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.ComputerService;
+import fortscale.services.FilterMachinesService;
 import fortscale.services.computer.EndpointDetectionService;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.actdir.ADParser;
@@ -35,10 +36,14 @@ public class ComputerServiceImpl implements ComputerService {
 	private ComputerRepository repository;
 	
 	@Autowired
-	private EndpointDetectionService endpointDetectionService;
+	private FilterMachinesService filterMachinesService;
 	
+	@Autowired
+	private EndpointDetectionService endpointDetectionService;
+    
 	@Value("${computer.cluster.regex.patterns:}")
 	private String clusterGroupsRegexProperty;
+	
 	
 	private RegexMatcher clusterMatcher;
 	
@@ -64,7 +69,7 @@ public class ComputerServiceImpl implements ComputerService {
 			// skip this record as we already have a newer snapshot in place
 			return;
 		}
-		
+
 		// check if the repository already contains such a computer
 		if (saved==null)
 			saved = new Computer();
@@ -77,6 +82,10 @@ public class ComputerServiceImpl implements ComputerService {
 		
 		try {
 			repository.save(saved);
+			//update OU machines cache
+			if(filterMachinesService != null){
+				filterMachinesService.invalidateKey(computer.getCn());
+			}
 		} catch (org.springframework.dao.DuplicateKeyException e) {
 			// safe to ignore as it will be saved in the next ETL run  
 			logger.warn("race condition encountered when trying to save computer {}", saved.getName());

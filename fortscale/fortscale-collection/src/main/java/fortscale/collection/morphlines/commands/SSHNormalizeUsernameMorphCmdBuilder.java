@@ -14,13 +14,13 @@ import fortscale.services.impl.UsernameNormalizer;
 
 @Configurable(preConstruction=true)
 public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphCmdBuilder {
-
+	
 	@Autowired
 	UsernameNormalizer sshUsernameNormalizer;
 	
 	@Value("${impala.data.ssh.table.field.target_machine}")
 	private String targetMachineField;
-	
+
 	@Override
 	public Collection<String> getNames() {
 		return Collections.singletonList("SSHNormalizeUsername");
@@ -44,5 +44,9 @@ public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphC
 		} else{
 			return super.normalizeUsername(record);
 		}
+	}
+	
+	protected boolean toDropRecord(String normalizedUsername){
+		 return false;
 	}
 }

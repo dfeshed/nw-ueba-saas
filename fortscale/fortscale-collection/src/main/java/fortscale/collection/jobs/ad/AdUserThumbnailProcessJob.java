@@ -28,7 +28,10 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	
 	@Value("${collection.shell.scripts.dir.path}/ldapUserThumbnail.sh")
 	private String ldapUserThumbnail;
-	
+    
+	@Value("${users.ou.filter:}")
+    private String ouUsersFilter;
+
 	private String ldapFieldSeperator;
 	
 	private int adUserThumbnailBufferSize;
@@ -54,8 +57,13 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		startNewStep("etl");
-		
-		Process pr =  runCmd(null, ldapUserThumbnail);
+        Process pr = null;
+        if(ouUsersFilter.equals("")){
+            pr = runCmd(null, ldapUserThumbnail);
+        }else{
+            pr = runCmd(null, ldapUserThumbnail, ouUsersFilter);
+        }
+
 		BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 		String line = "";	
 		while ((line = reader.readLine())!= null) {
