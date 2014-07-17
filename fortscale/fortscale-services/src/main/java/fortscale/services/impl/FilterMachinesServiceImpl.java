@@ -1,11 +1,8 @@
 package fortscale.services.impl;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +24,6 @@ public class FilterMachinesServiceImpl implements FilterMachinesService,
 	private ComputerRepository computerRepository;
 	@Value("${machines.ou.filter:}")
 	private String ouName;
-	private static Logger logger = LoggerFactory
-			.getLogger(FilterMachinesServiceImpl.class);
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -60,14 +55,9 @@ public class FilterMachinesServiceImpl implements FilterMachinesService,
 		if (StringUtils.isEmpty(ouName)) {
 			return false;
 		}
-		try {
-			if (OUMachinesCache.get(computerName)) {
-				return false;
-			} else {
-				return true;
-			}
-		} catch (ExecutionException e) {
-			logger.error("Error in cache execution");
+		if (OUMachinesCache.getUnchecked(computerName)) {
+			return false;
+		} else {
 			return true;
 		}
 	}
