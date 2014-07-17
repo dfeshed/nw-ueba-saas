@@ -202,6 +202,8 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
         	barrier.setTimestamp(timestamp);
         	barrier.setDiscriminator(discriminator);
         	store.put(username, barrier);
+        } else {
+        	logger.error("encountered event in a future time {} [current time={}] for user {}, skipping barrier update", timestamp, System.currentTimeMillis(), username);
         }
 	}
 	

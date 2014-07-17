@@ -3,10 +3,14 @@ package fortscale.streaming.model.tagging;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.User;
 import fortscale.services.UserService;
 import fortscale.utils.TimestampUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -20,6 +24,8 @@ import java.util.*;
 @JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
 public class AccountMachineAccess {
 
+	private static final Logger logger = LoggerFactory.getLogger(AccountMachineAccess.class);
+	
     private String userName;
     private Map<String,MachineState> sources;
     private Map<String,MachineState> destinations;
@@ -72,6 +78,8 @@ public class AccountMachineAccess {
     	long millis = TimestampUtils.convertToMilliSeconds(lastEventTimeStamp);
     	if (!TimestampUtils.isFutureTimestamp(millis, 24))
     		this.lastEventTimeStamp = Math.max(lastEventTimeStamp, millis);
+    	else
+    		logger.error("encountered event in the future {}, skipping setting last event time [current time is {}]", lastEventTimeStamp, System.currentTimeMillis());
     }
 
     public long getLastEventTimeStamp() {
