@@ -77,7 +77,13 @@ public class SshSshdTest {
         		$ (
         		"Invalid User Failed Authentication",
         		"Jul 7 10:53:24 chaves sshd[12914]: Failed password for invalid user test-inv from spongebob.lab.ossec.net",
-        		null)
+        		null),
+                $(
+                "Target Machine as IP",
+                "Nov 19 14:58:32 192.168.55.55 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
+                year + "-11-19 14:58:32," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,false"
+                )
+
         		);
     }
 
