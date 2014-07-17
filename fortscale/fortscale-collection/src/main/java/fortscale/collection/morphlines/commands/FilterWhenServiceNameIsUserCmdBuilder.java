@@ -2,7 +2,6 @@ package fortscale.collection.morphlines.commands;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,13 +25,13 @@ public class FilterWhenServiceNameIsUserCmdBuilder implements CommandBuilder {
 
 	@Override
 	public Collection<String> getNames() {
-		return Collections.singletonList("FilterWhenServiceNameIsUser");
+		return Collections.singletonList("FilterWhenServiceNameIsNotComputer");
 	}
 
 	@Override
 	public Command build(Config config, Command parent, Command child,
 			MorphlineContext context) {
-		return new FilterWhenServiceNameIsUser(this, config, parent, child,
+		return new FilterWhenServiceNameIsNotComputer(this, config, parent, child,
 				context);
 	}
 
@@ -40,7 +39,7 @@ public class FilterWhenServiceNameIsUserCmdBuilder implements CommandBuilder {
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable(preConstruction = true)
-	public static class FilterWhenServiceNameIsUser extends AbstractCommand {
+	public static class FilterWhenServiceNameIsNotComputer extends AbstractCommand {
 
 		@Autowired
 		private ComputerRepository computerRepository;
@@ -50,14 +49,13 @@ public class FilterWhenServiceNameIsUserCmdBuilder implements CommandBuilder {
 		private String regexReplacement;
 		private LoadingCache<String, Boolean> machinesCache;
 
-		protected FilterWhenServiceNameIsUser(CommandBuilder builder,
+		protected FilterWhenServiceNameIsNotComputer(CommandBuilder builder,
 				Config config, Command parent, Command child,
 				MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			this.serviceNameField = getConfigs().getString(config,
 					"serviceName");
 			this.machinesCache = CacheBuilder.newBuilder().maximumSize(100000)
-					.expireAfterWrite(1, TimeUnit.HOURS)
 					.build(new CacheLoader<String, Boolean>() {
 						public Boolean load(String key) {
 							return getIsMachine(key);
