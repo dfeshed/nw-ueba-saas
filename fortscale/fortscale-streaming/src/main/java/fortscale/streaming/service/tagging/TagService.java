@@ -4,11 +4,14 @@ import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.UserService;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.SpringService;
-//import fortscale.streaming.service.dao.State;
+
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Throwables;
 
 import java.util.Collection;
 
@@ -18,6 +21,8 @@ import java.util.Collection;
  */
 public class TagService {
 
+	private static final Logger logger = LoggerFactory.getLogger(TagService.class);
+	
     private Collection<ServiceAccountTagging> implementationList;
     private KeyValueStore<String, AccountMachineAccess> store;
     private Long daysBackForArchive;
@@ -66,16 +71,32 @@ public class TagService {
 
     public void exportTags()
     {
-        KeyValueIterator iter =  this.store.all();
-
-        while (iter.hasNext()) {
-            Entry<String, AccountMachineAccess> entry  = (Entry<String, AccountMachineAccess>) iter.next();
-            if(entry.getValue().getIsDirty()) {
-                this.userService.updateTags(entry.getKey(), entry.getValue().getTags());
-                entry.getValue().setIsDirty(false);
-            }
+        KeyValueIterator<String, AccountMachineAccess> iter =  this.store.all();
+        
+        try {
+	        while (iter.hasNext()) {
+	            Entry<String, AccountMachineAccess> entry  = iter.next();
+	            if(entry.getValue().getIsDirty()) {
+	            	try {
+	            		// update the user in mongo
+	            		this.userService.updateTags(entry.getKey(), entry.getValue().getTags());
+	            		entry.getValue().setIsDirty(false);
+	            		// update the dirty flag in the store
+	            		store.put(entry.getKey(), entry.getValue());
+	            	} catch(Exception e) {
+	                    logger.error("error exporing tags for user {}", entry.getKey(), e);
+	                    // propagate exception when connection to mongodb failed, so we won't process additional models 
+	                    Throwables.propagateIfInstanceOf(e, org.springframework.dao.DataAccessResourceFailureException.class);
+	            	}
+	            }
+	        }
+        } catch (Exception e) {
+        	// report error to log and swallow that exception as 
+			logger.error("error exporting models to mongodb from streaming task", e);
+		} finally {
+        	if (iter!=null)
+        		iter.close();
         }
-
     }
 
     public void closeContext() {

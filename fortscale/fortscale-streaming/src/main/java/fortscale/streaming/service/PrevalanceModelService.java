@@ -8,6 +8,8 @@ import org.apache.samza.storage.kv.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Throwables;
+
 import fortscale.streaming.model.prevalance.PrevalanceModel;
 import fortscale.streaming.model.prevalance.PrevalanceModelBuilder;
 import fortscale.streaming.service.dao.Model;
@@ -100,9 +102,14 @@ public class PrevalanceModelService {
 						repository.upsertModel(dto);
 					} catch (Exception e) {
 						logger.error("error persisting model {} for user {} into repository", modelBuilder.getModelName(), username, e);
+						// propagate exception when connection to mongodb failed, so we won't process additional models 
+						Throwables.propagateIfInstanceOf(e, org.springframework.dao.DataAccessResourceFailureException.class);
 					}
 				}
 			}
+		} catch (Exception e) {
+			// report error to log and swallow that exception as 
+			logger.error("error exporting models to mongodb from streaming task", e);
 		} finally {
 			if (iterator!=null)
 				iterator.close();
