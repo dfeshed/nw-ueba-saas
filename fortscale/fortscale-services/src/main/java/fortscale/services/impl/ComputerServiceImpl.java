@@ -36,7 +36,7 @@ public class ComputerServiceImpl implements ComputerService {
 	private ComputerRepository repository;
 	
 	@Autowired
-	private FilterMachinesService filterMachinesSerivce;
+	private FilterMachinesService filterMachinesService;
 	
 	@Autowired
 	private EndpointDetectionService endpointDetectionService;
@@ -83,8 +83,8 @@ public class ComputerServiceImpl implements ComputerService {
 		try {
 			repository.save(saved);
 			//update OU machines cache
-			if(filterMachinesSerivce != null){
-				filterMachinesSerivce.invalidateKey(computer.getCn());
+			if(filterMachinesService != null){
+				filterMachinesService.invalidateKey(computer.getCn());
 			}
 		} catch (org.springframework.dao.DuplicateKeyException e) {
 			// safe to ignore as it will be saved in the next ETL run  
