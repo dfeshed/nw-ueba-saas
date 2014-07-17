@@ -362,7 +362,7 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<FeatureBean>> userClassifierAttributes(@PathVariable String uid, @PathVariable String classifierId,
-			@RequestParam(required=true) String date,
+			@RequestParam(required=true) String latestDate,
 			@RequestParam(required=false) String orderBy,
 			@RequestParam(defaultValue="0") Integer page,
 			@RequestParam(defaultValue="-1") Integer size,
@@ -370,7 +370,7 @@ public class ApiUserController extends BaseController{
 			Model model){
 		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
 		Direction direction = convertStringToDirection(orderByDirection);
-		List<IFeature> attrs = userServiceFacade.getUserAttributesScores(uid, classifierId, Long.parseLong(date), orderBy, direction);
+		List<IFeature> attrs = userServiceFacade.getUserAttributesScores(uid, classifierId, Long.parseLong(latestDate), orderBy, direction);
 		List<FeatureBean> features = getFeatureBeanList(attrs, page, size);
 		ret.setData(features);
 		ret.setTotal(attrs.size());
