@@ -14,19 +14,18 @@ import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.ClosableTask;
 import org.apache.samza.task.InitableTask;
 import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.StreamTask;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.apache.samza.task.WindowableTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.model.UserTopEvents;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserScoreStreamingService;
-import fortscale.streaming.model.UserTopEvents;
 import fortscale.utils.TimestampUtils;
 
-public class UserScoreStreamTask implements StreamTask, InitableTask, WindowableTask, ClosableTask{
+public class UserScoreStreamTask  extends AbstractStreamTask  implements InitableTask, ClosableTask{
 	private static final Logger logger = LoggerFactory.getLogger(UserScoreStreamTask.class);
 	
 	
@@ -61,41 +60,37 @@ public class UserScoreStreamTask implements StreamTask, InitableTask, Windowable
 	
 	/** Process incoming events and update the user models stats */
 	@Override
-	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// parse the message into json 
 		String messageText = (String)envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parse(messageText);
-		if (message==null) {
-			logger.error("message in envelope cannot be parsed - {}", messageText);
-			return;
-		}
+		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 		
 		// get the username, so that we can get the model from store
 		String username = convertToString(message.get(usernameField));
 		if (StringUtils.isEmpty(username)) {
-			logger.error("message {} does not contains username in field {}", messageText, usernameField);
-			return;
+			//logger.error("message {} does not contains username in field {}", messageText, usernameField);
+			throw new StreamMessageNotContainFieldException(messageText, usernameField);
 		}
 		
 		// get the timestamp from the message
 		Long timestamp = convertToLong(message.get(timestampField));
 		if (timestamp==null) {
-			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
-			return;
+			//logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
+			throw new StreamMessageNotContainFieldException(messageText, timestampField);
 		}
 		
 		// get the event score from the message
 		Double eventScore = convertToDouble(message.get(eventScoreField));
 		if (eventScore==null) {
-			logger.error("message {} does not contains event score in field {}", messageText, eventScoreField);
-			return;
+			//logger.error("message {} does not contains event score in field {}", messageText, eventScoreField);
+			throw new StreamMessageNotContainFieldException(messageText, eventScoreField);
 		}
 		
 		userScoreStreamingService.updateUserWithEventScore(username, eventScore, TimestampUtils.convertToMilliSeconds(timestamp));
 	}
 	
 	/** periodically save the state to mongodb as a secondary backing store and update the user score in mongodb*/
-	@Override public void window(MessageCollector collector, TaskCoordinator coordinator) {
+	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
 		if (userScoreStreamingService!=null){
 			userScoreStreamingService.updateDb();
 			userScoreStreamingService.exportSnapshot();

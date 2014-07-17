@@ -19,11 +19,11 @@ import org.apache.samza.task.InitableTask;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.apache.samza.task.WindowableTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fortscale.domain.core.ComputerUsageType;
+import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.tagging.TagService;
 
@@ -31,7 +31,7 @@ import fortscale.streaming.service.tagging.TagService;
  * Created by idanp on 7/7/2014.
  * Streaming task that get an event and made some heretics that tags the account related to that event
  */
-public class AccountTaggingTask extends AbstractStreamTask  implements InitableTask, WindowableTask, ClosableTask {
+public class AccountTaggingTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
     private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTask.class);
 
@@ -95,11 +95,7 @@ public class AccountTaggingTask extends AbstractStreamTask  implements InitableT
 
         // parse the message into json
         String messageText = (String)envelope.getMessage();
-        JSONObject message = (JSONObject) JSONValue.parse(messageText);
-        if (message==null) {
-            logger.error("message in envelope cannot be parsed - {}", messageText);
-            return;
-        }
+        JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
         // get the is service account flag
         // in case that there is other value then true or there is no value at all the isServiceAccount will get false
@@ -120,39 +116,39 @@ public class AccountTaggingTask extends AbstractStreamTask  implements InitableT
             // get the username
             String userName = convertToString(message.get(usernameField));
             if (StringUtils.isEmpty(userName)) {
-                logger.error("message {} does not contains username in field {}", messageText, usernameField);
-                return;
+                //logger.error("message {} does not contains username in field {}", messageText, usernameField);
+                throw new StreamMessageNotContainFieldException(messageText, usernameField);
             }
 
             // get the timeStamp
             Long timeStamp = convertToLong(message.get(timestampField));
             if (timeStamp == null) {
-                logger.error("message {} does not contains timeStamp in field {}", messageText, timestampField);
-                return;
+                //logger.error("message {} does not contains timeStamp in field {}", messageText, timestampField);
+            	throw new StreamMessageNotContainFieldException(messageText, timestampField);
             }
 
 
             // get the source host name
             String sourceHostName = convertToString(message.get(sourceHostNameField));
             if (StringUtils.isEmpty(sourceHostName)) {
-                logger.error("message {} does not contains sourceHostName in field {}", messageText, sourceHostNameField);
-                return;
+                //logger.error("message {} does not contains sourceHostName in field {}", messageText, sourceHostNameField);
+                throw new StreamMessageNotContainFieldException(messageText, sourceHostNameField);
             }
 
             // get the source ComputerType
             try {
                 sourceComputerType = ComputerUsageType.valueOf(convertToString(message.get(sourceComputerTypeField)));
             } catch (IllegalArgumentException ex) {
-                logger.error("message {} does not contains valid source computer type in field {}", messageText, sourceComputerTypeField);
-                return;
+                //logger.error("message {} does not contains valid source computer type in field {}", messageText, sourceComputerTypeField);
+                throw new StreamMessageNotContainFieldException(messageText, sourceComputerTypeField);
             }
 
 
             // get the destination host name
             String destHostName = convertToString(message.get(destHostNameField));
             if (StringUtils.isEmpty(destHostName)) {
-                logger.error("message {} does not contains destHostName in field {}", messageText, destHostNameField);
-                return;
+                //logger.error("message {} does not contains destHostName in field {}", messageText, destHostNameField);
+                throw new StreamMessageNotContainFieldException(messageText, destHostNameField);
             }
 
 
@@ -160,8 +156,8 @@ public class AccountTaggingTask extends AbstractStreamTask  implements InitableT
             try {
                 destComputerType = ComputerUsageType.valueOf(convertToString(message.get(destComputerTypeField)));
             } catch (IllegalArgumentException ex) {
-                logger.error("message {} does not contains valid destination computer type in field {}", messageText, destComputerTypeField);
-                return;
+                //logger.error("message {} does not contains valid destination computer type in field {}", messageText, destComputerTypeField);
+                throw new StreamMessageNotContainFieldException(messageText, destComputerTypeField);
             }
 
 
@@ -180,8 +176,7 @@ public class AccountTaggingTask extends AbstractStreamTask  implements InitableT
     }
 
     @Override
-    public void window(MessageCollector collector, TaskCoordinator coordinator)
-    {
+    public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
         if(this.taggingService!=null)
             this.taggingService.exportTags();
 

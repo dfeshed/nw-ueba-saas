@@ -1,4 +1,4 @@
-package fortscale.streaming;
+package fortscale.streaming.exceptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +12,11 @@ public class ExceptionHandler {
 	
 	private int numOfContinuesExceptions = 0;
 	
-	Map<Class<Exception>, Integer> numOfContinuesExceptionsToFilterMap = new HashMap<>();
+	Map<Class<?>, Integer> numOfContinuesExceptionsToFilterMap = new HashMap<>();
 	
 	public ExceptionHandler(){}
 	
-	public void configNumOfContinuesExceptionsToFilter(Class<Exception> exceptionClass, int numOfContinuesExceptionsToFilter){
+	public void configNumOfContinuesExceptionsToFilter(Class<?> exceptionClass, int numOfContinuesExceptionsToFilter){
 		numOfContinuesExceptionsToFilterMap.put(exceptionClass, numOfContinuesExceptionsToFilter);
 	}
 	

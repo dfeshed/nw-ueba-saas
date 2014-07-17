@@ -1,13 +1,12 @@
 package fortscale.streaming.task;
 
-import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
 import java.util.List;
 
-import fortscale.streaming.model.prevalance.UserTimeBarrierModel;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
@@ -18,14 +17,17 @@ import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.ClosableTask;
 import org.apache.samza.task.InitableTask;
 import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.StreamTask;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
-import org.apache.samza.task.WindowableTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fortscale.streaming.exceptions.HdfsException;
+import fortscale.streaming.exceptions.LevelDbException;
+import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.exceptions.TaskCoordinatorException;
+import fortscale.streaming.model.prevalance.UserTimeBarrierModel;
 import fortscale.streaming.service.HdfsService;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
@@ -35,7 +37,7 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
  * Stream tasks that receives events and write them to hdfs using 
  * a partitioned writer 
  */
-public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableTask, WindowableTask {
+public class HDFSWriterStreamTask  extends AbstractStreamTask  implements InitableTask, ClosableTask{
 
 	private static final Logger logger = LoggerFactory.getLogger(HDFSWriterStreamTask.class);
 	
@@ -84,49 +86,44 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 	}
 	
 	/** Write the incoming message fields to hdfs */
-	@Override public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		try {
-			// parse the message into json 
-			String messageText = (String)envelope.getMessage();
-			JSONObject message = (JSONObject) JSONValue.parse(messageText);
-			if (message==null) {
-				logger.error("message in envelope cannot be parsed - {}", messageText);
-				return;
-			}
-			
-			// get the timestamp from the message
-			Long timestamp = convertToLong(message.get(timestampField));
-			if (timestamp==null) {
-				logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
-				return;
-			}
-
-            // get the username from the message
-            String username = convertToString(message.get(usernameField));
-            String discriminator = calculateDiscriminator(message);
-
-			// check if the event is before the time stamp barrier
-            timestamp = TimestampUtils.convertToMilliSeconds(timestamp);
-			if (isEventAfterBarrier(username, timestamp, discriminator)) {
-			
-				// write the event to hdfs
-				String eventLine = buildEventLine(message);
-				service.writeLineToHdfs(eventLine, timestamp.longValue());
-				
-				updateBarrier(username, timestamp, discriminator);
-				processedMessageCount.inc();
-				nonFlushedEventsCounter++;
-				
-				if (nonFlushedEventsCounter>=eventsCountFlushThreshold) {
-					flushEvents();
-					// commit the checkpoint in the kafka topic when flushing events, not to write them twice
-					coordinator.commit(RequestScope.CURRENT_TASK);
-				}
-			}
-			
-		} catch (Exception e) {
-			logger.error("error while writing events to " + tableName + " with mesage " + envelope.getMessage(), e);
+	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		// parse the message into json 
+		String messageText = (String)envelope.getMessage();
+		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+		
+		// get the timestamp from the message
+		Long timestamp = convertToLong(message.get(timestampField));
+		if (timestamp==null) {
+			//logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
+			throw new StreamMessageNotContainFieldException(messageText, timestampField);
 		}
+
+        // get the username from the message
+        String username = convertToString(message.get(usernameField));
+        String discriminator = calculateDiscriminator(message);
+
+		// check if the event is before the time stamp barrier
+        timestamp = TimestampUtils.convertToMilliSeconds(timestamp);
+		if (isEventAfterBarrier(username, timestamp, discriminator)) {
+		
+			// write the event to hdfs
+			String eventLine = buildEventLine(message);
+			try{
+				service.writeLineToHdfs(eventLine, timestamp.longValue());
+			} catch(Exception exception){
+				throw new HdfsException(String.format("failed to write to hdfs: %s. message: %s.", eventLine, messageText), exception);
+			}
+			
+			updateBarrier(username, timestamp, discriminator);
+			processedMessageCount.inc();
+			nonFlushedEventsCounter++;
+			
+			if (nonFlushedEventsCounter>=eventsCountFlushThreshold) {
+				flushEvents();
+				// commit the checkpoint in the kafka topic when flushing events, not to write them twice
+				coordinateCheckpoint(coordinator);
+			}
+		}			
 	}
 	
 	private String buildEventLine(JSONObject message) {
@@ -147,16 +144,28 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
 
 	private void flushEvents() throws Exception {
 		// flush writes to hdfs and refresh impala
-		service.flushHdfs();
+		try{
+			service.flushHdfs();
+		} catch(Exception exception){
+			throw new HdfsException(String.format("failed to flush to hdfs. tablename: %s.", tableName), exception);
+		}
 		nonFlushedEventsCounter = 0;
 		flushBarrier();
 	}
 	
 	/** Periodically flush data to hdfs */
-	@Override public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		flushEvents();
 		// commit the checkpoint in the kafka topic when flushing events, not to write them twice
-		coordinator.commit(RequestScope.CURRENT_TASK);
+		coordinateCheckpoint(coordinator);
+	}
+	
+	private void coordinateCheckpoint(TaskCoordinator coordinator) throws TaskCoordinatorException{
+		try{
+			coordinator.commit(RequestScope.CURRENT_TASK);
+		} catch(Exception exception){
+			throw new TaskCoordinatorException(String.format("failed to commit the checkpoint in to the kafka topic. tablename: %s",tableName), exception);
+		}
 	}
 
 	/** Close the hdfs writer when job shuts down */
@@ -190,7 +199,7 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
                 (timestamp == barrier.getTimestamp() && !barrier.getDiscriminator().equals(discriminator)));
 	}
 	
-	private void updateBarrier(String username, long timestamp, String discriminator) {
+	private void updateBarrier(String username, long timestamp, String discriminator) throws LevelDbException {
         if (username==null) return;
 
         UserTimeBarrierModel barrier = store.get(username);
@@ -201,14 +210,26 @@ public class HDFSWriterStreamTask implements StreamTask, InitableTask, ClosableT
         if (!TimestampUtils.isFutureTimestamp(timestamp, 24)) {
         	barrier.setTimestamp(timestamp);
         	barrier.setDiscriminator(discriminator);
-        	store.put(username, barrier);
+        	try{
+        		store.put(username, barrier);
+        	} catch(Exception exception){
+            	logger.error("error storing value. username: {} exception: {}", username, exception);
+                logger.error("error storing value.", exception);
+                throw new LevelDbException(String.format("error while trying to store user %s.", username), exception);
+            }
         } else {
         	logger.error("encountered event in a future time {} [current time={}] for user {}, skipping barrier update", timestamp, System.currentTimeMillis(), username);
         }
 	}
 	
-	private void flushBarrier() {
-        store.flush();
+	private void flushBarrier() throws LevelDbException {
+		try{
+			store.flush();
+		} catch(Exception exception){
+        	logger.error("error flushing. tablename: {} exception: {}", tableName, exception);
+            logger.error("error flushing.", exception);
+            throw new LevelDbException(String.format("error while trying to do store fulsh. tablename: %s", tableName), exception);
+        }
 	}
 	
 	@SuppressWarnings("unchecked")
