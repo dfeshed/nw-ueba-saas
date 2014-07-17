@@ -72,14 +72,17 @@ public class TagService {
     public void exportTags()
     {
         KeyValueIterator<String, AccountMachineAccess> iter =  this.store.all();
-
+        
         try {
 	        while (iter.hasNext()) {
 	            Entry<String, AccountMachineAccess> entry  = iter.next();
 	            if(entry.getValue().getIsDirty()) {
 	            	try {
+	            		// update the user in mongo
 	            		this.userService.updateTags(entry.getKey(), entry.getValue().getTags());
 	            		entry.getValue().setIsDirty(false);
+	            		// update the dirty flag in the store
+	            		store.put(entry.getKey(), entry.getValue());
 	            	} catch(Exception e) {
 	                    logger.error("error exporing tags for user {}", entry.getKey(), e);
 	                    // propagate exception when connection to mongodb failed, so we won't process additional models 
