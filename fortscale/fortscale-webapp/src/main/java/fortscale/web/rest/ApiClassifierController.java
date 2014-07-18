@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -155,6 +156,44 @@ public class ApiClassifierController extends BaseController {
 		ret.setData(users.getContent());
 		ret.setOffset(users.getNumber()*users.getSize());
 		ret.setTotal((int) users.getTotalElements());
+		return ret;
+	}
+	
+	@RequestMapping(value = "/suspiciousUsers", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<ISuspiciousUserInfo>> suspiciousUsers(@RequestParam(required=true) List<String> classifierIds, @RequestParam(defaultValue = SUSPICIOUS_USERS_BY_SCORE) String sortby, @RequestParam(defaultValue = "0") Integer page,
+			@RequestParam(defaultValue = "10") Integer size, @RequestParam(defaultValue = "80") Integer minScore, @RequestParam(defaultValue = "100") Integer maxScore, @RequestParam(defaultValue = "false") Boolean followedOnly, Model model) {
+		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
+		
+		int fromIndex = page*size;
+		int toIndex = fromIndex + size;
+		List<ISuspiciousUserInfo> content = new ArrayList<>();
+		
+		long total = 0;
+		for(String id: classifierIds){
+			Page<ISuspiciousUserInfo> users;
+			if (SUSPICIOUS_USERS_BY_SCORE.equals(sortby)) {
+				users = classifierService.getSuspiciousUsersByScore(id, 0, toIndex, minScore, maxScore, followedOnly);
+			} else if (SUSPICIOUS_USERS_BY_TREND.equals(sortby)) {
+				users = classifierService.getSuspiciousUsersByTrend(id, 0, toIndex, minScore, maxScore, followedOnly);
+			} else {
+				throw new InvalidValueException(String.format("no such sorting field [%s]", sortby));
+			}
+			content.addAll(users.getContent());
+			total += users.getTotalElements();
+		}
+
+		Collections.sort(content, new ISuspiciousUserInfo.OrderByTrendDesc());
+		
+		if(toIndex > content.size()){
+			ret.setData(content);
+		} else{
+			ret.setData(content.subList(fromIndex, toIndex));
+		}
+		
+		ret.setOffset(fromIndex);
+		ret.setTotal((int) total);
 		return ret;
 	}
 

@@ -22,8 +22,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 
 import fortscale.domain.core.ApplicationUserDetails;
@@ -91,6 +89,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
 		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lte(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
+		query.fields().exclude(User.adInfoField);
 
 		return getPage(query, pageable, User.class);
 	}
@@ -100,6 +99,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
 		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lte(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
+		query.fields().exclude(User.adInfoField);
 		
 		return getPage(query, pageable, User.class);
 	}

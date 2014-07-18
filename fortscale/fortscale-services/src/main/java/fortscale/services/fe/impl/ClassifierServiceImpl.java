@@ -195,7 +195,7 @@ public class ClassifierServiceImpl implements ClassifierService{
 	private SuspiciousUserInfo createSuspiciousUserInfo(String classifierId, User user){
 		ClassifierScore classifierScore = user.getScore(classifierId);
 		int trendSign = classifierScore.getTrend() > 0 ? 1 : -1;
-		return new SuspiciousUserInfo(user.getId(), user.getUsername(), (int) Math.floor(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrendScore()*trendSign), user.getFollowed());
+		return new SuspiciousUserInfo(classifierId, user.getId(), user.getUsername(), user.getDisplayName(), (int) Math.floor(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrendScore()*trendSign), user.getFollowed());
 	}
 	
 	private Range getRange(String severityId){
