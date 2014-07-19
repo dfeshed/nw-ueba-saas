@@ -145,44 +145,42 @@ public class ClassifierServiceImpl implements ClassifierService{
 	}
 	
 	@Override
-	public Page<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, String severityId, int page, int size, boolean followedOnly) {
+	public Page<ISuspiciousUserInfo> getSuspiciousUsersByScore(Classifier classifier, String severityId, int page, int size, boolean followedOnly) {
 		Range severityRange = getRange(severityId);
-		return getTopUsers(classifierId, new ThresholdNoFilter(),page,size, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), followedOnly, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
+		return getTopUsers(classifier, new ThresholdNoFilter(),page,size, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), followedOnly, User.getClassifierScoreCurrentScoreField(classifier.getId()), User.getClassifierScoreCurrentTrendScoreField(classifier.getId()));
 	}
 	
 	@Override
-	public Page<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, String severityId, int page, int size, boolean followedOnly) {
+	public Page<ISuspiciousUserInfo> getSuspiciousUsersByTrend(Classifier classifier, String severityId, int page, int size, boolean followedOnly) {
 		Range severityRange = getRange(severityId);
-		return getTopUsers(classifierId, new ThresholdTrendFilter(), page, size, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), followedOnly, User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
+		return getTopUsers(classifier, new ThresholdTrendFilter(), page, size, severityRange.getMinimumInteger(), severityRange.getMaximumInteger(), followedOnly, User.getClassifierScoreCurrentTrendScoreField(classifier.getId()), User.getClassifierScoreCurrentScoreField(classifier.getId()));
 	}
 	
 	@Override
-	public Page<ISuspiciousUserInfo> getSuspiciousUsersByScore(String classifierId, int page, int size, Integer minScore, Integer maxScore, boolean followedOnly) {
-		return getTopUsers(classifierId, new ThresholdNoFilter(),page,size, minScore, maxScore, followedOnly, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
+	public Page<ISuspiciousUserInfo> getSuspiciousUsersByScore(Classifier classifier, int page, int size, Integer minScore, Integer maxScore, boolean followedOnly) {
+		return getTopUsers(classifier, new ThresholdNoFilter(),page,size, minScore, maxScore, followedOnly, User.getClassifierScoreCurrentScoreField(classifier.getId()), User.getClassifierScoreCurrentTrendScoreField(classifier.getId()));
 	}
 	
 	@Override
-	public Page<ISuspiciousUserInfo> getSuspiciousUsersByTrend(String classifierId, int page, int size, Integer minScore, Integer maxScore, boolean followedOnly) {
-		return getTopUsers(classifierId, new ThresholdTrendFilter(),page,size, minScore, maxScore, followedOnly, User.getClassifierScoreCurrentTrendScoreField(classifierId), User.getClassifierScoreCurrentScoreField(classifierId));
+	public Page<ISuspiciousUserInfo> getSuspiciousUsersByTrend(Classifier classifier, int page, int size, Integer minScore, Integer maxScore, boolean followedOnly) {
+		return getTopUsers(classifier, new ThresholdTrendFilter(),page,size, minScore, maxScore, followedOnly, User.getClassifierScoreCurrentTrendScoreField(classifier.getId()), User.getClassifierScoreCurrentScoreField(classifier.getId()));
 	}
 
-	private Page<ISuspiciousUserInfo> getTopUsers(String classifierId, ThresholdFilter thresholdFilter, int page, int size, Integer minScore, Integer maxScore, boolean followedOnly, String... sortingFieldsName) {
-		Classifier.validateClassifierId(classifierId);
-		
+	private Page<ISuspiciousUserInfo> getTopUsers(Classifier classifier, ThresholdFilter thresholdFilter, int page, int size, Integer minScore, Integer maxScore, boolean followedOnly, String... sortingFieldsName) {		
 		Pageable pageable = new PageRequest(page, size, Direction.DESC, sortingFieldsName);
 		Page<User> users = null;
 		DateTime dateTime = new DateTime();
 		dateTime = dateTime.minusHours(24);
 			
 		if(followedOnly){
-			users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(classifierId, minScore, maxScore, dateTime.toDate(), pageable);
+			users = userRepository.findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(classifier.getId(), minScore, maxScore, dateTime.toDate(), pageable);
 		} else{
-			users = userRepository.findByClassifierIdAndScoreBetweenAndTimeGteAsData(classifierId, minScore, maxScore, dateTime.toDate(), pageable);
+			users = userRepository.findByClassifierIdAndScoreBetweenAndTimeGteAsData(classifier.getId(), minScore, maxScore, dateTime.toDate(), pageable);
 		}
 		
 		List<ISuspiciousUserInfo> retList = new ArrayList<>();
 		for(User user: users.getContent()){
-			ISuspiciousUserInfo suspiciousUserInfo = createSuspiciousUserInfo(classifierId, user);
+			ISuspiciousUserInfo suspiciousUserInfo = createSuspiciousUserInfo(classifier.getId(), user);
 			if(!thresholdFilter.hasPassed(suspiciousUserInfo)){
 				break;
 			}

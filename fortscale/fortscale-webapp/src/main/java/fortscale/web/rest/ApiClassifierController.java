@@ -22,6 +22,7 @@ import fortscale.domain.fe.EventScore;
 import fortscale.domain.fe.dao.EmptyTableException;
 import fortscale.domain.fe.dao.EventLoginDayCount;
 import fortscale.services.exceptions.InvalidValueException;
+import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
 import fortscale.services.fe.IClassifierScoreDistribution;
 import fortscale.services.fe.IScoreDistribution;
@@ -141,14 +142,14 @@ public class ApiClassifierController extends BaseController {
 	@RequestMapping(value = "/{id}/suspiciousUser", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<ISuspiciousUserInfo>> suspiciousUser(@PathVariable String id, @RequestParam(defaultValue = SUSPICIOUS_USERS_BY_SCORE) String sortby, @RequestParam(defaultValue = "0") Integer page,
+	public DataBean<List<ISuspiciousUserInfo>> suspiciousUser(@PathVariable Classifier classifier, @RequestParam(defaultValue = SUSPICIOUS_USERS_BY_SCORE) String sortby, @RequestParam(defaultValue = "0") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(defaultValue = "80") Integer minScore, @RequestParam(defaultValue = "100") Integer maxScore, @RequestParam(defaultValue = "false") Boolean followedOnly, Model model) {
 		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
 		Page<ISuspiciousUserInfo> users;
 		if (SUSPICIOUS_USERS_BY_SCORE.equals(sortby)) {
-			users = classifierService.getSuspiciousUsersByScore(id, page, size, minScore, maxScore, followedOnly);
+			users = classifierService.getSuspiciousUsersByScore(classifier, page, size, minScore, maxScore, followedOnly);
 		} else if (SUSPICIOUS_USERS_BY_TREND.equals(sortby)) {
-			users = classifierService.getSuspiciousUsersByTrend(id, page, size, minScore, maxScore, followedOnly);
+			users = classifierService.getSuspiciousUsersByTrend(classifier, page, size, minScore, maxScore, followedOnly);
 		} else {
 			throw new InvalidValueException(String.format("no such sorting field [%s]", sortby));
 		}
@@ -162,7 +163,7 @@ public class ApiClassifierController extends BaseController {
 	@RequestMapping(value = "/suspiciousUsers", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<ISuspiciousUserInfo>> suspiciousUsers(@RequestParam(required=true) List<String> classifierIds, @RequestParam(defaultValue = SUSPICIOUS_USERS_BY_SCORE) String sortby, @RequestParam(defaultValue = "0") Integer page,
+	public DataBean<List<ISuspiciousUserInfo>> suspiciousUsers(@RequestParam(required=false) List<Classifier> classifiers, @RequestParam(defaultValue = SUSPICIOUS_USERS_BY_SCORE) String sortby, @RequestParam(defaultValue = "0") Integer page,
 			@RequestParam(defaultValue = "10") Integer size, @RequestParam(defaultValue = "80") Integer minScore, @RequestParam(defaultValue = "100") Integer maxScore, @RequestParam(defaultValue = "false") Boolean followedOnly, Model model) {
 		DataBean<List<ISuspiciousUserInfo>> ret = new DataBean<List<ISuspiciousUserInfo>>();
 		
@@ -170,13 +171,22 @@ public class ApiClassifierController extends BaseController {
 		int toIndex = fromIndex + size;
 		List<ISuspiciousUserInfo> content = new ArrayList<>();
 		
+		if(classifiers == null || classifiers.isEmpty()){
+			classifiers = new ArrayList<>();
+			for(Classifier classifier: Classifier.values()){
+				if(!Classifier.total.equals(classifier)){
+					classifiers.add(classifier);
+				}
+			}
+		}
+		
 		long total = 0;
-		for(String id: classifierIds){
+		for(Classifier classifier: classifiers){
 			Page<ISuspiciousUserInfo> users;
 			if (SUSPICIOUS_USERS_BY_SCORE.equals(sortby)) {
-				users = classifierService.getSuspiciousUsersByScore(id, 0, toIndex, minScore, maxScore, followedOnly);
+				users = classifierService.getSuspiciousUsersByScore(classifier, 0, toIndex, minScore, maxScore, followedOnly);
 			} else if (SUSPICIOUS_USERS_BY_TREND.equals(sortby)) {
-				users = classifierService.getSuspiciousUsersByTrend(id, 0, toIndex, minScore, maxScore, followedOnly);
+				users = classifierService.getSuspiciousUsersByTrend(classifier, 0, toIndex, minScore, maxScore, followedOnly);
 			} else {
 				throw new InvalidValueException(String.format("no such sorting field [%s]", sortby));
 			}
@@ -184,10 +194,14 @@ public class ApiClassifierController extends BaseController {
 			total += users.getTotalElements();
 		}
 
-		Collections.sort(content, new ISuspiciousUserInfo.OrderByTrendDesc());
+		if (SUSPICIOUS_USERS_BY_SCORE.equals(sortby)) {
+			Collections.sort(content, new ISuspiciousUserInfo.OrderByScoreDesc());
+		} else if (SUSPICIOUS_USERS_BY_TREND.equals(sortby)) {
+			Collections.sort(content, new ISuspiciousUserInfo.OrderByTrendDesc());
+		}
 		
 		if(toIndex > content.size()){
-			ret.setData(content);
+			ret.setData(content.subList(fromIndex, content.size()));
 		} else{
 			ret.setData(content.subList(fromIndex, toIndex));
 		}
@@ -196,7 +210,7 @@ public class ApiClassifierController extends BaseController {
 		ret.setTotal((int) total);
 		return ret;
 	}
-
+	
 	@RequestMapping(value = "/all/dist", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException

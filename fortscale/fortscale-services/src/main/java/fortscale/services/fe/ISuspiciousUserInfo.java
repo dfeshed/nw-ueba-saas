@@ -20,4 +20,13 @@ public interface ISuspiciousUserInfo {
 		}
 		
 	}
+	
+public static class OrderByScoreDesc implements Comparator<ISuspiciousUserInfo>{
+		
+		@Override
+		public int compare(ISuspiciousUserInfo o1, ISuspiciousUserInfo o2) {
+			return o2.getScore() > o1.getScore() ? 1 : (o2.getScore() < o1.getScore() ? -1 : 0);
+		}
+		
+	}
 }
