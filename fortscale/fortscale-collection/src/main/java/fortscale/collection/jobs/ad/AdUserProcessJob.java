@@ -9,10 +9,10 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
+import fortscale.collection.tagging.service.AdministratorAccountService;
+import fortscale.collection.tagging.service.ExecutiveAccountService;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.services.AdministratorAccountService;
-import fortscale.services.ExecutiveAccountService;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.impl.UsernameService;
 

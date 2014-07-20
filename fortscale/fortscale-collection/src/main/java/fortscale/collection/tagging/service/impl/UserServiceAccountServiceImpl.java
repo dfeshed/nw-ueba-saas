@@ -1,4 +1,4 @@
-package fortscale.services.impl;
+package fortscale.collection.tagging.service.impl;
 
 import java.io.File;
 import java.util.HashSet;
@@ -12,9 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import fortscale.collection.tagging.service.UserServiceAccountService;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.UserServiceAccountService;
+import fortscale.services.impl.UsernameNormalizer;
 import fortscale.utils.logging.Logger;
 
 

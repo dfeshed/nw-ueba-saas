@@ -1,4 +1,4 @@
-package fortscale.services;
+package fortscale.collection.tagging.service;
 
 public interface ExecutiveAccountService {
 

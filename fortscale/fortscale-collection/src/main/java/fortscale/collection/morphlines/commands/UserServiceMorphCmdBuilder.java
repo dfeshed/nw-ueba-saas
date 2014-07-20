@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.UserServiceAccountService;
+import fortscale.collection.tagging.service.UserServiceAccountService;
 
 public class UserServiceMorphCmdBuilder implements CommandBuilder {
 	

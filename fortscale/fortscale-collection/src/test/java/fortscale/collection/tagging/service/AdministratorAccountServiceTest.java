@@ -1,4 +1,4 @@
-package fortscale.services.impl;
+package fortscale.collection.tagging.service;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -20,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import fortscale.collection.tagging.service.impl.AdministratorAccountServiceImpl;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 
@@ -79,7 +80,7 @@ public class AdministratorAccountServiceTest {
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
 		
 		administratorAccountService.setFilePath(null);
-		administratorAccountService.afterPropertiesSet();
+		administratorAccountService.update();
 				
 		assertEquals(false, administratorAccountService.isUserAdministrator("user2"));
 
@@ -94,7 +95,7 @@ public class AdministratorAccountServiceTest {
 		when(pages.getContent()).thenReturn(new ArrayList<User>());
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);		
 		administratorAccountService.setFilePath(getFile("group1,group2"));
-		administratorAccountService.afterPropertiesSet();
+		administratorAccountService.update();
 			
 		assertEquals(false, administratorAccountService.isUserAdministrator("user2"));
 	}
@@ -114,7 +115,7 @@ public class AdministratorAccountServiceTest {
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
 		
 		administratorAccountService.setFilePath(getFile("group1,group2"));
-		administratorAccountService.afterPropertiesSet();
+		administratorAccountService.update();
 			
 		ArgumentCaptor<User> captorUser = ArgumentCaptor.forClass(User.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);
@@ -141,7 +142,7 @@ public class AdministratorAccountServiceTest {
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
 		
 		administratorAccountService.setFilePath(getFile("group1,group2"));
-		administratorAccountService.afterPropertiesSet();
+		administratorAccountService.update();
 			
 		ArgumentCaptor<User> captorUser = ArgumentCaptor.forClass(User.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);

@@ -1,13 +1,14 @@
-package fortscale.services.impl;
+package fortscale.collection.tagging.service.impl;
 import java.util.List;
-import org.springframework.beans.factory.InitializingBean;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import fortscale.collection.tagging.service.AdministratorAccountService;
 import fortscale.domain.core.User;
-import fortscale.services.AdministratorAccountService;
 
 @Service("administratorAccountService")
-public class AdministratorAccountServiceImpl extends UserTaggingServiceAbstract implements AdministratorAccountService,InitializingBean{
+public class AdministratorAccountServiceImpl extends UserTaggingServiceAbstract implements AdministratorAccountService{
 	@Value("${user.list.admin_groups.path:}")
 	private String filePath;
 	private String tagName = "administrator";
@@ -36,13 +37,12 @@ public class AdministratorAccountServiceImpl extends UserTaggingServiceAbstract 
 	}
 	
 	@Override
-	public Boolean isUserTagged(User user){
-		return user.getAdministratorAccount();
+	public boolean isUserTagged(User user){
+		return user.getAdministratorAccount() != null ? user.getAdministratorAccount() : false;
 	}
 	
-	public void refresh() {
-		List<User> taggedUsersList= userRepository.findByAdministratorAccount(true);
-		refreshTaggedUsers(taggedUsersList);
-	}
-	
+	@Override
+	protected List<User> findTaggedUsersFromDb(){
+		return userRepository.findByAdministratorAccount(true);
+	}	
 }

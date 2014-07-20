@@ -18,7 +18,7 @@ import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
 import fortscale.collection.morphlines.commands.UserAdministratorMorphCmdBuilder.IsUserAdministrator;
-import fortscale.services.impl.AdministratorAccountServiceImpl;
+import fortscale.collection.tagging.service.impl.AdministratorAccountServiceImpl;
 
 public class UserAdministratorMorphCmdTest {
 

@@ -1,17 +1,18 @@
-package fortscale.services.impl;
+package fortscale.collection.tagging.service.impl;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.utils.logging.Logger;
 
-public abstract class UserTaggingServiceAbstract {
+public abstract class UserTaggingServiceAbstract implements InitializingBean{
 	private static Logger logger = Logger.getLogger(UserTaggingServiceAbstract.class);
 	@Autowired
 	protected UserRepository userRepository;
@@ -27,8 +28,19 @@ public abstract class UserTaggingServiceAbstract {
 	protected abstract String getFilePath();
 	protected abstract void updateUserTag(User user, boolean isTagTheUser);
 	protected abstract String getTagName();
-	protected abstract Boolean isUserTagged(User user);
+	protected abstract boolean isUserTagged(User user);
+	protected abstract List<User> findTaggedUsersFromDb();
 	
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		refresh();
+	}
+	
+	public void refresh() {
+		List<User> taggedUsersList= findTaggedUsersFromDb();
+		refreshTaggedUsers(taggedUsersList);
+	}
 	
 	/**
 	 * This function run over the file groups and 
@@ -107,9 +119,11 @@ public abstract class UserTaggingServiceAbstract {
 				PageRequest pageRequest = new PageRequest(i, pageSize);
 				for(User user: userRepository.findAll(pageRequest).getContent()){
 					if (taggedUsers.contains(user.getUsername())) {
-						updateUserTag(user, true);
+						if(!isUserTagged(user)){
+							updateUserTag(user, true);
+						}
 					}
-					else if (isUserTagged(user) == null || isUserTagged(user)) {
+					else if (isUserTagged(user)) {
 						updateUserTag(user, false);
 					}
 				}
@@ -130,7 +144,7 @@ public abstract class UserTaggingServiceAbstract {
 		for(int i = 0; i < numOfPages; i++){
 			PageRequest pageRequest = new PageRequest(i, pageSize);
 			for(User user: userRepository.findAll(pageRequest).getContent()){
-				if (isUserTagged(user) == null || isUserTagged(user)) {
+				if (isUserTagged(user)) {
 					updateUserTag(user, false);
 				}
 			}
@@ -138,15 +152,10 @@ public abstract class UserTaggingServiceAbstract {
 	}
 	
 	
-	public void afterPropertiesSet() throws Exception {
-		updateTaggedUsersList();
-		updateAllUsersTags();
-	}
-	
-	
 	public void update() {
 		try {
-			afterPropertiesSet();
+			updateTaggedUsersList();
+			updateAllUsersTags();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			e.printStackTrace();

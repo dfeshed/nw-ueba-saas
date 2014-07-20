@@ -1,4 +1,4 @@
-package fortscale.services.impl;
+package fortscale.collection.tagging.service.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +16,9 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import fortscale.collection.tagging.service.SensitiveMachineService;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
-import fortscale.services.SensitiveMachineService;
 
 @Service("sensitiveMachineService")
 public class SensitiveMachineServiceImpl implements SensitiveMachineService,

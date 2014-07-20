@@ -1,4 +1,4 @@
-package fortscale.services.impl;
+package fortscale.collection.tagging.service;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import fortscale.collection.tagging.service.impl.SensitiveMachineServiceImpl;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
 
