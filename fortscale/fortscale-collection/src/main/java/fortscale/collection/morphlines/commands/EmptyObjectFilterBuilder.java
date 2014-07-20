@@ -15,35 +15,33 @@ import com.typesafe.config.Config;
 
 import fortscale.utils.logging.Logger;
 
-
-
 /**
  * Command that succeeds if all field values of the given named fields are not
  * empty string and fails otherwise.
  */
-public class EmptyStringFilterBuilder implements CommandBuilder {
-	private static Logger logger = Logger.getLogger(EmptyStringFilterBuilder.class);
-	
+public class EmptyObjectFilterBuilder implements CommandBuilder {
+	private static Logger logger = Logger.getLogger(EmptyObjectFilterBuilder.class);
+
 	@Override
 	public Collection<String> getNames() {
-		return Collections.singletonList("EmptyStringFilter");
+		return Collections.singletonList("EmptyObjectFilter");
 	}
 
 	@Override
 	public Command build(Config config, Command parent, Command child,
 			MorphlineContext context) {
-		return new EmptyStringFilter(this, config, parent, child, context);
+		return new EmptyObjectFilter(this, config, parent, child, context);
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
-	public static final class EmptyStringFilter extends AbstractCommand {
+	public static final class EmptyObjectFilter extends AbstractCommand {
 
 		private final List<String> filterFields;
 		private final String renderedConfig; // cached value
 
-		public EmptyStringFilter(CommandBuilder builder, Config config,
+		public EmptyObjectFilter(CommandBuilder builder, Config config,
 				Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			filterFields = getConfigs().getStringList(config, "filterFields");
@@ -52,12 +50,19 @@ public class EmptyStringFilterBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
-			for(String field: filterFields){
-				String fieldValue = (String) inputRecord.getFirstValue(field);
-				if(StringUtils.isBlank(fieldValue)){
+			for (String field : filterFields) {
+				Object fieldValue = inputRecord.getFirstValue(field);
+				if (fieldValue == null) {
 					// drop record
-					logger.debug("EmptyStringFilter command droped record because {} is empty. command: {}, record: {}",field, renderedConfig, inputRecord.toString());
+					logger.debug("EmptyObjectFilter command droped record because {} is null. command: {}, record: {}", field, renderedConfig, inputRecord.toString());
 					return true;
+				}
+				if (fieldValue instanceof String) {
+					if (StringUtils.isBlank((String)fieldValue)) {
+						// drop record
+						logger.debug("EmptyObjectFilter command droped record because {} is empty. command: {}, record: {}", field, renderedConfig, inputRecord.toString());
+						return true;
+					}
 				}
 			}
 			return super.doProcess(inputRecord);
