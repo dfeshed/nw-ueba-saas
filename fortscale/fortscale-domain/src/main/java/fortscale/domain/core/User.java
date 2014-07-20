@@ -287,12 +287,40 @@ public class User extends AbstractDocument {
 		tags.remove(tag);
 	}
 	
+	public Set<String> getTags(){
+		return tags;
+	}
+	
 	public Date getWhenCreated() {
 		return whenCreated;
 	}
 
 	public void setWhenCreated(Date whenCreated) {
 		this.whenCreated = whenCreated;
+	}
+	
+	public Boolean getUserServiceAccount() {
+		return userServiceAccount != null ? userServiceAccount : false;
+	}
+
+	public void setUserServiceAccount(Boolean userServiceAccount) {
+		this.userServiceAccount = userServiceAccount;
+	}
+
+	public Boolean getAdministratorAccount() {
+		return administratorAccount != null ? administratorAccount : false;
+	}
+
+	public void setAdministratorAccount(Boolean administratorAccount) {
+		this.administratorAccount = administratorAccount;
+	}
+	
+	public Boolean getExecutiveAccount() {
+		return executiveAccount != null ? executiveAccount : false;
+	}
+	
+	public void setExecutiveAccount(Boolean executiveAccount) {
+		this.executiveAccount = executiveAccount;
 	}
 	
 	public static String getClassifierScoreField(String classifierId) {
@@ -345,30 +373,6 @@ public class User extends AbstractDocument {
 
 	public static String getAdInfoField(String adInfoFieldName) {
 		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
-	}
-
-	public Boolean getUserServiceAccount() {
-		return userServiceAccount;
-	}
-
-	public void setUserServiceAccount(Boolean userServiceAccount) {
-		this.userServiceAccount = userServiceAccount;
-	}
-
-	public Boolean getAdministratorAccount() {
-		return administratorAccount;
-	}
-
-	public void setAdministratorAccount(Boolean administratorAccount) {
-		this.administratorAccount = administratorAccount;
-	}
-	
-	public Boolean getExecutiveAccount() {
-		return executiveAccount;
-	}
-	
-	public void setExecutiveAccount(Boolean executiveAccount) {
-		this.executiveAccount = executiveAccount;
 	}
 	
 }

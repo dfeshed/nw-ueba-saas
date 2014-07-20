@@ -1,5 +1,7 @@
 package fortscale.services.fe.impl;
 
+import java.util.List;
+
 import fortscale.services.fe.ISuspiciousUserInfo;
 
 public class SuspiciousUserInfo implements ISuspiciousUserInfo {
@@ -10,8 +12,9 @@ public class SuspiciousUserInfo implements ISuspiciousUserInfo {
 	private int score;
 	private double trend;
 	private Boolean isUserFollowed;
+	private List<String> userTags;
 	
-	public SuspiciousUserInfo(String classifierId, String userId, String username, String displayName, int score, double trend, Boolean isUserFollowed){
+	public SuspiciousUserInfo(String classifierId, String userId, String username, String displayName, int score, double trend, Boolean isUserFollowed, List<String> userTags){
 		this.classifierId = classifierId;
 		this.score = score;
 		this.username = username;
@@ -19,6 +22,7 @@ public class SuspiciousUserInfo implements ISuspiciousUserInfo {
 		this.trend = trend;
 		this.userId = userId;
 		this.isUserFollowed = isUserFollowed;
+		this.userTags = userTags;
 	}
 
 	@Override
@@ -46,12 +50,18 @@ public class SuspiciousUserInfo implements ISuspiciousUserInfo {
 		return isUserFollowed;
 	}
 
+	@Override
 	public String getClassifierId() {
 		return classifierId;
 	}
 
+	@Override
 	public String getDisplayName() {
 		return displayName;
 	}
 	
+	@Override
+	public List<String> getUserTags() {
+		return userTags;
+	}
 }

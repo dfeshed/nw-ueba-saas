@@ -1,6 +1,7 @@
 package fortscale.services.fe;
 
 import java.util.Comparator;
+import java.util.List;
 
 
 public interface ISuspiciousUserInfo {
@@ -10,7 +11,9 @@ public interface ISuspiciousUserInfo {
 	public String getDisplayName();
 	public int getScore();
 	public double getTrend();
-	Boolean getIsUserFollowed();
+	public Boolean getIsUserFollowed();
+	public List<String> getUserTags();
+	
 	
 	public static class OrderByTrendDesc implements Comparator<ISuspiciousUserInfo>{
 		

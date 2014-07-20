@@ -68,7 +68,25 @@ public class UserDetailsBean implements Serializable{
 	public Map<String, String> getLogUsernameMap(){
 		return user.getLogUsernameMap();
 	}
-
+	
+	public List<String> getTags(){
+		List<String> userTags = new ArrayList<>();
+		userTags.addAll(user.getTags());
+		if(user.getAdministratorAccount()){
+			userTags.add("adminAccount");
+		}
+		if(user.getExecutiveAccount()){
+			userTags.add("executiveAccount");
+		}
+		if(user.getUserServiceAccount()){
+			userTags.add("serviceAccount");
+		}
+		return userTags;
+	}
+	
+	public Long getLastActivity(){
+		return user.getLastActivity().getMillis();
+	}
 
 	public String getName() {
 		return user.getDisplayName();

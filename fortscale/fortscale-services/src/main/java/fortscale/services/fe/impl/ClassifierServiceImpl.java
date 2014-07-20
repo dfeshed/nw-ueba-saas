@@ -193,7 +193,18 @@ public class ClassifierServiceImpl implements ClassifierService{
 	private SuspiciousUserInfo createSuspiciousUserInfo(String classifierId, User user){
 		ClassifierScore classifierScore = user.getScore(classifierId);
 		int trendSign = classifierScore.getTrend() > 0 ? 1 : -1;
-		return new SuspiciousUserInfo(classifierId, user.getId(), user.getUsername(), user.getDisplayName(), (int) Math.floor(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrendScore()*trendSign), user.getFollowed());
+		List<String> userTags = new ArrayList<>();
+		userTags.addAll(user.getTags());
+		if(user.getAdministratorAccount()){
+			userTags.add("adminAccount");
+		}
+		if(user.getExecutiveAccount()){
+			userTags.add("executiveAccount");
+		}
+		if(user.getUserServiceAccount()){
+			userTags.add("serviceAccount");
+		}
+		return new SuspiciousUserInfo(classifierId, user.getId(), user.getUsername(), user.getDisplayName(), (int) Math.floor(user.getScore(classifierId).getScore()), Math.round(classifierScore.getTrendScore()*trendSign), user.getFollowed(), userTags);
 	}
 	
 	private Range getRange(String severityId){
