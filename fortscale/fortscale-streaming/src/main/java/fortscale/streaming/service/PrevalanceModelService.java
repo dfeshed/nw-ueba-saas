@@ -1,15 +1,16 @@
 package fortscale.streaming.service;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
 
+import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.storage.kv.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
 
+import fortscale.streaming.exceptions.LevelDbException;
 import fortscale.streaming.model.prevalance.PrevalanceModel;
 import fortscale.streaming.model.prevalance.PrevalanceModelBuilder;
 import fortscale.streaming.service.dao.Model;
@@ -53,9 +54,15 @@ public class PrevalanceModelService {
 		return modelBuilder.build();
 	}
 	
-	/** Update the user model in samza store */
-	public void updateUserModelInStore(String username, PrevalanceModel model) {
-		store.put(username, model);
+	/** Update the user model in samza store 
+	 * @throws LevelDbException */
+	public void updateUserModelInStore(String username, PrevalanceModel model) throws LevelDbException {
+		try{
+			store.put(username, model);
+		} catch(Exception exception){
+        	logger.error(String.format("error storing value. username: %s", username), exception);
+            throw new LevelDbException(String.format("error while trying to store user %s.", username), exception);
+        }
 	}
 	
 	/** sync all models in samza store with the models in the mongodb */ 

@@ -1,9 +1,6 @@
 package fortscale.streaming.service.tagging;
 
-import fortscale.domain.core.ComputerUsageType;
-import fortscale.services.UserService;
-import fortscale.streaming.model.tagging.AccountMachineAccess;
-import fortscale.streaming.service.SpringService;
+import java.util.Collection;
 
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -13,7 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
 
-import java.util.Collection;
+import fortscale.domain.core.ComputerUsageType;
+import fortscale.services.UserService;
+import fortscale.streaming.exceptions.LevelDbException;
+import fortscale.streaming.model.tagging.AccountMachineAccess;
+import fortscale.streaming.service.SpringService;
 
 /**
  * Created by idanp on 7/8/2014.
@@ -39,7 +40,7 @@ public class TagService {
        this.userService = SpringService.getInstance("classpath*:META-INF/spring/streaming-TaggingTask-context.xml").resolve(UserService.class);
     }
 
-    public void handleAccount(String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType,boolean isSensetiveMachine )
+    public void handleAccount(String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType,boolean isSensetiveMachine ) throws LevelDbException
     {
         //add or update the account at the store key value
         //check if need to create instance of AccountAccessMachine for that account
@@ -59,7 +60,13 @@ public class TagService {
         //tag the account
         tagAccount(currentAccount);
         
-        this.store.put(userName, currentAccount);
+        try{
+        	this.store.put(userName, currentAccount);
+        } catch(Exception exception){
+        	logger.error("error storing value. username: {}, timestamp: {} exception: {}", userName, timeStamp, exception);
+            logger.error("error storing value.", exception);
+            throw new LevelDbException(String.format("error while trying to store user %s.", userName), exception);
+        }
     }
 
     private void tagAccount(AccountMachineAccess targetAccount)
@@ -69,31 +76,36 @@ public class TagService {
         }
     }
 
-    public void exportTags()
-    {
+    public void exportTags() throws Exception{
         KeyValueIterator<String, AccountMachineAccess> iter =  this.store.all();
         
         try {
 	        while (iter.hasNext()) {
 	            Entry<String, AccountMachineAccess> entry  = iter.next();
+	            boolean isSavedToMongo = false;
 	            if(entry.getValue().getIsDirty()) {
 	            	try {
 	            		// update the user in mongo
 	            		this.userService.updateTags(entry.getKey(), entry.getValue().getTags());
-	            		entry.getValue().setIsDirty(false);
-	            		// update the dirty flag in the store
-	            		store.put(entry.getKey(), entry.getValue());
+	            		isSavedToMongo = true;
 	            	} catch(Exception e) {
-	                    logger.error("error exporing tags for user {}", entry.getKey(), e);
+	                    logger.error(String.format("error exporing tags for user %s.", entry.getKey()), e);
 	                    // propagate exception when connection to mongodb failed, so we won't process additional models 
 	                    Throwables.propagateIfInstanceOf(e, org.springframework.dao.DataAccessResourceFailureException.class);
 	            	}
 	            }
+	            if(isSavedToMongo){
+	            	entry.getValue().setIsDirty(false);
+	            	try {
+	            		// update the dirty flag in the store
+	            		store.put(entry.getKey(), entry.getValue());
+	            	} catch(Exception e) {
+	                    logger.error(String.format("error storing value in user {}.", entry.getKey()), e);
+	                    throw new LevelDbException(String.format("error while trying to store user %s.", entry.getKey()), e);
+	            	}
+	            }
 	        }
-        } catch (Exception e) {
-        	// report error to log and swallow that exception as 
-			logger.error("error exporting models to mongodb from streaming task", e);
-		} finally {
+        } finally {
         	if (iter!=null)
         		iter.close();
         }

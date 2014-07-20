@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import fortscale.streaming.exceptions.LevelDbException;
 import fortscale.streaming.model.UserTopEvents;
 
 import org.apache.samza.storage.kv.Entry;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+
+import com.google.common.base.Throwables;
 
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
@@ -78,7 +81,7 @@ public class UserScoreStreamingService {
 		}
 	}
 	
-	public void updateUserWithEventScore(String username, double score, long eventTimeInMillis){
+	public void updateUserWithEventScore(String username, double score, long eventTimeInMillis) throws LevelDbException{
 		updateLatestEventTime(eventTimeInMillis);
 		
 		long currentEpochTime = getCurrentEpochTimeInMillis();
@@ -116,7 +119,13 @@ public class UserScoreStreamingService {
 		
 		if(hasToUpdateStore){
 			userTopEvents.setLastUpdateEpochTime(currentEpochTime);
-			store.put(username, userTopEvents);
+			try{
+				store.put(username, userTopEvents);
+			} catch(Exception exception){
+            	logger.error("error storing value. username: {} exception: {}", username, exception);
+                logger.error("error storing value.", exception);
+                throw new LevelDbException(String.format("error while trying to store user %s.", username), exception);
+            }
 		}
 	}
 	
@@ -140,6 +149,7 @@ public class UserScoreStreamingService {
 			}
 		} catch (Exception e) {
 			logger.error("error updating score for user {} in mongodb from user score stream task", username, e);
+			Throwables.propagateIfInstanceOf(e, org.springframework.dao.DataAccessResourceFailureException.class);
 		}
 		return ret;
 	}
@@ -230,6 +240,7 @@ public class UserScoreStreamingService {
 			}
 		} catch (Exception e) {
 			logger.error("error updating mongo with users scores", e);
+			Throwables.propagateIfInstanceOf(e, org.springframework.dao.DataAccessResourceFailureException.class);
 		} finally {
 			if (iterator!=null)
 				iterator.close();
