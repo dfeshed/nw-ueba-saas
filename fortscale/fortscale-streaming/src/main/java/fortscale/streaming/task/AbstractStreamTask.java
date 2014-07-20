@@ -42,35 +42,23 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask{
 	
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		Exception e = null;
 		try{
 			wrappedProcess(envelope, collector, coordinator);
+			processExceptionHandler.clear();
 		} catch(Exception exception){
 			logger.error("got an exception while processing steam message", exception);
-			e = exception;
-		}
-		
-		if(e != null){
-			processExceptionHandler.handleException(e);
-		} else{
-			processExceptionHandler.clear();
-		}
+			processExceptionHandler.handleException(exception);
+		}		
 	}
 	
 	@Override
     public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
-		Exception e = null;
 		try{
 			wrappedWindow(collector, coordinator);
+			windowExceptionHandler.clear();
 		} catch(Exception exception){
 			logger.error("got an exception while processing steam message", exception);
-			e = exception;
-		}
-		
-		if(e != null){
-			windowExceptionHandler.handleException(e);
-		} else{
-			windowExceptionHandler.clear();
+			windowExceptionHandler.handleException(exception);
 		}
     }
 }

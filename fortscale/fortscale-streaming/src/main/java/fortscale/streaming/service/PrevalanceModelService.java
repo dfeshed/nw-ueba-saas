@@ -60,8 +60,7 @@ public class PrevalanceModelService {
 		try{
 			store.put(username, model);
 		} catch(Exception exception){
-        	logger.error("error storing value. username: {} exception: {}", username, exception);
-            logger.error("error storing value.", exception);
+        	logger.error(String.format("error storing value. username: %s", username), exception);
             throw new LevelDbException(String.format("error while trying to store user %s.", username), exception);
         }
 	}

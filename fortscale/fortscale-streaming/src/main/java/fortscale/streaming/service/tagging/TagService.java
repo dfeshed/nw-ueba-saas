@@ -89,8 +89,7 @@ public class TagService {
 	            		this.userService.updateTags(entry.getKey(), entry.getValue().getTags());
 	            		isSavedToMongo = true;
 	            	} catch(Exception e) {
-	                    logger.error("error exporing tags for user {}. exception: {}", entry.getKey(), e);
-	                    logger.error("error exporing tags for user", e);
+	                    logger.error(String.format("error exporing tags for user %s.", entry.getKey()), e);
 	                    // propagate exception when connection to mongodb failed, so we won't process additional models 
 	                    Throwables.propagateIfInstanceOf(e, org.springframework.dao.DataAccessResourceFailureException.class);
 	            	}
@@ -101,8 +100,7 @@ public class TagService {
 	            		// update the dirty flag in the store
 	            		store.put(entry.getKey(), entry.getValue());
 	            	} catch(Exception e) {
-	                    logger.error("error storing value in user {}. exception: {}", entry.getKey(), e);
-	                    logger.error("error storing value in user.", e);
+	                    logger.error(String.format("error storing value in user {}.", entry.getKey()), e);
 	                    throw new LevelDbException(String.format("error while trying to store user %s.", entry.getKey()), e);
 	            	}
 	            }

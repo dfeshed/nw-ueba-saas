@@ -23,7 +23,6 @@ import org.apache.samza.task.TaskCoordinator.RequestScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fortscale.streaming.exceptions.HdfsException;
 import fortscale.streaming.exceptions.LevelDbException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
@@ -108,11 +107,7 @@ public class HDFSWriterStreamTask  extends AbstractStreamTask  implements Initab
 		
 			// write the event to hdfs
 			String eventLine = buildEventLine(message);
-			try{
-				service.writeLineToHdfs(eventLine, timestamp.longValue());
-			} catch(Exception exception){
-				throw new HdfsException(String.format("failed to write to hdfs: %s. message: %s.", eventLine, messageText), exception);
-			}
+			service.writeLineToHdfs(eventLine, timestamp.longValue());
 			
 			updateBarrier(username, timestamp, discriminator);
 			processedMessageCount.inc();
@@ -144,11 +139,8 @@ public class HDFSWriterStreamTask  extends AbstractStreamTask  implements Initab
 
 	private void flushEvents() throws Exception {
 		// flush writes to hdfs and refresh impala
-		try{
-			service.flushHdfs();
-		} catch(Exception exception){
-			throw new HdfsException(String.format("failed to flush to hdfs. tablename: %s.", tableName), exception);
-		}
+		service.flushHdfs();
+
 		nonFlushedEventsCounter = 0;
 		flushBarrier();
 	}

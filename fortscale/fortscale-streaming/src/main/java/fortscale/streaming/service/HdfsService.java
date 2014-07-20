@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fortscale.streaming.exceptions.HdfsException;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
@@ -33,52 +34,69 @@ public class HdfsService {
 		impalaClient = SpringService.getInstance().resolve(ImpalaClient.class);
 	}
 	
-	public void writeLineToHdfs(String line, long timestamp) throws IOException {
-		appender.writeLine(line, timestamp);
+	public void writeLineToHdfs(String line, long timestamp) throws HdfsException {
+		try {
+			appender.writeLine(line, timestamp);
+		} catch(Exception e){
+			throw new HdfsException(String.format("writeLineToHdfs failed. line: %s, timestamp: %d fileName: %s.", line, timestamp, fileName), e);
+		}
 	}
 	
-	public void flushHdfs() throws Exception {
-		appender.flush();
-				
+	public void flushHdfs() throws HdfsException {
 		Exception firstException = null;
-		// add new partitions to impala
-		for (String partition : appender.getNewPartitions()) {
+		try{
+			appender.flush();
+					
+			
+			// add new partitions to impala
+			for (String partition : appender.getNewPartitions()) {
+				try {
+					impalaClient.addPartitionToTable(tableName, partition);
+				} catch (Exception e) {
+					logger.error("error adding partition " + partition + " to table " + tableName, e);
+					if (firstException==null)
+						firstException = e;
+				}
+			}
+			// clear the new partitions list from the hdfs appender, once they were added to impala
+			appender.clearNewPartitions();
+		
+			// since for some reason when the FileSystem in HDFS appender is always open, 
+			// the name node does not recognize changes in file up until we close the connection
+			// so the work around to to close and re-open the connection here
+			appender.close();
+			appender.open(fileName);
+			
+			// refresh the impala table with new partitions data
 			try {
-				impalaClient.addPartitionToTable(tableName, partition);
+				impalaClient.refreshTable(tableName);
 			} catch (Exception e) {
-				logger.error("error adding partition " + partition + " to table " + tableName, e);
+				logger.error("error refreshing table " + tableName, e);
 				if (firstException==null)
 					firstException = e;
 			}
-		}
-		// clear the new partitions list from the hdfs appender, once they were added to impala
-		appender.clearNewPartitions();
-	
-		// since for some reason when the FileSystem in HDFS appender is always open, 
-		// the name node does not recognize changes in file up until we close the connection
-		// so the work around to to close and re-open the connection here
-		appender.close();
-		appender.open(fileName);
-		
-		// refresh the impala table with new partitions data
-		try {
-			impalaClient.refreshTable(tableName);
-		} catch (Exception e) {
-			logger.error("error refreshing table " + tableName, e);
+		} catch (Exception e){
 			if (firstException==null)
 				firstException = e;
 		}
 		
 		
-		if (firstException!=null)
-			throw firstException;
+		if (firstException!=null){
+			throw new HdfsException(String.format("flushHdfs failed. fileName: %s tablename: %s.", fileName, tableName), firstException);
+		}
 	}
 	
 	public void close() throws Exception {
 		// call flush to ensure that all partitions were added to impala
-		flushHdfs();
-		appender.close();
-		SpringService.shutdown();
+		try{
+			flushHdfs();
+		} finally{
+			try{
+				appender.close();
+			} finally{
+				SpringService.shutdown();
+			}
+		}
 	}
 	
 	

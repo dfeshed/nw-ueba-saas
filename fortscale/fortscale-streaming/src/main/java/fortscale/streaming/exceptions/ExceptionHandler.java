@@ -25,7 +25,7 @@ public class ExceptionHandler {
 		Integer numOfContinuesExceptionToFilter = numOfContinuesExceptionsToFilterMap.get(e.getClass());
 		numOfContinuesExceptionToFilter = numOfContinuesExceptionToFilter != null ? numOfContinuesExceptionToFilter : defaultNumOfContinuesExceptionToFilter;
 		if(numOfContinuesExceptions >= numOfContinuesExceptionToFilter){
-			logger.error("continuesly got the following exception", e);
+			logger.error(String.format("Got the following exception continuesly %d times", numOfContinuesExceptions), e);
 			throw e;
 		}
 	}
