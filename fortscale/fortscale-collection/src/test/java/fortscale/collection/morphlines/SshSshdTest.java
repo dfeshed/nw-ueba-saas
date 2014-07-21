@@ -5,20 +5,24 @@ import static junitparams.JUnitParamsRunner.$;
 import java.util.Calendar;
 import java.util.List;
 
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 
+
 @RunWith(JUnitParamsRunner.class)
 public class SshSshdTest {
+
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readSSH_centos.conf";
@@ -26,8 +30,11 @@ public class SshSshdTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
+
+
+        PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.ssh.table.morphline.fields");
+
 		List<String> sshOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		morphlineTester.init(new String[] { confFile }, sshOutputFields);
 	}
@@ -78,6 +85,14 @@ public class SshSshdTest {
         		"Invalid User Failed Authentication",
         		"Jul 7 10:53:24 chaves sshd[12914]: Failed password for invalid user test-inv from spongebob.lab.ossec.net",
         		null)
+                ,
+                $(
+                "Target Machine as IP",
+                "Nov 19 14:58:32 192.168.0.30 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
+                 year + "-11-19 14:58:32," + runtime + ",192.168.200.254,,root,Accepted,password,,,,false,false"
+                )
+
+
         );
     }
 
