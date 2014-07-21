@@ -66,7 +66,7 @@ public class UserServiceAccountServiceTest {
 		when(userNormalizer.normalize("user2")).thenReturn("user2");
 		service.setFilePath(getFile("user1\nuser2\nuser3\nuser4"));
 		service.setDeletionSymbol("-");
-		service.afterPropertiesSet();
+		service.update();
 				
 		ArgumentCaptor<String> captorUser = ArgumentCaptor.forClass(String.class);
 		verify(repository,times(4)).findByUsername(captorUser.capture());		
@@ -79,9 +79,10 @@ public class UserServiceAccountServiceTest {
 		// arrange
 		when(repository.findByUserServiceAccount(true)).thenReturn(getUsersList("user1,user2,user3,user4"));
 		when(userNormalizer.normalize("user5")).thenReturn("user5");
+		
 		service.setFilePath(getFile("user5"));
 		service.setDeletionSymbol("-");
-		service.afterPropertiesSet();
+		service.update();
 			
 		ArgumentCaptor<String> captorUser = ArgumentCaptor.forClass(String.class);
 		verify(repository).findByUsername(captorUser.capture());		
@@ -94,9 +95,10 @@ public class UserServiceAccountServiceTest {
 		when(repository.findByUsername(anyString())).thenReturn( new User());
 		when(repository.findByUserServiceAccount(true)).thenReturn(getUsersList("user1,user2,user3,user4"));
 		when(userNormalizer.normalize("user3")).thenReturn("user3");
+
 		service.setFilePath(getFile("-user3"));
 		service.setDeletionSymbol("-");
-		service.afterPropertiesSet();
+		service.update();
 			
 		ArgumentCaptor<User> captorUser = ArgumentCaptor.forClass(User.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);

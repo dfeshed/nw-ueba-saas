@@ -119,7 +119,7 @@ public class AdministratorAccountServiceTest {
 			
 		ArgumentCaptor<User> captorUser = ArgumentCaptor.forClass(User.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);
-		verify(repository,times(3)).updateAdministratorAccount(captorUser.capture(),captorBool.capture());		
+		verify(repository,times(1)).updateAdministratorAccount(captorUser.capture(),captorBool.capture());		
 		for(int i=0;i<captorUser.getAllValues().size();i++) {
 			if (captorUser.getAllValues().get(i).getUsername().equals("user3")) {
 				assertEquals(true, captorBool.getAllValues().get(i));
@@ -135,7 +135,7 @@ public class AdministratorAccountServiceTest {
 		when(adminUsers.contains("user1")).thenReturn(true);
 		when(adminUsers.contains("user2")).thenReturn(true);
 		when(adminUsers.contains("user3")).thenReturn(false);
-		List<User> users2 = getUsersList("user1,user2,user3,user4,user5","true,true,true,false,false");
+		List<User> users2 = getUsersList("user1,user2,user3,user4,user5","false,false,true,false,false");
 		@SuppressWarnings("unchecked")
 		Page<User> pages = mock(Page.class);
 		when(pages.getContent()).thenReturn(users2);
