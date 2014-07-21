@@ -20,9 +20,7 @@ import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.domain.events.ComputerLoginEvent;
-import fortscale.domain.events.dao.ComputerLoginEventRepository;
-
-
+import fortscale.services.ipresolving.ComputerLoginResolver;
 
 
 public class ComputerLoginUpdateBuilder implements CommandBuilder{
@@ -43,8 +41,7 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 	public static final class ComputerLoginUpdate extends AbstractCommand {
 		
 		@Autowired
-		private ComputerLoginEventRepository computerLoginEventRepository;
-		
+		private ComputerLoginResolver computerLoginResolver;
 
 		private final String timestampepochFieldName;
 		private final String ipaddressFieldName;
@@ -85,11 +82,11 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 				if(maxBatchSize > 1){
 					computerLoginEvents.add(computerLoginEvent);
 					if(computerLoginEvents.size() >= maxBatchSize){
-						computerLoginEventRepository.save(computerLoginEvents);
+						computerLoginResolver.addComputerLogins(computerLoginEvents);
 						computerLoginEvents.clear();
 					}
 				} else{
-					computerLoginEventRepository.save(computerLoginEvent);
+					computerLoginResolver.addComputerLogin(computerLoginEvent);
 				}
 			} catch(Exception e){
 				logger.error("Got an exception while processing morphline record", e);
@@ -102,9 +99,9 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 		@Override
 		protected void doNotify(Record notification) {
 			for (Object event : Notifications.getLifecycleEvents(notification)) {
-				if (event == Notifications.LifecycleEvent.SHUTDOWN && computerLoginEventRepository!=null && computerLoginEvents != null) {
+				if (event == Notifications.LifecycleEvent.SHUTDOWN && computerLoginResolver!=null && computerLoginEvents != null) {
 					if(computerLoginEvents.size() > 0){
-						computerLoginEventRepository.save(computerLoginEvents);
+						computerLoginResolver.addComputerLogins(computerLoginEvents);
 					}
 				}
 			}
