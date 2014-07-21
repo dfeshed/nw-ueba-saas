@@ -76,6 +76,14 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 
 	private void doWrite(String text, boolean newLine, long timestamp) throws IOException {
 		if (text!=null) {
+			// check if the file is open, if
+			if (!isOpen()) {
+				if (fileName != null)
+					open(this.fileName);
+				else
+					throw new IllegalStateException("HDFSPartitionWriter is not opened");
+			}
+			
 			// get the writer needed according to the event time
 			BufferedWriter writer = ensureWriter(timestamp);
 			if (writer!=null) {
@@ -103,6 +111,9 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 			throw lastException;
 	}
 
+	public boolean isOpen() {
+		return fs!=null;
+	}
 
 	@Override
 	public void close() throws IOException {
