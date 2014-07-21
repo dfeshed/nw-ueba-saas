@@ -81,15 +81,15 @@ public class SplunkFetchSavedQueryJob implements Job {
 			monitor.startStep(monitorId, "Prepare sink file", 1);
 			File outputDir = ensureOutputDirectoryExists(outputPath);
 			
-			// try to create output file
-			createOutputFile(context, outputDir);
-			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
-			monitor.finishStep(monitorId, "Prepare sink file");
-			
 			// connect to splunk
 			logger.debug("trying to connect splunk at {}@{}:{}", username, hostName, port);
 			monitor.startStep(monitorId, "Query Splunk", 2);
 			SplunkApi splunkApi = new SplunkApi(hostName, port, username, password);
+			
+			// try to create output file
+			createOutputFile(context, outputDir);
+			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
+			monitor.finishStep(monitorId, "Prepare sink file");
 			
 			// configure events handler to save events to csv file
 			SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
