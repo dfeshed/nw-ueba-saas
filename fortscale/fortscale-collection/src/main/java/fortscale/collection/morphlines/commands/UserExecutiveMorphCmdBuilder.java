@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.collection.tagging.service.ExecutiveAccountService;
+import fortscale.collection.tagging.service.UserTagEnum;
+import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.utils.logging.Logger;
 
 public class UserExecutiveMorphCmdBuilder implements CommandBuilder {
 	
@@ -33,11 +35,12 @@ public class UserExecutiveMorphCmdBuilder implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable(preConstruction=true)
 	public static class IsUserExecutive extends AbstractCommand {
+		private static Logger logger = Logger.getLogger(IsUserExecutive.class);
 		
 		protected String usernameField;
 		private String isUserExecutiveField;
 		@Autowired
-		private ExecutiveAccountService executiveAccountService;
+		private UserTaggingService userTaggingService;
 		
 		public IsUserExecutive(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -45,17 +48,17 @@ public class UserExecutiveMorphCmdBuilder implements CommandBuilder {
 			this.isUserExecutiveField = getConfigs().getString(config, "isUserExecutiveField");			
 		}
 
-		public IsUserExecutive(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, ExecutiveAccountService service) {
+		public IsUserExecutive(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, UserTaggingService service) {
 			this(builder, config, parent, child, context);
-			this.executiveAccountService = service;
+			this.userTaggingService = service;
 		}
 
 
-		protected boolean isUserExecutive(Record record){
+		protected boolean isUserExecutive(Record record) throws Exception{
 			if (record.getFirstValue(usernameField) != null) {
-				String ret = RecordExtensions.getStringValue(record, usernameField);
-				if(executiveAccountService != null && ret != null && ret != ""){
-					return executiveAccountService.isUserExecutive(ret);
+				String username = RecordExtensions.getStringValue(record, usernameField);
+				if(userTaggingService != null && username != null && username != ""){
+					return userTaggingService.isUserTagged(UserTagEnum.executive.getId(), username);
 				}
 			}				
 			return false;
@@ -64,7 +67,11 @@ public class UserExecutiveMorphCmdBuilder implements CommandBuilder {
 		
 		@Override
 		protected boolean doProcess(Record inputRecord) {
-			inputRecord.put(isUserExecutiveField, isUserExecutive(inputRecord));
+			try {
+				inputRecord.put(isUserExecutiveField, isUserExecutive(inputRecord));
+			} catch (Exception e) {
+				logger.error("got and exception while tagging event with isExecutive", e);
+			}
 			return super.doProcess(inputRecord);
 
 		}

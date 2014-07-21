@@ -41,7 +41,7 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		updateSensitiveMachines();
+		refreshSensitiveMachines();
 	}
 
 

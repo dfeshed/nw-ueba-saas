@@ -18,13 +18,14 @@ import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
 import fortscale.collection.morphlines.commands.UserServiceMorphCmdBuilder.IsUserServiceAccount;
-import fortscale.collection.tagging.service.impl.UserServiceAccountServiceImpl;
+import fortscale.collection.tagging.service.UserTagEnum;
+import fortscale.collection.tagging.service.impl.UserTaggingServiceImpl;
 
 public class UserServiceMorphCmdTest {
 
 	private RecordSinkCommand sink = new RecordSinkCommand();
 	private Config config;
-	private UserServiceAccountServiceImpl service;
+	private UserTaggingServiceImpl service;
 
 	@Before
 	public void setUp() throws Exception {	
@@ -34,7 +35,7 @@ public class UserServiceMorphCmdTest {
 		when(config.getString("isUserServiceAccountField")).thenReturn("isUserServiceAccount");
 		
 		// mock service
-		service = mock(UserServiceAccountServiceImpl.class);
+		service = mock(UserTaggingServiceImpl.class);
 	}
 	
 	private Record getRecord(boolean skipUsername, String username) {
@@ -51,8 +52,8 @@ public class UserServiceMorphCmdTest {
 	}
 
 	@Test
-	public void serivce_returns_user_service_account() {
-		when(service.isUserServiceAccount("test-user")).thenReturn(true);
+	public void serivce_returns_user_service_account() throws Exception {
+		when(service.isUserTagged(UserTagEnum.service.getId(),"test-user")).thenReturn(true);
 		
 		IsUserServiceAccount command = getCommand();
 		Record record = getRecord(false, "test-user");
@@ -68,7 +69,7 @@ public class UserServiceMorphCmdTest {
 	}
 
 	@Test
-	public void serivce_when_username_is_empty() {	
+	public void serivce_when_username_is_empty() throws Exception {	
 		IsUserServiceAccount command = getCommand();
 		Record record = getRecord(false, "");
 		
@@ -79,11 +80,11 @@ public class UserServiceMorphCmdTest {
 		assertTrue(result);
 		assertNotNull(output);
 		assertEquals(false, output.getFirstValue("isUserServiceAccount"));
-		verify(service, times(0)).isUserServiceAccount(anyString());
+		verify(service, times(0)).isUserTagged(anyString(),anyString());
 	}
 	
 	@Test
-	public void serivce_when_username_is_null() {	
+	public void serivce_when_username_is_null() throws Exception {	
 		IsUserServiceAccount command = getCommand();
 		Record record = getRecord(true, null);
 		
@@ -94,6 +95,6 @@ public class UserServiceMorphCmdTest {
 		assertTrue(result);
 		assertNotNull(output);
 		assertEquals(false, output.getFirstValue("isUserServiceAccount"));
-		verify(service, times(0)).isUserServiceAccount(anyString());
+		verify(service, times(0)).isUserTagged(anyString(),anyString());
 	}	
 }

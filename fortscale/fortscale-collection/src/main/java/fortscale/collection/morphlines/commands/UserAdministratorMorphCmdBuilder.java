@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.collection.tagging.service.AdministratorAccountService;
+import fortscale.collection.tagging.service.UserTagEnum;
+import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.utils.logging.Logger;
 
 public class UserAdministratorMorphCmdBuilder implements CommandBuilder {
 	
@@ -33,11 +35,11 @@ public class UserAdministratorMorphCmdBuilder implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable(preConstruction=true)
 	public static class IsUserAdministrator extends AbstractCommand {
-		
+		private static Logger logger = Logger.getLogger(IsUserAdministrator.class);
 		protected String usernameField;
 		private String isUserAdministratorField;
 		@Autowired
-		private AdministratorAccountService administratorAccountService;
+		private UserTaggingService userTaggingService;
 		
 		public IsUserAdministrator(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -45,17 +47,17 @@ public class UserAdministratorMorphCmdBuilder implements CommandBuilder {
 			this.isUserAdministratorField = getConfigs().getString(config, "isUserAdministratorField");			
 		}
 
-		public IsUserAdministrator(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, AdministratorAccountService service) {
+		public IsUserAdministrator(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, UserTaggingService service) {
 			this(builder, config, parent, child, context);
-			this.administratorAccountService = service;
+			this.userTaggingService = service;
 		}
 
 
-		protected boolean isUserAdministrator(Record record){
+		protected boolean isUserAdministrator(Record record) throws Exception{
 			if (record.getFirstValue(usernameField) != null) {
-				String ret = RecordExtensions.getStringValue(record, usernameField);
-				if(administratorAccountService != null && ret != null && ret != ""){
-					return administratorAccountService.isUserAdministrator(ret);
+				String username = RecordExtensions.getStringValue(record, usernameField);
+				if(userTaggingService != null && username != null && username != ""){
+					return userTaggingService.isUserTagged(UserTagEnum.admin.getId(), username);
 				}
 			}				
 			return false;
@@ -64,8 +66,11 @@ public class UserAdministratorMorphCmdBuilder implements CommandBuilder {
 		
 		@Override
 		protected boolean doProcess(Record inputRecord) {
-		
-			inputRecord.put(isUserAdministratorField, isUserAdministrator(inputRecord));
+			try {
+				inputRecord.put(isUserAdministratorField, isUserAdministrator(inputRecord));
+			} catch (Exception e) {
+				logger.error("got and exception while tagging event with isAdministrator", e);
+			}
 			return super.doProcess(inputRecord);
 
 		}

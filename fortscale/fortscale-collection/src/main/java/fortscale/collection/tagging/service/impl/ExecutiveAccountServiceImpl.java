@@ -4,15 +4,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import fortscale.collection.tagging.service.ExecutiveAccountService;
+import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.domain.core.User;
 
 @Service("executiveAccountService")
-public class ExecutiveAccountServiceImpl extends UserTaggingServiceAbstract implements ExecutiveAccountService{
+public class ExecutiveAccountServiceImpl extends UserTagServiceAbstract{
 	@Value("${user.list.executive_groups.path:}")
 	private String filePath;
 	
-	private String tagName = "executive";
+	private UserTagEnum tag = UserTagEnum.executive;
 	
 	@Override
 	public String getFilePath(){
@@ -20,8 +20,8 @@ public class ExecutiveAccountServiceImpl extends UserTaggingServiceAbstract impl
 	}
 	
 	@Override
-	public String getTagName(){
-		return tagName;
+	public UserTagEnum getTag(){
+		return tag;
 	}
 	
 	public void setFilePath(String filePath) {
