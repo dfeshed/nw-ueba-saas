@@ -53,8 +53,8 @@ public class ComputerLoginResolver {
 		// check if we have a matching event in the cache
 		ComputerLoginEvent cachedEvent = cache.getIfPresent(ip);
 		if (cachedEvent!=null && 
-				cachedEvent.getTimestampepoch() > ts - leaseTimeInMins*60*1000 && 
-				cachedEvent.getTimestampepoch() < ts + graceTimeInMins*60*1000) {
+				cachedEvent.getTimestampepoch() >= ts - leaseTimeInMins*60*1000 && 
+				cachedEvent.getTimestampepoch() <= ts + graceTimeInMins*60*1000) {
 			return cachedEvent.getHostname();
 		}
 		
