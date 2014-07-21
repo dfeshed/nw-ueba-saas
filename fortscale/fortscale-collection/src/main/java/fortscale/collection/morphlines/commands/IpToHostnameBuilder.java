@@ -19,7 +19,7 @@ import fortscale.services.ipresolving.ComputerLoginResolver;
 import fortscale.services.ipresolving.DhcpResolver;
 import fortscale.services.ipresolving.DnsResolver;
 
-public class IpToHostnameBuilder implements CommandBuilder {
+public final class IpToHostnameBuilder implements CommandBuilder {
 	
 	@Override
 	public Collection<String> getNames() {
@@ -35,7 +35,7 @@ public class IpToHostnameBuilder implements CommandBuilder {
 	// Nested classes:
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable(preConstruction=true)
-	public class IpToHostname extends AbstractCommand {
+	public static final class IpToHostname extends AbstractCommand {
 		
 		@Autowired
 		private DhcpResolver dhcpResolver;
@@ -90,7 +90,19 @@ public class IpToHostnameBuilder implements CommandBuilder {
 			validateArguments();
 		}
 
-		@Override
+        public void setDhcpResolver(DhcpResolver dhcpResolver) {
+            this.dhcpResolver = dhcpResolver;
+        }
+
+        public void setDnsResolver(DnsResolver dnsResolver) {
+            this.dnsResolver = dnsResolver;
+        }
+
+        public void setComputerLoginResolver(ComputerLoginResolver computerLoginResolver) {
+            this.computerLoginResolver = computerLoginResolver;
+        }
+
+        @Override
 		protected boolean doProcess(Record inputRecord) {
 			// If we weren't able to connect or access the collection,
 			// return an empty string
