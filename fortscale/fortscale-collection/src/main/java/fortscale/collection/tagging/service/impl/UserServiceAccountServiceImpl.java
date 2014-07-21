@@ -55,7 +55,7 @@ public class UserServiceAccountServiceImpl implements UserTagService,Initializin
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		userTaggingService.putUserTagService(UserTagEnum.service.getId(), this);
-		update();
+		loadUserServiceAccountTagFromMongo();
 	}
 	
 	@Override
