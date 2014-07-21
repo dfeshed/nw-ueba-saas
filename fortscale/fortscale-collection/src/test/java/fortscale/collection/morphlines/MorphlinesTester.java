@@ -43,7 +43,8 @@ public class MorphlinesTester {
 	
 	public void close() throws IOException {
 		for (MorphlinesItemsProcessor subject : subjects)
-			subject.close();
+			if (subject!=null)
+				subject.close();
 	}
 
 	public void testSingleLine(String testCase, String inputLine, String expectedOutput) {
