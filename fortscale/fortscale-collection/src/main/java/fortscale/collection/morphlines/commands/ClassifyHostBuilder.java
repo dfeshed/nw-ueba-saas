@@ -65,7 +65,7 @@ public class ClassifyHostBuilder implements CommandBuilder {
 			if (!StringUtils.isEmpty(hostname) && service!=null) {
 				// lookup the hostname and get the usage type
 				ComputerUsageType usage = service.getComputerUsageType(hostname);
-				inputRecord.put(classificationField, usage);
+				inputRecord.put(classificationField, usage==null ? ComputerUsageType.Unknown : usage);
 			}
 
 			return super.doProcess(inputRecord);
