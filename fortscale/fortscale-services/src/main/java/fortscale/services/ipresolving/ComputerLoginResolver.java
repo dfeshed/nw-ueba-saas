@@ -91,7 +91,7 @@ public class ComputerLoginResolver {
 		} else {
 			// if the event is in the cache, check if the new event has a different hostname and save it
 			// if the event is in the cache and has the same hostname, update it only if the ticket expiration time passed
-			if ((!event.getHostname().equals(cachedEvent.getHostname())) || (event.getTimestampepoch() >= cachedEvent.getTimestampepoch() +  (leaseTimeInMins * 60 * 1000))) {
+			if ((!event.getHostname().equals(cachedEvent.getHostname())) || (event.getTimestampepoch() > cachedEvent.getTimestampepoch() +  (leaseTimeInMins * 60 * 1000))) {
 				computerLoginEventRepository.save(event);
 				cache.put(ip, event);
 			} else {
