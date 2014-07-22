@@ -40,7 +40,7 @@ public class ComputerLoginResolver {
 	
 	public ComputerLoginResolver() {
 		// create a cache of ip login events
-		cache = CacheBuilder.newBuilder().maximumSize(cacheMaxSize).concurrencyLevel(1).build();
+		cache = CacheBuilder.newBuilder().maximumSize(cacheMaxSize).build();
 	}
 	
 	
