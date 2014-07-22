@@ -1,6 +1,8 @@
 package fortscale.collection;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.quartz.JobDataMap;
@@ -51,6 +53,18 @@ public class JobDataMapExtension {
 		value = getEnvPropertyValue(value, key);
 		
 		return value;
+	}
+	
+	/**
+	 * get all job data map keys that start with the given prefix.
+	 */
+	public Iterable<String> getJobDataMapKeysStartingWith(JobDataMap map, String keyPrefix) {
+		List<String> keys = new LinkedList<String>();
+		for (String key : map.keySet()) {
+			if (key.startsWith(keyPrefix))
+				keys.add(key);
+		}
+		return keys;
 	}
 	
 	public String getJobDataMapStringValue(JobDataMap map, String key, String defaultValue) throws JobExecutionException {
