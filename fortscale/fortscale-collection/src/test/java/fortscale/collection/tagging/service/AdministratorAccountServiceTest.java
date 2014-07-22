@@ -1,4 +1,4 @@
-package fortscale.services.impl;
+package fortscale.collection.tagging.service;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -20,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import fortscale.collection.tagging.service.impl.AdministratorAccountServiceImpl;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 
@@ -79,7 +80,7 @@ public class AdministratorAccountServiceTest {
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
 		
 		administratorAccountService.setFilePath(null);
-		administratorAccountService.afterPropertiesSet();
+		administratorAccountService.update();
 				
 		assertEquals(false, administratorAccountService.isUserAdministrator("user2"));
 
@@ -94,7 +95,7 @@ public class AdministratorAccountServiceTest {
 		when(pages.getContent()).thenReturn(new ArrayList<User>());
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);		
 		administratorAccountService.setFilePath(getFile("group1,group2"));
-		administratorAccountService.afterPropertiesSet();
+		administratorAccountService.update();
 			
 		assertEquals(false, administratorAccountService.isUserAdministrator("user2"));
 	}
@@ -114,11 +115,11 @@ public class AdministratorAccountServiceTest {
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
 		
 		administratorAccountService.setFilePath(getFile("group1,group2"));
-		administratorAccountService.afterPropertiesSet();
+		administratorAccountService.update();
 			
 		ArgumentCaptor<User> captorUser = ArgumentCaptor.forClass(User.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);
-		verify(repository,times(3)).updateAdministratorAccount(captorUser.capture(),captorBool.capture());		
+		verify(repository,times(1)).updateAdministratorAccount(captorUser.capture(),captorBool.capture());		
 		for(int i=0;i<captorUser.getAllValues().size();i++) {
 			if (captorUser.getAllValues().get(i).getUsername().equals("user3")) {
 				assertEquals(true, captorBool.getAllValues().get(i));
@@ -134,14 +135,14 @@ public class AdministratorAccountServiceTest {
 		when(adminUsers.contains("user1")).thenReturn(true);
 		when(adminUsers.contains("user2")).thenReturn(true);
 		when(adminUsers.contains("user3")).thenReturn(false);
-		List<User> users2 = getUsersList("user1,user2,user3,user4,user5","true,true,true,false,false");
+		List<User> users2 = getUsersList("user1,user2,user3,user4,user5","false,false,true,false,false");
 		@SuppressWarnings("unchecked")
 		Page<User> pages = mock(Page.class);
 		when(pages.getContent()).thenReturn(users2);
 		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
 		
 		administratorAccountService.setFilePath(getFile("group1,group2"));
-		administratorAccountService.afterPropertiesSet();
+		administratorAccountService.update();
 			
 		ArgumentCaptor<User> captorUser = ArgumentCaptor.forClass(User.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);

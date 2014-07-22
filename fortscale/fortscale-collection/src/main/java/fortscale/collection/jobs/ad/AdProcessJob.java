@@ -134,7 +134,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	}
 	
-	protected void runFinalStep(){
+	protected void runFinalStep() throws Exception{
 		//by default do nothing
 	}
 	

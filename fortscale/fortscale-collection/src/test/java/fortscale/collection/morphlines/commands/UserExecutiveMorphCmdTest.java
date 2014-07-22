@@ -18,13 +18,14 @@ import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
 import fortscale.collection.morphlines.commands.UserExecutiveMorphCmdBuilder.IsUserExecutive;
-import fortscale.services.impl.ExecutiveAccountServiceImpl;
+import fortscale.collection.tagging.service.UserTagEnum;
+import fortscale.collection.tagging.service.impl.UserTaggingServiceImpl;
 
 public class UserExecutiveMorphCmdTest {
 
 	private RecordSinkCommand sink = new RecordSinkCommand();
 	private Config config;
-	private ExecutiveAccountServiceImpl service;
+	private UserTaggingServiceImpl service;
 
 	@Before
 	public void setUp() throws Exception {	
@@ -34,7 +35,7 @@ public class UserExecutiveMorphCmdTest {
 		when(config.getString("isUserExecutiveField")).thenReturn("isUserExecutive");
 		
 		// mock service
-		service = mock(ExecutiveAccountServiceImpl.class);
+		service = mock(UserTaggingServiceImpl.class);
 	}
 	
 	private Record getRecord(boolean skipUsername, String username) {
@@ -51,8 +52,8 @@ public class UserExecutiveMorphCmdTest {
 	}
 
 	@Test
-	public void serivce_returns_admin_account() {
-		when(service.isUserExecutive("test-user")).thenReturn(true);
+	public void serivce_returns_admin_account() throws Exception {
+		when(service.isUserTagged(UserTagEnum.executive.getId(),"test-user")).thenReturn(true);
 		
 		IsUserExecutive command = getCommand();
 		Record record = getRecord(false, "test-user");
@@ -68,7 +69,7 @@ public class UserExecutiveMorphCmdTest {
 	}
 
 	@Test
-	public void serivce_when_username_is_empty() {	
+	public void serivce_when_username_is_empty() throws Exception {	
 		IsUserExecutive command = getCommand();
 		Record record = getRecord(false, "");
 		
@@ -79,11 +80,11 @@ public class UserExecutiveMorphCmdTest {
 		assertTrue(result);
 		assertNotNull(output);
 		assertEquals(false, output.getFirstValue("isUserExecutive"));
-		verify(service, times(0)).isUserExecutive(anyString());
+		verify(service, times(0)).isUserTagged(anyString(),anyString());
 	}
 	
 	@Test
-	public void serivce_when_username_is_null() {	
+	public void serivce_when_username_is_null() throws Exception {	
 		IsUserExecutive command = getCommand();
 		Record record = getRecord(true, null);
 		
@@ -94,6 +95,6 @@ public class UserExecutiveMorphCmdTest {
 		assertTrue(result);
 		assertNotNull(output);
 		assertEquals(false, output.getFirstValue("isUserExecutive"));
-		verify(service, times(0)).isUserExecutive(anyString());
+		verify(service, times(0)).isUserTagged(anyString(),anyString());
 	}	
 }

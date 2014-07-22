@@ -1,18 +1,18 @@
-package fortscale.services.impl;
+package fortscale.collection.tagging.service.impl;
 import java.util.List;
-import org.springframework.beans.factory.InitializingBean;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.domain.core.User;
-import fortscale.services.ExecutiveAccountService;
 
 @Service("executiveAccountService")
-public class ExecutiveAccountServiceImpl extends UserTaggingServiceAbstract implements ExecutiveAccountService,InitializingBean{
+public class ExecutiveAccountServiceImpl extends UserTagServiceAbstract{
 	@Value("${user.list.executive_groups.path:}")
 	private String filePath;
 	
-	private String tagName = "executive";
+	private UserTagEnum tag = UserTagEnum.executive;
 	
 	@Override
 	public String getFilePath(){
@@ -20,8 +20,8 @@ public class ExecutiveAccountServiceImpl extends UserTaggingServiceAbstract impl
 	}
 	
 	@Override
-	public String getTagName(){
-		return tagName;
+	public UserTagEnum getTag(){
+		return tag;
 	}
 	
 	public void setFilePath(String filePath) {
@@ -33,8 +33,8 @@ public class ExecutiveAccountServiceImpl extends UserTaggingServiceAbstract impl
 	}
 	
 	@Override
-	public Boolean isUserTagged(User user){
-		return user.getExecutiveAccount();
+	public boolean isUserTagged(User user){
+		return user.getExecutiveAccount() != null ? user.getExecutiveAccount() : false;
 	}
 	
 	@Override
@@ -42,9 +42,9 @@ public class ExecutiveAccountServiceImpl extends UserTaggingServiceAbstract impl
 		userRepository.updateExecutiveAccount(user, isTagTheUser);
 	}
 	
-	public void refresh() {
-		List<User> taggedUsersList= userRepository.findByExecutiveAccount(true);
-		refreshTaggedUsers(taggedUsersList);
+	@Override
+	protected List<User> findTaggedUsersFromDb(){
+		return userRepository.findByExecutiveAccount(true);
 	}
 	
 }

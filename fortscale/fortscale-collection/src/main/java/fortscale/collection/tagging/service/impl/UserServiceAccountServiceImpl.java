@@ -1,4 +1,4 @@
-package fortscale.services.impl;
+package fortscale.collection.tagging.service.impl;
 
 import java.io.File;
 import java.util.HashSet;
@@ -12,19 +12,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import fortscale.collection.tagging.service.UserTagEnum;
+import fortscale.collection.tagging.service.UserTagService;
+import fortscale.collection.tagging.service.UserTaggingService;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.UserServiceAccountService;
+import fortscale.services.impl.UsernameNormalizer;
 import fortscale.utils.logging.Logger;
 
 
 @Service("userServiceAccountService")
-public class UserServiceAccountServiceImpl implements UserServiceAccountService,InitializingBean {
+public class UserServiceAccountServiceImpl implements UserTagService,InitializingBean {
 
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
 	private UsernameNormalizer secUsernameNormalizer;
+	@Autowired
+	private UserTaggingService userTaggingService;
 	
 	private static Logger logger = Logger.getLogger(UserServiceAccountServiceImpl.class);
 	
@@ -38,7 +43,7 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 
 
 	@Override
-	public boolean isUserServiceAccount(String username) {
+	public boolean isUserTagged(String username) {
 		if (serviceAccounts !=  null) {
 			return serviceAccounts.contains(username);
 		}
@@ -49,9 +54,11 @@ public class UserServiceAccountServiceImpl implements UserServiceAccountService,
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		update();
+		userTaggingService.putUserTagService(UserTagEnum.service.getId(), this);
+		loadUserServiceAccountTagFromMongo();
 	}
 	
+	@Override
 	public void update() throws Exception {
 		boolean isFileOk = true;
 		if(!StringUtils.isEmpty(getFilePath())){

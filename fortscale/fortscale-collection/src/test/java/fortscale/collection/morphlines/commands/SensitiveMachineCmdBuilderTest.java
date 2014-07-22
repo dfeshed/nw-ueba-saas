@@ -13,7 +13,7 @@ import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
 import fortscale.collection.morphlines.commands.SensitiveMachineMorphCmdBuilder.IsSensitiveMachine;
-import fortscale.services.SensitiveMachineService;
+import fortscale.collection.tagging.service.SensitiveMachineService;
 
 public class SensitiveMachineCmdBuilderTest {
 	

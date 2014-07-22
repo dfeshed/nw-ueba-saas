@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.UserServiceAccountService;
+import fortscale.collection.tagging.service.UserTagEnum;
+import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.utils.logging.Logger;
 
 public class UserServiceMorphCmdBuilder implements CommandBuilder {
 	
@@ -33,11 +35,12 @@ public class UserServiceMorphCmdBuilder implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable(preConstruction=true)
 	public static class IsUserServiceAccount extends AbstractCommand {
+		private static Logger logger = Logger.getLogger(IsUserServiceAccount.class);
 		
 		private String usernameField;
 		private String isUserServiceAccountField;
 		@Autowired
-		private UserServiceAccountService userServiceAccountService;
+		private UserTaggingService userTaggingService;
 		
 		public IsUserServiceAccount(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -45,17 +48,17 @@ public class UserServiceMorphCmdBuilder implements CommandBuilder {
 			this.isUserServiceAccountField = getConfigs().getString(config, "isUserServiceAccountField");			
 		}
 
-		public IsUserServiceAccount(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, UserServiceAccountService service) {
+		public IsUserServiceAccount(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, UserTaggingService service) {
 			this(builder, config, parent, child, context);
-			this.userServiceAccountService = service;
+			this.userTaggingService = service;
 		}
 
 
-		protected boolean isUserServiceAccount(Record record){
+		protected boolean isUserServiceAccount(Record record) throws Exception{
 			if (record.getFirstValue(usernameField) != null) {
-				String ret = RecordExtensions.getStringValue(record, usernameField);
-				if(userServiceAccountService != null && ret != null && ret != ""){
-					return userServiceAccountService.isUserServiceAccount(ret);
+				String username = RecordExtensions.getStringValue(record, usernameField);
+				if(userTaggingService != null && username != null && username != ""){
+					return userTaggingService.isUserTagged(UserTagEnum.service.getId(), username);
 				}
 			}				
 			return false;
@@ -64,8 +67,11 @@ public class UserServiceMorphCmdBuilder implements CommandBuilder {
 		
 		@Override
 		protected boolean doProcess(Record inputRecord) {
-		
-			inputRecord.put(isUserServiceAccountField, isUserServiceAccount(inputRecord));
+			try {
+				inputRecord.put(isUserServiceAccountField, isUserServiceAccount(inputRecord));
+			} catch (Exception e) {
+				logger.error("got and exception while tagging event with isServiceAccount", e);
+			}
 
 			return super.doProcess(inputRecord);
 

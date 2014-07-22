@@ -9,10 +9,10 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
+import fortscale.collection.tagging.service.UserTagEnum;
+import fortscale.collection.tagging.service.UserTaggingService;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.services.AdministratorAccountService;
-import fortscale.services.ExecutiveAccountService;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.impl.UsernameService;
 
@@ -28,11 +28,8 @@ public class AdUserProcessJob extends AdProcessJob {
 	private UsernameService usernameService;
 	
 	@Autowired
-	private AdministratorAccountService administratorAccountService;
+	private UserTaggingService userTaggingService;
 	
-	@Autowired
-	private ExecutiveAccountService executiveAccountService;
-
 	private RecordToBeanItemConverter<AdUser> converter;
 	
 	@Override
@@ -70,12 +67,12 @@ public class AdUserProcessJob extends AdProcessJob {
 		return "Users";
 	}
 	
-	protected void runFinalStep(){
+	protected void runFinalStep() throws Exception{
 		startNewStep("update username set");
 		usernameService.update();
 		// Update admin tag
-		executiveAccountService.update();
-		administratorAccountService.update();
+		userTaggingService.update(UserTagEnum.executive.getId());
+		userTaggingService.update(UserTagEnum.admin.getId());
 		
 		finishStep();
 	}

@@ -1,20 +1,28 @@
-package fortscale.services.impl;
+package fortscale.collection.tagging.service.impl;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+
+import fortscale.collection.tagging.service.UserTagEnum;
+import fortscale.collection.tagging.service.UserTagService;
+import fortscale.collection.tagging.service.UserTaggingService;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.utils.logging.Logger;
 
-public abstract class UserTaggingServiceAbstract {
-	private static Logger logger = Logger.getLogger(UserTaggingServiceAbstract.class);
+public abstract class UserTagServiceAbstract implements UserTagService, InitializingBean{
+	private static Logger logger = Logger.getLogger(UserTagServiceAbstract.class);
 	@Autowired
 	protected UserRepository userRepository;
+	@Autowired
+	private UserTaggingService userTaggingService;
 	
 	private List<String> groupsToTag;
 	private Set<String> taggedUsers = new HashSet<String>();
@@ -26,9 +34,21 @@ public abstract class UserTaggingServiceAbstract {
 	 */
 	protected abstract String getFilePath();
 	protected abstract void updateUserTag(User user, boolean isTagTheUser);
-	protected abstract String getTagName();
-	protected abstract Boolean isUserTagged(User user);
+	public abstract UserTagEnum getTag();
+	protected abstract boolean isUserTagged(User user);
+	protected abstract List<User> findTaggedUsersFromDb();
 	
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		userTaggingService.putUserTagService(getTag().getId(), this);
+		refresh();
+	}
+	
+	public void refresh() {
+		List<User> taggedUsersList= findTaggedUsersFromDb();
+		refreshTaggedUsers(taggedUsersList);
+	}
 	
 	/**
 	 * This function run over the file groups and 
@@ -76,20 +96,20 @@ public abstract class UserTaggingServiceAbstract {
 			if(f.exists() && !f.isDirectory()) {
 				groupsToTag = FileUtils.readLines(new File(filePath));
 				if(isFileEmptyFromGroups()){
-					logger.warn("Users Tagging [{}] file is Empty: {}",getTagName(), filePath);
+					logger.warn("Users Tagging [{}] file is Empty: {}",getTag(), filePath);
 				}
 				List<User> taggedUsersList = userRepository.findByUserInGroup(groupsToTag);
 				taggedUsers = getUsernameList(taggedUsersList);				
 				if (taggedUsersList ==null) {
-					logger.warn("Users Tagging [{}] no users found in the user repository for groups {}",getTagName() ,groupsToTag);
+					logger.warn("Users Tagging [{}] no users found in the user repository for groups {}",getTag() ,groupsToTag);
 				}
 			}
 			else {
-				logger.warn("Users Tagging [{}] file not found in path: {}",getTagName(),filePath);
+				logger.warn("Users Tagging [{}] file not found in path: {}",getTag(),filePath);
 			}
 		}
 		else {
-			logger.info("[Users Tagging [{}] file path not configured",getTagName());	
+			logger.info("[Users Tagging [{}] file path not configured",getTag());	
 		}
 	}
 	
@@ -107,9 +127,11 @@ public abstract class UserTaggingServiceAbstract {
 				PageRequest pageRequest = new PageRequest(i, pageSize);
 				for(User user: userRepository.findAll(pageRequest).getContent()){
 					if (taggedUsers.contains(user.getUsername())) {
-						updateUserTag(user, true);
+						if(!isUserTagged(user)){
+							updateUserTag(user, true);
+						}
 					}
-					else if (isUserTagged(user) == null || isUserTagged(user)) {
+					else if (isUserTagged(user)) {
 						updateUserTag(user, false);
 					}
 				}
@@ -130,27 +152,17 @@ public abstract class UserTaggingServiceAbstract {
 		for(int i = 0; i < numOfPages; i++){
 			PageRequest pageRequest = new PageRequest(i, pageSize);
 			for(User user: userRepository.findAll(pageRequest).getContent()){
-				if (isUserTagged(user) == null || isUserTagged(user)) {
+				if (isUserTagged(user)) {
 					updateUserTag(user, false);
 				}
 			}
 		}
 	}
 	
-	
-	public void afterPropertiesSet() throws Exception {
+	@Override
+	public void update() throws Exception{
 		updateTaggedUsersList();
 		updateAllUsersTags();
-	}
-	
-	
-	public void update() {
-		try {
-			afterPropertiesSet();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			e.printStackTrace();
-		}
 	}
 	
 	
