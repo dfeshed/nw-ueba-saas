@@ -82,6 +82,7 @@ public class SshSshdTest {
         		"Nov 19 14:58:32 inter-psg-01 sshd[22525]: Failed password for root from 192.168.211.112 port 59420 ssh2",
         		year + "-11-19 14:58:32," + runtime + ",192.168.211.112,inter-psg-01,root,Failed,password,,,,false,false,false,false"),
         		$ (
+
         		"Invalid User Failed Authentication",
         		"Jul 7 10:53:24 chaves sshd[12914]: Failed password for invalid user test-inv from spongebob.lab.ossec.net",
         		null)
@@ -89,7 +90,7 @@ public class SshSshdTest {
                 $(
                 "Target Machine as IP",
                 "Nov 19 14:58:32 192.168.0.30 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
-                 year + "-11-19 14:58:32," + runtime + ",192.168.200.254,,root,Accepted,password,,,,false,false"
+                 year + "-11-19 14:58:32," + runtime + ",192.168.200.254,192.168.0.30,root,Accepted,password,,,,false,false,false,false"
                 )
 
 
