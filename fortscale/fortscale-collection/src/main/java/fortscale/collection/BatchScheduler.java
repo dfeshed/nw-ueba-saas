@@ -106,6 +106,7 @@ public class BatchScheduler {
 		
 		startJob("Computer_Fetch", "AD", params);
 		startJob("Computer_ETL", "AD", params);
+		startJob("Computer", "Tagging", params);
 		startJob("Classify_Computers", "AD", params);
 		startJob("OU_Fetch", "AD", params);
 		startJob("OU_ETL", "AD", params);
@@ -113,6 +114,7 @@ public class BatchScheduler {
 		startJob("Group_ETL", "AD", params);
 		startJob("User_Fetch", "AD", params);
 		startJob("User_ETL", "AD", params);
+		startJob("User", "Tagging", params);
 		startJob("User_Thumbnail_ETL", "AD", params);
 		startJob("Group_Membership_Scoring", "AD", params);
 		startJob("Fetch", "DHCP", params);
