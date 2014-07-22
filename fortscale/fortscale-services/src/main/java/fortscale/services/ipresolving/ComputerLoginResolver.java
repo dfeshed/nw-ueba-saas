@@ -3,18 +3,20 @@ package fortscale.services.ipresolving;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.dao.ComputerLoginEventRepository;
@@ -23,7 +25,7 @@ import fortscale.utils.TimestampUtils;
 
 @Service("computerLoginResolver")
 @Scope("singleton")
-public class ComputerLoginResolver {
+public class ComputerLoginResolver implements InitializingBean {
 
 	private static final Logger logger = LoggerFactory.getLogger(ComputerLoginResolver.class);
 	
@@ -37,23 +39,15 @@ public class ComputerLoginResolver {
 	@Value("${computer.login.resolver.cache.max.items:30000}")
 	private int cacheMaxSize;
 	
-	private Map<String, ComputerLoginEvent> cache;
+	private Cache<String, ComputerLoginEvent> cache;
 	
-	public ComputerLoginResolver() {
+	@Override
+	public void afterPropertiesSet() throws Exception {
 		// create a cache of ip login events
-		cache = createLRUMap(cacheMaxSize);
+		cache = CacheBuilder.newBuilder().maximumSize(cacheMaxSize).build();
 	}
 	
-	
-	public static <K, V> Map<K, V> createLRUMap(final int maxEntries) {
-	    return new LinkedHashMap<K, V>(maxEntries*3/2, 0.7f, true) {
-	        @Override
-	        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-	            return size() > maxEntries;
-	        }
-	    };
-	}
-	
+
 	public String getHostname(String ip, long ts) {
 		if(computerLoginEventRepository == null){
 			return null;
@@ -61,7 +55,7 @@ public class ComputerLoginResolver {
 		ts = TimestampUtils.convertToMilliSeconds(ts);
 		
 		// check if we have a matching event in the cache
-		ComputerLoginEvent cachedEvent = cache.get(ip);
+		ComputerLoginEvent cachedEvent = cache.getIfPresent(ip);
 		if (cachedEvent!=null && 
 				cachedEvent.getTimestampepoch() >= ts - leaseTimeInMins*60*1000 && 
 				cachedEvent.getTimestampepoch() <= ts + graceTimeInMins*60*1000) {
@@ -94,7 +88,7 @@ public class ComputerLoginResolver {
 		checkNotNull(ip);
 		
 		// check if the event is in the cache, if not add it and save to repository
-		ComputerLoginEvent cachedEvent =  cache.get(ip);
+		ComputerLoginEvent cachedEvent =  cache.getIfPresent(ip);
 		if (cachedEvent==null) {
 			computerLoginEventRepository.save(event);
 			cache.put(ip, event);
@@ -109,4 +103,5 @@ public class ComputerLoginResolver {
 			}
 		}
 	}
+
 }
