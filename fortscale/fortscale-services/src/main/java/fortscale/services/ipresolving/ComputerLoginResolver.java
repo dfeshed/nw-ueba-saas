@@ -3,7 +3,9 @@ package fortscale.services.ipresolving;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.dao.ComputerLoginEventRepository;
@@ -36,13 +35,22 @@ public class ComputerLoginResolver {
 	@Value("${computer.login.resolver.cache.max.items:30000}")
 	private int cacheMaxSize;
 	
-	private Cache<String, ComputerLoginEvent> cache;
+	private Map<String, ComputerLoginEvent> cache;
 	
 	public ComputerLoginResolver() {
 		// create a cache of ip login events
-		cache = CacheBuilder.newBuilder().maximumSize(cacheMaxSize).build();
+		cache = createLRUMap(cacheMaxSize);
 	}
 	
+	
+	public static <K, V> Map<K, V> createLRUMap(final int maxEntries) {
+	    return new LinkedHashMap<K, V>(maxEntries*3/2, 0.7f, true) {
+	        @Override
+	        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+	            return size() > maxEntries;
+	        }
+	    };
+	}
 	
 	public String getHostname(String ip, long ts) {
 		if(computerLoginEventRepository == null){
@@ -51,7 +59,7 @@ public class ComputerLoginResolver {
 		ts = TimestampUtils.convertToMilliSeconds(ts);
 		
 		// check if we have a matching event in the cache
-		ComputerLoginEvent cachedEvent = cache.getIfPresent(ip);
+		ComputerLoginEvent cachedEvent = cache.get(ip);
 		if (cachedEvent!=null && 
 				cachedEvent.getTimestampepoch() >= ts - leaseTimeInMins*60*1000 && 
 				cachedEvent.getTimestampepoch() <= ts + graceTimeInMins*60*1000) {
@@ -84,7 +92,7 @@ public class ComputerLoginResolver {
 		checkNotNull(ip);
 		
 		// check if the event is in the cache, if not add it and save to repository
-		ComputerLoginEvent cachedEvent =  cache.getIfPresent(ip);
+		ComputerLoginEvent cachedEvent =  cache.get(ip);
 		if (cachedEvent==null) {
 			computerLoginEventRepository.save(event);
 			cache.put(ip, event);
