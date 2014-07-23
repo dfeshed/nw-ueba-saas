@@ -23,9 +23,8 @@
 		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
 			<maxFileSize>100MB</maxFileSize>
 		</triggeringPolicy>
-		
 		<encoder>
-			<Pattern>%date{ISO8601} [%thread] - %-5level  [%t%C{1}@%L]: - %msg%n%xEx{full}</Pattern>
+			<Pattern>%date{ISO8601} [%thread] - %-5level  [%t%C{1}@%L]: - %msg %xEx{full}%n</Pattern>
 		</encoder>
 	</appender>
 		
