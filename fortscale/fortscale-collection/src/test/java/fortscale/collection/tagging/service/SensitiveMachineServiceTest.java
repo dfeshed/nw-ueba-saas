@@ -65,7 +65,7 @@ public class SensitiveMachineServiceTest {
 	}
 
 	@Test
-	public void test_adding_existing_sensitiveMachine_to_sensitivemachines() {
+	public void test_adding_existing_sensitiveMachine_to_sensitivemachines() throws IOException {
 		creatingMachinesFile("DUMMY-PC");
 		when(computerRepository.findByName(anyString())).thenReturn(
 				new Computer());
@@ -74,7 +74,7 @@ public class SensitiveMachineServiceTest {
 	}
 	
 	@Test
-	public void test_adding_three_sensitiveMachines_to_sensitivemachines() {
+	public void test_adding_three_sensitiveMachines_to_sensitivemachines() throws IOException {
 		creatingMachinesFile("dummy-pc\nX-PC\nY-PC");
 		when(computerRepository.findByName(anyString())).thenReturn(
 				new Computer());
@@ -85,7 +85,7 @@ public class SensitiveMachineServiceTest {
 	}
 	
 	@Test
-	public void test_adding_not_existed_machine_to_sensitive_machines() {
+	public void test_adding_not_existed_machine_to_sensitive_machines() throws IOException {
 		creatingMachinesFile("DUMMY-PC\n ");
 		when(computerRepository.findByName(anyString())).thenReturn(
 				null);
@@ -95,7 +95,7 @@ public class SensitiveMachineServiceTest {
 	}
 	
 	@Test
-	public void test_removing_sensitive_machine_from_sensitive_machines() {
+	public void test_removing_sensitive_machine_from_sensitive_machines() throws IOException {
 		creatingMachinesFile("-MY-PC");
 		when(computerRepository.findByName(anyString())).thenReturn(
 				new Computer());
@@ -104,7 +104,7 @@ public class SensitiveMachineServiceTest {
 	}
 	
 	@Test
-	public void test_removing_not_sensitive_machine_from_sensitive_machines() {
+	public void test_removing_not_sensitive_machine_from_sensitive_machines() throws IOException {
 		creatingMachinesFile("-DUMMY-PC");
 		when(computerRepository.findByName(anyString())).thenReturn(
 				new Computer());

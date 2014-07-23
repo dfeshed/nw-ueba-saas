@@ -59,19 +59,12 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 		return new HashSet<String>(computers);
 	}
 
-	public void updateSensitiveMachines() {
-		sensitiveMachines = loadSensitiveMachinesFromMongo();
+	public void updateSensitiveMachines() throws IOException {
 		if (!StringUtils.isEmpty(filePath)) {
 			File machinesFile = new File(filePath);
 			if (machinesFile.exists() && machinesFile.isFile()) {
 				Set<String> machinesFromFile = null;
-				try {
-					machinesFromFile = new HashSet<String>(
-							FileUtils.readLines(machinesFile));
-				} catch (IOException e) {
-					logger.error("Error reading lines from file: " + filePath,
-							e);
-				}
+				machinesFromFile = new HashSet<String>(FileUtils.readLines(machinesFile));
 				for (String machineLine : machinesFromFile) {
 					if (machineLine.startsWith(deletionSymbol)) {
 						String machine = machineLine.substring(1).toUpperCase();

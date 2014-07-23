@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
@@ -51,16 +52,16 @@ public interface UserRepositoryCustom {
 	
 	public User findLastActiveUser(LogEventsEnum eventId);
 	
-	public void updateUserServiceAccount(User user, boolean isUserServiceAccount);
-	public List<User> findByUserInGroup(Collection<String> groups);
-	public void updateAdministratorAccount(User user, boolean isAdministratorAccount);
-	public void updateExecutiveAccount(User user, boolean isExecutiveAccount);
+	public Set<String> findByUserInGroup(Collection<String> groups);
+	public void updateUserTag(String tagField, String username, boolean value);
 	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime);
 
 	public long getNumberOfAccountsCreatedBefore(DateTime time);
 	public long getNumberOfDisabledAccounts();
 	public long getNumberOfDisabledAccountsBeforeTime(DateTime time);
 	public long getNumberOfInactiveAccounts();
+	
+	public Set<String> findNameByTag(String tagFieldName, Boolean value);
 	
 	/**
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)

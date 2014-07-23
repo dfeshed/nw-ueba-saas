@@ -1,8 +1,9 @@
+
 package fortscale.collection.tagging.service.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -20,9 +21,9 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.impl.UsernameNormalizer;
 import fortscale.utils.logging.Logger;
 
-
 @Service("userServiceAccountService")
-public class UserServiceAccountServiceImpl implements UserTagService,InitializingBean {
+public class UserServiceAccountServiceImpl
+	implements UserTagService, InitializingBean {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -30,103 +31,128 @@ public class UserServiceAccountServiceImpl implements UserTagService,Initializin
 	private UsernameNormalizer secUsernameNormalizer;
 	@Autowired
 	private UserTaggingService userTaggingService;
-	
-	private static Logger logger = Logger.getLogger(UserServiceAccountServiceImpl.class);
-	
+
+	private static Logger logger =
+		Logger.getLogger(UserServiceAccountServiceImpl.class);
+
 	@Value("${user.list.service_account.path:}")
 	private String filePath;
-	
+
 	@Value("${user.list.service_account.deletion_symbol:}")
 	private String deletionSymbol;
-	
-	private Set<String> serviceAccounts = null;
 
+	private Set<String> serviceAccounts = null;
 
 	@Override
 	public boolean isUserTagged(String username) {
-		if (serviceAccounts !=  null) {
+
+		if (serviceAccounts != null) {
 			return serviceAccounts.contains(username);
 		}
-		else{
+		else {
 			return false;
 		}
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()
+		throws Exception {
+
 		userTaggingService.putUserTagService(UserTagEnum.service.getId(), this);
-		loadUserServiceAccountTagFromMongo();
+		refreshServiceAccounts();
 	}
-	
+
 	@Override
-	public void update() throws Exception {
-		boolean isFileOk = true;
-		if(!StringUtils.isEmpty(getFilePath())){
-			File f = new File(getFilePath());
-			if(f.exists() && !f.isDirectory()) {
-				serviceAccounts = updateMongoUserServiceAccountTag(new HashSet<String>(FileUtils.readLines(new File(getFilePath()))));
-				logger.info("ServiceAccount file loaded from path: {}",getFilePath());
+	public void update() throws IOException {
+
+		if (!StringUtils.isEmpty(getFilePath())) {
+			File usersFile = new File(getFilePath());
+			if (usersFile.exists() && usersFile.isFile()) {
+				Set<String> usersFromFile = null;
+				usersFromFile = new HashSet<String>(FileUtils.readLines(usersFile));
+				for (String userLine : usersFromFile) {
+					if (userLine.startsWith(deletionSymbol)) {
+						String userName =
+							secUsernameNormalizer.normalize(userLine.substring(1));
+						if (serviceAccounts.contains(userName)) {
+							User user = userRepository.findByUsername(userName);
+							if (user != null) {
+								userRepository.updateUserTag(
+									User.userServiceAccountField, userName,
+									false);
+								serviceAccounts.remove(userName);
+							}
+						}
+					}
+					else {
+						String userName = secUsernameNormalizer.normalize(userLine);
+						if (!serviceAccounts.contains(userName)) {
+							User user = userRepository.findByUsername(userName);
+							if (user != null) {
+								userRepository.updateUserTag(
+									User.userServiceAccountField, userName,
+									true);
+								serviceAccounts.add(userName);
+							}
+						}
+					}
+				}
+				logger.info(
+					"ServiceAccount file loaded from path: {}", getFilePath());
 			}
 			else {
-				isFileOk = false;
-				logger.warn("ServiceAccount file not found in path: {}",getFilePath());
+				logger.warn(
+					"ServiceAccount file not found in path: {}", getFilePath());
 			}
 		}
 		else {
-			isFileOk = false;
-			logger.info("ServiceAccount file path not configured");		
-		}
-		if (!isFileOk) {
-			serviceAccounts = loadUserServiceAccountTagFromMongo();
+			logger.info("ServiceAccount file path not configured");
 		}
 	}
-	
+
+	public void refreshServiceAccounts() {
+
+		this.serviceAccounts = loadUserServiceAccountTagFromMongo();
+	}
+
 	private Set<String> loadUserServiceAccountTagFromMongo() {
-		Set<String> result = new HashSet<String>();
-		List<User> users = userRepository.findByUserServiceAccount(true);
-		for (User user : users) {
-			result.add(user.getUsername());
-		}
-		return result;
-	}
-	
-	private Set<String> updateMongoUserServiceAccountTag(Set<String> serviceAccounts) {
-		for (String serviceAccountUser : serviceAccounts) {
-			String username;
-			boolean isUserServiceAccount;
-			if (serviceAccountUser.startsWith(getDeletionSymbol())) {
-				// Remove tag from user.
-				isUserServiceAccount = false;
-				username = secUsernameNormalizer.normalize(serviceAccountUser.substring(1,serviceAccountUser.length()));
-			}
-			else {
-				isUserServiceAccount = true;
-				username = secUsernameNormalizer.normalize(serviceAccountUser);
-			}
-			User user = userRepository.findByUsername(username);
-			if ((user != null)) {				
-				userRepository.updateUserServiceAccount(user,isUserServiceAccount);
-			}
-			else {
-				logger.warn("User {} isn't in the user repository.",serviceAccountUser);
-			}
-		}
-		return loadUserServiceAccountTagFromMongo();
+
+		return userRepository.findNameByTag(getTagMongoField(), true);
 	}
 
 	public String getDeletionSymbol() {
+
 		return deletionSymbol;
 	}
 
 	public void setDeletionSymbol(String deletionSymbol) {
+
 		this.deletionSymbol = deletionSymbol;
 	}
 
 	public String getFilePath() {
+
 		return filePath;
 	}
 
 	public void setFilePath(String filePath) {
+
 		this.filePath = filePath;
-	}	
+	}
+
+	@Override
+	public String getTagMongoField() {
+
+		return User.userServiceAccountField;
+	}
+
+	public Set<String> getServiceAccounts() {
+
+		return serviceAccounts;
+	}
+
+	public void setServiceAccounts(Set<String> serviceAccounts) {
+
+		this.serviceAccounts = serviceAccounts;
+	}
 }
