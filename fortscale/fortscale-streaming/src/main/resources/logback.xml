@@ -25,7 +25,7 @@
 		</triggeringPolicy>
 		
 		<encoder>
-			<Pattern>%d [%thread] %-5level %logger{36} - %msg%n%xEx{full}</Pattern>
+			<Pattern>%date{ISO8601} [%thread] - %-5level  [%t%C{1}@%L]: - %msg%n%xEx{full}</Pattern>
 		</encoder>
 	</appender>
 		
