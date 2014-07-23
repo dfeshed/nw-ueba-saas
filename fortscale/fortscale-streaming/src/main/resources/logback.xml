@@ -23,9 +23,8 @@
 		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
 			<maxFileSize>100MB</maxFileSize>
 		</triggeringPolicy>
-		
 		<encoder>
-			<Pattern>%d [%thread] %-5level %logger{36} - %msg%n%xEx{full}</Pattern>
+			<Pattern>%date{ISO8601} - %-5level [%t%C{1}@%L]: - %msg %xEx{full}%n</Pattern>
 		</encoder>
 	</appender>
 		
@@ -34,7 +33,6 @@
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       		<level>ERROR</level>
     	</filter>
-	
 		<syslogHost>localhost</syslogHost>
 		<facility>USER</facility>
 		<suffixPattern>fortscale-streaming: %d [%thread] %-5level %logger{36} - %msg%n%xEx{full}</suffixPattern>
