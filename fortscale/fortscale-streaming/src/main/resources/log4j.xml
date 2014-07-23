@@ -17,7 +17,7 @@
 		<param name="MaxBackupIndex" value="3" />
 		<param name="file" value="log/logFile-${STREAM_TASK_NAME}.log4j.log" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ISO8601} [myid:%X{myid}] - %-5p [%t:%C{1}@%L] - %m%n" />
+			<param name="ConversionPattern" value="%d{ISO8601} - %-5p [%t:%C{1}@%L] - %m%n" />
 		</layout>
 	</appender>
 
