@@ -23,4 +23,5 @@ public interface ComputerRepositoryCustom {
 	
 	List<Computer> getComputersWithPartialFields(List<String> machineNames, String... includeFields);
 	Computer getComputerWithPartialFields(String machineName, String... includeFields);
+	public boolean findIfComputerExists(String computerName);
 }

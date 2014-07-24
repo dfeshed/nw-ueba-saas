@@ -266,27 +266,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return ret;
 	}
 
-	class UsernameWrapper {
-		private String id;
-		private String username;
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getUsername() {
-			return username;
-		}
-
-		public void setUsername(String username) {
-			this.username = username;
-		}
-	}
-
 	@Override
 	public Set<String> findByUserInGroup(Collection<String> groups) {
 		Query query = new Query(where(User.getAdInfoField(String.format("%s.%s",UserAdInfo.groupsField,UserAdInfo.adDnField))).in(groups));
@@ -401,6 +380,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return res;
 	}
 	
+	public boolean findIfUserExists(String username){
+		return !(mongoTemplate.find(query(where(User.usernameField).is(username)), UserIdWrapper.class, User.collectionName).isEmpty());
+	}
+	
 	/**
 	 * Since spring data mongodb does not support each on the addToSet update 
 	 * operator we create a custom bson command that does that
@@ -411,6 +394,38 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			// create a custom addToSet operator
 			this.addToSet(key, BasicDBObjectBuilder.start("$each", values).get());
 			return this;
+		}
+	}
+	
+	class UsernameWrapper {
+		private String id;
+		private String username;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+	}
+	
+	class UserIdWrapper{
+		private String id;
+		
+		public String getId(){
+			return id;
+		}
+		public void setId(String id){
+			this.id = id;
 		}
 	}
 }

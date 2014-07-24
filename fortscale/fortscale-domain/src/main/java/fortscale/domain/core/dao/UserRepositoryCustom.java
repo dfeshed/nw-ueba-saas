@@ -62,7 +62,7 @@ public interface UserRepositoryCustom {
 	public long getNumberOfInactiveAccounts();
 	
 	public Set<String> findNameByTag(String tagFieldName, Boolean value);
-	
+	public boolean findIfUserExists(String username);
 	/**
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
 	 */

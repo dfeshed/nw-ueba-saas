@@ -75,8 +75,8 @@ public class UserServiceAccountServiceImpl
 						String userName =
 							secUsernameNormalizer.normalize(userLine.substring(1));
 						if (serviceAccounts.contains(userName)) {
-							User user = userRepository.findByUsername(userName);
-							if (user != null) {
+							boolean userExists = userRepository.findIfUserExists(userName);
+							if (userExists) {
 								userRepository.updateUserTag(
 									User.userServiceAccountField, userName,
 									false);
@@ -87,8 +87,8 @@ public class UserServiceAccountServiceImpl
 					else {
 						String userName = secUsernameNormalizer.normalize(userLine);
 						if (!serviceAccounts.contains(userName)) {
-							User user = userRepository.findByUsername(userName);
-							if (user != null) {
+							boolean userExists = userRepository.findIfUserExists(userName);
+							if (userExists) {
 								userRepository.updateUserTag(
 									User.userServiceAccountField, userName,
 									true);

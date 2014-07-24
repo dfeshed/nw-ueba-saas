@@ -20,6 +20,7 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageClassifier;
 import fortscale.domain.core.ComputerUsageType;
 
+
 public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 
 	@Autowired
@@ -116,6 +117,21 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 			query.fields().include(includeField);
 		
 		return mongoTemplate.find(query, Computer.class);
-		
 	}
+	
+	public boolean findIfComputerExists(String computerName){
+		return !(mongoTemplate.find(query(where(Computer.NAME_FIELD).is(computerName)), ComputerIdWrapper.class, Computer.COLLECTION_NAME).isEmpty());
+	}
+	
+	class ComputerIdWrapper{
+		private String id;
+		
+		public String getId(){
+			return id;
+		}
+		public void setId(String id){
+			this.id = id;
+		}
+	}
+	
 }

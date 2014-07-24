@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import fortscale.collection.tagging.service.SensitiveMachineService;
-import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
 
 @Service("sensitiveMachineService")
@@ -72,8 +71,8 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 					if (machineLine.startsWith(deletionSymbol)) {
 						String machine = machineLine.substring(1).toUpperCase();
 						if (sensitiveMachines.contains(machine)) {
-							Computer computer = computerRepository.findByName(machine);
-							if (computer != null) {
+							boolean computerExists = computerRepository.findIfComputerExists(machine);
+							if (computerExists) {
 								computerRepository.updateSensitiveMachine(
 									computerRepository.findByName(machine),
 									false);
@@ -84,8 +83,8 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 					else {
 						String machine = machineLine.toUpperCase();
 						if (!sensitiveMachines.contains(machine)) {
-							Computer computer = computerRepository.findByName(machine);
-							if (computer != null) {
+							boolean computerExists = computerRepository.findIfComputerExists(machine);
+							if (computerExists) {
 								computerRepository.updateSensitiveMachine(
 									computerRepository.findByName(machine),
 									true);
