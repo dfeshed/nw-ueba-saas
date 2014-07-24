@@ -53,6 +53,8 @@ public class ComputerLoginResolver implements InitializingBean {
 			return null;
 		}
 		ts = TimestampUtils.convertToMilliSeconds(ts);
+
+        logger.info("computerLoginEventRepository is not null timestampEphoc is:"+ts);
 		
 		// check if we have a matching event in the cache
 		ComputerLoginEvent cachedEvent = cache.getIfPresent(ip);
@@ -70,6 +72,7 @@ public class ComputerLoginResolver implements InitializingBean {
 		if(!computerLoginEvents.isEmpty()) {
 			// we do not update the cache here as the next ip resolving might have a slightly newer timestamp with an that was resolved to a different hostname
 			// so we rely on the cache to hold only the newest timestamp for resolving, thus we can make sure there is not other hostname for that ip
+
 			return computerLoginEvents.get(0).getHostname();
 		}
 		
