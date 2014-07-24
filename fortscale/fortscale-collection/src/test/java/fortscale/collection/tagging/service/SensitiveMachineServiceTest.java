@@ -67,8 +67,8 @@ public class SensitiveMachineServiceTest {
 	@Test
 	public void test_adding_existing_sensitiveMachine_to_sensitivemachines() throws IOException {
 		creatingMachinesFile("DUMMY-PC");
-		when(computerRepository.findByName(anyString())).thenReturn(
-				new Computer());
+		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
+				true);
 		service.updateSensitiveMachines();
 		assertTrue(service.getSensitiveMachines().contains("DUMMY-PC") == true);
 	}
@@ -76,8 +76,8 @@ public class SensitiveMachineServiceTest {
 	@Test
 	public void test_adding_three_sensitiveMachines_to_sensitivemachines() throws IOException {
 		creatingMachinesFile("dummy-pc\nX-PC\nY-PC");
-		when(computerRepository.findByName(anyString())).thenReturn(
-				new Computer());
+		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
+			true);
 		service.updateSensitiveMachines();
 		assertTrue(service.getSensitiveMachines().contains("DUMMY-PC") == true);
 		assertTrue(service.getSensitiveMachines().contains("X-PC") == true);

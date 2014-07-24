@@ -56,12 +56,6 @@ public class UserServiceAccountServiceTest {
 		return temp.getAbsolutePath();
 	}
 
-	private User getNewUser(String user) {
-
-		User u = new User();
-		u.setUsername(user);
-		return u;
-	}
 
 	@Test
 	public void mongo_has_some_data_add_new_user()
@@ -71,12 +65,12 @@ public class UserServiceAccountServiceTest {
 		service.setFilePath(getFile("user3\nuser4"));
 		when(secUsernameNormalizer.normalize(anyString())).thenReturn(
 			"user3", "user4");
-		when(repository.findByUsername(anyString())).thenReturn(
-			getNewUser("dummy"));
+		when(repository.findIfUserExists(anyString())).thenReturn(
+			true);
 		service.setDeletionSymbol("-");
 		service.update();
 
-		verify(repository, times(2)).findByUsername(anyString());
+		verify(repository, times(2)).findIfUserExists(anyString());
 		assertTrue(service.getServiceAccounts().contains("user3") == true);
 		assertTrue(service.getServiceAccounts().contains("user4") == true);
 	}
@@ -94,12 +88,12 @@ public class UserServiceAccountServiceTest {
 		service.setFilePath(getFile("-user1\nuser4"));
 		when(secUsernameNormalizer.normalize(anyString())).thenReturn(
 			"user4", "user1");
-		when(repository.findByUsername(anyString())).thenReturn(
-			getNewUser("dummy"));
+		when(repository.findIfUserExists(anyString())).thenReturn(
+			true);
 		service.setDeletionSymbol("-");
 		service.update();
 
-		verify(repository, times(2)).findByUsername(anyString());
+		verify(repository, times(2)).findIfUserExists(anyString());
 		assertTrue(service.getServiceAccounts().contains("user1") == false);
 		assertTrue(service.getServiceAccounts().contains("user4") == true);
 	}
