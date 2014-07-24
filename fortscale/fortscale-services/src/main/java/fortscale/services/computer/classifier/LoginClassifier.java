@@ -37,10 +37,10 @@ public class LoginClassifier implements EndpointClassifier {
 	@Value("${endpoint.login.pattern.period:30}")
 	private int loginPeriod;
 	
-	@Value("${endpoint.login.min.events.required:50}")
+	@Value("${endpoint.login.min.events.required:1000}")
 	private int minimunEventsRequired;
 	
-	@Value("${enpoint.login.min.events.backoff.hours:1}")
+	@Value("${enpoint.login.min.events.backoff.hours:10}")
 	private int hoursToBackoff;
 	
 	private long lastTimeCheckedForMinimumEvents;
