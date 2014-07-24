@@ -24,7 +24,12 @@
 					<key>morphlineFile</key>
 					<value>file:resources/conf-files/readSecEvt_splunk.conf</value>
 				</entry>
-								
+				
+				<!--  4624 morphline -->
+				<entry>
+					<key>morphlineFile4624</key>
+					<value>file:resources/conf-files/processSecEvt4624.conf</value>
+				</entry>
 				<!--  4769 morphline  -->
 				<entry>
 					<key>morphlineFile4769</key>
@@ -82,7 +87,7 @@
 				<!--  Login table parameters -->
 				<entry>
 					<key>eventsToProcessLoginEvt</key>
-					<value>4768,4771</value>
+					<value>4768,4771,4624</value>
 				</entry>
 				<entry>
 					<key>outputFieldsLoginEvt</key>

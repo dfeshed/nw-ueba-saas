@@ -10,7 +10,7 @@
 			<name>Comp_ETL</name>
 			<group>SecurityEvents</group>
 			<description>process 4768 security events of computers and saved them into mongo</description>
-			<job-class>fortscale.collection.jobs.GenericSecurityEventsJob</job-class>
+			<job-class>fortscale.collection.jobs.SecurityEventsComputerJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			
@@ -21,8 +21,20 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
+					<value>file:resources/conf-files/readSecEvtOnlyComp_splunk.conf</value>
+				</entry>
+				<entry>
+					<key>eventMorphlineFile4624</key>
+					<value>file:resources/conf-files/processSecEvt4624.conf</value>
+				</entry>
+				<entry>
+					<key>eventMorphlineFile4768</key>
 					<value>file:resources/conf-files/read4768SecEvtOnlyComp_splunk.conf</value>
-				</entry>				
+				</entry>
+				<entry>
+					<key>eventMorphlineFile4771</key>
+					<value>file:resources/conf-files/read4768SecEvtOnlyComp_splunk.conf</value>
+				</entry>
 			</job-data-map>
 		</job>		
 	</schedule>

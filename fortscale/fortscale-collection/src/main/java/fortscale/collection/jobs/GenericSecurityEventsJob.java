@@ -26,8 +26,8 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	@Value("${collection.fetch.finish.data.path}")
 	private String finishPath;
 	
-	private String filesFilter;
-	private MorphlinesItemsProcessor morphline;
+	protected String filesFilter;
+	protected MorphlinesItemsProcessor morphline;
 		
 	
 	@Override

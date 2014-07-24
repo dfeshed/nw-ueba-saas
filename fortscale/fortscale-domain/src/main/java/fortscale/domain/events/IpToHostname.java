@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import fortscale.domain.core.AbstractDocument;
+import fortscale.utils.TimestampUtils;
 
 public class IpToHostname extends AbstractDocument{
 
@@ -48,7 +49,7 @@ public class IpToHostname extends AbstractDocument{
 	}
 
 	public void setTimestampepoch(Long timestampepoch) {
-		this.timestampepoch = timestampepoch;
+		this.timestampepoch = TimestampUtils.convertToMilliSeconds(timestampepoch);
 	}
 
 	public String getIpaddress() {
