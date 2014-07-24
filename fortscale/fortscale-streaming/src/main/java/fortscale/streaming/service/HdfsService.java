@@ -1,13 +1,12 @@
 package fortscale.streaming.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fortscale.streaming.exceptions.HdfsException;
+import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
@@ -24,7 +23,7 @@ public class HdfsService {
 	private String tableName;
 	private String fileName;
 	private ImpalaClient impalaClient;
-	private WriteBuffer buffer;
+	private BufferedHDFSWriter buffer;
 	
 	public HdfsService(String hdfsRootPath, String fileName, PartitionStrategy partition, FileSplitStrategy split, String tableName, int flushPerItemsCount) throws IOException {
 		// create hdfs appender
@@ -36,16 +35,15 @@ public class HdfsService {
 		impalaClient = SpringService.getInstance().resolve(ImpalaClient.class);
 		
 		// create buffer for items written to hdfs
-		buffer = new WriteBuffer(flushPerItemsCount);
+		buffer = new BufferedHDFSWriter(appender, fileName, flushPerItemsCount);
 	}
 	
 	public void writeLineToHdfs(String line, long timestamp) throws HdfsException {
-		// add line to buffer
-		buffer.add(timestamp, line);
-		
-		// see if the buffer exceeded the limit, if so write them all to hdfs
-		if (buffer.isFull()) 
-			writeBuffer();
+		try {
+			buffer.writeLine(line, timestamp);
+		} catch (IOException e) {
+			throw new HdfsException("cannot write to " + fileName, e);
+		}
 	}
 	
 	public void flushHdfs() throws HdfsException {
@@ -55,14 +53,8 @@ public class HdfsService {
 	private void writeBuffer() throws HdfsException {
 		Exception firstException = null;
 		try {
-			// write all items to hdfs appender
-			appender.open(fileName);
-			for (WriteBuffer.LineEntry item : buffer.getItems()) {
-				appender.writeLine(item.line, item.timestamp);
-			}
-			appender.flush();
-			appender.close();
-			buffer.clear();
+			// flush the buffer 
+			buffer.flush();
 			
 			// add new partitions to impala
 			for (String partition : appender.getNewPartitions()) {
@@ -104,42 +96,4 @@ public class HdfsService {
 			SpringService.shutdown();
 		}
 	}
-	
-	private class WriteBuffer {
-		
-		public class LineEntry {
-			public LineEntry(long timestamp, String line) {
-				this.timestamp = timestamp;
-				this.line = line;
-			}
-			
-			public long timestamp;
-			public String line;
-		}
-		
-		private int sizeLimit;
-		private List<LineEntry> buffer;
-		
-		public WriteBuffer(int sizeLimit) {
-			this.sizeLimit = sizeLimit;
-			this.buffer = new ArrayList<LineEntry>(sizeLimit);
-		}
-		
-		public void add(long timestamp, String line) {
-			buffer.add(new LineEntry(timestamp, line));
-		}
-		
-		public boolean isFull() {
-			return buffer.size()>=sizeLimit;
-		}
-		
-		public void clear() {
-			buffer.clear();
-		}
-		
-		public Iterable<LineEntry> getItems() {
-			return buffer;
-		}
-	}
-	
 }

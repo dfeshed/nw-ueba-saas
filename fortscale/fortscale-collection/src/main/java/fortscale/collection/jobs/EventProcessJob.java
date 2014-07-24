@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import fortscale.collection.JobDataMapExtension;
 import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
+import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
@@ -57,6 +58,8 @@ public class EventProcessJob implements Job {
 	private String normalizedUsernameField;
 	@Value("${impala.table.fields.username}")
 	private String usernameField;
+	@Value("${hadoop.writer.buffer.size:3000}")
+	protected int maxBufferSize;
 	
 	
 	protected String filesFilter;
@@ -66,7 +69,7 @@ public class EventProcessJob implements Job {
 	protected String hadoopPath;
 	protected String hadoopFilename;
 	protected String impalaTableName;
-	protected HDFSPartitionsWriter appender;
+	protected BufferedHDFSWriter appender;
 	protected String partitionType;
 	protected String fileSplitType;
 	protected String timestampField;
@@ -318,13 +321,15 @@ public class EventProcessJob implements Job {
 		List<Exception> exceptions = new LinkedList<Exception>();
 		
 		// declare new partitions for impala
-		for (String partition : appender.getNewPartitions()) {
+		HDFSPartitionsWriter partitionsWriter = (HDFSPartitionsWriter)appender.getWriter();
+		for (String partition : partitionsWriter.getNewPartitions()) {
 			try {
 				impalaClient.addPartitionToTable(impalaTableName, partition); 
 			} catch (Exception e) {
 				exceptions.add(e);
 			}
 		}
+		partitionsWriter.clearNewPartitions();
 		
 		try {
 			impalaClient.refreshTable(impalaTableName);
@@ -342,18 +347,11 @@ public class EventProcessJob implements Job {
 	}
 	
 	protected void createOutputAppender() throws JobExecutionException {
-		try {
-			logger.debug("initializing hadoop appender in {}", hadoopPath);
+		logger.debug("initializing hadoop appender in {}", hadoopPath);
 
-			// calculate file directory path according to partition strategy
-			appender = new HDFSPartitionsWriter(hadoopPath, getPartitionStrategy(), getFileSplitStrategy());
-			appender.open(hadoopFilename);
-
-		} catch (IOException e) {
-			logger.error("error creating hdfs partitions writer at " + hadoopPath, e);
-			monitor.error(monitorId, "Process Files", String.format("error creating hdfs partitions writer at %s: \n %s",  hadoopPath, e.toString()));
-			throw new JobExecutionException("error creating hdfs partitions writer at " + hadoopPath, e);
-		}
+		// calculate file directory path according to partition strategy
+		HDFSPartitionsWriter writer = new HDFSPartitionsWriter(hadoopPath, getPartitionStrategy(), getFileSplitStrategy());
+		appender = new BufferedHDFSWriter(writer, hadoopFilename, maxBufferSize);
 	}
 	
 	/*** Initialize the streaming appender upon job start to be able to produce messages to */ 
