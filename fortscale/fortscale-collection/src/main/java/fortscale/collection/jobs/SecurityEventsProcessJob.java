@@ -21,6 +21,7 @@ import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.services.fe.Classifier;
+import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
@@ -142,30 +143,11 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 
 	@Override protected void createOutputAppender() throws JobExecutionException {
 		// go over the events map and create an appender for each event
-		try {
-			for (EventTableHandlers handler : eventToTableHandlerMap.values()) {
-				try {
-					// create partition strategy
-					logger.debug("opening hdfs file {} for append", handler.hadoopPath);
-					handler.appender = new HDFSPartitionsWriter(handler.hadoopPath, new MonthlyPartitionStrategy(), new DailyFileSplitStrategy());
-					handler.appender.open(handler.hadoopFilename);
-				} catch (IOException e) {
-					logger.error("error creating hdfs partition writer at " + handler.hadoopPath, e);
-					monitor.error(monitorId, "Process Files", String.format("error creating hdfs partition writer at  %s: \n %s",  handler.hadoopPath, e.toString()));
-					throw new JobExecutionException("error creating hdfs partition writer at " + handler.hadoopPath, e);
-				}
-			}
-		} catch (JobExecutionException e) {
-			// close appenders that were opened if we throw exception
-			for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
-				try {
-					if (handlers.appender!=null)
-						handlers.appender.close();
-				} catch (IOException e1) { 
-					logger.warn(String.format("error closing handler for $s", handlers.hadoopPath));
-				}
-			}
-			throw e;
+		for (EventTableHandlers handler : eventToTableHandlerMap.values()) {
+			// create partition strategy
+			logger.debug("opening hdfs file {} for append", handler.hadoopPath);
+			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(handler.hadoopPath, new MonthlyPartitionStrategy(), new DailyFileSplitStrategy()); 
+			handler.appender = new BufferedHDFSWriter(writer, handler.hadoopFilename, maxBufferSize);
 		}
 	}
 	
@@ -229,13 +211,15 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		// refresh all events tables
 		for (EventTableHandlers handlers : eventToTableHandlerMap.values()) {
 			// declare new partitions in impala
-			for (String partition : handlers.appender.getNewPartitions()) {
+			HDFSPartitionsWriter partitionsWriter = (HDFSPartitionsWriter)handlers.appender.getWriter();
+			for (String partition : partitionsWriter.getNewPartitions()) {
 				try {
 					impalaClient.addPartitionToTable(handlers.impalaTableName, partition);
 				} catch (Exception e) {
 					exceptions.add(e);
 				}
 			}
+			partitionsWriter.clearNewPartitions();
 			
 			try {
 				impalaClient.refreshTable(handlers.impalaTableName);
@@ -276,7 +260,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public String hadoopFilename;
 		public String impalaTableName;
 		public String timestampField;
-		public HDFSPartitionsWriter appender;
+		public BufferedHDFSWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
 		public KafkaEventsWriter streamWriter;
 	}
