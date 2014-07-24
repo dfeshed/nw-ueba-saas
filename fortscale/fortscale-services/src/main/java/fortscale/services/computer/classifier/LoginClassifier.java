@@ -45,6 +45,7 @@ public class LoginClassifier implements EndpointClassifier {
 	
 	private long lastTimeCheckedForMinimumEvents;
 	private boolean hasMinimumEvents = true;
+	private int lastEventsCount;
 	
 	@Override
 	public boolean canClassify(Computer computer) {
@@ -57,10 +58,11 @@ public class LoginClassifier implements EndpointClassifier {
 	 */
 	private boolean haveMinimumEvents() {
 		// check if the last time checked for minimum events was recently
-		if (minimunEventsRequired!=0 && lastTimeCheckedForMinimumEvents < (System.currentTimeMillis() - (hoursToBackoff*1000*60*60))) {
+		if (minimunEventsRequired!=0 &&  lastEventsCount < minimunEventsRequired 
+				&& lastTimeCheckedForMinimumEvents < (System.currentTimeMillis() - (hoursToBackoff*1000*60*60))) {
 			// get the events count in the table and check if it passes the min required
-			int eventsCount = dao.count(loginPeriod);
-			hasMinimumEvents = (eventsCount > minimunEventsRequired);
+			lastEventsCount = dao.count(loginPeriod);
+			hasMinimumEvents = (lastEventsCount > minimunEventsRequired);
 			lastTimeCheckedForMinimumEvents = System.currentTimeMillis();
 		}
 		
@@ -73,11 +75,11 @@ public class LoginClassifier implements EndpointClassifier {
 	
 	@Override
 	public boolean classify(Computer computer) {
-		if (!canClassify(computer))
-			return false;
-		
 		// skip classification in case other classifier already decided on classification
 		if (hasOtherClassifications(computer))
+			return false;
+		
+		if (!canClassify(computer))
 			return false;
 				
 		// check if we already have a classification that is not stale
