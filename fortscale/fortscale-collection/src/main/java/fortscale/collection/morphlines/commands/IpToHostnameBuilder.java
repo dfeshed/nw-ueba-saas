@@ -9,6 +9,8 @@ import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -37,6 +39,9 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable(preConstruction=true)
 	public static final class IpToHostname extends AbstractCommand {
+
+
+        private static final Logger logger = LoggerFactory.getLogger(IpToHostname.class);
 		
 		@Autowired
 		private DhcpResolver dhcpResolver;
@@ -107,11 +112,18 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 		protected boolean doProcess(Record inputRecord) {
 			// If we weren't able to connect or access the collection,
 			// return an empty string
+
+
 			
 			try {
 				
 				String ip = RecordExtensions.getStringValue(inputRecord, this.ipAddress);
+
+
+
 				Long ts = RecordExtensions.getLongValue(inputRecord, this.timeStamp);
+
+
 				
 				// Try and get a hostname to the IP
                 inputRecord.put(this.outputRecordName, getHostname(ip, ts));

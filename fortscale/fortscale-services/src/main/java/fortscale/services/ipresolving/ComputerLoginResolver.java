@@ -53,23 +53,33 @@ public class ComputerLoginResolver implements InitializingBean {
 			return null;
 		}
 		ts = TimestampUtils.convertToMilliSeconds(ts);
+
+
 		
 		// check if we have a matching event in the cache
 		ComputerLoginEvent cachedEvent = cache.getIfPresent(ip);
 		if (cachedEvent!=null && 
 				cachedEvent.getTimestampepoch() >= ts - leaseTimeInMins*60*1000 && 
 				cachedEvent.getTimestampepoch() <= ts + graceTimeInMins*60*1000) {
+
 			return cachedEvent.getHostname();
 		}
 		
 		// if cache not found resort to the repository check
 		long upperLimitTs = (graceTimeInMins > 0)? ts + graceTimeInMins * 60 * 1000: ts;
 		long lowerLimitTs = ts - leaseTimeInMins * 60 * 1000;
+
+
+
+
 		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, ComputerLoginEvent.TIMESTAMP_EPOCH_FIELD_NAME);
 		List<ComputerLoginEvent> computerLoginEvents = computerLoginEventRepository.findByIpaddressAndTimestampepochBetween(ip, lowerLimitTs, upperLimitTs, pageRequest);
 		if(!computerLoginEvents.isEmpty()) {
+
+
 			// we do not update the cache here as the next ip resolving might have a slightly newer timestamp with an that was resolved to a different hostname
 			// so we rely on the cache to hold only the newest timestamp for resolving, thus we can make sure there is not other hostname for that ip
+
 			return computerLoginEvents.get(0).getHostname();
 		}
 		
