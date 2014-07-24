@@ -70,7 +70,7 @@ public class ComputerLoginResolver implements InitializingBean {
 		long lowerLimitTs = ts - leaseTimeInMins * 60 * 1000;
 
 
-        logger.info("upperLimitTs: "+upperLimitTs+" lowerLimitTs: "+lowerLimitTs);
+        logger.info("ip: "+ip+" upperLimitTs: "+upperLimitTs+" lowerLimitTs: "+lowerLimitTs);
 
 		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, ComputerLoginEvent.TIMESTAMP_EPOCH_FIELD_NAME);
 		List<ComputerLoginEvent> computerLoginEvents = computerLoginEventRepository.findByIpaddressAndTimestampepochBetween(ip, lowerLimitTs, upperLimitTs, pageRequest);
