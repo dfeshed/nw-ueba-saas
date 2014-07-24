@@ -113,17 +113,17 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 			// If we weren't able to connect or access the collection,
 			// return an empty string
 
-            logger.info("IpToHostname start");
+
 			
 			try {
 				
 				String ip = RecordExtensions.getStringValue(inputRecord, this.ipAddress);
 
-                logger.info("ip: "+ip);
+
 
 				Long ts = RecordExtensions.getLongValue(inputRecord, this.timeStamp);
 
-                logger.info("ts: "+ts);
+
 				
 				// Try and get a hostname to the IP
                 inputRecord.put(this.outputRecordName, getHostname(ip, ts));
