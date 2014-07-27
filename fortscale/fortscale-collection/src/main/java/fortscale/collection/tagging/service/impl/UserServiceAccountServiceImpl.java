@@ -97,11 +97,11 @@ public class UserServiceAccountServiceImpl implements UserTagService,Initializin
 			if (serviceAccountUser.startsWith(getDeletionSymbol())) {
 				// Remove tag from user.
 				isUserServiceAccount = false;
-				username = serviceAccountUser.substring(1,serviceAccountUser.length()).toLowerCase();
+				username = secUsernameNormalizer.normalize(serviceAccountUser.substring(1,serviceAccountUser.length()));
 			}
 			else {
 				isUserServiceAccount = true;
-				username = serviceAccountUser.toLowerCase();
+				username = secUsernameNormalizer.normalize(serviceAccountUser);
 			}
 			User user = userRepository.findByUsername(username);
 			if ((user != null)) {				
