@@ -71,7 +71,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 				usersFromFile = new HashSet<String>(FileUtils.readLines(usersFile));
 				for (String userLine : usersFromFile) {
 					if (userLine.startsWith(deletionSymbol)) {
-						String userName = secUsernameNormalizer.normalize(userLine.substring(1));
+						String userName = userLine.substring(1).toLowerCase();
 						if (serviceAccounts.contains(userName)) {
 							boolean userExists = userRepository.findIfUserExists(userName);
 							if (userExists) {
@@ -81,7 +81,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 						}
 					}
 					else {
-						String userName = secUsernameNormalizer.normalize(userLine);
+						String userName = userLine.toLowerCase();
 						if (!serviceAccounts.contains(userName)) {
 							boolean userExists = userRepository.findIfUserExists(userName);
 							if (userExists) {
