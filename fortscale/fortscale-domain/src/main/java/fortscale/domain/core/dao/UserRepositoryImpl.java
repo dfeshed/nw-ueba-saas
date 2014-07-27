@@ -381,7 +381,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 	
 	public boolean findIfUserExists(String username){
-		return !(mongoTemplate.find(query(where(User.usernameField).is(username)), UserIdWrapper.class, User.collectionName).isEmpty());
+		Query query = new Query(where(User.usernameField).is(username));
+		query.fields().include(User.ID_FIELD);
+		return !(mongoTemplate.find(query, UserIdWrapper.class, User.collectionName).isEmpty());
 	}
 	
 	/**

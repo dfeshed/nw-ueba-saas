@@ -119,7 +119,14 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 		return mongoTemplate.find(query, Computer.class);
 	}
 	
+	@Override
+	public void updateSensitiveMachineByName(String machineName, boolean isSensitive) {
+		mongoTemplate.updateFirst(query(where(Computer.NAME_FIELD).is(machineName)), update(Computer.SENSITIVE_MACHINE_FIELD, isSensitive), Computer.class);
+	}
+	
 	public boolean findIfComputerExists(String computerName){
+		Query query = new Query(where(Computer.NAME_FIELD).is(computerName));
+		query.fields().include(Computer.ID_FIELD);
 		return !(mongoTemplate.find(query(where(Computer.NAME_FIELD).is(computerName)), ComputerIdWrapper.class, Computer.COLLECTION_NAME).isEmpty());
 	}
 	

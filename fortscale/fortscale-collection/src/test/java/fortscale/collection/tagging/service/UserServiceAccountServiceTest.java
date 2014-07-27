@@ -19,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
 import fortscale.collection.tagging.service.impl.UserServiceAccountServiceImpl;
-import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.impl.UsernameNormalizer;
 

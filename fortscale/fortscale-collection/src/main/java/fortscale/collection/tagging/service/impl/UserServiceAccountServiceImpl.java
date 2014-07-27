@@ -22,8 +22,7 @@ import fortscale.services.impl.UsernameNormalizer;
 import fortscale.utils.logging.Logger;
 
 @Service("userServiceAccountService")
-public class UserServiceAccountServiceImpl
-	implements UserTagService, InitializingBean {
+public class UserServiceAccountServiceImpl implements UserTagService, InitializingBean {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -32,8 +31,7 @@ public class UserServiceAccountServiceImpl
 	@Autowired
 	private UserTaggingService userTaggingService;
 
-	private static Logger logger =
-		Logger.getLogger(UserServiceAccountServiceImpl.class);
+	private static Logger logger = Logger.getLogger(UserServiceAccountServiceImpl.class);
 
 	@Value("${user.list.service_account.path:}")
 	private String filePath;
@@ -63,7 +61,8 @@ public class UserServiceAccountServiceImpl
 	}
 
 	@Override
-	public void update() throws IOException {
+	public void update()
+		throws IOException {
 
 		if (!StringUtils.isEmpty(getFilePath())) {
 			File usersFile = new File(getFilePath());
@@ -72,14 +71,11 @@ public class UserServiceAccountServiceImpl
 				usersFromFile = new HashSet<String>(FileUtils.readLines(usersFile));
 				for (String userLine : usersFromFile) {
 					if (userLine.startsWith(deletionSymbol)) {
-						String userName =
-							secUsernameNormalizer.normalize(userLine.substring(1));
+						String userName = secUsernameNormalizer.normalize(userLine.substring(1));
 						if (serviceAccounts.contains(userName)) {
 							boolean userExists = userRepository.findIfUserExists(userName);
 							if (userExists) {
-								userRepository.updateUserTag(
-									User.userServiceAccountField, userName,
-									false);
+								userRepository.updateUserTag(User.userServiceAccountField, userName, false);
 								serviceAccounts.remove(userName);
 							}
 						}
@@ -89,20 +85,16 @@ public class UserServiceAccountServiceImpl
 						if (!serviceAccounts.contains(userName)) {
 							boolean userExists = userRepository.findIfUserExists(userName);
 							if (userExists) {
-								userRepository.updateUserTag(
-									User.userServiceAccountField, userName,
-									true);
+								userRepository.updateUserTag(User.userServiceAccountField, userName, true);
 								serviceAccounts.add(userName);
 							}
 						}
 					}
 				}
-				logger.info(
-					"ServiceAccount file loaded from path: {}", getFilePath());
+				logger.info("ServiceAccount file loaded from path: {}", getFilePath());
 			}
 			else {
-				logger.warn(
-					"ServiceAccount file not found in path: {}", getFilePath());
+				logger.warn("ServiceAccount file not found in path: {}", getFilePath());
 			}
 		}
 		else {

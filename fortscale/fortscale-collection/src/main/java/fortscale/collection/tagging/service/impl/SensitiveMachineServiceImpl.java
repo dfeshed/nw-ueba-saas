@@ -1,3 +1,4 @@
+
 package fortscale.collection.tagging.service.impl;
 
 import java.io.File;
@@ -20,11 +21,9 @@ import fortscale.collection.tagging.service.SensitiveMachineService;
 import fortscale.domain.core.dao.ComputerRepository;
 
 @Service("sensitiveMachineService")
-public class SensitiveMachineServiceImpl implements SensitiveMachineService,
-		InitializingBean {
+public class SensitiveMachineServiceImpl implements SensitiveMachineService, InitializingBean {
 
-	private static Logger logger = LoggerFactory
-			.getLogger(SensitiveMachineServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(SensitiveMachineServiceImpl.class);
 
 	@Autowired
 	private ComputerRepository computerRepository;
@@ -37,15 +36,16 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 	@Value("${user.list.service_sensitive_machine.deletion_symbol:-}")
 	private String deletionSymbol;
 
-
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()
+		throws Exception {
+
 		refreshSensitiveMachines();
 	}
 
-
 	@Override
 	public boolean isMachineSensitive(String machineName) {
+
 		machineName = machineName.toUpperCase();
 		if (sensitiveMachines != null) {
 			return sensitiveMachines.contains(machineName);
@@ -73,9 +73,7 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 						if (sensitiveMachines.contains(machine)) {
 							boolean computerExists = computerRepository.findIfComputerExists(machine);
 							if (computerExists) {
-								computerRepository.updateSensitiveMachine(
-									computerRepository.findByName(machine),
-									false);
+								computerRepository.updateSensitiveMachineByName(machine, false);
 							}
 							sensitiveMachines.remove(machine);
 						}
@@ -85,9 +83,7 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService,
 						if (!sensitiveMachines.contains(machine)) {
 							boolean computerExists = computerRepository.findIfComputerExists(machine);
 							if (computerExists) {
-								computerRepository.updateSensitiveMachine(
-									computerRepository.findByName(machine),
-									true);
+								computerRepository.updateSensitiveMachineByName(machine, true);
 								sensitiveMachines.add(machine);
 							}
 						}
