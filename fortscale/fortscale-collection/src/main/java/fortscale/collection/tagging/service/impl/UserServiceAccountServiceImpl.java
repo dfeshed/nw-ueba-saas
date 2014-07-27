@@ -18,7 +18,6 @@ import fortscale.collection.tagging.service.UserTagService;
 import fortscale.collection.tagging.service.UserTaggingService;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.impl.UsernameNormalizer;
 import fortscale.utils.logging.Logger;
 
 @Service("userServiceAccountService")
@@ -26,8 +25,6 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private UsernameNormalizer secUsernameNormalizer;
 	@Autowired
 	private UserTaggingService userTaggingService;
 
