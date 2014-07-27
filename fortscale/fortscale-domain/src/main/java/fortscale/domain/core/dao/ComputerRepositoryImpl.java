@@ -127,7 +127,7 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 	public boolean findIfComputerExists(String computerName){
 		Query query = new Query(where(Computer.NAME_FIELD).is(computerName));
 		query.fields().include(Computer.ID_FIELD);
-		return !(mongoTemplate.find(query(where(Computer.NAME_FIELD).is(computerName)), ComputerIdWrapper.class, Computer.COLLECTION_NAME).isEmpty());
+		return !(mongoTemplate.find(query, ComputerIdWrapper.class, Computer.COLLECTION_NAME).isEmpty());
 	}
 	
 	class ComputerIdWrapper{
