@@ -21,7 +21,7 @@ public class CumulativeAverageFieldModel implements FieldModel{
 	
 	@Override
 	public void add(Object value, long timestamp) {
-		if (value instanceof Integer) {
+		if (value instanceof Integer || value instanceof Long) {
 			int valN = (int)value;
 			
 			// advance average
@@ -33,7 +33,7 @@ public class CumulativeAverageFieldModel implements FieldModel{
 				count = count / 2;
 			
 		} else {
-			logger.warn("given field value {} is not valid for average", value);
+			logger.warn("given field value {} (type={}) is not valid for average", value, (value==null)? "null" : value.getClass());
 		}
 		
 	}
