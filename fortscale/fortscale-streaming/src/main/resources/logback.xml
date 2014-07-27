@@ -40,8 +40,8 @@
 
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
-		<appender-ref name="LogFile" />
-		<appender-ref name="SYSLOG" />
+		<appender-ref ref="LogFile" />
+		<appender-ref ref="SYSLOG" />
 	</root>
 	
 	
