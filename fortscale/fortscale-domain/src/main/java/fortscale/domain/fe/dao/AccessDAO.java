@@ -7,10 +7,7 @@ import static fortscale.utils.impala.ImpalaCriteria.equalsTo;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +37,10 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 	
 	@Value("${impala.data.table.fields.normalized_username}")
 	public String NORMALIZED_USERNAME;
+
+    private Date lastRunDate = null;
+
+    public abstract String getEventTimeFieldName();
 
 		
 	public abstract String getDestinationFieldName();
@@ -71,6 +72,25 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 			query.where(lte(getPartitionStrategy().getImpalaPartitionFieldName(), latestValue));
 		}
 	}
+
+    public Long getLastRuntime() {
+        if (lastRunDate == null) {
+            Calendar tmp = Calendar.getInstance();
+            tmp.add(Calendar.DAY_OF_MONTH, -1);
+            lastRunDate = new Date(tmp.getTimeInMillis());
+        }
+        String query = String.format("select max(%s) from %s",
+                getEventTimeFieldName(), getTableName());
+        String queryWithHint = String.format("%s where %s >= %d", query,
+                getEventTimeFieldName(), lastRunDate.getTime() / 1000);
+        Long lastRun = impalaJdbcTemplate.queryForObject(queryWithHint,
+                Long.class);
+        if (lastRun == null) {
+            lastRun = impalaJdbcTemplate.queryForObject(query, Long.class);
+        }
+
+        return lastRun;
+    }
 	
 	public List<EventScore> getEventScores(String username, int daysBack, int limit) {
 		// build query

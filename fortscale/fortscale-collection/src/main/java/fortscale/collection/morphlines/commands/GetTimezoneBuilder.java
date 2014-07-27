@@ -135,18 +135,16 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 
 
             //in case that the host is null return the first time zone the config list have
-            if (host == null)
-            {
-                return regexpList.get(0).timezone;
+            if (host != null) {
+                for (TimezoneUnit tzUnit : regexpList) {
+                    if (tzUnit.type.equals(type)) {
+                        Matcher matcher = tzUnit.hostPattern.matcher(host);
+                        if (matcher.matches()) {
+                            return tzUnit.timezone;
+                        }
+                    }
+                }
             }
-			for (TimezoneUnit tzUnit : regexpList) {				
-				if (tzUnit.type.equals(type)) {
-					Matcher matcher = tzUnit.hostPattern.matcher(host);
-					if(matcher.matches()){
-						return tzUnit.timezone;
-					}
-				}
-			}
 			return defaultTimezone;
 		}
 	}
