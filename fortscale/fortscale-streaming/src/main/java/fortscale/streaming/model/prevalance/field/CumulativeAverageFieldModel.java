@@ -1,5 +1,6 @@
 package fortscale.streaming.model.prevalance.field;
 
+import static fortscale.utils.ConversionUtils.convertToInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +22,9 @@ public class CumulativeAverageFieldModel implements FieldModel{
 	
 	@Override
 	public void add(Object value, long timestamp) {
-		if (value instanceof Integer || value instanceof Long) {
-			int valN = (int)value;
+		Integer intValue = convertToInteger(value);
+		if (intValue!=null) {
+			int valN = (int)intValue;
 			
 			// advance average
 			average = ((double) valN / (count + 1)) + (average / (count + 1))*count;

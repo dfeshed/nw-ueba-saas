@@ -20,6 +20,24 @@ public final class ConversionUtils {
 		}
 	}
 	
+	public static Integer convertToInteger(Object value) {
+		try {
+			if (value==null)
+				return null;
+			
+			if (value instanceof Integer)
+				return (Integer)value;
+			
+			if (value instanceof Long)
+				return ((Long)value).intValue();
+			
+			String str = value.toString();
+			return Integer.valueOf(str);				
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
 	public static Double convertToDouble(Object value) {
 		try {
 			if (value==null)
