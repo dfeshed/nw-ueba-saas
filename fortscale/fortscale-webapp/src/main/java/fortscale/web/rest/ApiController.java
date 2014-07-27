@@ -3,6 +3,7 @@ package fortscale.web.rest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,14 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
-
-
-
-
-
 
 @Controller
 @RequestMapping("/api/**")
@@ -36,6 +35,14 @@ public class ApiController {
 
     @Autowired
     private ClassifierService classifierService;
+	
+	private Cache<String, DataBean<List<Map<String, Object>>>> investigateQueryCache;
+	
+	public ApiController() {
+		// initialize investigate caching 
+		//CacheBuilder<String, DataBean<List<Map<String, Object>>>>
+		investigateQueryCache = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).maximumSize(10).build();
+	}
 	
 	
 	@RequestMapping("/**")
@@ -62,7 +69,16 @@ public class ApiController {
 	@LogException
 	public DataBean<List<Map<String, Object>>> investigate(@RequestParam(required=true) String query,
 			@RequestParam(required=false) String countQuery,
+			@RequestParam(defaultValue="false") boolean useCache,
 			Model model){
+		// check if the query is in the cache before returning results
+		if (useCache) {
+			DataBean<List<Map<String, Object>>> cachedResults = investigateQueryCache.getIfPresent(query);
+			if (cachedResults!=null)
+				return cachedResults;
+		}
+		
+		// perform the query
 		DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
 		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
 		int total = resultsMap.size();
@@ -71,6 +87,11 @@ public class ApiController {
 		}
 		retBean.setData(resultsMap);
 		retBean.setTotal(total);
+		
+		// cache results if needed
+		if (useCache)
+			investigateQueryCache.put(query, retBean);
+			
 		return retBean;
 	}
 
