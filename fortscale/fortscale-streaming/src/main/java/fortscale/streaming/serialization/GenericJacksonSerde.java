@@ -20,6 +20,7 @@ public class GenericJacksonSerde<T> implements Serde<T> {
     public GenericJacksonSerde(Class<T> type) {
         mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
         this.type = type;
     }
 
