@@ -21,7 +21,7 @@ import com.typesafe.config.Config;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
 
-public class FilterWhenServiceNameIsUserCmdBuilder implements CommandBuilder {
+public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuilder {
 
 	@Override
 	public Collection<String> getNames() {
