@@ -22,9 +22,9 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	@Value("${collection.fetch.data.path}")
 	protected String inputPath;
 	@Value("${collection.fetch.error.data.path}")
-	private String errorPath;
+	protected String errorPath;
 	@Value("${collection.fetch.finish.data.path}")
-	private String finishPath;
+	protected String finishPath;
 	
 	protected String filesFilter;
 	protected MorphlinesItemsProcessor morphline;
@@ -57,7 +57,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 		runProcessFilesStep(files);
 	}
 
-	private void runProcessFilesStep(File[] files) throws IOException, JobExecutionException{
+	protected void runProcessFilesStep(File[] files) throws IOException, JobExecutionException{
 		startNewStep("Process files");
 		
 		try{
