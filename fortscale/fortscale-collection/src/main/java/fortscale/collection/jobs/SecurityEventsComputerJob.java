@@ -1,5 +1,6 @@
 package fortscale.collection.jobs;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
@@ -9,12 +10,16 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 
 @DisallowConcurrentExecution
 public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 
+	private static Logger logger = LoggerFactory.getLogger(SecurityEventsComputerJob.class);
+	
 	private Map<String, MorphlinesItemsProcessor> morphlineForEventCode = new HashMap<String, MorphlinesItemsProcessor>();
 	
 	@Override
@@ -50,6 +55,41 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 			}
 		}
 		return record;
+	}
+	
+	@Override
+	protected void runProcessFilesStep(File[] files) throws IOException, JobExecutionException{
+		startNewStep("Process files");
+		
+		try{
+			for (File file : files) {
+				try {
+					logger.info("starting to process {}", file.getName()); 
+					
+					// transform events in file
+					boolean success = processFile(file);
+					
+					if (success) {
+						moveFileToFolder(file, finishPath);
+					} else {
+						moveFileToFolder(file, errorPath);
+					}
+		
+					logger.info("finished processing {}", file.getName());
+				} catch (Exception e) {
+					moveFileToFolder(file, errorPath);
+
+					logger.error("error processing file " + file.getName(), e);
+					monitor.error(getMonitorId(), getStepName(), e.toString());
+				}
+			}
+		} finally{
+			morphline.close();
+			for (MorphlinesItemsProcessor processor : morphlineForEventCode.values())
+				processor.close();
+		}
+		
+		finishStep();
 	}
 
 }
