@@ -152,14 +152,16 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 			double eventScore = 0;
 			for (String fieldName : model.getFieldNames()) {
 				Object value = message.get(fieldName);
-				double score = model.calculateScore(fieldName, value);
-			
-				// set the max field score as the event score
-				if (model.shouldAffectEventScore(fieldName))
-					eventScore = Math.max(eventScore, score);
+				if (value!=null) {
+					double score = model.calculateScore(fieldName, value);
 				
-				// store the field score in the message
-				message.put(outputFields.get(fieldName), score);
+					// set the max field score as the event score
+					if (model.shouldAffectEventScore(fieldName))
+						eventScore = Math.max(eventScore, score);
+					
+					// store the field score in the message
+					message.put(outputFields.get(fieldName), score);
+				}
 			}
 		
 			// put the event score in the message
