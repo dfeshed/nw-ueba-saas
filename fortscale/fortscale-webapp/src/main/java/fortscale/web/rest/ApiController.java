@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fortscale.services.fe.ClassifierService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
@@ -32,6 +33,9 @@ public class ApiController {
 
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
+
+    @Autowired
+    private ClassifierService classifierService;
 	
 	
 	@RequestMapping("/**")
@@ -69,6 +73,13 @@ public class ApiController {
 		retBean.setTotal(total);
 		return retBean;
 	}
+
+    @RequestMapping(value="/getLatestRuntime", method=RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public Long getLatestRuntime(@RequestParam(required=true) String tableName,	Model model){
+        return classifierService.getLatestRuntime(tableName);
+    }
 		
 	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
 	@ResponseBody

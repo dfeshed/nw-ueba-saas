@@ -408,4 +408,18 @@ public class ClassifierServiceImpl implements ClassifierService{
 		}
 		
 	}
+
+
+    @Override
+    public Long getLatestRuntime(String tableName) {
+        Long retLong = null;
+        if(loginDAO.getTableName().equals(tableName)) {
+            retLong = loginDAO.getLastRuntime();
+        } else if(sshDAO.getTableName().equals(tableName)) {
+            retLong = sshDAO.getLastRuntime();
+        } else if (vpnDAO.getTableName().equals(tableName)) {
+            retLong = vpnDAO.getLastRuntime();
+        }
+        return retLong;
+    }
 }

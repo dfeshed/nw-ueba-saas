@@ -134,7 +134,7 @@ public class GetTimezoneBuilderTest {
 		
 		assertTrue(result);
 		assertNotNull(output);
-		assertEquals("Asia/Jerusalem", output.getFirstValue("timezoneOutput"));
+		assertEquals("UTC", output.getFirstValue("timezoneOutput"));
 	}
 
 	@Test
