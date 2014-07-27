@@ -84,7 +84,7 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		query.from(getTableName());
 		addPartitionFilterToQuery(query, startOfTime);
 		query.andWhere(getNormalizedUserNameEqualComparison(username));
-		query.andWhere(String.format("datediff(to_date(now()),%s)<%d", getEventTimeFieldName(), daysBack));
+		query.andWhere(String.format("unix_timestamp(%s) > %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(DateTime.now().minusDays(daysBack).getMillis())));
 		query.limitAndSort(new ImpalaPageRequest(limit, new Sort(Direction.DESC, getEventTimeFieldName())));
 				
 		// perform query
@@ -98,8 +98,7 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		String selectArgs = String.format("to_date(%s) as %s, if(%s='%s','%s','%s') as %s, count(*) as %s", getEventTimeFieldName(), EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME, getStatusFieldName(), getStatusSuccessValue(), EventLoginDayCount.STATUS_SUCCESS, EventLoginDayCount.STATUS_FAILURE, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME, EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME);
 		query.select(selectArgs).from(getTableName());
 		addPartitionFilterToQuery(query, startOfTime);
-		query.andWhere(getNormalizedUserNameEqualComparison(username)).andWhere(String.format("datediff(to_date(now()),%s)<%d", getEventTimeFieldName(), numberOfDays));
-		
+		query.andWhere(getNormalizedUserNameEqualComparison(username)).andWhere(String.format("unix_timestamp(%s) > %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(DateTime.now().minusDays(numberOfDays).getMillis())));
 		query.groupBy(EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME).limitAndSort(new ImpalaPageRequest(numberOfDays*2, new Sort(Direction.ASC, EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME)));
 		
 		return query.toSQL();
@@ -168,15 +167,13 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 
 		return getListResults(query.toSQL());
 	}
-	
+
 	public List<Map<String, Object>> findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(String username, int minScore, Long latestDate, Long earliestDate, Pageable pageable) {		
 		ImpalaQuery query = getFindAllEventsQuery(pageable);
 		addPartitionFilterToQuery(query, earliestDate, latestDate);
 		query.andGte(getEventScoreFieldName(), minScore);
 		query.andWhere(getNormalizedUserNameEqualComparison(username));
-		query.andWhere(String.format("unix_timestamp(%s) >= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(earliestDate)));
-		query.andWhere(String.format("unix_timestamp(%s) <= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(latestDate)));
-		
+		updateQueryTimeRanges(query, earliestDate, latestDate);
 		
 		
 		return getListResults(query.toSQL());
@@ -237,8 +234,7 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		ImpalaQuery impalaQuery = new ImpalaQuery();
 		impalaQuery.select("count(*)").from(getTableName()).andWhere(getNormalizedUserNameEqualComparison(username)).andGte(getEventScoreFieldName(), minScore);
 		addPartitionFilterToQuery(impalaQuery, earliestDate, latestDate);
-		impalaQuery.andWhere(String.format("unix_timestamp(%s) >= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(earliestDate)));
-		impalaQuery.andWhere(String.format("unix_timestamp(%s) <= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(latestDate)));
+		updateQueryTimeRanges(impalaQuery, earliestDate, latestDate);
 		
 		
 		return impalaJdbcTemplate.queryForObject(impalaQuery.toSQL(), Integer.class);
@@ -248,9 +244,8 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		ImpalaQuery impalaQuery = new ImpalaQuery();
 		impalaQuery.select("count(*)").from(getTableName()).andGte(getEventScoreFieldName(), minScore);
 		addPartitionFilterToQuery(impalaQuery, earliestDate, latestDate);
-		impalaQuery.andWhere(String.format("unix_timestamp(%s) >= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(earliestDate)));
-		impalaQuery.andWhere(String.format("unix_timestamp(%s) <= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(latestDate)));
 		impalaQuery.andIn(getNormalizedUsernameField(), usernames);
+		updateQueryTimeRanges(impalaQuery, earliestDate, latestDate);
 		
 		return impalaJdbcTemplate.queryForObject(impalaQuery.toSQL(), Integer.class);
 	}
@@ -262,8 +257,7 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 			query.andGte(getEventScoreFieldName(), minScore);
 		}
 		query.andIn(getNormalizedUsernameField(), usernames);
-		query.andWhere(String.format("unix_timestamp(%s) >= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(earliestDate)));
-		query.andWhere(String.format("unix_timestamp(%s) <= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(latestDate)));
+		updateQueryTimeRanges(query, earliestDate, latestDate);
 		
 		return getListResults(query.toSQL());
 	}
@@ -370,6 +364,12 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 			
 			return new EventScore(getLogEventsEnum(), ts, source, destination, status, score); 
 		}
+	}
+	
+	
+	public void updateQueryTimeRanges(ImpalaQuery query, Long earliestDate, Long latestDate){
+		query.andWhere(String.format("unix_timestamp(%s) >= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(earliestDate)));
+		query.andWhere(String.format("unix_timestamp(%s) <= %d", getEventTimeFieldName(), TimestampUtils.convertToSeconds(latestDate)));
 	}
 	
 	class UsernameMapper implements RowMapper<Map<String, Object>> {
