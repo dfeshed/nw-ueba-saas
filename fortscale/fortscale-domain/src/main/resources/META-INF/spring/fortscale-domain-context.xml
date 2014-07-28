@@ -29,6 +29,8 @@
 	
 	<bean id="loginDAO" class="fortscale.domain.fe.dao.impl.LoginDAOImpl"/>
 	
-	<bean id="sshDAO" class="fortscale.domain.fe.dao.impl.SshDAOImpl"/>	
+	<bean id="sshDAO" class="fortscale.domain.fe.dao.impl.SshDAOImpl"/>
+
+    <bean id="groupMembershipDAO" class="fortscale.domain.fe.dao.GroupMembershipDAO"/>
 
 </beans>

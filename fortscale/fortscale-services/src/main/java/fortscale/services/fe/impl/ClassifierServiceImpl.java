@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.domain.fe.dao.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.IntRange;
 import org.apache.commons.lang.math.Range;
@@ -26,11 +27,6 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.EventScore;
-import fortscale.domain.fe.dao.AccessDAO;
-import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
-import fortscale.domain.fe.dao.EventLoginDayCount;
-import fortscale.domain.fe.dao.EventResultRepository;
-import fortscale.domain.fe.dao.Threshold;
 import fortscale.services.UserService;
 import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.exceptions.UnknownResourceException;
@@ -68,7 +64,10 @@ public class ClassifierServiceImpl implements ClassifierService{
 	
 	@Autowired
 	private AccessDAO vpnDAO;
-	
+
+    @Autowired
+    private GroupMembershipDAO groupMembershipDAO;
+
 	@Autowired
 	private UserService userService;
 	
@@ -412,14 +411,8 @@ public class ClassifierServiceImpl implements ClassifierService{
 
     @Override
     public Long getLatestRuntime(String tableName) {
-        Long retLong = null;
-        if(loginDAO.getTableName().equals(tableName)) {
-            retLong = loginDAO.getLastRuntime();
-        } else if(sshDAO.getTableName().equals(tableName)) {
-            retLong = sshDAO.getLastRuntime();
-        } else if (vpnDAO.getTableName().equals(tableName)) {
-            retLong = vpnDAO.getLastRuntime();
-        }
-        return retLong;
+
+        return groupMembershipDAO.getLastRuntime();
+
     }
 }
