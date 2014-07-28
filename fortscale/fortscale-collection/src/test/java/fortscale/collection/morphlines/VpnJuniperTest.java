@@ -98,11 +98,17 @@ public class VpnJuniperTest {
 	    		"Regular (Poza) Successful VPN Authentication",
 	    		$(
 	    			"Mar 16 04:17:26 192.168.199.2 Juniper: 2014-03-16 04:17:26 - ive - [82.166.88.97] omendelso-contractor(SecurID Users)[Users, Poza Users] - Agent login succeeded for omendelso-contractor/SecurID Users from 82.166.88.97.",
-	    			"Mar 16 04:17:26 192.168.199.2 Juniper: 2014-03-16 04:17:26 - ive - [82.166.88.97] omendelso-contractor(SecurID Users)[Users, Poza Users] - VPN Tunneling: Session started for user with IP 10.49.253.16, hostname ORI-PC"   
-				),
+	    			"Mar 16 04:17:26 192.168.199.2 Juniper: 2014-03-16 04:17:26 - ive - [82.166.88.97] omendelso-contractor(SecurID Users)[Users, Poza Users] - VPN Tunneling: Session started for user with IP 10.49.253.16, hostname ORI-PC",
+
+                    "Mar 16 04:17:26 192.168.199.3 Juniper: 2014-03-16 04:17:26 - ive - [82.166.88.95] idanp-contractor(SecurID Users)[Users, Poza Users] - VPN Tunneling: Session started for user with IP 10.49.253.16, hostname Idan-PC",
+                    "Mar 16 04:16:26 192.168.199.3 Juniper: 2014-03-16 04:16:26 - ive - [82.166.88.95] idanp-contractor(SecurID Users)[Users, Poza Users] - Agent login succeeded for idanp-contractor/SecurID Users from 82.166.88.95."
+                ),
 	    		$(
     				(String)null,
-    				"2014-03-16 04:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,,,,,,,ORI-PC,,,,,,false,false"
+    				"2014-03-16 04:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,,,,,,,ORI-PC,,,,,,false,false",
+
+                    (String)null,
+                    "2014-03-16 04:16:26,1394936186,idanp-contractor,82.166.88.95,10.49.253.16,SUCCESS,,,,,,,Idan-PC,,,,,,false,false"
 	    		)
     		),
     		$(
