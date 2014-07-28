@@ -61,10 +61,10 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
             tmp.add(Calendar.DAY_OF_MONTH, -1);
             lastRunDate = new Date(tmp.getTimeInMillis());
         }
-        String query = String.format("select max(%s) from %s",
+        String query = String.format("select  UNIX_TIMESTAMP(max(%s)) from %s",
                 getTimeStamp(), getTableName());
-        String queryWithHint = String.format("%s where %s >=' %s'", query,
-                getTimeStamp(), new Timestamp(lastRunDate.getTime() / 1000));
+        String queryWithHint = String.format("%s where UNIX_TIMESTAMP(%s) >= %d", query,
+                getTimeStamp(), lastRunDate.getTime() / 1000);
         Long lastRun = impalaJdbcTemplate.queryForObject(queryWithHint,
                 Long.class);
         if (lastRun == null) {
