@@ -14,7 +14,7 @@
 	<appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<filter class="fortscale.streaming.SamzaContainerShutdownErrorFilter" />
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<file>${STREAM_LOG_DIR}/logFile-${STREAM_TASK_NAME}-logback.%i.log</file>
+			<fileNamePattern>${STREAM_LOG_DIR}/logFile-${STREAM_TASK_NAME}-logback.%i.log</fileNamePattern>
 			<minIndex>1</minIndex>
 			<maxIndex>5</maxIndex>
 		</rollingPolicy>
