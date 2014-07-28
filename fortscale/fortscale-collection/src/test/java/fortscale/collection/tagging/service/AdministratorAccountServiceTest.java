@@ -7,8 +7,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
@@ -17,8 +16,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import fortscale.collection.tagging.service.impl.AdministratorAccountServiceImpl;
 import fortscale.domain.core.User;
@@ -28,8 +25,7 @@ public class AdministratorAccountServiceTest {
 
 	@Mock
 	private UserRepository repository;
-	@Mock
-	private Set<String> adminUsers;
+
 	@InjectMocks
 	private AdministratorAccountServiceImpl administratorAccountService;
 	
@@ -46,25 +42,11 @@ public class AdministratorAccountServiceTest {
  	   return temp.getAbsolutePath();
 	}
 	
-	private User getNewUser(String user) {
-		User u = new User();
-	
-		u.setUsername(user);
-		return u;
-	}
-
-	private User getNewUser(String user,Boolean isAdministratorAccount) {
-		User u = getNewUser(user);
-		u.setAdministratorAccount(isAdministratorAccount);
-		return u;
-	}
-	
-	private List<User> getUsersList(String userList,String adminList) {
-		List<User> result = new ArrayList<User>();
+	private Set<String> getUsersSet(String userList) {
+		Set<String> result = new HashSet<String>();
 		String[] users = userList.split(",");
-		String[] values = adminList.split(",");
 		for (int i=0;i<users.length;i++) {
-			result.add(getNewUser(users[i],Boolean.parseBoolean(values[i])));
+			result.add(users[i]);
 		}
 		return result;
 	}
@@ -73,88 +55,55 @@ public class AdministratorAccountServiceTest {
 	@Test
 	public void no_admin_file() throws Exception {
 		// arrange
-		when(adminUsers.contains("user2")).thenReturn(false);
-		@SuppressWarnings("unchecked")
-		Page<User> pages = mock(Page.class);
-		when(pages.getContent()).thenReturn(new ArrayList<User>());
-		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
+		HashSet<String> taggedUsers = new HashSet<String>();
+		taggedUsers.add("user1");
+		administratorAccountService.setTaggedUsers(taggedUsers);
 		
 		administratorAccountService.setFilePath(null);
 		administratorAccountService.update();
 				
-		assertEquals(false, administratorAccountService.isUserAdministrator("user2"));
-
+		assertEquals(false, administratorAccountService.isUserAdministrator("user1"));
 	}
 	
-	@Test
-	public void group_not_in_repository() throws Exception {
-		// arrange
-		when(repository.findByUserInGroup(anyListOf(String.class))).thenReturn(new ArrayList<User>());
-		@SuppressWarnings("unchecked")
-		Page<User> pages = mock(Page.class);
-		when(pages.getContent()).thenReturn(new ArrayList<User>());
-		when(repository.findAll(any(Pageable.class))).thenReturn(pages);		
-		administratorAccountService.setFilePath(getFile("group1,group2"));
-		administratorAccountService.update();
-			
-		assertEquals(false, administratorAccountService.isUserAdministrator("user2"));
-	}
 	
 	@Test
-	public void add_admin_tag_to_user() throws Exception {
+	public void remove_admin_tag_to_user() throws Exception {
 		// arrange		
-		List<User> users1 = getUsersList("user1,user2,user3","true,true,false");
+		Set<String> users1 = getUsersSet("user1,user2,user3");
 		when((repository.findByUserInGroup(anyListOf(String.class)))).thenReturn(users1);
-		when(adminUsers.contains("user1")).thenReturn(true);
-		when(adminUsers.contains("user2")).thenReturn(true);
-		when(adminUsers.contains("user3")).thenReturn(true);
-		List<User> users2 = getUsersList("user1,user2,user3,user4,user5","true,true,false,false,false");
-		@SuppressWarnings("unchecked")
-		Page<User> pages = mock(Page.class);
-		when(pages.getContent()).thenReturn(users2);
-		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
-		
+		Set<String> users2 = getUsersSet("user1,user2,user3,user4,user5");
+		when(repository.findNameByTag(User.administratorAccountField, true)).thenReturn(users2);
 		administratorAccountService.setFilePath(getFile("group1,group2"));
 		administratorAccountService.update();
 			
-		ArgumentCaptor<User> captorUser = ArgumentCaptor.forClass(User.class);
+		ArgumentCaptor<String> usernameCaptor = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);
-		verify(repository,times(1)).updateAdministratorAccount(captorUser.capture(),captorBool.capture());		
-		for(int i=0;i<captorUser.getAllValues().size();i++) {
-			if (captorUser.getAllValues().get(i).getUsername().equals("user3")) {
+		verify(repository,times(2)).updateUserTag(anyString(), usernameCaptor.capture(),captorBool.capture());		
+		for(int i=0;i<usernameCaptor.getAllValues().size();i++) {
+			if (usernameCaptor.getAllValues().get(i).equals("user4") || usernameCaptor.getAllValues().get(i).equals("user5")) {
+				assertEquals(false, captorBool.getAllValues().get(i));
+			}else{
 				assertEquals(true, captorBool.getAllValues().get(i));
-			}			
+			}
 		}
 	}
 	
 	@Test
 	public void user_removed_from_group() throws Exception {
 		// arrange		
-		List<User> users1 = getUsersList("user1,user2","true,true");
+		Set<String> users1 = getUsersSet("user1,user2,user3,user4,user5");
 		when((repository.findByUserInGroup(anyListOf(String.class)))).thenReturn(users1);
-		when(adminUsers.contains("user1")).thenReturn(true);
-		when(adminUsers.contains("user2")).thenReturn(true);
-		when(adminUsers.contains("user3")).thenReturn(false);
-		List<User> users2 = getUsersList("user1,user2,user3,user4,user5","false,false,true,false,false");
-		@SuppressWarnings("unchecked")
-		Page<User> pages = mock(Page.class);
-		when(pages.getContent()).thenReturn(users2);
-		when(repository.findAll(any(Pageable.class))).thenReturn(pages);
-		
+		Set<String> users2 = getUsersSet("user1,user2,user3");
+		when(repository.findNameByTag(User.administratorAccountField, true)).thenReturn(users2);
 		administratorAccountService.setFilePath(getFile("group1,group2"));
 		administratorAccountService.update();
 			
-		ArgumentCaptor<User> captorUser = ArgumentCaptor.forClass(User.class);
+		ArgumentCaptor<String> usernameCaptor = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);
-		verify(repository,times(3)).updateAdministratorAccount(captorUser.capture(),captorBool.capture());		
-		for(int i=0;i<captorUser.getAllValues().size();i++) {
-			if (captorUser.getAllValues().get(i).getUsername().equals("user3")) {
-				assertEquals(false, captorBool.getAllValues().get(i));
-			}
-			else {
-				assertEquals(true, captorBool.getAllValues().get(i));
-			}
-			
+		verify(repository,times(2)).updateUserTag(anyString(), usernameCaptor.capture(),captorBool.capture());	
+		for(int i=0;i<usernameCaptor.getAllValues().size();i++) {
+			assert(usernameCaptor.getAllValues().get(i).equals("user4")  || usernameCaptor.getAllValues().get(i).equals("user5"));
+			assertEquals(true, captorBool.getAllValues().get(i));
 		}
 	}
 }

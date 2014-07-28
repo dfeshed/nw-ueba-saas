@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -264,45 +266,20 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return ret;
 	}
 
-	class UsernameWrapper {
-		private String id;
-		private String username;
-
-		public String getId() {
-			return id;
+	@Override
+	public Set<String> findByUserInGroup(Collection<String> groups) {
+		Query query = new Query(where(User.getAdInfoField(String.format("%s.%s",UserAdInfo.groupsField,UserAdInfo.adDnField))).in(groups));
+		query.fields().include(User.usernameField);
+		HashSet<String> userNames = new HashSet<String>();
+		for (UsernameWrapper userNameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)){
+			userNames.add(userNameWrapper.getUsername());
 		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getUsername() {
-			return username;
-		}
-
-		public void setUsername(String username) {
-			this.username = username;
-		}
+		return userNames;
 	}
 
 	@Override
-	public void updateUserServiceAccount(User user, boolean isUserServiceAccount) {
-		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.userServiceAccountField, isUserServiceAccount), User.class);		
-	}
-
-	@Override
-	public List<User> findByUserInGroup(Collection<String> groups) {
-		return findByUniqueField(User.getAdInfoField(String.format("%s.%s",UserAdInfo.groupsField,UserAdInfo.adDnField)), groups);
-	}
-
-	@Override
-	public void updateAdministratorAccount(User user, boolean isAdministratorAccount) {
-		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.administratorAccountField, isAdministratorAccount), User.class);
-	}
-
-	@Override
-	public void updateExecutiveAccount(User user, boolean isExecutiveAccount) {
-		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.executiveAccountField, isExecutiveAccount), User.class);
+	public void updateUserTag(String tagField, String username, boolean value) {
+		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update(tagField, value), User.class);
 	}
 	
 	@Override
@@ -390,6 +367,25 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         }
 	}
 	
+	@Override
+	public Set<String> findNameByTag(String tagFieldName, Boolean value) {
+		Query query = new Query();
+		Criteria criteria = where(tagFieldName).is(value);
+		query.fields().include(User.usernameField);
+		query.addCriteria(criteria);
+		Set<String> res = new HashSet<String>();
+		for(UsernameWrapper usernameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)){
+			res.add(usernameWrapper.getUsername());
+		}
+		return res;
+	}
+	
+	public boolean findIfUserExists(String username){
+		Query query = new Query(where(User.usernameField).is(username));
+		query.fields().include(User.ID_FIELD);
+		return !(mongoTemplate.find(query, UserIdWrapper.class, User.collectionName).isEmpty());
+	}
+	
 	/**
 	 * Since spring data mongodb does not support each on the addToSet update 
 	 * operator we create a custom bson command that does that
@@ -402,5 +398,36 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			return this;
 		}
 	}
+	
+	class UsernameWrapper {
+		private String id;
+		private String username;
 
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+	}
+	
+	class UserIdWrapper{
+		private String id;
+		
+		public String getId(){
+			return id;
+		}
+		public void setId(String id){
+			this.id = id;
+		}
+	}
 }

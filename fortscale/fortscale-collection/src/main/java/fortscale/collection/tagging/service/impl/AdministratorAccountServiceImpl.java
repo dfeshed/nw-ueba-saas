@@ -1,5 +1,4 @@
 package fortscale.collection.tagging.service.impl;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,11 @@ public class AdministratorAccountServiceImpl extends UserTagServiceAbstract{
 		return tag;
 	}
 	
+	@Override
+	public String getTagMongoField(){
+		return User.administratorAccountField;
+	}
+	
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
@@ -32,17 +36,7 @@ public class AdministratorAccountServiceImpl extends UserTagServiceAbstract{
 	}
 	
 	@Override
-	public void updateUserTag(User user, boolean isTagTheUser){
-		userRepository.updateAdministratorAccount(user, isTagTheUser);
+	public void updateUserTag(String username, boolean isTagTheUser){
+		userRepository.updateUserTag(User.administratorAccountField, username, isTagTheUser);
 	}
-	
-	@Override
-	public boolean isUserTagged(User user){
-		return user.getAdministratorAccount() != null ? user.getAdministratorAccount() : false;
-	}
-	
-	@Override
-	protected List<User> findTaggedUsersFromDb(){
-		return userRepository.findByAdministratorAccount(true);
-	}	
 }

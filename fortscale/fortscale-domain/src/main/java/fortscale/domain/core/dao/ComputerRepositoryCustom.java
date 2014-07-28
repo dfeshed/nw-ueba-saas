@@ -23,4 +23,6 @@ public interface ComputerRepositoryCustom {
 	
 	List<Computer> getComputersWithPartialFields(List<String> machineNames, String... includeFields);
 	Computer getComputerWithPartialFields(String machineName, String... includeFields);
+	public void updateSensitiveMachineByName(String machineName, boolean isSensitive);
+	public boolean findIfComputerExists(String computerName);
 }

@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import fortscale.collection.tagging.service.impl.SensitiveMachineServiceImpl;
-import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
 
 public class SensitiveMachineServiceTest {
@@ -65,19 +64,19 @@ public class SensitiveMachineServiceTest {
 	}
 
 	@Test
-	public void test_adding_existing_sensitiveMachine_to_sensitivemachines() {
+	public void test_adding_existing_sensitiveMachine_to_sensitivemachines() throws IOException {
 		creatingMachinesFile("DUMMY-PC");
-		when(computerRepository.findByName(anyString())).thenReturn(
-				new Computer());
+		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
+				true);
 		service.updateSensitiveMachines();
 		assertTrue(service.getSensitiveMachines().contains("DUMMY-PC") == true);
 	}
 	
 	@Test
-	public void test_adding_three_sensitiveMachines_to_sensitivemachines() {
+	public void test_adding_three_sensitiveMachines_to_sensitivemachines() throws IOException {
 		creatingMachinesFile("dummy-pc\nX-PC\nY-PC");
-		when(computerRepository.findByName(anyString())).thenReturn(
-				new Computer());
+		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
+			true);
 		service.updateSensitiveMachines();
 		assertTrue(service.getSensitiveMachines().contains("DUMMY-PC") == true);
 		assertTrue(service.getSensitiveMachines().contains("X-PC") == true);
@@ -85,29 +84,29 @@ public class SensitiveMachineServiceTest {
 	}
 	
 	@Test
-	public void test_adding_not_existed_machine_to_sensitive_machines() {
+	public void test_adding_not_existed_machine_to_sensitive_machines() throws IOException {
 		creatingMachinesFile("DUMMY-PC\n ");
-		when(computerRepository.findByName(anyString())).thenReturn(
-				null);
+		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
+				false);
 		service.updateSensitiveMachines();
 		assertTrue(service.getSensitiveMachines().contains("DUMMY-PC") == false);
 		
 	}
 	
 	@Test
-	public void test_removing_sensitive_machine_from_sensitive_machines() {
+	public void test_removing_sensitive_machine_from_sensitive_machines() throws IOException {
 		creatingMachinesFile("-MY-PC");
-		when(computerRepository.findByName(anyString())).thenReturn(
-				new Computer());
+		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
+				true);
 		service.updateSensitiveMachines();
 		assertTrue(service.getSensitiveMachines().contains("MY-PC") == false);
 	}
 	
 	@Test
-	public void test_removing_not_sensitive_machine_from_sensitive_machines() {
+	public void test_removing_not_sensitive_machine_from_sensitive_machines() throws IOException {
 		creatingMachinesFile("-DUMMY-PC");
-		when(computerRepository.findByName(anyString())).thenReturn(
-				new Computer());
+		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
+				true);
 		Set<String> oldSensitiveMachine = new HashSet<String>(service.getSensitiveMachines());
 		service.updateSensitiveMachines();
 		assertEquals(service.getSensitiveMachines(), oldSensitiveMachine);
