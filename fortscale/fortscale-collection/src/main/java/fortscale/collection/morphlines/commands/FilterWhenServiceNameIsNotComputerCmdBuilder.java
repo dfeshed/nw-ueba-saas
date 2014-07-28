@@ -20,9 +20,10 @@ import com.typesafe.config.Config;
 
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
+import fortscale.utils.logging.Logger;
 
 public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuilder {
-
+	private static Logger logger = Logger.getLogger(FilterWhenServiceNameIsNotComputerCmdBuilder.class);
 	@Override
 	public Collection<String> getNames() {
 		return Collections.singletonList("FilterWhenServiceNameIsNotComputer");
@@ -100,6 +101,7 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 			if (isMachine) {
 				return super.doProcess(inputRecord);
 			} else {
+				logger.debug("Filter event since service name [{}] is not a computer.", serviceName);
 				return true;
 			}
 		}
