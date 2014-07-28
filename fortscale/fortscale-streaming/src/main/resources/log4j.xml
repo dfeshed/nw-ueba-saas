@@ -15,9 +15,9 @@
 		<param name="append" value="true" />
 		<param name="MaxFileSize" value="25MB" />
 		<param name="MaxBackupIndex" value="3" />
-		<param name="file" value="log/logFile-${STREAM_TASK_NAME}.log4j.log" />
+		<param name="file" value="${STREAM_LOG_DIR}/logFile-${STREAM_TASK_NAME}-log4j.log" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ISO8601} - %-5p [%t:%C{1}@%L] - %m%n" />
+			<param name="ConversionPattern" value="%d{ISO8601} %p %c: %m%n" />
 		</layout>
 	</appender>
 
