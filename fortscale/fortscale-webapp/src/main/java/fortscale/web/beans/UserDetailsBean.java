@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -85,7 +86,8 @@ public class UserDetailsBean implements Serializable{
 	}
 	
 	public Long getLastActivity(){
-		return user.getLastActivity().getMillis();
+		DateTime lastActivity = user.getLastActivity();
+		return lastActivity != null ? lastActivity.getMillis() : null;
 	}
 
 	public String getName() {
