@@ -16,8 +16,6 @@ import org.apache.samza.task.InitableTask;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.model.UserTopEvents;
@@ -26,8 +24,6 @@ import fortscale.streaming.service.UserScoreStreamingService;
 import fortscale.utils.TimestampUtils;
 
 public class UserScoreStreamTask  extends AbstractStreamTask  implements InitableTask, ClosableTask{
-	private static final Logger logger = LoggerFactory.getLogger(UserScoreStreamTask.class);
-	
 	
 	private String usernameField;
 	private String timestampField;

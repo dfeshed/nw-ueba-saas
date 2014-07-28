@@ -15,7 +15,6 @@ import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
 import fortscale.collection.morphlines.commands.GetTimezoneBuilder.GetTimezone;
-import org.kitesdk.morphline.base.Configs;
 
 public class GetTimezoneBuilderTest {
 

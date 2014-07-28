@@ -5,13 +5,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fortscale.domain.core.ComputerUsageType;
-import fortscale.domain.core.User;
-import fortscale.services.UserService;
 import fortscale.utils.TimestampUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 

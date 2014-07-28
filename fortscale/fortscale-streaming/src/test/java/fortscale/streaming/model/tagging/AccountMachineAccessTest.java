@@ -3,10 +3,8 @@ package fortscale.streaming.model.tagging;
 import fortscale.domain.core.ComputerUsageType;
 import org.junit.Test;
 
-import javax.xml.transform.Source;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
 
 import static org.junit.Assert.*;

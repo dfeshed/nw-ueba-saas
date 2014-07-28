@@ -2,14 +2,11 @@ package fortscale.streaming.service.tagging;
 
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
-import org.apache.samza.storage.kv.KeyValueStore;
 import org.junit.Test;
 
 import java.util.Date;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class IsSensetiveTagImplTest {
 

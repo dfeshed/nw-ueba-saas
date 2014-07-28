@@ -7,7 +7,6 @@ import fortscale.collection.morphlines.RecordSinkCommand;
 import fortscale.services.ipresolving.ComputerLoginResolver;
 import fortscale.services.ipresolving.DhcpResolver;
 import fortscale.services.ipresolving.DnsResolver;
-import org.glassfish.grizzly.utils.ArraySet;
 import org.junit.Before;
 import org.junit.Test;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -21,7 +20,6 @@ import java.util.Set;
 import  fortscale.collection.morphlines.commands.IpToHostnameBuilder.IpToHostname;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
