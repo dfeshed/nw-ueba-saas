@@ -41,7 +41,7 @@ public class ApiController {
 	public ApiController() {
 		// initialize investigate caching 
 		//CacheBuilder<String, DataBean<List<Map<String, Object>>>>
-		investigateQueryCache = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).maximumSize(10).build();
+		investigateQueryCache = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).maximumSize(300).build();
 	}
 	
 	
@@ -88,8 +88,8 @@ public class ApiController {
 		retBean.setData(resultsMap);
 		retBean.setTotal(total);
 		
-		// cache results if needed
-		if (useCache)
+		// cache results if needed, store results with up to 200 rows in the cache to protect memory
+		if (useCache && retBean.getTotal() < 200)
 			investigateQueryCache.put(query, retBean);
 			
 		return retBean;
