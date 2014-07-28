@@ -4,6 +4,7 @@ import fortscale.domain.impala.ImpalaDAO;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -60,8 +61,8 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
         }
         String query = String.format("select max(%s) from %s",
                 timeStamp, getTableName());
-        String queryWithHint = String.format("%s where %s >= %d", query,
-                timeStamp, lastRunDate.getTime() / 1000);
+        String queryWithHint = String.format("%s where %s >= %s", query,
+                timeStamp, new Timestamp(lastRunDate.getTime() / 1000));
         Long lastRun = impalaJdbcTemplate.queryForObject(queryWithHint,
                 Long.class);
         if (lastRun == null) {
