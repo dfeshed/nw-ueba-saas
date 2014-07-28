@@ -4,7 +4,6 @@ import fortscale.domain.impala.ImpalaDAO;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -29,8 +28,8 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
     @Value("${impala.ldap.group.membership.scores.table.name}")
     private String tableName;
 
-    @Value("${impala.ldap.group.membership.scores.table.fields.timeStamp}")
-    private String timeStamp;
+    @Value("${impala.ldap.group.membership.scores.table.fields.runTime}")
+    private String runTime;
 
     @Value("${impala.ldap.group.membership.scores.table.fields}")
     private String impalaMemberShipTableFields;
@@ -51,8 +50,8 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
         this.tableName = tableName;
     }
 
-    public String getTimeStamp() {
-        return timeStamp;
+    public String getRunTime() {
+        return runTime;
     }
 
     public Long getLastRuntime() {
@@ -61,10 +60,10 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
             tmp.add(Calendar.DAY_OF_MONTH, -1);
             lastRunDate = new Date(tmp.getTimeInMillis());
         }
-        String query = String.format("select  UNIX_TIMESTAMP(max(%s)) from %s",
-                getTimeStamp(), getTableName());
-        String queryWithHint = String.format("%s where UNIX_TIMESTAMP(%s) >= %d", query,
-                getTimeStamp(), lastRunDate.getTime() / 1000);
+        String query = String.format("select  max(%s) from %s",
+                getRunTime(), getTableName());
+        String queryWithHint = String.format("%s where %s >= %d", query,
+                getRunTime(), lastRunDate.getTime() / 1000);
         Long lastRun = impalaJdbcTemplate.queryForObject(queryWithHint,
                 Long.class);
         if (lastRun == null) {
