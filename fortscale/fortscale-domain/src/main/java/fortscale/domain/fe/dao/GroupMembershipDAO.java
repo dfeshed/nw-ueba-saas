@@ -51,7 +51,9 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
         this.tableName = tableName;
     }
 
-
+    public String getTimeStamp() {
+        return timeStamp;
+    }
 
     public Long getLastRuntime() {
         if (lastRunDate == null) {
@@ -60,9 +62,9 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
             lastRunDate = new Date(tmp.getTimeInMillis());
         }
         String query = String.format("select max(%s) from %s",
-                timeStamp, getTableName());
-        String queryWithHint = String.format("%s where %s >= %s", query,
-                timeStamp, new Timestamp(lastRunDate.getTime() / 1000));
+                getTimeStamp(), getTableName());
+        String queryWithHint = String.format("%s where %s >=' %s'", query,
+                getTimeStamp(), new Timestamp(lastRunDate.getTime() / 1000));
         Long lastRun = impalaJdbcTemplate.queryForObject(queryWithHint,
                 Long.class);
         if (lastRun == null) {
