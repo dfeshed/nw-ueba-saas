@@ -31,10 +31,6 @@
 					<key>eventMorphlineFile4768</key>
 					<value>file:resources/conf-files/read4768SecEvtOnlyComp_splunk.conf</value>
 				</entry>
-				<entry>
-					<key>eventMorphlineFile4771</key>
-					<value>file:resources/conf-files/read4768SecEvtOnlyComp_splunk.conf</value>
-				</entry>
 			</job-data-map>
 		</job>		
 	</schedule>
