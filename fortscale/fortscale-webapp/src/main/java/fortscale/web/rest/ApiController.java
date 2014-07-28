@@ -89,7 +89,7 @@ public class ApiController {
 		retBean.setTotal(total);
 		
 		// cache results if needed, store results with up to 200 rows in the cache to protect memory
-		if (useCache && retBean.getTotal() < 200)
+		if (useCache && resultsMap.size() < 200)
 			investigateQueryCache.put(query, retBean);
 			
 		return retBean;
