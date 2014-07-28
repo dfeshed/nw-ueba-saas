@@ -11,15 +11,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
-import fortscale.utils.TimestampUtils;
-
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class PrevalanceModel {
 	
 	private Map<String, FieldModel> fields = new HashMap<String, FieldModel>();
 	private String modelName;
-	private long timeMark;
+	private UserTimeBarrierModel barrier;
 	
 	@JsonCreator
 	public PrevalanceModel(@JsonProperty("modelName") String modelName) {
@@ -39,8 +37,10 @@ public class PrevalanceModel {
 		fields.put(field, model);
 	}
 	
-	public long getTimeMark() {
-		return timeMark;
+	public UserTimeBarrierModel getBarrier() {
+		if (barrier==null)
+			barrier = new UserTimeBarrierModel();
+		return barrier;
 	}
 	
 	public void addFieldValue(String fieldName, Object value, long timestamp) {
@@ -48,18 +48,9 @@ public class PrevalanceModel {
 		if (value==null || !fields.containsKey(fieldName))
 			return; 
 		
-		// check that the value time stamp is not before the time mark
-		long millis = convertToMilliSeconds(timestamp);
-		if (isBeforeTimeMark(timestamp))
-			return;
-		
 		// add the value to the field model
 		FieldModel model = fields.get(fieldName);
-		model.add(value, millis);
-		
-		// update the time mark, but check that it is not in the future (more than 24 hours
-		if (!TimestampUtils.isFutureTimestamp(millis, 24))
-			timeMark = Math.max(timeMark, millis);
+		model.add(value, convertToMilliSeconds(timestamp));
 	}
 	
 	public double calculateScore(String fieldName, Object value){
@@ -75,16 +66,6 @@ public class PrevalanceModel {
 		checkNotNull(fieldName);
 		FieldModel model = fields.get(fieldName);
 		return (model!=null && model.shouldAffectEventScore());
-	}
-	
-	public boolean isAfterTimeMark(long timestamp) {
-		// check that the value time stamp is after the time mark
-		return (timeMark < convertToMilliSeconds(timestamp));
-	}
-	
-	public boolean isBeforeTimeMark(long timestamp) {
-		// check that the value time stamp is before the time mark
-		return (convertToMilliSeconds(timestamp) < timeMark);
 	}
 	
 }

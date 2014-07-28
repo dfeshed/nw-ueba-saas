@@ -20,13 +20,11 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import fortscale.streaming.exceptions.LevelDbException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.model.prevalance.UserTimeBarrierModel;
+import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.HdfsService;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
@@ -36,25 +34,22 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
  * Stream tasks that receives events and write them to hdfs using a partitioned
  * writer
  */
-public class HDFSWriterStreamTask extends AbstractStreamTask implements
-		InitableTask, ClosableTask {
-
-	private static final Logger logger = LoggerFactory.getLogger(HDFSWriterStreamTask.class);
+public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
 	private static final String storeNamePrefix = "hdfs-write-";
 
 	private String timestampField;
 	private String usernameField;
 	private List<String> fields;
-	private List<String> discriminatorsFields;
 	private String separator;
 	private HdfsService service;
 	private String tableName;
 	private Counter processedMessageCount;
-	private KeyValueStore<String, UserTimeBarrierModel> store;
 	private String storeName;
+	private BarrierService barrier;
 
 	/** reads task configuration from job config and initialize hdfs appender */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config, TaskContext context) throws Exception {
 		// get configuration properties
@@ -64,7 +59,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		usernameField = getConfigString(config, "fortscale.username.field");
 		fields = getConfigStringList(config, "fortscale.fields");
-		discriminatorsFields = getConfigStringList(config, "fortscale.discriminator.fields");
+		List<String> discriminatorsFields = getConfigStringList(config, "fortscale.discriminator.fields");
 		tableName = getConfigString(config, "fortscale.table.name");
 		int eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
 		storeName = storeNamePrefix + tableName;
@@ -81,7 +76,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", tableName));
 
 		// get write time stamp barrier store
-		loadBarrier(context);
+		barrier = new BarrierService((KeyValueStore<String, UserTimeBarrierModel>) context.getStore(storeName), discriminatorsFields);
 	}
 
 	/** Write the incoming message fields to hdfs */
@@ -103,17 +98,16 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements
 
 		// get the username from the message
 		String username = convertToString(message.get(usernameField));
-		String discriminator = calculateDiscriminator(message);
 
 		// check if the event is before the time stamp barrier
 		timestamp = TimestampUtils.convertToMilliSeconds(timestamp);
-		if (isEventAfterBarrier(username, timestamp, discriminator)) {
-
+		if (barrier.isEventAfterBarrier(username, timestamp, message)) {
 			// write the event to hdfs
 			String eventLine = buildEventLine(message);
 			service.writeLineToHdfs(eventLine, timestamp.longValue());
 
-			updateBarrier(username, timestamp, discriminator);
+			// update barrier
+			barrier.updateBarrier(username, timestamp, message);
 			processedMessageCount.inc();
 		}
 	}
@@ -137,19 +131,17 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements
 
 	/** Periodically flush data to hdfs */
 	@Override
-	public void wrappedWindow(MessageCollector collector,
-			TaskCoordinator coordinator) throws Exception {
+	public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// flush writes to hdfs and refresh impala
 		service.flushHdfs();
 
-		flushBarrier();
+		barrier.flushBarrier();
 		// commit the checkpoint in the kafka topic when flushing events, not to
 		// write them twice
 		coordinateCheckpoint(coordinator);
 	}
 
-	private void coordinateCheckpoint(TaskCoordinator coordinator)
-			throws TaskCoordinatorException {
+	private void coordinateCheckpoint(TaskCoordinator coordinator) throws TaskCoordinatorException {
 		try {
 			coordinator.commit(RequestScope.CURRENT_TASK);
 		} catch (Exception exception) {
@@ -163,69 +155,10 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements
 		// close hdfs appender
 		if (service != null) {
 			service.close();
-			flushBarrier();
+			barrier.flushBarrier();
 		}
 		service = null;
+		barrier = null;
 	}
 
-	// //////////// events time stamp write barrier methods
-
-	private String calculateDiscriminator(JSONObject message) {
-		StringBuilder sb = new StringBuilder();
-		for (String field : discriminatorsFields) {
-			sb.append(convertToString(message.get(field)));
-			sb.append(";");
-		}
-		return sb.toString();
-	}
-
-	private boolean isEventAfterBarrier(String username, long timestamp,
-			String discriminator) {
-		// get the barrier from the state, stored by table name
-		UserTimeBarrierModel barrier = store.get(username);
-		if (barrier == null)
-			return true;
-
-		return ((timestamp > barrier.getTimestamp()) || (timestamp == barrier.getTimestamp() && !barrier.getDiscriminator().equals(discriminator)));
-	}
-
-	private void updateBarrier(String username, long timestamp,
-			String discriminator) throws LevelDbException {
-		if (username == null)
-			return;
-
-		UserTimeBarrierModel barrier = store.get(username);
-		if (barrier == null)
-			barrier = new UserTimeBarrierModel();
-
-		// update barrier in case it is not too much in the future
-		if (!TimestampUtils.isFutureTimestamp(timestamp, 24)) {
-			barrier.setTimestamp(timestamp);
-			barrier.setDiscriminator(discriminator);
-			try {
-				store.put(username, barrier);
-			} catch (Exception exception) {
-				logger.error("error storing value. username: {} exception: {}", username, exception);
-				logger.error("error storing value.", exception);
-				throw new LevelDbException(String.format("error while trying to store user %s.", username), exception);
-			}
-		} else {
-			logger.error("encountered event in a future time {} [current time={}] for user {}, skipping barrier update", timestamp, System.currentTimeMillis(), username);
-		}
-	}
-
-	private void flushBarrier() throws LevelDbException {
-		try {
-			store.flush();
-		} catch (Exception exception) {
-			logger.error("error flushing. tablename: {} exception: {}", tableName, exception);
-			logger.error("error flushing.", exception);
-			throw new LevelDbException(String.format("error while trying to do store fulsh. tablename: %s", tableName), exception);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private void loadBarrier(TaskContext context) {
-		store = (KeyValueStore<String, UserTimeBarrierModel>) context.getStore(storeName);
-	}
 }
