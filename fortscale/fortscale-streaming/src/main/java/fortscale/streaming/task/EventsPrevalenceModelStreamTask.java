@@ -93,7 +93,10 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 			String outputField = getConfigString(config, String.format("fortscale.fields.%s.output", fieldName));
 			
 			modelBuilder.withField(fieldName, fieldModel);
-			outputFields.put(fieldName, outputField);
+			if (outputField==null)
+				logger.error("output field is null for field {}", fieldName);
+			else
+				outputFields.put(fieldName, outputField);
 		}
 		return modelBuilder;
 	}
@@ -160,13 +163,15 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 						eventScore = Math.max(eventScore, score);
 					
 					// store the field score in the message
-					message.put(outputFields.get(fieldName), score);
+					String outputFieldname = outputFields.get(fieldName); 
+					if (outputFieldname!=null)
+						message.put(outputFieldname, score);
 				}
 			}
 		
 			// put the event score in the message
 			message.put(eventScoreField, eventScore);
-				
+			
 			// publish the event with score to the subsequent topic in the topology
 			if (StringUtils.isNotEmpty(outputTopic)){
 				try{
