@@ -104,12 +104,13 @@ public class VpnCiscoTest {
                 $(
                         "Session disconnected",
                         $("111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv: 2649665  Reason: User Requested",
-                          "111412517: 2 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv: 2649665  Reason: User Requested",
                           "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv: 2649665  Reason: User Requested",
+                          "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: : User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration:  Bytes xmt: 632880  Bytes rcv:   Reason: User Requested",
+                          "111412517: 2 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv: 2649665  Reason: User Requested",
                           "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt:   Bytes rcv: 2649665  Reason: User Requested",
                           "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv:   Reason: User Requested",
-                          "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration:  Bytes xmt: 632880  Bytes rcv:   Reason: User Requested",
-                          "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: : User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration:  Bytes xmt: 632880  Bytes rcv:   Reason: User Requested"
+                          "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration:  Bytes xmt: 632880  Bytes rcv:   Reason: User Requested"
+
                         ),
 
                         $("2014-03-22 04:07:25,1395454045,pmoreno,37.11.25.29,,CLOSED,,,,,,,,3282545,2649665,632880,16:30:23,50,false,false",
