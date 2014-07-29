@@ -40,14 +40,22 @@ public class BufferedHDFSWriter implements HDFSWriter {
 
 	@Override
 	public void writeLine(String line, long timestamp) throws IOException {
+		writeLine(line, timestamp, true);
+	}
+
+	public void writeLine(String line, long timestamp, boolean flushIfFull) throws IOException {
 		// add line to buffer
 		buffer.add(timestamp, line);
 		
 		// see if the buffer exceeded the limit, if so write them all to hdfs
-		if (buffer.isFull()) 
+		if (flushIfFull && buffer.isFull()) 
 			writeBuffer();
 	}
-
+	
+	public boolean isFull() {
+		return buffer.isFull();
+	}
+	
 	@Override
 	public void write(String str) throws IOException {
 		throw new NotImplementedException("method write without timestamp is not implemented");

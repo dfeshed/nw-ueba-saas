@@ -40,7 +40,9 @@ public class HdfsService {
 	
 	public void writeLineToHdfs(String line, long timestamp) throws HdfsException {
 		try {
-			buffer.writeLine(line, timestamp);
+			buffer.writeLine(line, timestamp, false);
+			if (buffer.isFull())
+				writeBuffer();
 		} catch (IOException e) {
 			throw new HdfsException("cannot write to " + fileName, e);
 		}
