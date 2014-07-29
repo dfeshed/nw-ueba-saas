@@ -21,8 +21,8 @@ public class ModelRepositoryImpl implements ModelRepositoryCustom {
 		if (existing==null) {
 			mongoTemplate.save(model);
 		} else {
-			if (existing.getModel().getTimeMark() < model.getModel().getTimeMark()) {
-				// update existing model
+			if (existing.getModel().getBarrier().isEventAfterBarrier(model.getModel().getBarrier())) {
+				// update existing model if the model given is newer than the saved model barrier
 				existing.setModel(model.getModel());
 				mongoTemplate.save(existing);
 			}

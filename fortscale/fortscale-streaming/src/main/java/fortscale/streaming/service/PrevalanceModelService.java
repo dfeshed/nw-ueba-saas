@@ -13,6 +13,7 @@ import com.google.common.base.Throwables;
 import fortscale.streaming.exceptions.LevelDbException;
 import fortscale.streaming.model.prevalance.PrevalanceModel;
 import fortscale.streaming.model.prevalance.PrevalanceModelBuilder;
+import fortscale.streaming.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.dao.Model;
 import fortscale.streaming.service.dao.ModelRepository;
 
@@ -75,7 +76,9 @@ public class PrevalanceModelService {
 				PrevalanceModel model = entry.getValue();
 				try {
 					Model dto = repository.findByUserNameAndModelName(username, modelBuilder.getModelName());
-					if (dto.getModel().getTimeMark() > model.getTimeMark()) {
+					UserTimeBarrier dtoBarrier = dto.getModel().getBarrier();
+					// check if the model in the repository is newer than the model in the store
+					if (model.getBarrier().isEventAfterBarrier(dtoBarrier)) {
 						// replace the model in store
 						PrevalanceModel updatedModel = dto.getModel();
 						store.put(username, updatedModel);

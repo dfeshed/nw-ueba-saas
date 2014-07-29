@@ -1,10 +1,12 @@
 package fortscale.streaming.task;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minidev.json.JSONObject;
@@ -31,6 +33,7 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.model.prevalance.PrevalanceModel;
 import fortscale.streaming.model.prevalance.PrevalanceModelBuilder;
+import fortscale.streaming.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.PrevalanceModelService;
 import fortscale.utils.StringPredicates;
 
@@ -54,6 +57,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	private String eventScoreField;
 	private boolean skipScore;
 	private boolean skipModel;
+	private List<String> discriminatorsFields;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -64,6 +68,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		outputTopic = config.get("fortscale.output.topic", "");
 		skipScore = config.getBoolean("fortscale.skip.score", false);
 		skipModel = config.getBoolean("fortscale.skip.model", false);
+		discriminatorsFields = getConfigStringList(config, "fortscale.discriminator.fields");
 		
 		// get the store that holds models
 		String storeName = getConfigString(config, "fortscale.store.name");
@@ -129,10 +134,11 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		
 		// go over each field in the event and add it to the model
 		PrevalanceModel model = modelService.getModelForUser(username);
-			
+		
 		// skip events that occur before the model time mark in case the task is configured
 		// to perform both model computation and scoring (the normal case)
-		boolean afterTimeMark = model.isAfterTimeMark(timestamp);
+		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);
+		boolean afterTimeMark = model.getBarrier().isEventAfterBarrier(timestamp, discriminator);
 		if (!afterTimeMark && !skipModel) {
 			skippedMessageCount.inc();
 			return;
@@ -145,6 +151,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 				Object value = message.get(fieldName);
 				model.addFieldValue(fieldName, value, timestamp);
 			}
+			model.getBarrier().updateBarrier(timestamp, discriminator);
 			modelService.updateUserModelInStore(username, model);
 		}
 		
