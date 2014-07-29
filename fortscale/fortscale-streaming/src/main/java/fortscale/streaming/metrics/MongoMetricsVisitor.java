@@ -7,11 +7,6 @@ import org.apache.samza.metrics.MetricsVisitor;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
 
-/**
- * 
- * @author dotanp
- *
- */
 public class MongoMetricsVisitor extends MetricsVisitor {
 
 	private JobProgressReporter reporter;
@@ -24,12 +19,12 @@ public class MongoMetricsVisitor extends MetricsVisitor {
 	
 	@Override
 	public void counter(Counter counter) {
-		reporter.addDataReceived(monitorId, new JobDataReceived(counter.getName(), (int)counter.getCount(), "(Counter)"));		
+		reporter.addDataReceived(monitorId, new JobDataReceived(counter.getName(), (int)counter.getCount(), ""));		
 	}
 
 	@Override
 	public <T> void gauge(Gauge<T> gauge) {
-		// ignore	
+		// ignore as we do not support reporting data currently in the mongo monitor for gauge
 	}
 
 }
