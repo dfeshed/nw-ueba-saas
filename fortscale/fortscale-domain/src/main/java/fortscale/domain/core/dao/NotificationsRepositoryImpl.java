@@ -72,7 +72,8 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		int numAggregatesFound = 0;
 		int pageNum = 0;
 		boolean hasMoreData = true;
-		while (numAggregatesFound < request.getPageSize() && hasMoreData) {
+		// fetch no more than 4 pages and up to the time limit needed of notifications
+		while (numAggregatesFound < request.getPageSize() && hasMoreData && pageNum<4) {
 			// get the next page of notifications from mongo
 			query.skip(pageNum * request.getPageSize());
 			List<Notification> notifications = mongoTemplate.find(query, Notification.class);
