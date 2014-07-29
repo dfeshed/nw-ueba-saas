@@ -33,7 +33,7 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.model.prevalance.PrevalanceModel;
 import fortscale.streaming.model.prevalance.PrevalanceModelBuilder;
-import fortscale.streaming.model.prevalance.UserTimeBarrierModel;
+import fortscale.streaming.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.PrevalanceModelService;
 import fortscale.utils.StringPredicates;
 
@@ -137,7 +137,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		
 		// skip events that occur before the model time mark in case the task is configured
 		// to perform both model computation and scoring (the normal case)
-		String discriminator = UserTimeBarrierModel.calculateDisriminator(message, discriminatorsFields);
+		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);
 		boolean afterTimeMark = model.getBarrier().isEventAfterBarrier(timestamp, discriminator);
 		if (!afterTimeMark && !skipModel) {
 			skippedMessageCount.inc();

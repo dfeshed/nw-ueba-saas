@@ -23,7 +23,7 @@ import org.apache.samza.task.TaskCoordinator.RequestScope;
 
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
-import fortscale.streaming.model.prevalance.UserTimeBarrierModel;
+import fortscale.streaming.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.HdfsService;
 import fortscale.utils.TimestampUtils;
@@ -76,7 +76,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", tableName));
 
 		// get write time stamp barrier store
-		barrier = new BarrierService((KeyValueStore<String, UserTimeBarrierModel>) context.getStore(storeName), discriminatorsFields);
+		barrier = new BarrierService((KeyValueStore<String, UserTimeBarrier>) context.getStore(storeName), discriminatorsFields);
 	}
 
 	/** Write the incoming message fields to hdfs */

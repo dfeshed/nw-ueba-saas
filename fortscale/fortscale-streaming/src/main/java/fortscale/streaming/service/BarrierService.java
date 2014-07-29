@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fortscale.streaming.exceptions.LevelDbException;
-import fortscale.streaming.model.prevalance.UserTimeBarrierModel;
+import fortscale.streaming.model.prevalance.UserTimeBarrier;
 
 /**
  * Barrier for events that holds a latest time stamp and discriminating fields 
@@ -19,21 +19,21 @@ public class BarrierService {
 
 	private static Logger logger = LoggerFactory.getLogger(BarrierService.class);
 	
-	private KeyValueStore<String, UserTimeBarrierModel> store;
+	private KeyValueStore<String, UserTimeBarrier> store;
 	private List<String> discriminatorsFields;
 	
-	public BarrierService(KeyValueStore<String, UserTimeBarrierModel> store, List<String> discriminatorsFields) {
+	public BarrierService(KeyValueStore<String, UserTimeBarrier> store, List<String> discriminatorsFields) {
 		this.store = store;
 		this.discriminatorsFields = discriminatorsFields;
 	}
 	
 	public boolean isEventAfterBarrier(String username, long timestamp, JSONObject message) {
 		// get the barrier from the state, stored by table name
-		UserTimeBarrierModel barrier = store.get(username);
+		UserTimeBarrier barrier = store.get(username);
 		if (barrier == null)
 			return true;
 
-		String discriminator = UserTimeBarrierModel.calculateDisriminator(message, discriminatorsFields);
+		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);
 		return barrier.isEventAfterBarrier(timestamp, discriminator);
 	}
 	
@@ -52,19 +52,19 @@ public class BarrierService {
 			return;
 		
 		// get the barrier model to update
-		UserTimeBarrierModel barrier = store.get(username);
+		UserTimeBarrier barrier = store.get(username);
 		if (barrier == null)
-			barrier = new UserTimeBarrierModel();
+			barrier = new UserTimeBarrier();
 
 		// update barrier in case it is not too much in the future
-		String discriminator = UserTimeBarrierModel.calculateDisriminator(message, discriminatorsFields);
+		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);
 		boolean updated = barrier.updateBarrier(timestamp, discriminator);
 		if (updated)
 			saveBarrierForUser(username, barrier);
 	}
 	
 	
-	protected void saveBarrierForUser(String username, UserTimeBarrierModel barrier) throws LevelDbException {
+	protected void saveBarrierForUser(String username, UserTimeBarrier barrier) throws LevelDbException {
 		try {
 			store.put(username, barrier);
 		} catch (Exception exception) {

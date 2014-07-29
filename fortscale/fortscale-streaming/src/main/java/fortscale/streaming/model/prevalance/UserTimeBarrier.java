@@ -18,9 +18,9 @@ import fortscale.utils.TimestampUtils;
  * Task state the hold a runtime barrier and event discriminator encountered for each user
  */
 @JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
-public class UserTimeBarrierModel {
+public class UserTimeBarrier {
 
-	private static Logger logger = LoggerFactory.getLogger(UserTimeBarrierModel.class);
+	private static Logger logger = LoggerFactory.getLogger(UserTimeBarrier.class);
 	
     private long timestamp;
     private String discriminator;
@@ -33,7 +33,7 @@ public class UserTimeBarrierModel {
         return discriminator==null? "" : discriminator;
     }
 
-    public boolean isEventAfterBarrier(UserTimeBarrierModel other) {
+    public boolean isEventAfterBarrier(UserTimeBarrier other) {
     	return (other==null)? false : isEventAfterBarrier(other.getTimestamp(), other.getDiscriminator());
     }
     

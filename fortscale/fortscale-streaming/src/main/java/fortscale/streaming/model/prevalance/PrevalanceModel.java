@@ -17,7 +17,7 @@ public class PrevalanceModel {
 	
 	private Map<String, FieldModel> fields = new HashMap<String, FieldModel>();
 	private String modelName;
-	private UserTimeBarrierModel barrier;
+	private UserTimeBarrier barrier;
 	
 	@JsonCreator
 	public PrevalanceModel(@JsonProperty("modelName") String modelName) {
@@ -37,9 +37,9 @@ public class PrevalanceModel {
 		fields.put(field, model);
 	}
 	
-	public UserTimeBarrierModel getBarrier() {
+	public UserTimeBarrier getBarrier() {
 		if (barrier==null)
-			barrier = new UserTimeBarrierModel();
+			barrier = new UserTimeBarrier();
 		return barrier;
 	}
 	
