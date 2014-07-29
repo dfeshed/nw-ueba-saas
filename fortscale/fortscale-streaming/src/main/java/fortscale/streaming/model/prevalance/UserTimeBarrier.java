@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 
 import fortscale.utils.TimestampUtils;
 
@@ -54,11 +57,11 @@ public class UserTimeBarrier {
     }
     
     public static String calculateDisriminator(JSONObject message, List<String> discriminatorsFields) {
-		StringBuilder sb = new StringBuilder();
+		HashFunction hf = Hashing.md5();
+		Hasher hasher = hf.newHasher();
 		for (String field : discriminatorsFields) {
-			sb.append(convertToString(message.get(field)));
-			sb.append(";");
+			hasher.putString(convertToString(message.get(field)));
 		}
-		return sb.toString();
+		return Long.toString(hasher.hash().asLong());
 	}
 }
