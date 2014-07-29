@@ -7,7 +7,7 @@ import org.apache.samza.metrics.MetricsReporterFactory;
 /**
  * Constructs a MongoMetricsSnaphotReporter to report job metrics to mongodb periodically
  */
-public class MongoMetricsSnaphotReporterFactory implements MetricsReporterFactory {
+public class MongoMetricsSnapshotReporterFactory implements MetricsReporterFactory {
 
 	@Override
 	public MetricsReporter getMetricsReporter(String name, String containerName, Config config) {
