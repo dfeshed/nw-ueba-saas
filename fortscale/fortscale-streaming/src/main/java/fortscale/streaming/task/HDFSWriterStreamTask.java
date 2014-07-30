@@ -87,7 +87,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		for (String filterName : config.getList("fortscale.filters")) {
 			// create a filter instance
 			String filterClass = getConfigString(config, String.format("fortscale.filter.%s.class", filterName));
-			MessageFilter filter = (MessageFilter)Class.forName(filterName).newInstance();
+			MessageFilter filter = (MessageFilter)Class.forName(filterClass).newInstance();
 			
 			// initialize the filter with configuration
 			filter.init(filterName, config);
