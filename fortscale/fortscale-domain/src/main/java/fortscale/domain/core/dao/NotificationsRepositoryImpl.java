@@ -53,7 +53,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	}
 	
 	@Override
-	public List<NotificationAggregate> findAllAndAggregate(Optional<Integer> daysToFetch, PageRequest request) {
+	public List<NotificationAggregate> findAllAndAggregate(Optional<Integer> daysToFetch, PageRequest request, int maxPages) {
 		HashMap<String, List<Notification>> aggMap = new HashMap<String, List<Notification>>(); 
 		List<NotificationAggregate> aggNotifications = new ArrayList<>();
 
@@ -72,8 +72,8 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		int numAggregatesFound = 0;
 		int pageNum = 0;
 		boolean hasMoreData = true;
-		// fetch no more than 4 pages and up to the time limit needed of notifications
-		while (numAggregatesFound < request.getPageSize() && hasMoreData && pageNum<4) {
+		// fetch no more than maxPages pages and up to the time limit needed of notifications
+		while (numAggregatesFound < request.getPageSize() && hasMoreData && pageNum<maxPages) {
 			// get the next page of notifications from mongo
 			query.skip(pageNum * request.getPageSize());
 			List<Notification> notifications = mongoTemplate.find(query, Notification.class);
