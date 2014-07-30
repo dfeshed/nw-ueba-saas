@@ -56,7 +56,7 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>sshScores</value>
+						<value>${impala.score.ssh.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
@@ -68,6 +68,34 @@
 					</entry>
             	</job-data-map>
  				<cron-expression>0 52 3 * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+		<trigger>		
+			<cron>
+				<name>topSshScores_partition_sync_hourly_trigger</name>
+				<group>SSH</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>SSH</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.processeddata.sshscores.top.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.score.ssh_top.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>monthly</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>90</value>
+					</entry>
+            	</job-data-map>
+ 				<cron-expression>0 52 4 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

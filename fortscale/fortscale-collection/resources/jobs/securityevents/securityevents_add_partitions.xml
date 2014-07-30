@@ -100,6 +100,34 @@
 			</cron>
 		</trigger>
 		
+		<trigger>
+			<cron>
+				<name>topAuthenticationScores_partition_sync_hourly_trigger</name>
+				<group>SecurityEvents</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>SecurityEvents</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.processeddata.security.top.events.4769.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.score.ldapauth_top.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>monthly</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>90</value>
+					</entry>
+            	</job-data-map>
+ 				<cron-expression>0 52 3 * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
 		
 		
 	</schedule>
