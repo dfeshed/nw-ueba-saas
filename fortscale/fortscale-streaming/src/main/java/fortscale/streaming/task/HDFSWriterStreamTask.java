@@ -5,6 +5,7 @@ import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minidev.json.JSONObject;
@@ -23,6 +24,7 @@ import org.apache.samza.task.TaskCoordinator.RequestScope;
 
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
+import fortscale.streaming.filters.MessageFilter;
 import fortscale.streaming.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.HdfsService;
@@ -45,8 +47,10 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private HdfsService service;
 	private String tableName;
 	private Counter processedMessageCount;
+	private Counter skipedMessageCount;
 	private String storeName;
 	private BarrierService barrier;
+	private List<MessageFilter> filters = new LinkedList<MessageFilter>();
 
 	/** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
@@ -74,9 +78,21 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", tableName));
+		skipedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-skip-count", tableName));
 
 		// get write time stamp barrier store
 		barrier = new BarrierService((KeyValueStore<String, UserTimeBarrier>) context.getStore(storeName), discriminatorsFields);
+		
+		// load filters from configuration
+		for (String filterName : config.getList("fortscale.filters")) {
+			// create a filter instance
+			String filterClass = getConfigString(config, String.format("fortscale.filter.%s.class", filterName));
+			MessageFilter filter = (MessageFilter)Class.forName(filterName).newInstance();
+			
+			// initialize the filter with configuration
+			filter.init(filterName, config);
+			filters.add(filter);
+		}
 	}
 
 	/** Write the incoming message fields to hdfs */
@@ -99,6 +115,12 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		// get the username from the message
 		String username = convertToString(message.get(usernameField));
 
+		// filter messages if needed
+		if (filterMessage(message)) {
+			skipedMessageCount.inc();
+			return;
+		}
+		
 		// check if the event is before the time stamp barrier
 		timestamp = TimestampUtils.convertToMilliSeconds(timestamp);
 		if (barrier.isEventAfterBarrier(username, timestamp, message)) {
@@ -110,6 +132,18 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			barrier.updateBarrier(username, timestamp, message);
 			processedMessageCount.inc();
 		}
+	}
+	
+	/**
+	 * filter message method that can be used by overriding instances to control 
+	 * which messages are written
+	 */
+	private boolean filterMessage(JSONObject message) {
+		for (MessageFilter filter : filters) {
+			if (filter.filter(message))
+				return true;
+		}
+		return false;
 	}
 
 	private String buildEventLine(JSONObject message) {
