@@ -84,7 +84,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		barrier = new BarrierService((KeyValueStore<String, UserTimeBarrier>) context.getStore(storeName), discriminatorsFields);
 		
 		// load filters from configuration
-		for (String filterName : config.getList("fortscale.filters")) {
+		for (String filterName : config.getList("fortscale.filters", new LinkedList<String>())) {
 			// create a filter instance
 			String filterClass = getConfigString(config, String.format("fortscale.filter.%s.class", filterName));
 			MessageFilter filter = (MessageFilter)Class.forName(filterClass).newInstance();
