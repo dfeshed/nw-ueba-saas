@@ -180,13 +180,14 @@ public class ApiNotificationsController extends BaseController {
 	@RequestMapping(value = "/aggregate", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Object>> agg(@RequestParam(defaultValue="0") int daysToFetch) {
+	public DataBean<List<Object>> agg(@RequestParam(defaultValue="0") int daysToFetch, @RequestParam(defaultValue="50") int maxNotifications) {
 		
 		Sort sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP));
 		PageRequest request = new PageRequest(0, 10, sortByTSDesc);
-
+		int maxPages = (int)Math.ceil((double)maxNotifications / 10);
+		
 		Optional<Integer> earliest = (daysToFetch==0)? Optional.<Integer>absent() : Optional.of(daysToFetch);
-		Iterable<NotificationAggregate> overviewNotificationsAgg = notificationsRepository.findAllAndAggregate(earliest,request);
+		Iterable<NotificationAggregate> overviewNotificationsAgg = notificationsRepository.findAllAndAggregate(earliest,request, maxPages);
 		return notificationDataAgg(overviewNotificationsAgg);
 	}
 
