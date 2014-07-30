@@ -67,6 +67,18 @@ public class HadoopInit implements InitializingBean{
 	@Value("${impala.score.ldapauth.table.partition.type}")
 	private String impalaSecScoringTablePartitionType;
 	
+	// Top Security Events Scoring table
+	@Value("${impala.score.ldapauth_top.table.fields}")
+	private String impalaSecTopScoringTableFields;
+	@Value("${impala.score.ldapauth_top.table.delimiter}")
+	private String impalaSecTopScoringTableDelimiter;
+	@Value("${impala.score.ldapauth_top.table.name}")
+	private String impalaSecTopScoringTableName;
+	@Value("${hdfs.user.processeddata.security.top.events.4769.path}")
+	private String impalaSecTopScoringDirectory;
+	@Value("${impala.score.ldapauth_top.table.partition.type}")
+	private String impalaSecTopScoringTablePartitionType;
+	
 	// Security Events Login Scoring table
 	@Value("${impala.score.login.table.name}")
 	private String impalaLoginScoringTableName;
@@ -101,6 +113,18 @@ public class HadoopInit implements InitializingBean{
 	@Value("${impala.score.vpn.table.partition.type}")
 	private String impalaVpnScoringTablePartitionType;
 	
+	//Top VPN Scoring table
+	@Value("${impala.score.vpn_top.table.fields}")
+	private String impalaTopVpnScoringTableFields;
+	@Value("${impala.score.vpn_top.table.delimiter}")
+	private String impalaTopVpnScoringTableDelimiter;
+	@Value("${impala.score.vpn_top.table.name}")
+	private String impalaTopVpnScoringTableName;
+	@Value("${hdfs.user.processeddata.vpnscores_top.path}")
+	private String impalaTopVpnScoringDirectory;
+	@Value("${impala.score.vpn_top.table.partition.type}")
+	private String impalaTopVpnScoringTablePartitionType;
+	
 	//VPN Session Scoring table
 	@Value("${impala.score.vpn.session.table.fields}")
 	private String impalaVpnSessionScoringTableFields;
@@ -110,6 +134,16 @@ public class HadoopInit implements InitializingBean{
 	private String impalaVpnSessionScoringTableName;
 	@Value("${hdfs.user.processeddata.vpnscores.session.path}")
 	private String impalaVpnSessionScoringDirectory;
+	
+	//Top VPN Session Scoring table
+	@Value("${impala.score.vpn.session.top.table.fields}")
+	private String impalaTopVpnSessionScoringTableFields;
+	@Value("${impala.score.vpn.session.top.table.delimiter}")
+	private String impalaTopVpnSessionScoringTableDelimiter;
+	@Value("${impala.score.vpn.session.top.table.name}")
+	private String impalaTopVpnSessionScoringTableName;
+	@Value("${hdfs.user.processeddata.vpnscores.session.top.path}")
+	private String impalaTopVpnSessionScoringDirectory;
 	
 	//SSH Data table
 	@Value("${impala.data.ssh.table.fields}")
@@ -132,6 +166,18 @@ public class HadoopInit implements InitializingBean{
 	private String impalaSshScoringDirectory;
 	@Value("${impala.score.ssh.table.partition.type}")
 	private String impalaSshScoringTablePartitionType;
+	
+	//Top SSH Scoring table
+	@Value("${impala.score.ssh_top.table.fields}")
+	private String impalaTopSshScoringTableFields;
+	@Value("${impala.score.ssh_top.table.delimiter}")
+	private String impalaTopSshScoringTableDelimiter;
+	@Value("${impala.score.ssh_top.table.name}")
+	private String impalaTopSshScoringTableName;
+	@Value("${hdfs.user.processeddata.sshscores.top.path}")
+	private String impalaTopSshScoringDirectory;
+	@Value("${impala.score.ssh_top.table.partition.type}")
+	private String impalaTopSshScoringTablePartitionType;
 	
 	//Total Score table
 	@Value("${impala.total.scores.table.fields}")
@@ -210,6 +256,10 @@ public class HadoopInit implements InitializingBean{
 		//Security Events Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecScoringTablePartitionType);
 		createTable(impalaSecScoringTableName, impalaSecScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecScoringTableDelimiter, impalaSecScoringDirectory);
+
+		//Top Security Events Scoring table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecTopScoringTablePartitionType);
+		createTable(impalaSecTopScoringTableName, impalaSecTopScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecTopScoringTableDelimiter, impalaSecTopScoringDirectory);
 		
 		// Security Events Login Scoring table
 		createTable(impalaLoginScoringTableName, impalaLoginScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaLoginScoringTableDelimiter, impalaLoginScoringDirectory);
@@ -221,9 +271,16 @@ public class HadoopInit implements InitializingBean{
 		//VPN Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnScoringTablePartitionType);
 		createTable(impalaVpnScoringTableName, impalaVpnScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaVpnScoringTableDelimiter, impalaVpnScoringDirectory);
-		
+
+		//Top VPN Scoring table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopVpnScoringTablePartitionType);
+		createTable(impalaTopVpnScoringTableName, impalaTopVpnScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopVpnScoringTableDelimiter, impalaTopVpnScoringDirectory);
+
 		//VPN Session Scoring table
 		createTable(impalaVpnSessionScoringTableName, impalaVpnSessionScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaVpnSessionScoringTableDelimiter, impalaVpnSessionScoringDirectory);
+
+		//Top VPN Session Scoring table
+		createTable(impalaTopVpnSessionScoringTableName, impalaTopVpnSessionScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaTopVpnSessionScoringTableDelimiter, impalaTopVpnSessionScoringDirectory);
 		
 		//SSH Data table
 		createTable(impalaSshDataTableName, impalaSshDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSshDataTableDelimiter, impalaSshDataDirectory);
@@ -231,6 +288,10 @@ public class HadoopInit implements InitializingBean{
 		//SSH Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSshScoringTablePartitionType);
 		createTable(impalaSshScoringTableName, impalaSshScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSshScoringTableDelimiter, impalaSshScoringDirectory);
+
+		//SSH Scoring table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopSshScoringTablePartitionType);
+		createTable(impalaTopSshScoringTableName, impalaTopSshScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopSshScoringTableDelimiter, impalaTopSshScoringDirectory);
 		
 		//Total Scoring table
 		createTable(impalaTotalScoringTableName, impalaTotalScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaTotalScoringTableDelimiter, impalaTotalScoringDirectory);

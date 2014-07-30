@@ -73,6 +73,34 @@
 		
 		<trigger>		
 			<cron>
+				<name>topVpndataRes_partition_sync_hourly_trigger</name>
+				<group>VPN</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>VPN</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.processeddata.vpnscores_top.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.score.vpn_top.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>monthly</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>90</value>
+					</entry>
+            	</job-data-map>
+ 				<cron-expression>0 40 4 * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+		<trigger>		
+			<cron>
 				<name>vpnsessionRes_partition_sync_hourly_trigger</name>
 				<group>VPN</group>
 				<job-name>Add_Partitions</job-name>
@@ -96,6 +124,34 @@
 					</entry>
             	</job-data-map>
  				<cron-expression>0 45 3 * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+		<trigger>		
+			<cron>
+				<name>topVpnsessionRes_partition_sync_hourly_trigger</name>
+				<group>VPN</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>VPN</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.processeddata.vpnscores.session.top.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.score.vpn.session.top.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>monthly</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>90</value>
+					</entry>
+            	</job-data-map>
+ 				<cron-expression>0 45 4 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
