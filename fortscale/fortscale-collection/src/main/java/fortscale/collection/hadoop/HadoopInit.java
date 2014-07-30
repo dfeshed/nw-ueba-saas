@@ -68,7 +68,7 @@ public class HadoopInit implements InitializingBean{
 	private String impalaSecScoringTablePartitionType;
 	
 	// Top Security Events Scoring table
-	@Value("${impala.score.ldapauth_top.table.name}")
+	@Value("${impala.score.ldapauth_top.table.fields}")
 	private String impalaSecTopScoringTableFields;
 	@Value("${impala.score.ldapauth_top.table.delimiter}")
 	private String impalaSecTopScoringTableDelimiter;
