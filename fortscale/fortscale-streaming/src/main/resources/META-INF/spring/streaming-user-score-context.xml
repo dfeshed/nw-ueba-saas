@@ -11,6 +11,7 @@
 	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
+	<import resource="classpath*:META-INF/spring/monitor-context.xml" />
 	
 	<context:spring-configured />
     <context:annotation-config />
