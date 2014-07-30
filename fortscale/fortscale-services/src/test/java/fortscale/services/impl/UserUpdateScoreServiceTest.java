@@ -99,7 +99,7 @@ public class UserUpdateScoreServiceTest {
 		Date timestamp = new Date(System.currentTimeMillis() - 1000);
 //		ScoreInfo scoreInfo = UserScoreTestUtil.createScoreInfo(timestamp, avgScore, score, 10, 10);
 //		ClassifierScore classifierScore = new ClassifierScore(classifierId, scoreInfo);
-		User retUser = userUpdateScoreService.updateUserScore(user, timestamp, classifierId, score, avgScore, false, false);
+		User retUser = userUpdateScoreService.updateUserScore(user, timestamp, classifierId, score, avgScore, false);
 		verifyZeroInteractions(userRepository);
 		assertNotNull(retUser);
 		assertEquals(user.getId(), retUser.getId());
