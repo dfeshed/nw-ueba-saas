@@ -2,19 +2,14 @@ package fortscale.domain.fe.dao;
 
 import fortscale.domain.impala.ImpalaDAO;
 import fortscale.utils.TimestampUtils;
-import fortscale.utils.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-/**
- * Created by idanp on 7/27/2014.
- */
 public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
-
-    private static Logger logger = Logger.getLogger(AccessDAO.class);
 
     protected static final String EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME = "day";
     protected static final String EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME = "status";
@@ -41,6 +36,10 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
     public String getTableName() {
         return tableName;
     }
+	@Override
+	public String getTableName(int minScore) {
+		return tableName;
+	}
 
     @Override
     public String getInputFileHeaderDesc() {

@@ -29,7 +29,7 @@ public interface EventScoreDAO {
 	
 	public List<EventScore> getEventScores(String username, int daysBack, int limit);
 	
-	public List<EventsToMachineCount> getEventsToTargetMachineCount(String username, int daysBack);
+	public List<EventsToMachineCount> getEventsToTargetMachineCount(String username, int daysBack, int minScore);
 	
 	public String getNormalizedUsernameField();
 

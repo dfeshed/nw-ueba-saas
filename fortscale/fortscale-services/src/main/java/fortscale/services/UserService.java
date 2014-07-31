@@ -61,5 +61,5 @@ public interface UserService {
 	
 	public void updateTags(String username, Map<String, Boolean> tagSettings);
 	
-	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues);
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues, int minScore);
 }

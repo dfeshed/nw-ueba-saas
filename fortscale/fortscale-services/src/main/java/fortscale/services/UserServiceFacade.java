@@ -16,7 +16,7 @@ import fortscale.services.types.PropertiesDistribution;
 
 
 public interface UserServiceFacade {
-public void updateUserWithCurrentADInfo();
+	public void updateUserWithCurrentADInfo();
 	
 	public void updateUserWithADInfo(Long timestampepoch);
 	
@@ -62,5 +62,5 @@ public void updateUserWithCurrentADInfo();
 	
 	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
 	
-	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues);
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues, int minScore);
 }
