@@ -34,7 +34,7 @@
 
 	<root>
 		<priority value="INFO" />
-		<appender-ref ref="console" />
+<!-- 		<appender-ref ref="console" /> -->
 		<appender-ref ref="fileAppender" />
 		<appender-ref ref="syslog" />
 	</root>
