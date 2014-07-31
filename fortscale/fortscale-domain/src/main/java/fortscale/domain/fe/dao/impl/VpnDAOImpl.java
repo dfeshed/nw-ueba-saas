@@ -160,7 +160,7 @@ public class VpnDAOImpl extends AccessDAO implements InitializingBean{
 
 	@Override
 	public String getStatusSuccessValue() {
-		return "success";
+		return "SUCCESS";
 	}
 
 	@Override
