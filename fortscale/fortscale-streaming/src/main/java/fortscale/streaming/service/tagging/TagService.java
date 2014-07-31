@@ -2,6 +2,7 @@ package fortscale.streaming.service.tagging;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -53,8 +54,10 @@ public class TagService {
         currentAccount.setLastEventTimeStamp(timeStamp);
 
         //Add source and destination machines to the account
-        currentAccount.addSource(sourceHostName,timeStamp , sourceComputerType);
-        currentAccount.addDestination(destHostName, timeStamp, destComputerType,isSensetiveMachine);
+        if (StringUtils.isNotEmpty(sourceHostName))
+        	currentAccount.addSource(sourceHostName,timeStamp , sourceComputerType);
+        if (StringUtils.isNotEmpty(destHostName))
+        	currentAccount.addDestination(destHostName, timeStamp, destComputerType,isSensetiveMachine);
         currentAccount.dilutionLists(this.daysBackForArchive);
 
         //tag the account

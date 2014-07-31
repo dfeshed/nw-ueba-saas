@@ -130,47 +130,34 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 
             // get the source host name
             String sourceHostName = convertToString(message.get(sourceHostNameField));
-            if (StringUtils.isEmpty(sourceHostName)) {
-                //logger.error("message {} does not contains sourceHostName in field {}", messageText, sourceHostNameField);
-                throw new StreamMessageNotContainFieldException(messageText, sourceHostNameField);
-            }
 
             // get the source ComputerType
             try {
-                sourceComputerType = ComputerUsageType.valueOf(convertToString(message.get(sourceComputerTypeField)));
+            	String srcClassValue = convertToString(message.get(sourceComputerTypeField));
+            	sourceComputerType = StringUtils.isEmpty(srcClassValue) ? ComputerUsageType.Unknown : ComputerUsageType.valueOf(srcClassValue);
             } catch (IllegalArgumentException ex) {
-                //logger.error("message {} does not contains valid source computer type in field {}", messageText, sourceComputerTypeField);
                 throw new StreamMessageNotContainFieldException(messageText, sourceComputerTypeField);
             }
 
 
             // get the destination host name
             String destHostName = convertToString(message.get(destHostNameField));
-            if (StringUtils.isEmpty(destHostName)) {
-                //logger.error("message {} does not contains destHostName in field {}", messageText, destHostNameField);
-                throw new StreamMessageNotContainFieldException(messageText, destHostNameField);
-            }
-
 
             // get the destination ComputerType
             try {
-                destComputerType = ComputerUsageType.valueOf(convertToString(message.get(destComputerTypeField)));
+            	String destClassValue = convertToString(message.get(destComputerTypeField));
+                destComputerType = StringUtils.isEmpty(destClassValue) ? ComputerUsageType.Unknown : ComputerUsageType.valueOf(destClassValue);
             } catch (IllegalArgumentException ex) {
-                //logger.error("message {} does not contains valid destination computer type in field {}", messageText, destComputerTypeField);
                 throw new StreamMessageNotContainFieldException(messageText, destComputerTypeField);
             }
 
 
             // get the isSensetiveMachine  flag
             // in case that there is other value then true or there is no value at all the isSensetiveMachine will get false
-            boolean isSensetiveMachine = convertToBoolean(message.get(isSensetiveMachineField));
-
-
+            boolean isSensetiveMachine = message.get(isSensetiveMachineField)==null? false : convertToBoolean(message.get(isSensetiveMachineField));
 
             //handle the account
             this.taggingService.handleAccount(userName,timeStamp,sourceHostName,destHostName,sourceComputerType,destComputerType,isSensetiveMachine);
-
-
         }
 
     }
