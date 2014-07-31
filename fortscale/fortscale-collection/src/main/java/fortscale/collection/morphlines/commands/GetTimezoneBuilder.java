@@ -82,28 +82,17 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 		@Override
 		protected boolean doProcess(Record record) {
 
-
-			String hostname = (String)record.getFirstValue(hostnameField);
-			if (sourceType != null && hostname != null && tzConfig != null) {
-				record.put(this.timezoneField, tzConfig.getTimeZone(sourceType, hostname));
-			}
-			else if (tzConfig == null) {
+			if (tzConfig == null) {
 				// ####################################################################################################
 				// TEMP: Please refer to jira FV-3191
 				// ####################################################################################################
 				record.put(this.timezoneField, "Asia/Jerusalem");
+			} else{
+				String hostname = (String)record.getFirstValue(hostnameField);
+				record.put(this.timezoneField, tzConfig.getTimeZone(sourceType, hostname));
+				
 			}
-
-            else if(hostname == null && sourceType != null )
-            {
-                record.put(this.timezoneField, tzConfig.getTimeZone(sourceType, hostname));
-            }
-			else {
-				logger.error(" sourceType  is null, NO timezone forwarded to morphline! "
-						+ " sourceType is null: {}, timezones is : {}",
-						sourceType == null ? "true" : "false" ,
-						timezones, tzConfig == null ? "true" : "false" );
-			}
+			
 			// pass record to next command in chain:
 			return super.doProcess(record);
 		}

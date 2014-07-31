@@ -12,6 +12,7 @@ import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
 import fortscale.collection.morphlines.commands.GetTimezoneBuilder.GetTimezone;
@@ -41,8 +42,13 @@ public class GetTimezoneBuilderTest {
 		return record;
 	}
 
+	@SuppressWarnings("unchecked")
 	private GetTimezone getCommand(String sourceType, String timezones) {
-		when(config.getString("sourceType")).thenReturn(sourceType);
+		if(sourceType != null){
+			when(config.getString("sourceType")).thenReturn(sourceType);
+		} else{
+			when(config.getString("sourceType")).thenThrow(ConfigException.Missing.class);
+		}
 		GetTimezoneBuilder builder = new GetTimezoneBuilder();
 		MorphlineContext morphlineContext = new MorphlineContext.Builder().build();
 		return new GetTimezone(builder, config, sink, sink, morphlineContext,timezones);
@@ -136,18 +142,10 @@ public class GetTimezoneBuilderTest {
 		assertEquals("UTC", output.getFirstValue("timezoneOutput"));
 	}
 
-	@Test
+	@Test(expected=ConfigException.Missing.class)
 	public void source_type_is_null() {		
-		GetTimezone command = getCommand(null, "{  \"regexpList\": [    {\"type\" : \"vpn\" , \"host\" : \"il.srv.+\" , \"timezone\" : \"Asia/Jerusalem\"},    {\"type\" : \"4769\" , \"host\" : \"sm.srv.+\" , \"timezone\" : \"Pacific/Samoa\"}  ], \"defaultTimezone\" : \"UTC\" }");
-		Record record = getRecord("ilsrv01");
+		getCommand(null, "{  \"regexpList\": [    {\"type\" : \"vpn\" , \"host\" : \"il.srv.+\" , \"timezone\" : \"Asia/Jerusalem\"},    {\"type\" : \"4769\" , \"host\" : \"sm.srv.+\" , \"timezone\" : \"Pacific/Samoa\"}  ], \"defaultTimezone\" : \"UTC\" }");
 		
-		// execute the command
-		boolean result = command.doProcess(record);
-		Record output = sink.popRecord();
-		
-		assertTrue(result);
-		assertNotNull(output);
-		assertEquals(null, output.getFirstValue("timezoneOutput"));	
 	}
 	
 	@Test
