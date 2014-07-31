@@ -38,6 +38,9 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 	@Value("${impala.data.table.fields.normalized_username}")
 	public String NORMALIZED_USERNAME;
 
+	@Value("${impala.data.table.min.score.top:50}")
+	protected int minScoreForTopTable;
+	
 	public abstract String getDestinationFieldName();
 	
 	public abstract String getStatusFieldName();

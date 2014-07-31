@@ -42,7 +42,7 @@ public class LoginDAOImpl extends AccessDAO{
 	}
 	@Override
 	public String getTableName(int minScore) {
-		if (minScore<50)
+		if (minScore<minScoreForTopTable)
 			return tableName;
 		else
 			return tableName + "_top";
