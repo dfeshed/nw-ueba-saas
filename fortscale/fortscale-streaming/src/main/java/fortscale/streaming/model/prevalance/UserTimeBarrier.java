@@ -41,13 +41,18 @@ public class UserTimeBarrier {
     }
     
     public boolean isEventAfterBarrier(long timestamp, String discriminator) {
-		return ((timestamp > this.getTimestamp()) || (timestamp == this.getTimestamp() && !this.getDiscriminator().equals(discriminator)));
+    	long convertedTimestamp = convertTimestamp(timestamp);
+		return ((convertedTimestamp > this.getTimestamp()) || (convertedTimestamp == this.getTimestamp() && !this.getDiscriminator().equals(discriminator)));
 	}
+    
+    private long convertTimestamp(long timestamp){
+    	return convertToMilliSeconds(timestamp);
+    }
     
     public boolean updateBarrier(long timestamp, String discriminator) {
     	// update barrier in case it is not too much in the future
 		if (!TimestampUtils.isFutureTimestamp(timestamp, 24)) {
-			this.timestamp = convertToMilliSeconds(timestamp);
+			this.timestamp = convertTimestamp(timestamp);
 			this.discriminator = discriminator;
 			return true;
 		} else {

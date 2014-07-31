@@ -106,7 +106,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	private void updateUserTotalScore(User user, Date lastRun){
 		ScoreInfo totalScore = calculateTotalScore(configurationService.getScoreConfiguration().getConfMap().values(), user.getScores(), lastRun);
 		
-		updateUserScore(user, lastRun, Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false, false);
+		updateUserScore(user, lastRun, Classifier.total.getId(), totalScore.getScore(), totalScore.getAvgScore(), false);
 	}
 	
 	private ScoreInfo calculateTotalScore(Collection<ScoreWeight> scoreWeights, Map<String, ClassifierScore> classifierScoreMap, Date lastRun){
@@ -204,7 +204,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		double avg = sum / users.size();
 		for(User user: users){
 			double userScore = userIdToScoreMap.get(user.getId());
-			User updatedUser = updateUserScore(user, runtime, classifier.getId(), userScore, avg, false, false);
+			User updatedUser = updateUserScore(user, runtime, classifier.getId(), userScore, avg, false);
 			if(updatedUser != null){
 				Update update = new Update();
 				userService.fillUpdateUserScore(update, user, classifier);
@@ -277,7 +277,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 			return null;
 		}
 		//updating the user with the new score.
-		user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false, false);
+		user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false);
 	
 		Update update = new Update();
 		update.set(User.getClassifierScoreField(Classifier.groups.getId()), user.getScore(Classifier.groups.getId()));
@@ -317,13 +317,13 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 //			if(classifierScore.getClassifierId().equals(Classifier.groups.getId())){
 //				isSaveMaxScore = true;
 //			}
-			updateUserScore(user, classifierScore.getTimestamp(), classifierScore.getClassifierId(), classifierScore.getScore(), classifierScore.getAvgScore(), false,isSaveMaxScore);
+			updateUserScore(user, classifierScore.getTimestamp(), classifierScore.getClassifierId(), classifierScore.getScore(), classifierScore.getAvgScore(),isSaveMaxScore);
 			updateUserTotalScore(user, classifierScore.getTimestamp());
 		}
 	}
 	
 	@Override
-	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isToSave, boolean isSaveMaxScore){
+	public User updateUserScore(User user, Date timestamp, String classifierId, double value, double avgScore, boolean isSaveMaxScore){
 		ClassifierScore cScore = user.getScore(classifierId);
 		
 		
@@ -385,9 +385,6 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 			cScore.setTrendScore(Math.abs(diffScore));
 		}
 		user.putClassifierScore(cScore);
-		if(isToSave){
-			userRepository.save(user);
-		}
 		return user;
 	}
 	
