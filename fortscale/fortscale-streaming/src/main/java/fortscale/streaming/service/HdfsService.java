@@ -92,10 +92,6 @@ public class HdfsService {
 		
 	public void close() throws Exception {
 		// call flush to ensure that all partitions were added to impala
-		try{
-			flushHdfs();
-		} finally{
-			SpringService.shutdown();
-		}
+		flushHdfs();
 	}
 }

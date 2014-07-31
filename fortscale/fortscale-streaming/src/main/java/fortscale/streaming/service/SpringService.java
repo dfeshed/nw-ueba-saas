@@ -1,5 +1,7 @@
 package fortscale.streaming.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -11,19 +13,23 @@ import java.util.Collection;
 public class SpringService {
 
 	/// Singleton section
+	private static Logger logger = LoggerFactory.getLogger(SpringService.class);
 	
 	private static SpringService instance;
 	
-	public static SpringService getInstance() {
+	public static void init(String contextPath) {
 		if (instance==null) {
-			instance = new SpringService("classpath*:META-INF/spring/streaming-context.xml");
+			logger.info("Creating SpringService with context at {}", contextPath);
+			instance = new SpringService(contextPath);
 		}
-		return instance;
 	}
 	
-	public static SpringService getInstance(String contextPath) {
+	public static SpringService getInstance() {
 		if (instance==null) {
-			instance = new SpringService(contextPath);
+			// report error if instance was not create
+			StackTraceElement[] trace = Thread.currentThread().getStackTrace(); 
+			logger.error("SpringService.getInstance was called from {}.{} without being initialized first", 
+					trace[trace.length-1].getClassName(), trace[trace.length-1].getMethodName());
 		}
 		return instance;
 	}

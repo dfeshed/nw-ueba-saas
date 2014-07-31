@@ -61,7 +61,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void init(Config config, TaskContext context) throws Exception {
+	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		// get task configuration parameters
 		usernameField = getConfigString(config, "fortscale.username.field");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
@@ -203,10 +203,9 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	}
 
 	/** save the state to mongodb when the job shutsdown */
-	@Override public void close() throws Exception {
+	@Override protected void wrappedClose() throws Exception {
 		if (modelService!=null) {
 			modelService.exportModels();
-			modelService.close();
 		}
 		modelService = null;
 	}

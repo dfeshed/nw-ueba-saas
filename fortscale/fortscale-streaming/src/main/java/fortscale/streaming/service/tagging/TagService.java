@@ -37,8 +37,8 @@ public class TagService {
         this.daysBackForArchive = daysBack;
 
         //retrieve the implementation list from spring
-       this.implementationList = SpringService.getInstance("classpath*:META-INF/spring/streaming-TaggingTask-context.xml").resolveAll(ServiceAccountTagging.class);
-       this.userService = SpringService.getInstance("classpath*:META-INF/spring/streaming-TaggingTask-context.xml").resolve(UserService.class);
+       this.implementationList = SpringService.getInstance().resolveAll(ServiceAccountTagging.class);
+       this.userService = SpringService.getInstance().resolve(UserService.class);
     }
 
     public void handleAccount(String userName, Long timeStamp,String sourceHostName,String destHostName, ComputerUsageType sourceComputerType , ComputerUsageType destComputerType,boolean isSensetiveMachine ) throws LevelDbException
@@ -113,10 +113,4 @@ public class TagService {
         		iter.close();
         }
     }
-
-    public void closeContext() {
-        SpringService.shutdown();
-    }
-
-
 }
