@@ -18,6 +18,7 @@ public abstract class ImpalaDAO<T> {
 	protected JdbcOperations impalaJdbcTemplate;
 	
 	public abstract String getTableName();
+	public abstract String getTableName(int minScore);
 	
 	public abstract String getInputFileHeaderDesc();
 	

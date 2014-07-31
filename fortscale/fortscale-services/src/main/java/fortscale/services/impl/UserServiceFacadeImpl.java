@@ -151,7 +151,7 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	}
 
 	@Override
-	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues) {
-		return userService.getDestinationComputerPropertyDistribution(uid, propertyName, daysToGet, maxValues);
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues, int minScore) {
+		return userService.getDestinationComputerPropertyDistribution(uid, propertyName, daysToGet, maxValues, minScore);
 	}
 }

@@ -449,10 +449,11 @@ public class ApiUserController extends BaseController{
 	public DataBean<Collection<PropertyEntry>> getDestinationPropertyDistribution(
 			@PathVariable String uid,
 			@PathVariable String param,
+			@RequestParam(defaultValue="50") int minScore,
 			@RequestParam(defaultValue="14") int daysToGet,
 			@RequestParam(defaultValue="10") int maxValues) {
 		
-		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param, daysToGet, maxValues);
+		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param, daysToGet, maxValues, minScore);
 
 		// convert the distribution properties to data bean
 		DataBean<Collection<PropertyEntry>> ret = new DataBean<Collection<PropertyEntry>>();

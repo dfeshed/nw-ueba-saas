@@ -38,6 +38,9 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 	@Value("${impala.data.table.fields.normalized_username}")
 	public String NORMALIZED_USERNAME;
 
+	@Value("${impala.data.table.min.score.top:50}")
+	protected int minScoreForTopTable;
+	
 	public abstract String getDestinationFieldName();
 	
 	public abstract String getStatusFieldName();
@@ -110,12 +113,13 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		return impalaJdbcTemplate.query(getEventLoginDayCountSqlQuery(username, numberOfDays), new EventLoginDayCountMapper());
 	}
 
-	public List<EventsToMachineCount> getEventsToTargetMachineCount(String username, int daysBack) {
+	public List<EventsToMachineCount> getEventsToTargetMachineCount(String username, int daysBack, int minScore) {
 		long startOfTime = (new DateTime()).minusDays(daysBack).getMillis();
 		
 		///build query for events in the last X days to each distinct target machine by the username
 		ImpalaQuery query = new ImpalaQuery();
-		query.select(getDestinationFieldName() + " as " + EventsToMachineCountRowMapper.HostnameField, "count(*) as " + EventsToMachineCountRowMapper.EventsCountField).from(getTableName());
+		query.select(getDestinationFieldName() + " as " + EventsToMachineCountRowMapper.HostnameField, "count(*) as " + EventsToMachineCountRowMapper.EventsCountField);
+		query.from(getTableName(minScore));
 		addPartitionFilterToQuery(query, startOfTime);
 			// get only success events
 		query.andWhere(ImpalaCriteria.equalsTo(getStatusFieldName(), getStatusSuccessValue(), true))
@@ -125,8 +129,6 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 			.andWhere(gte(getEventEpochTimeFieldName(), Long.toString(startOfTime)))
 			// group by target
 			.groupBy(getDestinationFieldName());
-		
-		
 		
 		return impalaJdbcTemplate.query(query.toSQL(), new EventsToMachineCountRowMapper());
 	}
@@ -172,7 +174,7 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 	}
 
 	public List<Map<String, Object>> findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(String username, int minScore, Long latestDate, Long earliestDate, Pageable pageable) {		
-		ImpalaQuery query = getFindAllEventsQuery(pageable);
+		ImpalaQuery query = getFindAllEventsQuery(pageable, minScore);
 		addPartitionFilterToQuery(query, earliestDate, latestDate);
 		query.andGte(getEventScoreFieldName(), minScore);
 		query.andWhere(getNormalizedUserNameEqualComparison(username));
@@ -190,7 +192,7 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 
 	public List<Map<String, Object>> findEvents(Pageable pageable, String additionalWhereQuery) {
 		
-		ImpalaQuery query = getFindAllEventsQuery(pageable);
+		ImpalaQuery query = getFindAllEventsQuery(pageable, 0);
 		if (additionalWhereQuery != null && additionalWhereQuery.length() > 0) {
 			query.andWhere(additionalWhereQuery);
 		}
@@ -254,7 +256,7 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 	}
 	
 	public List<Map<String, Object>> findEventsByGtEventScoreBetweenTimeInUsernameList(Pageable pageable, Integer minScore, Long latestDate, Long earliestDate, Collection<String> usernames) {
-		ImpalaQuery query = getFindAllEventsQuery(pageable);
+		ImpalaQuery query = getFindAllEventsQuery(pageable, minScore);
 		addPartitionFilterToQuery(query, earliestDate, latestDate);
 		if(minScore != null){
 			query.andGte(getEventScoreFieldName(), minScore);
@@ -265,10 +267,10 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		return getListResults(query.toSQL());
 	}
 	
-	public ImpalaQuery getFindAllEventsQuery(Pageable pageable) {
+	public ImpalaQuery getFindAllEventsQuery(Pageable pageable, int minScore) {
 		
 		ImpalaQuery query = new ImpalaQuery();
-		query.select("*").from(getTableName());
+		query.select("*").from(getTableName(minScore));
 		
 		query.limitAndSort(pageable);
 

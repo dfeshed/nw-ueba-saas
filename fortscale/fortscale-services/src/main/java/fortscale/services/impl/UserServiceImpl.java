@@ -590,14 +590,14 @@ public class UserServiceImpl implements UserService{
 		return userRepository.findByApplicationUserName(userApplication.getId(), usernames);
 	}
 	
-	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues) {
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues, int minScore) {
 		// get the destinations from 4769 events and ssh events
 		Map<String, EventsToMachineCount> destinationsCount = new HashMap<String, EventsToMachineCount>();
 		
 		String username = getUserNameFromID(uid);
 		
-		addEventsToMachineCountToMap(destinationsCount, loginDAO.getEventsToTargetMachineCount(username, daysToGet));
-		addEventsToMachineCountToMap(destinationsCount, sshDAO.getEventsToTargetMachineCount(username, daysToGet));
+		addEventsToMachineCountToMap(destinationsCount, loginDAO.getEventsToTargetMachineCount(username, daysToGet, minScore));
+		addEventsToMachineCountToMap(destinationsCount, sshDAO.getEventsToTargetMachineCount(username, daysToGet, minScore));
 	
 		// create a properties distribution object
 		PropertiesDistribution distribution = new PropertiesDistribution(propertyName);

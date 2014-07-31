@@ -72,6 +72,13 @@ public class SshDAOImpl extends AccessDAO{
 	public String getTableName() {
 		return tableName;
 	}
+	@Override
+	public String getTableName(int minScore) {
+		if (minScore<minScoreForTopTable)
+			return tableName;
+		else
+			return tableName + "_top";
+	}
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
