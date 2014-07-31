@@ -93,11 +93,15 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		ImpalaQuery query = new ImpalaQuery();
 		long startOfTime = (new DateTime()).minusDays(numberOfDays).getMillis();
 		
-		String selectArgs = String.format("to_date(%s) as %s, if(%s='%s','%s','%s') as %s, count(*) as %s", getEventTimeFieldName(), EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME, getStatusFieldName(), getStatusSuccessValue(), EventLoginDayCount.STATUS_SUCCESS, EventLoginDayCount.STATUS_FAILURE, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME, EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME);
-		query.select(selectArgs).from(getTableName());
+		query.select(String.format("to_date(%s) as %s", getEventTimeFieldName(), EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME),
+				String.format("if(%s='%s','%s','%s') as %s", getStatusFieldName(), getStatusSuccessValue(), EventLoginDayCount.STATUS_SUCCESS, EventLoginDayCount.STATUS_FAILURE),
+				String.format("count(*) as %s", EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME, EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME));
+		query.from(getTableName());
 		addPartitionFilterToQuery(query, startOfTime);
-		query.andWhere(getNormalizedUserNameEqualComparison(username)).andWhere(gte(getEventEpochTimeFieldName(), Long.toString(TimestampUtils.convertToSeconds(DateTime.now().minusDays(numberOfDays).getMillis()))));
-		query.groupBy(EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME).limitAndSort(new ImpalaPageRequest(numberOfDays*2, new Sort(Direction.ASC, EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME)));
+		query.andWhere(getNormalizedUserNameEqualComparison(username))
+			 .andWhere(gte(getEventEpochTimeFieldName(), Long.toString(TimestampUtils.convertToSeconds(startOfTime))));
+		query.groupBy(EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME)
+			.limitAndSort(new ImpalaPageRequest(numberOfDays*2, new Sort(Direction.ASC, EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME)));
 		
 		return query.toSQL();
 	}
