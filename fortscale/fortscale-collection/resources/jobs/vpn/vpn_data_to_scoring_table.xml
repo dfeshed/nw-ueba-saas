@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>Scoring</name>
+			<group>VPN</group>
+			<description>Running vpn Scoring</description>
+			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			<job-data-map>
+				<entry>
+					<key>impalaTableName</key>
+					<value>${impala.data.vpn.table.name}</value>
+				</entry>
+				<entry>
+					<key>epochtimeField</key>
+					<value>${impala.data.table.fields.epochtime}</value>
+				</entry>
+				<entry>
+					<key>streamingTopic</key>
+					<value>${kafka.vpn.struct.topic}</value>
+				</entry>
+			</job-data-map>
+			
+		</job>
+	
+	</schedule>
+
+
+</job-scheduling-data>

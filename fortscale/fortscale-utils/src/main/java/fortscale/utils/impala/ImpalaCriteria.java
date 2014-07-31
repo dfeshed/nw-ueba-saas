@@ -45,6 +45,10 @@ public class ImpalaCriteria implements ImpalaQueryElementInterface{
 		return compare(key, "<=", value);
 	}
 	
+	public static ImpalaCriteria lt(String key, String value){
+		return compare(key, "<", value);
+	}
+	
 	public static ImpalaCriteria in(String key, String value){
 		return compare(key, " in ", "(" +  value + ")");
 	}

@@ -45,7 +45,7 @@
 				</entry>
 				<entry>
 					<key>impalaTableName</key>
-					<value>sshdata</value>
+					<value>${impala.data.ssh.table.name}</value>
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
