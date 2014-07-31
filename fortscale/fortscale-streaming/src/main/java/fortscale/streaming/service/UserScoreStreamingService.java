@@ -205,6 +205,7 @@ public class UserScoreStreamingService {
 		KeyValueIterator<String, UserTopEvents> iterator = store.all();
 		List<User> users = new ArrayList<>();
 		double avgScore = 0;
+		int numOfUsersThatDoesNotExist = 0;
 		try { 
 			while (iterator.hasNext()) {
 				Entry<String, UserTopEvents> entry = iterator.next();
@@ -224,8 +225,14 @@ public class UserScoreStreamingService {
 						userTopEvents.setLastUpdatedScore(curScore);
 						userTopEvents.setLastUpdateScoreEpochTime(lastUpdateEpochTime);
 						store.put(username, userTopEvents);
+					} else{
+						numOfUsersThatDoesNotExist++;
+						logger.info("A user has userScoreTopEvents store but doesn't exist in our db. username: {}", username);
 					}
 				}
+			}
+			if(numOfUsersThatDoesNotExist > 0){
+				logger.warn("got events of {} users that do not exist.", numOfUsersThatDoesNotExist);
 			}
 			if(users.size() > 1){
 				avgScore = avgScore / users.size();
