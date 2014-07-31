@@ -97,8 +97,8 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		long startOfTime = (new DateTime()).minusDays(numberOfDays).getMillis();
 		
 		query.select(String.format("to_date(%s) as %s", getEventTimeFieldName(), EVENT_LOGIN_DAY_COUNT_DAY_FIELD_NAME),
-				String.format("if(%s='%s','%s','%s') as %s", getStatusFieldName(), getStatusSuccessValue(), EventLoginDayCount.STATUS_SUCCESS, EventLoginDayCount.STATUS_FAILURE),
-				String.format("count(*) as %s", EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME, EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME));
+				String.format("if(%s='%s','%s','%s') as %s", getStatusFieldName(), getStatusSuccessValue(), EventLoginDayCount.STATUS_SUCCESS, EventLoginDayCount.STATUS_FAILURE, EVENT_LOGIN_DAY_COUNT_STATUS_FIELD_NAME),
+				String.format("count(*) as %s", EVENT_LOGIN_DAY_COUNT_COUNT_FIELD_NAME));
 		query.from(getTableName());
 		addPartitionFilterToQuery(query, startOfTime);
 		query.andWhere(getNormalizedUserNameEqualComparison(username))
