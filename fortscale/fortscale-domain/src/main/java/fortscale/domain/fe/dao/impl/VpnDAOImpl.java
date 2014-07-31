@@ -88,7 +88,10 @@ public class VpnDAOImpl extends AccessDAO implements InitializingBean{
 	}
 	@Override
 	public String getTableName(int minScore) {
-		return tableName + "_top";
+		if (minScore<50)
+			return tableName;
+		else
+			return tableName + "_top";
 	}
 	
 	public void setTableName(String tableName) {
