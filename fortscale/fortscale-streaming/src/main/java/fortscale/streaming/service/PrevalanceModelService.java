@@ -126,11 +126,6 @@ public class PrevalanceModelService {
 		}
 	}
 	
-	public void close() {
-		SpringService.shutdown();
-	}
-	
-	
 	private Model convertToDTO(String username, PrevalanceModel model) {
 		Model dto = new Model(modelBuilder.getModelName(), username, model);
 		return dto;

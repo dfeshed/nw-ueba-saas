@@ -52,7 +52,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 
     @SuppressWarnings("unchecked")
     @Override
-    public void init(Config config, TaskContext context) throws Exception {
+    protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
         usernameField = getConfigString(config, "fortscale.username.field");
         timestampField = getConfigString(config, "fortscale.timestamp.field");
@@ -170,14 +170,11 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
     }
 
     @Override
-    public void close() throws Exception {
+    protected void wrappedClose() throws Exception {
         if(this.taggingService!=null) {
             this.taggingService.exportTags();
-            this.taggingService.closeContext();
         }
         this.taggingService = null;
-
-
     }
 
 

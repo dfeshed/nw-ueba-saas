@@ -55,7 +55,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	/** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void init(Config config, TaskContext context) throws Exception {
+	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		// get configuration properties
 		String hdfsRootPath = getConfigString(config, "fortscale.hdfs.root");
 		String fileName = getConfigString(config, "fortscale.file.name");
@@ -185,7 +185,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	/** Close the hdfs writer when job shuts down */
 	@Override
-	public void close() throws Exception {
+	protected void wrappedClose() throws Exception {
 		// close hdfs appender
 		if (service != null) {
 			service.close();

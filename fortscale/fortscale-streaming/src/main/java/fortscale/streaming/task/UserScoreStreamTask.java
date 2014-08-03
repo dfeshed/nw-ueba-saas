@@ -35,7 +35,7 @@ public class UserScoreStreamTask  extends AbstractStreamTask  implements Initabl
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void init(Config config, TaskContext context) throws Exception {
+	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		// get task configuration parameters
 		usernameField = getConfigString(config, "fortscale.username.field");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
@@ -48,7 +48,7 @@ public class UserScoreStreamTask  extends AbstractStreamTask  implements Initabl
 		KeyValueStore<String, UserTopEvents> store = (KeyValueStore<String, UserTopEvents>)context.getStore(storeName);
 		
 		//get the user score streaming service and set it with the store and the classifier id.
-		userScoreStreamingService = SpringService.getInstance("classpath*:META-INF/spring/streaming-user-score-context.xml").resolve(UserScoreStreamingService.class);
+		userScoreStreamingService = SpringService.getInstance().resolve(UserScoreStreamingService.class);
 		userScoreStreamingService.setClassifierId(classifierId);
 		userScoreStreamingService.setStore(store);
 		userScoreStreamingService.setUseLatestEventTimeAsCurrentTime(isUseLatestEventTimeAsCurrentTime);
@@ -95,10 +95,9 @@ public class UserScoreStreamTask  extends AbstractStreamTask  implements Initabl
 	
 	/** save the state to mongodb when the job shutsdown */
 	@Override 
-	public void close() throws Exception {
+	protected void wrappedClose() throws Exception {
 		if (userScoreStreamingService!=null) {
 			userScoreStreamingService.exportSnapshot();
-			SpringService.shutdown();
 		}
 		userScoreStreamingService = null;
 	}
