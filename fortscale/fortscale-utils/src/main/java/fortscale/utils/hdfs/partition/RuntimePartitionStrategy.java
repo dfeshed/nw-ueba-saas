@@ -1,7 +1,8 @@
 package fortscale.utils.hdfs.partition;
 
-import static fortscale.utils.hdfs.partition.PartitionsUtils.*;
-import static fortscale.utils.TimestampUtils.*;
+import static fortscale.utils.TimestampUtils.convertToSeconds;
+import static fortscale.utils.hdfs.partition.PartitionsUtils.getPartitionPartFromPath;
+import static fortscale.utils.hdfs.partition.PartitionsUtils.normalizePath;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 
 	@Override
 	public String getImpalaPartitionName(long timestamp) {
-		return String.format("%s=%d",RUNTIME_PARTITION_FIELD_NAME, timestamp);
+		return String.format("%s=%d",RUNTIME_PARTITION_FIELD_NAME, convertToSeconds(timestamp));
 	}
 	
 	/**
@@ -39,7 +40,7 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 	 * Gets the partition value in impala table column for a given timestamp
 	 */
 	public String getImpalaPartitionValue(long timestamp) {
-		return String.format("%d", timestamp);
+		return String.format("%d", convertToSeconds(timestamp));
 	}
 
 	/**
@@ -89,8 +90,8 @@ public class RuntimePartitionStrategy implements PartitionStrategy {
 		// get the runtime part from the path
 		String partitionPart = getPartitionPartFromPath(partitionPath);
 		long runtime = Long.parseLong(partitionPart.substring(8));
-		runtime = normalizeTimestamp(runtime);
-		ts = normalizeTimestamp(ts);
+		runtime = convertToSeconds(runtime);
+		ts = convertToSeconds(ts);
 		
 		if (ts > runtime)
 			return 1;

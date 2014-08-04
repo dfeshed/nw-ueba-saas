@@ -15,7 +15,7 @@ public class RuntimePartitionStrategyTest {
 	@Test
 	public void runtime_partition_strategy_should_set_path_correct() {
 		String actual = strategy.getPartitionPath(1392911553123L, "/base");
-		assertEquals("/base/runtime=1392911553123/", actual);
+		assertEquals("/base/runtime=1392911553/", actual);
 	}
 	
 	@Test
