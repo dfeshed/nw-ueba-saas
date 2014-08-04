@@ -26,6 +26,10 @@
 					<key>streamingTopic</key>
 					<value>${kafka.4769.struc.topic}</value>
 				</entry>
+				<entry>
+					<key>impalaTableFields</key>
+					<value>${impala.data.security.events.4769.table.fields}</value>
+				</entry>
 			</job-data-map>
 			
 		</job>

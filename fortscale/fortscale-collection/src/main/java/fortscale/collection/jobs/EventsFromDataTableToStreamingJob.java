@@ -3,10 +3,8 @@ package fortscale.collection.jobs;
 import static fortscale.utils.impala.ImpalaCriteria.gte;
 import static fortscale.utils.impala.ImpalaCriteria.lt;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -22,6 +20,7 @@ import org.springframework.jdbc.core.JdbcOperations;
 
 import fortscale.collection.io.KafkaEventsWriter;
 import fortscale.utils.TimestampUtils;
+import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
 
 
@@ -33,6 +32,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	private static int EVENTS_DELTA_TIME_IN_SEC_DEFAULT = 14*24*60*60;
 	private static int FETCH_EVENTS_STEP_IN_DAYS_DEFAULT = 1;
 	private static final String IMPALA_TABLE_NAME_JOB_PARAMETER = "impalaTableName";
+	private static final String IMPALA_TABLE_FIELDS_JOB_PARAMETER = "impalaTableFields";
 	private static final String LATEST_EVENT_TIME_JOB_PARAMETER = "latestEventTime";
 	private static final String DELTA_TIME_IN_SEC_JOB_PARAMETER = "deltaTimeInSec";
 	private static final String EPOCH_TIME_FIELD_JOB_PARAMETER = "epochtimeField";
@@ -44,6 +44,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	
 	//parameters:
 	private String impalaTableName;
+	private String impalaTableFields;
 	private String epochtimeField;
 	private String streamingTopic;	
 	private long latestEventTime;
@@ -62,6 +63,8 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 		// get parameters values from the job data map
 		
 		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_NAME_JOB_PARAMETER);
+		impalaTableFields = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_FIELDS_JOB_PARAMETER);
+		
 		epochtimeField = jobDataMapExtension.getJobDataMapStringValue(map, EPOCH_TIME_FIELD_JOB_PARAMETER);
 		
 		streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_FIELD_JOB_PARAMETER);
@@ -85,6 +88,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 		KafkaEventsWriter streamWriter = null;
 		
 		try{
+			String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(impalaTableFields);
 			streamWriter = new KafkaEventsWriter(streamingTopic);
 			long timestampCursor = latestEventTime - deltaTimeInSec;
 			while(timestampCursor <= latestEventTime){
@@ -98,10 +102,9 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 				
 				for(Map<String, Object> result: resultsMap){
 					JSONObject json = new JSONObject();
-					Iterator<Entry<String, Object>> resultIter = result.entrySet().iterator();
-					while(resultIter.hasNext()){
-						Entry<String, Object> entry = resultIter.next();
-						json.put(entry.getKey(), entry.getValue());
+					for(String fieldName: fieldsName){
+						Object val = result.get(fieldName.toLowerCase());
+						json.put(fieldName, val);
 					}
 					streamWriter.send(json.toJSONString(JSONStyle.NO_COMPRESS));
 				}

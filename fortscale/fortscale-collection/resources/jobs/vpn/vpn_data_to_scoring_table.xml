@@ -26,6 +26,10 @@
 					<key>streamingTopic</key>
 					<value>${kafka.vpn.struct.topic}</value>
 				</entry>
+				<entry>
+					<key>impalaTableFields</key>
+					<value>${impala.data.vpn.table.fields}</value>
+				</entry>
 			</job-data-map>
 			
 		</job>
