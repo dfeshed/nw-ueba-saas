@@ -16,7 +16,6 @@ import net.minidev.json.JSONObject;
 public class Sec4769EventsModelStreamTask extends EventsPrevalenceModelStreamTask {
 
 	private static final String NAT_SRC_MACHINE = "nat_src_machine";
-	private static final String FAILURE_AUGEMENTED ="aug_failure_code";
 	
 	private Pattern accountNamePattern;
 	private Pattern destinationPattern;
@@ -59,15 +58,7 @@ public class Sec4769EventsModelStreamTask extends EventsPrevalenceModelStreamTas
 		// set field for source ip address only is it not nat, otherwise put don't care value in the event
 		String normalized_src_machine = convertToString(message.get("normalized_src_machine")); 		
 		Boolean is_nat = convertToBoolean(message.get("is_nat"));
-		message.put(NAT_SRC_MACHINE, (Boolean.TRUE.equals(is_nat))? "" : normalized_src_machine);
-		
-		// the followin failure codes are sent to the scoring algorithm with the event time value in order to get high score for them:
-		// 0x12 - Clients credentials have been revoked: Account disabled, expired, locked out, logon hours.
-		// 0x22 - Request is a replay
-		// 0x6 - Client not found in Kerberos database: Bad user name, or new computer/user account has not replicated to DC yet
-		String failureCode = convertToString(message.get("failure_code"));
-		message.put(FAILURE_AUGEMENTED, ("0x12".equals(failureCode) || "0x22".equals(failureCode) || "0x6".equals(failureCode))? System.currentTimeMillis() : "0x0");
-		
+		message.put(NAT_SRC_MACHINE, (Boolean.TRUE.equals(is_nat))? "" : normalized_src_machine);	
 		
 		return true;
 	}

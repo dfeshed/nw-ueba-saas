@@ -6,18 +6,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.samza.config.Config;
+
 public final class PrevalanceModelBuilder {
 
-	public static PrevalanceModelBuilder createModel(String name) {
-		return new PrevalanceModelBuilder(name);
+	public static PrevalanceModelBuilder createModel(String name, Config config) {
+		return new PrevalanceModelBuilder(name, config);
 	}
 	
 	private String name;
+	private Config config;
 	private Map<String, String> fields = new HashMap<String, String>();
 	
 	
-	private PrevalanceModelBuilder(String name) {
+	private PrevalanceModelBuilder(String name, Config config) {
 		this.name = name;
+		this.config = config;
 	}
 	
 	public PrevalanceModelBuilder withField(String fieldName, String fieldModelClassName) {
@@ -35,6 +39,7 @@ public final class PrevalanceModelBuilder {
 		PrevalanceModel model = new PrevalanceModel(name);
 		for (Entry<String, String> entry :  fields.entrySet()) {
 			FieldModel fieldModel = (FieldModel)Class.forName(entry.getValue()).newInstance();
+			fieldModel.init(entry.getKey(), config);
 			model.setFieldModel(entry.getKey(), fieldModel);	
 		}
 		

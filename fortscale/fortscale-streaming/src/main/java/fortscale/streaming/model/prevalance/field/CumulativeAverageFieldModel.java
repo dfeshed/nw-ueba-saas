@@ -1,6 +1,8 @@
 package fortscale.streaming.model.prevalance.field;
 
 import static fortscale.utils.ConversionUtils.convertToInteger;
+
+import org.apache.samza.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,9 @@ public class CumulativeAverageFieldModel implements FieldModel{
 	
 	private int count;
 	private double average;
+	
+	@Override
+	public void init(String fieldName, Config config) {}
 	
 	@Override
 	public void add(Object value, long timestamp) {

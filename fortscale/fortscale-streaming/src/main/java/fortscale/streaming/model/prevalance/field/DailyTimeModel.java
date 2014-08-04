@@ -1,6 +1,7 @@
 package fortscale.streaming.model.prevalance.field;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.samza.config.Config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -19,6 +20,9 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 	public DailyTimeModel(){
 		super(TIME_RESOLUTION, BUCKET_SIZE);
 	}
+	
+	@Override
+	public void init(String fieldName, Config config) {}
 	
 	@Override
 	public void add(Object value, long timestamp){

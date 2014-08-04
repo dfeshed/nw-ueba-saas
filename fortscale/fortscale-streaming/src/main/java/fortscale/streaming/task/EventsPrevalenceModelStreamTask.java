@@ -89,7 +89,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		// get the model name and fields to include from configuration
 		modelName = getConfigString(config, "fortscale.model.name");
 		eventScoreField = getConfigString(config, "fortscale.event.score.field");
-		PrevalanceModelBuilder modelBuilder = PrevalanceModelBuilder.createModel(modelName);
+		PrevalanceModelBuilder modelBuilder = PrevalanceModelBuilder.createModel(modelName, config);
 		
 		Config fieldsSubset = config.subset("fortscale.fields.");		
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".model"))) {

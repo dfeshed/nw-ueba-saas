@@ -1,5 +1,7 @@
 package fortscale.streaming.model.prevalance;
 
+import org.apache.samza.config.Config;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
@@ -8,6 +10,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  */
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public interface FieldModel {
+	
+	/**
+	 * Initialize the field model with configuration values
+	 */
+	void init(String fieldName, Config config);
 	
 	/**
 	 * Count the field value in the model, set at the given time stamp
