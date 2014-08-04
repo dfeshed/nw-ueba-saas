@@ -14,6 +14,8 @@ import fortscale.services.impl.ImpalaUseridToAppUsernameWriter;
 import fortscale.services.impl.ImpalaWriterFactory;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
@@ -28,6 +30,8 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	private String impalaGroupMembershipScoringTableFields;
 	@Value("${impala.ldap.group.membership.scores.table.delimiter}")
 	private String impalaGroupMembershipScoringTableDelimiter;
+	@Value("${impala.ldap.group.membership.scores.table.partition.type}")
+	private String impalaGroupMembershipScoringTablePartitionType;
 	
 	@Value("${impala.total.scores.table.fields}")
 	private String impalaTotalScoringTableFields;
@@ -39,7 +43,8 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	
 	public void createGroupsScoreAppender(String basePath, String filename) throws IOException{
 		if(groupsScoreAppender == null){
-			groupsScoreAppender = new HDFSPartitionsWriter(basePath, new MonthlyPartitionStrategy(), new DefaultFileSplitStrategy());
+			PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);
+			groupsScoreAppender = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
 		}
 		groupsScoreAppender.open(filename);
 	}

@@ -2,6 +2,8 @@ package fortscale.domain.fe.dao;
 
 import fortscale.domain.impala.ImpalaDAO;
 import fortscale.utils.TimestampUtils;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 
 import org.springframework.beans.factory.annotation.Value;
 
@@ -24,11 +26,11 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
     @Value("${impala.ldap.group.membership.scores.table.name}")
     private String tableName;
 
-    @Value("${impala.ldap.group.membership.scores.table.fields.runTime}")
-    private String runTime;
-
     @Value("${impala.ldap.group.membership.scores.table.fields}")
     private String impalaMemberShipTableFields;
+    
+    @Value("${impala.ldap.group.membership.scores.table.partition.type}")
+	private String impalaGroupMembershipScoringTablePartitionType;
 
 
 
@@ -50,8 +52,9 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
         this.tableName = tableName;
     }
 
-    public String getRunTime() {
-        return runTime;
+    public String getRunTimeField() {
+    	PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);
+        return partitionStrategy.getImpalaPartitionFieldName();
     }
 
     public Long getLastRuntime() {
@@ -61,9 +64,9 @@ public class GroupMembershipDAO extends ImpalaDAO<Map<String, Object>> {
             lastRunDate = new Date(tmp.getTimeInMillis());
         }
         String query = String.format("select  max(%s) from %s",
-                getRunTime(), getTableName());
+                getRunTimeField(), getTableName());
         String queryWithHint = String.format("%s where %s >= %d", query,
-                getRunTime(), TimestampUtils.convertToSeconds(lastRunDate.getTime()));
+                getRunTimeField(), TimestampUtils.convertToSeconds(lastRunDate.getTime()));
         Long lastRun = impalaJdbcTemplate.queryForObject(queryWithHint,
                 Long.class);
         if (lastRun == null) {

@@ -239,6 +239,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaGroupMembershipScoringTableName;
 	@Value("${hdfs.user.processeddata.group.membership.score.path}")
 	private String impalaGroupMembershipScoringDirectory;
+	@Value("${impala.ldap.group.membership.scores.table.partition.type}")
+	private String impalaGroupMembershipScoringTablePartitionType;
 		
 	public void createImpalaTables() throws IOException{
 		MonthlyPartitionStrategy monthlyPartitionStrategy = new MonthlyPartitionStrategy();
@@ -309,7 +311,8 @@ public class HadoopInit implements InitializingBean{
 		createTable(impalaAdUserTableName, impalaAdUserTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaAdUserTableDelimiter, impalaAdUserDirectory);
 				
 		//Group Membership Scoring table
-		createTable(impalaGroupMembershipScoringTableName, impalaGroupMembershipScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaGroupMembershipScoringTableDelimiter, impalaGroupMembershipScoringDirectory);
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);
+		createTable(impalaGroupMembershipScoringTableName, impalaGroupMembershipScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaGroupMembershipScoringTableDelimiter, impalaGroupMembershipScoringDirectory);
 		
 	}
 	
