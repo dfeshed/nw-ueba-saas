@@ -90,15 +90,16 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		
 		logger.info("update all user total score.");
 		for(User user: users){
-			updateUserTotalScore(user, lastRun);
+			try{
+				updateUserTotalScore(user, lastRun);
+				Update update = new Update();
+				update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+				userService.updateUser(user, update);
+			} catch(Exception e){
+				logger.error(String.format("got the following exception while trying to recalculate the total score for user %s", user.getUsername()),e);
+			}
 		}
-		
-		for(User user: users){
-			Update update = new Update();
-			update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
-			userService.updateUser(user, update);
-		}
-		
+				
 		saveUserTotalScoreToImpala(users, lastRun, configurationService.getScoreConfiguration());
 	}
 	
@@ -115,6 +116,13 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		DateTime dateTime = new DateTime(lastRun.getTime());
 		dateTime = dateTime.minusHours(24);//if for some reason a score was not calculated for more than 24 hours then it will not be accounted.
 		for(ClassifierScore classifierScore: classifierScoreMap.values()){
+			if(classifierScore == null){
+				logger.warn("got a user with null classifier score");
+				continue;
+			}
+			if(classifierScore.getClassifierId().equals(Classifier.total.getId())){
+				continue;
+			}
 			if(dateTime.isAfter(classifierScore.getTimestampEpoc())){
 				continue;
 			}
@@ -290,16 +298,24 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	public void recalculateTotalScore(){
 		List<User> users = userRepository.findAllExcludeAdInfo();
 		for(User user: users){
-			recalculateTotalScore(user);
-			Update update = new Update();
-			update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
-			userService.updateUser(user, update);
+			try{
+				recalculateTotalScore(user);
+				Update update = new Update();
+				update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+				userService.updateUser(user, update);
+			} catch(Exception e){
+				logger.error(String.format("got the following exception while trying to recalculate the total score for user %s", user.getUsername()),e);
+			}
 		}
 	}
 	
 	private void recalculateTotalScore(User user){
 		List<ClassifierScore> classifierScores = new ArrayList<>();
 		for(ClassifierScore classifierScore: user.getScores().values()){
+			if(classifierScore == null){
+				logger.warn("user {} has null classifier score", user.getUsername());
+				continue;
+			}
 			if(classifierScore.getClassifierId().equals(Classifier.total.getId())){
 				continue;
 			}
