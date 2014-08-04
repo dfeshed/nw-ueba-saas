@@ -26,6 +26,10 @@
 					<key>streamingTopic</key>
 					<value>${kafka.ssh.struct.topic}</value>
 				</entry>
+				<entry>
+					<key>impalaTableFields</key>
+					<value>${impala.data.ssh.table.fields}</value>
+				</entry>
 			</job-data-map>
 			
 		</job>
