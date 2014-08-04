@@ -88,7 +88,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>monthly</value>
+						<value>runtime</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
