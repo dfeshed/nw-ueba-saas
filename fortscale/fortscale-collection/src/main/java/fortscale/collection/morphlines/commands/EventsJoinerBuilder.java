@@ -119,9 +119,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
 					cache = null;
 				}
 			}
+			super.doNotify(notification);
 		}
-
-		
 	}
-
 }

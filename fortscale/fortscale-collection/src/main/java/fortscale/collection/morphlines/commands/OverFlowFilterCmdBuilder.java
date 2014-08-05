@@ -110,6 +110,7 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 					}
 				}
 			}
+			super.doNotify(notification);
 		}
 	}
 }

@@ -108,28 +108,16 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 		protected boolean doProcess(Record inputRecord) {
 			// If we weren't able to connect or access the collection,
 			// return an empty string
-
-
-			
 			try {
-				
 				String ip = RecordExtensions.getStringValue(inputRecord, this.ipAddress);
-
-
-
 				Long ts = RecordExtensions.getLongValue(inputRecord, this.timeStamp);
-
-
 				
 				// Try and get a hostname to the IP
                 inputRecord.put(this.outputRecordName, getHostname(ip, ts));
-
-				
 			} catch (IllegalArgumentException e) {
 				// did not found ip or ts fields in input record
 				inputRecord.put(this.outputRecordName, STRING_EMPTY);
 			}
-			
 
 			return super.doProcess(inputRecord);
 

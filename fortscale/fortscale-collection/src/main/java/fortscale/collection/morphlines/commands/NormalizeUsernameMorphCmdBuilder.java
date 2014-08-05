@@ -61,10 +61,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	private class NormalizeUsername extends AbstractCommand {
 		
-		
-		
 		private String normalizedUsernameField;
-		
 		
 		public NormalizeUsername(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);

@@ -75,6 +75,7 @@ public class EventsJoinerStoreBuilder implements CommandBuilder {
 					cache = null;
 				}
 			}
+			super.doNotify(notification);
 		}
 	}
 }
