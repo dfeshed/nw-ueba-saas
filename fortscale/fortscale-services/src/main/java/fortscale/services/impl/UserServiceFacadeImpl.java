@@ -154,4 +154,9 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues, int minScore) {
 		return userService.getDestinationComputerPropertyDistribution(uid, propertyName, daysToGet, maxValues, minScore);
 	}
+	
+	@Override
+	public String findByNormalizedUserName(String normalizedUsername) {
+		return userService.findByNormalizedUserName(normalizedUsername);
+	}
 }

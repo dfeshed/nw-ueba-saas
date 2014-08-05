@@ -386,6 +386,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return !(mongoTemplate.find(query, UserIdWrapper.class, User.collectionName).isEmpty());
 	}
 	
+	public String getUserIdByNormalizedUsername(String username) {
+		Query query = new Query(where(User.usernameField).is(username));
+		query.fields().include(User.ID_FIELD);
+ 		UserIdWrapper wrapper = mongoTemplate.findOne(query, UserIdWrapper.class, User.collectionName);
+ 		return (wrapper==null)? null : wrapper.getId();
+	}
+	
 	/**
 	 * Since spring data mongodb does not support each on the addToSet update 
 	 * operator we create a custom bson command that does that

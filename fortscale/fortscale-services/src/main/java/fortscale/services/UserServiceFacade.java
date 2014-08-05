@@ -42,6 +42,8 @@ public interface UserServiceFacade {
 		
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 	
+	public String findByNormalizedUserName(String normalizedUsername);
+	
 	public void recalculateTotalScore();
 		
 	public void removeClassifierFromAllUsers(String classifierId);

@@ -515,6 +515,10 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	
+	@Override
+	public String findByNormalizedUserName(String normalizedUsername) {
+		return userRepository.getUserIdByNormalizedUsername(normalizedUsername);
+	}
 	
 	
 	@Override

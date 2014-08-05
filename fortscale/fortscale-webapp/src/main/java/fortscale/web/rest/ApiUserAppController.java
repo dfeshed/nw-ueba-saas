@@ -2,6 +2,7 @@ package fortscale.web.rest;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,23 @@ public class ApiUserAppController {
 		ret.setTotal(applicationUserDetailsBeans.size());
 		return ret;
 	}
+	
+	@RequestMapping(value="/normalizedUsernameToId", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<String>> normalizedUsernameToId(@RequestParam(required=true) String normalizedUsername) {
+		DataBean<List<String>> ret = new DataBean<List<String>>();
+		List<String> idList = new LinkedList<String>();
+			
+		// translate the normalized username to user id
+		String userId = userServiceFacade.findByNormalizedUserName(normalizedUsername);
+		idList.add(userId);
+		
+		ret.setData(idList);
+		ret.setTotal(idList.size());
+		return ret;
+	}
+	
 	
 	@RequestMapping(value="/{appId}/usersDetails", method=RequestMethod.GET)
 	@ResponseBody
