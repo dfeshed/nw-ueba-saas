@@ -148,7 +148,6 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 		configuration.addResource(new Path("/etc/hadoop/conf/hdfs-site.xml"));
 		
 		fs = FileSystem.get(configuration);
-		newPartitions = new LinkedList<String>();
 	}
 	
 	/**
@@ -160,7 +159,7 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 	}
 	
 	public void clearNewPartitions() {
-		newPartitions = new LinkedList<String>();
+		newPartitions.clear();
 	}
 	
 	public void removeNewPartition(String partitionName) {
