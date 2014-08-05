@@ -176,21 +176,21 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 		String partitionPath = partitionStrategy.getPartitionPath(millis, basePath);
 		String filePath = fileSplitStrategy.getFilePath(partitionPath, fileName, millis);
 		
-		// keep track of new partitions that we create
-		if (!fs.exists(new Path(partitionPath))) {
-			// create path
-			if (!fs.mkdirs(new Path(partitionPath)))
-				throw new IOException("cannot create hdfs path " + partitionPath);
-
-			// stored the new partition to be used later for impala refresh
-			String partitionName = partitionStrategy.getImpalaPartitionName(millis);
-			if (partitionName!=null)
-				newPartitions.add(partitionName);
-		}
-		
 		// check if a writer already created for that file
 		BufferedWriter writer = writers.get(filePath);
 		if (writer==null) {
+			// keep track of new partitions that we create
+			if (!fs.exists(new Path(partitionPath))) {
+				// create path
+				if (!fs.mkdirs(new Path(partitionPath)))
+					throw new IOException("cannot create hdfs path " + partitionPath);
+
+				// stored the new partition to be used later for impala refresh
+				String partitionName = partitionStrategy.getImpalaPartitionName(millis);
+				if (partitionName!=null)
+					newPartitions.add(partitionName);
+			}
+			
 			// create a new writer
 			writer = openWriter(filePath);
 			writers.put(filePath, writer);
