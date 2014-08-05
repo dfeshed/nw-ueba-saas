@@ -17,6 +17,12 @@ public interface FieldModel {
 	void init(String fieldName, Config config);
 	
 	/**
+	 * Return a boolean value indicating if the entire event should be skipped based 
+	 * on the field value
+	 */
+	boolean shouldSkipEvent(Object value);
+	
+	/**
 	 * Count the field value in the model, set at the given time stamp
 	 */
 	void add(Object value, long timestamp);

@@ -30,6 +30,11 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 	}
 	
 	@Override
+	public boolean shouldSkipEvent(Object value) {
+		return isIgnoreValue(getFeatureValue(value));
+	}
+	
+	@Override
 	public void add(Object value, long timestamp) {
 		try {
 			String featureValue = getFeatureValue(value);

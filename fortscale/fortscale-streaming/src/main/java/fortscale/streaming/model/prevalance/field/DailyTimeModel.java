@@ -25,6 +25,11 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 	public void init(String fieldName, Config config) {}
 	
 	@Override
+	public boolean shouldSkipEvent(Object value) {
+		return false;
+	}
+	
+	@Override
 	public void add(Object value, long timestamp){
 		try {
 			Long epoch = convertToLong(value);

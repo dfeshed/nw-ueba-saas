@@ -147,10 +147,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		// skip events that occur before the model mark in case the task is configured to
 		// perform only model computation and not event scoring 
 		if (afterTimeMark && !skipModel) {
-			for (String fieldName : model.getFieldNames()) {
-				Object value = message.get(fieldName);
-				model.addFieldValue(fieldName, value, timestamp);
-			}
+			model.addFieldValues(message, timestamp);
 			model.getBarrier().updateBarrier(timestamp, discriminator);
 			modelService.updateUserModelInStore(username, model);
 		}

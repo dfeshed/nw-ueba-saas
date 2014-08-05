@@ -6,6 +6,8 @@ import static fortscale.utils.TimestampUtils.convertToMilliSeconds;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minidev.json.JSONObject;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,7 +45,23 @@ public class PrevalanceModel {
 		return barrier;
 	}
 	
-	public void addFieldValue(String fieldName, Object value, long timestamp) {
+	public void addFieldValues(JSONObject message, long timestamp) {
+		// go over the fields and check that they non should force
+		// the event to be skipped
+		for (String fieldName : getFieldNames()) {
+			FieldModel model = fields.get(fieldName);
+			if (model.shouldSkipEvent(message.get(fieldName)))
+				return;
+		}
+		
+		// add the fields to the model if passed the skip event check
+		for (String fieldName : getFieldNames()) {
+			Object value = message.get(fieldName);
+			addFieldValue(fieldName, value, timestamp);
+		}
+	}
+	
+	private void addFieldValue(String fieldName, Object value, long timestamp) {
 		checkNotNull(fieldName);
 		if (value==null || !fields.containsKey(fieldName))
 			return; 

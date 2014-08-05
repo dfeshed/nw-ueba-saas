@@ -44,6 +44,11 @@ public class CumulativeAverageFieldModel implements FieldModel{
 		}
 		
 	}
+	
+	@Override
+	public boolean shouldSkipEvent(Object value) {
+		return false;
+	}
 
 	@Override
 	public double calculateScore(Object value) {
