@@ -1,7 +1,6 @@
 package fortscale.streaming.model.prevalance.field;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.samza.config.Config;
 
@@ -16,18 +15,18 @@ import fortscale.utils.logging.Logger;
 public class DiscreetValuesCalibratedModel implements FieldModel{
 	private static Logger logger = Logger.getLogger(DiscreetValuesCalibratedModel.class);
 
-	private static final String BOOST_VALUES_CONFIG_FORMAT = "fortscale.fields.%s.boost.score.values";
-	private static final String IGNORE_VALUES_CONFIG_FORMAT = "fortscale.fields.%s.ignore.score.values";
+	private static final String BOOST_VALUES_CONFIG_FORMAT = "fortscale.fields.%s.boost.score.regex";
+	private static final String IGNORE_VALUES_CONFIG_FORMAT = "fortscale.fields.%s.ignore.score.regex";
 	
 	private FeatureCalibration featureCalibration = new FeatureCalibration();
-	private List<String> boostValues;
-	private List<String> ignoreValues;
+	private Pattern boostValues;
+	private Pattern ignoreValues;
 	
 	@Override
 	public void init(String fieldName, Config config) {
 		// get the boost and ignore score values from configuration
-		boostValues = config.getList(String.format(BOOST_VALUES_CONFIG_FORMAT, fieldName), new LinkedList<String>());
-		ignoreValues = config.getList(String.format(IGNORE_VALUES_CONFIG_FORMAT, fieldName), new LinkedList<String>());
+		boostValues = Pattern.compile(config.get(String.format(BOOST_VALUES_CONFIG_FORMAT, fieldName), ""));
+		ignoreValues = Pattern.compile(config.get(String.format(IGNORE_VALUES_CONFIG_FORMAT, fieldName), ""));
 	}
 	
 	@Override
@@ -65,13 +64,13 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 	}
 	
 	private boolean isBoostValue(String value) {
-		return boostValues.contains(value);
+		return boostValues.matcher(value).matches();
 	}
 	
 	private boolean isIgnoreValue(String value) {
-		return ignoreValues.contains(value);
+		return ignoreValues.matcher(value).matches();
 	}
-
+	
 	@Override
 	public boolean shouldAffectEventScore() {
 		return true;
