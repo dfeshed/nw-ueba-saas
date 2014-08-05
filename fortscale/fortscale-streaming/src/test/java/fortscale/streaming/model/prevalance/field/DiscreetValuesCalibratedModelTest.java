@@ -63,4 +63,14 @@ public class DiscreetValuesCalibratedModelTest {
 		
 		Assert.assertEquals(0d, score, 0.000001);
 	}
+	
+	@Test
+	public void model_should_give_score_0_to_empty_string() {
+		DiscreetValuesCalibratedModel model = createModel("", "");
+		
+		model.add("", System.currentTimeMillis());
+		double score = model.calculateScore("");
+				
+		Assert.assertEquals(0d, score, 0.000001);
+	}
 }
