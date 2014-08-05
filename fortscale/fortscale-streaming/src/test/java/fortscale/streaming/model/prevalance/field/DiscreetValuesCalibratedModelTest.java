@@ -51,7 +51,7 @@ public class DiscreetValuesCalibratedModelTest {
 		model.add("value1", System.currentTimeMillis());
 		double score = model.calculateScore("value1");
 		
-		Assert.assertTrue(score > 80);
+		Assert.assertEquals(100d, score, 0.000001);
 	}
 	
 	@Test

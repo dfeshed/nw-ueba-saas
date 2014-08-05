@@ -50,6 +50,8 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 		if(featureValue != null) {
 			if (isIgnoreValue(featureValue))
 				return 0;
+			if (isBoostValue(featureValue))
+				return 100;
 			return featureCalibration.score(value.toString());
 		} else{
 			return 0;
