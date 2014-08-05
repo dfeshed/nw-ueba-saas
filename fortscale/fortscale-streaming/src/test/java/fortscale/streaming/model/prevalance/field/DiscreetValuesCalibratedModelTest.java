@@ -10,8 +10,8 @@ public class DiscreetValuesCalibratedModelTest {
 
 	private DiscreetValuesCalibratedModel createModel(String boost, String ignore) {
 		Config config = mock(Config.class);
-		when(config.get("fortscale.fields.myfield.boost.score.regex", "")).thenReturn(boost);
-		when(config.get("fortscale.fields.myfield.ignore.score.regex", "")).thenReturn(ignore);
+		when(config.get("fortscale.fields.myfield.boost.score.regex")).thenReturn(boost);
+		when(config.get("fortscale.fields.myfield.ignore.score.regex")).thenReturn(ignore);
 		
 		DiscreetValuesCalibratedModel model = new DiscreetValuesCalibratedModel();
 		model.init("myfield", config);

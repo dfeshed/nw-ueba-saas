@@ -2,6 +2,7 @@ package fortscale.streaming.model.prevalance.field;
 
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -25,8 +26,13 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 	@Override
 	public void init(String fieldName, Config config) {
 		// get the boost and ignore score values from configuration
-		boostValues = Pattern.compile(config.get(String.format(BOOST_VALUES_CONFIG_FORMAT, fieldName), ""));
-		ignoreValues = Pattern.compile(config.get(String.format(IGNORE_VALUES_CONFIG_FORMAT, fieldName), ""));
+		String boostPattern = config.get(String.format(BOOST_VALUES_CONFIG_FORMAT, fieldName));
+		if (boostPattern!=null)
+			boostValues = Pattern.compile(boostPattern);
+		
+		String ignorePattern = config.get(String.format(IGNORE_VALUES_CONFIG_FORMAT, fieldName));
+		if (ignorePattern!=null)
+			ignoreValues = Pattern.compile(ignorePattern);
 	}
 	
 	@Override
@@ -71,11 +77,11 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 	}
 	
 	private boolean isBoostValue(String value) {
-		return boostValues.matcher(value).matches();
+		return (boostValues==null)? false : boostValues.matcher(value).matches();
 	}
 	
 	private boolean isIgnoreValue(String value) {
-		return ignoreValues.matcher(value).matches();
+		return (ignoreValues==null)? false : ignoreValues.matcher(value).matches();
 	}
 	
 	@Override
