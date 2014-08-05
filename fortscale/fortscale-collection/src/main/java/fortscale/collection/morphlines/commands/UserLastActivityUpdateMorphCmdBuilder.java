@@ -90,6 +90,7 @@ public class UserLastActivityUpdateMorphCmdBuilder implements CommandBuilder {
 					userService.updateUsersLastActivity(userLastActivityMap);
 				}
 			}
+			super.doNotify(notification);
 		}
 	}
 }

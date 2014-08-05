@@ -77,6 +77,7 @@ public class EventsJoinerCacheDropBuilder implements CommandBuilder {
 					cache = null;
 				}
 			}
+			super.doNotify(notification);
 		}		
 		
 	}

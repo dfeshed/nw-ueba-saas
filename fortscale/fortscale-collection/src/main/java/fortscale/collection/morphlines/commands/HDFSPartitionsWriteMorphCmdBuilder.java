@@ -154,6 +154,7 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 					appender = null;
 				}
 			}
+			super.doNotify(notification);
 		}
 		
 		private void closeOutputAppender() throws IOException {

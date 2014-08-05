@@ -94,6 +94,7 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 					cache = null;
 				}
 			}
+			super.doNotify(notification);
 		}
 		
 	}

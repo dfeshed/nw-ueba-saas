@@ -105,6 +105,7 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 					}
 				}
 			}
+			super.doNotify(notification);
 		}
 	}
 	
