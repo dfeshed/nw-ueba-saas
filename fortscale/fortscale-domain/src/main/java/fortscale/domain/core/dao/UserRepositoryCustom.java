@@ -63,6 +63,7 @@ public interface UserRepositoryCustom {
 	
 	public Set<String> findNameByTag(String tagFieldName, Boolean value);
 	public boolean findIfUserExists(String username);
+	public String getUserIdByNormalizedUsername(String username);
 	/**
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
 	 */

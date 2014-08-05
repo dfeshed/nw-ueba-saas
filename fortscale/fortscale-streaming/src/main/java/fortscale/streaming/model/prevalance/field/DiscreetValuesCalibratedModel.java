@@ -2,7 +2,6 @@ package fortscale.streaming.model.prevalance.field;
 
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
