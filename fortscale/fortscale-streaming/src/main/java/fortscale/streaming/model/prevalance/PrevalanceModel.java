@@ -46,13 +46,8 @@ public class PrevalanceModel {
 	}
 	
 	public void addFieldValues(JSONObject message, long timestamp) {
-		// go over the fields and check that they non should force
-		// the event to be skipped
-		for (String fieldName : getFieldNames()) {
-			FieldModel model = fields.get(fieldName);
-			if (model.shouldSkipEvent(message.get(fieldName)))
-				return;
-		}
+		if (shouldSkipEventScore(message))
+			return;
 		
 		// add the fields to the model if passed the skip event check
 		for (String fieldName : getFieldNames()) {
@@ -71,13 +66,27 @@ public class PrevalanceModel {
 		model.add(value, convertToMilliSeconds(timestamp));
 	}
 	
-	public double calculateScore(String fieldName, Object value){
+	public double calculateScore(JSONObject message, String fieldName){
 		checkNotNull(fieldName);
-		if (value==null || !fields.containsKey(fieldName))
+		if (message==null || !fields.containsKey(fieldName))
 			return 0 ; 
 		
+		if (shouldSkipEventScore(message))
+			return 0;
+		
 		FieldModel model = fields.get(fieldName);
-		return model.calculateScore(value);
+		return model.calculateScore(message.get(fieldName));
+	}
+	
+	private boolean shouldSkipEventScore(JSONObject message) {
+		// go over the fields and check that they non should force
+		// the event to be skipped
+		for (String fieldName : getFieldNames()) {
+			FieldModel model = fields.get(fieldName);
+			if (model.shouldSkipEvent(message.get(fieldName)))
+				return true;
+		}
+		return false;
 	}
 	
 	public boolean shouldAffectEventScore(String fieldName) {
