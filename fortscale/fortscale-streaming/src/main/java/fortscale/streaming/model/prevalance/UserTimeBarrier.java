@@ -65,7 +65,9 @@ public class UserTimeBarrier {
 		HashFunction hf = Hashing.md5();
 		Hasher hasher = hf.newHasher();
 		for (String field : discriminatorsFields) {
-			hasher.putString(convertToString(message.get(field)));
+			String fieldValue = convertToString(message.get(field));
+			if (fieldValue!=null)
+				hasher.putString(fieldValue);
 		}
 		return Long.toString(hasher.hash().asLong());
 	}
