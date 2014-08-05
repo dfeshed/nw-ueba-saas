@@ -21,6 +21,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.ApplicationUserDetailsBean;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.UserDetailsBean;
+import fortscale.web.beans.UserIdBean;
 
 
 
@@ -52,13 +53,13 @@ public class ApiUserAppController {
 	@RequestMapping(value="/normalizedUsernameToId", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<String>> normalizedUsernameToId(@RequestParam(required=true) String normalizedUsername) {
-		DataBean<List<String>> ret = new DataBean<List<String>>();
-		List<String> idList = new LinkedList<String>();
+	public DataBean<List<UserIdBean>> normalizedUsernameToId(@RequestParam(required=true) String normalizedUsername) {
+		DataBean<List<UserIdBean>> ret = new DataBean<List<UserIdBean>>();
+		List<UserIdBean> idList = new LinkedList<UserIdBean>();
 			
 		// translate the normalized username to user id
 		String userId = userServiceFacade.findByNormalizedUserName(normalizedUsername);
-		idList.add(userId);
+		idList.add(new UserIdBean(userId));
 		
 		ret.setData(idList);
 		ret.setTotal(idList.size());
