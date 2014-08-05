@@ -89,7 +89,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		// get the model name and fields to include from configuration
 		modelName = getConfigString(config, "fortscale.model.name");
 		eventScoreField = getConfigString(config, "fortscale.event.score.field");
-		PrevalanceModelBuilder modelBuilder = PrevalanceModelBuilder.createModel(modelName);
+		PrevalanceModelBuilder modelBuilder = PrevalanceModelBuilder.createModel(modelName, config);
 		
 		Config fieldsSubset = config.subset("fortscale.fields.");		
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".model"))) {
@@ -147,10 +147,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		// skip events that occur before the model mark in case the task is configured to
 		// perform only model computation and not event scoring 
 		if (afterTimeMark && !skipModel) {
-			for (String fieldName : model.getFieldNames()) {
-				Object value = message.get(fieldName);
-				model.addFieldValue(fieldName, value, timestamp);
-			}
+			model.addFieldValues(message, timestamp);
 			model.getBarrier().updateBarrier(timestamp, discriminator);
 			modelService.updateUserModelInStore(username, model);
 		}

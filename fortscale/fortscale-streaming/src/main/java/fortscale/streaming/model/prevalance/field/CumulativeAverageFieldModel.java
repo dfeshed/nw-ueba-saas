@@ -1,6 +1,8 @@
 package fortscale.streaming.model.prevalance.field;
 
 import static fortscale.utils.ConversionUtils.convertToInteger;
+
+import org.apache.samza.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +23,9 @@ public class CumulativeAverageFieldModel implements FieldModel{
 	private double average;
 	
 	@Override
+	public void init(String fieldName, Config config) {}
+	
+	@Override
 	public void add(Object value, long timestamp) {
 		Integer intValue = convertToInteger(value);
 		if (intValue!=null) {
@@ -38,6 +43,11 @@ public class CumulativeAverageFieldModel implements FieldModel{
 			logger.warn("given field value {} (type={}) is not valid for average", value, (value==null)? "null" : value.getClass());
 		}
 		
+	}
+	
+	@Override
+	public boolean shouldSkipEvent(Object value) {
+		return false;
 	}
 
 	@Override
