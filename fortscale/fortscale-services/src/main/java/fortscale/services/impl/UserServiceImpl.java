@@ -609,7 +609,7 @@ public class UserServiceImpl implements UserService{
 		// go over the computers returned by events and get the operating system for each one
 		int numberOfDestinations = 0;
 		for (EventsToMachineCount destMachine : destinationsCount.values()) {
-			Computer computer = computerRepository.getComputerWithPartialFields(destMachine.getHostname(), propertyName);
+			Computer computer = computerRepository.getComputerWithPartialFields(destMachine.getHostname().toUpperCase(), propertyName);
 			distribution.incValueCount(computer.getPropertyValue(propertyName).toString(), destMachine.getEventsCount());
 			numberOfDestinations++;
 			
