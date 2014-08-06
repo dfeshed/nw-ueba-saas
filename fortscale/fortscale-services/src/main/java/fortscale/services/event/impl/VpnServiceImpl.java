@@ -243,6 +243,7 @@ public class VpnServiceImpl implements VpnService{
 					}else if(ret.otherOpenSessionCountryTime == null && vpnSession.getClosedAt() == null && !vpnSession.getCountry().equals(ret.curCountry)){
 						ret.otherOpenSessionCountryTime = vpnSession.getCreatedAt();
 					}else if(vpnSession.getClosedAt() != null && 
+							!vpnSession.getCountry().equals(ret.curCountry) && 
 							(ret.otherCloseSessionCountryTime == null || ret.otherCloseSessionCountryTime.isBefore(vpnSession.getClosedAt()))){
 						ret.otherCloseSessionCountryTime = vpnSession.getClosedAt();
 					}
