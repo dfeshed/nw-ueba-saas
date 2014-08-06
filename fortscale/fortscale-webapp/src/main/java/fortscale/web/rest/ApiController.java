@@ -1,13 +1,16 @@
 package fortscale.web.rest;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fortscale.services.UserServiceFacade;
 import fortscale.services.fe.ClassifierService;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
@@ -25,6 +28,7 @@ import com.google.common.cache.CacheBuilder;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.UserIdBean;
 
 @Controller
 @RequestMapping("/api/**")
@@ -36,6 +40,9 @@ public class ApiController {
     @Autowired
     private ClassifierService classifierService;
 	
+    @Autowired
+	private UserServiceFacade userServiceFacade;
+    
 	private Cache<String, DataBean<List<Map<String, Object>>>> investigateQueryCache;
 	
 	public ApiController() {
@@ -62,6 +69,22 @@ public class ApiController {
         throw new UnknownResourceException(builder.toString());
     }
 	
+	
+	@RequestMapping(value="/normalizedUsernameToId", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<UserIdBean>> normalizedUsernameToId(@RequestParam(required=true) String normalizedUsername) {
+		DataBean<List<UserIdBean>> ret = new DataBean<List<UserIdBean>>();
+		List<UserIdBean> idList = new LinkedList<UserIdBean>();
+			
+		// translate the normalized username to user id
+		String userId = userServiceFacade.findByNormalizedUserName(normalizedUsername);
+		idList.add(new UserIdBean(userId));
+		
+		ret.setData(idList);
+		ret.setTotal(idList.size());
+		return ret;
+	}
 	
 	
 	@RequestMapping(value="/investigate", method=RequestMethod.GET)

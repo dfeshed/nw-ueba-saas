@@ -50,22 +50,7 @@ public class ApiUserAppController {
 		return ret;
 	}
 	
-	@RequestMapping(value="/normalizedUsernameToId", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<UserIdBean>> normalizedUsernameToId(@RequestParam(required=true) String normalizedUsername) {
-		DataBean<List<UserIdBean>> ret = new DataBean<List<UserIdBean>>();
-		List<UserIdBean> idList = new LinkedList<UserIdBean>();
-			
-		// translate the normalized username to user id
-		String userId = userServiceFacade.findByNormalizedUserName(normalizedUsername);
-		idList.add(new UserIdBean(userId));
-		
-		ret.setData(idList);
-		ret.setTotal(idList.size());
-		return ret;
-	}
-	
+
 	
 	@RequestMapping(value="/{appId}/usersDetails", method=RequestMethod.GET)
 	@ResponseBody
