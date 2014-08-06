@@ -243,6 +243,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 				lastException = e;
 			}
 		}
+		appender.clearNewPartitions();
 		
 		try {
 			impalaClient.refreshTable(impalaTableName);

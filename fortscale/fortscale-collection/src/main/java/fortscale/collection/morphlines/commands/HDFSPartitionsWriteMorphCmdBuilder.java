@@ -190,6 +190,7 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 					exceptions.add(e);
 				}
 			}
+			appender.clearNewPartitions();
 			
 			try {
 				impalaClient.refreshTable(impalaTableName);
