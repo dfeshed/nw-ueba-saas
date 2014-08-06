@@ -2,8 +2,10 @@ package fortscale.domain.core.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,7 +31,7 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	@Override
 	public List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed, Optional<Integer> daysToFetch) {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("fsId").is(fsid));
+		query.addCriteria(Criteria.where("fsId").is(new ObjectId(fsid)));
 		if (!includeDissmissed)
 			query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
 		// limit the days to fetch is a criteria is given
@@ -119,10 +121,22 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		
 		// build query object with the criterias
 		Query query = new Query();
-		if (includeFsID!=null && !includeFsID.isEmpty())
-			query.addCriteria(Criteria.where("fsId").in(includeFsID));
-		if (excludeFsID!=null && !excludeFsID.isEmpty())
-			query.addCriteria(Criteria.where("fsId").not().in(excludeFsID));
+		if (includeFsID!=null && !includeFsID.isEmpty()) {
+			// convert fsId to ObjectId list
+			List<ObjectId> includeList = new LinkedList<ObjectId>();
+			for (String fsid : includeFsID)
+				includeList.add(new ObjectId(fsid));
+			
+			query.addCriteria(Criteria.where("fsId").in(includeList));
+		}
+		if (excludeFsID!=null && !excludeFsID.isEmpty()) {
+			// convert fsId to ObjectId list
+			List<ObjectId> excludeList = new LinkedList<ObjectId>();
+			for (String fsid : excludeFsID)
+				excludeList.add(new ObjectId(fsid));
+			
+			query.addCriteria(Criteria.where("fsId").not().in(excludeList));
+		}
 		if (!includeDissmissed)
 			query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
 		if (includeGenerators!=null && !includeGenerators.isEmpty())
