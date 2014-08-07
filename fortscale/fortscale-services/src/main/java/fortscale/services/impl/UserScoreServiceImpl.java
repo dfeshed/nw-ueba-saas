@@ -137,6 +137,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 			String classifierId = scoreWeight.getId();
 			ClassifierScore classifierScore = user.getScore(classifierId);
 			if(classifierScore != null){
+				ScoreInfo latestScoreInfo = null;
 				for(ScoreInfo prevScoreInfo: classifierScore.getPrevScores()) {
 					if(dateTimeStart.isAfter(prevScoreInfo.getTimestampEpoc())) {
 						// skip classifier score which is before the time range
@@ -145,12 +146,16 @@ public class UserScoreServiceImpl implements UserScoreService{
 						// skip classifier score which is after the time range
 						continue;
 					}
-					// found a classifier for the time range, can break here
+					// update the latest score info for that classifier
+					if ((latestScoreInfo==null) || (latestScoreInfo.getTimestampEpoc() < prevScoreInfo.getTimestampEpoc()))
+						latestScoreInfo = prevScoreInfo;
+				}
+				if (latestScoreInfo!=null) {
+					// add the latest score info for the classifier into the results
 					Classifier classifier = classifierService.getClassifier(classifierId);
 					UserScore score = new UserScore(user.getId(), classifierId, classifier.getDisplayName(),
-							(int)Math.round(prevScoreInfo.getScore()), (int)Math.round(prevScoreInfo.getAvgScore()));
+							(int)Math.round(latestScoreInfo.getScore()), (int)Math.round(latestScoreInfo.getAvgScore()));
 					ret.put(classifierId, score);
-					break;
 				}
 			}
 		}
