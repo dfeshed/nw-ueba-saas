@@ -114,23 +114,21 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		// get the username from the message
 		String username = convertToString(message.get(usernameField));
-
-		// filter messages if needed
-		if (filterMessage(message)) {
-			skipedMessageCount.inc();
-			return;
-		}
-		
+	
 		// check if the event is before the time stamp barrier
 		timestamp = TimestampUtils.convertToMilliSeconds(timestamp);
 		if (barrier.isEventAfterBarrier(username, timestamp, message)) {
-			// write the event to hdfs
-			String eventLine = buildEventLine(message);
-			service.writeLineToHdfs(eventLine, timestamp.longValue());
-
+			// filter messages if needed
+			if (filterMessage(message)) {
+				skipedMessageCount.inc();
+			} else {
+				// write the event to hdfs
+				String eventLine = buildEventLine(message);
+				service.writeLineToHdfs(eventLine, timestamp.longValue());
+				processedMessageCount.inc();
+			}
 			// update barrier
 			barrier.updateBarrier(username, timestamp, message);
-			processedMessageCount.inc();
 		}
 	}
 	
