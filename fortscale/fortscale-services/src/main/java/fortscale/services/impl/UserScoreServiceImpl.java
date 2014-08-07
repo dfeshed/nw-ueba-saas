@@ -122,20 +122,35 @@ public class UserScoreServiceImpl implements UserScoreService{
 		dateTimeEnd = dateTimeStart.plusHours(24);
 		Map<String,IUserScore> ret = new HashMap<String, IUserScore>();
 		
+		// since the score for that day takes into account the classifier scores for the previous 24 hours
+		// the time range should be for the 24 hours prior to the total score, which may exceed the day limits
+		for (ScoreInfo prevTotalScore : user.getScore(Classifier.total.getId()).getPrevScores()) {
+			if (dateTimeStart.isBefore(prevTotalScore.getTimestampEpoc()) &&
+					dateTimeEnd.isAfter(prevTotalScore.getTimestampEpoc())) {
+				// adjust the time range according to the total score in the date range
+				dateTimeEnd = new DateTime(prevTotalScore.getTimestampEpoc());
+				dateTimeStart = dateTimeEnd.minusHours(24);
+			}
+		}
+		
 		for(ScoreWeight scoreWeight: configurationService.getScoreConfiguration().getConfMap().values()){
 			String classifierId = scoreWeight.getId();
 			ClassifierScore classifierScore = user.getScore(classifierId);
 			if(classifierScore != null){
-				for(ScoreInfo prevScoreInfo: classifierScore.getPrevScores()){
-					if(dateTimeStart.isAfter(prevScoreInfo.getTimestampEpoc())){
-						break;
-					} else if(dateTimeEnd.isBefore(prevScoreInfo.getTimestampEpoc())){
+				for(ScoreInfo prevScoreInfo: classifierScore.getPrevScores()) {
+					if(dateTimeStart.isAfter(prevScoreInfo.getTimestampEpoc())) {
+						// skip classifier score which is before the time range
+						continue;
+					} else if(dateTimeEnd.isBefore(prevScoreInfo.getTimestampEpoc())) {
+						// skip classifier score which is after the time range
 						continue;
 					}
+					// found a classifier for the time range, can break here
 					Classifier classifier = classifierService.getClassifier(classifierId);
 					UserScore score = new UserScore(user.getId(), classifierId, classifier.getDisplayName(),
 							(int)Math.round(prevScoreInfo.getScore()), (int)Math.round(prevScoreInfo.getAvgScore()));
 					ret.put(classifierId, score);
+					break;
 				}
 			}
 		}
