@@ -7,4 +7,5 @@ public interface IFeatureCalibrationBucketScorer {
 	public boolean getIsFirstBucket();
 	public void setIsFirstBucket(boolean isFirstBucket);
 	public int size();
+	double getBoostedScore(int numOfFeatureValues);
 }

@@ -103,7 +103,7 @@ public class FeatureCalibration{
 			}
 		}
 				
-		fillScoreBucketAggr();
+		setMaxScore();
 		
 	}
 		
@@ -123,9 +123,7 @@ public class FeatureCalibration{
 		//while doing so the counts are getting reduced in the method reduceCount
 		initBucketScoreList();
 		
-		//Filling the an aggregated histogram of the buckets.
-		scoreBucketsAggr = new Double[MAX_NUM_OF_BUCKETS];
-		fillScoreBucketAggr();
+		setMaxScore();
 	}
 	
 	//Finding the smaller count of all the feature values
@@ -143,13 +141,10 @@ public class FeatureCalibration{
 		}
 	}
 	
-	private void fillScoreBucketAggr(){
-		double sum = 0;
+	private void setMaxScore(){
 		for(int i = 0; i < bucketScorerList.size(); i++){
-			sum += bucketScorerList.get(i).getScore();
-			scoreBucketsAggr[i] = sum;
+			total = Math.max(total, bucketScorerList.get(i).getScore());
 		}
-		total = sum;
 	}
 	
 	//Filling the buckets with all the feature values counts.
@@ -175,7 +170,7 @@ public class FeatureCalibration{
 
 	
 	public double score(String featureValue) {
-		if(scoreBucketsAggr == null){
+		if(total == 0){
 			return 0;
 		}
 		
@@ -185,18 +180,26 @@ public class FeatureCalibration{
 		}
 		
 		double bucketIndex = getBucketIndex(featureCount);
-		if(bucketIndex + 1 >= scoreBucketsAggr.length){
+		if(bucketIndex + 1 >= bucketScorerList.size()){
 			return 0;
 		}
 		
 		int lowerBucketIndex = (int) bucketIndex;
-		double ret = scoreBucketsAggr[lowerBucketIndex];
-		if(lowerBucketIndex != bucketIndex){
-			ret = (scoreBucketsAggr[lowerBucketIndex] * (lowerBucketIndex + 1 - bucketIndex)) +
-					(scoreBucketsAggr[lowerBucketIndex+1] * (bucketIndex - lowerBucketIndex));
+		double lowerBucketScore = 0;
+		int size = 0;
+		for(int i = 0; i <= lowerBucketIndex; i++){
+			size += bucketScorerList.get(i).size();
+			lowerBucketScore = Math.max(lowerBucketScore, bucketScorerList.get(i).getBoostedScore(size));
 		}
-		return (int) ((1 - (ret / total))*100);
+		
+		double upperBucketScore = Math.max(lowerBucketScore, bucketScorerList.get(lowerBucketIndex+1).getBoostedScore(size + bucketScorerList.get(lowerBucketIndex+1).size()));
+		double ret = (lowerBucketScore * (lowerBucketIndex + 1 - bucketIndex - 0.2)) +
+				(upperBucketScore * (bucketIndex - lowerBucketIndex + 0.2));
+		
+		return ret > total ? 0 :(int) ((1 - (ret / total))*100);
 	}
+	
+	
 	
 	private double getBucketIndex(double rscore){
 		double num = rscore + addedValue;
