@@ -188,8 +188,11 @@ public class FeatureCalibration{
 		}
 		
 		double upperBucketScore = Math.max(lowerBucketScore, bucketScorerList.get(lowerBucketIndex+1).getBoostedScore(size + bucketScorerList.get(lowerBucketIndex+1).size()));
-		double ret = (lowerBucketScore * (lowerBucketIndex + 1 - bucketIndex - 0.2)) +
-				(upperBucketScore * (bucketIndex - lowerBucketIndex + 0.2));
+		// smoothing the score between element in bucketIndex and with the elements in the next bucket.
+		// The 0.2 means that elements in bucketIndex will be influenced by the next bucket by at least 0.2
+		double nextBucketMinInfluence =  0.4/(Math.pow(2, lowerBucketIndex+1) - Math.pow(2, lowerBucketIndex));
+		double ret = (lowerBucketScore * (lowerBucketIndex + 1 - bucketIndex - nextBucketMinInfluence)) +
+				(upperBucketScore * (bucketIndex - lowerBucketIndex + nextBucketMinInfluence));
 		
 		return ret > total ? 0 :(int) ((1 - (ret / total))*100);
 	}

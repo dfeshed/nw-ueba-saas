@@ -211,42 +211,42 @@ public class FeatureCalibrationTest {
 		String rareFeatureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(rareFeatureValue, 5D);
 		score = calibration.score( veryRarefeatureValue );
-		Assert.assertEquals(96, score, 1);
+		Assert.assertEquals(94, score, 1);
 		score = calibration.score( rareFeatureValue );
 		Assert.assertEquals(85, score, 1);
 		
 		rareFeatureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(rareFeatureValue, 6D);
 		score = calibration.score( veryRarefeatureValue );
-		Assert.assertEquals(94, score, 1);
+		Assert.assertEquals(90, score, 1);
 		score = calibration.score( rareFeatureValue );
 		Assert.assertEquals(75, score, 1);
 		
 		rareFeatureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(rareFeatureValue, 4D);
 		score = calibration.score( veryRarefeatureValue );
-		Assert.assertEquals(92, score, 1);
+		Assert.assertEquals(85, score, 1);
 		score = calibration.score( rareFeatureValue );
 		Assert.assertEquals(64, score, 1);
 		
 		rareFeatureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(rareFeatureValue, 5D);
 		score = calibration.score( veryRarefeatureValue );
-		Assert.assertEquals(89, score, 1);
+		Assert.assertEquals(78, score, 1);
 		score = calibration.score( rareFeatureValue );
 		Assert.assertEquals(47, score, 1);
 		
 		rareFeatureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(rareFeatureValue, 6D);
 		score = calibration.score( veryRarefeatureValue );
-		Assert.assertEquals(85, score, 1);
+		Assert.assertEquals(70, score, 1);
 		score = calibration.score( rareFeatureValue );
 		Assert.assertEquals(27, score, 1);
 		
 		rareFeatureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(rareFeatureValue, 4D);
 		score = calibration.score( veryRarefeatureValue );
-		Assert.assertEquals(80, score, 1);
+		Assert.assertEquals(60, score, 1);
 		score = calibration.score( rareFeatureValue );
 		Assert.assertEquals(1, score, 1);
 	}
