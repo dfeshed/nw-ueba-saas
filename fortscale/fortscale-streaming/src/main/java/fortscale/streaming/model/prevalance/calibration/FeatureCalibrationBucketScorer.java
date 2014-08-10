@@ -21,7 +21,7 @@ public class FeatureCalibrationBucketScorer implements IFeatureCalibrationBucket
 	
 	@Override
 	public double getScore(){
-		if(score < 1 && featureValueToScoreMap.size() > 0){
+		if(score < 1){
 			return getBoostedScore(1);
 		}
 		return score;
