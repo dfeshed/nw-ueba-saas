@@ -139,6 +139,7 @@ public class FeatureCalibration{
 	}
 	
 	private void setMaxScore(){
+		total = 0;
 		for(int i = 0; i < bucketScorerList.size(); i++){
 			total = Math.max(total, bucketScorerList.get(i).getScore());
 		}
