@@ -73,8 +73,16 @@ public class DailyTimeModelScoringTest {
 	
 	@Test
 	public void testScoresInDifferentDistancesFromTheCluster() throws Exception{
-		Random rnd = new Random(1);
 		DailyTimeModel timeModel = new DailyTimeModel();
+		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
+		
+		timeModel.update(14000);
+		double score = timeModel.score(14000);
+		Assert.assertEquals(99, score,1);
+	}
+	
+	private void initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(DailyTimeModel timeModel) throws Exception{
+		Random rnd = new Random(1);
 		for (int i = 0; i < 2; i++) {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 600);
 			timeModel.update(epochSeconds);
@@ -89,18 +97,36 @@ public class DailyTimeModelScoringTest {
 			long epochSeconds = (long)(rnd.nextDouble( ) * 2400 + 2400);
 			timeModel.update(epochSeconds);
 		}
-		
-		timeModel.update(14000);
-		double score = timeModel.score(14000);
-		Assert.assertEquals(99, score,1);
+	}
+	
+	@Test
+	public void testScoresInDifferentDistancesFromTheCluster1() throws Exception{
+		DailyTimeModel timeModel = new DailyTimeModel();
+		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
 		
 		timeModel.update(11000);
-		score = timeModel.score(11000);
-		Assert.assertEquals(82, score,1);
+		double score = timeModel.score(11000);
+		Assert.assertEquals(93, score,1);
+	}
+	
+	@Test
+	public void testScoresInDifferentDistancesFromTheCluster2() throws Exception{
+		DailyTimeModel timeModel = new DailyTimeModel();
+		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
 		
-		timeModel.update(8700);
-		score = timeModel.score(8700);
-		Assert.assertEquals(0, score,1);
+		timeModel.update(10000);
+		double score = timeModel.score(10000);
+		Assert.assertEquals(65, score,1);
+	}
+	
+	@Test
+	public void testScoresInDifferentDistancesFromTheCluster3() throws Exception{
+		DailyTimeModel timeModel = new DailyTimeModel();
+		initDailyTimeModelForTestScoresInDifferentDistancesFromTheCluster(timeModel);
+				
+		timeModel.update(9000);
+		double score = timeModel.score(9000);
+		Assert.assertEquals(3, score,1);
 		
 		
 	}
