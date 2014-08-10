@@ -21,11 +21,10 @@ public class FeatureCalibrationBucketScorer implements IFeatureCalibrationBucket
 	
 	@Override
 	public double getScore(){
-		if(isFirstBucket){
-			return getBoostedScore(featureValueToScoreMap.size());
-		} else{
-			return score;
+		if(score < 1 && featureValueToScoreMap.size() > 0){
+			return getBoostedScore(1);
 		}
+		return score;
 	}
 	
 	@Override
@@ -82,18 +81,7 @@ public class FeatureCalibrationBucketScorer implements IFeatureCalibrationBucket
 		}
 		
 		return getScore();
-	}
-
-	@Override
-	public boolean getIsFirstBucket() {
-		return isFirstBucket;
-	}
-
-	@Override
-	public void setIsFirstBucket(boolean isFirstBucket) {
-		this.isFirstBucket = isFirstBucket;
-	}
-	
+	}	
 	
 	@Override
 	public int size(){

@@ -97,9 +97,6 @@ public class FeatureCalibration{
 			if(prevBucketIndex != bucketIndex){
 				FeatureCalibrationBucketScorer prevBucketScorer = bucketScorerList.get(prevBucketIndex);
 				prevBucketScorer.removeFeatureValue(featureValue);
-				if(prevBucketScorer.size() == 0 && prevBucketScorer.getIsFirstBucket()){
-					bucketScorer.setIsFirstBucket(true);
-				}
 			}
 		}
 				
@@ -156,16 +153,13 @@ public class FeatureCalibration{
 			bucketScorerList.add(bucketScorer);
 		}
 		
-		int minIndex = MAX_NUM_OF_BUCKETS;
 		Iterator<Entry<String, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
 		while(featureValueToCountIter.hasNext()){
 			Entry<String, Double> featureValueToCountEntry = featureValueToCountIter.next();
 			int bucketIndex = (int)getBucketIndex(featureValueToCountEntry.getValue());
-			minIndex = Math.min(minIndex, bucketIndex);
 			FeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
 			bucketScorer.updateFeatureValueCount(featureValueToCountEntry.getKey(), featureValueToCountEntry.getValue());
 		}
-		bucketScorerList.get(minIndex).setIsFirstBucket(true);		
 	}
 
 	

@@ -299,7 +299,7 @@ public class FeatureCalibrationTest {
 		}
 		
 		double score = calibration.score( featureValue );
-		Assert.assertEquals(15, score, 1);
+		Assert.assertEquals(0, score, 1);
 	}
 	
 	@Test
@@ -331,12 +331,12 @@ public class FeatureCalibrationTest {
 		String mediumRareFeatureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(mediumRareFeatureValue, 8D);		
 		double score = calibration.score( rareFeatureValue );
-		Assert.assertEquals(56, score, 1);
+		Assert.assertEquals(52, score, 1);
 		
 		mediumRareFeatureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(mediumRareFeatureValue, 9D);		
 		score = calibration.score( rareFeatureValue );
-		Assert.assertEquals(50, score, 1);
+		Assert.assertEquals(48, score, 1);
 		
 		mediumRareFeatureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(mediumRareFeatureValue, 10D);		
