@@ -126,7 +126,7 @@ public class DailyTimeModelScoringTest {
 				
 		timeModel.update(9000);
 		double score = timeModel.score(9000);
-		Assert.assertEquals(3, score,1);
+		Assert.assertEquals(13, score,1);
 		
 		
 	}
