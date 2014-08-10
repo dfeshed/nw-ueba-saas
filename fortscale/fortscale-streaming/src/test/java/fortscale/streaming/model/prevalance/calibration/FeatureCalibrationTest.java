@@ -48,7 +48,7 @@ public class FeatureCalibrationTest {
 		Random rnd = new Random(1);
 		FeatureCalibration calibration = createNewFeatureCalibration();
 		Map<String, Double> featureValueToCountMap = new HashMap<String, Double>();
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 50; i++) {
 			double val = Math.min( 100.0, rnd.nextDouble( ) * 100 + 8);
 			featureValueToCountMap.put(String.format("test%d", i), val);
 		}
@@ -67,7 +67,12 @@ public class FeatureCalibrationTest {
 		featureValueToCountMap.put("test101", 3D);
 		calibration.init(featureValueToCountMap);
 		score = calibration.score( "test101" );
-		Assert.assertEquals(0, score, 1);		
+		Assert.assertEquals(61, score, 1);	
+		
+		featureValueToCountMap.put("test101", 4D);
+		calibration.init(featureValueToCountMap);
+		score = calibration.score( "test101" );
+		Assert.assertEquals(18, score, 1);	
 	}
 	
 	@Test
@@ -75,7 +80,7 @@ public class FeatureCalibrationTest {
 		Random rnd = new Random(1);
 		FeatureCalibration calibration = createNewFeatureCalibration();
 		int i = 0;
-		for (; i < 100; i++) {
+		for (; i < 50; i++) {
 			double val = Math.min( 100.0, rnd.nextDouble( ) * 100 + 8);
 			calibration.updateFeatureValueCount(String.format("test%d", i), val);
 		}
@@ -85,26 +90,74 @@ public class FeatureCalibrationTest {
 		double score = calibration.score( featureValue );
 		Assert.assertEquals(99, score, 1);
 		
-		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 2D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(88, score, 1);
+		Assert.assertEquals(93, score, 1);
 		
-		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 3D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0, score, 1);		
+		Assert.assertEquals(61, score, 1);	
+		
+		calibration.updateFeatureValueCount(featureValue, 4D);
+		score = calibration.score( featureValue );
+		Assert.assertEquals(18, score, 1);	
 	}
 	
 	
 	@Test
-	public void testingScoreOfVeryRareFeatureValues() throws Exception{
+	public void testingScoreOfVeryRareFeatureValueAgainstVeryLargeFetureValueWithValuesIncreasingByTime() throws Exception{
+		FeatureCalibration calibration = createNewFeatureCalibration();
+		int i = 0;
+		
+		String featureValue1 = String.format("test%d", i++);
+		
+		calibration.updateFeatureValueCount(featureValue1, 5000D);
+		
+		String featureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(featureValue, 1D);
+		double score = calibration.score( featureValue );
+		Assert.assertEquals(99, score, 1);
+				
+		calibration.updateFeatureValueCount(featureValue1, 10000D);
+		calibration.updateFeatureValueCount(featureValue, 2D);
+		score = calibration.score( featureValue );
+		Assert.assertEquals(96, score, 1);
+		
+		calibration.updateFeatureValueCount(featureValue1, 15000D);
+		calibration.updateFeatureValueCount(featureValue, 3D);
+		score = calibration.score( featureValue );
+		Assert.assertEquals(93, score, 1);
+		
+		calibration.updateFeatureValueCount(featureValue1, 20000D);
+		calibration.updateFeatureValueCount(featureValue, 4D);
+		score = calibration.score( featureValue );
+		Assert.assertEquals(90, score, 1);
+		
+		calibration.updateFeatureValueCount(featureValue1, 40000D);
+		calibration.updateFeatureValueCount(featureValue, 8D);
+		score = calibration.score( featureValue );
+		Assert.assertEquals(81, score, 1);
+		
+		calibration.updateFeatureValueCount(featureValue1, 80000D);
+		calibration.updateFeatureValueCount(featureValue, 16D);
+		score = calibration.score( featureValue );
+		Assert.assertEquals(70, score, 1);
+		
+		calibration.updateFeatureValueCount(featureValue1, 160000D);
+		calibration.updateFeatureValueCount(featureValue, 32D);
+		score = calibration.score( featureValue );
+		Assert.assertEquals(56, score, 1);
+		
+	}
+	
+	@Test
+	public void testingScoreOfVeryRareFeatureValuesAgainstVeryLargeFetureValue() throws Exception{
 		FeatureCalibration calibration = createNewFeatureCalibration();
 		int i = 0;
 		
 		String featureValue = String.format("test%d", i++);
 		
-		calibration.updateFeatureValueCount(featureValue, 50D);
+		calibration.updateFeatureValueCount(featureValue, 20000D);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 1D);
@@ -116,37 +169,98 @@ public class FeatureCalibrationTest {
 		score = calibration.score( featureValue );
 		double score1 = calibration.score( featureValue1 );
 		Assert.assertEquals(score, score1, 1);
-		Assert.assertEquals(86, score, 1);
+		Assert.assertEquals(94, score, 1);
+		
+		featureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(featureValue, 2D);
+		score = calibration.score( featureValue );
+		Assert.assertEquals(87, score, 1);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 1D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(68, score, 1);
+		Assert.assertEquals(76, score, 1);
 		
 		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 1D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(21, score, 1);
+		Assert.assertEquals(59, score, 1);
 		
-		for(int j = 0; j < 6; j++){
-			featureValue = String.format("test%d", i++);
-			calibration.updateFeatureValueCount(featureValue, 1D);
-		}
-		
+		featureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(featureValue, 1D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0, score, 1);
+		Assert.assertEquals(38, score, 1);
+		
+		
 	}
 	
 	@Test
-	public void testingScoreOfRareFeatureValues() throws Exception{
+	public void testingScoreOfOneVeryRareFeatureValueAndManyRareFetureValuesAgainstVeryLargeFetureValue() throws Exception{
 		FeatureCalibration calibration = createNewFeatureCalibration();
 		int i = 0;
 		
+		String veryLargefeatureValue = String.format("test%d", i++);
+		
+		calibration.updateFeatureValueCount(veryLargefeatureValue, 20000D);
+		
+		String veryRarefeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(veryRarefeatureValue, 1D);
+		double score = calibration.score( veryRarefeatureValue );
+		Assert.assertEquals(99, score, 1);
+		
+		String rareFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(rareFeatureValue, 5D);
+		score = calibration.score( veryRarefeatureValue );
+		Assert.assertEquals(96, score, 1);
+		score = calibration.score( rareFeatureValue );
+		Assert.assertEquals(85, score, 1);
+		
+		rareFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(rareFeatureValue, 6D);
+		score = calibration.score( veryRarefeatureValue );
+		Assert.assertEquals(94, score, 1);
+		score = calibration.score( rareFeatureValue );
+		Assert.assertEquals(75, score, 1);
+		
+		rareFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(rareFeatureValue, 4D);
+		score = calibration.score( veryRarefeatureValue );
+		Assert.assertEquals(92, score, 1);
+		score = calibration.score( rareFeatureValue );
+		Assert.assertEquals(64, score, 1);
+		
+		rareFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(rareFeatureValue, 5D);
+		score = calibration.score( veryRarefeatureValue );
+		Assert.assertEquals(89, score, 1);
+		score = calibration.score( rareFeatureValue );
+		Assert.assertEquals(47, score, 1);
+		
+		rareFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(rareFeatureValue, 6D);
+		score = calibration.score( veryRarefeatureValue );
+		Assert.assertEquals(85, score, 1);
+		score = calibration.score( rareFeatureValue );
+		Assert.assertEquals(27, score, 1);
+		
+		rareFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(rareFeatureValue, 4D);
+		score = calibration.score( veryRarefeatureValue );
+		Assert.assertEquals(80, score, 1);
+		score = calibration.score( rareFeatureValue );
+		Assert.assertEquals(1, score, 1);
+	}
+	
+	@Test
+	public void testingScoreOfRareFeatureValuesAgainstMediumFeatureValue() throws Exception{
+		FeatureCalibration calibration = createNewFeatureCalibration();
+		int i = 0;
+		
+		String mediumFeatureValue = String.format("test%d", i++);
+		
+		calibration.updateFeatureValueCount(mediumFeatureValue, 50D);
+		
 		String featureValue = String.format("test%d", i++);
-		
-		calibration.updateFeatureValueCount(featureValue, 50D);
-		
-		featureValue = String.format("test%d", i++);
 		calibration.updateFeatureValueCount(featureValue, 4D);
 		double score = calibration.score( featureValue );		
 		Assert.assertEquals(76, score, 1);
@@ -156,14 +270,18 @@ public class FeatureCalibrationTest {
 		score = calibration.score( featureValue );
 		double score1 = calibration.score( featureValue1 );
 		Assert.assertEquals(score, score1, 1);
-		int j = 1;
-		for(; j < 3; j++){
-			String tmp = String.format("test%d", i++);
-			calibration.updateFeatureValueCount(tmp, 4D + j);
-		}
+		Assert.assertEquals(63, score, 1);
 		
+		featureValue1 = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(featureValue1, 5D);
 		score = calibration.score( featureValue );
-		Assert.assertEquals(0, score, 1);		
+		Assert.assertEquals(45, score, 1);
+		
+		featureValue1 = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(featureValue1, 5D);
+		score = calibration.score( featureValue );
+		Assert.assertEquals(16, score, 1);
+		
 	}
 	
 	@Test
@@ -181,11 +299,11 @@ public class FeatureCalibrationTest {
 		}
 		
 		double score = calibration.score( featureValue );
-		Assert.assertEquals(0, score, 1);
+		Assert.assertEquals(15, score, 1);
 	}
 	
 	@Test
-	public void testingScoreOfVeryRareFeatureValueAgainstMediumFeatureValue() throws Exception{
+	public void testingScoreOfVeryRareFeatureValueAgainstMediumRareFeatureValues() throws Exception{
 		FeatureCalibration calibration = createNewFeatureCalibration();
 		int i = 0;
 		
@@ -194,59 +312,75 @@ public class FeatureCalibrationTest {
 		calibration.updateFeatureValueCount(featureValue, 1D);		
 		
 		for(int j = 0; j < 4; j++){
-			String tmp = String.format("test%d", i++);
-			calibration.updateFeatureValueCount(tmp, 8D + j);
+			String mediumRareFeatureValue = String.format("test%d", i++);
+			calibration.updateFeatureValueCount(mediumRareFeatureValue, 8D + j);
+			double score = calibration.score( featureValue );
+			Assert.assertEquals(99, score, 1);
 		}
-		
-		double score = calibration.score( featureValue );
-		Assert.assertEquals(99, score, 1);
 	}
 	
 	@Test
-	public void testingScoreOfMediumFeatureValueAgainstVeryLargeFetureValue() throws Exception{
+	public void testingScoreOfRareFeatureValueAgainstMediumRareFeatureValues() throws Exception{
 		FeatureCalibration calibration = createNewFeatureCalibration();
 		int i = 0;
 		
-		String featureValue = String.format("test%d", i++);
-		calibration.updateFeatureValueCount(featureValue, 19000D);
+		String rareFeatureValue = String.format("test%d", i++);
 		
-		featureValue = String.format("test%d", i++);
-		calibration.updateFeatureValueCount(featureValue, 22D);
+		calibration.updateFeatureValueCount(rareFeatureValue, 3D);		
 		
-		double score = calibration.score( featureValue );
-		Assert.assertEquals(57, score, 1);
+		String mediumRareFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(mediumRareFeatureValue, 8D);		
+		double score = calibration.score( rareFeatureValue );
+		Assert.assertEquals(56, score, 1);
+		
+		mediumRareFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(mediumRareFeatureValue, 9D);		
+		score = calibration.score( rareFeatureValue );
+		Assert.assertEquals(50, score, 1);
+		
+		mediumRareFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(mediumRareFeatureValue, 10D);		
+		score = calibration.score( rareFeatureValue );
+		Assert.assertEquals(40, score, 1);
 	}
-	
+		
 	@Test
 	public void testingScoreOfFewMediumFeatureValueAgainstVeryLargeFetureValue() throws Exception{
 		FeatureCalibration calibration = createNewFeatureCalibration();
 		int i = 0;
 		
-		String featureValue = String.format("test%d", i++);
-		calibration.updateFeatureValueCount(featureValue, 522D);
+		String veryLargeFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(veryLargeFeatureValue, 19000D);
 		
-		featureValue = String.format("test%d", i++);
-		calibration.updateFeatureValueCount(featureValue, 22D);
+		String mediumFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(mediumFeatureValue, 22D);
+		double score = calibration.score( mediumFeatureValue );
+		Assert.assertEquals(57, score, 1);
 		
-		for(int j = 1; j < 2; j++){
-			String tmp = String.format("test%d", i++);
-			calibration.updateFeatureValueCount(tmp, 22D + j);
-		}
+		mediumFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(mediumFeatureValue, 22D);
+		score = calibration.score( mediumFeatureValue );
+		Assert.assertEquals(55, score, 1);
 		
-		double score = calibration.score( featureValue );
-		Assert.assertEquals(27, score, 1);
+		mediumFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(mediumFeatureValue, 22D);
+		score = calibration.score( mediumFeatureValue );
+		Assert.assertEquals(48, score, 1);
 		
-		for(int j = 1; j < 2; j++){
-			String tmp = String.format("test%d", i++);
-			calibration.updateFeatureValueCount(tmp, 22D + j);
-		}
+		mediumFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(mediumFeatureValue, 22D);
+		score = calibration.score( mediumFeatureValue );
+		Assert.assertEquals(36, score, 1);
 		
-		score = calibration.score( featureValue );
-		Assert.assertEquals(16, score, 1);
+		mediumFeatureValue = String.format("test%d", i++);
+		calibration.updateFeatureValueCount(mediumFeatureValue, 22D);
+		score = calibration.score( mediumFeatureValue );
+		Assert.assertEquals(20, score, 1);
+		
 	}
 	
 	@Test
-	public void testingScoreOfRareFeatureValueAcrossTime() throws Exception{
+	public void testingScoreOfRareFeatureValueAgainstMediumFeatureValueAcrossTime() throws Exception{
 		FeatureCalibration calibration = createNewFeatureCalibration();
 		int i = 0;
 		
@@ -267,7 +401,7 @@ public class FeatureCalibrationTest {
 	}
 	
 	@Test
-	public void test() throws Exception{
+	public void testRareToMediumFetureValueAgainstMediumLargeFeatureValue() throws Exception{
 		FeatureCalibration calibration = createNewFeatureCalibration();
 
 		int i = 0;

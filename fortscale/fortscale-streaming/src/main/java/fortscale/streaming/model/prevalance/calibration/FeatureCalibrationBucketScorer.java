@@ -30,7 +30,7 @@ public class FeatureCalibrationBucketScorer implements IFeatureCalibrationBucket
 	
 	@Override
 	public double getBoostedScore(int numOfFeatureValues){
-		return score == 0 ? 0 : Math.pow(score, 2) + 0.1 * (numOfFeatureValues-1) * Math.pow(2, (numOfFeatureValues-2));
+		return score == 0 ? 0 : Math.pow(score, 2) + 0.1 * Math.pow((numOfFeatureValues-1), 2);
 	}
 	
 	private void updateMaxScore(){
