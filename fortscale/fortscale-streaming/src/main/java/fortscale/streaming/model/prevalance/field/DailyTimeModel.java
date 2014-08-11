@@ -32,7 +32,7 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 	@Override
 	public void add(Object value, long timestamp){
 		try {
-			Long epoch = convertToLong(value);
+			Long epoch = convertToSeconds(value);
 			if(epoch != null){
 				super.update(epoch);
 			}
@@ -42,14 +42,16 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 		}
 	}
 	
-	private Long convertToLong(Object value){
+	private Long convertToSeconds(Object value){
 		if(value == null){
 			return null;
 		}
 		
 		Long ret = null;
-		if(value instanceof Long || value instanceof Integer){
-			ret = TimestampUtils.convertToSeconds((Long) value);
+		if(value instanceof Long){
+			ret = (Long)value;
+		} else if(value instanceof Long || value instanceof Integer){
+			ret = ((Integer) value).longValue();
 		} else if(value instanceof String){
 			try{
 				if(StringUtils.isNotEmpty((String) value)){
@@ -62,6 +64,9 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 			logger.warn("got value {} of instance {} instead of Long or String", value, value.getClass());
 		}
 		
+		if(ret != null){
+			ret = TimestampUtils.convertToSeconds(ret);
+		}
 		return ret;
 	}
 
@@ -69,7 +74,7 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 	public double calculateScore(Object value) {
 		double ret = 0;
 		try {
-			Long epoch = convertToLong(value);
+			Long epoch = convertToSeconds(value);
 			if(epoch != null){
 				ret = super.score(epoch);
 			}
