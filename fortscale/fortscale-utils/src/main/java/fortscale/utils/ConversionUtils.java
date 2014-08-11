@@ -13,6 +13,9 @@ public final class ConversionUtils {
 			if (value instanceof Long)
 				return (Long)value;
 			
+			if (value instanceof Integer)
+				return ((Integer) value).longValue();
+			
 			String str = value.toString();
 			return Long.valueOf(str);
 		} catch (Exception e) {

@@ -30,6 +30,36 @@ public class DailyTimeModelScoringTest {
 	}
 	
 	@Test
+	public void elementarycheckWithIntegersAsEpochTime() throws Exception {
+		DailyTimeModel timeModel = new DailyTimeModel();
+		
+		Integer epochSeconds = new Integer(1000);
+		for (int i = 0; i < 100; i++) {
+			timeModel.add(epochSeconds, 0);
+		}
+		
+		epochSeconds = new Integer(6600);
+		timeModel.add(epochSeconds, 0);
+		double score = timeModel.calculateScore(epochSeconds);
+		Assert.assertEquals(44.0, score);
+	}
+	
+	@Test
+	public void testNullValueScore(){
+		DailyTimeModel timeModel = new DailyTimeModel();
+		
+		Integer epochSeconds = new Integer(1000);
+		for (int i = 0; i < 100; i++) {
+			timeModel.add(epochSeconds, 0);
+		}
+		
+		epochSeconds = null;
+		timeModel.add(epochSeconds, 0);
+		double score = timeModel.calculateScore(epochSeconds);
+		Assert.assertEquals(0.0, score);
+	}
+	
+	@Test
 	public void testUniformlyRandomDistribution() throws Exception{
 		Random rnd = new Random(1);
 		DailyTimeModel timeModel = new DailyTimeModel();
