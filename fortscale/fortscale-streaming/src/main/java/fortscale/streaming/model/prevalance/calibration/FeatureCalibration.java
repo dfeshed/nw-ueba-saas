@@ -97,13 +97,10 @@ public class FeatureCalibration{
 			if(prevBucketIndex != bucketIndex){
 				FeatureCalibrationBucketScorer prevBucketScorer = bucketScorerList.get(prevBucketIndex);
 				prevBucketScorer.removeFeatureValue(featureValue);
-				if(prevBucketScorer.size() == 0 && prevBucketScorer.getIsFirstBucket()){
-					bucketScorer.setIsFirstBucket(true);
-				}
 			}
 		}
 				
-		fillScoreBucketAggr();
+		setMaxScore();
 		
 	}
 		
@@ -123,9 +120,7 @@ public class FeatureCalibration{
 		//while doing so the counts are getting reduced in the method reduceCount
 		initBucketScoreList();
 		
-		//Filling the an aggregated histogram of the buckets.
-		scoreBucketsAggr = new Double[MAX_NUM_OF_BUCKETS];
-		fillScoreBucketAggr();
+		setMaxScore();
 	}
 	
 	//Finding the smaller count of all the feature values
@@ -143,13 +138,11 @@ public class FeatureCalibration{
 		}
 	}
 	
-	private void fillScoreBucketAggr(){
-		double sum = 0;
+	private void setMaxScore(){
+		total = 0;
 		for(int i = 0; i < bucketScorerList.size(); i++){
-			sum += bucketScorerList.get(i).getScore();
-			scoreBucketsAggr[i] = sum;
+			total = Math.max(total, bucketScorerList.get(i).getScore());
 		}
-		total = sum;
 	}
 	
 	//Filling the buckets with all the feature values counts.
@@ -161,21 +154,18 @@ public class FeatureCalibration{
 			bucketScorerList.add(bucketScorer);
 		}
 		
-		int minIndex = MAX_NUM_OF_BUCKETS;
 		Iterator<Entry<String, Double>> featureValueToCountIter = featureValueToCountMap.entrySet().iterator();
 		while(featureValueToCountIter.hasNext()){
 			Entry<String, Double> featureValueToCountEntry = featureValueToCountIter.next();
 			int bucketIndex = (int)getBucketIndex(featureValueToCountEntry.getValue());
-			minIndex = Math.min(minIndex, bucketIndex);
 			FeatureCalibrationBucketScorer bucketScorer = bucketScorerList.get(bucketIndex);
 			bucketScorer.updateFeatureValueCount(featureValueToCountEntry.getKey(), featureValueToCountEntry.getValue());
 		}
-		bucketScorerList.get(minIndex).setIsFirstBucket(true);		
 	}
 
 	
 	public double score(String featureValue) {
-		if(scoreBucketsAggr == null){
+		if(total == 0){
 			return 0;
 		}
 		
@@ -185,18 +175,29 @@ public class FeatureCalibration{
 		}
 		
 		double bucketIndex = getBucketIndex(featureCount);
-		if(bucketIndex + 1 >= scoreBucketsAggr.length){
+		if(bucketIndex + 1 >= bucketScorerList.size()){
 			return 0;
 		}
 		
 		int lowerBucketIndex = (int) bucketIndex;
-		double ret = scoreBucketsAggr[lowerBucketIndex];
-		if(lowerBucketIndex != bucketIndex){
-			ret = (scoreBucketsAggr[lowerBucketIndex] * (lowerBucketIndex + 1 - bucketIndex)) +
-					(scoreBucketsAggr[lowerBucketIndex+1] * (bucketIndex - lowerBucketIndex));
+		double lowerBucketScore = 0;
+		int size = 0;
+		for(int i = 0; i <= lowerBucketIndex; i++){
+			size += bucketScorerList.get(i).size();
+			lowerBucketScore = Math.max(lowerBucketScore, bucketScorerList.get(i).getBoostedScore(size));
 		}
-		return (int) ((1 - (ret / total))*100);
+		
+		double upperBucketScore = Math.max(lowerBucketScore, bucketScorerList.get(lowerBucketIndex+1).getBoostedScore(size + bucketScorerList.get(lowerBucketIndex+1).size()));
+		// smoothing the score between element in bucketIndex and with the elements in the next bucket.
+		// The 0.2 means that elements in bucketIndex will be influenced by the next bucket by at least 0.2
+		double nextBucketMinInfluence =  0.4/(Math.pow(2, lowerBucketIndex+1) - Math.pow(2, lowerBucketIndex));
+		double ret = (lowerBucketScore * (lowerBucketIndex + 1 - bucketIndex - nextBucketMinInfluence)) +
+				(upperBucketScore * (bucketIndex - lowerBucketIndex + nextBucketMinInfluence));
+		
+		return ret > total ? 0 :(int) ((1 - (ret / total))*100);
 	}
+	
+	
 	
 	private double getBucketIndex(double rscore){
 		double num = rscore + addedValue;

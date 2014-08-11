@@ -21,11 +21,15 @@ public class FeatureCalibrationBucketScorer implements IFeatureCalibrationBucket
 	
 	@Override
 	public double getScore(){
-		if(isFirstBucket){
-			return Math.max(score + featureValueToScoreMap.size() - 1,score*0.5*featureValueToScoreMap.size()) * Math.pow(2, (featureValueToScoreMap.size()-1)/3.0);
-		} else{
-			return score;
+		if(score < 1){
+			return getBoostedScore(1);
 		}
+		return score;
+	}
+	
+	@Override
+	public double getBoostedScore(int numOfFeatureValues){
+		return score == 0 ? 0 : Math.pow(score, 2) + 0.1 * Math.pow((numOfFeatureValues-1), 2);
 	}
 	
 	private void updateMaxScore(){
@@ -64,8 +68,7 @@ public class FeatureCalibrationBucketScorer implements IFeatureCalibrationBucket
 	}
 	
 	private double reduceCount(double count){
-		double ret = Math.log(count+1) / Math.log(2);
-		ret = Math.pow(ret, 2);
+		double ret = Math.log(count+0.3) / Math.log(10);
 		
 		return ret;
 	}
@@ -78,18 +81,7 @@ public class FeatureCalibrationBucketScorer implements IFeatureCalibrationBucket
 		}
 		
 		return getScore();
-	}
-
-	@Override
-	public boolean getIsFirstBucket() {
-		return isFirstBucket;
-	}
-
-	@Override
-	public void setIsFirstBucket(boolean isFirstBucket) {
-		this.isFirstBucket = isFirstBucket;
-	}
-	
+	}	
 	
 	@Override
 	public int size(){
