@@ -13,13 +13,17 @@ public class StringCaseInsensitiveValuesCalibrationModel extends DiscreetValuesC
 
 	@Override
 	public void add(Object value, long timestamp) {
+		if(value == null){
+			return;
+		}
 		if (isValueValid(value)){
-			if(value != null && StringUtils.isNotEmpty((String) value)){
-				String str = (String)value;
-				super.add(str.toLowerCase(), timestamp);
-			}
-		} else{
 			logger.warn("given value ({}) is not valid", value);
+			return;
+		}
+		
+		if(StringUtils.isNotEmpty((String) value)){
+			String str = (String)value;
+			super.add(str.toLowerCase(), timestamp);
 		}
 	}
 	
