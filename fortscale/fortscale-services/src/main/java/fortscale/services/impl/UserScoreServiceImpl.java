@@ -130,6 +130,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 				// adjust the time range according to the total score in the date range
 				dateTimeEnd = new DateTime(prevTotalScore.getTimestampEpoc());
 				dateTimeStart = dateTimeEnd.minusHours(24);
+				break;
 			}
 		}
 		
