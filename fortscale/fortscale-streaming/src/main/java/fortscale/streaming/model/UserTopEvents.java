@@ -88,7 +88,7 @@ public class UserTopEvents {
 			sum += timeDecayScore(eventScore.getScore(), eventScore.getEventTime(), curTimeInMillis);
 		}
 		
-		return sum / eventScores.size();
+		return Math.round(sum / eventScores.size());
 	}
 	
 	

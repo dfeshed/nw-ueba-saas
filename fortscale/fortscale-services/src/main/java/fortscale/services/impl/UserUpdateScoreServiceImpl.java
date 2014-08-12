@@ -130,7 +130,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		}
 		
 		ScoreInfo ret = new ScoreInfo();
-		ret.setScore(score);
+		ret.setScore(Math.round(score));
 		ret.setAvgScore(0);
 		return ret;
 	}
@@ -203,13 +203,13 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 			for(Map<String, Object> authScore: authScores){
 				userSum += (Double)authScore.get(SCORE_DECAY_FIELD_NAME);
 			}
-			double userScore = userSum/5;
+			double userScore = Math.round(userSum/5);
 			userIdToScoreMap.put(user.getId(), userScore);
 			sum += userScore;
 		}
 		
 		logger.info("updating all the {} users with new scores.", users.size());
-		double avg = sum / users.size();
+		double avg = Math.round(sum / users.size());
 		for(User user: users){
 			double userScore = userIdToScoreMap.get(user.getId());
 			User updatedUser = updateUserScore(user, runtime, classifier.getId(), userScore, avg, false);
