@@ -16,7 +16,7 @@ public class StringCaseInsensitiveValuesCalibrationModel extends DiscreetValuesC
 		if(value == null){
 			return;
 		}
-		if (isValueValid(value)){
+		if (!isValueValid(value)){
 			logger.warn("given value ({}) is not valid", value);
 			return;
 		}
