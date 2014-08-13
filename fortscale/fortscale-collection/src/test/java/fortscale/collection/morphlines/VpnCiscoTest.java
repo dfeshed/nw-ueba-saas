@@ -113,7 +113,7 @@ public class VpnCiscoTest {
 
                         ),
 
-                        $("2014-03-22 04:07:25,1395454045,pmoreno,37.11.25.29,,CLOSED,,,,,,,,3282545,2649665,632880,16:30:23,50,false,false",
+                        $("2014-03-22 04:07:25,1395454045,pmoreno,37.11.25.29,,CLOSED,,,,,,,,3282545,632880,2649665,,50,false,false",
                           (String)null,
                           (String)null,
                           (String)null,
