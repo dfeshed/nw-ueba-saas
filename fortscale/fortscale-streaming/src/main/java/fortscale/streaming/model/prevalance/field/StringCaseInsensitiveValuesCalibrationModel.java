@@ -29,6 +29,9 @@ public class StringCaseInsensitiveValuesCalibrationModel extends DiscreetValuesC
 	
 	@Override
 	public double calculateScore(Object value) {
+		if(value == null){
+			return 0;
+		}
 		double ret = 0;
 		if (isValueValid(value)){
 			if(value != null && StringUtils.isNotEmpty((String) value)){
