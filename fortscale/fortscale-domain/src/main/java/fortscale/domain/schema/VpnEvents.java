@@ -1,10 +1,9 @@
 package fortscale.domain.schema;
 
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
 
 /**
  * Schema Descriptor class for raw vpn events impala table and hdfs storage 
@@ -75,7 +74,10 @@ public class VpnEvents implements TableSchema {
 	@Value("${impala.data.vpn.table.field.is_executive_account}")
 	public String IS_EXECUTIVE_ACCOUNT;
 
-	private PartitionStrategy partition = new MonthlyPartitionStrategy();	
+    @Value("${impala.data.vpn.table.partition.type}")
+    private String impalaVpnDataTablePartitionType;
+
+	private PartitionStrategy partition = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);;
 	
 	@Override
 	public String getTableName() {

@@ -1,36 +1,7 @@
 package fortscale.collection.jobs;
 
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.kitesdk.morphline.api.Record;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.Job;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-
 import fortscale.collection.JobDataMapExtension;
-import fortscale.services.UserService;
-import fortscale.services.fe.Classifier;
-import fortscale.utils.hdfs.BufferedHDFSWriter;
-import fortscale.utils.hdfs.HDFSPartitionsWriter;
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
-import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
-import fortscale.utils.hdfs.split.FileSplitStrategy;
-import fortscale.utils.impala.ImpalaClient;
-import fortscale.utils.impala.ImpalaParser;
 import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.io.KafkaEventsWriter;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
@@ -38,6 +9,30 @@ import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.monitor.JobProgressReporter;
 import fortscale.monitor.domain.JobDataReceived;
+import fortscale.services.UserService;
+import fortscale.services.fe.Classifier;
+import fortscale.utils.hdfs.BufferedHDFSWriter;
+import fortscale.utils.hdfs.HDFSPartitionsWriter;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
+import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
+import fortscale.utils.hdfs.split.FileSplitStrategy;
+import fortscale.utils.impala.ImpalaClient;
+import fortscale.utils.impala.ImpalaParser;
+import org.apache.commons.lang3.StringUtils;
+import org.kitesdk.morphline.api.Record;
+import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Job class to help build event process jobs from saved files into hadoop
@@ -75,6 +70,7 @@ public class EventProcessJob implements Job {
 	protected String timestampField;
 	protected String streamingTopic;
 	protected KafkaEventsWriter streamWriter;
+    protected PartitionStrategy partitionStrategy;
 	
 	@Autowired
 	protected ImpalaClient impalaClient;
@@ -112,6 +108,9 @@ public class EventProcessJob implements Job {
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 		
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
+
+        String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
 	}
 	
 	@Override
@@ -373,7 +372,7 @@ public class EventProcessJob implements Job {
 	}
 	
 	protected PartitionStrategy getPartitionStrategy(){
-		return new MonthlyPartitionStrategy();
+		return this.partitionStrategy;
 	}
 	
 	protected FileSplitStrategy getFileSplitStrategy(){

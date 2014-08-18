@@ -1,27 +1,5 @@
 package fortscale.streaming.task;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.streaming.ConfigUtils.getConfigStringList;
-import static fortscale.utils.ConversionUtils.convertToLong;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.LinkedList;
-import java.util.List;
-
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
-import org.apache.samza.config.Config;
-import org.apache.samza.metrics.Counter;
-import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
-import org.apache.samza.task.TaskCoordinator.RequestScope;
-
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.filters.MessageFilter;
@@ -31,6 +9,22 @@ import fortscale.streaming.service.HdfsService;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
+import org.apache.samza.storage.kv.KeyValueStore;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.*;
+import org.apache.samza.task.TaskCoordinator.RequestScope;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.utils.ConversionUtils.convertToLong;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
  * Stream tasks that receives events and write them to hdfs using a partitioned
@@ -67,6 +61,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		tableName = getConfigString(config, "fortscale.table.name");
 		int eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
 		storeName = storeNamePrefix + tableName;
+
+        //PartitionsUtils.getPartitionStrategy(impalaTotalScoringTablePartitionType);
 
 		String partitionClassName = getConfigString(config, "fortscale.partition.strategy");
 		PartitionStrategy partitionStrategy = (PartitionStrategy) Class.forName(partitionClassName).newInstance();

@@ -83,6 +83,10 @@
 					<key>streamingTopicSecEvt4769</key>
 					<value>${kafka.4769.struc.topic}</value>
 				</entry>
+                <entry>
+                    <key>partitionStrategySecEvt4769</key>
+                    <value>monthly</value>
+                </entry>
 				
 				<!--  Login table parameters -->
 				<entry>
@@ -117,6 +121,11 @@
 					<key>streamingTopicLoginEvt</key>
 					<value>${kafka.4768.struc.topic}</value>
 				</entry>
+                <entry>
+                    <key>partitionStrategyLoginEvt</key>
+                    <value>monthly</value>
+                </entry>
+
 			</job-data-map>
 		</job>
 		

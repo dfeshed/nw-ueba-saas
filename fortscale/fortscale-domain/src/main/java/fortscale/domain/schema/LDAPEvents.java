@@ -1,10 +1,9 @@
 package fortscale.domain.schema;
 
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
 
 /**
  * Schema Descriptor class for raw ldap authentication events impala table and hdfs storage 
@@ -65,8 +64,10 @@ public class LDAPEvents implements TableSchema {
 	public String IS_EXECUTIVE_ACCOUNT;
 	@Value("${impala.data.security.events.4769.table.field.is_sensitive_machine}")
 	public String IS_SENSITIVE_MACHINE;
+    @Value("${impala.data.security.events.4769.table.partition.type}")
+    private String  impalaSecDataTablePartitionType;
 	
-	private PartitionStrategy partition = new MonthlyPartitionStrategy();
+	private PartitionStrategy partition = PartitionsUtils.getPartitionStrategy(impalaSecDataTablePartitionType);
 	
 	@Override
 	public String getTableName() {

@@ -60,7 +60,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>monthly</value>
+						<value>daily</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -88,7 +88,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>monthly</value>
+						<value>daily</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -116,7 +116,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>monthly</value>
+						<value>daily</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -144,7 +144,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>monthly</value>
+						<value>daily</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>

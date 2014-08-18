@@ -29,6 +29,7 @@ public class PartitionsUtils {
 		switch(partitionType){
 		case "monthly" : return new MonthlyPartitionStrategy();
 		case "runtime" : return new RuntimePartitionStrategy();
+        case "daily"   : return new DailyPartitionStrategy();
 		default : return new DefaultPartitionStrategy();
 		}
 	}
