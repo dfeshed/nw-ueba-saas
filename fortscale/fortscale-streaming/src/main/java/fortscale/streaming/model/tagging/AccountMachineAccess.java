@@ -113,7 +113,7 @@ public class AccountMachineAccess {
         if (machineState != null)
         {
             //in case that the machine exist compare the time stamps
-            if(machineState.getLastEventTimeStamp() < timeStamp)
+            if(machineState.getLastEventTimeStamp() < TimestampUtils.convertToMilliSeconds(timeStamp))
                 machineState.setLastEventTimeStamp(timeStamp);
 
         }
@@ -138,7 +138,7 @@ public class AccountMachineAccess {
         if (machineState != null)
         {
             //in case that the machine exist compare the time stamps
-            if(machineState.getLastEventTimeStamp() < timeStamp)
+            if(machineState.getLastEventTimeStamp() < TimestampUtils.convertToMilliSeconds(timeStamp))
                 machineState.setLastEventTimeStamp(timeStamp);
 
             //update the isSensetiveMachine flag (if the machine was sensitive in the past dont change the flag
