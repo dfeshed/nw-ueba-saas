@@ -111,7 +111,7 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
     private void tagPerType(AccountMachineAccess account)
     {
 
-        int numOfDistinctDestinations = account.getDestinations().size();
+        int numOfDistinctDestinations = account.getServerDesktopDestination().size();
 
         //calculate the number that represent the thershold precent round down (for example 0.9 from 8 destination will be 7 cause the true value is 7.2)
         int breakPointValue  =  (numOfDistinctDestinations == 1 ? 1 : (numOfDistinctDestinations  == 2 ? 2 : ((int) Math.floor(threshold*numOfDistinctDestinations))));
