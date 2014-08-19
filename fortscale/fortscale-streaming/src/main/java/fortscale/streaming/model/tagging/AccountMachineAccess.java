@@ -3,10 +3,8 @@ package fortscale.streaming.model.tagging;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.utils.TimestampUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +55,20 @@ public class AccountMachineAccess {
 
     public Map<String,MachineState> getDestinations() {
         return destinations;
+    }
+
+
+    //return subset with server or desktop destination only!!
+    public Map<String,MachineState> getServerDesktopDestination()
+    {
+        Map<String,MachineState> result = new HashMap<String,MachineState>();
+        for (Map.Entry<String,MachineState> entry : destinations.entrySet())
+        {
+            if (entry.getValue().getType() == ComputerUsageType.Server || entry.getValue().getType() == ComputerUsageType.Desktop )
+                result.put(entry.getKey(),entry.getValue());
+        }
+
+        return result;
     }
 
     public  Map<String,Boolean> getTags() {
