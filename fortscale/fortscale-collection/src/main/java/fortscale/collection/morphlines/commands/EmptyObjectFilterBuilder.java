@@ -61,11 +61,17 @@ public class EmptyObjectFilterBuilder implements CommandBuilder {
 				}
 				boolean isAllFieldValueEmpty = true;
 				for(Object fieldValue: fieldValues){
+					if(fieldValue == null){
+						continue;
+					}
 					if (fieldValue instanceof String) {
 						if (!StringUtils.isBlank((String)fieldValue)) {
 							isAllFieldValueEmpty = false;
 							break;
 						}
+					} else{
+						isAllFieldValueEmpty = false;
+						break;
 					}
 				}
 				if (isAllFieldValueEmpty) {
