@@ -3,6 +3,7 @@ package fortscale.services.ipresolving;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -90,8 +91,15 @@ public class ComputerLoginResolver implements InitializingBean {
 	
 	public void addComputerLogins(Iterable<ComputerLoginEvent> events) {
 	    // save all events in the 
-	    for (ComputerLoginEvent event : events)
-	    	addComputerLogin(event);
+		List<ComputerLoginEvent> eventsToSaveInDB = new ArrayList<>();
+	    for (ComputerLoginEvent event : events){
+	    	if(isToUpdate(event)){
+	    		eventsToSaveInDB.add(event);
+	    		cache.put(event.getIpaddress(), event);
+	    	}
+	    }
+
+	    computerLoginEventRepository.save(eventsToSaveInDB);
 	}
 	
 	public void addComputerLogin(ComputerLoginEvent event) {
@@ -99,21 +107,33 @@ public class ComputerLoginResolver implements InitializingBean {
 		String ip = event.getIpaddress();
 		checkNotNull(ip);
 		
+		if (isToUpdate(event)) {
+			computerLoginEventRepository.save(event);
+			cache.put(ip, event);
+		} else{
+			logger.debug("skipping ip to hostname login event with hostname={}, ip={}, timestamp={}", event.getHostname(), event.getIpaddress(), event.getTimestampepoch());
+		}
+
+		
+	}
+	
+	private boolean isToUpdate(ComputerLoginEvent event){
+		String ip = event.getIpaddress();
+		
 		// check if the event is in the cache, if not add it and save to repository
 		ComputerLoginEvent cachedEvent =  cache.getIfPresent(ip);
 		if (cachedEvent==null) {
-			computerLoginEventRepository.save(event);
-			cache.put(ip, event);
+			return true;
 		} else {
 			// if the event is in the cache, check if the new event has a different hostname and save it
 			// if the event is in the cache and has the same hostname, update it only if the ticket expiration time passed
 			if ((!event.getHostname().equals(cachedEvent.getHostname())) || (event.getTimestampepoch() > cachedEvent.getTimestampepoch() +  (ipToHostNameUpdateResolutionInMins * 60 * 1000))) {
-				computerLoginEventRepository.save(event);
-				cache.put(ip, event);
-			} else {
-				logger.debug("skipping ip to hostname login event with hostname={}, ip={}, timestamp={}", event.getHostname(), event.getIpaddress(), event.getTimestampepoch());
+				return true;
 			}
 		}
+		
+		return false;
 	}
-
+	
+	
 }

@@ -65,7 +65,7 @@ public class EmptyObjectFilterBuilder implements CommandBuilder {
 						continue;
 					}
 					if (fieldValue instanceof String) {
-						if (!StringUtils.isBlank((String)fieldValue)) {
+						if (!StringUtils.isBlank((String)fieldValue) && !"-".equals((String)fieldValue)) {
 							isAllFieldValueEmpty = false;
 							break;
 						}

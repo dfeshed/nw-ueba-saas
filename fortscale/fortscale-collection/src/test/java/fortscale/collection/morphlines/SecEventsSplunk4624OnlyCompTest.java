@@ -18,7 +18,7 @@ public class SecEventsSplunk4624OnlyCompTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readSecEvtOnlyComp_splunk.conf";
-	private String conf4624File = "resources/conf-files/processSecEvt4624.conf";
+	private String conf4624File = "resources/conf-files/read4624SecEvtOnlyComp_splunk.conf";
 
 	
 	@Before
