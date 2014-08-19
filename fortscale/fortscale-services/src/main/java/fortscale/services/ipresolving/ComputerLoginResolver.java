@@ -34,6 +34,8 @@ public class ComputerLoginResolver implements InitializingBean {
 	
 	@Value("${computer.login.resolver.leaseTimeInMins:600}") // TGT lease time is default to 10 hours
 	private int leaseTimeInMins;
+	@Value("${computer.login.resolver.ipToHostNameUpdateResolutionInMins:60}") 
+	private int ipToHostNameUpdateResolutionInMins;
 	@Value("${computer.login.resolver.graceTimeInMins:1}")
 	private int graceTimeInMins;
 	@Value("${computer.login.resolver.cache.max.items:30000}")
@@ -105,7 +107,7 @@ public class ComputerLoginResolver implements InitializingBean {
 		} else {
 			// if the event is in the cache, check if the new event has a different hostname and save it
 			// if the event is in the cache and has the same hostname, update it only if the ticket expiration time passed
-			if ((!event.getHostname().equals(cachedEvent.getHostname())) || (event.getTimestampepoch() > cachedEvent.getTimestampepoch() +  (leaseTimeInMins * 60 * 1000))) {
+			if ((!event.getHostname().equals(cachedEvent.getHostname())) || (event.getTimestampepoch() > cachedEvent.getTimestampepoch() +  (ipToHostNameUpdateResolutionInMins * 60 * 1000))) {
 				computerLoginEventRepository.save(event);
 				cache.put(ip, event);
 			} else {
