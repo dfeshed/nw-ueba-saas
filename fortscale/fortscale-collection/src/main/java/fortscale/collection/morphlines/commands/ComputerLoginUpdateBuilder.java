@@ -68,6 +68,10 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+			if(computerLoginResolver == null){
+				logger.error("computerLoginResolver is null");
+				return super.doProcess(inputRecord);
+			}
 			try{
 				Long timestampepoch = RecordExtensions.getLongValue(inputRecord, timestampepochFieldName);
 				String ipaddress = RecordExtensions.getStringValue(inputRecord, ipaddressFieldName);
