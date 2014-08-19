@@ -41,6 +41,8 @@ public class ComputerLoginResolver implements InitializingBean {
 	private int graceTimeInMins;
 	@Value("${computer.login.resolver.cache.max.items:30000}")
 	private int cacheMaxSize;
+	@Value("${computer.login.resolver.is.use.cache.for.resolving:true}")
+	private boolean isUseCacheForResolving;
 	
 	private Cache<String, ComputerLoginEvent> cache;
 	
@@ -60,12 +62,14 @@ public class ComputerLoginResolver implements InitializingBean {
 
 		
 		// check if we have a matching event in the cache
-		ComputerLoginEvent cachedEvent = cache.getIfPresent(ip);
-		if (cachedEvent!=null && 
-				cachedEvent.getTimestampepoch() >= ts - leaseTimeInMins*60*1000 && 
-				cachedEvent.getTimestampepoch() <= ts + graceTimeInMins*60*1000) {
-
-			return cachedEvent.getHostname();
+		if(isUseCacheForResolving){
+			ComputerLoginEvent cachedEvent = cache.getIfPresent(ip);
+			if (cachedEvent!=null && 
+					cachedEvent.getTimestampepoch() >= ts - leaseTimeInMins*60*1000 && 
+					cachedEvent.getTimestampepoch() <= ts + graceTimeInMins*60*1000) {
+	
+				return cachedEvent.getHostname();
+			}
 		}
 		
 		// if cache not found resort to the repository check
