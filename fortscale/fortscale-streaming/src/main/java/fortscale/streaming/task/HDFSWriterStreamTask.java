@@ -6,8 +6,10 @@ import fortscale.streaming.filters.MessageFilter;
 import fortscale.streaming.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.HdfsService;
+import fortscale.streaming.service.SpringService;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -17,6 +19,7 @@ import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
+import org.springframework.core.env.Environment;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,6 +48,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private String storeName;
 	private BarrierService barrier;
 	private List<MessageFilter> filters = new LinkedList<MessageFilter>();
+    private PartitionStrategy partitionStrategy;
+
 
 	/** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
@@ -56,16 +61,20 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		separator = config.get("fortscale.separator", ",");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		usernameField = getConfigString(config, "fortscale.username.field");
-		fields = getConfigStringList(config, "fortscale.fields");
+
 		List<String> discriminatorsFields = getConfigStringList(config, "fortscale.discriminator.fields");
 		tableName = getConfigString(config, "fortscale.table.name");
 		int eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
 		storeName = storeNamePrefix + tableName;
 
-        //PartitionsUtils.getPartitionStrategy(impalaTotalScoringTablePartitionType);
 
-		String partitionClassName = getConfigString(config, "fortscale.partition.strategy");
-		PartitionStrategy partitionStrategy = (PartitionStrategy) Class.forName(partitionClassName).newInstance();
+        //get the Enviorment instance of the spring context for resolving parametric configuration refer to global config (e.g - partition strategy)
+        Environment env = SpringService.getInstance().resolve(Environment.class);
+        fields = env.getProperty(getConfigString(config, "fortscale.fields"),List.class);
+
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(env.getProperty(getConfigString(config, "fortscale.partition.strategy")));
+
+
 		String splitClassName = getConfigString(config, "fortscale.split.strategy");
 		FileSplitStrategy splitStrategy = (FileSplitStrategy) Class.forName(splitClassName).newInstance();
 

@@ -123,7 +123,7 @@
 				</entry>
                 <entry>
                     <key>partitionStrategyLoginEvt</key>
-                    <value>monthly</value>
+                    <value>daily</value>
                 </entry>
 
 			</job-data-map>
