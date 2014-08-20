@@ -64,7 +64,7 @@ public class LoginEvents implements TableSchema {
     private String  impalaSecLoginTablePartitionType;
 	
 	
-	private PartitionStrategy partition = PartitionsUtils.getPartitionStrategy(impalaSecLoginTablePartitionType);
+	private PartitionStrategy partition;
 	
 	@Override
 	public String getTableName() {
@@ -73,6 +73,9 @@ public class LoginEvents implements TableSchema {
 
 	@Override
 	public PartitionStrategy getPartitionStrategy() {
+        if (partition == null)
+            partition = PartitionsUtils.getPartitionStrategy(impalaSecLoginTablePartitionType);
+
 		return partition;
 	}
 
