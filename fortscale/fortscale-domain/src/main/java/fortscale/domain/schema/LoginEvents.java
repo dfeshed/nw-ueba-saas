@@ -61,7 +61,7 @@ public class LoginEvents implements TableSchema {
 	@Value("${impala.data.security.events.login.table.field.src_class}")
 	public String SRC_CLASS;
     @Value("${impala.data.security.events.login.table.partition.type}")
-    private String  impalaSecLoginTablePartitionType;
+    public String  impalaSecLoginTablePartitionType;
 	
 	
 	private PartitionStrategy partition;
