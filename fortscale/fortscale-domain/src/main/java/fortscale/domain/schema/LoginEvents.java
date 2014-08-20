@@ -14,7 +14,7 @@ public class LoginEvents implements TableSchema {
 
 	@Value("${impala.data.security.events.login.table.name}")
 	private String tableName;
-	
+
 	
 	@Value("${impala.data.security.events.login.table.field.timeGeneratedRaw}")
 	public String TIMEGENERATEDRAW;
@@ -62,8 +62,7 @@ public class LoginEvents implements TableSchema {
 	public String SRC_CLASS;
     @Value("${impala.data.security.events.login.table.partition.type}")
     public String  impalaSecLoginTablePartitionType;
-	
-	
+
 	private PartitionStrategy partition;
 	
 	@Override

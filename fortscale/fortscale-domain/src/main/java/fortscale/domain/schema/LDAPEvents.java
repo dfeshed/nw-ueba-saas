@@ -67,7 +67,7 @@ public class LDAPEvents implements TableSchema {
     @Value("${impala.data.security.events.4769.table.partition.type}")
     public String  impalaSecDataTablePartitionType;
 	
-	private PartitionStrategy partition = PartitionsUtils.getPartitionStrategy(impalaSecDataTablePartitionType);
+	private PartitionStrategy partition;
 	
 	@Override
 	public String getTableName() {
@@ -76,6 +76,10 @@ public class LDAPEvents implements TableSchema {
 
 	@Override
 	public PartitionStrategy getPartitionStrategy() {
+
+        if (partition == null)
+            partition = PartitionsUtils.getPartitionStrategy(impalaSecDataTablePartitionType);
+
 		return partition;
 	}
 

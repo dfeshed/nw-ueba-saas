@@ -36,7 +36,7 @@ public class SSHEvents implements TableSchema {
     public String impalaSshDataTablePartitionType;
 
 	
-	private PartitionStrategy partition = PartitionsUtils.getPartitionStrategy(impalaSshDataTablePartitionType);
+	private PartitionStrategy partition;
 	
 	@Override
 	public String getTableName() {
@@ -45,6 +45,9 @@ public class SSHEvents implements TableSchema {
 
 	@Override
 	public PartitionStrategy getPartitionStrategy() {
+
+        if (partition == null)
+            partition = PartitionsUtils.getPartitionStrategy(impalaSshDataTablePartitionType);
 		return partition;
 	}
 

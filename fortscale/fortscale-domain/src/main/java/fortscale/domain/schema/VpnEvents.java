@@ -77,7 +77,7 @@ public class VpnEvents implements TableSchema {
     @Value("${impala.data.vpn.table.partition.type}")
     public String impalaVpnDataTablePartitionType;
 
-	private PartitionStrategy partition = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
+	private PartitionStrategy partition;
 	
 	@Override
 	public String getTableName() {
@@ -86,6 +86,9 @@ public class VpnEvents implements TableSchema {
 	
 	@Override
 	public String getPartitionFieldName() {
+        if (partition == null)
+            partition = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
+
 		return partition.getImpalaPartitionFieldName();
 	}
 	
