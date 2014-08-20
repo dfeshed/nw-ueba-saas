@@ -11,6 +11,7 @@ import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
+import fortscale.utils.impala.ImpalaParser;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -68,11 +69,12 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		storeName = storeNamePrefix + tableName;
 
 
-        //get the Enviorment instance of the spring context for resolving parametric configuration refer to global config (e.g - partition strategy)
+        //Resolve the fields names
         Environment env = SpringService.getInstance().resolve(Environment.class);
-        fields = env.getProperty(getConfigString(config, "fortscale.fields"),List.class);
+        fields = ImpalaParser.getTableFieldNames(env.getProperty("fortscale.fields"));
 
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(env.getProperty(getConfigString(config, "fortscale.partition.strategy")));
+        //Resolve the partition strategy
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(env.getProperty("fortscale.partition.strategy"));
 
 
 		String splitClassName = getConfigString(config, "fortscale.split.strategy");

@@ -55,6 +55,10 @@
 					<key>filenameFormat</key>
 					<value>ous%d.csv</value>
 				</entry>
+                <entry>
+                    <key>partitionStrategy</key>
+                    <value>monthly</value>
+                </entry>
 				<entry>
 					<key>impalaTableName</key>
 					<value>${impala.ldapous.table.name}</value>

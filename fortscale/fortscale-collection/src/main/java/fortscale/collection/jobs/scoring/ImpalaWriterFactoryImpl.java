@@ -1,24 +1,22 @@
 package fortscale.collection.jobs.scoring;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import fortscale.services.impl.ImpalaGroupsScoreWriter;
 import fortscale.services.impl.ImpalaTotalScoreWriter;
 import fortscale.services.impl.ImpalaUseridToAppUsernameWriter;
 import fortscale.services.impl.ImpalaWriterFactory;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
@@ -37,7 +35,9 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	private String impalaTotalScoringTableFields;
 	@Value("${impala.total.scores.table.delimiter}")
 	private String impalaTotalScoringTableDelimiter;
-	
+    @Value(("${impala.total.scores.table.partition.type}"))
+    private String impalaTotalScoringTablePartitionType;
+
 	private HDFSPartitionsWriter groupsScoreAppender;
 	private HDFSPartitionsWriter totalScoreAppender;
 	
@@ -77,7 +77,8 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	
 	public void createTotalScoreAppender(String basePath, String filename) throws IOException{
 		if(totalScoreAppender == null){
-			totalScoreAppender = new HDFSPartitionsWriter(basePath, new MonthlyPartitionStrategy(), new DefaultFileSplitStrategy());
+            PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTotalScoringTablePartitionType);
+			totalScoreAppender = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
 		}
 		totalScoreAppender.open(filename);
 	}
