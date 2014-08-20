@@ -33,7 +33,7 @@ public class SSHEvents implements TableSchema {
 	@Value("${impala.data.ssh.table.field.normalized_username}")
 	public String NORMALIZED_USERNAME;
     @Value("${impala.data.ssh.table.partition.type}")
-    private String impalaSshDataTablePartitionType;
+    public String impalaSshDataTablePartitionType;
 
 	
 	private PartitionStrategy partition = PartitionsUtils.getPartitionStrategy(impalaSshDataTablePartitionType);

@@ -65,7 +65,7 @@ public class LDAPEvents implements TableSchema {
 	@Value("${impala.data.security.events.4769.table.field.is_sensitive_machine}")
 	public String IS_SENSITIVE_MACHINE;
     @Value("${impala.data.security.events.4769.table.partition.type}")
-    private String  impalaSecDataTablePartitionType;
+    public String  impalaSecDataTablePartitionType;
 	
 	private PartitionStrategy partition = PartitionsUtils.getPartitionStrategy(impalaSecDataTablePartitionType);
 	

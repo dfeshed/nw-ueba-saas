@@ -75,9 +75,9 @@ public class VpnEvents implements TableSchema {
 	public String IS_EXECUTIVE_ACCOUNT;
 
     @Value("${impala.data.vpn.table.partition.type}")
-    private String impalaVpnDataTablePartitionType;
+    public String impalaVpnDataTablePartitionType;
 
-	private PartitionStrategy partition = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);;
+	private PartitionStrategy partition = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
 	
 	@Override
 	public String getTableName() {
