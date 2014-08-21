@@ -60,7 +60,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>monthly</value>
+						<value>${impala.data.security.events.4769.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -117,7 +117,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>daily</value>
+						<value>${impala.score.ldapauth_top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>

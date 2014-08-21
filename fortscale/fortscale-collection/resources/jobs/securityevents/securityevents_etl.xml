@@ -85,7 +85,7 @@
 				</entry>
                 <entry>
                     <key>partitionStrategySecEvt4769</key>
-                    <value>monthly</value>
+                    <value>${impala.data.security.events.4769.table.partition.type}</value>
                 </entry>
 				
 				<!--  Login table parameters -->
@@ -123,7 +123,7 @@
 				</entry>
                 <entry>
                     <key>partitionStrategyLoginEvt</key>
-                    <value>daily</value>
+                    <value>${impala.data.security.events.login.table.partition.type}</value>
                 </entry>
 
 			</job-data-map>

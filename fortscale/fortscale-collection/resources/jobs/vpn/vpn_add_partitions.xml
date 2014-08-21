@@ -36,7 +36,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>monthly</value>
+						<value>${impala.data.vpn.table.partition.type}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 35 3 * * ?</cron-expression>
@@ -60,7 +60,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>daily</value>
+						<value>${impala.score.vpn.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -88,7 +88,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>daily</value>
+						<value>${impala.score.vpn_top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -116,7 +116,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>daily</value>
+						<value>${impala.score.vpn.session.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -144,7 +144,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>daily</value>
+						<value>${impala.score.vpn.session.top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>

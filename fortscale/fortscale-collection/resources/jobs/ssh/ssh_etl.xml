@@ -53,7 +53,7 @@
 				</entry>
                 <entry>
                     <key>partitionStrategy</key>
-                    <value>monthly</value>
+                    <value>${impala.data.ssh.table.partition.type}</value>
                 </entry>
 			</job-data-map>
 		</job>

@@ -57,7 +57,7 @@
 				</entry>
                 <entry>
                     <key>partitionStrategy</key>
-                    <value>monthly</value>
+                    <value>${impala.ldapusers.table.partition.type}</value>
                 </entry>
 				<entry>
 					<key>impalaTableName</key>

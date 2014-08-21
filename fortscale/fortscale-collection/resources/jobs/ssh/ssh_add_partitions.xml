@@ -32,7 +32,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>monthly</value>
+						<value>${impala.data.ssh.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -60,7 +60,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>daily</value>
+						<value>${impala.score.ssh.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -88,7 +88,7 @@
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>daily</value>
+						<value>${impala.score.ssh_top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
