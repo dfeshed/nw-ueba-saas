@@ -71,10 +71,10 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
         //Resolve the fields names
         Environment env = SpringService.getInstance().resolve(Environment.class);
-        fields = ImpalaParser.getTableFieldNames(env.getProperty("fortscale.fields"));
+        fields = ImpalaParser.getTableFieldNames(env.getProperty(getConfigString(config,"fortscale.fields")));
 
         //Resolve the partition strategy
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(env.getProperty("fortscale.partition.strategy"));
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(env.getProperty(getConfigString(config,"fortscale.partition.strategy")));
 
 
 		String splitClassName = getConfigString(config, "fortscale.split.strategy");
