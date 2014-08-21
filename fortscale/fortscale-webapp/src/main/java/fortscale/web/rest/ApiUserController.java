@@ -367,10 +367,11 @@ public class ApiUserController extends BaseController{
 			@RequestParam(defaultValue="0") Integer page,
 			@RequestParam(defaultValue="-1") Integer size,
 			@RequestParam(defaultValue="DESC") String orderByDirection,
+			@RequestParam(required=false) Integer minScore,
 			Model model){
 		DataBean<List<FeatureBean>> ret = new DataBean<List<FeatureBean>>();
 		Direction direction = convertStringToDirection(orderByDirection);
-		List<IFeature> attrs = userServiceFacade.getUserAttributesScores(uid, classifierId, Long.parseLong(latestDate), orderBy, direction);
+		List<IFeature> attrs = userServiceFacade.getUserAttributesScores(uid, classifierId, Long.parseLong(latestDate), orderBy, direction, minScore);
 		List<FeatureBean> features = getFeatureBeanList(attrs, page, size);
 		ret.setData(features);
 		ret.setTotal(attrs.size());

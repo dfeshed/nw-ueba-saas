@@ -106,8 +106,8 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	}
 
 	@Override
-	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction) {
-		return userScoreService.getUserAttributesScores(uid, classifierId, timestamp, orderBy, direction);
+	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction, Integer minScore) {
+		return userScoreService.getUserAttributesScores(uid, classifierId, timestamp, orderBy, direction, minScore);
 	}
 
 	@Override

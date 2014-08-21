@@ -1,12 +1,6 @@
 package fortscale.services.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -212,17 +206,29 @@ public class UserScoreServiceImpl implements UserScoreService{
 	}
 
 	@Override
-	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction) {
+	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction, Integer minScore) {
 		Classifier.validateClassifierId(classifierId);
 //		Long timestampepoch = timestamp/1000;
 		AdUserFeaturesExtraction ufe = adUsersFeaturesExtractionRepository.findByClassifierIdAndUserIdAndTimestamp(classifierId, uid, new Date(timestamp));
 		if(ufe == null || ufe.getAttributes() == null){
 			return Collections.emptyList();
 		}
-		
-		Collections.sort(ufe.getAttributes(), getUserFeatureComparator(orderBy, direction));
-		List<IFeature> ret = ufe.getAttributes();
-		
+		List<IFeature> ret = new ArrayList<>();
+
+		if (minScore != null) {
+			// filter attributes by minimum feature score
+			for (IFeature attribute : ufe.getAttributes()) {
+				if (attribute.getFeatureScore() >= minScore) {
+					ret.add(attribute);
+				}
+			}
+		} else {
+			// use all attributes
+			ret.addAll(ufe.getAttributes());
+		}
+
+		Collections.sort(ret, getUserFeatureComparator(orderBy, direction));
+
 		return ret;
 	}
 	
