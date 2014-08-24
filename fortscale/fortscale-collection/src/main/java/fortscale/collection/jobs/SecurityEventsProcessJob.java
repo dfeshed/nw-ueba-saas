@@ -7,6 +7,7 @@ import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
@@ -77,7 +78,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + impalaTable);
 
             String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy"+ impalaTable);
-            partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
+            handler.partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
 			
 			String streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic" + impalaTable, "");
 			if (StringUtils.isNotEmpty(streamingTopic))
@@ -144,7 +145,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		for (EventTableHandlers handler : eventToTableHandlerMap.values()) {
 			// create partition strategy
 			logger.debug("opening hdfs file {} for append", handler.hadoopPath);
-			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(handler.hadoopPath, partitionStrategy, new DailyFileSplitStrategy());
+			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(handler.hadoopPath,handler.partitionStrategy, new DailyFileSplitStrategy());
 			handler.appender = new BufferedHDFSWriter(writer, handler.hadoopFilename, maxBufferSize);
 		}
 	}
@@ -261,6 +262,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public BufferedHDFSWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
 		public KafkaEventsWriter streamWriter;
+        public PartitionStrategy partitionStrategy;
 	}
 	
 }
