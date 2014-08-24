@@ -26,7 +26,7 @@ public interface UserServiceFacade {
 	
 	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp); 
 	
-	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction);
+	public List<IFeature> getUserAttributesScores(String uid, String classifierId, Long timestamp, String orderBy, Direction direction, Integer minScore);
 	
 	public Map<User,List<IFeature>> getFollowedUserAttributesScores(String classifierId, Long timestamp, String orderBy, Direction direction); 
 	
