@@ -1,0 +1,2 @@
+2014-08-19 15:49:50,231 WARN fortscale.streaming.model.prevalance.field.CumulativeAverageFieldModel: given field value null (type=null) is not valid for average 
+2014-08-24 09:46:20,046 WARN fortscale.streaming.model.prevalance.field.CumulativeAverageFieldModel: given field value null (type=null) is not valid for average 

@@ -21,7 +21,7 @@
 				</entry>
 				<entry>
 					<key>tableName</key>
-					<value>${impala.total.scores.table.nam}</value>
+					<value>${impala.total.scores.table.name}</value>
 				</entry>
 				<entry>
 						<key>partitionStrategy</key>

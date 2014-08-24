@@ -6,6 +6,7 @@ import fortscale.streaming.filters.MessageFilter;
 import fortscale.streaming.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.HdfsService;
+import fortscale.streaming.service.SpringService;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
@@ -19,7 +20,6 @@ import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 import java.util.LinkedList;
@@ -38,8 +38,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	private static final String storeNamePrefix = "hdfs-write-";
 
-    @Autowired
-    Environment env;
+
 
 	private String timestampField;
 	private String usernameField;
@@ -55,7 +54,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
     private PartitionStrategy partitionStrategy;
 
 
-	/** reads task configuration from job config and initialize hdfs appender */
+    /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -73,7 +72,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 
         //Resolve the fields names
-        //Environment env = SpringService.getInstance().resolve(Environment.class);
+        Environment env =  SpringService.getInstance().resolve(Environment.class);
         fields = ImpalaParser.getTableFieldNames(env.getProperty(getConfigString(config,"fortscale.fields")));
 
         //Resolve the partition strategy
