@@ -76,7 +76,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
 			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + impalaTable);
 
-            String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
+            String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy"+ impalaTable);
             partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
 			
 			String streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic" + impalaTable, "");
