@@ -150,7 +150,7 @@ public class AdUserProcessJob extends AdProcessJob {
 		String[] filtersList = filtersStr.split("\\s*;\\s*");
 		ArrayList<Pair<String, UsersFilterEnum>> filtersPriorityList = new ArrayList<Pair<String, UsersFilterEnum>> ();
 		for(String filter : filtersList){
-			String regex = "\"(.*)\"\\s*:\\s*\"(.*)\"";
+			String regex = "\\s*\"(.*)\"\\s*:\\s*\"(.*)\"\\s*";
 			Pattern pattern = Pattern.compile(regex);
 			Matcher m = pattern.matcher(filter);
 			if(m.matches() == false){
