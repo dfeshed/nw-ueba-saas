@@ -2,8 +2,10 @@ package fortscale.collection.usersfiltering.service.impl;
 
 import java.util.HashSet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import fortscale.collection.usersfiltering.service.SupportedUsersService;
@@ -14,14 +16,20 @@ public class SupportedUsersServiceImpl implements SupportedUsersService, Initial
 	private HashSet<String> supportedUsersGUID;
 	@Autowired
 	private UserRepository userRepository;
+	@Value("${users.filter.prioritylist:}")
+    private String ouUsersFilter;
 	
 	@Override
 	public void afterPropertiesSet()
 		throws Exception {
-		if(userRepository.count() != 0){
-			supportedUsersGUID = userRepository.getUsersGUID();
-		}else{
-			supportedUsersGUID = new HashSet<String>();
+
+		if (!StringUtils.isEmpty(ouUsersFilter)) {
+			if (userRepository.count() != 0) {
+				supportedUsersGUID = userRepository.getUsersGUID();
+			}
+			else {
+				supportedUsersGUID = new HashSet<String>();
+			}
 		}
 	}
 	public boolean isSupportedUser(String userGUID){
