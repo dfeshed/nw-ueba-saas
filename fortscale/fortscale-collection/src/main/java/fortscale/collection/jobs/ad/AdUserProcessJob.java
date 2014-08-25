@@ -13,6 +13,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -64,9 +66,12 @@ public class AdUserProcessJob extends AdProcessJob {
 	
 	private boolean jobFirstRun;
 	
+	private static Logger logger = LoggerFactory.getLogger(AdUserProcessJob.class);
+	
 	@Override
 	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
 		super.init(jobExecutionContext);
+		
 		converter = new RecordToBeanItemConverter<>(getOutputFields());
 		if(!StringUtils.isEmpty(ouUsersFilter) && supportedUsersService.getSupportedUsersNumber() == 0){
 			jobFirstRun = true;
@@ -120,6 +125,10 @@ public class AdUserProcessJob extends AdProcessJob {
 			}
 			else { // Group filter
 				AdGroup adGroup = adgroupRepository.findByDistinguishedName(filter.getLeft());
+				if(adGroup == null){
+					logger.error("Users group filter does not exist : {}",filter.getLeft());
+					continue;
+				}
 				String members = adGroup.getMember();
 				List<String> membersList = Arrays.asList(members.split("\\s*;\\s*"));
 				List<AdUser> users = adUserRepository.findByDnUsersIn(membersList);
