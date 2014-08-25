@@ -28,7 +28,6 @@ public class AdFetchJob extends FortscaleJob {
 	private String filenameFormat;
 	private String outputPath;
 	private String ldapSearchShellScript;
-    private String ouUsersFilter;
 
 	
 	
@@ -43,7 +42,6 @@ public class AdFetchJob extends FortscaleJob {
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");	
 		ldapSearchShellScript = jobDataMapExtension.getJobDataMapStringValue(map, "ldapSearchShellScript");
-        ouUsersFilter = jobDataMapExtension.getJobDataMapStringValue(map, "ouFilter", null);
 
 	}
 
@@ -93,13 +91,9 @@ public class AdFetchJob extends FortscaleJob {
 		
 		//TODO: Handle errors
         Process pr = null;
-        if(ouUsersFilter == null){
-            pr =  runCmd(null, ldapSearchShellScript, outputTempFile.getAbsolutePath());
-        }else{
-            pr =  runCmd(null, ldapSearchShellScript, outputTempFile.getAbsolutePath(), ouUsersFilter);
-        }
+        pr =  runCmd(null, ldapSearchShellScript, outputTempFile.getAbsolutePath());
 
-		if(pr == null){
+        if(pr == null){
 			return false;
 		}
 		

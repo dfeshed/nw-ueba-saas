@@ -26,6 +26,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.mongodb.BasicDBObjectBuilder;
 
+import fortscale.domain.ad.AdUser;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
@@ -393,6 +394,16 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
  		return (wrapper==null)? null : wrapper.getId();
 	}
 	
+	public HashSet<String> getUsersGUID(){
+		Query query = new Query();
+		query.fields().include(User.getAdInfoField(AdUser.objectGUIDField)).exclude(User.ID_FIELD);
+		HashSet<String> res = new HashSet<String>();
+		for(UserObjectGUIDWrapper userGUID : mongoTemplate.find(query, UserObjectGUIDWrapper.class, User.collectionName)){
+			res.add(userGUID.getObjectGUID());
+		}
+		return res;
+	}
+	
 	/**
 	 * Since spring data mongodb does not support each on the addToSet update 
 	 * operator we create a custom bson command that does that
@@ -437,4 +448,22 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			this.id = id;
 		}
 	}
+	
+	public class UserObjectGUIDWrapper {
+		private String objectGUID;
+
+		public String getObjectGUID() {
+			return objectGUID;
+		}
+
+		public void setObjectGUID(String objectGUID) {
+			this.objectGUID = objectGUID;
+		}
+
+
+		public UserObjectGUIDWrapper(String objectGUID) {
+			this.objectGUID = objectGUID;
+		}
+	}
+	
 }
