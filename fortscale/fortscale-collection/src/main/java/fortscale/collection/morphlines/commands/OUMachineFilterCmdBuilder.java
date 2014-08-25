@@ -43,7 +43,7 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
     			.getLogger(FilterOUMachine.class);
 		@Autowired
 		private FilterMachinesService service;
-	    @Value("${machines.ou.filter:}")
+	    @Value("${machines.ou.filters:}")
 	    private String ouName; 
         private String hostnameField;
         private String regex;
