@@ -1,14 +1,12 @@
 package fortscale.web.rest;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
 import fortscale.services.UserServiceFacade;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +42,11 @@ public class ApiController {
 	private UserServiceFacade userServiceFacade;
     
 	private Cache<String, DataBean<List<Map<String, Object>>>> investigateQueryCache;
+
+	/**
+	 * Limit for results of 1 query in the cache
+	 */
+	protected static final Integer CACHE_LIMIT = 200;
 	
 	public ApiController() {
 		// initialize investigate caching 
@@ -93,12 +96,32 @@ public class ApiController {
 	public DataBean<List<Map<String, Object>>> investigate(@RequestParam(required=true) String query,
 			@RequestParam(required=false) String countQuery,
 			@RequestParam(defaultValue="false") boolean useCache,
+			@RequestParam(required=false) Integer page, // starting from 1
+			@RequestParam(defaultValue="20") Integer pageSize,
 			Model model){
+
+		// Add offset and limit according to page
+		Integer offsetInLimit = null;
+		if (page != null) {
+			if (page < 1) throw new InvalidValueException("Page number must be greater than 0");
+			page--; // move pager to start from 0
+			int location = page * pageSize;
+			offsetInLimit = (location % CACHE_LIMIT);
+			int offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
+			query += " LIMIT " + CACHE_LIMIT + " OFFSET " + offsetInQuery;
+		}
+
 		// check if the query is in the cache before returning results
 		if (useCache) {
 			DataBean<List<Map<String, Object>>> cachedResults = investigateQueryCache.getIfPresent(query);
-			if (cachedResults!=null)
-				return cachedResults;
+			if (cachedResults!=null) {
+				if (page != null) {
+					// take only relevant page from cache
+					return createDataForPage(pageSize, offsetInLimit, cachedResults);
+				} else {
+					return cachedResults;
+				}
+			}
 		}
 		
 		// perform the query
@@ -110,15 +133,43 @@ public class ApiController {
 		}
 		retBean.setData(resultsMap);
 		retBean.setTotal(total);
+		DataBean<List<Map<String, Object>>> retBeanForPage = retBean;
+
+		// take only relevant page from results
+		if (page != null) {
+			retBeanForPage = createDataForPage(pageSize, offsetInLimit, retBean);
+		}
 		
 		// cache results if needed, store results with up to 200 rows in the cache to protect memory
-		if (useCache && resultsMap.size() < 200)
+		if (useCache && resultsMap.size() <= CACHE_LIMIT) // Query real size is 200.
 			investigateQueryCache.put(query, retBean);
 			
+		return retBeanForPage;
+	}
+
+	/**
+	 *
+	 * @param pageSize		Page size
+	 * @param offsetInLimit	The offset of the results (from the cached results)
+	 * @param cachedResults	The cached results
+	 * @return Results for the specific page
+	 */
+	private DataBean<List<Map<String, Object>>> createDataForPage(
+					Integer pageSize, Integer offsetInLimit,
+					DataBean<List<Map<String, Object>>> cachedResults) {
+
+		DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
+		if (offsetInLimit < cachedResults.getData().size()) {
+			retBean.setData(cachedResults.getData().subList(offsetInLimit, Math.min(offsetInLimit + pageSize, cachedResults.getData().size())));
+			retBean.setTotal(cachedResults.getTotal());
+		} else {
+			retBean.setData(Collections.<Map<String,Object>>emptyList());
+			retBean.setTotal(0);
+		}
 		return retBean;
 	}
 
-    @RequestMapping(value="/getLatestRuntime", method=RequestMethod.GET)
+	@RequestMapping(value="/getLatestRuntime", method=RequestMethod.GET)
     @ResponseBody
     @LogException
     public Long getLatestRuntime(@RequestParam(required=true) String tableName,	Model model){
