@@ -3,7 +3,6 @@ package fortscale.domain.ad.dao;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -48,25 +47,25 @@ class AdUserRepositoryImpl extends AdObjectRepositoryImpl implements AdUserRepos
 //	}
 	
 	public List<AdUser> findAdUsersBelongtoOU(String ou){
-		Date date = mongoDbRepositoryUtil.getLatestTimeStampDate(AdUser.runTimeField, AdUser.COLLECTION_NAME);
+		String date = mongoDbRepositoryUtil.getLatestTimeStampString(AdUser.runTimeField, AdUser.COLLECTION_NAME);
 		Query query = new Query(where(AdUser.dnField).regex(".*"+ou).andOperator(where(AdUser.runTimeField).is(date)));
 		return mongoTemplate.find(query, AdUser.class, AdUser.COLLECTION_NAME);
 	}
 	
 	public List<AdUser> findByDnUsersIn(List<String> usersDn) {
-		Date date = mongoDbRepositoryUtil.getLatestTimeStampDate(AdUser.runTimeField, AdUser.COLLECTION_NAME);
+		String latestRuntime = mongoDbRepositoryUtil.getLatestTimeStampString(AdUser.runTimeField, AdUser.COLLECTION_NAME);
 		int chunksNumber = (int) Math.ceil((float) usersDn.size() / inOperatorSizeLimit);
 		List<AdUser> users = new ArrayList<AdUser>();
 		for (int i = 0; i < chunksNumber - 1; i++) {
-			users.addAll(findByDnAdUsersInChunk((usersDn.subList(inOperatorSizeLimit * i, inOperatorSizeLimit * (i + 1))), date));
+			users.addAll(findByDnAdUsersInChunk((usersDn.subList(inOperatorSizeLimit * i, inOperatorSizeLimit * (i + 1))), latestRuntime));
 
 		}
-		users.addAll(findByDnAdUsersInChunk(usersDn.subList(inOperatorSizeLimit * (chunksNumber - 1), usersDn.size()), date));
+		users.addAll(findByDnAdUsersInChunk(usersDn.subList(inOperatorSizeLimit * (chunksNumber - 1), usersDn.size()), latestRuntime));
 		return users;
 	}
 	
-	private List<AdUser> findByDnAdUsersInChunk(List<String> usersDn, Date date){
-		Query query = new Query(where(AdUser.dnField).in(usersDn).andOperator(where(AdUser.runTimeField).is(date)));
+	private List<AdUser> findByDnAdUsersInChunk(List<String> usersDn, String time){
+		Query query = new Query(where(AdUser.dnField).in(usersDn).andOperator(where(AdUser.runTimeField).is(time)));
 		return mongoTemplate.find(query, AdUser.class, AdUser.COLLECTION_NAME);
 	}
 }
