@@ -32,6 +32,11 @@ public class FilterMachinesServiceImpl implements FilterMachinesService,
 	public void afterPropertiesSet() throws Exception {
 		
 		ouFiltersList = ParsingUsersMachinesFiltering.getFiltersList(ouFilters);
+		for(Pair<String, UsersMachinesFilterEnum> filter : ouFiltersList){
+			if (!filter.getRight().equals(UsersMachinesFilterEnum.OU)){
+				throw new IllegalArgumentException("Machines filter only supports OUs");
+			}
+		}
 		OUMachinesCache = CacheBuilder.newBuilder().maximumSize(100000)
 				.expireAfterWrite(1, TimeUnit.HOURS)
 				.build(new CacheLoader<String, Boolean>() {
