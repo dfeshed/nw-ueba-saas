@@ -1,14 +1,7 @@
 package fortscale.collection.morphlines.commands;
 
 
-import static fortscale.collection.morphlines.RecordExtensions.getLongValue;
-import static fortscale.utils.TimestampUtils.convertToSeconds;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
+import com.typesafe.config.Config;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -16,7 +9,13 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Notifications;
 
-import com.typesafe.config.Config;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import static fortscale.collection.morphlines.RecordExtensions.getLongValue;
+import static fortscale.utils.TimestampUtils.convertToSeconds;
 
 
 /**
@@ -94,11 +93,13 @@ public class EventsJoinerBuilder implements CommandBuilder {
 					for (String field : mergeFields) {
 						@SuppressWarnings("rawtypes")
 						List values = previousEvent.get(field);
-						// add all values to the input record
-						inputRecord.removeAll(field);
-						for (Object value : values) {
-							inputRecord.put(field, value);
-						}
+						// add all values to the input record (only values that already exist at the previous record )
+                        if (values.size() > 0) {
+                            inputRecord.removeAll(field);
+                            for (Object value : values) {
+                                inputRecord.put(field, value);
+                            }
+                        }
 					}
 	
 					// continue processing in the command chain
