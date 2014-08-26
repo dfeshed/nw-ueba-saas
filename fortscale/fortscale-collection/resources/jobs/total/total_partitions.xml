@@ -21,11 +21,11 @@
 				</entry>
 				<entry>
 					<key>tableName</key>
-					<value>totalscore</value>
+					<value>${impala.total.scores.table.name}</value>
 				</entry>
 				<entry>
 						<key>partitionStrategy</key>
-						<value>runtime</value>
+						<value>${impala.total.scores.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>

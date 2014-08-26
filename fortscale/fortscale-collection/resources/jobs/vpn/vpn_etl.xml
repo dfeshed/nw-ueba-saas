@@ -51,6 +51,10 @@
 					<key>streamingTopic</key>
 					<value>${kafka.vpn.struct.topic}</value>
 				</entry>
+                <entry>
+                    <key>partitionStrategy</key>
+                    <value>${impala.data.vpn.table.partition.type}</value>
+                </entry>
 			</job-data-map>
 			
 		</job>

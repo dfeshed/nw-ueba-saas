@@ -1,11 +1,17 @@
 package fortscale.collection.jobs.ad;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Date;
-
+import fortscale.collection.io.BufferedLineReader;
+import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.morphlines.MorphlinesItemsProcessor;
+import fortscale.collection.morphlines.RecordToStringItemsProcessor;
+import fortscale.monitor.domain.JobDataReceived;
+import fortscale.utils.hdfs.HDFSPartitionsWriter;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
+import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
+import fortscale.utils.impala.ImpalaClient;
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.logging.Logger;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -14,17 +20,11 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import fortscale.monitor.domain.JobDataReceived;
-import fortscale.utils.hdfs.HDFSPartitionsWriter;
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
-import fortscale.collection.io.BufferedLineReader;
-import fortscale.collection.jobs.FortscaleJob;
-import fortscale.collection.morphlines.MorphlinesItemsProcessor;
-import fortscale.collection.morphlines.RecordToStringItemsProcessor;
-import fortscale.utils.impala.ImpalaClient;
-import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.logging.Logger;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Date;
 
 @DisallowConcurrentExecution
 public abstract class AdProcessJob extends FortscaleJob {
@@ -59,6 +59,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 	protected String hadoopDirPath;
 	private String filenameFormat;
 	protected String impalaTableName;
+    protected String partitionType;
+    protected PartitionStrategy partitionStrategy;
 	
 	String[] outputFields;
 
@@ -75,7 +77,10 @@ public abstract class AdProcessJob extends FortscaleJob {
 		hadoopDirPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopDirPath");
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
-		
+        partitionType = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
+
+        //create the appropriate  partition strategy
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
 
 		// build record to items processor
 		outputFields = ImpalaParser.getTableFieldNamesAsArray(jobDataMapExtension.getJobDataMapStringValue(map, "outputFields"));
@@ -262,7 +267,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		try {
 			logger.debug("opening hdfs file {} for append", hadoopDirPath);
 
-			appender = new HDFSPartitionsWriter(hadoopDirPath, new MonthlyPartitionStrategy(), new DefaultFileSplitStrategy());
+			appender = new HDFSPartitionsWriter(hadoopDirPath, partitionStrategy, new DefaultFileSplitStrategy());
 			appender.open(hadoopFilename);
 
 		} catch (IOException e) {

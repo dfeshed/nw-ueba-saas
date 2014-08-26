@@ -51,6 +51,10 @@
 					<key>streamingTopic</key>
 					<value>${kafka.ssh.struct.topic}</value>
 				</entry>
+                <entry>
+                    <key>partitionStrategy</key>
+                    <value>${impala.data.ssh.table.partition.type}</value>
+                </entry>
 			</job-data-map>
 		</job>
 		

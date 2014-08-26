@@ -1,13 +1,17 @@
 package fortscale.collection.jobs;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import fortscale.collection.io.KafkaEventsWriter;
+import fortscale.collection.morphlines.MorphlinesItemsProcessor;
+import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.collection.morphlines.RecordToStringItemsProcessor;
+import fortscale.services.fe.Classifier;
+import fortscale.utils.hdfs.BufferedHDFSWriter;
+import fortscale.utils.hdfs.HDFSPartitionsWriter;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
+import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
@@ -16,17 +20,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
-import fortscale.collection.io.KafkaEventsWriter;
-import fortscale.collection.morphlines.MorphlinesItemsProcessor;
-import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.collection.morphlines.RecordToStringItemsProcessor;
-import fortscale.services.fe.Classifier;
-import fortscale.utils.hdfs.BufferedHDFSWriter;
-import fortscale.utils.hdfs.HDFSPartitionsWriter;
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
-import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.logging.Logger;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Scheduled job class for security events log
@@ -80,6 +76,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + impalaTable);
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
 			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + impalaTable);
+
+            String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy"+ impalaTable);
+            handler.partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
 			
 			String streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic" + impalaTable, "");
 			if (StringUtils.isNotEmpty(streamingTopic))
@@ -146,7 +145,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		for (EventTableHandlers handler : eventToTableHandlerMap.values()) {
 			// create partition strategy
 			logger.debug("opening hdfs file {} for append", handler.hadoopPath);
-			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(handler.hadoopPath, new MonthlyPartitionStrategy(), new DailyFileSplitStrategy()); 
+			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(handler.hadoopPath,handler.partitionStrategy, new DailyFileSplitStrategy());
 			handler.appender = new BufferedHDFSWriter(writer, handler.hadoopFilename, maxBufferSize);
 		}
 	}
@@ -263,6 +262,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public BufferedHDFSWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
 		public KafkaEventsWriter streamWriter;
+        public PartitionStrategy partitionStrategy;
 	}
 	
 }

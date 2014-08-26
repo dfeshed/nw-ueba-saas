@@ -1,7 +1,8 @@
 package fortscale.collection.hadoop;
 
-import java.io.IOException;
-
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
+import fortscale.utils.impala.ImpalaClient;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.springframework.beans.factory.InitializingBean;
@@ -9,11 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionsUtils;
-import fortscale.utils.hdfs.partition.RuntimePartitionStrategy;
-import fortscale.utils.impala.ImpalaClient;
+import java.io.IOException;
 
 @Component
 public class HadoopInit implements InitializingBean{
@@ -44,6 +41,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaSecLoginTableName;
 	@Value("${hdfs.user.data.security.events.login.path}")
 	private String impalaSecLoginDirectory;
+    @Value("${impala.data.security.events.login.table.partition.type}")
+    private String  impalaSecLoginTablePartitionType;
 	
 	//Security Events Data table
 	@Value("${impala.data.security.events.4769.table.fields}")
@@ -54,6 +53,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaSecDataTableName;
 	@Value("${hdfs.user.data.security.events.4769.path}")
 	private String impalaSecDataDirectory;
+    @Value("${impala.data.security.events.4769.table.partition.type}")
+    private String  impalaSecDataTablePartitionType;
 	
 	//Security Events Scoring table
 	@Value("${impala.score.ldapauth.table.fields}")
@@ -88,6 +89,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaLoginScoringTableFields;
 	@Value("${hdfs.user.processeddata.security.login.path}")
 	private String impalaLoginScoringDirectory;
+    @Value("${impala.score.login.table.partition.type}")
+    private String impalaSecLoginScoringTablePartitionType;
 	
 	//VPN Data table
 	@Value("${impala.data.vpn.table.fields}")
@@ -134,6 +137,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaVpnSessionScoringTableName;
 	@Value("${hdfs.user.processeddata.vpnscores.session.path}")
 	private String impalaVpnSessionScoringDirectory;
+    @Value("${impala.score.vpn.session.table.partition.type}")
+    private String impalaVpnSessionScoringTablePartitionType;
 	
 	//Top VPN Session Scoring table
 	@Value("${impala.score.vpn.session.top.table.fields}")
@@ -144,6 +149,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaTopVpnSessionScoringTableName;
 	@Value("${hdfs.user.processeddata.vpnscores.session.top.path}")
 	private String impalaTopVpnSessionScoringDirectory;
+    @Value("${impala.score.vpn.session.top.table.partition.type}")
+    private String impalaTopVpnSessionScoringTablePartitionType;
 	
 	//SSH Data table
 	@Value("${impala.data.ssh.table.fields}")
@@ -154,6 +161,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaSshDataTableName;
 	@Value("${hdfs.user.data.ssh.path}")
 	private String impalaSshDataDirectory;
+    @Value("${impala.data.ssh.table.partition.type}")
+    private String impalaSshDataTablePartitionType;
 	
 	//SSH Scoring table
 	@Value("${impala.score.ssh.table.fields}")
@@ -188,6 +197,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaTotalScoringTableName;
 	@Value("${hdfs.user.processeddata.totalscore.path}")
 	private String impalaTotalScoringDirectory;
+    @Value("${impala.total.scores.table.partition.type}")
+    private String impalaTotalScoringTablePartitionType;
 	
 	
 	//AD Computers table
@@ -199,6 +210,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaAdComputerTableName;
 	@Value("${hdfs.user.data.ldap.computers.path}")
 	private String impalaAdComputerDirectory;
+    @Value("${impala.ldapcomputers.table.partition.type}")
+    private String impalaADComputerDataTablePartitionType;
 	
 	//AD OUs table
 	@Value("${impala.ldapous.table.fields}")
@@ -209,6 +222,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaAdOUTableName;
 	@Value("${hdfs.user.data.ldap.ous.path}")
 	private String impalaAdOUDirectory;
+    @Value("${impala.ldapous.table.partition.type}")
+    private String impalaADOUsDataTablePartitionType;
 	
 	//AD Group table
 	@Value("${impala.ldapgroups.table.fields}")
@@ -219,6 +234,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaAdGroupTableName;
 	@Value("${hdfs.user.data.ldap.groups.path}")
 	private String impalaAdGroupDirectory;
+    @Value("${impala.ldapgroups.table.partition.type}")
+    private String impalaADGroupsDataTablePartitionType;
 	
 	//AD User table
 	@Value("${impala.ldapusers.table.fields}")
@@ -229,6 +246,8 @@ public class HadoopInit implements InitializingBean{
 	private String impalaAdUserTableName;
 	@Value("${hdfs.user.data.ldap.users.path}")
 	private String impalaAdUserDirectory;
+    @Value("${impala.ldapusers.table.partition.type}")
+    private String impalaADUsersDataTablePartitionType;
 	
 	//Group Membership Score table
 	@Value("${impala.ldap.group.membership.scores.table.fields}")
@@ -243,17 +262,18 @@ public class HadoopInit implements InitializingBean{
 	private String impalaGroupMembershipScoringTablePartitionType;
 		
 	public void createImpalaTables() throws IOException{
-		MonthlyPartitionStrategy monthlyPartitionStrategy = new MonthlyPartitionStrategy();
-		RuntimePartitionStrategy runtimePartitionStrategy = new RuntimePartitionStrategy();
+
 		PartitionStrategy partitionStrategy;
 		//Users table
 		createTable(impalaUserTableName, impalaUserFields, null, impalaUserTableDelimiter, impalaUsersDirectory);
 		
 		//Security Events Data table
-		createTable(impalaSecDataTableName, impalaSecDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSecDataTableDelimiter, impalaSecDataDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecDataTablePartitionType);
+		createTable(impalaSecDataTableName, impalaSecDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecDataTableDelimiter, impalaSecDataDirectory);
 		
 		//Security Events Login table
-		createTable(impalaSecLoginTableName, impalaSecLoginTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSecLoginTableDelimiter, impalaSecLoginDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecLoginTablePartitionType);
+		createTable(impalaSecLoginTableName, impalaSecLoginTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecLoginTableDelimiter, impalaSecLoginDirectory);
 		
 		//Security Events Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecScoringTablePartitionType);
@@ -264,7 +284,8 @@ public class HadoopInit implements InitializingBean{
 		createTable(impalaSecTopScoringTableName, impalaSecTopScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecTopScoringTableDelimiter, impalaSecTopScoringDirectory);
 		
 		// Security Events Login Scoring table
-		createTable(impalaLoginScoringTableName, impalaLoginScoringTableFields, runtimePartitionStrategy.getTablePartitionDefinition(), impalaLoginScoringTableDelimiter, impalaLoginScoringDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecLoginScoringTablePartitionType);
+		createTable(impalaLoginScoringTableName, impalaLoginScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaLoginScoringTableDelimiter, impalaLoginScoringDirectory);
 				
 		//VPN Data table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
@@ -279,13 +300,16 @@ public class HadoopInit implements InitializingBean{
 		createTable(impalaTopVpnScoringTableName, impalaTopVpnScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopVpnScoringTableDelimiter, impalaTopVpnScoringDirectory);
 
 		//VPN Session Scoring table
-		createTable(impalaVpnSessionScoringTableName, impalaVpnSessionScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaVpnSessionScoringTableDelimiter, impalaVpnSessionScoringDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnSessionScoringTablePartitionType);
+		createTable(impalaVpnSessionScoringTableName, impalaVpnSessionScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaVpnSessionScoringTableDelimiter, impalaVpnSessionScoringDirectory);
 
 		//Top VPN Session Scoring table
-		createTable(impalaTopVpnSessionScoringTableName, impalaTopVpnSessionScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaTopVpnSessionScoringTableDelimiter, impalaTopVpnSessionScoringDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopVpnSessionScoringTablePartitionType);
+		createTable(impalaTopVpnSessionScoringTableName, impalaTopVpnSessionScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopVpnSessionScoringTableDelimiter, impalaTopVpnSessionScoringDirectory);
 		
 		//SSH Data table
-		createTable(impalaSshDataTableName, impalaSshDataTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaSshDataTableDelimiter, impalaSshDataDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSshDataTablePartitionType);
+		createTable(impalaSshDataTableName, impalaSshDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSshDataTableDelimiter, impalaSshDataDirectory);
 		
 		//SSH Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSshScoringTablePartitionType);
@@ -296,19 +320,24 @@ public class HadoopInit implements InitializingBean{
 		createTable(impalaTopSshScoringTableName, impalaTopSshScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopSshScoringTableDelimiter, impalaTopSshScoringDirectory);
 		
 		//Total Scoring table
-		createTable(impalaTotalScoringTableName, impalaTotalScoringTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaTotalScoringTableDelimiter, impalaTotalScoringDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTotalScoringTablePartitionType);
+		createTable(impalaTotalScoringTableName, impalaTotalScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTotalScoringTableDelimiter, impalaTotalScoringDirectory);
 		
 		//AD Computer table
-		createTable(impalaAdComputerTableName, impalaAdComputerTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaAdComputerTableDelimiter, impalaAdComputerDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaADComputerDataTablePartitionType);
+        createTable(impalaAdComputerTableName, impalaAdComputerTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAdComputerTableDelimiter, impalaAdComputerDirectory);
 
 		//AD OU table
-		createTable(impalaAdOUTableName, impalaAdOUTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaAdOUTableDelimiter, impalaAdOUDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaADOUsDataTablePartitionType);
+		createTable(impalaAdOUTableName, impalaAdOUTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAdOUTableDelimiter, impalaAdOUDirectory);
 				
 		//AD Group table
-		createTable(impalaAdGroupTableName, impalaAdGroupTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaAdGroupTableDelimiter, impalaAdGroupDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaADGroupsDataTablePartitionType);
+		createTable(impalaAdGroupTableName, impalaAdGroupTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAdGroupTableDelimiter, impalaAdGroupDirectory);
 		
 		//AD User table
-		createTable(impalaAdUserTableName, impalaAdUserTableFields, monthlyPartitionStrategy.getTablePartitionDefinition(), impalaAdUserTableDelimiter, impalaAdUserDirectory);
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaADUsersDataTablePartitionType);
+		createTable(impalaAdUserTableName, impalaAdUserTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAdUserTableDelimiter, impalaAdUserDirectory);
 				
 		//Group Membership Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);

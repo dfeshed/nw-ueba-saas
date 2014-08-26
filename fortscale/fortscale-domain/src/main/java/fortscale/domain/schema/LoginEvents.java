@@ -1,10 +1,9 @@
 package fortscale.domain.schema;
 
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
 
 
 /**
@@ -15,7 +14,7 @@ public class LoginEvents implements TableSchema {
 
 	@Value("${impala.data.security.events.login.table.name}")
 	private String tableName;
-	
+
 	
 	@Value("${impala.data.security.events.login.table.field.timeGeneratedRaw}")
 	public String TIMEGENERATEDRAW;
@@ -61,9 +60,10 @@ public class LoginEvents implements TableSchema {
 	public String IS_NAT;
 	@Value("${impala.data.security.events.login.table.field.src_class}")
 	public String SRC_CLASS;
-	
-	
-	private PartitionStrategy partition = new MonthlyPartitionStrategy();
+    @Value("${impala.data.security.events.login.table.partition.type}")
+    public String  impalaSecLoginTablePartitionType;
+
+	private PartitionStrategy partition;
 	
 	@Override
 	public String getTableName() {
@@ -72,6 +72,9 @@ public class LoginEvents implements TableSchema {
 
 	@Override
 	public PartitionStrategy getPartitionStrategy() {
+        if (partition == null)
+            partition = PartitionsUtils.getPartitionStrategy(impalaSecLoginTablePartitionType);
+
 		return partition;
 	}
 

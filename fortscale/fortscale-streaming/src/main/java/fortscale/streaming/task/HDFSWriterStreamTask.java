@@ -1,36 +1,34 @@
 package fortscale.streaming.task;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.streaming.ConfigUtils.getConfigStringList;
-import static fortscale.utils.ConversionUtils.convertToLong;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.LinkedList;
-import java.util.List;
-
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
-import org.apache.samza.config.Config;
-import org.apache.samza.metrics.Counter;
-import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
-import org.apache.samza.task.TaskCoordinator.RequestScope;
-
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.filters.MessageFilter;
 import fortscale.streaming.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.HdfsService;
+import fortscale.streaming.service.SpringService;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
+import fortscale.utils.impala.ImpalaParser;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
+import org.apache.samza.storage.kv.KeyValueStore;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.*;
+import org.apache.samza.task.TaskCoordinator.RequestScope;
+import org.springframework.core.env.Environment;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.utils.ConversionUtils.convertToLong;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
  * Stream tasks that receives events and write them to hdfs using a partitioned
@@ -39,6 +37,8 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 public class HDFSWriterStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
 	private static final String storeNamePrefix = "hdfs-write-";
+
+
 
 	private String timestampField;
 	private String usernameField;
@@ -51,8 +51,10 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private String storeName;
 	private BarrierService barrier;
 	private List<MessageFilter> filters = new LinkedList<MessageFilter>();
+    private PartitionStrategy partitionStrategy;
 
-	/** reads task configuration from job config and initialize hdfs appender */
+
+    /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -62,14 +64,21 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		separator = config.get("fortscale.separator", ",");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		usernameField = getConfigString(config, "fortscale.username.field");
-		fields = getConfigStringList(config, "fortscale.fields");
+
 		List<String> discriminatorsFields = getConfigStringList(config, "fortscale.discriminator.fields");
 		tableName = getConfigString(config, "fortscale.table.name");
 		int eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
 		storeName = storeNamePrefix + tableName;
 
-		String partitionClassName = getConfigString(config, "fortscale.partition.strategy");
-		PartitionStrategy partitionStrategy = (PartitionStrategy) Class.forName(partitionClassName).newInstance();
+
+        //Resolve the fields names
+        Environment env =  SpringService.getInstance().resolve(Environment.class);
+        fields = ImpalaParser.getTableFieldNames(env.getProperty(getConfigString(config,"fortscale.fields")));
+
+        //Resolve the partition strategy
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(env.getProperty(getConfigString(config,"fortscale.partition.strategy")));
+
+
 		String splitClassName = getConfigString(config, "fortscale.split.strategy");
 		FileSplitStrategy splitStrategy = (FileSplitStrategy) Class.forName(splitClassName).newInstance();
 

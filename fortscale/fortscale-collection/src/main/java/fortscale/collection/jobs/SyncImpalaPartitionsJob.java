@@ -1,8 +1,8 @@
 package fortscale.collection.jobs;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import fortscale.utils.hdfs.partition.*;
+import fortscale.utils.impala.ImpalaClient;
+import fortscale.utils.logging.Logger;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -16,11 +16,8 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
-import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
-import fortscale.utils.hdfs.partition.RuntimePartitionStrategy;
-import fortscale.utils.impala.ImpalaClient;
-import fortscale.utils.logging.Logger;
+import java.util.LinkedList;
+import java.util.List;
 
 @DisallowConcurrentExecution
 public class SyncImpalaPartitionsJob extends FortscaleJob {
@@ -54,13 +51,9 @@ public class SyncImpalaPartitionsJob extends FortscaleJob {
 		daysToRetain = jobDataMapExtension.getJobDataMapIntValue(map, "daysToRetain");
 		
 		String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
-		if (strategy.equals("runtime"))
-			partitionStrategy = new RuntimePartitionStrategy();
-		else if (strategy.equals("monthly"))
-			partitionStrategy = new MonthlyPartitionStrategy();
-		else 
-			throw new JobExecutionException("invalid configuration for partition strategy", false);
-			
+        partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
+
+
 	}
 
 	@Override

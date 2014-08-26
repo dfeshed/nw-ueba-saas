@@ -25,8 +25,11 @@ public class ITotalScoreTableTest {
 		
 		HashMap<String, Class<?>> expectedFieldsMap = ImpalaParser.getTableFieldDefinitionMap(impalaTableFields);
 
-		Assert.assertEquals(expectedFieldsMap.size(), propertyDescriptors.length);
+		Assert.assertEquals(expectedFieldsMap.size(), propertyDescriptors.length-1);
 		for(PropertyDescriptor propertyDescriptor: propertyDescriptors){
+			if("runtime".equals(propertyDescriptor.getName())){
+				continue;
+			}
 			Assert.assertTrue(expectedFieldsMap.containsKey(propertyDescriptor.getName()));
 			Class<?> type = expectedFieldsMap.get(propertyDescriptor.getName());
 			Class<?> actualType = propertyDescriptor.getPropertyType();
