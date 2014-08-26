@@ -3,6 +3,7 @@ package fortscale.domain.core.dao;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,6 +65,7 @@ public interface UserRepositoryCustom {
 	public Set<String> findNameByTag(String tagFieldName, Boolean value);
 	public boolean findIfUserExists(String username);
 	public String getUserIdByNormalizedUsername(String username);
+	public HashSet<String> getUsersGUID();
 	/**
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
 	 */

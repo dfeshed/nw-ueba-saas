@@ -1,8 +1,10 @@
 package fortscale.services.impl;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,12 +24,22 @@ public class FilterMachinesServiceImpl implements FilterMachinesService,
 	LoadingCache<String, Boolean> OUMachinesCache;
 	@Autowired
 	private ComputerRepository computerRepository;
-	@Value("${machines.ou.filter:}")
-	private String ouName;
+	@Value("${machines.ou.filters:}")
+	private String ouFilters;
 
+	private ArrayList<Pair<String, UsersMachinesFilterEnum>> ouFiltersList;
+	
 	@Override
 	public void afterPropertiesSet() throws Exception {
 
+		if (!StringUtils.isEmpty(ouFilters)) {
+			ouFiltersList = ParsingUsersMachinesFiltering.getFiltersList(ouFilters);
+			for (Pair<String, UsersMachinesFilterEnum> filter : ouFiltersList) {
+				if (!filter.getRight().equals(UsersMachinesFilterEnum.OU)) {
+					throw new IllegalArgumentException("Machines filter only supports OUs");
+				}
+			}
+		}
 		OUMachinesCache = CacheBuilder.newBuilder().maximumSize(100000)
 				.expireAfterWrite(1, TimeUnit.HOURS)
 				.build(new CacheLoader<String, Boolean>() {
@@ -38,21 +50,26 @@ public class FilterMachinesServiceImpl implements FilterMachinesService,
 	}
 
 	private Boolean getIfBelongToOU(String computerName) {
+
 		Computer computer = computerRepository.findByName(computerName);
 		if (computer == null) {
 			return false;
-		} else {
-			String dn = computer.getDistinguishedName();
-			if (dn != null && dn.endsWith(ouName)) {
+		}
+
+		String dn = computer.getDistinguishedName();
+		if (dn == null){
+			return false;
+		}
+		for (Pair<String, UsersMachinesFilterEnum> filter : ouFiltersList) {
+			if (dn.endsWith(filter.getLeft())) {
 				return true;
-			} else {
-				return false;
 			}
 		}
+		return false;
 	}
 
 	public boolean toFilter(String computerName) {
-		if (StringUtils.isEmpty(ouName)) {
+		if (ouFiltersList == null) {
 			return false;
 		}
 		if (OUMachinesCache.getUnchecked(computerName)) {
@@ -64,10 +81,9 @@ public class FilterMachinesServiceImpl implements FilterMachinesService,
 
 	@Override
 	public void invalidateKey(String computerName) {
-		if (StringUtils.isEmpty(ouName)) {
+		if (ouFiltersList == null) {
 			return;
 		}
 		OUMachinesCache.invalidate(computerName);
 	}
-
 }

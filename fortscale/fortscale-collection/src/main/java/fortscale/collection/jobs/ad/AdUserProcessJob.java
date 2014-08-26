@@ -1,25 +1,45 @@
 package fortscale.collection.jobs.ad;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
 
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.collection.usersfiltering.service.SupportedUsersService;
+import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
+import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.services.UserServiceFacade;
+import fortscale.services.impl.ParsingUsersMachinesFiltering;
 import fortscale.services.impl.UsernameService;
+import fortscale.services.impl.UsersMachinesFilterEnum;
 
 public class AdUserProcessJob extends AdProcessJob {
 
+	
 	@Autowired
 	private AdUserRepository adUserRepository;
+	
+	@Autowired
+	private SupportedUsersService supportedUsersService;
+	
+	@Autowired
+	private AdGroupRepository adgroupRepository;
 	
 	@Autowired
 	private UserServiceFacade userServiceFacade;
@@ -30,12 +50,32 @@ public class AdUserProcessJob extends AdProcessJob {
 	@Autowired
 	private UserTaggingService userTaggingService;
 	
+	@Value("${users.filter.prioritylist:}")
+    private String ouUsersFilter;
+	
+	@Value("${users.filter.limit:0}")
+	private int usersNumberLimit;
+	
+	@Value("${users.filter.add_new_users:false}")
+	
+	private boolean addUsers;
+	
 	private RecordToBeanItemConverter<AdUser> converter;
+	
+	private boolean jobFirstRun;
+	
+	private static Logger logger = LoggerFactory.getLogger(AdUserProcessJob.class);
 	
 	@Override
 	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
 		super.init(jobExecutionContext);
+		
 		converter = new RecordToBeanItemConverter<>(getOutputFields());
+		if(!StringUtils.isEmpty(ouUsersFilter) && supportedUsersService.getSupportedUsersNumber() == 0){
+			jobFirstRun = true;
+		}else{
+			jobFirstRun = false;
+		}
 	}
 	
 	@Override
@@ -56,10 +96,56 @@ public class AdUserProcessJob extends AdProcessJob {
 			return false;
 		}
 		adUser.setLastModified(new Date());
-		adUserRepository.save(adUser);
-		userServiceFacade.updateUserWithADInfo(adUser);
-		
+		if(StringUtils.isEmpty(ouUsersFilter)){
+			adUserRepository.save(adUser);
+			userServiceFacade.updateUserWithADInfo(adUser);
+		}else{
+			if(addUsers == false && jobFirstRun == false){
+				if(supportedUsersService.isSupportedUser(adUser.getObjectGUID())){
+					adUserRepository.save(adUser);
+					userServiceFacade.updateUserWithADInfo(adUser);
+				}
+			}else{
+				adUserRepository.save(adUser);	
+			}
+		}
 		return true;
+	}
+	
+	protected void updateUsersWhoBelongtoOUOrGroup() {
+
+		ArrayList<Pair<String, UsersMachinesFilterEnum>> filtersPriorityList = ParsingUsersMachinesFiltering.getFiltersList(ouUsersFilter);
+		for (Pair<String, UsersMachinesFilterEnum> filter : filtersPriorityList) {
+			if (filter.getRight() == UsersMachinesFilterEnum.OU) { // OU filter
+				List<AdUser> users = adUserRepository.findAdUsersBelongtoOU(filter.getLeft());
+				updateSupportedUsers(users);
+			}
+			else { // Group filter
+				AdGroup adGroup = adgroupRepository.findByDistinguishedName(filter.getLeft());
+				if(adGroup == null){
+					logger.error("Users group filter does not exist : {}",filter.getLeft());
+					continue;
+				}
+				String members = adGroup.getMember();
+				List<String> membersList = Arrays.asList(members.split("\\s*;\\s*"));
+				List<AdUser> users = adUserRepository.findByDnUsersIn(membersList);
+				updateSupportedUsers(users);
+				}
+			}
+		}
+	
+	protected void updateSupportedUsers(List<AdUser> users){
+		for (AdUser aduser : users) {
+			if (supportedUsersService.isSupportedUser(aduser.getObjectGUID())) {
+				userServiceFacade.updateUserWithADInfo(aduser);
+			}
+			else {
+				if (usersNumberLimit == 0 || supportedUsersService.getSupportedUsersNumber() < usersNumberLimit) {
+					userServiceFacade.updateUserWithADInfo(aduser);
+					supportedUsersService.addSupportedUser(aduser.getObjectGUID());
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -73,7 +159,15 @@ public class AdUserProcessJob extends AdProcessJob {
 		// Update admin tag
 		userTaggingService.update(UserTagEnum.executive.getId());
 		userTaggingService.update(UserTagEnum.admin.getId());
-		
+		if(!StringUtils.isEmpty(ouUsersFilter)){
+			if(addUsers == true){
+				updateUsersWhoBelongtoOUOrGroup();
+			}
+			if(addUsers == false && jobFirstRun){
+				updateUsersWhoBelongtoOUOrGroup();
+				adUserRepository.deleteAll();
+			}
+		}
 		finishStep();
 	}
 }

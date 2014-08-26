@@ -16,6 +16,7 @@ public class AdObject extends AbstractDocument{
 	public static final String objectGUIDField = "objectGUID";
 	public static final String timestampepochField = "timestampepoch";
 	public static final String lastModifiedField = "lastModified";
+	public static final String runTimeField = "runtime";
 	
 	@Indexed
 	@Field(objectGUIDField)
@@ -33,7 +34,8 @@ public class AdObject extends AbstractDocument{
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*20)
 	@Field(lastModifiedField)
 	private Date lastModified;
-		
+	
+	@Field(runTimeField)
 	private String runtime;
 	
 //	public AdObject(String distinguishedName){
