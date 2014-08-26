@@ -3,6 +3,7 @@ package fortscale.services.impl;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,13 @@ public class FilterMachinesServiceImpl implements FilterMachinesService,
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		
-		ouFiltersList = ParsingUsersMachinesFiltering.getFiltersList(ouFilters);
-		for(Pair<String, UsersMachinesFilterEnum> filter : ouFiltersList){
-			if (!filter.getRight().equals(UsersMachinesFilterEnum.OU)){
-				throw new IllegalArgumentException("Machines filter only supports OUs");
+
+		if (!StringUtils.isEmpty(ouFilters)) {
+			ouFiltersList = ParsingUsersMachinesFiltering.getFiltersList(ouFilters);
+			for (Pair<String, UsersMachinesFilterEnum> filter : ouFiltersList) {
+				if (!filter.getRight().equals(UsersMachinesFilterEnum.OU)) {
+					throw new IllegalArgumentException("Machines filter only supports OUs");
+				}
 			}
 		}
 		OUMachinesCache = CacheBuilder.newBuilder().maximumSize(100000)

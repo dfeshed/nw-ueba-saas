@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -12,6 +13,9 @@ import org.apache.commons.lang3.tuple.Pair;
 public class ParsingUsersMachinesFiltering {
 	
 	static public ArrayList<Pair<String, UsersMachinesFilterEnum>> getFiltersList(String filtersStr){
+		if(StringUtils.isEmpty(filtersStr)){
+			return null;
+		}
 		if(!filtersStr.startsWith("[") || !filtersStr.endsWith("]")){
 			throw new IllegalArgumentException("Filters list must be enclosed with []");
 		}
