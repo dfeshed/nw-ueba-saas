@@ -64,9 +64,6 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
-	@Autowired
-	private MongoDbRepositoryUtil mongoDbRepositoryUtil;
-	
 	
 	
 	@Override
@@ -287,7 +284,7 @@ public class AdUsersFeaturesExtractionRepositoryImpl implements	AdUsersFeaturesE
 
 	@Override
 	public Date getLatestTimeStamp() {
-		return mongoDbRepositoryUtil.getLatestTimeStampDate(AdUserFeaturesExtraction.timestampField, AdUserFeaturesExtraction.collectionName);
+		return MongoDbRepositoryUtil.getLatestTimeStampDate(AdUserFeaturesExtraction.timestampField, AdUserFeaturesExtraction.collectionName);
 	}
 
 	@Override

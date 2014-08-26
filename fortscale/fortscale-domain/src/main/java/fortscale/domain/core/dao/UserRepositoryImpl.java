@@ -417,7 +417,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 	}
 	
-	class UsernameWrapper {
+	static class UsernameWrapper {
 		private String id;
 		private String username;
 
@@ -438,7 +438,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 	}
 	
-	class UserIdWrapper{
+	static class UserIdWrapper{
 		private String id;
 		
 		public String getId(){
@@ -449,7 +449,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 	}
 	
-	public class UserObjectGUIDWrapper {
+	static public class UserObjectGUIDWrapper {
 		private String objectGUID;
 
 		public String getObjectGUID() {

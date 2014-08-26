@@ -17,8 +17,7 @@ public class UserGUIDReadConverter implements Converter<DBObject, UserObjectGUID
 	public UserObjectGUIDWrapper convert(DBObject dbObject) {
 		DBObject adInfoObj = (DBObject) dbObject.get(User.adInfoField);
 		String userGUID = (String) adInfoObj.get(AdUser.objectGUIDField);
-		UserRepositoryImpl userRepository = new UserRepositoryImpl();
-		return userRepository.new UserObjectGUIDWrapper(userGUID);
+		return new UserObjectGUIDWrapper(userGUID);
 	}
 	
 }

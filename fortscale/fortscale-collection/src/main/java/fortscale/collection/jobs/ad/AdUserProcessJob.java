@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobExecutionContext;
@@ -23,13 +20,14 @@ import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.collection.tagging.service.UserTaggingService;
 import fortscale.collection.usersfiltering.service.SupportedUsersService;
-import fortscale.collection.usersfiltering.service.impl.UsersFilterEnum;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.services.UserServiceFacade;
+import fortscale.services.impl.ParsingUsersMachinesFiltering;
 import fortscale.services.impl.UsernameService;
+import fortscale.services.impl.UsersMachinesFilterEnum;
 
 public class AdUserProcessJob extends AdProcessJob {
 
@@ -107,19 +105,18 @@ public class AdUserProcessJob extends AdProcessJob {
 					adUserRepository.save(adUser);
 					userServiceFacade.updateUserWithADInfo(adUser);
 				}
-				return true;
+			}else{
+				adUserRepository.save(adUser);	
 			}
-			adUserRepository.save(adUser);	
-			return true;
 		}
 		return true;
 	}
 	
 	protected void updateUsersWhoBelongtoOUOrGroup() {
 
-		ArrayList<Pair<String, UsersFilterEnum>> filtersPriorityList = getFiltersPriorityList();
-		for (Pair<String, UsersFilterEnum> filter : filtersPriorityList) {
-			if (filter.getRight() == UsersFilterEnum.OU) { // OU filter
+		ArrayList<Pair<String, UsersMachinesFilterEnum>> filtersPriorityList = ParsingUsersMachinesFiltering.getFiltersList(ouUsersFilter);
+		for (Pair<String, UsersMachinesFilterEnum> filter : filtersPriorityList) {
+			if (filter.getRight() == UsersMachinesFilterEnum.OU) { // OU filter
 				List<AdUser> users = adUserRepository.findAdUsersBelongtoOU(filter.getLeft());
 				updateSupportedUsers(users);
 			}
@@ -143,40 +140,12 @@ public class AdUserProcessJob extends AdProcessJob {
 				userServiceFacade.updateUserWithADInfo(aduser);
 			}
 			else {
-				if (supportedUsersService.getSupportedUsersNumber() < usersNumberLimit) {
+				if (usersNumberLimit == 0 || supportedUsersService.getSupportedUsersNumber() < usersNumberLimit) {
 					userServiceFacade.updateUserWithADInfo(aduser);
 					supportedUsersService.addSupportedUser(aduser.getObjectGUID());
 				}
 			}
 		}
-	}
-	
-	protected ArrayList<Pair<String, UsersFilterEnum>> getFiltersPriorityList(){
-		if(!ouUsersFilter.startsWith("[") || !ouUsersFilter.endsWith("]")){
-			throw new IllegalArgumentException("Users filter priority list must be enclosed with []");
-		}
-		String filtersStr = ouUsersFilter.substring(1, ouUsersFilter.length()-1);
-		String[] filtersList = filtersStr.split("\\s*;\\s*");
-		ArrayList<Pair<String, UsersFilterEnum>> filtersPriorityList = new ArrayList<Pair<String, UsersFilterEnum>> ();
-		for(String filter : filtersList){
-			String regex = "\\s*\"(.*)\"\\s*:\\s*\"(.*)\"\\s*";
-			Pattern pattern = Pattern.compile(regex);
-			Matcher m = pattern.matcher(filter);
-			if(m.matches() == false){
-				throw new IllegalArgumentException("Bad Users filter format");
-			}
-			String filterName = m.group(1);
-			UsersFilterEnum filterKind;
-			if(m.group(2).equals("group")){
-				filterKind = UsersFilterEnum.GROUP;
-			}else if(m.group(2).equals("ou")){
-				filterKind = UsersFilterEnum.OU;
-			}else{
-				throw new IllegalArgumentException("Filter should be group/ou");
-			}
-			filtersPriorityList.add(new ImmutablePair<String, UsersFilterEnum> (filterName, filterKind));
-		}
-		return filtersPriorityList;
 	}
 	
 	@Override

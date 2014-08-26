@@ -8,17 +8,20 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.proj
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 @Component("mongoDbRepositoryUtil")
 public class MongoDbRepositoryUtil {
 	
 	@Autowired
-	private MongoTemplate mongoTemplate;
+	static private MongoTemplate mongoTemplate;
 	
 	public String getLatestTimeStampString(String timestampField, String collectionName) {
 		Aggregation agg = newAggregation(project(timestampField),
@@ -39,17 +42,15 @@ public class MongoDbRepositoryUtil {
 //		String timestamp;
 	}
 	
-	public Date getLatestTimeStampDate(String timestampField, String collectionName) {
-		Aggregation agg = newAggregation(project(timestampField),
-				group(timestampField),
-				sort(DESC,"_id"),
-				limit(1));
-	
-		AggregationResults<AdUserTimeStampDate> result = mongoTemplate.aggregate(agg, collectionName, AdUserTimeStampDate.class);
-		if(result.getMappedResults().isEmpty()) {
+	static public Date getLatestTimeStampDate(String timestampField, String collectionName) {
+		Query query = new Query();
+		query.with(new Sort(Sort.Direction.DESC, timestampField)).limit(1);
+		query.fields().include(timestampField);
+		List<AdUserTimeStampDate> result = mongoTemplate.find(query, AdUserTimeStampDate.class, collectionName);
+		if(result.isEmpty()) {
 			return null;
 		}
-		AdUserTimeStampDate ret = result.getMappedResults().get(0);
+		AdUserTimeStampDate ret = result.get(0);
 		return ret.id;
 	}
 	

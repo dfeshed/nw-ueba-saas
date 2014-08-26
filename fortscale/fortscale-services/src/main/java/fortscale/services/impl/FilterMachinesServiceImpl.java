@@ -2,10 +2,8 @@ package fortscale.services.impl;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,11 +26,12 @@ public class FilterMachinesServiceImpl implements FilterMachinesService,
 	@Value("${machines.ou.filters:}")
 	private String ouFilters;
 
-	private ArrayList<String> ouFiltersList;
+	private ArrayList<Pair<String, UsersMachinesFilterEnum>> ouFiltersList;
+	
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		
-		ouFiltersList = parseOUfilters();
+		ouFiltersList = ParsingUsersMachinesFiltering.getFiltersList(ouFilters);
 		OUMachinesCache = CacheBuilder.newBuilder().maximumSize(100000)
 				.expireAfterWrite(1, TimeUnit.HOURS)
 				.build(new CacheLoader<String, Boolean>() {
@@ -50,8 +49,11 @@ public class FilterMachinesServiceImpl implements FilterMachinesService,
 		}
 
 		String dn = computer.getDistinguishedName();
-		for (String ouFilter : ouFiltersList) {
-			if (dn != null && dn.endsWith(ouFilter)) {
+		if (dn == null){
+			return false;
+		}
+		for (Pair<String, UsersMachinesFilterEnum> filter : ouFiltersList) {
+			if (dn.endsWith(filter.getLeft())) {
 				return true;
 			}
 		}
@@ -76,28 +78,4 @@ public class FilterMachinesServiceImpl implements FilterMachinesService,
 		}
 		OUMachinesCache.invalidate(computerName);
 	}
-	
-	private ArrayList<String> parseOUfilters(){
-		if (StringUtils.isEmpty(ouFilters)){
-			return null;
-		}
-		if(!ouFilters.startsWith("[") || !ouFilters.endsWith("]")){
-			throw new IllegalArgumentException("machines OU filter list must be enclosed with []");
-		}
-		String filtersStr = ouFilters.substring(1, ouFilters.length()-1);
-		String[] filtersList = filtersStr.split("\\s*;\\s*");
-		ArrayList<String> ouList = new ArrayList<String>();
-		for(String filter : filtersList){
-			String regex = "\\s*\"(.*)\"\\s*";
-			Pattern pattern = Pattern.compile(regex);
-			Matcher m = pattern.matcher(filter);
-			if(m.matches() == false){
-				throw new IllegalArgumentException("Bad machines OU filter format");
-			}
-			String filterName = m.group(1);
-			ouList.add(filterName);
-		}
-		return ouList;
-	}
-
 }
