@@ -117,7 +117,8 @@ public class ApiController {
 		// Add offset and limit according to page
 		Integer offsetInLimit = null;
 		if (page != null) {
-			if (page < 0) throw new InvalidValueException("Page number must be greater than 0");			
+			if (page < 0) throw new InvalidValueException("Page number must be greater than 0");
+			if (pageSize > CACHE_LIMIT) throw new InvalidValueException("Page size must be less than " + CACHE_LIMIT);
 			int location = page * pageSize;
 			offsetInLimit = (location % CACHE_LIMIT);
 			int offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
