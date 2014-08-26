@@ -21,6 +21,9 @@ class AdUserRepositoryImpl extends AdObjectRepositoryImpl implements AdUserRepos
 	private static final int inOperatorSizeLimit = 2000; 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	
+	@Autowired
+	private MongoDbRepositoryUtil mongoDbRepositoryUtil;
 //	@SuppressWarnings("unchecked")
 //	@Override
 //	public List<AdUser> findAdUsersAttrVals() {
@@ -44,16 +47,14 @@ class AdUserRepositoryImpl extends AdObjectRepositoryImpl implements AdUserRepos
 //		return db.getCollection("ad_user");
 //	}
 	
-	
 	public List<AdUser> findAdUsersBelongtoOU(String ou){
-		Date date = MongoDbRepositoryUtil.getLatestTimeStampDate(AdUser.runTimeField, AdUser.COLLECTION_NAME);
+		Date date = mongoDbRepositoryUtil.getLatestTimeStampDate(AdUser.runTimeField, AdUser.COLLECTION_NAME);
 		Query query = new Query(where(AdUser.dnField).regex(".*"+ou).andOperator(where(AdUser.runTimeField).is(date)));
 		return mongoTemplate.find(query, AdUser.class, AdUser.COLLECTION_NAME);
 	}
 	
 	public List<AdUser> findByDnUsersIn(List<String> usersDn) {
-		Date date = MongoDbRepositoryUtil.getLatestTimeStampDate(AdUser.runTimeField, AdUser.COLLECTION_NAME);
-		MongoDbRepositoryUtil.getLatestTimeStampDate(AdUser.runTimeField, AdUser.COLLECTION_NAME);
+		Date date = mongoDbRepositoryUtil.getLatestTimeStampDate(AdUser.runTimeField, AdUser.COLLECTION_NAME);
 		int chunksNumber = (int) Math.ceil((float) usersDn.size() / inOperatorSizeLimit);
 		List<AdUser> users = new ArrayList<AdUser>();
 		for (int i = 0; i < chunksNumber - 1; i++) {

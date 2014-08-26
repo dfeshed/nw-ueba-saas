@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class MongoDbRepositoryUtil {
 	
 	@Autowired
-	static private MongoTemplate mongoTemplate;
+	private MongoTemplate mongoTemplate;
 	
 	public String getLatestTimeStampString(String timestampField, String collectionName) {
 		Aggregation agg = newAggregation(project(timestampField),
@@ -42,7 +42,7 @@ public class MongoDbRepositoryUtil {
 //		String timestamp;
 	}
 	
-	static public Date getLatestTimeStampDate(String timestampField, String collectionName) {
+	public Date getLatestTimeStampDate(String timestampField, String collectionName) {
 		Query query = new Query();
 		query.with(new Sort(Sort.Direction.DESC, timestampField)).limit(1);
 		query.fields().include(timestampField);
