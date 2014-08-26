@@ -97,7 +97,7 @@ public class ApiController {
 	 * @param countQuery	The count query. Not mandatory.
 	 * @param useCache		"True" if we wish to use existing results from cache (if exist).
 	 * 						Not mandatory. "False" by default
-	 * @param page			The requested page number (starting from 1). Not mandatory. 
+	 * @param page			The requested page number (starting from 0). Not mandatory. 
 	 * 						If null no paging will be used
 	 * @param pageSize		The page size. Not mandatory. "20" by default. 
 	 * 						Relevant only if "page" was requested
@@ -110,15 +110,14 @@ public class ApiController {
 	public DataBean<List<Map<String, Object>>> investigate(@RequestParam(required=true) String query,
 			@RequestParam(required=false) String countQuery,
 			@RequestParam(defaultValue="false") boolean useCache,
-			@RequestParam(required=false) Integer page, // starting from 1
+			@RequestParam(required=false) Integer page, // starting from 0
 			@RequestParam(defaultValue="20") Integer pageSize,
 			Model model){
 
 		// Add offset and limit according to page
 		Integer offsetInLimit = null;
 		if (page != null) {
-			if (page < 1) throw new InvalidValueException("Page number must be greater than 0");
-			page--; // move page to start from 0
+			if (page < 0) throw new InvalidValueException("Page number must be greater than 0");			
 			int location = page * pageSize;
 			offsetInLimit = (location % CACHE_LIMIT);
 			int offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
