@@ -69,6 +69,19 @@ public class EmptyObjectFilterTest {
 	}
 	
 	@Test
+	public void testSingleFieldWithDashStringIsDropped(){
+		List<String> filterFields = Arrays.asList("field1");
+		
+		EmptyObjectFilter command = getCommand(filterFields);
+		
+		Record record = new Record();
+		record.put("field1", "-");
+		command.doProcess(record);
+		Record output = sink.popRecord();
+		assertNull(output);
+	}
+	
+	@Test
 	public void testSingleFieldWithBlankStringIsDropped(){
 		List<String> filterFields = Arrays.asList("field1");
 		
@@ -118,6 +131,21 @@ public class EmptyObjectFilterTest {
 		record.put("field1", "");
 		record.put("field2", "");
 		record.put("field3", "");
+		command.doProcess(record);
+		Record output = sink.popRecord();
+		assertNull(output);
+	}
+	
+	@Test
+	public void testMultiFieldWithDashStringIsDropped(){
+		List<String> filterFields = Arrays.asList("field1","field2","field3");
+		
+		EmptyObjectFilter command = getCommand(filterFields);
+		
+		Record record = new Record();
+		record.put("field1", "-");
+		record.put("field2", "-");
+		record.put("field3", "-");
 		command.doProcess(record);
 		Record output = sink.popRecord();
 		assertNull(output);

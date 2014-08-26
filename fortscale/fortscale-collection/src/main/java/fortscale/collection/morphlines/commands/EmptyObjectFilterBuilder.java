@@ -51,18 +51,33 @@ public class EmptyObjectFilterBuilder implements CommandBuilder {
 		@Override
 		protected boolean doProcess(Record inputRecord) {
 			for (String field : filterFields) {
-				Object fieldValue = inputRecord.getFirstValue(field);
-				if (fieldValue == null) {
+				@SuppressWarnings("unchecked")
+				List<Object> fieldValues = inputRecord.get(field);
+				
+				if (fieldValues.isEmpty()) {
 					// drop record
-					logger.debug("EmptyObjectFilter command droped record because {} is null. command: {}, record: {}", field, renderedConfig, inputRecord.toString());
+					logger.debug("EmptyObjectFilter command droped record because {} does not contains any value. command: {}, record: {}", field, renderedConfig, inputRecord.toString());
 					return true;
 				}
-				if (fieldValue instanceof String) {
-					if (StringUtils.isBlank((String)fieldValue)) {
-						// drop record
-						logger.debug("EmptyObjectFilter command droped record because {} is empty. command: {}, record: {}", field, renderedConfig, inputRecord.toString());
-						return true;
+				boolean isAllFieldValueEmpty = true;
+				for(Object fieldValue: fieldValues){
+					if(fieldValue == null){
+						continue;
 					}
+					if (fieldValue instanceof String) {
+						if (!StringUtils.isBlank((String)fieldValue) && !"-".equals((String)fieldValue)) {
+							isAllFieldValueEmpty = false;
+							break;
+						}
+					} else{
+						isAllFieldValueEmpty = false;
+						break;
+					}
+				}
+				if (isAllFieldValueEmpty) {
+					// drop record
+					logger.debug("EmptyObjectFilter command droped record because {} contains only empty values. command: {}, record: {}", field, renderedConfig, inputRecord.toString());
+					return true;
 				}
 			}
 			return super.doProcess(inputRecord);

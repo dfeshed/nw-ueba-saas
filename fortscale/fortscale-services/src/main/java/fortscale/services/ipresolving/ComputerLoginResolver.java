@@ -3,6 +3,7 @@ package fortscale.services.ipresolving;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -34,10 +35,14 @@ public class ComputerLoginResolver implements InitializingBean {
 	
 	@Value("${computer.login.resolver.leaseTimeInMins:600}") // TGT lease time is default to 10 hours
 	private int leaseTimeInMins;
+	@Value("${computer.login.resolver.ipToHostNameUpdateResolutionInMins:60}") 
+	private int ipToHostNameUpdateResolutionInMins;
 	@Value("${computer.login.resolver.graceTimeInMins:1}")
 	private int graceTimeInMins;
 	@Value("${computer.login.resolver.cache.max.items:30000}")
 	private int cacheMaxSize;
+	@Value("${computer.login.resolver.is.use.cache.for.resolving:true}")
+	private boolean isUseCacheForResolving;
 	
 	private Cache<String, ComputerLoginEvent> cache;
 	
@@ -57,12 +62,14 @@ public class ComputerLoginResolver implements InitializingBean {
 
 		
 		// check if we have a matching event in the cache
-		ComputerLoginEvent cachedEvent = cache.getIfPresent(ip);
-		if (cachedEvent!=null && 
-				cachedEvent.getTimestampepoch() >= ts - leaseTimeInMins*60*1000 && 
-				cachedEvent.getTimestampepoch() <= ts + graceTimeInMins*60*1000) {
-
-			return cachedEvent.getHostname();
+		if(isUseCacheForResolving){
+			ComputerLoginEvent cachedEvent = cache.getIfPresent(ip);
+			if (cachedEvent!=null && 
+					cachedEvent.getTimestampepoch() >= ts - leaseTimeInMins*60*1000 && 
+					cachedEvent.getTimestampepoch() <= ts + graceTimeInMins*60*1000) {
+	
+				return cachedEvent.getHostname();
+			}
 		}
 		
 		// if cache not found resort to the repository check
@@ -88,8 +95,15 @@ public class ComputerLoginResolver implements InitializingBean {
 	
 	public void addComputerLogins(Iterable<ComputerLoginEvent> events) {
 	    // save all events in the 
-	    for (ComputerLoginEvent event : events)
-	    	addComputerLogin(event);
+		List<ComputerLoginEvent> eventsToSaveInDB = new ArrayList<>();
+	    for (ComputerLoginEvent event : events){
+	    	if(isToUpdate(event)){
+	    		eventsToSaveInDB.add(event);
+	    		cache.put(event.getIpaddress(), event);
+	    	}
+	    }
+
+	    computerLoginEventRepository.save(eventsToSaveInDB);
 	}
 	
 	public void addComputerLogin(ComputerLoginEvent event) {
@@ -97,21 +111,33 @@ public class ComputerLoginResolver implements InitializingBean {
 		String ip = event.getIpaddress();
 		checkNotNull(ip);
 		
+		if (isToUpdate(event)) {
+			computerLoginEventRepository.save(event);
+			cache.put(ip, event);
+		} else{
+			logger.debug("skipping ip to hostname login event with hostname={}, ip={}, timestamp={}", event.getHostname(), event.getIpaddress(), event.getTimestampepoch());
+		}
+
+		
+	}
+	
+	private boolean isToUpdate(ComputerLoginEvent event){
+		String ip = event.getIpaddress();
+		
 		// check if the event is in the cache, if not add it and save to repository
 		ComputerLoginEvent cachedEvent =  cache.getIfPresent(ip);
 		if (cachedEvent==null) {
-			computerLoginEventRepository.save(event);
-			cache.put(ip, event);
+			return true;
 		} else {
 			// if the event is in the cache, check if the new event has a different hostname and save it
 			// if the event is in the cache and has the same hostname, update it only if the ticket expiration time passed
-			if ((!event.getHostname().equals(cachedEvent.getHostname())) || (event.getTimestampepoch() > cachedEvent.getTimestampepoch() +  (leaseTimeInMins * 60 * 1000))) {
-				computerLoginEventRepository.save(event);
-				cache.put(ip, event);
-			} else {
-				logger.debug("skipping ip to hostname login event with hostname={}, ip={}, timestamp={}", event.getHostname(), event.getIpaddress(), event.getTimestampepoch());
+			if ((!event.getHostname().equals(cachedEvent.getHostname())) || (event.getTimestampepoch() > cachedEvent.getTimestampepoch() +  (ipToHostNameUpdateResolutionInMins * 60 * 1000))) {
+				return true;
 			}
 		}
+		
+		return false;
 	}
-
+	
+	
 }

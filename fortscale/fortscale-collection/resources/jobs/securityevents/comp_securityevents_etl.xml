@@ -25,7 +25,7 @@
 				</entry>
 				<entry>
 					<key>eventMorphlineFile4624</key>
-					<value>file:resources/conf-files/processSecEvt4624.conf</value>
+					<value>file:resources/conf-files/read4624SecEvtOnlyComp_splunk.conf</value>
 				</entry>
 				<entry>
 					<key>eventMorphlineFile4768</key>

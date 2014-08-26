@@ -113,21 +113,25 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			if (handler!=null) {
 				Record processedRecord = eventMorphlinesItemsProcessor.process(record);
 				if (processedRecord!=null) {
-					String output = handler.recordToStringProcessor.process(processedRecord);
-				
-					if (output!=null) {
-						// append to hadoop
-						Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
-						handler.appender.writeLine(output, timestamp.longValue());
-						
-						// ensure user exists in mongodb
-						updateOrCreateUserWithClassifierUsername(processedRecord);
-						
-						// output event to streaming platform
-						if (handler.streamWriter!=null)
-							handler.streamWriter.send(handler.recordToStringProcessor.toJSON(processedRecord));
-						
-						return true;
+					Boolean isComputer = (Boolean) record.getFirstValue("isComputer");
+					if(isComputer == null || !isComputer){
+					
+						String output = handler.recordToStringProcessor.process(processedRecord);
+					
+						if (output!=null) {
+							// append to hadoop
+							Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
+							handler.appender.writeLine(output, timestamp.longValue());
+							
+							// ensure user exists in mongodb
+							updateOrCreateUserWithClassifierUsername(processedRecord);
+							
+							// output event to streaming platform
+							if (handler.streamWriter!=null)
+								handler.streamWriter.send(handler.recordToStringProcessor.toJSON(processedRecord));
+							
+							return true;
+						}
 					}
 				}
 			}

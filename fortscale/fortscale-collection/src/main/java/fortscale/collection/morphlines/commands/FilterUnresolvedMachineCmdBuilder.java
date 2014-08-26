@@ -34,7 +34,7 @@ public class FilterUnresolvedMachineCmdBuilder  implements CommandBuilder {
 	@Configurable()
 	public static class FilterUnresolvedMachine extends AbstractCommand {
 		@Value("${ipresolving.fail.filter:false}") 
-		private boolean filterOnFail = false;
+		private boolean filterOnFail;
 		private String machineNameField;
 		public FilterUnresolvedMachine(CommandBuilder builder,
 				Config config, Command parent, Command child,
