@@ -90,6 +90,20 @@ public class ApiController {
 	}
 	
 	
+	/**
+	 * 
+	 * @param query			The SQL query from the client. 
+	 * 						This query shouldn't contain the "LIMIT" and "OFFSET" in case of paging
+	 * @param countQuery	The count query. Not mandatory.
+	 * @param useCache		"True" if we wish to use existing results from cache (if exist).
+	 * 						Not mandatory. "False" by default
+	 * @param page			The requested page number (starting from 1). Not mandatory. 
+	 * 						If null no paging will be used
+	 * @param pageSize		The page size. Not mandatory. "20" by default. 
+	 * 						Relevant only if "page" was requested
+	 * @param model			The model
+	 * @return				List of results according to the query and paging
+	 */
 	@RequestMapping(value="/investigate", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -104,7 +118,7 @@ public class ApiController {
 		Integer offsetInLimit = null;
 		if (page != null) {
 			if (page < 1) throw new InvalidValueException("Page number must be greater than 0");
-			page--; // move pager to start from 0
+			page--; // move page to start from 0
 			int location = page * pageSize;
 			offsetInLimit = (location % CACHE_LIMIT);
 			int offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
