@@ -7,6 +7,8 @@ import java.util.List;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -46,10 +48,12 @@ class AdUserRepositoryImpl extends AdObjectRepositoryImpl implements AdUserRepos
 //		return db.getCollection("ad_user");
 //	}
 	
-	public List<AdUser> findAdUsersBelongtoOU(String ou){
-		String date = mongoDbRepositoryUtil.getLatestTimeStampString(AdUser.runTimeField, AdUser.COLLECTION_NAME);
-		Query query = new Query(where(AdUser.dnField).regex(".*"+ou).andOperator(where(AdUser.runTimeField).is(date)));
-		return mongoTemplate.find(query, AdUser.class, AdUser.COLLECTION_NAME);
+	public String getAdUsersLastSnapshotRuntime(){
+		return  mongoDbRepositoryUtil.getLatestTimeStampString(AdUser.runTimeField, AdUser.COLLECTION_NAME);
+	}
+	public Page<AdUser> findAdUsersBelongtoOUInSnapshot(String ou, Pageable pageable, String runtime){
+		Query query = new Query(where(AdUser.dnField).regex(".*"+ou).andOperator(where(AdUser.runTimeField).is(runtime)));
+		return mongoDbRepositoryUtil.getPage(query, pageable, AdUser.class, false);
 	}
 	
 	public List<AdUser> findByDnUsersIn(List<String> usersDn) {
@@ -68,4 +72,5 @@ class AdUserRepositoryImpl extends AdObjectRepositoryImpl implements AdUserRepos
 		Query query = new Query(where(AdUser.dnField).in(usersDn).andOperator(where(AdUser.runTimeField).is(time)));
 		return mongoTemplate.find(query, AdUser.class, AdUser.COLLECTION_NAME);
 	}
+
 }
