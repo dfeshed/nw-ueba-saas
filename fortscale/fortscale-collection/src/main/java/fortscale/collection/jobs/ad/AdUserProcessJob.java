@@ -119,7 +119,7 @@ public class AdUserProcessJob extends AdProcessJob {
 		ArrayList<Pair<String, UsersMachinesFilterEnum>> filtersPriorityList = ParsingUsersMachinesFiltering.getFiltersList(ouUsersFilter);
 		for (Pair<String, UsersMachinesFilterEnum> filter : filtersPriorityList) {
 			if (filter.getRight() == UsersMachinesFilterEnum.OU) { // OU filter
-				Pageable pageable = new PageRequest(0, 10);
+				Pageable pageable = new PageRequest(0, 1000);
 				String runtime = adUserRepository.getAdUsersLastSnapshotRuntime();
 				Page<AdUser> users = adUserRepository.findAdUsersBelongtoOUInSnapshot(filter.getLeft(), pageable, runtime);
 				while(users!= null && users.hasContent()){

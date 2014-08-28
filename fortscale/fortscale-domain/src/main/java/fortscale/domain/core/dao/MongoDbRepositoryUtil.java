@@ -70,8 +70,8 @@ public class MongoDbRepositoryUtil {
 		query.with(pageable);
 		List<T> content = mongoTemplate.find(query, entityClass);
 		if(countTotal){
-		long total = mongoTemplate.count(query, entityClass);
-		return new PageImpl<>(content, pageable, total);
+			long total = mongoTemplate.count(query, entityClass);
+			return new PageImpl<>(content, pageable, total);
 		}else{
 			return new PageImpl<>(content);
 		}
