@@ -180,7 +180,7 @@ public class VpnJuniperTest {
             $(
                     "Regular (Poza) Successful VPN Authentication -new type of event",
                     $(
-                            "Jun 25 02:30:44 292.168.199.2 Juniper: 2014-06-25 02:30:44 - ive - [187.247.232.212] suarez-2am(SecurID Users)[Users, Fortscale Users] - Login succeeded for suarez-2am/SecurID Users (session:00000000) from 11.29.253.18.",
+                            "Jun 25 02:30:44 292.168.199.2 Juniper: 2014-06-25 02:30:44 - ive - [127.0.0.1] suarez-2am(SecurID Users)[Users, Fortscale Users] - Login succeeded for suarez-2am/SecurID Users (session:00000000) from 187.247.232.212.",
                             "Jun 25 02:30:44 292.168.199.2 Juniper: 2014-06-25 02:30:44 - ive - [187.247.232.212] suarez-2am(SecurID Users)[Users, Fortscale Users] - VPN Tunneling: Session started for user with IP 11.29.253.18, hostname SRT-UP-2AM2-00"
                     ),
                     $(
