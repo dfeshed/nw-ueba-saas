@@ -2,6 +2,8 @@ package fortscale.domain.schema;
 
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
+
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Schema Descriptor class for raw login events impala table and hdfs storage 
  */
 @Component
-public class LoginEvents implements TableSchema {
+public class LoginEvents implements TableSchema, InitializingBean {
 
 	@Value("${impala.data.security.events.login.table.name}")
 	private String tableName;
@@ -66,15 +68,18 @@ public class LoginEvents implements TableSchema {
 	private PartitionStrategy partition;
 	
 	@Override
+	public void afterPropertiesSet()
+		throws Exception {
+		partition = PartitionsUtils.getPartitionStrategy(impalaSecLoginTablePartitionType);
+	}
+	
+	@Override
 	public String getTableName() {
 		return tableName;
 	}
 
 	@Override
 	public PartitionStrategy getPartitionStrategy() {
-        if (partition == null)
-            partition = PartitionsUtils.getPartitionStrategy(impalaSecLoginTablePartitionType);
-
 		return partition;
 	}
 
@@ -82,5 +87,5 @@ public class LoginEvents implements TableSchema {
 	public String getPartitionFieldName() {
 		return partition.getImpalaPartitionFieldName();
 	}
-	
+
 }
