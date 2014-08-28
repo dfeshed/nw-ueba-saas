@@ -1,26 +1,28 @@
 package fortscale.collection.morphlines;
 
-import static junitparams.JUnitParamsRunner.$;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.properties.PropertiesResolver;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.properties.PropertiesResolver;
+import java.util.ArrayList;
+import java.util.List;
+
+import static junitparams.JUnitParamsRunner.$;
 
 @RunWith(JUnitParamsRunner.class)
 public class VpnJuniperTest {
 
+
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readVPN_juniper.conf";
+
+
+
 
 	
 	@Before
@@ -34,6 +36,7 @@ public class VpnJuniperTest {
 	@After
 	public void tearDown() throws Exception {
 		morphlineTester.close();
+
 	}
 	
 	@Test
@@ -173,6 +176,17 @@ public class VpnJuniperTest {
             				(String)null,
             				"2014-06-25 02:30:44,1403652644,scarletj,87.247.232.212,11.29.253.18,SUCCESS,,,,,,,L-25002436,,,,,,false,false"
             		)
+            ),
+            $(
+                    "Regular (Poza) Successful VPN Authentication -new type of event",
+                    $(
+                            "Jun 25 02:30:44 292.168.199.2 Juniper: 2014-06-25 02:30:44 - ive - [127.0.0.1] suarez-2am(SecurID Users)[Users, Fortscale Users] - Login succeeded for suarez-2am/SecurID Users (session:00000000) from 187.247.232.212.",
+                            "Jun 25 02:30:44 292.168.199.2 Juniper: 2014-06-25 02:30:44 - ive - [187.247.232.212] suarez-2am(SecurID Users)[Users, Fortscale Users] - VPN Tunneling: Session started for user with IP 11.29.253.18, hostname SRT-UP-2AM2-00"
+                    ),
+                    $(
+                            (String)null,
+                            "2014-06-25 02:30:44,1403652644,suarez-2am,187.247.232.212,11.29.253.18,SUCCESS,,,,,,,SRT-UP-2AM2-00,,,,,,false,false"
+                    )
             )
 		);
     }
