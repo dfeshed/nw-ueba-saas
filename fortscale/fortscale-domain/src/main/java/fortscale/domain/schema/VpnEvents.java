@@ -2,6 +2,8 @@ package fortscale.domain.schema;
 
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
+
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +11,7 @@ import org.springframework.stereotype.Component;
  * Schema Descriptor class for raw vpn events impala table and hdfs storage 
  */
 @Component
-public class VpnEvents implements TableSchema {
+public class VpnEvents implements TableSchema, InitializingBean {
 
 	@Value("${impala.data.vpn.table.name}")
 	private String tableName;
@@ -80,16 +82,14 @@ public class VpnEvents implements TableSchema {
 	private PartitionStrategy partition;
 	
 	@Override
-	public String getTableName() {
-		return tableName;
+	public void afterPropertiesSet()
+		throws Exception {
+		partition = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
 	}
 	
 	@Override
-	public String getPartitionFieldName() {
-        if (partition == null)
-            partition = PartitionsUtils.getPartitionStrategy(impalaVpnDataTablePartitionType);
-
-		return partition.getImpalaPartitionFieldName();
+	public String getTableName() {
+		return tableName;
 	}
 	
 	@Override
@@ -97,4 +97,9 @@ public class VpnEvents implements TableSchema {
 		return partition;
 	}
 	
+	@Override
+	public String getPartitionFieldName() {
+		return partition.getImpalaPartitionFieldName();
+	}
+
 }

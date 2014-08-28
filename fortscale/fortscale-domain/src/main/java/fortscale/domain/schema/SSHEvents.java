@@ -2,6 +2,8 @@ package fortscale.domain.schema;
 
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
+
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +11,7 @@ import org.springframework.stereotype.Component;
  * Schema Descriptor class for raw ssh events impala table and hdfs storage 
  */
 @Component
-public class SSHEvents implements TableSchema {
+public class SSHEvents implements TableSchema, InitializingBean {
 
 	@Value("${impala.data.ssh.table.name}")
 	private String tableName;
@@ -39,15 +41,18 @@ public class SSHEvents implements TableSchema {
 	private PartitionStrategy partition;
 	
 	@Override
+	public void afterPropertiesSet()
+		throws Exception {
+		partition = PartitionsUtils.getPartitionStrategy(impalaSshDataTablePartitionType);
+	}
+	
+	@Override
 	public String getTableName() {
 		return tableName;
 	}
 
 	@Override
 	public PartitionStrategy getPartitionStrategy() {
-
-        if (partition == null)
-            partition = PartitionsUtils.getPartitionStrategy(impalaSshDataTablePartitionType);
 		return partition;
 	}
 
