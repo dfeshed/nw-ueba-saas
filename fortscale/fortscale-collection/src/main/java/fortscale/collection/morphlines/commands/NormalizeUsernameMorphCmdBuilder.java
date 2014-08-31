@@ -49,11 +49,17 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
         
 		return ret;
 	}
+
 	protected boolean toDropRecord(String normalizedUsername){
 		 if (normalizedUsername == null && dropOnFail == true){
              return true;
          }
 		 return false;
+	}
+	
+	protected String getFinalNormalizedUserName(Record inputRecord, String normalizedUserName){
+		String username = RecordExtensions.getStringValue(inputRecord, usernameField).toLowerCase();
+        return Objects.firstNonNull(normalizedUserName, username);
 	}
 	
 	// /////////////////////////////////////////////////////////////////////////////
@@ -79,10 +85,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
             if(toDropRecord(normalizedUserName)){
             	return true;
             }
-            String username = RecordExtensions.getStringValue(inputRecord, usernameField).toLowerCase();
-            normalizedUserName = Objects.firstNonNull(normalizedUserName, username);
-            inputRecord.put(normalizedUsernameField, normalizedUserName);
-
+            inputRecord.put(normalizedUsernameField, getFinalNormalizedUserName(inputRecord, normalizedUserName));
 			return super.doProcess(inputRecord);
 
 		}
