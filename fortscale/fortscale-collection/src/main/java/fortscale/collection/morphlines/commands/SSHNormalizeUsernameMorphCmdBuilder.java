@@ -45,6 +45,7 @@ public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphC
 
 		super();
 		if (!StringUtils.isEmpty(sshUsersFile)) {
+			sshUsersRegList = new ArrayList<Pattern>();
 			File f = new File(sshUsersFile);
 			if (f.exists() && f.isFile()) {
 				ArrayList<String> usersRegex = new ArrayList<String>(FileUtils.readLines(f));
