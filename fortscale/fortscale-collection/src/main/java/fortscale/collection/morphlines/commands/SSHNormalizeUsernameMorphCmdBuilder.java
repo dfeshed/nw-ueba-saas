@@ -92,6 +92,9 @@ public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphC
 	}
 	
 	protected String getFinalNormalizedUserName(Record inputRecord, String normalizedUserName){
+		if(sshUsernameNormalizer == null){
+			return super.getFinalNormalizedUserName(inputRecord, normalizedUserName);
+		}
 		String username = RecordExtensions.getStringValue(inputRecord, usernameField);
 		String targetMachine = RecordExtensions.getStringValue(inputRecord, targetMachineField);
 		return Objects.firstNonNull(normalizedUserName, String.format("%s@%s", username, targetMachine));
