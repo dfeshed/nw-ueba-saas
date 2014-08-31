@@ -50,7 +50,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 		return ret;
 	}
 
-	protected boolean toDropRecord(String normalizedUsername){
+	protected boolean toDropRecord(String normalizedUsername, Record inputRecord){
 		 if (normalizedUsername == null && dropOnFail == true){
              return true;
          }
@@ -82,7 +82,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 			// If we weren't able to connect or access the collection,
 			// return an empty string
             String normalizedUserName = normalizeUsername(inputRecord);
-            if(toDropRecord(normalizedUserName)){
+            if(toDropRecord(normalizedUserName, inputRecord)){
             	return true;
             }
             inputRecord.put(normalizedUsernameField, getFinalNormalizedUserName(inputRecord, normalizedUserName));

@@ -78,12 +78,12 @@ public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphC
 		}
 	}
 	
-	protected boolean toDropRecord(String normalizedUsername) {
+	protected boolean toDropRecord(String normalizedUsername, Record inputRecord) {
 
 		if (sshUsersRegList == null ||  dropOnFail == false) {
 			return false;
 		}
-		String username = normalizedUsername.split("@")[0];
+		String username = RecordExtensions.getStringValue(inputRecord, usernameField);
 		for (Pattern userPattern : sshUsersRegList) {
 			if (userPattern.matcher(username).matches()) {
 				return false;
