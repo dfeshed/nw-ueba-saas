@@ -130,8 +130,8 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
 
 
 
-        account.addTag(ComputerUsageType.Desktop.toString(),(numOfDesdktopsMachines >= breakPointValue));
-        account.addTag(ComputerUsageType.Server.toString(),(numOfServersMachines >= breakPointValue));
+        account.addTag(ComputerUsageType.Desktop.toString(),(breakPointValue > 0 && numOfDesdktopsMachines >= breakPointValue));
+        account.addTag(ComputerUsageType.Server.toString(),( breakPointValue > 0 &&  numOfServersMachines >= breakPointValue));
 
 
     }
