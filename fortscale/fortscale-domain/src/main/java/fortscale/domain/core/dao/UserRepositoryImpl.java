@@ -15,7 +15,6 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -38,6 +37,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	
+	@Autowired
+	private MongoDbRepositoryUtil mongoDbRepositoryUtil;
 
 	@Override
 	public User findLastActiveUser(LogEventsEnum eventId) {
@@ -94,7 +96,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lte(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
 		query.fields().exclude(User.adInfoField);
 
-		return getPage(query, pageable, User.class);
+		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
 	}
 
 	@Override
@@ -104,23 +106,16 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lte(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
 		query.fields().exclude(User.adInfoField);
 		
-		return getPage(query, pageable, User.class);
+		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
 	}
 	
-	private <T> Page<T> getPage(Query query, Pageable pageable, Class<T> entityClass){
-		query.with(pageable);
-		List<T> content = mongoTemplate.find(query, entityClass);
-		long total = mongoTemplate.count(query, entityClass);
-
-		return new PageImpl<>(content, pageable, total);
-	}
 
 	@Override
 	public Page<User> findByClassifierIdAndTimeGteAsData(String classifierId, Date time, Pageable pageable) {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(time));
 
-		return getPage(query, pageable, User.class);
+		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
 	}
 
 	@Override
@@ -128,7 +123,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
 		Query query = new Query(where(User.followedField).is(true).and(classifierScoreCurrentTimestampField).gte(time));
 
-		return getPage(query, pageable, User.class);
+		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
 	}
 
 	@Override

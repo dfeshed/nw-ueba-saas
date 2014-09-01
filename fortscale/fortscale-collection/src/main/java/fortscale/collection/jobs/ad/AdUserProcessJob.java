@@ -14,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
@@ -113,12 +116,17 @@ public class AdUserProcessJob extends AdProcessJob {
 	}
 	
 	protected void updateUsersWhoBelongtoOUOrGroup() {
-
 		ArrayList<Pair<String, UsersMachinesFilterEnum>> filtersPriorityList = ParsingUsersMachinesFiltering.getFiltersList(ouUsersFilter);
 		for (Pair<String, UsersMachinesFilterEnum> filter : filtersPriorityList) {
 			if (filter.getRight() == UsersMachinesFilterEnum.OU) { // OU filter
-				List<AdUser> users = adUserRepository.findAdUsersBelongtoOU(filter.getLeft());
-				updateSupportedUsers(users);
+				Pageable pageable = new PageRequest(0, 1000);
+				String runtime = adUserRepository.getAdUsersLastSnapshotRuntime();
+				Page<AdUser> users = adUserRepository.findAdUsersBelongtoOUInSnapshot(filter.getLeft(), pageable, runtime);
+				while(users!= null && users.hasContent()){
+					updateSupportedUsers(users.getContent());
+					pageable = pageable.next();
+					users = adUserRepository.findAdUsersBelongtoOUInSnapshot(filter.getLeft(), pageable, runtime);
+				}
 			}
 			else { // Group filter
 				AdGroup adGroup = adgroupRepository.findByDistinguishedName(filter.getLeft());

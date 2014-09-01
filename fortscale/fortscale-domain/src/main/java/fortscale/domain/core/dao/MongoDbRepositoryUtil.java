@@ -9,11 +9,16 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.proj
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 
@@ -60,4 +65,16 @@ public class MongoDbRepositoryUtil {
 		Date id;
 //		String timestamp;
 	}
+	
+	public <T> Page<T> getPage(Query query, Pageable pageable, Class<T> entityClass, boolean countTotal){
+		query.with(pageable);
+		List<T> content = mongoTemplate.find(query, entityClass);
+		if(countTotal){
+			long total = mongoTemplate.count(query, entityClass);
+			return new PageImpl<>(content, pageable, total);
+		}else{
+			return new PageImpl<>(content);
+		}
+	}
+	
 }
