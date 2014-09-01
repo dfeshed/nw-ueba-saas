@@ -1,14 +1,19 @@
 package fortscale.collection.morphlines.commands;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 import org.kitesdk.morphline.api.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
+
+
 import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.collection.usersfiltering.service.SSHUsersWhitelistService;
 import fortscale.services.impl.UsernameNormalizer;
 
 
@@ -18,8 +23,14 @@ public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphC
 	@Autowired
 	UsernameNormalizer sshUsernameNormalizer;
 	
+	@Autowired
+	SSHUsersWhitelistService sshUsersWhitelist;
+	
 	@Value("${impala.data.ssh.table.field.target_machine}")
 	private String targetMachineField;
+
+	@Value("${normalizedUser.fail.filter:false}")
+    private boolean dropOnFail;
 
 	@Override
 	public Collection<String> getNames() {
@@ -35,18 +46,39 @@ public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphC
 	protected String normalizeUsername(Record record){
 		if(sshUsernameNormalizer != null){
 			String username = RecordExtensions.getStringValue(record, usernameField);
-			String ret = sshUsernameNormalizer.normalize(username);
-			if(ret == null){
-				String targetMachine = RecordExtensions.getStringValue(record, targetMachineField);
-				ret = String.format("%s@%s", username, targetMachine);
-			}
-			return ret;
+			return sshUsernameNormalizer.normalize(username);
 		} else{
 			return super.normalizeUsername(record);
 		}
 	}
 	
-	protected boolean toDropRecord(String normalizedUsername){
-		 return false;
+	protected boolean toDropRecord(String normalizedUsername, Record inputRecord) {
+		if (sshUsernameNormalizer == null) {
+			return super.toDropRecord(normalizedUsername, inputRecord);
+		}
+		ArrayList<Pattern> sshUsersRegList = sshUsersWhitelist.getSshUsersRegList();
+		if (sshUsersRegList == null ||  dropOnFail == false) {
+			return false;
+		}
+		String username = RecordExtensions.getStringValue(inputRecord, usernameField);
+		for (Pattern userPattern : sshUsersRegList) {
+			if (userPattern.matcher(username).matches()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	protected String getFinalNormalizedUserName(Record inputRecord, String normalizedUserName) {
+
+		if (sshUsernameNormalizer == null) {
+			return super.getFinalNormalizedUserName(inputRecord, normalizedUserName);
+		}
+		if (normalizedUserName != null) {
+			return normalizedUserName;
+		}
+		String username = RecordExtensions.getStringValue(inputRecord, usernameField);
+		String targetMachine = RecordExtensions.getStringValue(inputRecord, targetMachineField);
+		return String.format("%s@%s", username, targetMachine);
 	}
 }

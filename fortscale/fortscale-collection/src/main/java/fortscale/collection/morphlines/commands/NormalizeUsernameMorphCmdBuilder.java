@@ -11,7 +11,6 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.google.common.base.Objects;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
@@ -49,11 +48,21 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
         
 		return ret;
 	}
-	protected boolean toDropRecord(String normalizedUsername){
+
+	protected boolean toDropRecord(String normalizedUsername, Record inputRecord){
 		 if (normalizedUsername == null && dropOnFail == true){
              return true;
          }
 		 return false;
+	}
+	
+	protected String getFinalNormalizedUserName(Record inputRecord, String normalizedUserName){
+		if(normalizedUserName != null){
+			return normalizedUserName;
+		}
+		
+		String username = RecordExtensions.getStringValue(inputRecord, usernameField).toLowerCase();
+        return username;
 	}
 	
 	// /////////////////////////////////////////////////////////////////////////////
@@ -76,13 +85,10 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 			// If we weren't able to connect or access the collection,
 			// return an empty string
             String normalizedUserName = normalizeUsername(inputRecord);
-            if(toDropRecord(normalizedUserName)){
+            if(toDropRecord(normalizedUserName, inputRecord)){
             	return true;
             }
-            String username = RecordExtensions.getStringValue(inputRecord, usernameField).toLowerCase();
-            normalizedUserName = Objects.firstNonNull(normalizedUserName, username);
-            inputRecord.put(normalizedUsernameField, normalizedUserName);
-
+            inputRecord.put(normalizedUsernameField, getFinalNormalizedUserName(inputRecord, normalizedUserName));
 			return super.doProcess(inputRecord);
 
 		}
