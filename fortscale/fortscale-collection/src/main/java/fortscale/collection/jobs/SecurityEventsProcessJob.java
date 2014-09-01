@@ -113,7 +113,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			if (handler!=null) {
 				Record processedRecord = eventMorphlinesItemsProcessor.process(record);
 				if (processedRecord!=null) {
-					Boolean isComputer = (Boolean) record.getFirstValue("isComputer");
+					Boolean isComputer = (Boolean) processedRecord.getFirstValue("isComputer");
 					if(isComputer == null || !isComputer){
 					
 						String output = handler.recordToStringProcessor.process(processedRecord);
