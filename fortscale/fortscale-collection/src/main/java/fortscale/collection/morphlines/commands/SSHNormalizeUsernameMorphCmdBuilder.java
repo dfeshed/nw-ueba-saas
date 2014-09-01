@@ -53,6 +53,9 @@ public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphC
 	}
 	
 	protected boolean toDropRecord(String normalizedUsername, Record inputRecord) {
+		if (sshUsernameNormalizer == null) {
+			return super.toDropRecord(normalizedUsername, inputRecord);
+		}
 		ArrayList<Pattern> sshUsersRegList = sshAdditionalSupportedUsersService.getSshUsersRegList();
 		if (sshUsersRegList == null ||  dropOnFail == false) {
 			return false;
