@@ -1,8 +1,13 @@
 package fortscale.collection.morphlines.commands;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigObject;
-import fortscale.collection.morphlines.RecordSinkCommand;
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,25 +16,22 @@ import org.kitesdk.morphline.api.Record;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigObject;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import fortscale.collection.morphlines.RecordSinkCommand;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context-test-light.xml"})
-
 public class ParseFieldBuilderTest  {
+  
 
     private RecordSinkCommand sink = new RecordSinkCommand();
     private Config config;
 
 
     private ConfigObject configObject;
+    
 
     @Before
     public void setUp() throws Exception {
@@ -47,7 +49,7 @@ public class ParseFieldBuilderTest  {
         keySet.add("fieldName");
         keySet.add("outputField");
         keySet.add("ignoreConfig");
-        keySet.add("configurationPath");
+        keySet.add("toParse");
 
         when(config.root()).thenReturn(configObject);
         when(configObject.keySet()).thenReturn(keySet);
@@ -81,7 +83,7 @@ public class ParseFieldBuilderTest  {
             when(config.getString("fieldName")).thenReturn("username");
             when(config.getString("outputField")).thenReturn(null);
             when(config.getBoolean("ignoreConfig")).thenReturn(false);
-            when(config.getString("configurationPath")).thenReturn("fortscale.Morphline.Command.toParse");
+            when(config.getString("toParse")).thenReturn("${fortscale.Morphline.Command.toParse}");
 
 
             ParseFieldBuilder.ParseField command = getCommand();

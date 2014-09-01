@@ -1,17 +1,18 @@
 package fortscale.collection.morphlines.commands;
 
-import com.typesafe.config.Config;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.core.env.Environment;
+import org.springframework.context.EmbeddedValueResolverAware;
+import org.springframework.util.StringValueResolver;
 
-import java.util.Collection;
-import java.util.Collections;
+import com.typesafe.config.Config;
 
 /**
  * Created by idanp on 9/1/2014.
@@ -33,19 +34,16 @@ public final class ParseFieldBuilder implements CommandBuilder {
     // Nested classes:
     // /////////////////////////////////////////////////////////////////////////////
     @Configurable(preConstruction=true)
-    public static final class ParseField extends AbstractCommand {
+    public static final class ParseField extends AbstractCommand implements EmbeddedValueResolverAware {
 
         private String leftSignCharacter;
         private String rightSignCharacter;
         private String fieldName;
         private String outputField;
         private Boolean ignoreConfig;
-        private String configurationPath;
         private boolean toParse;
-
-
-        @Autowired
-        Environment env;
+        
+        StringValueResolver stringValueResolver;
 
 
 
@@ -56,8 +54,8 @@ public final class ParseFieldBuilder implements CommandBuilder {
             fieldName = getConfigs().getString(config, "fieldName");
             outputField = getConfigs().getString(config, "outputField");
             ignoreConfig = getConfig().getBoolean("ignoreConfig");
-            configurationPath = getConfigs().getString(config, "configurationPath");
-            toParse = Boolean.getBoolean(env.getProperty(configurationPath));
+            String toParseStr = getConfigs().getString(config, "toParse");
+            toParse = Boolean.valueOf(stringValueResolver.resolveStringValue(toParseStr));
 
 
 
@@ -85,6 +83,13 @@ public final class ParseFieldBuilder implements CommandBuilder {
             return super.doProcess(inputRecord);
 
         }
+
+
+
+		@Override
+		public void setEmbeddedValueResolver(StringValueResolver resolver) {
+			this.stringValueResolver = resolver;
+		}
 
 
     }
