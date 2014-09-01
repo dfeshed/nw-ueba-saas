@@ -29,9 +29,9 @@ public class SSHUsersWhitelistServiceImpl implements SSHUsersWhitelistService, I
 		throws Exception {
 
 		if (!StringUtils.isEmpty(sshUsersFile)) {
-			sshUsersRegList = new ArrayList<Pattern>();
 			File f = new File(sshUsersFile);
 			if (f.exists() && f.isFile()) {
+				sshUsersRegList = new ArrayList<Pattern>();
 				ArrayList<String> usersRegex = new ArrayList<String>(FileUtils.readLines(f));
 				for (String regex : usersRegex) {
 					sshUsersRegList.add(Pattern.compile(regex));
