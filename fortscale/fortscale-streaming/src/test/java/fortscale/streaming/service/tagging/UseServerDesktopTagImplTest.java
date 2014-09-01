@@ -2,6 +2,7 @@ package fortscale.streaming.service.tagging;
 
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
+import fortscale.streaming.model.tagging.MachineState;
 import org.junit.Test;
 
 import java.util.Date;
@@ -85,7 +86,7 @@ public class UseServerDesktopTagImplTest {
 
 
         //Case 5 - tag per reg exp
-        AccountMachineAccess regexpAccount = new AccountMachineAccess("idanp@fortscal.com");
+        AccountMachineAccess regexpAccount = new AccountMachineAccess("idanp@fortscale.com");
         regexpAccount.setFirstEventTimestamp(timestamp);
         regexpAccount.setLastEventTimeStamp(timestamp);
 
@@ -104,7 +105,7 @@ public class UseServerDesktopTagImplTest {
         accountToTagg3.setFirstEventTimestamp(timestamp);
         accountToTagg3.setLastEventTimeStamp(timestamp);
 
-         usdti2  = new UseServerDesktopTagImpl();
+        usdti2  = new UseServerDesktopTagImpl();
         usdti2.setDesktopsRegExpMachines("");
         usdti2.setThreshold(0.9);
         usdti2.setDaysBack(4l);
@@ -112,6 +113,31 @@ public class UseServerDesktopTagImplTest {
         usdti2.tag(accountToTagg3);
 
         assertTrue(accountToTagg3.getTags().size() == 0 && !accountToTagg3.getIsDirty() );
+
+        //all destinations are unknowen
+        accountToTagg3 = new AccountMachineAccess("TestUnkown");
+        accountToTagg3.setFirstEventTimestamp(timestamp);
+        accountToTagg3.setLastEventTimeStamp(timestamp);
+        MachineState machineState1 =  new MachineState("Unkown1");
+        machineState1.setType(ComputerUsageType.Unknown);
+        MachineState machineState2 =  new MachineState("Unkown2");
+        machineState2.setType(ComputerUsageType.Unknown);
+        MachineState machineState3 =  new MachineState("Unkown3");
+        machineState3.setType(ComputerUsageType.Unknown);
+
+        accountToTagg3.getServerDesktopDestination().put("Unkown1",machineState1);
+        accountToTagg3.getServerDesktopDestination().put("Unkown1",machineState2);
+        accountToTagg3.getServerDesktopDestination().put("Unkown1",machineState3);
+
+        usdti2  = new UseServerDesktopTagImpl();
+        usdti2.setDesktopsRegExpMachines("");
+        usdti2.setThreshold(0.9);
+        usdti2.setDaysBack(0l);
+
+        usdti2.tag(accountToTagg3);
+
+        assertTrue(!accountToTagg3.getTags().get("Desktop") && !accountToTagg3.getTags().get("Server") && accountToTagg3.getIsDirty() );
+
 
 
 
