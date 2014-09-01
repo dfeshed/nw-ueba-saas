@@ -11,7 +11,6 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.google.common.base.Objects;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
@@ -58,8 +57,12 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 	}
 	
 	protected String getFinalNormalizedUserName(Record inputRecord, String normalizedUserName){
+		if(normalizedUserName != null){
+			return normalizedUserName;
+		}
+		
 		String username = RecordExtensions.getStringValue(inputRecord, usernameField).toLowerCase();
-        return Objects.firstNonNull(normalizedUserName, username);
+        return username;
 	}
 	
 	// /////////////////////////////////////////////////////////////////////////////

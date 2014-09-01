@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.google.common.base.Objects;
 
 
 import fortscale.collection.morphlines.RecordExtensions;
@@ -92,12 +91,16 @@ public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphC
 		return true;
 	}
 	
-	protected String getFinalNormalizedUserName(Record inputRecord, String normalizedUserName){
-		if(sshUsernameNormalizer == null){
+	protected String getFinalNormalizedUserName(Record inputRecord, String normalizedUserName) {
+
+		if (sshUsernameNormalizer == null) {
 			return super.getFinalNormalizedUserName(inputRecord, normalizedUserName);
+		}
+		if (normalizedUserName != null) {
+			return normalizedUserName;
 		}
 		String username = RecordExtensions.getStringValue(inputRecord, usernameField);
 		String targetMachine = RecordExtensions.getStringValue(inputRecord, targetMachineField);
-		return Objects.firstNonNull(normalizedUserName, String.format("%s@%s", username, targetMachine));
+		return String.format("%s@%s", username, targetMachine);
 	}
 }
