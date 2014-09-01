@@ -24,7 +24,7 @@ public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphC
 	UsernameNormalizer sshUsernameNormalizer;
 	
 	@Autowired
-	SSHUsersWhitelistService sshAdditionalSupportedUsersService;
+	SSHUsersWhitelistService sshUsersWhitelist;
 	
 	@Value("${impala.data.ssh.table.field.target_machine}")
 	private String targetMachineField;
@@ -56,7 +56,7 @@ public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphC
 		if (sshUsernameNormalizer == null) {
 			return super.toDropRecord(normalizedUsername, inputRecord);
 		}
-		ArrayList<Pattern> sshUsersRegList = sshAdditionalSupportedUsersService.getSshUsersRegList();
+		ArrayList<Pattern> sshUsersRegList = sshUsersWhitelist.getSshUsersRegList();
 		if (sshUsersRegList == null ||  dropOnFail == false) {
 			return false;
 		}
