@@ -7,6 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import fortscale.domain.ad.AdGroup;
 
 public interface AdGroupRepository  extends PagingAndSortingRepository<AdGroup,String>, AdGroupRepositoryCustom{
-	public AdGroup findByDistinguishedName(String distinguishedName);
 	public List<AdGroup> findByLastModifiedExists(boolean exists);
 }
