@@ -76,56 +76,52 @@ public class VpnCiscoASATest {
 
     private Object[] parametersForTest() {
         return	$(
+
+
                 $(
-                        "apple_short - end1",
+                        "Everyone - Fail",
                         $(
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-7-722031: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: Out: 632880 (+2252) bytes, 32427 (+105) packets, 46 drops.",
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-7-722030: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: In: 2649665 (+2807) bytes, 25096 (+176) packets, 0 drops."
+                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-6-713905: Group = Everyone, Username = bpotugan, IP = 102.78.186.30, Login authentication failed due to max simultaneous-login restriction."
+
+
 
                         ),
                         $(
-                                (String)null,
-                                "2014-03-21 23:03:49,1395435829,kebarrow,75.138.81.207,,CLOSED,,,,,,,,3282545,632880,2649665,,50,false,false"
+
+                                "2014-03-21 23:03:49,1395435829,bpotugan,102.78.186.30,,FAIL,,,,,,,,,,,,,false,false"
 
                         )
 
                 ),
-                $(
-                        "apple_short - end2",
-                        $(
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-7-722030: Group <apple_short> User <idantest-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: In: 2649665 (+2807) bytes, 25096 (+176) packets, 0 drops.",
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-7-722031: Group <apple_short> User <idantest-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: Out: 632880 (+2252) bytes, 32427 (+105) packets, 46 drops."
-                        ),
-                        $(
-                                (String)null,
-                                "2014-03-21 23:03:49,1395435829,idantest,75.138.81.207,,CLOSED,,,,,,,,3282545,632880,2649665,,50,false,false"
-                        )
-                ),
 
                 $(
-                        "apple_short - start",
-                        $("Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
-                                "Ma 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <> IPv6 address <::> assigned to session"
+                        "Everyone - start",
+                        $(
+                                "Mar 21 2014 23:03:49 sjc12-gem-ubvpn-gw1a : %ASA-4-713228: Group = Everyone, Username = latom, IP =122.169.234.49, Assigned private IP address 172.30.223.157 to remote user",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <> IP <108.202.178.181> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <latom> IP <> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session"
+
+
+
                         ),
-                        $("2014-03-21 23:03:49,1395435829,kebarrow,75.138.81.207,10.89.4.165,SUCCESS,,,,,,,,,,,,,false,false",
-                                (String)null,
-                                (String)null,
+                        $(
+
+                                "2014-03-21 23:03:49,1395435829,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,false,false",
                                 (String)null,
                                 (String)null
-                        )
-                ),
 
+
+                        )
+
+                ),
 
 
                 $(
                         "apple_short - fail",
                         $(
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC closing connection: DPD failure."
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-3 : %ASA-4-722037: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC closing connection: DPD failure."
 
-                         ),
+                        ),
                         $(
 
                                 "2014-03-21 23:03:49,1395435829,kebarrow,75.138.81.207,,FAIL,,,,,,,,,,,,,false,false"
@@ -134,7 +130,73 @@ public class VpnCiscoASATest {
 
                 ),
 
+
+
+
+                $(
+                        "AnyConnect_policy - fakse start - resume",
+                        $(
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-3 : %ASA-6-716059: Group <AnyConnect_profile> User <latom> IP <108.202.178.181> AnyConnect session resumed connection from IP <10.21.77.114>>.",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <latom> IP <108.202.178.181> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session"
+
+                        ),
+                        $(
+                                (String)null,
+                                (String)null
+                        )
+
+
+                ),
+                $(
+                        "AnyConnect_policy - fake start - replace",
+                        $(
+                                "Mar 21 2014 23:03:49 sjck-vpn-cluster-4 : %ASA-5-722032: Group <AnyConnect_policy> User <chdemont> IP <24.7.121.71> New UDP SVC connection replacing old connection.",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <chdemont> IP <24.7.121.71> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session"
+
+                        ),
+                        $(
+                                (String)null,
+                                (String)null
+                        )
+
+
+                ),
+
+
+
+
+
+
                  $(
+                        "event with no datetime or type code",
+                        $(
+                                "M 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-7-722031: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: Out: 632880 (+2252) bytes, 32427 (+105) packets, 46 drops.",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : 1: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: Out: 632880 (+2252) bytes, 32427 (+105) packets, 46 drops."
+
+
+                         ),
+                        $(
+                                (String)null,
+                                (String)null
+
+                        )
+
+                ),
+
+                $(
+                        "Fail session without group sign",
+                        $(
+                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-6-113013: AAA unable to complete the request Error : reason = Simultaneous logins exceeded for user : user = kebarrow",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 173.38.203.42 : user = kebarrow"
+
+                        ),
+                        $(
+                                "2014-03-21 23:03:49,1395435829,kebarrow,,,FAIL,,,,,,,,,,,,,false,false",
+                                "2014-03-21 23:03:49,1395435829,kebarrow,,,FAIL,,,,,,,,,,,,,false,false"
+
+                        )
+                ),
+                $(
                         "AnyConnect_policy - start",
                         $(
                                 "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <latom> IP <108.202.178.181> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session",
@@ -189,26 +251,61 @@ public class VpnCiscoASATest {
                         )
 
                 ),
+
+
+
+
+
+
+
+
                 $(
-                        "Everyone - start",
+                        "apple_short - end1",
                         $(
-                                "Mar 21 2014 23:03:49 sjc12-gem-ubvpn-gw1a : %ASA-4-713228: Group = Everyone, Username = latom, IP =122.169.234.49, Assigned private IP address 172.30.223.157 to remote user",
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <> IP <108.202.178.181> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session",
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <latom> IP <> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session"
-
-
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-7-722031: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: Out: 632880 (+2252) bytes, 32427 (+105) packets, 46 drops.",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-7-722030: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: In: 2649665 (+2807) bytes, 25096 (+176) packets, 0 drops."
 
                         ),
                         $(
-
-                                "2014-03-21 23:03:49,1395435829,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,false,false",
                                 (String)null,
-                                (String)null
-
+                                "2014-03-21 23:03:49,1395435829,kebarrow,75.138.81.207,,CLOSED,,,,,,,,3282545,632880,2649665,,50,false,false"
 
                         )
 
                 ),
+                $(
+                        "apple_short - end2",
+                        $(
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-7-722030: Group <apple_short> User <idantest-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: In: 2649665 (+2807) bytes, 25096 (+176) packets, 0 drops.",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-7-722031: Group <apple_short> User <idantest-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: Out: 632880 (+2252) bytes, 32427 (+105) packets, 46 drops."
+                        ),
+                        $(
+                                (String)null,
+                                "2014-03-21 23:03:49,1395435829,idantest,75.138.81.207,,CLOSED,,,,,,,,3282545,632880,2649665,,50,false,false"
+                        )
+                ),
+
+                $(
+                        "apple_short - start",
+                        $("Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
+                                "Ma 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <> IPv6 address <::> assigned to session"
+                        ),
+                        $("2014-03-21 23:03:49,1395435829,kebarrow,75.138.81.207,10.89.4.165,SUCCESS,,,,,,,,,,,,,false,false",
+                                (String)null,
+                                (String)null,
+                                (String)null,
+                                (String)null
+                        )
+                ),
+
+
+
+
+
+
                 $(
                         "Everyone - end",
                         $(
@@ -234,21 +331,7 @@ public class VpnCiscoASATest {
                         )
 
                 ),
-                $(
-                        "Everyone - Fail",
-                        $(
-                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-6-713905: Group = Everyone, Username = bpotugan, IP = 102.78.186.30, Login authentication failed due to max simultaneous-login restriction."
 
-
-
-                        ),
-                        $(
-
-                                "2014-03-21 23:03:49,1395435829,bpotugan,102.78.186.30,,FAIL,,,,,,,,,,,,,false,false"
-
-                        )
-
-                ),
                 $(
                         "ciscovpn4cluster / ciscovpncluster / crdc_webex_employee / CRDC_users - start",
                         $(
@@ -324,8 +407,6 @@ public class VpnCiscoASATest {
                         )
 
                 )
-
-
 
 
 
