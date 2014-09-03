@@ -1,30 +1,30 @@
 package fortscale.collection.morphlines.commands;
 
 import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigObject;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context-test-light.xml"})
 public class ParseFieldBuilderTest  {
   
+	private static ClassPathXmlApplicationContext testContextManager;
 
     private RecordSinkCommand sink = new RecordSinkCommand();
     private Config config;
@@ -32,6 +32,17 @@ public class ParseFieldBuilderTest  {
 
     private ConfigObject configObject;
     
+    
+    @BeforeClass
+	public static void setUpClass(){
+		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+	}
+    
+    @AfterClass
+	public static void finalizeTestClass(){
+		testContextManager.close();
+		testContextManager = null;
+	}
 
     @Before
     public void setUp() throws Exception {
@@ -55,7 +66,7 @@ public class ParseFieldBuilderTest  {
         when(configObject.keySet()).thenReturn(keySet);
 
     }
-
+    
     private Record getRecord(String fieldName,String fieldValue) {
         Record record = new Record();
         record.put(fieldName,fieldValue);
