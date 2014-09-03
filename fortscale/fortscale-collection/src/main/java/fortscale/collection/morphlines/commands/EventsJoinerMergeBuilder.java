@@ -1,10 +1,6 @@
 package fortscale.collection.morphlines.commands;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
+import com.typesafe.config.Config;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -12,7 +8,10 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Notifications;
 
-import com.typesafe.config.Config;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * EventsJoinerMerge command is used together with a matching EventsJoinerStore to merge 
@@ -65,18 +64,20 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 				// drop record, halt current record execution
 				return true;
 			}
-			
-			// get the fields to merge from the previous record and put them 
-			// into the current record
-			for (String field : mergeFields) {
-				@SuppressWarnings("rawtypes")
-				List values = previousEvent.get(field);
-				// add all values to the input record
-				inputRecord.removeAll(field);
-				for (Object value : values) {
-					inputRecord.put(field, value);
-				}
-			}
+
+            if (previousEvent!=null ) {
+                // get the fields to merge from the previous record and put them
+                // into the current record
+                for (String field : mergeFields) {
+                    @SuppressWarnings("rawtypes")
+                    List values = previousEvent.get(field);
+                    // add all values to the input record
+                    inputRecord.removeAll(field);
+                    for (Object value : values) {
+                        inputRecord.put(field, value);
+                    }
+                }
+            }
 						
 			// continue processing in the command chain
 			return super.doProcess(inputRecord);
