@@ -129,7 +129,7 @@ public class AdUserProcessJob extends AdProcessJob {
 				}
 			}
 			else { // Group filter
-				AdGroup adGroup = adgroupRepository.findByDistinguishedName(filter.getLeft());
+				AdGroup adGroup = adgroupRepository.findByDistinguishedNameInLastSnapshot(filter.getLeft());
 				if(adGroup == null){
 					logger.error("Users group filter does not exist : {}",filter.getLeft());
 					continue;
