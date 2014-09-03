@@ -19,7 +19,6 @@ import org.springframework.util.StringValueResolver;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RegexFileList;
-import fortscale.collection.morphlines.commands.ParseFieldBuilder.ParseField;
 import fortscale.utils.logging.Logger;
 
 public class FieldBlacklistFilterCmdBuilder implements CommandBuilder{
@@ -32,7 +31,7 @@ public class FieldBlacklistFilterCmdBuilder implements CommandBuilder{
 
     @Override
     public Command build(Config config, Command parent, Command child, MorphlineContext context) {
-        return new ParseField(this, config, parent, child, context);
+        return new FieldBlacklistFilter(this, config, parent, child, context);
     }
 
     // /////////////////////////////////////////////////////////////////////////////

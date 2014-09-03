@@ -21,6 +21,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigObject;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
+import fortscale.collection.morphlines.commands.FieldBlacklistFilterCmdBuilder.FieldBlacklistFilter;
 
 public class FieldBlacklistFilterTest {
 	private static ClassPathXmlApplicationContext testContextManager;
@@ -55,26 +56,25 @@ public class FieldBlacklistFilterTest {
         keySet.add("blacklistFile");
 
         when(config.root()).thenReturn(configObject);
-        when(configObject.keySet()).thenReturn(keySet);
-
-        when(config.getString("blacklistFile")).thenReturn("classpath:blacklist.txt");
-        when(config.getString("fieldName")).thenReturn("testedField");
-        
-        command = getCommand();
+        when(configObject.keySet()).thenReturn(keySet);        
     }
     
     private FieldBlacklistFilterCmdBuilder.FieldBlacklistFilter getCommand() {
 
     	FieldBlacklistFilterCmdBuilder builder = new FieldBlacklistFilterCmdBuilder();
         MorphlineContext morphlineContext = new MorphlineContext.Builder().build();
-        FieldBlacklistFilterCmdBuilder.FieldBlacklistFilter fieldBlacklistFilter =  new  FieldBlacklistFilterCmdBuilder.FieldBlacklistFilter(builder,config,sink,sink,morphlineContext);
+        FieldBlacklistFilterCmdBuilder.FieldBlacklistFilter fieldBlacklistFilter =  (FieldBlacklistFilter) builder.build(config,sink,sink,morphlineContext);
         return fieldBlacklistFilter;
 
     }
 
 
     @Test
-    public void test_valueExistInTheListIsFiltered() throws Exception {     
+    public void test_valueExistInTheListIsFiltered1() throws Exception {    
+    	when(config.getString("blacklistFile")).thenReturn("classpath:blacklist.txt");
+        when(config.getString("fieldName")).thenReturn("testedField");
+        command = getCommand();
+        
         Record record = new Record();
         record.put("testedField","TEST-PC");
         boolean result = command.doProcess(record);
@@ -85,7 +85,26 @@ public class FieldBlacklistFilterTest {
     }
     
     @Test
-    public void test_valueNotExistInTheListIsNotFiltered() throws Exception {     
+    public void test_valueExistInTheListIsFiltered2() throws Exception {    
+    	when(config.getString("blacklistFile")).thenReturn("file:src/test/resources/blacklist.txt");
+        when(config.getString("fieldName")).thenReturn("${field.blacklist.filter.name}");
+        command = getCommand();
+        
+        Record record = new Record();
+        record.put("testedField","TEST-PC");
+        boolean result = command.doProcess(record);
+        Record output = sink.popRecord();
+        
+        assertTrue(result);
+        assertNull(output);
+    }
+    
+    @Test
+    public void test_valueNotExistInTheListIsNotFiltered() throws Exception { 
+    	when(config.getString("blacklistFile")).thenReturn("classpath:blacklist.txt");
+        when(config.getString("fieldName")).thenReturn("testedField");
+        command = getCommand();
+        
         Record record = new Record();
         record.put("testedField","TEST-PC1");
         boolean result = command.doProcess(record);
@@ -93,12 +112,7 @@ public class FieldBlacklistFilterTest {
         
         assertTrue(result);
         assertNotNull(output);
-
-
-
     }
-
-
 
 
 }
