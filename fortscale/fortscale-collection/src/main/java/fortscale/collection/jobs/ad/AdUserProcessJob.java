@@ -1,10 +1,17 @@
 package fortscale.collection.jobs.ad;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
+import fortscale.collection.morphlines.RecordToBeanItemConverter;
+import fortscale.collection.tagging.service.UserTagEnum;
+import fortscale.collection.tagging.service.UserTaggingService;
+import fortscale.collection.usersfiltering.service.SupportedUsersService;
+import fortscale.domain.ad.AdGroup;
+import fortscale.domain.ad.AdUser;
+import fortscale.domain.ad.dao.AdGroupRepository;
+import fortscale.domain.ad.dao.AdUserRepository;
+import fortscale.services.UserServiceFacade;
+import fortscale.services.impl.ParsingUsersMachinesFiltering;
+import fortscale.services.impl.UsernameService;
+import fortscale.services.impl.UsersMachinesFilterEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kitesdk.morphline.api.Record;
@@ -18,19 +25,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-
-import fortscale.collection.morphlines.RecordToBeanItemConverter;
-import fortscale.collection.tagging.service.UserTagEnum;
-import fortscale.collection.tagging.service.UserTaggingService;
-import fortscale.collection.usersfiltering.service.SupportedUsersService;
-import fortscale.domain.ad.AdGroup;
-import fortscale.domain.ad.AdUser;
-import fortscale.domain.ad.dao.AdGroupRepository;
-import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.services.UserServiceFacade;
-import fortscale.services.impl.ParsingUsersMachinesFiltering;
-import fortscale.services.impl.UsernameService;
-import fortscale.services.impl.UsersMachinesFilterEnum;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class AdUserProcessJob extends AdProcessJob {
 
@@ -135,12 +133,14 @@ public class AdUserProcessJob extends AdProcessJob {
 					continue;
 				}
 				String members = adGroup.getMember();
-				List<String> membersList = Arrays.asList(members.split("\\s*;\\s*"));
-				List<AdUser> users = adUserRepository.findByDnUsersIn(membersList);
-				updateSupportedUsers(users);
-				}
+                if (members!=null) {
+                    List<String> membersList = Arrays.asList(members.split("\\s*;\\s*"));
+                    List<AdUser> users = adUserRepository.findByDnUsersIn(membersList);
+                    updateSupportedUsers(users);
+                }
 			}
 		}
+	}
 	
 	protected void updateSupportedUsers(List<AdUser> users){
 		for (AdUser aduser : users) {
