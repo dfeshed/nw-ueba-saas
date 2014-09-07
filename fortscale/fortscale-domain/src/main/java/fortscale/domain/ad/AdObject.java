@@ -31,7 +31,7 @@ public class AdObject extends AbstractDocument{
 	@Field(timestampepochField)
 	private Long timestampepoch;
 	
-	@Indexed(unique = false, expireAfterSeconds=60*60*24*20)
+	@Indexed(unique = false, expireAfterSeconds=60*60*24)
 	@Field(lastModifiedField)
 	private Date lastModified;
 	
