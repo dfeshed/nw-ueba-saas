@@ -155,9 +155,9 @@ public class VpnCiscoASATest {
                 $(
                         "Everyone - start",
                         $(
-                                "Mar 21 2014 23:03:49 sjc12-gem-ubvpn-gw1a : %ASA-4-713228: Group = Everyone, Username = latom, IP =122.169.234.49, Assigned private IP address 172.30.223.157 to remote user",
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-713228: Group = Everyone User <> IP <108.202.178.181> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session",
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-713228: Group = Everyone User <latom> IP <> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session"
+                                "Mar 21 2014 23:03:49 sjc12-gem-ubvpn-gw1a : %ASA-4-713228: Group = Everyone, Username = latom, IP = 122.169.234.49, Assigned private IP address 172.30.223.157 to remote user",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-713228: Group = Everyone Username  IP = 108.202.178.181, Assigned private IP address 172.30.223.157 to remote user",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-713228: Group = Everyone Username = latom, IP = , Assigned private IP address 172.30.223.157 to remote user"
 
 
 
@@ -278,11 +278,11 @@ public class VpnCiscoASATest {
                 $(
                         "AnyConnect_policy - End",
                         $(
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-113019: Group = AnyConnect_profile, Username = latom, IP =108.99.114.225, Session disconnected. Session Type: SSL, Duration: 7h:23m:11s, Bytes xmt: 123772941, Bytes rcv: 86407232, Reason: User Requested",
-                                "M 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-113019: Group = AnyConnect_profile, Username = latom, IP =108.99.114.225, Session disconnected. Session Type: SSL, Duration: 7h:23m:11s, Bytes xmt: 123772941, Bytes rcv: 86407232, Reason: User Requested",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-113019: Group = AnyConnect_profile, Username = latom, IP = 108.99.114.225, Session disconnected. Session Type: SSL, Duration: 7h:23m:11s, Bytes xmt: 123772941, Bytes rcv: 86407232, Reason: User Requested",
+                                "M 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-113019: Group = AnyConnect_profile, Username = latom, IP = 108.99.114.225, Session disconnected. Session Type: SSL, Duration: 7h:23m:11s, Bytes xmt: 123772941, Bytes rcv: 86407232, Reason: User Requested",
                                 "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-113019: Group = AnyConnect_profile, Username = latom, IP =, Session disconnected. Session Type: SSL, Duration: 7h:23m:11s, Bytes xmt: 123772941, Bytes rcv: 86407232, Reason: User Requested",
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-113019: Group = AnyConnect_profile, Username = latom, IP =108.99.114.225, Session disconnected. Session Type: SSL, Duration: 7h:23m:11s, Bytes xmt: , Bytes rcv: 86407232, Reason: User Requested",
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-113019: Group = AnyConnect_profile, Username = latom, IP =108.99.114.225, Session disconnected. Session Type: SSL, Duration: 7h:23m:11s, Bytes xmt:123772941 , Bytes rcv: , Reason: User Requested"
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-113019: Group = AnyConnect_profile, Username = latom, IP = 108.99.114.225, Session disconnected. Session Type: SSL, Duration: 7h:23m:11s, Bytes xmt: , Bytes rcv: 86407232, Reason: User Requested",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-113019: Group = AnyConnect_profile, Username = latom, IP = 108.99.114.225, Session disconnected. Session Type: SSL, Duration: 7h:23m:11s, Bytes xmt:123772941 , Bytes rcv: , Reason: User Requested"
 
 
                         ),
@@ -336,11 +336,11 @@ public class VpnCiscoASATest {
                 $(
                         "Everyone - end",
                         $(
-                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP =102.76.169.108, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: 5179731, Bytes rcv:940724, Reason: User Requested",
-                                "Ma 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP =102.76.169.108, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: 5179731, Bytes rcv:940724, Reason: User Requested",
-                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP =, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: 5179731, Bytes rcv:940724, Reason: User Requested",
-                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP =102.76.169.108, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: , Bytes rcv:940724, Reason: User Requested",
-                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP =102.76.169.108, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: 5179731, Bytes rcv:, Reason: User Requested"
+                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP = 102.76.169.108, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: 5179731, Bytes rcv: 940724, Reason: User Requested",
+                                "Ma 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP = 102.76.169.108, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: 5179731, Bytes rcv: 940724, Reason: User Requested",
+                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP =, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: 5179731, Bytes rcv: 940724, Reason: User Requested",
+                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP = 102.76.169.108, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: , Bytes rcv: 940724, Reason: User Requested",
+                                "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP = 102.76.169.108, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: 5179731, Bytes rcv:, Reason: User Requested"
 
 
 
@@ -362,10 +362,10 @@ public class VpnCiscoASATest {
                 $(
                         "ciscovpn4cluster / ciscovpncluster / crdc_webex_employee / CRDC_users - start",
                         $(
-                                "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-713228: Group = ciscovpn4cluster, Username = kebarrow, IP =75.138.81.207, Assigned private IP address 10.82.210.107",
-                                "ar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-713228: Group = ciscovpn4cluster, Username = kebarrow, IP =75.138.81.207, Assigned private IP address 10.82.210.107",
+                                "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-713228: Group = ciscovpn4cluster, Username = kebarrow, IP = 75.138.81.207, Assigned private IP address 10.82.210.107",
+                                "ar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-713228: Group = ciscovpn4cluster, Username = kebarrow, IP = 75.138.81.207, Assigned private IP address 10.82.210.107",
                                 "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-713228: Group = ciscovpn4cluster, Username = kebarrow, IP =, Assigned private IP address 10.82.210.107",
-                                "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-713228: Group = ciscovpn4cluster, Username = kebarrow, IP =75.138.81.207, Assigned private IP address "
+                                "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-713228: Group = ciscovpn4cluster, Username = kebarrow, IP = 75.138.81.207, Assigned private IP address "
 
 
 
@@ -384,11 +384,11 @@ public class VpnCiscoASATest {
                 $(
                         "ciscovpn4cluster / ciscovpncluster / crdc_webex_employee / CRDC_users - end",
                         $(
-                                "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-113019: Group = ciscovpn4cluster, Username = kebarrow, IP =102.253.118.222, Session disconnected. Session Type: IPsecOverNatT, Duration: 0h:52m:55s, Bytes xmt:14038276, Bytes rcv: 5944581, Reason: Lost Service",
-                                "Ma 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-113019: Group = ciscovpn4cluster, Username = kebarrow, IP =102.253.118.222, Session disconnected. Session Type: IPsecOverNatT, Duration: 0h:52m:55s, Bytes xmt:14038276, Bytes rcv: 5944581, Reason: Lost Service",
+                                "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-113019: Group = ciscovpn4cluster, Username = kebarrow, IP = 102.253.118.222, Session disconnected. Session Type: IPsecOverNatT, Duration: 0h:52m:55s, Bytes xmt: 14038276, Bytes rcv: 5944581, Reason: Lost Service",
+                                "Ma 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-113019: Group = ciscovpn4cluster, Username = kebarrow, IP = 102.253.118.222, Session disconnected. Session Type: IPsecOverNatT, Duration: 0h:52m:55s, Bytes xmt: 14038276, Bytes rcv: 5944581, Reason: Lost Service",
                                 "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-113019: Group = ciscovpn4cluster, Username = kebarrow, IP =, Session disconnected. Session Type: IPsecOverNatT, Duration: 0h:52m:55s, Bytes xmt:14038276, Bytes rcv: 5944581, Reason: Lost Service",
-                                "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-113019: Group = ciscovpn4cluster, Username = kebarrow, IP =102.253.118.222, Session disconnected. Session Type: IPsecOverNatT, Duration: 0h:52m:55s, Bytes xmt:, Bytes rcv: 5944581, Reason: Lost Service",
-                                "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-113019: Group = ciscovpn4cluster, Username = kebarrow, IP =102.253.118.222, Session disconnected. Session Type: IPsecOverNatT, Duration: 0h:52m:55s, Bytes xmt:14038276, Bytes rcv: , Reason: Lost Service"
+                                "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-113019: Group = ciscovpn4cluster, Username = kebarrow, IP = 102.253.118.222, Session disconnected. Session Type: IPsecOverNatT, Duration: 0h:52m:55s, Bytes xmt:, Bytes rcv: 5944581, Reason: Lost Service",
+                                "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-113019: Group = ciscovpn4cluster, Username = kebarrow, IP = 102.253.118.222, Session disconnected. Session Type: IPsecOverNatT, Duration: 0h:52m:55s, Bytes xmt: 14038276, Bytes rcv: , Reason: Lost Service"
 
 
 
