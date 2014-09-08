@@ -77,6 +77,24 @@ public class VpnCiscoASATest {
     private Object[] parametersForTest() {
         return	$(
 
+
+                $(
+                        "apple_short - start",
+                        $("Sep 03 2014 05:12:22 rtp5-vpn-cluster-2 : %ASA-7-722051: Group <apple_short> User <tomerl-CA57DA549C121B25A5A5038A58C81E6B7B1C954F-iPhone> IP <174.46.152.7> IPv4 Address <10.82.239.225> IPv6 address <::> assigned to session",
+                                "Ma 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <> IPv6 address <::> assigned to session"
+                        ),
+                        $("2014-09-03 05:12:22,1409710342,tomerl,174.46.152.7,10.82.239.225,SUCCESS,,,,,,,,,,,,,false,false",
+                                (String)null,
+                                (String)null,
+                                (String)null,
+                                (String)null
+                        )
+                ),
+
+
                 $(
                         "apple_short - fakse start - resume",
                         $(
