@@ -2,6 +2,7 @@ package fortscale.collection;
 
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
+import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerListener;
 import org.quartz.Trigger;
@@ -20,8 +21,10 @@ public class SchedulerShutdownListener implements SchedulerListener {
 	private static final Logger logger = LoggerFactory.getLogger(SchedulerShutdownListener.class);
 	
 	private ClassPathXmlApplicationContext context;
+	private Scheduler scheduler;
 	
-	public SchedulerShutdownListener(ClassPathXmlApplicationContext context) {
+	public SchedulerShutdownListener(Scheduler scheduler, ClassPathXmlApplicationContext context) {
+		this.scheduler = scheduler;
 		this.context = context;
 	}
 
@@ -30,10 +33,25 @@ public class SchedulerShutdownListener implements SchedulerListener {
 	}
 	
 	public void schedulerShutdown() {
+		// check if all jobs finished running
+		logger.info("Waiting for all jobs to finish executing");
+		try {
+			while (scheduler.getCurrentlyExecutingJobs().size()>0) {
+				try {
+					// wait for 5 seconds to give running jobs a chance to finish executing
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {}
+			}
+		} catch (SchedulerException e) {
+			logger.error("error getting running jobs from scheduler", e);
+		}
+		
+		
 		logger.info("Scheduler has shutdown, going to close spring context");
 		if (context!=null)
 			context.close();
 		context = null;
+		scheduler = null;
 		logger.info("Spring context closed");
 	}
 
