@@ -77,6 +77,32 @@ public class VpnCiscoASATest {
     private Object[] parametersForTest() {
         return	$(
 
+                $(
+                        "apple_short - fail",
+                        $(
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-3 : %ASA-4-722037: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC closing connection: DPD failure."
+
+                        ),
+                        $(
+
+                                (String)null
+
+                        )
+
+                ),
+
+                $(
+                        "drop global fail without source_ip",
+                        $(
+                                "Mar 21 2014 23:03:49 bxb23-vpn-cluster-1 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 72.163.197.40 : user = kadara : user IP = 101.63.204.196",
+                                "Mar 21 2014 23:03:49 bxb23-vpn-cluster-1 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 72.163.197.40 : user = kadara"
+
+                        ),
+                        $(
+                                "2014-03-21 23:03:49,1395435829,kadara,101.63.204.196,,FAIL,,,,,,,,,,,,,false,false",
+                                (String)null
+                        )
+                ),
 
                 $(
                         "apple_short - start",
@@ -192,19 +218,7 @@ public class VpnCiscoASATest {
                 ),
 
 
-                $(
-                        "apple_short - fail",
-                        $(
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-3 : %ASA-4-722037: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC closing connection: DPD failure."
 
-                        ),
-                        $(
-
-                                "2014-03-21 23:03:49,1395435829,kebarrow,75.138.81.207,,FAIL,,,,,,,,,,,,,false,false"
-
-                        )
-
-                ),
 
 
 
@@ -460,11 +474,6 @@ public class VpnCiscoASATest {
                                 "2014-03-21 23:03:49,1395435829,kebarrow,,,FAIL,,,,,,,,,,,,,false,false"
                         )
                 )
-
-
-
-
-
 
         );
     }
