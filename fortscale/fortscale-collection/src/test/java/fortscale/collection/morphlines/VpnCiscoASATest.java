@@ -281,8 +281,8 @@ public class VpnCiscoASATest {
 
                         ),
                         $(
-                                "2014-03-21 23:03:49,1395435829,kebarrow,,,FAIL,,,,,,,,,,,,,false,false",
-                                "2014-03-21 23:03:49,1395435829,kebarrow,,,FAIL,,,,,,,,,,,,,false,false"
+                                (String)null,
+                                (String)null
 
                         )
                 ),
@@ -337,7 +337,7 @@ public class VpnCiscoASATest {
                         ),
                         $(
 
-                                "2014-03-21 23:03:49,1395435829,bagiri,98.207.110.144,,FAIL,,,,,,,,,,,,,false,false"
+                                (String)null
                         )
 
                 ),
@@ -445,7 +445,7 @@ public class VpnCiscoASATest {
                         ),
                         $(
 
-                                "2014-03-21 23:03:49,1395435829,akucher,,,FAIL,,,,,,,,,,,,,false,false"
+                                (String)null
 
                         )
 
@@ -467,11 +467,11 @@ public class VpnCiscoASATest {
                 $(
                         "VALIDATE PARSING OF \" ",
                         $(
-                              "\" Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 173.38.203.42 : user = kebarrow\","
+                              "\" Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 173.38.203.42 : user = kebarrow : user IP = 101.63.204.196\","
 
                         ),
                         $(
-                                "2014-03-21 23:03:49,1395435829,kebarrow,,,FAIL,,,,,,,,,,,,,false,false"
+                                "2014-03-21 23:03:49,1395435829,kebarrow,101.63.204.196,,FAIL,,,,,,,,,,,,,false,false"
                         )
                 )
 
