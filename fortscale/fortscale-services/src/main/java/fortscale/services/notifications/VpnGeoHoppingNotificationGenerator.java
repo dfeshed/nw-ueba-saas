@@ -11,6 +11,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import fortscale.domain.core.Notification;
@@ -76,8 +77,13 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 			notifications.add(notification);
 		}
 		
-		
-		notificationsRepository.save(notifications);
+		try{
+			notificationsRepository.save(notifications);
+		} catch (DuplicateKeyException ex){
+			logger.info("got geo hopping notification duplication exception", ex);
+		} catch (Exception e) {
+			logger.info("got the following exception while trying to save new notifications to DB.", e);
+		}
 	}
 	
 	private String buildIndex(VpnSession vpnSession){
