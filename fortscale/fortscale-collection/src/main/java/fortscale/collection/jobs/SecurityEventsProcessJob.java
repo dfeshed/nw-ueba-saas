@@ -127,7 +127,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 							updateOrCreateUserWithClassifierUsername(processedRecord);
 							
 							// output event to streaming platform
-							if (handler.streamWriter!=null)
+							if (handler.streamWriter!=null && sendToKafka == true)
 								handler.streamWriter.send(handler.recordToStringProcessor.toJSON(processedRecord));
 							
 							return true;
