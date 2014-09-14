@@ -55,7 +55,7 @@ public class EventProcessJob implements Job {
 	private String usernameField;
 	@Value("${hadoop.writer.buffer.size:3000}")
 	protected int maxBufferSize;
-	@Value("${etl.sendTo.kafka}:true")
+	@Value("${etl.sendTo.kafka:true}")
 	protected boolean sendToKafka;
 	
 	
