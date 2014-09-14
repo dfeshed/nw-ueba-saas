@@ -55,6 +55,8 @@ public class EventProcessJob implements Job {
 	private String usernameField;
 	@Value("${hadoop.writer.buffer.size:3000}")
 	protected int maxBufferSize;
+	@Value("${etl.sendTo.kafka}:true")
+	protected boolean sendToKafka;
 	
 	
 	protected String filesFilter;
@@ -361,7 +363,7 @@ public class EventProcessJob implements Job {
 	
 	/*** Send the message produced by the morphline ETL to the streaming platform */
 	protected void streamMessage(String message) throws IOException {
-		if (streamWriter!=null)
+		if (streamWriter!=null && sendToKafka == true)
 			streamWriter.send(message);
 	}
 	
