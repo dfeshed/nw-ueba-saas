@@ -56,6 +56,8 @@ public class EventProcessJob implements Job {
 	@Value("${hadoop.writer.buffer.size:3000}")
 	protected int maxBufferSize;
 	@Value("${etl.sendTo.kafka:true}")
+	protected boolean defaultSendToKafka;
+	
 	protected boolean sendToKafka;
 	
 	
@@ -103,6 +105,7 @@ public class EventProcessJob implements Job {
 		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
 		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
 		streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic", "");
+		sendToKafka = jobDataMapExtension.getJobDataMapBooleanValue(map, "sendToKafka", defaultSendToKafka);
 		
 		// build record to items processor
 		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
