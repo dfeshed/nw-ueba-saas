@@ -50,6 +50,8 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	
 	@Override protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
+		
+		sendToKafka = jobDataMapExtension.getJobDataMapBooleanValue(map, "sendToKafka", defaultSendToKafka);
 
 		// get parameters values from the job data map
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
