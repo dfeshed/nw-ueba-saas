@@ -36,6 +36,11 @@
 		<mongo:custom-converters base-package="fortscale.domain" />
 	</mongo:mapping-converter>
 	
+	<bean id="mongoConverterConfigurer" class="fortscale.domain.MongoConverterConfigurer" init-method="init" >
+		<property name="mongoConverter" ref="mongoConverter"/>
+		<property name="mapKeyDotReplacement" value="${mongo.map.dot.replacement}"/>
+	</bean>
+	
 	<mongo:auditing />
 	
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
