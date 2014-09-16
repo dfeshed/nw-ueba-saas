@@ -60,8 +60,13 @@ public class DnsResolver {
 			dnsLookupCounter++;
 			try {
 				resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
-				if (StringUtils.isNotEmpty(resolvedHostname))
-					dnsCacheMap.put(ip_address, resolvedHostname);
+				if (StringUtils.isNotEmpty(resolvedHostname)) {
+					// some dns might return the ip address as part of the name in case it cannot be resolved correctly
+					if (resolvedHostname.startsWith(ip_address))
+						resolvedHostname = null;
+					else
+						dnsCacheMap.put(ip_address, resolvedHostname);
+				}
 			}
 			catch (Exception e) {
 				logger.debug("Exception while running reverseDns resolving for IP: {}. Adding it to black list.", ip_address);
