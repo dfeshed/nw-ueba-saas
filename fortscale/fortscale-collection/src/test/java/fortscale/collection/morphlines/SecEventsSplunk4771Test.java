@@ -1,20 +1,18 @@
 package fortscale.collection.morphlines;
 
-import static junitparams.JUnitParamsRunner.$;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.properties.PropertiesResolver;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.properties.PropertiesResolver;
+import java.util.ArrayList;
+import java.util.List;
+
+import static junitparams.JUnitParamsRunner.$;
 
 @RunWith(JUnitParamsRunner.class)
 public class SecEventsSplunk4771Test {
@@ -54,12 +52,12 @@ public class SecEventsSplunk4771Test {
     		$ (
 	        "4771 Event with all neccessary fields",
 	        "2014-03-19T10:38:53.000+02:00|03/19/2014 10:38:53 AM	LogName=Security	SourceName=Microsoft Windows security auditing.	EventCode=4771	EventType=0	Type=Information	ComputerName=Fs-DC-01.Fortscale.dom	TaskCategory=Kerberos Authentication Service	OpCode=Info	RecordNumber=248270818	Keywords=Audit Failure	Message=Kerberos pre-authentication failed.		Account Information:		Security ID:		FORTSCALEaxk		Account Name:		maxk		Service Information:		Service Name:		krbtgt/FORTSCALE.DOM		Network Information:		Client Address:		::ffff:192.168.0.107		Client Port:		55612		Additional Information:		Ticket Options:		0x40800000		Failure Code:		0x18		Pre-Authentication Type:	2		Certificate Information:		Certificate Issuer Name:				Certificate Serial Number: 			Certificate Thumbprint:				Certificate information is only provided if a certificate was used for pre-authentication.		Pre-authentication types, ticket options and failure codes are defined in RFC 4120.		If the ticket was malformed or damaged during transit and could not be decrypted, then many fields in this event might not be present.",
-	    	"2014-03-19T10:38:53.000+02:00,2014-03-19 10:38:53,1395218333,maxk,,FORTSCALEaxk,4771,192.168.0.107,FAILURE,0x18,2,0x40800000,True,False,False,False,False,False,false,,,false"
+	    	"2014-03-19T10:38:53.000+02:00,2014-03-19 08:38:53,1395218333,maxk,,FORTSCALEaxk,4771,192.168.0.107,FAILURE,0x18,2,0x40800000,True,False,False,False,False,False,false,,,false"
     		),
     		$ (
 	        "4771 Event with all neccessary fields over NAT",
 	        "2014-03-19T10:38:53.000+02:00|03/19/2014 10:38:53 AM	LogName=Security	SourceName=Microsoft Windows security auditing.	EventCode=4771	EventType=0	Type=Information	ComputerName=Fs-DC-01.Fortscale.dom	TaskCategory=Kerberos Authentication Service	OpCode=Info	RecordNumber=248270818	Keywords=Audit Failure	Message=Kerberos pre-authentication failed.		Account Information:		Security ID:		FORTSCALEaxk		Account Name:		maxk		Service Information:		Service Name:		krbtgt/FORTSCALE.DOM		Network Information:		Client Address:		::ffff:192.168.0.22		Client Port:		55612		Additional Information:		Ticket Options:		0x40800000		Failure Code:		0x18		Pre-Authentication Type:	2		Certificate Information:		Certificate Issuer Name:				Certificate Serial Number: 			Certificate Thumbprint:				Certificate information is only provided if a certificate was used for pre-authentication.		Pre-authentication types, ticket options and failure codes are defined in RFC 4120.		If the ticket was malformed or damaged during transit and could not be decrypted, then many fields in this event might not be present.",
-	    	"2014-03-19T10:38:53.000+02:00,2014-03-19 10:38:53,1395218333,maxk,,FORTSCALEaxk,4771,192.168.0.22,FAILURE,0x18,2,0x40800000,True,False,False,False,False,False,true,,,false"
+	    	"2014-03-19T10:38:53.000+02:00,2014-03-19 08:38:53,1395218333,maxk,,FORTSCALEaxk,4771,192.168.0.22,FAILURE,0x18,2,0x40800000,True,False,False,False,False,False,true,,,false"
     		),
     		$ (
 	        "4771 Event with computer as account name (Should be dropped)",

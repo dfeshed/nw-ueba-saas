@@ -1,23 +1,18 @@
 package fortscale.collection.morphlines;
 
-import static junitparams.JUnitParamsRunner.$;
-import java.util.ArrayList;
-import java.util.List;
-
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import fortscale.domain.events.dao.VpnSessionRepository;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import org.junit.*;
+import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static junitparams.JUnitParamsRunner.$;
 
 /**
  * Created by idanp on 7/15/2014.
@@ -94,7 +89,7 @@ public class VpnCiscoTest {
                           "111350320: 2014 Mar 21 23:03:49.730 +0100 +1:00 %AUTH-6-92: RPT=22376: 212.59.220.45: User [mduran] Sending ACCT-START for assigned IP  (Session ID=9305F724)",
                           "111350320: 2014 Mar 21 23:03:49.730 +0100 +1:00 %AUTH-6-92: RPT=22376: : User [mduran] Sending ACCT-START for assigned IP 172.16.25.22 (Session ID=9305F724)"
                         ),
-                        $("2014-03-21 23:03:49,1395435829,mduran,37.11.25.29,172.16.25.22,SUCCESS,,,,,,,,,,,,,false,false",
+                        $("2014-03-21 21:03:49,1395435829,mduran,37.11.25.29,172.16.25.22,SUCCESS,,,,,,,,,,,,,false,false",
                           (String)null,
                           (String)null,
                           (String)null,
@@ -113,7 +108,7 @@ public class VpnCiscoTest {
 
                         ),
 
-                        $("2014-03-22 04:07:25,1395454045,pmoreno,37.11.25.29,,CLOSED,,,,,,,,3282545,632880,2649665,,50,false,false",
+                        $("2014-03-22 02:07:25,1395454045,pmoreno,37.11.25.29,,CLOSED,,,,,,,,3282545,632880,2649665,,50,false,false",
                           (String)null,
                           (String)null,
                           (String)null,
@@ -130,7 +125,7 @@ public class VpnCiscoTest {
                           "111502127: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-4-5: RPT=333150: 206.201.227.92: Authentication rejected: Reason = Simultaneous logins exceeded for user handle = 86, server = (none), user = , domain = <not specified>"),
 
 
-                        $("2014-03-22 04:07:25,1395454045,monkey,37.11.25.29,,FAIL,,,,,,,,,,,,,false,false",
+                        $("2014-03-22 02:07:25,1395454045,monkey,37.11.25.29,,FAIL,,,,,,,,,,,,,false,false",
                           (String)null,
                           (String)null,
                           (String)null

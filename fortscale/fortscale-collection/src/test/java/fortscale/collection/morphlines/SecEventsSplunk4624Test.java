@@ -1,17 +1,16 @@
 package fortscale.collection.morphlines;
 
-import static junitparams.JUnitParamsRunner.$;
-
-import java.util.Arrays;
-import java.util.List;
-
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static junitparams.JUnitParamsRunner.$;
 
 @RunWith(JUnitParamsRunner.class)
 public class SecEventsSplunk4624Test {
@@ -23,7 +22,7 @@ public class SecEventsSplunk4624Test {
 	
 	@Before
 	public void setUp() throws Exception {
-		List<String> fieldsToCheck = Arrays.asList("timeGeneratedUnixTime","source_ip","account_name","account_domain","reporting_server");
+		List<String> fieldsToCheck = Arrays.asList("date_time_unix","source_ip","account_name","account_domain","reporting_server");
 		morphlineTester.init(new String[] { confFile, conf4624File }, fieldsToCheck);
 	}
 
