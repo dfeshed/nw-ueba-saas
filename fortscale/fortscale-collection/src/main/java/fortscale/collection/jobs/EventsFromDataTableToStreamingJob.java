@@ -215,10 +215,14 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 		}
 		
 		private String extractValue(String confLine, String paramName){
-			int fieldIndexStart = confLine.indexOf(paramName) + paramName.length();
+			int fieldIndexStart = confLine.indexOf(paramName);
 			if(fieldIndexStart == -1){
 				return null;
 			}
+			
+			fieldIndexStart = fieldIndexStart + paramName.length();
+			
+			
 			int fieldIndexEnd = confLine.indexOf(PREFIX_PARAMETER_NAME, fieldIndexStart);
 			if(fieldIndexEnd == -1){
 				return confLine.substring(fieldIndexStart).trim();
