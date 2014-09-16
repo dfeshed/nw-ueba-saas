@@ -92,9 +92,10 @@ public class DailyPartitionStrategyTest {
     public void daily_parition_should_create_directories_for_year_month_and_day() {
         // arrange
         DailyPartitionStrategy strategy = new DailyPartitionStrategy();
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        int month = Calendar.getInstance().get(Calendar.MONTH) + 1; // month are starting from 0 here
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1; // month are starting from 0 here
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
         String expectedPath = String.format("/user/cloudera/data/ssh/yearmonthday=%s%02d%02d/", year, month,day);
 
         // act
@@ -111,7 +112,7 @@ public class DailyPartitionStrategyTest {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1; // month are starting from 0 here
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
         String expectedPath = String.format("/user/cloudera/data/ssh/yearmonthday=%s%02d%02d/", year, month,day);
 
         // act
@@ -129,7 +130,7 @@ public class DailyPartitionStrategyTest {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1; // month are starting from 0 here
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
         String expectedPath = String.format("/user/cloudera/data/ssh/yearmonthday=%s%02d%02d/", year, month,day);
 
         // act
