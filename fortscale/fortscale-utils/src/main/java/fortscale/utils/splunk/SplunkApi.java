@@ -420,7 +420,11 @@ public class SplunkApi {
     	}
 		
 		if(job != null && !job.isFailed()){
-			job.cancel();
+			try {
+				job.cancel();
+			} catch (Exception e) {
+				logger.warn("error cancelling saved search from splunk", e);
+			}
 		}
 		
         return retCursor;
