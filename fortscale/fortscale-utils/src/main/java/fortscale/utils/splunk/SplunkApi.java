@@ -366,7 +366,7 @@ public class SplunkApi {
 	
 			        Event event = null;
 			        Event lastEvent = null;
-			        while((event = reader.getNextEvent()) != null){
+			        while((event = getNextEvent(reader)) != null){
 			        	if(retCursor == null && searchJob.isContainTime()){
 			            	retCursor = event.get(SPLUNK_TIMESTAMP_FIELD);
 			            	if(retCursor != null){
@@ -428,6 +428,22 @@ public class SplunkApi {
 		}
 		
         return retCursor;
+	}
+	
+	private Event getNextEvent(ResultsReaderXml reader) throws IOException{
+		Event event = null;
+		int numOfTries = 0;
+        while(numOfTries < 5 && event == null){
+        	numOfTries++;
+        	try{
+        		event = reader.getNextEvent();
+        	} catch(IOException ioe){
+        		throw ioe;
+        	} catch(Exception e){
+        		logger.warn("got the following exception while trying to get the next event from splunk", e);
+        	}
+        }
+        return event;
 	}
 	
 	
