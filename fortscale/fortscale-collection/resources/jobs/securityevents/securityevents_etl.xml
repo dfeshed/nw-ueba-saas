@@ -61,7 +61,7 @@
 				</entry>
 				<entry>
 					<key>timestampFieldSecEvt4769</key>
-					<value>${impala.data.security.events.4769.table.field.timeGeneratedUnixTime}</value>
+					<value>${impala.data.security.events.4769.table.field.date_time_unix}</value>
 				</entry>
 				<entry>
 					<key>outputSeparatorSecEvt4769</key>
@@ -99,7 +99,7 @@
 				</entry>
 				<entry>
 					<key>timestampFieldLoginEvt</key>
-					<value>${impala.data.security.events.login.table.field.timeGeneratedUnixTime}</value>
+					<value>${impala.data.security.events.login.table.field.date_time_unix}</value>
 				</entry>
 				<entry>
 					<key>outputSeparatorLoginEvt</key>

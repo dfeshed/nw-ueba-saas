@@ -85,7 +85,9 @@ public class SecEventsSA4769Test {
 		    	"May  1 10:14:55 roee-hd5 %NICWIN-4-Security_4769_Microsoft-Windows-Security-Auditing: Security,rn=668424399 cid=11272 eid=628,Mon Mar 17 13:49:03 2014,4769,Microsoft-Windows-Security-Auditing,,Audit Success,BG-DC1.bg.playtech.corp,Kerberos Service Ticket Operations,,A Kerberos service ticket was requested.  Account Information:  Account Name:  Plamenv@BG.PLAYTECH.CORP  Account Domain:  BG.PLAYTECH.CORP  Logon GUID:  {C3A9E22D-636B-22E1-B056-F86D42CD69AD}  Service Information:  Service Name:  krbtgt@FORTSCALE.DOM  Service ID:  S-1-5-21-3421828858-1269048617-336047487-1898  Network Information:  Client Address:  ::ffff:192.168.203.228  Client Port:  64165  Additional Information:  Ticket Options:  0x40800000  Ticket Encryption Type: 0x12  Failure Code:  0x0  Transited Services: -  This event is generated every time access is requested to a resource such as a computer or a Windows service.  The service name indicates the resource to which access was requested.  This event can be correlated with Windows logon events by comparing the Logon GUID fields in each event.  The logon event occurs on the machine that was accessed, which is often a different machine than the domain controller which issued the service ticket.  Ticket options, encryption types, and failure codes are defined in RFC 4120.",
 		    	null
         		)
+
         );
+
  	}
 
 

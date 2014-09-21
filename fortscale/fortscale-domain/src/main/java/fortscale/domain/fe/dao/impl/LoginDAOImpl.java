@@ -18,7 +18,7 @@ public class LoginDAOImpl extends AccessDAO{
 	private String partitionName;
 	@Value("${impala.score.ldapauth.table.fields.timeGenerated}")
 	public String TIMEGENERATED;
-	@Value("${impala.score.ldapauth.table.fields.timeGeneratedUnixTime}")
+	@Value("${impala.score.ldapauth.table.fields.date_time_unix}")
 	public String TIMEGENERATED_UNIX;
 	@Value("${impala.score.ldapauth.table.fields.date_timeScore}")
 	public String EVENT_TIME_SCORE;
