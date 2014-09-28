@@ -1,19 +1,17 @@
 package fortscale.collection.morphlines;
 
-import static junitparams.JUnitParamsRunner.$;
-
-import java.util.List;
-
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.properties.PropertiesResolver;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.properties.PropertiesResolver;
+import java.util.List;
+
+import static junitparams.JUnitParamsRunner.$;
 
 
 @RunWith(JUnitParamsRunner.class)
@@ -53,7 +51,7 @@ public class SshCiscoTest {
         		$ (
         		"Successful Public Key Authentication",
         		"2014-09-09T17:00:00+00:00 dev-gever sshd[2552]: Accepted publickey for root from 171.70.163.169 port 47952 ssh2",
-        		"2014-09-09 17:00:00,1410271200,171.70.163.169,dev-gever,root,Accepted,publickey,,,,false,false,false,false,false")	
+        		"2014-09-09 14:00:00,1410271200,171.70.163.169,dev-gever,root,Accepted,publickey,,,,false,false,false,false,false")
         );
     }
 

@@ -20,9 +20,9 @@ public class LoginEvents implements TableSchema, InitializingBean {
 	
 	@Value("${impala.data.security.events.login.table.field.timeGeneratedRaw}")
 	public String TIMEGENERATEDRAW;
-	@Value("${impala.data.security.events.login.table.field.timeGenerated}")
+	@Value("${impala.data.security.events.login.table.field.date_time}")
 	public String TIMEGENERATED;
-	@Value("${impala.data.security.events.login.table.field.timeGeneratedUnixTime}")
+	@Value("${impala.data.security.events.login.table.field.date_time_unix}")
 	public String TIMEGENERATEDUNIXTIME;
 	@Value("${impala.data.security.events.login.table.field.account_name}")
 	public String ACCOUNT_NAME;

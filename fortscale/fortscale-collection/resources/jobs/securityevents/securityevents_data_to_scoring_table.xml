@@ -20,7 +20,7 @@
 				</entry>
 				<entry>
 					<key>epochtimeField</key>
-					<value>${impala.data.security.events.4769.table.field.timeGeneratedUnixTime}</value>
+					<value>${impala.data.security.events.4769.table.field.date_time_unix}</value>
 				</entry>
 				<entry>
 					<key>streamingTopic</key>

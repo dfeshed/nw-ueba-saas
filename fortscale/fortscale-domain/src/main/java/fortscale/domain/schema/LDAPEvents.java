@@ -20,7 +20,7 @@ public class LDAPEvents implements TableSchema, InitializingBean {
 	public String ACCOUNT_NAME;
 	@Value("${impala.data.security.events.4769.table.field.timeGeneratedRaw}") 
 	public String TIMEGENERATEDRAW;
-	@Value("${impala.data.security.events.4769.table.field.timeGenerated}") 
+	@Value("${impala.data.security.events.4769.table.field.date_time}")
 	public String TIMEGENERATED;
 	@Value("${impala.data.security.events.4769.table.field.categoryString}") 
 	public String CATEGORYSTRING;
@@ -48,7 +48,7 @@ public class LDAPEvents implements TableSchema, InitializingBean {
 	public String FAILURE_CODE;
 	@Value("${impala.data.security.events.4769.table.field.source_network_address}")
 	public String SOURCE_NETWORK_ADDRESS;
-	@Value("${impala.data.security.events.4769.table.field.timeGeneratedUnixTime}")
+	@Value("${impala.data.security.events.4769.table.field.date_time_unix}")
 	public String TIMEGENERATEDUNIXTIME;
 	@Value("${impala.data.security.events.4769.table.field.machine_name}")
 	public String MACHINE_NAME;
