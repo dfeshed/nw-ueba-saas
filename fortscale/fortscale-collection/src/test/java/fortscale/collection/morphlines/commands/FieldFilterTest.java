@@ -21,16 +21,16 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigObject;
 
 import fortscale.collection.morphlines.RecordSinkCommand;
-import fortscale.collection.morphlines.commands.FieldBlacklistFilterCmdBuilder.FieldBlacklistFilter;
+import fortscale.collection.morphlines.commands.FieldFilterCmdBuilder.FieldFilter;
 
-public class FieldBlacklistFilterTest {
+public class FieldFilterTest {
 	private static ClassPathXmlApplicationContext testContextManager;
 
     private RecordSinkCommand sink = new RecordSinkCommand();
     private Config config;
     private ConfigObject configObject;
     
-    FieldBlacklistFilterCmdBuilder.FieldBlacklistFilter command;
+    FieldFilterCmdBuilder.FieldFilter command;
     
     
     @BeforeClass
@@ -59,12 +59,12 @@ public class FieldBlacklistFilterTest {
         when(configObject.keySet()).thenReturn(keySet);        
     }
     
-    private FieldBlacklistFilterCmdBuilder.FieldBlacklistFilter getCommand() {
+    private FieldFilterCmdBuilder.FieldFilter getCommand() {
 
-    	FieldBlacklistFilterCmdBuilder builder = new FieldBlacklistFilterCmdBuilder();
+    	FieldFilterCmdBuilder builder = new FieldFilterCmdBuilder();
         MorphlineContext morphlineContext = new MorphlineContext.Builder().build();
-        FieldBlacklistFilterCmdBuilder.FieldBlacklistFilter fieldBlacklistFilter =  (FieldBlacklistFilter) builder.build(config,sink,sink,morphlineContext);
-        return fieldBlacklistFilter;
+        FieldFilterCmdBuilder.FieldFilter fieldFilter =  (FieldFilter) builder.build(config,sink,sink,morphlineContext);
+        return fieldFilter;
 
     }
 

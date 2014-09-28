@@ -21,42 +21,46 @@ import com.typesafe.config.Config;
 import fortscale.collection.morphlines.RegexFileList;
 import fortscale.utils.logging.Logger;
 
-public class FieldBlacklistFilterCmdBuilder implements CommandBuilder{
-	private static Logger logger = Logger.getLogger(FieldBlacklistFilterCmdBuilder.class);
+public class FieldFilterCmdBuilder implements CommandBuilder{
+	private static Logger logger = Logger.getLogger(FieldFilterCmdBuilder.class);
 	
 	@Override
     public Collection<String> getNames() {
-        return Collections.singletonList("FieldBlacklistFilter");
+        return Collections.singletonList("FieldFilter");
     }
 
     @Override
     public Command build(Config config, Command parent, Command child, MorphlineContext context) {
-        return new FieldBlacklistFilter(this, config, parent, child, context);
+        return new FieldFilter(this, config, parent, child, context);
     }
 
     // /////////////////////////////////////////////////////////////////////////////
     // Nested classes:
     // /////////////////////////////////////////////////////////////////////////////
     @Configurable(preConstruction=true)
-    public static final class FieldBlacklistFilter extends AbstractCommand implements EmbeddedValueResolverAware, ApplicationContextAware {
+    public static final class FieldFilter extends AbstractCommand implements EmbeddedValueResolverAware, ApplicationContextAware {
     	
     	private final String renderedConfig; // cached value
 
         private RegexFileList regexFileList;
         private String fieldName;
+        private boolean isBlacklist;
         
         StringValueResolver stringValueResolver;
         ApplicationContext applicationContext;
 
 
 
-        public FieldBlacklistFilter(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
+        public FieldFilter(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
             super(builder, config, parent, child, context);
             fieldName = getConfigs().getString(config, "fieldName");
             fieldName = stringValueResolver.resolveStringValue(fieldName);
+            
             String blacklistFileStr = getConfigs().getString(config, "blacklistFile");
             Resource blacklistResource = applicationContext.getResource(blacklistFileStr);
             regexFileList = new RegexFileList(blacklistResource);
+            
+            isBlacklist = getConfigs().getBoolean(config, "isBlacklist", true);
             
             this.renderedConfig = config.root().render();
         }
@@ -64,10 +68,11 @@ public class FieldBlacklistFilterCmdBuilder implements CommandBuilder{
         @Override
         protected boolean doProcess(Record inputRecord) {
         	String fieldContent = (String) inputRecord.getFirstValue(fieldName);
-
-            if(regexFileList.isMatch(fieldContent)){
+        	
+        	boolean isMatch = regexFileList.isMatch(fieldContent);
+            if((isBlacklist && isMatch) || (!isBlacklist && !isMatch) ){
             	// drop record
-				logger.debug("FieldBlacklistFilter command droped record because {} is in the black list of field {}. command: {}, record: {}", fieldContent, fieldName, renderedConfig, inputRecord.toString());
+				logger.debug("FieldFilter command droped record because {} is in the black list of field {}. command: {}, record: {}", fieldContent, fieldName, renderedConfig, inputRecord.toString());
 				return true;
             }
 
