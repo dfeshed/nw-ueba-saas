@@ -97,7 +97,8 @@ public class AdUserProcessJob extends AdProcessJob {
 			return false;
 		}
 		adUser.setLastModified(new Date());
-		if(StringUtils.isEmpty(ouUsersFilter)){
+		if(StringUtils.isEmpty(ouUsersFilter) || supportedUsersService.isSupportedUsername(adUser.getUserPrincipalName()) ||
+				supportedUsersService.isSupportedUsername(adUser.getsAMAccountName())){
 			adUserRepository.save(adUser);
 			userServiceFacade.updateUserWithADInfo(adUser);
 		}else{
