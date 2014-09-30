@@ -20,10 +20,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Date;
 
 @DisallowConcurrentExecution
@@ -150,19 +147,22 @@ public abstract class AdProcessJob extends FortscaleJob {
 		BufferedLineReader reader = null;
 		Date runtime = new Date();
 		try {
-			logger.info("starting to process {}", file.getName());
+            logger.info("starting to process {}", file.getName());
+            if(ldiftocsv == null){
+                reader = new BufferedLineReader( new BufferedReader(new FileReader(file)));
+                processFile(reader, runtime);
+            }else{
+                Process pr =  runCmd(null, ldiftocsv, file.getAbsolutePath());
+                reader = new BufferedLineReader( new BufferedReader(new InputStreamReader(pr.getInputStream())));
+                // transform events in file
+                processFile(reader, runtime);
 
-			Process pr =  runCmd(null, ldiftocsv, file.getAbsolutePath());
-			reader = new BufferedLineReader( new BufferedReader(new InputStreamReader(pr.getInputStream())));
-			// transform events in file
-			processFile(reader, runtime);
-			
-			if(pr.waitFor() != 0){
-				handleCmdFailure(pr, ldiftocsv);
-				throw new JobExecutionException(String.format("got error while running shell command %s", ldiftocsv));
-			}
-
-			logger.info("finished processing {}", file.getName());
+                if(pr.waitFor() != 0){
+                    handleCmdFailure(pr, ldiftocsv);
+                    throw new JobExecutionException(String.format("got error while running shell command %s", ldiftocsv));
+                }
+            }
+            logger.info("finished processing {}", file.getName());
 
 		} catch (Exception e) {
 			moveFileToFolder(file, errorPath);
