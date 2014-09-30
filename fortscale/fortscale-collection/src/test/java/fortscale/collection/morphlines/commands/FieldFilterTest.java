@@ -53,7 +53,7 @@ public class FieldFilterTest {
 
         Set<String> keySet = new HashSet<String>();
         keySet.add("fieldName");
-        keySet.add("blacklistFile");
+        keySet.add("listFile");
 
         when(config.root()).thenReturn(configObject);
         when(configObject.keySet()).thenReturn(keySet);        
@@ -67,11 +67,50 @@ public class FieldFilterTest {
         return fieldFilter;
 
     }
+    
+    
 
+    @Test
+    public void test_valueExistInTheWhiteListIsNotFiltered() throws Exception {    
+    	when(config.getString("listFile")).thenReturn("classpath:exactMatchWhitelist.txt");
+        when(config.getString("fieldName")).thenReturn("testedField");
+        when(config.getBoolean("isBlacklist")).thenReturn(false);
+        when(config.hasPath("isBlacklist")).thenReturn(true);
+        when(config.getBoolean("isRegex")).thenReturn(false);
+        when(config.hasPath("isRegex")).thenReturn(true);
+        command = getCommand();
+        
+        Record record = new Record();
+        record.put("testedField","TEST-PC");
+        boolean result = command.doProcess(record);
+        Record output = sink.popRecord();
+        
+        assertTrue(result);
+        assertNotNull(output);
+    }
+    
+    @Test
+    public void test_valueNotExistInTheWhiteListIsFiltered() throws Exception {    
+    	when(config.getString("listFile")).thenReturn("classpath:exactMatchWhitelist.txt");
+        when(config.getString("fieldName")).thenReturn("testedField");
+        when(config.getBoolean("isBlacklist")).thenReturn(false);
+        when(config.hasPath("isBlacklist")).thenReturn(true);
+        when(config.getBoolean("isRegex")).thenReturn(false);
+        when(config.hasPath("isRegex")).thenReturn(true);
+        command = getCommand();
+        
+        Record record = new Record();
+        record.put("testedField","TEST-PC1");
+        boolean result = command.doProcess(record);
+        Record output = sink.popRecord();
+        
+        assertTrue(result);
+        assertNull(output);
+    }
 
     @Test
     public void test_valueExistInTheListIsFiltered1() throws Exception {    
-    	when(config.getString("blacklistFile")).thenReturn("classpath:blacklist.txt");
+    	when(config.getString("listFile")).thenReturn("classpath:blacklist.txt");
         when(config.getString("fieldName")).thenReturn("testedField");
         command = getCommand();
         
@@ -86,7 +125,7 @@ public class FieldFilterTest {
     
     @Test
     public void test_valueExistInTheListIsFiltered2() throws Exception {    
-    	when(config.getString("blacklistFile")).thenReturn("file:src/test/resources/blacklist.txt");
+    	when(config.getString("listFile")).thenReturn("file:src/test/resources/blacklist.txt");
         when(config.getString("fieldName")).thenReturn("${field.blacklist.filter.name}");
         command = getCommand();
         
@@ -101,7 +140,7 @@ public class FieldFilterTest {
     
     @Test
     public void test_valueNotExistInTheListIsNotFiltered() throws Exception { 
-    	when(config.getString("blacklistFile")).thenReturn("classpath:blacklist.txt");
+    	when(config.getString("listFile")).thenReturn("classpath:blacklist.txt");
         when(config.getString("fieldName")).thenReturn("testedField");
         command = getCommand();
         

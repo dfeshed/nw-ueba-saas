@@ -18,7 +18,9 @@ import org.springframework.util.StringValueResolver;
 
 import com.typesafe.config.Config;
 
-import fortscale.collection.morphlines.RegexFileList;
+import fortscale.collection.morphlines.ExactMatcherFileList;
+import fortscale.collection.morphlines.MatcherFileList;
+import fortscale.collection.morphlines.RegexMatcherFileList;
 import fortscale.utils.logging.Logger;
 
 public class FieldFilterCmdBuilder implements CommandBuilder{
@@ -42,7 +44,7 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
     	
     	private final String renderedConfig; // cached value
 
-        private RegexFileList regexFileList;
+        private MatcherFileList matcherFileList;
         private String fieldName;
         private boolean isBlacklist;
         
@@ -56,9 +58,14 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
             fieldName = getConfigs().getString(config, "fieldName");
             fieldName = stringValueResolver.resolveStringValue(fieldName);
             
-            String blacklistFileStr = getConfigs().getString(config, "blacklistFile");
-            Resource blacklistResource = applicationContext.getResource(blacklistFileStr);
-            regexFileList = new RegexFileList(blacklistResource);
+            String listFileStr = getConfigs().getString(config, "listFile");
+            Resource listResource = applicationContext.getResource(listFileStr);
+            boolean isRegex = getConfigs().getBoolean(config, "isRegex", true);
+            if(isRegex){
+            	matcherFileList = new RegexMatcherFileList(listResource);
+            } else{
+            	matcherFileList = new ExactMatcherFileList(listResource);
+            }
             
             isBlacklist = getConfigs().getBoolean(config, "isBlacklist", true);
             
@@ -69,7 +76,7 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
         protected boolean doProcess(Record inputRecord) {
         	String fieldContent = (String) inputRecord.getFirstValue(fieldName);
         	
-        	boolean isMatch = regexFileList.isMatch(fieldContent);
+        	boolean isMatch = matcherFileList.isMatch(fieldContent);
             if((isBlacklist && isMatch) || (!isBlacklist && !isMatch) ){
             	// drop record
 				logger.debug("FieldFilter command droped record because {} is in the black list of field {}. command: {}, record: {}", fieldContent, fieldName, renderedConfig, inputRecord.toString());
