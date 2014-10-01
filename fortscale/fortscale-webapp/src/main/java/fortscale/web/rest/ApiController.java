@@ -5,6 +5,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fortscale.dataqueries.querydto.DataQueryDTO;
+import fortscale.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
@@ -34,6 +38,9 @@ public class ApiController {
 
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
+
+	@Autowired
+	private DataQueryRunnerFactory dataQueryRunnerFactory;
 
     @Autowired
     private ClassifierService classifierService;
@@ -159,6 +166,46 @@ public class ApiController {
 			investigateQueryCache.put(query, retBean);
 			
 		return retBeanForPage;
+	}
+
+	/**
+	 *
+	 * @param queryObject	The query object from the client.
+	 * 						This query shouldn't contain the "LIMIT" and "OFFSET" in case of paging
+	 * @param countQuery	The count query. Not mandatory.
+	 * @param useCache		"True" if we wish to use existing results from cache (if exist).
+	 * 						Not mandatory. "False" by default
+	 * @param page			The requested page number (starting from 0). Not mandatory.
+	 * 						If null no paging will be used
+	 * @param pageSize		The page size. Not mandatory. "20" by default.
+	 * 						Relevant only if "page" was requested
+	 * @param model			The model
+	 * @return				List of results according to the query and paging
+	 */
+	@RequestMapping(value="/investigateObject", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<Map<String, Object>>> investigateObject(@RequestParam(required=true) String queryObject,
+					@RequestParam(required=false) String countQuery,
+					@RequestParam(defaultValue="false") boolean useCache,
+					@RequestParam(required=false) Integer page, // starting from 0
+					@RequestParam(defaultValue="20") Integer pageSize,
+					Model model){
+
+
+		// TODO - create DTO from queryObject
+		DataQueryDTO temporary = new DataQueryDTO();
+
+
+		// create and run query
+		DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(temporary);
+		try {
+			return dataQueryRunner.runQuery(temporary, true);
+		}
+		catch (InvalidQueryException e) {
+			throw new InvalidValueException("Invalid query to parse");
+		}
+
 	}
 
 	/**
