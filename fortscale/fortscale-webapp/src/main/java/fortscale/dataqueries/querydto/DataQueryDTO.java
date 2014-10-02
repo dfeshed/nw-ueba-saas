@@ -24,12 +24,18 @@ public class DataQueryDTO {
     public short limit = 10;
     public int offset = 0;
 
+    public static enum QueryValueType{
+        BOOLEAN, NUMBER, STRING, DATE, ARRAY
+    }
+
     public static class DataQueryField{
         private String id;
         private String alias;
         private DataQueryEntity entity;
         private DBFunction function;
         private String value;
+
+        public QueryValueType valueType;
 
         public String getId(){ return id; }
         public String getAlias(){ return alias; }
@@ -43,6 +49,7 @@ public class DataQueryDTO {
             this.entity = new DataQueryEntity(entityName);
         }
 
+        public void setValue(String value){ this.value = value; }
         public DBFunction setFunction(){ return function; }
     }
 
@@ -53,54 +60,46 @@ public class DataQueryDTO {
         }
     }
 
+    public static enum LogicalOperator{
+        AND, OR
+    }
+
     @JsonTypeInfo(
-            use = JsonTypeInfo.Id.CLASS,
+            use = JsonTypeInfo.Id.NAME,
             include = As.PROPERTY,
             property = "type")
     @JsonSubTypes({
             @Type(value = ConditionTerm.class, name = "term"),
             @Type(value = ConditionField.class, name = "field") })
     public static abstract class Term{
-        @JsonProperty("type")
-        public String type;
-
-        // TODO: Use enum instead of string (and then implement with generics?)
         @JsonProperty("operator")
-        protected String operator;
-
-        public abstract String getOperator();
-        public abstract void setOperator(String operator);
+        Enum operator;
     }
 
     public static class ConditionTerm extends Term{
-        @JsonCreator
-        public ConditionTerm(@JsonProperty("type") String type) {
-            this.type = type;
-        }
-
         public List<Term> terms;
+        public LogicalOperator operator;
+    }
 
-        public String getOperator(){ return this.operator; }
-        public void setOperator(String operator){
-            if (!operator.toUpperCase().equals("AND") && !operator.toUpperCase().equals("OR"))
-                throw new InvalidValueException("Invalid operator for condition term, must be either 'AND' or 'OR'");
-
-            this.operator = operator;
-        }
+    public static enum Operator{
+        equals, notEquals,
+        greaterThan, greaterThanOrEquals,
+        lesserThan, lesserThanOrEquals,
+        in,
+        like,
+        hasValue,
+        hasNoValue,
+        regex
     }
 
     public static class ConditionField extends Term{
-        @JsonCreator
-        public ConditionField(@JsonProperty("type") String type) {
-            this.type = type;
-        }
+        public DataQueryField field;
+        public Operator operator;
 
-        public String getOperator(){ return this.operator; }
-        public void setOperator(String operator){
-            // TODO: After the operator is an enum, validate it.
-
-            this.operator = operator;
-        }
+        private String value;
+        public QueryValueType valueType;
+        public String getValue(){ return value; }
+        public void setValue(String value){ this.value = value; }
     }
 
     public static class DBFunction{
@@ -110,36 +109,12 @@ public class DataQueryDTO {
         public void setFunctionName(String functionName){ this.functionName = functionName; }
     }
 
+    public static enum SortDirection{
+        ASC, DESC
+    }
+
     public static class Sort{
-
-    }
-
-    public static enum QueryValueType{
-        BOOLEAN("boolean"),
-        INT("int"),
-        FLOAT("float"),
-        STRING("string"),
-        DATE("date");
-
-        private final String name;
-
-        private QueryValueType(String name){
-            this.name = name;
-        }
-
-        // TODO this still shouldn't work.
-    }
-
-    public static class QueryValue{
-        private String value;
-        private QueryValueType valueType;
-
-        public String getValue(){ return value; }
-        public QueryValueType getValueType(){ return valueType; }
-
-        public void setValue(String value){ this.value = value; }
-        public void setValueType(QueryValueType valueTypeName){
-            this.valueType = valueType;
-        }
+        public DataQueryField field;
+        public SortDirection direction;
     }
 }
