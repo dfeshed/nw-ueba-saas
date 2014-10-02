@@ -182,12 +182,12 @@ public class ApiControllerTest {
 	@Test
 	public void testInvestigateObject() throws Exception {
 
-		String jsonQuery = "bla bla"; // TODO replace with JSON
+		String jsonQuery = "{\"fields\":[{\"id\":\"source_ip\"},{\"id\":\"destination_machine\"},{\"id\":\"source_machine\"},{\"id\":\"is_sensitive_machine\"},{\"id\":\"destination_machine_score\"},{\"id\":\"source_machine_score\"},{\"id\":\"event_time_score\"},{\"alias\":\"type\",\"value\":\"AD\"},{\"id\":\"event_time\",\"alias\":\"time\"},{\"id\":\"normalized_username\",\"alias\":\"username\"},{\"alias\":\"country\",\"value\":null}],\"conditions\":[{\"type\":\"term\",\"operator\":\"AND\",\"terms\":[{\"operator\":\"greaterThanOrEquals\",\"type\":\"field\",\"id\":\"event_score\",\"value\":50},{\"operator\":\"greaterThanOrEquals\",\"type\":\"field\",\"id\":\"event_time\",\"value\":\"1411592400\"},{\"type\":\"term\",\"operator\":\"OR\",\"terms\":[{\"operator\":\"lesserThanOrEquals\",\"type\":\"field\",\"id\":\"event_time\",\"value\":\"1412283599\"},{\"operator\":\"equals\",\"type\":\"field\",\"id\":\"normalized_username\",\"value\":\"omrik@fortscale.dom\"}]}]}],\"entities\":[\"ad_logins\"],\"sort\":[{\"field\":\"event_score\",\"direction\":\"DESC\"},{\"field\":\"event_time\",\"direction\":\"DESC\"}],\"limit\":20,\"offset\":0}";
 
-		mockMvc.perform(get("/api/investigateObject")
+		mockMvc.perform(get("/api/dataQuery")
 										.param("pageSize", PAGE_SIZE.toString())
 										.param("page", "1") // page 1
-										.param("queryObject", jsonQuery)
+										.param("dataQuery", jsonQuery)
 										.accept(MediaType.APPLICATION_JSON))
 						.andExpect(status().isOk())
 						.andExpect(content().contentType("application/json;charset=UTF-8"));

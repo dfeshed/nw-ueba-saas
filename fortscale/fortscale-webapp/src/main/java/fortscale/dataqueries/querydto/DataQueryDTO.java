@@ -1,7 +1,14 @@
 package fortscale.dataqueries.querydto;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import fortscale.services.exceptions.InvalidValueException;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -10,10 +17,13 @@ import java.util.List;
 public class DataQueryDTO {
 
 	public List<DataQueryField> fields;
-    /*
-    public List<Term> conditions;
+
+    public Collection<Term> conditions;
     public List<DataQueryEntity> entities;
-*/
+    public List<Sort> sort;
+    public short limit = 10;
+    public int offset = 0;
+
     public static class DataQueryField{
         private String id;
         private String alias;
@@ -43,8 +53,54 @@ public class DataQueryDTO {
         }
     }
 
-    public static class Term{
+    @JsonTypeInfo(
+            use = JsonTypeInfo.Id.CLASS,
+            include = As.PROPERTY,
+            property = "type")
+    @JsonSubTypes({
+            @Type(value = ConditionTerm.class, name = "term"),
+            @Type(value = ConditionField.class, name = "field") })
+    public static abstract class Term{
+        @JsonProperty("type")
+        public String type;
 
+        // TODO: Use enum instead of string (and then implement with generics?)
+        @JsonProperty("operator")
+        protected String operator;
+
+        public abstract String getOperator();
+        public abstract void setOperator(String operator);
+    }
+
+    public static class ConditionTerm extends Term{
+        @JsonCreator
+        public ConditionTerm(@JsonProperty("type") String type) {
+            this.type = type;
+        }
+
+        public List<Term> terms;
+
+        public String getOperator(){ return this.operator; }
+        public void setOperator(String operator){
+            if (!operator.toUpperCase().equals("AND") && !operator.toUpperCase().equals("OR"))
+                throw new InvalidValueException("Invalid operator for condition term, must be either 'AND' or 'OR'");
+
+            this.operator = operator;
+        }
+    }
+
+    public static class ConditionField extends Term{
+        @JsonCreator
+        public ConditionField(@JsonProperty("type") String type) {
+            this.type = type;
+        }
+
+        public String getOperator(){ return this.operator; }
+        public void setOperator(String operator){
+            // TODO: After the operator is an enum, validate it.
+
+            this.operator = operator;
+        }
     }
 
     public static class DBFunction{

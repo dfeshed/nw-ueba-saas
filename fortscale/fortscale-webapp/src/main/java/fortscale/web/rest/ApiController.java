@@ -170,46 +170,90 @@ public class ApiController {
 		return retBeanForPage;
 	}
 
-	/**
-	 *
-	 * @param queryObject	The query object from the client.
-	 * 						This query shouldn't contain the "LIMIT" and "OFFSET" in case of paging
-	 * @param countQuery	The count query. Not mandatory.
-	 * @param useCache		"True" if we wish to use existing results from cache (if exist).
-	 * 						Not mandatory. "False" by default
-	 * @param page			The requested page number (starting from 0). Not mandatory.
-	 * 						If null no paging will be used
-	 * @param pageSize		The page size. Not mandatory. "20" by default.
-	 * 						Relevant only if "page" was requested
-	 * @param model			The model
-	 * @return				List of results according to the query and paging
-	 */
-	@RequestMapping(value="/dataQuery", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<Map<String, Object>>> investigateObject(@RequestParam(required=true) String dataQueryJson){
+    /**
+     *
+     * @param dataQuery	The query object from the client.
+     * 						This query shouldn't contain the "LIMIT" and "OFFSET" in case of paging
+     * @param useCache		Whether to use cache (optional, defaults to true).
+     *
+     * @param page			The requested page number (starting from 0). Not mandatory.
+     * 						If null no paging will be used
+     * @param pageSize		The page size. Not mandatory. "20" by default.
+     * 						Relevant only if "page" was requested
+     * @return				List of results according to the query
+     */
+    @RequestMapping(value="/dataQuery", method=RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<List<Map<String, Object>>> dataQuery(@RequestParam(required=true) String dataQuery,
+                                                                 @RequestParam(defaultValue="true") boolean useCache,
+                                                                 @RequestParam(required=false) Integer page, // starting from 0
+                                                                 @RequestParam(defaultValue="20") Integer pageSize){
+
         Logger logger = Logger.getLogger(DataQueryDTO.class);
         ObjectMapper mapper = new ObjectMapper();
-        DataQueryDTO dataQuery;
+        DataQueryDTO dataQueryObject;
         DataQueryRunner dataQueryRunner;
 
         try {
-            dataQuery = mapper.readValue(dataQueryJson, DataQueryDTO.class);
+            dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             throw new InvalidValueException("Couldn't parse dataQuery.");
         }
 
         // create and run query
-        dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQuery);
+        dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryObject);
 
-		try {
-			return dataQueryRunner.runQuery(dataQuery, true);
-		}
-		catch (InvalidQueryException e) {
-			throw new InvalidValueException("Invalid query to parse");
-		}
-	}
+        try {
+            // Generates query
+            String query = dataQueryRunner.generateQuery(dataQueryObject);
+
+            // Add offset and limit according to page
+            Integer offsetInLimit = null;
+            if (page != null) {
+                if (page < 0) throw new InvalidValueException("Page number must be greater than 0");
+                if (pageSize > CACHE_LIMIT) throw new InvalidValueException("Page size must be less than " + CACHE_LIMIT);
+                int location = page * pageSize;
+                offsetInLimit = (location % CACHE_LIMIT);
+                int offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
+                query += " LIMIT " + CACHE_LIMIT + " OFFSET " + offsetInQuery;
+            }
+
+            // check if the query is in the cache before returning results
+            if (useCache) {
+                DataBean<List<Map<String, Object>>> cachedResults = investigateQueryCache.getIfPresent(query);
+                if (cachedResults!=null) {
+                    if (page != null) {
+                        // take only relevant page from cache
+                        return createDataForPage(pageSize, offsetInLimit, cachedResults);
+                    } else {
+                        return cachedResults;
+                    }
+                }
+            }
+
+
+            // execute Query
+            DataBean<List<Map<String, Object>>> retBean = dataQueryRunner.executeQuery(query);
+
+            DataBean<List<Map<String, Object>>> retBeanForPage = retBean;
+
+            // take only relevant page from results
+            if (page != null) {
+                retBeanForPage = createDataForPage(pageSize, offsetInLimit, retBean);
+            }
+
+            // cache results if needed, store results with up to 200 rows in the cache to protect memory
+            if (useCache && retBean.getData().size() <= CACHE_LIMIT) // Query real size is 200.
+                investigateQueryCache.put(query, retBean);
+
+            return retBeanForPage;
+        }
+        catch (InvalidQueryException e) {
+            throw new InvalidValueException("Invalid query to parse");
+        }
+    }
 
 	/**
 	 *
