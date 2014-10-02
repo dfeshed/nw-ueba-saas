@@ -1,6 +1,6 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
-import com.google.common.cache.Cache;
+
 
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.*;
@@ -31,6 +31,10 @@ public class MySqlQueryRunner implements DataQueryRunner {
 
 	@Autowired
 	private QueryPartGenerator mySqlWherePartGenerator;
+
+	@Autowired
+	private QueryPartGenerator mySqlOrderByPartGenerator;
+
 
 
 	// runner for impala
@@ -66,7 +70,8 @@ public class MySqlQueryRunner implements DataQueryRunner {
 		StringBuilder sb = new StringBuilder();
 		sb.append(mySqlSelectPartGenerator.generateQueryPart(dataQueryDTO))
 						.append(mySqlFromPartGenerator.generateQueryPart(dataQueryDTO))
-						.append(mySqlWherePartGenerator.generateQueryPart(dataQueryDTO));
+						.append(mySqlWherePartGenerator.generateQueryPart(dataQueryDTO))
+						.append(mySqlOrderByPartGenerator.generateQueryPart(dataQueryDTO));
 		return sb.toString();
 	}
 }
