@@ -13,6 +13,7 @@ import fortscale.services.UserServiceFacade;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
 
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
@@ -31,6 +32,7 @@ import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.UserIdBean;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @RequestMapping("/api/**")
@@ -182,30 +184,31 @@ public class ApiController {
 	 * @param model			The model
 	 * @return				List of results according to the query and paging
 	 */
-	@RequestMapping(value="/investigateObject", method=RequestMethod.GET)
+	@RequestMapping(value="/dataQuery", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<Map<String, Object>>> investigateObject(@RequestParam(required=true) String queryObject,
-					@RequestParam(required=false) String countQuery,
-					@RequestParam(defaultValue="false") boolean useCache,
-					@RequestParam(required=false) Integer page, // starting from 0
-					@RequestParam(defaultValue="20") Integer pageSize,
-					Model model){
+	public DataBean<List<Map<String, Object>>> investigateObject(@RequestParam(required=true) String dataQueryJson){
+        Logger logger = Logger.getLogger(DataQueryDTO.class);
+        ObjectMapper mapper = new ObjectMapper();
+        DataQueryDTO dataQuery;
+        DataQueryRunner dataQueryRunner;
 
+        try {
+            dataQuery = mapper.readValue(dataQueryJson, DataQueryDTO.class);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            throw new InvalidValueException("Couldn't parse dataQuery.");
+        }
 
-		// TODO - create DTO from queryObject
-		DataQueryDTO temporary = new DataQueryDTO();
+        // create and run query
+        dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQuery);
 
-
-		// create and run query
-		DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(temporary);
 		try {
-			return dataQueryRunner.runQuery(temporary, true);
+			return dataQueryRunner.runQuery(dataQuery, true);
 		}
 		catch (InvalidQueryException e) {
 			throw new InvalidValueException("Invalid query to parse");
 		}
-
 	}
 
 	/**
