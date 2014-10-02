@@ -5,6 +5,7 @@ import fortscale.utils.properties.PropertiesResolver;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,26 +58,26 @@ public class SshSshdTest {
 		if (currentMonth < 11)
 			year--;
 
-		long runtime = ((new DateTime(year, 11, 19, 14, 58, 32).getMillis()) / 1000L);
+		long runtime = ((new DateTime(year, 11, 19, 14, 58, 32, DateTimeZone.UTC).getMillis()) / 1000L);
 
         return	$(
         		$ (
         		"Successful Password Authentication",
         		"Nov 19 14:58:32 dev-gever sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
-        		year + "-11-19 12:58:32," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,false,false,false,false"
+        		year + "-11-19 14:58:32," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,false,false,false,false"
 				),
         		$ (
         		"Successful Public Key Authentication",
         		"Nov 19 14:58:32 dev-gever sshd[2591]: Accepted publickey for root from 192.168.55.55 port 38681 ssh2",
-        		year + "-11-19 12:58:32," + runtime + ",192.168.55.55,dev-gever,root,Accepted,publickey,,,,false,false,false,false,false"),
+        		year + "-11-19 14:58:32," + runtime + ",192.168.55.55,dev-gever,root,Accepted,publickey,,,,false,false,false,false,false"),
         		$ (
         		"Successful Public Key Authentication from NAT address",
         		"Nov 19 14:58:32 dev-gever sshd[2591]: Accepted publickey for root from 192.168.0.22 port 38681 ssh2",
-        		year + "-11-19 12:58:32," + runtime + ",192.168.0.22,dev-gever,root,Accepted,publickey,,,,true,false,false,false,false"),
+        		year + "-11-19 14:58:32," + runtime + ",192.168.0.22,dev-gever,root,Accepted,publickey,,,,true,false,false,false,false"),
         		$ (
         		"Password Failed Authentication",
         		"Nov 19 14:58:32 inter-psg-01 sshd[22525]: Failed password for root from 192.168.211.112 port 59420 ssh2",
-        		year + "-11-19 12:58:32," + runtime + ",192.168.211.112,inter-psg-01,root,Failed,password,,,,false,false,false,false,false"),
+        		year + "-11-19 14:58:32," + runtime + ",192.168.211.112,inter-psg-01,root,Failed,password,,,,false,false,false,false,false"),
         		$ (
 
         		"Invalid User Failed Authentication",
