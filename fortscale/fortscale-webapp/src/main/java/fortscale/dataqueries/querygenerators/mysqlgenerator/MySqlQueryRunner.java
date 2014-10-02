@@ -39,30 +39,14 @@ public class MySqlQueryRunner implements DataQueryRunner {
 	private JdbcOperations impalaJdbcTemplate;
 
 
-	// TODO move cache capabilities from ApiController to here
-
-
-
-	@Override public DataBean<List<Map<String, Object>>> runQuery(
-					DataQueryDTO dataQueryDTO, boolean useCache) throws InvalidQueryException {
-
-
-		// Generates query
-		String query = generatesQuery(dataQueryDTO);
-
-		// execute Query
-		return executeQuery(query);
-
-	}
-
 	/**
 	 * Execute the query
 	 * @param query	the query to execute
 	 * @return the result of the query
 	 */
-	private DataBean<List<Map<String, Object>>> executeQuery(String query) {
+	@Override
+	public DataBean<List<Map<String, Object>>> executeQuery(String query) {
 
-		// TODO copy ApiController.investigate() logic to here (cache, paginf, etc.)
 		DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
 		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
 		retBean.setData(resultsMap);
@@ -72,10 +56,11 @@ public class MySqlQueryRunner implements DataQueryRunner {
 
 	/**
 	 * Generates the query
-	 * @param dataQueryDTO
-	 * @throws InvalidQueryException
+	 * @param dataQueryDTO The DTO that represents the query
+	 * @throws InvalidQueryException in case the DTO is not a valid query
 	 */
-	private String generatesQuery(DataQueryDTO dataQueryDTO)
+	@Override
+	public String generateQuery(DataQueryDTO dataQueryDTO)
 					throws InvalidQueryException {
 
 		StringBuilder sb = new StringBuilder();

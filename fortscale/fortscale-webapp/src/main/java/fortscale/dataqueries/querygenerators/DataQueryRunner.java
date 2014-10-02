@@ -12,14 +12,19 @@ import java.util.Map;
  */
 public interface DataQueryRunner {
 
+
 	/**
-	 * Creates and runs query according to the DTO
+	 * Creates query according to the DTO
 	 * @param dataQueryDTO    The DTO
-	 * @param useCache	true if we want to use the cache
 	 * @return The results of the Query
 	 * @throws InvalidQueryException	in case we failed to parse the DTO into query
 	 */
-	DataBean<List<Map<String, Object>>> runQuery(
-					DataQueryDTO dataQueryDTO, boolean useCache) throws
-					InvalidQueryException;
+	public String generateQuery(DataQueryDTO dataQueryDTO) throws InvalidQueryException;
+
+	/**
+	 * runs query according to the DTO
+	 * @param query
+	 * @return The results of the Query
+	 */
+	public DataBean<List<Map<String, Object>>> executeQuery(String query);
 }

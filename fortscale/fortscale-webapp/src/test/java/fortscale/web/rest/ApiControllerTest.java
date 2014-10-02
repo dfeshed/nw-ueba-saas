@@ -71,7 +71,10 @@ public class ApiControllerTest {
 
 		// create mock for queries factory
 		DataQueryRunner dataQueryRunner = Mockito.mock(DataQueryRunner.class);
-		when(dataQueryRunner.runQuery(any(DataQueryDTO.class), eq(true))).thenReturn(new DataBean<List<Map<String, Object>>>());
+		when(dataQueryRunner.generateQuery(any(DataQueryDTO.class))).thenReturn("select A from B");
+		DataBean<List<Map<String, Object>>> dataBean = new DataBean<List<Map<String, Object>>>();
+		dataBean.setData(new ArrayList<Map<String, Object>>());
+		when(dataQueryRunner.executeQuery(any(String.class))).thenReturn(dataBean);
 		when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(dataQueryRunner);
 
 
@@ -185,7 +188,6 @@ public class ApiControllerTest {
 										.param("pageSize", PAGE_SIZE.toString())
 										.param("page", "1") // page 1
 										.param("queryObject", jsonQuery)
-										.param("useCache", "true") // use cache
 										.accept(MediaType.APPLICATION_JSON))
 						.andExpect(status().isOk())
 						.andExpect(content().contentType("application/json;charset=UTF-8"));
