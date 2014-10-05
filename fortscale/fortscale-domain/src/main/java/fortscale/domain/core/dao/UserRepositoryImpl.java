@@ -401,6 +401,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return res;
 	}
 	
+	public Set<String> getUserTags(String normalizedUsername) {
+		Query query = new Query(where(User.usernameField).is(normalizedUsername));
+		query.fields().include(User.tagsField);
+		User user = mongoTemplate.findOne(query, User.class);
+		
+		return (user==null)? new HashSet<String>() : user.getTags();
+	}
+	
 	public boolean findIfUserExists(String username){
 		Query query = new Query(where(User.usernameField).is(username));
 		query.fields().include(User.ID_FIELD);

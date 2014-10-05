@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -23,6 +24,9 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
@@ -58,6 +62,8 @@ public class UserServiceImpl implements UserService{
 	
 	private static final String SEARCH_FIELD_PREFIX = "##";
 	
+	@Value("${user.service.tags.cache.max.items:10000}")
+	private int cacheMaxSize;
 	
 	@Autowired
 	private MongoOperations mongoTemplate;
@@ -109,7 +115,12 @@ public class UserServiceImpl implements UserService{
 
 	
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
+	private Cache<String, Set<String>> tagsCache;
 	
+	public UserServiceImpl() {
+		// construct user tags cache instances
+		tagsCache = CacheBuilder.newBuilder().maximumSize(cacheMaxSize).build();
+	}
 	
 	
 	@Override
@@ -670,5 +681,23 @@ public class UserServiceImpl implements UserService{
 		// call the repository to update mongodb with the tags settings
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 	}
+
+
+	@Override
+	public boolean isUserTagged(String username, String tag) {
+		// check if the user tags are kept in cache
+		Set<String> tags = tagsCache.getIfPresent(username);
+		if (tags==null) {
+			// get tags from mongodb and add to cache
+			tags = userRepository.getUserTags(username);
+			if (tags!=null)
+				tagsCache.put(username, tags);
+		}
+			
+		return tags!=null & tags.contains(tag);
+	}
 	
+	public void invalidateCache() {
+		tagsCache.invalidateAll();
+	}
 }
