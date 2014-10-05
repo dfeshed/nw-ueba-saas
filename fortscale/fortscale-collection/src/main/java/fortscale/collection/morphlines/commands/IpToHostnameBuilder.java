@@ -18,6 +18,7 @@ import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.services.ipresolving.ComputerLoginResolver;
 import fortscale.services.ipresolving.DhcpResolver;
 import fortscale.services.ipresolving.DnsResolver;
+import fortscale.services.ipresolving.StaticFileBasedMappingResolver;
 import fortscale.utils.actdir.LogsToADConversions;
 
 public final class IpToHostnameBuilder implements CommandBuilder {
@@ -45,7 +46,8 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 		private DnsResolver dnsResolver;
 		@Autowired
 		private ComputerLoginResolver computerLoginResolver;
-
+		@Autowired
+		private StaticFileBasedMappingResolver fileResolver;
 		
 		private static final String STRING_EMPTY = "";
 		private final String ipAddress;
@@ -53,6 +55,7 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 		private boolean useLoginResolver = false;
 		private boolean useDhcpResolver = false;
 		private boolean useDnsResolver = false;
+		private boolean useFileResolver = false;
 		private final String outputRecordName;
 		
 		private boolean shortName = true;
@@ -73,6 +76,7 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 				useDhcpResolver = true;
 				useDnsResolver = true;
 				useLoginResolver = true;
+				useFileResolver = true;
 			} else{
 				for(String resolver: resolvers){
 					switch(resolver){
@@ -85,7 +89,11 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 					case "logins":
 						useLoginResolver = true;
 						break;
-					}					
+					case "file":
+						useFileResolver = true;
+						break;
+					}
+					
 				}
 			}
 			
@@ -102,6 +110,10 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 
         public void setComputerLoginResolver(ComputerLoginResolver computerLoginResolver) {
             this.computerLoginResolver = computerLoginResolver;
+        }
+        
+        public void setFileResolver(StaticFileBasedMappingResolver fileResolver) {
+        	this.fileResolver = fileResolver;
         }
 
         @Override
@@ -129,6 +141,12 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 				return STRING_EMPTY;
 			
 			String ret = null;
+			
+			if (ret == null || ret.isEmpty()) {
+				if (useFileResolver && fileResolver != null) {
+					ret = fileResolver.getHostname(ip);
+				}
+			}
 			if(ret == null || ret.isEmpty() ){
 				if(useLoginResolver && computerLoginResolver != null){
 					ret = computerLoginResolver.getHostname(ip, ts);
@@ -144,6 +162,7 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 					ret = dnsResolver.getHostname(ip);
 				}
 			}
+
 			
 			if (ret != null) {
 				if (shortName ) {
