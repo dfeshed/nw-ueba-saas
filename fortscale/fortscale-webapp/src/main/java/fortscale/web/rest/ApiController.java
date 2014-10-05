@@ -116,7 +116,11 @@ public class ApiController {
 
 		// Add offset and limit according to page
 		Integer offsetInLimit = null;
-		if (page != null) {
+
+		// the request shouldn't include "limit" if page was sent, but in order to be on the safe size, we check it
+		boolean usePaging = (page != null && !query.toLowerCase().contains(" limit "));
+
+		if (usePaging) {
 			if (page < 0) throw new InvalidValueException("Page number must be greater than 0");
 			if (pageSize > CACHE_LIMIT) throw new InvalidValueException("Page size must be less than " + CACHE_LIMIT);
 			int location = page * pageSize;
@@ -129,7 +133,7 @@ public class ApiController {
 		if (useCache) {
 			DataBean<List<Map<String, Object>>> cachedResults = investigateQueryCache.getIfPresent(query);
 			if (cachedResults!=null) {
-				if (page != null) {
+				if (usePaging) {
 					// take only relevant page from cache
 					return createDataForPage(pageSize, offsetInLimit, cachedResults);
 				} else {
@@ -150,7 +154,7 @@ public class ApiController {
 		DataBean<List<Map<String, Object>>> retBeanForPage = retBean;
 
 		// take only relevant page from results
-		if (page != null) {
+		if (usePaging) {
 			retBeanForPage = createDataForPage(pageSize, offsetInLimit, retBean);
 		}
 		
