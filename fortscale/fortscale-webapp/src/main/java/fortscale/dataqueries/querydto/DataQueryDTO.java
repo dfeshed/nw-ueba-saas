@@ -1,5 +1,6 @@
 package fortscale.dataqueries.querydto;
 
+import fortscale.dataqueries.QueryValueType;
 import fortscale.services.exceptions.InvalidValueException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -19,19 +20,15 @@ public class DataQueryDTO {
 	public List<DataQueryField> fields;
 
     public Collection<Term> conditions;
-    public List<DataQueryEntity> entities;
+    public String[] entities;
     public List<Sort> sort;
     public short limit = 10;
     public int offset = 0;
 
-    public static enum QueryValueType{
-        BOOLEAN, NUMBER, STRING, DATE, ARRAY
-    }
-
     public static class DataQueryField{
         private String id;
         private String alias;
-        private DataQueryEntity entity;
+        private String entity;
         private DBFunction function;
         private String value;
 
@@ -39,25 +36,18 @@ public class DataQueryDTO {
 
         public String getId(){ return id; }
         public String getAlias(){ return alias; }
-        public DataQueryEntity getEntity(){ return entity; }
+        public String getEntity(){ return entity; }
         public DBFunction getFunction(){ return function; }
         public String getValue(){ return value; }
 
         public void setId(String id){ this.id = id; }
         public void setAlias(String alias){ this.alias = alias; }
-        public void setEntity(String entityName){
-            this.entity = new DataQueryEntity(entityName);
+        public void setEntity(String entityId){
+            this.entity = entityId;
         }
 
         public void setValue(String value){ this.value = value; }
         public DBFunction setFunction(){ return function; }
-    }
-
-    public static class DataQueryEntity{
-
-        public DataQueryEntity(String entityName){
-            // TODO: get entity from mapping
-        }
     }
 
     public static enum LogicalOperator{

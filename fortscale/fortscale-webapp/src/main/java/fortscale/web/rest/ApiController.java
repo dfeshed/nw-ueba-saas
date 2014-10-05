@@ -203,7 +203,12 @@ public class ApiController {
         }
 
         // create and run query
-        dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryObject);
+        try {
+            dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryObject);
+        }
+        catch(Exception error){
+            throw new InvalidValueException("Couldn't create query generator: " + error.getMessage());
+        }
 
         try {
             // Generates query
