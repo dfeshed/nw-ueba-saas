@@ -141,6 +141,12 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 				return STRING_EMPTY;
 			
 			String ret = null;
+			
+			if (ret == null || ret.isEmpty()) {
+				if (useFileResolver && fileResolver != null) {
+					ret = fileResolver.getHostname(ip);
+				}
+			}
 			if(ret == null || ret.isEmpty() ){
 				if(useLoginResolver && computerLoginResolver != null){
 					ret = computerLoginResolver.getHostname(ip, ts);
@@ -156,12 +162,7 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 					ret = dnsResolver.getHostname(ip);
 				}
 			}
-			
-			if (ret == null || ret.isEmpty()) {
-				if (useFileResolver && fileResolver != null) {
-					ret = fileResolver.getHostname(ip);
-				}
-			}
+
 			
 			if (ret != null) {
 				if (shortName ) {
