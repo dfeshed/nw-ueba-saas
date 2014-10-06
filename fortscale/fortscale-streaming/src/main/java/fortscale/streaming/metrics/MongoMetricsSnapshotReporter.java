@@ -38,7 +38,7 @@ public class MongoMetricsSnapshotReporter implements MetricsReporter, Runnable {
 	@Override
 	public void start() {
 		logger.info("starting mongo metrics snapshot reporter");
-		executor.scheduleWithFixedDelay(this, 15, 15, TimeUnit.MINUTES);
+		executor.scheduleWithFixedDelay(this, 5, 5, TimeUnit.MINUTES);
 	}
 
 	@Override
@@ -83,6 +83,7 @@ public class MongoMetricsSnapshotReporter implements MetricsReporter, Runnable {
 		for (String source : registries.keySet()) {
 			ReadableMetricsRegistry metricRegistry = registries.get(source);
 			for (String group : metricRegistry.getGroups()) {
+				visitor.setGroup(group);
 				for (Metric metric : metricRegistry.getGroup(group).values()) {
 					metric.visit(visitor);
 				}

@@ -14,6 +14,7 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -48,6 +49,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private String tableName;
 	private Counter processedMessageCount;
 	private Counter skipedMessageCount;
+	private Counter lastTimestampCount;
 	private String storeName;
 	private BarrierService barrier;
 	private List<MessageFilter> filters = new LinkedList<MessageFilter>();
@@ -88,6 +90,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", tableName));
 		skipedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-skip-count", tableName));
+		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-epochime", tableName));
 
 		// get write time stamp barrier store
 		barrier = new BarrierService((KeyValueStore<String, UserTimeBarrier>) context.getStore(storeName), discriminatorsFields);
@@ -138,6 +141,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			}
 			// update barrier
 			barrier.updateBarrier(username, timestamp, message);
+			// update timestamp counter
+			lastTimestampCount.set(timestamp);
 		}
 	}
 	
