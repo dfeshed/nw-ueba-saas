@@ -71,7 +71,7 @@ public class DataQueryEntity {
 
     Properties getEntityProperties(String entityId) throws IOException{
         Properties entityProperties = new Properties();
-        String propertiesFileName = "resources/META-INF/entities/" + entityId + ".properties";
+        String propertiesFileName = "/META-INF/entities/" + entityId + ".properties";
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propertiesFileName);
         entityProperties.load(inputStream);
 
