@@ -53,6 +53,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	private PrevalanceModelService modelService;
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
+	private Counter lastTimestampCount;
 	private Map<String, String> outputFields = new HashMap<String, String>();
 	private String eventScoreField;
 	private boolean skipScore;
@@ -83,6 +84,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-message-count", modelName));
 		skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-skip-count", modelName));
+		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-message-epochime", modelName));
 	}
 	
 	private PrevalanceModelBuilder createModelBuilder(Config config) throws Exception {
@@ -150,6 +152,8 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 			model.addFieldValues(message, timestamp);
 			model.getBarrier().updateBarrier(timestamp, discriminator);
 			modelService.updateUserModelInStore(username, model);
+			// update timestamp counter
+			lastTimestampCount.set(timestamp);
 		}
 		
 		// compute score for the event fields. don't enforce time mark here

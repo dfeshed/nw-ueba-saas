@@ -12,6 +12,7 @@ import net.minidev.json.JSONValue;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.ClosableTask;
@@ -48,6 +49,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
     private List<String> failureCodes;
     private String isSensetiveMachineField;
     private String daysBackField;
+    private Counter lastTimestampCount;
 
 
     @SuppressWarnings("unchecked")
@@ -81,6 +83,8 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 
         this.taggingService = new TagService(store,daysBack);
 
+        // register metrics
+        lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), "account-tagging-epochime");
     }
 
 
@@ -158,6 +162,9 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 
             //handle the account
             this.taggingService.handleAccount(userName,timeStamp,sourceHostName,destHostName,sourceComputerType,destComputerType,isSensetiveMachine);
+            
+            // update metric
+            lastTimestampCount.set(timeStamp);
         }
 
     }

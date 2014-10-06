@@ -9,6 +9,7 @@ import net.minidev.json.JSONValue;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.ClosableTask;
@@ -29,6 +30,7 @@ public class UserScoreStreamTask  extends AbstractStreamTask  implements Initabl
 	private String timestampField;
 	private String eventScoreField;
 	private String classifierId;
+	private Counter lastTimestampCount;
 	
 	private UserScoreStreamingService userScoreStreamingService;
 	
@@ -52,6 +54,9 @@ public class UserScoreStreamTask  extends AbstractStreamTask  implements Initabl
 		userScoreStreamingService.setClassifierId(classifierId);
 		userScoreStreamingService.setStore(store);
 		userScoreStreamingService.setUseLatestEventTimeAsCurrentTime(isUseLatestEventTimeAsCurrentTime);
+		
+		// register metrics
+		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-user-score-epochime", classifierId));
 	}
 	
 	/** Process incoming events and update the user models stats */
@@ -83,6 +88,7 @@ public class UserScoreStreamTask  extends AbstractStreamTask  implements Initabl
 		}
 		
 		userScoreStreamingService.updateUserWithEventScore(username, eventScore, TimestampUtils.convertToMilliSeconds(timestamp));
+		lastTimestampCount.set(timestamp);
 	}
 	
 	/** periodically save the state to mongodb as a secondary backing store and update the user score in mongodb*/
