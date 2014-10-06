@@ -272,18 +272,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public Set<String> findByUserInOU(Collection<String> ouList) {
 
-		/*
-		http://docs.mongodb.org/manual/reference/operator/query/in/#op._S_in
-		The $in operator can specify matching values using regular expressions of the form /pattern/.
-		You cannot use $regex operator expressions inside an $in.
-		 */
-
 		// get users according to OU (users that their DN ends with the requested OU)
-		Set<String> ouRegexp = new HashSet<>();
+		StringBuffer ouRegexp = new StringBuffer();
 		for (String ou : ouList) {
-			ouRegexp.add(String.format("/,%s$/i", ou));
+			ouRegexp.append("|,").append(ou).append("$");
 		}
-		Query query = new Query(where(User.getAdInfoField(UserAdInfo.adDnField)).in(ouRegexp));
+		Query query = new Query(where(User.getAdInfoField(UserAdInfo.adDnField))
+						.regex(ouRegexp.substring(1), "i"));
 
 		// take only username field from the document
 		query.fields().include(User.usernameField);

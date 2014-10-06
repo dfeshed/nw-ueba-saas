@@ -68,6 +68,8 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 			if (usersFile.exists() && usersFile.isFile()) {
 				Set<String> usersFromFile = null;
 				usersFromFile = new HashSet<String>(FileUtils.readLines(usersFile));
+				int addedCounter = 0;
+				int removedCounter = 0;
 				for (String userLine : usersFromFile) {
 					if (userLine.startsWith(deletionSymbol)) {
 
@@ -78,11 +80,15 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 							// Remove tag from all uses in OU
 							Set<String> usersByOu = findUsersByOU(userName);
 							for (String user : usersByOu) {
-								tagServiceAccount(user);
+								if (removeTagFromUser(user)) {
+									removedCounter++;
+								}
 							}
 						} else {
 							// Remove tag from single user
-							removeTagFromUser(userName);
+							if (removeTagFromUser(userName)) {
+								removedCounter++;
+							}
 						}
 					}
 					else {
@@ -94,16 +100,21 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 							// Tag all uses in OU
 							Set<String> usersByOu = findUsersByOU(userName);
 							for (String user : usersByOu) {
-								tagServiceAccount(user);
+								if (tagServiceAccount(user)) {
+									addedCounter++;
+								}
 							}
 						} else {
 							// Tag single user
-							tagServiceAccount(userName);
+							if (tagServiceAccount(userName)) {
+								addedCounter++;
+							}
 						}
 					}
 				}
 
 				logger.info("ServiceAccount file loaded from path: {}", getFilePath());
+				logger.debug("{} accounts were tagged and {} accounts were untagged", addedCounter, removedCounter);
 			}
 			else {
 				logger.warn("ServiceAccount file not found in path: {}", getFilePath());
@@ -121,26 +132,30 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 		return userRepository.findByUserInOU(ousToTag);
 	}
 
-	private void removeTagFromUser(String userName) {
+	private boolean removeTagFromUser(String userName) {
 
 		if (serviceAccounts.contains(userName)) {
 			boolean userExists = userRepository.findIfUserExists(userName);
 			if (userExists) {
 				userRepository.updateUserTag(User.userServiceAccountField, userName, false);
 				serviceAccounts.remove(userName);
+				return true;
 			}
 		}
+		return false;
 	}
 
-	private void tagServiceAccount(String userName) {
+	private boolean tagServiceAccount(String userName) {
 
 		if (!serviceAccounts.contains(userName)) {
 			boolean userExists = userRepository.findIfUserExists(userName);
 			if (userExists) {
 				userRepository.updateUserTag(User.userServiceAccountField, userName, true);
 				serviceAccounts.add(userName);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	public void refreshServiceAccounts() {
