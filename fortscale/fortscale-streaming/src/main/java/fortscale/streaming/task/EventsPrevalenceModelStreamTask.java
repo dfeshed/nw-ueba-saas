@@ -96,8 +96,9 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 			String fieldName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".model"));
 			String fieldModel = getConfigString(config, String.format("fortscale.fields.%s.model", fieldName));
 			String outputField = getConfigString(config, String.format("fortscale.fields.%s.output", fieldName));
+			String fieldBooster = config.get(String.format("fortscale.fields.%s.booster", fieldName), "");
 			
-			modelBuilder.withField(fieldName, fieldModel);
+			modelBuilder.withField(fieldName, fieldModel, fieldBooster);
 			if (outputField==null)
 				logger.error("output field is null for field {}", fieldName);
 			else
