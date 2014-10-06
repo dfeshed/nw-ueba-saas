@@ -4,6 +4,8 @@ package fortscale.collection.tagging.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -68,26 +70,39 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 				usersFromFile = new HashSet<String>(FileUtils.readLines(usersFile));
 				for (String userLine : usersFromFile) {
 					if (userLine.startsWith(deletionSymbol)) {
+
+						// Remove user's tag
+
 						String userName = userLine.substring(1).toLowerCase();
-						if (serviceAccounts.contains(userName)) {
-							boolean userExists = userRepository.findIfUserExists(userName);
-							if (userExists) {
-								userRepository.updateUserTag(User.userServiceAccountField, userName, false);
-								serviceAccounts.remove(userName);
+						if (userName.toLowerCase().startsWith("ou=")) {
+							// Remove tag from all uses in OU
+							Set<String> usersByOu = findUsersByOU(userName);
+							for (String user : usersByOu) {
+								tagServiceAccount(user);
 							}
+						} else {
+							// Remove tag from single user
+							removeTagFromUser(userName);
 						}
 					}
 					else {
+
+						// Add user's tag
+
 						String userName = userLine.toLowerCase();
-						if (!serviceAccounts.contains(userName)) {
-							boolean userExists = userRepository.findIfUserExists(userName);
-							if (userExists) {
-								userRepository.updateUserTag(User.userServiceAccountField, userName, true);
-								serviceAccounts.add(userName);
+						if (userName.toLowerCase().startsWith("ou=")) {
+							// Tag all uses in OU
+							Set<String> usersByOu = findUsersByOU(userName);
+							for (String user : usersByOu) {
+								tagServiceAccount(user);
 							}
+						} else {
+							// Tag single user
+							tagServiceAccount(userName);
 						}
 					}
 				}
+
 				logger.info("ServiceAccount file loaded from path: {}", getFilePath());
 			}
 			else {
@@ -96,6 +111,35 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 		}
 		else {
 			logger.info("ServiceAccount file path not configured");
+		}
+	}
+
+	private Set<String> findUsersByOU(String userName) {
+
+		List<String> ousToTag = new LinkedList<>();
+		ousToTag.add(userName);
+		return userRepository.findByUserInOU(ousToTag);
+	}
+
+	private void removeTagFromUser(String userName) {
+
+		if (serviceAccounts.contains(userName)) {
+			boolean userExists = userRepository.findIfUserExists(userName);
+			if (userExists) {
+				userRepository.updateUserTag(User.userServiceAccountField, userName, false);
+				serviceAccounts.remove(userName);
+			}
+		}
+	}
+
+	private void tagServiceAccount(String userName) {
+
+		if (!serviceAccounts.contains(userName)) {
+			boolean userExists = userRepository.findIfUserExists(userName);
+			if (userExists) {
+				userRepository.updateUserTag(User.userServiceAccountField, userName, true);
+				serviceAccounts.add(userName);
+			}
 		}
 	}
 
