@@ -125,7 +125,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 			streamWriter = new KafkaEventsWriter(streamingTopic);
 			long timestampCursor = latestEventTime - deltaTimeInSec;
 			while(timestampCursor <= latestEventTime){
-				long nextTimestampCursor = timestampCursor + fetchEventsStepInDays * DateTimeConstants.SECONDS_PER_DAY;
+				long nextTimestampCursor = Math.min(latestEventTime, timestampCursor + fetchEventsStepInDays * DateTimeConstants.SECONDS_PER_DAY);
 				ImpalaQuery query = new ImpalaQuery();
 				query.select("*").from(impalaTableName);
 				query.andWhere(gte(epochtimeField, Long.toString(timestampCursor)));
