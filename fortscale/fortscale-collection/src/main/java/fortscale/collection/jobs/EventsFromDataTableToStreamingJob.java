@@ -2,6 +2,7 @@ package fortscale.collection.jobs;
 
 import static fortscale.utils.impala.ImpalaCriteria.gte;
 import static fortscale.utils.impala.ImpalaCriteria.lt;
+import static fortscale.utils.impala.ImpalaCriteria.lte;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -124,12 +125,15 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 			String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(impalaTableFields);
 			streamWriter = new KafkaEventsWriter(streamingTopic);
 			long timestampCursor = latestEventTime - deltaTimeInSec;
-			while(timestampCursor <= latestEventTime){
+			while(timestampCursor < latestEventTime){
 				long nextTimestampCursor = Math.min(latestEventTime, timestampCursor + fetchEventsStepInDays * DateTimeConstants.SECONDS_PER_DAY);
 				ImpalaQuery query = new ImpalaQuery();
 				query.select("*").from(impalaTableName);
 				query.andWhere(gte(epochtimeField, Long.toString(timestampCursor)));
-				query.andWhere(lt(epochtimeField, Long.toString(nextTimestampCursor)));
+				if (nextTimestampCursor==latestEventTime)
+					query.andWhere(lte(epochtimeField, Long.toString(nextTimestampCursor)));
+				else
+					query.andWhere(lt(epochtimeField, Long.toString(nextTimestampCursor)));
 				
 				List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
 				
