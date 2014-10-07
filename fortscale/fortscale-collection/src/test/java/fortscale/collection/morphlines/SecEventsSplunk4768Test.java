@@ -4,10 +4,9 @@ import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,23 @@ public class SecEventsSplunk4768Test {
 	private String confFile = "resources/conf-files/readSecEvt_splunk.conf";
 	private String conf4768File = "resources/conf-files/processSecEvt4768.conf";
 
-	@Before
+
+    private static ClassPathXmlApplicationContext testContextManager;
+
+    @BeforeClass
+    public static void setUpClass() {
+        testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
+    }
+
+    @AfterClass
+    public static void finalizeTestClass(){
+        testContextManager.close();
+        testContextManager = null;
+    }
+
+
+
+    @Before
 	public void setUp() throws Exception {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.security.events.login.table.morphline.fields");
@@ -49,6 +64,8 @@ public class SecEventsSplunk4768Test {
 	@SuppressWarnings("unused")
  	private Object[] parametersForTest() {
         return	$(
+
+
     		$ (
 	        "Successfull 4768 Event",
 	        "2014-03-21T23:24:58.000+02:00|03/21/2014 03:01:29 AM LogName=Security SourceName=Microsoft Windows security auditing. EventCode=4768 EventType=0 Type=Information ComputerName=Fs-DC-01.Fortscale.dom TaskCategory=Kerberos Authentication Service OpCode=Info RecordNumber=249225174 Keywords=Audit Success Message=A Kerberos authentication ticket (TGT) was requested.  Account Information: 	Account Name:		tomerl 	Supplied Realm Name:	FORTSCALE.DOM 	User ID:			FORTSCALE\\tomerl  Service Information: 	Service Name:		krbtgt 	Service ID:		FORTSCALE\\krbtgt  Network Information: 	Client Address:		::ffff:192.168.100.157 	Client Port:		50129  Additional Information: 	Ticket Options:		0x40810010 	Result Code:		0x0 	Ticket Encryption Type:	0x12 	Pre-Authentication Type:	2  Certificate Information: 	Certificate Issuer Name:		 	Certificate Serial Number:	 	Certificate Thumbprint:		  Certificate information is only provided if a certificate was used for pre-authentication.  Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.",
@@ -72,7 +89,7 @@ public class SecEventsSplunk4768Test {
     		$ (
     		"Regular 4768 Event",
     		"2014-02-24T13:38:40.000+02:00|02/24/2014 01:38:40 PM    LogName=Security        SourceName=Microsoft Windows security auditing. EventCode=4768  EventType=0     Type=Information        ComputerName=Fs-DC-01.Fortscale.dom     TaskCategory=Kerberos Authentication Service    OpCode=Info     RecordNumber=229771360  Keywords=Audit Success  Message=A Kerberos authentication ticket (TGT) was requested.           Account Information:            Account Name:           maxk            Supplied Realm Name:    FORTSCALE.DOM           User ID:                        FORTSCALEaxk            Service Information:            Service Name:          krbtgt          Service ID:             FORTSCALErbtgt          Network Information:            Client Address:         ::ffff:192.168.0.107            Client Port:            45665          Additional Information:         Ticket Options:         0x10            Result Code:            0x0             Ticket Encryption Type: 0x12            Pre-Authentication Type:       2               Certificate Information:                Certificate Issuer Name:                                Certificate Serial Number:                      Certificate Thumbprint:                        Certificate information is only provided if a certificate was used for pre-authentication.              Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.",
-    		"2014-02-24T13:38:40.000+02:00,2014-02-24 11:38:40,1393241920,maxk,FORTSCALE.DOM,FORTSCALEaxk,4768,192.168.0.107,SUCCESS,0x0,2,0x10,False,False,False,False,False,False,false,,,false"
+    		"2014-02-24T13:38:40.000+02:00,2014-02-24 11:38:40,1393241920,maxk,FORTSCALE.DOM,FORTSCALEaxk,4768,192.168.0.107,SUCCESS,0x0,2,0x10,False,False,False,False,False,False,false,Unknown,MAXK,false"
     		),
     		$ (
     		"4768 Event with computer as account name",
@@ -84,6 +101,7 @@ public class SecEventsSplunk4768Test {
     		"2014-06-25T18:04:46.000+02:00|06/25/2014 06:04:46 PM	LogName=Security	SourceName=Microsoft Windows security auditing.	EventCode=4768	EventType=0	Type=Information	ComputerName=DC01.corp.fortscale.com	TaskCategory=Kerberos Authentication Service	OpCode=Info	RecordNumber=4196374540	Keywords=Audit Success	Message=A Kerberos authentication ticket (TGT) was requested.		Account Information:		Account Name:		toy gangara's m		Supplied Realm Name:	CORP.FORTSCALE.COM		User ID:			CORP\\toy gangara's m		Service Information:		Service Name:		krbtgt		Service ID:		CORP\\krbtgt		Network Information:		Client Address:		10.148.172.23		Client Port:		60578		Additional Information:		Ticket Options:		0x40000000		Result Code:		0x0		Ticket Encryption Type:	0x12		Pre-Authentication Type:	2		Certificate Information:		Certificate Issuer Name:				Certificate Serial Number:			Certificate Thumbprint:				Certificate information is only provided if a certificate was used for pre-authentication.		Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.",
     		"2014-06-25T18:04:46.000+02:00,2014-06-25 15:04:46,1403708686,toy gangaras m,CORP.FORTSCALE.COM,CORP\\toy gangaras m,4768,10.148.172.23,SUCCESS,0x0,2,0x40000000,True,False,False,False,False,False,false,,,false"
     		)
+
         );
  	}
 

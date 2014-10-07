@@ -1,27 +1,5 @@
 package fortscale.collection.jobs;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocatedFileStatus;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.RemoteIterator;
-import org.joda.time.DateTime;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-
 import fortscale.collection.jobs.ad.AdProcessJob;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -31,6 +9,28 @@ import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaDateTime;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.LocatedFileStatus;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.RemoteIterator;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 
 @DisallowConcurrentExecution
@@ -194,7 +194,7 @@ public class UserTableUpdateJob extends FortscaleJob {
 				if(StringUtils.isEmpty(val)){
 					val = ImpalaParser.IMPALA_NULL_VALUE;
 				} else if(impalaUserFieldsMap.get(fieldDef).equals(ImpalaDateTime.class)){
-					val = ImpalaDateTime.formatTimeDate(new DateTime(Long.parseLong(val)));
+					val = ImpalaDateTime.formatTimeDate(new DateTime(Long.parseLong(val), DateTimeZone.UTC));
 				}
 				values.add(val);
 			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | NumberFormatException e) {

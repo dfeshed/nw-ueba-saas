@@ -1,13 +1,13 @@
 package fortscale.collection.morphlines;
 
-import org.joda.time.DateTime;
-import org.kitesdk.morphline.api.Record;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
 import fortscale.utils.TimestampUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.kitesdk.morphline.api.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class RecordToVpnSessionConverter {
@@ -26,11 +26,11 @@ public class RecordToVpnSessionConverter {
 		switch(status){
 		case "CLOSED":
 			vpnSession.setClosedAtEpoch(epochtime);
-			vpnSession.setClosedAt(new DateTime(epochtime));
+			vpnSession.setClosedAt(new DateTime(epochtime, DateTimeZone.UTC ));
 			break;
 		case "SUCCESS":
 			vpnSession.setCreatedAtEpoch(epochtime);
-			vpnSession.setCreatedAt(new DateTime(epochtime));
+			vpnSession.setCreatedAt(new DateTime(epochtime, DateTimeZone.UTC));
 			break;
 		default:
 			isFailed = true;

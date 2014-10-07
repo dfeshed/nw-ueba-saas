@@ -1,21 +1,17 @@
 package fortscale.collection.morphlines.commands;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
+import fortscale.collection.morphlines.RecordSinkCommand;
+import fortscale.collection.morphlines.commands.GetTimezoneBuilder.GetTimezone;
 import org.junit.Before;
 import org.junit.Test;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
-
-import fortscale.collection.morphlines.RecordSinkCommand;
-import fortscale.collection.morphlines.commands.GetTimezoneBuilder.GetTimezone;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class GetTimezoneBuilderTest {
 
@@ -159,7 +155,7 @@ public class GetTimezoneBuilderTest {
 		
 		assertTrue(result);
 		assertNotNull(output);
-		assertEquals("Asia/Jerusalem", output.getFirstValue("timezoneOutput"));	
+		assertEquals("UTC", output.getFirstValue("timezoneOutput"));
 	}
 	
 	@Test
@@ -173,7 +169,7 @@ public class GetTimezoneBuilderTest {
 		
 		assertTrue(result);
 		assertNotNull(output);
-		assertEquals("Asia/Jerusalem", output.getFirstValue("timezoneOutput"));	
+		assertEquals("UTC", output.getFirstValue("timezoneOutput"));
 	}
 
 }

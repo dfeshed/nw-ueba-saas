@@ -1,13 +1,8 @@
 package fortscale.collection.morphlines.commands;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.typesafe.config.Config;
+import fortscale.utils.logging.Logger;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -16,10 +11,12 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.typesafe.config.Config;
-
-import fortscale.utils.logging.Logger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Command that according to the input source type and server name regexp returns the appropriate timezone..
@@ -48,7 +45,7 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 		private final String timezoneField;
 		private TimzoneConfig tzConfig;
 
-		@Value("${morphline.timezone:}")
+		@Value("${morphline.timezone}")
 		public String timezones;
 		
 		private static Logger logger = Logger.getLogger(GetTimezone.class);
@@ -86,7 +83,7 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 				// ####################################################################################################
 				// TEMP: Please refer to jira FV-3191
 				// ####################################################################################################
-				record.put(this.timezoneField, "Asia/Jerusalem");
+				record.put(this.timezoneField, "UTC");
 			} else{
 				String hostname = (String)record.getFirstValue(hostnameField);
 				record.put(this.timezoneField, tzConfig.getTimeZone(sourceType, hostname));
