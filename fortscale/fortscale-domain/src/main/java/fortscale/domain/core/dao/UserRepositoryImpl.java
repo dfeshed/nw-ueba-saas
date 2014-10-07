@@ -266,7 +266,32 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public Set<String> findByUserInGroup(Collection<String> groups) {
 		Query query = new Query(where(User.getAdInfoField(String.format("%s.%s",UserAdInfo.groupsField,UserAdInfo.adDnField))).in(groups));
 		query.fields().include(User.usernameField);
-		HashSet<String> userNames = new HashSet<String>();
+		return getUsernameFromWrapper(query);
+	}
+
+	@Override
+	public Set<String> findByUserInOU(Collection<String> ouList) {
+
+		// get users according to OU (users that their DN ends with the requested OU)
+		StringBuffer ouRegexp = new StringBuffer();
+		for (String ou : ouList) {
+			ouRegexp.append("|,").append(ou).append("$");
+		}
+		Query query = new Query(where(User.getAdInfoField(UserAdInfo.adDnField))
+						.regex(ouRegexp.substring(1), "i"));
+
+		// take only username field from the document
+		query.fields().include(User.usernameField);
+
+		// Take only user-names
+		return getUsernameFromWrapper(query);
+
+
+	}
+
+	private Set<String> getUsernameFromWrapper(Query query) {
+
+		HashSet<String> userNames = new HashSet<>();
 		for (UsernameWrapper userNameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)){
 			userNames.add(userNameWrapper.getUsername());
 		}

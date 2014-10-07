@@ -2,10 +2,7 @@
 package fortscale.collection.tagging.service.impl;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +23,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	@Autowired
 	private UserTaggingService userTaggingService;
 
+	private List<String> ousToTag;
 	private List<String> groupsToTag;
 	private Set<String> taggedUsers = new HashSet<String>();
 
@@ -86,6 +84,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		if (!StringUtils.isEmpty(filePath)) {
 			File f = new File(filePath);
 			if (f.exists() && f.isFile()) {
+				// read requested group from file
 				groupsToTag = FileUtils.readLines(new File(filePath));
 				if (isFileEmptyFromGroups()) {
 					logger.warn(
@@ -94,7 +93,23 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 					taggedUsers = new HashSet<String>();
 					return;
 				}
-				taggedUsers = userRepository.findByUserInGroup(groupsToTag);
+				// take OUs from groups
+				ousToTag = new LinkedList<>();
+				for (String group : groupsToTag) {
+					if (group.toLowerCase().startsWith("ou=")) {
+						// this is not a group but OU
+						ousToTag.add(group);
+					}
+				}
+				groupsToTag.removeAll(ousToTag);
+				// find users matching to the groups and the OUs (this solution might be problematic memory-wise in case there are many users)
+				taggedUsers = new HashSet<>();
+				if (!groupsToTag.isEmpty()) {
+					taggedUsers.addAll(userRepository.findByUserInGroup(groupsToTag));
+				}
+				if (!ousToTag.isEmpty()) {
+					taggedUsers.addAll(userRepository.findByUserInOU(ousToTag));
+				}
 				if (taggedUsers.isEmpty()) {
 					logger.warn(
 						"Users Tagging [{}] no users found in the user repository for groups {}",
