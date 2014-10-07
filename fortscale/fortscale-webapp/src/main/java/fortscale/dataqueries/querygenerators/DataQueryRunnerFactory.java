@@ -1,12 +1,14 @@
 package fortscale.dataqueries.querygenerators;
 
-import fortscale.dataqueries.DataQueryEntity;
 import fortscale.dataqueries.DataQueryEntityFactory;
 import fortscale.dataqueries.SupportedDBType;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringValueResolver;
 
 import java.util.Map;
 
@@ -14,7 +16,9 @@ import java.util.Map;
  * Factory for creating DataQueryRunner
  */
 @Component
-public class DataQueryRunnerFactory {
+public class DataQueryRunnerFactory implements EmbeddedValueResolverAware{
+
+    StringValueResolver stringValueResolver;
 
 	@Autowired
 	private MySqlQueryRunner mySqlQueryRunner;
@@ -22,18 +26,30 @@ public class DataQueryRunnerFactory {
     @Autowired
     DataQueryEntityFactory entityFactory;
 
+    private SupportedDBType getEntityDbType(String entityId){
+        String type = stringValueResolver.resolveStringValue("${entities." + entityId + ".db}");
+        return SupportedDBType.valueOf(type);
+    }
+
+    @Override
+	public void setEmbeddedValueResolver(StringValueResolver resolver) {
+		this.stringValueResolver = resolver;
+	}
+    
 	/**
 	 * Get the relevant query runner according to DTO
 	 * @param dataQueryDTO the query object
 	 * @return query runner
 	 */
 	public DataQueryRunner getDataQueryRunner(DataQueryDTO dataQueryDTO) throws Exception{
-        DataQueryEntity entity = entityFactory.getDataQueryEntity(dataQueryDTO.entities[0]);
+        //DataQueryEntity entity = entityFactory.getDataQueryEntity(dataQueryDTO.entities[0]);
 
-        if (entity.getDbType() == SupportedDBType.MySQL)
+        SupportedDBType type = getEntityDbType(dataQueryDTO.entities[0]);
+
+        if (type == SupportedDBType.MySQL)
 		    return mySqlQueryRunner;
-
-        throw new Exception("A DataQueryRunner for DB of type " + entity.getDbType().name() + " doesn't exist.");
+        else
+            throw new Exception("A DataQueryRunner for DB of type " + stringValueResolver.resolveStringValue("entities." + dataQueryDTO.entities[0] + ".db") + " doesn't exist.");
 	}
 
 }
