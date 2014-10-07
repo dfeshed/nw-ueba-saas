@@ -3,10 +3,7 @@ package fortscale.collection.tagging.service.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -138,6 +135,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 			boolean userExists = userRepository.findIfUserExists(userName);
 			if (userExists) {
 				userRepository.updateUserTag(User.userServiceAccountField, userName, false);
+				userRepository.syncTags(userName, Collections.<String>emptyList(), Arrays.asList(UserTagEnum.service.getId()));
 				serviceAccounts.remove(userName);
 				return true;
 			}
@@ -151,6 +149,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 			boolean userExists = userRepository.findIfUserExists(userName);
 			if (userExists) {
 				userRepository.updateUserTag(User.userServiceAccountField, userName, true);
+				userRepository.syncTags(userName, Arrays.asList(UserTagEnum.service.getId()), Collections.<String>emptyList());
 				serviceAccounts.add(userName);
 				return true;
 			}
