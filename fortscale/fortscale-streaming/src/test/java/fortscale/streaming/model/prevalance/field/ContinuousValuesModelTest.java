@@ -11,6 +11,9 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 public class ContinuousValuesModelTest {
 
 	private static int maxNumOfHistogramElements = 100;
@@ -230,5 +233,38 @@ public class ContinuousValuesModelTest {
 		}
 		
 		
+	}
+	
+	@Test
+	public void model_should_serialize_to_json() throws Exception {
+		// build model	
+		ContinuousValuesModel continuousValuesModel = new ContinuousValuesModel(0.3);
+		continuousValuesModel.setMaxNumOfHistogramElements(2);
+		continuousValuesModel.add(10.0);
+		continuousValuesModel.add(20.0);
+		continuousValuesModel.add(30.0);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		
+		String json = mapper.writeValueAsString(continuousValuesModel);
+
+		Assert.assertNotNull(json);
+		Assert.assertTrue(json.contains("\"histogram\":{\"38.4\":2.0,\"19.2\":1.0}"));
+		Assert.assertTrue(json.contains("\"histogramAvg\":32.0"));
+		Assert.assertFalse(json.contains("\"histogramStd\":050966799187808"));
+	}
+	
+	@Test
+	public void model_should_deserialize_from_json() throws Exception {
+		
+        byte[] json = "{\"roundNumber\":19.2,\"histogram\":{\"38.4\":2.0,\"19.2\":1.0},\"maxNumOfHistogramElements\":2,\"histogramAvg\":32.0,\"histogramStd\":9.050966799187808,\"N\":3,\"scoreForLargeValues\":true,\"scoreForSmallValues\":true,\"a2\":33.333333333333336,\"a1\":11.666666666666666,\"largestPValue\":0.2}".getBytes("UTF-8");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		ContinuousValuesModel continuousValuesModel = mapper.readValue(json, ContinuousValuesModel.class);
+		
+		Assert.assertNotNull(continuousValuesModel);
+		Assert.assertEquals(0, continuousValuesModel.calculateScore(40.0),0.01);
+		Assert.assertEquals(6.25, continuousValuesModel.calculateScore(22.0),0.01);
 	}
 }

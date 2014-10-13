@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 import org.apache.commons.math3.distribution.TDistribution;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
@@ -25,8 +27,8 @@ public class ContinuousValuesModel {
 	private double largestPValue = 0.2;
 	
 	
-	
-	public ContinuousValuesModel(double roundNumber){
+	@JsonCreator
+	public ContinuousValuesModel(@JsonProperty("roundNumber") double roundNumber){
 		if(roundNumber > 0){
 			this.roundNumber = roundNumber;
 		} else{
