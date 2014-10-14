@@ -7,12 +7,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import com.maxmind.geoip2.DatabaseReader;
-import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
 
 import fortscale.utils.logging.Logger;
 
-public class MMGeoIPService implements GeoIPService{
+public class MMGeoIPService extends CachedGeoIPService {
 	private static Logger logger = Logger.getLogger(MMGeoIPService.class);
 
 	private static final String MM_DB_FILENAME = "GeoLite2-City.mmdb";
@@ -46,7 +45,7 @@ public class MMGeoIPService implements GeoIPService{
 			throw e;
 		}
 	}
-
+	
 	/**
 	 * This method takes an IPv4 address and returns a GeoIPInfo object. Returns
 	 * an empty GeoIPInfo object if an error occurs.
@@ -56,7 +55,7 @@ public class MMGeoIPService implements GeoIPService{
 	 * @return GeoIPInfo
 	 * @throws UnknownHostException
 	 */
-	public GeoIPInfo getGeoIPInfo(String IPAddress) throws UnknownHostException {
+	protected GeoIPInfo doGetGeoIPInfo(String IPAddress) throws UnknownHostException {
 		// Convert to IP address
 		InetAddress byName = InetAddress.getByName(IPAddress);
 
@@ -88,12 +87,5 @@ public class MMGeoIPService implements GeoIPService{
 			logger.warn(String.format("Failed to perform GeoIP lookup for IP %s", IPAddress), e);
 		}
 		return geoInfo;
-	}
-
-	public static void main(String[] args) throws IOException, GeoIp2Exception {
-
-		MMGeoIPService gis = new MMGeoIPService();
-		GeoIPInfo info = gis.getGeoIPInfo("128.101.101.101");
-		System.out.println(info.getCountryName());
 	}
 }
