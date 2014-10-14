@@ -2,9 +2,12 @@ package fortscale.streaming.model.prevalance;
 
 import org.apache.samza.config.Config;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
  * Adjust a given score for a field value according to custom logic 
  */
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public interface FieldScoreBooster {
 
 	/**
