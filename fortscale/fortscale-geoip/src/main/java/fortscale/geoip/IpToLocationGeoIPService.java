@@ -13,13 +13,14 @@ import com.ip2location.IPResult;
 import fortscale.utils.logging.Logger;
 
 
-public class IpToLocationGeoIPService implements GeoIPService{
+public class IpToLocationGeoIPService extends CachedGeoIPService {
+	
 	private static Logger logger = Logger.getLogger(IpToLocationGeoIPService.class);
 
 	private static final String MOBILE_USAGE_TYPE = "MOB";
 
 	private IP2Location loc = null;
-
+	
 	/**
 	 * Constructor. Takes a path to to a GeoIP DB
 	 * 
@@ -28,14 +29,14 @@ public class IpToLocationGeoIPService implements GeoIPService{
 	 * @throws IOException
 	 */
 	public IpToLocationGeoIPService(String fullDbPath, String fullLicenseKeyPath){
-			if (loc == null) {
-				loc = new IP2Location();
-				IP2Location.IPDatabasePath = fullDbPath;
-				IP2Location.IPDatabasePathIPv6 = fullDbPath;
-				if(StringUtils.isNotEmpty(fullLicenseKeyPath)){
-					IP2Location.IPLicensePath = fullLicenseKeyPath;
-				}
+		if (loc == null) {
+			loc = new IP2Location();
+			IP2Location.IPDatabasePath = fullDbPath;
+			IP2Location.IPDatabasePathIPv6 = fullDbPath;
+			if(StringUtils.isNotEmpty(fullLicenseKeyPath)){
+				IP2Location.IPLicensePath = fullLicenseKeyPath;
 			}
+		}
 	}
 	
 	/**
@@ -74,6 +75,7 @@ public class IpToLocationGeoIPService implements GeoIPService{
 			}
 	}
 
+	
 	/**
 	 * This method takes an IPv4 address and returns a GeoIPInfo object. Returns
 	 * an empty GeoIPInfo object if an error occurs.
@@ -83,7 +85,7 @@ public class IpToLocationGeoIPService implements GeoIPService{
 	 * @return GeoIPInfo
 	 * @throws UnknownHostException
 	 */
-	public GeoIPInfo getGeoIPInfo(String IPAddress) throws UnknownHostException {
+	protected GeoIPInfo doGetGeoIPInfo(String IPAddress) throws UnknownHostException {
 		// Convert to IP address
 		InetAddress byName = InetAddress.getByName(IPAddress);
 
@@ -130,6 +132,8 @@ public class IpToLocationGeoIPService implements GeoIPService{
 		}
 		return geoInfo;
 	}
+
+
 
 //	public static void main(String[] args) throws IOException {
 //
