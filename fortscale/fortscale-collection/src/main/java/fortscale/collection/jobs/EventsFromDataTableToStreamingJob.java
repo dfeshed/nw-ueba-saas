@@ -21,6 +21,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 
@@ -28,6 +30,7 @@ import fortscale.collection.io.KafkaEventsWriter;
 import fortscale.services.impl.RegexMatcher;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.TimestampUtils;
+import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.logging.Logger;
@@ -128,12 +131,15 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 			while(timestampCursor < latestEventTime){
 				long nextTimestampCursor = Math.min(latestEventTime, timestampCursor + fetchEventsStepInDays * DateTimeConstants.SECONDS_PER_DAY);
 				ImpalaQuery query = new ImpalaQuery();
-				query.select("*").from(impalaTableName);
+				query.select("count(*)").from(impalaTableName);
 				query.andWhere(gte(epochtimeField, Long.toString(timestampCursor)));
 				if (nextTimestampCursor==latestEventTime)
 					query.andWhere(lte(epochtimeField, Long.toString(nextTimestampCursor)));
 				else
 					query.andWhere(lt(epochtimeField, Long.toString(nextTimestampCursor)));
+				int limit = impalaJdbcTemplate.queryForObject(query.toSQL(), Integer.class);
+				query.select("*");
+				query.limitAndSort(new ImpalaPageRequest(limit, new Sort(Direction.ASC, epochtimeField)));
 				
 				List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
 				
