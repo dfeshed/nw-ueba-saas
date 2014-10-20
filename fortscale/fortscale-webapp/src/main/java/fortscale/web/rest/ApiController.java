@@ -15,6 +15,7 @@ import fortscale.services.fe.ClassifierService;
 
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;

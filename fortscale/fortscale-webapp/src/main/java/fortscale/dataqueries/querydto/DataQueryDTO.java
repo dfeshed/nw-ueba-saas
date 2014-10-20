@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,8 +16,10 @@ import java.util.List;
 /**
  * DTO for data query representation
  */
+@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class DataQueryDTO {
 
+    @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 	public List<DataQueryField> fields;
 
     public Collection<Term> conditions;
@@ -25,6 +28,7 @@ public class DataQueryDTO {
     public short limit = 10;
     public int offset = 0;
 
+    @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
     public static class DataQueryField{
         private String id;
         private String alias;
