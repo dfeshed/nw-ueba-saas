@@ -22,7 +22,7 @@ public class DataQueryDTO {
     @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 	public List<DataQueryField> fields;
 
-    public Collection<Term> conditions;
+    public List<ConditionTerm> conditions;
     public String[] entities;
     public List<Sort> sort;
     public short limit = 10;

@@ -33,9 +33,10 @@ public class MySqlQueryRunner implements DataQueryRunner {
 	private QueryPartGenerator mySqlWherePartGenerator;
 
 	@Autowired
-	private QueryPartGenerator mySqlOrderByPartGenerator;
+	private QueryPartGenerator mySqlLimitPartGenerator;
 
-
+    @Autowired
+    private QueryPartGenerator mySqlOrderByPartGenerator;
 
 	// runner for impala
 
@@ -68,10 +69,11 @@ public class MySqlQueryRunner implements DataQueryRunner {
 					throws InvalidQueryException {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(mySqlSelectPartGenerator.generateQueryPart(dataQueryDTO))
-						.append(mySqlFromPartGenerator.generateQueryPart(dataQueryDTO))
-						.append(mySqlWherePartGenerator.generateQueryPart(dataQueryDTO))
-						.append(mySqlOrderByPartGenerator.generateQueryPart(dataQueryDTO));
+		sb.append(mySqlSelectPartGenerator.generateQueryPart(dataQueryDTO)).append(" ")
+            .append(mySqlFromPartGenerator.generateQueryPart(dataQueryDTO)).append(" ")
+            .append(mySqlWherePartGenerator.generateQueryPart(dataQueryDTO)).append(" ")
+			.append(mySqlOrderByPartGenerator.generateQueryPart(dataQueryDTO)).append(" ")
+            .append(mySqlLimitPartGenerator.generateQueryPart(dataQueryDTO));
 		return sb.toString();
 	}
 }
