@@ -257,7 +257,7 @@ public class ApiController {
             return retBeanForPage;
         }
         catch (InvalidQueryException e) {
-            throw new InvalidValueException("Invalid query to parse");
+            throw new InvalidValueException("Invalid query to parse. Error: " + e.getMessage());
         }
     }
 

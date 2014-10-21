@@ -34,7 +34,7 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator, EmbeddedVal
 
         for(DataQueryDTO.DataQueryField field: dataQueryDTO.fields){
             if (field != null)
-                fields.add(mySqlUtils.getFieldSql(field, dataQueryDTO));
+                fields.add(mySqlUtils.getFieldSql(field, dataQueryDTO, true));
         }
 
         sb.append(joiner.join(fields));

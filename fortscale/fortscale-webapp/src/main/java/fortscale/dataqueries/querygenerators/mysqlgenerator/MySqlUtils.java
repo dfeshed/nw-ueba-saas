@@ -7,6 +7,7 @@ import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
+import sun.org.mozilla.javascript.internal.EcmaError;
 
 /**
  * Some static functions that should be available to multiple MySql part generators
@@ -20,7 +21,7 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
         this.stringValueResolver = resolver;
     }
 
-    public String getFieldSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException {
+    public String getFieldSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId) throws InvalidQueryException {
         StringBuilder fieldSB = new StringBuilder();
 
         if (field.getValue() != null){
@@ -28,18 +29,26 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
                 throw new InvalidQueryException("An alias should be specified for field value '" + field.getValue() + "'.");
 
             fieldSB.append(getValueSql(field.getValue(), field.valueType));
+            fieldSB.append(" as " + field.getAlias());
         }
         else{
             if (dataQueryDTO.entities.length > 1 && field.getEntity() != null)
                 fieldSB.append(field.getEntity() + ".");
 
-            fieldSB.append(getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.entities[0], field.getId() ));
+            String columnName = getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.entities[0], field.getId() );
+            fieldSB.append(columnName);
+
+            if (field.getAlias() != null)
+                fieldSB.append(" as " + field.getAlias());
+            else if (aliasAsId && !columnName.equals(field.getId()))
+                fieldSB.append(" as " + field.getId());
         }
 
-        if (field.getAlias() != null)
-            fieldSB.append(" as " + field.getAlias());
-
         return fieldSB.toString();
+    }
+
+    public String getFieldSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+        return getFieldSql(field, dataQueryDTO, false);
     }
 
     /**
@@ -89,11 +98,21 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
      * @return
      */
     public String getBaseEntity(String entityId){
-        return stringValueResolver.resolveStringValue("${entities." + entityId + ".extends}");
+        try {
+            return stringValueResolver.resolveStringValue("${entities." + entityId + ".extends}");
+        }
+        catch(Exception error){
+            return null;
+        }
     }
 
     public String getEntityTable(String entityId){
-        return stringValueResolver.resolveStringValue("${entities." + entityId + ".table}");
+        try {
+            return stringValueResolver.resolveStringValue("${entities." + entityId + ".table}");
+        }
+        catch(Exception error){
+            return null;
+        }
     }
 
     public String getValueSql(String value, QueryValueType type){
@@ -127,11 +146,23 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
 
         sb.append(operator.sqlOperator);
         sb.append(" ");
-        sb.append(getValueSql(conditionField.getValue(), conditionField.valueType));
+
+        String entityId = conditionField.field.getEntity();
+        if (entityId == null)
+            entityId = dataQueryDTO.entities[0];
+
+        sb.append(getValueSql(conditionField.getValue(), getFieldType(entityId , conditionField.field.getId())));
 
         return sb.toString();
     }
 
+    public QueryValueType getFieldType(String entityId, String fieldId) throws InvalidQueryException{
+        String typeStr = getExtendableValue(entityId, "field." + fieldId + ".type");
+        if (typeStr == null)
+            throw new InvalidQueryException("Couldn't find type for field " + fieldId + " in entity " + entityId + ".");
+
+        return QueryValueType.valueOf(typeStr);
+    }
 
     public String getEntityPerformanceTable(String entityId){
         return getExtendableValue(entityId, "performance_table");
