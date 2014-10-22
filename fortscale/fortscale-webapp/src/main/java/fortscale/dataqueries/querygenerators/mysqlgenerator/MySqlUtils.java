@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
 import sun.org.mozilla.javascript.internal.EcmaError;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Some static functions that should be available to multiple MySql part generators
  */
@@ -49,6 +52,34 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
 
     public String getFieldSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         return getFieldSql(field, dataQueryDTO, false);
+    }
+
+    /**
+     * Returns an array of all of an entity's field IDs
+     * @param entityId
+     * @return
+     */
+    public ArrayList<String> getAllEntityFields(String entityId){
+        ArrayList<String> fields = new ArrayList<String>();
+        try{
+            String[] configFields = stringValueResolver.resolveStringValue("${entities." + entityId + ".fields}").split("\\s*,[,\\s]*");
+            for(String field: configFields){
+                fields.add(field);
+            }
+        }
+        catch(Exception error){
+            return null;
+        }
+
+        String baseEntityId = getBaseEntity(entityId);
+        if (baseEntityId != null){
+            ArrayList<String> baseEntityFields = getAllEntityFields(baseEntityId);
+            if (baseEntityFields != null){
+                fields.addAll(baseEntityFields);
+            }
+        }
+
+        return fields;
     }
 
     /**
