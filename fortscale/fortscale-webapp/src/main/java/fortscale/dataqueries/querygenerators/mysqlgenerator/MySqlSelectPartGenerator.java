@@ -1,6 +1,7 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
+import fortscale.dataqueries.DataQueryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,9 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator, EmbeddedVal
     @Autowired
     private MySqlUtils mySqlUtils;
 
+    @Autowired
+    DataQueryUtils dataQueryUtils;
+
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         StringBuilder sb = new StringBuilder("SELECT ");
 
@@ -54,7 +58,7 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator, EmbeddedVal
 	}
 
     private List<DataQueryDTO.DataQueryField> getAllEntityFields(String entityId){
-        ArrayList<String> fieldIds = mySqlUtils.getAllEntityFields(entityId);
+        ArrayList<String> fieldIds = dataQueryUtils.getAllEntityFields(entityId);
         ArrayList<DataQueryDTO.DataQueryField> fields = new ArrayList<DataQueryDTO.DataQueryField>();
 
         for(String fieldId: fieldIds){

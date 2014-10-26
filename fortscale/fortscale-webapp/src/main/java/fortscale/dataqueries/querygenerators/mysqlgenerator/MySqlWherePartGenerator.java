@@ -1,6 +1,9 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
+import fortscale.dataqueries.DataQueryPartition;
+import fortscale.dataqueries.DataQueryPartitionType;
+import fortscale.dataqueries.DataQueryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,12 +21,16 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
     @Autowired
     private MySqlUtils mySqlUtils;
 
+    @Autowired
+    DataQueryUtils dataQueryUtils;
+
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
 
 		if (dataQueryDTO.conditions == null || dataQueryDTO.conditions.size() == 0)
             return "";
 
-		return "WHERE " + getConditionTermSql(dataQueryDTO.conditions.get(0), dataQueryDTO);
+        String partitionsSql = getPartitionsSql(dataQueryDTO);
+		return "WHERE " + (partitionsSql != null ? partitionsSql : "") + getConditionTermSql(dataQueryDTO.conditions.get(0), dataQueryDTO);
 	}
 
     private String getConditionTermSql(DataQueryDTO.ConditionTerm conditionTerm, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
@@ -38,6 +45,15 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
         }
 
         return "(" + joiner.join(terms) + ")";
+    }
+
+    private String getPartitionsSql(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+        ArrayList<DataQueryPartition> partitions = dataQueryUtils.getEntityPartitions(dataQueryDTO.entities[0]);
+        if (partitions == null || partitions.size() == 0)
+            return "";
+
+        // TODO: Continue the partitions SQL rendering.
+        return null;
     }
 
     private String getConditionFieldSql(DataQueryDTO.ConditionField conditionField, DataQueryDTO dataQueryDTO) throws InvalidQueryException{

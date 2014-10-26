@@ -1,6 +1,7 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
+import fortscale.dataqueries.DataQueryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,12 +20,15 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
     @Autowired
     private MySqlUtils mySqlUtils;
 
+    @Autowired
+    DataQueryUtils dataQueryUtils;
+
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         try {
             String entityId = dataQueryDTO.entities[0];
             String tableName = dataQueryDTO.conditions != null && isHighScore(entityId, dataQueryDTO.conditions.get(0))
-                    ? mySqlUtils.getEntityPerformanceTable(entityId)
-                    : mySqlUtils.getEntityTable(entityId);
+                    ? dataQueryUtils.getEntityPerformanceTable(entityId)
+                    : dataQueryUtils.getEntityTable(entityId);
 
             // For now the generator supports only single table queries. When joins are supported, need to add the logic here.
             return "FROM " + tableName;
@@ -48,9 +52,9 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
         for (DataQueryDTO.Term childTerm: term.terms){
             if (childTerm.getClass() == DataQueryDTO.ConditionField.class){
                 DataQueryDTO.ConditionField condition = (DataQueryDTO.ConditionField)childTerm;
-                if (condition.field.getId().equals(mySqlUtils.getEntityPerformanceTableField(entityId))){
+                if (condition.field.getId().equals(dataQueryUtils.getEntityPerformanceTableField(entityId))){
                     int value = Integer.parseInt(condition.getValue());
-                    if (value >= mySqlUtils.getEntityPerformanceTableFieldMinValue(entityId) &&
+                    if (value >= dataQueryUtils.getEntityPerformanceTableFieldMinValue(entityId) &&
                             (condition.operator == DataQueryDTO.Operator.equals || condition.operator == DataQueryDTO.Operator.greaterThan || condition.operator == DataQueryDTO.Operator.greaterThanOrEquals)){
                         return true;
                     }
