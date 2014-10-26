@@ -2,7 +2,6 @@ package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import fortscale.dataqueries.DataQueryPartition;
-import fortscale.dataqueries.DataQueryPartitionType;
 import fortscale.dataqueries.DataQueryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +11,9 @@ import fortscale.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Generate the "where" part of the query in MySql
@@ -30,7 +32,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
             return "";
 
         String partitionsSql = getPartitionsSql(dataQueryDTO);
-		return "WHERE " + (partitionsSql != null ? partitionsSql : "") + getConditionTermSql(dataQueryDTO.conditions.get(0), dataQueryDTO);
+		return "WHERE " + (partitionsSql != null ? partitionsSql + " AND " : "") + getConditionTermSql(dataQueryDTO.conditions.get(0), dataQueryDTO);
 	}
 
     private String getConditionTermSql(DataQueryDTO.ConditionTerm conditionTerm, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
@@ -48,12 +50,82 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
     }
 
     private String getPartitionsSql(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
-        ArrayList<DataQueryPartition> partitions = dataQueryUtils.getEntityPartitions(dataQueryDTO.entities[0]);
+        String entityId = dataQueryDTO.entities[0];
+        ArrayList<DataQueryPartition> partitions = dataQueryUtils.getEntityPartitions(entityId);
         if (partitions == null || partitions.size() == 0)
             return "";
 
-        // TODO: Continue the partitions SQL rendering.
-        return null;
+        ArrayList<String> sqlConditions = new ArrayList<>();
+        Joiner joiner = Joiner.on(" AND ").skipNulls();
+
+        for(DataQueryPartition partition: partitions){
+            ArrayList<DataQueryDTO.ConditionField> partitionConditions = getPartitionConditions(dataQueryDTO.conditions.get(0), partition.entityField);
+            if (partitionConditions != null){
+                sqlConditions.add(getPartitionSql(partition, partitionConditions, dataQueryDTO));
+            }
+        }
+
+        return joiner.join(sqlConditions);
+    }
+
+    /**
+     * Check whether a partition for a field should be enabled in the WHERE SQL query.
+     * A partition is enabled if it's present in a DTO's conditions.
+     * IMPORTANT: Partitions are allowed only in the root terms of a DTOs conditions, so if there are nested terms, they won't be considered when looking for partitions!!
+     * @param term
+     * @param partitionFieldId
+     * @return
+     */
+    private ArrayList<DataQueryDTO.ConditionField> getPartitionConditions(DataQueryDTO.ConditionTerm term, String partitionFieldId){
+        if (term.terms == null || term.terms.size() == 0)
+            return null;
+
+        ArrayList<DataQueryDTO.ConditionField> conditions = new ArrayList<>();
+
+        for (DataQueryDTO.Term childTerm: term.terms){
+            if (childTerm.getClass() == DataQueryDTO.ConditionField.class){
+                DataQueryDTO.ConditionField condition = (DataQueryDTO.ConditionField)childTerm;
+                if (condition.field.getId().equals(partitionFieldId))
+                    conditions.add(condition);
+            }
+        }
+
+        if (conditions.size() == 0)
+            return null;
+
+        return conditions;
+    }
+
+    private String getPartitionSql(DataQueryPartition partitionConfig, List<DataQueryDTO.ConditionField> conditionFields, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+        ArrayList<String> sqlConditions = new ArrayList<>();
+        Joiner joiner = Joiner.on(" AND ").skipNulls();
+
+        for(DataQueryDTO.ConditionField conditionField: conditionFields){
+            DataQueryDTO.ConditionField partitionCondition = new DataQueryDTO.ConditionField();
+            partitionCondition.setValue(getPartitionValue(partitionConfig, conditionField));
+            partitionCondition.operator = conditionField.operator;
+            partitionCondition.field = new DataQueryDTO.DataQueryField();
+            partitionCondition.field.setId(partitionConfig.partitionField);
+
+            String conditionSql = getConditionFieldSql(partitionCondition, dataQueryDTO);
+            if (!sqlConditions.contains(conditionSql)){
+                sqlConditions.add(conditionSql);
+            }
+        }
+
+        return joiner.join(sqlConditions);
+    }
+
+    private String getPartitionValue(DataQueryPartition partitionConfig, DataQueryDTO.ConditionField conditionField) throws InvalidQueryException{
+        switch(partitionConfig.type){
+            case daily:
+                Date date = new Date(Long.parseLong(conditionField.getValue()) * 1000);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                return Integer.toString(calendar.get(Calendar.YEAR) * 10000 + calendar.get(Calendar.MONTH) * 100 + calendar.get(Calendar.DATE));
+            default:
+                throw new InvalidQueryException("Handling for " + partitionConfig.type.name() + " is not implemented yet.");
+        }
     }
 
     private String getConditionFieldSql(DataQueryDTO.ConditionField conditionField, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
