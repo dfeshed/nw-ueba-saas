@@ -66,4 +66,16 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
 
         return false;
     }
+
+	// Getters and setters
+
+	public MySqlUtils getMySqlUtils() {
+
+		return mySqlUtils;
+	}
+
+	public void setMySqlUtils(MySqlUtils mySqlUtils) {
+
+		this.mySqlUtils = mySqlUtils;
+	}
 }
