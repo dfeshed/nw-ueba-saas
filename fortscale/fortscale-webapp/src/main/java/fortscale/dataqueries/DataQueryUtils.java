@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utilities for all data queries
@@ -45,6 +46,57 @@ public class DataQueryUtils implements EmbeddedValueResolverAware {
         }
 
         return fields;
+    }
+
+    /**
+     * Gets all the logical entities that are present in entities.properties.
+     * @return
+     */
+    public List<LogicalDataQueryEntity> getAllLogicalEntities() throws Exception{
+        String[] entityIds = stringValueResolver.resolveStringValue("${entities}").split("\\s*,[,\\s]*");
+        ArrayList<LogicalDataQueryEntity> entities = new ArrayList<>();
+
+        for(String entityId: entityIds){
+            entities.add(getLogicalEntity(entityId));
+        }
+
+        return entities;
+    }
+
+    /**
+     * Gets a DataQuery entity configuration, to be sent to the front-end. This is only the logical representation of the entity, without mappings.
+     * @param entityId The ID of the entity
+     * @return
+     */
+    public LogicalDataQueryEntity getLogicalEntity(String entityId) throws Exception{
+        LogicalDataQueryEntity entity = new LogicalDataQueryEntity();
+        entity.id = entityId;
+        entity.name = getExtendableValue(entityId, "name");
+        entity.shortName = getExtendableValue(entityId, "short_name");
+
+        List<String> fieldIds = getAllEntityFields(entityId);
+        ArrayList<LogicalDataQueryEntity.Field> fields = new ArrayList<>();
+
+        for(String fieldId: fieldIds){
+            try {
+                String fieldPrefix = "field." + fieldId + ".";
+                LogicalDataQueryEntity.Field field = new LogicalDataQueryEntity.Field();
+                field.id = fieldId;
+                field.name = getExtendableValue(entityId, fieldPrefix + "name");
+                field.type = QueryValueType.valueOf(getExtendableValue(entityId, fieldPrefix + "type"));
+                field.scoreField = getExtendableValue(entityId, fieldPrefix + "score");
+
+                String isDefaultEnabled = getExtendableValue(entityId, fieldPrefix + "enabled");
+                field.isDefaultEnabled = isDefaultEnabled == null || !isDefaultEnabled.equals("false");
+                fields.add(field);
+            } catch(Exception error){
+                throw new Exception("Can't read field " + fieldId + " of entity " + entityId);
+            }
+        }
+
+        entity.fields = fields;
+
+        return entity;
     }
 
     /**
