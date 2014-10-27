@@ -78,4 +78,9 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
 
 		this.mySqlUtils = mySqlUtils;
 	}
+
+    public void setDataQueryUtils(DataQueryUtils dataQueryUtils) {
+
+        this.dataQueryUtils = dataQueryUtils;
+    }
 }

@@ -20,10 +20,9 @@ public class MySqlFromPartGeneratorTest extends DataQueryGeneratorTest{
 					throws Exception {
 
 		super.setUp();
-
 		mySqlFromPartGenerator = new MySqlFromPartGenerator();
 		mySqlFromPartGenerator.setMySqlUtils(mySqlUtils);
-
+		mySqlFromPartGenerator.setDataQueryUtils(dataQueryUtils);
 	}
 
 	@Test
@@ -32,17 +31,8 @@ public class MySqlFromPartGeneratorTest extends DataQueryGeneratorTest{
 
 
 		String sqlStr = mySqlFromPartGenerator.generateQueryPart(dataQueryDTO1);
-		String expectedString = "lalala";
+		String expectedString = "FROM someEntity";
 		assertEquals("SQL for DTO 1" , expectedString, sqlStr);
-
-
-		sqlStr = mySqlFromPartGenerator.generateQueryPart(dataQueryDTO1);
-		expectedString = "lalala";
-		assertEquals("SQL for DTO 1" , expectedString, sqlStr);
-
-
-
-
 
 	}
 }
