@@ -25,9 +25,15 @@ public class MySqlOrderByPartGenerator implements QueryPartGenerator {
         Joiner joiner = Joiner.on(", ").skipNulls();
 
         for(DataQueryDTO.Sort sort: dataQueryDTO.sort){
-            sorts.add(mySqlUtils.getFieldSql(sort.field, dataQueryDTO) + (sort.direction != null ? " " + sort.direction.name() : ""));
+            String field = mySqlUtils.getFieldSql(sort.field, dataQueryDTO);
+            sorts.add( field+ (sort.direction != null ? " " + sort.direction.name() : ""));
         }
 
 		return "ORDER BY " + joiner.join(sorts);
 	}
+
+    public void setMySqlUtils(MySqlUtils mySqlUtils) {
+
+        this.mySqlUtils = mySqlUtils;
+    }
 }
