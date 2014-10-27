@@ -188,32 +188,34 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 	/**
 	 * Gets the list of job reports older than the time given (excluded)
 	 * @param when the starting time to look for reports
-	 * @param count the maximum number of job report to return
 	 * @return the list of job reports found
 	 */
 	public List<JobReport> findJobReportsOlderThan(Date when) {
 		Date dayBefore = new Date(when.getTime() - (1000L*60*60*24));
-		return repository.findByStartBetween(dayBefore, when, 
-				new Sort(Sort.Direction.DESC, "start", "sourceType", "jobName"));
+		return repository.findByStartBetween(dayBefore, when, getJobsSort());
 	}
-	
+
+	/**
+	 * @return new sort for JobReport item
+	 */
+	private Sort getJobsSort() {
+		return new Sort(Sort.Direction.DESC, "start", "sourceType", "jobName");
+	}
+
 	/**
 	 * Get the list of job reports newer than the time given (excluded)
 	 * @param when the starting time to look for reports
-	 * @param count the maximum number of job reports to return
 	 * @return the list of job reports found
 	 */
 	public List<JobReport> findJobReportsNewerThan(Date when) {
-		return repository.findByStartGreaterThan(when, 
-				new Sort(Sort.Direction.DESC, "start", "sourceType", "jobName"));
+		return repository.findByStartGreaterThan(when, getJobsSort());
 	}
 	
 	public List<JobReport> findLatestJobReports() {
 		Date now = new Date();
 		Date yesterday = new Date(now.getTime() - (1000L*60*60*24));
 		
-		return repository.findByStartGreaterThan(yesterday,
-				new Sort(Sort.Direction.DESC, "start", "sourceType", "jobName"));
+		return repository.findByStartGreaterThan(yesterday, getJobsSort());
 	}
 	
 	/**

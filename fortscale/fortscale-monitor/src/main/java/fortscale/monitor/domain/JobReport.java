@@ -6,11 +6,16 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection="job_report")
 @TypeAlias(value="JobReport")
+@CompoundIndexes({
+	@CompoundIndex(name="job_report_sort_idx", def = "{'start': -1, 'sourceType': -1, 'jobName': -1}")
+})
 public class JobReport {
 
 	@Id
