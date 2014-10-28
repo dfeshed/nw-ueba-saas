@@ -19,9 +19,6 @@ public class DataQueryGeneratorTest {
 	protected DataQueryUtils dataQueryUtils;
 	protected DataQueryDTO dataQueryDTO1;
 
-
-
-
 	private ObjectMapper mapper = new ObjectMapper();
 	public void setUp()
 					throws Exception {
@@ -35,8 +32,6 @@ public class DataQueryGeneratorTest {
 		Mockito.when(dataQueryUtils.getEntityTable(Mockito.any(String.class))).thenReturn("someEntity");
 		Mockito.when(dataQueryUtils.getEntityPerformanceTableField(Mockito.any(String.class))).thenReturn("somePerformanceEntityField");
 		Mockito.when(dataQueryUtils.getEntityPerformanceTableFieldMinValue(Mockito.any(String.class))).thenReturn(50);
-
-
 
 	}
 

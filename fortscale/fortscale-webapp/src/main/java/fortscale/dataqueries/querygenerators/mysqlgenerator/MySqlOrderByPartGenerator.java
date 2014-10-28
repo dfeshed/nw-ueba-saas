@@ -33,7 +33,6 @@ public class MySqlOrderByPartGenerator implements QueryPartGenerator {
 	}
 
     public void setMySqlUtils(MySqlUtils mySqlUtils) {
-
         this.mySqlUtils = mySqlUtils;
     }
 }
