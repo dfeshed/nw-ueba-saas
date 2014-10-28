@@ -1,5 +1,6 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
+import fortscale.dataqueries.DataQueryUtils;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,31 +25,31 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 		mySqlSelectPartGenerator.setDataQueryUtils(dataQueryUtils);
 		mySqlSelectPartGenerator.setMySqlUtils(mySqlUtils);
 
-		String fieldName_1 = "field1";
+		ArrayList<DataQueryDTO.DataQueryField> fields = new ArrayList<DataQueryDTO.DataQueryField>();
 		DataQueryDTO.DataQueryField field1 = new DataQueryDTO.DataQueryField();
-		field1.setId(fieldName_1);
+		field1.setId("field1");
+		fields.add(field1);
 
-		String fieldName_2 = "field2";
 		DataQueryDTO.DataQueryField field2 = new DataQueryDTO.DataQueryField();
-		field2.setId(fieldName_2);
+		field2.setId("field2");
+		fields.add(field2);
 
+		ArrayList<String> entities = new ArrayList<String>();
+		entities.add(field1.getId());
+		entities.add(field2.getId());
 
-		ArrayList<String> fields = new ArrayList<String>();
-		fields.add(fieldName_1);
-		fields.add(fieldName_2);
-
-		Mockito.when(dataQueryUtils.getAllEntityFields(Mockito.any(String.class))).thenReturn(fields);
-		Mockito.when(mySqlUtils.getFieldSql(field1,dataQueryDTO1,true)).thenReturn(fieldName_1);
-		Mockito.when(mySqlUtils.getFieldSql(field2,dataQueryDTO1,true)).thenReturn(fieldName_2);
+		Mockito.when(dataQueryUtils.getAllEntityFields(dataQueryDTO1.entities[0])).thenReturn(entities);
+		for (DataQueryDTO.DataQueryField field : fields) {
+			if (field != null)
+				Mockito.when(mySqlUtils.getFieldSql(field, dataQueryDTO1, true)).thenReturn("aaa,ddd,eee");
+		}
 
 	}
 
 	@Test
 	public void testGenerateQueryPart()
 					throws Exception {
-
 		String sqlStr = mySqlSelectPartGenerator.generateQueryPart(dataQueryDTO1);
-		//TODO - check why this test is fail, it supposed to pass I believe it is something related to mockito
 		String expectedString = "SELECT field1, field2 ";
 		assertEquals("SQL for DTO 1" , expectedString, sqlStr);
 
