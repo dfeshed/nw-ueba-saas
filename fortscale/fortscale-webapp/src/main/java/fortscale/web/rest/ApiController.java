@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fortscale.dataqueries.DataQueryUtils;
+import fortscale.dataqueries.LogicalDataQueryEntity;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.dataqueries.querygenerators.DataQueryRunnerFactory;
@@ -50,7 +52,10 @@ public class ApiController {
 	
     @Autowired
 	private UserServiceFacade userServiceFacade;
-    
+
+    @Autowired
+    private DataQueryUtils dataQueryUtils;
+
 	private Cache<String, DataBean<List<Map<String, Object>>>> investigateQueryCache;
 
 	/**
@@ -170,6 +175,24 @@ public class ApiController {
 			
 		return retBeanForPage;
 	}
+
+    /**
+     * @return List of entities available to the front-end
+     */
+    @RequestMapping(value="/getEntities", method=RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<List<LogicalDataQueryEntity>> getEntities(){
+        DataBean<List<LogicalDataQueryEntity>> entities = new DataBean<List<LogicalDataQueryEntity>>();
+        try {
+            entities.setData(dataQueryUtils.getAllLogicalEntities());
+        }
+        catch(Exception error){
+            throw new InvalidValueException("Can't get entities. Error: " + error.getMessage());
+        }
+
+        return entities;
+    }
 
     /**
      *

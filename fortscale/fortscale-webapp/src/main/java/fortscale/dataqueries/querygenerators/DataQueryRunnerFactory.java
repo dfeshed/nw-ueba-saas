@@ -1,6 +1,5 @@
 package fortscale.dataqueries.querygenerators;
 
-import fortscale.dataqueries.DataQueryEntityFactory;
 import fortscale.dataqueries.SupportedDBType;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
@@ -9,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
-
-import java.util.Map;
 
 /**
  * Factory for creating DataQueryRunner
@@ -22,9 +19,6 @@ public class DataQueryRunnerFactory implements EmbeddedValueResolverAware{
 
 	@Autowired
 	private MySqlQueryRunner mySqlQueryRunner;
-
-    @Autowired
-    DataQueryEntityFactory entityFactory;
 
     private SupportedDBType getEntityDbType(String entityId){
         String type = stringValueResolver.resolveStringValue("${entities." + entityId + ".db}");
@@ -42,8 +36,6 @@ public class DataQueryRunnerFactory implements EmbeddedValueResolverAware{
 	 * @return query runner
 	 */
 	public DataQueryRunner getDataQueryRunner(DataQueryDTO dataQueryDTO) throws Exception{
-        //DataQueryEntity entity = entityFactory.getDataQueryEntity(dataQueryDTO.entities[0]);
-
         SupportedDBType type = getEntityDbType(dataQueryDTO.entities[0]);
 
         if (type == SupportedDBType.MySQL)
