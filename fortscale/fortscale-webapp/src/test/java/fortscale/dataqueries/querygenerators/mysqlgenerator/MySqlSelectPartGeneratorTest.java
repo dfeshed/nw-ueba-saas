@@ -39,10 +39,8 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 		entities.add(field2.getId());
 
 		Mockito.when(dataQueryUtils.getAllEntityFields(dataQueryDTO1.entities[0])).thenReturn(entities);
-		for (DataQueryDTO.DataQueryField field : fields) {
-			if (field != null)
-				Mockito.when(mySqlUtils.getFieldSql(field, dataQueryDTO1, true)).thenReturn("aaa,ddd,eee");
-		}
+		Mockito.when(mySqlUtils.getFieldSql(Mockito.any(DataQueryDTO.DataQueryField.class), Mockito.eq(dataQueryDTO1), Mockito.eq(true))).thenReturn("aaa,ddd,eee");
+
 
 	}
 
