@@ -1,6 +1,7 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.dataqueries.DataQueryUtils;
+import fortscale.dataqueries.QueryValueType;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,27 +19,30 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
 
 	@Before
 	public void setUp()
-					throws Exception {
+			throws Exception {
 
 		super.setUp();
 		mySqlWherePartGenerator = new MySqlWherePartGenerator();
 		mySqlWherePartGenerator.setDataQueryUtils(dataQueryUtils);
 		mySqlWherePartGenerator.setMySqlUtils(mySqlUtils);
 
-		DataQueryDTO.ConditionField conditionField = new DataQueryDTO.ConditionField();
-		conditionField.setValue("30");
-
-		Mockito.when(mySqlUtils.getConditionFieldSql(conditionField,dataQueryDTO1)).thenReturn("field > 20");
-
+		for (DataQueryDTO.ConditionTerm condtionTearm: dataQueryDTO1.conditions){
+			for (DataQueryDTO.Term childTerm: condtionTearm.terms){
+				if (childTerm.getClass() == DataQueryDTO.ConditionField.class){
+					DataQueryDTO.ConditionField condition = (DataQueryDTO.ConditionField)childTerm;
+					Mockito.when(mySqlUtils.getConditionFieldSql(condition,dataQueryDTO1)).thenReturn(condition.field.getId() + "<=" + condition.getValue());
+				}
+			}
+		}
 	}
 
 	@Test
 	public void testGenerateQueryPart()
-					throws Exception {
+			throws Exception {
 
 		String sqlStr = mySqlWherePartGenerator.generateQueryPart(dataQueryDTO1);
 		//TODO - check why this test is fail, it supposed to pass I believe it is something related to mockito
-		String expectedString = "SELECT field1, field2 ";
+		String expectedString = "WHERE (event_score<=50 AND event_time_utc<=1414184400 AND event_time_utc<=1414360799)";
 		assertEquals("SQL for DTO 1" , expectedString, sqlStr);
 
 	}
