@@ -11,11 +11,13 @@ import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.domain.analyst.AnalystAuth;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
 
 import fortscale.utils.logging.Logger;
+import fortscale.web.BaseController;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @RequestMapping("/api/**")
-public class ApiController {
+public class ApiController extends BaseController {
 
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
@@ -267,6 +269,11 @@ public class ApiController {
             DataBean<List<Map<String, Object>>> retBean = dataQueryRunner.executeQuery(query);
 
             DataBean<List<Map<String, Object>>> retBeanForPage = retBean;
+
+            // TODO: Add a QA authority to the analyst or something, so this isn't returned for all analysts:
+            // if (getThisAnalystAuth().getAuthorities())
+            retBeanForPage.info = new HashMap<>();
+            retBeanForPage.info.put("query", query);
 
             // take only relevant page from results
             if (page != null) {
