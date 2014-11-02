@@ -106,18 +106,6 @@ public class VpnCiscoASATest {
 
                 ),
 
-                $(
-                        "drop global fail without source_ip",
-                        $(
-                                "Mar 21 2014 23:03:49 bxb23-vpn-cluster-1 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 72.163.197.40 : user = kadara : user IP = 101.63.204.196",
-                                "Mar 21 2014 23:03:49 bxb23-vpn-cluster-1 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 72.163.197.40 : user = kadara"
-
-                        ),
-                        $(
-                                "2014-03-21 23:03:49,1395435829,kadara,101.63.204.196,,FAIL,,,,,,,,,,,,,false,false",
-                                (String)null
-                        )
-                ),
 
                 $(
                         "apple_short - start",
@@ -295,10 +283,12 @@ public class VpnCiscoASATest {
                                 "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-6-113013: AAA unable to complete the request Error : reason = Simultaneous logins exceeded for user : user = kebarrow",
                                 "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 173.38.203.42 : user = kebarrow"
 
+
                         ),
                         $(
-                                (String)null,
-                                (String)null
+                                "2014-03-21 23:03:49,1395435829,kebarrow,,,FAIL,,,,,,,,,,,,,false,false",
+                                "2014-03-21 23:03:49,1395435829,kebarrow,,,FAIL,,,,,,,,,,,,,false,false"
+
 
                         )
                 ),
@@ -454,19 +444,6 @@ public class VpnCiscoASATest {
 
                 ),
                 $(
-                        "ciscovpn4cluster / ciscovpncluster / crdc_webex_employee / CRDC_users - Fail",
-                        $(
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 173.38.203.42 : user = akucher"
-
-                        ),
-                        $(
-
-                                (String)null
-
-                        )
-
-                ),
-                $(
                         "un supported group ",
                         $(
                                 "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-7-722031: Group <bla bla test> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC Session Termination: Out: 632880 (+2252) bytes, 32427 (+105) packets, 46 drops."
@@ -490,6 +467,8 @@ public class VpnCiscoASATest {
                                 "2014-03-21 23:03:49,1395435829,kebarrow,101.63.204.196,,FAIL,,,,,,,,,,,,,false,false"
                         )
                 )
+
+
 
         );
     }
