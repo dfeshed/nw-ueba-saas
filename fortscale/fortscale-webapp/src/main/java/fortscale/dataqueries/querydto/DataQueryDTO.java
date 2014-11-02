@@ -23,7 +23,6 @@ public class DataQueryDTO {
 
     @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 	public List<DataQueryField> fields;
-
     public List<ConditionTerm> conditions;
     public String[] entities;
     public List<DataQueryField> groupBy;

@@ -8,6 +8,8 @@ import fortscale.services.exceptions.InvalidValueException;
 import org.junit.Before;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+
 /**
  * Created by rotemn on 10/26/2014.
  */
@@ -18,9 +20,6 @@ public class DataQueryGeneratorTest {
 	protected MySqlUtils mySqlUtils;
 	protected DataQueryUtils dataQueryUtils;
 	protected DataQueryDTO dataQueryDTO1;
-
-
-
 
 	private ObjectMapper mapper = new ObjectMapper();
 	public void setUp()
@@ -35,8 +34,6 @@ public class DataQueryGeneratorTest {
 		Mockito.when(dataQueryUtils.getEntityTable(Mockito.any(String.class))).thenReturn("someEntity");
 		Mockito.when(dataQueryUtils.getEntityPerformanceTableField(Mockito.any(String.class))).thenReturn("somePerformanceEntityField");
 		Mockito.when(dataQueryUtils.getEntityPerformanceTableFieldMinValue(Mockito.any(String.class))).thenReturn(50);
-
-
 
 	}
 

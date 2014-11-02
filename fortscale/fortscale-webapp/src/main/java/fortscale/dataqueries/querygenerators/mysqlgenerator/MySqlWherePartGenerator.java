@@ -32,7 +32,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
             return null;
 
         String partitionsSql = getPartitionsSql(dataQueryDTO);
-		return "WHERE " + (partitionsSql != null ? partitionsSql + " AND " : "") + getConditionTermSql(dataQueryDTO.conditions.get(0), dataQueryDTO);
+		return "WHERE " + ((partitionsSql != null && partitionsSql.length() > 0) ? partitionsSql + " AND " : "") + getConditionTermSql(dataQueryDTO.conditions.get(0), dataQueryDTO);
 	}
 
     private String getConditionTermSql(DataQueryDTO.ConditionTerm conditionTerm, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
@@ -130,5 +130,12 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 
     private String getConditionFieldSql(DataQueryDTO.ConditionField conditionField, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         return mySqlUtils.getConditionFieldSql(conditionField, dataQueryDTO);
+    }
+
+    public void setDataQueryUtils(DataQueryUtils dataQueryUtils) {
+        this.dataQueryUtils = dataQueryUtils;
+    }
+    public void setMySqlUtils(MySqlUtils mySqlUtils) {
+        this.mySqlUtils = mySqlUtils;
     }
 }

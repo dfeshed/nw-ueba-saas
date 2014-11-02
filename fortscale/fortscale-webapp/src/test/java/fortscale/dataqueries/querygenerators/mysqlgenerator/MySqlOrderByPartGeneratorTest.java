@@ -18,6 +18,7 @@ public class MySqlOrderByPartGeneratorTest extends DataQueryGeneratorTest{
 		super.setUp();
 		mySqlOrderByPartGenerator = new MySqlOrderByPartGenerator();
 		mySqlOrderByPartGenerator.setMySqlUtils(mySqlUtils);
+
 		Mockito.when(mySqlUtils.getFieldSql(dataQueryDTO1.sort.get(0).field,dataQueryDTO1)).thenReturn("fieldToSortBy1");
 		Mockito.when(mySqlUtils.getFieldSql(dataQueryDTO1.sort.get(1).field,dataQueryDTO1)).thenReturn("fieldToSortBy2");
 
@@ -29,7 +30,7 @@ public class MySqlOrderByPartGeneratorTest extends DataQueryGeneratorTest{
 
 		String sqlStr = mySqlOrderByPartGenerator.generateQueryPart(dataQueryDTO1);
 		String expectedString = "ORDER BY fieldToSortBy1 DESC, fieldToSortBy2 DESC";
-		assertEquals("SQL for DTO 1" , expectedString, sqlStr);
+		assertEquals("SQL order Part for DTO1" , expectedString, sqlStr);
 
 	}
 }

@@ -24,7 +24,7 @@ public class MySqlLimitPartGeneratorTest extends DataQueryGeneratorTest{
 
 		String sqlStr = mySqlLimitPartGenerator.generateQueryPart(dataQueryDTO1);
 		String expectedString = "LIMIT 20";
-		assertEquals("SQL for DTO 1" , expectedString, sqlStr);
+		assertEquals("SQL Limit Part for DTO 1" , expectedString, sqlStr);
 
 	}
 }
