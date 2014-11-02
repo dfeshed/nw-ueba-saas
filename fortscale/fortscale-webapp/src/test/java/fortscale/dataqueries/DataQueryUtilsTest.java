@@ -94,7 +94,7 @@ public class DataQueryUtilsTest{
     @Test
     public void testGetFieldColumn() throws Exception {
         String entity = dataQueryUtils.getFieldColumn("kerberos_logins", "username");
-        assertEquals("Get value of a column from impala" , entity, "SomeUserFromImpala");
+        assertEquals("Get value of a column from impala" , entity, "account_name");
     }
 
 
