@@ -39,7 +39,7 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 		entities.add(field2.getId());
 
 		Mockito.when(dataQueryUtils.getAllEntityFields(dataQueryDTO1.entities[0])).thenReturn(entities);
-		Mockito.when(mySqlUtils.getFieldSql(Mockito.any(DataQueryDTO.DataQueryField.class), Mockito.eq(dataQueryDTO1), Mockito.eq(true))).thenReturn("aaa,ddd,eee");
+		Mockito.when(mySqlUtils.getFieldSql(Mockito.any(DataQueryDTO.DataQueryField.class), Mockito.eq(dataQueryDTO1), Mockito.eq(true))).thenReturn("someField");
 
 
 	}
@@ -48,8 +48,8 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 	public void testGenerateQueryPart()
 					throws Exception {
 		String sqlStr = mySqlSelectPartGenerator.generateQueryPart(dataQueryDTO1);
-		String expectedString = "SELECT field1, field2 ";
-		assertEquals("SQL for DTO 1" , expectedString, sqlStr);
+		String expectedString = "SELECT someField, someField";
+		assertEquals("SQL Select Part for DTO1" , expectedString, sqlStr);
 
 	}
 }

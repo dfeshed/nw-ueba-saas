@@ -43,7 +43,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
 		String sqlStr = mySqlWherePartGenerator.generateQueryPart(dataQueryDTO1);
 		//TODO - check why this test is fail, it supposed to pass I believe it is something related to mockito
 		String expectedString = "WHERE (event_score<=50 AND event_time_utc<=1414184400 AND event_time_utc<=1414360799)";
-		assertEquals("SQL for DTO 1" , expectedString, sqlStr);
+		assertEquals("SQL Where part for DTO1" , expectedString, sqlStr);
 
 	}
 }

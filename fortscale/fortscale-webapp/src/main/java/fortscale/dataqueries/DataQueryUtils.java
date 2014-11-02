@@ -1,6 +1,8 @@
 package fortscale.dataqueries;
 
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.dataqueries.querygenerators.mysqlgenerator.MySqlUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
@@ -13,12 +15,12 @@ import java.util.List;
  */
 @Component
 public class DataQueryUtils implements EmbeddedValueResolverAware {
-    StringValueResolver stringValueResolver;
-
     @Override
     public void setEmbeddedValueResolver(StringValueResolver resolver) {
         this.stringValueResolver = resolver;
     }
+
+    StringValueResolver stringValueResolver;
 
     /**
      * Returns an array of all of an entity's field IDs

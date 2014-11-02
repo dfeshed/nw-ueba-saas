@@ -8,6 +8,8 @@ import fortscale.services.exceptions.InvalidValueException;
 import org.junit.Before;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+
 /**
  * Created by rotemn on 10/26/2014.
  */

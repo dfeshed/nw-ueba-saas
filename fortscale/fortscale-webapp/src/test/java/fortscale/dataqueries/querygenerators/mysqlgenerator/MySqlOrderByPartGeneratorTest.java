@@ -30,7 +30,7 @@ public class MySqlOrderByPartGeneratorTest extends DataQueryGeneratorTest{
 
 		String sqlStr = mySqlOrderByPartGenerator.generateQueryPart(dataQueryDTO1);
 		String expectedString = "ORDER BY fieldToSortBy1 DESC, fieldToSortBy2 DESC";
-		assertEquals("SQL for DTO 1" , expectedString, sqlStr);
+		assertEquals("SQL order Part for DTO1" , expectedString, sqlStr);
 
 	}
 }
