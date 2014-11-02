@@ -33,6 +33,9 @@ public class MySqlQueryRunner implements DataQueryRunner {
 	private QueryPartGenerator mySqlWherePartGenerator;
 
 	@Autowired
+    private QueryPartGenerator mySqlGroupByPartGenerator;
+	
+	@Autowired
 	private QueryPartGenerator mySqlLimitPartGenerator;
 
     @Autowired
@@ -70,10 +73,25 @@ public class MySqlQueryRunner implements DataQueryRunner {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(mySqlSelectPartGenerator.generateQueryPart(dataQueryDTO)).append(" ")
-            .append(mySqlFromPartGenerator.generateQueryPart(dataQueryDTO)).append(" ")
-            .append(mySqlWherePartGenerator.generateQueryPart(dataQueryDTO)).append(" ")
-			.append(mySqlOrderByPartGenerator.generateQueryPart(dataQueryDTO)).append(" ")
-            .append(mySqlLimitPartGenerator.generateQueryPart(dataQueryDTO));
+            .append(mySqlFromPartGenerator.generateQueryPart(dataQueryDTO));
+		
+		String whereSql = mySqlWherePartGenerator.generateQueryPart(dataQueryDTO);
+		String groupBySql = mySqlGroupByPartGenerator.generateQueryPart(dataQueryDTO);
+		String orderBySql = mySqlOrderByPartGenerator.generateQueryPart(dataQueryDTO);
+		String limitSql = mySqlLimitPartGenerator.generateQueryPart(dataQueryDTO);
+		
+		if (whereSql != null)
+            sb.append(" ").append(whereSql);
+		
+		if (groupBySql != null)
+            sb.append(" ").append(groupBySql);
+		
+		if (orderBySql != null)
+            sb.append(" ").append(orderBySql);
+		
+		if (limitSql != null)
+            sb.append(" ").append(limitSql);
+
 		return sb.toString();
 	}
 }

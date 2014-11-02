@@ -1,5 +1,6 @@
 package fortscale.dataqueries.querydto;
 
+import fortscale.dataqueries.QueryFieldFunction;
 import fortscale.dataqueries.QueryValueType;
 import fortscale.services.exceptions.InvalidValueException;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,6 +13,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * DTO for data query representation
@@ -24,6 +26,7 @@ public class DataQueryDTO {
 
     public List<ConditionTerm> conditions;
     public String[] entities;
+    public List<DataQueryField> groupBy;
     public List<Sort> sort;
     public short limit = 10;
     public int offset = 0;
@@ -33,15 +36,14 @@ public class DataQueryDTO {
         private String id;
         private String alias;
         private String entity;
-        private DBFunction function;
         private String value;
 
+        public FieldFunction func;
         public QueryValueType valueType;
 
         public String getId(){ return id; }
         public String getAlias(){ return alias; }
         public String getEntity(){ return entity; }
-        public DBFunction getFunction(){ return function; }
         public String getValue(){ return value; }
 
         public void setId(String id){ this.id = id; }
@@ -51,7 +53,6 @@ public class DataQueryDTO {
         }
 
         public void setValue(String value){ this.value = value; }
-        public DBFunction setFunction(){ return function; }
     }
 
     public static enum LogicalOperator{
@@ -96,11 +97,9 @@ public class DataQueryDTO {
         public void setValue(String value){ this.value = value; }
     }
 
-    public static class DBFunction{
-        private String functionName;
-
-        public String getFunctionName(){ return functionName; }
-        public void setFunctionName(String functionName){ this.functionName = functionName; }
+    public static class FieldFunction{
+        public QueryFieldFunction name;
+        public Map<String, String> params;
     }
 
     public static enum SortDirection{

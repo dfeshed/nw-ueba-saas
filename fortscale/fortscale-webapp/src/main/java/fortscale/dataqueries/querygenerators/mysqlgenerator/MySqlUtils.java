@@ -3,14 +3,17 @@ package fortscale.dataqueries.querygenerators.mysqlgenerator;
 import fortscale.dataqueries.DataQueryPartition;
 import fortscale.dataqueries.DataQueryPartitionType;
 import fortscale.dataqueries.DataQueryUtils;
+import fortscale.dataqueries.QueryFieldFunction;
 import fortscale.dataqueries.QueryValueType;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
+
 import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
+
 
 
 import java.util.ArrayList;
@@ -41,6 +44,15 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
             fieldSB.append(getValueSql(field.getValue(), field.valueType));
             fieldSB.append(" as " + field.getAlias());
         }
+        else if (field.func != null){
+        	fieldSB.append(getFieldFuncSql(field, dataQueryDTO));
+        	if (field.getAlias() != null)
+                fieldSB.append(" as " + field.getAlias());
+        	else if (field.getId() != null)
+    			fieldSB.append(" as " + field.func.name + "_" + field.getId());
+        	else
+        		throw new InvalidQueryException("Can't add field function, missing alias for result.");
+        }
         else{
             if (dataQueryDTO.entities.length > 1 && field.getEntity() != null)
                 fieldSB.append(field.getEntity() + ".");
@@ -61,6 +73,38 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
         return getFieldSql(field, dataQueryDTO, false);
     }
 
+    /**
+     * Generates SQL for a field function call, such as 'COUNT(*)' or 'MAX(eventscore)'
+     * @param function
+     * @return
+     */
+    public String getFieldFuncSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+    	StringBuilder sb = new StringBuilder();
+    	String entityId = field.getEntity();
+    	if (entityId == null)
+    		entityId = dataQueryDTO.entities[0];
+    	
+    	switch(field.func.name){
+    		case count:
+				sb.append("COUNT(");
+				if (field.func.params.containsKey("all"))
+					sb.append("*");
+				else{
+					if (field.func.params.containsKey("distinct"))
+						sb.append("DISTINCT ");
+					
+					sb.append(dataQueryUtils.getFieldColumn(entityId, field.getId()));
+				}
+				
+				sb.append(")");
+				return sb.toString();
+    		case min:
+    		case max:
+			default:
+				throw new InvalidQueryException("There's no implementation for field function " + field.func.name + ".");
+    	}
+    }
+    
     public String getValueSql(String value, QueryValueType type){
         if (value == null)
             return "null";

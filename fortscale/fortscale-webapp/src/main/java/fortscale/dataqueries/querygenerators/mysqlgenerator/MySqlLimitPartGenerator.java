@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class MySqlLimitPartGenerator implements QueryPartGenerator {
     public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException {
         if (dataQueryDTO.limit <= 0)
-            return "";
+            return null;
 
         return "LIMIT " + dataQueryDTO.limit + (dataQueryDTO.offset > 0 ? ", " + dataQueryDTO.offset : "");
     }
