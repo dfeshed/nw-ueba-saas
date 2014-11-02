@@ -40,10 +40,10 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedVa
         
         for (DataQueryDTO.DataQueryField field : dataQueryDTO.groupBy) {
             if (field != null){
-            	if (field.getId() != null && field.getAlias() != null)
+            	if (field.getAlias() != null)
         			throw new InvalidQueryException("Invalid GROUP BY field, " + field.getId() + ", can't alias fields in a GROUP BY query part.");
-            	
-                fieldsSql.add(mySqlUtils.getFieldSql(field, dataQueryDTO));
+
+        		fieldsSql.add(mySqlUtils.getFieldSql(field, dataQueryDTO));
             }
         }
 

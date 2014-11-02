@@ -50,7 +50,7 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
             return false;
 
         for (DataQueryDTO.Term childTerm: term.terms){
-            if (childTerm.getClass() == DataQueryDTO.ConditionField.class){
+            if (childTerm instanceof DataQueryDTO.ConditionField){
                 DataQueryDTO.ConditionField condition = (DataQueryDTO.ConditionField)childTerm;
                 if (condition.field.getId().equals(dataQueryUtils.getEntityPerformanceTableField(entityId))){
                     int value = Integer.parseInt(condition.getValue());

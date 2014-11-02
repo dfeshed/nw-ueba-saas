@@ -18,15 +18,9 @@ import java.util.List;
  * Generates the SELECT part of the query in MySql - "SELECT field1, field2, field3..."
  */
 @Component
-public class MySqlSelectPartGenerator implements QueryPartGenerator, EmbeddedValueResolverAware {
-    StringValueResolver stringValueResolver;
+public class MySqlSelectPartGenerator implements QueryPartGenerator {
 
-    @Override
-    public void setEmbeddedValueResolver(StringValueResolver resolver) {
-        this.stringValueResolver = resolver;
-    }
-
-    @Autowired
+	@Autowired
     private MySqlUtils mySqlUtils;
 
     @Autowired
@@ -45,7 +39,7 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator, EmbeddedVal
         else
             fields = dataQueryDTO.fields;
 
-        fieldsSql = new ArrayList<String>();
+        fieldsSql = new ArrayList<>();
 
         for (DataQueryDTO.DataQueryField field : fields) {
             if (field != null)
@@ -58,7 +52,7 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator, EmbeddedVal
 	}
 
     private List<DataQueryDTO.DataQueryField> getAllEntityFields(String entityId){
-        ArrayList<String> fieldIds = dataQueryUtils.getAllEntityFields(entityId);
+        List<String> fieldIds = dataQueryUtils.getAllEntityFields(entityId);
         ArrayList<DataQueryDTO.DataQueryField> fields = new ArrayList<DataQueryDTO.DataQueryField>();
 
         for(String fieldId: fieldIds){

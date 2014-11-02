@@ -42,16 +42,12 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
                 throw new InvalidQueryException("An alias should be specified for field value '" + field.getValue() + "'.");
 
             fieldSB.append(getValueSql(field.getValue(), field.valueType));
-            fieldSB.append(" as " + field.getAlias());
+            fieldSB.append(" as '" + field.getAlias() + "'");
         }
         else if (field.func != null){
         	fieldSB.append(getFieldFuncSql(field, dataQueryDTO));
         	if (field.getAlias() != null)
-                fieldSB.append(" as " + field.getAlias());
-        	else if (field.getId() != null)
-    			fieldSB.append(" as " + field.func.name + "_" + field.getId());
-        	else
-        		throw new InvalidQueryException("Can't add field function, missing alias for result.");
+                fieldSB.append(" as '" + field.getAlias() + "'");
         }
         else{
             if (dataQueryDTO.entities.length > 1 && field.getEntity() != null)
@@ -61,9 +57,9 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
             fieldSB.append(columnName);
 
             if (field.getAlias() != null)
-                fieldSB.append(" as " + field.getAlias());
+                fieldSB.append(" as '" + field.getAlias() + "'");
             else if (aliasAsId && !columnName.equals(field.getId()))
-                fieldSB.append(" as " + field.getId());
+                fieldSB.append(" as '" + field.getId() + "'");
         }
 
         return fieldSB.toString();
@@ -98,6 +94,11 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
 				
 				sb.append(")");
 				return sb.toString();
+    		case to_date:
+    			if (field.getId() == null)
+					throw new InvalidQueryException("The to_date field function requires a field ID.");
+    			
+				return "TO_DATE(" + dataQueryUtils.getFieldColumn(entityId, field.getId()) + ")";
     		case min:
     		case max:
 			default:

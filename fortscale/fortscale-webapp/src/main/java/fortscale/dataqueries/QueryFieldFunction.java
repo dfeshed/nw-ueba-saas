@@ -6,5 +6,5 @@ package fortscale.dataqueries;
  *
  */
 public enum QueryFieldFunction {
-	count, min, max
+	count, min, max, to_date
 }
