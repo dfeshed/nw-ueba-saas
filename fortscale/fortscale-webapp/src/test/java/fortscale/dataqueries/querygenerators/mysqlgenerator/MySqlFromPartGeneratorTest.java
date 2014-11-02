@@ -32,7 +32,7 @@ public class MySqlFromPartGeneratorTest extends DataQueryGeneratorTest{
 
 		String sqlStr = mySqlFromPartGenerator.generateQueryPart(dataQueryDTO1);
 		String expectedString = "FROM someEntity";
-		assertEquals("SQL for DTO 1" , expectedString, sqlStr);
+		assertEquals("SQL From Part for DTO1" , expectedString, sqlStr);
 
 	}
 }

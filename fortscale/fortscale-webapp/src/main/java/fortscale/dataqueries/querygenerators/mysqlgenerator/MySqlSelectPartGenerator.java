@@ -63,4 +63,13 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator {
 
         return fields;
     }
+
+
+    public void setDataQueryUtils(DataQueryUtils dataQueryUtils) {
+        this.dataQueryUtils = dataQueryUtils;
+    }
+
+    public void setMySqlUtils(MySqlUtils mySqlUtils) {
+        this.mySqlUtils = mySqlUtils;
+    }
 }
