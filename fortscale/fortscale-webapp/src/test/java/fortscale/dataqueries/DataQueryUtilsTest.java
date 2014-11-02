@@ -52,6 +52,10 @@ public class DataQueryUtilsTest{
         Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.kerberos_logins.field.failure_code.name" + "}")).thenReturn("Error Code");
         Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.kerberos_logins.field.failure_code.type" + "}")).thenReturn("STRING");
 
+        //for entity partition test
+        Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.access_event.partitions" + "}")).thenReturn("event_time_utc daily day_partition");
+        Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.kerberos_logins.field.username.column" + "}")).thenReturn("account_name");
+
     }
 
     @Test
@@ -79,14 +83,19 @@ public class DataQueryUtilsTest{
         assertEquals("SQL Select Part for DTO1" , listString, "source_machine_type, destination_machine_type, failure_code, ");
     }
 
-   /* @Test
+    @Test
     public void getEntityPartitions() throws Exception {
-        ArrayList<DataQueryPartition> partitions = dataQueryUtils.getEntityPartitions("kerberos_logins");
-        String listString="";
-        *//*for (LogicalDataQueryEntity.Field field : entity.fields){ listString += field.id + ", ";}*//*
-        assertEquals("SQL Select Part for DTO1" , listString, "source_machine_type, destination_machine_type, failure_code, ");
-    }*/
+        ArrayList<DataQueryPartition> partitions = dataQueryUtils.getEntityPartitions("access_event");
+        assertEquals("partition.entity_field" , partitions.get(0).entityField, "event_time_utc");
+        assertEquals("partition.partitionField" , partitions.get(0).partitionField, "day_partition");
+        assertEquals("partition.type" , partitions.get(0).type.name(), "daily");
+    }
 
+    @Test
+    public void testGetFieldColumn() throws Exception {
+        String entity = dataQueryUtils.getFieldColumn("kerberos_logins", "username");
+        assertEquals("Get value of a column from impala" , entity, "SomeUserFromImpala");
+    }
 
 
 }

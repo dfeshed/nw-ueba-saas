@@ -102,6 +102,10 @@ public class MySqlUtils implements EmbeddedValueResolverAware {
         return sb.toString();
     }
 
+    public void setDataQueryUtils(DataQueryUtils dataQueryUtils){
+        this.dataQueryUtils = dataQueryUtils;
+    }
+
     public static enum MySqlOperator{
         equals ("="),
         notEquals ("!="),
