@@ -23,9 +23,6 @@ public class DataQueryUtilsTest{
 
     protected StringValueResolver stringValueResolver;
 
-    @Autowired
-    private MySqlUtils mySqlUtils;
-
 
     DataQueryUtils dataQueryUtils = new DataQueryUtils();
 

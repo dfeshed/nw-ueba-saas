@@ -42,6 +42,7 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 		Mockito.when(mySqlUtils.getFieldSql(Mockito.any(DataQueryDTO.DataQueryField.class), Mockito.eq(dataQueryDTO1), Mockito.eq(true))).thenReturn("someField");
 
 
+
 	}
 
 	@Test
@@ -50,7 +51,7 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 		String sqlStr = mySqlSelectPartGenerator.generateQueryPart(dataQueryDTO1);
 		String expectedString = "SELECT someField, someField";
 		assertEquals("SQL Select Part for DTO1" , expectedString, sqlStr);
-
+		Mockito.verify(dataQueryUtils).getAllEntityFields("kerberos_logins");
 	}
 }
 
