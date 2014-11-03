@@ -270,8 +270,9 @@ public class UserServiceImpl implements UserService{
 		} catch (ParseException e) {
 			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
 		}
-		
-		if(user != null && whenChanged != null && !user.getAdInfo().getWhenChanged().before(whenChanged)){
+
+		// skip when the existing user's when-changed is newer then the AD-user's
+		if(user != null && whenChanged != null && user.getAdInfo().getWhenChanged() != null && !user.getAdInfo().getWhenChanged().before(whenChanged)){
 			return;
 		}
 		
