@@ -26,14 +26,14 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
 		mySqlWherePartGenerator.setDataQueryUtils(dataQueryUtils);
 		mySqlWherePartGenerator.setMySqlUtils(mySqlUtils);
 
-		for (DataQueryDTO.ConditionTerm condtionTearm: dataQueryDTO1.conditions){
-			for (DataQueryDTO.Term childTerm: condtionTearm.terms){
+
+			for (DataQueryDTO.Term childTerm: dataQueryDTO1.conditions.terms){
 				if (childTerm.getClass() == DataQueryDTO.ConditionField.class){
 					DataQueryDTO.ConditionField condition = (DataQueryDTO.ConditionField)childTerm;
 					Mockito.when(mySqlUtils.getConditionFieldSql(condition,dataQueryDTO1)).thenReturn(condition.field.getId() + "<=" + condition.getValue());
 				}
 			}
-		}
+
 	}
 
 	@Test
