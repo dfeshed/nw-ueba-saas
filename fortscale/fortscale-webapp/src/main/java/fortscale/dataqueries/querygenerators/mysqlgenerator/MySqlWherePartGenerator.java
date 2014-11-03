@@ -28,11 +28,11 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
 
-		if (dataQueryDTO.conditions == null || dataQueryDTO.conditions.size() == 0)
+		if (dataQueryDTO.conditions == null)
             return null;
 
         String partitionsSql = getPartitionsSql(dataQueryDTO);
-		return "WHERE " + ((partitionsSql != null && partitionsSql.length() > 0) ? partitionsSql + " AND " : "") + getConditionTermSql(dataQueryDTO.conditions.get(0), dataQueryDTO);
+		return "WHERE " + ((partitionsSql != null && partitionsSql.length() > 0) ? partitionsSql + " AND " : "") + getConditionTermSql(dataQueryDTO.conditions, dataQueryDTO);
 	}
 
     private String getConditionTermSql(DataQueryDTO.ConditionTerm conditionTerm, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
@@ -59,7 +59,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
         Joiner joiner = Joiner.on(" AND ").skipNulls();
 
         for(DataQueryPartition partition: partitions){
-            ArrayList<DataQueryDTO.ConditionField> partitionConditions = getPartitionConditions(dataQueryDTO.conditions.get(0), partition.entityField);
+            ArrayList<DataQueryDTO.ConditionField> partitionConditions = getPartitionConditions(dataQueryDTO.conditions, partition.entityField);
             if (partitionConditions != null){
                 sqlConditions.add(getPartitionSql(partition, partitionConditions, dataQueryDTO));
             }

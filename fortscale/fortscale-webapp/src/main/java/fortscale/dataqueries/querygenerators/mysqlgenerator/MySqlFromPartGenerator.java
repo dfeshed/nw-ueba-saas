@@ -26,7 +26,7 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         try {
             String entityId = dataQueryDTO.entities[0];
-            String tableName = dataQueryDTO.conditions != null && isHighScore(entityId, dataQueryDTO.conditions.get(0))
+            String tableName = dataQueryDTO.conditions != null && isHighScore(entityId, dataQueryDTO.conditions)
                     ? dataQueryUtils.getEntityPerformanceTable(entityId)
                     : dataQueryUtils.getEntityTable(entityId);
 
