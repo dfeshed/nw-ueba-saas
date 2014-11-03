@@ -20,8 +20,8 @@ import java.util.List;
 @Component
 public class MySqlSelectPartGenerator implements QueryPartGenerator {
 
-	@Autowired
-    private MySqlUtils mySqlUtils;
+    @Autowired
+    MySqlFieldGenerator mySqlFieldGenerator;
 
     @Autowired
     DataQueryUtils dataQueryUtils;
@@ -43,7 +43,7 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator {
 
         for (DataQueryDTO.DataQueryField field : fields) {
             if (field != null)
-                fieldsSql.add(mySqlUtils.getFieldSql(field, dataQueryDTO, true));
+                fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO, true));
         }
 
         sb.append(joiner.join(fieldsSql));
@@ -67,9 +67,5 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator {
 
     public void setDataQueryUtils(DataQueryUtils dataQueryUtils) {
         this.dataQueryUtils = dataQueryUtils;
-    }
-
-    public void setMySqlUtils(MySqlUtils mySqlUtils) {
-        this.mySqlUtils = mySqlUtils;
     }
 }

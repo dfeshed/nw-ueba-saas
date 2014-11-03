@@ -1,13 +1,12 @@
 package fortscale.dataqueries;
 
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.dataqueries.querygenerators.mysqlgenerator.MySqlUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,9 +30,7 @@ public class DataQueryUtils implements EmbeddedValueResolverAware {
         ArrayList<String> fields = new ArrayList<String>();
         try{
             String[] configFields = stringValueResolver.resolveStringValue("${entities." + entityId + ".fields}").split("\\s*,[,\\s]*");
-            for(String field: configFields){
-                fields.add(field);
-            }
+            Collections.addAll(fields, configFields);
         }
         catch(Exception error){
             return null;

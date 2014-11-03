@@ -18,9 +18,6 @@ import java.util.List;
 @Component
 public class MySqlFromPartGenerator implements QueryPartGenerator {
     @Autowired
-    private MySqlUtils mySqlUtils;
-
-    @Autowired
     DataQueryUtils dataQueryUtils;
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
@@ -68,16 +65,6 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
     }
 
 	// Getters and setters
-
-	public MySqlUtils getMySqlUtils() {
-
-		return mySqlUtils;
-	}
-
-	public void setMySqlUtils(MySqlUtils mySqlUtils) {
-
-		this.mySqlUtils = mySqlUtils;
-	}
 
     public void setDataQueryUtils(DataQueryUtils dataQueryUtils) {
 
