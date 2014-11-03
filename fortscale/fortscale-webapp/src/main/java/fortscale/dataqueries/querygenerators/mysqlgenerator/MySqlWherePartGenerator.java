@@ -18,10 +18,18 @@ import java.util.*;
 @Component
 public class MySqlWherePartGenerator implements QueryPartGenerator {
     @Autowired
-    private MySqlUtils mySqlUtils;
+    MySqlFieldGenerator mySqlFieldGenerator;
 
     @Autowired
     DataQueryUtils dataQueryUtils;
+
+    @Autowired
+    MySqlValueGenerator mySqlValueGenerator;
+
+    static {
+
+
+    }
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
 
@@ -133,13 +141,35 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
     }
 
     private String getConditionFieldSql(DataQueryDTO.ConditionField conditionField, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
-        return mySqlUtils.getConditionFieldSql(conditionField, dataQueryDTO);
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(mySqlFieldGenerator.generateSql(conditionField.field, dataQueryDTO));
+        sb.append(" ");
+
+        MySqlOperator operator;
+        try {
+            operator = MySqlOperator.valueOf(conditionField.operator.toString());
+        }
+        catch(Exception error){
+            throw new InvalidQueryException("Unknown operator for MySql: " + conditionField.operator.toString() + ".");
+        }
+
+        if (operator.requiresValue && conditionField.getValue() == null)
+            throw new InvalidQueryException("Can't create MySQL query, the " + operator.name() + " operator requires a value, but none was specified.");
+
+        sb.append(operator.sqlOperator);
+        sb.append(" ");
+
+        String entityId = conditionField.field.getEntity();
+        if (entityId == null)
+            entityId = dataQueryDTO.entities[0];
+
+        sb.append(mySqlValueGenerator.generateSql(conditionField.getValue(), dataQueryUtils.getFieldType(entityId , conditionField.field.getId())));
+
+        return sb.toString();
     }
 
     public void setDataQueryUtils(DataQueryUtils dataQueryUtils) {
         this.dataQueryUtils = dataQueryUtils;
-    }
-    public void setMySqlUtils(MySqlUtils mySqlUtils) {
-        this.mySqlUtils = mySqlUtils;
     }
 }

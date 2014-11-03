@@ -20,13 +20,13 @@ import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedValueResolverAware {
     StringValueResolver stringValueResolver;
 
+    @Autowired
+    MySqlFieldGenerator mySqlFieldGenerator;
+
     @Override
     public void setEmbeddedValueResolver(StringValueResolver resolver) {
         this.stringValueResolver = resolver;
     }
-
-    @Autowired
-    private MySqlUtils mySqlUtils;
 
 	@Override
 	public String generateQueryPart(DataQueryDTO dataQueryDTO)
@@ -43,7 +43,7 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedVa
             	if (field.getAlias() != null)
         			throw new InvalidQueryException("Invalid GROUP BY field, " + field.getId() + ", can't alias fields in a GROUP BY query part.");
 
-        		fieldsSql.add(mySqlUtils.getFieldSql(field, dataQueryDTO));
+        		fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO));
             }
         }
 

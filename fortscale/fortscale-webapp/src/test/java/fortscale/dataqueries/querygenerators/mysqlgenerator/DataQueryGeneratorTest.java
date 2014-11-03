@@ -27,7 +27,6 @@ public class DataQueryGeneratorTest {
 
 		dataQueryDTO1 = mapper.readValue(dto1, DataQueryDTO.class);
 
-		mySqlUtils = Mockito.mock(MySqlUtils.class);
 		dataQueryUtils = Mockito.mock(DataQueryUtils.class);
 
 		Mockito.when(dataQueryUtils.getEntityPerformanceTable(Mockito.any(String.class))).thenReturn("somePerformanceEntityField");

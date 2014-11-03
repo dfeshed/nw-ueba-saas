@@ -23,7 +23,6 @@ public class MySqlUtilsTest {
     @Before
     public void setUp() throws Exception {
         dataQueryUtils = new DataQueryUtils();
-        mySqlUtils = new MySqlUtils();
         dataQueryDTO1 = mapper.readValue(dto1, DataQueryDTO.class);
 
         stringValueResolver = Mockito.mock(StringValueResolver.class);

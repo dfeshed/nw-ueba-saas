@@ -15,7 +15,7 @@ import java.util.ArrayList;
 @Component
 public class MySqlOrderByPartGenerator implements QueryPartGenerator {
     @Autowired
-    private MySqlUtils mySqlUtils;
+    MySqlFieldGenerator mySqlFieldGenerator;
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         if (dataQueryDTO.sort == null || dataQueryDTO.sort.size() == 0)
@@ -25,14 +25,10 @@ public class MySqlOrderByPartGenerator implements QueryPartGenerator {
         Joiner joiner = Joiner.on(", ").skipNulls();
 
         for(DataQueryDTO.Sort sort: dataQueryDTO.sort){
-            String field = mySqlUtils.getFieldSql(sort.field, dataQueryDTO);
+            String field = mySqlFieldGenerator.generateSql(sort.field, dataQueryDTO);
             sorts.add( field+ (sort.direction != null ? " " + sort.direction.name() : ""));
         }
 
 		return "ORDER BY " + joiner.join(sorts);
 	}
-
-    public void setMySqlUtils(MySqlUtils mySqlUtils) {
-        this.mySqlUtils = mySqlUtils;
-    }
 }

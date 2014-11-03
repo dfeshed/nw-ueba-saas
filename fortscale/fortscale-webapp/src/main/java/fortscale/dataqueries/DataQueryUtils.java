@@ -32,9 +32,7 @@ public class DataQueryUtils implements EmbeddedValueResolverAware {
         ArrayList<String> fields = new ArrayList<String>();
         try{
             String[] configFields = stringValueResolver.resolveStringValue("${entities." + entityId + ".fields}").split("\\s*,[,\\s]*");
-            for(String field: configFields){
-                fields.add(field);
-            }
+            Collections.addAll(fields, configFields);
         }
         catch(Exception error){
             return null;
