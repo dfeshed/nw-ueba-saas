@@ -1,14 +1,9 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
-import fortscale.dataqueries.DataQueryUtils;
-import fortscale.dataqueries.QueryValueType;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 

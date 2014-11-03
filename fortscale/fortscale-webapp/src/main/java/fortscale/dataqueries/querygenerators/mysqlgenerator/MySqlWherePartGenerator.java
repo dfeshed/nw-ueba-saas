@@ -3,17 +3,14 @@ package fortscale.dataqueries.querygenerators.mysqlgenerator;
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import fortscale.dataqueries.DataQueryPartition;
 import fortscale.dataqueries.DataQueryUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Generate the "where" part of the query in MySql
@@ -49,72 +46,79 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
         return "(" + joiner.join(terms) + ")";
     }
 
+    /**
+     * Return the partiotion sql statement (condition on the partition fields )
+     * @param dataQueryDTO
+     * @return
+     * @throws InvalidQueryException
+     */
+
     private String getPartitionsSql(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+
         String entityId = dataQueryDTO.entities[0];
-        ArrayList<DataQueryPartition> partitions = dataQueryUtils.getEntityPartitions(entityId);
-        if (partitions == null || partitions.size() == 0)
+        PartitionStrategy partitionStrategy = dataQueryUtils.getEntityPartitionStrategy(entityId);
+
+        if (partitionStrategy == null)
             return "";
 
-        ArrayList<String> sqlConditions = new ArrayList<>();
-        Joiner joiner = Joiner.on(" AND ").skipNulls();
+        String partitionConditions =  createPartitionSql(partitionStrategy,dataQueryDTO.conditions, entityId,dataQueryDTO);
 
-        for(DataQueryPartition partition: partitions){
-            ArrayList<DataQueryDTO.ConditionField> partitionConditions = getPartitionConditions(dataQueryDTO.conditions, partition.entityField);
-            if (partitionConditions != null){
-                sqlConditions.add(getPartitionSql(partition, partitionConditions, dataQueryDTO));
-            }
-        }
 
-        return joiner.join(sqlConditions);
+        return partitionConditions;
     }
 
     /**
      * Check whether a partition for a field should be enabled in the WHERE SQL query.
      * A partition is enabled if it's present in a DTO's conditions.
+     * If yes create his sql statement
      * IMPORTANT: Partitions are allowed only in the root terms of a DTOs conditions, so if there are nested terms, they won't be considered when looking for partitions!!
+     * @param partitionStrategy
      * @param term
-     * @param partitionFieldId
+     * @param entityId
+     * @param dataQueryDTO
      * @return
      */
-    private ArrayList<DataQueryDTO.ConditionField> getPartitionConditions(DataQueryDTO.ConditionTerm term, String partitionFieldId){
+    private String createPartitionSql(PartitionStrategy partitionStrategy,DataQueryDTO.ConditionTerm term, String entityId,DataQueryDTO dataQueryDTO)throws InvalidQueryException{
+
+
         if (term.terms == null || term.terms.size() == 0)
             return null;
+
+        ArrayList<String> sqlConditions = new ArrayList<>();
+        Joiner joiner = Joiner.on(" AND ").skipNulls();
+        ArrayList<String> entityPartitionsBaeFields = dataQueryUtils.getEntityPartitionBaseField(entityId);
+
 
         ArrayList<DataQueryDTO.ConditionField> conditions = new ArrayList<>();
 
         for (DataQueryDTO.Term childTerm: term.terms){
+
             if (childTerm.getClass() == DataQueryDTO.ConditionField.class){
                 DataQueryDTO.ConditionField condition = (DataQueryDTO.ConditionField)childTerm;
-                if (condition.field.getId().equals(partitionFieldId))
-                    conditions.add(condition);
+                if (entityPartitionsBaeFields.contains(condition.field.getId()))
+                {
+                    DataQueryDTO.ConditionField partitionCondition = new DataQueryDTO.ConditionField();
+
+                    //TODO - need to make it more generic - the interface partition strategy is based on long as partition (timestamp) - need to abstract it to String and to parse the value in the implementations
+                    partitionCondition.setValue(partitionStrategy.getImpalaPartitionValue(Long.parseLong(condition.getValue())));
+                    partitionCondition.operator = condition.operator;
+                    partitionCondition.field = new DataQueryDTO.DataQueryField();
+                    partitionCondition.field.setId(partitionStrategy.getImpalaPartitionFieldName());
+                    String conditionSql = getConditionFieldSql(partitionCondition, dataQueryDTO);
+                    if (!sqlConditions.contains(conditionSql)){
+                        sqlConditions.add(conditionSql);
+                    }
+                }
             }
-        }
 
-        if (conditions.size() == 0)
-            return null;
-
-        return conditions;
-    }
-
-    private String getPartitionSql(DataQueryPartition partitionConfig, List<DataQueryDTO.ConditionField> conditionFields, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
-        ArrayList<String> sqlConditions = new ArrayList<>();
-        Joiner joiner = Joiner.on(" AND ").skipNulls();
-
-        for(DataQueryDTO.ConditionField conditionField: conditionFields){
-            DataQueryDTO.ConditionField partitionCondition = new DataQueryDTO.ConditionField();
-            partitionCondition.setValue(getPartitionValue(partitionConfig, conditionField));
-            partitionCondition.operator = conditionField.operator;
-            partitionCondition.field = new DataQueryDTO.DataQueryField();
-            partitionCondition.field.setId(partitionConfig.partitionField);
-
-            String conditionSql = getConditionFieldSql(partitionCondition, dataQueryDTO);
-            if (!sqlConditions.contains(conditionSql)){
-                sqlConditions.add(conditionSql);
-            }
         }
 
         return joiner.join(sqlConditions);
+
     }
+
+
+
 
     private String getPartitionValue(DataQueryPartition partitionConfig, DataQueryDTO.ConditionField conditionField) throws InvalidQueryException{
         switch(partitionConfig.type){
