@@ -13,7 +13,7 @@ import java.util.List;
  * Utilities for all data queries
  */
 @Component
-public class DataQueryUtils implements EmbeddedValueResolverAware {
+public class DataEntitiesConfig implements EmbeddedValueResolverAware {
     @Override
     public void setEmbeddedValueResolver(StringValueResolver resolver) {
         this.stringValueResolver = resolver;
@@ -35,7 +35,7 @@ public class DataQueryUtils implements EmbeddedValueResolverAware {
         catch(Exception error){
             return null;
         }
-
+        
         String baseEntityId = getBaseEntity(entityId);
         if (baseEntityId != null){
             ArrayList<String> baseEntityFields = getAllEntityFields(baseEntityId);
@@ -51,9 +51,9 @@ public class DataQueryUtils implements EmbeddedValueResolverAware {
      * Gets all the logical entities that are present in entities.properties.
      * @return
      */
-    public List<LogicalDataQueryEntity> getAllLogicalEntities() throws Exception{
+    public List<DataEntity> getAllLogicalEntities() throws Exception{
         String[] entityIds = stringValueResolver.resolveStringValue("${entities}").split("\\s*,[,\\s]*");
-        ArrayList<LogicalDataQueryEntity> entities = new ArrayList<>();
+        ArrayList<DataEntity> entities = new ArrayList<>();
 
         for(String entityId: entityIds){
             entities.add(getLogicalEntity(entityId));
@@ -67,19 +67,19 @@ public class DataQueryUtils implements EmbeddedValueResolverAware {
      * @param entityId The ID of the entity
      * @return
      */
-    public LogicalDataQueryEntity getLogicalEntity(String entityId) throws Exception{
-        LogicalDataQueryEntity entity = new LogicalDataQueryEntity();
+    public DataEntity getLogicalEntity(String entityId) throws Exception{
+        DataEntity entity = new DataEntity();
         entity.id = entityId;
         entity.name = getExtendableValue(entityId, "name");
         entity.shortName = getExtendableValue(entityId, "short_name");
 
         List<String> fieldIds = getAllEntityFields(entityId);
-        ArrayList<LogicalDataQueryEntity.Field> fields = new ArrayList<>();
+        ArrayList<DataEntity.Field> fields = new ArrayList<>();
 
         for(String fieldId: fieldIds){
             try {
                 String fieldPrefix = "field." + fieldId + ".";
-                LogicalDataQueryEntity.Field field = new LogicalDataQueryEntity.Field();
+                DataEntity.Field field = new DataEntity.Field();
                 field.id = fieldId;
                 field.name = getExtendableValue(entityId, fieldPrefix + "name");
                 field.type = QueryValueType.valueOf(getExtendableValue(entityId, fieldPrefix + "type"));
@@ -142,7 +142,7 @@ public class DataQueryUtils implements EmbeddedValueResolverAware {
      * @param key
      * @return
      */
-    public String getExtendableValue(String entityId, String key){
+    private String getExtendableValue(String entityId, String key){
         String fullKey = "entities." + entityId + "." + key;
         String value;
         try{
@@ -177,6 +177,11 @@ public class DataQueryUtils implements EmbeddedValueResolverAware {
         }
     }
 
+    /**
+     * Returns the physical table name of an entity, or null if none found.
+     * @param entityId The ID of the entity
+     * @return
+     */
     public String getEntityTable(String entityId){
         try {
             return stringValueResolver.resolveStringValue("${entities." + entityId + ".table}");
@@ -186,6 +191,13 @@ public class DataQueryUtils implements EmbeddedValueResolverAware {
         }
     }
 
+    /**
+     * Given an entity ID and field ID, returns the type of the field
+     * @param entityId
+     * @param fieldId
+     * @return
+     * @throws InvalidQueryException
+     */
     public QueryValueType getFieldType(String entityId, String fieldId) throws InvalidQueryException{
         String typeStr = getExtendableValue(entityId, "field." + fieldId + ".type");
         if (typeStr == null)
@@ -194,14 +206,30 @@ public class DataQueryUtils implements EmbeddedValueResolverAware {
         return QueryValueType.valueOf(typeStr);
     }
 
+    /**
+     * Returns the physical table name of a performance table for a specified entity
+     * @param entityId
+     * @return
+     */
     public String getEntityPerformanceTable(String entityId){
         return getExtendableValue(entityId, "performance_table");
     }
 
+    /**
+     * Returns the logical field which is used to determine if a performance table should be used
+     * @param entityId
+     * @return
+     */
     public String getEntityPerformanceTableField(String entityId){
         return getExtendableValue(entityId, "performance_field");
     }
 
+    /**
+     * Returns the minimum value of a performance table field required to use the performance table instead of the regular table
+     * @param entityId
+     * @return
+     * @throws Exception
+     */
     public int getEntityPerformanceTableFieldMinValue(String entityId) throws Exception{
         String value = getExtendableValue(entityId, "performance_field_min_value");
 

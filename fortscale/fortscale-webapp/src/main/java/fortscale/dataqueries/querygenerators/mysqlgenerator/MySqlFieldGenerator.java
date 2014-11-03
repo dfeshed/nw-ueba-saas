@@ -1,6 +1,6 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
-import fortscale.dataqueries.DataQueryUtils;
+import fortscale.dataqueries.DataEntitiesConfig;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MySqlFieldGenerator {
     @Autowired
-    private DataQueryUtils dataQueryUtils;
+    private DataEntitiesConfig dataEntitiesConfig;
 
     @Autowired
     MySqlValueGenerator mySqlValueGenerator;
@@ -40,7 +40,7 @@ public class MySqlFieldGenerator {
             if (dataQueryDTO.entities.length > 1 && field.getEntity() != null)
                 fieldSB.append(field.getEntity() + ".");
 
-            String columnName = dataQueryUtils.getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.entities[0], field.getId() );
+            String columnName = dataEntitiesConfig.getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.entities[0], field.getId() );
             fieldSB.append(columnName);
 
             if (field.getAlias() != null)

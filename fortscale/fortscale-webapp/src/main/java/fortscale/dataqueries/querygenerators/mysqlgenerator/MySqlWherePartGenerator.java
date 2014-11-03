@@ -2,7 +2,7 @@ package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import fortscale.dataqueries.DataQueryPartition;
-import fortscale.dataqueries.DataQueryUtils;
+import fortscale.dataqueries.DataEntitiesConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
     MySqlFieldGenerator mySqlFieldGenerator;
 
     @Autowired
-    DataQueryUtils dataQueryUtils;
+    DataEntitiesConfig dataEntitiesConfig;
 
     @Autowired
     MySqlValueGenerator mySqlValueGenerator;
@@ -59,7 +59,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 
     private String getPartitionsSql(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         String entityId = dataQueryDTO.entities[0];
-        ArrayList<DataQueryPartition> partitions = dataQueryUtils.getEntityPartitions(entityId);
+        ArrayList<DataQueryPartition> partitions = dataEntitiesConfig.getEntityPartitions(entityId);
         if (partitions == null || partitions.size() == 0)
             return "";
 
@@ -160,12 +160,12 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
         if (entityId == null)
             entityId = dataQueryDTO.entities[0];
 
-        sb.append(mySqlValueGenerator.generateSql(conditionField.getValue(), dataQueryUtils.getFieldType(entityId , conditionField.field.getId())));
+        sb.append(mySqlValueGenerator.generateSql(conditionField.getValue(), dataEntitiesConfig.getFieldType(entityId , conditionField.field.getId())));
 
         return sb.toString();
     }
 
-    public void setDataQueryUtils(DataQueryUtils dataQueryUtils) {
-        this.dataQueryUtils = dataQueryUtils;
+    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig) {
+        this.dataEntitiesConfig = dataEntitiesConfig;
     }
 }

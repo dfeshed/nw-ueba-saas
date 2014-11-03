@@ -1,13 +1,11 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
-import fortscale.dataqueries.DataQueryUtils;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,7 +20,7 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 
 		super.setUp();
 		mySqlSelectPartGenerator = new MySqlSelectPartGenerator();
-		mySqlSelectPartGenerator.setDataQueryUtils(dataQueryUtils);
+		mySqlSelectPartGenerator.setDataEntitiesConfig(dataEntitiesConfig);
 		mySqlSelectPartGenerator.setMySqlUtils(mySqlUtils);
 
 		ArrayList<DataQueryDTO.DataQueryField> fields = new ArrayList<DataQueryDTO.DataQueryField>();
@@ -38,7 +36,7 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 		entities.add(field1.getId());
 		entities.add(field2.getId());
 
-		Mockito.when(dataQueryUtils.getAllEntityFields(dataQueryDTO1.entities[0])).thenReturn(entities);
+		Mockito.when(dataEntitiesConfig.getAllEntityFields(dataQueryDTO1.entities[0])).thenReturn(entities);
 		Mockito.when(mySqlUtils.getFieldSql(Mockito.any(DataQueryDTO.DataQueryField.class), Mockito.eq(dataQueryDTO1), Mockito.eq(true))).thenReturn("someField");
 
 
@@ -51,7 +49,7 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 		String sqlStr = mySqlSelectPartGenerator.generateQueryPart(dataQueryDTO1);
 		String expectedString = "SELECT someField, someField";
 		assertEquals("SQL Select Part for DTO1" , expectedString, sqlStr);
-		Mockito.verify(dataQueryUtils).getAllEntityFields("kerberos_logins");
+		Mockito.verify(dataEntitiesConfig).getAllEntityFields("kerberos_logins");
 	}
 }
 

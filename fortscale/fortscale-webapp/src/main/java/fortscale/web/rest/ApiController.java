@@ -5,13 +5,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fortscale.dataqueries.DataQueryUtils;
-import fortscale.dataqueries.LogicalDataQueryEntity;
+import fortscale.dataqueries.DataEntity;
+import fortscale.dataqueries.DataEntitiesConfig;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.domain.analyst.AnalystAuth;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
@@ -19,7 +18,6 @@ import fortscale.services.fe.ClassifierService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.BaseController;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -56,7 +54,7 @@ public class ApiController extends BaseController {
 	private UserServiceFacade userServiceFacade;
 
     @Autowired
-    private DataQueryUtils dataQueryUtils;
+    private DataEntitiesConfig dataEntitiesConfig;
 
 	private Cache<String, DataBean<List<Map<String, Object>>>> investigateQueryCache;
 
@@ -184,10 +182,10 @@ public class ApiController extends BaseController {
     @RequestMapping(value="/getEntities", method=RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<LogicalDataQueryEntity>> getEntities(){
-        DataBean<List<LogicalDataQueryEntity>> entities = new DataBean<List<LogicalDataQueryEntity>>();
+    public DataBean<List<DataEntity>> getEntities(){
+        DataBean<List<DataEntity>> entities = new DataBean<List<DataEntity>>();
         try {
-            entities.setData(dataQueryUtils.getAllLogicalEntities());
+            entities.setData(dataEntitiesConfig.getAllLogicalEntities());
         }
         catch(Exception error){
             throw new InvalidValueException("Can't get entities. Error: " + error.getMessage());
