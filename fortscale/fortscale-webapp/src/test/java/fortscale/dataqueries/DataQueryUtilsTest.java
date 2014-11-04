@@ -2,12 +2,9 @@ package fortscale.dataqueries;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.dataqueries.querydto.DataQueryDTO;
-import fortscale.dataqueries.querygenerators.mysqlgenerator.DataQueryGeneratorTest;
-import org.eclipse.core.runtime.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringValueResolver;
 
 import java.util.ArrayList;
@@ -23,13 +20,13 @@ public class DataQueryUtilsTest{
     protected StringValueResolver stringValueResolver;
 
 
-    DataQueryUtils dataQueryUtils = new DataQueryUtils();
+    DataEntitiesConfig dataEntitiesConfig = new DataEntitiesConfig();
 
     @Before
     public void setUp() throws Exception {
         dataQueryDTO1 = mapper.readValue(dto1, DataQueryDTO.class);
         stringValueResolver = Mockito.mock(StringValueResolver.class);
-        dataQueryUtils.setEmbeddedValueResolver(stringValueResolver);
+        dataEntitiesConfig.setEmbeddedValueResolver(stringValueResolver);
 
         String entityToTest = "kerberos_logins";
         String entityToTestFields = "source_machine_type, destination_machine_type, failure_code";
@@ -56,7 +53,7 @@ public class DataQueryUtilsTest{
 
     @Test
     public void testGetAllEntityFields() throws Exception {
-        ArrayList<String> arr = dataQueryUtils.getAllEntityFields("kerberos_logins");
+        ArrayList<String> arr = dataEntitiesConfig.getAllEntityFields("kerberos_logins");
 
         String listString="";
         for (String s : arr){ listString += s + ", ";}
@@ -65,23 +62,23 @@ public class DataQueryUtilsTest{
 
     @Test
     public void testGetAllLogicalEntities() throws Exception {
-        List<LogicalDataQueryEntity> arr = dataQueryUtils.getAllLogicalEntities();
+        List<DataEntity> arr = dataEntitiesConfig.getAllLogicalEntities();
         String listString="";
-        for (LogicalDataQueryEntity.Field field : arr.get(0).fields){ listString += field.id + ", ";}
+        for (DataEntity.Field field : arr.get(0).fields){ listString += field.id + ", ";}
         assertEquals("SQL Select Part for DTO1" , listString, "source_machine_type, destination_machine_type, failure_code, ");
     }
 
     @Test
     public void testGetLogicalEntity() throws Exception {
-        LogicalDataQueryEntity entity = dataQueryUtils.getLogicalEntity("kerberos_logins");
+        DataEntity entity = dataEntitiesConfig.getLogicalEntity("kerberos_logins");
         String listString="";
-        for (LogicalDataQueryEntity.Field field : entity.fields){ listString += field.id + ", ";}
+        for (DataEntity.Field field : entity.fields){ listString += field.id + ", ";}
         assertEquals("SQL Select Part for DTO1" , listString, "source_machine_type, destination_machine_type, failure_code, ");
     }
 
     @Test
     public void getEntityPartitions() throws Exception {
-        ArrayList<DataQueryPartition> partitions = dataQueryUtils.getEntityPartitions("access_event");
+        ArrayList<DataQueryPartition> partitions = dataEntitiesConfig.getEntityPartitions("access_event");
         assertEquals("partition.entity_field" , partitions.get(0).entityField, "event_time_utc");
         assertEquals("partition.partitionField" , partitions.get(0).partitionField, "day_partition");
         assertEquals("partition.type" , partitions.get(0).type.name(), "daily");
@@ -89,7 +86,7 @@ public class DataQueryUtilsTest{
 
     @Test
     public void testGetFieldColumn() throws Exception {
-        String entity = dataQueryUtils.getFieldColumn("kerberos_logins", "username");
+        String entity = dataEntitiesConfig.getFieldColumn("kerberos_logins", "username");
         assertEquals("Get value of a column from impala" , entity, "account_name");
     }
 

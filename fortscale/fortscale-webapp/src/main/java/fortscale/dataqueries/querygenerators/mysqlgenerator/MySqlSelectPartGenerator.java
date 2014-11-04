@@ -1,7 +1,7 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
-import fortscale.dataqueries.DataQueryUtils;
+import fortscale.dataqueries.DataEntitiesConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator {
     MySqlFieldGenerator mySqlFieldGenerator;
 
     @Autowired
-    DataQueryUtils dataQueryUtils;
+    DataEntitiesConfig dataEntitiesConfig;
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         StringBuilder sb = new StringBuilder("SELECT ");
@@ -52,7 +52,7 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator {
 	}
 
     private List<DataQueryDTO.DataQueryField> getAllEntityFields(String entityId){
-        List<String> fieldIds = dataQueryUtils.getAllEntityFields(entityId);
+        List<String> fieldIds = dataEntitiesConfig.getAllEntityFields(entityId);
         ArrayList<DataQueryDTO.DataQueryField> fields = new ArrayList<DataQueryDTO.DataQueryField>();
 
         for(String fieldId: fieldIds){
@@ -65,7 +65,7 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator {
     }
 
 
-    public void setDataQueryUtils(DataQueryUtils dataQueryUtils) {
-        this.dataQueryUtils = dataQueryUtils;
+    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig) {
+        this.dataEntitiesConfig = dataEntitiesConfig;
     }
 }

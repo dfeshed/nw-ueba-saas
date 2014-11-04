@@ -1,7 +1,7 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
-import fortscale.dataqueries.DataQueryUtils;
+import fortscale.dataqueries.DataEntitiesConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,23 +9,20 @@ import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Generate the "from" part of the query in MySql
  */
 @Component
 public class MySqlFromPartGenerator implements QueryPartGenerator {
     @Autowired
-    DataQueryUtils dataQueryUtils;
+    DataEntitiesConfig dataEntitiesConfig;
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         try {
             String entityId = dataQueryDTO.entities[0];
             String tableName = dataQueryDTO.conditions != null && isHighScore(entityId, dataQueryDTO.conditions)
-                    ? dataQueryUtils.getEntityPerformanceTable(entityId)
-                    : dataQueryUtils.getEntityTable(entityId);
+                    ? dataEntitiesConfig.getEntityPerformanceTable(entityId)
+                    : dataEntitiesConfig.getEntityTable(entityId);
 
             // For now the generator supports only single table queries. When joins are supported, need to add the logic here.
             return "FROM " + tableName;
@@ -49,9 +46,9 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
         for (DataQueryDTO.Term childTerm: term.terms){
             if (childTerm instanceof DataQueryDTO.ConditionField){
                 DataQueryDTO.ConditionField condition = (DataQueryDTO.ConditionField)childTerm;
-                if (condition.field.getId().equals(dataQueryUtils.getEntityPerformanceTableField(entityId))){
+                if (condition.field.getId().equals(dataEntitiesConfig.getEntityPerformanceTableField(entityId))){
                     int value = Integer.parseInt(condition.getValue());
-                    if (value >= dataQueryUtils.getEntityPerformanceTableFieldMinValue(entityId) &&
+                    if (value >= dataEntitiesConfig.getEntityPerformanceTableFieldMinValue(entityId) &&
                             (condition.operator == DataQueryDTO.Operator.equals || condition.operator == DataQueryDTO.Operator.greaterThan || condition.operator == DataQueryDTO.Operator.greaterThanOrEquals)){
                         return true;
                     }
@@ -66,8 +63,8 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
 
 	// Getters and setters
 
-    public void setDataQueryUtils(DataQueryUtils dataQueryUtils) {
+    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig) {
 
-        this.dataQueryUtils = dataQueryUtils;
+        this.dataEntitiesConfig = dataEntitiesConfig;
     }
 }

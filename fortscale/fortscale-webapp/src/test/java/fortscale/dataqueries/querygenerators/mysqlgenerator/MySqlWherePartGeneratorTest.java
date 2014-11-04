@@ -18,7 +18,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
 
 		super.setUp();
 		mySqlWherePartGenerator = new MySqlWherePartGenerator();
-		mySqlWherePartGenerator.setDataQueryUtils(dataQueryUtils);
+		mySqlWherePartGenerator.setDataEntitiesConfig(dataEntitiesConfig);
 		mySqlWherePartGenerator.setMySqlUtils(mySqlUtils);
 
 
