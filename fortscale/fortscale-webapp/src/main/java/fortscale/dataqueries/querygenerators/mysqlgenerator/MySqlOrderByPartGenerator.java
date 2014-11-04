@@ -19,7 +19,7 @@ public class MySqlOrderByPartGenerator implements QueryPartGenerator {
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         if (dataQueryDTO.sort == null || dataQueryDTO.sort.size() == 0)
-            return null;
+            return "";
 
         ArrayList<String> sorts = new ArrayList<String>();
         Joiner joiner = Joiner.on(", ").skipNulls();

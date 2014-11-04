@@ -37,7 +37,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
 
 		if (dataQueryDTO.conditions == null)
-            return null;
+            return "";
 
         String partitionsSql = getPartitionsSql(dataQueryDTO);
 		return "WHERE " + ((partitionsSql != null && partitionsSql.length() > 0) ? partitionsSql + " AND " : "") + getConditionTermSql(dataQueryDTO.conditions, dataQueryDTO);
