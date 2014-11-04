@@ -142,16 +142,12 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
         sb.append(mySqlFieldGenerator.generateSql(conditionField.field, dataQueryDTO));
         sb.append(" ");
 
-        MySqlOperator operator;
-        try {
-            operator = MySqlOperator.valueOf(conditionField.operator.toString());
-        }
-        catch(Exception error){
+        MySqlOperator operator = MySqlConditionOperators.getOperator(conditionField.operator);
+        if (operator == null)
             throw new InvalidQueryException("Unknown operator for MySql: " + conditionField.operator.toString() + ".");
-        }
 
         if (operator.requiresValue && conditionField.getValue() == null)
-            throw new InvalidQueryException("Can't create MySQL query, the " + operator.name() + " operator requires a value, but none was specified.");
+            throw new InvalidQueryException("Can't create MySQL query, the " + conditionField.operator.name() + " operator requires a value, but none was specified.");
 
         sb.append(operator.sqlOperator);
         sb.append(" ");
