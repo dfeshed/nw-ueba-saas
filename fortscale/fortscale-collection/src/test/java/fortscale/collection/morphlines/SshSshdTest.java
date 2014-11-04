@@ -55,7 +55,11 @@ public class SshSshdTest {
 
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-		if (currentMonth < 11)
+        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+
+
+        //10 Represent Nov Month at calendar (counting start from 0)
+		if (currentMonth < 10 || (currentMonth == 10 && currentDay < 19 ))
 			year--;
 
 		long runtime = ((new DateTime(year, 11, 19, 14, 58, 32, DateTimeZone.UTC).getMillis()) / 1000L);
@@ -89,6 +93,7 @@ public class SshSshdTest {
                 "Nov 19 14:58:32 192.168.0.30 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
                  null
                 )
+
 
 
         );
