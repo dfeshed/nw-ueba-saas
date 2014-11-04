@@ -1,6 +1,8 @@
 package fortscale.dataqueries;
 
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.partition.PartitionsUtils;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
@@ -99,27 +101,40 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
     }
 
     /**
-     * Gets all the partitions for the specified entity
+     * Get the entite partition Strategy
      * @param entityId
-     * @return
+     * @return PartitionStrategy - The partition strategy of the entity
      * @throws Exception
      */
-    public ArrayList<DataQueryPartition> getEntityPartitions(String entityId) throws InvalidQueryException{
+    public PartitionStrategy getEntityPartitionStrategy(String entityId) throws InvalidQueryException{
+
         String entityPartitionsConfig = getExtendableValue(entityId, "partitions");
+
         if (entityPartitionsConfig == null)
             return null;
 
-        ArrayList<DataQueryPartition> partitions = new ArrayList<DataQueryPartition>();
+        //will represent a the partition startigy of the current entity
+        PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(entityPartitionsConfig);
 
-        for(String entityPartition: entityPartitionsConfig.split(",")){
-            String[] partitionConfig = entityPartition.split("\\s");
-            if (partitionConfig.length != 3)
-                throw new InvalidQueryException("Invalid partition config, exactly 3 values are required: entityField, type and partitionField.");
 
-            partitions.add(new DataQueryPartition(partitionConfig[0], DataQueryPartitionType.valueOf(partitionConfig[1]), partitionConfig[2]));
-        }
+        return partitionStrategy;
+    }
 
-        return partitions;
+
+    /**
+     * Get the entite partition base field
+     * @param entityId
+     * @return entityPartitionBaseField - The field that base on him we use the partition
+     * @throws Exception
+     */
+    public ArrayList<String> getEntityPartitionBaseField(String entityId) throws InvalidQueryException{
+
+        ArrayList<String> paritionBaseFields = new ArrayList<>();
+
+        String [] entityPartitionBaseField = getExtendableValue(entityId, "partition.base.field").split(",");
+        Collections.addAll(paritionBaseFields,entityPartitionBaseField);
+
+        return paritionBaseFields;
     }
 
     /**
