@@ -1,7 +1,6 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
-import fortscale.dataqueries.DataQueryPartition;
 
 import fortscale.dataqueries.DataEntitiesConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,6 @@ import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -101,7 +98,6 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
         ArrayList<String> entityPartitionsBaeFields = dataEntitiesConfig.getEntityPartitionBaseField(entityId);
 
 
-        ArrayList<DataQueryDTO.ConditionField> conditions = new ArrayList<>();
 
         for (DataQueryDTO.Term childTerm: term.terms){
 
@@ -129,20 +125,6 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 
     }
 
-
-
-
-    private String getPartitionValue(DataQueryPartition partitionConfig, DataQueryDTO.ConditionField conditionField) throws InvalidQueryException{
-        switch(partitionConfig.type){
-            case daily:
-                Date date = new Date(Long.parseLong(conditionField.getValue()) * 1000);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                return Integer.toString(calendar.get(Calendar.YEAR) * 10000 + calendar.get(Calendar.MONTH) * 100 + calendar.get(Calendar.DATE));
-            default:
-                throw new InvalidQueryException("Handling for " + partitionConfig.type.name() + " is not implemented yet.");
-        }
-    }
 
     private String getConditionFieldSql(DataQueryDTO.ConditionField conditionField, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         StringBuilder sb = new StringBuilder();
