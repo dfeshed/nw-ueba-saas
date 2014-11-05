@@ -50,14 +50,20 @@ public abstract class FortscaleJob implements Job {
 		try{
 			runSteps();
 		} catch (Exception e) {
-			logger.error(String.format("while running the step %s, got the following exception", stepName), e);
-			monitor.error(monitorId, stepName, String.format("while running the step %s, got the following exception %s", stepName, e.getMessage()));
+			handleExecutionException(monitorId, e);
 		} finally {
 			monitor.finishJob(monitorId);
 		}
 	}
-	
+
+	protected void handleExecutionException(String monitorId, Exception e) throws JobExecutionException {
+		logger.error(String.format("while running the step %s, got the following exception", stepName), e);
+		monitor.error(monitorId, stepName, String.format("while running the step %s, got the following exception %s", stepName, e.getMessage()));
+	}
+
 	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
+		// get parameters from context
+		logger.debug("getting parameters from job context");
 		getJobParameters(jobExecutionContext);
 	}
 	
