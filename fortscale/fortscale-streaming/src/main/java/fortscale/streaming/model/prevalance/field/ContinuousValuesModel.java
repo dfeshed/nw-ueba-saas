@@ -108,7 +108,7 @@ public class ContinuousValuesModel {
 		double roundedVal = roundValue(val);
 		
 		double ret = calculatScore(roundedVal);
-		return (int)(ret*100);
+		return Math.round(ret*100);
 	}
 	
 	private double calculatScore(double val){

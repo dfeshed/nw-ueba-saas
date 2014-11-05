@@ -84,7 +84,7 @@ public class ContinuousValuesModelTest {
 			}
 		}
 		
-		Assert.assertEquals(21.3,continuousValuesModel.calculateScore(startVal),0.1);
+		Assert.assertEquals(21.0,continuousValuesModel.calculateScore(startVal),0.1);
 		
 		Assert.assertEquals(0.0,continuousValuesModel.calculateScore(startVal+50000),0.0);
 		
@@ -114,7 +114,7 @@ public class ContinuousValuesModelTest {
 		
 		Assert.assertEquals(100,continuousValuesModel.calculateScore(outlierVal),0.0);
 		
-		Assert.assertEquals(21.3,continuousValuesModel.calculateScore(startVal),0.1);
+		Assert.assertEquals(21.0,continuousValuesModel.calculateScore(startVal),0.1);
 		
 		Assert.assertEquals(0.0,continuousValuesModel.calculateScore(startVal+50000),0.0);
 		
@@ -139,25 +139,25 @@ public class ContinuousValuesModelTest {
 		//adding the outlier
 		double outlierVal = startVal+1100;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(54.1,continuousValuesModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(54.0,continuousValuesModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1200;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(76.2,continuousValuesModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(76.0,continuousValuesModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1300;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(89.2,continuousValuesModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(89.0,continuousValuesModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1400;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(96.3,continuousValuesModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(96.0,continuousValuesModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1500;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(98.6,continuousValuesModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(99.0,continuousValuesModel.calculateScore(outlierVal),0.1);
 		
-		Assert.assertEquals(23.6,continuousValuesModel.calculateScore(startVal),0.1);
+		Assert.assertEquals(24.0,continuousValuesModel.calculateScore(startVal),0.1);
 		
 		Assert.assertEquals(0.0,continuousValuesModel.calculateScore(startVal+500),0.0);
 		
@@ -182,25 +182,25 @@ public class ContinuousValuesModelTest {
 		//adding the outlier
 		double outlierVal = startVal+1.1;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(54.1,continuousValuesModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(54.0,continuousValuesModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1.2;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(76.2,continuousValuesModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(76.0,continuousValuesModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1.3;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(89.2,continuousValuesModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(89.0,continuousValuesModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1.4;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(96.3,continuousValuesModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(96.0,continuousValuesModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1.5;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(98.6,continuousValuesModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(99.0,continuousValuesModel.calculateScore(outlierVal),0.1);
 		
-		Assert.assertEquals(23.6,continuousValuesModel.calculateScore(startVal),0.1);
+		Assert.assertEquals(24.0,continuousValuesModel.calculateScore(startVal),0.1);
 		
 		Assert.assertEquals(0.0,continuousValuesModel.calculateScore(startVal+0.5),0.0);
 		
@@ -265,6 +265,6 @@ public class ContinuousValuesModelTest {
 		
 		Assert.assertNotNull(continuousValuesModel);
 		Assert.assertEquals(0, continuousValuesModel.calculateScore(40.0),0.01);
-		Assert.assertEquals(6.25, continuousValuesModel.calculateScore(22.0),0.01);
+		Assert.assertEquals(6.0, continuousValuesModel.calculateScore(22.0),0.01);
 	}
 }

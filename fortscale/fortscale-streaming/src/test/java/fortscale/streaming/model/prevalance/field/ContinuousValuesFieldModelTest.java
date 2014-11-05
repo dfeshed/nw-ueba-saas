@@ -67,25 +67,25 @@ public class ContinuousValuesFieldModelTest {
 		//adding the outlier
 		double outlierVal = startVal+1100;
 		continuousValuesFieldModel.add(outlierVal,0);
-		Assert.assertEquals(53.7,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(54.0,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1200;
 		continuousValuesFieldModel.add(outlierVal,0);
-		Assert.assertEquals(82.5,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(82.0,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1300;
 		continuousValuesFieldModel.add(outlierVal,0);
-		Assert.assertEquals(68.5,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(68.0,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1400;
 		continuousValuesFieldModel.add(outlierVal,0);
-		Assert.assertEquals(97.2,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(97.0,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
 		
 		outlierVal = startVal+1500;
 		continuousValuesFieldModel.add(outlierVal,0);
 		Assert.assertEquals(97.0,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
 		
-		Assert.assertEquals(73.5,continuousValuesFieldModel.calculateScore(startVal),0.1);
+		Assert.assertEquals(74.0,continuousValuesFieldModel.calculateScore(startVal),0.1);
 		
 		Assert.assertEquals(0.0,continuousValuesFieldModel.calculateScore(startVal+500),0.0);		
 		
