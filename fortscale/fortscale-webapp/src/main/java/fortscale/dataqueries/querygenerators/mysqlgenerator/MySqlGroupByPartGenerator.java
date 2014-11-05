@@ -33,7 +33,7 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedVa
 			throws InvalidQueryException {
 		
 		if (dataQueryDTO.groupBy == null)
-			return null;
+			return "";
 		
 		ArrayList<String> fieldsSql = new ArrayList<>();
         Joiner joiner = Joiner.on(", ").skipNulls();
