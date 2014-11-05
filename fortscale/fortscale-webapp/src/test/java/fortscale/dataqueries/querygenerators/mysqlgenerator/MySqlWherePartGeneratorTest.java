@@ -26,7 +26,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
 			throws Exception {
 
 		super.setUp();
-		/*mySqlValueGenerator = new MySqlValueGenerator();
+		mySqlValueGenerator = new MySqlValueGenerator();
 		mySqlWherePartGenerator = new MySqlWherePartGenerator();
 		dataEntitiesConfig = Mockito.mock(DataEntitiesConfig.class);
 
@@ -35,13 +35,14 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
 		mySqlFieldGenerator.setMySqlValueGenerator(mySqlValueGenerator);
 		mySqlFieldGenerator.setDataEntitiesConfig(dataEntitiesConfig);
 		mySqlWherePartGenerator.setMySqlFieldGenerator(mySqlFieldGenerator);
+		mySqlWherePartGenerator.setMySqlValueGenerator(mySqlValueGenerator);
 
-		*//*for (DataQueryDTO.Term childTerm: dataQueryDTO1.conditions.terms){
+		/*for (DataQueryDTO.Term childTerm: dataQueryDTO1.conditions.terms){
 			if (childTerm.getClass() == DataQueryDTO.ConditionField.class){
 				DataQueryDTO.ConditionField condition = (DataQueryDTO.ConditionField)childTerm;
 				Mockito.when(mySqlUtils.getConditionFieldSql(condition,dataQueryDTO1)).thenReturn(condition.field.getId() + "<=" + condition.getValue());
 			}
-		}*//*
+		}*/
 
 		PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy("daily");
 		Mockito.when(dataEntitiesConfig.getEntityPartitionStrategy(dataQueryDTO1.entities[0])).thenReturn(partitionStrategy);
@@ -51,7 +52,14 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
 		Mockito.when(dataEntitiesConfig.getEntityPartitionBaseField(dataQueryDTO1.entities[0])).thenReturn(partitionsBaseFields);
 		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.entities[0],partitionsBaseFields.get(0))).thenReturn("date_time_unix");
 		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.entities[0],"yearmonthday")).thenReturn("date_time_unix");
-		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.entities[0], "yearmonthday")).thenReturn(QueryValueType.DATE_TIME);*/
+
+		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.entities[0],"event_score")).thenReturn("eventscore");
+
+		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.entities[0], "yearmonthday")).thenReturn(QueryValueType.DATE_TIME);
+		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.entities[0], "event_score")).thenReturn(QueryValueType.NUMBER);
+		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.entities[0], "date_time_unix")).thenReturn(QueryValueType.DATE_TIME);
+		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.entities[0], "event_time_utc")).thenReturn(QueryValueType.DATE_TIME);
+
 
 
 	}
@@ -60,10 +68,10 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
 	public void testGenerateQueryPart()
 			throws Exception {
 
-		/*String sqlStr = mySqlWherePartGenerator.generateQueryPart(dataQueryDTO1);
+		String sqlStr = mySqlWherePartGenerator.generateQueryPart(dataQueryDTO1);
 		//TODO - check why this test is fail, it supposed to pass I believe it is something related to mockito
-		String expectedString = "WHERE (event_score<=50 AND event_time_utc<=1414184400 AND event_time_utc<=1414360799)";
-		assertEquals("SQL Where part for DTO1" , expectedString, sqlStr);*/
+		String expectedString = "WHERE date_time_unix >= 20141024 AND date_time_unix <= 20141026 AND (eventscore >= 50 AND date_time_unix >= 1414184400 AND date_time_unix <= 1414360799)";
+		assertEquals("SQL Where part for DTO1" , expectedString, sqlStr);
 
 	}
 }

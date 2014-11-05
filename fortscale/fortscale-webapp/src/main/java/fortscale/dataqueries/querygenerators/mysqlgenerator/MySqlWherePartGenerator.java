@@ -97,7 +97,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
             return null;
 
         ArrayList<String> sqlConditions = new ArrayList<>();
-        Joiner joiner = Joiner.on(term.operator.toString()).skipNulls();
+        Joiner joiner = Joiner.on(" " + term.operator.toString() + " ").skipNulls();
         ArrayList<String> entityPartitionsBaeFields = dataEntitiesConfig.getEntityPartitionBaseField(entityId);
 
 
@@ -175,5 +175,9 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 
     public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator){
         this.mySqlFieldGenerator = mySqlFieldGenerator;
+    }
+
+    public void setMySqlValueGenerator(MySqlValueGenerator mySqlValueGenerator){
+        this.mySqlValueGenerator = mySqlValueGenerator;
     }
 }
