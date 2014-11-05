@@ -1,20 +1,15 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator.functions;
 
-import fortscale.dataqueries.DataEntitiesConfig;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by Yossi on 04/11/2014.
+ * COUNT function generator for fields
  */
 @Component
-public class MySqlFunctionCount implements MySqlFieldFunction {
-    @Autowired
-    private DataEntitiesConfig dataEntitiesConfig;
-
+public class MySqlFunctionCount extends MySqlFieldFunction {
     public String generateSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         StringBuilder sb = new StringBuilder();
         String entityId = field.getEntity();

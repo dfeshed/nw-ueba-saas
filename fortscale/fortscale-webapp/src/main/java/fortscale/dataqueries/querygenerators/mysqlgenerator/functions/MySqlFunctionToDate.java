@@ -1,20 +1,15 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator.functions;
 
-import fortscale.dataqueries.DataEntitiesConfig;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by Yossi on 04/11/2014.
+ * TO_DATE function generator for fields
  */
 @Component
-public class MySqlFunctionToDate implements MySqlFieldFunction {
-    @Autowired
-    private DataEntitiesConfig dataEntitiesConfig;
-
+public class MySqlFunctionToDate extends MySqlFieldFunction {
     public String generateSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         String entityId = field.getEntity();
         if (entityId == null)
