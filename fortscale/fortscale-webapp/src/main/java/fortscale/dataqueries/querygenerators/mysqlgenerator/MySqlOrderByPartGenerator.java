@@ -31,4 +31,8 @@ public class MySqlOrderByPartGenerator implements QueryPartGenerator {
 
 		return "ORDER BY " + joiner.join(sorts);
 	}
+
+    public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator){
+        this.mySqlFieldGenerator = mySqlFieldGenerator;
+    }
 }

@@ -23,13 +23,13 @@ public class DataQueryGeneratorTest {
 					throws Exception {
 
 		dataQueryDTO1 = mapper.readValue(dto1, DataQueryDTO.class);
-
 		dataEntitiesConfig = Mockito.mock(DataEntitiesConfig.class);
 
+		/*
 		Mockito.when(dataEntitiesConfig.getEntityPerformanceTable(Mockito.any(String.class))).thenReturn("somePerformanceEntityField");
 		Mockito.when(dataEntitiesConfig.getEntityTable(Mockito.any(String.class))).thenReturn("someEntity");
 		Mockito.when(dataEntitiesConfig.getEntityPerformanceTableField(Mockito.any(String.class))).thenReturn("somePerformanceEntityField");
-		Mockito.when(dataEntitiesConfig.getEntityPerformanceTableFieldMinValue(Mockito.any(String.class))).thenReturn(50);
+		Mockito.when(dataEntitiesConfig.getEntityPerformanceTableFieldMinValue(Mockito.any(String.class))).thenReturn(50);*/
 
 	}
 

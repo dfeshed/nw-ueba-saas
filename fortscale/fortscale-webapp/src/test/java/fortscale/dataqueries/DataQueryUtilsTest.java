@@ -2,6 +2,7 @@ package fortscale.dataqueries;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.dataqueries.querydto.DataQueryDTO;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -78,10 +79,8 @@ public class DataQueryUtilsTest{
 
     @Test
     public void getEntityPartitions() throws Exception {
-        ArrayList<DataQueryPartition> partitions = dataEntitiesConfig.getEntityPartitions("access_event");
-        assertEquals("partition.entity_field" , partitions.get(0).entityField, "event_time_utc");
-        assertEquals("partition.partitionField" , partitions.get(0).partitionField, "day_partition");
-        assertEquals("partition.type" , partitions.get(0).type.name(), "daily");
+        PartitionStrategy partition = dataEntitiesConfig.getEntityPartitionStrategy("access_event");
+        assertEquals("partition.entity_field" , partition.getImpalaPartitionFieldName(), "event_time_utc");
     }
 
     @Test

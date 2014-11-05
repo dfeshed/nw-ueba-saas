@@ -172,4 +172,8 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
     public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig) {
         this.dataEntitiesConfig = dataEntitiesConfig;
     }
+
+    public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator){
+        this.mySqlFieldGenerator = mySqlFieldGenerator;
+    }
 }

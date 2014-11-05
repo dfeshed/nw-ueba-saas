@@ -55,4 +55,12 @@ public class MySqlFieldGenerator {
     public String generateSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         return generateSql(field, dataQueryDTO, false);
     }
+
+    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){
+        this.dataEntitiesConfig = dataEntitiesConfig;
+    }
+
+    public void setMySqlValueGenerator(MySqlValueGenerator mySqlValueGenerator){
+        this.mySqlValueGenerator = mySqlValueGenerator;
+    }
 }

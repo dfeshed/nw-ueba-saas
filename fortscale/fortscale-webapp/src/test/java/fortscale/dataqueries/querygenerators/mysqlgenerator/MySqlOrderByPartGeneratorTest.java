@@ -1,5 +1,8 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
+import fortscale.dataqueries.DataEntitiesConfig;
+import fortscale.dataqueries.querydto.DataQueryDTO;
+import fortscale.dataqueries.querygenerators.QueryPartGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -8,8 +11,8 @@ import static org.junit.Assert.assertEquals;
 
 public class MySqlOrderByPartGeneratorTest extends DataQueryGeneratorTest{
 
-	private MySqlOrderByPartGenerator mySqlOrderByPartGenerator;
-
+	private  MySqlOrderByPartGenerator mySqlOrderByPartGenerator;
+	private MySqlFieldGenerator mySqlFieldGenerator;
 
 	@Before
 	public void setUp()
@@ -17,11 +20,12 @@ public class MySqlOrderByPartGeneratorTest extends DataQueryGeneratorTest{
 
 		super.setUp();
 		mySqlOrderByPartGenerator = new MySqlOrderByPartGenerator();
-		mySqlOrderByPartGenerator.setMySqlUtils(mySqlUtils);
+		mySqlFieldGenerator = Mockito.mock(MySqlFieldGenerator.class);
+		mySqlOrderByPartGenerator.setMySqlFieldGenerator(mySqlFieldGenerator);
 
-		Mockito.when(mySqlUtils.getFieldSql(dataQueryDTO1.sort.get(0).field,dataQueryDTO1)).thenReturn("fieldToSortBy1");
-		Mockito.when(mySqlUtils.getFieldSql(dataQueryDTO1.sort.get(1).field,dataQueryDTO1)).thenReturn("fieldToSortBy2");
-
+		for(DataQueryDTO.Sort sort: dataQueryDTO1.sort){
+			Mockito.when(mySqlFieldGenerator.generateSql(sort.field, dataQueryDTO1)).thenReturn(sort.field.getId());
+		}
 	}
 
 	@Test
@@ -29,7 +33,7 @@ public class MySqlOrderByPartGeneratorTest extends DataQueryGeneratorTest{
 					throws Exception {
 
 		String sqlStr = mySqlOrderByPartGenerator.generateQueryPart(dataQueryDTO1);
-		String expectedString = "ORDER BY fieldToSortBy1 DESC, fieldToSortBy2 DESC";
+		String expectedString = "ORDER BY event_score DESC, event_time DESC";
 		assertEquals("SQL order Part for DTO1" , expectedString, sqlStr);
 
 	}
