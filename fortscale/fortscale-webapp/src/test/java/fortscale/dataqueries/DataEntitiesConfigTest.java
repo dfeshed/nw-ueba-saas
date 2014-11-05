@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class DataQueryUtilsTest{
+public class DataEntitiesConfigTest {
     public static String dto1 = "{\"fields\":[],\"conditions\":{\"type\":\"term\",\"operator\":\"AND\",\"terms\":[{\"field\":{\"id\":\"event_score\"},\"operator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":50,\"valueType\":\"NUMBER\"},{\"field\":{\"id\":\"event_time_utc\"},\"operator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":\"1414184400\",\"valueType\":\"STRING\"},{\"field\":{\"id\":\"event_time_utc\"},\"operator\":\"lesserThanOrEquals\",\"type\":\"field\",\"value\":\"1414360799\",\"valueType\":\"STRING\"}]},\"entities\":[\"kerberos_logins\"],\"sort\":[{\"field\":{\"id\":\"event_score\"},\"direction\":\"DESC\"},{\"field\":{\"id\":\"event_time\"},\"direction\":\"DESC\"}],\"limit\":20,\"offset\":0}";
     protected DataQueryDTO dataQueryDTO1;
     private ObjectMapper mapper = new ObjectMapper();
@@ -47,7 +47,7 @@ public class DataQueryUtilsTest{
         Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.kerberos_logins.field.failure_code.type" + "}")).thenReturn("STRING");
 
         //for entity partition test
-        Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.access_event.partitions" + "}")).thenReturn("event_time_utc daily day_partition");
+        Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.kerberos_logins.partitions" + "}")).thenReturn("daily");
         Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.kerberos_logins.field.username.column" + "}")).thenReturn("account_name");
 
     }
@@ -79,8 +79,8 @@ public class DataQueryUtilsTest{
 
     @Test
     public void getEntityPartitions() throws Exception {
-        PartitionStrategy partition = dataEntitiesConfig.getEntityPartitionStrategy("access_event");
-        assertEquals("partition.entity_field" , partition.getImpalaPartitionFieldName(), "event_time_utc");
+        PartitionStrategy partition = dataEntitiesConfig.getEntityPartitionStrategy("kerberos_logins");
+        assertEquals("partition.entity_field" , "yearmonthday",partition.getImpalaPartitionFieldName());
     }
 
     @Test
