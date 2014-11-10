@@ -1,12 +1,8 @@
 package fortscale.web.rest;
 
-import fortscale.dataqueries.querydto.DataQueryDTO;
-import fortscale.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.dataqueries.querygenerators.DataQueryRunnerFactory;
-import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.EventScore;
-import fortscale.services.fe.ClassifierService;
-import fortscale.web.beans.DataBean;
+import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -72,9 +68,7 @@ public class ApiControllerTest {
 		// create mock for queries factory
 		DataQueryRunner dataQueryRunner = Mockito.mock(DataQueryRunner.class);
 		when(dataQueryRunner.generateQuery(any(DataQueryDTO.class))).thenReturn("select A from B");
-		DataBean<List<Map<String, Object>>> dataBean = new DataBean<List<Map<String, Object>>>();
-		dataBean.setData(new ArrayList<Map<String, Object>>());
-		when(dataQueryRunner.executeQuery(any(String.class))).thenReturn(dataBean);
+		when(dataQueryRunner.executeQuery(any(String.class))).thenReturn(resultsMap);
 		when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(dataQueryRunner);
 
 

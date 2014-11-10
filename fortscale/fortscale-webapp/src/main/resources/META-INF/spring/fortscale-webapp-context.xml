@@ -15,14 +15,6 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="localOverride" value="true" />
 	</bean>
-	<bean
-		class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-		<property name="location" value="classpath:META-INF/entities.properties" />
-		<property name="order"
-			value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}" />
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
-		<property name="localOverride" value="true" />
-	</bean>
 	<bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl" />
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" />
 </beans>

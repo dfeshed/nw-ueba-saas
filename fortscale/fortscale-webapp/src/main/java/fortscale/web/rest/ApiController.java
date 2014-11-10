@@ -5,12 +5,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fortscale.dataqueries.DataEntity;
-import fortscale.dataqueries.DataEntitiesConfig;
-import fortscale.dataqueries.querydto.DataQueryDTO;
-import fortscale.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.dataqueries.querygenerators.DataQueryRunnerFactory;
-import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.services.dataentity.DataEntity;
+import fortscale.services.dataentity.DataEntitiesConfig;
+import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.fe.ClassifierService;
@@ -264,7 +264,10 @@ public class ApiController extends BaseController {
 
 
             // execute Query
-            DataBean<List<Map<String, Object>>> retBean = dataQueryRunner.executeQuery(query);
+			DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
+			List<Map<String, Object>> resultsMap = dataQueryRunner.executeQuery(query);
+			retBean.setData(resultsMap);
+			retBean.setTotal(resultsMap.size());
 
             DataBean<List<Map<String, Object>>> retBeanForPage = retBean;
 
