@@ -1,6 +1,7 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator.functions;
 
 import fortscale.dataqueries.querydto.DataQueryDTO;
+import fortscale.dataqueries.querydto.DataQueryField;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 import org.springframework.stereotype.Component;
@@ -10,10 +11,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MySqlFunctionToDate extends MySqlFieldFunction {
-    public String generateSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         String entityId = field.getEntity();
         if (entityId == null)
-            entityId = dataQueryDTO.entities[0];
+            entityId = dataQueryDTO.getEntities()[0];
 
         if (field.getId() == null)
         throw new InvalidQueryException("The to_date field function requires a field ID.");

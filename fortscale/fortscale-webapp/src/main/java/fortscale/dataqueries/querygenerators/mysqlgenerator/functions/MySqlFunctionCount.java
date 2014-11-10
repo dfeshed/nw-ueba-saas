@@ -1,6 +1,7 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator.functions;
 
 import fortscale.dataqueries.querydto.DataQueryDTO;
+import fortscale.dataqueries.querydto.DataQueryField;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 import org.springframework.stereotype.Component;
@@ -10,17 +11,17 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MySqlFunctionCount extends MySqlFieldFunction {
-    public String generateSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         StringBuilder sb = new StringBuilder();
         String entityId = field.getEntity();
         if (entityId == null)
-            entityId = dataQueryDTO.entities[0];
+            entityId = dataQueryDTO.getEntities()[0];
 
         sb.append("COUNT(");
-        if (field.func.params.containsKey("all"))
+        if (field.getFunc().getParams().containsKey("all"))
             sb.append("*");
         else{
-            if (field.func.params.containsKey("distinct"))
+            if (field.getFunc().getParams().containsKey("distinct"))
                 sb.append("DISTINCT ");
 
             sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));

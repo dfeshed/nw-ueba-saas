@@ -1,11 +1,10 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
-import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import fortscale.dataqueries.DataEntitiesConfig;
+import fortscale.dataqueries.querydto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
@@ -19,8 +18,8 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         try {
-            String entityId = dataQueryDTO.entities[0];
-            String tableName = dataQueryDTO.conditions != null && isHighScore(entityId, dataQueryDTO.conditions)
+            String entityId = dataQueryDTO.getEntities()[0];
+            String tableName = dataQueryDTO.getConditions() != null && isHighScore(entityId, dataQueryDTO.getConditions())
                     ? dataEntitiesConfig.getEntityPerformanceTable(entityId)
                     : dataEntitiesConfig.getEntityTable(entityId);
 
@@ -39,22 +38,22 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
      * @return
      * @throws Exception
      */
-    private Boolean isHighScore(String entityId, DataQueryDTO.ConditionTerm term) throws Exception{
-        if (term.terms == null || term.terms.size() == 0)
+    private Boolean isHighScore(String entityId, ConditionTerm term) throws Exception{
+        if (term.getTerms() == null || term.getTerms().size() == 0)
             return false;
 
-        for (DataQueryDTO.Term childTerm: term.terms){
-            if (childTerm instanceof DataQueryDTO.ConditionField){
-                DataQueryDTO.ConditionField condition = (DataQueryDTO.ConditionField)childTerm;
-                if (condition.field.getId().equals(dataEntitiesConfig.getEntityPerformanceTableField(entityId))){
+        for (Term childTerm: term.getTerms()){
+            if (childTerm instanceof ConditionField){
+                ConditionField condition = (ConditionField)childTerm;
+                if (condition.getField().getId().equals(dataEntitiesConfig.getEntityPerformanceTableField(entityId))){
                     int value = Integer.parseInt(condition.getValue());
                     if (value >= dataEntitiesConfig.getEntityPerformanceTableFieldMinValue(entityId) &&
-                            (condition.operator == DataQueryDTO.Operator.equals || condition.operator == DataQueryDTO.Operator.greaterThan || condition.operator == DataQueryDTO.Operator.greaterThanOrEquals)){
+                            (condition.getOperator() == QueryOperator.equals || condition.getOperator() == QueryOperator.greaterThan || condition.getOperator() == QueryOperator.greaterThanOrEquals)){
                         return true;
                     }
                 }
             }
-            else if (isHighScore(entityId, (DataQueryDTO.ConditionTerm)childTerm))
+            else if (isHighScore(entityId, (ConditionTerm)childTerm))
                 return true;
         }
 

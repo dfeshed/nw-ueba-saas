@@ -2,7 +2,6 @@ package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.dataqueries.DataEntitiesConfig;
 import fortscale.dataqueries.QueryValueType;
-import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import org.junit.Before;
@@ -45,20 +44,20 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
 		}*/
 
 		PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy("daily");
-		Mockito.when(dataEntitiesConfig.getEntityPartitionStrategy(dataQueryDTO1.entities[0])).thenReturn(partitionStrategy);
+		Mockito.when(dataEntitiesConfig.getEntityPartitionStrategy(dataQueryDTO1.getEntities()[0])).thenReturn(partitionStrategy);
 		ArrayList<String> partitionsBaseFields = new ArrayList<String>();
 		partitionsBaseFields.add("event_time_utc");
 
-		Mockito.when(dataEntitiesConfig.getEntityPartitionBaseField(dataQueryDTO1.entities[0])).thenReturn(partitionsBaseFields);
-		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.entities[0],partitionsBaseFields.get(0))).thenReturn("date_time_unix");
-		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.entities[0],"yearmonthday")).thenReturn("date_time_unix");
+		Mockito.when(dataEntitiesConfig.getEntityPartitionBaseField(dataQueryDTO1.getEntities()[0])).thenReturn(partitionsBaseFields);
+		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.getEntities()[0],partitionsBaseFields.get(0))).thenReturn("date_time_unix");
+		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.getEntities()[0],"yearmonthday")).thenReturn("date_time_unix");
 
-		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.entities[0],"event_score")).thenReturn("eventscore");
+		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.getEntities()[0],"event_score")).thenReturn("eventscore");
 
-		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.entities[0], "yearmonthday")).thenReturn(QueryValueType.DATE_TIME);
-		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.entities[0], "event_score")).thenReturn(QueryValueType.NUMBER);
-		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.entities[0], "date_time_unix")).thenReturn(QueryValueType.DATE_TIME);
-		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.entities[0], "event_time_utc")).thenReturn(QueryValueType.DATE_TIME);
+		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "yearmonthday")).thenReturn(QueryValueType.DATE_TIME);
+		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "event_score")).thenReturn(QueryValueType.NUMBER);
+		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "date_time_unix")).thenReturn(QueryValueType.DATE_TIME);
+		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "event_time_utc")).thenReturn(QueryValueType.DATE_TIME);
 
 
 

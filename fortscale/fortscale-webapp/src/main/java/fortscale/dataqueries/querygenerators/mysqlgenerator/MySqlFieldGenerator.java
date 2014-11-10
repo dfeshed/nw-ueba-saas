@@ -2,6 +2,7 @@ package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.dataqueries.DataEntitiesConfig;
 import fortscale.dataqueries.querydto.DataQueryDTO;
+import fortscale.dataqueries.querydto.DataQueryField;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,26 +22,26 @@ public class MySqlFieldGenerator {
     @Autowired
     MySqlFieldFunctionGenerator mySqlFieldFunctionGenerator;
 
-    public String generateSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId) throws InvalidQueryException {
+    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId) throws InvalidQueryException {
         StringBuilder fieldSB = new StringBuilder();
 
         if (field.getValue() != null){
             if (field.getAlias() == null)
                 throw new InvalidQueryException("An alias should be specified for field value '" + field.getValue() + "'.");
 
-            fieldSB.append(mySqlValueGenerator.generateSql(field.getValue(), field.valueType));
+            fieldSB.append(mySqlValueGenerator.generateSql(field.getValue(), field.getValueType()));
             fieldSB.append(" as '" + field.getAlias() + "'");
         }
-        else if (field.func != null){
+        else if (field.getFunc() != null){
             fieldSB.append(mySqlFieldFunctionGenerator.generateSql(field, dataQueryDTO));
             if (field.getAlias() != null)
                 fieldSB.append(" as '" + field.getAlias() + "'");
         }
         else{
-            if (dataQueryDTO.entities.length > 1 && field.getEntity() != null)
+            if (dataQueryDTO.getEntities().length > 1 && field.getEntity() != null)
                 fieldSB.append(field.getEntity() + ".");
 
-            String columnName = dataEntitiesConfig.getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.entities[0], field.getId() );
+            String columnName = dataEntitiesConfig.getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.getEntities()[0], field.getId() );
             fieldSB.append(columnName);
 
             if (field.getAlias() != null)
@@ -52,7 +53,7 @@ public class MySqlFieldGenerator {
         return fieldSB.toString();
     }
 
-    public String generateSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         return generateSql(field, dataQueryDTO, false);
     }
 

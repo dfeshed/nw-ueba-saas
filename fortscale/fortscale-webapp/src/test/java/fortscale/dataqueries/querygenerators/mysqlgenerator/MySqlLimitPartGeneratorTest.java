@@ -29,8 +29,8 @@ public class MySqlLimitPartGeneratorTest extends DataQueryGeneratorTest{
 	@Test
 	public void testGenerateQueryPart_offset()
 			throws Exception {
-		dataQueryDTO1.offset = 4;
-		dataQueryDTO1.limit = 70;
+		dataQueryDTO1.setOffset(4);
+		dataQueryDTO1.setLimit(70);
 		String sqlStr = mySqlLimitPartGenerator.generateQueryPart(dataQueryDTO1);
 		String expectedString = "LIMIT 70 OFFSET 4";
 		assertEquals("SQL Limit and offset Part for DTO 1" , expectedString, sqlStr);

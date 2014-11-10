@@ -2,6 +2,7 @@ package fortscale.dataqueries.querygenerators.mysqlgenerator.functions;
 
 import fortscale.dataqueries.DataEntitiesConfig;
 import fortscale.dataqueries.querydto.DataQueryDTO;
+import fortscale.dataqueries.querydto.DataQueryField;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,7 +14,7 @@ public abstract class MySqlFieldFunction {
     @Autowired
     protected DataEntitiesConfig dataEntitiesConfig;
 
-    public abstract String generateSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException;
+    public abstract String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException;
 
     public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){
         this.dataEntitiesConfig = dataEntitiesConfig;

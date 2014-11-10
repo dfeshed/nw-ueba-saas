@@ -27,8 +27,8 @@ public abstract class MySqlFunctionTest {
         dataQueryDTO = mapper.readValue(dtoJson, DataQueryDTO.class);
 
         dataEntitiesConfig = Mockito.mock(DataEntitiesConfig.class);
-        Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO.entities[0], "destination_machine")).thenReturn("service_name");
-        Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO.entities[0], "event_time")).thenReturn("date_time");
+        Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO.getEntities()[0], "destination_machine")).thenReturn("service_name");
+        Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO.getEntities()[0], "event_time")).thenReturn("date_time");
         function.setDataEntitiesConfig(dataEntitiesConfig);
     }
 

@@ -37,15 +37,15 @@ public class DataQueryRunnerFactory implements EmbeddedValueResolverAware{
 	 * @return query runner
 	 */
 	public DataQueryRunner getDataQueryRunner(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
-		if (dataQueryDTO.entities.length > 1)
+		if (dataQueryDTO.getEntities().length > 1)
 			throw new InvalidQueryException("Queries with more than one entity are not supported yet.");
 		
-        SupportedDBType type = getEntityDbType(dataQueryDTO.entities[0]);
+        SupportedDBType type = getEntityDbType(dataQueryDTO.getEntities()[0]);
 
         if (type == SupportedDBType.MySQL)
 		    return mySqlQueryRunner;
         else
-            throw new InvalidQueryException("A DataQueryRunner for DB of type " + stringValueResolver.resolveStringValue("entities." + dataQueryDTO.entities[0] + ".db") + " doesn't exist.");
+            throw new InvalidQueryException("A DataQueryRunner for DB of type " + stringValueResolver.resolveStringValue("entities." + dataQueryDTO.getEntities()[0] + ".db") + " doesn't exist.");
 	}
 
 }

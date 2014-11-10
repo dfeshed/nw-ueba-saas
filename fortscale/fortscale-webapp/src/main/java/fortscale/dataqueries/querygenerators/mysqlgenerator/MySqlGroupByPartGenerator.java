@@ -2,6 +2,7 @@ package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import java.util.ArrayList;
 
+import fortscale.dataqueries.querydto.DataQueryField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
@@ -32,13 +33,13 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedVa
 	public String generateQueryPart(DataQueryDTO dataQueryDTO)
 			throws InvalidQueryException {
 		
-		if (dataQueryDTO.groupBy == null)
+		if (dataQueryDTO.getGroupBy() == null)
 			return "";
 		
 		ArrayList<String> fieldsSql = new ArrayList<>();
         Joiner joiner = Joiner.on(", ").skipNulls();
         
-        for (DataQueryDTO.DataQueryField field : dataQueryDTO.groupBy) {
+        for (DataQueryField field : dataQueryDTO.getGroupBy()) {
             if (field != null){
             	if (field.getAlias() != null)
         			throw new InvalidQueryException("Invalid GROUP BY field, " + field.getId() + ", can't alias fields in a GROUP BY query part.");

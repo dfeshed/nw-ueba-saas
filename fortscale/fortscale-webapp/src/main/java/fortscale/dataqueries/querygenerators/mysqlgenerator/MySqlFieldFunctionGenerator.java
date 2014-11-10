@@ -2,6 +2,7 @@ package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.dataqueries.DataEntitiesConfig;
 import fortscale.dataqueries.querydto.DataQueryDTO;
+import fortscale.dataqueries.querydto.DataQueryField;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.dataqueries.querygenerators.mysqlgenerator.functions.MySqlFunctionCount;
 import fortscale.dataqueries.querygenerators.mysqlgenerator.functions.MySqlFunctionToDate;
@@ -25,14 +26,14 @@ public class MySqlFieldFunctionGenerator {
      * @param dataQueryDTO
      * @return
      */
-    public String generateSql(DataQueryDTO.DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException {
-        switch(field.func.name){
+    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException {
+        switch(field.getFunc().getName()){
             case count: return mySqlFunctionCount.generateSql(field, dataQueryDTO);
             case to_date: return mySqlFunctionToDate.generateSql(field, dataQueryDTO);
             case min:
             case max:
             default:
-                throw new InvalidQueryException("There's no implementation for field function " + field.func.name + ".");
+                throw new InvalidQueryException("There's no implementation for field function " + field.getFunc().getName() + ".");
         }
     }
 }

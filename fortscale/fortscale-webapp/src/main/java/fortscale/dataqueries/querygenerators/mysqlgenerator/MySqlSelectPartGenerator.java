@@ -2,14 +2,13 @@ package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import fortscale.dataqueries.DataEntitiesConfig;
+import fortscale.dataqueries.querydto.DataQueryField;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import org.springframework.util.StringValueResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +31,16 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator {
         ArrayList<String> fieldsSql;
         Joiner joiner = Joiner.on(", ").skipNulls();
 
-        List<DataQueryDTO.DataQueryField> fields;
+        List<DataQueryField> fields;
 
-        if (dataQueryDTO.entities.length == 1 && (dataQueryDTO.fields == null || dataQueryDTO.fields.size() == 0))
-            fields = getAllEntityFields(dataQueryDTO.entities[0]);
+        if (dataQueryDTO.getEntities().length == 1 && (dataQueryDTO.getFields() == null || dataQueryDTO.getFields().size() == 0))
+            fields = getAllEntityFields(dataQueryDTO.getEntities()[0]);
         else
-            fields = dataQueryDTO.fields;
+            fields = dataQueryDTO.getFields();
 
         fieldsSql = new ArrayList<>();
 
-        for (DataQueryDTO.DataQueryField field : fields) {
+        for (DataQueryField field : fields) {
             if (field != null)
                 fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO, true));
         }
@@ -51,12 +50,12 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator {
 		return sb.toString();
 	}
 
-    private List<DataQueryDTO.DataQueryField> getAllEntityFields(String entityId){
+    private List<DataQueryField> getAllEntityFields(String entityId){
         List<String> fieldIds = dataEntitiesConfig.getAllEntityFields(entityId);
-        ArrayList<DataQueryDTO.DataQueryField> fields = new ArrayList<DataQueryDTO.DataQueryField>();
+        ArrayList<DataQueryField> fields = new ArrayList<DataQueryField>();
 
         for(String fieldId: fieldIds){
-            DataQueryDTO.DataQueryField field = new DataQueryDTO.DataQueryField();
+            DataQueryField field = new DataQueryField();
             field.setId(fieldId);
             fields.add(field);
         }

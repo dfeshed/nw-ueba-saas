@@ -1,13 +1,11 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
-import fortscale.dataqueries.querydto.DataQueryDTO;
+import fortscale.dataqueries.querydto.DataQueryField;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,8 +28,8 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 		fields.add("field1");
 		fields.add("field2");
 
-		Mockito.when(dataEntitiesConfig.getAllEntityFields(Mockito.eq(dataQueryDTO1.entities[0]))).thenReturn(fields);
-		Mockito.when(mySqlFieldGenerator.generateSql(Mockito.any(DataQueryDTO.DataQueryField.class), Mockito.eq(dataQueryDTO1), Mockito.eq(true))).thenReturn("someField");
+		Mockito.when(dataEntitiesConfig.getAllEntityFields(Mockito.eq(dataQueryDTO1.getEntities()[0]))).thenReturn(fields);
+		Mockito.when(mySqlFieldGenerator.generateSql(Mockito.any(DataQueryField.class), Mockito.eq(dataQueryDTO1), Mockito.eq(true))).thenReturn("someField");
 
 	}
 

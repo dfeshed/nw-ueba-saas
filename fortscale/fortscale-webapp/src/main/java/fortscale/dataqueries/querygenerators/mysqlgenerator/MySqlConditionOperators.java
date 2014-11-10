@@ -1,6 +1,6 @@
 package fortscale.dataqueries.querygenerators.mysqlgenerator;
 
-import fortscale.dataqueries.querydto.DataQueryDTO;
+import fortscale.dataqueries.querydto.QueryOperator;
 
 import java.util.HashMap;
 
@@ -9,22 +9,22 @@ import java.util.HashMap;
  * Defines how condition operators are handled by MySQL
  */
 public class MySqlConditionOperators {
-    private static HashMap<DataQueryDTO.Operator, MySqlOperator> operators = new HashMap<DataQueryDTO.Operator, MySqlOperator>();
+    private static HashMap<QueryOperator, MySqlOperator> operators = new HashMap<QueryOperator, MySqlOperator>();
 
     static{
-        operators.put(DataQueryDTO.Operator.equals, new MySqlOperator("=", true));
-        operators.put(DataQueryDTO.Operator.notEquals, new MySqlOperator("!=", true));
-        operators.put(DataQueryDTO.Operator.greaterThan, new MySqlOperator(">", true));
-        operators.put(DataQueryDTO.Operator.greaterThanOrEquals, new MySqlOperator(">=", true));
-        operators.put(DataQueryDTO.Operator.lesserThan, new MySqlOperator("<", true));
-        operators.put(DataQueryDTO.Operator.lesserThanOrEquals, new MySqlOperator("<=", true));
-        operators.put(DataQueryDTO.Operator.in, new MySqlOperator("IN", true));
-        operators.put(DataQueryDTO.Operator.like, new MySqlOperator("LIKE", true));
-        operators.put(DataQueryDTO.Operator.hasValue, new MySqlOperator("IS NOT NULL", true));
-        operators.put(DataQueryDTO.Operator.hasNoValue, new MySqlOperator("IS NULL", true));
+        operators.put(QueryOperator.equals, new MySqlOperator("=", true));
+        operators.put(QueryOperator.notEquals, new MySqlOperator("!=", true));
+        operators.put(QueryOperator.greaterThan, new MySqlOperator(">", true));
+        operators.put(QueryOperator.greaterThanOrEquals, new MySqlOperator(">=", true));
+        operators.put(QueryOperator.lesserThan, new MySqlOperator("<", true));
+        operators.put(QueryOperator.lesserThanOrEquals, new MySqlOperator("<=", true));
+        operators.put(QueryOperator.in, new MySqlOperator("IN", true));
+        operators.put(QueryOperator.like, new MySqlOperator("LIKE", true));
+        operators.put(QueryOperator.hasValue, new MySqlOperator("IS NOT NULL", true));
+        operators.put(QueryOperator.hasNoValue, new MySqlOperator("IS NULL", true));
     }
 
-    public static MySqlOperator getOperator(DataQueryDTO.Operator operator){
+    public static MySqlOperator getOperator(QueryOperator operator){
         return operators.get(operator);
     }
 }

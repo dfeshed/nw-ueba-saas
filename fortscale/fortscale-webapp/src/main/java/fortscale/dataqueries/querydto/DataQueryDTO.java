@@ -1,19 +1,8 @@
 package fortscale.dataqueries.querydto;
 
-import fortscale.dataqueries.QueryFieldFunction;
-import fortscale.dataqueries.QueryValueType;
-import fortscale.services.exceptions.InvalidValueException;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * DTO for data query representation
@@ -22,91 +11,67 @@ import java.util.Map;
 public class DataQueryDTO {
 
     @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
-	public List<DataQueryField> fields;
-    public ConditionTerm conditions;
-    public String[] entities;
-    public List<DataQueryField> groupBy;
-    public List<Sort> sort;
-    public short limit = 10;
-    public int offset = 0;
+    private List<DataQueryField> fields;
+    private ConditionTerm conditions;
+    private String[] entities;
+    private List<DataQueryField> groupBy;
+    private List<QuerySort> sort;
+    private short limit = 10;
+    private int offset = 0;
 
-    @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
-    public static class DataQueryField{
-        private String id;
-        private String alias;
-        private String entity;
-        private String value;
-
-        public FieldFunction func;
-        public QueryValueType valueType;
-
-        public String getId(){ return id; }
-        public String getAlias(){ return alias; }
-        public String getEntity(){ return entity; }
-        public String getValue(){ return value; }
-
-        public void setId(String id){ this.id = id; }
-        public void setAlias(String alias){ this.alias = alias; }
-        public void setEntity(String entityId){
-            this.entity = entityId;
-        }
-
-        public void setValue(String value){ this.value = value; }
+    public List<DataQueryField> getFields() {
+        return fields;
     }
 
-    public static enum LogicalOperator{
-        AND, OR
+    public void setFields(List<DataQueryField> fields) {
+        this.fields = fields;
     }
 
-    @JsonTypeInfo(
-            use = JsonTypeInfo.Id.NAME,
-            include = As.PROPERTY,
-            property = "type")
-    @JsonSubTypes({
-            @Type(value = ConditionTerm.class, name = "term"),
-            @Type(value = ConditionField.class, name = "field") })
-    public static abstract class Term{
-        @JsonProperty("operator")
-        Enum operator;
+    public ConditionTerm getConditions() {
+        return conditions;
     }
 
-    public static class ConditionTerm extends Term{
-        public List<Term> terms;
-        public LogicalOperator operator;
+    public void setConditions(ConditionTerm conditions) {
+        this.conditions = conditions;
     }
 
-    public static enum Operator{
-        equals, notEquals,
-        greaterThan, greaterThanOrEquals,
-        lesserThan, lesserThanOrEquals,
-        in,
-        like,
-        hasValue,
-        hasNoValue,
-        regex
+    public String[] getEntities() {
+        return entities;
     }
 
-    public static class ConditionField extends Term{
-        public DataQueryField field;
-        public Operator operator;
-
-        private String value;
-        public QueryValueType valueType;
-        public String getValue(){ return value; }
-        public void setValue(String value){ this.value = value; }
+    public void setEntities(String[] entities) {
+        this.entities = entities;
     }
 
-    public static class FieldFunction{
-        public QueryFieldFunction name;
-        public Map<String, String> params;
+    public List<DataQueryField> getGroupBy() {
+        return groupBy;
     }
 
-    public static enum SortDirection{
-        ASC, DESC
+    public void setGroupBy(List<DataQueryField> groupBy) {
+        this.groupBy = groupBy;
     }
 
-    public static class Sort{
-        public DataQueryField field;
-        public SortDirection direction;
+    public List<QuerySort> getSort() {
+        return sort;
+    }
+
+    public void setSort(List<QuerySort> sort) {
+        this.sort = sort;
+    }
+
+    public short getLimit() {
+        return limit;
+    }
+
+    public void setLimit(short limit) {
+        this.limit = limit;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 }

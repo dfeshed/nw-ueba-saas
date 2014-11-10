@@ -16,21 +16,21 @@ public class MySqlFunctionCountTest extends MySqlFunctionTest {
 
     @Test
     public void testGenerateSql_distinct() throws Exception {
-        String functionSql = function.generateSql(dataQueryDTO.fields.get(0), dataQueryDTO);
+        String functionSql = function.generateSql(dataQueryDTO.getFields().get(0), dataQueryDTO);
         String expectedSql = "COUNT(DISTINCT service_name)";
         assertEquals("COUNT function for a field with DISTINCT operator" , expectedSql, functionSql);
     }
 
     @Test
     public void testGenerateSql_all() throws Exception {
-        String functionSql = function.generateSql(dataQueryDTO.fields.get(1), dataQueryDTO);
+        String functionSql = function.generateSql(dataQueryDTO.getFields().get(1), dataQueryDTO);
         String expectedSql = "COUNT(*)";
         assertEquals("COUNT function for for *" , expectedSql, functionSql);
     }
 
     @Test
     public void testGenerateSql_field() throws Exception {
-        String functionSql = function.generateSql(dataQueryDTO.fields.get(2), dataQueryDTO);
+        String functionSql = function.generateSql(dataQueryDTO.getFields().get(2), dataQueryDTO);
         String expectedSql = "COUNT(service_name)";
         assertEquals("COUNT function for a field operator" , expectedSql, functionSql);
     }
