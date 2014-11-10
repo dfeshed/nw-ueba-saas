@@ -102,9 +102,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 
         ArrayList<String> sqlConditions = new ArrayList<>();
         Joiner joiner = Joiner.on(" " + term.getOperator().toString() + " ").skipNulls();
-        ArrayList<String> entityPartitionsBaeFields = dataEntitiesConfig.getEntityPartitionBaseField(entityId);
-
-
+        List<String> entityPartitionsBaeFields = dataEntitiesConfig.getEntityPartitionBaseField(entityId);
 
         for (Term childTerm: term.getTerms()){
 

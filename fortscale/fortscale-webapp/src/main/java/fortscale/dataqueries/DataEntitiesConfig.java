@@ -9,6 +9,7 @@ import org.springframework.util.StringValueResolver;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,6 +23,24 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
     }
 
     StringValueResolver stringValueResolver;
+
+    private HashMap<String, DataEntityConfig> entitiesCache = new HashMap<>();
+    private List<DataEntity> allDataEntities;
+
+    private DataEntityConfig getEntityFromCache(String entityId){
+        DataEntityConfig entityConfig = entitiesCache.get(entityId);
+        if(entityConfig == null){
+            entityConfig = new DataEntityConfig();
+            entitiesCache.put(entityId, entityConfig);
+        }
+
+        return entityConfig;
+    }
+
+    private DataEntityFieldConfig getFieldFromCache(String entityId, String fieldId){
+        DataEntityConfig entityConfig = entitiesCache.get(entityId);
+        return entityConfig.getField(fieldId);
+    }
 
     /**
      * Given an entity name and an array of strings consisting the rest of the path, returns a key name in the same fortmat as found in the entities.properties file
@@ -47,11 +66,17 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @param entityId
      * @return
      */
-    public ArrayList<String> getAllEntityFields(String entityId){
-        ArrayList<String> fields = new ArrayList<String>();
+    public List<String> getAllEntityFields(String entityId){
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
+        if (entityConfig.getFieldsList() != null)
+            return entityConfig.getFieldsList();
+
+        ArrayList<String> fieldsList = new ArrayList<>();
+        entityConfig.setFieldsList(fieldsList);
+
         try{
-            String[] configFields = stringValueResolver.resolveStringValue(String.format("${entities.%s.fields}", entityId)).split("\\s*,[,\\s]*");
-            Collections.addAll(fields, configFields);
+            String[] configFields = stringValueResolver.resolveStringValue(getPropertyKey(entityId, "fields")).split("\\s*,[,\\s]*");
+            Collections.addAll(fieldsList, configFields);
         }
         catch(Exception error){
             return null;
@@ -59,13 +84,13 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         
         String baseEntityId = getBaseEntityId(entityId);
         if (baseEntityId != null){
-            ArrayList<String> baseEntityFields = getAllEntityFields(baseEntityId);
+            List<String> baseEntityFields = getAllEntityFields(baseEntityId);
             if (baseEntityFields != null){
-                fields.addAll(baseEntityFields);
+                fieldsList.addAll(baseEntityFields);
             }
         }
 
-        return fields;
+        return entityConfig.getFieldsList();
     }
 
     /**
@@ -73,6 +98,9 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public List<DataEntity> getAllLogicalEntities() throws Exception{
+        if (allDataEntities != null)
+            return allDataEntities;
+
         String[] entityIds = stringValueResolver.resolveStringValue("${entities}").split("\\s*,[,\\s]*");
         ArrayList<DataEntity> entities = new ArrayList<>();
 
@@ -80,6 +108,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
             entities.add(getLogicalEntity(entityId));
         }
 
+        allDataEntities = entities;
         return entities;
     }
 
@@ -89,8 +118,14 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public SupportedDBType getEntityDbType(String entityId){
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
+        if (entityConfig.getDbType() != null)
+            return entityConfig.getDbType();
+
         String type = stringValueResolver.resolveStringValue(getPropertyKey(entityId, "db"));
-        return SupportedDBType.valueOf(type);
+        SupportedDBType dbType = SupportedDBType.valueOf(type);
+        entityConfig.setDbType(dbType);
+        return dbType;
     }
 
     /**
@@ -99,10 +134,26 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public DataEntity getLogicalEntity(String entityId) throws Exception{
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
+
         DataEntity entity = new DataEntity();
         entity.setId(entityId);
-        entity.setName(getExtendableValue(entityId, "name"));
-        entity.setShortName(getExtendableValue(entityId, "short_name"));
+
+        String entityName = entityConfig.getName();
+        if (entityName == null){
+            entityName = getExtendableValue(entityId, "name");
+            entityConfig.setName(entityName);
+        }
+
+        entity.setName(entityName);
+
+        String entityShortName = entityConfig.getShortName();
+        if (entityShortName == null){
+            entityShortName = getExtendableValue(entityId, "short_name");
+            entityConfig.setShortName(entityShortName);
+        }
+
+        entity.setName(entityShortName);
 
         List<String> fieldIds = getAllEntityFields(entityId);
         ArrayList<DataEntityField> fields = new ArrayList<>();
@@ -110,13 +161,39 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         for(String fieldId: fieldIds){
             try {
                 DataEntityField field = new DataEntityField();
-                field.setId(fieldId);
-                field.setName(getExtendableValue(entityId, "field", fieldId, "name"));
-                field.setType(QueryValueType.valueOf(getExtendableValue(entityId, "field", fieldId, "type")));
-                field.setScoreField(getExtendableValue(entityId, "field", fieldId, "score"));
+                DataEntityFieldConfig fieldConfig = entityConfig.getField(fieldId);
 
-                String isDefaultEnabled = getExtendableValue(entityId, "field", fieldId, "enabled");
-                field.setIsDefaultEnabled(isDefaultEnabled == null || !isDefaultEnabled.equals("false"));
+                field.setId(fieldId);
+
+                String fieldName = fieldConfig.getName();
+                if (fieldName == null){
+                    fieldName = getExtendableValue(entityId, "field", fieldId, "name");
+                    fieldConfig.setName(fieldName);
+                }
+                field.setName(fieldName);
+
+                QueryValueType fieldType = fieldConfig.getType();
+                if (fieldType == null){
+                    fieldType = QueryValueType.valueOf(getExtendableValue(entityId, "field", fieldId, "type"));
+                    fieldConfig.setType(fieldType);
+                }
+                field.setType(fieldType);
+
+                String scoreField = fieldConfig.getScore();
+                if (scoreField == null){
+                    scoreField = getExtendableValue(entityId, "field", fieldId, "score");
+                    fieldConfig.setScore(scoreField);
+                }
+                field.setScoreField(scoreField);
+
+                Boolean isDefaultEnabled = fieldConfig.getDefaultEnabled();
+                if (isDefaultEnabled == null){
+                    String isDefaultEnabledStr = getExtendableValue(entityId, "field", fieldId, "enabled");
+                    isDefaultEnabled = isDefaultEnabled == null || !isDefaultEnabled.equals("false");
+                    fieldConfig.setDefaultEnabled(isDefaultEnabled);
+                }
+                field.setIsDefaultEnabled(isDefaultEnabled);
+
                 fields.add(field);
             } catch(Exception error){
                 throw new Exception(String.format("Can't read field %s of entity %s", fieldId, entityId));
@@ -135,15 +212,18 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @throws Exception
      */
     public PartitionStrategy getEntityPartitionStrategy(String entityId) throws InvalidQueryException{
-
-        String entityPartitionsConfig = getExtendableValue(entityId, "partitions");
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
+        String entityPartitionsConfig = entityConfig.getPartitions();
+        if (entityPartitionsConfig == null){
+            entityPartitionsConfig = getExtendableValue(entityId, "partitions");
+            entityConfig.setPartitions(entityPartitionsConfig);
+        }
 
         if (entityPartitionsConfig == null)
             return null;
 
         //will represent a the partition startigy of the current entity
         PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(entityPartitionsConfig);
-
 
         return partitionStrategy;
     }
@@ -155,14 +235,18 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return entityPartitionBaseField - The field that base on him we use the partition
      * @throws Exception
      */
-    public ArrayList<String> getEntityPartitionBaseField(String entityId) throws InvalidQueryException{
+    public List<String> getEntityPartitionBaseField(String entityId) throws InvalidQueryException{
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
+        if (entityConfig.getPartitionsBaseField() != null)
+            return entityConfig.getPartitionsBaseField();
 
-        ArrayList<String> paritionBaseFields = new ArrayList<>();
+        ArrayList<String> partitionBaseFields = new ArrayList<>();
 
         String [] entityPartitionBaseField = getExtendableValue(entityId, "partition.base.field").split(",");
-        Collections.addAll(paritionBaseFields,entityPartitionBaseField);
+        Collections.addAll(partitionBaseFields,entityPartitionBaseField);
 
-        return paritionBaseFields;
+        entityConfig.setPartitionsBaseField(partitionBaseFields);
+        return partitionBaseFields;
     }
 
     /**
@@ -172,10 +256,15 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public String getFieldColumn(String entityId, String fieldId) throws InvalidQueryException {
+        DataEntityFieldConfig fieldConfig = getFieldFromCache(entityId, fieldId);
+        if (fieldConfig.getColumn() != null)
+            return fieldConfig.getColumn();
+
         String column = getExtendableValue(entityId, "field", fieldId, "column");
         if (column == null)
             throw new InvalidQueryException(String.format("Column for field %s in entity %s not found.", fieldId, entityId));
 
+        fieldConfig.setColumn(column);
         return column;
     }
 
@@ -212,8 +301,14 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public String getBaseEntityId(String entityId){
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
+        if (entityConfig.getExtendedEntity() != null)
+            return entityConfig.getExtendedEntity();
+
         try {
-            return stringValueResolver.resolveStringValue(String.format("${entities.%s.extends}", entityId));
+            String baseEntityId = stringValueResolver.resolveStringValue(getPropertyKey(entityId, "extends"));
+            entityConfig.setExtendedEntity(baseEntityId);
+            return baseEntityId;
         }
         catch(Exception error){
             return null;
@@ -226,8 +321,14 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public String getEntityTable(String entityId){
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
+        if (entityConfig.getTable() != null)
+            return entityConfig.getTable();
+
         try {
-            return stringValueResolver.resolveStringValue(String.format("${entities.%s.table}", entityId));
+            String table = stringValueResolver.resolveStringValue(getPropertyKey(entityId, "table"));
+            entityConfig.setTable(table);
+            return table;
         }
         catch(Exception error){
             return null;
@@ -242,11 +343,17 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @throws InvalidQueryException
      */
     public QueryValueType getFieldType(String entityId, String fieldId) throws InvalidQueryException{
+        DataEntityFieldConfig fieldConfig = getFieldFromCache(entityId, fieldId);
+        if (fieldConfig.getType() != null)
+            return fieldConfig.getType();
+
         String typeStr = getExtendableValue(entityId, "field", fieldId, "type");
         if (typeStr == null)
             throw new InvalidQueryException(String.format("Couldn't find type for field %s in entity %s.", fieldId, entityId));
 
-        return QueryValueType.valueOf(typeStr);
+        QueryValueType type = QueryValueType.valueOf(typeStr);
+        fieldConfig.setType(type);
+        return type;
     }
 
     /**
@@ -255,7 +362,17 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public String getEntityPerformanceTable(String entityId){
-        return getExtendableValue(entityId, "performance_table");
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
+        if (entityConfig.getPerformanceTable() != null)
+            return entityConfig.getPerformanceTable();
+
+        if (entityConfig.getPerformanceTable().equals(""))
+            return null;
+
+        String performanceTable = getExtendableValue(entityId, "performance_table");
+        entityConfig.setPerformanceTable(performanceTable != null ? performanceTable : "");
+
+        return performanceTable;
     }
 
     /**
@@ -264,7 +381,13 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public String getEntityPerformanceTableField(String entityId){
-        return getExtendableValue(entityId, "performance_field");
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
+        if (entityConfig.getPerformanceField() != null)
+            return entityConfig.getPerformanceField();
+
+        String performanceTableField = getExtendableValue(entityId, "performance_field");
+        entityConfig.setPerformanceField(performanceTableField);
+        return performanceTableField;
     }
 
     /**
@@ -274,11 +397,17 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @throws Exception
      */
     public int getEntityPerformanceTableFieldMinValue(String entityId) throws Exception{
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
+        if (entityConfig.getPerformanceFieldMinValue() != 0)
+            return entityConfig.getPerformanceFieldMinValue();
+
         String value = getExtendableValue(entityId, "performance_field_min_value");
 
         if (value == null)
             throw new Exception(String.format("Entity %s doesn't have a specified performance table min value.", entityId));
 
-        return Integer.parseInt(value);
+        int minValue = Integer.parseInt(value);
+        entityConfig.setPerformanceFieldMinValue(minValue);
+        return minValue;
     }
 }
