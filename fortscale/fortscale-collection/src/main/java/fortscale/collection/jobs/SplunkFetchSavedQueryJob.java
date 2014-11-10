@@ -55,8 +55,6 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 	private File outputFile;
 
 
-	@Autowired
-	private JobDataMapExtension jobDataMapExtension;
 
 	@Override
 	protected int getTotalNumOfSteps() {
