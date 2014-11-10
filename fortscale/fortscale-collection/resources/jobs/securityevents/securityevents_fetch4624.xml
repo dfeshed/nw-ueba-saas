@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+
+    <schedule>
+        <job>
+            <name>Fetch4624</name>
+            <group>SecurityEvents</group>
+            <description>Fetch data from splunk hourly</description>
+            <job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+
+            <job-data-map>
+                <entry>
+                    <key>earliest</key>
+                    <value>-1h@h</value>
+                </entry>
+                <entry>
+                    <key>latest</key>
+                    <value>-0h@h</value>
+                </entry>
+                <entry>
+                    <key>savedQuery</key>
+                    <value>getSEC4624data</value>
+                </entry>
+                <entry>
+                    <key>returnKeys</key>
+                    <value>_time,Account_Name,Source_Network_Address</value>
+                </entry>
+                <entry>
+                    <key>delimiter</key>
+                    <value>|</value>
+                </entry>
+                <entry>
+                    <key>encloseQuotes</key>
+                    <value>false</value>
+                </entry>
+                <entry>
+                    <key>filenameFormat</key>
+                    <value>computer_SEC4624_%d.csv</value>
+                </entry>
+                <entry>
+                    <key>sortShellScript</key>
+                    <value>${collection.shell.scripts.dir.path}/sortCsvToCsv.sh</value>
+                </entry>
+            </job-data-map>
+        </job>
+
+
+        <trigger>
+            <cron>
+                <name>sec_evt_fetch_hourly_trigger</name>
+                <group>SecurityEvents</group>
+                <job-name>Fetch</job-name>
+                <job-group>SecurityEvents</job-group>
+                <cron-expression>0 5 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+
+    </schedule>
+
+</job-scheduling-data>

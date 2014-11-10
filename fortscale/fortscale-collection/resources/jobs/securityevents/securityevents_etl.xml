@@ -18,7 +18,7 @@
 				<!-- common parameters -->
 				<entry>
 					<key>filesFilter</key>
-					<value>SEC_\d+.csv$</value>
+					<value>user_SEC_\d+.csv$</value>
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
