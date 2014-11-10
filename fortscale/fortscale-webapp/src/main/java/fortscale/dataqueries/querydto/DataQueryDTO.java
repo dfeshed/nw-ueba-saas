@@ -16,7 +16,7 @@ public class DataQueryDTO {
     private String[] entities;
     private List<DataQueryField> groupBy;
     private List<QuerySort> sort;
-    private short limit = 10;
+    private int limit = 10;
     private int offset = 0;
 
     public List<DataQueryField> getFields() {
@@ -59,11 +59,11 @@ public class DataQueryDTO {
         this.sort = sort;
     }
 
-    public short getLimit() {
+    public int getLimit() {
         return limit;
     }
 
-    public void setLimit(short limit) {
+    public void setLimit(int limit) {
         this.limit = limit;
     }
 

@@ -38,7 +38,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
     }
 
     private DataEntityFieldConfig getFieldFromCache(String entityId, String fieldId){
-        DataEntityConfig entityConfig = entitiesCache.get(entityId);
+        DataEntityConfig entityConfig = getEntityFromCache(entityId);
         return entityConfig.getField(fieldId);
     }
 

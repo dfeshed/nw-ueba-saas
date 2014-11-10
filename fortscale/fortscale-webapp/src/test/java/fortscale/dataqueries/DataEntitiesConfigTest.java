@@ -54,7 +54,7 @@ public class DataEntitiesConfigTest {
 
     @Test
     public void testGetAllEntityFields() throws Exception {
-        ArrayList<String> arr = dataEntitiesConfig.getAllEntityFields("kerberos_logins");
+        List<String> arr = dataEntitiesConfig.getAllEntityFields("kerberos_logins");
 
         String listString="";
         for (String s : arr){ listString += s + ", ";}
