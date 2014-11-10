@@ -27,27 +27,27 @@ public class MySqlFieldGenerator {
 
         if (field.getValue() != null){
             if (field.getAlias() == null)
-                throw new InvalidQueryException("An alias should be specified for field value '" + field.getValue() + "'.");
+                throw new InvalidQueryException(String.format("An alias should be specified for field value '%s'.", field.getValue()));
 
             fieldSB.append(mySqlValueGenerator.generateSql(field.getValue(), field.getValueType()));
-            fieldSB.append(" as '" + field.getAlias() + "'");
+            fieldSB.append(" as '").append(field.getAlias()).append("'");
         }
         else if (field.getFunc() != null){
             fieldSB.append(mySqlFieldFunctionGenerator.generateSql(field, dataQueryDTO));
             if (field.getAlias() != null)
-                fieldSB.append(" as '" + field.getAlias() + "'");
+                fieldSB.append(" as '").append(field.getAlias()).append("'");
         }
         else{
             if (dataQueryDTO.getEntities().length > 1 && field.getEntity() != null)
-                fieldSB.append(field.getEntity() + ".");
+                fieldSB.append(field.getEntity()).append(".");
 
             String columnName = dataEntitiesConfig.getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.getEntities()[0], field.getId() );
             fieldSB.append(columnName);
 
             if (field.getAlias() != null)
-                fieldSB.append(" as '" + field.getAlias() + "'");
+                fieldSB.append(" as '").append(field.getAlias()).append("'");
             else if (aliasAsId && !columnName.equals(field.getId()))
-                fieldSB.append(" as '" + field.getId() + "'");
+                fieldSB.append(" as '").append(field.getId()).append("'");
         }
 
         return fieldSB.toString();

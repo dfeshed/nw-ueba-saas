@@ -1,5 +1,6 @@
 package fortscale.dataqueries.querygenerators;
 
+import fortscale.dataqueries.DataEntitiesConfig;
 import fortscale.dataqueries.SupportedDBType;
 import fortscale.dataqueries.querydto.DataQueryDTO;
 import fortscale.dataqueries.querygenerators.exceptions.InvalidQueryException;
@@ -14,23 +15,14 @@ import org.springframework.util.StringValueResolver;
  * Factory for creating DataQueryRunner
  */
 @Component
-public class DataQueryRunnerFactory implements EmbeddedValueResolverAware{
+public class DataQueryRunnerFactory{
 
-    StringValueResolver stringValueResolver;
+    @Autowired
+    private DataEntitiesConfig dataEntitiesConfig;
 
 	@Autowired
 	private MySqlQueryRunner mySqlQueryRunner;
 
-    private SupportedDBType getEntityDbType(String entityId){
-        String type = stringValueResolver.resolveStringValue("${entities." + entityId + ".db}");
-        return SupportedDBType.valueOf(type);
-    }
-
-    @Override
-	public void setEmbeddedValueResolver(StringValueResolver resolver) {
-		this.stringValueResolver = resolver;
-	}
-    
 	/**
 	 * Get the relevant query runner according to DTO
 	 * @param dataQueryDTO the query object
@@ -40,12 +32,12 @@ public class DataQueryRunnerFactory implements EmbeddedValueResolverAware{
 		if (dataQueryDTO.getEntities().length > 1)
 			throw new InvalidQueryException("Queries with more than one entity are not supported yet.");
 		
-        SupportedDBType type = getEntityDbType(dataQueryDTO.getEntities()[0]);
+        SupportedDBType type = dataEntitiesConfig.getEntityDbType(dataQueryDTO.getEntities()[0]);
 
         if (type == SupportedDBType.MySQL)
 		    return mySqlQueryRunner;
         else
-            throw new InvalidQueryException("A DataQueryRunner for DB of type " + stringValueResolver.resolveStringValue("entities." + dataQueryDTO.getEntities()[0] + ".db") + " doesn't exist.");
+            throw new InvalidQueryException("The DB type for entity " + dataQueryDTO.getEntities()[0] + " is not supported.");
 	}
 
 }

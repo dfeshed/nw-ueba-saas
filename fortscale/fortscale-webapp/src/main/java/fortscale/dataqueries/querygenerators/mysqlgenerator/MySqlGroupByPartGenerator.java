@@ -48,7 +48,8 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedVa
             }
         }
 
-		return "GROUP BY " + joiner.join(fieldsSql);
+        StringBuilder sb = new StringBuilder("GROUP BY ").append(joiner.join(fieldsSql));
+		return sb.toString();
 	}
 
 }

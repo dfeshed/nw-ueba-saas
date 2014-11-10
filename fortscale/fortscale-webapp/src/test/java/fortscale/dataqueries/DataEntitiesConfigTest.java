@@ -65,7 +65,7 @@ public class DataEntitiesConfigTest {
     public void testGetAllLogicalEntities() throws Exception {
         List<DataEntity> arr = dataEntitiesConfig.getAllLogicalEntities();
         String listString="";
-        for (DataEntity.Field field : arr.get(0).fields){ listString += field.id + ", ";}
+        for (DataEntityField field : arr.get(0).getFields()){ listString += field.getId() + ", ";}
         assertEquals("SQL Select Part for DTO1" , listString, "source_machine_type, destination_machine_type, failure_code, ");
     }
 
@@ -73,7 +73,7 @@ public class DataEntitiesConfigTest {
     public void testGetLogicalEntity() throws Exception {
         DataEntity entity = dataEntitiesConfig.getLogicalEntity("kerberos_logins");
         String listString="";
-        for (DataEntity.Field field : entity.fields){ listString += field.id + ", ";}
+        for (DataEntityField field : entity.getFields()){ listString += field.getId() + ", ";}
         assertEquals("SQL Select Part for DTO1" , listString, "source_machine_type, destination_machine_type, failure_code, ");
     }
 

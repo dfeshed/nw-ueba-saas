@@ -30,7 +30,8 @@ public class MySqlOrderByPartGenerator implements QueryPartGenerator {
             sorts.add( field+ (sort.getDirection() != null ? " " + sort.getDirection().name() : ""));
         }
 
-		return "ORDER BY " + joiner.join(sorts);
+        StringBuilder sb = new StringBuilder("ORDER BY ").append(joiner.join(sorts));
+		return sb.toString();
 	}
 
     public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator){

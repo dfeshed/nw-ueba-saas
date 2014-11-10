@@ -24,7 +24,10 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
                     : dataEntitiesConfig.getEntityTable(entityId);
 
             // For now the generator supports only single table queries. When joins are supported, need to add the logic here.
-            return "FROM " + tableName;
+            StringBuilder sb = new StringBuilder("FROM ");
+            sb.append(tableName);
+
+            return sb.toString();
         }
         catch(Exception error){
             throw new InvalidQueryException("Can't create FROM part of the MySQL query. Error: " + error.getMessage());

@@ -33,7 +33,7 @@ public class MySqlFieldFunctionGenerator {
             case min:
             case max:
             default:
-                throw new InvalidQueryException("There's no implementation for field function " + field.getFunc().getName() + ".");
+                throw new InvalidQueryException(String.format("There's no implementation for field function %s.", field.getFunc().getName()));
         }
     }
 }

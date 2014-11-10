@@ -24,6 +24,25 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
     StringValueResolver stringValueResolver;
 
     /**
+     * Given an entity name and an array of strings consisting the rest of the path, returns a key name in the same fortmat as found in the entities.properties file
+     * @param entityId
+     * @param path
+     * @return
+     */
+    private String getPropertyKey(String entityId, String... path){
+        StringBuilder keyBuilder = new StringBuilder("${entities.");
+        keyBuilder.append(entityId);
+
+        for(String pathElement: path){
+            keyBuilder.append(".");
+            keyBuilder.append(pathElement);
+        }
+
+        keyBuilder.append("}");
+        return keyBuilder.toString();
+    }
+
+    /**
      * Returns an array of all of an entity's field IDs
      * @param entityId
      * @return
@@ -31,14 +50,14 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
     public ArrayList<String> getAllEntityFields(String entityId){
         ArrayList<String> fields = new ArrayList<String>();
         try{
-            String[] configFields = stringValueResolver.resolveStringValue("${entities." + entityId + ".fields}").split("\\s*,[,\\s]*");
+            String[] configFields = stringValueResolver.resolveStringValue(String.format("${entities.%s.fields}", entityId)).split("\\s*,[,\\s]*");
             Collections.addAll(fields, configFields);
         }
         catch(Exception error){
             return null;
         }
         
-        String baseEntityId = getBaseEntity(entityId);
+        String baseEntityId = getBaseEntityId(entityId);
         if (baseEntityId != null){
             ArrayList<String> baseEntityFields = getAllEntityFields(baseEntityId);
             if (baseEntityFields != null){
@@ -65,37 +84,46 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
     }
 
     /**
+     * Gets the DB type that should be used to generate the query for the given entity
+     * @param entityId
+     * @return
+     */
+    public SupportedDBType getEntityDbType(String entityId){
+        String type = stringValueResolver.resolveStringValue(getPropertyKey(entityId, "db"));
+        return SupportedDBType.valueOf(type);
+    }
+
+    /**
      * Gets a DataQuery entity configuration, to be sent to the front-end. This is only the logical representation of the entity, without mappings.
      * @param entityId The ID of the entity
      * @return
      */
     public DataEntity getLogicalEntity(String entityId) throws Exception{
         DataEntity entity = new DataEntity();
-        entity.id = entityId;
-        entity.name = getExtendableValue(entityId, "name");
-        entity.shortName = getExtendableValue(entityId, "short_name");
+        entity.setId(entityId);
+        entity.setName(getExtendableValue(entityId, "name"));
+        entity.setShortName(getExtendableValue(entityId, "short_name"));
 
         List<String> fieldIds = getAllEntityFields(entityId);
-        ArrayList<DataEntity.Field> fields = new ArrayList<>();
+        ArrayList<DataEntityField> fields = new ArrayList<>();
 
         for(String fieldId: fieldIds){
             try {
-                String fieldPrefix = "field." + fieldId + ".";
-                DataEntity.Field field = new DataEntity.Field();
-                field.id = fieldId;
-                field.name = getExtendableValue(entityId, fieldPrefix + "name");
-                field.type = QueryValueType.valueOf(getExtendableValue(entityId, fieldPrefix + "type"));
-                field.scoreField = getExtendableValue(entityId, fieldPrefix + "score");
+                DataEntityField field = new DataEntityField();
+                field.setId(fieldId);
+                field.setName(getExtendableValue(entityId, "field", fieldId, "name"));
+                field.setType(QueryValueType.valueOf(getExtendableValue(entityId, "field", fieldId, "type")));
+                field.setScoreField(getExtendableValue(entityId, "field", fieldId, "score"));
 
-                String isDefaultEnabled = getExtendableValue(entityId, fieldPrefix + "enabled");
-                field.isDefaultEnabled = isDefaultEnabled == null || !isDefaultEnabled.equals("false");
+                String isDefaultEnabled = getExtendableValue(entityId, "field", fieldId, "enabled");
+                field.setIsDefaultEnabled(isDefaultEnabled == null || !isDefaultEnabled.equals("false"));
                 fields.add(field);
             } catch(Exception error){
-                throw new Exception("Can't read field " + fieldId + " of entity " + entityId);
+                throw new Exception(String.format("Can't read field %s of entity %s", fieldId, entityId));
             }
         }
 
-        entity.fields = fields;
+        entity.setFields(fields);
 
         return entity;
     }
@@ -144,9 +172,9 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public String getFieldColumn(String entityId, String fieldId) throws InvalidQueryException {
-        String column = getExtendableValue(entityId, "field." + fieldId + ".column");
+        String column = getExtendableValue(entityId, "field", fieldId, "column");
         if (column == null)
-            throw new InvalidQueryException("Column for field " + fieldId + " in entity " + entityId + " not found.");
+            throw new InvalidQueryException(String.format("Column for field %s in entity %s not found.", fieldId, entityId));
 
         return column;
     }
@@ -154,25 +182,25 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
     /**
      * Searches for a key value in an entity, and if not found and the entity has an 'extends' property, searches its base entity as well (recursive)
      * @param entityId
-     * @param key
+     * @param path
      * @return
      */
-    private String getExtendableValue(String entityId, String key){
-        String fullKey = "entities." + entityId + "." + key;
+    private String getExtendableValue(String entityId, String... path){
+        String fullKey = getPropertyKey(entityId, path);
         String value;
         try{
-            value = stringValueResolver.resolveStringValue("${" + fullKey + "}");
+            value = stringValueResolver.resolveStringValue(fullKey);
         }
         catch(Exception error){
             value = null;
         }
 
         if (value == null) {
-            String baseEntity = getBaseEntity(entityId);
+            String baseEntity = getBaseEntityId(entityId);
             if (baseEntity == null)
                 return null;
 
-            return getExtendableValue(baseEntity, key);
+            return getExtendableValue(baseEntity, path);
         }
         else
             return value;
@@ -183,9 +211,9 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @param entityId
      * @return
      */
-    public String getBaseEntity(String entityId){
+    public String getBaseEntityId(String entityId){
         try {
-            return stringValueResolver.resolveStringValue("${entities." + entityId + ".extends}");
+            return stringValueResolver.resolveStringValue(String.format("${entities.%s.extends}", entityId));
         }
         catch(Exception error){
             return null;
@@ -199,7 +227,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      */
     public String getEntityTable(String entityId){
         try {
-            return stringValueResolver.resolveStringValue("${entities." + entityId + ".table}");
+            return stringValueResolver.resolveStringValue(String.format("${entities.%s.table}", entityId));
         }
         catch(Exception error){
             return null;
@@ -214,9 +242,9 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @throws InvalidQueryException
      */
     public QueryValueType getFieldType(String entityId, String fieldId) throws InvalidQueryException{
-        String typeStr = getExtendableValue(entityId, "field." + fieldId + ".type");
+        String typeStr = getExtendableValue(entityId, "field", fieldId, "type");
         if (typeStr == null)
-            throw new InvalidQueryException("Couldn't find type for field " + fieldId + " in entity " + entityId + ".");
+            throw new InvalidQueryException(String.format("Couldn't find type for field %s in entity %s.", fieldId, entityId));
 
         return QueryValueType.valueOf(typeStr);
     }
@@ -249,7 +277,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         String value = getExtendableValue(entityId, "performance_field_min_value");
 
         if (value == null)
-            throw new Exception("Entity " + entityId + " doesn't have a specified performance table min value.");
+            throw new Exception(String.format("Entity %s doesn't have a specified performance table min value.", entityId));
 
         return Integer.parseInt(value);
     }

@@ -7,12 +7,41 @@ import java.util.List;
  * Represents a DataQuery entity, to send to the front-end
  */
 public class DataEntity {
-    public String id, name, shortName;
-    public List<Field> fields;
+    private String id;
+    private String name;
+    private String shortName;
+    private List<DataEntityField> fields;
 
-    public static class Field{
-        public String id, name, scoreField;
-        public Boolean isDefaultEnabled = true;
-        public QueryValueType type;
+    public String getId() {
+        return id;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+    public List<DataEntityField> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<DataEntityField> fields) {
+        this.fields = fields;
+    }
+
 }

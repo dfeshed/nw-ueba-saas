@@ -19,6 +19,10 @@ public class MySqlFunctionToDate extends MySqlFieldFunction {
         if (field.getId() == null)
         throw new InvalidQueryException("The to_date field function requires a field ID.");
 
-        return "TO_DATE(" + dataEntitiesConfig.getFieldColumn(entityId, field.getId()) + ")";
+        StringBuilder sb = new StringBuilder("TO_DATE(");
+        sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
+        sb.append(")");
+
+        return sb.toString();
     }
 }

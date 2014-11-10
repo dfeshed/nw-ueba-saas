@@ -14,6 +14,8 @@ public class MySqlLimitPartGenerator implements QueryPartGenerator {
         if (dataQueryDTO.getLimit() <= 0)
             return "";
 
-        return "LIMIT " + dataQueryDTO.getLimit() + (dataQueryDTO.getOffset() > 0 ? " OFFSET " + dataQueryDTO.getOffset() : "");
+        StringBuilder sb = new StringBuilder("LIMIT ").append(dataQueryDTO.getLimit());
+        sb.append(dataQueryDTO.getOffset() > 0 ? " OFFSET " + dataQueryDTO.getOffset() : "");
+        return sb.toString();
     }
 }

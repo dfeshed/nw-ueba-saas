@@ -15,7 +15,8 @@ public class MySqlValueGenerator {
 
         switch (type){
             case STRING:
-                return "\"" + value + "\"";
+                StringBuilder sb = new StringBuilder("\"").append(value).append("\"");
+                return sb.toString();
             default:
                 return value;
         }
