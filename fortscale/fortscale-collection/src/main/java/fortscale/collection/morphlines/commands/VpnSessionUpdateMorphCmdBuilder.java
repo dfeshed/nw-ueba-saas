@@ -84,6 +84,10 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			}
 			
 			VpnSession vpnSession = recordToVpnSessionConverter.convert(inputRecord, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName, sessionIdFieldName);
+			if(vpnSession.getClosedAt() == null && vpnSession.getCreatedAt() == null){
+				//right now we don't use fail status for updating vpn session. There is a JIRA for this (FV-4413).
+				return super.doProcess(inputRecord);
+			}
 			if (StringUtils.isEmpty(vpnSession.getSessionId()) && (StringUtils.isEmpty(vpnSession.getNormalizeUsername()) || StringUtils.isEmpty(vpnSession.getSourceIp()))) {
 				logger.warn("vpnSession should have either sessionId or username and sourceIP. Original record is: {}", inputRecord.toString());
 				return super.doProcess(inputRecord);
