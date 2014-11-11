@@ -14,8 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MySqlFieldFunctionGenerator {
-    @Autowired
-    private DataEntitiesConfig dataEntitiesConfig;
+
 
     @Autowired private MySqlFunctionCount mySqlFunctionCount;
     @Autowired private MySqlFunctionToDate mySqlFunctionToDate;
