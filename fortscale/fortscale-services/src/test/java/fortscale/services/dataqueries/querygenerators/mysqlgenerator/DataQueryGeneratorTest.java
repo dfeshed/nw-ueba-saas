@@ -16,7 +16,7 @@ public class DataQueryGeneratorTest {
 	protected DataEntitiesConfig dataEntitiesConfig;
 	protected DataQueryDTO dataQueryDTO1;
 
-	private ObjectMapper mapper = new ObjectMapper();
+	protected ObjectMapper mapper = new ObjectMapper();
 	public void setUp()
 					throws Exception {
 

@@ -273,8 +273,9 @@ public class ApiController extends BaseController {
 
             // TODO: Add a QA authority to the analyst or something, so this isn't returned for all analysts:
             // if (getThisAnalystAuth().getAuthorities())
-            retBeanForPage.info = new HashMap<>();
-            retBeanForPage.info.put("query", query);
+			Map<String, Object> info = new HashMap<>();
+            info.put("query", query);
+			retBeanForPage.setInfo(info);
 
             // take only relevant page from results
             if (page != null) {

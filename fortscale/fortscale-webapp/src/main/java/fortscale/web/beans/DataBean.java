@@ -7,7 +7,7 @@ public class DataBean<T> {
 	private int total = 1;
 	private int offset = 0;
 	private WarningMessage warning;
-    public Map<String, Object> info;
+	private Map<String, Object> info;
 
 	public T getData() {
 		return data;
@@ -33,7 +33,14 @@ public class DataBean<T> {
 		this.offset = offset;
 	}
 
-	
+	public Map<String, Object> getInfo() {
+		return info;
+	}
+
+	public void setInfo(Map<String, Object> info) {
+		this.info = info;
+	}
+
 	public WarningMessage getWarning() {
 		return warning;
 	}
