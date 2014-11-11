@@ -1,6 +1,7 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataqueries.querydto.QueryOperator;
+import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 import java.util.HashMap;
 
@@ -24,7 +25,10 @@ public class MySqlConditionOperators {
         operators.put(QueryOperator.hasNoValue, new MySqlOperator("IS NULL", true));
     }
 
-    public static MySqlOperator getOperator(QueryOperator operator){
-        return operators.get(operator);
+    public static MySqlOperator getOperator(QueryOperator operator) throws InvalidQueryException {
+		MySqlOperator mySqlOperator = operators.get(operator);
+		if (mySqlOperator == null)
+			throw new InvalidQueryException("Unknown operator for MySql: " + operator + ".");
+		return mySqlOperator;
     }
 }

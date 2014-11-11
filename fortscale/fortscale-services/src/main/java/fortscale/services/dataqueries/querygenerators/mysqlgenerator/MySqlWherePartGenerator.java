@@ -138,8 +138,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
         sb.append(" ");
 
         MySqlOperator operator = MySqlConditionOperators.getOperator(conditionField.getOperator());
-        if (operator == null)
-            throw new InvalidQueryException("Unknown operator for MySql: " + conditionField.getOperator().toString() + ".");
+
 
         if (operator.requiresValue && conditionField.getValue() == null)
             throw new InvalidQueryException("Can't create MySQL query, the " + conditionField.getOperator().name() + " operator requires a value, but none was specified.");
