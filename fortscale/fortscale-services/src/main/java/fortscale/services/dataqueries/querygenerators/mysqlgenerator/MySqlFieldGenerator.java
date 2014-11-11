@@ -22,7 +22,7 @@ public class MySqlFieldGenerator {
     @Autowired
     MySqlFieldFunctionGenerator mySqlFieldFunctionGenerator;
 
-    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId) throws InvalidQueryException {
+    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId, Boolean mapToColumn) throws InvalidQueryException {
         StringBuilder fieldSB = new StringBuilder();
 
         if (field.getValue() != null){
@@ -41,7 +41,9 @@ public class MySqlFieldGenerator {
             if (dataQueryDTO.getEntities().length > 1 && field.getEntity() != null)
                 fieldSB.append(field.getEntity()).append(".");
 
-            String columnName = dataEntitiesConfig.getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.getEntities()[0], field.getId() );
+            String columnName = mapToColumn 
+            		? dataEntitiesConfig.getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.getEntities()[0], field.getId() )
+    				: field.getId();
             fieldSB.append(columnName);
 
             if (field.getAlias() != null)
@@ -53,8 +55,12 @@ public class MySqlFieldGenerator {
         return fieldSB.toString();
     }
 
+    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId) throws InvalidQueryException{
+        return generateSql(field, dataQueryDTO, aliasAsId, true);
+    }
+    
     public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
-        return generateSql(field, dataQueryDTO, false);
+        return generateSql(field, dataQueryDTO, false, true);
     }
 
     public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){

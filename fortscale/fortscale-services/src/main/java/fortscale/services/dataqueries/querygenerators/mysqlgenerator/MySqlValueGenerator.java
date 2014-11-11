@@ -13,6 +13,9 @@ public class MySqlValueGenerator {
         if (value == null)
             return "null";
 
+        if (type == null)
+            return value;
+
         switch (type){
             case STRING:
                 StringBuilder sb = new StringBuilder("\"").append(value).append("\"");

@@ -196,7 +196,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
                 Boolean isDefaultEnabled = fieldConfig.getDefaultEnabled();
                 if (isDefaultEnabled == null){
                     String isDefaultEnabledStr = getExtendableValue(entityId, "field", fieldId, "enabled");
-                    isDefaultEnabled = isDefaultEnabled == null || !isDefaultEnabled.equals("false");
+                    isDefaultEnabled = isDefaultEnabledStr == null || !isDefaultEnabledStr.equals("false");
                     fieldConfig.setDefaultEnabled(isDefaultEnabled);
                 }
                 field.setIsDefaultEnabled(isDefaultEnabled);
@@ -349,18 +349,26 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      * @throws InvalidQueryException
      */
-    public QueryValueType getFieldType(String entityId, String fieldId) throws InvalidQueryException{
+    public QueryValueType getFieldType(String entityId, String fieldId, Boolean ignoreUnknownType) throws InvalidQueryException{
         DataEntityFieldConfig fieldConfig = getFieldFromCache(entityId, fieldId);
         if (fieldConfig.getType() != null)
             return fieldConfig.getType();
 
         String typeStr = getExtendableValue(entityId, "field", fieldId, "type");
-        if (typeStr == null)
+        if (typeStr == null) {
+            if (ignoreUnknownType)
+                return null;
+            
             throw new InvalidQueryException(String.format("Couldn't find type for field %s in entity %s.", fieldId, entityId));
+        }
 
         QueryValueType type = QueryValueType.valueOf(typeStr);
         fieldConfig.setType(type);
         return type;
+    }
+
+    public QueryValueType getFieldType(String entityId, String fieldId) throws InvalidQueryException{
+        return getFieldType(entityId, fieldId, false);
     }
 
     /**
@@ -373,7 +381,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         if (entityConfig.getPerformanceTable() != null)
             return entityConfig.getPerformanceTable();
 
-        if (entityConfig.getPerformanceTable().equals(""))
+        if (entityConfig.getPerformanceTable() != null && entityConfig.getPerformanceTable().equals(""))
             return null;
 
         String performanceTable = getExtendableValue(entityId, "performance_table");

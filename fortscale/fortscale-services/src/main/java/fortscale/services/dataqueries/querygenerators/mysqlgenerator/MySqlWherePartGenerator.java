@@ -117,7 +117,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
                     partitionCondition.setOperator(condition.getOperator());
                     partitionCondition.setField(new DataQueryField());
                     partitionCondition.getField().setId(partitionStrategy.getImpalaPartitionFieldName());
-                    String conditionSql = getConditionFieldSql(partitionCondition, dataQueryDTO);
+                    String conditionSql = getConditionFieldSql(partitionCondition, dataQueryDTO, false);
                     if (!sqlConditions.contains(conditionSql)){
                         sqlConditions.add(conditionSql);
                     }
@@ -130,11 +130,14 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 
     }
 
-
     private String getConditionFieldSql(ConditionField conditionField, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+    	return getConditionFieldSql(conditionField, dataQueryDTO, true);
+    }
+    
+    private String getConditionFieldSql(ConditionField conditionField, DataQueryDTO dataQueryDTO, Boolean mapToColumn) throws InvalidQueryException{
         StringBuilder sb = new StringBuilder();
 
-        sb.append(mySqlFieldGenerator.generateSql(conditionField.getField(), dataQueryDTO));
+        sb.append(mySqlFieldGenerator.generateSql(conditionField.getField(), dataQueryDTO, false, mapToColumn));
         sb.append(" ");
 
         MySqlOperator operator = MySqlConditionOperators.getOperator(conditionField.getOperator());
@@ -151,7 +154,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
         if (entityId == null)
             entityId = dataQueryDTO.getEntities()[0];
 
-        sb.append(mySqlValueGenerator.generateSql(conditionField.getValue(), dataEntitiesConfig.getFieldType(entityId , conditionField.getField().getId())));
+        sb.append(mySqlValueGenerator.generateSql(conditionField.getValue(), dataEntitiesConfig.getFieldType(entityId , conditionField.getField().getId(), !mapToColumn)));
 
         return sb.toString();
     }
