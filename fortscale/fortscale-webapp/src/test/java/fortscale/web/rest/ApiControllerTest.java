@@ -1,13 +1,13 @@
 package fortscale.web.rest;
 
-import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.EventScore;
-import fortscale.services.fe.ClassifierService;
-import fortscale.web.beans.DataBean;
+import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
@@ -33,6 +33,10 @@ public class ApiControllerTest {
 
 	@Mock
 	private JdbcOperations impalaJdbcTemplate;
+
+	@Mock
+	private DataQueryRunnerFactory dataQueryRunnerFactory;
+
 	@InjectMocks
 	private ApiController controller;
 
@@ -60,6 +64,14 @@ public class ApiControllerTest {
 		when(impalaJdbcTemplate.query(eq(QUERY_1_OFFSET_0), any(ColumnMapRowMapper.class))).thenReturn(resultsMap);
 		when(impalaJdbcTemplate.query(eq(QUERY_1_OFFSET_200), any(ColumnMapRowMapper.class))).thenReturn(resultsMap);
 		when(impalaJdbcTemplate.query(eq(QUERY_2_OFFSET_0), any(ColumnMapRowMapper.class))).thenReturn(resultsMap);
+
+
+		// create mock for queries factory
+		DataQueryRunner dataQueryRunner = Mockito.mock(DataQueryRunner.class);
+		when(dataQueryRunner.generateQuery(any(DataQueryDTO.class))).thenReturn("select A from B");
+		when(dataQueryRunner.executeQuery(any(String.class))).thenReturn(resultsMap);
+		when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(dataQueryRunner);
+
 
 		this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 	}
@@ -188,6 +200,25 @@ public class ApiControllerTest {
 
 
 
+
+	}
+
+	@Test
+	public void testInvestigateObject() throws Exception {
+
+		String jsonQuery = "{\"fields\":[{\"id\":\"source_ip\"},{\"id\":\"destination_machine\"},{\"id\":\"source_machine\"},{\"id\":\"is_sensitive_machine\"},{\"id\":\"destination_machine_score\"},{\"id\":\"source_machine_score\"},{\"id\":\"event_time_score\"},{\"alias\":\"type\",\"value\":\"AD\",\"valueType\":\"STRING\"},{\"id\":\"event_time\",\"alias\":\"time\"},{\"id\":\"normalized_username\",\"alias\":\"username\"},{\"alias\":\"country\",\"value\":null,\"valueType\":\"STRING\"}],\"conditions\":{\"type\":\"term\",\"operator\":\"AND\",\"terms\":[{\"field\":{\"id\":\"event_score\"},\"operator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":50,\"valueType\":\"NUMBER\"},{\"field\":{\"id\":\"event_time\"},\"operator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":\"1411592400\",\"valueType\":\"STRING\"},{\"type\":\"term\",\"operator\":\"OR\",\"terms\":[{\"field\":{\"id\":\"event_time\"},\"operator\":\"lesserThanOrEquals\",\"type\":\"field\",\"value\":\"1412283599\",\"valueType\":\"STRING\"},{\"field\":{\"id\":\"normalized_username\"},\"operator\":\"equals\",\"type\":\"field\",\"value\":\"user2@somebigcompany.com\",\"valueType\":\"STRING\"}]}]}" +
+				",\"entities\":[\"ad_logins\"],\"sort\":[{\"field\":{\"id\":\"event_score\"},\"direction\":\"DESC\"},{\"field\":{\"id\":\"event_time\"},\"direction\":\"DESC\"}],\"limit\":20,\"offset\":0}";
+
+		mockMvc.perform(get("/api/dataQuery")
+										.param("pageSize", PAGE_SIZE.toString())
+										.param("page", "1") // page 1
+										.param("dataQuery", jsonQuery)
+										.accept(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk())
+						.andExpect(content().contentType("application/json;charset=UTF-8"));
+
+		// TODO verify real DataQueryDTO and not any(DataQueryDTO.class)
+		verify(dataQueryRunnerFactory, times(1)).getDataQueryRunner(any(DataQueryDTO.class)); // no data in cache, 1 call to impala service
 
 	}
 
