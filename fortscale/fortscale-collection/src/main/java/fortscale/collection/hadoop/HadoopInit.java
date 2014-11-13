@@ -3,8 +3,11 @@ package fortscale.collection.hadoop;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaClient;
+
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +18,7 @@ import java.io.IOException;
 @Component
 public class HadoopInit implements InitializingBean{
 	
+	private static Logger logger = LoggerFactory.getLogger(HadoopInit.class);
 	
 	@Autowired
 	private FileSystem hadoopFs;
@@ -352,7 +356,9 @@ public class HadoopInit implements InitializingBean{
 		try{
 			impalaClient.createTable(tableName, fields, partition, delimiter, location);
 		} catch(Exception e){
-			//Nothing to do. just making sure that the table exist.
+			// changed to log warning message instead of swallowing the exception as this might lose the details of real errors that might occur
+			// this should be changed so that we won't get exception in case the table exists
+			logger.error("error creating table " + tableName, e);
 		}
 	}
 	
