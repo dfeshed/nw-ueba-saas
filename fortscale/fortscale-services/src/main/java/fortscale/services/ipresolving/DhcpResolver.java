@@ -23,6 +23,25 @@ public class DhcpResolver {
 	@Value("${dhcp.resolver.leaseTimeInMins:1}")
 	private int graceTimeInMins;
 	
+	/**
+	 * Handle the dhcp event and update repository when required.
+	 * Dhcp event can contain assign, release to expired action codes. 
+	 */
+	public void addDhcpEvent(DhcpEvent event) {
+		// add assigned events to repository
+		if (DhcpEvent.ASSIGN_ACTION.equals(event.getAction())) {
+			dhcpEventRepository.save(event);
+		}
+		// end previous assignment in case of expiration or release
+		if (DhcpEvent.RELEASE_ACTION.equals(event.getAction()) || DhcpEvent.EXPIRED_ACTION.equals(event.getAction())) {
+			DhcpEvent existing = dhcpEventRepository.findLatestEventForComputerBeforeTimestamp(event.getIpaddress(), event.getHostname(), event.getTimestampepoch());
+			if (existing!=null) {
+				// mark previous event as expired once the ip is released
+				existing.setExpiration(event.getTimestampepoch());
+				dhcpEventRepository.save(existing);
+			}
+		}
+	}
 	
 	public String getHostname(String ip, long ts) {
 		String ret = null;
@@ -35,7 +54,10 @@ public class DhcpResolver {
 		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME);
 		List<DhcpEvent> dhcpEvents = dhcpEventRepository.findByIpaddressAndTimestampepochBetween(ip, lowerLimitTs, upperLimitTs, pageRequest);
 		if(!dhcpEvents.isEmpty()){
-			ret = dhcpEvents.get(0).getHostname();
+			// check if the ip assignment is not expired
+			DhcpEvent assignment = dhcpEvents.get(0);
+			if (assignment.getExpiration() >= ts)
+				ret = dhcpEvents.get(0).getHostname();
 		}
 		
 		return ret;

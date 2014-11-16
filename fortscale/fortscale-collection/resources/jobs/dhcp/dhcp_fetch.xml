@@ -21,7 +21,11 @@
 				</entry>
 				<entry>
 					<key>returnKeys</key>
-					<value>_raw</value>
+					<value>${dhcp.returnKeys}</value>
+				</entry>
+				<entry>
+					<key>encloseQuotes</key>
+					<value>${dhcp.encloseQuotes}</value>
 				</entry>
 				<entry>
 					<key>filenameFormat</key>
