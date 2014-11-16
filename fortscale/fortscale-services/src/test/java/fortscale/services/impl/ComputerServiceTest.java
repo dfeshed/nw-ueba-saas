@@ -31,6 +31,7 @@ public class ComputerServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		service.afterPropertiesSet();
 	}
 	
 	private AdComputer getAdComputer() {
@@ -55,6 +56,34 @@ public class ComputerServiceTest {
 		computer.putUsageClassifier(new ComputerUsageClassifier("login", ComputerUsageType.Desktop));
 		
 		return computer;
+	}
+	
+	@Test
+	public void isHostnameInAD_should_return_false_in_case_of_null_hostname() {
+		boolean actual = service.isHostnameInAD(null);
+		assertFalse(actual);
+	}
+	
+	@Test
+	public void isHostnameInAD_should_return_false_in_case_of_empty_hostname() {
+		boolean actual = service.isHostnameInAD("");
+		assertFalse(actual);
+	}
+	
+	@Test
+	public void isHostnameInAD_should_return_true_in_case_of_hostname_that_is_in_the_computer_repository() {
+		when(repository.findByName("MY-PC")).thenReturn(getComputer());
+		
+		boolean actual = service.isHostnameInAD("MY-PC");
+		assertTrue(actual);
+	}
+	
+	@Test
+	public void isHostnameInAD_should_match_computer_name_without_case_sensitivity() {
+		when(repository.findByName("MY-PC")).thenReturn(getComputer());
+		
+		boolean actual = service.isHostnameInAD("My-pC");
+		assertTrue(actual);
 	}
 	
 	

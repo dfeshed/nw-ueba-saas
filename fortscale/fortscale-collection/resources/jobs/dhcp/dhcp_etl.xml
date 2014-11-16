@@ -20,8 +20,12 @@
 					<value>DHCP_\d+.csv$</value>
 				</entry>
 				<entry>
-					<key>morphlineFile</key>
-					<value>file:resources/conf-files/read_WINDHCP.conf</value>
+					<key>specificMorphlineFile</key>
+					<value>${dhcp.morphline}</value>
+				</entry>
+				<entry>
+					<key>sharedMorphlineFile</key>
+					<value>file:resources/conf-files/processDHCP.conf</value>
 				</entry>
 			</job-data-map>
 		</job>

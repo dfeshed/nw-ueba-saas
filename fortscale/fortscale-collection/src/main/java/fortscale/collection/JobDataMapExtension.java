@@ -85,8 +85,11 @@ public class JobDataMapExtension {
 			return defaultValue;
 		
 		try {
-			boolean value = map.getBoolean(key);
-			return value;
+			String valueStr = map.getString(key);
+			valueStr = getEnvPropertyValue(valueStr, key);
+			
+			// convert string to boolean
+			return Boolean.parseBoolean(valueStr);
 		} catch (ClassCastException e) {
 			logger.warn("value for key {} in job data map is not boolean", key);
 			return defaultValue;

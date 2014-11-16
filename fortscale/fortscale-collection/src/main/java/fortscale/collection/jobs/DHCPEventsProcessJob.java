@@ -13,9 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.collection.JobDataMapExtension;
+import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.events.DhcpEvent;
-import fortscale.domain.events.dao.DhcpEventRepository;
+import fortscale.services.ipresolving.DhcpResolver;
 
 /**
  * Scheduled job to process dhcp events into mongodb
@@ -26,11 +27,12 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	private static Logger logger = LoggerFactory.getLogger(DHCPEventsProcessJob.class);
 	
 	@Autowired
-	private DhcpEventRepository dhcpEventRepository;
+	private DhcpResolver dhcpResolver;
 	
 	@Autowired
 	private JobDataMapExtension jobDataMapExtension;
 	
+	private MorphlinesItemsProcessor sharedMorphline;
 	
 	
 	private RecordToBeanItemConverter<DhcpEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent());
@@ -43,7 +45,8 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		
 		// build record to items processor
-		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
+		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "specificMorphlineFile");
+		sharedMorphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "sharedMorphlineFile"); 
 	}
 	
 	@Override
@@ -51,14 +54,19 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 		// process each line
 		Record record = morphline.process(line);
 		
-		// write data to mongodb
+		// skip records that failed on parsing
 		if (record==null) 
+			return false;
+		
+		// pass parsed records to the shared morphline
+		record = sharedMorphline.process(record);
+		if (record==null)
 			return false;
 		
 		try {
 			DhcpEvent dhcpEvent = new DhcpEvent();
 			recordToBeanItemConverter.convert(record, dhcpEvent);
-			dhcpEventRepository.save(dhcpEvent);
+			dhcpResolver.addDhcpEvent(dhcpEvent);
 			return true;
 		} catch (Exception e) {
 			logger.warn(String.format("error writing record %s to mongo", record.toString()));

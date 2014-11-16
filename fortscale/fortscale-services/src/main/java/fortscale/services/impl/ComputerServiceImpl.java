@@ -7,14 +7,19 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import fortscale.domain.ad.AdComputer;
 import fortscale.domain.core.Computer;
@@ -28,7 +33,7 @@ import fortscale.utils.actdir.ADParser;
 
 
 @Service
-public class ComputerServiceImpl implements ComputerService {
+public class ComputerServiceImpl implements ComputerService, InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
 	
@@ -44,10 +49,31 @@ public class ComputerServiceImpl implements ComputerService {
 	@Value("${computer.cluster.regex.patterns:}")
 	private String clusterGroupsRegexProperty;
 	
+	@Value("${computer.service.cache.max.items:10000}")
+	private int cacheMaxSize;
 	
 	private RegexMatcher clusterMatcher;
 	
 	private ADParser parser = new ADParser();
+	
+	private Cache<String, Computer> cache;
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// create a cache of ip login events
+		cache = CacheBuilder.newBuilder().maximumSize(cacheMaxSize).build();
+	}
+	
+	
+	public boolean isHostnameInAD(String hostname) {
+		if (StringUtils.isEmpty(hostname))
+			return false;
+		// since all computers in the collections are from AD it is safe to just check that 
+		// hostname appears in the collection, when we later store computers from different
+		// sources, need to change this logic
+		Computer computer = getComputerFromCache(hostname);
+		return computer!=null;
+	}
 	
 	public void updateComputerWithADInfo(AdComputer computer) {
 		checkNotNull(computer);
@@ -63,8 +89,8 @@ public class ComputerServiceImpl implements ComputerService {
 		
 		// find out if the AD computer record is newer than what we have, 
 		// if not skip the whole process. Otherwise, look for the existing
-		// document in mongo, create one if not exist or update the existing 
-		Computer saved = repository.findByName(computer.getCn().toUpperCase());
+		// document in mongo, create one if not exist or update the existing
+		Computer saved = getComputerFromCache(computer.getCn());
 		if (saved!=null && saved.getWhenChanged()!=null && !saved.getWhenChanged().before(whenChanged)) {
 			// skip this record as we already have a newer snapshot in place
 			return;
@@ -81,6 +107,7 @@ public class ComputerServiceImpl implements ComputerService {
 		endpointDetectionService.classifyNewComputer(saved); 
 		
 		try {
+			cache.put(computer.getCn().toUpperCase(), saved);
 			repository.save(saved);
 			//update OU machines cache
 			if(filterMachinesService != null){
@@ -97,7 +124,7 @@ public class ComputerServiceImpl implements ComputerService {
 
 		// get the computer from the repository, use upper case for host name
 		// as we case insensitive search
-		Computer computer = repository.findByName(hostname.toUpperCase());
+		Computer computer = getComputerFromCache(hostname);
 		if (computer==null) {
 			// create a new computer instance type for the discovered host
 			computer = new Computer();
@@ -110,6 +137,7 @@ public class ComputerServiceImpl implements ComputerService {
 			
 			// save the new computer
 			try {
+				cache.put(hostname.toUpperCase(), computer);
 				computer = repository.save(computer);
 			} catch (org.springframework.dao.DuplicateKeyException e) {
 				// safe to ignore as it is saved by some thread that beat us to it
@@ -118,10 +146,22 @@ public class ComputerServiceImpl implements ComputerService {
 		}
 		return computer.getUsageType();
 	}
+
+
+	private Computer getComputerFromCache(String hostname) {
+		String normalizedHostname = hostname.toUpperCase();
+		Computer computer = cache.getIfPresent(normalizedHostname);
+		if (computer==null) {
+			computer = repository.findByName(normalizedHostname);
+			if (computer!=null)
+				cache.put(normalizedHostname, computer);
+		}
+		return computer;
+	}
 	
 	private void mergeComputerInfo(Computer computer, AdComputer adComputer) {
 		computer.setTimestamp(new Date());
-		computer.setName(adComputer.getCn());
+		computer.setName(adComputer.getCn().toUpperCase());
 		computer.setDistinguishedName(adComputer.getDistinguishedName());
 		computer.setOperatingSystem(adComputer.getOperatingSystem());
 		computer.setOperatingSystemServicePack(adComputer.getOperatingSystemServicePack());
