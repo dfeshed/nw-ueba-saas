@@ -44,12 +44,14 @@ public class ClassifyHostBuilder implements CommandBuilder {
 		
 		private String hostnameField;
 		private String classificationField;
+		private boolean createNewComputerInstances;
 		
 		public ClassifyHost(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			
 			this.hostnameField = getConfigs().getString(config, "hostnameField");
 			this.classificationField = getConfigs().getString(config, "classificationField");
+			this.createNewComputerInstances = getConfigs().getBoolean(config, "createNewComputerInstances;", true);
 		}
 		
 		public ClassifyHost(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context, ComputerService service) {
@@ -63,6 +65,10 @@ public class ClassifyHostBuilder implements CommandBuilder {
 			// get the hostname from the record
 			String hostname = (String)inputRecord.getFirstValue(hostnameField);
 			if (!StringUtils.isEmpty(hostname) && service!=null) {
+				// ensure we have a computer instance 
+				if (createNewComputerInstances)
+					service.ensureComputerExists(hostname);
+				
 				// lookup the hostname and get the usage type
 				ComputerUsageType usage = service.getComputerUsageType(hostname);
 				inputRecord.put(classificationField, usage==null ? ComputerUsageType.Unknown : usage);

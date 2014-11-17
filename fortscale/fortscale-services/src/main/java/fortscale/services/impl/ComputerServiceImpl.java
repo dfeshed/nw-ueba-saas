@@ -119,14 +119,16 @@ public class ComputerServiceImpl implements ComputerService, InitializingBean {
 		}
 	}
 	
-	public ComputerUsageType getComputerUsageType(String hostname) {
+	/**
+	 * Ensure we have a computer instance for the given host name. 
+	 * This method will create a computer if it doesn't exists
+	 */
+	public void ensureComputerExists(String hostname) {
 		checkNotNull(hostname);
-
-		// get the computer from the repository, use upper case for host name
-		// as we case insensitive search
+		
 		Computer computer = getComputerFromCache(hostname);
 		if (computer==null) {
-			// create a new computer instance type for the discovered host
+			// create a new computer instance
 			computer = new Computer();
 			computer.setName(hostname.toUpperCase());
 			computer.setTimestamp(new Date());
@@ -144,7 +146,14 @@ public class ComputerServiceImpl implements ComputerService, InitializingBean {
 				logger.warn("race condition encountered when trying to save computer {}", computer.getName());
 			}
 		}
-		return computer.getUsageType();
+	}
+	
+	
+	public ComputerUsageType getComputerUsageType(String hostname) {
+		checkNotNull(hostname);
+
+		Computer computer = getComputerFromCache(hostname);
+		return (computer==null)? ComputerUsageType.Unknown : computer.getUsageType();
 	}
 
 

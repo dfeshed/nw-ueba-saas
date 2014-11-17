@@ -1,16 +1,19 @@
 package fortscale.domain.events;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import fortscale.utils.TimestampUtils;
 
 
 @Document(collection=DhcpEvent.collectionName)
 @CompoundIndexes({
 	@CompoundIndex(name="ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}"),
-	@CompoundIndex(name="hostnameTimeIdx", def = "{'hostname': 1, 'timestampepoch': -1}"),
+	@CompoundIndex(name="hostnameAndIpTimeIdx", def = "{'hostname': 1, 'ipaddress': 1, 'timestampepoch': -1}")
 })
 public class DhcpEvent extends IpToHostname{
 
@@ -21,7 +24,7 @@ public class DhcpEvent extends IpToHostname{
 	public static final String EXPIRED_ACTION = "EXPIRED";
 	public static final String ASSIGN_ACTION = "ASSIGN"; 
 	
-
+	// collection properties
 	public static final String collectionName =  "DhcpEvent";
 	public static final String MAC_ADDRESS_FIELD_NAME = "macAddress";
 	public static final String EXPIRATION_FIELD_NAME = "expiration";
@@ -42,8 +45,8 @@ public class DhcpEvent extends IpToHostname{
 	private String action;
 	
 	
-	public Boolean isADHostName() {
-		return adHostName;
+	public boolean isADHostName() {
+		return (adHostName==null)? false : adHostName;
 	}
 	
 	public void setADHostName(Boolean adHostName) {
@@ -63,7 +66,7 @@ public class DhcpEvent extends IpToHostname{
 	}
 	
 	public void setExpiration(long expiration) {
-		this.expiration = expiration;
+		this.expiration = TimestampUtils.convertToMilliSeconds(expiration);
 	}
 
 	public String getMacAddress() {
@@ -72,6 +75,34 @@ public class DhcpEvent extends IpToHostname{
 
 	public void setMacAddress(String macAddress) {
 		this.macAddress = macAddress;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (obj == this) return true;
+		if (obj.getClass() != getClass()) return false;
+		
+		DhcpEvent other = (DhcpEvent)obj;
+		return new EqualsBuilder()
+				.append(expiration, other.expiration)
+				.append(timestampepoch, other.timestampepoch)
+				.append(ipaddress, other.ipaddress)
+				.append(hostname, other.hostname)
+				.isEquals();
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("ip", ipaddress)
+				.append("hostname", hostname)
+				.append("mac", macAddress)
+				.append("timestamp", timestampepoch)
+				.append("expiration", expiration)
+				.append("action", action)
+				.append("isADHost", adHostName)
+				.build();
 	}
 	
 }
