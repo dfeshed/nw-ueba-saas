@@ -27,4 +27,10 @@ public interface ComputerService {
 	 * Run classification on all computers
 	 */
 	void classifyAllComputers();
+	
+	/**
+	 * Ensure we have a computer instance for the given host name. 
+	 * This method will create a computer if it doesn't exists
+	 */
+	void ensureComputerExists(String hostname);
 }

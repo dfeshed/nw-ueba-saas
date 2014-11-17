@@ -24,6 +24,23 @@
 		</encoder>
 	</appender>
 	
+	<appender name="IpConflictFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>ipConflicts.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>ipConflicts.%i.log</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>5</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>100MB</maxFileSize>
+		</triggeringPolicy>
+		
+		<encoder>
+			<Pattern>%date{ISO8601}: %m %n</Pattern>
+		</encoder>
+	</appender>
+	
 	<appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       		<level>ERROR</level>
@@ -87,5 +104,9 @@
 		<appender-ref ref="LogFile" />
 	</logger>
 	
+	<!-- logger for ip conflict messages -->
+	<logger name="fortscale.services.ipresolving.IpToHostnameResolver" additivity="false" level="debug">
+		<appender-ref ref="IpConflictFile" />
+	</logger>
 	
 </configuration>

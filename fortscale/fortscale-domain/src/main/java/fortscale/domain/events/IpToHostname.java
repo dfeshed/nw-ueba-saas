@@ -19,19 +19,20 @@ public class IpToHostname extends AbstractDocument{
 	public static final String IP_ADDRESS_FIELD_NAME = "ipaddress";
 	public static final String HOSTNAME_FIELD_NAME = "hostname";
 	
-	@Indexed(unique = false, expireAfterSeconds=60*60*24*14)
+	// expire events after 50 hours, as we suspect that dhcp leases are usually for 24 or 48 hours
+	@Indexed(unique = false, expireAfterSeconds=60*60*50)
 	@CreatedDate
 	@Field(CREATED_AT_FIELD_NAME)
-	private DateTime createdAt;
+	protected DateTime createdAt;
 	
 	@Field(TIMESTAMP_EPOCH_FIELD_NAME)
-	private Long timestampepoch;
+	protected Long timestampepoch;
 	
 	@Field(IP_ADDRESS_FIELD_NAME)
-	private String ipaddress;
+	protected String ipaddress;
 	
 	@Field(HOSTNAME_FIELD_NAME)
-	private String hostname;
+	protected String hostname;
 	
 	
 	

@@ -2,7 +2,6 @@ package fortscale.collection.morphlines.commands;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -15,11 +14,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.typesafe.config.Config;
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.ipresolving.ComputerLoginResolver;
-import fortscale.services.ipresolving.DhcpResolver;
-import fortscale.services.ipresolving.DnsResolver;
-import fortscale.services.ipresolving.StaticFileBasedMappingResolver;
-import fortscale.utils.actdir.LogsToADConversions;
+import fortscale.services.ipresolving.IpToHostnameResolver;
 
 public final class IpToHostnameBuilder implements CommandBuilder {
 	
@@ -38,83 +33,24 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	@Configurable(preConstruction=true)
 	public static final class IpToHostname extends AbstractCommand {
-
-	
 		@Autowired
-		private DhcpResolver dhcpResolver;
-		@Autowired
-		private DnsResolver dnsResolver;
-		@Autowired
-		private ComputerLoginResolver computerLoginResolver;
-		@Autowired
-		private StaticFileBasedMappingResolver fileResolver;
-		
+		private IpToHostnameResolver ipToHostnameResolver;
+				
 		private static final String STRING_EMPTY = "";
 		private final String ipAddress;
 		private final String timeStamp;
-		private boolean useLoginResolver = false;
-		private boolean useDhcpResolver = false;
-		private boolean useDnsResolver = false;
-		private boolean useFileResolver = false;
-		private final String outputRecordName;
-		
-		private boolean shortName = true;
-		private boolean isRemoveLastDot = false;
-
-		
-		
+		private final String outputFieldName;
+		private final boolean restrictToADName;
+			
 		public IpToHostname(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			this.ipAddress = getConfigs().getString(config, "ipAddress");
 			this.timeStamp = getConfigs().getString(config, "timeStamp");
-			this.outputRecordName = getConfigs().getString(config, "outputRecordName");
-			this.shortName = getConfigs().getBoolean(config, "short_name", true);
-			this.isRemoveLastDot = getConfigs().getBoolean(config, "remove_last_dot", false);
-			
-			List<String> resolvers = getConfigs().getStringList(config, "resolvers");
-			if(resolvers == null || resolvers.isEmpty()){
-				useDhcpResolver = true;
-				useDnsResolver = true;
-				useLoginResolver = true;
-				useFileResolver = true;
-			} else{
-				for(String resolver: resolvers){
-					switch(resolver){
-					case "dhcp":
-						useDhcpResolver = true;
-						break;
-					case "dns":
-						useDnsResolver = true;
-						break;
-					case "logins":
-						useLoginResolver = true;
-						break;
-					case "file":
-						useFileResolver = true;
-						break;
-					}
-					
-				}
-			}
+			this.outputFieldName = getConfigs().getString(config, "outputFieldName");
+			this.restrictToADName = getConfigs().getBoolean(config, "restrictToADName", false);
 			
 			validateArguments();
 		}
-
-        public void setDhcpResolver(DhcpResolver dhcpResolver) {
-            this.dhcpResolver = dhcpResolver;
-        }
-
-        public void setDnsResolver(DnsResolver dnsResolver) {
-            this.dnsResolver = dnsResolver;
-        }
-
-        public void setComputerLoginResolver(ComputerLoginResolver computerLoginResolver) {
-            this.computerLoginResolver = computerLoginResolver;
-        }
-        
-        public void setFileResolver(StaticFileBasedMappingResolver fileResolver) {
-        	this.fileResolver = fileResolver;
-        }
 
         @Override
 		protected boolean doProcess(Record inputRecord) {
@@ -125,10 +61,10 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 				Long ts = RecordExtensions.getLongValue(inputRecord, this.timeStamp);
 				
 				// Try and get a hostname to the IP
-                inputRecord.put(this.outputRecordName, getHostname(ip, ts));
+                inputRecord.put(this.outputFieldName, getHostname(ip, ts));
 			} catch (IllegalArgumentException e) {
 				// did not found ip or ts fields in input record
-				inputRecord.put(this.outputRecordName, STRING_EMPTY);
+				inputRecord.put(this.outputFieldName, STRING_EMPTY);
 			}
 
 			return super.doProcess(inputRecord);
@@ -137,9 +73,11 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 
 
 		private String getHostname(String ip, long ts) {
-			if (ip==null)
+			if (ip==null || ipToHostnameResolver==null)
 				return STRING_EMPTY;
 			
+<<<<<<< ours
+<<<<<<< ours
 			String ret = null;
 			
 			if (ret == null || ret.isEmpty()) {
@@ -177,7 +115,13 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 		
 		private String removeLastDot(String input) {
 			return input.endsWith(".") ? input.substring(0, input.length()-1) : input ; 
+=======
+			String hostname = ipToHostnameResolver.resolve(ip, ts, false);
+=======
+			String hostname = ipToHostnameResolver.resolve(ip, ts, restrictToADName);
+>>>>>>> theirs
+			return (hostname==null)? STRING_EMPTY : hostname;
+>>>>>>> theirs
 		}
-		
 	}
 }

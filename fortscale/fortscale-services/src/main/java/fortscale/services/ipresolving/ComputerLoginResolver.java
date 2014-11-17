@@ -54,12 +54,15 @@ public class ComputerLoginResolver implements InitializingBean {
 	
 
 	public String getHostname(String ip, long ts) {
+		ComputerLoginEvent event = getComputerLoginEvent(ip, ts);
+		return (event!=null)? event.getHostname() : null;
+	}
+	
+	public ComputerLoginEvent getComputerLoginEvent(String ip, long ts) {
 		if(computerLoginEventRepository == null){
 			return null;
 		}
 		ts = TimestampUtils.convertToMilliSeconds(ts);
-
-
 		
 		// check if we have a matching event in the cache
 		if(isUseCacheForResolving){
@@ -68,7 +71,7 @@ public class ComputerLoginResolver implements InitializingBean {
 					cachedEvent.getTimestampepoch() >= ts - leaseTimeInMins*60*1000 && 
 					cachedEvent.getTimestampepoch() <= ts + graceTimeInMins*60*1000) {
 	
-				return cachedEvent.getHostname();
+				return cachedEvent;
 			}
 		}
 		
@@ -76,18 +79,12 @@ public class ComputerLoginResolver implements InitializingBean {
 		long upperLimitTs = (graceTimeInMins > 0)? ts + graceTimeInMins * 60 * 1000: ts;
 		long lowerLimitTs = ts - leaseTimeInMins * 60 * 1000;
 
-
-
-
 		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, ComputerLoginEvent.TIMESTAMP_EPOCH_FIELD_NAME);
 		List<ComputerLoginEvent> computerLoginEvents = computerLoginEventRepository.findByIpaddressAndTimestampepochBetween(ip, lowerLimitTs, upperLimitTs, pageRequest);
 		if(!computerLoginEvents.isEmpty()) {
-
-
 			// we do not update the cache here as the next ip resolving might have a slightly newer timestamp with an that was resolved to a different hostname
 			// so we rely on the cache to hold only the newest timestamp for resolving, thus we can make sure there is not other hostname for that ip
-
-			return computerLoginEvents.get(0).getHostname();
+			return computerLoginEvents.get(0);
 		}
 		
 		return null;
