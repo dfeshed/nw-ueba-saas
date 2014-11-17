@@ -76,52 +76,8 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 			if (ip==null || ipToHostnameResolver==null)
 				return STRING_EMPTY;
 			
-<<<<<<< ours
-<<<<<<< ours
-			String ret = null;
-			
-			if (ret == null || ret.isEmpty()) {
-				if (useFileResolver && fileResolver != null) {
-					ret = fileResolver.getHostname(ip);
-				}
-			}
-			if(ret == null || ret.isEmpty() ){
-				if(useLoginResolver && computerLoginResolver != null){
-					ret = computerLoginResolver.getHostname(ip, ts);
-				}
-			}
-			if(ret == null || ret.isEmpty() ){
-				if(useDhcpResolver && dhcpResolver != null){
-					ret = dhcpResolver.getHostname(ip, ts);
-				}
-			}
-			if(ret == null || ret.isEmpty() ){
-				if(useDnsResolver && dnsResolver != null){
-					ret = dnsResolver.getHostname(ip);
-				}
-			}
-
-			
-			if (ret != null) {
-				if (shortName ) {
-                    ret = LogsToADConversions.getHostShortName(ret);
-				} else if(isRemoveLastDot){
-					ret = removeLastDot(ret);
-				}
-			}
-			
-			return ret;
-		}
-		
-		private String removeLastDot(String input) {
-			return input.endsWith(".") ? input.substring(0, input.length()-1) : input ; 
-=======
-			String hostname = ipToHostnameResolver.resolve(ip, ts, false);
-=======
 			String hostname = ipToHostnameResolver.resolve(ip, ts, restrictToADName);
->>>>>>> theirs
 			return (hostname==null)? STRING_EMPTY : hostname;
->>>>>>> theirs
 		}
 	}
 }
