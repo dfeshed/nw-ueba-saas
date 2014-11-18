@@ -21,11 +21,11 @@
                 </entry>
                 <entry>
                     <key>morphlineFile</key>
-                    <value>file:resources/conf-files/readSecEvtOnlyComp_splunk.conf</value>
+                    <value>${readSecEvtOnlyComp_splunk.morphline}</value>
                 </entry>
                 <entry>
                     <key>eventMorphlineFile4624</key>
-                    <value>file:resources/conf-files/read4624SecEvtOnlyComp_splunk.conf</value>
+                    <value>${read4624SecEvtOnlyComp_splunk.morphline}</value>
                 </entry>
             </job-data-map>
         </job>
