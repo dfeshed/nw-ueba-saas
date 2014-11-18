@@ -75,7 +75,7 @@ public class IpToHostnameResolver {
 			// 1. dhcp is missing
 			// 2. it is newer than the dhcp event
 			// 3. dhcp and login event hostnames are the same
-			if (dhcpEvent==null || (loginEvent.getTimestampepoch() > dhcpEvent.getTimestampepoch()) || (loginHostname.equals(dhcpHostname)))
+			if (dhcpEvent==null || (loginEvent.getTimestampepoch() >= dhcpEvent.getTimestampepoch()) || (loginHostname.equals(dhcpHostname)))
 				return loginHostname;
 			else {
 				// log conflicts between dhcp and security events
