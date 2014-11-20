@@ -26,7 +26,10 @@ public class MySqlOrderByPartGenerator implements QueryPartGenerator {
         Joiner joiner = Joiner.on(", ").skipNulls();
 
         for(QuerySort sort: dataQueryDTO.getSort()){
-            String field = mySqlFieldGenerator.generateSql(sort.getField(), dataQueryDTO);
+            String field = sort.getField().getAlias();
+            if (field == null)
+                field = mySqlFieldGenerator.generateSql(sort.getField(), dataQueryDTO);
+
             sorts.add( field+ (sort.getDirection() != null ? " " + sort.getDirection().name() : ""));
         }
 
