@@ -50,6 +50,16 @@ public class DhcpResolverTest {
 	}
 	
 	@Test
+	public void addDhcpEvent_should_skip_events_for_the_same_ip_hostname_and_expiration() {
+		when(cache.getIfPresent("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200));
+		
+		dhcpResolver.addDhcpEvent(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+110, now+200));
+		
+		verify(cache, times(0)).put(anyString(), any(DhcpEvent.class));
+		verify(dhcpEventRepository, times(0)).save(any(DhcpEvent.class));
+	}
+	
+	@Test
 	public void addDhcpEvent_should_replace_the_cache_if_the_item_in_cache_is_older_than_given_event() {
 		// mock old cache value
 		when(cache.getIfPresent("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200));

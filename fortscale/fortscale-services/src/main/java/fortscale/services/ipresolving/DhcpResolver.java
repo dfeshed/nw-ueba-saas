@@ -50,12 +50,34 @@ public class DhcpResolver implements InitializingBean {
 	public void addDhcpEvent(DhcpEvent event) {
 		// add assigned events to repository
 		if (DhcpEvent.ASSIGN_ACTION.equals(event.getAction())) {
-			dhcpEventRepository.save(event);
-			
-			// put in cache if the cache is empty or older than the new item
+			// see that we don't already have such an event in cache with the same 
+			// expiration time and hostname
 			DhcpEvent cached = cache.getIfPresent(event.getIpaddress());
-			if (cached==null || cached.getTimestampepoch() < event.getTimestampepoch())
+			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration()>= event.getExpiration())
+				return;
+			 
+			
+			// put in cache if the cache is empty
+			if (cached==null) {
 				cache.put(event.getIpaddress(), event);
+				dhcpEventRepository.save(event);
+			} else {
+				// if we got assign to a new hostname update cache and mongo
+				if (!cached.getHostname().equals(event.getHostname())) {
+					// update cache only if it is not older event than the existing one
+					if (cached.getTimestampepoch() < event.getTimestampepoch())
+						cache.put(event.getIpaddress(), event);
+					dhcpEventRepository.save(event);
+				} else {
+					// for the same hostname as cached event, check if we need to update the 
+					// expiration date on the cached event
+					if (event.getTimestampepoch() > cached.getTimestampepoch()) { 
+						cached.setExpiration(event.getExpiration());
+						cache.put(event.getIpaddress(), event);
+						dhcpEventRepository.save(event);
+					}
+				}
+			}
 		}
 		// end previous assignment in case of expiration or release
 		if (DhcpEvent.RELEASE_ACTION.equals(event.getAction()) || DhcpEvent.EXPIRED_ACTION.equals(event.getAction())) {
@@ -72,6 +94,10 @@ public class DhcpResolver implements InitializingBean {
 				// mark previous event as expired once the ip is released
 				existing.setExpiration(event.getTimestampepoch());
 				dhcpEventRepository.save(existing);
+				
+				// update cache
+				if (cached==null)
+					cache.put(existing.getIpaddress(), existing);
 			}
 		}
 	}
