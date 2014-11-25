@@ -1,9 +1,8 @@
 package fortscale.collection.usersfiltering.service.impl;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-
+import fortscale.collection.usersfiltering.service.SupportedUsersService;
+import fortscale.domain.core.dao.UserRepository;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -11,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import fortscale.collection.usersfiltering.service.SupportedUsersService;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.utils.logging.Logger;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 @Service("supportedUsersService")
 public class SupportedUsersServiceImpl implements SupportedUsersService, InitializingBean{
@@ -49,6 +48,9 @@ public class SupportedUsersServiceImpl implements SupportedUsersService, Initial
 					supportedUsernames = new HashSet<String>(new ArrayList<String>(FileUtils.readLines(f)));
 				}
 			}
+			else
+				supportedUsernames = new HashSet<String> ();
+
 		} catch(Exception e){
 			logger.warn("got the following exception while trying to read from username white list file.",e);
 		}
