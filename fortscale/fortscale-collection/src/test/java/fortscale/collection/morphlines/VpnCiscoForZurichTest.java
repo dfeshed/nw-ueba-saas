@@ -101,8 +101,8 @@ public class VpnCiscoForZurichTest {
 							"10/13/2014,8:09:45,uswh90d,Default Group,,Stop,C825FF9E,20943,Framed,PPP,9199349,19097369,62424,61192,10.128.59.201,217886720,10.148.1.72" // no source-IP - dropping record
 						),
 						// response
-						$(	"2014-10-13 08:09:45,1413176985,uswh90d,82.166.88.97,10.128.59.201,CLOSED,Israel,IL,Not_supported,Not_supported,Not_supported,isp,,28296718,9199349,19097369,20943,50,false,false",
-							"2014-10-13 08:09:45,1413176985,uswh90d,82.166.88.97,,CLOSED,Israel,IL,Not_supported,Not_supported,Not_supported,isp,,28296718,9199349,19097369,20943,50,false,false",
+						$(	"2014-10-13 08:09:45,1413176985,uswh90d,82.166.88.97,10.128.59.201,CLOSED,Israel,IL,Not_supported,Not_supported,Not_supported,isp,,28296718,9199349,19097369,20943,415,false,false",
+							"2014-10-13 08:09:45,1413176985,uswh90d,82.166.88.97,,CLOSED,Israel,IL,Not_supported,Not_supported,Not_supported,isp,,28296718,9199349,19097369,20943,415,false,false",
 								(String)null
 						)
 				)
