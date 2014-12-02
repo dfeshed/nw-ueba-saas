@@ -142,7 +142,7 @@ public class VpnF5Test {
     			),
     	    	$(
         			(String)null,
-    	    		"2014-01-02 17:06:26,1388682386,bartra,69.141.27.100,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
+    	    		"2013-01-02 17:06:26,1388682386,bartra,69.141.27.100,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
     	    	)
         	),
         	
