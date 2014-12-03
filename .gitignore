@@ -10,3 +10,4 @@ testFile.log
 *.iml
 .idea
 fortscale/fortscale-streaming/log/
+fortscale/fortscale-collection/ipConflicts.log
