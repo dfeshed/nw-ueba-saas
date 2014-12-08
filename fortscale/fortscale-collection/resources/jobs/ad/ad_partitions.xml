@@ -36,7 +36,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>2</value>
+						<value>${ldapUsers.partitions.sync.hourly.trigger.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 35 3 * * ?</cron-expression>
