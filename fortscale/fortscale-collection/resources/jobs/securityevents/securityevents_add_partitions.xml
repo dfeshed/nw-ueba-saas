@@ -36,7 +36,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>8</value>
+						<value>${hdfs.user.processeddata.security.login.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 55 3 * * ?</cron-expression>
@@ -64,7 +64,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>90</value>
+						<value>${hdfs.user.data.security.events.login.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 56 3 * * ?</cron-expression>
@@ -92,7 +92,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>14</value>
+						<value>${hdfs.user.data.security.events.4769.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 37 3 * * ?</cron-expression>
@@ -121,7 +121,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>90</value>
+						<value>${hdfs.user.processeddata.security.events.4769.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 52 3 * * ?</cron-expression>
@@ -149,7 +149,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>90</value>
+						<value>${hdfs.user.processeddata.security.top.events.4769.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 52 3 * * ?</cron-expression>

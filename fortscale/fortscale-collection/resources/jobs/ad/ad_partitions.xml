@@ -36,7 +36,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>${ldapUsers.partitions.sync.hourly.trigger.retention}</value>
+						<value>${hdfs.user.data.ldap.users.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 35 3 * * ?</cron-expression>
@@ -64,7 +64,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>2</value>
+						<value>${hdfs.user.data.ldap.computers.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 37 3 * * ?</cron-expression>
@@ -92,7 +92,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>2</value>
+						<value>${hdfs.user.data.ldap.groups.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 36 3 * * ?</cron-expression>
@@ -120,7 +120,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>2</value>
+						<value>${hdfs.user.data.ldap.ous.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 39 3 * * ?</cron-expression>
@@ -150,7 +150,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>8</value>
+						<value>${hdfs.user.processeddata.group.membership.score.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 57 3 * * ?</cron-expression>

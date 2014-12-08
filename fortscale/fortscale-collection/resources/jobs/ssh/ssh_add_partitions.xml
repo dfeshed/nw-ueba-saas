@@ -36,7 +36,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>14</value>
+						<value>${hdfs.user.data.ssh.retention}</value>
 					</entry>
 	            </job-data-map>
  				<cron-expression>0 36 3 * * ?</cron-expression>
@@ -64,7 +64,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>90</value>
+						<value>${hdfs.user.processeddata.sshscores.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 52 3 * * ?</cron-expression>
@@ -92,7 +92,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>90</value>
+						<value>${hdfs.user.processeddata.sshscores.top.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 52 4 * * ?</cron-expression>

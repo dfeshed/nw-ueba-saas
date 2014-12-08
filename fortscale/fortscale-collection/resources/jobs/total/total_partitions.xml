@@ -29,7 +29,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>8</value>
+						<value>${hdfs.user.processeddata.totalscore.retention}</value>
 					</entry>
             </job-data-map>
 		</job>
