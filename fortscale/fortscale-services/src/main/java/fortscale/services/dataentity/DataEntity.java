@@ -44,4 +44,12 @@ public class DataEntity {
         this.fields = fields;
     }
 
+    public DataEntityField getField(String fieldId){
+        for(DataEntityField field: fields){
+            if (field.getId().equals(fieldId))
+                return field;
+        }
+
+        return null;
+    }
 }

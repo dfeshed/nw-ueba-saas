@@ -201,6 +201,14 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
                 }
                 field.setIsDefaultEnabled(isDefaultEnabled);
 
+                Boolean isLogicalOnly = fieldConfig.getIsLogicalOnly();
+                if (isLogicalOnly == null){
+                    String isLogicalOnlyStr = getExtendableValue(entityId, "field", fieldId, "is_logical_only");
+                    isLogicalOnly = isLogicalOnlyStr != null && isLogicalOnlyStr.equals("true");
+                    fieldConfig.setIsLogicalOnly(isLogicalOnly);
+                }
+                field.setIsLogicalOnly(isLogicalOnly);
+
                 fields.add(field);
             } catch(Exception error){
                 throw new Exception(String.format("Can't read field %s of entity %s", fieldId, entityId));

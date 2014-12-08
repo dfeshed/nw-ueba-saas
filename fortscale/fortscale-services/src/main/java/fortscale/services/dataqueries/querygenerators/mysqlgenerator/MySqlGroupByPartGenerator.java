@@ -2,7 +2,9 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import java.util.ArrayList;
 
+import fortscale.services.dataentity.*;
 import fortscale.services.dataqueries.querydto.DataQueryField;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
@@ -18,16 +20,12 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
  * Generates the GROUP BY part of the query in MySql - "GROUP BY field1, field2, field3..."
  */
 @Component
-public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedValueResolverAware {
-    StringValueResolver stringValueResolver;
-
+public class MySqlGroupByPartGenerator implements QueryPartGenerator {
     @Autowired
     MySqlFieldGenerator mySqlFieldGenerator;
 
-    @Override
-    public void setEmbeddedValueResolver(StringValueResolver resolver) {
-        this.stringValueResolver = resolver;
-    }
+    @Autowired
+    DataEntitiesConfig dataEntitiesConfig;
 
 	@Override
 	public String generateQueryPart(DataQueryDTO dataQueryDTO)
@@ -43,8 +41,20 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedVa
             if (field != null){
             	if (field.getAlias() != null)
             		fieldsSql.add(field.getAlias());
-            	else            	
-            		fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO));
+                else{
+                    try {
+                        DataEntity entity = dataEntitiesConfig.getLogicalEntity(dataQueryDTO.getEntities()[0]);
+                        DataEntityField fieldConfig = entity.getField(field.getId());
+
+                        if (fieldConfig.getIsLogicalOnly())
+                            fieldsSql.add(fieldConfig.getId());
+                        else
+                            fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO));
+                    }
+                    catch(Exception error){
+                        throw new InvalidQueryException(error.getMessage());
+                    }
+                }
             }
         }
 

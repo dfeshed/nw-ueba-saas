@@ -9,6 +9,7 @@ public class DataEntityField {
     private String scoreField;
     private Boolean isDefaultEnabled = true;
     private QueryValueType type;
+    private Boolean isLogicalOnly = false;
 
     public String getId() {
         return id;
@@ -48,5 +49,13 @@ public class DataEntityField {
 
     public void setType(QueryValueType type) {
         this.type = type;
+    }
+
+    public Boolean getIsLogicalOnly() {
+        return isLogicalOnly;
+    }
+
+    public void setIsLogicalOnly(Boolean isLogicalOnly) {
+        this.isLogicalOnly = isLogicalOnly;
     }
 }
