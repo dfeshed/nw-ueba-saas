@@ -38,6 +38,7 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator {
         Joiner joiner = Joiner.on(", ").skipNulls();
         
         for (DataQueryField field : dataQueryDTO.getGroupBy()) {
+
             if (field != null){
             	if (field.getAlias() != null)
             		fieldsSql.add(field.getAlias());
