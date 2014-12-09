@@ -1,5 +1,8 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
+import fortscale.services.dataentity.DataEntity;
+import fortscale.services.dataentity.DataEntityField;
+import fortscale.services.dataentity.QueryValueType;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querydto.QuerySort;
@@ -17,6 +20,7 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest{
 	private MySqlFieldGenerator mySqlFieldGenerator;
 
 	private DataQueryDTO dataQueryDTO2;
+	private DataQueryDTO dataQueryDtoWithGroupByLogicalField;
 
 	@Before
 	public void setUp()
@@ -26,6 +30,7 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest{
 		mySqlGroupByPartGenerator = new MySqlGroupByPartGenerator();
 		mySqlFieldGenerator = Mockito.mock(MySqlFieldGenerator.class);
 		mySqlGroupByPartGenerator.setMySqlFieldGenerator(mySqlFieldGenerator);
+        mySqlGroupByPartGenerator.setDataEntitiesConfig(dataEntitiesConfig);
 
 		dataQueryDTO2 = mapper.readValue(dto1, DataQueryDTO.class);
 		ArrayList<DataQueryField> groupBy = new ArrayList<>();
@@ -37,9 +42,42 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest{
 		groupBy.add(field);
 		dataQueryDTO2.setGroupBy(groupBy);
 
+        dataQueryDtoWithGroupByLogicalField = mapper.readValue(dto1, DataQueryDTO.class);
+        groupBy = new ArrayList<>();
+        field = new DataQueryField();
+        field.setId("logicalField");
+        field.setLogicalOnly(true);
+        groupBy.add(field);
+        dataQueryDtoWithGroupByLogicalField.setGroupBy(groupBy);
+
 		for (DataQueryField dataQueryField : dataQueryDTO2.getGroupBy()) {
 			Mockito.when(mySqlFieldGenerator.generateSql(dataQueryField, dataQueryDTO2)).thenReturn(dataQueryField.getId());
 		}
+
+        DataEntity kerberosLoginsEntity = new DataEntity();
+        DataEntityField regularFieldA = new DataEntityField(),
+                regularFieldB = new DataEntityField();
+
+        ArrayList<DataEntityField> fields = new ArrayList<>();
+
+        regularFieldA.setId("aaa");
+        fields.add(regularFieldA);
+
+        regularFieldB.setId("bbb");
+        fields.add(regularFieldB);
+
+        kerberosLoginsEntity.setFields(fields);
+        Mockito.when(dataEntitiesConfig.getLogicalEntity(dataQueryDTO2.getEntities()[0])).thenReturn(kerberosLoginsEntity);
+
+        dataQueryDtoWithGroupByLogicalField.setEntities(new String[]{"mock_entity"});
+        DataEntity logicalEntity = new DataEntity();
+        DataEntityField logicalOnlyField = new DataEntityField();
+        logicalOnlyField.setId("logicalField");
+        logicalOnlyField.setLogicalOnly(true);
+        fields.clear();
+        fields.add(logicalOnlyField);
+        logicalEntity.setFields(fields);
+        Mockito.when(dataEntitiesConfig.getLogicalEntity(dataQueryDtoWithGroupByLogicalField.getEntities()[0])).thenReturn(logicalEntity);
 	}
 
 	@Test
@@ -55,6 +93,12 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest{
 		sqlStr = mySqlGroupByPartGenerator.generateQueryPart(dataQueryDTO2);
 		expectedString = "GROUP BY aaa, bbb";
 		assertEquals("SQL GroupBy Part for DTO2" , expectedString, sqlStr);
-
 	}
+
+    @Test
+    public void testLogicalOnlyGroupBy() throws Exception{
+        String sqlStr = mySqlGroupByPartGenerator.generateQueryPart(dataQueryDtoWithGroupByLogicalField);
+        String expectedString = "GROUP BY logicalField";
+        assertEquals("Logical-only GROUP BY SQL", expectedString, sqlStr);
+    }
 }

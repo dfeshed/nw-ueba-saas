@@ -4,11 +4,8 @@ import java.util.ArrayList;
 
 import fortscale.services.dataentity.*;
 import fortscale.services.dataqueries.querydto.DataQueryField;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringValueResolver;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 
@@ -45,9 +42,12 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator {
                 else{
                     try {
                         DataEntity entity = dataEntitiesConfig.getLogicalEntity(dataQueryDTO.getEntities()[0]);
+                        if (entity == null)
+                            throw new InvalidQueryException("Unknown entity, '" + dataQueryDTO.getEntities()[0] + "'");
+
                         DataEntityField fieldConfig = entity.getField(field.getId());
 
-                        if (fieldConfig.getIsLogicalOnly())
+                        if (fieldConfig.isLogicalOnly())
                             fieldsSql.add(fieldConfig.getId());
                         else
                             fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO));
@@ -68,7 +68,19 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator {
 		return mySqlFieldGenerator;
 	}
 
+    /**
+     * Set MySQL field generator, used by tests
+     * @param mySqlFieldGenerator
+     */
 	public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator) {
 		this.mySqlFieldGenerator = mySqlFieldGenerator;
 	}
+
+    /**
+     * Set the dataEntitiesConfig, used by tests
+     * @param dataEntitiesConfig
+     */
+    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){
+        this.dataEntitiesConfig = dataEntitiesConfig;
+    }
 }

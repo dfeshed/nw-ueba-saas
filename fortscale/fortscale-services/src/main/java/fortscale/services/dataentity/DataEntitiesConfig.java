@@ -207,7 +207,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
                     isLogicalOnly = isLogicalOnlyStr != null && isLogicalOnlyStr.equalsIgnoreCase("true");
                     fieldConfig.setLogicalOnly(isLogicalOnly);
                 }
-                field.setIsLogicalOnly(isLogicalOnly);
+                field.setLogicalOnly(isLogicalOnly);
 
                 fields.add(field);
             } catch(Exception error){
