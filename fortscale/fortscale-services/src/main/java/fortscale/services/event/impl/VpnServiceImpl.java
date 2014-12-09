@@ -1,13 +1,17 @@
 package fortscale.services.event.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
@@ -19,7 +23,7 @@ import fortscale.services.event.VpnService;
 import fortscale.utils.logging.Logger;
 
 @Service("vpnService")
-public class VpnServiceImpl implements VpnService{
+public class VpnServiceImpl implements VpnService,InitializingBean {
 	private static Logger logger = Logger.getLogger(VpnServiceImpl.class);
 	
 	public static final int VPN_GEO_HOPPING_OPEN_THRESHOLD_IN_HOURS = 6;
@@ -30,10 +34,44 @@ public class VpnServiceImpl implements VpnService{
 	private VpnSessionRepository vpnSessionRepository;
 	
 	private HashMap<String, GeoHoppingData> userToGeoHoppingData = new HashMap<>();
-	
-	
-	
-	
+
+	@Value("${geo-hopping.black.list.file:}")
+	private String geoHoppingBlackListFilePath;
+
+
+
+	private GeoHoppingBlackListRepresentation geoHoppingBlackListRepresentation;
+
+
+	@Override
+	public void afterPropertiesSet(){
+
+		//Read the blacklist from the geo hopping black list file if exist
+		// and fell the list at ignoreGeoHoppingSources
+		try{
+			if (!StringUtils.isEmpty(geoHoppingBlackListFilePath)) {
+				ObjectMapper mapper = new ObjectMapper();
+				geoHoppingBlackListRepresentation = mapper.readValue(new File(geoHoppingBlackListFilePath),GeoHoppingBlackListRepresentation.class);
+
+			}
+			else {
+                logger.warn("There is no blacklist file for filtering GeoHoping notifications");
+				geoHoppingBlackListRepresentation = new GeoHoppingBlackListRepresentation(new HashMap<String,Set<String>>(),new HashSet<String>(),new HashSet<String>());
+
+			}
+
+		} catch(Exception e){
+			logger.warn("got the following exception while trying to read from geo hopping black list file.",e);
+            geoHoppingBlackListRepresentation = new GeoHoppingBlackListRepresentation(new HashMap<String,Set<String>>(),new HashSet<String>(),new HashSet<String>());
+
+		}
+
+
+	}
+
+
+
+
 	@Override
 	public VpnSession findBySessionId(String sessionId){
 		return vpnSessionRepository.findBySessionId(sessionId);
@@ -123,6 +161,7 @@ public class VpnServiceImpl implements VpnService{
 	
 	
 	// Return vpn sessions that are geo hopping events with the the current vpn session.
+	// in case that the source_ip or the country+city exist at the blacklist skip this event from geo - hopping process
 	// If the current vpn session is a geo hopping event then it (curVpnSession) is marked.
 	//
 	// A vpn session is a geo-hopping event if there is a vpn session from a different country which was opened with in the given boundary
@@ -134,7 +173,8 @@ public class VpnServiceImpl implements VpnService{
 	//                           - the latest creation and close time of the vpn session (might be 2 different vpn sessions) from different country than the last vpn session.
 	@Override
 	public List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
-		if(!isCountryValid(curVpnSession)){
+
+		if(!isCountryValid(curVpnSession) || skipBasedOnBlackList(curVpnSession)){
 			return Collections.emptyList();
 		}
 
@@ -201,7 +241,32 @@ public class VpnServiceImpl implements VpnService{
 		
 		return vpnSessions;
 	}
-	
+
+	/**
+	 * This method validate the current event geo hopping needed - In case that we have blacklist we want to check if this event belong to that list
+	 * In case that the event is not belong we will continue to process the geo - hopping on it other case we will return empty list (filter this event from geo hopping)
+	 * @param curVpnSession
+	 * @return
+	 */
+	private boolean skipBasedOnBlackList(VpnSession curVpnSession) {
+
+		String currCountry = curVpnSession.getCountry();
+		String currCity = curVpnSession.getCity();
+		String source_ip = curVpnSession.getSourceIp();
+
+
+		if(geoHoppingBlackListRepresentation.getSourceIp().contains(source_ip))
+			return true;
+		if (geoHoppingBlackListRepresentation.getCountry().contains(currCountry))
+			return true;
+		if (geoHoppingBlackListRepresentation.getCountryCityMap().containsKey(currCountry) &&  geoHoppingBlackListRepresentation.getCountryCityMap().get(currCountry).contains(currCity) )
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	// Returns vpn sessions that are from the given prevCountry and with in the given thresholds bounds.
 	private List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, String prevCountry, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
 		logger.info("looking for vpn sessions from {} which were created at most {} hours before {} and closed at most {} hours before that same time", prevCountry, vpnGeoHoppingOpenSessionThresholdInHours, curVpnSession.getCreatedAt(),
@@ -273,5 +338,62 @@ public class VpnServiceImpl implements VpnService{
 		public DateTime curCountryTime = null;
 		public DateTime otherOpenSessionCountryTime = null;
 		public DateTime otherCloseSessionCountryTime = null;
+	}
+
+
+	@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+	public static class GeoHoppingBlackListRepresentation
+	{
+
+
+
+		private HashMap<String,Set<String>> countryCityMap;
+
+		private Set<String> country;
+
+		private Set<String> sourceIp;
+
+        public GeoHoppingBlackListRepresentation (){}
+
+
+        public GeoHoppingBlackListRepresentation ( HashMap<String,Set<String>> countryCityMap , Set<String> country , Set<String> sourceIp )
+        {
+            this.country = country;
+            this.sourceIp = sourceIp;
+            this.countryCityMap = countryCityMap;
+        }
+
+
+        @JsonProperty("countryCityMap")
+		public HashMap<String, Set<String>> getCountryCityMap() {
+			return countryCityMap;
+		}
+
+		public void setCountryCityMap(HashMap<String, Set<String>> countryCityMap) {
+			this.countryCityMap = countryCityMap;
+		}
+
+        @JsonProperty("country")
+		public Set<String> getCountry() {
+			return country;
+		}
+
+		public void setCountry(Set<String> country) {
+			this.country = country;
+		}
+
+        @JsonProperty("sourceIp")
+		public Set<String> getSourceIp() {
+			return sourceIp;
+		}
+
+		public void setSourceIp(Set<String> sourceIp) {
+			this.sourceIp = sourceIp;
+		}
+
+
+
+
+
 	}
 }
