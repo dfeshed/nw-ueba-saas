@@ -1,5 +1,6 @@
 package fortscale.services.dataentity;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -11,6 +12,7 @@ public class DataEntity {
     private String name;
     private String shortName;
     private List<DataEntityField> fields;
+    private HashMap<String, DataEntityField> fieldsIndex;
 
     public String getId() {
         return id;
@@ -42,14 +44,13 @@ public class DataEntity {
 
     public void setFields(List<DataEntityField> fields) {
         this.fields = fields;
+        this.fieldsIndex = new HashMap<>(fields.size());
+        for(DataEntityField field: fields){
+            this.fieldsIndex.put(field.getId(), field);
+        }
     }
 
     public DataEntityField getField(String fieldId){
-        for(DataEntityField field: fields){
-            if (field.getId().equals(fieldId))
-                return field;
-        }
-
-        return null;
+        return fieldsIndex.get(fieldId);
     }
 }
