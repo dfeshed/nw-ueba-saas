@@ -163,7 +163,7 @@ public class VpnCiscoASATest {
 
                         ),
                         $(
-                                "2014-10-01 00:05:44,1412111144,idantest,44.188.239.218,,CLOSED,United States,US,Not_supported,Not_supported,Not_supported,isp,,215906548,187346964,28559584,157274,50,false,false",
+                                "2014-10-01 00:05:44,1412111144,idantest,44.188.239.218,,CLOSED,United States,US,Not_supported,Not_supported,Not_supported,isp,,215906548,187346964,28559584,157274,1182,false,false",
                                 (String)null
 
                         )
@@ -177,7 +177,7 @@ public class VpnCiscoASATest {
 
                         ),
                         $(
-                                "2014-07-01 06:49:49,1404186589,idantest,188.76.199.235,,CLOSED,United Kingdom,UK,Not_supported,Not_supported,Not_supported,isp,,78243017,69672950,8570067,868193,50,false,false",
+                                "2014-07-01 06:49:49,1404186589,idantest,188.76.199.235,,CLOSED,United Kingdom,UK,Not_supported,Not_supported,Not_supported,isp,,78243017,69672950,8570067,868193,80,false,false",
                                 (String)null
 
                         )

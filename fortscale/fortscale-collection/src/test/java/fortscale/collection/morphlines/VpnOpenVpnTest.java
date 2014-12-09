@@ -57,12 +57,12 @@ public class VpnOpenVpnTest {
 			$ (
 			"Regular (FS) Closed VPN",
 			"<14>Apr  6 08:40:28 openvpnas openvpnas: [-] OVPN 3 OUT: 'Sun Apr  6 05:40:28 2014 YaronDL/77.126.216.55:64441 TLS: soft reset sec=-1 bytes=314561084/0 pkts=727457/0'",
-			"2014-04-06 05:40:28,1396762828,YaronDL,77.126.216.55,,CLOSED,,,,,,,,314561084,314561084,,,400,false,false"
+			"2014-04-06 05:40:28,1396762828,YaronDL,77.126.216.55,,CLOSED,,,,,,,,314561084,314561084,,,,false,false"
 			),
 			$ (
 			"Closed VPN",
 			"<14>Apr  8 12:14:39 openvpnas openvpnas: [-] OVPN 2 OUT: 'Tue Apr  8 09:14:39 2014 dotanp/84.94.86.213:51078 SIGTERM[soft,remote-exit] received, client-instance exiting'",
-			"2014-04-08 09:14:39,1396948479,dotanp,84.94.86.213,,CLOSED,,,,,,,,,,,,50,false,false"
+			"2014-04-08 09:14:39,1396948479,dotanp,84.94.86.213,,CLOSED,,,,,,,,,,,,,false,false"
 			)
         );
     }	

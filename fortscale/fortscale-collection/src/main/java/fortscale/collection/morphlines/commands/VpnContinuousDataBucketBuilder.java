@@ -61,7 +61,7 @@ public class VpnContinuousDataBucketBuilder implements CommandBuilder {
 				readBytes = RecordExtensions.getLongValue(inputRecord, totalbytesFieldName, 0L);
 			}
 
-			// calculate bucket
+			// calculate bucket - in case that we don't have duration, we will not add the bucket field and the score will be 0
 			if(duration != null ){
 				if(duration > 0){
 					Long bytePerSec = (Long.valueOf(readBytes)/(20*60 + duration));
