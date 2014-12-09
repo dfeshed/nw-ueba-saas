@@ -20,16 +20,46 @@
 			<group>SSH</group>
 		</second>
 	</chain>
+    <chain>
+        <first>
+            <name>Fetch4624</name>
+            <group>SecurityEvents</group>
+        </first>
+        <second>
+            <name>Comp4624_ETL</name>
+            <group>SecurityEvents</group>
+        </second>
+    </chain>
+    <chain>
+        <first>
+            <name>Comp4624_ETL</name>
+            <group>SecurityEvents</group>
+        </first>
+        <second>
+            <name>Fetch</name>
+            <group>SecurityEvents</group>
+        </second>
+    </chain>
 	<chain>
 		<first>
 			<name>Fetch</name>
 			<group>SecurityEvents</group>
 		</first>
 		<second>
-			<name>ETL</name>
+			<name>Route_ETL</name>
 			<group>SecurityEvents</group>
 		</second>
 	</chain>
+    <chain>
+        <first>
+            <name>Route_ETL</name>
+            <group>SecurityEvents</group>
+        </first>
+        <second>
+            <name>ETL</name>
+            <group>SecurityEvents</group>
+        </second>
+    </chain>
 	<chain>
 		<first>
 			<name>User_Fetch</name>
