@@ -53,7 +53,7 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator {
                             fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO));
                     }
                     catch(Exception error){
-                        throw new InvalidQueryException(error.getMessage());
+                        throw new InvalidQueryException(error.getMessage(), error);
                     }
                 }
             }
