@@ -12,6 +12,7 @@ public class DataQueryField {
     private String alias;
     private String entity;
     private String value;
+    private Boolean logicalOnly;
 
     private FieldFunction func;
     private QueryValueType valueType;
@@ -43,5 +44,13 @@ public class DataQueryField {
 
     public void setValueType(QueryValueType valueType) {
         this.valueType = valueType;
+    }
+
+    public Boolean isLogicalOnly() {
+        return logicalOnly;
+    }
+
+    public void setLogicalOnly(Boolean logicalOnly) {
+        this.logicalOnly = logicalOnly;
     }
 }

@@ -2,11 +2,10 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import java.util.ArrayList;
 
+import fortscale.services.dataentity.*;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringValueResolver;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 
@@ -18,16 +17,12 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
  * Generates the GROUP BY part of the query in MySql - "GROUP BY field1, field2, field3..."
  */
 @Component
-public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedValueResolverAware {
-    StringValueResolver stringValueResolver;
-
+public class MySqlGroupByPartGenerator implements QueryPartGenerator {
     @Autowired
     MySqlFieldGenerator mySqlFieldGenerator;
 
-    @Override
-    public void setEmbeddedValueResolver(StringValueResolver resolver) {
-        this.stringValueResolver = resolver;
-    }
+    @Autowired
+    DataEntitiesConfig dataEntitiesConfig;
 
 	@Override
 	public String generateQueryPart(DataQueryDTO dataQueryDTO)
@@ -40,11 +35,27 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedVa
         Joiner joiner = Joiner.on(", ").skipNulls();
         
         for (DataQueryField field : dataQueryDTO.getGroupBy()) {
+
             if (field != null){
             	if (field.getAlias() != null)
             		fieldsSql.add(field.getAlias());
-            	else            	
-            		fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO));
+                else{
+                    try {
+                        DataEntity entity = dataEntitiesConfig.getLogicalEntity(dataQueryDTO.getEntities()[0]);
+                        if (entity == null)
+                            throw new InvalidQueryException("Unknown entity, '" + dataQueryDTO.getEntities()[0] + "'");
+
+                        DataEntityField fieldConfig = entity.getField(field.getId());
+
+                        if (fieldConfig.isLogicalOnly())
+                            fieldsSql.add(fieldConfig.getId());
+                        else
+                            fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO));
+                    }
+                    catch(Exception error){
+                        throw new InvalidQueryException(error.getMessage(), error);
+                    }
+                }
             }
         }
 
@@ -57,7 +68,19 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator, EmbeddedVa
 		return mySqlFieldGenerator;
 	}
 
+    /**
+     * Set MySQL field generator, used by tests
+     * @param mySqlFieldGenerator
+     */
 	public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator) {
 		this.mySqlFieldGenerator = mySqlFieldGenerator;
 	}
+
+    /**
+     * Set the dataEntitiesConfig, used by tests
+     * @param dataEntitiesConfig
+     */
+    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){
+        this.dataEntitiesConfig = dataEntitiesConfig;
+    }
 }
