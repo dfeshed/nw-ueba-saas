@@ -201,11 +201,11 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
                 }
                 field.setIsDefaultEnabled(isDefaultEnabled);
 
-                Boolean isLogicalOnly = fieldConfig.getIsLogicalOnly();
+                Boolean isLogicalOnly = fieldConfig.isLogicalOnly();
                 if (isLogicalOnly == null){
                     String isLogicalOnlyStr = getExtendableValue(entityId, "field", fieldId, "is_logical_only");
                     isLogicalOnly = isLogicalOnlyStr != null && isLogicalOnlyStr.equalsIgnoreCase("true");
-                    fieldConfig.setIsLogicalOnly(isLogicalOnly);
+                    fieldConfig.setLogicalOnly(isLogicalOnly);
                 }
                 field.setIsLogicalOnly(isLogicalOnly);
 
