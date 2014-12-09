@@ -19,7 +19,7 @@ public class KafkaEventsWriter implements Closeable {
 	private String kafkaBrokerList;
 	@Value("${kafka.requiredAcks:1}")
 	private String requiredAcks;
-	@Value("${kafka.producer.type:sync}")
+	@Value("${kafka.producer.type:async}")
 	private String producerType;
 	@Value("${kafka.serializer.class:kafka.serializer.StringEncoder}")
 	private String serializer;
@@ -27,6 +27,12 @@ public class KafkaEventsWriter implements Closeable {
 	private String partitionerClass;
 	@Value("${kafka.partitioner.retry.backoff.ms:10000}")
 	private String retryBackoff;
+	@Value("${kafka.queue.time:5000}")
+	private int queueTime;
+	@Value("${kafka.queue.size:10000}")
+	private int queueSize;
+	@Value("${kafka.batch.size:200}")
+	private int batchSize;
 	
 	private Producer<String, String> producer;
 	private String topic;
@@ -43,6 +49,10 @@ public class KafkaEventsWriter implements Closeable {
 		props.put("request.required.acks", requiredAcks);
 		props.put("producer.type", producerType);
 		props.put("retry.backoff.ms", retryBackoff);
+		props.put("queue.time", queueTime);
+		props.put("queue.size", queueSize);
+		props.put("batch.size", batchSize);
+		
 		ProducerConfig config = new ProducerConfig(props);
 		
 		producer = new Producer<String, String>(config);
