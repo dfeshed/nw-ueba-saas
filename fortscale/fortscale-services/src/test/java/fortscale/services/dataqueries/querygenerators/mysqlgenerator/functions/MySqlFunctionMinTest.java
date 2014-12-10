@@ -25,6 +25,6 @@ public class MySqlFunctionMinTest extends MySqlFunctionTest {
     public void testGenerateSql_distinct() throws Exception {
         String functionSql = function.generateSql(dataQueryDTO.getFields().get(0), dataQueryDTO);
         String expectedSql = "MIN(DISTINCT event_score)";
-        assertEquals("MIN    function for date_time column" , expectedSql, functionSql);
+        assertEquals("MIN    function for date_time column with DISTINCT operator" , expectedSql, functionSql);
     }
 }

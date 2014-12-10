@@ -6,7 +6,7 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
 import org.springframework.stereotype.Component;
 
 /**
- * COUNT function generator for fields
+ * AVG function generator for fields
  */
 @Component
 public class MySqlFunctionAvg extends MySqlFieldFunction {

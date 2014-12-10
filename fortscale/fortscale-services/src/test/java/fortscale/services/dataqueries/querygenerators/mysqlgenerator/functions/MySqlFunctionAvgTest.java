@@ -25,6 +25,6 @@ public class MySqlFunctionAvgTest extends MySqlFunctionTest {
     public void testGenerateSql_distinct() throws Exception {
         String functionSql = function.generateSql(dataQueryDTO.getFields().get(0), dataQueryDTO);
         String expectedSql = "AVG(DISTINCT event_score)";
-        assertEquals("AVG function for date_time column" , expectedSql, functionSql);
+        assertEquals("AVG function for date_time column with DISTINCT operator" , expectedSql, functionSql);
     }
 }

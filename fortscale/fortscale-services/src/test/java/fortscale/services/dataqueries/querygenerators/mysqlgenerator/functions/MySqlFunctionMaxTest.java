@@ -25,6 +25,6 @@ public class MySqlFunctionMaxTest extends MySqlFunctionTest {
     public void testGenerateSql_distinct() throws Exception {
         String functionSql = function.generateSql(dataQueryDTO.getFields().get(0), dataQueryDTO);
         String expectedSql = "MAX(DISTINCT event_score)";
-        assertEquals("MAX function for date_time column" , expectedSql, functionSql);
+        assertEquals("MAX function for date_time column with DISTINCT operator" , expectedSql, functionSql);
     }
 }
