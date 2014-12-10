@@ -14,6 +14,7 @@ public class DataQueryDTO {
     private List<DataQueryField> fields;
     private ConditionTerm conditions;
     private String[] entities;
+    private List<DataQueryJoin> join;
     private List<DataQueryField> groupBy;
     private List<QuerySort> sort;
     private int limit = 10;
@@ -73,5 +74,13 @@ public class DataQueryDTO {
 
     public void setOffset(int offset) {
         this.offset = offset;
+    }
+
+    public List<DataQueryJoin> getJoin() {
+        return join;
+    }
+
+    public void setJoin(List<DataQueryJoin> join) {
+        this.join = join;
     }
 }

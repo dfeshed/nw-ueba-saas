@@ -34,6 +34,12 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 	 */
     private List<DataEntity> allDataEntities;
 
+    /**
+     * Gets a DataEntityConfig object from cache, or creates a new one under the specified entityId if not found.
+     * DOES NOT get the DataEntityConfig data itself, just creates the object in cache!
+     * @param entityId
+     * @return
+     */
     private DataEntityConfig getEntityFromCache(String entityId){
         DataEntityConfig entityConfig = entitiesCache.get(entityId);
         if(entityConfig == null){
@@ -281,6 +287,21 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 
         fieldConfig.setColumn(column);
         return column;
+    }
+
+    public Boolean getFieldIsLogicalOnly(String entityId, String fieldId) throws InvalidQueryException{
+        DataEntityFieldConfig fieldConfig = getFieldFromCache(entityId, fieldId);
+        if (fieldConfig.isLogicalOnly() != null)
+            return fieldConfig.isLogicalOnly();
+
+        String isLogicalOnlyStr = getExtendableValue(entityId, "field", fieldId, "is_logical_only");
+        fieldConfig.setLogicalOnly(isLogicalOnlyStr.equalsIgnoreCase("true"));
+        return fieldConfig.isLogicalOnly();
+    }
+
+    public DataEntityFieldConfig getFieldConfig(String entityId, String fieldId){
+        DataEntityFieldConfig fieldConfig = getFieldFromCache(entityId, fieldId);
+        return fieldConfig;
     }
 
     /**

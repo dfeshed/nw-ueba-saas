@@ -7,6 +7,8 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Created by Yossi on 03/11/2014.
  * Generates SQL for a field
@@ -37,9 +39,24 @@ public class MySqlFieldGenerator {
             if (field.getAlias() != null)
                 fieldSB.append(" as '").append(field.getAlias()).append("'");
         }
+        else if (field.isAllFields()){
+            String entityId = field.getEntity();
+            String entityTable = dataEntitiesConfig.getEntityTable(entityId);
+
+            if (entityId == null)
+                entityId = dataQueryDTO.getEntities()[0];
+
+            List<String> fieldIds = dataEntitiesConfig.getAllEntityFields(entityId);
+            for(String fieldId: fieldIds){
+                fieldSB.append(entityTable).append(".").append(dataEntitiesConfig.getFieldColumn(entityId, fieldId));
+                fieldSB.append(", ");
+            }
+            if (fieldSB.length() > 2)
+                fieldSB.delete(fieldSB.length() - 2, fieldSB.length());
+        }
         else{
-            if (dataQueryDTO.getEntities().length > 1 && field.getEntity() != null)
-                fieldSB.append(field.getEntity()).append(".");
+            if (field.getEntity() != null)
+                fieldSB.append(dataEntitiesConfig.getEntityTable(field.getEntity())).append(".");
 
             String columnName = mapToColumn 
             		? dataEntitiesConfig.getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.getEntities()[0], field.getId() )
