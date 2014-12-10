@@ -354,7 +354,7 @@ public class HadoopInit implements InitializingBean{
 			hadoopFs.mkdirs(new Path(location));
 		}
 		try{
-			impalaClient.createTable(tableName, fields, partition, delimiter, location);
+			impalaClient.createTable(tableName, fields, partition, delimiter, location, true);
 		} catch(Exception e){
 			// changed to log warning message instead of swallowing the exception as this might lose the details of real errors that might occur
 			// this should be changed so that we won't get exception in case the table exists

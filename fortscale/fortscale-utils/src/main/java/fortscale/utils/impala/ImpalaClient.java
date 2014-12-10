@@ -56,15 +56,29 @@ public class ImpalaClient {
 		String sql = String.format("alter table %s drop if exists partition (%s)", tableName, partition);
 		impalaJdbcTemplate.execute(sql);
 	}
-	
-	public void createTable(String tableName, String fields, String partition, String delimiter, String location){
+
+	/**
+	 * Create EXTERNAL table in Impala
+	 * @param tableName	the name of the table
+	 * @param fields	the fields of the table (names and types)
+	 * @param partition	the partition type (can be left null)
+	 * @param delimiter	delimiter of the HDFS file
+	 * @param location	location of the HDFS file
+	 * @param onlyIfNotExist	true if we want to create the table only if doesn't exist
+	 */
+	public void createTable(String tableName, String fields, String partition, String delimiter, String location,
+			boolean onlyIfNotExist){
 		Assert.hasText(tableName);
 		Assert.hasText(fields);
 		Assert.hasText(delimiter);
 		Assert.hasText(location);
 		
 		StringBuilder builder = new StringBuilder();
-		builder.append("CREATE EXTERNAL TABLE ").append(tableName).append("(").append(fields).append(")");
+		builder.append("CREATE EXTERNAL TABLE ");
+		if (onlyIfNotExist) {
+			builder.append(" IF NOT EXISTS ");
+		}
+		builder.append(tableName).append("(").append(fields).append(")");
 		if(!StringUtils.isEmpty(partition)){
 			builder.append(" PARTITIONED BY (").append(partition).append(")");
 		}
