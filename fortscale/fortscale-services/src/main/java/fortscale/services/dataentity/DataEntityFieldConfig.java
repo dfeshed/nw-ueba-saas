@@ -11,8 +11,8 @@ public class DataEntityFieldConfig {
     private String score;
     private QueryValueType type;
 
-    static final String IS_LOGICAL_ONLY = "is_logical_only";
-    static final String EXPLICIT = "is_logical_only";
+    public static final String IS_LOGICAL_ONLY = "is_logical_only";
+    public static final String EXPLICIT = "is_logical_only";
 
     HashMap<String, Boolean> flags = new HashMap<>();
 
