@@ -5,6 +5,7 @@ import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.SupportedDBType;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryJoin;
+import fortscale.services.dataqueries.querydto.DataQueryJoinField;
 import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +29,12 @@ public class MySqlJoinPartGenerator implements QueryPartGenerator {
                 if (dataEntitiesConfig.getEntityDbType(join.getEntity()) != SupportedDBType.MySQL)
                     continue;
 
-                if (join.getJoinFields().size() != 2)
-                    throw new InvalidQueryException("Invalid JOIN. Expected exactly 2 fields, got " + join.getJoinFields().size());
-
                 sb.append(join.getType().name()).append(" JOIN ");
                 sb.append(dataEntitiesConfig.getEntityTable(join.getEntity()));
                 sb.append(" ON ");
-                getJoinField(join.getJoinFields().get(0).getEntity(), join.getJoinFields().get(0).getField(), sb);
+                getJoinField(join.getLeft(), sb);
                 sb.append(" = ");
-                getJoinField(join.getJoinFields().get(1).getEntity(), join.getJoinFields().get(1).getField(), sb);
+                getJoinField(join.getRight(), sb);
                 sb.append(" ");
             }
             catch(Exception error){
@@ -55,16 +53,15 @@ public class MySqlJoinPartGenerator implements QueryPartGenerator {
 
     /**
      * Gets the physical name of a field for the JOIN clause
-     * @param entityId The logical name of the JOIN's entity
-     * @param fieldId The logical name of the JOIN's field
+     * @param joinField The entity/field of the join
      * @param sb An existing StringBuilder to append the result to
      * @return
      */
-    private void getJoinField(String entityId, String fieldId, StringBuilder sb) throws InvalidQueryException{
-        String fieldColumn = dataEntitiesConfig.getFieldColumn(entityId, fieldId);
-        if (dataEntitiesConfig.getFieldIsLogicalOnly(entityId, fieldId))
+    private void getJoinField(DataQueryJoinField joinField, StringBuilder sb) throws InvalidQueryException{
+        String fieldColumn = dataEntitiesConfig.getFieldColumn(joinField.getEntity(), joinField.getField());
+        if (dataEntitiesConfig.getFieldIsLogicalOnly(joinField.getEntity(), joinField.getField()))
             sb.append(fieldColumn);
         else
-            sb.append(dataEntitiesConfig.getEntityTable(entityId)).append(".").append(fieldColumn);
+            sb.append(dataEntitiesConfig.getEntityTable(joinField.getEntity())).append(".").append(fieldColumn);
     }
 }
