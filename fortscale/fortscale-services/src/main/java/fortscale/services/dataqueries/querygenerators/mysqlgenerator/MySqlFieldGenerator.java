@@ -41,6 +41,10 @@ public class MySqlFieldGenerator {
                 fieldSB.append(" as '").append(field.getAlias()).append("'");
         }
         else if (field.isAllFields() != null && field.isAllFields() == true){
+            // First, validate that there's no ID or value, since that would be a confusing structure:
+            if (field.getId() != null || field.getValue() != null || field.getAlias() != null)
+                throw new InvalidQueryException("Invalid field, if allFields = true, can't have ID, value or alias.");
+
             String entityId = field.getEntity();
 
             if (entityId == null)
