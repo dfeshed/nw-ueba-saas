@@ -3,15 +3,16 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-
 import org.springframework.stereotype.Component;
 
 /**
- * COUNT function generator for fields
+ * Aggregation base class function generator for fields
  */
 @Component
-public class MySqlFunctionCount extends MySqlFieldFunction {
+public class MySqlFunctionAggregate extends MySqlFieldFunction {
+
     public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+
         String sqlFunctionName = field.getFunc().getName().toString().toUpperCase();
 
         StringBuilder sb = new StringBuilder();
@@ -19,20 +20,23 @@ public class MySqlFunctionCount extends MySqlFieldFunction {
         if (entityId == null)
             entityId = dataQueryDTO.getEntities()[0];
 
+        if (field.getId() == null)
+            throw new InvalidQueryException("The " + dataQueryDTO + " field function requires a field ID.");
+
         sb.append(sqlFunctionName);
         sb.append("(");
 
-        if (field.getFunc().getParams() != null) {
-            if (field.getFunc().getParams().containsKey("all"))
-                sb.append("*");
-            else {
-                if (field.getFunc().getParams().containsKey("distinct"))
-                    sb.append("DISTINCT ");
-                sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
-            }
-        }
+        if (field.getFunc().getParams() != null)
+            if (field.getFunc().getParams().containsKey("distinct"))
+                sb.append("DISTINCT ");
+
+        sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
 
         sb.append(")");
         return sb.toString();
     }
+
+
 }
+
+

@@ -12,14 +12,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class MySqlFunctionToDate extends MySqlFieldFunction {
     public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+
+        String sqlFunctionName = field.getFunc().getName().toString().toUpperCase();
+        StringBuilder sb = new StringBuilder();
         String entityId = field.getEntity();
+
         if (entityId == null)
             entityId = dataQueryDTO.getEntities()[0];
 
         if (field.getId() == null)
-        throw new InvalidQueryException("The to_date field function requires a field ID.");
+            throw new InvalidQueryException("The " + sqlFunctionName + " field function requires a field ID.");
 
-        StringBuilder sb = new StringBuilder("TO_DATE(");
+
+        sb.append(sqlFunctionName);
+        sb.append("(");
         sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
         sb.append(")");
 
