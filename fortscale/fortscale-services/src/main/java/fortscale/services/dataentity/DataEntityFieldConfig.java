@@ -11,6 +11,9 @@ public class DataEntityFieldConfig {
     private String score;
     private QueryValueType type;
 
+    static final String IS_LOGICAL_ONLY = "is_logical_only";
+    static final String EXPLICIT = "is_logical_only";
+
     HashMap<String, Boolean> flags = new HashMap<>();
 
     public Boolean getDefaultEnabled() {
@@ -56,19 +59,19 @@ public class DataEntityFieldConfig {
     }
 
     public Boolean isLogicalOnly() {
-        return flags.get("is_logical_only");
+        return flags.get(IS_LOGICAL_ONLY);
     }
 
     public void setLogicalOnly(Boolean logicalOnly) {
-        flags.put("is_logical_only", logicalOnly);
+        flags.put(IS_LOGICAL_ONLY, logicalOnly);
     }
 
     public Boolean isExplicit(){
-        return flags.get("explicit");
+        return flags.get(EXPLICIT);
     }
 
     public void setExplicit(Boolean explicit){
-        flags.put("explicit", explicit);
+        flags.put(EXPLICIT, explicit);
     }
 
     public Boolean getFlag(String flagName){
