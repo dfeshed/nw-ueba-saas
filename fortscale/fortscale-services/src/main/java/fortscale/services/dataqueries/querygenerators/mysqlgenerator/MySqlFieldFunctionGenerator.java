@@ -6,7 +6,6 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions.MySqlFunctionAggregate;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions.MySqlFunctionCount;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions.MySqlFunctionToDate;
-import fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions.MySqlFunctionAggregate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
