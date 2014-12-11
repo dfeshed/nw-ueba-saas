@@ -6,7 +6,12 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
 import org.springframework.stereotype.Component;
 
 /**
- * Aggregation base class function generator for fields
+ * Aggregate similar functions.
+ * This function can add sql query function generically,
+ * such as avg, max, min, sum.
+ * when one of the above functions being used, in the dataQuery, this function is being invoked in order
+ * to return the SQL part of the function.
+ *
  */
 @Component
 public class MySqlFunctionAggregate extends MySqlFieldFunction {
@@ -21,7 +26,7 @@ public class MySqlFunctionAggregate extends MySqlFieldFunction {
             entityId = dataQueryDTO.getEntities()[0];
 
         if (field.getId() == null)
-            throw new InvalidQueryException("The " + dataQueryDTO + " field function requires a field ID.");
+            throw new InvalidQueryException("The " + sqlFunctionName + " field function requires a field ID.");
 
         sb.append(sqlFunctionName);
         sb.append("(");
