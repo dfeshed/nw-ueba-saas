@@ -9,8 +9,10 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static junitparams.JUnitParamsRunner.$;
 
@@ -19,23 +21,123 @@ import static junitparams.JUnitParamsRunner.$;
 public class VpnF5Test {
 
 	private static ClassPathXmlApplicationContext testContextManager;
-	
+
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readVPN_F5.conf";
-		
+
+	static TimeZone tz;
+	static SimpleDateFormat sdf;
+
+	static Calendar calendar = Calendar.getInstance();
+	static Integer currentYear;
+	static String year;
+
+	final static String Apr_14_01_50_26 = "Apr 14 01:50:26";
+	static String Apr_14_01_50_26_OUT;
+	static Long Apr_14_01_50_26_L;
+	final static String Apr_14_00_17_42 = "Apr 14 00:17:42";
+	static String Apr_14_00_17_42_OUT;
+	static Long Apr_14_00_17_42_L;
+	final static String Apr_14_00_23_29 = "Apr 14 00:23:29";
+	static String Apr_14_00_23_29_OUT;
+	static Long Apr_14_00_23_29_L;
+	final static String Apr_14_01_50_05 = "Apr 14 01:50:05";
+	static String Apr_14_01_50_05_OUT;
+	static Long Apr_14_01_50_05_L;
+	final static String Apr_14_01_50_42 = "Apr 14 01:50:42";
+	static String Apr_14_01_50_42_OUT;
+	static Long Apr_14_01_50_42_L;
+	final static String Jan_2_19_08_35 = "Jan  2 19:08:35";
+	static String Jan_2_19_08_35_OUT;
+	static Long Jan_2_19_08_35_L;
+	final static String Jan_2_19_08_28 = "Jan  2 19:08:28";
+	static String Jan_2_19_08_28_OUT;
+	static Long Jan_2_19_08_28_L;
+	final static String Jan_4_19_08_28 = "Jan  4 19:08:28";
+	static String Jan_4_19_08_28_OUT;
+	static Long Jan_4_19_08_28_L;
+	final static String Jan_2_19_11_09 = "Jan  2 19:11:09";
+	static String Jan_2_19_11_09_OUT;
+	static Long Jan_2_19_11_09_L;
+	final static String Jan_2_19_06_14 = "Jan  2 19:06:14";
+	static String Jan_2_19_06_14_OUT;
+	static Long Jan_2_19_06_14_L;
+	final static String Jan_2_19_06_26 = "Jan  2 19:06:26";
+	static String Jan_2_19_06_26_OUT;
+	static Long Jan_2_19_06_26_L;
+	final static String Mar_2_22_32_16 = "Mar  2 22:32:16";
+	static String Mar_2_22_32_16_OUT;
+	static Long Mar_2_22_32_16_L;
+
+	static {
+		prepareDates();
+	}
+
+
 	@BeforeClass
 	public static void setUpClass(){
 		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
 		VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
 		vpnSessionRepository.deleteAll();
 	}
-	
+
+	private static void prepareDates() {
+
+		tz = TimeZone.getTimeZone("Asia/Jerusalem");
+		calendar.setTimeZone(tz);
+		currentYear = calendar.get(Calendar.YEAR);
+		year = Integer.toString(currentYear);
+		sdf = new SimpleDateFormat("yyyy MMM dd HH:mm:ss");
+		sdf.setTimeZone(tz);
+
+		Date date = constuctDate(Jan_2_19_08_35);
+		Jan_2_19_08_35_OUT = getOutputDate(date);
+		Jan_2_19_08_35_L = getUnixDate(date);
+
+		date = constuctDate(Jan_2_19_11_09);
+		Jan_2_19_11_09_OUT = getOutputDate(date);
+		Jan_2_19_11_09_L = getUnixDate(date);
+
+		date = constuctDate(Apr_14_00_17_42);
+		Apr_14_00_17_42_OUT = getOutputDate(date);
+		Apr_14_00_17_42_L = getUnixDate(date);
+
+		date = constuctDate(Apr_14_00_23_29);
+		Apr_14_00_23_29_OUT = getOutputDate(date);
+		Apr_14_00_23_29_L = getUnixDate(date);
+
+		date = constuctDate(Apr_14_01_50_26);
+		Apr_14_01_50_26_OUT = getOutputDate(date);
+		Apr_14_01_50_26_L = getUnixDate(date);
+
+		date = constuctDate(Apr_14_01_50_05);
+		Apr_14_01_50_05_OUT = getOutputDate(date);
+		Apr_14_01_50_05_L = getUnixDate(date);
+
+		date = constuctDate(Apr_14_01_50_42);
+		Apr_14_01_50_42_OUT = getOutputDate(date);
+		Apr_14_01_50_42_L = getUnixDate(date);
+
+		date = constuctDate(Jan_2_19_08_28);
+		Jan_2_19_08_28_OUT = getOutputDate(date);
+		Jan_2_19_08_28_L = getUnixDate(date);
+
+		date = constuctDate(Jan_2_19_06_14);
+		Jan_2_19_06_14_OUT = getOutputDate(date);
+		Jan_2_19_06_14_L = getUnixDate(date);
+
+		date = constuctDate(Jan_2_19_06_26);
+		Jan_2_19_06_26_OUT = getOutputDate(date);
+		Jan_2_19_06_26_L = getUnixDate(date);
+
+	}
+
 	@AfterClass
 	public static void finalizeTestClass(){
 		testContextManager.close();
 		testContextManager = null;
 	}
-	 
+
 	@Before
 	public void setUp() throws Exception {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
@@ -50,180 +152,207 @@ public class VpnF5Test {
 		VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
 		vpnSessionRepository.deleteAll();
 	}
-	
+
 	@Test
 	@Parameters
 	public void test(String testCase, Object[] lines, Object[] outputs) {
-		
+
 		List<String> events = new ArrayList<String>(lines.length);
 		for (Object line : lines)
 			events.add((String)line);
-		
+
 		List<String> expected = new ArrayList<String>(outputs.length);
 		for (Object output : outputs)
 			expected.add((String)output);
-		
+
 		morphlineTester.testMultipleLines(testCase, events , expected);
 	}
-	
-	
+
+	private static Date constuctDate(String inDate){
+		try {
+			Date parsedDate = sdf.parse(year + " " + inDate);
+			Date currentDate = calendar.getTime();
+			if (parsedDate.compareTo(currentDate)>0) {
+				parsedDate.setYear(parsedDate.getYear() - 1);
+			}
+			return parsedDate;
+
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+
+		}
+	}
+
+	private static String getOutputDate(Date date){
+
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeZone(tz);
+		formatter.setCalendar(cal);
+		return formatter.format(date);
+	}
+
+	private static Long getUnixDate(Date date){
+		return date.getTime() / 1000;
+	}
+
 	@SuppressWarnings("unused")
 	private Object[] parametersForTest() {
-        return	$(
-    		$(
-    			"Several new session with authentication (BS) VPN",
-    			$(
-					"Apr 14 00:17:42 va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
-					"Apr 14 00:17:42 va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
-					"Apr 14 01:50:26 server Apr 14 01:50:47 server info apd[18544]: 01490500:5: 18648c83: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
-					"Apr 14 00:23:29 va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c83: Session statistics - bytes in: 0, bytes out: 0"
-    			),
-    			$(
-    				(String)null,
-    				(String)null,
-    				"2014-04-14 01:50:26,1397429426,kamali123,66.249.64.46,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
-    				(String)null
-    			)
-    		),
-    		$(
-	    		"Regular (BS) Successful VPN Authentication",
-	    		$(
-	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
-	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8781: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
-	    			"Jan  2 19:11:09 server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8781: Session statistics - bytes in: 632880, bytes out: 2649665"
+		return	$(
+				$(
+						"Several new session with authentication (BS) VPN",
+						$(
+								Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+								Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+								Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490500:5: 18648c83: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
+								Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c83: Session statistics - bytes in: 0, bytes out: 0"
+						),
+						$(
+								(String)null,
+								(String)null,
+								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
+								(String)null
+						)
+				) ,
+				$(
+						"Regular (BS) Successful VPN Authentication",
+						$(
+								Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+								Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8781: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+								Jan_2_19_11_09 + " server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8781: Session statistics - bytes in: 632880, bytes out: 2649665"
+						),
+						$(
+								(String)null,
+								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false",
+								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,false,false"
+						)
 				),
-	    		$(
-    				(String)null,
-	    			"2014-01-02 19:08:35,1388682515,chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false",
-	    			"2014-01-02 19:11:09,1388682669,chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,false,false"
-	    		)
-    		),
-    		$(
-	    		"Regular (BS) Successful VPN Authentication in reverse order",
-	    		$(
-	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8782: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
-	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8782: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+				$(
+						"Regular (BS) Successful VPN Authentication in reverse order",
+						$(
+								Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8782: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+								Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8782: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+						),
+						$(
+								(String)null,
+								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false"
+						)
 				),
-	    		$(
-    				(String)null,
-	    			"2014-01-02 19:08:35,1388682515,chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false"
-	    		)
-    		),
-    		$(
-	    		"Regular (BS) Successful VPN Authentication in reverse order more than day apart",
-	    		$(
-	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8788: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
-	    			"Jan  4 19:08:28 server.bs.dom Jan  4 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8788: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+				$(
+						"Regular (BS) Successful VPN Authentication in reverse order more than day apart",
+						$(
+								Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8788: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+								Jan_4_19_08_28 + " server.bs.dom Jan  4 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8788: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+						),
+						$(
+								(String)null,
+								(String)null
+						)
 				),
-	    		$(
-    				(String)null,
-    				(String)null
-	    		)
-    		),
-    		$(
-	    		"Regular (BS) Successful VPN Authentication in reverse order with end session",
-	    		$(
-	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8784: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
-	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8784: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
-	    			"Jan  2 19:11:09 server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8784: Session statistics - bytes in: 632880, bytes out: 2649665"
+				$(
+						"Regular (BS) Successful VPN Authentication in reverse order with end session",
+						$(
+								Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8784: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+								Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8784: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+								Jan_2_19_11_09 + " server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8784: Session statistics - bytes in: 632880, bytes out: 2649665"
+						),
+						$(
+								(String)null,
+								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false",
+								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,false,false"
+						)
 				),
-	    		$(
-    				(String)null,
-	    			"2014-01-02 19:08:35,1388682515,chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false",
-	    			"2014-01-02 19:11:09,1388682669,chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,false,false"
-	    		)
-    		),
-    		
-    		$(
-    	    	"Regular (BS) Failed VPN Authentication",
-    	    	$(
-    	    		"Jan  2 19:06:14 server.bs.dom Jan  2 19:07:42 server notice tmm2[20226]: 01490500:5: 8a38fa18: New session from client IP 69.141.27.100 (ST=New Jersey/CC=US/C=NA) at VIP 172.10.11.12 Listener /DETAILS/details (Reputation=Unknown)",
-    	    		"Jan  2 19:06:26 server.bs.dom Jan  2 19:07:54 server info apd[18544]: 01490017:6: 8a38fa18: AD agent: Auth (logon attempt:0): authenticate with 'bartra' failed"
-    			),
-    	    	$(
-        			(String)null,
-    	    		"2014-01-02 19:06:26,1388682386,bartra,69.141.27.100,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
-    	    	)
-        	),
-        	
-    		$(
-	    		"Only First Event of Regular (BS) Successful VPN Authentication",
-	    		$(
-	    			"Jan  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8783: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
-				),
-	    		$(
-    				(String)null
-	    		)
-    		),
-    		
-    		$(
-	    		"Only Second Event of Regular (BS) Successful VPN Authentication",
-	    		$(
-	    			"Jan  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8798: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
-				),
-	    		$(
-    				(String)null
-	    		)
-    		),
-    		
-    		$(
-	    		"Regular (BS) Successful VPN Authentication From Last Year",
-	    		$(
-	    			"Dec  2 19:08:28 server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8785: New session from client IP 75.26.245.201 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
-	    			"Dec  2 19:08:35 server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8785: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
-				),
-	    		$(
-    				(String)null,
-	    			"2014-12-02 19:08:35,1417540115,chavier,75.26.245.201,,SUCCESS,,,,,,,,,,,,,false,false"
-	    		)
-    		),
 
-    		$(
-	    		"Regular (BS) VPN Session Statistics Event",
-	    		$(
-	    			"Feb 28 17:11:09 server.bs.dom Feb 28 17:11:31 server notice tmm2[20226]: 01490521:5: 0a6c7b51: Session statistics - bytes in: 632880, bytes out: 2649665"
+				$(
+						"Regular (BS) Failed VPN Authentication",
+						$(
+								Jan_2_19_06_14 + " server.bs.dom Jan  2 19:07:42 server notice tmm2[20226]: 01490500:5: 8a38fa18: New session from client IP 69.141.27.100 (ST=New Jersey/CC=US/C=NA) at VIP 172.10.11.12 Listener /DETAILS/details (Reputation=Unknown)",
+								Jan_2_19_06_26 + " server.bs.dom Jan  2 19:07:54 server info apd[18544]: 01490017:6: 8a38fa18: AD agent: Auth (logon attempt:0): authenticate with 'bartra' failed"
+						),
+						$(
+								(String)null,
+								Jan_2_19_06_26_OUT + "," + Jan_2_19_06_26_L + ",bartra,69.141.27.100,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
+						)
 				),
-	    		$(
-	    			(String) null
-	    		)
-    		),
-    		
-    		$(
-    			"HTTP Agent authentication event should be dropped", // As we are using the AD agent authentication event to recognize this action
-    			$(
-    				"Mar  2 22:32:16 server.bs.dom Mar  2 22:32:16 server info apd[5904]: 01490139:6: 2275c32c: HTTP agent: authenticate with 'pinto' successful"
-    			),
-    			$(
-    				(String)null
-    			)
-    		),
-    		$(
-    			"Failed and Success Regular (BS) VPN Authentications",
-    			$(
-					"Apr 14 01:50:05 server Apr 14 01:50:26 server notice tmm[20226]: 01490500:5: e83f3a7c: New session from client IP 71.125.52.63 (ST=New York/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
-					"Apr 14 01:50:26 server Apr 14 01:50:47 server info apd[18544]: 01490017:6: e83f3a7c: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
-					"Apr 14 01:50:42 server Apr 14 01:51:04 server info apd[18544]: 01490017:6: e83f3a7c: AD agent: Auth (logon attempt:1): authenticate with 'kamalij' successful"
-    			),
-    			$(
-    				(String)null,
-    				"2014-04-14 01:50:26,1397429426,kamali123,71.125.52.63,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
-    				"2014-04-14 01:50:42,1397429442,kamalij,71.125.52.63,,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
-    			)
-    		),
-    		$(
-    			"New session without authentication (BS) VPN",
-    			$(
-					"Apr 14 00:17:42 va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c73: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
-					"Apr 14 00:17:42 va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c73: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
-					"Apr 14 00:23:29 va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c73: Session statistics - bytes in: 0, bytes out: 0"
-    			),
-    			$(
-    				(String)null,
-    				(String)null,
-    				(String)null
-    			)
-    		)
+
+				$(
+						"Only First Event of Regular (BS) Successful VPN Authentication",
+						$(
+								Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8783: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+						),
+						$(
+								(String)null
+						)
+				),
+
+				$(
+						"Only Second Event of Regular (BS) Successful VPN Authentication",
+						$(
+								Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8798: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
+						),
+						$(
+								(String)null
+						)
+				),
+
+				$(
+						"Regular (BS) Successful VPN Authentication From Last Year",
+						$(
+								Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8785: New session from client IP 75.26.245.201 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+								Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8785: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
+						),
+						$(
+								(String)null,
+								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.201,,SUCCESS,,,,,,,,,,,,,false,false"
+						)
+				),
+
+				$(
+						"Regular (BS) VPN Session Statistics Event",
+						$(
+								Jan_2_19_11_09 + " server.bs.dom Feb 28 17:11:31 server notice tmm2[20226]: 01490521:5: 0a6c7b51: Session statistics - bytes in: 632880, bytes out: 2649665"
+						),
+						$(
+								(String) null
+						)
+				),
+
+				$(
+						"HTTP Agent authentication event should be dropped", // As we are using the AD agent authentication event to recognize this action
+						$(
+								Mar_2_22_32_16 + " server.bs.dom Mar  2 22:32:16 server info apd[5904]: 01490139:6: 2275c32c: HTTP agent: authenticate with 'pinto' successful"
+						),
+						$(
+								(String)null
+						)
+				),
+				$(
+						"Failed and Success Regular (BS) VPN Authentications",
+						$(
+								Apr_14_01_50_05 + " server Apr 14 01:50:26 server notice tmm[20226]: 01490500:5: e83f3a7c: New session from client IP 71.125.52.63 (ST=New York/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+								Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490017:6: e83f3a7c: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
+								Apr_14_01_50_42 + " server Apr 14 01:51:04 server info apd[18544]: 01490017:6: e83f3a7c: AD agent: Auth (logon attempt:1): authenticate with 'kamalij' successful"
+						),
+						$(
+								(String)null,
+								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,71.125.52.63,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
+								Apr_14_01_50_42_OUT + "," + Apr_14_01_50_42_L + ",kamalij,71.125.52.63,,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
+						)
+				),
+				$(
+						"New session without authentication (BS) VPN",
+						$(
+								Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c73: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+								Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c73: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+								Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c73: Session statistics - bytes in: 0, bytes out: 0"
+						),
+						$(
+								(String)null,
+								(String)null,
+								(String)null
+						)
+				)
 		);
-    }
+	}
 
 }
