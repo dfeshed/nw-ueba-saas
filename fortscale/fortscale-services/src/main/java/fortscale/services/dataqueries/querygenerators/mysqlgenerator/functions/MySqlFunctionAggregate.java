@@ -6,28 +6,37 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
 import org.springframework.stereotype.Component;
 
 /**
- * MIN function generator for fields
+ * Aggregation base class function generator for fields
  */
 @Component
-public class MySqlFunctionMin extends MySqlFieldFunction {
+public class MySqlFunctionAggregate extends MySqlFieldFunction {
+
     public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+
+        String sqlFunctionName = field.getFunc().getName().toString().toUpperCase();
+
         StringBuilder sb = new StringBuilder();
         String entityId = field.getEntity();
         if (entityId == null)
             entityId = dataQueryDTO.getEntities()[0];
 
         if (field.getId() == null)
-            throw new InvalidQueryException("The min field function requires a field ID.");
+            throw new InvalidQueryException("The " + dataQueryDTO + " field function requires a field ID.");
 
-        sb.append("MIN(");
+        sb.append(sqlFunctionName);
+        sb.append("(");
 
         if (field.getFunc().getParams() != null)
             if (field.getFunc().getParams().containsKey("distinct"))
                 sb.append("DISTINCT ");
 
-       sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
+        sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
 
         sb.append(")");
         return sb.toString();
     }
+
+
 }
+
+

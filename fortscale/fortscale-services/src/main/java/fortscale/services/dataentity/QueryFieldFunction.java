@@ -6,5 +6,5 @@ package fortscale.services.dataentity;
  *
  */
 public enum QueryFieldFunction {
-	count, min, max, to_date, avg
+	count, min, max, to_date, avg, sum
 }

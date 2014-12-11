@@ -1,5 +1,6 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions;
 
+import fortscale.services.dataqueries.querydto.FieldFunction;
 import org.junit.Before;
 import org.junit.Test;
 

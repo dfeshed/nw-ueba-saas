@@ -12,21 +12,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class MySqlFunctionCount extends MySqlFieldFunction {
     public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+        String sqlFunctionName = field.getFunc().getName().toString().toUpperCase();
+
         StringBuilder sb = new StringBuilder();
         String entityId = field.getEntity();
         if (entityId == null)
             entityId = dataQueryDTO.getEntities()[0];
 
-        sb.append("COUNT(");
-        if (field.getFunc().getParams().containsKey("all"))
-            sb.append("*");
-        else{
+        sb.append(sqlFunctionName);
+        sb.append("(");
 
-            if (field.getFunc().getParams() != null)
+        if (field.getFunc().getParams() != null) {
+            if (field.getFunc().getParams().containsKey("all"))
+                sb.append("*");
+            else {
                 if (field.getFunc().getParams().containsKey("distinct"))
                     sb.append("DISTINCT ");
-
-            sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
+                sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
+            }
         }
 
         sb.append(")");
