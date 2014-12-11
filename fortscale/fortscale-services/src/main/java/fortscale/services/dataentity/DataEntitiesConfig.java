@@ -290,13 +290,24 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
     }
 
     public Boolean getFieldIsLogicalOnly(String entityId, String fieldId) throws InvalidQueryException{
-        DataEntityFieldConfig fieldConfig = getFieldFromCache(entityId, fieldId);
-        if (fieldConfig.isLogicalOnly() != null)
-            return fieldConfig.isLogicalOnly();
+        return getFieldFlag("is_logical_only", entityId, fieldId);
+    }
 
-        String isLogicalOnlyStr = getExtendableValue(entityId, "field", fieldId, "is_logical_only");
-        fieldConfig.setLogicalOnly(isLogicalOnlyStr.equalsIgnoreCase("true"));
-        return fieldConfig.isLogicalOnly();
+    public Boolean getFieldIsExplicit(String entityId, String fieldId) throws InvalidQueryException{
+        return getFieldFlag("explicit", entityId, fieldId);
+    }
+
+    private Boolean getFieldFlag(String flagName, String entityId, String fieldId) throws InvalidQueryException{
+        DataEntityFieldConfig fieldConfig = getFieldFromCache(entityId, fieldId);
+        Boolean flagValue = fieldConfig.getFlag(flagName);
+        if (flagValue != null)
+            return flagValue;
+
+        String flagValueStr = getExtendableValue(entityId, "field", fieldId, flagName);
+        flagValue = flagValueStr != null && flagValueStr.equalsIgnoreCase("true");
+        fieldConfig.setFlag(flagName, flagValue);
+        return flagValue;
+
     }
 
     public DataEntityFieldConfig getFieldConfig(String entityId, String fieldId){

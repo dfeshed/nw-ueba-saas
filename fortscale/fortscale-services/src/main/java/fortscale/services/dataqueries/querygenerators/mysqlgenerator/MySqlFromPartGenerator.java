@@ -19,13 +19,14 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         try {
             String entityId = dataQueryDTO.getEntities()[0];
-            String tableName = dataQueryDTO.getConditions() != null && isHighScore(entityId, dataQueryDTO.getConditions())
-                    ? dataEntitiesConfig.getEntityPerformanceTable(entityId)
-                    : dataEntitiesConfig.getEntityTable(entityId);
+            String tableName = dataEntitiesConfig.getEntityTable(entityId);
 
-            // For now the generator supports only single table queries. When joins are supported, need to add the logic here.
             StringBuilder sb = new StringBuilder("FROM ");
-            sb.append(tableName);
+
+            if (dataQueryDTO.getConditions() != null && isHighScore(entityId, dataQueryDTO.getConditions()))
+                sb.append(dataEntitiesConfig.getEntityPerformanceTable(entityId)).append(" as ").append(tableName);
+            else
+                sb.append(tableName);
 
             return sb.toString();
         }

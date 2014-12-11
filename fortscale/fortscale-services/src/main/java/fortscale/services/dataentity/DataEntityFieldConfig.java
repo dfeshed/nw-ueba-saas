@@ -1,5 +1,7 @@
 package fortscale.services.dataentity;
 
+import java.util.HashMap;
+
 /**
  * Created by Yossi on 10/11/2014.
  */
@@ -8,7 +10,8 @@ public class DataEntityFieldConfig {
     private String column;
     private String score;
     private QueryValueType type;
-    private Boolean logicalOnly;
+
+    HashMap<String, Boolean> flags = new HashMap<>();
 
     public Boolean getDefaultEnabled() {
         return defaultEnabled;
@@ -53,10 +56,26 @@ public class DataEntityFieldConfig {
     }
 
     public Boolean isLogicalOnly() {
-        return logicalOnly;
+        return flags.get("is_logical_only");
     }
 
     public void setLogicalOnly(Boolean logicalOnly) {
-        this.logicalOnly = logicalOnly;
+        flags.put("is_logical_only", logicalOnly);
+    }
+
+    public Boolean isExplicit(){
+        return flags.get("explicit");
+    }
+
+    public void setExplicit(Boolean explicit){
+        flags.put("explicit", explicit);
+    }
+
+    public Boolean getFlag(String flagName){
+        return flags.get(flagName);
+    }
+
+    public void setFlag(String flagName, Boolean value){
+        flags.put(flagName, value);
     }
 }

@@ -50,11 +50,15 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator {
 		return sb.toString();
 	}
 
-    private List<DataQueryField> getAllEntityFields(String entityId){
+    private List<DataQueryField> getAllEntityFields(String entityId) throws InvalidQueryException{
         List<String> fieldIds = dataEntitiesConfig.getAllEntityFields(entityId);
         ArrayList<DataQueryField> fields = new ArrayList<DataQueryField>();
 
         for(String fieldId: fieldIds){
+            // Explicit fields should be explicitly requested in the fields list, so they aren't returned when all fields are specified.
+            if (dataEntitiesConfig.getFieldIsExplicit(entityId, fieldId))
+                continue;
+
             DataQueryField field = new DataQueryField();
             field.setId(fieldId);
             fields.add(field);

@@ -47,7 +47,7 @@ public class MySqlFieldGeneratorTest extends DataQueryGeneratorTest{
      */
     public void testAllFieldsField() throws Exception {
         String sqlStr = mySqlFieldGenerator.generateSql(allFields, joinDTO);
-        String expectedString = entityTable + ".source_machine_column, " + entityTable + ".event_time_column";
+        String expectedString = entityTable + ".source_machine_column as 'source_machine', " + entityTable + ".event_time_column as 'event_time'";
         assertEquals("Field SQL generator for all fields of an entity" , expectedString, sqlStr);
     }
 }

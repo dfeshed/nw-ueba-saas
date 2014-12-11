@@ -13,29 +13,30 @@ import org.springframework.stereotype.Component;
  * Factory for creating DataQueryRunner
  */
 @Component
-public class DataQueryRunnerFactory{
+public class DataQueryRunnerFactory {
 
-    @Autowired
-    private DataEntitiesConfig dataEntitiesConfig;
+	@Autowired
+	private DataEntitiesConfig dataEntitiesConfig;
 
 	@Autowired
 	private MySqlQueryRunner mySqlQueryRunner;
 
 	/**
 	 * Get the relevant query runner according to DTO
-	 * @param dataQueryDTO the query object
+	 * 
+	 * @param dataQueryDTO
+	 *            the query object
 	 * @return query runner
 	 */
-	public DataQueryRunner getDataQueryRunner(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
-		if (dataQueryDTO.getEntities().length > 1)
-			throw new InvalidQueryException("Queries with more than one entity are not supported yet.");
-		
-        SupportedDBType type = dataEntitiesConfig.getEntityDbType(dataQueryDTO.getEntities()[0]);
+	public DataQueryRunner getDataQueryRunner(DataQueryDTO dataQueryDTO)
+			throws InvalidQueryException {
+		SupportedDBType type = dataEntitiesConfig.getEntityDbType(dataQueryDTO
+				.getEntities()[0]);
 
-        if (type == SupportedDBType.MySQL)
-		    return mySqlQueryRunner;
-        else
-            throw new InvalidQueryException("The DB type for entity " + dataQueryDTO.getEntities()[0] + " is not supported.");
+		if (type == SupportedDBType.MySQL)
+			return mySqlQueryRunner;
+		else
+			throw new InvalidQueryException("The DB type for entity "
+					+ dataQueryDTO.getEntities()[0] + " is not supported.");
 	}
-
 }
