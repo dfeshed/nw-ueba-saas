@@ -39,6 +39,9 @@ public class MySqlQueryRunner implements DataQueryRunner {
     @Autowired
     private QueryPartGenerator mySqlOrderByPartGenerator;
 
+    @Autowired
+    private QueryPartGenerator mySqlJoinPartGenerator;
+
     // runner for impala
 
     @Autowired
@@ -69,6 +72,7 @@ public class MySqlQueryRunner implements DataQueryRunner {
     	QueryPartGenerator[] partGenerators = new QueryPartGenerator[]{
                 mySqlSelectPartGenerator,
                 mySqlFromPartGenerator,
+                mySqlJoinPartGenerator,
                 mySqlWherePartGenerator,
                 mySqlGroupByPartGenerator,
                 mySqlOrderByPartGenerator,

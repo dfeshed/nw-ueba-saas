@@ -34,6 +34,12 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 	 */
     private List<DataEntity> allDataEntities;
 
+    /**
+     * Gets a DataEntityConfig object from cache, or creates a new one under the specified entityId if not found.
+     * DOES NOT get the DataEntityConfig data itself, just creates the object in cache!
+     * @param entityId
+     * @return
+     */
     private DataEntityConfig getEntityFromCache(String entityId){
         DataEntityConfig entityConfig = entitiesCache.get(entityId);
         if(entityConfig == null){
@@ -281,6 +287,32 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 
         fieldConfig.setColumn(column);
         return column;
+    }
+
+    public Boolean getFieldIsLogicalOnly(String entityId, String fieldId) throws InvalidQueryException{
+        return getFieldFlag(DataEntityFieldConfig.IS_LOGICAL_ONLY, entityId, fieldId);
+    }
+
+    public Boolean getFieldIsExplicit(String entityId, String fieldId) throws InvalidQueryException{
+        return getFieldFlag(DataEntityFieldConfig.EXPLICIT, entityId, fieldId);
+    }
+
+    private Boolean getFieldFlag(String flagName, String entityId, String fieldId) throws InvalidQueryException{
+        DataEntityFieldConfig fieldConfig = getFieldFromCache(entityId, fieldId);
+        Boolean flagValue = fieldConfig.getFlag(flagName);
+        if (flagValue != null)
+            return flagValue;
+
+        String flagValueStr = getExtendableValue(entityId, "field", fieldId, flagName);
+        flagValue = flagValueStr != null && flagValueStr.equalsIgnoreCase("true");
+        fieldConfig.setFlag(flagName, flagValue);
+        return flagValue;
+
+    }
+
+    public DataEntityFieldConfig getFieldConfig(String entityId, String fieldId){
+        DataEntityFieldConfig fieldConfig = getFieldFromCache(entityId, fieldId);
+        return fieldConfig;
     }
 
     /**

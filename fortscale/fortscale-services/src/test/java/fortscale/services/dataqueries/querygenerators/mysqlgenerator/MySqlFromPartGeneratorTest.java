@@ -31,7 +31,7 @@ public class MySqlFromPartGeneratorTest extends DataQueryGeneratorTest{
 					throws Exception {
 
 		String sqlStr = mySqlFromPartGenerator.generateQueryPart(dataQueryDTO1);
-		String expectedString = "FROM ldapauth_top";
+		String expectedString = "FROM ldapauth_top as ldapauth";
 		assertEquals("SQL From Part for DTO1 (top)" , expectedString, sqlStr);
 
 	}
