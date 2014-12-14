@@ -23,10 +23,6 @@
 					<key>morphlineFile</key>
 					<value>${readSecEvtRouter_splunk.morphline}</value>
 				</entry>
-                <entry>
-                    <key>processComputerViaRouteYesNo</key>
-                    <value>${securityEvents.ETL.processComputerViaRouteYesNo}</value>
-                </entry>
 			</job-data-map>
 		</job>		
 	</schedule>
