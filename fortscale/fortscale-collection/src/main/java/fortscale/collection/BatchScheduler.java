@@ -1,7 +1,5 @@
 package fortscale.collection;
 
-import java.util.Arrays;
-
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -9,6 +7,8 @@ import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.Arrays;
 
 /**
  * Batch application scheduler for jobs execution
@@ -119,6 +119,8 @@ public class BatchScheduler {
 		startJob("Group_Membership_Scoring", "AD", params);
 		startJob("Fetch", "DHCP", params);
 		startJob("ETL", "DHCP", params);
+        startJob("Fetch4624", "SecurityEvents", params);
+        startJob("Comp4624_ETL", "SecurityEvents", params);
 		startJob("Fetch", "SecurityEvents", params);
 		startJob("Route_ETL", "SecurityEvents", params);
 		startJob("Comp_ETL", "SecurityEvents", params);
