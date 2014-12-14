@@ -23,11 +23,13 @@ public class MySqlJoinPartGenerator implements QueryPartGenerator {
         if (dataQueryDTO.getJoin() == null)
             return "";
 
+        SupportedDBType mainEntityType = dataEntitiesConfig.getEntityDbType(dataQueryDTO.getEntities()[0]);
+
         StringBuilder sb = new StringBuilder();
         for(DataQueryJoin join: dataQueryDTO.getJoin()){
             try {
-                if (dataEntitiesConfig.getEntityDbType(join.getEntity()) != SupportedDBType.MySQL)
-                    continue;
+                if (dataEntitiesConfig.getEntityDbType(join.getEntity()) != mainEntityType)
+                    throw new InvalidQueryException("Entity join between " + join.getEntity() + " and " + dataQueryDTO.getEntities()[0] + " is not supported at the moment, since they use different technologies.");
 
                 sb.append(join.getType().name()).append(" JOIN ");
                 sb.append(dataEntitiesConfig.getEntityTable(join.getEntity()));
