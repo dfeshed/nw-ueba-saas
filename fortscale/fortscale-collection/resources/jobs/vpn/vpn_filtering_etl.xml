@@ -21,7 +21,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>${vpn_ASA.filtering.morphline}</value>
+					<value>${vpn.filtering.morphline}</value>
 				</entry>				
 			</job-data-map>
 		</job>		

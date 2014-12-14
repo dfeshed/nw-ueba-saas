@@ -33,7 +33,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>${readSSH_cisco.morphline}</value>
+					<value>${readSSH.morphline}</value>
 				</entry>
 				<entry>
 					<key>hadoopPath</key>
