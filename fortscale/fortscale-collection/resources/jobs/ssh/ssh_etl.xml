@@ -33,7 +33,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>file:resources/conf-files/readSSH_centos.conf</value>
+					<value>${readSSH_cisco.morphline}</value>
 				</entry>
 				<entry>
 					<key>hadoopPath</key>

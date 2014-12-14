@@ -98,6 +98,7 @@
 		<hive.version>0.12.0-cdh5.0.2</hive.version>
 		<pigunit.version>0.12.0-cdh5.0.2</pigunit.version>
 		<pig.version>0.12.0-cdh5.0.2</pig.version>
+		<JAVA_HOME>/usr/local/jdk1.7.0_71</JAVA_HOME>
 		<!-- eclipse plugins versions -->
 		
 	</properties>
