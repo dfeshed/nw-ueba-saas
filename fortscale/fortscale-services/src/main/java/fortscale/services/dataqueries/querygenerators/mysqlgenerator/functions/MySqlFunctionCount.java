@@ -31,7 +31,9 @@ public class MySqlFunctionCount extends MySqlFieldFunction {
                 sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
             }
         }
-
+        else
+        	sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
+        
         sb.append(")");
         return sb.toString();
     }

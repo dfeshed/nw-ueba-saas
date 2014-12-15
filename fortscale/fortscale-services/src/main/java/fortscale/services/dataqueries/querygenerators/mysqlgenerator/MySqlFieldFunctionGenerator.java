@@ -32,9 +32,9 @@ public class MySqlFieldFunctionGenerator {
         switch(field.getFunc().getName()){
             case count: return mySqlFunctionCount.generateSql(field, dataQueryDTO);
             case to_date: return mySqlFunctionToDate.generateSql(field, dataQueryDTO);
-            case min: return mySqlFunctionAggregate.generateSql(field, dataQueryDTO);
-            case max: return mySqlFunctionAggregate.generateSql(field, dataQueryDTO);
-            case avg: return mySqlFunctionAggregate.generateSql(field, dataQueryDTO);
+            case min:
+            case max:
+            case avg:
             case sum: return mySqlFunctionAggregate.generateSql(field, dataQueryDTO);
             default:
                 throw new InvalidQueryException(String.format("There's no implementation for field function %s.", field.getFunc().getName()));
