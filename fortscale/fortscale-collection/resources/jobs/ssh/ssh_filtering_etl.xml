@@ -21,7 +21,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>file:resources/conf-files/sshEventsFiltering.conf</value>
+					<value>${sshEventsFiltering.morphline}</value>
 				</entry>				
 			</job-data-map>
 		</job>		

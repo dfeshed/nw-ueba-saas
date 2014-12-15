@@ -22,28 +22,28 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>file:resources/conf-files/readSecEvt_splunk.conf</value>
+					<value>${readSecEvt_splunk.morphline}</value>
 				</entry>
 				
 				<!--  4624 morphline -->
 				<entry>
 					<key>morphlineFile4624</key>
-					<value>file:resources/conf-files/processSecEvt4624.conf</value>
+					<value>${processSecEvt4624.morphline}</value>
 				</entry>
 				<!--  4769 morphline  -->
 				<entry>
 					<key>morphlineFile4769</key>
-					<value>file:resources/conf-files/processSecEvt4769.conf</value>
+					<value>${processSecEvt4769.morphline}</value>
 				</entry>
 				<!--  4768 morphline -->
 				<entry>
 					<key>morphlineFile4768</key>
-					<value>file:resources/conf-files/processSecEvt4768.conf</value>
+					<value>${processSecEvt4768.morphline}</value>
 				</entry>
 				<!--  4771 morphline -->
 				<entry>
 					<key>morphlineFile4771</key>
-					<value>file:resources/conf-files/processSecEvt4771.conf</value>
+					<value>${processSecEvt4771.morphline}</value>
 				</entry>
 				
 				<entry>
