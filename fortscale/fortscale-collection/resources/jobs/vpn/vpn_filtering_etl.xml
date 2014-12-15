@@ -21,7 +21,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>file:resources/conf-files/vpn_ASA_Cisco_filtering.conf</value>
+					<value>${vpn.filtering.morphline}</value>
 				</entry>				
 			</job-data-map>
 		</job>		
