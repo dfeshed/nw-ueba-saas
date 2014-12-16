@@ -142,8 +142,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 
         MySqlOperator operator = MySqlConditionOperators.getOperator(conditionField.getOperator());
 
-
-        if (operator.requiresValue && conditionField.getValue() == null)
+        if (operator.requiresValue && conditionField.getValue() == null && conditionField.getValueField() == null)
             throw new InvalidQueryException("Can't create MySQL query, the " + conditionField.getOperator().name() + " operator requires a value, but none was specified.");
 
         sb.append(operator.sqlOperator);
@@ -153,7 +152,10 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
         if (entityId == null)
             entityId = dataQueryDTO.getEntities()[0];
 
-        sb.append(mySqlValueGenerator.generateSql(conditionField.getValue(), dataEntitiesConfig.getFieldType(entityId , conditionField.getField().getId(), !mapToColumn)));
+        if (conditionField.getValueField() != null)
+            sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, true));
+        else
+            sb.append(mySqlValueGenerator.generateSql(conditionField.getValue(), dataEntitiesConfig.getFieldType(entityId , conditionField.getField().getId(), !mapToColumn)));
 
         return sb.toString();
     }

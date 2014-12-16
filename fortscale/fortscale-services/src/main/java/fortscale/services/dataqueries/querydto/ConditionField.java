@@ -8,6 +8,7 @@ import fortscale.services.dataentity.QueryValueType;
 public class ConditionField extends Term {
     private DataQueryField field;
     private QueryOperator operator;
+    private DataQueryField valueField;
 
     private String value;
     private QueryValueType valueType;
@@ -36,5 +37,13 @@ public class ConditionField extends Term {
 
     public void setValueType(QueryValueType valueType) {
         this.valueType = valueType;
+    }
+
+    public DataQueryField getValueField() {
+        return valueField;
+    }
+
+    public void setValueField(DataQueryField valueField) {
+        this.valueField = valueField;
     }
 }
