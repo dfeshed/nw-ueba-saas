@@ -41,7 +41,11 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator {
             		fieldsSql.add(field.getAlias());
                 else{
                     try {
-                        DataEntity entity = dataEntitiesConfig.getLogicalEntity(dataQueryDTO.getEntities()[0]);
+                    	String entityId = field.getEntity();
+                    	if (entityId == null)
+                			entityId = dataQueryDTO.getEntities()[0];
+                    	
+                        DataEntity entity = dataEntitiesConfig.getLogicalEntity(entityId);
                         if (entity == null)
                             throw new InvalidQueryException("Unknown entity, '" + dataQueryDTO.getEntities()[0] + "'");
 
