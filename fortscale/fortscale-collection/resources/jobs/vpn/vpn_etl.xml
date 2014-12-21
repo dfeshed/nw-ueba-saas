@@ -33,7 +33,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>file:resources/conf-files/readVPN_openVPN.conf</value>
+					<value>${readVPN.morphline}</value>
 				</entry>
 				<entry>
 					<key>hadoopPath</key>
