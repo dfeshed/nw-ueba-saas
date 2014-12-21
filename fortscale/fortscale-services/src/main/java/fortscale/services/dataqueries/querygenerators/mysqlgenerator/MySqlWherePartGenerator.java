@@ -27,10 +27,6 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
     @Autowired
     MySqlValueGenerator mySqlValueGenerator;
 
-    static {
-
-
-    }
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
 
