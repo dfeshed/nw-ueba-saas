@@ -30,6 +30,8 @@ public abstract class MySqlFunctionTest {
         Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO.getEntities()[0], "destination_machine")).thenReturn("service_name");
         Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO.getEntities()[0], "event_time")).thenReturn("date_time");
         Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO.getEntities()[0], "event_score")).thenReturn("event_score");
+        Mockito.when(dataEntitiesConfig.getFieldColumn("users", "whenCreated")).thenReturn("whenCreated");
+        Mockito.when(dataEntitiesConfig.getFieldColumn("users", "whenUpdated")).thenReturn("whenUpdated");
         function.setDataEntitiesConfig(dataEntitiesConfig);
     }
 
