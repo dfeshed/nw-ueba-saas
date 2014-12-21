@@ -3,6 +3,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -11,6 +12,7 @@ import java.util.Date;
 /**
  * Created by Yossi on 18/12/2014.
  */
+@Component
 public class MySqlFunctionDateDiff extends MySqlFieldFunction {
     final static String MISSING_START_PARAM_ERROR = "datediff function requires either a startDateField param or field ID.";
 
