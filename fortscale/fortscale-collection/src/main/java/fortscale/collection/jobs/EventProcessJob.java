@@ -269,12 +269,13 @@ public class EventProcessJob implements Job {
 	
 	protected boolean processLine(String line) throws IOException {
 		// process each line
-		Record record = morphline.process(line);
-		if(record == null){
+		Record rec = morphline.process(line);
+		Record record = null;
+		if(rec == null){
 			return false;
 		}
 		if (morphlineEnrichment != null) {
-			record = morphlineEnrichment.process(record);
+			record = morphlineEnrichment.process(rec);
 			if (record == null) {
 				return false;
 			}
