@@ -1,7 +1,10 @@
 package fortscale.services.ipresolving;
 
-import java.util.regex.Pattern;
+package fortscale.services.ipresolving;
 
+import fortscale.domain.events.ComputerLoginEvent;
+import fortscale.domain.events.DhcpEvent;
+import fortscale.services.ComputerService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.events.ComputerLoginEvent;
-import fortscale.domain.events.DhcpEvent;
-import fortscale.services.ComputerService;
+import java.util.regex.Pattern;
 
 /**
  * IP resolving service that aggregate results from all available providers to determine the
@@ -48,13 +49,20 @@ public class IpToHostnameResolver {
 	@Value("${ip2hostname.dnsProvider.enabled:true}")
 	private boolean dnsProviderEnabled;
 	
+	private boolean shortName;
+	private boolean isRemoveLastDot;
 	
+
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
 	 * @param restrictToADName should we return only hostnames that appear in AD and leave un-resolved otherwise
 	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
 	 */
-	public String resolve(String ip, long timestamp, boolean restrictToADName) {
+	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName, boolean isRemoveLastDot) {
+		// Set normalizeHostname preferences
+		this.shortName = shortName;
+		this.isRemoveLastDot = isRemoveLastDot;
+		
 		// get hostname from file resolver
 		if (isFileProviderEnabled()) {
 			String hostname = normalizeHostname(fileResolver.getHostname(ip));
@@ -118,8 +126,15 @@ public class IpToHostnameResolver {
 	private String normalizeHostname(String hostname) {
 		if (StringUtils.isEmpty(hostname))
 			return null;
-		else
-			return (hostname.contains("."))? hostname.substring(0, hostname.indexOf('.')).toUpperCase() : hostname.toUpperCase();
+		
+		String retHostname = hostname.toUpperCase();
+		if (this.isRemoveLastDot)
+			retHostname = retHostname.endsWith(".") ? retHostname.substring(0, retHostname.length()-1) : retHostname ; 
+		
+		if (this.shortName)
+			retHostname = retHostname.contains(".") ? retHostname.substring(0, hostname.indexOf('.')) : retHostname ;
+
+		return retHostname;
 	}
 	
 	private boolean isHostnameInBlacklist(String hostname) {

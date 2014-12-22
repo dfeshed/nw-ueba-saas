@@ -1,8 +1,8 @@
 package fortscale.collection.morphlines.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-
+import com.typesafe.config.Config;
+import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.services.ipresolving.IpToHostnameResolver;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -11,10 +11,8 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.typesafe.config.Config;
-
-import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.ipresolving.IpToHostnameResolver;
+import java.util.Collection;
+import java.util.Collections;
 
 public final class IpToHostnameBuilder implements CommandBuilder {
 	
@@ -41,6 +39,8 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 		private final String timeStamp;
 		private final String outputFieldName;
 		private final boolean restrictToADName;
+		private boolean shortName = true;
+		private boolean isRemoveLastDot = false;		
 			
 		public IpToHostname(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -48,7 +48,8 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 			this.timeStamp = getConfigs().getString(config, "timeStamp");
 			this.outputFieldName = getConfigs().getString(config, "outputFieldName");
 			this.restrictToADName = getConfigs().getBoolean(config, "restrictToADName", false);
-			
+			this.shortName = getConfigs().getBoolean(config, "short_name", true);
+			this.isRemoveLastDot = getConfigs().getBoolean(config, "remove_last_dot", false);			
 			validateArguments();
 		}
 
@@ -76,7 +77,7 @@ public final class IpToHostnameBuilder implements CommandBuilder {
 			if (ip==null || ipToHostnameResolver==null)
 				return STRING_EMPTY;
 			
-			String hostname = ipToHostnameResolver.resolve(ip, ts, restrictToADName);
+			String hostname = ipToHostnameResolver.resolve(ip, ts, restrictToADName, shortName, isRemoveLastDot);
 			return (hostname==null)? STRING_EMPTY : hostname;
 		}
 	}

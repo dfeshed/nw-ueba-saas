@@ -1,17 +1,17 @@
 package fortscale.services.ipresolving;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
+import fortscale.domain.events.ComputerLoginEvent;
+import fortscale.domain.events.DhcpEvent;
+import fortscale.services.ComputerService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import fortscale.domain.events.ComputerLoginEvent;
-import fortscale.domain.events.DhcpEvent;
-import fortscale.services.ComputerService;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.when;
 
 public class IpToHostnameResolverTest {
 
@@ -50,7 +50,18 @@ public class IpToHostnameResolverTest {
 		when(dnsResolver.getHostname("192.168.1.1", 155)).thenReturn("wowo");
 		when(computerService.isHostnameInAD("wowo")).thenReturn(false);
 		
-		String actual = resolver.resolve("192.168.1.1", 155L, true);
+		String actual = resolver.resolve("192.168.1.1", 155L, true, true, false);
+		assertNull(actual);
+	}
+
+	@Test
+	public void resolve_should_return_null_if_dns_name_is_in_blacklist() {
+		resolver.setDhcpProviderEnabled(false);
+		resolver.setFileProviderEnabled(false);
+		resolver.setLoginProviderEnabled(false);
+		when(dnsResolver.getHostname("192.168.1.1", 155)).thenReturn("localhost");
+		when(computerService.isHostnameInAD("localhost")).thenReturn(true);
+
 		assertNull(actual);		
 	}
 	
@@ -62,7 +73,7 @@ public class IpToHostnameResolverTest {
 		when(dnsResolver.getHostname("192.168.1.1", 155)).thenReturn("localhost");
 		when(computerService.isHostnameInAD("localhost")).thenReturn(true);
 		
-		String actual = resolver.resolve("192.168.1.1", 155L, true);
+		String actual = resolver.resolve("192.168.1.1", 155L, true, true, false);
 		assertNull(actual);
 	}
 	
@@ -78,7 +89,7 @@ public class IpToHostnameResolverTest {
 		when(computerService.isHostnameInAD("WOWO")).thenReturn(true);
 		when(computerService.isHostnameInAD("PC1")).thenReturn(false);
 		
-		String actual = resolver.resolve("192.168.1.1", 155L, true);
+		String actual = resolver.resolve("192.168.1.1", 155L, true, true, false);
 		assertEquals("WOWO", actual);
 	}
 	
@@ -91,7 +102,7 @@ public class IpToHostnameResolverTest {
 		when(dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", 155)).thenReturn(dhcpEvent);
 		when(dnsResolver.getHostname("192.168.1.1", 155)).thenReturn("wowo");
 		
-		String actual = resolver.resolve("192.168.1.1", 155L, false);
+		String actual = resolver.resolve("192.168.1.1", 155L, false, true, false);
 		assertEquals("WOWO", actual);
 	}
 	
@@ -111,7 +122,7 @@ public class IpToHostnameResolverTest {
 		resolver.setFileProviderEnabled(false);
 		resolver.setLoginProviderEnabled(false);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertNull(actual);
 	}
 	
@@ -119,7 +130,7 @@ public class IpToHostnameResolverTest {
 	public void resolve_should_first_return_hostname_from_mapping_file_if_it_exists_there() {
 		when(fileResolver.getHostname("192.168.1.1")).thenReturn("pc1");
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertEquals("PC1", actual);
 	}
 	
@@ -130,7 +141,7 @@ public class IpToHostnameResolverTest {
 		loginEvent.setHostname("pc1");
 		when(computerLoginResolver.getComputerLoginEvent("192.168.1.1", 155)).thenReturn(loginEvent);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertEquals("PC1", actual);
 	}
 	
@@ -146,7 +157,7 @@ public class IpToHostnameResolverTest {
 		dhcpEvent.setTimestampepoch(100L);
 		when(dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", 155)).thenReturn(dhcpEvent);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertEquals("PC2", actual);
 	}
 	
@@ -162,7 +173,7 @@ public class IpToHostnameResolverTest {
 		dhcpEvent.setTimestampepoch(100L);
 		when(dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", 155)).thenReturn(dhcpEvent);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertEquals("PC1", actual);
 	}
 	
@@ -178,7 +189,7 @@ public class IpToHostnameResolverTest {
 		dhcpEvent.setTimestampepoch(100L);
 		when(dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", 155)).thenReturn(dhcpEvent);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertEquals("PC1", actual);
 	}
 	
@@ -192,7 +203,7 @@ public class IpToHostnameResolverTest {
 		when(dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", 155)).thenReturn(dhcpEvent);
 		when(computerService.isHostnameInAD("pc1")).thenReturn(false);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, true);
+		String actual = resolver.resolve("192.168.1.1", 155, true, true, false);
 		assertNull(actual);
 	}
 	
@@ -205,7 +216,7 @@ public class IpToHostnameResolverTest {
 		when(dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", 155)).thenReturn(dhcpEvent);
 		when(computerService.isHostnameInAD("pc1")).thenReturn(false);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertEquals("PC1", actual);
 	}
 	
@@ -219,7 +230,7 @@ public class IpToHostnameResolverTest {
 		when(dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", 155)).thenReturn(dhcpEvent);
 		when(computerService.isHostnameInAD("pc1")).thenReturn(false);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertEquals("PC1", actual);
 	}
 	
@@ -235,7 +246,7 @@ public class IpToHostnameResolverTest {
 		when(dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", 155)).thenReturn(dhcpEvent);
 		when(computerService.isHostnameInAD("pc1")).thenReturn(false);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, true);
+		String actual = resolver.resolve("192.168.1.1", 155, true, true, false);
 		assertNull(actual);
 	}
 	
@@ -248,7 +259,7 @@ public class IpToHostnameResolverTest {
 		dhcpEvent.setHostname("localhost");
 		when(dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", 155)).thenReturn(dhcpEvent);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertNull(actual);
 	}
 	
@@ -260,7 +271,7 @@ public class IpToHostnameResolverTest {
 		when(dnsResolver.getHostname("192.168.1.1", 155)).thenReturn("localhost");
 		when(computerService.isHostnameInAD("pc1")).thenReturn(false);
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertNull(actual);
 	}
 	
@@ -268,7 +279,7 @@ public class IpToHostnameResolverTest {
 	public void resolve_should_return_hostname_is_capital_letters() {
 		when(fileResolver.getHostname("192.168.1.1")).thenReturn("me");
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertEquals("ME", actual);
 	}
 	
@@ -276,8 +287,39 @@ public class IpToHostnameResolverTest {
 	public void resolve_should_return_hostname_up_to_first_dot() {
 		when(fileResolver.getHostname("192.168.1.1")).thenReturn("me.fortscale.dom");
 		
-		String actual = resolver.resolve("192.168.1.1", 155, false);
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, false);
 		assertEquals("ME", actual);
 	}
 	
+	@Test
+	public void resolve_should_return_hostname_as_full_dns_name() {
+		when(fileResolver.getHostname("192.168.1.1")).thenReturn("me.fortscale.dom");
+
+		String actual = resolver.resolve("192.168.1.1", 155, false, false, false);
+		assertEquals("ME.FORTSCALE.DOM", actual);
+}
+
+	@Test
+	public void resolve_should_return_hostname_without_last_dot() {
+		when(fileResolver.getHostname("192.168.1.1")).thenReturn("me.fortscale.dom.");
+
+		String actual = resolver.resolve("192.168.1.1", 155, false, false, true);
+		assertEquals("ME.FORTSCALE.DOM", actual);
+	}
+
+	@Test
+	public void resolve_should_return_hostname_without_dots() {
+		when(fileResolver.getHostname("192.168.1.1")).thenReturn("me.fortscale.dom");
+
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, true);
+		assertEquals("ME", actual);
+	}
+	
+	@Test
+	public void resolve_should_return_hostname_without_dots_2() {
+		when(fileResolver.getHostname("192.168.1.1")).thenReturn("me.fortscale.dom.");
+
+		String actual = resolver.resolve("192.168.1.1", 155, false, true, true);
+		assertEquals("ME", actual);
+	}
 }
