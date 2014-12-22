@@ -37,7 +37,7 @@
 				</entry>
 				<entry>
 					<key>morphlineEnrichment</key>
-					<value>${readVPN.morphline}</value>
+					<value>${readVPN.morphline.enrichment}</value>
 				</entry>
 				<entry>
 					<key>hadoopPath</key>
