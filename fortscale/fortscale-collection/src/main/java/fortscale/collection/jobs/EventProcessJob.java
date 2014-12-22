@@ -63,6 +63,7 @@ public class EventProcessJob implements Job {
 	
 	protected String filesFilter;
 	protected MorphlinesItemsProcessor morphline;
+	protected MorphlinesItemsProcessor morphlineEnrichment;
 	protected RecordToStringItemsProcessor recordToString;
 	protected String monitorId;
 	protected String hadoopPath;
@@ -113,6 +114,7 @@ public class EventProcessJob implements Job {
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 		
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
+		morphlineEnrichment = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineEnrichment");
 
         String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
         partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
@@ -270,6 +272,12 @@ public class EventProcessJob implements Job {
 		Record record = morphline.process(line);
 		if(record == null){
 			return false;
+		}
+		if (morphlineEnrichment != null) {
+			record = morphlineEnrichment.process(line);
+			if (record == null) {
+				return false;
+			}
 		}
 		String output = recordToString.process(record);
 		

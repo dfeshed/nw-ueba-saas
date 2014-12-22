@@ -36,6 +36,10 @@
 					<value>${readVPN.morphline}</value>
 				</entry>
 				<entry>
+					<key>morphlineEnrichment</key>
+					<value>${readVPN.morphline}</value>
+				</entry>
+				<entry>
 					<key>hadoopPath</key>
 					<value>${hdfs.user.data.vpn.path}</value>
 				</entry>
