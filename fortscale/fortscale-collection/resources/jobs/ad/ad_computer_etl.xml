@@ -45,7 +45,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>file:${collection.morphline.conf.ad.path}/readADDataComputers.conf</value>
+					<value>${ad.read.computers.morphline}</value>
 				</entry>
 				<entry>
 					<key>hadoopDirPath</key>
