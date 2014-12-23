@@ -2,12 +2,11 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
+import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 
@@ -17,13 +16,7 @@ import java.util.*;
  * Generate the "where" part of the query in MySql
  */
 @Component
-public class MySqlWherePartGenerator implements QueryPartGenerator {
-    @Autowired
-    MySqlFieldGenerator mySqlFieldGenerator;
-
-    @Autowired
-    DataEntitiesConfig dataEntitiesConfig;
-
+public class MySqlWherePartGenerator extends SingleQueryPartGenerator {
     @Autowired
     MySqlValueGenerator mySqlValueGenerator;
 
@@ -154,14 +147,6 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
             sb.append(mySqlValueGenerator.generateSql(conditionField.getValue(), dataEntitiesConfig.getFieldType(entityId , conditionField.getField().getId(), !mapToColumn)));
 
         return sb.toString();
-    }
-
-    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig) {
-        this.dataEntitiesConfig = dataEntitiesConfig;
-    }
-
-    public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator){
-        this.mySqlFieldGenerator = mySqlFieldGenerator;
     }
 
     public void setMySqlValueGenerator(MySqlValueGenerator mySqlValueGenerator){

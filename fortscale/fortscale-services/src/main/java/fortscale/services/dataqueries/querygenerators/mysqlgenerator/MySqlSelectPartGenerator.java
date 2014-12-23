@@ -1,13 +1,12 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryField;
+import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 import java.util.ArrayList;
@@ -17,13 +16,7 @@ import java.util.List;
  * Generates the SELECT part of the query in MySql - "SELECT field1, field2, field3..."
  */
 @Component
-public class MySqlSelectPartGenerator implements QueryPartGenerator {
-
-    @Autowired
-    MySqlFieldGenerator mySqlFieldGenerator;
-
-    @Autowired
-    DataEntitiesConfig dataEntitiesConfig;
+public class MySqlSelectPartGenerator extends SingleQueryPartGenerator {
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         StringBuilder sb = new StringBuilder("SELECT ");
@@ -66,14 +59,4 @@ public class MySqlSelectPartGenerator implements QueryPartGenerator {
 
         return fields;
     }
-
-
-    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig) {
-        this.dataEntitiesConfig = dataEntitiesConfig;
-    }
-
-    public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator) {
-        this.mySqlFieldGenerator = mySqlFieldGenerator;
-    }
-
 }

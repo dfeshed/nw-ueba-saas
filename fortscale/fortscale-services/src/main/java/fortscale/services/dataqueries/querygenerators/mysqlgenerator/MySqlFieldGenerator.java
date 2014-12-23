@@ -92,19 +92,24 @@ public class MySqlFieldGenerator {
         if (entityId == null)
             entityId = dataQueryDTO.getEntities()[0];
 
-        List<String> fieldIds = dataEntitiesConfig.getAllEntityFields(entityId);
-        for(String fieldId: fieldIds){
-            // Explicit fields should be explicitly requested in the fields list, so they aren't returned when all fields are specified.
-            if (dataEntitiesConfig.getFieldIsExplicit(entityId, fieldId))
-                continue;
+        // If selecting from a subquery, the available fields are decided from inside the subquery, so it's OK to use '*'.
+        if (entityId == null && dataQueryDTO.getSubQuery() != null)
+            fieldSB.append("*");
+        else {
+            List<String> fieldIds = dataEntitiesConfig.getAllEntityFields(entityId);
+            for (String fieldId : fieldIds) {
+                // Explicit fields should be explicitly requested in the fields list, so they aren't returned when all fields are specified.
+                if (dataEntitiesConfig.getFieldIsExplicit(entityId, fieldId))
+                    continue;
 
-            addFieldTable(entityId, fieldId, fieldSB);
-            fieldSB.append(dataEntitiesConfig.getFieldColumn(entityId, fieldId));
-            fieldSB.append(" as '").append(fieldId).append("'");
-            fieldSB.append(", ");
+                addFieldTable(entityId, fieldId, fieldSB);
+                fieldSB.append(dataEntitiesConfig.getFieldColumn(entityId, fieldId));
+                fieldSB.append(" as '").append(fieldId).append("'");
+                fieldSB.append(", ");
+            }
+            if (fieldSB.length() > 2)
+                fieldSB.delete(fieldSB.length() - 2, fieldSB.length());
         }
-        if (fieldSB.length() > 2)
-            fieldSB.delete(fieldSB.length() - 2, fieldSB.length());
     }
 
     /**

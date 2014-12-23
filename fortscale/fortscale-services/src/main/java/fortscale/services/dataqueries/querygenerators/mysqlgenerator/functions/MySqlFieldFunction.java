@@ -19,4 +19,27 @@ public abstract class MySqlFieldFunction {
     public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){
         this.dataEntitiesConfig = dataEntitiesConfig;
     }
+
+    /**
+     * Gets the physical name of the field to use inside a function.
+     * @param field
+     * @param dataQueryDTO
+     * @return
+     * @throws InvalidQueryException
+     */
+    protected String getFieldName(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+        if (field.getId() != null){
+            String entityId = field.getEntity();
+            if (entityId == null && dataQueryDTO.getEntities() != null && dataQueryDTO.getEntities().length > 0) {
+                entityId = dataQueryDTO.getEntities()[0];
+
+                return dataEntitiesConfig.getFieldColumn(entityId, field.getId());
+            }
+        }
+        else if (field.getFunc().getParams() != null && field.getFunc().getParams().containsKey("field")){
+            return field.getFunc().getParams().get("field");
+        }
+
+        return null;
+    }
 }

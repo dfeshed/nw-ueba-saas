@@ -2,31 +2,37 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
+import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 /**
  * Generate the "from" part of the query in MySql
  */
 @Component
-public class MySqlFromPartGenerator implements QueryPartGenerator {
+public class MySqlFromPartGenerator extends SingleQueryPartGenerator {
     @Autowired
-    DataEntitiesConfig dataEntitiesConfig;
+    MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator;
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         try {
-            String entityId = dataQueryDTO.getEntities()[0];
-            String tableName = dataEntitiesConfig.getEntityTable(entityId);
-
             StringBuilder sb = new StringBuilder("FROM ");
 
-            if (dataQueryDTO.getConditions() != null && isHighScore(entityId, dataQueryDTO.getConditions()))
-                sb.append(dataEntitiesConfig.getEntityPerformanceTable(entityId)).append(" as ").append(tableName);
-            else
-                sb.append(tableName);
+            if (dataQueryDTO.getSubQuery() != null){
+                sb.append(getSubQuerySql(dataQueryDTO.getSubQuery()));
+            }
+            else {
+                String entityId = dataQueryDTO.getEntities()[0];
+                String tableName = dataEntitiesConfig.getEntityTable(entityId);
+
+
+                if (dataQueryDTO.getConditions() != null && isHighScore(entityId, dataQueryDTO.getConditions()))
+                    sb.append(dataEntitiesConfig.getEntityPerformanceTable(entityId)).append(" as ").append(tableName);
+                else
+                    sb.append(tableName);
+            }
 
             return sb.toString();
         }
@@ -64,10 +70,14 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
         return false;
     }
 
-	// Getters and setters
+    String getSubQuerySql(MultipleDataQueryDTO subQuery) throws InvalidQueryException{
+        StringBuilder stringbuilder = new StringBuilder("(");
+        stringbuilder.append(mySqlMultipleQueryGenerator.generateQueryPart(subQuery));
+        stringbuilder.append(") as t1");
+        return stringbuilder.toString();
+    }
 
-    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig) {
-
-        this.dataEntitiesConfig = dataEntitiesConfig;
+    public void setMySqlMultipleQueryGenerator(MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator){
+        this.mySqlMultipleQueryGenerator = mySqlMultipleQueryGenerator;
     }
 }

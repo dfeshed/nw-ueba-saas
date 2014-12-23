@@ -2,10 +2,9 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
-import fortscale.services.dataentity.QueryValueType;
+import fortscale.services.dataqueries.DataQueryGeneratorTest;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryField;
-import fortscale.services.dataqueries.querydto.QuerySort;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -14,10 +13,8 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest{
+public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest {
 
-	private MySqlGroupByPartGenerator mySqlGroupByPartGenerator;
-	private MySqlFieldGenerator mySqlFieldGenerator;
 
 	private DataQueryDTO dataQueryDTO2;
 	private DataQueryDTO dataQueryDtoWithGroupByLogicalField;
@@ -25,12 +22,9 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest{
 	@Before
 	public void setUp()
 					throws Exception {
+        generator = new MySqlGroupByPartGenerator();
 
 		super.setUp();
-		mySqlGroupByPartGenerator = new MySqlGroupByPartGenerator();
-		mySqlFieldGenerator = Mockito.mock(MySqlFieldGenerator.class);
-		mySqlGroupByPartGenerator.setMySqlFieldGenerator(mySqlFieldGenerator);
-        mySqlGroupByPartGenerator.setDataEntitiesConfig(dataEntitiesConfig);
 
 		dataQueryDTO2 = mapper.readValue(dto1, DataQueryDTO.class);
 		ArrayList<DataQueryField> groupBy = new ArrayList<>();
@@ -85,19 +79,19 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest{
 					throws Exception {
 
 		// empty group-by
-		String sqlStr = mySqlGroupByPartGenerator.generateQueryPart(dataQueryDTO1);
+		String sqlStr = generator.generateQueryPart(dataQueryDTO1);
 		String expectedString = "";
 		assertEquals("SQL GroupBy Part for DTO1" , expectedString, sqlStr);
 
 		// 2 fields group by
-		sqlStr = mySqlGroupByPartGenerator.generateQueryPart(dataQueryDTO2);
+		sqlStr = generator.generateQueryPart(dataQueryDTO2);
 		expectedString = "GROUP BY aaa, bbb";
 		assertEquals("SQL GroupBy Part for DTO2" , expectedString, sqlStr);
 	}
 
     @Test
     public void testLogicalOnlyGroupBy() throws Exception{
-        String sqlStr = mySqlGroupByPartGenerator.generateQueryPart(dataQueryDtoWithGroupByLogicalField);
+        String sqlStr = generator.generateQueryPart(dataQueryDtoWithGroupByLogicalField);
         String expectedString = "GROUP BY logicalField";
         assertEquals("Logical-only GROUP BY SQL", expectedString, sqlStr);
     }

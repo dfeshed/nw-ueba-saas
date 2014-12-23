@@ -1,5 +1,6 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
+import fortscale.services.dataqueries.DataQueryGeneratorTest;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,20 +10,14 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
-
-	private MySqlSelectPartGenerator mySqlSelectPartGenerator;
-	private MySqlFieldGenerator mySqlFieldGenerator;
+public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest {
 
 	@Before
 	public void setUp()
 					throws Exception {
+        generator = new MySqlSelectPartGenerator();
 
 		super.setUp();
-		mySqlSelectPartGenerator = new MySqlSelectPartGenerator();
-		mySqlSelectPartGenerator.setDataEntitiesConfig(dataEntitiesConfig);
-		mySqlFieldGenerator = Mockito.mock(MySqlFieldGenerator.class);
-		mySqlSelectPartGenerator.setMySqlFieldGenerator(mySqlFieldGenerator);
 
 		ArrayList<String> fields = new ArrayList<String>();
 		fields.add("field1");
@@ -36,7 +31,7 @@ public class MySqlSelectPartGeneratorTest extends DataQueryGeneratorTest{
 	@Test
 	public void testGenerateQueryPart()
 					throws Exception {
-		String sqlStr = mySqlSelectPartGenerator.generateQueryPart(dataQueryDTO1);
+		String sqlStr = generator.generateQueryPart(dataQueryDTO1);
 		String expectedString = "SELECT someField, someField";
 		assertEquals("SQL Select Part for DTO1" , expectedString, sqlStr);
 		Mockito.verify(dataEntitiesConfig).getAllEntityFields("kerberos_logins");

@@ -1,8 +1,8 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataentity.SupportedDBType;
+import fortscale.services.dataqueries.DataQueryGeneratorTest;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querydto.DataQueryField;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 public class MySqlJoinPartGeneratorTest extends DataQueryGeneratorTest {
-    private MySqlJoinPartGenerator mySqlJoinPartGenerator;
     private String entityId, entityTable;
 
     public static String doubleJoinDTOJson = "{\"fields\":[{\"entity\":\"kerberos_logins\",\"allFields\":true},{\"entity\":\"users\",\"id\":\"displayName\"},{\"entity\":\"users\",\"id\":\"id\"},{\"entity\":\"users\",\"id\":\"is_user_administrator\"},{\"entity\":\"users\",\"id\":\"is_user_executive\"},{\"entity\":\"users\",\"id\":\"accountIsDisabled\"},{\"entity\":\"users\",\"id\":\"is_user_service\"},{\"entity\":\"users\",\"id\":\"followed\"}],\"conditions\":{\"type\":\"term\",\"operator\":\"AND\",\"terms\":[{\"field\":{\"id\":\"event_score\"},\"operator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":50,\"valueType\":\"NUMBER\"},{\"field\":{\"id\":\"event_time_utc\"},\"operator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":1418209915,\"valueType\":\"STRING\"},{\"field\":{\"id\":\"event_time_utc\"},\"operator\":\"lesserThanOrEquals\",\"type\":\"field\",\"value\":1418296315,\"valueType\":\"STRING\"}]},\"entities\":[\"kerberos_logins\"],\"join\":[{\"type\":\"RIGHT\",\"entity\":\"users\",\"left\":{\"entity\":\"kerberos_logins\",\"field\":\"normalized_username\"},\"right\":{\"entity\":\"users\",\"field\":\"normalized_username\"}},{\"entity\":\"ssh\",\"type\":\"LEFT\",\"left\":{\"entity\":\"users\",\"field\":\"normalized_username\"},\"right\":{\"entity\":\"ssh\",\"field\":\"normalized_username\"}}],\"sort\":[],\"limit\":50,\"offset\":0}";
@@ -21,10 +20,9 @@ public class MySqlJoinPartGeneratorTest extends DataQueryGeneratorTest {
     @Before
     public void setUp()
             throws Exception {
+        generator = new MySqlJoinPartGenerator();
 
         super.setUp();
-        mySqlJoinPartGenerator = new MySqlJoinPartGenerator();
-        mySqlJoinPartGenerator.setDataEntitiesConfig(dataEntitiesConfig);
 
         doubleJoinDTO = mapper.readValue(doubleJoinDTOJson, DataQueryDTO.class);
 
@@ -48,14 +46,14 @@ public class MySqlJoinPartGeneratorTest extends DataQueryGeneratorTest {
 
     @Test
     public void testSingleRightJoin() throws Exception {
-        String sqlStr = mySqlJoinPartGenerator.generateQueryPart(joinDTO);
+        String sqlStr = generator.generateQueryPart(joinDTO);
         String expectedString = "RIGHT JOIN users ON authentication_scores.normalized_username_column = users.username_column";
         assertEquals("RIGHT JOIN between kerberos_logins.normalized_username and users.username", expectedString, sqlStr);
     }
 
     @Test
     public void testDoubleJoin() throws Exception {
-        String sqlStr = mySqlJoinPartGenerator.generateQueryPart(doubleJoinDTO);
+        String sqlStr = generator.generateQueryPart(doubleJoinDTO);
         String expectedString = "RIGHT JOIN users ON authentication_scores.normalized_username_column = users.username_column LEFT JOIN ssh ON users.username_column = ssh.normalized_username_column";
         assertEquals("Double join - kerberos_loings-users, users-ssh", expectedString, sqlStr);
     }

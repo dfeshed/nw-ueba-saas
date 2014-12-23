@@ -2,6 +2,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.QueryValueType;
+import fortscale.services.dataqueries.DataQueryGeneratorTest;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import org.junit.Before;
@@ -12,13 +13,10 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
+public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 
 	private MySqlWherePartGenerator mySqlWherePartGenerator;
-	private MySqlFieldGenerator mySqlFieldGenerator;
 	private MySqlValueGenerator mySqlValueGenerator;
-	DataEntitiesConfig dataEntitiesConfig;
-
 
 	@Before
 	public void setUp()
@@ -27,12 +25,9 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest{
 		super.setUp();
 		mySqlValueGenerator = new MySqlValueGenerator();
 		mySqlWherePartGenerator = new MySqlWherePartGenerator();
-		dataEntitiesConfig = Mockito.mock(DataEntitiesConfig.class);
 
 		mySqlWherePartGenerator.setDataEntitiesConfig(dataEntitiesConfig);
-		mySqlFieldGenerator = new MySqlFieldGenerator();
 		mySqlFieldGenerator.setMySqlValueGenerator(mySqlValueGenerator);
-		mySqlFieldGenerator.setDataEntitiesConfig(dataEntitiesConfig);
 		mySqlWherePartGenerator.setMySqlFieldGenerator(mySqlFieldGenerator);
 		mySqlWherePartGenerator.setMySqlValueGenerator(mySqlValueGenerator);
 

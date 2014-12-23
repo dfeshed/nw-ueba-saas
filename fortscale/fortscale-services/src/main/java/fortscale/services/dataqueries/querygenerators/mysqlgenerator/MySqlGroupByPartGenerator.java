@@ -4,26 +4,20 @@ import java.util.ArrayList;
 
 import fortscale.services.dataentity.*;
 import fortscale.services.dataqueries.querydto.DataQueryField;
+import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 /**
  * Generates the GROUP BY part of the query in MySql - "GROUP BY field1, field2, field3..."
  */
 @Component
-public class MySqlGroupByPartGenerator implements QueryPartGenerator {
-    @Autowired
-    MySqlFieldGenerator mySqlFieldGenerator;
-
-    @Autowired
-    DataEntitiesConfig dataEntitiesConfig;
-
+public class MySqlGroupByPartGenerator extends SingleQueryPartGenerator {
 	@Override
 	public String generateQueryPart(DataQueryDTO dataQueryDTO)
 			throws InvalidQueryException {
@@ -67,24 +61,4 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator {
 		sb = joiner.appendTo(sb,fieldsSql);
 		return sb.toString();
 	}
-
-	public MySqlFieldGenerator getMySqlFieldGenerator() {
-		return mySqlFieldGenerator;
-	}
-
-    /**
-     * Set MySQL field generator, used by tests
-     * @param mySqlFieldGenerator
-     */
-	public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator) {
-		this.mySqlFieldGenerator = mySqlFieldGenerator;
-	}
-
-    /**
-     * Set the dataEntitiesConfig, used by tests
-     * @param dataEntitiesConfig
-     */
-    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){
-        this.dataEntitiesConfig = dataEntitiesConfig;
-    }
 }

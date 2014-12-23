@@ -28,11 +28,11 @@ public class MySqlFunctionCount extends MySqlFieldFunction {
             else {
                 if (field.getFunc().getParams().containsKey("distinct"))
                     sb.append("DISTINCT ");
-                sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
+                sb.append(getFieldName(field, dataQueryDTO));
             }
         }
         else
-        	sb.append(dataEntitiesConfig.getFieldColumn(entityId, field.getId()));
+            sb.append(getFieldName(field, dataQueryDTO));
         
         sb.append(")");
         return sb.toString();
