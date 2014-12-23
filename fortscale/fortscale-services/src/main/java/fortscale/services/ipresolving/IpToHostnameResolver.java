@@ -1,7 +1,5 @@
 package fortscale.services.ipresolving;
 
-package fortscale.services.ipresolving;
-
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.services.ComputerService;
@@ -49,23 +47,26 @@ public class IpToHostnameResolver {
 	@Value("${ip2hostname.dnsProvider.enabled:true}")
 	private boolean dnsProviderEnabled;
 	
-	private boolean shortName;
-	private boolean isRemoveLastDot;
-	
-
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
 	 * @param restrictToADName should we return only hostnames that appear in AD and leave un-resolved otherwise
 	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
 	 */
+	public String resolve(String ip, long timestamp, boolean restrictToADName) {
+		return resolve(ip, timestamp, restrictToADName, true, false);
+	}
+	
+	/**
+	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
+	 * @param restrictToADName should we return only hostnames that appear in AD and leave un-resolved otherwise
+	 * @param shortName truncate the hostname to be up to the first dot
+	 * @param isRemoveLastDot remove dot character from the hostname in case it is the last character in the name
+	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
+	 */
 	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName, boolean isRemoveLastDot) {
-		// Set normalizeHostname preferences
-		this.shortName = shortName;
-		this.isRemoveLastDot = isRemoveLastDot;
-		
 		// get hostname from file resolver
 		if (isFileProviderEnabled()) {
-			String hostname = normalizeHostname(fileResolver.getHostname(ip));
+			String hostname = normalizeHostname(fileResolver.getHostname(ip), isRemoveLastDot, shortName);
 			if (StringUtils.isNotEmpty(hostname))
 				return hostname;
 		}
@@ -74,8 +75,8 @@ public class IpToHostnameResolver {
 		ComputerLoginEvent loginEvent = isLoginProviderEnabled()? computerLoginResolver.getComputerLoginEvent(ip, timestamp) : null;
 		DhcpEvent dhcpEvent = isDhcpProviderEnabled()? dhcpResolver.getLatestDhcpEventBeforeTimestamp(ip, timestamp) : null;
 		
-		String loginHostname = (loginEvent==null)? null : normalizeHostname(loginEvent.getHostname());
-		String dhcpHostname = (dhcpEvent==null)? null : normalizeHostname(dhcpEvent.getHostname());
+		String loginHostname = (loginEvent==null)? null : normalizeHostname(loginEvent.getHostname(), isRemoveLastDot, shortName);
+		String dhcpHostname = (dhcpEvent==null)? null : normalizeHostname(dhcpEvent.getHostname(), isRemoveLastDot, shortName);
 		
 		// check if we can return the login event hostname
 		if (loginEvent!=null) {
@@ -106,7 +107,7 @@ public class IpToHostnameResolver {
 		
 		// at last resolve to dns if all other failed
 		if (isDnsProviderEnabled()) {
-			String hostname = normalizeHostname(dnsResolver.getHostname(ip, timestamp));
+			String hostname = normalizeHostname(dnsResolver.getHostname(ip, timestamp), isRemoveLastDot, shortName);
 			
 			// return dns name if (AND between criteria):
 			// 1. it is not in blacklist
@@ -123,15 +124,15 @@ public class IpToHostnameResolver {
 		return computerService.isHostnameInAD(hostname);
 	}
 	
-	private String normalizeHostname(String hostname) {
+	private String normalizeHostname(String hostname, boolean isRemoveLastDot, boolean shortName) {
 		if (StringUtils.isEmpty(hostname))
 			return null;
 		
 		String retHostname = hostname.toUpperCase();
-		if (this.isRemoveLastDot)
+		if (isRemoveLastDot)
 			retHostname = retHostname.endsWith(".") ? retHostname.substring(0, retHostname.length()-1) : retHostname ; 
 		
-		if (this.shortName)
+		if (shortName)
 			retHostname = retHostname.contains(".") ? retHostname.substring(0, hostname.indexOf('.')) : retHostname ;
 
 		return retHostname;
