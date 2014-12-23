@@ -58,17 +58,6 @@ public class IpToHostnameResolverTest {
 	public void resolve_should_return_null_if_dns_name_is_in_blacklist() {
 		resolver.setDhcpProviderEnabled(false);
 		resolver.setFileProviderEnabled(false);
-		resolver.setLoginProviderEnabled(false);
-		when(dnsResolver.getHostname("192.168.1.1", 155)).thenReturn("localhost");
-		when(computerService.isHostnameInAD("localhost")).thenReturn(true);
-
-		assertNull(actual);		
-	}
-	
-	@Test
-	public void resolve_should_return_null_if_dns_name_is_in_blacklist() {
-		resolver.setDhcpProviderEnabled(false);
-		resolver.setFileProviderEnabled(false);
 		resolver.setLoginProviderEnabled(false);	
 		when(dnsResolver.getHostname("192.168.1.1", 155)).thenReturn("localhost");
 		when(computerService.isHostnameInAD("localhost")).thenReturn(true);
