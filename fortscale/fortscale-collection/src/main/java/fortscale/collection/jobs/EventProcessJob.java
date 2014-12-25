@@ -279,6 +279,8 @@ public class EventProcessJob implements Job {
 			if (record == null) {
 				return false;
 			}
+		} else {
+			record = rec;
 		}
 		String output = recordToString.process(record);
 		
