@@ -82,6 +82,8 @@ public class VpnSession extends AbstractDocument{
 	
 	private Boolean geoHopping = false;
 
+	private Boolean addSessionData = false;
+
 	public String getNormalizeUsername() {
 		return normalizeUsername;
 	}
@@ -276,6 +278,14 @@ public class VpnSession extends AbstractDocument{
 
 	public Boolean getGeoHopping() {
 		return geoHopping;
+	}
+
+	public Boolean getAddSessionData() {
+		return addSessionData;
+	}
+
+	public void setAddSessionData(Boolean addSessionData) {
+		this.addSessionData = addSessionData;
 	}
 
 	public void setGeoHopping(Boolean geoHopping) {

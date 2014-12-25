@@ -22,6 +22,7 @@ public class VpnCiscoForZurichTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readVPN_Cisco_forZurich.conf";
+	private String confEnrichmentFile = "resources/conf-files/enrichment/readVPN_enrich.conf";
 
 	@BeforeClass
 	public static void setUpClass(){
@@ -41,7 +42,7 @@ public class VpnCiscoForZurichTest {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
-		morphlineTester.init(new String[] {confFile}, vpnOutputFields);
+		morphlineTester.init(new String[] {confFile, confEnrichmentFile}, vpnOutputFields);
 	}
 
 	@After
