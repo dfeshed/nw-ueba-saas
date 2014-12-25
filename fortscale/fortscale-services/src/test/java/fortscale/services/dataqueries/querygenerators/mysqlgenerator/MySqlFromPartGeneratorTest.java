@@ -33,7 +33,7 @@ public class MySqlFromPartGeneratorTest extends DataQueryGeneratorTest {
 		Mockito.when(dataEntitiesConfig.getEntityPerformanceTableField(dataQueryDTO1.getEntities()[0])).thenReturn("event_score");
 		Mockito.when(dataEntitiesConfig.getEntityPerformanceTableFieldMinValue(dataQueryDTO1.getEntities()[0])).thenReturn(50);
         Mockito.when(mySqlMultipleQueryGenerator.generateQueryPart(Mockito.any(MultipleDataQueryDTO.class))).thenReturn("[query1] UNION [query2]");
-        Mockito.when(dataQueryDtoHelper.getSubQuerySql(Mockito.any(MultipleDataQueryDTO.class))).thenReturn("([query1] UNION [query2]) as t1");
+        Mockito.when(mySqlMultipleQueryGenerator.getSubQuerySql(Mockito.any(MultipleDataQueryDTO.class))).thenReturn("([query1] UNION [query2]) as t1");
 
     }
 	@Test

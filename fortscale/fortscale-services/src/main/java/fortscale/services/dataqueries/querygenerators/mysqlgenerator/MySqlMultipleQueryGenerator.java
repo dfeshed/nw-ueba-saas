@@ -17,7 +17,7 @@ import java.util.HashMap;
  * Generates the SQL for combining multiple queries, such as with UNION
  */
 @Component
-public class MySqlMultipleQueryGenerator extends QueryPartGenerator<MultipleDataQueryDTO> {
+public class MySqlMultipleQueryGenerator {
     @Autowired
     MySqlQueryRunner mySqlQueryRunner;
 
@@ -37,6 +37,19 @@ public class MySqlMultipleQueryGenerator extends QueryPartGenerator<MultipleData
         }
 
         return joiner.join(fieldsSql);
+    }
+
+    /**
+     * Generates a multiple query's SQL and returns it as a subQuery. e.g instead of "[query1] UNION [query2]", returns "([query1] UNION [query2]) as t1"
+     * @param subQuery
+     * @return
+     * @throws InvalidQueryException
+     */
+    public String getSubQuerySql(MultipleDataQueryDTO subQuery) throws InvalidQueryException {
+        StringBuilder stringbuilder = new StringBuilder("(");
+        stringbuilder.append(generateQueryPart(subQuery));
+        stringbuilder.append(") as t1");
+        return stringbuilder.toString();
     }
 
     /**

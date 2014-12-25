@@ -16,7 +16,7 @@ public class MySqlFromPartGenerator extends SingleQueryPartGenerator {
             StringBuilder sb = new StringBuilder("FROM ");
 
             if (dataQueryDTO.getSubQuery() != null){
-                sb.append(dataQueryDtoHelper.getSubQuerySql(dataQueryDTO.getSubQuery()));
+                sb.append(mySqlMultipleQueryGenerator.getSubQuerySql(dataQueryDTO.getSubQuery()));
             }
             else {
                 String entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
@@ -63,9 +63,5 @@ public class MySqlFromPartGenerator extends SingleQueryPartGenerator {
         }
 
         return false;
-    }
-
-    public void setMySqlMultipleQueryGenerator(MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator){
-        this.mySqlMultipleQueryGenerator = mySqlMultipleQueryGenerator;
     }
 }

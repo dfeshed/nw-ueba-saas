@@ -22,9 +22,6 @@ public class MySqlFunctionAggregate extends MySqlFieldFunction {
 
         StringBuilder sb = new StringBuilder();
 
-        if (field.getId() == null)
-            throw new InvalidQueryException("The " + sqlFunctionName + " field function requires a field ID.");
-
         sb.append(sqlFunctionName);
         sb.append("(");
 
@@ -32,7 +29,11 @@ public class MySqlFunctionAggregate extends MySqlFieldFunction {
             if (field.getFunc().getParams().containsKey("distinct"))
                 sb.append("DISTINCT ");
 
-        sb.append(getFieldName(field, dataQueryDTO));
+        String fieldName = getFieldName(field, dataQueryDTO);
+        if (fieldName == null)
+            throw new InvalidQueryException("The " + sqlFunctionName + " field function requires a field ID.");
+        
+        sb.append(fieldName);
 
         sb.append(")");
         return sb.toString();

@@ -125,7 +125,9 @@ public class MySqlFieldGenerator {
      * @throws InvalidQueryException
      */
     private void addRegularField(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId, Boolean mapToColumn, StringBuilder fieldSB) throws InvalidQueryException{
-        if (field.getEntity() != null)
+    	if (dataQueryDTO.getSubQuery() != null)
+            aliasAsId = mapToColumn = false;
+    	else if (field.getEntity() != null)
             addFieldTable(field.getEntity(), field.getId(), fieldSB);
 
         String columnName;

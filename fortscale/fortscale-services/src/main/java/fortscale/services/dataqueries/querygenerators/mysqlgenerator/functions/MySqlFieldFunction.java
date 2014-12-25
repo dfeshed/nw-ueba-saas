@@ -37,11 +37,16 @@ public abstract class MySqlFieldFunction {
      */
     protected String getFieldName(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         if (field.getId() != null){
-            String entityId = field.getEntity();
-            if (entityId == null) {
-                entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
+            if (dataQueryDTO.getSubQuery() != null){
+                return field.getId();
+            }
+            else {
+                String entityId = field.getEntity();
+                if (entityId == null) {
+                    entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
-                return dataEntitiesConfig.getFieldColumn(entityId, field.getId());
+                    return dataEntitiesConfig.getFieldColumn(entityId, field.getId());
+                }
             }
         }
         else if (field.getFunc().getParams() != null && field.getFunc().getParams().containsKey("field")){

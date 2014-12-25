@@ -49,6 +49,10 @@ public abstract class QueryPartGenerator<T> {
         this.mySqlFieldGenerator = mySqlFieldGenerator;
     }
 
+    public void setMySqlMultipleQueryGenerator(MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator){
+        this.mySqlMultipleQueryGenerator = mySqlMultipleQueryGenerator;
+    }
+
 	/**
 	 * Generates part of query
 	 * @param querySource	the DTO we want to parse onto a query

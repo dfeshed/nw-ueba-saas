@@ -12,21 +12,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DataQueryDtoHelper {
-    @Autowired
-    MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator;
-
-    // For tests:
-    public void setMySqlMultipleQueryGenerator(MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator) {
-        this.mySqlMultipleQueryGenerator = mySqlMultipleQueryGenerator;
-    }
-
-    public String getSubQuerySql(MultipleDataQueryDTO subQuery) throws InvalidQueryException {
-        StringBuilder stringbuilder = new StringBuilder("(");
-        stringbuilder.append(mySqlMultipleQueryGenerator.generateQueryPart(subQuery));
-        stringbuilder.append(") as t1");
-        return stringbuilder.toString();
-    }
-
     public String getEntityId(DataQueryDTO dataQueryDTO){
         if (dataQueryDTO.getEntities() != null && dataQueryDTO.getEntities().length != 0)
             return dataQueryDTO.getEntities()[0];

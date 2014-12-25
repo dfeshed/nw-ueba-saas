@@ -28,7 +28,6 @@ public class MySqlMultipleQueryGeneratorTest extends DataQueryGeneratorTest {
         mySqlMultipleQueryGenerator = new MySqlMultipleQueryGenerator();
         mySqlQueryRunner = Mockito.mock(MySqlQueryRunner.class);
         mySqlMultipleQueryGenerator.setMySqlQueryRunner(mySqlQueryRunner);
-        mySqlMultipleQueryGenerator.setDataEntitiesConfig(dataEntitiesConfig);
 
         dataQueryDto_UnionAll = mapper.readValue(subQueryUnionAllDtoJson, DataQueryDTO.class);
         subQueryDto_UnionAll = dataQueryDto_UnionAll.getSubQuery();
