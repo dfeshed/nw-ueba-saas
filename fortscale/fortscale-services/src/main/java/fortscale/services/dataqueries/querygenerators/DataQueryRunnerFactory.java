@@ -3,6 +3,7 @@ package fortscale.services.dataqueries.querygenerators;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.SupportedDBType;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDtoHelper;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 
@@ -21,6 +22,9 @@ public class DataQueryRunnerFactory {
 	@Autowired
 	private MySqlQueryRunner mySqlQueryRunner;
 
+    @Autowired
+    DataQueryDtoHelper dataQueryDtoHelper;
+
 	/**
 	 * Get the relevant query runner according to DTO
 	 * 
@@ -30,7 +34,7 @@ public class DataQueryRunnerFactory {
 	 */
 	public DataQueryRunner getDataQueryRunner(DataQueryDTO dataQueryDTO)
 			throws InvalidQueryException {
-        String firstEntityId = getFirstEntityId(dataQueryDTO);
+        String firstEntityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
         if (firstEntityId == null)
             throw new InvalidQueryException("Can't create dataQuery runner, no entity found.");
 
@@ -39,23 +43,6 @@ public class DataQueryRunnerFactory {
 		if (type == SupportedDBType.MySQL)
 			return mySqlQueryRunner;
 		else
-			throw new InvalidQueryException("The DB type for entity '" + dataQueryDTO.getEntities()[0] + "' is not supported.");
+			throw new InvalidQueryException("The DB type for entity '" + firstEntityId + "' is not supported.");
 	}
-
-    String getFirstEntityId(DataQueryDTO dataQueryDTO){
-        if (dataQueryDTO.getEntities() != null && dataQueryDTO.getEntities().length != 0)
-            return dataQueryDTO.getEntities()[0];
-
-        if (dataQueryDTO.getSubQuery() != null){
-            if (dataQueryDTO.getSubQuery().getDataQueries().size() != 0){
-                for(DataQueryDTO subDataQuery: dataQueryDTO.getSubQuery().getDataQueries()){
-                    String entityId = getFirstEntityId(dataQueryDTO.getSubQuery().getDataQueries().get(0));
-                    if (entityId != null)
-                        return entityId;
-                }
-            }
-        }
-
-        return null;
-    }
 }

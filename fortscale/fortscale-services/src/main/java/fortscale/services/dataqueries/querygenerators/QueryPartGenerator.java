@@ -2,8 +2,10 @@ package fortscale.services.dataqueries.querygenerators;
 
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDtoHelper;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlFieldGenerator;
+import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlMultipleQueryGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -16,6 +18,16 @@ public abstract class QueryPartGenerator<T> {
 
     @Autowired
     protected MySqlFieldGenerator mySqlFieldGenerator;
+
+    @Autowired
+    protected MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator;
+
+    @Autowired
+    protected DataQueryDtoHelper dataQueryDtoHelper;
+
+    public void setDataQueryDtoHelper(DataQueryDtoHelper dataQueryDtoHelper) {
+        this.dataQueryDtoHelper = dataQueryDtoHelper;
+    }
 
     /**
      * Set the dataEntitiesConfig, used by tests

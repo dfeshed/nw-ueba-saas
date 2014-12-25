@@ -2,6 +2,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions;
 
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDtoHelper;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,18 @@ public abstract class MySqlFieldFunction {
     @Autowired
     protected DataEntitiesConfig dataEntitiesConfig;
 
-    public abstract String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException;
+    @Autowired
+    protected DataQueryDtoHelper dataQueryDtoHelper;
 
     public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){
         this.dataEntitiesConfig = dataEntitiesConfig;
     }
+
+    public void setDataQueryDtoHelper(DataQueryDtoHelper dataQueryDtoHelper) {
+        this.dataQueryDtoHelper = dataQueryDtoHelper;
+    }
+
+    public abstract String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException;
 
     /**
      * Gets the physical name of the field to use inside a function.
@@ -30,8 +38,8 @@ public abstract class MySqlFieldFunction {
     protected String getFieldName(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         if (field.getId() != null){
             String entityId = field.getEntity();
-            if (entityId == null && dataQueryDTO.getEntities() != null && dataQueryDTO.getEntities().length > 0) {
-                entityId = dataQueryDTO.getEntities()[0];
+            if (entityId == null) {
+                entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
                 return dataEntitiesConfig.getFieldColumn(entityId, field.getId());
             }

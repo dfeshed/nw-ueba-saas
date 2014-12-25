@@ -1,7 +1,9 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions;
 
+import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 
@@ -10,7 +12,7 @@ public class MySqlFunctionDateDiffTest extends MySqlFunctionTest {
     @Before
     public void setUp() throws Exception{
         this.function = new MySqlFunctionDateDiff();
-        setDtoJson("{\"fields\":[{\"alias\":\"date_diff\",\"func\":{\"name\":\"datediff\",\"params\":{\"startDateField\":\"whenCreated\"}}},{\"alias\":\"date_diff\",\"func\":{\"name\":\"datediff\",\"params\":{\"startDateValue\":\"1418912308\"}}},{\"alias\":\"date_diff\",\"func\":{\"name\":\"datediff\",\"params\":{\"startDateField\":\"whenCreated\",\"endDateField\":\"whenUpdated\"}}}], \"entities\": [\"users\"]}");
+        setDtoJson("{\"fields\":[{\"alias\":\"date_diff\",\"func\":{\"name\":\"datediff\",\"params\":{\"startDateField\":\"creation_date\"}}},{\"alias\":\"date_diff\",\"func\":{\"name\":\"datediff\",\"params\":{\"startDateValue\":\"1418912308\"}}},{\"alias\":\"date_diff\",\"func\":{\"name\":\"datediff\",\"params\":{\"startDateField\":\"creation_date\",\"endDateField\":\"last_change_date\"}}}], \"entities\": [\"users\"]}");
         super.setUp();
     }
 

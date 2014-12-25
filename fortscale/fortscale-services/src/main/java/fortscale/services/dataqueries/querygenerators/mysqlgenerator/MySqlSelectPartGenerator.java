@@ -27,7 +27,7 @@ public class MySqlSelectPartGenerator extends SingleQueryPartGenerator {
         List<DataQueryField> fields;
 
         if (dataQueryDTO.getEntities().length == 1 && (dataQueryDTO.getFields() == null || dataQueryDTO.getFields().size() == 0))
-            fields = getAllEntityFields(dataQueryDTO.getEntities()[0]);
+            fields = getAllEntityFields(dataQueryDtoHelper.getEntityId(dataQueryDTO));
         else
             fields = dataQueryDTO.getFields();
 

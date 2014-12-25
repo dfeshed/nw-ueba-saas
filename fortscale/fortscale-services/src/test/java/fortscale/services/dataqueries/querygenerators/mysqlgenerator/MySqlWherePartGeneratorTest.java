@@ -3,6 +3,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.QueryValueType;
 import fortscale.services.dataqueries.DataQueryGeneratorTest;
+import fortscale.services.dataqueries.querydto.*;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import org.junit.Before;
@@ -27,17 +28,22 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 		mySqlWherePartGenerator = new MySqlWherePartGenerator();
 
 		mySqlWherePartGenerator.setDataEntitiesConfig(dataEntitiesConfig);
-		mySqlFieldGenerator.setMySqlValueGenerator(mySqlValueGenerator);
-		mySqlWherePartGenerator.setMySqlFieldGenerator(mySqlFieldGenerator);
+        MySqlFieldGenerator fieldGenerator = new MySqlFieldGenerator();
+        fieldGenerator.setDataQueryDtoHelper(dataQueryDtoHelper);
+        fieldGenerator.setMySqlValueGenerator(mySqlValueGenerator);
+        fieldGenerator.setDataEntitiesConfig(dataEntitiesConfig);
+        mySqlWherePartGenerator.setMySqlFieldGenerator(fieldGenerator);
 		mySqlWherePartGenerator.setMySqlValueGenerator(mySqlValueGenerator);
+        mySqlWherePartGenerator.setDataQueryDtoHelper(dataQueryDtoHelper);
 
-		/*for (DataQueryDTO.Term childTerm: dataQueryDTO1.conditions.terms){
-			if (childTerm.getClass() == DataQueryDTO.ConditionField.class){
-				DataQueryDTO.ConditionField condition = (DataQueryDTO.ConditionField)childTerm;
-				Mockito.when(mySqlUtils.getConditionFieldSql(condition,dataQueryDTO1)).thenReturn(condition.field.getId() + "<=" + condition.getValue());
-			}
-		}*/
-
+        /*
+		for (Term childTerm: dataQueryDTO1.getConditions().getTerms()){
+			if (childTerm instanceof ConditionField){
+				ConditionField condition = (ConditionField)childTerm;
+                Mockito.when(mySqlFieldGenerator.generateSql(Mockito.any(DataQueryField.class), Mockito.any(DataQueryDTO.class), Mockito.any(Boolean.class), Mockito.any(Boolean.class))).thenReturn(condition.getField().getId());
+            }
+		}
+*/
 		PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy("daily");
 		Mockito.when(dataEntitiesConfig.getEntityPartitionStrategy(dataQueryDTO1.getEntities()[0])).thenReturn(partitionStrategy);
 		ArrayList<String> partitionsBaseFields = new ArrayList<String>();
@@ -53,7 +59,6 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "event_score")).thenReturn(QueryValueType.NUMBER);
 		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "date_time_unix")).thenReturn(QueryValueType.DATE_TIME);
 		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "event_time_utc")).thenReturn(QueryValueType.DATE_TIME);
-
 
 
 	}

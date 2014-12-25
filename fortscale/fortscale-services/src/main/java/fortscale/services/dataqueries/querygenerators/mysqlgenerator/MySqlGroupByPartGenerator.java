@@ -37,11 +37,11 @@ public class MySqlGroupByPartGenerator extends SingleQueryPartGenerator {
                     try {
                     	String entityId = field.getEntity();
                     	if (entityId == null)
-                			entityId = dataQueryDTO.getEntities()[0];
+                			entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
                     	
                         DataEntity entity = dataEntitiesConfig.getLogicalEntity(entityId);
                         if (entity == null)
-                            throw new InvalidQueryException("Unknown entity, '" + dataQueryDTO.getEntities()[0] + "'");
+                            throw new InvalidQueryException("Unknown entity, '" + entityId + "'");
 
                         DataEntityField fieldConfig = entity.getField(field.getId());
 

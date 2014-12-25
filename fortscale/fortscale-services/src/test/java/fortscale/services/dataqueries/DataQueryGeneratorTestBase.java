@@ -3,6 +3,8 @@ package fortscale.services.dataqueries;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDtoHelper;
+import fortscale.services.dataqueries.querydto.MultipleDataQueryDTO;
 import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlFieldGenerator;
 import org.mockito.Mockito;
@@ -24,6 +26,7 @@ public class DataQueryGeneratorTestBase<T> {
     protected ObjectMapper mapper = new ObjectMapper();
     protected DataEntitiesConfig dataEntitiesConfig;
     protected MySqlFieldGenerator mySqlFieldGenerator;
+    protected DataQueryDtoHelper dataQueryDtoHelper;
 
     public void setUp()
             throws Exception {
@@ -33,11 +36,17 @@ public class DataQueryGeneratorTestBase<T> {
 
         dataEntitiesConfig = Mockito.mock(DataEntitiesConfig.class);
         mySqlFieldGenerator = Mockito.mock(MySqlFieldGenerator.class);
+        dataQueryDtoHelper = Mockito.mock(DataQueryDtoHelper.class);
+
         mySqlFieldGenerator.setDataEntitiesConfig(dataEntitiesConfig);
+        mySqlFieldGenerator.setDataQueryDtoHelper(dataQueryDtoHelper);
+
+        Mockito.when(dataQueryDtoHelper.getEntityId(Mockito.any(DataQueryDTO.class))).thenReturn("kerberos_logins");
 
         if (generator != null) {
             generator.setDataEntitiesConfig(dataEntitiesConfig);
             generator.setMySqlFieldGenerator(mySqlFieldGenerator);
+            generator.setDataQueryDtoHelper(dataQueryDtoHelper);
         }
     }
 }

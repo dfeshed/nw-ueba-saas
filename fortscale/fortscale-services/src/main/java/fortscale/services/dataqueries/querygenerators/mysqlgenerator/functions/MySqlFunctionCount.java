@@ -17,7 +17,7 @@ public class MySqlFunctionCount extends MySqlFieldFunction {
         StringBuilder sb = new StringBuilder();
         String entityId = field.getEntity();
         if (entityId == null)
-            entityId = dataQueryDTO.getEntities()[0];
+            entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
         sb.append(sqlFunctionName);
         sb.append("(");

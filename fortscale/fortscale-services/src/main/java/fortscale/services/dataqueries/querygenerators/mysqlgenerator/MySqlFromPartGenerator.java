@@ -1,9 +1,7 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
@@ -13,18 +11,15 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
  */
 @Component
 public class MySqlFromPartGenerator extends SingleQueryPartGenerator {
-    @Autowired
-    MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator;
-
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         try {
             StringBuilder sb = new StringBuilder("FROM ");
 
             if (dataQueryDTO.getSubQuery() != null){
-                sb.append(getSubQuerySql(dataQueryDTO.getSubQuery()));
+                sb.append(dataQueryDtoHelper.getSubQuerySql(dataQueryDTO.getSubQuery()));
             }
             else {
-                String entityId = dataQueryDTO.getEntities()[0];
+                String entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
                 String tableName = dataEntitiesConfig.getEntityTable(entityId);
 
 
@@ -68,13 +63,6 @@ public class MySqlFromPartGenerator extends SingleQueryPartGenerator {
         }
 
         return false;
-    }
-
-    String getSubQuerySql(MultipleDataQueryDTO subQuery) throws InvalidQueryException{
-        StringBuilder stringbuilder = new StringBuilder("(");
-        stringbuilder.append(mySqlMultipleQueryGenerator.generateQueryPart(subQuery));
-        stringbuilder.append(") as t1");
-        return stringbuilder.toString();
     }
 
     public void setMySqlMultipleQueryGenerator(MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator){

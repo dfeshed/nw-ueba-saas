@@ -25,7 +25,7 @@ public class MySqlFunctionDateDiff extends MySqlFieldFunction {
         String entityId = field.getEntity();
 
         if (entityId == null)
-            entityId = dataQueryDTO.getEntities()[0];
+            entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
         if (field.getFunc().getParams() == null)
             throw new InvalidQueryException(MISSING_START_PARAM_ERROR);
@@ -55,7 +55,6 @@ public class MySqlFunctionDateDiff extends MySqlFieldFunction {
      */
     private String getParamDateValue(DataQueryField field, String entityId, StartEnd startOrEnd) throws InvalidQueryException{
         String dateField = field.getFunc().getParams().get(startOrEnd + "DateField");
-        String dateValue;
 
         if (dateField != null)
             return dataEntitiesConfig.getFieldColumn(entityId, dateField);

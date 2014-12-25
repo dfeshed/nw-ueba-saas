@@ -37,6 +37,7 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest {
 		dataQueryDTO2.setGroupBy(groupBy);
 
         dataQueryDtoWithGroupByLogicalField = mapper.readValue(dto1, DataQueryDTO.class);
+
         groupBy = new ArrayList<>();
         field = new DataQueryField();
         field.setId("logicalField");
@@ -49,8 +50,10 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest {
 		}
 
         DataEntity kerberosLoginsEntity = new DataEntity();
-        DataEntityField regularFieldA = new DataEntityField(),
-                regularFieldB = new DataEntityField();
+        DataEntityField
+                regularFieldA = new DataEntityField(),
+                regularFieldB = new DataEntityField(),
+                logicalField = new DataEntityField();
 
         ArrayList<DataEntityField> fields = new ArrayList<>();
 
@@ -59,6 +62,9 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest {
 
         regularFieldB.setId("bbb");
         fields.add(regularFieldB);
+
+        logicalField.setId("logicalField");
+        fields.add(logicalField);
 
         kerberosLoginsEntity.setFields(fields);
         Mockito.when(dataEntitiesConfig.getLogicalEntity(dataQueryDTO2.getEntities()[0])).thenReturn(kerberosLoginsEntity);
@@ -72,7 +78,8 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest {
         fields.add(logicalOnlyField);
         logicalEntity.setFields(fields);
         Mockito.when(dataEntitiesConfig.getLogicalEntity(dataQueryDtoWithGroupByLogicalField.getEntities()[0])).thenReturn(logicalEntity);
-	}
+        Mockito.when(dataQueryDtoHelper.getEntityId(dataQueryDtoWithGroupByLogicalField)).thenReturn("mock_entity");
+    }
 
 	@Test
 	public void testGenerateQueryPart()

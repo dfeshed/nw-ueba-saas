@@ -23,15 +23,19 @@ public class MySqlFromPartGeneratorTest extends DataQueryGeneratorTest {
 
         generator.setMySqlFieldGenerator(mySqlFieldGenerator);
         generator.setDataEntitiesConfig(dataEntitiesConfig);
+        generator.setDataQueryDtoHelper(dataQueryDtoHelper);
         mySqlMultipleQueryGenerator = Mockito.mock(MySqlMultipleQueryGenerator.class);
         generator.setMySqlMultipleQueryGenerator(mySqlMultipleQueryGenerator);
+
 
 		Mockito.when(dataEntitiesConfig.getEntityPerformanceTable(dataQueryDTO1.getEntities()[0])).thenReturn("ldapauth_top");
 		Mockito.when(dataEntitiesConfig.getEntityTable(dataQueryDTO1.getEntities()[0])).thenReturn("ldapauth");
 		Mockito.when(dataEntitiesConfig.getEntityPerformanceTableField(dataQueryDTO1.getEntities()[0])).thenReturn("event_score");
 		Mockito.when(dataEntitiesConfig.getEntityPerformanceTableFieldMinValue(dataQueryDTO1.getEntities()[0])).thenReturn(50);
         Mockito.when(mySqlMultipleQueryGenerator.generateQueryPart(Mockito.any(MultipleDataQueryDTO.class))).thenReturn("[query1] UNION [query2]");
-	}
+        Mockito.when(dataQueryDtoHelper.getSubQuerySql(Mockito.any(MultipleDataQueryDTO.class))).thenReturn("([query1] UNION [query2]) as t1");
+
+    }
 	@Test
 	public void testGenerateQueryPart_top()
 					throws Exception {
