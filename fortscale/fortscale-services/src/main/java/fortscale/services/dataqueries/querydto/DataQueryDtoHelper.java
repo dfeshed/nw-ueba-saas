@@ -12,12 +12,18 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DataQueryDtoHelper {
+    /**
+     * Gets the ID of the main entity from a DataQueryDTO. Required for fields that don't explicitly specify their entity, and for validations.
+     * Note - it's a single entity since it's the MAIN entity. All other entities should be specified explicitly by fields and JOINs.
+     * @param dataQueryDTO
+     * @return
+     */
     public String getEntityId(DataQueryDTO dataQueryDTO){
         if (dataQueryDTO.getEntities() != null && dataQueryDTO.getEntities().length != 0)
             return dataQueryDTO.getEntities()[0];
 
         if (dataQueryDTO.getSubQuery() != null){
-            if (dataQueryDTO.getSubQuery().getDataQueries().size() != 0){
+            if (!dataQueryDTO.getSubQuery().getDataQueries().isEmpty()){
                 for(DataQueryDTO subDataQuery: dataQueryDTO.getSubQuery().getDataQueries()){
                     String entityId = getEntityId(dataQueryDTO.getSubQuery().getDataQueries().get(0));
                     if (entityId != null)
