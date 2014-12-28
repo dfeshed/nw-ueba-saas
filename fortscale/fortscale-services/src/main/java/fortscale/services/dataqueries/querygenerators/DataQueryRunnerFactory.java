@@ -3,6 +3,7 @@ package fortscale.services.dataqueries.querygenerators;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.SupportedDBType;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDtoHelper;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 
@@ -21,6 +22,9 @@ public class DataQueryRunnerFactory {
 	@Autowired
 	private MySqlQueryRunner mySqlQueryRunner;
 
+    @Autowired
+    DataQueryDtoHelper dataQueryDtoHelper;
+
 	/**
 	 * Get the relevant query runner according to DTO
 	 * 
@@ -30,13 +34,15 @@ public class DataQueryRunnerFactory {
 	 */
 	public DataQueryRunner getDataQueryRunner(DataQueryDTO dataQueryDTO)
 			throws InvalidQueryException {
-		SupportedDBType type = dataEntitiesConfig.getEntityDbType(dataQueryDTO
-				.getEntities()[0]);
+        String firstEntityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
+        if (firstEntityId == null)
+            throw new InvalidQueryException("Can't create dataQuery runner, no entity found.");
+
+		SupportedDBType type = dataEntitiesConfig.getEntityDbType(firstEntityId);
 
 		if (type == SupportedDBType.MySQL)
 			return mySqlQueryRunner;
 		else
-			throw new InvalidQueryException("The DB type for entity "
-					+ dataQueryDTO.getEntities()[0] + " is not supported.");
+			throw new InvalidQueryException("The DB type for entity '" + firstEntityId + "' is not supported.");
 	}
 }

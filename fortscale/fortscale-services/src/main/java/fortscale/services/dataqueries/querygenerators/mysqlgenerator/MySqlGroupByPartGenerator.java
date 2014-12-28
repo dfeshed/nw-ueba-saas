@@ -4,26 +4,20 @@ import java.util.ArrayList;
 
 import fortscale.services.dataentity.*;
 import fortscale.services.dataqueries.querydto.DataQueryField;
+import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 /**
  * Generates the GROUP BY part of the query in MySql - "GROUP BY field1, field2, field3..."
  */
 @Component
-public class MySqlGroupByPartGenerator implements QueryPartGenerator {
-    @Autowired
-    MySqlFieldGenerator mySqlFieldGenerator;
-
-    @Autowired
-    DataEntitiesConfig dataEntitiesConfig;
-
+public class MySqlGroupByPartGenerator extends QueryPartGenerator {
 	@Override
 	public String generateQueryPart(DataQueryDTO dataQueryDTO)
 			throws InvalidQueryException {
@@ -43,11 +37,11 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator {
                     try {
                     	String entityId = field.getEntity();
                     	if (entityId == null)
-                			entityId = dataQueryDTO.getEntities()[0];
+                			entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
                     	
                         DataEntity entity = dataEntitiesConfig.getLogicalEntity(entityId);
                         if (entity == null)
-                            throw new InvalidQueryException("Unknown entity, '" + dataQueryDTO.getEntities()[0] + "'");
+                            throw new InvalidQueryException("Unknown entity, '" + entityId + "'");
 
                         DataEntityField fieldConfig = entity.getField(field.getId());
 
@@ -67,24 +61,4 @@ public class MySqlGroupByPartGenerator implements QueryPartGenerator {
 		sb = joiner.appendTo(sb,fieldsSql);
 		return sb.toString();
 	}
-
-	public MySqlFieldGenerator getMySqlFieldGenerator() {
-		return mySqlFieldGenerator;
-	}
-
-    /**
-     * Set MySQL field generator, used by tests
-     * @param mySqlFieldGenerator
-     */
-	public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator) {
-		this.mySqlFieldGenerator = mySqlFieldGenerator;
-	}
-
-    /**
-     * Set the dataEntitiesConfig, used by tests
-     * @param dataEntitiesConfig
-     */
-    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){
-        this.dataEntitiesConfig = dataEntitiesConfig;
-    }
 }

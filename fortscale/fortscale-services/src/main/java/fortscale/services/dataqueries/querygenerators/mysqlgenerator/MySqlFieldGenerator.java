@@ -2,9 +2,9 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDtoHelper;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +24,9 @@ public class MySqlFieldGenerator {
 
     @Autowired
     MySqlFieldFunctionGenerator mySqlFieldFunctionGenerator;
+
+    @Autowired
+    DataQueryDtoHelper dataQueryDtoHelper;
 
     public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId, Boolean mapToColumn) throws InvalidQueryException {
         StringBuilder fieldSB = new StringBuilder();
@@ -89,22 +92,27 @@ public class MySqlFieldGenerator {
 
         String entityId = field.getEntity();
 
-        if (entityId == null)
-            entityId = dataQueryDTO.getEntities()[0];
+        // If selecting from a subquery, the available fields are decided from inside the subquery, so it's OK to use '*'.
+        if (entityId == null && dataQueryDTO.getSubQuery() != null)
+            fieldSB.append("*");
+        else {
+            if (entityId == null)
+                entityId = dataQueryDTO.getEntities()[0];
 
-        List<String> fieldIds = dataEntitiesConfig.getAllEntityFields(entityId);
-        for(String fieldId: fieldIds){
-            // Explicit fields should be explicitly requested in the fields list, so they aren't returned when all fields are specified.
-            if (dataEntitiesConfig.getFieldIsExplicit(entityId, fieldId))
-                continue;
+            List<String> fieldIds = dataEntitiesConfig.getAllEntityFields(entityId);
+            for (String fieldId : fieldIds) {
+                // Explicit fields should be explicitly requested in the fields list, so they aren't returned when all fields are specified.
+                if (dataEntitiesConfig.getFieldIsExplicit(entityId, fieldId))
+                    continue;
 
-            addFieldTable(entityId, fieldId, fieldSB);
-            fieldSB.append(dataEntitiesConfig.getFieldColumn(entityId, fieldId));
-            fieldSB.append(" as '").append(fieldId).append("'");
-            fieldSB.append(", ");
+                addFieldTable(entityId, fieldId, fieldSB);
+                fieldSB.append(dataEntitiesConfig.getFieldColumn(entityId, fieldId));
+                fieldSB.append(" as '").append(fieldId).append("'");
+                fieldSB.append(", ");
+            }
+            if (fieldSB.length() > 2)
+                fieldSB.delete(fieldSB.length() - 2, fieldSB.length());
         }
-        if (fieldSB.length() > 2)
-            fieldSB.delete(fieldSB.length() - 2, fieldSB.length());
     }
 
     /**
@@ -117,12 +125,25 @@ public class MySqlFieldGenerator {
      * @throws InvalidQueryException
      */
     private void addRegularField(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId, Boolean mapToColumn, StringBuilder fieldSB) throws InvalidQueryException{
-        if (field.getEntity() != null)
+    	if (dataQueryDTO.getSubQuery() != null)
+            aliasAsId = mapToColumn = false;
+    	else if (field.getEntity() != null)
             addFieldTable(field.getEntity(), field.getId(), fieldSB);
 
-        String columnName = mapToColumn
-                ? dataEntitiesConfig.getFieldColumn(field.getEntity() != null ? field.getEntity() : dataQueryDTO.getEntities()[0], field.getId() )
-                : field.getId();
+        String columnName;
+        if (mapToColumn){
+            String entityId = field.getEntity();
+            if (entityId == null)
+                entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
+
+            if (entityId == null)
+                throw new InvalidQueryException("Can't map field '" + field.getId() + "' to column, unknown entity.");
+
+            columnName = dataEntitiesConfig.getFieldColumn(entityId, field.getId());
+        }
+        else
+            columnName = field.getId();
+
         fieldSB.append(columnName);
 
         if (field.getAlias() != null)
@@ -145,5 +166,9 @@ public class MySqlFieldGenerator {
 
     public void setMySqlValueGenerator(MySqlValueGenerator mySqlValueGenerator){
         this.mySqlValueGenerator = mySqlValueGenerator;
+    }
+
+    public void setDataQueryDtoHelper(DataQueryDtoHelper dataQueryDtoHelper) {
+        this.dataQueryDtoHelper = dataQueryDtoHelper;
     }
 }

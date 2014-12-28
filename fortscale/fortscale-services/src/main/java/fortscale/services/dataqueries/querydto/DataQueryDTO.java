@@ -14,6 +14,7 @@ public class DataQueryDTO {
     private List<DataQueryField> fields;
     private ConditionTerm conditions;
     private String[] entities;
+    private MultipleDataQueryDTO subQuery;
     private List<DataQueryJoin> join;
     private List<DataQueryField> groupBy;
     private List<QuerySort> sort;
@@ -82,5 +83,13 @@ public class DataQueryDTO {
 
     public void setJoin(List<DataQueryJoin> join) {
         this.join = join;
+    }
+
+    public MultipleDataQueryDTO getSubQuery() {
+        return subQuery;
+    }
+
+    public void setSubQuery(MultipleDataQueryDTO subQuery) {
+        this.subQuery = subQuery;
     }
 }

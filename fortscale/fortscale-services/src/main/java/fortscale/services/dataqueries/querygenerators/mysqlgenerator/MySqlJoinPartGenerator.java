@@ -1,35 +1,30 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
-import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.SupportedDBType;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryJoin;
 import fortscale.services.dataqueries.querydto.DataQueryJoinField;
 import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * Generate JOINs in MySQL
  */
 @Component
-public class MySqlJoinPartGenerator implements QueryPartGenerator {
-    @Autowired
-    DataEntitiesConfig dataEntitiesConfig;
-
+public class MySqlJoinPartGenerator extends QueryPartGenerator {
     public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException {
         if (dataQueryDTO.getJoin() == null)
             return "";
 
-        SupportedDBType mainEntityType = dataEntitiesConfig.getEntityDbType(dataQueryDTO.getEntities()[0]);
+        String entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
+        SupportedDBType mainEntityType = dataEntitiesConfig.getEntityDbType(entityId);
 
         StringBuilder sb = new StringBuilder();
         for(DataQueryJoin join: dataQueryDTO.getJoin()){
             try {
                 if (dataEntitiesConfig.getEntityDbType(join.getEntity()) != mainEntityType)
-                    throw new InvalidQueryException("Entity join between " + join.getEntity() + " and " + dataQueryDTO.getEntities()[0] + " is not supported at the moment, since they use different technologies.");
+                    throw new InvalidQueryException("Entity join between " + join.getEntity() + " and " + entityId + " is not supported at the moment, since they use different technologies.");
 
                 sb.append(join.getType().name()).append(" JOIN ");
                 sb.append(dataEntitiesConfig.getEntityTable(join.getEntity()));
@@ -46,11 +41,6 @@ public class MySqlJoinPartGenerator implements QueryPartGenerator {
 
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
-    }
-
-    // For tests:
-    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig) {
-        this.dataEntitiesConfig = dataEntitiesConfig;
     }
 
     /**

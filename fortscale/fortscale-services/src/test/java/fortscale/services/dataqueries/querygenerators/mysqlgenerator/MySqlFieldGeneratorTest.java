@@ -1,5 +1,6 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
+import fortscale.services.dataqueries.DataQueryGeneratorTest;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class MySqlFieldGeneratorTest extends DataQueryGeneratorTest{
+public class MySqlFieldGeneratorTest extends DataQueryGeneratorTest {
 
     private MySqlFieldGenerator mySqlFieldGenerator;
     private DataQueryField allFields;

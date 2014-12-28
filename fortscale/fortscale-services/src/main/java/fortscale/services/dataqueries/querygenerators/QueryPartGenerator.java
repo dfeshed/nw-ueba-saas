@@ -1,12 +1,57 @@
 package fortscale.services.dataqueries.querygenerators;
 
+import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryDtoHelper;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlFieldGenerator;
+import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlMultipleQueryGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Generate part of query
  */
-public interface QueryPartGenerator {
+public abstract class QueryPartGenerator {
+
+    @Autowired
+    protected DataEntitiesConfig dataEntitiesConfig;
+
+    @Autowired
+    protected MySqlFieldGenerator mySqlFieldGenerator;
+
+    @Autowired
+    protected MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator;
+
+    @Autowired
+    protected DataQueryDtoHelper dataQueryDtoHelper;
+
+    public void setDataQueryDtoHelper(DataQueryDtoHelper dataQueryDtoHelper) {
+        this.dataQueryDtoHelper = dataQueryDtoHelper;
+    }
+
+    /**
+     * Set the dataEntitiesConfig, used by tests
+     * @param dataEntitiesConfig
+     */
+    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){
+        this.dataEntitiesConfig = dataEntitiesConfig;
+    }
+
+    public MySqlFieldGenerator getMySqlFieldGenerator() {
+        return mySqlFieldGenerator;
+    }
+
+    /**
+     * Set MySQL field generator, used by tests
+     * @param mySqlFieldGenerator
+     */
+    public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator) {
+        this.mySqlFieldGenerator = mySqlFieldGenerator;
+    }
+
+    public void setMySqlMultipleQueryGenerator(MySqlMultipleQueryGenerator mySqlMultipleQueryGenerator){
+        this.mySqlMultipleQueryGenerator = mySqlMultipleQueryGenerator;
+    }
 
 	/**
 	 * Generates part of query
@@ -14,6 +59,6 @@ public interface QueryPartGenerator {
 	 * @return the part of the query
 	 * @throws InvalidQueryException in case we failed to parse the DTO into the query type
 	 */
-	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException;
+	public abstract String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException;
 
 }

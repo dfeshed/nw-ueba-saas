@@ -1,32 +1,41 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import org.springframework.stereotype.Component;
 
-import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 /**
  * Generate the "from" part of the query in MySql
  */
 @Component
-public class MySqlFromPartGenerator implements QueryPartGenerator {
-    @Autowired
-    DataEntitiesConfig dataEntitiesConfig;
-
+public class MySqlFromPartGenerator extends QueryPartGenerator {
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
-        try {
-            String entityId = dataQueryDTO.getEntities()[0];
-            String tableName = dataEntitiesConfig.getEntityTable(entityId);
+        if (dataQueryDTO.getSubQuery() != null && dataQueryDTO.getEntities().length > 0)
+            throw new InvalidQueryException("A DataQuery can't have both entities and a subquery.");
 
+        try {
             StringBuilder sb = new StringBuilder("FROM ");
 
-            if (dataQueryDTO.getConditions() != null && isHighScore(entityId, dataQueryDTO.getConditions()))
-                sb.append(dataEntitiesConfig.getEntityPerformanceTable(entityId)).append(" as ").append(tableName);
-            else
-                sb.append(tableName);
+            // If a sub query exists, the FROM clause refers to it
+            if (dataQueryDTO.getSubQuery() != null){
+                sb.append(mySqlMultipleQueryGenerator.getSubQuerySql(dataQueryDTO.getSubQuery()));
+            }
+            // Otherwise, use the dataQueryDTO's entities to select from tables:
+            else {
+                if (dataQueryDTO.getEntities().length == 0)
+                    throw new InvalidQueryException("At least one entity is required for a DataQuery.");
+
+                String entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
+                String tableName = dataEntitiesConfig.getEntityTable(entityId);
+
+
+                if (dataQueryDTO.getConditions() != null && isHighScore(entityId, dataQueryDTO.getConditions()))
+                    sb.append(dataEntitiesConfig.getEntityPerformanceTable(entityId)).append(" as ").append(tableName);
+                else
+                    sb.append(tableName);
+            }
 
             return sb.toString();
         }
@@ -62,12 +71,5 @@ public class MySqlFromPartGenerator implements QueryPartGenerator {
         }
 
         return false;
-    }
-
-	// Getters and setters
-
-    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig) {
-
-        this.dataEntitiesConfig = dataEntitiesConfig;
     }
 }

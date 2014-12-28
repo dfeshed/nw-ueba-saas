@@ -14,10 +14,7 @@ import java.util.ArrayList;
  * Generate the "order by" part of the query in MySql
  */
 @Component
-public class MySqlOrderByPartGenerator implements QueryPartGenerator {
-    @Autowired
-    MySqlFieldGenerator mySqlFieldGenerator;
-
+public class MySqlOrderByPartGenerator extends QueryPartGenerator {
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         if (dataQueryDTO.getSort() == null || dataQueryDTO.getSort().size() == 0)
             return "";
@@ -36,8 +33,4 @@ public class MySqlOrderByPartGenerator implements QueryPartGenerator {
         StringBuilder sb = new StringBuilder("ORDER BY ").append(joiner.join(sorts));
 		return sb.toString();
 	}
-
-    public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator){
-        this.mySqlFieldGenerator = mySqlFieldGenerator;
-    }
 }

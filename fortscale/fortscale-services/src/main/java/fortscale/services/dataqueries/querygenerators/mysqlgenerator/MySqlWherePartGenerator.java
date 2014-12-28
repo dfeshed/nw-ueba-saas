@@ -2,12 +2,11 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
+import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 
@@ -17,13 +16,7 @@ import java.util.*;
  * Generate the "where" part of the query in MySql
  */
 @Component
-public class MySqlWherePartGenerator implements QueryPartGenerator {
-    @Autowired
-    MySqlFieldGenerator mySqlFieldGenerator;
-
-    @Autowired
-    DataEntitiesConfig dataEntitiesConfig;
-
+public class MySqlWherePartGenerator extends QueryPartGenerator {
     @Autowired
     MySqlValueGenerator mySqlValueGenerator;
 
@@ -67,7 +60,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 
     private String getPartitionsSql(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
 
-        String entityId = dataQueryDTO.getEntities()[0];
+        String entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
         PartitionStrategy partitionStrategy = dataEntitiesConfig.getEntityPartitionStrategy(entityId);
         if (partitionStrategy == null)
@@ -106,13 +99,8 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
                 ConditionField condition = (ConditionField)childTerm;
                 if (entityPartitionsBaeFields.contains(condition.getField().getId()))
                 {
-                    ConditionField partitionCondition = new ConditionField();
+                    ConditionField partitionCondition = getPartitionConditionField(partitionStrategy, condition, dataQueryDTO);
 
-                    //TODO - need to make it more generic - the interface partition strategy is based on long as partition (timestamp) - need to abstract it to String and to parse the value in the implementations
-                    partitionCondition.setValue(partitionStrategy.getImpalaPartitionValue(Long.parseLong(condition.getValue())));
-                    partitionCondition.setOperator(condition.getOperator());
-                    partitionCondition.setField(new DataQueryField());
-                    partitionCondition.getField().setId(partitionStrategy.getImpalaPartitionFieldName());
                     String conditionSql = getConditionFieldSql(partitionCondition, dataQueryDTO, false);
                     if (!sqlConditions.contains(conditionSql)){
                         sqlConditions.add(conditionSql);
@@ -146,7 +134,7 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
 
         String entityId = conditionField.getField().getEntity();
         if (entityId == null)
-            entityId = dataQueryDTO.getEntities()[0];
+            entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
         if (conditionField.getValueField() != null)
             sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, true));
@@ -156,12 +144,23 @@ public class MySqlWherePartGenerator implements QueryPartGenerator {
         return sb.toString();
     }
 
-    public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig) {
-        this.dataEntitiesConfig = dataEntitiesConfig;
-    }
+    /**
+     * Creates the conditionField for a partition, according to a conditionField. Partition conditions use the partition's physical fields, so there's a need to translate from
+     * the original logical field.
+     * @param partitionStrategy
+     * @param condition
+     * @param dataQueryDTO
+     * @return
+     */
+    public ConditionField getPartitionConditionField(PartitionStrategy partitionStrategy, ConditionField condition, DataQueryDTO dataQueryDTO){
+        ConditionField partitionCondition = new ConditionField();
 
-    public void setMySqlFieldGenerator(MySqlFieldGenerator mySqlFieldGenerator){
-        this.mySqlFieldGenerator = mySqlFieldGenerator;
+        //TODO - need to make it more generic - the interface partition strategy is based on long as partition (timestamp) - need to abstract it to String and to parse the value in the implementations
+        partitionCondition.setValue(partitionStrategy.getImpalaPartitionValue(Long.parseLong(condition.getValue())));
+        partitionCondition.setOperator(condition.getOperator());
+        partitionCondition.setField(new DataQueryField());
+        partitionCondition.getField().setId(partitionStrategy.getImpalaPartitionFieldName());
+        return partitionCondition;
     }
 
     public void setMySqlValueGenerator(MySqlValueGenerator mySqlValueGenerator){
