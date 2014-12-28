@@ -18,13 +18,14 @@ public class VpnOpenVpnTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readVPN_openVPN.conf";
+	private String confEnrichmentFile = "resources/conf-files/enrichment/readVPN_enrich.conf";
 	
 	@Before
 	public void setUp() throws Exception {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
-		morphlineTester.init(new String[] { confFile }, vpnOutputFields);
+		morphlineTester.init(new String[] { confFile, confEnrichmentFile }, vpnOutputFields);
 	}
 	
 	@After
