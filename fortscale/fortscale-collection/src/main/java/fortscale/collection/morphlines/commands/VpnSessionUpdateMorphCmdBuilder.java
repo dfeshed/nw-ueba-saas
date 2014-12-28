@@ -84,7 +84,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 				return super.doProcess(inputRecord);
 			}
 
-			VpnSession vpnSession = recordToVpnSessionConverter.convert(inputRecord, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName, sessionIdFieldName, addSessionDataFieldName);
+			VpnSession vpnSession = recordToVpnSessionConverter.convert(inputRecord, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName, sessionIdFieldName);
 			if(vpnSession.getClosedAt() == null && vpnSession.getCreatedAt() == null){
 				//right now we don't use fail status for updating vpn session. There is a JIRA for this (FV-4413).
 				return super.doProcess(inputRecord);
