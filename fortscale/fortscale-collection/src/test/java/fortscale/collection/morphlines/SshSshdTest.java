@@ -23,6 +23,7 @@ public class SshSshdTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readSSH_centos.conf";
+	private String confEnrichmentFile = "resources/conf-files/enrichment/readSSH_enrich.conf";
 
 
 	@Before
@@ -33,7 +34,7 @@ public class SshSshdTest {
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.ssh.table.morphline.fields");
 
 		List<String> sshOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
-		morphlineTester.init(new String[] { confFile }, sshOutputFields);
+		morphlineTester.init(new String[] { confFile, confEnrichmentFile }, sshOutputFields);
 	}
 
 	@After
