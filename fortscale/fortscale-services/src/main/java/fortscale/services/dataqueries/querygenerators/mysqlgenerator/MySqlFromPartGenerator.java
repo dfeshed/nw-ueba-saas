@@ -12,6 +12,9 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
 @Component
 public class MySqlFromPartGenerator extends QueryPartGenerator {
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
+        if (dataQueryDTO.getSubQuery() != null && dataQueryDTO.getEntities().length > 0)
+            throw new InvalidQueryException("A DataQuery can't have both entities and a subquery.");
+
         try {
             StringBuilder sb = new StringBuilder("FROM ");
 
@@ -21,6 +24,9 @@ public class MySqlFromPartGenerator extends QueryPartGenerator {
             }
             // Otherwise, use the dataQueryDTO's entities to select from tables:
             else {
+                if (dataQueryDTO.getEntities().length == 0)
+                    throw new InvalidQueryException("At least one entity is required for a DataQuery.");
+
                 String entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
                 String tableName = dataEntitiesConfig.getEntityTable(entityId);
 
