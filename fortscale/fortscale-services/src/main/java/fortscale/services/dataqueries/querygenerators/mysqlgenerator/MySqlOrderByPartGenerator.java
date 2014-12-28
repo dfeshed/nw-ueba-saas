@@ -3,7 +3,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.QuerySort;
-import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
+import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Generate the "order by" part of the query in MySql
  */
 @Component
-public class MySqlOrderByPartGenerator extends SingleQueryPartGenerator {
+public class MySqlOrderByPartGenerator extends QueryPartGenerator {
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         if (dataQueryDTO.getSort() == null || dataQueryDTO.getSort().size() == 0)
             return "";

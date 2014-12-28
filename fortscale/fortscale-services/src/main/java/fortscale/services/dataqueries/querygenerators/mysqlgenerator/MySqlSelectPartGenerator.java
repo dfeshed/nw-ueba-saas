@@ -2,7 +2,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import fortscale.services.dataqueries.querydto.DataQueryField;
-import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
+import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ import java.util.List;
  * Generates the SELECT part of the query in MySql - "SELECT field1, field2, field3..."
  */
 @Component
-public class MySqlSelectPartGenerator extends SingleQueryPartGenerator {
+public class MySqlSelectPartGenerator extends QueryPartGenerator {
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         StringBuilder sb = new StringBuilder("SELECT ");

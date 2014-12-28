@@ -22,7 +22,7 @@ public class DataQueryGeneratorTestBase<T> {
     protected DataQueryDTO joinDTO;
     protected DataQueryDTO dataQueryDto_UnionDistinct;
 
-    protected QueryPartGenerator<T> generator;
+    protected QueryPartGenerator generator;
     protected ObjectMapper mapper = new ObjectMapper();
     protected DataEntitiesConfig dataEntitiesConfig;
     protected MySqlFieldGenerator mySqlFieldGenerator;

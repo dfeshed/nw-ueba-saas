@@ -1,7 +1,7 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataqueries.querydto.*;
-import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
+import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import org.springframework.stereotype.Component;
 
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
@@ -10,14 +10,16 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
  * Generate the "from" part of the query in MySql
  */
 @Component
-public class MySqlFromPartGenerator extends SingleQueryPartGenerator {
+public class MySqlFromPartGenerator extends QueryPartGenerator {
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         try {
             StringBuilder sb = new StringBuilder("FROM ");
 
+            // If a sub query exists, the FROM clause refers to it
             if (dataQueryDTO.getSubQuery() != null){
                 sb.append(mySqlMultipleQueryGenerator.getSubQuerySql(dataQueryDTO.getSubQuery()));
             }
+            // Otherwise, use the dataQueryDTO's entities to select from tables:
             else {
                 String entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
                 String tableName = dataEntitiesConfig.getEntityTable(entityId);

@@ -3,7 +3,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 
 import fortscale.services.dataqueries.querydto.*;
-import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
+import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ import java.util.*;
  * Generate the "where" part of the query in MySql
  */
 @Component
-public class MySqlWherePartGenerator extends SingleQueryPartGenerator {
+public class MySqlWherePartGenerator extends QueryPartGenerator {
     @Autowired
     MySqlValueGenerator mySqlValueGenerator;
 

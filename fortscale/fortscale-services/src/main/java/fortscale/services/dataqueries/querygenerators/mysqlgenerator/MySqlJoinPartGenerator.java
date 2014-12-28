@@ -4,7 +4,7 @@ import fortscale.services.dataentity.SupportedDBType;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryJoin;
 import fortscale.services.dataqueries.querydto.DataQueryJoinField;
-import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
+import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Generate JOINs in MySQL
  */
 @Component
-public class MySqlJoinPartGenerator extends SingleQueryPartGenerator {
+public class MySqlJoinPartGenerator extends QueryPartGenerator {
     public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException {
         if (dataQueryDTO.getJoin() == null)
             return "";

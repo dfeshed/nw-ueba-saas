@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import fortscale.services.dataentity.*;
 import fortscale.services.dataqueries.querydto.DataQueryField;
-import fortscale.services.dataqueries.querygenerators.SingleQueryPartGenerator;
+import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
  * Generates the GROUP BY part of the query in MySql - "GROUP BY field1, field2, field3..."
  */
 @Component
-public class MySqlGroupByPartGenerator extends SingleQueryPartGenerator {
+public class MySqlGroupByPartGenerator extends QueryPartGenerator {
 	@Override
 	public String generateQueryPart(DataQueryDTO dataQueryDTO)
 			throws InvalidQueryException {

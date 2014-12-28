@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Generate part of query
  */
-public abstract class QueryPartGenerator<T> {
+public abstract class QueryPartGenerator {
 
     @Autowired
     protected DataEntitiesConfig dataEntitiesConfig;
@@ -55,10 +55,10 @@ public abstract class QueryPartGenerator<T> {
 
 	/**
 	 * Generates part of query
-	 * @param querySource	the DTO we want to parse onto a query
+	 * @param dataQueryDTO	the DTO we want to parse onto a query
 	 * @return the part of the query
 	 * @throws InvalidQueryException in case we failed to parse the DTO into the query type
 	 */
-	public abstract String generateQueryPart(T querySource) throws InvalidQueryException;
+	public abstract String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException;
 
 }
