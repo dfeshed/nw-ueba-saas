@@ -25,7 +25,7 @@ public class DataQueryDtoHelper {
         if (dataQueryDTO.getSubQuery() != null){
             if (!dataQueryDTO.getSubQuery().getDataQueries().isEmpty()){
                 for(DataQueryDTO subDataQuery: dataQueryDTO.getSubQuery().getDataQueries()){
-                    String entityId = getEntityId(dataQueryDTO.getSubQuery().getDataQueries().get(0));
+                    String entityId = getEntityId(subDataQuery);
                     if (entityId != null)
                         return entityId;
                 }
