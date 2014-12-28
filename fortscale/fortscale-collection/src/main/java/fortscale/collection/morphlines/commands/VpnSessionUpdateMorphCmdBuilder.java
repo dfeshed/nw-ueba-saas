@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import fortscale.collection.morphlines.RecordExtensions;
 import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -82,7 +83,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 				logger.warn("vpnService is null while processing morphline command {}. probably the spring configuration context was not loaded", VpnSessionUpdate.class);
 				return super.doProcess(inputRecord);
 			}
-			
+
 			VpnSession vpnSession = recordToVpnSessionConverter.convert(inputRecord, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName, sessionIdFieldName, addSessionDataFieldName);
 			if(vpnSession.getClosedAt() == null && vpnSession.getCreatedAt() == null){
 				//right now we don't use fail status for updating vpn session. There is a JIRA for this (FV-4413).
@@ -93,7 +94,12 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 				return super.doProcess(inputRecord);
 			}
 
-			if(vpnSession.getClosedAt() != null && vpnSession.getAddSessionData()){
+			/**
+			 * when <code>addSessionData</code> is false: if there is a close session event without an open event we drop this session
+			 * if true: we can create a session without the stat session event as we have all attributes in the close session event.
+			 */
+			Boolean isAddSessionData = RecordExtensions.getBooleanValue(inputRecord, addSessionDataFieldName);
+			if(vpnSession.getClosedAt() != null && isAddSessionData){
 				VpnSession vpnOpenSession = getOpenSessionDataToRecord(vpnSession);
 				if(vpnOpenSession == null){
 					logger.debug("got close vpn session for non existing or failed session");

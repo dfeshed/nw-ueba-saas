@@ -56,7 +56,6 @@ public class RecordToVpnSessionConverter {
 			vpnSession.setLatitude(RecordExtensions.getDoubleValue(inputRecord,latitudeFieldName, null));
 			vpnSession.setLongtitude(RecordExtensions.getDoubleValue(inputRecord,longtitudeFieldName, null));
 			vpnSession.setSessionId(RecordExtensions.getStringValue(inputRecord, sessionIdFieldName, null));
-			vpnSession.setAddSessionData(Boolean.parseBoolean(RecordExtensions.getStringValue(inputRecord, addSessionDataFieldName, "true")));
 		}
 		
 		return vpnSession;
