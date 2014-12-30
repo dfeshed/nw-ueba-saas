@@ -168,6 +168,22 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 
         entity.setName(entityShortName);
 
+        String entityEventsEntity = entityConfig.getEventsEntity();
+        if (entityEventsEntity == null){
+            entityEventsEntity = getExtendableValue(entityId, "events_entity");
+            entityConfig.setEventsEntity(entityEventsEntity);
+        }
+
+        entity.setEventsEntity(entityEventsEntity);
+
+        String entitySessionEntity = entityConfig.getSessionEntity();
+        if (entitySessionEntity == null){
+            entitySessionEntity = getExtendableValue(entityId, "session_entity");
+            entityConfig.setSessionEntity(entitySessionEntity);
+        }
+
+        entity.setSessionEntity(entitySessionEntity);
+
         List<String> fieldIds = getAllEntityFields(entityId);
         ArrayList<DataEntityField> fields = new ArrayList<>();
 

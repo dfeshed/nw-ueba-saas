@@ -13,6 +13,8 @@ public class DataEntityConfig {
     private HashMap<String, DataEntityFieldConfig> fields = new HashMap<>();
     private ArrayList<String> fieldsList;
     private String extendedEntity;
+    private String eventsEntity;
+    private String sessionEntity;
     private String performanceField;
     private int performanceFieldMinValue = 0;
     private String performanceTable;
@@ -51,6 +53,22 @@ public class DataEntityConfig {
 
     public void setPartitionsBaseField(List<String> partitionsBaseField) {
         this.partitionsBaseField = partitionsBaseField;
+    }
+
+    public String getSessionEntity() {
+        return sessionEntity;
+    }
+
+    public void setSessionEntity(String sessionEntity) {
+        this.sessionEntity = sessionEntity;
+    }
+
+    public String getEventsEntity() {
+        return eventsEntity;
+    }
+
+    public void setEventsEntity(String eventsEntity) {
+        this.eventsEntity = eventsEntity;
     }
 
     public String getName() {
