@@ -42,11 +42,13 @@ public abstract class MySqlFieldFunction {
             }
             else {
                 String entityId = field.getEntity();
-                if (entityId == null) {
+                if (entityId == null)
                     entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
-                    return dataEntitiesConfig.getFieldColumn(entityId, field.getId());
-                }
+                if (entityId == null)
+                	throw new InvalidQueryException("Can't get field name for function, entity not found.");
+                
+                return dataEntitiesConfig.getFieldColumn(entityId, field.getId());
             }
         }
         else if (field.getFunc().getParams() != null && field.getFunc().getParams().containsKey("field")){
