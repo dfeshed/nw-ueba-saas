@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component;
 
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
+import javax.management.Query;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Generate the "from" part of the query in MySql
  */
@@ -44,6 +48,13 @@ public class MySqlFromPartGenerator extends QueryPartGenerator {
         }
 	}
 
+    final static ArrayList<QueryOperator> greaterThanOrEqualsOperators = new ArrayList<QueryOperator>();
+    static{
+        greaterThanOrEqualsOperators.add(QueryOperator.equals);
+        greaterThanOrEqualsOperators.add(QueryOperator.greaterThan);
+        greaterThanOrEqualsOperators.add(QueryOperator.greaterThanOrEquals);
+    }
+
     /**
      * Checks whether the DTO has a condition where the performance field (usually event_score) is >= the performance min value (usually 50).
      * This is pretty naive at the moment, since it doesn't take into account OR operators, but should be good enough for now.
@@ -55,21 +66,26 @@ public class MySqlFromPartGenerator extends QueryPartGenerator {
         if (term.getTerms() == null || term.getTerms().size() == 0)
             return false;
 
+        Boolean returnValue = false;
+
         for (Term childTerm: term.getTerms()){
             if (childTerm instanceof ConditionField){
                 ConditionField condition = (ConditionField)childTerm;
                 if (condition.getField().getId().equals(dataEntitiesConfig.getEntityPerformanceTableField(entityId))){
                     int value = Integer.parseInt(condition.getValue());
-                    if (value >= dataEntitiesConfig.getEntityPerformanceTableFieldMinValue(entityId) &&
-                            (condition.getOperator() == QueryOperator.equals || condition.getOperator() == QueryOperator.greaterThan || condition.getOperator() == QueryOperator.greaterThanOrEquals)){
-                        return true;
-                    }
+
+                    // If it's the performance field and its value is equal or required to the performance value and it's a >= operator, we can use the performance table.
+                    if (greaterThanOrEqualsOperators.contains(condition.getOperator()) && value >= dataEntitiesConfig.getEntityPerformanceTableFieldMinValue(entityId))
+                        returnValue = true;
+                    // But if there's any condition on the performance field that doesn't allow to use the performance field, the isHighScore method should return false:
+                    else
+                        return false;
                 }
             }
             else if (isHighScore(entityId, (ConditionTerm)childTerm))
-                return true;
+                returnValue = true;
         }
 
-        return false;
+        return returnValue;
     }
 }
