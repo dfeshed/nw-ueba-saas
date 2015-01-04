@@ -29,12 +29,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterables;
 
+import fortscale.ml.model.prevalance.PrevalanceModel;
+import fortscale.ml.model.prevalance.PrevalanceModelBuilder;
+import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.streaming.model.prevalance.PrevalanceModel;
-import fortscale.streaming.model.prevalance.PrevalanceModelBuilder;
-import fortscale.streaming.model.prevalance.UserTimeBarrier;
-import fortscale.streaming.service.PrevalanceModelService;
+import fortscale.streaming.service.PrevalanceModelStreamingService;
 import fortscale.utils.StringPredicates;
 
 
@@ -50,7 +50,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	private String usernameField;
 	private String timestampField;
 	private String modelName;
-	private PrevalanceModelService modelService;
+	private PrevalanceModelStreamingService modelService;
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
 	private Counter lastTimestampCount;
@@ -79,7 +79,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		PrevalanceModelBuilder builder = createModelBuilder(config);
 		
 		// create model service based on the store and model builder
-		modelService = new PrevalanceModelService(store, builder);
+		modelService = new PrevalanceModelStreamingService(store, builder);
 		
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-message-count", modelName));

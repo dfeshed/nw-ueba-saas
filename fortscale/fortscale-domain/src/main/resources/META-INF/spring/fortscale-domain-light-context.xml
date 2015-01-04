@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+		
+	<description>domain light context.</description>
+		
+
+	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}"/>
+	
+	<mongo:mapping-converter id="mongoConverter" base-package="fortscale.domain">
+		<mongo:custom-converters base-package="fortscale.domain" />
+	</mongo:mapping-converter>
+	
+	<bean id="mongoConverterConfigurer" class="fortscale.domain.MongoConverterConfigurer" init-method="init" >
+		<property name="mongoConverter" ref="mongoConverter"/>
+		<property name="mapKeyDotReplacement" value="${mongo.map.dot.replacement}"/>
+	</bean>
+	
+	<mongo:auditing />
+	
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg ref="mongoDbFactory" />
+		<constructor-arg ref="mongoConverter" />
+		<property name="writeConcern" value="SAFE" />
+	</bean>
+</beans>

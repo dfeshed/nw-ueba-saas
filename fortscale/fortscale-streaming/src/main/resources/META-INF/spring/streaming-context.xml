@@ -8,13 +8,6 @@
 						http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-
-
-<!--
-	<context:property-placeholder location="classpath*:META-INF/*.properties" />
-	<context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
--->
-
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
  		<property name="location" value="file:config/fortscale-overriding-streaming.properties"/>
  		<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
@@ -25,31 +18,12 @@
 
 	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-domain-light-context.xml"/>
 	<import resource="classpath*:META-INF/spring/monitor-context.xml" />
 
 
     <context:annotation-config />
 	
-	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}"/>
-	
-	<mongo:mapping-converter id="mongoConverter" base-package="fortscale.domain">
-		<mongo:custom-converters base-package="fortscale.domain" />
-	</mongo:mapping-converter>
-	
-	<bean id="mongoConverterConfigurer" class="fortscale.domain.MongoConverterConfigurer" init-method="init" >
-		<property name="mongoConverter" ref="mongoConverter"/>
-		<property name="mapKeyDotReplacement" value="${mongo.map.dot.replacement}"/>
-	</bean>
-	
-	<mongo:auditing />
-	
-	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-		<constructor-arg ref="mongoDbFactory" />
-		<constructor-arg ref="mongoConverter" />
-		<property name="writeConcern" value="SAFE" />
-	</bean>
-	
-	<mongo:repositories base-package="fortscale.streaming.service.dao" />
 	<mongo:repositories base-package="fortscale.domain.system.dao" />
 	
 	<bean class="fortscale.domain.system.ServersListConfigurationImpl" />
