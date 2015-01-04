@@ -179,6 +179,7 @@ public class EventProcessJob implements Job {
 				// make sure all close are called, hence the horror below of nested finally blocks
 				try {
 					morphline.close();
+					morphlineEnrichment.close();
 				} finally {
 					try {
 						closeOutputAppender();
