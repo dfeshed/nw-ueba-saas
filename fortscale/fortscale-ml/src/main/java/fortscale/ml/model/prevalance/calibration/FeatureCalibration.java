@@ -15,7 +15,6 @@ public class FeatureCalibration{
 	
 	private static int MAX_NUM_OF_BUCKETS = 30;
 	
-	private Double scoreBucketsAggr[];
 	private ArrayList<FeatureCalibrationBucketScorer> bucketScorerList = null;
 	private Map<String, Double> featureValueToCountMap = new HashMap<>();
 	private double addedValue = 1;

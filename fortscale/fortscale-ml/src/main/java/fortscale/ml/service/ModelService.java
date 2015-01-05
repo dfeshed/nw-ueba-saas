@@ -1,8 +1,6 @@
 package fortscale.ml.service;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +10,6 @@ import fortscale.ml.service.dao.ModelRepository;
 
 @Service
 public class ModelService {
-
-	private static final Logger logger = LoggerFactory.getLogger(ModelService.class);
 	
 	@Autowired
 	private ModelRepository modelRepository;

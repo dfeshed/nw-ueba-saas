@@ -5,9 +5,7 @@ import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -17,8 +15,6 @@ import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.system.OutgoingMessageEnvelope;
-import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.ClosableTask;
 import org.apache.samza.task.InitableTask;
 import org.apache.samza.task.MessageCollector;
@@ -32,7 +28,6 @@ import com.google.common.collect.Iterables;
 import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.model.prevalance.PrevalanceModelBuilder;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
-import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.PrevalanceModelStreamingService;
 import fortscale.utils.StringPredicates;
@@ -46,7 +41,6 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 
 	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTask.class);
 	
-	private String outputTopic;
 	private String usernameField;
 	private String timestampField;
 	private String modelName;
@@ -54,10 +48,6 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
 	private Counter lastTimestampCount;
-	private Map<String, String> outputFields = new HashMap<String, String>();
-	private String eventScoreField;
-	private boolean skipScore;
-	private boolean skipModel;
 	private List<String> discriminatorsFields;
 	
 	@SuppressWarnings("unchecked")
@@ -66,9 +56,6 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		// get task configuration parameters
 		usernameField = getConfigString(config, "fortscale.username.field");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
-		outputTopic = config.get("fortscale.output.topic", "");
-		skipScore = config.getBoolean("fortscale.skip.score", false);
-		skipModel = config.getBoolean("fortscale.skip.model", false);
 		discriminatorsFields = getConfigStringList(config, "fortscale.discriminator.fields");
 		
 		// get the store that holds models
@@ -90,21 +77,15 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	private PrevalanceModelBuilder createModelBuilder(Config config) throws Exception {
 		// get the model name and fields to include from configuration
 		modelName = getConfigString(config, "fortscale.model.name");
-		eventScoreField = getConfigString(config, "fortscale.event.score.field");
 		PrevalanceModelBuilder modelBuilder = PrevalanceModelBuilder.createModel(modelName, config);
 		
 		Config fieldsSubset = config.subset("fortscale.fields.");		
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".model"))) {
 			String fieldName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".model"));
 			String fieldModel = getConfigString(config, String.format("fortscale.fields.%s.model", fieldName));
-			String outputField = getConfigString(config, String.format("fortscale.fields.%s.output", fieldName));
 			String fieldBooster = config.get(String.format("fortscale.fields.%s.booster", fieldName), "");
 			
 			modelBuilder.withField(fieldName, fieldModel, fieldBooster);
-			if (outputField==null)
-				logger.error("output field is null for field {}", fieldName);
-			else
-				outputFields.put(fieldName, outputField);
 		}
 		return modelBuilder;
 	}
@@ -142,53 +123,22 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		// to perform both model computation and scoring (the normal case)
 		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);
 		boolean afterTimeMark = model.getBarrier().isEventAfterBarrier(timestamp, discriminator);
-		if (!afterTimeMark && !skipModel) {
+		if (!afterTimeMark) {
 			skippedMessageCount.inc();
 			return;
 		}
 		
 		// skip events that occur before the model mark in case the task is configured to
 		// perform only model computation and not event scoring 
-		if (afterTimeMark && !skipModel) {
+		if (afterTimeMark) {
 			model.addFieldValues(message, timestamp);
 			model.getBarrier().updateBarrier(timestamp, discriminator);
 			modelService.updateUserModelInStore(username, model);
 			// update timestamp counter
 			lastTimestampCount.set(timestamp);
-		}
-		
-		// compute score for the event fields. don't enforce time mark here
-		// so we can deal with a scenario where events are passed through twice - 
-		// once for model computation and a second time for scoring
-		if (!skipScore) {
-			double eventScore = 0;
-			for (String fieldName : model.getFieldNames()) {
-				double score = model.calculateScore(message, fieldName);
-			
-				// set the max field score as the event score
-				if (model.shouldAffectEventScore(fieldName))
-					eventScore = Math.max(eventScore, score);
-				
-				// store the field score in the message
-				String outputFieldname = outputFields.get(fieldName); 
-				if (outputFieldname!=null)
-					message.put(outputFieldname, score);
-			}
-		
-			// put the event score in the message
-			message.put(eventScoreField, eventScore);
-			
-			// publish the event with score to the subsequent topic in the topology
-			if (StringUtils.isNotEmpty(outputTopic)){
-				try{
-					collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
-				} catch(Exception exception){
-					throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", messageText), exception);
-				}
-			}
 			
 			processedMessageCount.inc();
-		} else {
+		} else{
 			skippedMessageCount.inc();
 		}
 	}

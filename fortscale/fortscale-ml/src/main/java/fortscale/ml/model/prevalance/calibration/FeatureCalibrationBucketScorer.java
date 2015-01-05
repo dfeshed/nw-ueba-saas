@@ -12,9 +12,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 public class FeatureCalibrationBucketScorer implements IFeatureCalibrationBucketScorer {
 
 	private Map<String, Double> featureValueToScoreMap = new HashMap<>();
-	
-	private boolean isFirstBucket = false;
-	
+		
 	private double score = 0;
 	private String scoreFeatureValue;
 	
