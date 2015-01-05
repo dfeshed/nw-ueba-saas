@@ -20,7 +20,15 @@ import scala.collection.immutable.Set;
 import com.google.common.collect.Sets;
 
 /**
- * Samza job factory that supports graceful shutdown
+ * Samza job factory that supports graceful shutdown.
+ * In addition the local job factory enables the restriction of which partitions to include in each input topic.
+ * To control which partitions are handles, and java opts parameter should be passed to the JVM instance named "topicPartitions".
+ * The value of the java opts parameter "topicPartitions" should be in the format of <topicName>.<partitionId>,<topicName>.<partitionId>,....
+ * Only partitions that actualy exists in the topic will be processed. Several partitions or topics of the same kind can
+ * appear in the topicPartitions parameter value.
+ *
+ * To set the JVM topicPartitions in linux ssh terminal run the following command:
+ * export JAVA_OPTS="-DtopicPartitions=...."
  */
 public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 
