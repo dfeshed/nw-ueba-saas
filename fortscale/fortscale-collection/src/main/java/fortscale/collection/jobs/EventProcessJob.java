@@ -181,9 +181,13 @@ public class EventProcessJob implements Job {
 					morphline.close();
 				} finally {
 					try {
-						closeOutputAppender();
+						morphlineEnrichment.close();
 					} finally {
-						closeStreamingAppender();
+						try {
+							closeOutputAppender();
+						} finally {
+							closeStreamingAppender();
+						}
 					}
 				}
 			}
