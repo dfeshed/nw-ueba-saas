@@ -16,8 +16,6 @@ import org.apache.samza.system.SystemStreamPartition;
 import org.apache.samza.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.collection.JavaConversions;
-import scala.collection.immutable.ListSet;
 import scala.collection.immutable.Set;
 import com.google.common.collect.Sets;
 
@@ -78,7 +76,8 @@ public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 			return Util.getInputStreamPartitions(config);
 
 
-		Set<SystemStreamPartition> partitions = new ListSet<>();
+
+		scala.collection.mutable.Set<SystemStreamPartition> partitions = new scala.collection.mutable.HashSet<>();
 
 		// get all topics from the task configuration file and for each one create a SSP
 		// only for the restricted partitions in the topic
@@ -86,44 +85,39 @@ public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 		Map<String, SystemAdmin> systemAdmins = new HashMap<>();
 
 		for (String configTopic : configTopics) {
-			String[] configParts = configTopic.split(".");
+			String[] configParts = configTopic.split("\\.");
 			String system = configParts[0];
 			String topic = configParts[1];
 
-			if (partitionsToInclude.containsKey(topic)) {
-				// create SSP only for the restricted partitions
-				for (Integer partitionId : partitionsToInclude.get(topic))
-					partitions = (Set<SystemStreamPartition>)partitions.$plus(new SystemStreamPartition(system, topic, new Partition(partitionId)));
-			} else {
-				// create SSP for all partitions in the topic, get the partitions list using the system admin
-
-				// ensure we have a system factory for the system topic
-				if (!systemAdmins.containsKey(system)) {
-					// get the system factory name from configuration
-					try {
-						String className = config.get(String.format("systems.%s.samza.factory", system));
-						SystemFactory factory = (SystemFactory) Class.forName(className).newInstance();
-						SystemAdmin admin = factory.getAdmin(system, config);
-						systemAdmins.put(system, admin);
-					} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-						throw new IllegalStateException("cannot create instance of system factory for system " + system);
-					}
+			// ensure we have a system factory for the system topic
+			if (!systemAdmins.containsKey(system)) {
+				// get the system factory name from configuration
+				try {
+					String className = config.get(String.format("systems.%s.samza.factory", system));
+					SystemFactory factory = (SystemFactory) Class.forName(className).newInstance();
+					SystemAdmin admin = factory.getAdmin(system, config);
+					systemAdmins.put(system, admin);
+				} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+					throw new IllegalStateException("cannot create instance of system factory for system " + system);
 				}
-				SystemAdmin admin = systemAdmins.get(system);
+			}
+			SystemAdmin admin = systemAdmins.get(system);
 
-				// get all topic partitions and create a SSP for each one
-				SystemStreamMetadata metadata = admin.getSystemStreamMetadata(Sets.newHashSet(topic)).get(topic);
-				for (Partition partition : metadata.getSystemStreamPartitionMetadata().keySet()) {
-					partitions = (Set<SystemStreamPartition>)partitions.$plus(new SystemStreamPartition(system, topic, partition));
-				}
+
+			// get all topic partitions and create a SSP for each one
+			SystemStreamMetadata metadata = admin.getSystemStreamMetadata(Sets.newHashSet(topic)).get(topic);
+			for (Partition partition : metadata.getSystemStreamPartitionMetadata().keySet()) {
+				// check if we have the topic and partition in the restriction map
+				if (!partitionsToInclude.containsKey(topic) || partitionsToInclude.get(topic).contains(partition.getPartitionId()))
+					partitions.add(new SystemStreamPartition(system, topic, partition));
 			}
 		}
 
-		return partitions;
+		return partitions.toSet();
 	}
 
 	private Map<String, List<Integer>> getPartitionsToRestrict() {
-		String envTopicPartitions = System.getenv("topicPartitions");
+		String envTopicPartitions = System.getProperty("topicPartitions");
 		if (StringUtils.isEmpty(envTopicPartitions))
 			return new HashMap<>();
 
@@ -132,7 +126,7 @@ public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 		// build from the environment variable a map between topic names and list of partitions to include
 		Map<String,List<Integer>> partitionsToInclude = new HashMap<>();
 		for (String topicEntry : envTopicPartitions.split(",")) {
-			String[] topicEntryArr = topicEntry.split(".");
+			String[] topicEntryArr = topicEntry.split("\\.");
 			String topicName = topicEntryArr[0];
 			int partition = Integer.parseInt(topicEntryArr[1]);
 
