@@ -1,10 +1,9 @@
 package fortscale.streaming.task;
 
-import fortscale.geoip.GeoIPInfo;
 import net.minidev.json.JSONObject;
+import fortscale.geoip.GeoIPInfo;
 
-public class VPNSessionEventsModelStreamTask extends EventsPrevalenceModelStreamTask {
-
+public class VPNSessionEventsFilterStreamTask extends EventsFilterStreamTask{
 	private static final String CLOSED = "CLOSED";
 	private static final String STATUS_FIELD = "status";
     private static final String COUNTRYFIELD = "country";
@@ -22,5 +21,4 @@ public class VPNSessionEventsModelStreamTask extends EventsPrevalenceModelStream
 		// filter out vpn events which are not in closed status
 		return CLOSED.equals(message.get(STATUS_FIELD));
 	}
-	
 }

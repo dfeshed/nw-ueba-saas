@@ -1,8 +1,11 @@
 package fortscale.streaming.task;
 
-import static fortscale.utils.ConversionUtils.*;
+import static fortscale.utils.ConversionUtils.convertToBoolean;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 import java.util.regex.Pattern;
+
+import net.minidev.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.config.Config;
@@ -11,11 +14,9 @@ import org.apache.samza.task.TaskContext;
 import fortscale.domain.system.ServersListConfiguration;
 import fortscale.domain.system.ServersListConfigurationImpl;
 import fortscale.streaming.service.SpringService;
-import net.minidev.json.JSONObject;
 
-public class Sec4769EventsModelStreamTask extends EventsPrevalenceModelStreamTask {
-
-	private static final String NAT_SRC_MACHINE = "nat_src_machine";
+public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
+private static final String NAT_SRC_MACHINE = "nat_src_machine";
 	
 	private Pattern accountNamePattern;
 	private Pattern destinationPattern;
