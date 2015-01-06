@@ -1,18 +1,13 @@
 package fortscale.collection.morphlines;
 
-import fortscale.domain.events.VpnSession;
-import fortscale.services.event.VpnService;
+import fortscale.domain.events.dao.VpnSessionRepository;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContextManager;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,17 +15,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static junitparams.JUnitParamsRunner.$;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnitParamsRunner.class)
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:META-INF/spring/mophline-test-context.xml")
-public class VpnF5Test  {
+//@ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context.xml"})
+public class VpnF5Test {
 
-	private TestContextManager testContextManager;
-
-	@Autowired
-	private VpnService vpnService;
+	private static ClassPathXmlApplicationContext testContextManager;
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readVPN_F5.conf";
@@ -84,6 +74,14 @@ public class VpnF5Test  {
 		prepareDates();
 	}
 
+
+	@BeforeClass
+	public static void setUpClass(){
+		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
+		VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
+		vpnSessionRepository.deleteAll();
+	}
+
 	private static void prepareDates() {
 
 		tz = TimeZone.getTimeZone("Asia/Jerusalem");
@@ -135,24 +133,14 @@ public class VpnF5Test  {
 
 	}
 
-	@BeforeClass
-	public static void setUpClass(){
-	}
-
-
-
 	@AfterClass
 	public static void finalizeTestClass(){
+		testContextManager.close();
+		testContextManager = null;
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		//this is where the magic happens, we actually do "by hand" what the spring runner would do for us,
-		// read the JavaDoc for the class bellow to know exactly what it does, the method names are quite accurate though
-		this.testContextManager = new TestContextManager(getClass());
-		this.testContextManager.prepareTestInstance(this);
-
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
@@ -162,13 +150,14 @@ public class VpnF5Test  {
 	@After
 	public void tearDown() throws Exception {
 		morphlineTester.close();
+		VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
+		vpnSessionRepository.deleteAll();
 	}
 
 	@Test
 	@Parameters
 	public void test(String testCase, Object[] lines, Object[] outputs) {
 
-		when (vpnService.findBySessionId(anyString())).thenReturn(new VpnSession());
 		List<String> events = new ArrayList<String>(lines.length);
 		for (Object line : lines)
 			events.add((String)line);
@@ -222,7 +211,7 @@ public class VpnF5Test  {
 						$(
 								(String)null,
 								(String)null,
-								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,false,false",
+								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
 								(String)null
 						)
 				) ,
@@ -283,7 +272,7 @@ public class VpnF5Test  {
 						),
 						$(
 								(String)null,
-								Jan_2_19_06_26_OUT + "," + Jan_2_19_06_26_L + ",bartra,69.141.27.100,,FAIL,,,,,,,,,,,,,false,false"
+								Jan_2_19_06_26_OUT + "," + Jan_2_19_06_26_L + ",bartra,69.141.27.100,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
 						)
 				),
 
@@ -347,8 +336,8 @@ public class VpnF5Test  {
 						),
 						$(
 								(String)null,
-								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,71.125.52.63,,FAIL,,,,,,,,,,,,,false,false",
-								Apr_14_01_50_42_OUT + "," + Apr_14_01_50_42_L + ",kamalij,71.125.52.63,,SUCCESS,,,,,,,,,,,,,false,false"
+								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,71.125.52.63,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
+								Apr_14_01_50_42_OUT + "," + Apr_14_01_50_42_L + ",kamalij,71.125.52.63,,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
 						)
 				),
 				$(
