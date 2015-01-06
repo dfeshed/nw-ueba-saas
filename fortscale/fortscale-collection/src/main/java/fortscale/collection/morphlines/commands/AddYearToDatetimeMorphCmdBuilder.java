@@ -19,7 +19,7 @@ import java.util.*;
 @Configurable()
 public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 	private static org.slf4j.Logger logger = LoggerFactory.getLogger(AddYearToDatetimeMorphCmdBuilder.class);
-	
+
 	@Override
 	public Collection<String> getNames() {
 		return Collections.singletonList("AddYearToDatetime");
@@ -37,12 +37,16 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 
 		private final String dateFormat;
 		private final String timeZone;
+		private final SimpleDateFormat sdf;
+		private final String year;
 
 		public AddYearToDatetime(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 
 			dateFormat = getConfigs().getString(config, "dateFormat");
 			timeZone = getConfigs().getString(config, "timezone");
+			sdf = new SimpleDateFormat(dateFormat);
+			year = Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
 
 			validateArguments();
 		}
@@ -51,20 +55,16 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 		protected boolean doProcess(Record inputRecord) {
 			//Adding year from the system current date to the date_time.
 			try {
-				Object date_time = inputRecord.getFirstValue("date_time");
-				TimeZone outputTimeZone = TimeZone.getTimeZone(timeZone == null ? "UTC" : timeZone);
+				Object date_time = RecordExtensions.getStringValue(inputRecord, "date_time");
+				TimeZone outputTimeZone = TimeZone.getTimeZone(RecordExtensions.getStringValue(inputRecord, timeZone, "UTC"));
 
 				if (date_time==null) {
 					return false;
 				}
 
-				SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 				sdf.setTimeZone(outputTimeZone);
-				int year = Calendar.getInstance().get(Calendar.YEAR);
 
-
-
-				Date parsedDate = sdf.parse(Integer.toString(year) + " " + date_time.toString());
+				Date parsedDate = sdf.parse(year + " " + date_time.toString());
 
 
 				Calendar cal = Calendar.getInstance(outputTimeZone);
