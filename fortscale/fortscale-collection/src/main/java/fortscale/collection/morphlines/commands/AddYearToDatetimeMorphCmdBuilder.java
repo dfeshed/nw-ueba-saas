@@ -2,8 +2,6 @@ package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.impl.UsernameNormalizer;
-import fortscale.utils.logging.Logger;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -11,7 +9,6 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -33,12 +30,14 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	// Nested class:
 	// /////////////////////////////////////////////////////////////////////////////
-	private class AddYearToDatetime extends AbstractCommand {
+	@Configurable(preConstruction=true)
+	public static class AddYearToDatetime extends AbstractCommand {
 
 		private final String dateFormat;
 		private final String timeZone;
 		private final SimpleDateFormat sdf;
-		private final String year;
+		private String year = null;
+		Calendar cal;
 
 		public AddYearToDatetime(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
@@ -46,7 +45,6 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 			dateFormat = getConfigs().getString(config, "dateFormat");
 			timeZone = getConfigs().getString(config, "timezone");
 			sdf = new SimpleDateFormat(dateFormat);
-			year = Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
 
 			validateArguments();
 		}
@@ -62,23 +60,18 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 					return false;
 				}
 
+				cal = Calendar.getInstance(outputTimeZone);
+				year = Integer.toString(cal.get(Calendar.YEAR));
 				sdf.setTimeZone(outputTimeZone);
-
 				Date parsedDate = sdf.parse(year + " " + date_time.toString());
 
 
-				Calendar cal = Calendar.getInstance(outputTimeZone);
-
 				Date currentDate = cal.getTime();
-
-
 
 				if (parsedDate.compareTo(currentDate)>0) {
 					parsedDate.setYear(parsedDate.getYear() - 1);
 				}
-
 				inputRecord.replaceValues("date_time", sdf.format(parsedDate));
-
 
 			} catch (Exception e) {
 				logger.error("Error parsing date." + e.getMessage());
