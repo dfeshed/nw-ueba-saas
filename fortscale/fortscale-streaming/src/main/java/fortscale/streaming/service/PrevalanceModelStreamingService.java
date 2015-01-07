@@ -7,6 +7,8 @@ import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.google.common.base.Throwables;
 
@@ -19,34 +21,38 @@ import fortscale.streaming.exceptions.LevelDbException;
 /** 
  * Service class to maintain model lifecycle and persistence within samza tasks
  */
-public class PrevalanceModelStreamingService {
+@Service("prevalanceModelStreamingService")
+public class PrevalanceModelStreamingService implements ModelService{
 
 	private static final Logger logger = LoggerFactory.getLogger(PrevalanceModelStreamingService.class);
 	
 	private KeyValueStore<String, PrevalanceModel> store;
 	private PrevalanceModelBuilder modelBuilder;
+	@Autowired
 	private ModelService modelService;
 	
-	public PrevalanceModelStreamingService(KeyValueStore<String, PrevalanceModel> store, PrevalanceModelBuilder modelBuilder) {
+	
+	
+	
+	public void setStore(KeyValueStore<String, PrevalanceModel> store){
 		checkNotNull(store);
-		checkNotNull(modelBuilder);
 		this.store = store;
+	}
+	
+	public void setModelBuilder(PrevalanceModelBuilder modelBuilder){
+		checkNotNull(modelBuilder);
 		this.modelBuilder = modelBuilder;
-		
-		// get the repository from spring context implicitly, as I has a horrible 
-		// experience using compile time weaving to work here....
-		modelService = SpringService.getInstance().resolve(ModelService.class);
 	}
 	
 	/** Get the model for the user first from the samza store, if not exists look for it in the repository or build a new model */
-	public PrevalanceModel getModelForUser(String username) throws Exception {
+	public PrevalanceModel getModelForUser(String username, String modelName) throws Exception {
 		// lookup the model in the store
 		PrevalanceModel model = store.get(username);
 		if (model!=null)
 			return model;
 		
 		// lookup the model in the repository
-		model = modelService.getModelForUser(username, modelBuilder.getModelName());
+		model = modelService.getModelForUser(username, modelName);
 		if (model!=null) 
 			return model;
 		
@@ -56,7 +62,7 @@ public class PrevalanceModelStreamingService {
 	
 	/** Update the user model in samza store 
 	 * @throws LevelDbException */
-	public void updateUserModelInStore(String username, PrevalanceModel model) throws LevelDbException {
+	public void updateUserModel(String username, PrevalanceModel model) throws LevelDbException {
 		try{
 			store.put(username, model);
 		} catch(Exception exception){

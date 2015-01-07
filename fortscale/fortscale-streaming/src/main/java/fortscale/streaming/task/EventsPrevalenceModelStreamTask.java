@@ -30,6 +30,7 @@ import fortscale.ml.model.prevalance.PrevalanceModelBuilder;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.PrevalanceModelStreamingService;
+import fortscale.streaming.service.SpringService;
 import fortscale.utils.StringPredicates;
 
 
@@ -44,7 +45,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	private String usernameField;
 	private String timestampField;
 	private String modelName;
-	private PrevalanceModelStreamingService modelService;
+	private PrevalanceModelStreamingService prevalanceModelStreamingService;
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
 	private Counter lastTimestampCount;
@@ -63,10 +64,12 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		KeyValueStore<String, PrevalanceModel> store = (KeyValueStore<String, PrevalanceModel>)context.getStore(storeName);
 		
 		// create a model builder based on fields configuration
-		PrevalanceModelBuilder builder = createModelBuilder(config);
+		PrevalanceModelBuilder modelBuilder = createModelBuilder(config);
 		
 		// create model service based on the store and model builder
-		modelService = new PrevalanceModelStreamingService(store, builder);
+		prevalanceModelStreamingService = SpringService.getInstance().resolve(PrevalanceModelStreamingService.class);
+		prevalanceModelStreamingService.setModelBuilder(modelBuilder);
+		prevalanceModelStreamingService.setStore(store);
 		
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-message-count", modelName));
@@ -112,23 +115,19 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		}
 		
 		// go over each field in the event and add it to the model
-		PrevalanceModel model = modelService.getModelForUser(username);
+		PrevalanceModel model = prevalanceModelStreamingService.getModelForUser(username,modelName);
 		
 		// skip events that occur before the model time mark in case the task is configured
 		// to perform both model computation and scoring (the normal case)
 		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);
 		boolean afterTimeMark = model.getBarrier().isEventAfterBarrier(timestamp, discriminator);
-		if (!afterTimeMark) {
-			skippedMessageCount.inc();
-			return;
-		}
 		
 		// skip events that occur before the model mark in case the task is configured to
 		// perform only model computation and not event scoring 
 		if (afterTimeMark) {
 			model.addFieldValues(message, timestamp);
 			model.getBarrier().updateBarrier(timestamp, discriminator);
-			modelService.updateUserModelInStore(username, model);
+			prevalanceModelStreamingService.updateUserModel(username, model);
 			// update timestamp counter
 			lastTimestampCount.set(timestamp);
 			
@@ -142,15 +141,15 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	
 	/** periodically save the state to mongodb as a secondary backing store */
 	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
-		if (modelService!=null)
-			modelService.exportModels();
+		if (prevalanceModelStreamingService!=null)
+			prevalanceModelStreamingService.exportModels();
 	}
 
 	/** save the state to mongodb when the job shutsdown */
 	@Override protected void wrappedClose() throws Exception {
-		if (modelService!=null) {
-			modelService.exportModels();
+		if (prevalanceModelStreamingService!=null) {
+			prevalanceModelStreamingService.exportModels();
 		}
-		modelService = null;
+		prevalanceModelStreamingService = null;
 	}
 }

@@ -1,4 +1,4 @@
-package fortscale.streaming.task;
+package fortscale.streaming.service;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToString;
@@ -15,14 +15,13 @@ import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Iterables;
 
@@ -30,23 +29,27 @@ import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.streaming.service.SpringService;
 import fortscale.utils.StringPredicates;
 
-public class EventsScoreStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
+@Service
+public class EventsScoreStreamTaskService {
 
-	private static final Logger logger = LoggerFactory.getLogger(EventsScoreStreamTask.class);
+private static final Logger logger = LoggerFactory.getLogger(EventsScoreStreamTaskService.class);
 	
+
+	@Autowired
+	private ModelService prevalanceModelStreamingService;
+
 	private String outputTopic;
 	private String usernameField;
 	private String modelName;
-	private ModelService modelService;
+	
 	private Counter processedMessageCount;
 	private Map<String, String> outputFields = new HashMap<String, String>();
 	private String eventScoreField;
 	
-	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	
+	protected void init(Config config, TaskContext context) throws Exception {
 		// get task configuration parameters
 		usernameField = getConfigString(config, "fortscale.username.field");
 		outputTopic = config.get("fortscale.output.topic", "");
@@ -56,7 +59,7 @@ public class EventsScoreStreamTask extends AbstractStreamTask implements Initabl
 		
 
 		//get the events score streaming service.
-		modelService = SpringService.getInstance().resolve(ModelService.class);
+		prevalanceModelStreamingService = SpringService.getInstance().resolve(PrevalanceModelStreamingService.class);
 		
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-message-count", modelName));
@@ -79,7 +82,7 @@ public class EventsScoreStreamTask extends AbstractStreamTask implements Initabl
 	}
 	
 	/** Process incoming events and update the user models stats */
-	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// parse the message into json 
 		String messageText = (String)envelope.getMessage();
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
@@ -93,7 +96,7 @@ public class EventsScoreStreamTask extends AbstractStreamTask implements Initabl
 		}
 				
 		// go over each field in the event and add it to the model
-		PrevalanceModel model = modelService.getModelForUser(username, modelName);
+		PrevalanceModel model = prevalanceModelStreamingService.getModelForUser(username, modelName);
 		
 		double eventScore = 0;
 		for (String fieldName : model.getFieldNames()) {
@@ -125,15 +128,5 @@ public class EventsScoreStreamTask extends AbstractStreamTask implements Initabl
 		}
 		
 		processedMessageCount.inc();
-	}
-
-	
-	
-	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
-		
-	}
-
-	@Override protected void wrappedClose() throws Exception {
-		
 	}
 }
