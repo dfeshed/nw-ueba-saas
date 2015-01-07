@@ -31,7 +31,11 @@ public class DnsResolver implements InitializingBean {
 	
 	private static final char DNS_SERVERS_SEPERATOR = ',';
 
+	// dnsCache is used to cache ip lookups results returned from the dns server, thus lowering the number of
+	// requests against the dns server
 	private Cache<String, String> dnsCache;
+	// blackIpHashSetCache is used to keep track of ip addresses that couldn't not be resolved into hostname using
+	// the dns servers. We keep track of those ip addresses to prevent us from looking them up over and over again
 	private Cache<String, Boolean> blackIpHashSetCache;
 
 	@Value("${dns.resolver.cache.size:100000}")
@@ -109,9 +113,10 @@ public class DnsResolver implements InitializingBean {
 				if (StringUtils.isNotEmpty(resolvedHostname)) {
 					// some dns might return the ip address as part of the name in case it cannot be resolved correctly
 					// skip them in case the service is configured to do so
-					if (!returnIpAddresses && resolvedHostname.startsWith(ip_address))
+					if (!returnIpAddresses && resolvedHostname.startsWith(ip_address)) {
 						resolvedHostname = null;
-					else
+						blackIpHashSetCache.put(ip_address, Boolean.TRUE);
+					} else
 						dnsCache.put(ip_address, resolvedHostname);
 				}
 			}
@@ -121,7 +126,7 @@ public class DnsResolver implements InitializingBean {
 				return null;
 			}
 
-			if (null==resolvedHostname || resolvedHostname.isEmpty() || resolvedHostname.equalsIgnoreCase(ip_address)) {
+			if (StringUtils.isEmpty(resolvedHostname)) {
 				blackIpHashSetCache.put(ip_address, Boolean.TRUE);
 				return null;
 			}
