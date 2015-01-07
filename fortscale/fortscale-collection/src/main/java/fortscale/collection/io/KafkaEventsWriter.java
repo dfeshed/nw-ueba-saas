@@ -23,7 +23,7 @@ public class KafkaEventsWriter implements Closeable {
 	private String producerType;
 	@Value("${kafka.serializer.class:kafka.serializer.StringEncoder}")
 	private String serializer;
-	@Value("${kafka.partitioner.class:kafka.producer.DefaultPartitioner}")
+	@Value("${kafka.partitioner.class:fortscale.utils.kafka.partitions.StringHashPartitioner}")
 	private String partitionerClass;
 	@Value("${kafka.partitioner.retry.backoff.ms:10000}")
 	private String retryBackoff;
@@ -59,8 +59,8 @@ public class KafkaEventsWriter implements Closeable {
 	}
 	
 	
-	public void send(String data) {
-		KeyedMessage<String, String> message = new KeyedMessage<String, String>(topic, data);
+	public void send(String key, String data) {
+		KeyedMessage<String, String> message = new KeyedMessage<String, String>(topic, key, data);
 		producer.send(message);
 	}
 	
