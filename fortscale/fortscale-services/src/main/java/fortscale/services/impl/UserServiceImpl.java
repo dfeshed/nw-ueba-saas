@@ -221,7 +221,7 @@ public class UserServiceImpl implements UserService{
 
 			// get user by username
 			String username = entry.getKey();
-			User user = userRepository.getLastActivityByUserName(username); // TODO get log-last-activity-field
+			User user = userRepository.getLastActivityByUserName(eventId, username);
 			if (user == null) {
 				continue;
 			}
