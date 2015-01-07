@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 
+import fortscale.services.ipresolving.cache.ResolvingCache;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -23,7 +24,7 @@ public class DhcpResolverTest {
 	private DhcpEventRepository dhcpEventRepository;
 	
 	@Mock
-	private Cache<String, DhcpEvent> cache;
+	private ResolvingCache<DhcpEvent> cache;
 	
 	@InjectMocks
 	private DhcpResolver dhcpResolver;
@@ -51,7 +52,7 @@ public class DhcpResolverTest {
 	
 	@Test
 	public void addDhcpEvent_should_skip_events_for_the_same_ip_hostname_and_expiration() {
-		when(cache.getIfPresent("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200));
+		when(cache.get("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200));
 		
 		dhcpResolver.addDhcpEvent(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+110, now+200));
 		
@@ -62,7 +63,7 @@ public class DhcpResolverTest {
 	@Test
 	public void addDhcpEvent_should_replace_the_cache_if_the_item_in_cache_is_older_than_given_event() {
 		// mock old cache value
-		when(cache.getIfPresent("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200));
+		when(cache.get("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200));
 		
 		// act
 		dhcpResolver.addDhcpEvent(createDhcpEvent("192.168.1.1", "or-me", DhcpEvent.ASSIGN_ACTION, now+300, now+400));
@@ -74,7 +75,7 @@ public class DhcpResolverTest {
 	@Test
 	public void addDhcpEvent_should_not_update_the_cache_if_the_item_in_cache_is_newer_than_given_event() {
 		// mock old cache value
-		when(cache.getIfPresent("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+300, now+400));
+		when(cache.get("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+300, now+400));
 		
 		// act
 		dhcpResolver.addDhcpEvent(createDhcpEvent("192.168.1.1", "or-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200));
@@ -86,7 +87,7 @@ public class DhcpResolverTest {
 	
 	@Test
 	public void addDhcpEvent_should_update_expiration_time_in_cached_event() {
-		when(cache.getIfPresent("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200));
+		when(cache.get("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200));
 		
 		// act
 		dhcpResolver.addDhcpEvent(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.RELEASE_ACTION, now+150, now+150));
@@ -98,7 +99,7 @@ public class DhcpResolverTest {
 	@Test
 	public void getLatestDhcpEventBeforeTimestamp_should_return_dhcp_event_from_cache_if_it_is_not_expired_before_given_timestamp() {
 		DhcpEvent cached = createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200);
-		when(cache.getIfPresent("192.168.1.1")).thenReturn(cached);
+		when(cache.get("192.168.1.1")).thenReturn(cached);
 		
 		// act
 		DhcpEvent actual = dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", now+150);
@@ -110,7 +111,7 @@ public class DhcpResolverTest {
 	@Test
 	public void getLatestDhcpEventBeforeTimestamp_should_return_event_from_repository_if_cached_event_is_expired_at_given_timestamp() {
 		DhcpEvent cached = createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200);
-		when(cache.getIfPresent("192.168.1.1")).thenReturn(cached);
+		when(cache.get("192.168.1.1")).thenReturn(cached);
 		
 		DhcpEvent saved = createDhcpEvent("192.168.1.1", "not", DhcpEvent.ACTION_FIELD_NAME, now+210, now+500);
 		when(dhcpEventRepository.findByIpaddressAndTimestampepochLessThan(anyString(), any(Long.class), any(Pageable.class))).thenReturn(Arrays.asList(saved));
