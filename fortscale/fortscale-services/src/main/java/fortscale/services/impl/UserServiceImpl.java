@@ -212,7 +212,47 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 	}
-	
+
+	@Override
+	public void updateUsersLastActivityGeneralAndPerType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap) {
+
+		// Go over map of updates
+		for (Entry<String, Long> entry : userLastActivityMap.entrySet()) {
+
+			// get user by username
+			String username = entry.getKey();
+			User user = userRepository.getLastActivityByUserName(username); // TODO get log-last-activity-field
+			if (user == null) {
+				continue;
+			}
+
+			// get the time of the event
+			DateTime currTime = new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue()));
+
+			Update update = null;
+
+			// last activity
+			DateTime userCurrLast = user.getLastActivity();
+			if (userCurrLast == null || currTime.isAfter(userCurrLast)) {
+				update = new Update();
+				update.set(User.lastActivityField, currTime);
+			}
+
+			// Last activity of data source
+			userCurrLast = user.getLogLastActivity(eventId);
+			if (userCurrLast == null || currTime.isAfter(userCurrLast)) {
+				if (update == null) update = new Update();
+				update.set(User.getLogLastActivityField(eventId), currTime);
+			}
+
+			// update user
+			if (update != null) {
+				mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
+			}
+		}
+
+	}
+
 	@Override
 	public String getUserThumbnail(User user) {
 		String ret = null;
