@@ -12,7 +12,7 @@ public class StringHashPartitionerTest  {
 
     @Before
     public void setUp() {
-        partitioner = new StringHashPartitioner();
+        partitioner = new StringHashPartitioner(null);
     }
 
     @Test

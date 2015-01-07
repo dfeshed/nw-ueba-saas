@@ -1,6 +1,7 @@
 package fortscale.utils.kafka.partitions;
 
 import kafka.producer.Partitioner;
+import kafka.utils.VerifiableProperties;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -16,7 +17,7 @@ public class StringHashPartitioner implements Partitioner {
 
     MessageDigest digest;
 
-    public StringHashPartitioner() {
+    public StringHashPartitioner(VerifiableProperties props) {
         try {
             digest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
@@ -26,6 +27,10 @@ public class StringHashPartitioner implements Partitioner {
 
     @Override
     public int partition(Object key, int numPartitions) {
+        // save some time when there are no partitions
+        if (numPartitions==1)
+            return 0;
+
         // convert key to string
         String stringKey = (key==null)? "place-holder" : ((key instanceof String)? (String)key : key.toString());
 
