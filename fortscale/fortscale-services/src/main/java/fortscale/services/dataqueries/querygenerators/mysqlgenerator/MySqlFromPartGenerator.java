@@ -34,7 +34,7 @@ public class MySqlFromPartGenerator extends QueryPartGenerator {
                 String entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
                 String tableName = dataEntitiesConfig.getEntityTable(entityId);
 
-
+                // If there is condition about the score, and the score is higher than configuration (default 50), we will use the performance table ("_top")
                 if (dataQueryDTO.getConditions() != null && isHighScore(entityId, dataQueryDTO.getConditions()))
                     sb.append(dataEntitiesConfig.getEntityPerformanceTable(entityId)).append(" as ").append(tableName);
                 else
