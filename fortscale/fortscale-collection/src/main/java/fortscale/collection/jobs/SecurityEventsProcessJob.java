@@ -101,42 +101,60 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 
 	@Override protected boolean processLine(String line) throws IOException {
 		// process each line
-		Record record = morphline.process(line);
-		if (record==null)
+		Record rec = morphline.process(line);
+		Record record = null;
+		if (rec==null)
 			return false;
 		
 		// treat the event according to the event type
-		Object eventCodeObj = record.getFirstValue("eventCode");
+		Object eventCodeObj = rec.getFirstValue("eventCode");
 		if (eventCodeObj!=null) {
 			String eventCode = eventCodeObj.toString();
 			
 			// get the event process handlers from the map
 			EventTableHandlers handler = eventToTableHandlerMap.get(eventCode);
+
+
 			MorphlinesItemsProcessor eventMorphlinesItemsProcessor = eventToMorphlineMap.get(eventCode);
+
 			if (handler!=null) {
-				Record processedRecord = eventMorphlinesItemsProcessor.process(record);
+
+				//parse the record with the appropriate morphline based on the event code
+				Record processedRecord = eventMorphlinesItemsProcessor.process(rec);
+
 				if (processedRecord!=null) {
-					Boolean isComputer = (Boolean) processedRecord.getFirstValue("isComputer");
+
+					//In case there is exist enrich morphline process the record with him
+					if (this.morphlineEnrichment != null)
+					{
+						record = this.morphlineEnrichment.process(processedRecord);
+
+					}
+					else
+						record = processedRecord;
+
+					Boolean isComputer = (Boolean) record.getFirstValue("isComputer");
 					if(isComputer == null || !isComputer){
-					
-						String output = handler.recordToStringProcessor.process(processedRecord);
-					
+
+						String output = handler.recordToStringProcessor.process(record);
+
 						if (output!=null) {
 							// append to hadoop
-							Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
+							Long timestamp = RecordExtensions.getLongValue(record, handler.timestampField);
 							handler.appender.writeLine(output, timestamp.longValue());
-							
+
 							// ensure user exists in mongodb
-							updateOrCreateUserWithClassifierUsername(processedRecord);
-							
+							updateOrCreateUserWithClassifierUsername(record);
+
 							// output event to streaming platform
 							if (handler.streamWriter!=null && sendToKafka == true)
-								handler.streamWriter.send(handler.recordKeyExtractor.process(processedRecord),
-										handler.recordToStringProcessor.toJSON(processedRecord));
-							
+								handler.streamWriter.send(handler.recordKeyExtractor.process(record),
+										handler.recordToStringProcessor.toJSON(record));
+
 							return true;
 						}
 					}
+
 				}
 			}
 		}
