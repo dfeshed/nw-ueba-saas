@@ -34,4 +34,25 @@
 		<constructor-arg name="geoIpV6DbResource" value="file:${ip.to.location.db.full.path}"/>
 		<constructor-arg name="fullLicenseKeyResource" value="file:${ip.to.location.license.key.full.path}"/>
 	</bean>
+
+
+	<!-- ip resolving caches that uses memory based implementation are injected here -->
+	<bean id="dnsResolverCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${dns.resolver.cache.size:100000}" />
+		<constructor-arg name="timeToExpire" value="${dns.resolver.cache.timeToExpireSec:3600}" />
+	</bean>
+	<bean id="dnsBlacklistCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${dns.resolver.blacklist.size:100000}" />
+		<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
+	</bean>
+	<bean id="dhcpResolverCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${dhcp.resolver.cache.max.items:30000}" />
+	</bean>
+	<bean id="loginResolverCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
+	</bean>
+
+
+
+
 </beans>
