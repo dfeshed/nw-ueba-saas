@@ -34,11 +34,11 @@ import fortscale.utils.StringPredicates;
 @Service
 public class EventsScoreStreamTaskService {
 
-private static final Logger logger = LoggerFactory.getLogger(EventsScoreStreamTaskService.class);
+	private static final Logger logger = LoggerFactory.getLogger(EventsScoreStreamTaskService.class);
 	
 
 	@Autowired
-	private ModelService prevalanceModelStreamingService;
+	private ModelService modelService;
 
 	private String outputTopic;
 	private String usernameField;
@@ -49,20 +49,15 @@ private static final Logger logger = LoggerFactory.getLogger(EventsScoreStreamTa
 	private String eventScoreField;
 	
 	
-	protected void init(Config config, TaskContext context) throws Exception {
+	public void init(Config config, TaskContext context) throws Exception {
 		// get task configuration parameters
 		usernameField = getConfigString(config, "fortscale.username.field");
 		outputTopic = config.get("fortscale.output.topic", "");
 		fillModelConfig(config);
 		eventScoreField = getConfigString(config, "fortscale.event.score.field");
 		
-		
-
-		//get the events score streaming service.
-		prevalanceModelStreamingService = SpringService.getInstance().resolve(PrevalanceModelStreamingService.class);
-		
 		// create counter metric for processed messages
-		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-message-count", modelName));
+		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-event-score-message-count", modelName));
 	}
 	
 	private void fillModelConfig(Config config) throws Exception {
@@ -96,7 +91,7 @@ private static final Logger logger = LoggerFactory.getLogger(EventsScoreStreamTa
 		}
 				
 		// go over each field in the event and add it to the model
-		PrevalanceModel model = prevalanceModelStreamingService.getModelForUser(username, modelName);
+		PrevalanceModel model = modelService.getModelForUser(username, modelName);
 		
 		double eventScore = 0;
 		for (String fieldName : model.getFieldNames()) {

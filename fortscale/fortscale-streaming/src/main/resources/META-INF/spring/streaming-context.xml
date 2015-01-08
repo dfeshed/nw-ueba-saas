@@ -28,6 +28,8 @@
 	<mongo:repositories base-package="fortscale.domain.system.dao" />
 	
 	<bean class="fortscale.domain.system.ServersListConfigurationImpl" />
+	
+	<bean id="modelService" class="fortscale.streaming.service.PrevalanceModelStreamingService"/>
 
 
     <context:spring-configured />

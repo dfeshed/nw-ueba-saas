@@ -2,14 +2,12 @@ package fortscale.ml.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.service.ModelService;
 import fortscale.ml.service.dao.Model;
 import fortscale.ml.service.dao.ModelRepository;
 
-@Service("modelService")
 public class ModelServiceImpl implements ModelService{
 	
 	@Autowired
@@ -33,7 +31,7 @@ public class ModelServiceImpl implements ModelService{
 	
 	/** export user models to mongodb */
 	@Override
-	public void updateUserModel(String username, PrevalanceModel model) {
+	public void updateUserModel(String username, PrevalanceModel model) throws Exception{
 		if (model==null || StringUtils.isEmpty(username)) {
 			return;
 		}
