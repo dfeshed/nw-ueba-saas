@@ -166,7 +166,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
             entityConfig.setShortName(entityShortName);
         }
 
-        entity.setName(entityShortName);
+        entity.setShortName(entityShortName);
 
         String entityEventsEntity = entityConfig.getEventsEntity();
         if (entityEventsEntity == null){

@@ -50,6 +50,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	private static final String DELTA_TIME_IN_SEC_JOB_PARAMETER = "deltaTimeInSec";
 	private static final String EPOCH_TIME_FIELD_JOB_PARAMETER = "epochtimeField";
 	private static final String STREAMING_TOPIC_FIELD_JOB_PARAMETER = "streamingTopic";
+	private static final String STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER = "streamingTopicPartitionKey";
 	private static final String FETCH_EVENTS_STEP_IN_DAYS_JOB_PARAMETER = "fetchEventsStepInDays";
 	private static final String FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER = "fieldClusterGroupsRegexResource";
 	
@@ -60,7 +61,8 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	private String impalaTableName;
 	private String impalaTableFields;
 	private String epochtimeField;
-	private String streamingTopic;	
+	private String streamingTopic;
+	private String streamingTopicKey;
 	private long latestEventTime;
 	private long deltaTimeInSec;
 	private int fetchEventsStepInDays;
@@ -83,7 +85,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 		epochtimeField = jobDataMapExtension.getJobDataMapStringValue(map, EPOCH_TIME_FIELD_JOB_PARAMETER);
 		
 		streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_FIELD_JOB_PARAMETER);
-		
+		streamingTopicKey = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER);
 		
 		latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER, System.currentTimeMillis());
 		latestEventTime = TimestampUtils.convertToSeconds(latestEventTime);
@@ -149,7 +151,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 						Object val = result.get(fieldName.toLowerCase());
 						fillJsonWithFieldValue(json, fieldName, val);
 					}
-					streamWriter.send(json.toJSONString(JSONStyle.NO_COMPRESS));
+					streamWriter.send(result.get(streamingTopicKey).toString(), json.toJSONString(JSONStyle.NO_COMPRESS));
 				}
 				
 				monitorDataReceived(query.toSQL(), resultsMap.size(), "Events");

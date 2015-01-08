@@ -74,7 +74,8 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + impalaTable);
 			String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + impalaTable);
 			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
-			
+			handler.recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields" + impalaTable));
+
 			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + impalaTable);
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
 			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + impalaTable);
@@ -130,7 +131,8 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 							
 							// output event to streaming platform
 							if (handler.streamWriter!=null && sendToKafka == true)
-								handler.streamWriter.send(handler.recordToStringProcessor.toJSON(processedRecord));
+								handler.streamWriter.send(handler.recordKeyExtractor.process(processedRecord),
+										handler.recordToStringProcessor.toJSON(processedRecord));
 							
 							return true;
 						}
@@ -247,7 +249,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	@Override protected void initializeStreamingAppender() throws JobExecutionException {}
 	
 	/*** Send the message produced by the morphline ETL to the streaming platform */
-	@Override protected void streamMessage(String message) throws IOException {}
+	@Override protected void streamMessage(String key, String message) throws IOException {}
 	
 	/*** Close the streaming appender upon job finish to free resources */
 	@Override protected void closeStreamingAppender() throws JobExecutionException {
@@ -267,6 +269,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public String timestampField;
 		public BufferedHDFSWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
+		public RecordToStringItemsProcessor recordKeyExtractor;
 		public KafkaEventsWriter streamWriter;
         public PartitionStrategy partitionStrategy;
 	}

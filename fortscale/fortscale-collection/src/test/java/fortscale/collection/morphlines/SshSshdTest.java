@@ -11,8 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static junitparams.JUnitParamsRunner.$;
 
@@ -25,6 +28,18 @@ public class SshSshdTest {
 	private String confFile = "resources/conf-files/readSSH_centos.conf";
 	private String confEnrichmentFile = "resources/conf-files/enrichment/readSSH_enrich.conf";
 
+	final static String Nov_19_14_58_32 = "Nov 19 14:58:32";
+	static String Nov_19_14_58_32_OUT;
+
+	static {
+		prepareDates();
+	}
+
+	private static void prepareDates() {
+		TestUtils.init("yyyy MMM dd HH:mm:ss", "Asia/Jerusalem");
+		Date date = TestUtils.constuctDate(Nov_19_14_58_32);
+		Nov_19_14_58_32_OUT = TestUtils.getOutputDate(date);
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -68,21 +83,21 @@ public class SshSshdTest {
         return	$(
         		$ (
         		"Successful Password Authentication",
-        		"Nov 19 14:58:32 dev-gever sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
-        		year + "-11-19 14:58:32," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,false,false,false,false"
+						Nov_19_14_58_32 + " dev-gever sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,false,false,false,false"
 				),
         		$ (
         		"Successful Public Key Authentication",
-        		"Nov 19 14:58:32 dev-gever sshd[2591]: Accepted publickey for root from 192.168.55.55 port 38681 ssh2",
-        		year + "-11-19 14:58:32," + runtime + ",192.168.55.55,dev-gever,root,Accepted,publickey,,,,false,false,false,false,false"),
+						Nov_19_14_58_32 + " dev-gever sshd[2591]: Accepted publickey for root from 192.168.55.55 port 38681 ssh2",
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.55.55,dev-gever,root,Accepted,publickey,,,,false,false,false,false,false"),
         		$ (
         		"Successful Public Key Authentication from NAT address",
-        		"Nov 19 14:58:32 dev-gever sshd[2591]: Accepted publickey for root from 192.168.0.22 port 38681 ssh2",
-        		year + "-11-19 14:58:32," + runtime + ",192.168.0.22,dev-gever,root,Accepted,publickey,,,,true,false,false,false,false"),
+						Nov_19_14_58_32 + " dev-gever sshd[2591]: Accepted publickey for root from 192.168.0.22 port 38681 ssh2",
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.0.22,dev-gever,root,Accepted,publickey,,,,true,false,false,false,false"),
         		$ (
         		"Password Failed Authentication",
-        		"Nov 19 14:58:32 inter-psg-01 sshd[22525]: Failed password for root from 192.168.211.112 port 59420 ssh2",
-        		year + "-11-19 14:58:32," + runtime + ",192.168.211.112,inter-psg-01,root,Failed,password,,,,false,false,false,false,false"),
+						Nov_19_14_58_32 + " inter-psg-01 sshd[22525]: Failed password for root from 192.168.211.112 port 59420 ssh2",
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.211.112,inter-psg-01,root,Failed,password,,,,false,false,false,false,false"),
         		$ (
 
         		"Invalid User Failed Authentication",
@@ -91,7 +106,7 @@ public class SshSshdTest {
                 ,
                 $(
                 "Target Machine as IP",
-                "Nov 19 14:58:32 192.168.0.30 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
+						Nov_19_14_58_32 + " 192.168.0.30 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
                  null
                 )
 
