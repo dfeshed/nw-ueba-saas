@@ -1,4 +1,4 @@
-package fortscale.collection.io;
+package fortscale.utils.kafka;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
