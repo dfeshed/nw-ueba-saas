@@ -58,6 +58,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		
 		// load main morphline file
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
+
+		//load the enrich morphline file
+		morphlineEnrichment = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineEnrichment");
 		
 		// get the list of events to continue process config data
 		eventToMorphlineMap = new HashMap<String, MorphlinesItemsProcessor>();
