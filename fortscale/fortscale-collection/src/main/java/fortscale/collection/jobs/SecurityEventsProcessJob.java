@@ -1,6 +1,6 @@
 package fortscale.collection.jobs;
 
-import fortscale.collection.io.KafkaEventsWriter;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;

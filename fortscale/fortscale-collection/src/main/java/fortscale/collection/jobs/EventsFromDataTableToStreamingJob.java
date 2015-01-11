@@ -26,7 +26,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 
-import fortscale.collection.io.KafkaEventsWriter;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.services.impl.RegexMatcher;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.TimestampUtils;
