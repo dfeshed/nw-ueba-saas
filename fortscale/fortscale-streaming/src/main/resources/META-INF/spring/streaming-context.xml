@@ -21,6 +21,7 @@
 	<import resource="classpath*:META-INF/spring/fortscale-domain-light-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
 	<import resource="classpath*:META-INF/spring/monitor-context.xml" />
+	<import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
 
 
     <context:annotation-config />
@@ -33,7 +34,7 @@
 
 
     <context:spring-configured />
-    <context:component-scan base-package="fortscale.global,fortscale.ml" />
+    <context:component-scan base-package="fortscale.global,fortscale.streaming" />
 
 
 
