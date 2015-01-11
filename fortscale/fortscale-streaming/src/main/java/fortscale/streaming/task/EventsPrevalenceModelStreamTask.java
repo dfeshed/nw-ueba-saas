@@ -58,11 +58,15 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	
 	/** periodically save the state to mongodb as a secondary backing store */
 	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
-		eventsPrevalenceModelStreamTaskService.window(collector, coordinator);
+		if(eventsPrevalenceModelStreamTaskService != null){
+			eventsPrevalenceModelStreamTaskService.window(collector, coordinator);
+		}
 	}
 
 	/** save the state to mongodb when the job shutsdown */
 	@Override protected void wrappedClose() throws Exception {
-		eventsPrevalenceModelStreamTaskService.close();
+		if(eventsPrevalenceModelStreamTaskService != null){
+			eventsPrevalenceModelStreamTaskService.close();
+		}
 	}
 }
