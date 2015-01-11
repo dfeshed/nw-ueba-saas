@@ -38,6 +38,7 @@ public interface UserRepositoryCustom {
 	public User findByAdEmailAddress(EmailAddress emailAddress);
 	
 	public User getLastActivityByUserName(String userName);
+	public User getLastActivityByUserName(LogEventsEnum eventId, String username);
 	
 	public List<User> findByAdLastnameContaining(String lastNamePrefix);
 	

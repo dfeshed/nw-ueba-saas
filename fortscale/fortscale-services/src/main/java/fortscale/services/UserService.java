@@ -54,6 +54,8 @@ public interface UserService {
 	public void updateUsersLastActivityOfType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap);
 	
 	public void updateUsersLastActivity(Map<String, Long> userLastActivityMap);
+
+	public void updateUsersLastActivityGeneralAndPerType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap);
 	
 	public void updateUserLastActivity(String username, DateTime dateTime);
 

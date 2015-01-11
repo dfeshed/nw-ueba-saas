@@ -329,6 +329,21 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
+	public User getLastActivityByUserName(LogEventsEnum eventId, String userName) {
+		Criteria criteria = Criteria.where(User.usernameField).is(userName);
+		Query query = new Query(criteria);
+		query.fields().include(User.lastActivityField);
+		query.fields().include(User.getLogLastActivityField(eventId));
+		List<User> users = mongoTemplate.find(query, User.class);
+
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
 	public long getNumberOfAccountsCreatedBefore(DateTime time){
 		Criteria criteria = Criteria.where(User.whenCreatedField).lt(
 				time);
