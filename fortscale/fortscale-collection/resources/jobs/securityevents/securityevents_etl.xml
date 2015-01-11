@@ -24,6 +24,10 @@
 					<key>morphlineFile</key>
 					<value>${readSecEvt_splunk.morphline}</value>
 				</entry>
+                <entry>
+                    <key>morphlineEnrichment</key>
+                    <value>${readSEC.morphline.enrichment}</value>
+                </entry>
 				
 				<!--  4624 morphline -->
 				<entry>
