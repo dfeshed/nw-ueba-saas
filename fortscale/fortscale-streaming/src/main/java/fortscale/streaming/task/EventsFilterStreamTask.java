@@ -10,7 +10,7 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 
 
-public abstract class EventsFilterStreamTask extends AbstractStreamTask{
+public class EventsFilterStreamTask extends AbstractStreamTask{
 
 //	private static final Logger logger = LoggerFactory.getLogger(EventsFilterStreamTask.class);
 	
@@ -48,5 +48,5 @@ public abstract class EventsFilterStreamTask extends AbstractStreamTask{
 	}
 	
 	/** Auxiliary method to enable filtering messages on specific events types */
-	protected abstract boolean acceptMessage(JSONObject message);
+	protected boolean acceptMessage(JSONObject message){ return true;}
 }
