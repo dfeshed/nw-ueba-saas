@@ -1,5 +1,6 @@
 package fortscale.streaming.task;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.ClosableTask;
@@ -10,7 +11,6 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.apache.samza.task.WindowableTask;
 
-import fortscale.streaming.ConfigUtils;
 import fortscale.streaming.exceptions.ExceptionHandler;
 import fortscale.streaming.exceptions.HdfsException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
@@ -47,8 +47,10 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	public void init(Config config, TaskContext context) throws Exception {
 		// get spring context from configuration
-		String contextPath = ConfigUtils.getConfigString(config, "fortscale.context");
-		SpringService.init(contextPath);
+		String contextPath = config.get("fortscale.context", "");
+		if(StringUtils.isNotBlank(contextPath)){
+			SpringService.init(contextPath);
+		}
 		
 		// call specific task init method
 		wrappedInit(config, context);
