@@ -8,38 +8,39 @@ import java.util.Map;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.google.common.base.Throwables;
 
 import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.model.prevalance.PrevalanceModelBuilder;
-import fortscale.ml.model.prevalance.PrevalanceModelBuilderImpl;
 import fortscale.ml.service.impl.ModelServiceImpl;
 import fortscale.streaming.exceptions.LevelDbException;
 
 /** 
  * Service class to maintain model lifecycle and persistence within samza tasks
  */
+@Configurable(preConstruction=true)
 public class PrevalanceModelStreamingService extends ModelServiceImpl{
 
 	private static final Logger logger = LoggerFactory.getLogger(PrevalanceModelStreamingService.class);
 	private static final long MIN_DIFF_TO_UPDATE_MODEL_SERVICE = 3600;
 	
-	private KeyValueStore<String, PrevalanceModel> store = new NullKeyValueStore<>();
-	private PrevalanceModelBuilder modelBuilder = new NullPrevalanceModelBuilder();
+	private KeyValueStore<String, PrevalanceModel> store;
+	private PrevalanceModelBuilder modelBuilder;
 	private Map<PrevalanceModelKey, Long> changedModelsTimestampMap = new HashMap<>();
 	
-	
-	
-	public void setStore(KeyValueStore<String, PrevalanceModel> store){
+
+
+	public PrevalanceModelStreamingService(KeyValueStore<String, PrevalanceModel> store, PrevalanceModelBuilder modelBuilder){
 		checkNotNull(store);
-		this.store = store;
-	}
-	
-	public void setModelBuilder(PrevalanceModelBuilderImpl modelBuilder){
 		checkNotNull(modelBuilder);
+		
+		this.store = store;
 		this.modelBuilder = modelBuilder;
 	}
+	
+	
 	
 	/** Get the model for the user first from the samza store, if not exists look for it in the repository or build a new model */
 	public PrevalanceModel getModelForUser(String username, String modelName) throws Exception {

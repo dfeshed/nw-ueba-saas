@@ -20,8 +20,6 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Iterables;
 
@@ -31,12 +29,11 @@ import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.utils.StringPredicates;
 
-@Service
+
 public class EventsPrevalenceModelStreamTaskService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTaskService.class);
 	
-	@Autowired
 	private PrevalanceModelStreamingService prevalanceModelStreamingService;
 
 	private String usernameField;
@@ -49,7 +46,7 @@ public class EventsPrevalenceModelStreamTaskService {
 	private List<String> discriminatorsFields;
 	
 	@SuppressWarnings("unchecked")
-	public void init(Config config, TaskContext context) throws Exception {
+	public EventsPrevalenceModelStreamTaskService(Config config, TaskContext context) throws Exception {
 		// get task configuration parameters
 		usernameField = getConfigString(config, "fortscale.username.field");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
@@ -63,13 +60,16 @@ public class EventsPrevalenceModelStreamTaskService {
 		PrevalanceModelBuilderImpl modelBuilder = createModelBuilder(config);
 		
 		// create model service based on the store and model builder
-		prevalanceModelStreamingService.setModelBuilder(modelBuilder);
-		prevalanceModelStreamingService.setStore(store);
+		prevalanceModelStreamingService = new PrevalanceModelStreamingService(store,modelBuilder);
 		
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-model-message-count", modelName));
 		skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-model-skip-count", modelName));
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-model-message-epochime", modelName));
+	}
+	
+	public PrevalanceModelStreamingService getPrevalanceModelStreamingService(){
+		return prevalanceModelStreamingService;
 	}
 	
 	private PrevalanceModelBuilderImpl createModelBuilder(Config config) throws Exception {

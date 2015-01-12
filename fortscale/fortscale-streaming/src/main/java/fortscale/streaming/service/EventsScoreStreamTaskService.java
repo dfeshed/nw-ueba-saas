@@ -20,8 +20,6 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Iterables;
 
@@ -31,13 +29,11 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.utils.StringPredicates;
 
-@Service
 public class EventsScoreStreamTaskService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EventsScoreStreamTaskService.class);
 	
 
-	@Autowired
 	private ModelService modelService;
 
 	private String outputTopic;
@@ -49,7 +45,7 @@ public class EventsScoreStreamTaskService {
 	private String eventScoreField;
 	
 	
-	public void init(Config config, TaskContext context) throws Exception {
+	public EventsScoreStreamTaskService(Config config, TaskContext context, ModelService modelService) throws Exception{
 		// get task configuration parameters
 		usernameField = getConfigString(config, "fortscale.username.field");
 		outputTopic = config.get("fortscale.output.topic", "");

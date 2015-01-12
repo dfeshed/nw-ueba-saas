@@ -10,7 +10,6 @@ import org.apache.samza.task.TaskCoordinator;
 
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskService;
 import fortscale.streaming.service.EventsScoreStreamTaskService;
-import fortscale.streaming.service.SpringService;
 
 
 /**
@@ -36,11 +35,8 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		skipScore = config.getBoolean("fortscale.skip.score", false);
 		skipModel = config.getBoolean("fortscale.skip.model", false);
 		
-		eventsPrevalenceModelStreamTaskService = SpringService.getInstance().resolve(EventsPrevalenceModelStreamTaskService.class);
-		eventsPrevalenceModelStreamTaskService.init(config, context);
-		
-		eventsScoreStreamTaskService = SpringService.getInstance().resolve(EventsScoreStreamTaskService.class);
-		eventsScoreStreamTaskService.init(config, context);
+		eventsPrevalenceModelStreamTaskService = new EventsPrevalenceModelStreamTaskService(config, context);		
+		eventsScoreStreamTaskService = new EventsScoreStreamTaskService(config, context, eventsPrevalenceModelStreamTaskService.getPrevalanceModelStreamingService());
 	}
 	
 	/** Process incoming events and update the user models stats */
@@ -67,6 +63,9 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 	@Override protected void wrappedClose() throws Exception {
 		if(eventsPrevalenceModelStreamTaskService != null){
 			eventsPrevalenceModelStreamTaskService.close();
+			eventsPrevalenceModelStreamTaskService = null;
 		}
+		
+		eventsScoreStreamTaskService = null;
 	}
 }
