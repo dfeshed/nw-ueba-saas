@@ -13,6 +13,7 @@ public class DataEntityFieldConfig {
 
     public static final String IS_LOGICAL_ONLY = "is_logical_only";
     public static final String EXPLICIT = "explicit";
+    public static final String SEARCHABLE = "searchable";
 
     HashMap<String, Boolean> flags = new HashMap<>();
 
@@ -72,6 +73,14 @@ public class DataEntityFieldConfig {
 
     public void setExplicit(Boolean explicit){
         flags.put(EXPLICIT, explicit);
+    }
+
+    public Boolean isSearchable(){
+        return flags.get(SEARCHABLE);
+    }
+
+    public void setSearchable(Boolean searchable){
+        flags.put(SEARCHABLE, searchable);
     }
 
     public Boolean getFlag(String flagName){

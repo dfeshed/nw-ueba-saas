@@ -11,6 +11,8 @@ public class DataEntityField {
     private QueryValueType type;
     private Boolean logicalOnly = false;
 
+    private Boolean searchable = false;
+
     public String getId() {
         return id;
     }
@@ -57,5 +59,13 @@ public class DataEntityField {
 
     public void setLogicalOnly(Boolean logicalOnly) {
         this.logicalOnly = logicalOnly;
+    }
+
+    public Boolean isSearchable() {
+        return searchable;
+    }
+
+    public void setSearchable(Boolean searchable) {
+        this.searchable = searchable;
     }
 }
