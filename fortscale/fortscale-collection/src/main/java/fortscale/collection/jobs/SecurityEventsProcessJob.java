@@ -1,6 +1,6 @@
 package fortscale.collection.jobs;
 
-import fortscale.collection.io.KafkaEventsWriter;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -58,6 +58,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		
 		// load main morphline file
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
+
+		//load the enrich morphline file
+		morphlineEnrichment = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineEnrichment");
 		
 		// get the list of events to continue process config data
 		eventToMorphlineMap = new HashMap<String, MorphlinesItemsProcessor>();
@@ -74,7 +77,8 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + impalaTable);
 			String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + impalaTable);
 			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
-			
+			handler.recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields" + impalaTable));
+
 			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + impalaTable);
 			handler.hadoopFilename = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopFilename" + impalaTable);
 			handler.impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName" + impalaTable);
@@ -100,41 +104,60 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 
 	@Override protected boolean processLine(String line) throws IOException {
 		// process each line
-		Record record = morphline.process(line);
-		if (record==null)
+		Record rec = morphline.process(line);
+		Record record = null;
+		if (rec==null)
 			return false;
 		
 		// treat the event according to the event type
-		Object eventCodeObj = record.getFirstValue("eventCode");
+		Object eventCodeObj = rec.getFirstValue("eventCode");
 		if (eventCodeObj!=null) {
 			String eventCode = eventCodeObj.toString();
 			
 			// get the event process handlers from the map
 			EventTableHandlers handler = eventToTableHandlerMap.get(eventCode);
+
+
 			MorphlinesItemsProcessor eventMorphlinesItemsProcessor = eventToMorphlineMap.get(eventCode);
+
 			if (handler!=null) {
-				Record processedRecord = eventMorphlinesItemsProcessor.process(record);
+
+				//parse the record with the appropriate morphline based on the event code
+				Record processedRecord = eventMorphlinesItemsProcessor.process(rec);
+
 				if (processedRecord!=null) {
-					Boolean isComputer = (Boolean) processedRecord.getFirstValue("isComputer");
+
+					//In case there is exist enrich morphline process the record with him
+					if (this.morphlineEnrichment != null)
+					{
+						record = this.morphlineEnrichment.process(processedRecord);
+
+					}
+					else
+						record = processedRecord;
+
+					Boolean isComputer = (Boolean) record.getFirstValue("isComputer");
 					if(isComputer == null || !isComputer){
-					
-						String output = handler.recordToStringProcessor.process(processedRecord);
-					
+
+						String output = handler.recordToStringProcessor.process(record);
+
 						if (output!=null) {
 							// append to hadoop
-							Long timestamp = RecordExtensions.getLongValue(processedRecord, handler.timestampField);
+							Long timestamp = RecordExtensions.getLongValue(record, handler.timestampField);
 							handler.appender.writeLine(output, timestamp.longValue());
-							
+
 							// ensure user exists in mongodb
-							updateOrCreateUserWithClassifierUsername(processedRecord);
-							
+							updateOrCreateUserWithClassifierUsername(record);
+
 							// output event to streaming platform
 							if (handler.streamWriter!=null && sendToKafka == true)
-								handler.streamWriter.send(handler.recordToStringProcessor.toJSON(processedRecord));
-							
+								handler.streamWriter.send(handler.recordKeyExtractor.process(record),
+										handler.recordToStringProcessor.toJSON(record));
+
 							return true;
 						}
 					}
+
 				}
 			}
 		}
@@ -247,7 +270,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 	@Override protected void initializeStreamingAppender() throws JobExecutionException {}
 	
 	/*** Send the message produced by the morphline ETL to the streaming platform */
-	@Override protected void streamMessage(String message) throws IOException {}
+	@Override protected void streamMessage(String key, String message) throws IOException {}
 	
 	/*** Close the streaming appender upon job finish to free resources */
 	@Override protected void closeStreamingAppender() throws JobExecutionException {
@@ -267,6 +290,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		public String timestampField;
 		public BufferedHDFSWriter appender;
 		public RecordToStringItemsProcessor recordToStringProcessor;
+		public RecordToStringItemsProcessor recordKeyExtractor;
 		public KafkaEventsWriter streamWriter;
         public PartitionStrategy partitionStrategy;
 	}

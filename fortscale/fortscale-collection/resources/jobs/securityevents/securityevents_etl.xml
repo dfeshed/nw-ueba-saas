@@ -24,6 +24,10 @@
 					<key>morphlineFile</key>
 					<value>${readSecEvt_splunk.morphline}</value>
 				</entry>
+                <entry>
+                    <key>morphlineEnrichment</key>
+                    <value>${readSEC.morphline.enrichment}</value>
+                </entry>
 				
 				<!--  4624 morphline -->
 				<entry>
@@ -58,6 +62,10 @@
 				<entry>
 					<key>outputFieldsSecEvt4769</key>
 					<value>${impala.data.security.events.4769.table.fields}</value>
+				</entry>
+				<entry>
+					<key>partitionKeyFieldsSecEvt4769</key>
+					<value>${impala.data.security.events.login.table.field.account_name}</value>
 				</entry>
 				<entry>
 					<key>timestampFieldSecEvt4769</key>
@@ -96,6 +104,10 @@
 				<entry>
 					<key>outputFieldsLoginEvt</key>
 					<value>${impala.data.security.events.login.table.fields}</value>
+				</entry>
+				<entry>
+					<key>partitionKeyFieldsLoginEvt</key>
+					<value>${impala.data.security.events.login.table.field.normalized_username}</value>
 				</entry>
 				<entry>
 					<key>timestampFieldLoginEvt</key>

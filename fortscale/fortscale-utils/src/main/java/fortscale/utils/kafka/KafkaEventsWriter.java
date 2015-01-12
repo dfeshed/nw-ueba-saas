@@ -1,4 +1,4 @@
-package fortscale.collection.io;
+package fortscale.utils.kafka;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -23,7 +23,7 @@ public class KafkaEventsWriter implements Closeable {
 	private String producerType;
 	@Value("${kafka.serializer.class:kafka.serializer.StringEncoder}")
 	private String serializer;
-	@Value("${kafka.partitioner.class:kafka.producer.DefaultPartitioner}")
+	@Value("${kafka.partitioner.class:fortscale.utils.kafka.partitions.StringHashPartitioner}")
 	private String partitionerClass;
 	@Value("${kafka.partitioner.retry.backoff.ms:10000}")
 	private String retryBackoff;
@@ -40,28 +40,38 @@ public class KafkaEventsWriter implements Closeable {
 	public KafkaEventsWriter(String topic) {
 		checkNotNull(topic);
 		this.topic = topic;
-		
-		// build kafka producer
-		Properties props = new Properties();
-		props.put("metadata.broker.list", kafkaBrokerList);
-		props.put("serializer.class", serializer);
-		props.put("partitioner.class", partitionerClass);
-		props.put("request.required.acks", requiredAcks);
-		props.put("producer.type", producerType);
-		props.put("retry.backoff.ms", retryBackoff);
-		props.put("queue.time", queueTime);
-		props.put("queue.size", queueSize);
-		props.put("batch.size", batchSize);
-		
-		ProducerConfig config = new ProducerConfig(props);
-		
-		producer = new Producer<String, String>(config);
 	}
+
+	/**
+	 * Ensure a producer is initialized and return it to caller. We initialize the producer upon call instead of
+	 * in the class constructor since properties are not injected prior to constructor by spring using bean xml
+	 * definition (as opposed to aspecj creation using new).
+	 */
+	private Producer<String, String> getProducer() {
+		if (producer==null) {
+			// build kafka producer
+			Properties props = new Properties();
+			props.put("metadata.broker.list", kafkaBrokerList);
+			props.put("serializer.class", serializer);
+			props.put("partitioner.class", partitionerClass);
+			props.put("request.required.acks", requiredAcks);
+			props.put("producer.type", producerType);
+			props.put("retry.backoff.ms", retryBackoff);
+			props.put("queue.time", queueTime);
+			props.put("queue.size", queueSize);
+			props.put("batch.size", batchSize);
+
+			ProducerConfig config = new ProducerConfig(props);
+
+			producer = new Producer<String, String>(config);
+		}
+		return  producer;
+	}
+
 	
-	
-	public void send(String data) {
-		KeyedMessage<String, String> message = new KeyedMessage<String, String>(topic, data);
-		producer.send(message);
+	public void send(String key, String data) {
+		KeyedMessage<String, String> message = new KeyedMessage<String, String>(topic, key, data);
+		getProducer().send(message);
 	}
 	
 	

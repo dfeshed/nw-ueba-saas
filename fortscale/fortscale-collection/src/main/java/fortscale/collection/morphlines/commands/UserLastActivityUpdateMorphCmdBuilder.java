@@ -49,21 +49,13 @@ public class UserLastActivityUpdateMorphCmdBuilder implements CommandBuilder {
 		private final LogEventsEnum logEventsType;
 		private final String normalizedUsernameField;
 		private final String epochtimestampField;
-		private final long lastActivityEpochTimeInSecInPrevJob ;
 		
 		public UserLastActivityUpdate(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			this.logEventsType = LogEventsEnum.valueOf(getConfigs().getString(config, "logEventsType"));
 			this.normalizedUsernameField = getConfigs().getString(config, "normalizedUsernameField");
 			this.epochtimestampField = getConfigs().getString(config, "epochtimestampField");
-			
-			DateTime dateTime = null;
-			if(userService != null){
-				dateTime = userService.findLastActiveTime(logEventsType);
-			}
-			lastActivityEpochTimeInSecInPrevJob = dateTime == null ? 0 : TimestampUtils.convertToSeconds(dateTime.getMillis());
-			
-			validateArguments();
+
 		}
 
 		@Override
@@ -71,12 +63,13 @@ public class UserLastActivityUpdateMorphCmdBuilder implements CommandBuilder {
 			String normalizedUsername = RecordExtensions.getStringValue(inputRecord, normalizedUsernameField);
 			Long epochtime = TimestampUtils.convertToSeconds(RecordExtensions.getLongValue(inputRecord, epochtimestampField));
 			
-			if(lastActivityEpochTimeInSecInPrevJob < epochtime ){
-				Long userLastActivity = userLastActivityMap.get(normalizedUsername);
-				if(userLastActivity == null || userLastActivity < epochtime){
-					this.userLastActivityMap.put(normalizedUsername, epochtime);
-				}
+
+			// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
+			Long userLastActivity = userLastActivityMap.get(normalizedUsername);
+			if(userLastActivity == null || userLastActivity < epochtime){
+				this.userLastActivityMap.put(normalizedUsername, epochtime);
 			}
+
 
 			return super.doProcess(inputRecord);
 
@@ -86,8 +79,8 @@ public class UserLastActivityUpdateMorphCmdBuilder implements CommandBuilder {
 		protected void doNotify(Record notification) {
 			for (Object event : Notifications.getLifecycleEvents(notification)) {
 				if (event == Notifications.LifecycleEvent.SHUTDOWN && userService!=null) {
-					userService.updateUsersLastActivityOfType(logEventsType, userLastActivityMap);
-					userService.updateUsersLastActivity(userLastActivityMap);
+					// update all the users in the map in mongo: both the last-activity and the last-activity-per-type
+					userService.updateUsersLastActivityGeneralAndPerType(logEventsType, userLastActivityMap);
 				}
 			}
 			super.doNotify(notification);
