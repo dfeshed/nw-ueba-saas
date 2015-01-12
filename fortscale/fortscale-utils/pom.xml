@@ -308,6 +308,16 @@
 			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>pl.pragmatists</groupId>
+			<artifactId>JUnitParams</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
@@ -457,15 +467,6 @@
 		</pluginManagement>
 	</build>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>pl.pragmatists</groupId>
-			<artifactId>JUnitParams</artifactId>
-			<scope>test</scope>
-		</dependency>
 
 	<distributionManagement>
 		<snapshotRepository>
