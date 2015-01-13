@@ -1,19 +1,19 @@
 package fortscale.domain.eventscache;
 
-import static com.google.common.base.Preconditions.*;
-
 import org.kitesdk.morphline.api.Record;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 @Document(collection="cachedEventsRecord")
 @TypeAlias(value="CachedRecord")
 public class CachedRecord {
 
 	@Id
-	private long id;
+	private String id;
 	@Indexed(unique=false, dropDups=false)
 	private String cacheName;
 	private String key;
@@ -28,11 +28,11 @@ public class CachedRecord {
 		this.record = record;
 	}
 	
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 	
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	

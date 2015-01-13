@@ -1,7 +1,6 @@
 package fortscale.collection.morphlines;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,7 +14,7 @@ import fortscale.utils.logging.Logger;
 
 public class MorphlinesTester {
 
-	private MorphlinesItemsProcessor[] subjects;
+	protected MorphlinesItemsProcessor[] subjects;
 	private List<String> outputFields;
 	private static final Logger logger = Logger.getLogger(MorphlinesTester.class);
 	

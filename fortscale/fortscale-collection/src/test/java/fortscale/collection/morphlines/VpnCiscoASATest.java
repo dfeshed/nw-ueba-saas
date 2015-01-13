@@ -128,8 +128,8 @@ public class VpnCiscoASATest {
                 $(
                         "apple_short - fakse start - resume",
                         $(
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-6-716059: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <108.202.178.181> apple_short session resumed connection from IP <10.21.77.114>>.",
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <108.202.178.181> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session"
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-6-716059: Group <apple_short> User <kebarrowFAKE-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <108.202.178.181> apple_short session resumed connection from IP <10.21.77.114>>.",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrowFAKE-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <108.202.178.181> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session"
 
                         ),
                         $(
@@ -142,8 +142,8 @@ public class VpnCiscoASATest {
                 $(
                         "apple_short - fake start - replace",
                         $(
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-5-722032: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <108.202.178.181> New UDP SVC connection replacing old connection.",
-                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <108.202.178.181> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session"
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-5-722032: Group <apple_short> User <kebarrowFAKE-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <108.202.178.181> New UDP SVC connection replacing old connection.",
+                                "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrowFAKE-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <108.202.178.181> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session"
 
                         ),
                         $(
@@ -164,7 +164,7 @@ public class VpnCiscoASATest {
 
                         ),
                         $(
-                                "2014-10-01 00:05:44,1412111144,idantest,44.188.239.218,,CLOSED,United States,US,Not_supported,Not_supported,Not_supported,isp,,215906548,187346964,28559584,157274,1182,false,false",
+                        		"2014-10-01 00:05:44,1412111144,idantest,44.188.239.218,,CLOSED,United States,US,Not_supported,Not_supported,Not_supported,isp,,215906548,187346964,28559584,157274,1182,false,false",
                                 (String)null
 
                         )
@@ -178,7 +178,7 @@ public class VpnCiscoASATest {
 
                         ),
                         $(
-                                "2014-07-01 06:49:49,1404186589,idantest,188.76.199.235,,CLOSED,United Kingdom,UK,Not_supported,Not_supported,Not_supported,isp,,78243017,69672950,8570067,868193,80,false,false",
+                        		"2014-07-01 06:49:49,1404186589,idantest,188.76.199.235,,CLOSED,United Kingdom,UK,Not_supported,Not_supported,Not_supported,isp,,78243017,69672950,8570067,868193,80,false,false",
                                 (String)null
 
                         )
@@ -231,8 +231,8 @@ public class VpnCiscoASATest {
                 $(
                         "AnyConnect_policy - fakse start - resume",
                         $(
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-3 : %ASA-6-716059: Group <AnyConnect_profile> User <latom> IP <108.202.178.181> AnyConnect session resumed connection from IP <10.21.77.114>>.",
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <latom> IP <108.202.178.181> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session"
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-3 : %ASA-6-716059: Group <AnyConnect_profile> User <latomfake> IP <108.202.178.181> AnyConnect session resumed connection from IP <10.21.77.114>>.",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <latomfake> IP <108.202.178.181> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session"
 
                         ),
                         $(
@@ -245,8 +245,8 @@ public class VpnCiscoASATest {
                 $(
                         "AnyConnect_policy - fake start - replace",
                         $(
-                                "Mar 21 2014 23:03:49 sjck-vpn-cluster-4 : %ASA-5-722032: Group <AnyConnect_policy> User <chdemont> IP <24.7.121.71> New UDP SVC connection replacing old connection.",
-                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <chdemont> IP <24.7.121.71> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session"
+                                "Mar 21 2014 23:03:49 sjck-vpn-cluster-4 : %ASA-5-722032: Group <AnyConnect_policy> User <chdemontfake> IP <24.7.121.71> New UDP SVC connection replacing old connection.",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <chdemontfake> IP <24.7.121.71> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session"
 
                         ),
                         $(
