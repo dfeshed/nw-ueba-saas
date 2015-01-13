@@ -58,4 +58,17 @@ public class EventsIpResolvingService {
         return (configs.containsKey(inputTopic))? configs.get(inputTopic).getOutputTopic() : null;
     }
 
+    /** Get the partition key to use for outgoing message envelope for the given event */
+    public Object getPartitionKey(String inputTopic, JSONObject event) {
+        checkNotNull(inputTopic);
+        checkNotNull(event);
+
+        // get the configuration for the input topic, if not found skip this event
+        EventResolvingConfig config = configs.get(inputTopic);
+        if (config==null)
+            return event;
+
+        return event.get(config.getPartitionField());
+    }
+
 }

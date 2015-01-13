@@ -90,10 +90,12 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             boolean restrictToADName = config.getBoolean(String.format("fortscale.events.%s.restrictToADName", eventType));
             boolean shortName = config.getBoolean(String.format("fortscale.events.%s.shortName", eventType));
             boolean isRemoveLastDot = config.getBoolean(String.format("fortscale.events.%s.isRemoveLastDot", eventType));
+            String partitionField = getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType));
+
 
             // build EventResolvingConfig for the event type
             resolvingConfigList.add(EventResolvingConfig.build(inputTopic, ipField, hostField, outputTopic,
-                    restrictToADName, shortName, isRemoveLastDot, timestampField));
+                    restrictToADName, shortName, isRemoveLastDot, timestampField, partitionField));
         }
 
         // construct the resolving service
@@ -118,7 +120,10 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
             // construct outgoing message
             try {
-                OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", service.getOutputTopic(topic)), event.toJSONString());
+                OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
+                        new SystemStream("kafka", service.getOutputTopic(topic)),
+                        service.getPartitionKey(topic, event),
+                        event.toJSONString());
                 collector.send(output);
             } catch(Exception exception){
                 throw new KafkaPublisherException(String.format("failed to send event to from input topic %s, topic %s after ip resolving", topic, service.getOutputTopic(topic)), exception);

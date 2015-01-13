@@ -20,7 +20,7 @@ public class EventsIpResolvingServiceTest {
     @Before
     public void setUp() {
         List<EventResolvingConfig> configs = new LinkedList<>();
-        configs.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, "time"));
+        configs.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, "time", "partition"));
 
         resolver = mock(IpToHostnameResolver.class);
         service = new EventsIpResolvingService(resolver, configs);
@@ -82,5 +82,16 @@ public class EventsIpResolvingServiceTest {
         Assert.assertNull(actual);
     }
 
+
+    @Test
+    public void service_should_return_partition_field() {
+        JSONObject event = new JSONObject();
+        event.put("ip", "1.1.1.1");
+        event.put("time", 3L);
+        event.put("partition", "part-A");
+
+        Object actual = service.getPartitionKey("input", event);
+        Assert.assertEquals("part-A", actual);
+    }
 
 }
