@@ -21,6 +21,7 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.springframework.core.env.Environment;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -75,6 +76,9 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         resolver.getDhcpResolver().setCache(dhcpCache);
         resolver.getComputerLoginResolver().setCache(loginCache);
 
+        // get spring environment to resolve properties values using configuration files
+        Environment env =  SpringService.getInstance().resolve(Environment.class);
+
         // build EventResolvingConfig instances from streaming task configuration file
         List<EventResolvingConfig> resolvingConfigList = new LinkedList<>();
         Config fieldsSubset = config.subset("fortscale.events.");
@@ -84,13 +88,13 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             // load configuration for event type
             String inputTopic = getConfigString(config, String.format("fortscale.events.%s.input.topic", eventType));
             String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", eventType));
-            String ipField = getConfigString(config, String.format("fortscale.events.%s.ip.field", eventType));
-            String hostField = getConfigString(config, String.format("fortscale.events.%s.host.field", eventType));
-            String timestampField = getConfigString(config, String.format("fortscale.events.%s.timestamp.field", eventType));
+            String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.ip.field", eventType)));
+            String hostField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.host.field", eventType)));
+            String timestampField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.timestamp.field", eventType)));
             boolean restrictToADName = config.getBoolean(String.format("fortscale.events.%s.restrictToADName", eventType));
             boolean shortName = config.getBoolean(String.format("fortscale.events.%s.shortName", eventType));
             boolean isRemoveLastDot = config.getBoolean(String.format("fortscale.events.%s.isRemoveLastDot", eventType));
-            String partitionField = getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType));
+            String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
 
 
             // build EventResolvingConfig for the event type
