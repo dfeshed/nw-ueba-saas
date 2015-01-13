@@ -54,6 +54,7 @@ public class EventsScoreStreamTaskService {
 		
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-event-score-message-count", modelName));
+		this.modelService = modelService;
 	}
 	
 	private void fillModelConfig(Config config) throws Exception {
