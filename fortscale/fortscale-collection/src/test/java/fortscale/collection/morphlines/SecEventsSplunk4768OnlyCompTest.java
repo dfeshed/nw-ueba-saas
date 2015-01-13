@@ -18,11 +18,12 @@ public class SecEventsSplunk4768OnlyCompTest {
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readSecEvtOnlyComp_splunk.conf";
 	private String conf4768File = "resources/conf-files/read4768SecEvtOnlyComp_splunk.conf";
+	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
 	@Before
 	public void setUp() throws Exception {
 		List<String> fieldsToCheck = Arrays.asList("date_time_unix","client_address","account_name","account_domain","reporting_server");
-		morphlineTester.init(new String[] { confFile, conf4768File }, fieldsToCheck);
+		morphlineTester.init(new String[] { confFile, conf4768File,confSecEnrich }, fieldsToCheck);
 	}
 
 	@After
