@@ -9,8 +9,15 @@ public class DataEntityField {
     private String scoreField;
     private Boolean isDefaultEnabled = true;
     private QueryValueType type;
+
+    /**
+     * A logicalOnly field is one that has no matching physical representation, but is instead a function, case/if, etc.
+     */
     private Boolean logicalOnly = false;
 
+    /**
+     * Flag that indicates that this field can be searched by the front-end, to be used by autocomplete or other such components.
+     */
     private Boolean searchable = false;
 
     public String getId() {
