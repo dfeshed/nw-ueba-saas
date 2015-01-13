@@ -231,6 +231,14 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
                 }
                 field.setLogicalOnly(isLogicalOnly);
 
+                Boolean isSearchable = fieldConfig.isSearchable();
+                if (isSearchable == null){
+                    String isSearchableStr = getExtendableValue(entityId, "field", fieldId, "searchable");
+                    isSearchable = isSearchableStr != null && isSearchableStr.equalsIgnoreCase("true");
+                    fieldConfig.setSearchable(isSearchable);
+                }
+                field.setSearchable(isSearchable);
+                
                 fields.add(field);
             } catch(Exception error){
                 throw new Exception(String.format("Can't read field %s of entity %s", fieldId, entityId));
