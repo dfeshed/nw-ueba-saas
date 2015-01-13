@@ -24,6 +24,10 @@
 					<value>${impala.data.ssh.table.fields}</value>
 				</entry>
 				<entry>
+					<key>partitionKeyFields</key>
+					<value>${impala.data.ssh.table.field.username}</value>
+				</entry>
+				<entry>
 					<key>timestampField</key>
 					<value>${impala.data.table.fields.epochtime}</value>
 				</entry>

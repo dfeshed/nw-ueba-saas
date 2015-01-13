@@ -6,10 +6,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import fortscale.services.ipresolving.cache.MemoryBasedCache;
+import fortscale.services.ipresolving.cache.ResolvingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +29,7 @@ import fortscale.utils.TimestampUtils;
 
 @Service("computerLoginResolver")
 @Scope("singleton")
-public class ComputerLoginResolver implements InitializingBean {
+public class ComputerLoginResolver {
 
 	private static final Logger logger = LoggerFactory.getLogger(ComputerLoginResolver.class);
 	
@@ -39,19 +42,12 @@ public class ComputerLoginResolver implements InitializingBean {
 	private int ipToHostNameUpdateResolutionInMins;
 	@Value("${computer.login.resolver.graceTimeInMins:1}")
 	private int graceTimeInMins;
-	@Value("${computer.login.resolver.cache.max.items:30000}")
-	private int cacheMaxSize;
 	@Value("${computer.login.resolver.is.use.cache.for.resolving:true}")
 	private boolean isUseCacheForResolving;
-	
-	private Cache<String, ComputerLoginEvent> cache;
-	
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		// create a cache of ip login events
-		cache = CacheBuilder.newBuilder().maximumSize(cacheMaxSize).build();
-	}
-	
+
+	@Autowired
+	@Qualifier("loginResolverCache")
+	private ResolvingCache<ComputerLoginEvent> cache;
 
 	public String getHostname(String ip, long ts) {
 		ComputerLoginEvent event = getComputerLoginEvent(ip, ts);
@@ -66,7 +62,7 @@ public class ComputerLoginResolver implements InitializingBean {
 		
 		// check if we have a matching event in the cache
 		if(isUseCacheForResolving){
-			ComputerLoginEvent cachedEvent = cache.getIfPresent(ip);
+			ComputerLoginEvent cachedEvent = cache.get(ip);
 			if (cachedEvent!=null && 
 					cachedEvent.getTimestampepoch() >= ts - leaseTimeInMins*60*1000 && 
 					cachedEvent.getTimestampepoch() <= ts + graceTimeInMins*60*1000) {
@@ -122,7 +118,7 @@ public class ComputerLoginResolver implements InitializingBean {
 		String ip = event.getIpaddress();
 		
 		// check if the event is in the cache, if not add it and save to repository
-		ComputerLoginEvent cachedEvent =  cache.getIfPresent(ip);
+		ComputerLoginEvent cachedEvent =  cache.get(ip);
 		if (cachedEvent==null) {
 			return true;
 		} else {

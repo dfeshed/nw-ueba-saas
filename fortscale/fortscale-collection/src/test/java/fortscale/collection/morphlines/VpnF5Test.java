@@ -26,12 +26,6 @@ public class VpnF5Test {
 	private String confFile = "resources/conf-files/readVPN_F5.conf";
 	private String confEnrichmentFile = "resources/conf-files/enrichment/readVPN_enrich.conf";
 
-	static TimeZone tz;
-	static SimpleDateFormat sdf;
-
-	static Calendar calendar = Calendar.getInstance();
-	static Integer currentYear;
-	static String year;
 
 	final static String Apr_14_01_50_26 = "Apr 14 01:50:26";
 	static String Apr_14_01_50_26_OUT;
@@ -84,52 +78,47 @@ public class VpnF5Test {
 
 	private static void prepareDates() {
 
-		tz = TimeZone.getTimeZone("Asia/Jerusalem");
-		calendar.setTimeZone(tz);
-		currentYear = calendar.get(Calendar.YEAR);
-		year = Integer.toString(currentYear);
-		sdf = new SimpleDateFormat("yyyy MMM dd HH:mm:ss");
-		sdf.setTimeZone(tz);
+		TestUtils.init("yyyy MMM dd HH:mm:ss", "Asia/Jerusalem");
 
-		Date date = constuctDate(Jan_2_19_08_35);
-		Jan_2_19_08_35_OUT = getOutputDate(date);
-		Jan_2_19_08_35_L = getUnixDate(date);
+		Date date = TestUtils.constuctDate(Jan_2_19_08_35);
+		Jan_2_19_08_35_OUT = TestUtils.getOutputDate(date);
+		Jan_2_19_08_35_L = TestUtils.getUnixDate(date);
 
-		date = constuctDate(Jan_2_19_11_09);
-		Jan_2_19_11_09_OUT = getOutputDate(date);
-		Jan_2_19_11_09_L = getUnixDate(date);
+		date = TestUtils.constuctDate(Jan_2_19_11_09);
+		Jan_2_19_11_09_OUT = TestUtils.getOutputDate(date);
+		Jan_2_19_11_09_L = TestUtils.getUnixDate(date);
 
-		date = constuctDate(Apr_14_00_17_42);
-		Apr_14_00_17_42_OUT = getOutputDate(date);
-		Apr_14_00_17_42_L = getUnixDate(date);
+		date = TestUtils.constuctDate(Apr_14_00_17_42);
+		Apr_14_00_17_42_OUT = TestUtils.getOutputDate(date);
+		Apr_14_00_17_42_L = TestUtils.getUnixDate(date);
 
-		date = constuctDate(Apr_14_00_23_29);
-		Apr_14_00_23_29_OUT = getOutputDate(date);
-		Apr_14_00_23_29_L = getUnixDate(date);
+		date = TestUtils.constuctDate(Apr_14_00_23_29);
+		Apr_14_00_23_29_OUT = TestUtils.getOutputDate(date);
+		Apr_14_00_23_29_L = TestUtils.getUnixDate(date);
 
-		date = constuctDate(Apr_14_01_50_26);
-		Apr_14_01_50_26_OUT = getOutputDate(date);
-		Apr_14_01_50_26_L = getUnixDate(date);
+		date = TestUtils.constuctDate(Apr_14_01_50_26);
+		Apr_14_01_50_26_OUT = TestUtils.getOutputDate(date);
+		Apr_14_01_50_26_L = TestUtils.getUnixDate(date);
 
-		date = constuctDate(Apr_14_01_50_05);
-		Apr_14_01_50_05_OUT = getOutputDate(date);
-		Apr_14_01_50_05_L = getUnixDate(date);
+		date = TestUtils.constuctDate(Apr_14_01_50_05);
+		Apr_14_01_50_05_OUT = TestUtils.getOutputDate(date);
+		Apr_14_01_50_05_L = TestUtils.getUnixDate(date);
 
-		date = constuctDate(Apr_14_01_50_42);
-		Apr_14_01_50_42_OUT = getOutputDate(date);
-		Apr_14_01_50_42_L = getUnixDate(date);
+		date = TestUtils.constuctDate(Apr_14_01_50_42);
+		Apr_14_01_50_42_OUT = TestUtils.getOutputDate(date);
+		Apr_14_01_50_42_L = TestUtils.getUnixDate(date);
 
-		date = constuctDate(Jan_2_19_08_28);
-		Jan_2_19_08_28_OUT = getOutputDate(date);
-		Jan_2_19_08_28_L = getUnixDate(date);
+		date = TestUtils.constuctDate(Jan_2_19_08_28);
+		Jan_2_19_08_28_OUT = TestUtils.getOutputDate(date);
+		Jan_2_19_08_28_L = TestUtils.getUnixDate(date);
 
-		date = constuctDate(Jan_2_19_06_14);
-		Jan_2_19_06_14_OUT = getOutputDate(date);
-		Jan_2_19_06_14_L = getUnixDate(date);
+		date = TestUtils.constuctDate(Jan_2_19_06_14);
+		Jan_2_19_06_14_OUT = TestUtils.getOutputDate(date);
+		Jan_2_19_06_14_L = TestUtils.getUnixDate(date);
 
-		date = constuctDate(Jan_2_19_06_26);
-		Jan_2_19_06_26_OUT = getOutputDate(date);
-		Jan_2_19_06_26_L = getUnixDate(date);
+		date = TestUtils.constuctDate(Jan_2_19_06_26);
+		Jan_2_19_06_26_OUT = TestUtils.getOutputDate(date);
+		Jan_2_19_06_26_L = TestUtils.getUnixDate(date);
 
 	}
 
@@ -144,7 +133,7 @@ public class VpnF5Test {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.vpn.table.morphline.fields");
 		List<String> vpnOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
-		morphlineTester.init(new String[] {confFile, confEnrichmentFile}, vpnOutputFields);
+		morphlineTester.init(new String[]{confFile, confEnrichmentFile}, vpnOutputFields);
 	}
 
 	@After
@@ -169,33 +158,6 @@ public class VpnF5Test {
 		morphlineTester.testMultipleLines(testCase, events , expected);
 	}
 
-	private static Date constuctDate(String inDate){
-		try {
-			Date parsedDate = sdf.parse(year + " " + inDate);
-			Date currentDate = calendar.getTime();
-			if (parsedDate.compareTo(currentDate)>0) {
-				parsedDate.setYear(parsedDate.getYear() - 1);
-			}
-			return parsedDate;
-
-		} catch (ParseException e) {
-			throw new RuntimeException(e);
-
-		}
-	}
-
-	private static String getOutputDate(Date date){
-
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeZone(tz);
-		formatter.setCalendar(cal);
-		return formatter.format(date);
-	}
-
-	private static Long getUnixDate(Date date){
-		return date.getTime() / 1000;
-	}
 
 	@SuppressWarnings("unused")
 	private Object[] parametersForTest() {

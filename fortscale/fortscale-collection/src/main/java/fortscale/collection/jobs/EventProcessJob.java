@@ -65,6 +65,7 @@ public class EventProcessJob implements Job {
 	protected MorphlinesItemsProcessor morphline;
 	protected MorphlinesItemsProcessor morphlineEnrichment;
 	protected RecordToStringItemsProcessor recordToString;
+	protected RecordToStringItemsProcessor recordKeyExtractor;
 	protected String monitorId;
 	protected String hadoopPath;
 	protected String hadoopFilename;
@@ -112,7 +113,8 @@ public class EventProcessJob implements Job {
 		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
 		String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
-		
+		recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields"));
+
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 		morphlineEnrichment = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineEnrichment");
 
@@ -181,9 +183,15 @@ public class EventProcessJob implements Job {
 					morphline.close();
 				} finally {
 					try {
-						closeOutputAppender();
+						if (morphlineEnrichment != null) {
+							morphlineEnrichment.close();
+						}
 					} finally {
-						closeStreamingAppender();
+						try {
+							closeOutputAppender();
+						} finally {
+							closeStreamingAppender();
+						}
 					}
 				}
 			}
@@ -294,7 +302,7 @@ public class EventProcessJob implements Job {
 			updateOrCreateUserWithClassifierUsername(record);
 			
 			// output event to streaming platform
-			streamMessage(recordToString.toJSON(record));
+			streamMessage(recordKeyExtractor.process(record),recordToString.toJSON(record));
 			
 			return true;
 		} else {
@@ -376,9 +384,9 @@ public class EventProcessJob implements Job {
 	}
 	
 	/*** Send the message produced by the morphline ETL to the streaming platform */
-	protected void streamMessage(String message) throws IOException {
+	protected void streamMessage(String key, String message) throws IOException {
 		if (streamWriter!=null && sendToKafka == true)
-			streamWriter.send(message);
+			streamWriter.send(key, message);
 	}
 	
 	/*** Close the streaming appender upon job finish to free resources */

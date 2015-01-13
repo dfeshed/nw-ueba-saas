@@ -79,6 +79,6 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	@Override protected void closeOutputAppender() throws JobExecutionException {}
 	@Override protected void refreshImpala() throws JobExecutionException {}
 	@Override protected void initializeStreamingAppender() throws JobExecutionException {}
-	@Override protected void streamMessage(String message) throws IOException {}
+	@Override protected void streamMessage(String key, String message) throws IOException {}
 	@Override protected void closeStreamingAppender() throws JobExecutionException {}
 }

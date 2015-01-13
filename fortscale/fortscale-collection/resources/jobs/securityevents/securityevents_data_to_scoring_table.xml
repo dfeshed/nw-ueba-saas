@@ -27,6 +27,10 @@
 					<value>${kafka.4769.struc.topic}</value>
 				</entry>
 				<entry>
+					<key>streamingTopicPartitionKey</key>
+					<value>${impala.data.security.events.login.table.field.account_name}</value>
+				</entry>
+				<entry>
 					<key>impalaTableFields</key>
 					<value>${impala.data.security.events.4769.table.fields}</value>
 				</entry>
