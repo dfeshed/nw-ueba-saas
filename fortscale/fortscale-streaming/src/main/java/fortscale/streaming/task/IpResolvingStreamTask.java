@@ -13,6 +13,7 @@ import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
 import fortscale.streaming.service.ipresolving.LevelDbBasedResolvingCache;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -37,73 +38,71 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     // map between input topic name and relevant resolving cache instance
     private Map<String, LevelDbBasedResolvingCache<?>> topicToCacheMap = new HashMap<>();
 
-    private EventsIpResolvingService service;
+    private static EventsIpResolvingService service;
 
 
     private static String topicConfigKeyFormat = "fortscale.%s.topic";
     private static String storeConfigKeyFormat = "fortscale.%s.store";
 
-    private static String dnsCacheKey = "dns-cache";
-    private static String dnsBlacklistKey = "dns-blacklist";
     private static String dhcpCacheKey = "dhcp-cache";
     private static String loginCacheKey = "login-cache";
 
 
     @Override
     protected void wrappedInit(Config config, TaskContext context) throws Exception {
-        // create leveldb based caches for ip resolving services (dns, dhcp, login)
-        LevelDbBasedResolvingCache<String> dnsCache = new LevelDbBasedResolvingCache<String>(
-                (KeyValueStore<String, String>)context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dnsCacheKey))));
-        topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dnsCacheKey)), dnsCache);
 
-        LevelDbBasedResolvingCache<Boolean> dnsBlackListCache = new LevelDbBasedResolvingCache<>(
-                (KeyValueStore<String, Boolean>)context.getStore( getConfigString(config, String.format(storeConfigKeyFormat, dnsBlacklistKey)) ));
-        topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dnsBlacklistKey)), dnsBlackListCache);
+        // initialize the ip resolving service only once for all streaming task instances. Since we can
+        // host several task instances in this process, we want all of them to share the same ip resolving cache
+        // instances. To do so, we can have the events ip resolving service defined as a static member and be shared
+        // for all task instances. We won't have a problem for concurrent accesses here, since samza is a single
+        // threaded and all task instances run on the same thread, meaning we cannot have concurrent calls to
+        // init or process methods here, so it is safe to check for initialization the way we did.
+        if (service==null) {
 
-        LevelDbBasedResolvingCache<DhcpEvent> dhcpCache = new LevelDbBasedResolvingCache<>(
-                (KeyValueStore<String, DhcpEvent>)context.getStore( getConfigString(config, String.format(storeConfigKeyFormat, dhcpCacheKey)) ));
-        topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dhcpCacheKey)), dhcpCache);
+            // create leveldb based caches for ip resolving services (dhcp, login)
+            LevelDbBasedResolvingCache<DhcpEvent> dhcpCache = new LevelDbBasedResolvingCache<>(
+                    (KeyValueStore<String, DhcpEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dhcpCacheKey))));
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dhcpCacheKey)), dhcpCache);
 
-        LevelDbBasedResolvingCache<ComputerLoginEvent> loginCache = new LevelDbBasedResolvingCache<>(
-                (KeyValueStore<String, ComputerLoginEvent>)context.getStore( getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey)) ));
-        topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), loginCache);
-
-
-        // pass the caches to the ip resolving services
-        IpToHostnameResolver resolver = SpringService.getInstance().resolve(IpToHostnameResolver.class);
-        resolver.getDnsResolver().setDnsCache(dnsCache);
-        resolver.getDnsResolver().setBlackIpHashSetCache(dnsBlackListCache);
-        resolver.getDhcpResolver().setCache(dhcpCache);
-        resolver.getComputerLoginResolver().setCache(loginCache);
-
-        // get spring environment to resolve properties values using configuration files
-        Environment env =  SpringService.getInstance().resolve(Environment.class);
-
-        // build EventResolvingConfig instances from streaming task configuration file
-        List<EventResolvingConfig> resolvingConfigList = new LinkedList<>();
-        Config fieldsSubset = config.subset("fortscale.events.");
-        for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
-            String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".input.topic"));
-
-            // load configuration for event type
-            String inputTopic = getConfigString(config, String.format("fortscale.events.%s.input.topic", eventType));
-            String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", eventType));
-            String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.ip.field", eventType)));
-            String hostField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.host.field", eventType)));
-            String timestampField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.timestamp.field", eventType)));
-            boolean restrictToADName = config.getBoolean(String.format("fortscale.events.%s.restrictToADName", eventType));
-            boolean shortName = config.getBoolean(String.format("fortscale.events.%s.shortName", eventType));
-            boolean isRemoveLastDot = config.getBoolean(String.format("fortscale.events.%s.isRemoveLastDot", eventType));
-            String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
+            LevelDbBasedResolvingCache<ComputerLoginEvent> loginCache = new LevelDbBasedResolvingCache<>(
+                    (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))));
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), loginCache);
 
 
-            // build EventResolvingConfig for the event type
-            resolvingConfigList.add(EventResolvingConfig.build(inputTopic, ipField, hostField, outputTopic,
-                    restrictToADName, shortName, isRemoveLastDot, timestampField, partitionField));
+            // pass the caches to the ip resolving services
+            IpToHostnameResolver resolver = SpringService.getInstance().resolve(IpToHostnameResolver.class);
+            resolver.getDhcpResolver().setCache(dhcpCache);
+            resolver.getComputerLoginResolver().setCache(loginCache);
+
+            // get spring environment to resolve properties values using configuration files
+            Environment env = SpringService.getInstance().resolve(Environment.class);
+
+            // build EventResolvingConfig instances from streaming task configuration file
+            List<EventResolvingConfig> resolvingConfigList = new LinkedList<>();
+            Config fieldsSubset = config.subset("fortscale.events.");
+            for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
+                String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".input.topic"));
+
+                // load configuration for event type
+                String inputTopic = getConfigString(config, String.format("fortscale.events.%s.input.topic", eventType));
+                String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", eventType));
+                String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.ip.field", eventType)));
+                String hostField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.host.field", eventType)));
+                String timestampField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.timestamp.field", eventType)));
+                boolean restrictToADName = config.getBoolean(String.format("fortscale.events.%s.restrictToADName", eventType));
+                boolean shortName = config.getBoolean(String.format("fortscale.events.%s.shortName", eventType));
+                boolean isRemoveLastDot = config.getBoolean(String.format("fortscale.events.%s.isRemoveLastDot", eventType));
+                String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
+
+
+                // build EventResolvingConfig for the event type
+                resolvingConfigList.add(EventResolvingConfig.build(inputTopic, ipField, hostField, outputTopic,
+                        restrictToADName, shortName, isRemoveLastDot, timestampField, partitionField));
+            }
+
+            // construct the resolving service
+            service = new EventsIpResolvingService(resolver, resolvingConfigList);
         }
-
-        // construct the resolving service
-        service = new EventsIpResolvingService(resolver, resolvingConfigList);
     }
 
 
@@ -119,7 +118,9 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             cache.update((String) envelope.getKey(), envelope.getMessage());
         } else {
             // process event message
-            JSONObject event = (JSONObject)envelope.getMessage();
+            String messageText = (String)envelope.getMessage();
+            JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+
             event = service.enrichEvent(topic, event);
 
             // construct outgoing message
