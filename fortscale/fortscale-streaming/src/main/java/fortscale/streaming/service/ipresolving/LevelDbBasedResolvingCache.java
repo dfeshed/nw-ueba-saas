@@ -8,7 +8,7 @@ import org.apache.samza.storage.kv.KeyValueStore;
  * tasks. This ResolvingCache implementation is meant to be used by streaming tasks that accepts cache update
  * messages from input topic and update the values stored in the cache.
  */
-public class LevelDbBasedResolvingCache<T> implements ResolvingCache<T> {
+public abstract class LevelDbBasedResolvingCache<T> implements ResolvingCache<T> {
 
     private KeyValueStore<String, T> store;
 
@@ -31,12 +31,10 @@ public class LevelDbBasedResolvingCache<T> implements ResolvingCache<T> {
      * Process cache update messages that arrive from the streaming topic, we use this overload
      * that accepts Object and cached value since we cannot cast the value to the concrete held value by
      * the cache in the ip resolving streaming task (since there are several types of caches with different classes,
-     * which will require us to write specific code for each one)
+     * which will require us to write specific code for each one).
+     * Notice that the event should be json serialized format of the update message.
      */
-    public void update(String ip, Object event) {
-        // just call the put into cache method and cast the event value in order to update the cache
-        put(ip, (T)event);
-    }
+    public abstract void update(String ip, String event) throws Exception;
 
     /**
      * Flush the underlying leveldb store pending disk writes.
