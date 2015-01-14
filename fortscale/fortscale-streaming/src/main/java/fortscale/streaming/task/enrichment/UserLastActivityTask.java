@@ -95,7 +95,7 @@ public class UserLastActivityTask extends AbstractStreamTask {
 
 	}
 
-	// TODO add unit test!
+
 
 	/**
 	 * Process specific message
