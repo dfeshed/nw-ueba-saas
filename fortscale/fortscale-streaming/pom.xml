@@ -239,6 +239,11 @@
 			<artifactId>fortscale-monitor</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-ml</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 
 		<!-- javax persistence needed by aspectj compile time depenceny injection 

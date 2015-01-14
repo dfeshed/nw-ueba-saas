@@ -1,6 +1,7 @@
 package fortscale.streaming.serialization;
 
-import fortscale.streaming.model.prevalance.UserTimeBarrier;
+import fortscale.ml.model.prevalance.UserTimeBarrier;
+
 import org.apache.samza.config.Config;
 import org.apache.samza.serializers.Serde;
 import org.apache.samza.serializers.SerdeFactory;
