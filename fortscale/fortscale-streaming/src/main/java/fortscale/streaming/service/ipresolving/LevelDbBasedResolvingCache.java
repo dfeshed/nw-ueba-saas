@@ -39,11 +39,11 @@ public class LevelDbBasedResolvingCache<T> implements ResolvingCache<T> {
     }
 
     /**
-     * Close the underlying leveldb store and force flush of all pending disk writes.
-     * The close method should be called upon streaming task shutdown.
+     * Flush the underlying leveldb store pending disk writes.
+     * The flush method should be called upon streaming task shutdown or periodically when required.
      */
-    public void close() {
+    public void flush() {
         if (store!=null)
-            store.close();
+            store.flush();
     }
 }

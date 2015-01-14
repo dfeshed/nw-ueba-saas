@@ -112,7 +112,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
         // check if the message came from one of the cache updates topics, if so than update the resolving cache
         // with the update message
-        String topic = envelope.getSystemStreamPartition().getSystemStream().getSystem();
+        String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
         if (topicToCacheMap.containsKey(topic)) {
             // get the concrete cache and pass it the update message that arrive
             LevelDbBasedResolvingCache<?> cache = topicToCacheMap.get(topic);
@@ -142,6 +142,6 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     protected void wrappedClose() throws Exception {
         // close all leveldb resolving caches
         for (LevelDbBasedResolvingCache<?> cache : topicToCacheMap.values())
-            cache.close();
+            cache.flush();
     }
 }
