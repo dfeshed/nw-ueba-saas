@@ -55,5 +55,11 @@
         <constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
     </bean>
 
+    <!-- ip to hostname non-singleton service bean for use in fortscale collection -->
+    <bean id="dnsResolver" class="fortscale.services.ipresolving.DnsResolver" scope="singleton" />
+    <bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" />
+    <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" />
+    <bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
+
 
 </beans>

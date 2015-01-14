@@ -65,7 +65,7 @@
 				</entry>
 				<entry>
 					<key>partitionKeyFieldsSecEvt4769</key>
-					<value>${impala.data.security.events.login.table.field.account_name}</value>
+					<value>${impala.data.security.events.4769.table.morphline.fields.username}</value>
 				</entry>
 				<entry>
 					<key>timestampFieldSecEvt4769</key>

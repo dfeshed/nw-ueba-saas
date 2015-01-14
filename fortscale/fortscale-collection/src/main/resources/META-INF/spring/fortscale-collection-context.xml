@@ -37,31 +37,13 @@
 
 
 	<!-- ip resolving caches that uses memory based implementation are injected here -->
-	<bean id="dnsResolverCache" class="fortscale.services.ipresolving.cache.KafkaPropogateUpdatesCache">
-		<constructor-arg name="innerCache">
-			<bean class="fortscale.services.ipresolving.cache.MemoryBasedCache">
-				<constructor-arg name="maxSize" value="${dns.resolver.cache.size:100000}" />
-				<constructor-arg name="timeToExpire" value="${dns.resolver.cache.timeToExpireSec:3600}" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg name="topicWriter">
-			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
-				<constructor-arg name="topic" value="${dns.resolver.cache.updates.topic}" />
-			</bean>
-		</constructor-arg>
+	<bean id="dnsResolverCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${dns.resolver.cache.size:100000}" />
+		<constructor-arg name="timeToExpire" value="${dns.resolver.cache.timeToExpireSec:3600}" />
 	</bean>
-	<bean id="dnsBlacklistCache" class="fortscale.services.ipresolving.cache.KafkaPropogateUpdatesCache">
-		<constructor-arg name="innerCache">
-			<bean class="fortscale.services.ipresolving.cache.MemoryBasedCache">
-				<constructor-arg name="maxSize" value="${dns.resolver.blacklist.size:100000}" />
-				<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg name="topicWriter">
-			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
-				<constructor-arg name="topic" value="${dns.resolver.blacklist.updates.topic}" />
-			</bean>
-		</constructor-arg>
+	<bean id="dnsBlacklistCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${dns.resolver.blacklist.size:100000}" />
+		<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
 	</bean>
 	<bean id="dhcpResolverCache" class="fortscale.services.ipresolving.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
@@ -87,6 +69,13 @@
 			</bean>
 		</constructor-arg>
 	</bean>
+
+
+	<!-- ip to hostname singleton service bean for use in fortscale collection -->
+	<bean id="dnsResolver" class="fortscale.services.ipresolving.DnsResolver" scope="singleton" />
+	<bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" />
+	<bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" />
+	<bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
 
 
 

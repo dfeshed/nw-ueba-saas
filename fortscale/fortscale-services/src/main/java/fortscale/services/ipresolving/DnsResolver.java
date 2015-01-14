@@ -10,7 +10,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import org.xbill.DNS.DClass;
 import org.xbill.DNS.ExtendedResolver;
 import org.xbill.DNS.Message;
@@ -23,7 +22,6 @@ import org.xbill.DNS.Type;
 import fortscale.utils.TimestampUtils;
 
 
-@Service("dnsResolver")
 public class DnsResolver implements InitializingBean {
 	private static Logger logger = LoggerFactory.getLogger(DnsResolver.class);
 	
@@ -57,6 +55,14 @@ public class DnsResolver implements InitializingBean {
 	private int dnsLookupCounter = 0;
 
 	private String[] dnsServersArray;
+
+	public void setDnsCache(ResolvingCache<String> dnsCache) {
+		this.dnsCache = dnsCache;
+	}
+
+	public void setBlackIpHashSetCache(ResolvingCache<Boolean> blackIpHashSetCache) {
+		this.blackIpHashSetCache = blackIpHashSetCache;
+	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {

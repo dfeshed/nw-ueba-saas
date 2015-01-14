@@ -2,25 +2,18 @@ package fortscale.services.ipresolving;
 
 import java.util.List;
 
-import fortscale.services.ipresolving.cache.MemoryBasedCache;
 import fortscale.services.ipresolving.cache.ResolvingCache;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.dao.DhcpEventRepository;
 import fortscale.utils.TimestampUtils;
 
 
-@Service("dhcpResolver")
 public class DhcpResolver {
 
 	@Autowired

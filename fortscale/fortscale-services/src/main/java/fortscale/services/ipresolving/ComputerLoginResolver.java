@@ -6,29 +6,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import fortscale.services.ipresolving.cache.MemoryBasedCache;
 import fortscale.services.ipresolving.cache.ResolvingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.dao.ComputerLoginEventRepository;
 import fortscale.utils.TimestampUtils;
 
 
-@Service("computerLoginResolver")
-@Scope("singleton")
 public class ComputerLoginResolver {
 
 	private static final Logger logger = LoggerFactory.getLogger(ComputerLoginResolver.class);
@@ -48,6 +39,10 @@ public class ComputerLoginResolver {
 	@Autowired
 	@Qualifier("loginResolverCache")
 	private ResolvingCache<ComputerLoginEvent> cache;
+
+	public void setCache(ResolvingCache<ComputerLoginEvent> cache) {
+		this.cache = cache;
+	}
 
 	public String getHostname(String ip, long ts) {
 		ComputerLoginEvent event = getComputerLoginEvent(ip, ts);
