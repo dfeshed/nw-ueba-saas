@@ -1,12 +1,11 @@
 package fortscale.streaming.task.enrichment;
 
+import com.google.common.collect.Iterables;
 import fortscale.services.UserService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.streaming.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.UserScoreStreamingService;
 import fortscale.streaming.task.AbstractStreamTask;
-import fortscale.utils.TimestampUtils;
+import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -14,12 +13,12 @@ import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.springframework.beans.factory.annotation.Autowired;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToLong;
@@ -64,6 +63,11 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	protected UserService userService;
 
 	/**
+	 * Map between the input topic and the relevant data-source
+	 */
+	protected Map<String, String> topicToDataSourceMap = new HashMap<>();
+
+	/**
 	 * Init task after spring context is up
 	 * @param config	Samza task configuration
 	 * @param context	Samza task context
@@ -81,6 +85,13 @@ public class UserLastActivityTask extends AbstractStreamTask {
 
 		// Get the user service (for Mongo) from spring
 		userService = SpringService.getInstance().resolve(UserService.class);
+
+		// Fill the map between the input topic and the data source
+		Config fieldsSubset = config.subset("fortscale.data-source.input.topic.");
+		for (String dataSource : fieldsSubset.keySet()) {
+			String inputTopic = getConfigString(config, String.format("fortscale.data-source.input.topic.%s", dataSource));
+			topicToDataSourceMap.put(inputTopic, dataSource);
+		}
 
 	}
 
@@ -111,20 +122,24 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		// get the username from the event
 		String normalizedUsername = convertToString(message.get(usernameField));
 
+		// Get the input topic
+		String topic = envelope.getSystemStreamPartition().getSystemStream().getSystem();
+
 		// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
-		updateLastActivityInStore(timestamp, normalizedUsername);
+		updateLastActivityInStore(timestamp, normalizedUsername, topic);
 
 
-		// No output topic
+		// No output topic -> this is the last task in the chain
 
 	}
 
 	/**
 	 * Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
-	 * @param timestamp	the time of the event
-	 * @param normalizedUsername	the user
+	 * @param timestamp    the time of the event
+	 * @param normalizedUsername    the user
+	 * @param topic	The input topic
 	 */
-	private void updateLastActivityInStore(Long timestamp, String normalizedUsername) {
+	private void updateLastActivityInStore(Long timestamp, String normalizedUsername, String topic) {
 
 		Map<String, Long> dataSourceToTimestamp = store.get(normalizedUsername);
 
@@ -134,7 +149,12 @@ public class UserLastActivityTask extends AbstractStreamTask {
 			store.put(normalizedUsername, dataSourceToTimestamp);
 		}
 
-		String classifierId = "VPN"; // TODO - get data source according to input topic
+		// Get relevant data source according to topic
+		String classifierId = topicToDataSourceMap.get(topic);
+		if (classifierId == null) {
+			logger.error("No data source is defined for input topic {} ", topic);
+		}
+
 		Long userLastActivity = dataSourceToTimestamp.get(classifierId);
 		if(userLastActivity == null || userLastActivity < timestamp){
 			// update last activity in level DB
