@@ -63,7 +63,6 @@
 		<geoip2.version>0.7.0</geoip2.version>
 		<ip2location.version>1.0.0</ip2location.version>
 		<jcommander.version>1.30</jcommander.version>
-		<junit.version>4.8.1</junit.version>
 		<fortscale-utils.version>${project.parent.version}</fortscale-utils.version>
 		<!-- maven plugins versions -->
 		<maven-remote-resources-plugin.version>1.5</maven-remote-resources-plugin.version>
@@ -98,7 +97,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

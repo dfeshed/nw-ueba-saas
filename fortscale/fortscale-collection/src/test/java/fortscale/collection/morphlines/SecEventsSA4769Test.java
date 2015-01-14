@@ -9,8 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static junitparams.JUnitParamsRunner.$;
 
@@ -20,6 +21,7 @@ public class SecEventsSA4769Test {
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readSecEvt_securityAnalytics.conf";
 	private String conf4769File = "resources/conf-files/processSecEvtSA4769.conf";
+	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
 	final static String Mar_17_15_49_21 = "Mar 17 15:49:21";
 	static String Mar_17_15_49_21_OUT1;
@@ -48,7 +50,7 @@ public class SecEventsSA4769Test {
 				splunkSecEventsOutputFieldsExcludingEnrichment.add(field);
 			}
 		}
-		morphlineTester.init(new String[] { confFile, conf4769File }, splunkSecEventsOutputFieldsExcludingEnrichment);
+		morphlineTester.init(new String[] { confFile, conf4769File,confSecEnrich }, splunkSecEventsOutputFieldsExcludingEnrichment);
 	}
 
 	@After
