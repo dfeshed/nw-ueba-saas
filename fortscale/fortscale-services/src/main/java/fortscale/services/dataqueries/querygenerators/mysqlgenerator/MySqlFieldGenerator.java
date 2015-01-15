@@ -105,7 +105,7 @@ public class MySqlFieldGenerator {
                 if (dataEntitiesConfig.getFieldIsExplicit(entityId, fieldId))
                     continue;
 
-                addFieldTable(entityId, fieldId, fieldSB);
+                //addFieldTable(entityId, fieldId, fieldSB);
                 fieldSB.append(dataEntitiesConfig.getFieldColumn(entityId, fieldId));
                 fieldSB.append(" as '").append(fieldId).append("'");
                 fieldSB.append(", ");
