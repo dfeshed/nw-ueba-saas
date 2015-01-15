@@ -186,11 +186,6 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		}
 		userService = null;
 
-
-		// Close the underlying leveldb store and force flush of all pending disk writes.
-		if (store!=null)
-			store.close();
-
 	}
 
 
