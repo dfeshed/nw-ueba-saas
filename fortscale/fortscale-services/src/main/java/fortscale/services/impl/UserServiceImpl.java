@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -228,7 +229,7 @@ public class UserServiceImpl implements UserService{
 			}
 
 			// get the time of the event
-			DateTime currTime = new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue()));
+			DateTime currTime = new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue()), DateTimeZone.UTC);
 
 			Update update = null;
 
