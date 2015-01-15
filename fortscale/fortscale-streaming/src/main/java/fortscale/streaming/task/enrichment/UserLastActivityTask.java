@@ -193,10 +193,13 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	 * Go over all users in the last-activity map and write them to Mongo
 	 */
 	private void copyLevelDbToMongoDB() {
-		KeyValueIterator<String, Map<String, Long>> all = store.all();
-		while (all.hasNext()) {
-			Entry<String, Map<String, Long>> user = all.next();
+		KeyValueIterator<String, Map<String, Long>> iter = store.all();
+		while (iter.hasNext()) {
+			Entry<String, Map<String, Long>> user = iter.next();
+			// update user in mongo
 			userService.updateUsersLastActivityGeneralAndPerType(user.getKey(), user.getValue());
+			// remove from store
+			iter.remove();
 		}
 	}
 
