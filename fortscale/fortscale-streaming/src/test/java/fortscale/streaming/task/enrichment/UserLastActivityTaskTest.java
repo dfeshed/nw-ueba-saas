@@ -21,7 +21,7 @@ public class UserLastActivityTaskTest {
 
 	public static final String MESSAGE_1 = "{ \"name\": \"user1\",  \"time\": 1 }";
 	public static final String MESSAGE_2 = "{ \"name\": \"user1\",  \"time\": 2 }";
-	public static final String MESSAGE_3 = "{ \"name\": \"user1\",  \"time\": 1 }";
+
 
 	@Test
 	public void testWrappedProcess() throws Exception {

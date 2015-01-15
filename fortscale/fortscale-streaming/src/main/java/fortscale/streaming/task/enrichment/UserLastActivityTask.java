@@ -1,13 +1,14 @@
 package fortscale.streaming.task.enrichment;
 
-import com.google.common.collect.Iterables;
+
 import fortscale.services.UserService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.task.AbstractStreamTask;
-import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
+import org.apache.samza.storage.kv.Entry;
+import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
@@ -18,7 +19,7 @@ import parquet.org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToLong;
@@ -164,9 +165,13 @@ public class UserLastActivityTask extends AbstractStreamTask {
 
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		// TODO copy level DB to mongo DB
-	}
 
+		// copy level DB to mongo DB
+		if (userService !=null) {
+			copyLevelDbToMongoDB();
+		}
+
+	}
 
 	/**
 	 * The close method should be called upon streaming task shutdown
@@ -174,10 +179,31 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	 */
 	@Override
 	protected void wrappedClose() throws Exception {
+
+		// copy level DB to mongo DB
+		if (userService != null) {
+			copyLevelDbToMongoDB();
+		}
+		userService = null;
+
+
 		// Close the underlying leveldb store and force flush of all pending disk writes.
 		if (store!=null)
 			store.close();
 
 	}
+
+
+	/**
+	 * Go over all users in the last-activity map and write them to Mongo
+	 */
+	private void copyLevelDbToMongoDB() {
+		KeyValueIterator<String, Map<String, Long>> all = store.all();
+		while (all.hasNext()) {
+			Entry<String, Map<String, Long>> user = all.next();
+			userService.updateUsersLastActivityGeneralAndPerType(user.getKey(), user.getValue());
+		}
+	}
+
 
 }
