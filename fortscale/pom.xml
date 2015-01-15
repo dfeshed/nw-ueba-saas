@@ -475,6 +475,6 @@
 		<module>fortscale-monitor</module>
 		<module>fortscale-collection</module>
 		<module>fortscale-streaming</module>
-		<!-- <module>fortscale-webapp-security</module> -->
+		<module>fortscale-flume</module>
 	</modules>
 </project>
