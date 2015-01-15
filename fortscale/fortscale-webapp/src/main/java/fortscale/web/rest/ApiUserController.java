@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,7 +30,6 @@ import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserServiceFacade;
-import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.utils.logging.Logger;
@@ -41,7 +39,6 @@ import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataListWrapperBean;
 import fortscale.web.beans.DataWarningsEnum;
 import fortscale.web.beans.FeatureBean;
-import fortscale.web.beans.UserContactInfoBean;
 import fortscale.web.beans.UserDetailsBean;
 import fortscale.web.beans.UserMachinesBean;
 import fortscale.web.beans.UserSearchBean;
@@ -57,40 +54,7 @@ public class ApiUserController extends BaseController{
 	@Autowired
 	private UserRepository userRepository;
 	
-	@RequestMapping(value="/updateAdInfo", method=RequestMethod.GET)
-	public void updateAdInfo(@RequestParam(required=false) Long timestampepoch, Model model){
-		if(timestampepoch != null){
-			userServiceFacade.updateUserWithADInfo(timestampepoch);
-		} else{
-			userServiceFacade.updateUserWithCurrentADInfo();
-		}
-	}
-	
-	@RequestMapping(value="/updateAuthScore", method=RequestMethod.GET)
-	public void updateAuthScore(Model model){
-		userServiceFacade.updateUserWithAuthScore(Classifier.auth);
-	}
-	
-	@RequestMapping(value="/updateSshScore", method=RequestMethod.GET)
-	public void updateSshScore(Model model){
-		userServiceFacade.updateUserWithAuthScore(Classifier.ssh);
-	}
-	
-	@RequestMapping(value="/updateVpnScore", method=RequestMethod.GET)
-	public void updateVpnScore(Model model){
-		userServiceFacade.updateUserWithAuthScore(Classifier.vpn);
-	}
-	
-	@RequestMapping(value="/updateGroupsScore", method=RequestMethod.GET)
-	public void updateGroupsScore(Model model){
-		userServiceFacade.updateUserWithGroupMembershipScore();
-	}
-		
-	@RequestMapping(value="/recalculateTotalScores", method=RequestMethod.GET)
-	public void recalculateTotalScores(Model model){
-		userServiceFacade.recalculateTotalScore();
-	}
-	
+
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -240,19 +204,7 @@ public class ApiUserController extends BaseController{
 	}
 	
 	
-	
-	@RequestMapping(value="/{id}/contactinfo", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<UserContactInfoBean>> userContactInfo(@PathVariable String id, Model model){
-		User user = userRepository.findOne(id);
-		if(user == null){
-			return null;
-		}
-		UserContactInfoBean ret = new UserContactInfoBean(user);
-		return new DataListWrapperBean<UserContactInfoBean>(ret);
-	}
-	
+
 	@RequestMapping(value="/{id}/machines", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -273,15 +225,7 @@ public class ApiUserController extends BaseController{
 		List<User> users = userRepository.findByIds(ids);
 		return usersMachines(users);
 	}
-	
-	@RequestMapping(value="/followedUsersMachines", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<UserMachinesBean>> followedUsersMachines(Model model){
-		List<User> users = userRepository.findByFollowed(true);
-		return usersMachines(users);
-	}
-	
+
 	private DataBean<List<UserMachinesBean>> usersMachines(List<User> users){
 		List<UserMachinesBean> usersMachinesList = new ArrayList<>();
 		for(User user: users) {
@@ -305,22 +249,7 @@ public class ApiUserController extends BaseController{
 		ret.setTotal(userScores.size());
 		return ret;
 	}
-	
-	@RequestMapping(value="/followedUsersScores", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<Map<String, List<IUserScore>>> followedUsersScores(Model model){
-		DataBean<Map<String, List<IUserScore>>> ret = new DataBean<Map<String, List<IUserScore>>>();
-		Map<User, List<IUserScore>> userScores = userServiceFacade.getFollowedUsersScores();
-		Map<String, List<IUserScore>> data = new HashMap<>();
-		for(Entry<User, List<IUserScore>> entry: userScores.entrySet()){
-			data.put(entry.getKey().getId(), entry.getValue());
-		}
-		ret.setData(data);
-		ret.setTotal(data.size());
-		return ret;
-	}
-	
+
 	@RequestMapping(value="/{uid}/classifier/{classifierId}/scorehistory", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -377,31 +306,7 @@ public class ApiUserController extends BaseController{
 		ret.setTotal(attrs.size());
 		return ret;
 	}
-	
-	@RequestMapping(value="/classifier/{classifierId}/followedUsersAttributes", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<Map<String, List<FeatureBean>>> followedUsersClassifierAttributes(@PathVariable String classifierId,
-			@RequestParam(required=true) String date,
-			@RequestParam(required=false) String orderBy,
-			@RequestParam(defaultValue="0") Integer attributesPage,
-			@RequestParam(defaultValue="-1") Integer attributesSize,
-			@RequestParam(defaultValue="DESC") String orderByDirection,
-			Model model){
-		DataBean<Map<String, List<FeatureBean>>> ret = new DataBean<Map<String, List<FeatureBean>>>();
-		Direction direction = convertStringToDirection(orderByDirection);
-		Map<User,List<IFeature>> userToAttrsMap = userServiceFacade.getFollowedUserAttributesScores(classifierId, Long.parseLong(date), orderBy, direction);
-		Map<String, List<FeatureBean>> data = new HashMap<>();
-		for(Entry<User, List<IFeature>> entry: userToAttrsMap.entrySet()){
-			List<IFeature> attrs = entry.getValue();
-			List<FeatureBean> features = getFeatureBeanList(attrs, attributesPage, attributesSize);
-			data.put(entry.getKey().getId(), features);
-		}
-		ret.setData(data);
-		ret.setTotal(data.size());
-		return ret;
-	}
-	
+
 	private List<FeatureBean> getFeatureBeanList(List<IFeature> attrs, int page, int size){
 		List<FeatureBean> features = new ArrayList<FeatureBean>();
 		if(size > 0){
@@ -434,13 +339,7 @@ public class ApiUserController extends BaseController{
 		ret.setTotal(userScores.size());
 		return ret;
 	}
-	
-	@RequestMapping(value="/removeClassifier", method=RequestMethod.GET)
-	@LogException
-	public void removeClassifierFromAllUsers(@RequestParam(required=true) String classifierId, Model model){
-		userServiceFacade.removeClassifierFromAllUsers(classifierId);
-	}	
-	
+
 	/**
 	 * Gets the destination machines operating systems distribution for a user
 	 */
