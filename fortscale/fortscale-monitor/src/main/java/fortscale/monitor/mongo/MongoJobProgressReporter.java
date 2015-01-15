@@ -75,7 +75,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 			
 			repository.save(report);
 		} else {
-			logger.warn("job with id=%s not found", id);
+			logger.debug("job with id=%s not found", id);
 		}
 		
 	}
@@ -97,7 +97,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 			report.getSteps().add(step);
 			repository.save(report);
 		} else {
-			logger.warn(String.format("cannot find job with id=%s", id));
+			logger.debug(String.format("cannot find job with id=%s", id));
 		}
 	}
 
@@ -116,11 +116,11 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 				
 				repository.save(report);
 			} else {
-				logger.warn(String.format("step %s not found in job %s", stepName, id));
+				logger.debug(String.format("step %s not found in job %s", stepName, id));
 			}
 			
 		} else {
-			logger.warn(String.format("job not found with id=%s", id));
+			logger.debug(String.format("job not found with id=%s", id));
 		}
 
 	}
@@ -176,11 +176,11 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 				
 				repository.save(report);
 			} else {
-				logger.warn(String.format("step %s not found in job %s", stepName, id));
+				logger.debug(String.format("step %s not found in job %s", stepName, id));
 			}
 			
 		} else {
-			logger.warn(String.format("job not found with id=%s", id));
+			logger.debug(String.format("job not found with id=%s", id));
 		}
 	}
 
@@ -231,7 +231,7 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 			
 		JobReport report = repository.findOne(id);
 		if (report==null) {
-			logger.warn("report not found with id={}", id);
+			logger.debug("report not found with id={}", id);
 		} else {
 			report.getDataReceived().add(data);
 			repository.save(report);
