@@ -229,7 +229,7 @@ public class UserServiceImpl implements UserService{
 			}
 
 			// get the time of the event
-			DateTime currTime = new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue()), DateTimeZone.UTC);
+			DateTime currTime = new DateTime(TimestampUtils.convertToMilliSeconds(entry.getValue()));
 
 			Update update = null;
 
@@ -273,7 +273,7 @@ public class UserServiceImpl implements UserService{
 			for (String classifierId : lastActivityMap.keySet()) {
 
 				// get the time of the event
-				DateTime currTime = new DateTime(lastActivityMap.get(classifierId));
+				DateTime currTime = new DateTime(lastActivityMap.get(classifierId), DateTimeZone.UTC);
 				LogEventsEnum logEventsEnum = LogEventsEnum.valueOf(classifierId);
 
 				// last activity
