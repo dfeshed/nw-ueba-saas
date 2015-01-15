@@ -8,9 +8,7 @@ import fortscale.domain.events.DhcpEvent;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.ipresolving.EventResolvingConfig;
-import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
-import fortscale.streaming.service.ipresolving.LevelDbBasedResolvingCache;
+import fortscale.streaming.service.ipresolving.*;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -60,11 +58,11 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         if (service==null) {
 
             // create leveldb based caches for ip resolving services (dhcp, login)
-            LevelDbBasedResolvingCache<DhcpEvent> dhcpCache = new LevelDbBasedResolvingCache<>(
+            LevelDbBasedResolvingCache<DhcpEvent> dhcpCache = new DhcpLevelDbResolvingCache(
                     (KeyValueStore<String, DhcpEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dhcpCacheKey))));
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dhcpCacheKey)), dhcpCache);
 
-            LevelDbBasedResolvingCache<ComputerLoginEvent> loginCache = new LevelDbBasedResolvingCache<>(
+            LevelDbBasedResolvingCache<ComputerLoginEvent> loginCache = new ComputerLoginLevelDbResolvingCache(
                     (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))));
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), loginCache);
 
@@ -115,7 +113,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         if (topicToCacheMap.containsKey(topic)) {
             // get the concrete cache and pass it the update message that arrive
             LevelDbBasedResolvingCache<?> cache = topicToCacheMap.get(topic);
-            cache.update((String) envelope.getKey(), envelope.getMessage());
+            cache.update((String) envelope.getKey(), (String)envelope.getMessage());
         } else {
             // process event message
             String messageText = (String)envelope.getMessage();
