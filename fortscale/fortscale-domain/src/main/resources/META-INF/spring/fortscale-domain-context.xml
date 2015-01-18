@@ -7,26 +7,7 @@
 		
 	<description>domain context.</description>
 	
-	
-
-	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}"/>
-	
-	<mongo:mapping-converter id="mongoConverter" base-package="fortscale.domain">
-		<mongo:custom-converters base-package="fortscale.domain" />
-	</mongo:mapping-converter>
-	
-	<bean id="mongoConverterConfigurer" class="fortscale.domain.MongoConverterConfigurer" init-method="init" >
-		<property name="mongoConverter" ref="mongoConverter"/>
-		<property name="mapKeyDotReplacement" value="${mongo.map.dot.replacement}"/>
-	</bean>
-	
-	<mongo:auditing />
-	
-	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-		<constructor-arg ref="mongoDbFactory" />
-		<constructor-arg ref="mongoConverter" />
-		<property name="writeConcern" value="SAFE" />
-	</bean>
+	<import resource="classpath*:META-INF/spring/fortscale-domain-light-context.xml"/>
 	
 	<mongo:repositories base-package="fortscale.domain" />
 	

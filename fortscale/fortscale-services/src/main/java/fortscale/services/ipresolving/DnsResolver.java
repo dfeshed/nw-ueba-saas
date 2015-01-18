@@ -1,18 +1,15 @@
 package fortscale.services.ipresolving;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.concurrent.TimeUnit;
 
+import fortscale.services.ipresolving.cache.ResolvingCache;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import org.xbill.DNS.DClass;
 import org.xbill.DNS.ExtendedResolver;
 import org.xbill.DNS.Message;
@@ -25,7 +22,6 @@ import org.xbill.DNS.Type;
 import fortscale.utils.TimestampUtils;
 
 
-@Service("dnsResolver")
 public class DnsResolver implements InitializingBean {
 	private static Logger logger = LoggerFactory.getLogger(DnsResolver.class);
 	
@@ -33,19 +29,15 @@ public class DnsResolver implements InitializingBean {
 
 	// dnsCache is used to cache ip lookups results returned from the dns server, thus lowering the number of
 	// requests against the dns server
-	private Cache<String, String> dnsCache;
+	@Autowired
+	@Qualifier("dnsResolverCache")
+	private ResolvingCache<String> dnsCache;
 	// blackIpHashSetCache is used to keep track of ip addresses that couldn't not be resolved into hostname using
 	// the dns servers. We keep track of those ip addresses to prevent us from looking them up over and over again
-	private Cache<String, Boolean> blackIpHashSetCache;
+	@Autowired
+	@Qualifier("dnsBlacklistCache")
+	private ResolvingCache<Boolean> blackIpHashSetCache;
 
-	@Value("${dns.resolver.cache.size:100000}")
-	private int maxCacheSize;
-	@Value("${dns.resolver.cache.timeToExpireSec:3600}")
-	private int cacheExpirationSec;
-	@Value("${dns.resolver.blacklist.size:100000}")
-	private int maxBlacklistSize;
-	@Value("${dns.resolver.blacklist.timeToExpireSec:3600}")
-	private int blacklistExpirationSec;
 	@Value("${dns.resolver.maxQueriesPerHour:1000}")
 	private int maxQueries;
 	@Value("${dns.resolver.dnsServers:}")
@@ -64,15 +56,16 @@ public class DnsResolver implements InitializingBean {
 
 	private String[] dnsServersArray;
 
+	public void setDnsCache(ResolvingCache<String> dnsCache) {
+		this.dnsCache = dnsCache;
+	}
+
+	public void setBlackIpHashSetCache(ResolvingCache<Boolean> blackIpHashSetCache) {
+		this.blackIpHashSetCache = blackIpHashSetCache;
+	}
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// create resolving and blacklist caches according to configured sizes
-		dnsCache = CacheBuilder.newBuilder().maximumSize(maxCacheSize)
-				.expireAfterWrite(cacheExpirationSec, TimeUnit.SECONDS).build();
-
-		blackIpHashSetCache = CacheBuilder.newBuilder().maximumSize(maxBlacklistSize)
-				.expireAfterWrite(blacklistExpirationSec, TimeUnit.SECONDS).build();
-
 		// prepare dns servers array from configuration
 		if (!StringUtils.isEmpty(dnsServers)) {
 			dnsServersArray = StringUtils.split(dnsServers, DNS_SERVERS_SEPERATOR);
@@ -85,13 +78,13 @@ public class DnsResolver implements InitializingBean {
 		// to run only on recent entries
 		if (shouldSkipPastEvent(timestamp)) 
 			return null;
-		
-		if (blackIpHashSetCache.getIfPresent(ip_address)!=null) {
+
+		if (blackIpHashSetCache.get(ip_address)!=null) {
 			logger.debug("IP {} is in the black list. Skipping it.", ip_address);
 			return null;
 		}
 
-		String hostname = dnsCache.getIfPresent(ip_address);
+		String hostname = dnsCache.get(ip_address);
 		if (hostname!=null) {
 			return hostname;
 		}

@@ -11,19 +11,16 @@
 
 
 
-    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="file:config/fortscale-overriding-streaming.properties"/>
-        <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
-        <property name="ignoreUnresolvablePlaceholders" value="true"/>
-        <property name="localOverride" value="true"/>
-    </bean>
+    
 
     <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
-    <import resource="classpath*:META-INF/spring/monitor-context.xml" />
+    <import resource="classpath*:META-INF/spring/monitor-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
 
 
     <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
@@ -33,28 +30,36 @@
     <context:spring-configured />
     <context:annotation-config />
     <context:component-scan base-package="fortscale" />
-
- <!-- for local debug mark this out and all the above mark on
-<context:property-placeholder location="classpath*:META-INF/*.properties" />
-<context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
-<context:annotation-config />
-
-<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-    <property name="location" value="file:fortscale-streaming/config/fortscale-overriding-streaming.properties"/>
-    <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
-    <property name="ignoreUnresolvablePlaceholders" value="true"/>
-    <property name="localOverride" value="true"/>
-</bean>
-
-
-
--->
-
+    
     <!--List of Tagging service implementation -->
     <bean id = "sweeperImpl" class="fortscale.streaming.service.tagging.SweeperTagImpl"></bean>
     <bean id = "serverUsageImpl" class="fortscale.streaming.service.tagging.UseServerDesktopTagImpl"></bean>
     <bean id = "sensitiveImpl" class="fortscale.streaming.service.tagging.IsSensetiveTagImpl"></bean>
     <bean id = "IsFixedImpl" class="fortscale.streaming.service.tagging.IsFixSourceTagImpl"></bean>
     <!--****************************************-->
+
+
+    <!-- ip resolving caches that uses memory based implementation are injected here -->
+    <bean id="dnsResolverCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${dns.resolver.cache.size:100000}" />
+        <constructor-arg name="timeToExpire" value="${dns.resolver.cache.timeToExpireSec:3600}" />
+    </bean>
+    <bean id="dnsBlacklistCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${dns.resolver.blacklist.size:100000}" />
+        <constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
+    </bean>
+    <bean id="dhcpResolverCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${dhcp.resolver.cache.max.items:30000}" />
+    </bean>
+    <bean id="loginResolverCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
+    </bean>
+
+    <!-- ip to hostname non-singleton service bean for use in fortscale collection -->
+    <bean id="dnsResolver" class="fortscale.services.ipresolving.DnsResolver" scope="singleton" />
+    <bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" />
+    <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" />
+    <bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
+
 
 </beans>

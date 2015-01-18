@@ -8,8 +8,8 @@ import org.apache.samza.storage.kv.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.exceptions.LevelDbException;
-import fortscale.streaming.model.prevalance.UserTimeBarrier;
 
 /**
  * Barrier for events that holds a latest time stamp and discriminating fields 

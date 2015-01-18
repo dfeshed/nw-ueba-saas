@@ -17,8 +17,6 @@ import java.util.regex.Pattern;
  * IP resolving service that aggregate results from all available providers to determine the
  * what is the host name assignment for a given ip address and a certain time stamp
  */
-@Service("ipToHostnameResolver")
-@Scope("singleton")
 public class IpToHostnameResolver {
 
 	private static Logger logger = LoggerFactory.getLogger(IpToHostnameResolver.class);
@@ -46,7 +44,9 @@ public class IpToHostnameResolver {
 	private boolean dhcpProviderEnabled;
 	@Value("${ip2hostname.dnsProvider.enabled:true}")
 	private boolean dnsProviderEnabled;
-	
+
+
+
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
 	 * @param restrictToADName should we return only hostnames that appear in AD and leave un-resolved otherwise
@@ -186,5 +186,17 @@ public class IpToHostnameResolver {
 
 	public void setDnsProviderEnabled(boolean dnsProviderEnabled) {
 		this.dnsProviderEnabled = dnsProviderEnabled;
-	}	
+	}
+
+	public ComputerLoginResolver getComputerLoginResolver() {
+		return computerLoginResolver;
+	}
+
+	public DhcpResolver getDhcpResolver() {
+		return dhcpResolver;
+	}
+
+	public DnsResolver getDnsResolver() {
+		return dnsResolver;
+	}
 }

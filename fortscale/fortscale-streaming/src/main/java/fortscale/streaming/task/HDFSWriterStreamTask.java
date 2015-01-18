@@ -3,7 +3,7 @@ package fortscale.streaming.task;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.filters.MessageFilter;
-import fortscale.streaming.model.prevalance.UserTimeBarrier;
+import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.HdfsService;
 import fortscale.streaming.service.SpringService;

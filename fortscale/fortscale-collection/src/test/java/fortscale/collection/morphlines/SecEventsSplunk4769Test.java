@@ -20,6 +20,7 @@ public class SecEventsSplunk4769Test {
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/readSecEvt_splunk.conf";
 	private String conf4769File = "resources/conf-files/processSecEvt4769.conf";
+	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
 	
 	@Before
@@ -33,7 +34,7 @@ public class SecEventsSplunk4769Test {
 				splunkSecEventsOutputFieldsExcludingEnrichment.add(field);
 			}
 		}
-		morphlineTester.init(new String[] { confFile, conf4769File }, splunkSecEventsOutputFieldsExcludingEnrichment);
+		morphlineTester.init(new String[] { confFile, conf4769File,confSecEnrich }, splunkSecEventsOutputFieldsExcludingEnrichment);
 	}
 
 	@After

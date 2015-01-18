@@ -2,23 +2,19 @@ package fortscale.services.ipresolving;
 
 import java.util.List;
 
-import org.springframework.beans.factory.InitializingBean;
+import fortscale.services.ipresolving.cache.ResolvingCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.dao.DhcpEventRepository;
 import fortscale.utils.TimestampUtils;
 
 
-@Service("dhcpResolver")
-public class DhcpResolver implements InitializingBean {
+public class DhcpResolver {
 
 	@Autowired
 	private DhcpEventRepository dhcpEventRepository;
@@ -26,19 +22,11 @@ public class DhcpResolver implements InitializingBean {
 	@Value("${dhcp.resolver.leaseTimeInMins:1}")
 	private int graceTimeInMins;
 	
-	@Value("${dhcp.resolver.cache.max.items:30000}") 
-	private int cacheMaxSize;
+	@Autowired
+	@Qualifier("dhcpResolverCache")
+	private ResolvingCache<DhcpEvent> cache;
 	
-	private Cache<String, DhcpEvent> cache;
-	
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		// create a cache of ip login events
-		cache = CacheBuilder.newBuilder().maximumSize(cacheMaxSize).build();
-	}
-	
-	
-	public void setCache(Cache<String, DhcpEvent> cache) {
+	public void setCache(ResolvingCache<DhcpEvent> cache) {
 		this.cache = cache;
 	}
 	
@@ -52,7 +40,7 @@ public class DhcpResolver implements InitializingBean {
 		if (DhcpEvent.ASSIGN_ACTION.equals(event.getAction())) {
 			// see that we don't already have such an event in cache with the same 
 			// expiration time and hostname
-			DhcpEvent cached = cache.getIfPresent(event.getIpaddress());
+			DhcpEvent cached = cache.get(event.getIpaddress());
 			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration()>= event.getExpiration())
 				return;
 			 
@@ -82,7 +70,7 @@ public class DhcpResolver implements InitializingBean {
 		// end previous assignment in case of expiration or release
 		if (DhcpEvent.RELEASE_ACTION.equals(event.getAction()) || DhcpEvent.EXPIRED_ACTION.equals(event.getAction())) {
 			// check if we have an existing dhcp event than need to be updated with expiration time
-			DhcpEvent cached = cache.getIfPresent(event.getIpaddress());
+			DhcpEvent cached = cache.get(event.getIpaddress());
 			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration() > event.getTimestampepoch()) {
 				cached.setExpiration(event.getExpiration());
 				cache.put(cached.getIpaddress(), cached);
@@ -111,7 +99,7 @@ public class DhcpResolver implements InitializingBean {
 		long upperTsLimit = (graceTimeInMins > 0)? ts + graceTimeInMins * 60 * 1000 : ts;
 		
 		// see if we have a matching event in cache
-		DhcpEvent cached = cache.getIfPresent(ip);
+		DhcpEvent cached = cache.get(ip);
 		if (cached!=null && cached.getTimestampepoch()<=upperTsLimit && cached.getExpiration() >= ts) {
 			// return cached event
 			return cached;
