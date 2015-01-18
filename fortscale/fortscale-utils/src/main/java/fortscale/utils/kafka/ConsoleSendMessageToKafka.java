@@ -15,7 +15,7 @@ public class ConsoleSendMessageToKafka {
 
 		[cloudera@dev-rotemn target]$ cd /home/cloudera/fortscale/fortscale-core/fortscale/fortscale-utils/target
 		[cloudera@dev-rotemn target]$ java -cp fortscale-utils-1.1.0-SNAPSHOT.jar:lib/* fortscale.utils.kafka.ConsoleSendMessageToKafka fortscale-normalized-tagged-event-vpn 0 "{ \"name\": \"user1\",  \"time\": 1 }"
-		
+
 		 */
 
 		if (args.length != 3) {
@@ -51,6 +51,10 @@ public class ConsoleSendMessageToKafka {
 			this.requiredAcks = "1";
 			this.producerType = "sync";
 			this.partitionerClass = "fortscale.utils.kafka.partitions.StringHashPartitioner";
+			this.retryBackoff = "10000";
+			this.queueTime = 5000;
+			this.queueSize = 10000;
+			this.batchSize = 1;
 		}
 	}
 
