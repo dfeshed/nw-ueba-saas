@@ -84,7 +84,7 @@ public class UserLastActivityTaskTest {
 		IncomingMessageEnvelope envelope = Mockito.mock(IncomingMessageEnvelope.class);
 		Mockito.when(envelope.getMessage()).thenReturn(message);
 		Mockito.when(envelope.getSystemStreamPartition()).thenReturn(systemStreamPartition);
-		Mockito.when(systemStream.getSystem()).thenReturn(topic);
+		Mockito.when(systemStream.getStream()).thenReturn(topic);
 
 		return envelope;
 	}
