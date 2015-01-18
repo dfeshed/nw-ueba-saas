@@ -124,7 +124,7 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		String normalizedUsername = convertToString(message.get(usernameField));
 
 		// Get the input topic
-		String topic = envelope.getSystemStreamPartition().getSystemStream().getSystem();
+		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
 		// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
 		updateLastActivityInStore(timestamp, normalizedUsername, topic);
