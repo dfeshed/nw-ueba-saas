@@ -16,7 +16,7 @@ import kafka.producer.ProducerConfig;
 public class KafkaEventsWriter implements Closeable {
 
 	@Value("${kafka.broker.list}")
-	private String kafkaBrokerList;
+	protected String kafkaBrokerList;
 	@Value("${kafka.requiredAcks:1}")
 	private String requiredAcks;
 	@Value("${kafka.producer.type:async}")
