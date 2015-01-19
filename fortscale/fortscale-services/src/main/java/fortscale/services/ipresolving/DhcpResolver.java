@@ -111,8 +111,11 @@ public class DhcpResolver {
 		if(!dhcpEvents.isEmpty()){
 			// check if the ip assignment is not expired
 			DhcpEvent saved = dhcpEvents.get(0);
-			if (saved.getExpiration() >= ts)
+			if (saved.getExpiration() >= ts) {
+				// also add the event to the cache for next time
+				cache.put(ip, saved);
 				return saved;
+			}
 		}
 		
 		return null;
