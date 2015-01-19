@@ -18,8 +18,9 @@ import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-
+import java.util.Set;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToLong;
@@ -198,13 +199,19 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	 */
 	private void copyLevelDbToMongoDB() {
 		KeyValueIterator<String, Map<String, Long>> iter = store.all();
+		Set<String> usernames = new HashSet<>();
 		while (iter.hasNext()) {
 			Entry<String, Map<String, Long>> user = iter.next();
 			// update user in mongo
 			userService.updateUsersLastActivityGeneralAndPerType(user.getKey(), user.getValue());
-			// remove from store
-			iter.remove();
+			usernames.add(user.getKey());
 		}
+
+		// remove from store all users after they were copied to Mongo
+		for (String username : usernames) {
+			store.delete(username);
+		}
+
 	}
 
 
