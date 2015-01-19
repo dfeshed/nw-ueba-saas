@@ -122,6 +122,10 @@ public class UserLastActivityTask extends AbstractStreamTask {
 
 		// get the username from the event
 		String normalizedUsername = convertToString(message.get(usernameField));
+		if (normalizedUsername == null) {
+			logger.error("message {} does not contains username in field {}", messageText, usernameField);
+			throw new StreamMessageNotContainFieldException(messageText, usernameField);
+		}
 
 		// Get the input topic
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
