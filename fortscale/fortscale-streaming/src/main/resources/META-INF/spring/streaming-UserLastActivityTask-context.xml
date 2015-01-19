@@ -26,6 +26,7 @@
     <import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
     <import resource="classpath*:META-INF/spring/monitor-context.xml" />
 
+    <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
 
     <context:spring-configured />
     <context:annotation-config />
