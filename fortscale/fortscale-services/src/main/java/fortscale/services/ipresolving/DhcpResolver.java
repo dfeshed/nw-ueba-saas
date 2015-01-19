@@ -77,15 +77,19 @@ public class DhcpResolver {
 			}
 			
 			// update saved event in repository as well
-			DhcpEvent existing = dhcpEventRepository.findLatestEventForComputerBeforeTimestamp(event.getIpaddress(), event.getHostname(), event.getTimestampepoch());
-			if (existing!=null && existing.getExpiration() > event.getTimestampepoch()) {
-				// mark previous event as expired once the ip is released
-				existing.setExpiration(event.getTimestampepoch());
-				dhcpEventRepository.save(existing);
-				
-				// update cache
-				if (cached==null)
-					cache.put(existing.getIpaddress(), existing);
+			List<DhcpEvent> dhcpEvents = dhcpEventRepository.findByIpaddressAndTimestampepochLessThan(event.getIpaddress(), event.getTimestampepoch(),
+					new PageRequest(0, 1, Direction.DESC, DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME));
+			if (!dhcpEvents.isEmpty()) {
+				DhcpEvent existing = dhcpEvents.get(0);
+				if (existing.getHostname().equals(event.getHostname()) && existing.getExpiration() > event.getTimestampepoch()) {
+					// mark previous event as expired once the ip is released
+					existing.setExpiration(event.getTimestampepoch());
+					dhcpEventRepository.save(existing);
+
+					// update cache
+					if (cached==null)
+						cache.put(existing.getIpaddress(), existing);
+				}
 			}
 		}
 	}
@@ -111,8 +115,11 @@ public class DhcpResolver {
 		if(!dhcpEvents.isEmpty()){
 			// check if the ip assignment is not expired
 			DhcpEvent saved = dhcpEvents.get(0);
-			if (saved.getExpiration() >= ts)
+			if (saved.getExpiration() >= ts) {
+				// also add the event to the cache for next time
+				cache.put(ip, saved);
 				return saved;
+			}
 		}
 		
 		return null;
