@@ -7,8 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection=ComputerLoginEvent.collectionName)
 @CompoundIndexes({
-	@CompoundIndex(name="ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}"),
-	@CompoundIndex(name="hostnameTimeIdx", def = "{'hostname': 1, 'timestampepoch': -1}"),
+	@CompoundIndex(name="ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}")
 })
 public class ComputerLoginEvent extends IpToHostname{
 	/**
