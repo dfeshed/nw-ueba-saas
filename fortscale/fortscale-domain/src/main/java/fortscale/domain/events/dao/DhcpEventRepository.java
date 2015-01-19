@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import fortscale.domain.events.DhcpEvent;
 
 
-public interface DhcpEventRepository  extends MongoRepository<DhcpEvent, String>, DhcpEventRepositoryCustom {
+public interface DhcpEventRepository  extends MongoRepository<DhcpEvent, String> {
 	public List<DhcpEvent> findByIpaddressAndTimestampepochLessThan(String ipaddress, Long timstamp, Pageable pageable);
 }
 
