@@ -165,6 +165,8 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		if(userLastActivity == null || userLastActivity < timestamp){
 			// update last activity in level DB
 			dataSourceToTimestamp.put(classifierId, timestamp);
+			// Just to be on the safe side - we probably don't need it
+			store.put(normalizedUsername, dataSourceToTimestamp);
 		}
 	}
 
