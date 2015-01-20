@@ -43,8 +43,17 @@ public class DhcpResolver {
 			DhcpEvent cached = cache.get(event.getIpaddress());
 			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration()>= event.getExpiration())
 				return;
-			 
-			
+
+			// get the latest assignment from the repository if cache is empty
+			if (cached==null) {
+				List<DhcpEvent> dhcpEvents = dhcpEventRepository.findByIpaddressAndTimestampepochLessThan(event.getIpaddress(), event.getTimestampepoch(),
+						new PageRequest(0, 1, Direction.DESC, DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME));
+				if (!dhcpEvents.isEmpty()) {
+					cached = dhcpEvents.get(0);
+				}
+			}
+
+
 			// put in cache if the cache is empty
 			if (cached==null) {
 				cache.put(event.getIpaddress(), event);
@@ -52,14 +61,23 @@ public class DhcpResolver {
 			} else {
 				// if we got assign to a new hostname update cache and mongo
 				if (!cached.getHostname().equals(event.getHostname())) {
-					// update cache only if it is not older event than the existing one
+					// check if we need to update the expiration time of the existing record, and there
+					// is time overlap between the events
+					if (cached.getExpiration() > event.getTimestampepoch() && cached.getTimestampepoch() < event.getExpiration()) {
+						cached.setExpiration(event.getTimestampepoch());
+						// update the existing event in mongodb and in the cache
+						cache.put(cached.getIpaddress(), cached);
+						dhcpEventRepository.save(cached);
+					}
+
+					// update cache with the new event only if it is not older event than the existing one
 					if (cached.getTimestampepoch() < event.getTimestampepoch())
 						cache.put(event.getIpaddress(), event);
 					dhcpEventRepository.save(event);
 				} else {
 					// for the same hostname as cached event, check if we need to update the 
 					// expiration date on the cached event
-					if (event.getTimestampepoch() > cached.getTimestampepoch()) { 
+					if (event.getExpiration() > cached.getExpiration()) {
 						cached.setExpiration(event.getExpiration());
 						cache.put(event.getIpaddress(), event);
 						dhcpEventRepository.save(event);
