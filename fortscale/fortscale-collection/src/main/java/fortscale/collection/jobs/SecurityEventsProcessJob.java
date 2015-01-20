@@ -131,6 +131,10 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 					if (this.morphlineEnrichment != null)
 					{
 						record = this.morphlineEnrichment.process(processedRecord);
+						if (record == null) {
+							// record was filtered
+							return false;
+						}
 
 					}
 					else
