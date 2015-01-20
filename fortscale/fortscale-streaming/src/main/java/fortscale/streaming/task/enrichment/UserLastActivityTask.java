@@ -165,7 +165,6 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		if(userLastActivity == null || userLastActivity < timestamp){
 			// update last activity in level DB
 			dataSourceToTimestamp.put(classifierId, timestamp);
-			// Just to be on the safe side - we probably don't need it
 			store.put(normalizedUsername, dataSourceToTimestamp);
 		}
 	}
@@ -208,6 +207,7 @@ public class UserLastActivityTask extends AbstractStreamTask {
 			userService.updateUsersLastActivityGeneralAndPerType(user.getKey(), user.getValue());
 			usernames.add(user.getKey());
 		}
+		iter.close();
 
 		// remove from store all users after they were copied to Mongo
 		for (String username : usernames) {
