@@ -33,7 +33,9 @@ public class DhcpResolver {
 	
 	/**
 	 * Handle the dhcp event and update repository when required.
-	 * Dhcp event can contain assign, release to expired action codes. 
+	 * Dhcp event can contain assign, release to expired action codes.
+	 * Note: this implementation assumes all events are received in chronological order for each ip address, there
+	 * are some cases where we will not handle events as expected if they are received out of order
 	 */
 	public void addDhcpEvent(DhcpEvent event) {
 		// add assigned events to repository
