@@ -16,23 +16,23 @@ import kafka.producer.ProducerConfig;
 public class KafkaEventsWriter implements Closeable {
 
 	@Value("${kafka.broker.list}")
-	private String kafkaBrokerList;
+	protected String kafkaBrokerList;
 	@Value("${kafka.requiredAcks:1}")
-	private String requiredAcks;
+	protected String requiredAcks;
 	@Value("${kafka.producer.type:async}")
-	private String producerType;
+	protected String producerType;
 	@Value("${kafka.serializer.class:kafka.serializer.StringEncoder}")
-	private String serializer;
+	protected String serializer;
 	@Value("${kafka.partitioner.class:fortscale.utils.kafka.partitions.StringHashPartitioner}")
-	private String partitionerClass;
+	protected String partitionerClass;
 	@Value("${kafka.partitioner.retry.backoff.ms:10000}")
-	private String retryBackoff;
+	protected String retryBackoff;
 	@Value("${kafka.queue.time:5000}")
-	private int queueTime;
+	protected int queueTime;
 	@Value("${kafka.queue.size:10000}")
-	private int queueSize;
+	protected int queueSize;
 	@Value("${kafka.batch.size:200}")
-	private int batchSize;
+	protected int batchSize;
 	
 	private Producer<String, String> producer;
 	private String topic;

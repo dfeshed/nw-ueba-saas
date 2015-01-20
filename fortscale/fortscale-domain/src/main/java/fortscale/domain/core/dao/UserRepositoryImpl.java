@@ -319,6 +319,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Criteria criteria = Criteria.where(User.usernameField).is(userName);
 		Query query = new Query(criteria);
 		query.fields().include(User.lastActivityField);
+		query.fields().include(User.logLastActivityField);
 		List<User> users = mongoTemplate.find(query, User.class);
 
 		if (users.size() > 0) {
@@ -328,6 +329,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 	}
 
+	@Deprecated
 	@Override
 	public User getLastActivityByUserName(LogEventsEnum eventId, String userName) {
 		Criteria criteria = Criteria.where(User.usernameField).is(userName);
