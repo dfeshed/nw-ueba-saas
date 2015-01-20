@@ -17,10 +17,7 @@ import org.apache.samza.task.TaskCoordinator;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToLong;
@@ -200,7 +197,7 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	 */
 	private void copyLevelDbToMongoDB() {
 		KeyValueIterator<String, Map<String, Long>> iter = store.all();
-		Set<String> usernames = new HashSet<>();
+		List<String> usernames = new LinkedList<>();
 		while (iter.hasNext()) {
 			Entry<String, Map<String, Long>> user = iter.next();
 			// update user in mongo
