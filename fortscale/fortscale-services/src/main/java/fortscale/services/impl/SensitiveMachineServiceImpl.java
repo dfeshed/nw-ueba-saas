@@ -1,5 +1,5 @@
 
-package fortscale.collection.tagging.service.impl;
+package fortscale.services.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fortscale.services.cache.CacheHandler;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,10 +20,11 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import fortscale.collection.tagging.service.SensitiveMachineService;
+import fortscale.services.SensitiveMachineService;
 import fortscale.domain.core.dao.ComputerRepository;
 
 @Service("sensitiveMachineService")
+@Configurable(preConstruction=true)
 public class SensitiveMachineServiceImpl implements SensitiveMachineService, InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(SensitiveMachineServiceImpl.class);
@@ -28,7 +32,9 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService, Ini
 	@Autowired
 	private ComputerRepository computerRepository;
 
-	private Set<String> sensitiveMachines = null;
+	@Autowired
+	@Qualifier("sensitiveMachineCache")
+	private CacheHandler<String, String> cache;
 
 	@Value("${user.list.service_sensitive_machine.path}")
 	private String filePath;
@@ -36,27 +42,34 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService, Ini
 	@Value("${user.list.service_sensitive_machine.deletion_symbol:-}")
 	private String deletionSymbol;
 
+
+	public SensitiveMachineServiceImpl(ComputerRepository computerRepository, CacheHandler<String, String> cache) {
+		this.computerRepository = computerRepository;
+		setCache(cache);
+	}
+
 	@Override
 	public void afterPropertiesSet()
 		throws Exception {
-
 		refreshSensitiveMachines();
 	}
 
 	@Override
 	public boolean isMachineSensitive(String machineName) {
-
+		boolean isMachineSensitive = false;
 		machineName = machineName.toUpperCase();
-		if (sensitiveMachines != null) {
-			return sensitiveMachines.contains(machineName);
+		if (cache != null && cache.get(machineName) != null) {
+			isMachineSensitive = true;
 		}
-		return false;
+		return isMachineSensitive;
 	}
 
-	public Set<String> loadSensitiveMachinesFromMongo() {
+	public void refreshSensitiveMachines() {
 
 		List<String> computers = computerRepository.findNameByIsSensitive(true);
-		return new HashSet<String>(computers);
+		for (String computer : computers){
+			cache.put(computer,computer);
+		}
 	}
 
 	public void updateSensitiveMachines()
@@ -70,21 +83,21 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService, Ini
 				for (String machineLine : machinesFromFile) {
 					if (machineLine.startsWith(deletionSymbol)) {
 						String machine = machineLine.substring(1).toUpperCase();
-						if (sensitiveMachines.contains(machine)) {
+						if (cache.get(machine) != null) {
 							boolean computerExists = computerRepository.findIfComputerExists(machine);
 							if (computerExists) {
 								computerRepository.updateSensitiveMachineByName(machine, false);
 							}
-							sensitiveMachines.remove(machine);
+							cache.remove(machine);
 						}
 					}
 					else {
 						String machine = machineLine.toUpperCase();
-						if (!sensitiveMachines.contains(machine)) {
+						if (cache.get(machine) == null) {
 							boolean computerExists = computerRepository.findIfComputerExists(machine);
 							if (computerExists) {
 								computerRepository.updateSensitiveMachineByName(machine, true);
-								sensitiveMachines.add(machine);
+								cache.put(machine, machine);
 							}
 						}
 					}
@@ -99,11 +112,6 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService, Ini
 		}
 	}
 
-	public void refreshSensitiveMachines() {
-
-		this.sensitiveMachines = loadSensitiveMachinesFromMongo();
-	}
-
 	public String getFilePath() {
 
 		return filePath;
@@ -114,14 +122,12 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService, Ini
 		this.filePath = filePath;
 	}
 
-	public Set<String> getSensitiveMachines() {
-
-		return sensitiveMachines;
+	public CacheHandler getCache() {
+		return cache;
 	}
 
-	public void setSensitiveMachines(Set<String> sensitiveMachines) {
-
-		this.sensitiveMachines = sensitiveMachines;
+	public void setCache(CacheHandler cache) {
+		this.cache = cache;
 	}
 
 	public String getDeletionSymbol() {

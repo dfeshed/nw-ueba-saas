@@ -3,8 +3,12 @@ package fortscale.services.impl;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import fortscale.services.cache.CacheHandler;
 import org.junit.Test;
 import org.junit.Before;
 import org.mockito.ArgumentCaptor;
@@ -31,7 +35,28 @@ public class ComputerServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		service.afterPropertiesSet();
+
+		CacheHandler<String, Computer> cache = new CacheHandler<String, Computer>(Computer.class) {
+
+			Map<String,Computer> simpleCacheImpl = new HashMap<>();
+
+			@Override public Computer get(String key) {
+				return simpleCacheImpl.get(key);
+			}
+
+			@Override public void put(String key, Computer value) {
+				simpleCacheImpl.put(key,value);
+			}
+
+			@Override public void remove(String key) {
+				simpleCacheImpl.remove(key);
+			}
+
+			@Override public void close() throws IOException {
+				simpleCacheImpl = null;
+			}
+		};
+		service.setCache(cache);
 	}
 	
 	private AdComputer getAdComputer() {

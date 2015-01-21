@@ -2,7 +2,7 @@ package fortscale.services.ipresolving;
 
 import java.util.List;
 
-import fortscale.services.ipresolving.cache.ResolvingCache;
+import fortscale.services.cache.CacheHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +24,9 @@ public class DhcpResolver {
 	
 	@Autowired
 	@Qualifier("dhcpResolverCache")
-	private ResolvingCache<DhcpEvent> cache;
+	private CacheHandler<String,DhcpEvent> cache;
 	
-	public void setCache(ResolvingCache<DhcpEvent> cache) {
+	public void setCache(CacheHandler<String,DhcpEvent> cache) {
 		this.cache = cache;
 	}
 	

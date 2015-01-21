@@ -37,18 +37,21 @@
 
 
 	<!-- ip resolving caches that uses memory based implementation are injected here -->
-	<bean id="dnsResolverCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+	<bean id="dnsResolverCache" class="fortscale.services.cache.MemoryBasedCache">
 		<constructor-arg name="maxSize" value="${dns.resolver.cache.size:100000}" />
 		<constructor-arg name="timeToExpire" value="${dns.resolver.cache.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
-	<bean id="dnsBlacklistCache" class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+	<bean id="dnsBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
 		<constructor-arg name="maxSize" value="${dns.resolver.blacklist.size:100000}" />
 		<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="java.lang.Boolean" />
 	</bean>
-	<bean id="dhcpResolverCache" class="fortscale.services.ipresolving.cache.KafkaPropogateUpdatesCache">
+	<bean id="dhcpResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
-			<bean class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+			<bean class="fortscale.services.cache.MemoryBasedCache">
 				<constructor-arg name="maxSize" value="${dhcp.resolver.cache.max.items:30000}" />
+				<constructor-arg name="clazz" value="fortscale.domain.events.DhcpEvent" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg name="topicWriter">
@@ -56,11 +59,13 @@
 				<constructor-arg name="topic" value="${dhcp.resolver.cache.updates.topic}" />
 			</bean>
 		</constructor-arg>
+		<constructor-arg name="clazz" value="fortscale.domain.events.DhcpEvent" />
 	</bean>
-	<bean id="loginResolverCache" class="fortscale.services.ipresolving.cache.KafkaPropogateUpdatesCache">
+	<bean id="loginResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
-			<bean class="fortscale.services.ipresolving.cache.MemoryBasedCache">
+			<bean class="fortscale.services.cache.MemoryBasedCache">
 				<constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
+				<constructor-arg name="clazz" value="fortscale.domain.events.ComputerLoginEvent" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg name="topicWriter">
@@ -68,6 +73,7 @@
 				<constructor-arg name="topic" value="${computer.login.resolver.cache.updates.topic}" />
 			</bean>
 		</constructor-arg>
+		<constructor-arg name="clazz" value="fortscale.domain.events.ComputerLoginEvent" />
 	</bean>
 
 
@@ -76,6 +82,48 @@
 	<bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" />
 	<bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" />
 	<bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
+
+
+
+	<!-- computer service cache that uses memory based implementation are injected here -->
+	<bean id="computerServiceCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
+		<constructor-arg name="innerCache">
+			<bean class="fortscale.services.cache.MemoryBasedCache">
+				<constructor-arg name="maxSize" value="${computer.service.cache.max.items:10000}" />
+				<constructor-arg name="timeToExpire" value="${computer.service.cache.timeToExpireSec:0}" />
+				<constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="topicWriter">
+			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
+				<constructor-arg name="topic" value="${computer.service.cache.updates.topic}" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
+	</bean>
+
+	<!-- sensitiveMachine service cache that uses memory based implementation are injected here -->
+	<bean id="sensitiveMachineCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
+		<constructor-arg name="innerCache">
+			<bean class="fortscale.services.cache.MemoryBasedCache">
+				<constructor-arg name="maxSize" value="${computer.service.cache.max.items:10000}" />
+				<constructor-arg name="timeToExpire" value="${computer.service.cache.timeToExpireSec:0}" />
+				<constructor-arg name="clazz" value="java.lang.String" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="topicWriter">
+			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
+				<constructor-arg name="topic" value="${sensitive-machine.service.cache.updates.topic}" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+	<!-- ip to hostname singleton service bean for use in fortscale collection -->
+	<bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
+
+	<!-- ip to hostname singleton service bean for use in fortscale collection -->
+	<bean id="sensitiveMachineService" class="fortscale.services.impl.SensitiveMachineServiceImpl" scope="singleton" />
 
 
 

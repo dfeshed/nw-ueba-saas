@@ -2,21 +2,24 @@ package fortscale.services.ipresolving.cache;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+
+import fortscale.services.cache.CacheHandler;
+import fortscale.services.cache.KafkaPropogateUpdatesCache;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import org.junit.*;
 
 public class KafkaPropogateUpdatesCacheTest {
 
-    private KafkaPropogateUpdatesCache<String> subject;
-    private ResolvingCache<String> innerCache;
+    private KafkaPropogateUpdatesCache<String,String> subject;
+    private CacheHandler<String,String> innerCache;
     private KafkaEventsWriter kafkaWriter;
 
     @Before
     public void setUp() {
-        innerCache = mock(ResolvingCache.class);
+        innerCache = mock(CacheHandler.class);
         kafkaWriter = mock(KafkaEventsWriter.class);
 
-        subject = new KafkaPropogateUpdatesCache<String>(innerCache, kafkaWriter);
+        subject = new KafkaPropogateUpdatesCache<String,String>(innerCache, kafkaWriter,String.class);
     }
 
     @Test

@@ -6,7 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import fortscale.services.ipresolving.cache.ResolvingCache;
+import fortscale.services.cache.CacheHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +38,9 @@ public class ComputerLoginResolver {
 
 	@Autowired
 	@Qualifier("loginResolverCache")
-	private ResolvingCache<ComputerLoginEvent> cache;
+	private CacheHandler<String,ComputerLoginEvent> cache;
 
-	public void setCache(ResolvingCache<ComputerLoginEvent> cache) {
+	public void setCache(CacheHandler<String,ComputerLoginEvent> cache) {
 		this.cache = cache;
 	}
 

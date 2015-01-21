@@ -5,15 +5,13 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 
-import fortscale.services.ipresolving.cache.ResolvingCache;
+import fortscale.services.cache.CacheHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Pageable;
-
-import com.google.common.cache.Cache;
 
 import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.dao.DhcpEventRepository;
@@ -24,7 +22,7 @@ public class DhcpResolverTest {
 	private DhcpEventRepository dhcpEventRepository;
 	
 	@Mock
-	private ResolvingCache<DhcpEvent> cache;
+	private CacheHandler<String,DhcpEvent> cache;
 	
 	@InjectMocks
 	private DhcpResolver dhcpResolver;
