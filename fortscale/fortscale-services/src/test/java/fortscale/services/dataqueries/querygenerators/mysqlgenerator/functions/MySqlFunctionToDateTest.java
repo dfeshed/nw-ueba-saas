@@ -15,14 +15,6 @@ public class MySqlFunctionToDateTest extends MySqlFunctionTest {
         super.setUp();
     }
 
-    @Test
-    public void testGenerateSql() throws Exception {
-        String functionSql = function.generateSql(dataQueryDTO.getFields().get(0), dataQueryDTO);
-        String expectedSql = "TO_DATE(date_time)";
-        assertEquals("TO_DATE function for date_time column", expectedSql, functionSql);
-    }
-
-
     /**
      * When client sees all the activity for a certain day in a certain widget, s/he expects the 00:00-23:59 in local time.
      * The DB is working in UTC , so the time zone shift should be taken in consideraion:
