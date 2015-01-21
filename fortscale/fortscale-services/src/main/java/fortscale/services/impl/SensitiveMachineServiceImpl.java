@@ -42,8 +42,11 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService, Ini
 	@Value("${user.list.service_sensitive_machine.deletion_symbol:-}")
 	private String deletionSymbol;
 
+	public SensitiveMachineServiceImpl() {
+	}
 
 	public SensitiveMachineServiceImpl(ComputerRepository computerRepository, CacheHandler<String, String> cache) {
+		this();
 		this.computerRepository = computerRepository;
 		setCache(cache);
 	}

@@ -85,7 +85,7 @@
 
 
 
-	<!-- computer service cache that uses memory based implementation are injected here -->
+	<!-- computer service cache that uses memory based implementation and send updates to kafka topics are injected here -->
 	<bean id="computerServiceCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
 			<bean class="fortscale.services.cache.MemoryBasedCache">
@@ -102,7 +102,7 @@
 		<constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
 	</bean>
 
-	<!-- sensitiveMachine service cache that uses memory based implementation are injected here -->
+	<!-- sensitiveMachine service cache that uses memory based implementation and send updates to kafka topics are injected here -->
 	<bean id="sensitiveMachineCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
 			<bean class="fortscale.services.cache.MemoryBasedCache">
@@ -118,13 +118,5 @@
 		</constructor-arg>
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
-
-	<!-- ip to hostname singleton service bean for use in fortscale collection -->
-	<bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
-
-	<!-- ip to hostname singleton service bean for use in fortscale collection -->
-	<bean id="sensitiveMachineService" class="fortscale.services.impl.SensitiveMachineServiceImpl" scope="singleton" />
-
-
 
 </beans>

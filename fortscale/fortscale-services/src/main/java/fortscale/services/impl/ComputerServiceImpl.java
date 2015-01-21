@@ -61,6 +61,7 @@ public class ComputerServiceImpl implements ComputerService {
 	}
 
 	public ComputerServiceImpl(ComputerRepository repository, FilterMachinesService filterMachinesService, EndpointDetectionService endpointDetectionService, CacheHandler<String, Computer> cache) {
+		this();
 		this.repository = repository;
 		this.filterMachinesService = filterMachinesService;
 		this.endpointDetectionService = endpointDetectionService;
