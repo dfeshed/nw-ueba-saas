@@ -32,11 +32,16 @@ public class MySqlFunctionToDate extends MySqlFieldFunction {
 
         sb.append(sqlFunctionName);
         sb.append("(");
-        int tz =Integer.parseInt(timeZone);
-        if(tz > 0) {
-            sb.append("hours_sub");
+        try {
+            int tz = Integer.parseInt(timeZone);
+            if (tz > 0) {
+                sb.append("hours_sub");
+            } else {
+                sb.append("hours_add");
+            }
         }
-        else{ sb.append("hours_add");
+        catch (NumberFormatException e){
+            throw new InvalidQueryException("Invalid time zone format: "+ timeZone);
         }
         sb.append("(");
         sb.append(getFieldName(field, dataQueryDTO)); // the date
