@@ -72,6 +72,7 @@ public class FileNameRollingFileSink extends AbstractSink implements Configurabl
 	@Override
 	public void start() {
 		logger.info("Starting {}...", this);
+		super.start();
 		sinkCounter.start();
 
 		pathController.setBaseDirectory(directory);
@@ -184,6 +185,7 @@ public class FileNameRollingFileSink extends AbstractSink implements Configurabl
 	@Override
 	public void stop() {
 		logger.info("FileNameRollingFileSink sink {} stopping...", getName());
+		super.stop();
 		sinkCounter.stop();
 
 		if (outputStream != null) {
