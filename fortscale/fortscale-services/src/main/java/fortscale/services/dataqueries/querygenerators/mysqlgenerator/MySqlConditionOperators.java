@@ -21,6 +21,9 @@ public class MySqlConditionOperators {
         operators.put(QueryOperator.lesserThanOrEquals, new MySqlOperator("<=", true));
         operators.put(QueryOperator.in, new MySqlOperator("IN", true));
         operators.put(QueryOperator.like, new MySqlOperator("LIKE", true));
+        operators.put(QueryOperator.startsWith, new MySqlOperator("LIKE", true));
+        operators.put(QueryOperator.endsWith, new MySqlOperator("LIKE", true));
+        operators.put(QueryOperator.contains, new MySqlOperator("LIKE", true));
         operators.put(QueryOperator.hasValue, new MySqlOperator("IS NOT NULL", false));
         operators.put(QueryOperator.hasNoValue, new MySqlOperator("IS NULL", false));
     }
