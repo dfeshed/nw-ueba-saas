@@ -217,7 +217,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 
                 Boolean isDefaultEnabled = fieldConfig.getDefaultEnabled();
                 if (isDefaultEnabled == null){
-                    String isDefaultEnabledStr = getExtendableValue(entityId, "field", fieldId, "enabled");
+                    String isDefaultEnabledStr = getExtendableValue(entityId, "field", fieldId, "enabledByDefault");
                     isDefaultEnabled = isDefaultEnabledStr == null || !isDefaultEnabledStr.equals("false");
                     isDefaultEnabled = isDefaultEnabled && !getFieldIsExplicit(entityId, fieldId);
                     fieldConfig.setDefaultEnabled(isDefaultEnabled);
