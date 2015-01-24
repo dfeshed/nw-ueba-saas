@@ -16,9 +16,9 @@ public class ModelServiceImpl implements ModelService{
 	
 	/** Get the model for the user first from the samza store, if not exists look for it in the repository or build a new model */
 	@Override
-	public PrevalanceModel getModelForUser(String username, String modelName) throws Exception {
+	public PrevalanceModel getModel(String context, String modelName) throws Exception {
 		// lookup the model in the repository
-		Model dto = modelRepository.findByUserNameAndModelName(username, modelName);
+		Model dto = modelRepository.findByUserNameAndModelName(context, modelName);
 		if (dto!=null) 
 			return dto.getModel();
 		return null;
@@ -31,17 +31,17 @@ public class ModelServiceImpl implements ModelService{
 	
 	/** export user models to mongodb */
 	@Override
-	public void updateUserModel(String username, PrevalanceModel model) throws Exception{
-		if (model==null || StringUtils.isEmpty(username)) {
+	public void updateModel(String context, PrevalanceModel model) throws Exception{
+		if (model==null || StringUtils.isEmpty(context)) {
 			return;
 		}
 
-		Model dto = convertToDTO(username, model, model.getModelName());
+		Model dto = convertToDTO(context, model, model.getModelName());
 		modelRepository.upsertModel(dto);
 	}
 	
-	private Model convertToDTO(String username, PrevalanceModel model, String modelName) {
-		Model dto = new Model(modelName, username, model);
+	private Model convertToDTO(String context, PrevalanceModel model, String modelName) {
+		Model dto = new Model(modelName, context, model);
 		return dto;
 	}
 	
