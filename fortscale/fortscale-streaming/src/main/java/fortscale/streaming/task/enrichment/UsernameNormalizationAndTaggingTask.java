@@ -1,12 +1,17 @@
 package fortscale.streaming.task.enrichment;
 
+import fortscale.services.UserService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserTagsService;
+import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -36,19 +41,26 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	/**
 	 * Logger
 	 */
-	private static Logger logger = LoggerFactory.getLogger(UserLastActivityTask.class);
+	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizationAndTaggingTask.class);
 
-
-	// TODO replace with map from input to output topic
-	private String outputTopic;
-
+	/**
+	 * Map of configuration: from the data-source input topic, to an entry of normalization service and output topic
+	 */
+	private Map<String, Pair<String,UsernameNormalizationService>> inputTopicToConfiguration = new HashMap<>();
 
 	/**
 	 * The username field in the input event
 	 */
+	private String usernameField;
+
+	/**
+	 * The normalized username field
+	 */
 	private String normalizedUsernameField;
 
-
+	/**
+	 * Service for tagging events according to user-tag
+	 */
 	private UserTagsService tagService;
 
 	/**
@@ -61,11 +73,19 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 		// get task configuration
-		outputTopic = config.get("fortscale.output.topic");
+		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
+			String dataSource = ConfigField.getKey();
+			String inputTopic = ConfigField.getValue();
+			String outputTopic = String.format(getConfigString(config, "fortscale.events.output.topic.%s"),dataSource);
+			String serviceName = String.format(getConfigString(config, "fortscale.events.normalization.service.%s"),dataSource);
+			UsernameNormalizationService service = (UsernameNormalizationService)SpringService.getInstance().resolve(serviceName);
+			inputTopicToConfiguration.put(inputTopic, new ImmutablePair<>(outputTopic, service));
+		}
 
 		// Get field names
 		normalizedUsernameField = getConfigString(config, "fortscale.normalizedusername.field");
-		
+		usernameField = getConfigString(config, "fortscale.username.field");
+
 		// construct tagging service with the tags that are required from configuration
 		Map<String, String> tags = new HashMap<String, String>();
 		for (Entry<String,String> tagConfigField : config.subset("fortscale.tags.").entrySet()) {
@@ -82,18 +102,56 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		// parse the message into json 
 		String messageText = (String)envelope.getMessage();
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-		
-		// get the username from input record
-		String username = convertToString(message.get(normalizedUsernameField));
-		if (StringUtils.isEmpty(username)) {
-			logger.error("message {} does not contains username in field {}", messageText, normalizedUsernameField);
-			throw new StreamMessageNotContainFieldException(messageText, normalizedUsernameField);
+
+
+		// Get the input topic
+		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+		// TODO handle updates topics
+
+
+		// Get configuration for data source
+		Entry<String, UsernameNormalizationService> configuration = inputTopicToConfiguration.get(inputTopic);
+		if (configuration == null) {
+			logger.error("No configuration found for input topic {}. Dropping Record", inputTopic);
+			return;
 		}
-		
+
+		// Normalized username
+
+		// get the normalized username from input record
+		String normalizedUsername = convertToString(message.get(normalizedUsernameField));
+		if (StringUtils.isEmpty(normalizedUsername)) {
+
+			// get username
+			String username = convertToString(message.get(usernameField));
+			if (StringUtils.isEmpty(username)) {
+				logger.error("message {} does not contains username in field {}", messageText, usernameField);
+				throw new StreamMessageNotContainFieldException(messageText, usernameField);
+			}
+
+			UsernameNormalizationService normalizationService = configuration.getValue();
+			String normalizedUserName = normalizationService.normalizeUsername(username);
+			if(normalizationService.shouldDropRecord( username, normalizedUserName)){
+				if (logger.isDebugEnabled()) {
+					logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
+				}
+				// drop record
+				return;
+			}
+			if (normalizedUsername == null) {
+				normalizedUsername = normalizationService.getUsernameAsNormalizedUsername(username, message);
+			}
+			message.put(normalizedUsernameField, normalizedUsername);
+
+		}
+
+
 		// add the tags to the event
-		tagService.addTagsToEvent(username, message);
+		tagService.addTagsToEvent(normalizedUsername, message);
+
 
 		// send the event to the output topic
+		String outputTopic = configuration.getKey();
 		try{
 			collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
 		} catch(Exception exception){

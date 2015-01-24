@@ -1,4 +1,4 @@
-package fortscale.collection.usersfiltering.service;
+package fortscale.services.service;
 
 
 public interface SupportedUsersService {

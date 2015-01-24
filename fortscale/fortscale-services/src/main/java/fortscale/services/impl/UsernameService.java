@@ -263,6 +263,7 @@ public class UsernameService implements InitializingBean{
 			return true;
 		}
 
+		// TODO!!!!!
 		// TODO: maintain a "blacklist" of usernames not found instead of re-querying mongodb
 
 		return false;

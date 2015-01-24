@@ -1,6 +1,6 @@
-package fortscale.collection.usersfiltering.service.impl;
+package fortscale.services.service.impl;
 
-import fortscale.collection.usersfiltering.service.SupportedUsersService;
+import fortscale.services.service.SupportedUsersService;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;

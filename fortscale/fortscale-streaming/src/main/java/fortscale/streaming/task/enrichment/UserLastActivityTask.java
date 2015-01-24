@@ -155,7 +155,8 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		// Get relevant data source according to topic
 		String classifierId = topicToDataSourceMap.get(topic);
 		if (classifierId == null) {
-			logger.error("No data source is defined for input topic {} ", topic);
+			logger.error("No data source is defined for input topic {} . Dropping record.", topic);
+			return;
 		}
 
 		Long userLastActivity = dataSourceToTimestamp.get(classifierId);
