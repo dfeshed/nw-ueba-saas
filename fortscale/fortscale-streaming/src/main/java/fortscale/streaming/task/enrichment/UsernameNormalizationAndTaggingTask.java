@@ -46,22 +46,22 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	/**
 	 * Map of configuration: from the data-source input topic, to an entry of normalization service and output topic
 	 */
-	private Map<String, Pair<String,UsernameNormalizationService>> inputTopicToConfiguration = new HashMap<>();
+	protected Map<String, Pair<String,UsernameNormalizationService>> inputTopicToConfiguration = new HashMap<>();
 
 	/**
 	 * The username field in the input event
 	 */
-	private String usernameField;
+	protected String usernameField;
 
 	/**
 	 * The normalized username field
 	 */
-	private String normalizedUsernameField;
+	protected String normalizedUsernameField;
 
 	/**
 	 * Service for tagging events according to user-tag
 	 */
-	private UserTagsService tagService;
+	protected UserTagsService tagService;
 
 	/**
 	 * Init task after spring context is up
