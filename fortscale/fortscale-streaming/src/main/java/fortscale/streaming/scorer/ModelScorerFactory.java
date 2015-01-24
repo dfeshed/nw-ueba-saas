@@ -1,4 +1,4 @@
-package fortscale.streaming.service;
+package fortscale.streaming.scorer;
 
 import org.apache.samza.config.Config;
 import org.springframework.beans.factory.InitializingBean;
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import fortscale.ml.service.ModelService;
 
 @Service
-public class EventFeatureScorerFactory implements InitializingBean, ScorerFactory{
-	private static final String SCORER_NAME = "event-feature-scorer";
+public class ModelScorerFactory implements InitializingBean, ScorerFactory{
+	private static final String SCORER_NAME = "model-scorer";
 	
 	@Autowired
 	private ScorerFactoryService scorerFactoryService;
@@ -21,7 +21,7 @@ public class EventFeatureScorerFactory implements InitializingBean, ScorerFactor
 
 	@Override
 	public Scorer getScorer(String name, Config config, ModelService modelService) {
-		return new EventFeatureScorer(name, config, modelService);
+		return new ModelScorer(name, config, modelService);
 	}
 	
 }

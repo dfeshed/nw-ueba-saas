@@ -27,6 +27,8 @@ import com.google.common.collect.Iterables;
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.scorer.Scorer;
+import fortscale.streaming.scorer.ScorerFactoryService;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.logging.Logger;
 

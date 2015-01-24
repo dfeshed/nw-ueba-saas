@@ -1,4 +1,4 @@
-package fortscale.streaming.service;
+package fortscale.streaming.scorer;
 
 import net.minidev.json.JSONObject;
 

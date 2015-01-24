@@ -1,13 +1,13 @@
-package fortscale.streaming.service;
+package fortscale.streaming.scorer;
 
-public class EventFeatureScorerConfig {
+public class ModelScorerConfig {
 	private String scoreFieldName;
 	private String modelName;
 	private String contextFieldName;
 	private String featureFieldName;
 	
 	
-	public EventFeatureScorerConfig(String scoreFieldName, String modelName, String contextFieldName, String featureFieldName){
+	public ModelScorerConfig(String scoreFieldName, String modelName, String contextFieldName, String featureFieldName){
 		this.scoreFieldName = scoreFieldName;
 		this.modelName = modelName;
 		this.contextFieldName = contextFieldName;

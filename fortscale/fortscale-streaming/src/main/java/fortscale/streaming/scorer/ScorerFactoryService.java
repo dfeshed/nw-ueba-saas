@@ -1,4 +1,4 @@
-package fortscale.streaming.service;
+package fortscale.streaming.scorer;
 
 import java.util.HashMap;
 import java.util.Map;

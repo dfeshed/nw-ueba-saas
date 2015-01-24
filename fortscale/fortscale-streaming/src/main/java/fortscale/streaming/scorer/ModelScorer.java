@@ -1,4 +1,4 @@
-package fortscale.streaming.service;
+package fortscale.streaming.scorer;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToString;
@@ -11,18 +11,18 @@ import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 
-public class EventFeatureScorer implements Scorer{
+public class ModelScorer implements Scorer{
 //	private static final Logger logger = Logger.getLogger(EventFeatureScorer.class);
 	
 	
 	private ModelService modelService;
-	private EventFeatureScorerConfig eventFeatureScorerConfig;
+	private ModelScorerConfig eventFeatureScorerConfig;
 
-	public EventFeatureScorer(String scoreName, Config config,  ModelService modelService){
+	public ModelScorer(String scoreName, Config config,  ModelService modelService){
 		String modelName = getConfigString(config, String.format("fortscale.score.%s.model.name", scoreName));
 		String featureFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.fieldname", scoreName, modelName));
 		String contextFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.context.fieldname", scoreName, modelName));
-		eventFeatureScorerConfig = new EventFeatureScorerConfig(scoreName, modelName, contextFieldName, featureFieldName);
+		eventFeatureScorerConfig = new ModelScorerConfig(scoreName, modelName, contextFieldName, featureFieldName);
 		this.modelService = modelService;
 	}
 
