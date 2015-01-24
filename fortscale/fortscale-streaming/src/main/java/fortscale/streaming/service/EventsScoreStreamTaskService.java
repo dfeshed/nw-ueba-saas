@@ -2,10 +2,14 @@ package fortscale.streaming.service;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -27,6 +31,7 @@ import com.google.common.collect.Iterables;
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.scorer.EventMessage;
 import fortscale.streaming.scorer.Scorer;
 import fortscale.streaming.scorer.ScorerFactoryService;
 import fortscale.utils.StringPredicates;
@@ -47,7 +52,7 @@ public class EventsScoreStreamTaskService {
 	private String sourceType;
 	private String entityType;
 	private String timestampField;
-	private String eventScoreField;
+	private List<Scorer> scorersToRun;
 	
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
@@ -61,7 +66,6 @@ public class EventsScoreStreamTaskService {
 		entityType = getConfigString(config, "fortscale.entity.type");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		outputTopic = config.get("fortscale.output.topic", "");
-		eventScoreField = getConfigString(config, "fortscale.event.score.field");
 		
 		fillScoreConfig(config);
 		
@@ -80,6 +84,17 @@ public class EventsScoreStreamTaskService {
 			checkNotNull(scorer);
 			scorerMap.put(scoreName, scorer);			
 		}
+		
+		for(Scorer scorer: scorerMap.values()){
+			scorer.afterPropertiesSet(scorerMap);
+		}
+		
+		List<String> scorers = getConfigStringList(config, "fortscale.scorers");
+		for(String ScorerStr: scorers){
+			Scorer scorer = scorerMap.get(ScorerStr);
+			checkNotNull(scorer);
+			scorersToRun.add(scorer);
+		}
 	}
 	
 	/** Process incoming events and update the user models stats */
@@ -96,16 +111,18 @@ public class EventsScoreStreamTaskService {
 			throw new StreamMessageNotContainFieldException(messageText, timestampField);
 		}
 
-		double eventScore = 0;
-		for (Scorer scorer: scorerMap.values()) {
-			Double score = scorer.calculateScore(message);
-			if(score != null){
-				eventScore = Math.max(eventScore, score);
-			}
+		
+		EventMessage eventMessage = new EventMessage(message);
+		for (Scorer scorer: scorersToRun) {
+			scorer.calculateScore(eventMessage);
+		}
+		
+		Iterator<Entry<String, Double>> iter = eventMessage.getScoreIterator();
+		while (iter.hasNext()) {
+			Entry<String, Double> entry = iter.next();
+			message.put(entry.getKey(), entry.getValue());
 		}
 	
-		// put the event score in the message
-		message.put(eventScoreField, eventScore);
 		
 		// publish the event with score to the subsequent topic in the topology
 		if (StringUtils.isNotEmpty(outputTopic)){

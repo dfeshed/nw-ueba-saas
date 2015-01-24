@@ -1,8 +1,8 @@
 package fortscale.streaming.scorer;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.utils.ConversionUtils.convertToString;
-import net.minidev.json.JSONObject;
+
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
@@ -16,35 +16,34 @@ public class ModelScorer implements Scorer{
 	
 	
 	private ModelService modelService;
-	private ModelScorerConfig eventFeatureScorerConfig;
+	private ModelScorerConfig modelScorerConfig;
 
 	public ModelScorer(String scoreName, Config config,  ModelService modelService){
 		String modelName = getConfigString(config, String.format("fortscale.score.%s.model.name", scoreName));
 		String featureFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.fieldname", scoreName, modelName));
 		String contextFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.context.fieldname", scoreName, modelName));
-		eventFeatureScorerConfig = new ModelScorerConfig(scoreName, modelName, contextFieldName, featureFieldName);
+		modelScorerConfig = new ModelScorerConfig(scoreName, modelName, contextFieldName, featureFieldName);
 		this.modelService = modelService;
 	}
 
 	@Override
-	public Double calculateScore(JSONObject jsonObject) throws Exception {
-		// get the username, so that we can get the model from store
-		String context = convertToString(jsonObject.get(eventFeatureScorerConfig.getContextFieldName()));
+	public Double calculateScore(EventMessage eventMessage) throws Exception {
+		// get the context, so that we can get the model
+		String context = eventMessage.getEventStringValue(modelScorerConfig.getContextFieldName());
 		if (StringUtils.isEmpty(context)) {
-			throw new StreamMessageNotContainFieldException(jsonObject.toJSONString(), eventFeatureScorerConfig.getContextFieldName());
+			throw new StreamMessageNotContainFieldException(eventMessage.toJSONString(), modelScorerConfig.getContextFieldName());
 		}
 		
 		// go over each field in the event and add it to the model
-		PrevalanceModel model = modelService.getModel(context, eventFeatureScorerConfig.getModelName());
+		PrevalanceModel model = modelService.getModel(context, modelScorerConfig.getModelName());
 		
-		double score = model.calculateScore(jsonObject, eventFeatureScorerConfig.getFeatureFieldName());
+		double score = model.calculateScore(eventMessage.getJsonObject(), modelScorerConfig.getFeatureFieldName());
 		
-		jsonObject.put(eventFeatureScorerConfig.getScoreFieldName(), score);
+		eventMessage.setScore(modelScorerConfig.getScoreFieldName(), score);
 		
-		if(model.shouldAffectEventScore(eventFeatureScorerConfig.getFeatureFieldName())){
-			return score;
-		}
-		
-		return null;
+		return score;
 	}
+
+	@Override
+	public void afterPropertiesSet(Map<String, Scorer> scorerMap) {}
 }
