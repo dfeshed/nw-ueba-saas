@@ -1,9 +1,8 @@
 package fortscale.streaming.task;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
+import fortscale.streaming.exceptions.KafkaPublisherException;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
@@ -14,10 +13,11 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 
-import fortscale.streaming.exceptions.KafkaPublisherException;
+import static fortscale.streaming.ConfigUtils.getConfigString;
 
 
-public class EventsFilterStreamTask extends AbstractStreamTask{
+public class
+		EventsFilterStreamTask extends AbstractStreamTask{
 
 //	private static final Logger logger = LoggerFactory.getLogger(EventsFilterStreamTask.class);
 	
