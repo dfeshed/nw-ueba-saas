@@ -36,8 +36,7 @@ import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.actdir.ADParser;
 
 
-@Service("computerService")
-@Configurable(preConstruction=true)
+
 public class ComputerServiceImpl implements ComputerService {
 
 	private static Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
@@ -56,17 +55,6 @@ public class ComputerServiceImpl implements ComputerService {
 
 	@Autowired @Qualifier("computerServiceCache")
 	private CacheHandler<String, Computer> cache;
-
-	public ComputerServiceImpl() {
-	}
-
-	public ComputerServiceImpl(ComputerRepository repository, FilterMachinesService filterMachinesService, EndpointDetectionService endpointDetectionService, CacheHandler<String, Computer> cache) {
-		this();
-		this.repository = repository;
-		this.filterMachinesService = filterMachinesService;
-		this.endpointDetectionService = endpointDetectionService;
-		this.cache = cache;
-	}
 
 	public boolean isHostnameInAD(String hostname) {
 		if (StringUtils.isEmpty(hostname))

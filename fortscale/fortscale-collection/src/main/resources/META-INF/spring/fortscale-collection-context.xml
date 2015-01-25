@@ -119,4 +119,6 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
+	<bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
+
 </beans>

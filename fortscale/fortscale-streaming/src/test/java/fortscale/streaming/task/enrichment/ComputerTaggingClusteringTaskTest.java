@@ -7,6 +7,7 @@ import fortscale.services.SensitiveMachineService;
 import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.services.impl.SensitiveMachineServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
@@ -45,17 +46,20 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 
 
 	@Before public void setUp() throws Exception {
+
 		// Init the task to test
 		task = new ComputerTaggingClusteringTask();
 
 		// create the computer service with the levelDB cache
 		KeyValueStore<String,Computer> computerServiceStore = new KeyValueStoreMock<>();
-		computerService = new ComputerServiceImpl(null,null,null, new LevelDbBasedCache<String, Computer>(computerServiceStore, Computer.class));
+		computerService = new ComputerServiceImpl();
+		computerService.setCache(new LevelDbBasedCache<String, Computer>(computerServiceStore, Computer.class));
 		task.topicToServiceMap.put("computerUpdatesTopic", computerService);
 
 		// create the SensitiveMachine service with the levelDB cache
 		KeyValueStore<String,String> sensitiveMachineServiceStore = new KeyValueStoreMock<>();
-		sensitiveMachineService = new SensitiveMachineServiceImpl(null,new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) sensitiveMachineServiceStore, String.class));
+		sensitiveMachineService = new SensitiveMachineServiceImpl();
+		sensitiveMachineService.setCache(new LevelDbBasedCache<String, String>(sensitiveMachineServiceStore, String.class));
 		task.topicToServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
 
 

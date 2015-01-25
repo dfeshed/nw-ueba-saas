@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.isConfigContainKey;
 import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
@@ -57,11 +58,13 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 		// create the computer service with the levelDB cache
-		ComputerService computerService = new ComputerServiceImpl(null,null,null, new LevelDbBasedCache<String, Computer>((KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerKey))), Computer.class));
+		ComputerService computerService = SpringService.getInstance().resolve(ComputerServiceImpl.class);
+		computerService.setCache(new LevelDbBasedCache<String, Computer>((KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerKey))), Computer.class));
 		topicToServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerKey)), computerService);
 
 		// create the SensitiveMachine service with the levelDB cache
-		SensitiveMachineService sensitiveMachineService = new SensitiveMachineServiceImpl(null,new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, sensitiveMachineKey))), String.class));
+		SensitiveMachineService sensitiveMachineService = SpringService.getInstance().resolve(SensitiveMachineServiceImpl.class);
+		sensitiveMachineService.setCache(new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, sensitiveMachineKey))), String.class));
 		topicToServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, sensitiveMachineKey)), sensitiveMachineService);
 
 		// get spring environment to resolve properties values using configuration files
@@ -82,12 +85,17 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			Config fieldsSubset = config.subset(String.format("fortscale.events.%s.", eventType));
 			for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".hostname.field"))) {
 
-				String tagType = configKey.substring(0, configKey.indexOf(".hostname.field"));
+				String tagType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".hostname.field"));
 
 				String hostnameField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.hostname.field", eventType, tagType)));
 				String classificationField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.classification.field", eventType, tagType)));
 				String clusteringField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.clustering.field", eventType, tagType)));
-				String isSensitiveMachineField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.is-sensitive-machine.field", eventType, tagType)));
+				String isSensitiveMachineField = null;
+				String isSensitiveMachineFieldKey = String.format("fortscale.events.%s.%s.is-sensitive-machine.field", eventType, tagType);
+				if (isConfigContainKey(config,isSensitiveMachineFieldKey ))
+				{
+					isSensitiveMachineField = env.getProperty(getConfigString(config, isSensitiveMachineFieldKey));
+				}
 				boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.%s.%s.create-new-computer-instances", eventType, tagType));
 				computerTaggingFieldsConfigs.add(new ComputerTaggingFieldsConfig(tagType, hostnameField, classificationField, clusteringField, isSensitiveMachineField, createNewComputerInstances));
 			}
@@ -109,12 +117,19 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
 		if (topicToServiceMap.containsKey(inputTopic)) {
+			String key = null;
+			if (envelope.getKey() instanceof  String){
+				key = (String) envelope.getKey();
+			}
+			else if (envelope.getKey() instanceof byte[]) {
+				key = new String((byte[]) envelope.getKey());
+			}
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
-			if(envelope.getKey().equals("delete")){
+			if(key != null && key.equals("delete")){
 				cachingService.getCache().remove((String) envelope.getMessage());
 			}
 			else {
-				cachingService.getCache().putFromString((String) envelope.getKey(), (String) envelope.getMessage());
+				cachingService.getCache().putFromString(key, (String) envelope.getMessage());
 			}
 		} else {
 			// parse the message into json

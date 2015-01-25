@@ -14,6 +14,11 @@ public final class ConfigUtils {
 			throw new ConfigException("configuration is missing key " + key);
 		return value;
 	}
+
+	public static boolean isConfigContainKey(Config config, Object key) throws ConfigException {
+		String value = config.get(key);
+		return StringUtils.isNotEmpty(value);
+	}
 	
 	
 	public static List<String> getConfigStringList(Config config, String key) throws ConfigException {

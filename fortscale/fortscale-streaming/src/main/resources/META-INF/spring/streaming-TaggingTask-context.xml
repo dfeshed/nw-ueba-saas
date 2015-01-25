@@ -78,4 +78,6 @@
         <constructor-arg name="timeToExpire" value="${computer.service.cache.timeToExpireSec:0}" />
         <constructor-arg name="clazz" value="java.lang.String" />
     </bean>
+
+    <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="prototype" />
 </beans>
