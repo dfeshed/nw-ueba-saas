@@ -4,23 +4,23 @@ import org.apache.samza.config.Config;
 
 public class MaxScorerContainer extends ScorerContainer {
 
-	public MaxScorerContainer(String scoreName, Config config) {
-		super(scoreName, config);
+	public MaxScorerContainer(String scorerName, Config config) {
+		super(scorerName, config);
 	}
 
 	@Override
 	public Double calculateScore(EventMessage eventMessage) throws Exception {
-		double eventScore = 0;
+		double maxScore = 0;
 		for(Scorer scorer: scorers) {
 			Double score = scorer.calculateScore(eventMessage);
 			if(score != null){
-				eventScore = Math.max(eventScore, score);
+				maxScore = Math.max(maxScore, score);
 			}
 		}
 		
-		eventMessage.setScore(scorerContainerConfig.getScoreName(), eventScore);
+		eventMessage.setScore(outputFieldName, maxScore);
 		
-		return eventScore;
+		return maxScore;
 	}
 
 }

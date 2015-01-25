@@ -11,18 +11,20 @@ import org.apache.samza.config.Config;
 
 public class PrevalanceModelBuilderImpl implements PrevalanceModelBuilder{
 
-	public static PrevalanceModelBuilderImpl createModel(String name, Config config) {
-		return new PrevalanceModelBuilderImpl(name, config);
+	public static PrevalanceModelBuilderImpl createModel(String name, Config config, String configPrefix) {
+		return new PrevalanceModelBuilderImpl(name, config, configPrefix);
 	}
 	
 	private String name;
 	private Config config;
+	String configPrefix;
 	private Map<String, String> fields = new HashMap<String, String>();
 	private Map<String, String> fieldScoreBoost = new HashMap<String, String>();
 	
-	private PrevalanceModelBuilderImpl(String name, Config config) {
+	private PrevalanceModelBuilderImpl(String name, Config config, String configPrefix) {
 		this.name = name;
 		this.config = config;
+		this.configPrefix = configPrefix;
 	}
 	
 	@Override
@@ -47,7 +49,7 @@ public class PrevalanceModelBuilderImpl implements PrevalanceModelBuilder{
 			
 			// Construct a field model
 			FieldModel fieldModel = (FieldModel)Class.forName(entry.getValue()).newInstance();
-			fieldModel.init(fieldName, config);
+			fieldModel.init(configPrefix, fieldName, config);
 			
 			// Construct a field score booster
 			if (fieldScoreBoost.containsKey(fieldName)) {

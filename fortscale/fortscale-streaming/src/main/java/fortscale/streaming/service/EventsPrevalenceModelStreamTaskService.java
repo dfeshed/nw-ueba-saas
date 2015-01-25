@@ -90,7 +90,8 @@ public class EventsPrevalenceModelStreamTaskService {
 	
 	private PrevalanceModelBuilderImpl createModelBuilder(String modelName, Config config) throws Exception {
 		// get the fields to include from configuration
-		PrevalanceModelBuilderImpl modelBuilder = PrevalanceModelBuilderImpl.createModel(modelName, config);
+		String configPrefix = String.format("fortscale.model.%s.fields", modelName);
+		PrevalanceModelBuilderImpl modelBuilder = PrevalanceModelBuilderImpl.createModel(modelName, config, configPrefix);
 		
 		String fieldsPrefix = String.format("fortscale.model.%s.fields.", modelName);
 		Config fieldsSubset = config.subset(fieldsPrefix);

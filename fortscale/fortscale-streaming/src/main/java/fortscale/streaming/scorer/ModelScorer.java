@@ -11,35 +11,37 @@ import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 
-public class ModelScorer implements Scorer{
+public class ModelScorer extends AbstractScorer{
 //	private static final Logger logger = Logger.getLogger(EventFeatureScorer.class);
 	
 	
 	private ModelService modelService;
-	private ModelScorerConfig modelScorerConfig;
+	private String modelName;
+	private String contextFieldName;
+	private String featureFieldName;
 
-	public ModelScorer(String scoreName, Config config,  ModelService modelService){
-		String modelName = getConfigString(config, String.format("fortscale.score.%s.model.name", scoreName));
-		String featureFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.fieldname", scoreName, modelName));
-		String contextFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.context.fieldname", scoreName, modelName));
-		modelScorerConfig = new ModelScorerConfig(scoreName, modelName, contextFieldName, featureFieldName);
+	public ModelScorer(String scorerName, Config config,  ModelService modelService){
+		super(scorerName,config);
+		modelName = getConfigString(config, String.format("fortscale.score.%s.model.name", scorerName));
+		featureFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.fieldname", scorerName, modelName));
+		contextFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.context.fieldname", scorerName, modelName));
 		this.modelService = modelService;
 	}
 
 	@Override
 	public Double calculateScore(EventMessage eventMessage) throws Exception {
 		// get the context, so that we can get the model
-		String context = eventMessage.getEventStringValue(modelScorerConfig.getContextFieldName());
+		String context = eventMessage.getEventStringValue(contextFieldName);
 		if (StringUtils.isEmpty(context)) {
-			throw new StreamMessageNotContainFieldException(eventMessage.toJSONString(), modelScorerConfig.getContextFieldName());
+			throw new StreamMessageNotContainFieldException(eventMessage.toJSONString(), contextFieldName);
 		}
 		
 		// go over each field in the event and add it to the model
-		PrevalanceModel model = modelService.getModel(context, modelScorerConfig.getModelName());
+		PrevalanceModel model = modelService.getModel(context, modelName);
 		
-		double score = model.calculateScore(eventMessage.getJsonObject(), modelScorerConfig.getFeatureFieldName());
+		double score = model.calculateScore(eventMessage.getJsonObject(), featureFieldName);
 		
-		eventMessage.setScore(modelScorerConfig.getScoreFieldName(), score);
+		eventMessage.setScore(outputFieldName, score);
 		
 		return score;
 	}

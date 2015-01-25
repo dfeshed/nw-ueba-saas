@@ -9,19 +9,19 @@ import java.util.Map;
 
 import org.apache.samza.config.Config;
 
-public abstract class ScorerContainer implements Scorer{
+public abstract class ScorerContainer extends AbstractScorer{
 
-	protected ScorerContainerConfig scorerContainerConfig;
+	protected List<String> scorersStr;
 	protected List<Scorer> scorers = new ArrayList<>();
 	
-	public ScorerContainer(String scoreName, Config config){
-		List<String> scorers = getConfigStringList(config, String.format("fortscale.score.%s.scorers",scoreName));
-		scorerContainerConfig = new ScorerContainerConfig(scoreName, scorers);
+	public ScorerContainer(String scorerName, Config config){
+		super(scorerName,config);
+		scorersStr = getConfigStringList(config, String.format("fortscale.score.%s.scorers",scorerName));
 	}
 
 	@Override
 	public void afterPropertiesSet(Map<String, Scorer> scorerMap) {
-		for(String scorerName: scorerContainerConfig.scorers){
+		for(String scorerName: scorersStr){
 			Scorer scorer = scorerMap.get(scorerName);
 			checkNotNull(scorer);
 			scorers.add(scorer);
