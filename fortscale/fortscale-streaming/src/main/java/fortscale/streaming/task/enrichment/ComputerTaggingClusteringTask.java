@@ -1,4 +1,4 @@
-package fortscale.streaming.task;
+package fortscale.streaming.task.enrichment;
 
 import com.google.common.collect.Iterables;
 import fortscale.domain.core.Computer;
@@ -14,6 +14,7 @@ import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
+import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONValue;
 import net.minidev.json.JSONObject;
@@ -38,7 +39,7 @@ import static fortscale.utils.ConversionUtils.convertToString;
 /**
  * Created by danal on 18/01/2015.
  */
-public class ComputerTaggingClusteringStreamTask extends  AbstractStreamTask {
+public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 	private static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
 	private static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
@@ -49,7 +50,7 @@ public class ComputerTaggingClusteringStreamTask extends  AbstractStreamTask {
 	protected ComputerTaggingService computerTaggingService;
 
 	// map between input topic name and relevant service
-	private Map<String, CachingService> topicToServiceMap = new HashMap<>();
+	protected Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
 
 	@Override
@@ -119,13 +120,13 @@ public class ComputerTaggingClusteringStreamTask extends  AbstractStreamTask {
 			// parse the message into json
 			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
 
-			computerTaggingService.enrichEvent(inputTopic, event);
+			event = computerTaggingService.enrichEvent(inputTopic, event);
 			// construct outgoing message
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopic)), computerTaggingService.getPartitionKey(inputTopic, event), event.toJSONString());
 				collector.send(output);
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send event to from input topic %s, topic %s after computer tagging and clustering", inputTopic, computerTaggingService.getOutputTopic(inputTopic)), exception);
+				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopic, computerTaggingService.getOutputTopic(inputTopic)), exception);
 			}
 		}
 	}

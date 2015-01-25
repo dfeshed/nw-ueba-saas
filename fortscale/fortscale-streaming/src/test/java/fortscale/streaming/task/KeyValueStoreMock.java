@@ -1,4 +1,4 @@
-package fortscale.streaming.task.enrichment;
+package fortscale.streaming.task;
 
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
