@@ -4,6 +4,7 @@ import com.google.api.client.repackaged.com.google.common.base.Joiner;
 
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
+import fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators.MySqlOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -138,9 +139,12 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
 
         if (conditionField.getValueField() != null)
             sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, true));
-        else
-            sb.append(mySqlValueGenerator.generateSql(conditionField.getValue(), dataEntitiesConfig.getFieldType(entityId , conditionField.getField().getId(), !mapToColumn)));
+        else {
+            // The operator might need to add something to the value:
+            String value = operator.getOperatorValue(conditionField.getValue());
 
+            sb.append(mySqlValueGenerator.generateSql(value, dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn)));
+        }
         return sb.toString();
     }
 

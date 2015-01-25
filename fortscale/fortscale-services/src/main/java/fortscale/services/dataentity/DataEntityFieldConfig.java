@@ -10,6 +10,8 @@ public class DataEntityFieldConfig {
     private String column;
     private String score;
     private QueryValueType type;
+    private int rank = 100;
+    private boolean defaultRank = true;
 
     public static final String IS_LOGICAL_ONLY = "is_logical_only";
     public static final String EXPLICIT = "explicit";
@@ -89,5 +91,22 @@ public class DataEntityFieldConfig {
 
     public void setFlag(String flagName, Boolean value){
         flags.put(flagName, value);
+    }
+
+    /**
+     * Used to know whether the DataEntityFieldConfig's rank is the default or it was set using the setter.
+     * @return
+     */
+    public boolean isDefaultRank(){
+        return defaultRank;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+        defaultRank = false;
     }
 }
