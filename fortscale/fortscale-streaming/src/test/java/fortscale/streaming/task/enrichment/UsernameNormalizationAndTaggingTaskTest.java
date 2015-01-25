@@ -19,8 +19,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.never;
 
 public class UsernameNormalizationAndTaggingTaskTest {
@@ -79,8 +78,9 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate normalization for username
 		Mockito.verify(usernameNormalizationService).normalizeUsername("user1");
-		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(anyString(),eq(message));
+		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(eq("user1"),any(JSONObject.class));
 		// validate tagging
+		message.put(task.normalizedUsernameField, "User 1");
 		Mockito.verify(task.tagService).addTagsToEvent("User 1", message);
 
 
@@ -95,7 +95,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate normalization for username
 		Mockito.verify(usernameNormalizationService).normalizeUsername("user3");
-		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(anyString(),eq(message));
+		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(eq("user3"),any(JSONObject.class));
 		// validate tagging
 		Mockito.verify(task.tagService, never()).addTagsToEvent(anyString(), message);
 
@@ -114,6 +114,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.verify(usernameNormalizationService).normalizeUsername("user4");
 		Mockito.verify(usernameNormalizationService).getUsernameAsNormalizedUsername("user4", message);
 		// validate tagging
+		message.put(task.normalizedUsernameField, "User 4");
 		Mockito.verify(task.tagService).addTagsToEvent("User 4", message);
 
 
