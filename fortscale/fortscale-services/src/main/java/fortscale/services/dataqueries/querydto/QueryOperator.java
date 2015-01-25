@@ -9,6 +9,7 @@ public enum QueryOperator {
     lesserThan, lesserThanOrEquals,
     in,
     like,
+    startsWith, endsWith, contains,
     hasValue,
     hasNoValue,
     regex
