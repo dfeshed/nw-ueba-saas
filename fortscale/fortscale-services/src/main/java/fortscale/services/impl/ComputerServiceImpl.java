@@ -109,7 +109,7 @@ public class ComputerServiceImpl implements ComputerService {
 		endpointDetectionService.classifyNewComputer(saved);
 
 		try {
-			cache.put(computer.getCn().toUpperCase(), saved);
+			cache.put(saved.getName(), saved);
 			repository.save(saved);
 			//update OU machines cache
 			if (filterMachinesService != null) {
@@ -224,16 +224,18 @@ public class ComputerServiceImpl implements ComputerService {
 		Page<Computer> computers = repository.findAll(pageRequest);
 		while (computers != null && computers.hasContent()) {
 			// classify all computers in the page
-			List<Computer> changedComptuers = new LinkedList<Computer>();
+			List<Computer> changedComputers = new LinkedList<Computer>();
 			for (Computer computer : computers) {
 				boolean changed = endpointDetectionService.classifyComputer(computer);
-				if (changed)
-					changedComptuers.add(computer);
+				if (changed) {
+					changedComputers.add(computer);
+					cache.put(computer.getName(),computer);
+				}
 			}
 
 			// save all changed computers
-			repository.save(changedComptuers);
-			changedComptuers.clear();
+			repository.save(changedComputers);
+			changedComputers.clear();
 
 			// get next page
 			pageRequest = pageRequest.next();

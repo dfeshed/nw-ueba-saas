@@ -30,13 +30,17 @@ public abstract class CacheHandler<K,T> implements Closeable {
      * Process cache update that come as strings.
      * Notice that the updates should be json serialized format of the value type.
      */
-    public void putFromString(K key, String stringValue) throws Exception{
+    public void putFromString(K key, String stringValue) throws Exception {
+        T value = convertStringToValue(stringValue);
+        // add the value to the cache
+        this.put(key, value);
+    }
+
+    protected T convertStringToValue(String stringValue) throws Exception{
         if (mapper != null) {
             // deserialize the event to relevant class
-            T value = mapper.readValue(stringValue, clazz);
-
-            // add the event to the cache
-            this.put(key, value);
+            return mapper.readValue(stringValue, clazz);
         }
+        return null;
     }
 }

@@ -95,6 +95,7 @@ public class SensitiveMachineServiceTest {
 		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
 			true);
 		service.updateSensitiveMachines();
+		assertEquals(service.getCache().get("MY-PC"), "MY-PC");
 		assertEquals(service.getCache().get("DUMMY-PC"), "DUMMY-PC");
 		assertEquals(service.getCache().get("X-PC"), "X-PC");
 		assertEquals(service.getCache().get("Y-PC"), "Y-PC");
@@ -116,7 +117,7 @@ public class SensitiveMachineServiceTest {
 				true);
 		service.updateSensitiveMachines();
 		assertNull(service.getCache().get("DUMMY-PC"));
-		assertNull(service.getCache().get("DUMMY-PC"));
+		assertNull(service.getCache().get("MY-PC"));
 		assertEquals(service.getCache().get("ANOTHER-PC"), "ANOTHER-PC");
 	}
 	

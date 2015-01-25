@@ -37,19 +37,31 @@ public class MemoryBasedCache<K,T> extends CacheHandler<K,T> {
         cache = builder.build();
     }
 
+    public Cache<K, T> getCache() {
+        return cache;
+    }
+
+    public void setCache(Cache<K, T> cache) {
+        this.cache = cache;
+    }
+
+    @Override
     public T get(K key) {
         return cache.getIfPresent(key);
     }
 
+    @Override
     public void put(K key, T value) {
         cache.put(key, value);
     }
 
-    @Override public void remove(K key) {
+    @Override
+    public void remove(K key) {
         cache.invalidate(key);
     }
 
     @Override
     public void close() throws IOException {
+        cache.cleanUp();
     }
 }

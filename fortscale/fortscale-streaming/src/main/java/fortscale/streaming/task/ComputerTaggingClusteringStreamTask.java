@@ -51,38 +51,9 @@ public class ComputerTaggingClusteringStreamTask extends  AbstractStreamTask {
 	// map between input topic name and relevant service
 	private Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
-	@Override protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
-			TaskCoordinator coordinator) throws Exception {
 
-		// get message
-		String messageText = (String) envelope.getMessage();
-
-		// Get the input topic
-		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-
-		if (topicToServiceMap.containsKey(inputTopic)) {
-			CachingService cachingService = topicToServiceMap.get(inputTopic);
-			cachingService.getCache().putFromString((String) envelope.getKey(), (String) envelope.getMessage());
-		} else {
-			// parse the message into json
-			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
-
-			computerTaggingService.enrichEvent(inputTopic, event);
-			// construct outgoing message
-			try {
-				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopic)), computerTaggingService.getPartitionKey(inputTopic, event), event.toJSONString());
-				collector.send(output);
-			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send event to from input topic %s, topic %s after computer tagging and clustering", inputTopic, computerTaggingService.getOutputTopic(inputTopic)), exception);
-			}
-		}
-	}
-
-	@Override protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-
-	}
-
-	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	@Override
+	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 		// create the computer service with the levelDB cache
 		ComputerService computerService = new ComputerServiceImpl(null,null,null, new LevelDbBasedCache<String, Computer>((KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerKey))), Computer.class));
@@ -126,7 +97,46 @@ public class ComputerTaggingClusteringStreamTask extends  AbstractStreamTask {
 		computerTaggingService = new ComputerTaggingService(computerService, sensitiveMachineService, configs);
 	}
 
-	@Override protected void wrappedClose() throws Exception {
+	@Override
+	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
+			TaskCoordinator coordinator) throws Exception {
+
+		// get message
+		String messageText = (String) envelope.getMessage();
+
+		// Get the input topic
+		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+
+		if (topicToServiceMap.containsKey(inputTopic)) {
+			CachingService cachingService = topicToServiceMap.get(inputTopic);
+			if(envelope.getKey().equals("delete")){
+				cachingService.getCache().remove((String) envelope.getMessage());
+			}
+			else {
+				cachingService.getCache().putFromString((String) envelope.getKey(), (String) envelope.getMessage());
+			}
+		} else {
+			// parse the message into json
+			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+
+			computerTaggingService.enrichEvent(inputTopic, event);
+			// construct outgoing message
+			try {
+				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(inputTopic)), computerTaggingService.getPartitionKey(inputTopic, event), event.toJSONString());
+				collector.send(output);
+			} catch (Exception exception) {
+				throw new KafkaPublisherException(String.format("failed to send event to from input topic %s, topic %s after computer tagging and clustering", inputTopic, computerTaggingService.getOutputTopic(inputTopic)), exception);
+			}
+		}
+	}
+
+	@Override
+	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+
+	}
+
+	@Override
+	protected void wrappedClose() throws Exception {
 		for(CachingService cachingService: topicToServiceMap.values()) {
 			cachingService.getCache().close();
 		}

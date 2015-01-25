@@ -41,7 +41,10 @@ public class LevelDbBasedCache<K,T> extends CacheHandler<K,T> {
      */
     @Override
     public void close() throws IOException {
-        if (store!=null)
+        if (store!=null) {
             store.flush();
+            store.close();
+        }
+
     }
 }
