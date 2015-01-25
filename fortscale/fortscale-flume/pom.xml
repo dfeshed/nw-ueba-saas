@@ -61,10 +61,11 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<flume.version>1.4.0-cdh5.0.3</flume.version>
+		<flume.version>1.4.0-cdh5.0.2</flume.version>
 		<!-- maven plugins versions -->
 		<java-lang-config.version>1.7</java-lang-config.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -143,6 +144,7 @@
 					<target>${java-lang-config.version}</target>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 

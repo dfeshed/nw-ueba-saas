@@ -215,51 +215,57 @@ public class UsernameService implements InitializingBean{
 	}
 	
 	
-	public boolean isUsernameExist(String username, boolean useCache){
-		return isUsernameExist(username, useCache, null);
+	public boolean isUsernameExist(String username){
+		return isUsernameExist(username, null);
 	}
 
-	public boolean isUsernameExist(String username, boolean useCache, LogEventsEnum eventId){
-		boolean found = false;
-		if(useCache){
-			found = usernameToUserIdMap.containsKey(username);
-			if(!found && eventId != null){
-				found = logUsernameToUserIdMapList.get(eventId.ordinal()).containsKey(username);
-			}
-		} else{
-			found = userRepository.findByUsername(username) != null ? true : false;
+	public boolean isUsernameExist(String username, LogEventsEnum eventId){
+		if (usernameToUserIdMap.containsKey(username))
+			return true;
+
+		if(eventId != null && logUsernameToUserIdMapList.get(eventId.ordinal()).containsKey(username))
+			return true;
+
+		// resort to lookup mongodb and save the user id in cache
+		User user = userRepository.findByUsername(username);
+		if (user!=null) {
+			usernameToUserIdMap.put(username, user.getId());
+			return true;
 		}
-		
-		return found;
+		return false;
 	}
 		
-	public String getUserId(String username, boolean useCache, LogEventsEnum eventId){
-		String ret = null;
-		if(useCache){
-			ret = usernameToUserIdMap.get(username);
-			if(ret == null && eventId != null){
-				ret = logUsernameToUserIdMapList.get(eventId.ordinal()).get(username);
-			}
-		} else{
-			User user = userRepository.findByUsername(username);
-			ret = user != null ? user.getId() : null;
+	public String getUserId(String username,LogEventsEnum eventId){
+		if (usernameToUserIdMap.containsKey(username))
+			return usernameToUserIdMap.get(username);
+
+		if(eventId != null && logUsernameToUserIdMapList.get(eventId.ordinal()).containsKey(username))
+			return logUsernameToUserIdMapList.get(eventId.ordinal()).get(username);
+
+		// fall back to query mongo if not found
+		User user = userRepository.findByUsername(username);
+		if (user!=null) {
+			usernameToUserIdMap.put(username, user.getId());
+			return user.getId();
 		}
-		
-		return ret;
+
+		return null;
 	}
 	
-	public boolean isLogUsernameExist(LogEventsEnum eventId, String logUsername, String userId, boolean useCache){
-		boolean isExist = false;
-		if(useCache){
-			isExist = logUsernameSetList.get(eventId.ordinal()).contains(formatUserIdWithLogUsername(userId, logUsername));
-		} else{
-			User user = userRepository.findOne(userId);
-			if(user != null && logUsername.equals(user.getLogUserName(getLogname(eventId)))){
-				isExist = true;
-			}
+	public boolean isLogUsernameExist(LogEventsEnum eventId, String logUsername, String userId) {
+
+		if (logUsernameSetList.get(eventId.ordinal()).contains(formatUserIdWithLogUsername(userId, logUsername)))
+			return true;
+
+		User user = userRepository.findOne(userId);
+		if(user != null && logUsername.equals(user.getLogUserName(getLogname(eventId)))) {
+			logUsernameSetList.get(eventId.ordinal()).add(formatUserIdWithLogUsername(userId, logUsername));
+			return true;
 		}
-		
-		return isExist;
+
+		// TODO: maintain a "blacklist" of usernames not found instead of re-querying mongodb
+
+		return false;
 	}
 	
 	private String formatUserIdWithLogUsername(String userId, String logUsername){

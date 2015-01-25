@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -144,13 +145,13 @@ public class UserServiceImpl implements UserService{
 		}
 
 		LogEventsEnum eventId = classifier.getLogEventsEnum();
-		String userId = usernameService.getUserId(normalizedUsername, true, eventId);
+		String userId = usernameService.getUserId(normalizedUsername, eventId);
 		if(userId == null && onlyUpdate){
 			return;
 		}
 			
 		if(userId != null){
-			if(!usernameService.isLogUsernameExist(eventId, logUsername, userId, true)){
+			if(!usernameService.isLogUsernameExist(eventId, logUsername, userId)){
 				Update update = new Update();
 				usernameService.fillUpdateLogUsername(update, logUsername, eventId);
 				if(updateAppUsername){
@@ -214,6 +215,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	@Deprecated
 	public void updateUsersLastActivityGeneralAndPerType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap) {
 
 		// Go over map of updates
@@ -249,6 +251,56 @@ public class UserServiceImpl implements UserService{
 			if (update != null) {
 				mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
 			}
+		}
+
+	}
+
+	public void updateUsersLastActivityGeneralAndPerType(String username, Map<String, Long> lastActivityMap) {
+
+		// get user by username
+		User user = userRepository.getLastActivityByUserName(username);
+		if (user == null) {
+			logger.warn("Can't find user {} - Not going to update last activity");
+			return;
+		}
+
+		DateTime userCurrLast = user.getLastActivity();
+
+		try {
+
+			Update update = null;
+
+			for (String classifierId : lastActivityMap.keySet()) {
+
+				// get the time of the event
+				DateTime currTime = new DateTime(lastActivityMap.get(classifierId), DateTimeZone.UTC);
+				LogEventsEnum logEventsEnum = LogEventsEnum.valueOf(classifierId);
+
+				// last activity
+				if (userCurrLast == null || currTime.isAfter(userCurrLast)) {
+					if (update == null)
+						update = new Update();
+					update.set(User.lastActivityField, currTime);
+					userCurrLast = currTime;
+				}
+
+				// Last activity of data source
+				DateTime userCurrLastOfType = user.getLogLastActivity(logEventsEnum);
+				if (userCurrLastOfType == null || currTime.isAfter(userCurrLastOfType)) {
+					if (update == null)
+						update = new Update();
+					update.set(User.getLogLastActivityField(logEventsEnum), currTime);
+				}
+
+			}
+
+			// update user
+			if (update != null) {
+				mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
+			}
+
+		} catch (Exception e) {
+			logger.error("Failed to update last activity of user {} : {}", username, e.getMessage());
 		}
 
 	}

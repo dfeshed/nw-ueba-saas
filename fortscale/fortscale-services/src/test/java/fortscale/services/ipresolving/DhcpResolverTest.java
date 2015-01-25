@@ -57,7 +57,17 @@ public class DhcpResolverTest {
 		verify(cache, times(0)).put(anyString(), any(DhcpEvent.class));
 		verify(dhcpEventRepository, times(0)).save(any(DhcpEvent.class));
 	}
-	
+
+	@Test
+	public void addDhcpEvent_should_expire_existing_assignment_once_a_new_assignment_is_created() {
+		when(cache.get("192.168.1.1")).thenReturn(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now+100, now+200));
+
+		dhcpResolver.addDhcpEvent(createDhcpEvent("192.168.1.1", "or-me", DhcpEvent.ASSIGN_ACTION, now+150, now+300));
+
+		verify(dhcpEventRepository).save(createDhcpEvent("192.168.1.1", "pick-me", DhcpEvent.ASSIGN_ACTION, now + 100, now + 150));
+		verify(dhcpEventRepository).save(createDhcpEvent("192.168.1.1", "or-me", DhcpEvent.ASSIGN_ACTION, now + 150, now + 300));
+	}
+
 	@Test
 	public void addDhcpEvent_should_replace_the_cache_if_the_item_in_cache_is_older_than_given_event() {
 		// mock old cache value
@@ -80,7 +90,6 @@ public class DhcpResolverTest {
 		
 		// verify
 		verify(cache, times(0)).put(anyString(), any(DhcpEvent.class));
-		
 	}
 	
 	@Test

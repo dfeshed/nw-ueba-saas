@@ -55,8 +55,16 @@ public interface UserService {
 	
 	public void updateUsersLastActivity(Map<String, Long> userLastActivityMap);
 
+	@Deprecated
 	public void updateUsersLastActivityGeneralAndPerType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap);
-	
+
+	/**
+	 * Update the last activities of specific user: both the general last-activity and per-type
+	 * @param username	The username to update
+	 * @param lastActivityMap	Map: data-source to last activity
+	 */
+	public void updateUsersLastActivityGeneralAndPerType(String username, Map<String, Long> lastActivityMap);
+
 	public void updateUserLastActivity(String username, DateTime dateTime);
 
 	public DateTime findLastActiveTime(LogEventsEnum eventId);

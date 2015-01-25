@@ -93,8 +93,9 @@ public class MySqlFieldGenerator {
         String entityId = field.getEntity();
 
         // If selecting from a subquery, the available fields are decided from inside the subquery, so it's OK to use '*'.
-        if (entityId == null && dataQueryDTO.getSubQuery() != null)
+        if (entityId == null && dataQueryDTO.getSubQuery() != null) {
             fieldSB.append("*");
+        }
         else {
             if (entityId == null)
                 entityId = dataQueryDTO.getEntities()[0];
@@ -104,8 +105,10 @@ public class MySqlFieldGenerator {
                 // Explicit fields should be explicitly requested in the fields list, so they aren't returned when all fields are specified.
                 if (dataEntitiesConfig.getFieldIsExplicit(entityId, fieldId))
                     continue;
-
-                addFieldTable(entityId, fieldId, fieldSB);
+                //when the query is in a JOIN clause, the entity name should prefix the fields.
+                if(dataQueryDTO.getJoin() != null) {
+                    addFieldTable(entityId, fieldId, fieldSB);
+                }
                 fieldSB.append(dataEntitiesConfig.getFieldColumn(entityId, fieldId));
                 fieldSB.append(" as '").append(fieldId).append("'");
                 fieldSB.append(", ");

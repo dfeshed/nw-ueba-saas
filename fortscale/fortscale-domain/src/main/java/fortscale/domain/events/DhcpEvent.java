@@ -12,8 +12,7 @@ import fortscale.utils.TimestampUtils;
 
 @Document(collection=DhcpEvent.collectionName)
 @CompoundIndexes({
-	@CompoundIndex(name="ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}"),
-	@CompoundIndex(name="hostnameAndIpTimeIdx", def = "{'hostname': 1, 'ipaddress': 1, 'timestampepoch': -1}")
+	@CompoundIndex(name="ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}")
 })
 public class DhcpEvent extends IpToHostname{
 
