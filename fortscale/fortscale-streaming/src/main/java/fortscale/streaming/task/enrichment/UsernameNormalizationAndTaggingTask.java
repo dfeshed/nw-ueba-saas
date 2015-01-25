@@ -130,8 +130,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			}
 
 			UsernameNormalizationService normalizationService = configuration.getValue();
-			String normalizedUserName = normalizationService.normalizeUsername(username);
-			if(normalizationService.shouldDropRecord( username, normalizedUserName)){
+			normalizedUsername = normalizationService.normalizeUsername(username);
+			if(normalizationService.shouldDropRecord( username, normalizedUsername)){
 				if (logger.isDebugEnabled()) {
 					logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
 				}

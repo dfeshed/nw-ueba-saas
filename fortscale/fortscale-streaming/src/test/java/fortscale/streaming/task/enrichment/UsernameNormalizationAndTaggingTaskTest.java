@@ -97,7 +97,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.verify(usernameNormalizationService).normalizeUsername("user3");
 		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(eq("user3"),any(JSONObject.class));
 		// validate tagging
-		Mockito.verify(task.tagService, never()).addTagsToEvent(anyString(), message);
+		Mockito.verify(task.tagService, never()).addTagsToEvent(anyString(), eq(message));
 
 
 		// User 4 without normalized name, failure in normalization and no drop of record
@@ -112,7 +112,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate normalization for username
 		Mockito.verify(usernameNormalizationService).normalizeUsername("user4");
-		Mockito.verify(usernameNormalizationService).getUsernameAsNormalizedUsername("user4", message);
+		Mockito.verify(usernameNormalizationService).getUsernameAsNormalizedUsername(eq("user4"), any(JSONObject.class));
 		// validate tagging
 		message.put(task.normalizedUsernameField, "User 4");
 		Mockito.verify(task.tagService).addTagsToEvent("User 4", message);
