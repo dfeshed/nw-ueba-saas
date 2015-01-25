@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.service.SSHUsersWhitelistService;
+import fortscale.services.users.SSHUsersWhitelistService;
 import fortscale.services.impl.UsernameNormalizer;
 
 @Deprecated

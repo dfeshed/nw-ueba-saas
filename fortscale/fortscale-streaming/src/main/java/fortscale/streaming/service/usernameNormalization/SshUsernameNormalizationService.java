@@ -1,7 +1,7 @@
 package fortscale.streaming.service.usernameNormalization;
 
 import fortscale.services.impl.UsernameNormalizer;
-import fortscale.services.service.SSHUsersWhitelistService;
+import fortscale.services.users.SSHUsersWhitelistService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

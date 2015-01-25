@@ -1,4 +1,4 @@
-package fortscale.services.service;
+package fortscale.services.users;
 
 
 public interface SupportedUsersService {

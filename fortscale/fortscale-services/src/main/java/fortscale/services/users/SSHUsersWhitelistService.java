@@ -1,4 +1,4 @@
-package fortscale.services.service;
+package fortscale.services.users;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
