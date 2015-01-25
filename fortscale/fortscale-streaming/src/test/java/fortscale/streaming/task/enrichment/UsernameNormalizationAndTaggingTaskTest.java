@@ -2,6 +2,8 @@ package fortscale.streaming.task.enrichment;
 
 import fortscale.streaming.service.UserTagsService;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
@@ -9,12 +11,17 @@ import org.apache.samza.system.SystemStreamPartition;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.Times;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 
 public class UsernameNormalizationAndTaggingTaskTest {
 
@@ -41,7 +48,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// configuration
 		task.inputTopicToConfiguration = new HashMap<>();
-		UsernameNormalizationService usernameNormalizationService = Mockito.mock(SystemStreamPartition.class);
+		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
 		task.inputTopicToConfiguration.put("input1" , new ImmutablePair<>("output1",usernameNormalizationService));
 
 		// tagging
@@ -54,56 +61,60 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, MESSAGE_2, "input1");
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
-		// validate no normalization for username (we already have it
+		// validate no normalization for username (we already have it)
 		Mockito.verify(usernameNormalizationService, never()).normalizeUsername(anyString());
 		// validate tagging
-		Mockito.verify(task.tagService).addTagsToEvent("User 2", MESSAGE_2);
+		JSONObject message = (JSONObject) JSONValue.parseWithException(MESSAGE_2);
+		Mockito.verify(task.tagService).addTagsToEvent("User 2", message);
 
 
 		// User 1 without normalized name, success in normalization
 
 		Mockito.when(usernameNormalizationService.normalizeUsername("user1")).thenReturn("User 1");
 		Mockito.when(usernameNormalizationService.shouldDropRecord("user1", "User 1")).thenReturn(false);
+		message = (JSONObject) JSONValue.parseWithException(MESSAGE_1);
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, MESSAGE_1, "input1");
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
-		// validate no normalization for username (we already have it
+		// validate normalization for username
 		Mockito.verify(usernameNormalizationService).normalizeUsername("user1");
-		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(anyString(),anyString());
+		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(anyString(),eq(message));
 		// validate tagging
-		Mockito.verify(task.tagService).addTagsToEvent("User 1", MESSAGE_1);
+		Mockito.verify(task.tagService).addTagsToEvent("User 1", message);
 
 
 		// User 3 without normalized name, failure in normalization and drop of record
 
 		Mockito.when(usernameNormalizationService.normalizeUsername("user3")).thenReturn(null);
 		Mockito.when(usernameNormalizationService.shouldDropRecord("user3", null)).thenReturn(true);
+		message = (JSONObject) JSONValue.parseWithException(MESSAGE_3);
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, MESSAGE_3, "input1");
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
-		// validate no normalization for username (we already have it
+		// validate normalization for username
 		Mockito.verify(usernameNormalizationService).normalizeUsername("user3");
-		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(anyString(),anyString());
+		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(anyString(),eq(message));
 		// validate tagging
-		Mockito.verify(task.tagService, never()).addTagsToEvent(anyString(), MESSAGE_3);
+		Mockito.verify(task.tagService, never()).addTagsToEvent(anyString(), message);
 
 
 		// User 4 without normalized name, failure in normalization and no drop of record
 
 		Mockito.when(usernameNormalizationService.normalizeUsername("user4")).thenReturn(null);
 		Mockito.when(usernameNormalizationService.shouldDropRecord("user4", null)).thenReturn(false);
-		Mockito.when(usernameNormalizationService.getUsernameAsNormalizedUsername("user4", MESSAGE_4)).thenReturn("User 4");
+		message = (JSONObject) JSONValue.parseWithException(MESSAGE_4);
+		Mockito.when(usernameNormalizationService.getUsernameAsNormalizedUsername("user4", message)).thenReturn("User 4");
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, MESSAGE_4, "input1");
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
-		// validate no normalization for username (we already have it
+		// validate normalization for username
 		Mockito.verify(usernameNormalizationService).normalizeUsername("user4");
-		Mockito.verify(usernameNormalizationService).getUsernameAsNormalizedUsername("user4",anyString());
+		Mockito.verify(usernameNormalizationService).getUsernameAsNormalizedUsername("user4", message);
 		// validate tagging
-		Mockito.verify(task.tagService).addTagsToEvent("User 4", MESSAGE_4);
+		Mockito.verify(task.tagService).addTagsToEvent("User 4", message);
 
 
 	}
