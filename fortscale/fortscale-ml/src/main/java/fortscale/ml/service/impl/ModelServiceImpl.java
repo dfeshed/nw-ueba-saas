@@ -18,7 +18,7 @@ public class ModelServiceImpl implements ModelService{
 	@Override
 	public PrevalanceModel getModel(String context, String modelName) throws Exception {
 		// lookup the model in the repository
-		Model dto = modelRepository.findByUserNameAndModelName(context, modelName);
+		Model dto = modelRepository.findByContextAndModelName(context, modelName);
 		if (dto!=null) 
 			return dto.getModel();
 		return null;

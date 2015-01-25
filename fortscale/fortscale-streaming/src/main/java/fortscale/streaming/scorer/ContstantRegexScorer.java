@@ -13,10 +13,13 @@ public class ContstantRegexScorer extends RegexScorer{
 
 	@Override
 	public Double calculateScore(EventMessage eventMessage) throws Exception {
+		Double ret = null;
 		if(matches(eventMessage)){
-			return (double) constantScore;
+			ret = (double) constantScore;
+			eventMessage.setScore(outputFieldName, ret);
 		}
-		return null;
+		
+		return ret;
 	}
 
 }

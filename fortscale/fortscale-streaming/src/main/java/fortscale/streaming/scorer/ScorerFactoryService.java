@@ -21,7 +21,7 @@ public class ScorerFactoryService {
 		return scorerFactoryMap.get(key);
 	}
 	
-	public Scorer getScorer(String key, String scoreName, Config config, ModelService modelService){
-		return getScorerFactory(key).getScorer(scoreName, config, modelService);
+	public Scorer getScorer(String scorerType, String scorerName, Config config, ModelService modelService){
+		return getScorerFactory(scorerType).getScorer(scorerName, config, modelService);
 	}
 }

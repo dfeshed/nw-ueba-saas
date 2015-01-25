@@ -16,6 +16,7 @@ import net.minidev.json.JSONValue;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
+import org.apache.samza.config.ConfigException;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -78,11 +79,13 @@ public class EventsScoreStreamTaskService {
 		scorerMap = new HashMap<>();
 		Config fieldsSubset = config.subset("fortscale.score.");		
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".scorer"))) {
-			String scoreName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".scorer"));
-			String scorerName = getConfigString(config, String.format("fortscale.score.%s.scorer", scoreName));
-			Scorer scorer = scorerFactoryService.getScorer(scorerName, scoreName, config, modelService);
+			String scorerName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".scorer"));
+			if (StringUtils.isBlank(scorerName))
+				throw new ConfigException("configuration is missing key " + scorerName);
+			String scorerType = getConfigString(config, String.format("fortscale.score.%s.scorer", scorerName));
+			Scorer scorer = scorerFactoryService.getScorer(scorerType, scorerName, config, modelService);
 			checkNotNull(scorer);
-			scorerMap.put(scoreName, scorer);			
+			scorerMap.put(scorerName, scorer);			
 		}
 		
 		for(Scorer scorer: scorerMap.values()){

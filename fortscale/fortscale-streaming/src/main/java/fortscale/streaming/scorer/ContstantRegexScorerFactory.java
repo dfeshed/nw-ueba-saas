@@ -3,11 +3,13 @@ package fortscale.streaming.scorer;
 import org.apache.samza.config.Config;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import fortscale.ml.service.ModelService;
 
+@Component
 public class ContstantRegexScorerFactory implements InitializingBean, ScorerFactory{
-	private static final String SCORER_NAME = "const-regex-scorer";
+	public static final String SCORER_NAME = "const-regex-scorer";
 	
 	@Autowired
 	private ScorerFactoryService scorerFactoryService;
