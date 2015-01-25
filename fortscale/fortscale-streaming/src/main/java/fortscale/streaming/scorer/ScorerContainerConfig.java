@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-public class EventScorerConfig {
+public class ScorerContainerConfig {
 	private String scoreName;
 	ImmutableList<String> scorers;
 	
-	public EventScorerConfig(String scoreName, List<String> scorers){
+	public ScorerContainerConfig(String scoreName, List<String> scorers){
 		this.scoreName = scoreName;
 		this.scorers = ImmutableList.copyOf(scorers);
 	}

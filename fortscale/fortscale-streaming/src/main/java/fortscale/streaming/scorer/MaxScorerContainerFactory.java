@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.ml.service.ModelService;
 
-public class EventScorerFactory  implements InitializingBean, ScorerFactory{
-	private static final String SCORER_NAME = "event-scorer";
+public class MaxScorerContainerFactory  implements InitializingBean, ScorerFactory{
+	private static final String SCORER_NAME = "max-scorer";
 	
 	@Autowired
 	private ScorerFactoryService scorerFactoryService;
@@ -19,7 +19,7 @@ public class EventScorerFactory  implements InitializingBean, ScorerFactory{
 
 	@Override
 	public Scorer getScorer(String name, Config config,	ModelService modelService) {
-		return new EventScorer(name, config);
+		return new MaxScorerContainer(name, config);
 	}
 
 }
