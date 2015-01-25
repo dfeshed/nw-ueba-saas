@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Normalization service for VPN
  * Date: 24/01/2015.
  */
-public class VPNUsernameNormalizationService extends UsernameNormalizationService {
+public class VpnUsernameNormalizationService extends UsernameNormalizationService {
 
 	@Autowired
 	UsernameNormalizer vpnUsernameNormalizer;
