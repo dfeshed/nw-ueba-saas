@@ -15,6 +15,8 @@ import java.util.Properties;
 
 import org.apache.samza.config.MapConfig;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -33,6 +35,15 @@ private ModelService modelService;
 	@Before
 	public void setUp(){
 		modelService = mock(ModelService.class);
+	}
+	
+	@Test
+	public void thisAlwaysPasses() {
+	}
+
+	@Test
+	@Ignore
+	public void thisIsIgnored() {
 	}
 	
 	
