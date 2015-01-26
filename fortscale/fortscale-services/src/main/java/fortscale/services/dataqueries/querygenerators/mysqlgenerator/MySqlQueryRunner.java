@@ -22,7 +22,7 @@ import java.util.Map;
  * Handler for MySQL Queries
  */
 @Component
-public class MySqlQueryRunner implements DataQueryRunner {
+public class MySqlQueryRunner extends DataQueryRunner {
 
     // The parts of the query
 
@@ -90,42 +90,5 @@ public class MySqlQueryRunner implements DataQueryRunner {
         }
 
         return sb.toString();
-    }
-
-    /**
-     * Generates an SQL query for a DTO, but only for retrieving the total records available.
-     * It does so by removing the limit, offset and sort properties of the DTO and replacing the fields with
-     * a single COUNT(*) as 'total' field.
-     * @param dataQueryDTO The original DTO
-     * @return
-     * @throws InvalidQueryException
-     */
-    @Override
-    public String generateTotalQuery(DataQueryDTO dataQueryDTO) throws InvalidQueryException {
-        // Create a copy of the DataQueryDTO:
-        DataQueryDTO totalDataQueryDTO = new DataQueryDTO(dataQueryDTO);
-
-        // Create the count(*) field:
-        DataQueryField countField = new DataQueryField();
-        countField.setAlias("total");
-        FieldFunction countFunction = new FieldFunction();
-        countFunction.setName(QueryFieldFunction.count);
-        HashMap<String, String> countParams = new HashMap<>();
-        countParams.put("all", "true");
-        countFunction.setParams(countParams);
-        countField.setFunc(countFunction);
-
-        // The set fields new fields to the totalDTO:
-        ArrayList<DataQueryField> totalFields = new ArrayList<>();
-        totalFields.add(countField);
-        totalDataQueryDTO.setFields(totalFields);
-
-        // Remove limit, offset and sort from DTO:
-        totalDataQueryDTO.setLimit(0);
-        totalDataQueryDTO.setOffset(0);
-        totalDataQueryDTO.setSort(null);
-
-        // Finally, generate the query and return it:
-        return generateQuery(totalDataQueryDTO);
     }
 }

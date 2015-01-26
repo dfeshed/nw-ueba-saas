@@ -1,16 +1,21 @@
 package fortscale.services.dataqueries.querygenerators;
 
+import fortscale.services.dataentity.QueryFieldFunction;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryField;
+import fortscale.services.dataqueries.querydto.FieldFunction;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Interface for data queries
  */
-public interface DataQueryRunner {
+public abstract class DataQueryRunner {
 
 
 	/**
@@ -19,20 +24,48 @@ public interface DataQueryRunner {
 	 * @return The results of the Query
 	 * @throws InvalidQueryException	in case we failed to parse the DTO into query
 	 */
-	public String generateQuery(DataQueryDTO dataQueryDTO) throws InvalidQueryException;
+	public abstract String generateQuery(DataQueryDTO dataQueryDTO) throws InvalidQueryException;
 
     /**
-     * Creates a query for the DTO, but one that only counts the total available results.
-     * @param dataQueryDTO
+     * Generates a query for a DTO, but only for retrieving the total records available.
+     * It does so by removing the limit, offset and sort properties of the DTO and replacing the fields with
+     * a single COUNT(*) as 'total' field.
+     * @param dataQueryDTO The original DTO
      * @return
      * @throws InvalidQueryException
      */
-    public String generateTotalQuery(DataQueryDTO dataQueryDTO) throws InvalidQueryException;
+    public String generateTotalQuery(DataQueryDTO dataQueryDTO) throws InvalidQueryException {
+        // Create a copy of the DataQueryDTO:
+        DataQueryDTO totalDataQueryDTO = new DataQueryDTO(dataQueryDTO);
+
+        // Create the count(*) field:
+        DataQueryField countField = new DataQueryField();
+        countField.setAlias("total");
+        FieldFunction countFunction = new FieldFunction();
+        countFunction.setName(QueryFieldFunction.count);
+        HashMap<String, String> countParams = new HashMap<>();
+        countParams.put("all", "true");
+        countFunction.setParams(countParams);
+        countField.setFunc(countFunction);
+
+        // The set fields new fields to the totalDTO:
+        ArrayList<DataQueryField> totalFields = new ArrayList<>();
+        totalFields.add(countField);
+        totalDataQueryDTO.setFields(totalFields);
+
+        // Remove limit, offset and sort from DTO:
+        totalDataQueryDTO.setLimit(0);
+        totalDataQueryDTO.setOffset(0);
+        totalDataQueryDTO.setSort(null);
+
+        // Finally, generate the query and return it:
+        return generateQuery(totalDataQueryDTO);
+    }
 
 	/**
 	 * runs query according to the DTO
 	 * @param query the string of the SQL query
 	 * @return The results of the Query
 	 */
-	public List<Map<String, Object>> executeQuery(String query);
+	public abstract List<Map<String, Object>> executeQuery(String query);
 }

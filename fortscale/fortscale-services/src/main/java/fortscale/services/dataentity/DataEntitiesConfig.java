@@ -1,5 +1,8 @@
 package fortscale.services.dataentity;
 
+import fortscale.services.dataqueries.querydto.DataQueryField;
+import fortscale.services.dataqueries.querydto.QuerySort;
+import fortscale.services.dataqueries.querydto.SortDirection;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
@@ -258,6 +261,48 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 
         Collections.sort(fields);
         entity.setFields(fields);
+
+        List<QuerySort> entityDefaultSort = entityConfig.getDefaultSort();
+
+        if (entityDefaultSort == null){
+        	entityDefaultSort = new ArrayList<QuerySort>();
+        	
+        	String defaultSortConfig = getExtendableValue(entityId, "default_sort");
+        	if (defaultSortConfig == null)
+    			throw new InvalidQueryException("DataEntity '" + entityId + "' doesn't have a default_sort property.");
+        	
+            String[] defaultSortStr = defaultSortConfig.split("\\s*,[,\\s]*");
+            for(String sortStr: defaultSortStr){
+                String[] sortFieldDirection = sortStr.split("\\s+");
+                QuerySort sort = new QuerySort();
+                DataEntityField sortField = entity.getField(sortFieldDirection[0]);
+                if (sortField == null)
+                    throw new InvalidQueryException("Default sort field '" + sortFieldDirection[0] + "' is not found in the '" + entity.getName() + "' entity.");
+
+                DataQueryField queryField = new DataQueryField();
+                queryField.setEntity(entity.getId());
+                queryField.setId(sortField.getId());
+                sort.setField(queryField);
+
+                SortDirection sortDirection;
+
+                // Direction is specified in configuration
+                if (sortFieldDirection.length > 1){
+                    sortDirection = SortDirection.valueOf(sortFieldDirection[1]);
+                    if (sortDirection == null)
+                        throw new InvalidQueryException("Invalid sort direction, '" + sortFieldDirection[1] + "'.");
+                }
+                else
+                    sortDirection = SortDirection.ASC;
+
+                sort.setDirection(sortDirection);
+                entityDefaultSort.add(sort);
+            }
+            
+            entityConfig.setDefaultSort(entityDefaultSort);
+        }
+
+        entity.setDefaultSort(entityDefaultSort);
 
         return entity;
     }
