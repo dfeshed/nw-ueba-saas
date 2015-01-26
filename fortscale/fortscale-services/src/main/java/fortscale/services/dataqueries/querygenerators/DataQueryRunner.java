@@ -21,6 +21,14 @@ public interface DataQueryRunner {
 	 */
 	public String generateQuery(DataQueryDTO dataQueryDTO) throws InvalidQueryException;
 
+    /**
+     * Creates a query for the DTO, but one that only counts the total available results.
+     * @param dataQueryDTO
+     * @return
+     * @throws InvalidQueryException
+     */
+    public String generateTotalQuery(DataQueryDTO dataQueryDTO) throws InvalidQueryException;
+
 	/**
 	 * runs query according to the DTO
 	 * @param query the string of the SQL query
