@@ -127,6 +127,7 @@ public class ComputerServiceTest {
 	@Test
 	public void getComputerUsageType_should_return_computer_usage_type_when_computer_not_in_cache() {
 		Computer computer= getComputer();
+		computer.setName("MY-PC");
 		when(cache.get("MY-PC")).thenReturn(null);
 		when(repository.findByName("MY-PC")).thenReturn(computer);
 		ComputerUsageType computerUsageType = service.getComputerUsageType("MY-PC");
@@ -156,7 +157,9 @@ public class ComputerServiceTest {
 	@Test
 	public void ensureComputerExists_should_add_computer_to_cache_when_computer_exists_in_mongo() {
 		when(cache.get("MY-PC")).thenReturn(null);
-		when(repository.findByName("MY-PC")).thenReturn(new Computer());
+		Computer computer = new Computer();
+		computer.setName("MY-PC");
+		when(repository.findByName("MY-PC")).thenReturn(computer);
 		service.ensureComputerExists("MY-PC");
 		verify(endpointDetectionService,never()).classifyNewComputer(any(Computer.class));
 		verify(repository,never()).save(any(Computer.class));

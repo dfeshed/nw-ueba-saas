@@ -1,4 +1,4 @@
-package fortscale.services.impl;
+package fortscale.services.computer;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
