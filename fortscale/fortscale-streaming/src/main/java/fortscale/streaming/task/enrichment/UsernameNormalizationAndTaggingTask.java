@@ -106,7 +106,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-		// TODO handle updates topics
+		// TODO handle updates topics about existing usernames (normalizationService), and user tags (tagService)
 
 
 		// Get configuration for data source
@@ -130,7 +130,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			}
 
 			UsernameNormalizationService normalizationService = configuration.getValue();
+			// checks in memory-cache and mongo if the user exists
 			normalizedUsername = normalizationService.normalizeUsername(username);
+			// check if we should drop the record (user doesn't exist)
 			if(normalizationService.shouldDropRecord( username, normalizedUsername)){
 				if (logger.isDebugEnabled()) {
 					logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
@@ -139,6 +141,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				return;
 			}
 			if (normalizedUsername == null) {
+				// normalization failed, but we keep the record and generate normalized
 				normalizedUsername = normalizationService.getUsernameAsNormalizedUsername(username, message);
 			}
 			message.put(normalizedUsernameField, normalizedUsername);
@@ -146,13 +149,14 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		}
 
 
-		// add the tags to the event
+		// add the tags to the event - checks in memory-cache and mongo if the user exists with tags
 		tagService.addTagsToEvent(normalizedUsername, message);
 
 
 		// send the event to the output topic
 		String outputTopic = configuration.getKey();
 		try{
+			// TODO send to partition according to username
 			collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
 		} catch(Exception exception){
 			throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, messageText), exception);
