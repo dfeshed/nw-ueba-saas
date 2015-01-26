@@ -16,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import fortscale.services.impl.SensitiveMachineServiceImpl;
+import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.domain.core.dao.ComputerRepository;
 
 public class SensitiveMachineServiceTest {
