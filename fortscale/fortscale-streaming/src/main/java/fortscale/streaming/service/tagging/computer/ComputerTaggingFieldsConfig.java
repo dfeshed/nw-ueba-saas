@@ -1,5 +1,7 @@
 package fortscale.streaming.service.tagging.computer;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Configuration for computer tagging and clustering on a specific event type. This should be constructed from the topology
  * settings or from the streaming task configuration and passed to the ComputerTaggingService in order
@@ -70,5 +72,17 @@ public class ComputerTaggingFieldsConfig {
 
 	public void setCreateNewComputerInstances(boolean createNewComputerInstances) {
 		this.createNewComputerInstances = createNewComputerInstances;
+	}
+
+	public boolean runClassification(){
+		return !StringUtils.isEmpty(getClassificationField());
+	}
+
+	public boolean runClustering(){
+		return !StringUtils.isEmpty(getClassificationField());
+	}
+
+	public boolean runIsSensitiveMachine(){
+		return !StringUtils.isEmpty(getIsSensitiveMachineField());
 	}
 }

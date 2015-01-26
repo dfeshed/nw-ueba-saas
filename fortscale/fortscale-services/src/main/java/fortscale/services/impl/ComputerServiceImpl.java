@@ -134,7 +134,7 @@ public class ComputerServiceImpl implements ComputerService {
 
 			// save the new computer
 			try {
-				cache.put(hostname.toUpperCase(), computer);
+				cache.put(computer.getName(), computer);
 				computer = repository.save(computer);
 			} catch (org.springframework.dao.DuplicateKeyException e) {
 				// safe to ignore as it is saved by some thread that beat us to it
@@ -156,7 +156,7 @@ public class ComputerServiceImpl implements ComputerService {
 		if (computer == null) {
 			computer = repository.findByName(normalizedHostname);
 			if (computer != null)
-				cache.put(normalizedHostname, computer);
+				cache.put(computer.getName(), computer);
 		}
 		return computer;
 	}

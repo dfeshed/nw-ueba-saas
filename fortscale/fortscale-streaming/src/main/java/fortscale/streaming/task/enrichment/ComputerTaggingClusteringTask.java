@@ -117,16 +117,10 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
 		if (topicToServiceMap.containsKey(inputTopic)) {
-			String key = null;
-			if (envelope.getKey() instanceof  String){
-				key = (String) envelope.getKey();
-			}
-			else if (envelope.getKey() instanceof byte[]) {
-				key = new String((byte[]) envelope.getKey());
-			}
+			String key = (String) envelope.getKey();
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
-			if(key != null && key.equals("delete")){
-				cachingService.getCache().remove((String) envelope.getMessage());
+			if(envelope.getMessage() == null){
+				cachingService.getCache().remove(key);
 			}
 			else {
 				cachingService.getCache().putFromString(key, (String) envelope.getMessage());

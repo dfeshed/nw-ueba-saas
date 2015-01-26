@@ -109,7 +109,7 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		assertEquals(HOST_NAME, sensitiveMachineService.getCache().get(HOST_NAME));
 
 		// prepare envelope
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "delete", HOST_NAME, "sensitiveMachineUpdatesTopic");
+		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, HOST_NAME, null, "sensitiveMachineUpdatesTopic");
 
 		// run the process on the envelope
 		task.wrappedProcess(envelope , messageCollector, taskCoordinator);

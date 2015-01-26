@@ -50,7 +50,7 @@ public class KafkaPropogateUpdatesCache<K,T> extends CacheHandler<K,T> {
 
     @Override public void remove(K key) {
         innerCache.remove(key);
-        topicWriter.send("delete",keyAsString(key));
+        topicWriter.send(keyAsString(key),null);
     }
 
     protected String keyAsString(K key){

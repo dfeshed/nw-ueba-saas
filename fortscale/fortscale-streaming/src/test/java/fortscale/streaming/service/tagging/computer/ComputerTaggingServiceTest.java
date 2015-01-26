@@ -3,7 +3,6 @@ package fortscale.streaming.service.tagging.computer;
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
-import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import net.minidev.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import static org.mockito.Mockito.*;
 
 public class ComputerTaggingServiceTest {
 
-	private ComputerTaggingService ComputerTaggingService;
+	private ComputerTaggingService computerTaggingService;
 
 	ComputerService computerService;
 
@@ -25,7 +24,7 @@ public class ComputerTaggingServiceTest {
 		Map<String, ComputerTaggingConfig> configs = createConfigurations();
 		computerService = mock(ComputerService.class);
 		sensitiveMachineService = mock(SensitiveMachineService.class);
-		ComputerTaggingService = new ComputerTaggingService(computerService,sensitiveMachineService,configs);
+		computerTaggingService = new ComputerTaggingService(computerService,sensitiveMachineService,configs);
 
 	}
 
@@ -40,7 +39,7 @@ public class ComputerTaggingServiceTest {
 		when(computerService.getClusterGroupNameForHostname("destination-MY-PC")).thenReturn("cluster2");
 		when(sensitiveMachineService.isMachineSensitive("destination-MY-PC")).thenReturn(false);
 
-		JSONObject enrichedEvent = ComputerTaggingService.enrichEvent("security events input topic", event);
+		JSONObject enrichedEvent = computerTaggingService.enrichEvent("security events input topic", event);
 
 		assertEquals(ComputerUsageType.Server, enrichedEvent.get("source_classification"));
 		assertEquals("cluster", enrichedEvent.get("source_clustering"));
@@ -65,7 +64,7 @@ public class ComputerTaggingServiceTest {
 		when(computerService.getClusterGroupNameForHostname("destination-MY-PC")).thenReturn("cluster2");
 		when(sensitiveMachineService.isMachineSensitive("destination-MY-PC")).thenReturn(false);
 
-		JSONObject enrichedEvent = ComputerTaggingService.enrichEvent("ssh input topic", event);
+		JSONObject enrichedEvent = computerTaggingService.enrichEvent("ssh input topic", event);
 
 		assertEquals(ComputerUsageType.Server, enrichedEvent.get("source_classification1"));
 		assertEquals("cluster", enrichedEvent.get("source_clustering1"));
@@ -82,7 +81,12 @@ public class ComputerTaggingServiceTest {
 	@Test public void getPartitionKey_should_return_partition_field_value() throws Exception {
 		JSONObject event = new JSONObject();
 		event.put("userId", "user1");
-		assertEquals("user1",ComputerTaggingService.getPartitionKey("security events input topic",event));
+		assertEquals("user1", computerTaggingService.getPartitionKey("security events input topic", event));
+	}
+
+	@Test(expected =  Exception.class)
+	public void getOutputTopic_should_throw_exception_in_case_input_topic_not_defined_in_configuration() {
+		computerTaggingService.getOutputTopic("unknown");
 	}
 
 	private Map<String, ComputerTaggingConfig> createConfigurations(){
