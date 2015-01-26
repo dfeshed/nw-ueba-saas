@@ -44,10 +44,9 @@ public class LevelDbBasedCacheTest {
 	}
 
 	@Test
-	public void close_should_flush_and_close_the_inner_cache() throws IOException {
+	public void close_should_flush_the_inner_cache() throws IOException {
 		subject.close();
 		verify(store, times(1)).flush();
-		verify(store, times(1)).close();
 	}
 
 }
