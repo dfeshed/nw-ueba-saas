@@ -44,4 +44,9 @@ public class ScorerBaseTest {
 		}
 		return new EventMessage(jsonObject);
 	}
+	
+	protected void addToEventMessage(EventMessage eventMessage, String fieldName, String fieldValue){
+		JSONObject jsonObject = eventMessage.getJsonObject();
+		jsonObject.put(fieldName, fieldValue);
+	}
 }

@@ -39,7 +39,10 @@ public class ModelScorer extends AbstractScorer{
 		// go over each field in the event and add it to the model
 		PrevalanceModel model = modelService.getModel(context, modelName);
 		
-		double score = model.calculateScore(eventMessage.getJsonObject(), featureFieldName);
+		double score = 0;
+		if(model != null){
+			score = model.calculateScore(eventMessage.getJsonObject(), featureFieldName);
+		}
 		
 		eventMessage.setScore(outputFieldName, score);
 		

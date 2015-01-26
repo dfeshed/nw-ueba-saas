@@ -18,6 +18,10 @@ public class PriorityScorerContainer extends ScorerContainer{
 			}
 		}
 		
+		if(score == null){
+			score = 0d;
+		}
+		
 		eventMessage.setScore(outputFieldName, score);
 		
 		return score;

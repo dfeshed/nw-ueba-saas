@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ContstantRegexScorerFactory implements InitializingBean, ScorerFactory{
-	public static final String SCORER_NAME = "const-regex-scorer";
+	public static final String SCORER_TYPE = "const-regex-scorer";
 	
 	@Autowired
 	private ScorerFactoryService scorerFactoryService;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		scorerFactoryService.register(SCORER_NAME, this);
+		scorerFactoryService.register(SCORER_TYPE, this);
 	}
 
 	@Override

@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MaxScorerContainerFactory  implements InitializingBean, ScorerFactory{
-	private static final String SCORER_NAME = "max-scorer";
+	public static final String SCORER_TYPE = "max-scorer";
 	
 	@Autowired
 	private ScorerFactoryService scorerFactoryService;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		scorerFactoryService.register(SCORER_NAME, this);
+		scorerFactoryService.register(SCORER_TYPE, this);
 	}
 
 	@Override

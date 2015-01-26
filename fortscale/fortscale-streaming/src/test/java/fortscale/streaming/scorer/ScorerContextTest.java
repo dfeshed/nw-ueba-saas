@@ -4,14 +4,9 @@ import static org.mockito.Mockito.when;
 
 import org.apache.samza.config.Config;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:META-INF/spring/scorers-context-test.xml" })
 public class ScorerContextTest extends ScorerBaseTest{	
 	
 	@Test(expected=RuntimeException.class)
@@ -22,10 +17,6 @@ public class ScorerContextTest extends ScorerBaseTest{
 		ScorerFactory scorerFactory = new CyclicDefinitionScorerFactory();
 		scorerFactory.getScorer(scorerName, config, context);
 	}
-	
-	
-	
-	
 	
 	public class CyclicDefinitionScorerFactory implements ScorerFactory{
 		public static final String SCORER_NAME="testFactory";
