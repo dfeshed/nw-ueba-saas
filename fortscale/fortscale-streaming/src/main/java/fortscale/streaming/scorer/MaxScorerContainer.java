@@ -4,8 +4,8 @@ import org.apache.samza.config.Config;
 
 public class MaxScorerContainer extends ScorerContainer {
 
-	public MaxScorerContainer(String scorerName, Config config) {
-		super(scorerName, config);
+	public MaxScorerContainer(String scorerName, Config config, ScorerContext context) {
+		super(scorerName, config, context);
 	}
 
 	@Override

@@ -5,8 +5,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.ml.service.ModelService;
-
 @Component
 public class PriorityScorerContainerFactory implements InitializingBean, ScorerFactory{
 	private static final String SCORER_NAME = "priority-scorer";
@@ -20,8 +18,8 @@ public class PriorityScorerContainerFactory implements InitializingBean, ScorerF
 	}
 
 	@Override
-	public Scorer getScorer(String name, Config config, ModelService modelService) {
-		return new PriorityScorerContainer(name, config);
+	public Scorer getScorer(String name, Config config, ScorerContext context) {
+		return new PriorityScorerContainer(name, config, context);
 	}
 	
 }

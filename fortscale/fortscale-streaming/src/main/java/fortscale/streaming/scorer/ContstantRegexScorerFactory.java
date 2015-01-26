@@ -5,8 +5,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.ml.service.ModelService;
-
 @Component
 public class ContstantRegexScorerFactory implements InitializingBean, ScorerFactory{
 	public static final String SCORER_NAME = "const-regex-scorer";
@@ -20,7 +18,7 @@ public class ContstantRegexScorerFactory implements InitializingBean, ScorerFact
 	}
 
 	@Override
-	public Scorer getScorer(String name, Config config, ModelService modelService) {
+	public Scorer getScorer(String name, Config config, ScorerContext context) {
 		return new ContstantRegexScorer(name, config);
 	}
 	

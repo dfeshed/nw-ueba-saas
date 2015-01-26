@@ -5,10 +5,8 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minidev.json.JSONObject;
@@ -16,7 +14,6 @@ import net.minidev.json.JSONValue;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
-import org.apache.samza.config.ConfigException;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -27,15 +24,13 @@ import org.apache.samza.task.TaskCoordinator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.google.common.collect.Iterables;
-
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.scorer.EventMessage;
 import fortscale.streaming.scorer.Scorer;
+import fortscale.streaming.scorer.ScorerContext;
 import fortscale.streaming.scorer.ScorerFactoryService;
-import fortscale.utils.StringPredicates;
 import fortscale.utils.logging.Logger;
 
 @Configurable(preConstruction=true)
@@ -47,7 +42,6 @@ public class EventsScoreStreamTaskService {
 	private ScorerFactoryService scorerFactoryService;
 
 	private ModelService modelService;
-	private Map<String, Scorer> scorerMap;
 
 	private String outputTopic;
 	private String sourceType;
@@ -76,25 +70,27 @@ public class EventsScoreStreamTaskService {
 	}
 	
 	private void fillScoreConfig(Config config) throws Exception {
-		scorerMap = new HashMap<>();
-		Config fieldsSubset = config.subset("fortscale.score.");		
-		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".scorer"))) {
-			String scorerName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".scorer"));
-			if (StringUtils.isBlank(scorerName))
-				throw new ConfigException("configuration is missing key " + scorerName);
-			String scorerType = getConfigString(config, String.format("fortscale.score.%s.scorer", scorerName));
-			Scorer scorer = scorerFactoryService.getScorer(scorerType, scorerName, config, modelService);
-			checkNotNull(scorer);
-			scorerMap.put(scorerName, scorer);			
-		}
-		
-		for(Scorer scorer: scorerMap.values()){
-			scorer.afterPropertiesSet(scorerMap);
-		}
+//		scorerMap = new HashMap<>();
+//		Config fieldsSubset = config.subset("fortscale.score.");		
+//		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".scorer"))) {
+//			String scorerName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".scorer"));
+//			if (StringUtils.isBlank(scorerName))
+//				throw new ConfigException("configuration is missing key " + scorerName);
+//			String scorerType = getConfigString(config, String.format("fortscale.score.%s.scorer", scorerName));
+//			Scorer scorer = scorerFactoryService.getScorer(scorerType, scorerName, config, modelService);
+//			checkNotNull(scorer);
+//			scorerMap.put(scorerName, scorer);			
+//		}
+//		
+//		for(Scorer scorer: scorerMap.values()){
+//			scorer.afterPropertiesSet(scorerMap);
+//		}
 		
 		List<String> scorers = getConfigStringList(config, "fortscale.scorers");
+		ScorerContext context = new ScorerContext(config);
+		context.setBean("modelService", modelService);
 		for(String ScorerStr: scorers){
-			Scorer scorer = scorerMap.get(ScorerStr);
+			Scorer scorer = (Scorer) context.resolve(Scorer.class, ScorerStr);
 			checkNotNull(scorer);
 			scorersToRun.add(scorer);
 		}

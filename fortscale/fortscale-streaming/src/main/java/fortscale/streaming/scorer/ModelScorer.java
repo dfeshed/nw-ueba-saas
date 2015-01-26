@@ -1,8 +1,7 @@
 package fortscale.streaming.scorer;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
-
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
@@ -20,12 +19,13 @@ public class ModelScorer extends AbstractScorer{
 	private String contextFieldName;
 	private String featureFieldName;
 
-	public ModelScorer(String scorerName, Config config,  ModelService modelService){
+	public ModelScorer(String scorerName, Config config, ScorerContext context){
 		super(scorerName,config);
 		modelName = getConfigString(config, String.format("fortscale.score.%s.model.name", scorerName));
 		featureFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.fieldname", scorerName, modelName));
 		contextFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.context.fieldname", scorerName, modelName));
-		this.modelService = modelService;
+		this.modelService = (ModelService) context.resolve(ModelService.class, "modelService");
+		checkNotNull(modelService);
 	}
 
 	@Override
@@ -45,7 +45,4 @@ public class ModelScorer extends AbstractScorer{
 		
 		return score;
 	}
-
-	@Override
-	public void afterPropertiesSet(Map<String, Scorer> scorerMap) {}
 }

@@ -4,8 +4,8 @@ import org.apache.samza.config.Config;
 
 public class PriorityScorerContainer extends ScorerContainer{
 
-	public PriorityScorerContainer(String scorerName, Config config) {
-		super(scorerName, config);
+	public PriorityScorerContainer(String scorerName, Config config, ScorerContext context) {
+		super(scorerName, config, context);
 	}
 
 	@Override

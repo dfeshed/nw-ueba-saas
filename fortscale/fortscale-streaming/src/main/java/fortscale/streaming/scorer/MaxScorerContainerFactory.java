@@ -5,8 +5,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.ml.service.ModelService;
-
 @Component
 public class MaxScorerContainerFactory  implements InitializingBean, ScorerFactory{
 	private static final String SCORER_NAME = "max-scorer";
@@ -20,8 +18,8 @@ public class MaxScorerContainerFactory  implements InitializingBean, ScorerFacto
 	}
 
 	@Override
-	public Scorer getScorer(String name, Config config,	ModelService modelService) {
-		return new MaxScorerContainer(name, config);
+	public Scorer getScorer(String name, Config config, ScorerContext context) {
+		return new MaxScorerContainer(name, config, context);
 	}
 
 }

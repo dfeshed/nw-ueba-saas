@@ -6,8 +6,6 @@ import java.util.Map;
 import org.apache.samza.config.Config;
 import org.springframework.stereotype.Service;
 
-import fortscale.ml.service.ModelService;
-
 @Service
 public class ScorerFactoryService {
 
@@ -21,7 +19,7 @@ public class ScorerFactoryService {
 		return scorerFactoryMap.get(key);
 	}
 	
-	public Scorer getScorer(String scorerType, String scorerName, Config config, ModelService modelService){
-		return getScorerFactory(scorerType).getScorer(scorerName, config, modelService);
+	public Scorer getScorer(String scorerType, String scorerName, Config config, ScorerContext context){
+		return getScorerFactory(scorerType).getScorer(scorerName, config, context);
 	}
 }

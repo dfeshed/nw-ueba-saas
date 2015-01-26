@@ -5,8 +5,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.ml.service.ModelService;
-
 @Component
 public class ModelScorerFactory implements InitializingBean, ScorerFactory{
 	private static final String SCORER_NAME = "model-scorer";
@@ -20,8 +18,8 @@ public class ModelScorerFactory implements InitializingBean, ScorerFactory{
 	}
 
 	@Override
-	public Scorer getScorer(String name, Config config, ModelService modelService) {
-		return new ModelScorer(name, config, modelService);
+	public Scorer getScorer(String name, Config config, ScorerContext context) {
+		return new ModelScorer(name, config, context);
 	}
 	
 }

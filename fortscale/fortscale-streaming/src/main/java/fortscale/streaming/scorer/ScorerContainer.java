@@ -5,27 +5,20 @@ import static fortscale.streaming.ConfigUtils.getConfigStringList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.samza.config.Config;
 
 public abstract class ScorerContainer extends AbstractScorer{
 
-	protected List<String> scorersStr;
 	protected List<Scorer> scorers = new ArrayList<>();
 	
-	public ScorerContainer(String scorerName, Config config){
+	public ScorerContainer(String scorerName, Config config, ScorerContext context){
 		super(scorerName,config);
-		scorersStr = getConfigStringList(config, String.format("fortscale.score.%s.scorers",scorerName));
-	}
-
-	@Override
-	public void afterPropertiesSet(Map<String, Scorer> scorerMap) {
-		for(String scorerName: scorersStr){
-			Scorer scorer = scorerMap.get(scorerName);
+		List<String> scorersStr = getConfigStringList(config, String.format("fortscale.score.%s.scorers",scorerName));
+		for(String elem: scorersStr){
+			Scorer scorer = (Scorer) context.resolve(Scorer.class, elem);
 			checkNotNull(scorer);
 			scorers.add(scorer);
 		}
-
 	}
 }
