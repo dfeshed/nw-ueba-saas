@@ -38,6 +38,7 @@ public class DhcpEventTest {
         DhcpEvent actual = mapper.readValue(message, DhcpEvent.class);
 
         Assert.assertNotNull(actual);
+        Assert.assertEquals(new DateTime(1422189771865L), actual.getCreatedAt());
     }
 
 }
