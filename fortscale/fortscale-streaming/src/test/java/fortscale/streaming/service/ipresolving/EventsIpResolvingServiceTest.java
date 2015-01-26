@@ -76,9 +76,9 @@ public class EventsIpResolvingServiceTest {
         Assert.assertEquals("output", actual);
     }
 
-    @Test(expected=RuntimeException.class)
-    public void service_should_throw_an_exception_in_case_of_unknown_input_topic() {
-        service.getOutputTopic("unknown");
+    @Test(expected =  Exception.class)
+    public void service_should_fail_output_topic_in_case_of_unknown_input_topic() {
+        String actual = service.getOutputTopic("unknown");
     }
 
 
