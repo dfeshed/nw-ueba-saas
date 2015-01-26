@@ -68,7 +68,7 @@ public class EventsIpResolvingService {
         if (config==null)
             return event;
 
-        return event.get(config.getPartitionField());
+        return event.get(config.getPartitionField()).toString();
     }
 
 }
