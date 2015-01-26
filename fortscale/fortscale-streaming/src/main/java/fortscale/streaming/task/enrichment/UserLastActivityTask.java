@@ -5,6 +5,7 @@ import fortscale.services.UserService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.utils.TimestampUtils;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
@@ -112,7 +113,8 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) JSONValue.parseWithException(messageText);
 
 		// get the timestamp from the event
-		Long timestamp = convertToLong(message.get(timestampField));
+		Long timestamp = TimestampUtils.convertToMilliSeconds(convertToLong(message.get(timestampField)));
+		
 		if (timestamp == null) {
 			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
 			throw new StreamMessageNotContainFieldException(messageText, timestampField);
