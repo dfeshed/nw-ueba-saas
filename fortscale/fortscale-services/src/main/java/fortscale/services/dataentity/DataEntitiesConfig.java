@@ -217,8 +217,9 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 
                 Boolean isDefaultEnabled = fieldConfig.getDefaultEnabled();
                 if (isDefaultEnabled == null){
-                    String isDefaultEnabledStr = getExtendableValue(entityId, "field", fieldId, "enabled");
+                    String isDefaultEnabledStr = getExtendableValue(entityId, "field", fieldId, "enabledByDefault");
                     isDefaultEnabled = isDefaultEnabledStr == null || !isDefaultEnabledStr.equals("false");
+                    isDefaultEnabled = isDefaultEnabled && !getFieldIsExplicit(entityId, fieldId);
                     fieldConfig.setDefaultEnabled(isDefaultEnabled);
                 }
                 field.setIsDefaultEnabled(isDefaultEnabled);
@@ -238,20 +239,31 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
                     fieldConfig.setSearchable(isSearchable);
                 }
                 field.setSearchable(isSearchable);
-                
+
+                int rank = fieldConfig.getRank();
+                if (fieldConfig.isDefaultRank()){
+                    String rankStr = getExtendableValue(entityId, "field", fieldId, "rank");
+                    if (rankStr != null) {
+                        rank = Integer.parseInt(rankStr);
+                        fieldConfig.setRank(rank);
+                    }
+                }
+                field.setRank(rank);
+
                 fields.add(field);
             } catch(Exception error){
                 throw new Exception(String.format("Can't read field %s of entity %s", fieldId, entityId));
             }
         }
 
+        Collections.sort(fields);
         entity.setFields(fields);
 
         return entity;
     }
 
     /**
-     * Get the entite partition Strategy
+     * Get the entity partition Strategy
      * @param entityId
      * @return PartitionStrategy - The partition strategy of the entity
      * @throws Exception
