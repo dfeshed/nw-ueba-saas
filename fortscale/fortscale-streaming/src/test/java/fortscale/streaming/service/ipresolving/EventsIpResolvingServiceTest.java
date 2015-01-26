@@ -76,10 +76,9 @@ public class EventsIpResolvingServiceTest {
         Assert.assertEquals("output", actual);
     }
 
-    @Test
-    public void service_should_return_null_output_topic_in_case_of_unknown_input_topic() {
-        String actual = service.getOutputTopic("unknown");
-        Assert.assertNull(actual);
+    @Test(expected=RuntimeException.class)
+    public void service_should_throw_an_exception_in_case_of_unknown_input_topic() {
+        service.getOutputTopic("unknown");
     }
 
 
