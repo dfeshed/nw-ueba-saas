@@ -3,7 +3,7 @@ package fortscale.streaming.service.tagging.computer;
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.CachingService;
 import fortscale.services.ComputerService;
-import fortscale.services.SensitiveMachineService;
+import fortscale.services.computer.SensitiveMachineService;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;

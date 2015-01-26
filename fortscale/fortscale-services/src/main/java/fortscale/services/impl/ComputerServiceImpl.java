@@ -41,19 +41,24 @@ public class ComputerServiceImpl implements ComputerService {
 
 	private static Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
 
-	@Autowired private ComputerRepository repository;
+	@Autowired
+	private ComputerRepository repository;
 
-	@Autowired private FilterMachinesService filterMachinesService;
+	@Autowired
+	private FilterMachinesService filterMachinesService;
 
-	@Autowired private EndpointDetectionService endpointDetectionService;
+	@Autowired
+	private EndpointDetectionService endpointDetectionService;
 
-	@Value("${computer.cluster.regex.patterns:}") private String clusterGroupsRegexProperty;
+	@Value("${computer.cluster.regex.patterns:}")
+	private String clusterGroupsRegexProperty;
 
 	private RegexMatcher clusterMatcher;
 
 	private ADParser parser = new ADParser();
 
-	@Autowired @Qualifier("computerServiceCache")
+	@Autowired
+	@Qualifier("computerServiceCache")
 	private CacheHandler<String, Computer> cache;
 
 	public boolean isHostnameInAD(String hostname) {

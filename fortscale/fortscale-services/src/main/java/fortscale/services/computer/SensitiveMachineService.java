@@ -1,4 +1,6 @@
-package fortscale.services;
+package fortscale.services.computer;
+
+import fortscale.services.CachingService;
 
 import java.io.IOException;
 

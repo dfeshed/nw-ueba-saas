@@ -1,5 +1,5 @@
 
-package fortscale.services.impl;
+package fortscale.services.computer;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,11 +20,9 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import fortscale.services.SensitiveMachineService;
+import fortscale.services.computer.SensitiveMachineService;
 import fortscale.domain.core.dao.ComputerRepository;
 
-@Service("sensitiveMachineService")
-@Configurable(preConstruction=true)
 public class SensitiveMachineServiceImpl implements SensitiveMachineService, InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(SensitiveMachineServiceImpl.class);

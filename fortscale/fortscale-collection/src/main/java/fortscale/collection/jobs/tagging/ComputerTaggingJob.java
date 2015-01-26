@@ -5,7 +5,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.services.SensitiveMachineService;
+import fortscale.services.computer.SensitiveMachineService;
 
 public class ComputerTaggingJob extends FortscaleJob{
 	

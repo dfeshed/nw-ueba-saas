@@ -121,4 +121,8 @@
 
 	<bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
 
+	<bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
+
+
+
 </beans>
