@@ -8,6 +8,8 @@ import static fortscale.utils.ConversionUtils.convertToString;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.Map;
  * sends the enriched event to the designated output topic.
  */
 public class EventsIpResolvingService {
+
+    public static Logger logger = LoggerFactory.getLogger(EventsIpResolvingService.class);
 
     private IpToHostnameResolver resolver;
     private Map<String, EventResolvingConfig> configs = new HashMap<>();
@@ -37,8 +41,10 @@ public class EventsIpResolvingService {
 
         // get the configuration for the input topic, if not found skip this event
         EventResolvingConfig config = configs.get(inputTopic);
-        if (config==null)
+        if (config==null) {
+            logger.error("received event from topic {} that does not appear in configuration", inputTopic);
             return event;
+        }
 
 
         // get the ip address and timestamp fields from the event
@@ -55,7 +61,10 @@ public class EventsIpResolvingService {
     }
 
     public String getOutputTopic(String inputTopic) {
-        return (configs.containsKey(inputTopic))? configs.get(inputTopic).getOutputTopic() : null;
+        if (configs.containsKey(inputTopic))
+            return configs.get(inputTopic).getOutputTopic();
+        else
+            throw new RuntimeException("received events from topic " + inputTopic + " that does not appear in configuration");
     }
 
     /** Get the partition key to use for outgoing message envelope for the given event */
@@ -63,10 +72,12 @@ public class EventsIpResolvingService {
         checkNotNull(inputTopic);
         checkNotNull(event);
 
-        // get the configuration for the input topic, if not found skip this event
+        // get the configuration for the input topic, if not found return empty key
         EventResolvingConfig config = configs.get(inputTopic);
-        if (config==null)
-            return event;
+        if (config==null) {
+            logger.error("received event from topic {} that does not appear in configuration", inputTopic);
+            return null;
+        }
 
         return event.get(config.getPartitionField()).toString();
     }
