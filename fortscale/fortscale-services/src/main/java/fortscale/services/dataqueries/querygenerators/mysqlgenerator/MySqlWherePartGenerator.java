@@ -2,6 +2,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
 
+import fortscale.services.dataentity.QueryValueType;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators.MySqlOperator;
@@ -141,9 +142,9 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
             sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, true));
         else {
             // The operator might need to add something to the value:
-            String value = operator.getOperatorValue(conditionField.getValue());
-
-            sb.append(mySqlValueGenerator.generateSql(value, dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn)));
+            QueryValueType type = dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn);
+            String value = operator.getOperatorValue(mySqlValueGenerator, conditionField.getValue(), type );
+            sb.append(value);
         }
         return sb.toString();
     }

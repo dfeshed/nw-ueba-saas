@@ -1,5 +1,9 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators;
 
+import fortscale.services.dataentity.QueryValueType;
+import fortscale.services.dataqueries.querydto.ConditionField;
+import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlValueGenerator;
+
 /**
  * Created by Yossi on 21/01/2015.
  */
@@ -8,7 +12,10 @@ public class MySqlEndsWithOperator extends MySqlOperator {
         this.sqlOperator = "LIKE";
         this.requiresValue = true;
     }
-    public String getOperatorValue(String value){
-        return "%" + value;
+
+
+    @Override
+    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type){
+        return super.getOperatorValue(mySqlValueGenerator, "%" + value , type);
     }
 }
