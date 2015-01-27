@@ -94,7 +94,6 @@ public class PrevalanceModelStreamingService extends ModelServiceImpl{
 						// model might be null in case of a serialization error, in that case
 						// we don't want to fail here and the error is logged in the serde implementation 
 						super.updateUserModel(username, model);
-						changedModelsTimestampMap.remove(key);
 					}
 				} catch (Exception e) {
 					logger.error("error persisting model {} for user {} into repository", modelBuilder.getModelName(), username, e);
@@ -106,6 +105,7 @@ public class PrevalanceModelStreamingService extends ModelServiceImpl{
 			// report error to log and swallow that exception as 
 			logger.error("error exporting models to mongodb from streaming task", e);
 		}
+		changedModelsTimestampMap.clear();
 	}
 	
 	class PrevalanceModelKey extends Object{
