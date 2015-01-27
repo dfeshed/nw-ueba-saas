@@ -62,4 +62,19 @@
     <bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
 
 
+    <!-- Username normalization -->
+
+    <bean id="SecurityUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService">
+        <property name="dropOnFail" value="${normalizedUser.fail.filter}"/>
+        <property name="usernameNormalizer" ref="secUsernameNormalizer"/>
+    </bean>
+    <bean id="VpnUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService">
+        <property name="dropOnFail" value="${normalizedUser.fail.filter}"/>
+        <property name="usernameNormalizer" ref="vpnUsernameNormalizer"/>
+    </bean>
+    <bean id="SshUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.SshUsernameNormalizationService">
+        <property name="dropOnFail" value="${normalizedUser.fail.filter}"/>
+        <property name="usernameNormalizer" ref="sshUsernameNormalizer"/>
+    </bean>
+
 </beans>

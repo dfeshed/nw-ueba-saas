@@ -13,6 +13,8 @@ public class UsernameNormalizationService {
 	@Value("${normalizedUser.fail.filter:false}")
 	protected boolean dropOnFail;
 
+	protected UsernameNormalizer usernameNormalizer;
+
 	/**
 	 * Normalize username
 	 * @param username the original username
@@ -49,8 +51,21 @@ public class UsernameNormalizationService {
 		return username.toLowerCase();
 	}
 
-	protected UsernameNormalizer getUsernameNormalizer(){
-		return null;
+	// -- Getters and Setters
+
+	public boolean isDropOnFail() {
+		return dropOnFail;
 	}
 
+	public void setDropOnFail(boolean dropOnFail) {
+		this.dropOnFail = dropOnFail;
+	}
+
+	public UsernameNormalizer getUsernameNormalizer() {
+		return usernameNormalizer;
+	}
+
+	public void setUsernameNormalizer(UsernameNormalizer usernameNormalizer) {
+		this.usernameNormalizer = usernameNormalizer;
+	}
 }

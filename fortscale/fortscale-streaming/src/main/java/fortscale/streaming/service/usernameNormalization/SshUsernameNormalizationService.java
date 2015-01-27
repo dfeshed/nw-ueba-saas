@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
- * Date: 24/01/2015.
- */
+* Date: 24/01/2015.
+*/
 public class SshUsernameNormalizationService extends UsernameNormalizationService {
 
 	@Autowired
@@ -27,7 +27,7 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 
 
 	@Override
-	protected UsernameNormalizer getUsernameNormalizer(){
+	public UsernameNormalizer getUsernameNormalizer(){
 		return sshUsernameNormalizer;
 	}
 
