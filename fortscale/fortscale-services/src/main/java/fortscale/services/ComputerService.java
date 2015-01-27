@@ -1,9 +1,12 @@
 package fortscale.services;
 
 import fortscale.domain.ad.AdComputer;
+import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageType;
 
-public interface ComputerService {
+import java.io.IOException;
+
+public interface ComputerService extends CachingService{
 
 	/**
 	 * Determines if the computer hostname is taken from active directory

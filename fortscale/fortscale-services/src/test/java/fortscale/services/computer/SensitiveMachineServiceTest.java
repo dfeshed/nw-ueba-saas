@@ -1,4 +1,4 @@
-package fortscale.collection.tagging.service;
+package fortscale.services.computer;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -7,18 +7,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import fortscale.services.cache.CacheHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import fortscale.collection.tagging.service.impl.SensitiveMachineServiceImpl;
+import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.domain.core.dao.ComputerRepository;
 
 public class SensitiveMachineServiceTest {
@@ -35,12 +33,31 @@ public class SensitiveMachineServiceTest {
 		
 		List<String> computers = new ArrayList<String>();
 		computers.add("MY-PC");
-		computers.add("ANOTHER-PC");
+		computers.add("ANOTHER-PC2");
 		when(computerRepository.findNameByIsSensitive(true)).thenReturn(computers);
-		Set<String> sensitiveMachines = new HashSet<String>();
-		sensitiveMachines.add("MY-PC");
-		sensitiveMachines.add("ANOTHER-PC");
-		service.setSensitiveMachines(sensitiveMachines);
+		CacheHandler<String,String> cache = new CacheHandler<String, String>(String.class) {
+
+			Map<String,String> simpleCacheImpl = new HashMap<>();
+
+			@Override public String get(String key) {
+				return simpleCacheImpl.get(key);
+			}
+
+			@Override public void put(String key, String value) {
+				simpleCacheImpl.put(key,value);
+			}
+
+			@Override public void remove(String key) {
+				simpleCacheImpl.remove(key);
+			}
+
+			@Override public void close() throws IOException {
+				simpleCacheImpl = null;
+			}
+		};
+		cache.put("MY-PC","MY-PC");
+		cache.put("ANOTHER-PC","ANOTHER-PC");
+		service.setCache(cache);
 		service.setDeletionSymbol("-");
 
 	}
@@ -57,10 +74,10 @@ public class SensitiveMachineServiceTest {
 
 	@Test
 	public void test_loadSensitiveMachinesFromMongo_output() {
-		Set<String> out = new HashSet<String>();
-		out.add("MY-PC");
-		out.add("ANOTHER-PC");
-		assertEquals(service.loadSensitiveMachinesFromMongo(), out);
+		service.refreshSensitiveMachines();
+		assertEquals(service.getCache().get("MY-PC"), "MY-PC");
+		assertEquals(service.getCache().get("ANOTHER-PC"), "ANOTHER-PC");
+		assertEquals(service.getCache().get("ANOTHER-PC2"), "ANOTHER-PC2");
 	}
 
 	@Test
@@ -69,7 +86,7 @@ public class SensitiveMachineServiceTest {
 		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
 				true);
 		service.updateSensitiveMachines();
-		assertTrue(service.getSensitiveMachines().contains("DUMMY-PC") == true);
+		assertEquals(service.getCache().get("DUMMY-PC"), "DUMMY-PC");
 	}
 	
 	@Test
@@ -78,9 +95,10 @@ public class SensitiveMachineServiceTest {
 		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
 			true);
 		service.updateSensitiveMachines();
-		assertTrue(service.getSensitiveMachines().contains("DUMMY-PC") == true);
-		assertTrue(service.getSensitiveMachines().contains("X-PC") == true);
-		assertTrue(service.getSensitiveMachines().contains("Y-PC") == true);
+		assertEquals(service.getCache().get("MY-PC"), "MY-PC");
+		assertEquals(service.getCache().get("DUMMY-PC"), "DUMMY-PC");
+		assertEquals(service.getCache().get("X-PC"), "X-PC");
+		assertEquals(service.getCache().get("Y-PC"), "Y-PC");
 	}
 	
 	@Test
@@ -89,8 +107,7 @@ public class SensitiveMachineServiceTest {
 		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
 				false);
 		service.updateSensitiveMachines();
-		assertTrue(service.getSensitiveMachines().contains("DUMMY-PC") == false);
-		
+		assertNull(service.getCache().get("DUMMY-PC"));
 	}
 	
 	@Test
@@ -99,7 +116,9 @@ public class SensitiveMachineServiceTest {
 		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
 				true);
 		service.updateSensitiveMachines();
-		assertTrue(service.getSensitiveMachines().contains("MY-PC") == false);
+		assertNull(service.getCache().get("DUMMY-PC"));
+		assertNull(service.getCache().get("MY-PC"));
+		assertEquals(service.getCache().get("ANOTHER-PC"), "ANOTHER-PC");
 	}
 	
 	@Test
@@ -107,9 +126,10 @@ public class SensitiveMachineServiceTest {
 		creatingMachinesFile("-DUMMY-PC");
 		when(computerRepository.findIfComputerExists(anyString())).thenReturn(
 				true);
-		Set<String> oldSensitiveMachine = new HashSet<String>(service.getSensitiveMachines());
 		service.updateSensitiveMachines();
-		assertEquals(service.getSensitiveMachines(), oldSensitiveMachine);
+		assertNull(service.getCache().get("DUMMY-PC"));
+		assertEquals(service.getCache().get("MY-PC"), "MY-PC");
+		assertEquals(service.getCache().get("ANOTHER-PC"), "ANOTHER-PC");
 		
 	}
 	

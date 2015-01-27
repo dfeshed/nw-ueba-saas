@@ -2,7 +2,7 @@ package fortscale.services.ipresolving;
 
 import java.io.IOException;
 
-import fortscale.services.ipresolving.cache.ResolvingCache;
+import fortscale.services.cache.CacheHandler;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +31,12 @@ public class DnsResolver implements InitializingBean {
 	// requests against the dns server
 	@Autowired
 	@Qualifier("dnsResolverCache")
-	private ResolvingCache<String> dnsCache;
+	private CacheHandler<String,String> dnsCache;
 	// blackIpHashSetCache is used to keep track of ip addresses that couldn't not be resolved into hostname using
 	// the dns servers. We keep track of those ip addresses to prevent us from looking them up over and over again
 	@Autowired
 	@Qualifier("dnsBlacklistCache")
-	private ResolvingCache<Boolean> blackIpHashSetCache;
+	private CacheHandler<String,Boolean> blackIpHashSetCache;
 
 	@Value("${dns.resolver.maxQueriesPerHour:1000}")
 	private int maxQueries;
@@ -56,11 +56,11 @@ public class DnsResolver implements InitializingBean {
 
 	private String[] dnsServersArray;
 
-	public void setDnsCache(ResolvingCache<String> dnsCache) {
+	public void setDnsCache(CacheHandler<String,String> dnsCache) {
 		this.dnsCache = dnsCache;
 	}
 
-	public void setBlackIpHashSetCache(ResolvingCache<Boolean> blackIpHashSetCache) {
+	public void setBlackIpHashSetCache(CacheHandler<String,Boolean> blackIpHashSetCache) {
 		this.blackIpHashSetCache = blackIpHashSetCache;
 	}
 
