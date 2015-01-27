@@ -292,7 +292,6 @@ public class ApiController extends BaseController {
                 info.put("totalQuery", totalQuery);
             }
 
-            retBean.setData(resultsMap);
             retBean.setTotal(total);
 
 			retBeanForPage.setInfo(info);
