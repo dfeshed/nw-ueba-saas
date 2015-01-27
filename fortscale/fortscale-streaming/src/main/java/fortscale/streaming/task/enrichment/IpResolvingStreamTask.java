@@ -1,4 +1,4 @@
-package fortscale.streaming.task;
+package fortscale.streaming.task.enrichment;
 
 import static fortscale.streaming.ConfigUtils.*;
 
@@ -9,6 +9,7 @@ import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.ipresolving.*;
+import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
