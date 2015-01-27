@@ -1,5 +1,7 @@
 package fortscale.domain.events;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import fortscale.utils.json.JodaDateSerializer;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -23,6 +25,7 @@ public class IpToHostname extends AbstractDocument{
 	@Indexed(unique = false, expireAfterSeconds=60*60*50)
 	@CreatedDate
 	@Field(CREATED_AT_FIELD_NAME)
+	@JsonSerialize(using = JodaDateSerializer.class)
 	protected DateTime createdAt;
 	
 	@Field(TIMESTAMP_EPOCH_FIELD_NAME)

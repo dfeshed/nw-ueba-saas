@@ -13,6 +13,9 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 
@@ -45,20 +48,21 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 		}
 */
 		PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy("daily");
-		Mockito.when(dataEntitiesConfig.getEntityPartitionStrategy(dataQueryDTO1.getEntities()[0])).thenReturn(partitionStrategy);
+		when(dataEntitiesConfig.getEntityPartitionStrategy(dataQueryDTO1.getEntities()[0])).thenReturn(partitionStrategy);
 		ArrayList<String> partitionsBaseFields = new ArrayList<String>();
 		partitionsBaseFields.add("event_time_utc");
 
-		Mockito.when(dataEntitiesConfig.getEntityPartitionBaseField(dataQueryDTO1.getEntities()[0])).thenReturn(partitionsBaseFields);
-		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.getEntities()[0],partitionsBaseFields.get(0))).thenReturn("date_time_unix");
-		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.getEntities()[0],"yearmonthday")).thenReturn("date_time_unix");
+		when(dataEntitiesConfig.getEntityPartitionBaseField(any(String.class))).thenReturn(partitionsBaseFields);
+		when(dataEntitiesConfig.getFieldColumn(any(String.class), any(String.class))).thenReturn("date_time_unix");
+		when(dataEntitiesConfig.getFieldColumn(any(String.class), eq("yearmonthday"))).thenReturn("date_time_unix");
 
-		Mockito.when(dataEntitiesConfig.getFieldColumn(dataQueryDTO1.getEntities()[0],"event_score")).thenReturn("eventscore");
+		when(dataEntitiesConfig.getFieldColumn(any(String.class), eq("event_score"))).thenReturn("eventscore");
 
-		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "yearmonthday")).thenReturn(QueryValueType.DATE_TIME);
-		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "event_score")).thenReturn(QueryValueType.NUMBER);
-		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "date_time_unix")).thenReturn(QueryValueType.DATE_TIME);
-		Mockito.when(dataEntitiesConfig.getFieldType(dataQueryDTO1.getEntities()[0], "event_time_utc")).thenReturn(QueryValueType.DATE_TIME);
+		when(dataEntitiesConfig.getFieldType(any(String.class), eq("yearmonthday"),any(Boolean.class))).thenReturn(QueryValueType.TIMESTAMP);
+		when(dataEntitiesConfig.getFieldType(any(String.class), eq("event_score"),any(Boolean.class))).thenReturn(QueryValueType.NUMBER);
+		when(dataEntitiesConfig.getFieldType(any(String.class), eq("user_name"),any(Boolean.class))).thenReturn(QueryValueType.STRING);
+		when(dataEntitiesConfig.getFieldType(any(String.class), eq("date_time_unix"),any(Boolean.class))).thenReturn(QueryValueType.TIMESTAMP);
+		when(dataEntitiesConfig.getFieldType(any(String.class), eq("event_time_utc"),any(Boolean.class))).thenReturn(QueryValueType.TIMESTAMP);
 
 
 	}
@@ -70,6 +74,14 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 		String sqlStr = mySqlWherePartGenerator.generateQueryPart(dataQueryDTO1);
 		String expectedString = "WHERE yearmonthday >= 20141024 AND yearmonthday <= 20141026 AND (eventscore >= 50 AND date_time_unix >= 1414184400 AND date_time_unix <= 1414360799)";
 		assertEquals("SQL Where part for DTO1" , expectedString, sqlStr);
+	}
+
+	@Test
+	public void mySqlWherePartGenerator_should_generate_correct_where_condition()
+			throws Exception {
+		String sqlStr = mySqlWherePartGenerator.generateQueryPart(complexWhereDTO);
+		String expectedString = "WHERE yearmonthday >= 20141024 AND yearmonthday <= 20141026 AND (date_time_unix >= 1414184400 AND date_time_unix <= 1414360799 AND eventscore IN ( 50 , 70 ) AND date_time_unix IN ( \"my_user_name\" ) AND date_time_unix BETWEEN  \"my_user_name1\" AND \"my_user_name2\"  AND date_time_unix BETWEEN  1414360799 AND 1414360800  AND date_time_unix LIKE \"%my_user_name\" AND date_time_unix LIKE \"my_user_name%\" AND date_time_unix LIKE \"%my_user_name%\" AND eventscore IS NOT NULL  AND eventscore IS NULL )";
+		assertEquals("SQL Where part for complexWhereDTO" , expectedString, sqlStr);
 	}
 }
 
