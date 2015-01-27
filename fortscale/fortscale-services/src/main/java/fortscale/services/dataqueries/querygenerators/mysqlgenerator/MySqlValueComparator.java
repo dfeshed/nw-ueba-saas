@@ -1,18 +1,13 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataentity.QueryValueType;
-import fortscale.utils.TimestampUtils;
-import org.springframework.stereotype.Component;
-
-import java.text.SimpleDateFormat;
 import java.util.Comparator;
-import java.util.Date;
+
 
 /**
- * Created by Yossi on 03/11/2014.
- * Service for validating and generating a value in an SQL query according to a value from a DTO
+ *
+ * Comparator between two Sql values
  */
-@Component
 public class MySqlValueComparator implements Comparator<String>{
 
     private QueryValueType type;
