@@ -72,4 +72,33 @@ public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 		Assert.assertNotNull(score);
 		Assert.assertEquals(20.0d, score, 0.0);
 	}
+	
+	@Test
+	public void testDstMachineScoreHighest() throws Exception{
+		List<Scorer> scorers = buildScorersFromTaskConfig("config/ssh-prevalance-stats.properties");
+		Scorer scorer = scorers.get(0);
+		
+		EventMessage eventMessage = buildEventMessage(true, CONTEXT_NAME, CONTEXT);
+//		addToEventMessage(eventMessage, DATE_TIME_FIELD_NAME, CONTEXT);
+		when(model.calculateScore(eventMessage.getJsonObject(), DATE_TIME_FIELD_NAME)).thenReturn(50d);
+		when(model.calculateScore(eventMessage.getJsonObject(), NORMALIZE_DST_MACHINE_FIELD_NAME)).thenReturn(90d);
+		when(model.calculateScore(eventMessage.getJsonObject(), NORMALIZE_SRC_MACHINE_FIELD_NAME)).thenReturn(30d);
+		when(model.calculateScore(eventMessage.getJsonObject(), AUTH_METHOD_FIELD_NAME)).thenReturn(20d);
+		
+		Double score = scorer.calculateScore(eventMessage);
+		Assert.assertNotNull(score);
+		Assert.assertEquals(90.0d, score, 0.0);
+		score = eventMessage.getScore(DATE_TIME_OUTPUT_FIELD_NAME);
+		Assert.assertNotNull(score);
+		Assert.assertEquals(50.0d, score, 0.0);
+		score = eventMessage.getScore(NORMALIZE_DST_MACHINE_OUTPUT_FIELD_NAME);
+		Assert.assertNotNull(score);
+		Assert.assertEquals(90.0d, score, 0.0);
+		score = eventMessage.getScore(NORMALIZE_SRC_MACHINE_OUTPUT_FIELD_NAME);
+		Assert.assertNotNull(score);
+		Assert.assertEquals(30.0d, score, 0.0);
+		score = eventMessage.getScore(AUTH_METHOD_OUTPUT_FIELD_NAME);
+		Assert.assertNotNull(score);
+		Assert.assertEquals(20.0d, score, 0.0);
+	}
 }
