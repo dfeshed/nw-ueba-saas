@@ -10,6 +10,7 @@ import java.util.List;
  * Created by Yossi on 10/11/2014.
  */
 public class DataEntityConfig {
+    private String id;
     private String name;
     private String shortName;
     private HashMap<String, DataEntityFieldConfig> fields = new HashMap<>();
@@ -25,6 +26,14 @@ public class DataEntityConfig {
     private List<String> partitionsBaseField;
     private String table;
     private List<QuerySort> defaultSort;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getPerformanceTable() {
         return performanceTable;

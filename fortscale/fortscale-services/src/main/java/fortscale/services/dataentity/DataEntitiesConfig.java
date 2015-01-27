@@ -47,6 +47,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         DataEntityConfig entityConfig = entitiesCache.get(entityId);
         if(entityConfig == null){
             entityConfig = new DataEntityConfig();
+            entityConfig.setId(entityId);
             entitiesCache.put(entityId, entityConfig);
         }
 
@@ -262,51 +263,61 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         Collections.sort(fields);
         entity.setFields(fields);
 
-        List<QuerySort> entityDefaultSort = entityConfig.getDefaultSort();
-
-        if (entityDefaultSort == null){
-        	entityDefaultSort = new ArrayList<QuerySort>();
-        	
-        	String defaultSortConfig = getExtendableValue(entityId, "default_sort");
-        	if (defaultSortConfig == null)
-    			throw new InvalidQueryException("DataEntity '" + entityId + "' doesn't have a default_sort property.");
-        	
-            String[] defaultSortStr = defaultSortConfig.split("\\s*,[,\\s]*");
-            for(String sortStr: defaultSortStr){
-                String[] sortFieldDirection = sortStr.split("\\s+");
-                QuerySort sort = new QuerySort();
-                DataEntityField sortField = entity.getField(sortFieldDirection[0]);
-                if (sortField == null)
-                    throw new InvalidQueryException("Default sort field '" + sortFieldDirection[0] + "' is not found in the '" + entity.getName() + "' entity.");
-
-                DataQueryField queryField = new DataQueryField();
-                queryField.setEntity(entity.getId());
-                queryField.setId(sortField.getId());
-                sort.setField(queryField);
-
-                SortDirection sortDirection;
-
-                // Direction is specified in configuration
-                if (sortFieldDirection.length > 1){
-                    sortDirection = SortDirection.valueOf(sortFieldDirection[1]);
-                    if (sortDirection == null)
-                        throw new InvalidQueryException("Invalid sort direction, '" + sortFieldDirection[1] + "'.");
-                }
-                else
-                    sortDirection = SortDirection.ASC;
-
-                sort.setDirection(sortDirection);
-                entityDefaultSort.add(sort);
-            }
-            
-            entityConfig.setDefaultSort(entityDefaultSort);
-        }
-
-        entity.setDefaultSort(entityDefaultSort);
+        if (entityConfig.getDefaultSort() == null)
+            setDataEntityConfigDefaultSort(entityConfig, entity);
+        entity.setDefaultSort(entityConfig.getDefaultSort());
 
         return entity;
     }
 
+    /**
+     * Sets the defaultSort property of entityConfig
+     * @param entityConfig
+     * @param entity
+     * @throws InvalidQueryException
+     */
+    private void setDataEntityConfigDefaultSort(DataEntityConfig entityConfig, DataEntity entity) throws InvalidQueryException{
+        String entityId = entityConfig.getId();
+        List<QuerySort> entityDefaultSort = new ArrayList<>();
+
+        String defaultSortConfig = getExtendableValue(entityId, "default_sort");
+        if (defaultSortConfig == null)
+            throw new InvalidQueryException("DataEntity '" + entityId + "' doesn't have a default_sort property.");
+
+        // The default_sort config property is formatted like this:
+        // default_sort = field1_id [ASC/DESC][, field2_id [ASC/DESC][, field3_id [ASC/DESC]]]
+        // The next code parses the config string by splitting using commas and then extracting the field and direction.
+        // Note that direction is optional, ASC is the default if none was specified.
+        String[] defaultSortStr = defaultSortConfig.split("\\s*,[,\\s]*");
+        for(String sortStr: defaultSortStr){
+            String[] sortFieldDirection = sortStr.split("\\s+");
+            QuerySort sort = new QuerySort();
+            DataEntityField sortField = entity.getField(sortFieldDirection[0]);
+            if (sortField == null)
+                throw new InvalidQueryException("Default sort field '" + sortFieldDirection[0] + "' is not found in the '" + entity.getName() + "' entity.");
+
+            DataQueryField queryField = new DataQueryField();
+            queryField.setEntity(entity.getId());
+            queryField.setId(sortField.getId());
+            sort.setField(queryField);
+
+            SortDirection sortDirection;
+
+            // Direction is specified in configuration
+            if (sortFieldDirection.length > 1){
+                sortDirection = SortDirection.valueOf(sortFieldDirection[1]);
+                if (sortDirection == null)
+                    throw new InvalidQueryException("Invalid sort direction, '" + sortFieldDirection[1] + "'.");
+            }
+            else
+                sortDirection = SortDirection.ASC;
+
+            sort.setDirection(sortDirection);
+            entityDefaultSort.add(sort);
+        }
+
+        entityConfig.setDefaultSort(entityDefaultSort);
+    }
     /**
      * Get the entity partition Strategy
      * @param entityId

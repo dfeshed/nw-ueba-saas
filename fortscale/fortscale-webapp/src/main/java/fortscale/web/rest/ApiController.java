@@ -217,7 +217,7 @@ public class ApiController extends BaseController {
     @ResponseBody
     @LogException
     public DataBean<List<Map<String, Object>>> dataQuery(@RequestParam(required=true) String dataQuery,
-                                                         @RequestParam(required=false) String requestTotal,
+                                                         @RequestParam(defaultValue="false") boolean requestTotal,
                                                          @RequestParam(defaultValue="true") boolean useCache,
                                                          @RequestParam(required=false) Integer page, // starting from 0
                                                          @RequestParam(defaultValue="20") Integer pageSize){
@@ -286,7 +286,7 @@ public class ApiController extends BaseController {
             int total = resultsMap.size();
 
             // If the API caller requested a total count, generate a query for it and set the total to that instead of the current results:
-            if(requestTotal.equalsIgnoreCase("true")) {
+            if(requestTotal) {
                 String totalQuery = dataQueryRunner.generateTotalQuery(dataQueryObject);
                 total = impalaJdbcTemplate.queryForInt(totalQuery);
                 info.put("totalQuery", totalQuery);
