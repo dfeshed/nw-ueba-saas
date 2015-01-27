@@ -76,8 +76,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
 			String dataSource = ConfigField.getKey();
 			String inputTopic = ConfigField.getValue();
-			String outputTopic = String.format(getConfigString(config, "fortscale.events.output.topic.%s"),dataSource);
-			String serviceName = String.format(getConfigString(config, "fortscale.events.normalization.service.%s"),dataSource);
+			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
+			String serviceName = getConfigString(config, String.format("fortscale.events.normalization.service.%s",dataSource));
 			UsernameNormalizationService service = (UsernameNormalizationService)SpringService.getInstance().resolve(serviceName);
 			inputTopicToConfiguration.put(inputTopic, new ImmutablePair<>(outputTopic, service));
 		}
