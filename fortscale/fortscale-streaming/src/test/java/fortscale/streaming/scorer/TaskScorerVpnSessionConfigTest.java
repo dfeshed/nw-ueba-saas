@@ -8,6 +8,6 @@ public class TaskScorerVpnSessionConfigTest extends TaskScorerConfigTest{
 
 	@Test
 	public void testSanity() throws IOException{
-		testSanity("config/vpnsession-prevalence-stats.properties");
+		buildScorersFromTaskConfig("config/vpnsession-prevalence-stats.properties");
 	}
 }

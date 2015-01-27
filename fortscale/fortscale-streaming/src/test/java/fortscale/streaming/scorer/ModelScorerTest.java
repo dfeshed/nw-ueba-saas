@@ -32,9 +32,12 @@ public class ModelScorerTest extends ScorerBaseTest{
 		context = new ScorerContext(config);
 		modelService = mock(ModelService.class);
 		model = mock(PrevalanceModel.class);
-		
+		try {
+			when(modelService.getModel(CONTEXT, MODEL_NAME)).thenReturn(model);
+		} catch (Exception e) {
+			Assert.fail(e.toString());
+		}
 		context.setBean("modelService", modelService);
-		
 	}
 	
 	private Scorer buildScorer(String scorerName, String outputFieldName, String modelName, String fieldName, String contextName) throws Exception{
@@ -69,7 +72,6 @@ public class ModelScorerTest extends ScorerBaseTest{
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
 		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
-		when(modelService.getModel(CONTEXT, MODEL_NAME)).thenReturn(model);
 		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
 		
 		Double score = scorer.calculateScore(eventMessage);
@@ -85,7 +87,6 @@ public class ModelScorerTest extends ScorerBaseTest{
 		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME);
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
-		when(modelService.getModel(CONTEXT, MODEL_NAME)).thenReturn(model);
 		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
 		
 		scorer.calculateScore(eventMessage);

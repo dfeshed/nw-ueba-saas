@@ -3,6 +3,7 @@ package fortscale.streaming.scorer;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,26 +15,32 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.samza.config.MapConfig;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.service.ModelService;
 
 
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:META-INF/spring/scorers-context-test.xml" })
-public class TaskScorerConfigTest {
+public class TaskScorerConfigTest extends ScorerBaseTest{
 
-private ModelService modelService;
+	protected ModelService modelService;
+	
+	protected void whenModelServiceGetModel(String context, String modelName, PrevalanceModel model){
+		try {
+			when(modelService.getModel(context, modelName)).thenReturn(model);
+		} catch (Exception e) {
+			Assert.fail(e.toString());
+		}
+	}
 	
 	@Before
 	public void setUp(){
+		super.setUp();
 		modelService = mock(ModelService.class);
 	}
 	
@@ -48,9 +55,8 @@ private ModelService modelService;
 	
 	
 	
-	protected void testSanity(String taskConfigPropertiesFilePath) throws IOException{
+	protected List<Scorer> buildScorersFromTaskConfig(String taskConfigPropertiesFilePath) throws IOException{
 		final Properties properties = new Properties();
-//		InputStream is = getClass().getResourceAsStream( "/config/4769-prevalance-stats.properties" );
 		FileInputStream fileInputStream = new FileInputStream(new File(taskConfigPropertiesFilePath));
 		
 		properties.load(fileInputStream);
@@ -72,5 +78,6 @@ private ModelService modelService;
 			checkNotNull(scorer);
 			scorersToRun.add(scorer);
 		}
+		return scorersToRun;
 	}
 }
