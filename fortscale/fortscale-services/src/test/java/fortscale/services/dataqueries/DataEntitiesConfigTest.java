@@ -43,6 +43,7 @@ public class DataEntitiesConfigTest {
         Mockito.when(stringValueResolver.resolveStringValue("${" + "entities" + "}")).thenReturn(entityToTest);
         Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.kerberos_logins.short_name" + "}")).thenReturn("Kerberos");
         Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.logins.short_name" + "}")).thenReturn("Login");
+        Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.kerberos_logins.default_sort" + "}")).thenReturn("destination_machine_type ASC");
         Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.kerberos_logins.field.source_machine_type.name" + "}")).thenReturn("Source Computer Type");
         Mockito.when(stringValueResolver.resolveStringValue("${" + "entities.kerberos_logins.field.source_machine_type.type" + "}")).thenReturn("STRING");
 
