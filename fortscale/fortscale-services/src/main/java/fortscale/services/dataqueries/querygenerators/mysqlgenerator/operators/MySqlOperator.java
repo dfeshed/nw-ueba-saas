@@ -1,5 +1,8 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators;
 
+import fortscale.services.dataentity.QueryValueType;
+import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlValueGenerator;
+
 /**
  * Created by Yossi on 03/11/2014.
  */
@@ -26,7 +29,7 @@ public class MySqlOperator{
      * @param value
      * @return
      */
-    public String getOperatorValue(String value){
-        return value;
+    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type){
+        return requiresValue ? mySqlValueGenerator.generateSql(value,type) : "" ;
     }
 }
