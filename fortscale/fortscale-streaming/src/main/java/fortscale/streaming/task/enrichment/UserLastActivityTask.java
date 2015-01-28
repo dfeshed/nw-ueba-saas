@@ -89,7 +89,7 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		Config fieldsSubset = config.subset("fortscale.data-source.input.topic.");
 		for (String dataSource : fieldsSubset.keySet()) {
 			String inputTopic = getConfigString(config, String.format("fortscale.data-source.input.topic.%s", dataSource));
-			String classifier = getConfigString(config, String.format("fortscale.data-source.input.topic.%s.classifier", dataSource));
+			String classifier = getConfigString(config, String.format("fortscale.data-source.classifier.%s", dataSource));
 			topicToDataSourceMap.put(inputTopic, classifier);
 		}
 
