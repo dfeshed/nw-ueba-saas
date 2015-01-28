@@ -1,10 +1,8 @@
 package fortscale.streaming.task.enrichment;
 
-<<<<<<< HEAD
-=======
+
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
->>>>>>> master
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;
@@ -81,15 +79,6 @@ public class UserLastActivityTaskTest extends GeneralTaskTest {
 	}
 
 
-<<<<<<< HEAD
-		IncomingMessageEnvelope envelope = Mockito.mock(IncomingMessageEnvelope.class);
-		Mockito.when(envelope.getMessage()).thenReturn(message);
-		Mockito.when(envelope.getSystemStreamPartition()).thenReturn(systemStreamPartition);
-		Mockito.when(systemStream.getStream()).thenReturn(topic);
 
-		return envelope;
-	}
 }
-=======
-}
->>>>>>> master
+
