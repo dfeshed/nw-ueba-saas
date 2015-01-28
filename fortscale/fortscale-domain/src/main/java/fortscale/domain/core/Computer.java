@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -155,7 +156,8 @@ public class Computer extends AbstractDocument {
 	public void clearUsageClassifiers() {
 		this.usageClassifiers.clear();
 	}
-	
+
+	@JsonIgnore
 	public ComputerUsageType getUsageType() {
 		// go over the usage classifiers and return the first one that is not unknown
 		for (ComputerUsageClassifier classifier : usageClassifiers)

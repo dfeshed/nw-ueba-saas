@@ -7,7 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntitiesConfig;
+import fortscale.services.dataentity.QueryFieldFunction;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryField;
+import fortscale.services.dataqueries.querydto.FieldFunction;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
@@ -214,9 +217,10 @@ public class ApiController extends BaseController {
     @ResponseBody
     @LogException
     public DataBean<List<Map<String, Object>>> dataQuery(@RequestParam(required=true) String dataQuery,
-                                                                 @RequestParam(defaultValue="true") boolean useCache,
-                                                                 @RequestParam(required=false) Integer page, // starting from 0
-                                                                 @RequestParam(defaultValue="20") Integer pageSize){
+                                                         @RequestParam(defaultValue="false") boolean requestTotal,
+                                                         @RequestParam(defaultValue="true") boolean useCache,
+                                                         @RequestParam(required=false) Integer page, // starting from 0
+                                                         @RequestParam(defaultValue="20") Integer pageSize){
 
         Logger logger = Logger.getLogger(DataQueryDTO.class);
         ObjectMapper mapper = new ObjectMapper();
@@ -271,14 +275,25 @@ public class ApiController extends BaseController {
 			DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
 			List<Map<String, Object>> resultsMap = dataQueryRunner.executeQuery(query);
 			retBean.setData(resultsMap);
-			retBean.setTotal(resultsMap.size());
 
             DataBean<List<Map<String, Object>>> retBeanForPage = retBean;
 
             // TODO: Add a QA authority to the analyst or something, so this isn't returned for all analysts:
             // if (getThisAnalystAuth().getAuthorities())
-			Map<String, Object> info = new HashMap<>();
+            Map<String, Object> info = new HashMap<>();
             info.put("query", query);
+
+            int total = resultsMap.size();
+
+            // If the API caller requested a total count, generate a query for it and set the total to that instead of the current results:
+            if(requestTotal) {
+                String totalQuery = dataQueryRunner.generateTotalQuery(dataQueryObject);
+                total = impalaJdbcTemplate.queryForInt(totalQuery);
+                info.put("totalQuery", totalQuery);
+            }
+
+            retBean.setTotal(total);
+
 			retBeanForPage.setInfo(info);
 
             // take only relevant page from results

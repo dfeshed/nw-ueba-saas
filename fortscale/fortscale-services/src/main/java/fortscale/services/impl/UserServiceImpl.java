@@ -145,13 +145,13 @@ public class UserServiceImpl implements UserService{
 		}
 
 		LogEventsEnum eventId = classifier.getLogEventsEnum();
-		String userId = usernameService.getUserId(normalizedUsername, true, eventId);
+		String userId = usernameService.getUserId(normalizedUsername, eventId);
 		if(userId == null && onlyUpdate){
 			return;
 		}
 			
 		if(userId != null){
-			if(!usernameService.isLogUsernameExist(eventId, logUsername, userId, true)){
+			if(!usernameService.isLogUsernameExist(eventId, logUsername, userId)){
 				Update update = new Update();
 				usernameService.fillUpdateLogUsername(update, logUsername, eventId);
 				if(updateAppUsername){

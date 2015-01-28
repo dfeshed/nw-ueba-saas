@@ -1,5 +1,7 @@
 package fortscale.services.dataentity;
 
+import fortscale.services.dataqueries.querydto.QuerySort;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
  * Created by Yossi on 10/11/2014.
  */
 public class DataEntityConfig {
+    private String id;
     private String name;
     private String shortName;
     private HashMap<String, DataEntityFieldConfig> fields = new HashMap<>();
@@ -22,6 +25,15 @@ public class DataEntityConfig {
     private String partitions;
     private List<String> partitionsBaseField;
     private String table;
+    private List<QuerySort> defaultSort;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getPerformanceTable() {
         return performanceTable;
@@ -145,5 +157,13 @@ public class DataEntityConfig {
 
     public void setShortName(String shortName) {
         this.shortName = shortName;
+    }
+
+    public List<QuerySort> getDefaultSort() {
+        return defaultSort;
+    }
+
+    public void setDefaultSort(List<QuerySort> defaultSort) {
+        this.defaultSort = defaultSort;
     }
 }

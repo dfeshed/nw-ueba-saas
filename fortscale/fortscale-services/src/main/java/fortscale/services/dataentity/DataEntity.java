@@ -1,5 +1,7 @@
 package fortscale.services.dataentity;
 
+import fortscale.services.dataqueries.querydto.QuerySort;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class DataEntity {
     String shortName;
     List<DataEntityField> fields;
     HashMap<String, DataEntityField> fieldsIndex;
+    List<QuerySort> defaultSort;
 
     /**
      * eventsEntity is used to connect the entity to another entity, which contains the related events.
@@ -80,5 +83,13 @@ public class DataEntity {
 
     public DataEntityField getField(String fieldId){
         return fieldsIndex.get(fieldId);
+    }
+
+    public List<QuerySort> getDefaultSort() {
+        return defaultSort;
+    }
+
+    public void setDefaultSort(List<QuerySort> defaultSort) {
+        this.defaultSort = defaultSort;
     }
 }
