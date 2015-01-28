@@ -13,6 +13,7 @@ public interface FieldModel {
 	
 	/**
 	 * Initialize the field model with configuration values
+	 * The fieldModel only states the suffix of the configration key. The prefix should be given by the caller.
 	 */
 	void init(String prefix, String fieldName, Config config);
 		
