@@ -84,10 +84,6 @@ public class EventsPrevalenceModelStreamTaskService {
 		}
 	}
 	
-	public ModelService getModelStreamingService(){
-		return new PrevalenceModelServiceMap(prevalanceModelStreamingServiceMap);
-	}
-	
 	private PrevalanceModelBuilderImpl createModelBuilder(String modelName, Config config) throws Exception {
 		// get the fields to include from configuration
 		String configPrefix = String.format("fortscale.model.%s.fields", modelName);
@@ -98,11 +94,14 @@ public class EventsPrevalenceModelStreamTaskService {
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".model"))) {
 			String fieldName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".model"));
 			String fieldModel = getConfigString(config, String.format("%s%s.model", fieldsPrefix,fieldName));
-			String fieldBooster = config.get(String.format("%s%s.booster", fieldsPrefix,fieldName), "");
 			
-			modelBuilder.withField(fieldName, fieldModel, fieldBooster);
+			modelBuilder.withField(fieldName, fieldModel);
 		}
 		return modelBuilder;
+	}
+	
+	public ModelService getModelStreamingService(){
+		return new PrevalenceModelServiceMap(prevalanceModelStreamingServiceMap);
 	}
 	
 	/** Process incoming events and update the user models stats */

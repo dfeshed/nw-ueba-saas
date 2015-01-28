@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.config.Config;
 
 public class PrevalanceModelBuilderImpl implements PrevalanceModelBuilder{
@@ -19,7 +18,6 @@ public class PrevalanceModelBuilderImpl implements PrevalanceModelBuilder{
 	private Config config;
 	String configPrefix;
 	private Map<String, String> fields = new HashMap<String, String>();
-	private Map<String, String> fieldScoreBoost = new HashMap<String, String>();
 	
 	private PrevalanceModelBuilderImpl(String name, Config config, String configPrefix) {
 		this.name = name;
@@ -28,13 +26,11 @@ public class PrevalanceModelBuilderImpl implements PrevalanceModelBuilder{
 	}
 	
 	@Override
-	public PrevalanceModelBuilderImpl withField(String fieldName, String fieldModelClassName, String scoreBoostClassName) {
+	public PrevalanceModelBuilderImpl withField(String fieldName, String fieldModelClassName) {
 		checkNotNull(fieldName);
 		checkNotNull(fieldModelClassName);
 		
 		fields.put(fieldName, fieldModelClassName);
-		if (StringUtils.isNotEmpty(scoreBoostClassName))
-			fieldScoreBoost.put(fieldName, scoreBoostClassName);
 		
 		// return this for fluent type usage
 		return this;
@@ -51,15 +47,7 @@ public class PrevalanceModelBuilderImpl implements PrevalanceModelBuilder{
 			FieldModel fieldModel = (FieldModel)Class.forName(entry.getValue()).newInstance();
 			fieldModel.init(configPrefix, fieldName, config);
 			
-			// Construct a field score booster
-			if (fieldScoreBoost.containsKey(fieldName)) {
-				FieldScoreBooster booster = (FieldScoreBooster)Class.forName(fieldScoreBoost.get(fieldName)).newInstance();
-				booster.init(fieldName, config);
-				
-				model.setFieldModel(fieldName, fieldModel, booster);
-			} else {
-				model.setFieldModel(fieldName, fieldModel);
-			}
+			model.setFieldModel(fieldName, fieldModel);
 		}
 		
 		return model;

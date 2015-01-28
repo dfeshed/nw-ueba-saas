@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 public class PrevalanceModel {
 	
 	private Map<String, FieldModel> fields = new HashMap<String, FieldModel>();
-	private Map<String, FieldScoreBooster> fieldBooster = new HashMap<String, FieldScoreBooster>();
 	private String modelName;
 	private UserTimeBarrier barrier;
 	
@@ -34,14 +33,7 @@ public class PrevalanceModel {
 	public Iterable<String> getFieldNames() {
 		return fields.keySet();
 	}
-	
-	public void setFieldModel(String field, FieldModel model, FieldScoreBooster booster) {
-		checkNotNull(field);
-		fields.put(field, model);
-		if (booster!=null)
-			fieldBooster.put(field, booster);
-	}
-	
+		
 	public void setFieldModel(String field, FieldModel model) {
 		checkNotNull(field);
 		fields.put(field, model);
@@ -78,12 +70,6 @@ public class PrevalanceModel {
 				
 		FieldModel model = fields.get(fieldName);
 		Object fieldValue = message.get(fieldName);
-		double score = model.calculateScore(fieldValue);
-
-		// adjust score if required
-		if (fieldBooster.containsKey(fieldName))
-			score = fieldBooster.get(fieldName).adjustScore(fieldValue, score);
-			
-		return score;
+		return model.calculateScore(fieldValue);
 	}		
 }
