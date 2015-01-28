@@ -16,8 +16,7 @@ import org.apache.samza.task.TaskCoordinator;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
 
-public class
-		EventsFilterStreamTask extends AbstractStreamTask{
+public class EventsFilterStreamTask extends AbstractStreamTask{
 
 //	private static final Logger logger = LoggerFactory.getLogger(EventsFilterStreamTask.class);
 	
