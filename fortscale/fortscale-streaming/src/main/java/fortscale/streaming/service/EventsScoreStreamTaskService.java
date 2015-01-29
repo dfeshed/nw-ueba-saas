@@ -5,6 +5,7 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -89,6 +90,7 @@ public class EventsScoreStreamTaskService {
 		List<String> scorers = getConfigStringList(config, "fortscale.scorers");
 		ScorerContext context = new ScorerContext(config);
 		context.setBean("modelService", modelService);
+		scorersToRun = new ArrayList<>();
 		for(String ScorerStr: scorers){
 			Scorer scorer = (Scorer) context.resolve(Scorer.class, ScorerStr);
 			checkNotNull(scorer);
