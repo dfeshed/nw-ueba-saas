@@ -71,22 +71,6 @@ public class EventsScoreStreamTaskService {
 	}
 	
 	private void fillScoreConfig(Config config) throws Exception {
-//		scorerMap = new HashMap<>();
-//		Config fieldsSubset = config.subset("fortscale.score.");		
-//		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".scorer"))) {
-//			String scorerName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".scorer"));
-//			if (StringUtils.isBlank(scorerName))
-//				throw new ConfigException("configuration is missing key " + scorerName);
-//			String scorerType = getConfigString(config, String.format("fortscale.score.%s.scorer", scorerName));
-//			Scorer scorer = scorerFactoryService.getScorer(scorerType, scorerName, config, modelService);
-//			checkNotNull(scorer);
-//			scorerMap.put(scorerName, scorer);			
-//		}
-//		
-//		for(Scorer scorer: scorerMap.values()){
-//			scorer.afterPropertiesSet(scorerMap);
-//		}
-		
 		List<String> scorers = getConfigStringList(config, "fortscale.scorers");
 		ScorerContext context = new ScorerContext(config);
 		context.setBean("modelService", modelService);
