@@ -154,6 +154,8 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
     public List<ConditionField> getPartitionConditionFields(PartitionStrategy partitionStrategy, ConditionField condition){
         ArrayList<ConditionField> partitionConditionFields = new ArrayList<>();
 
+        // The partition can be a simple comparison operator (=, >, >=, <, <=) or a between operator, in which case it
+        // is broken down to two (<=, >=) ConditionFields:
         if (condition.getOperator() == QueryOperator.between){
             String[] values = condition.getValue().split(",");
 
