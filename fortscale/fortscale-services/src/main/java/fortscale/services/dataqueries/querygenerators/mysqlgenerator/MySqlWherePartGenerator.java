@@ -101,11 +101,13 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
                 ConditionField condition = (ConditionField)childTerm;
                 if (entityPartitionsBaeFields.contains(condition.getField().getId()))
                 {
-                    ConditionField partitionCondition = getPartitionConditionField(partitionStrategy, condition, dataQueryDTO);
+                    List<ConditionField> partitionConditions = getPartitionConditionFields(partitionStrategy, condition);
 
-                    String conditionSql = getConditionFieldSql(partitionCondition, dataQueryDTO, false);
-                    if (!sqlConditions.contains(conditionSql)){
-                        sqlConditions.add(conditionSql);
+                    for(ConditionField partitionCondition: partitionConditions) {
+                        String conditionSql = getConditionFieldSql(partitionCondition, dataQueryDTO, false);
+                        if (!sqlConditions.contains(conditionSql)) {
+                            sqlConditions.add(conditionSql);
+                        }
                     }
                 }
             }
@@ -149,15 +151,39 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
         return sb.toString();
     }
 
+    public List<ConditionField> getPartitionConditionFields(PartitionStrategy partitionStrategy, ConditionField condition){
+        ArrayList<ConditionField> partitionConditionFields = new ArrayList<>();
+
+        // The partition can be a simple comparison operator (=, >, >=, <, <=) or a between operator, in which case it
+        // is broken down to two (<=, >=) ConditionFields:
+        if (condition.getOperator() == QueryOperator.between){
+            String[] values = condition.getValue().split(",");
+
+            ConditionField firstBetweenValueConditionField = new ConditionField(condition);
+            firstBetweenValueConditionField.setValue(values[0]);
+            firstBetweenValueConditionField.setOperator(QueryOperator.greaterThanOrEquals);
+            partitionConditionFields.add(getPartitionConditionField(partitionStrategy, firstBetweenValueConditionField));
+
+            ConditionField secondBetweenValueConditionField = new ConditionField(condition);
+            secondBetweenValueConditionField.setValue(values[1]);
+            secondBetweenValueConditionField.setOperator(QueryOperator.lesserThanOrEquals);
+            partitionConditionFields.add(getPartitionConditionField(partitionStrategy, secondBetweenValueConditionField));
+        }
+        else{
+            partitionConditionFields.add(getPartitionConditionField(partitionStrategy, condition));
+        }
+
+        return partitionConditionFields;
+    }
+
     /**
      * Creates the conditionField for a partition, according to a conditionField. Partition conditions use the partition's physical fields, so there's a need to translate from
      * the original logical field.
      * @param partitionStrategy
      * @param condition
-     * @param dataQueryDTO
      * @return
      */
-    public ConditionField getPartitionConditionField(PartitionStrategy partitionStrategy, ConditionField condition, DataQueryDTO dataQueryDTO){
+    public ConditionField getPartitionConditionField(PartitionStrategy partitionStrategy, ConditionField condition){
         ConditionField partitionCondition = new ConditionField();
 
         //TODO - need to make it more generic - the interface partition strategy is based on long as partition (timestamp) - need to abstract it to String and to parse the value in the implementations

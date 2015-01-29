@@ -83,5 +83,13 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 		String expectedString = "WHERE yearmonthday >= 20141024 AND yearmonthday <= 20141026 AND (date_time_unix >= 1414184400 AND date_time_unix <= 1414360799 AND eventscore IN ( 50 , 70 ) AND date_time_unix IN ( \"my_user_name\" ) AND date_time_unix BETWEEN  \"my_user_name1\" AND \"my_user_name2\"  AND date_time_unix BETWEEN  1414360799 AND 1414360800  AND date_time_unix LIKE \"%my_user_name\" AND date_time_unix LIKE \"my_user_name%\" AND date_time_unix LIKE \"%my_user_name%\" AND eventscore IS NOT NULL  AND eventscore IS NULL )";
 		assertEquals("SQL Where part for complexWhereDTO" , expectedString, sqlStr);
 	}
+
+    @Test
+    public void mySqlWherePartGenerator_between_date_time()
+            throws Exception {
+        String sqlStr = mySqlWherePartGenerator.generateQueryPart(betweenPartitionDTO);
+        String expectedString = "WHERE yearmonthday >= 20141024 AND yearmonthday <= 20141026 AND (date_time_unix BETWEEN  1414184400 AND 1414360799 )";
+        assertEquals("SQL Where part for betweenPartitionDTO" , expectedString, sqlStr);
+    }
 }
 

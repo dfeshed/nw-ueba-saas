@@ -6,12 +6,21 @@ import fortscale.services.dataentity.QueryValueType;
 * Created by Yossi on 10/11/2014.
 */
 public class ConditionField extends Term {
+    public ConditionField(){}
+    public ConditionField(ConditionField otherConditionField){
+        this.field = otherConditionField.getField();
+        this.operator = otherConditionField.getOperator();
+        this.valueField = otherConditionField.getValueField();
+        this.value = otherConditionField.getValue();
+        this.valueType = otherConditionField.getValueType();
+    }
+
     private DataQueryField field;
     private QueryOperator operator;
     private DataQueryField valueField;
-
     private String value;
     private QueryValueType valueType;
+
     public String getValue(){ return value; }
     public void setValue(String value){ this.value = value; }
 
