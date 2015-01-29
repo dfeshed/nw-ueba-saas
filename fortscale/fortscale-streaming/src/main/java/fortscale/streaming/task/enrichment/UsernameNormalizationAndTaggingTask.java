@@ -49,7 +49,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	private static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
 
 	private static String usernameKey = "username";
-	private static String tagKey = "tag";
+	private static String userTagsCache = "user-tag";
 
 	/**
 	 * Logger
