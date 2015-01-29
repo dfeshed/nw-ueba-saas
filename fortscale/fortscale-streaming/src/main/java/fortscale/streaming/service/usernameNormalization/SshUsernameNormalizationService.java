@@ -17,9 +17,6 @@ import static fortscale.utils.ConversionUtils.convertToString;
 public class SshUsernameNormalizationService extends UsernameNormalizationService {
 
 	@Autowired
-	UsernameNormalizer sshUsernameNormalizer;
-
-	@Autowired
 	SSHUsersWhitelistService sshUsersWhitelist;
 
 	@Value("${impala.data.ssh.table.field.target_machine}")
@@ -28,13 +25,13 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 
 	@Override
 	public UsernameNormalizer getUsernameNormalizer(){
-		return sshUsernameNormalizer;
+		return usernameNormalizer;
 	}
 
 	@Override
 	public String normalizeUsername(String username) {
-		if(sshUsernameNormalizer != null){
-			return sshUsernameNormalizer.normalize(username);
+		if(usernameNormalizer != null){
+			return usernameNormalizer.normalize(username);
 		} else{
 			return super.normalizeUsername(username);
 		}
@@ -44,7 +41,7 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 	public boolean shouldDropRecord(String username, String normalizedUsername) {
 
 		boolean shouldDrop = super.shouldDropRecord(username, normalizedUsername);
-		if (sshUsernameNormalizer == null || !shouldDrop) {
+		if (usernameNormalizer == null || !shouldDrop) {
 			return shouldDrop;
 		}
 
@@ -67,7 +64,7 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 	@Override
 	public String getUsernameAsNormalizedUsername(String username, JSONObject message) {
 
-		if (sshUsernameNormalizer == null) {
+		if (usernameNormalizer == null) {
 			return super.getUsernameAsNormalizedUsername(username, message);
 		}
 

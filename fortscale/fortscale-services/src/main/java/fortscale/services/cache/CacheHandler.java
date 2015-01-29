@@ -25,6 +25,15 @@ public abstract class CacheHandler<K,T> implements Closeable {
     public abstract T get(K key);
     public abstract void put(K key, T value);
     public abstract void remove(K key);
+    public abstract long size();
+    public abstract void clear();
+
+    /*
+     *  check if cache contain the given key value
+     */
+    public boolean containsKey(K key) {
+        return (get(key) != null);
+    }
 
     /**
      * Process cache update that come as strings.

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fortscale.services.CachingService;
+import fortscale.services.cache.CacheHandler;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,10 @@ import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.logging.Logger;
 
-public class UsernameService implements InitializingBean{
+public class UsernameService implements InitializingBean, CachingService{
 	private static Logger logger = Logger.getLogger(UsernameService.class);
 
-	private HashMap<String, String> usernameToUserIdMap = new HashMap<>();
+
 	private List<Set<String>> logUsernameSetList;
 	private List<HashMap<String, String>> logUsernameToUserIdMapList;
 	
@@ -38,7 +40,10 @@ public class UsernameService implements InitializingBean{
 	
 	@Autowired
 	private EventScoreDAO vpnDAO;
-	
+
+	@Autowired
+	private CacheHandler<String, String> usernameToUserIdCache;
+
 	private boolean isLazy = true;
 	
 	@Value("${vpn.to.ad.username.regex.format:^%s@.*(?i)}")
@@ -220,7 +225,7 @@ public class UsernameService implements InitializingBean{
 	}
 
 	public boolean isUsernameExist(String username, LogEventsEnum eventId){
-		if (usernameToUserIdMap.containsKey(username))
+		if (usernameToUserIdCache.containsKey(username))
 			return true;
 
 		if(eventId != null && logUsernameToUserIdMapList.get(eventId.ordinal()).containsKey(username))
@@ -229,15 +234,15 @@ public class UsernameService implements InitializingBean{
 		// resort to lookup mongodb and save the user id in cache
 		User user = userRepository.findByUsername(username);
 		if (user!=null) {
-			usernameToUserIdMap.put(username, user.getId());
+			usernameToUserIdCache.put(username, user.getId());
 			return true;
 		}
 		return false;
 	}
 		
 	public String getUserId(String username,LogEventsEnum eventId){
-		if (usernameToUserIdMap.containsKey(username))
-			return usernameToUserIdMap.get(username);
+		if (usernameToUserIdCache.containsKey(username))
+			return usernameToUserIdCache.get(username);
 
 		if(eventId != null && logUsernameToUserIdMapList.get(eventId.ordinal()).containsKey(username))
 			return logUsernameToUserIdMapList.get(eventId.ordinal()).get(username);
@@ -245,7 +250,7 @@ public class UsernameService implements InitializingBean{
 		// fall back to query mongo if not found
 		User user = userRepository.findByUsername(username);
 		if (user!=null) {
-			usernameToUserIdMap.put(username, user.getId());
+			usernameToUserIdCache.put(username, user.getId());
 			return user.getId();
 		}
 
@@ -277,13 +282,12 @@ public class UsernameService implements InitializingBean{
 		HashMap<String, String> tmpMap = new HashMap<>();
 		
 		List<User> users = userRepository.findAllExcludeAdInfo();
+		usernameToUserIdCache.clear();
 		for(User user: users){
 			if(user.getUsername() != null){
-				tmpMap.put(user.getUsername(), user.getId());
+				usernameToUserIdCache.put(user.getUsername(), user.getId());
 			}
 		}
-		usernameToUserIdMap = tmpMap;
-		
 		for(LogEventsEnum logEventsEnum: LogEventsEnum.values()){
 			Set<String> logUsernameSet = new HashSet<>();
 			for(User user: users){
@@ -294,7 +298,7 @@ public class UsernameService implements InitializingBean{
 			}
 			logUsernameSetList.set(logEventsEnum.ordinal(), logUsernameSet);
 		}
-		logger.debug("username set contain {} elements", usernameToUserIdMap.size());
+		logger.debug("username set contain {} elements", usernameToUserIdCache.size());
 	}
 	
 	public void addLogNormalizedUsername(LogEventsEnum eventId, String userId, String username){
@@ -317,5 +321,13 @@ public class UsernameService implements InitializingBean{
 		if(!isLazy){
 			update();
 		}
+	}
+
+	@Override public CacheHandler getCache() {
+		return usernameToUserIdCache;
+	}
+
+	@Override public void setCache(CacheHandler cache) {
+		usernameToUserIdCache = cache;
 	}
 }

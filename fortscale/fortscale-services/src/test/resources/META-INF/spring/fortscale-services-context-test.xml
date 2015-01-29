@@ -24,7 +24,11 @@
 	<bean id="fortscaleConfigurationRepository" class="fortscale.services.domain.analyst.dao.FortscaleConfigurationRepositoryImpl"></bean>
 	
 	<bean id="mongoTemplate" class="fortscale.services.domain.jdbc.MongoTemplateDummy"></bean>
-	
+
+	<bean id="usernameService" class="fortscale.services.impl.UsernameService">
+		<property name="lazy" value="false"/>
+	</bean>
+
 	<context:component-scan base-package="fortscale.services"/>
 	
 </beans>

@@ -2,6 +2,7 @@ package fortscale.services;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.query.Update;
@@ -36,7 +37,9 @@ public interface UserService {
 	public void updateUserWithADInfo(AdUser adUser);
 
 	public void updateUser(User user, Update update);
-		
+
+	public boolean findIfUserExists(String username);
+
 	public User findByUserId(String userId);
 
 	public User createUser(UserApplication userApplication, String username, String appUsername);
@@ -73,9 +76,15 @@ public interface UserService {
 	
 	public boolean isUserTagged(String username, String tag);
 	
-	public void invalidateCache();
-	
 	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues, int minScore);
 	
 	public String findByNormalizedUserName(String normalizedUsername);
+
+	public Set<String> findNamesInGroup(List<String> groupsToTag);
+
+	public Set<String> findNamesInOU(List<String> ousToTag);
+
+	public Set<String> findNamesByTag(String tagFieldName, Boolean value);
+
+	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value);
 }

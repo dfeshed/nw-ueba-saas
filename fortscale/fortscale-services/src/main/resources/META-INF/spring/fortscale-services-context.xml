@@ -16,9 +16,6 @@
 	</bean>
 	<bean id="saltSource" class="fortscale.services.security.FortscaleSaltSource"/>
 
-	<bean id="usernameService" class="fortscale.services.impl.UsernameService">
-		<property name="lazy" value="false"/>
-	</bean>
 	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
 		<property name="matchersString" value="${collection.vpn.etl.username.normalize.matchers}"/>
 		<property name="usernameService" ref="usernameService"/>
