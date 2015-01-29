@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.samza.config.Config;
 import org.apache.samza.config.MapConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,9 +54,7 @@ public class TaskScorerConfigTest extends ScorerBaseTest{
 	public void thisIsIgnored() {
 	}
 	
-	
-	
-	protected List<Scorer> buildScorersFromTaskConfig(String taskConfigPropertiesFilePath) throws IOException{
+	protected Config buildTaskConfig(String taskConfigPropertiesFilePath) throws IOException{
 		final Properties properties = new Properties();
 		FileInputStream fileInputStream = new FileInputStream(new File(taskConfigPropertiesFilePath));
 		
@@ -67,7 +66,12 @@ public class TaskScorerConfigTest extends ScorerBaseTest{
 			propMap.put(keyStr, properties.getProperty(keyStr));
 		}
 
-		MapConfig config = new MapConfig(propMap);
+		return new MapConfig(propMap);
+	}
+
+	
+	protected List<Scorer> buildScorersFromTaskConfig(String taskConfigPropertiesFilePath) throws IOException{
+		Config config = buildTaskConfig(taskConfigPropertiesFilePath);
 
 		List<String> scorers = getConfigStringList(config, "fortscale.scorers");
 		ScorerContext context = new ScorerContext(config);
