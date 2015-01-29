@@ -845,7 +845,8 @@ public class UserServiceImpl implements UserService{
 			tags.add(tagField);
 		}
 		else {
-		} tags.remove(tagField);
+			tags.remove(tagField);
+		}
 		tagsCache.put(username, tags);
 	}
 }
