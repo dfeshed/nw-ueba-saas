@@ -1,7 +1,10 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 
+import fortscale.services.dataentity.QueryFieldFunction;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryField;
+import fortscale.services.dataqueries.querydto.FieldFunction;
 import fortscale.services.dataqueries.querygenerators.*;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 
@@ -10,6 +13,8 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +22,7 @@ import java.util.Map;
  * Handler for MySQL Queries
  */
 @Component
-public class MySqlQueryRunner implements DataQueryRunner {
+public class MySqlQueryRunner extends DataQueryRunner {
 
     // The parts of the query
 

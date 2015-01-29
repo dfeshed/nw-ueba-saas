@@ -15,7 +15,15 @@ public class MySqlLimitPartGenerator extends QueryPartGenerator {
             return "";
 
         StringBuilder sb = new StringBuilder("LIMIT ").append(dataQueryDTO.getLimit());
-        sb.append(dataQueryDTO.getOffset() > 0 ? " OFFSET " + dataQueryDTO.getOffset() : "");
+
+        if (dataQueryDTO.getOffset() > 0){
+            // Impala limitation, if using OFFSET, ORDER BY has to be used:
+            if (dataQueryDTO.getSort() == null)
+                throw new InvalidQueryException("Can't set offset to a query that doesn't have sort.");
+
+            sb.append(" OFFSET ").append(dataQueryDTO.getOffset());
+
+        }
         return sb.toString();
     }
 }

@@ -36,7 +36,7 @@ public class EventsPrevalenceModelStreamTask extends AbstractStreamTask implemen
 		skipModel = config.getBoolean("fortscale.skip.model", false);
 		
 		eventsPrevalenceModelStreamTaskService = new EventsPrevalenceModelStreamTaskService(config, context);		
-		eventsScoreStreamTaskService = new EventsScoreStreamTaskService(config, context, eventsPrevalenceModelStreamTaskService.getPrevalanceModelStreamingService());
+		eventsScoreStreamTaskService = new EventsScoreStreamTaskService(config, context, eventsPrevalenceModelStreamTaskService.getModelStreamingService());
 	}
 	
 	/** Process incoming events and update the user models stats */

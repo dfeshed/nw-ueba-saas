@@ -6,33 +6,31 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.config.Config;
 
 public class PrevalanceModelBuilderImpl implements PrevalanceModelBuilder{
 
-	public static PrevalanceModelBuilderImpl createModel(String name, Config config) {
-		return new PrevalanceModelBuilderImpl(name, config);
+	public static PrevalanceModelBuilderImpl createModel(String name, Config config, String configPrefix) {
+		return new PrevalanceModelBuilderImpl(name, config, configPrefix);
 	}
 	
 	private String name;
 	private Config config;
+	String configPrefix;
 	private Map<String, String> fields = new HashMap<String, String>();
-	private Map<String, String> fieldScoreBoost = new HashMap<String, String>();
 	
-	private PrevalanceModelBuilderImpl(String name, Config config) {
+	private PrevalanceModelBuilderImpl(String name, Config config, String configPrefix) {
 		this.name = name;
 		this.config = config;
+		this.configPrefix = configPrefix;
 	}
 	
 	@Override
-	public PrevalanceModelBuilderImpl withField(String fieldName, String fieldModelClassName, String scoreBoostClassName) {
+	public PrevalanceModelBuilderImpl withField(String fieldName, String fieldModelClassName) {
 		checkNotNull(fieldName);
 		checkNotNull(fieldModelClassName);
 		
 		fields.put(fieldName, fieldModelClassName);
-		if (StringUtils.isNotEmpty(scoreBoostClassName))
-			fieldScoreBoost.put(fieldName, scoreBoostClassName);
 		
 		// return this for fluent type usage
 		return this;
@@ -47,17 +45,9 @@ public class PrevalanceModelBuilderImpl implements PrevalanceModelBuilder{
 			
 			// Construct a field model
 			FieldModel fieldModel = (FieldModel)Class.forName(entry.getValue()).newInstance();
-			fieldModel.init(fieldName, config);
+			fieldModel.init(configPrefix, fieldName, config);
 			
-			// Construct a field score booster
-			if (fieldScoreBoost.containsKey(fieldName)) {
-				FieldScoreBooster booster = (FieldScoreBooster)Class.forName(fieldScoreBoost.get(fieldName)).newInstance();
-				booster.init(fieldName, config);
-				
-				model.setFieldModel(fieldName, fieldModel, booster);
-			} else {
-				model.setFieldModel(fieldName, fieldModel);
-			}
+			model.setFieldModel(fieldName, fieldModel);
 		}
 		
 		return model;

@@ -10,6 +10,24 @@ import java.util.List;
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class DataQueryDTO {
 
+    public DataQueryDTO(){}
+
+    /**
+     * Constructor for shallow copying another DataQueryDTO
+     * @param anotherDataQueryDTO
+     */
+    public DataQueryDTO(DataQueryDTO anotherDataQueryDTO){
+        this.fields = anotherDataQueryDTO.getFields();
+        this.conditions = anotherDataQueryDTO.getConditions();
+        this.entities = anotherDataQueryDTO.getEntities();
+        this.subQuery = anotherDataQueryDTO.getSubQuery();
+        this.join = anotherDataQueryDTO.getJoin();
+        this.groupBy = anotherDataQueryDTO.getGroupBy();
+        this.sort = anotherDataQueryDTO.getSort();
+        this.limit = anotherDataQueryDTO.getLimit();
+        this.offset = anotherDataQueryDTO.getOffset();
+    }
+
     @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
     private List<DataQueryField> fields;
     private ConditionTerm conditions;
@@ -20,6 +38,7 @@ public class DataQueryDTO {
     private List<QuerySort> sort;
     private int limit = 10;
     private int offset = 0;
+
 
     public List<DataQueryField> getFields() {
         return fields;
