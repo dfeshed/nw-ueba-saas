@@ -52,7 +52,6 @@ import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 
-@Service("userService")
 public class UserServiceImpl implements UserService, CachingService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	

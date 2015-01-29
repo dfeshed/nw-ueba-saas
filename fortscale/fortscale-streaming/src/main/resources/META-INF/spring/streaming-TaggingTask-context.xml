@@ -113,4 +113,6 @@
 
     <bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="prototype"/>
 
+    <bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="prototype"/>
+
 </beans>

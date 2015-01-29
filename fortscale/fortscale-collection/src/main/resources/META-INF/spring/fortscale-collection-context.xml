@@ -157,9 +157,11 @@
 
 	<bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
 
-	<bean id="usernameService" class="fortscale.services.impl.UsernameService">
+	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton">
 		<property name="lazy" value="false"/>
 	</bean>
+
+	<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
 
 
 </beans>

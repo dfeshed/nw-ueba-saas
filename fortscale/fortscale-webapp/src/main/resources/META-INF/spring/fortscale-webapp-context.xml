@@ -54,4 +54,6 @@
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton" />
 
+	<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
+
 </beans>
