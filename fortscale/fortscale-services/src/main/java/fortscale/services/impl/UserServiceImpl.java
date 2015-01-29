@@ -52,7 +52,7 @@ import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 
-public class UserServiceImpl implements UserService, CachingService{
+public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	
 	private static final String SEARCH_FIELD_PREFIX = "##";

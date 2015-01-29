@@ -34,6 +34,7 @@ import parquet.org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToString;
@@ -49,7 +50,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	private static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
 
 	private static String usernameKey = "username";
-	private static String userTagsCache = "user-tag";
+	private static String userTagsKey = "user-tag";
 
 	/**
 	 * Logger
@@ -91,6 +92,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	 */
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+		LevelDbBasedCache<String, String> usernameStore = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
 		CachingService usernameService = null;
 		// get task configuration
 		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
@@ -101,19 +103,12 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			UsernameNormalizationService service = (UsernameNormalizationService)SpringService.getInstance().resolve(serviceName);
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
+			usernameService.setCache(usernameStore);
 			inputTopicToConfiguration.put(inputTopic, new ImmutablePair<>(outputTopic, service));
-
 		}
 
 		// add the usernameService to update input topics map
 		if (usernameService != null) {
-			usernameService.setCache(new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class));
-			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, usernameKey)), usernameService);
-		}
-
-		// add the taService to update input topics map
-		if (usernameService != null) {
-			usernameService.setCache(new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class));
 			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, usernameKey)), usernameService);
 		}
 
@@ -121,6 +116,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		// Get field names
 		normalizedUsernameField = getConfigString(config, "fortscale.normalizedusername.field");
 		usernameField = getConfigString(config, "fortscale.username.field");
+
+
 
 		// construct tagging service with the tags that are required from configuration
 		Map<String, String> tags = new HashMap<String, String>();
@@ -130,6 +127,12 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			tags.put(tagName, tagField);
 		}
 		tagService = new UserTagsService(tags);
+		CachingService userService = tagService.getUserService();
+		// add the tagService to update input topics map
+		if (userService != null) {
+			userService.setCache(new LevelDbBasedCache<String, Set>((KeyValueStore<String, Set>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), Set.class));
+			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), usernameService);
+		}
 	}
 
 	

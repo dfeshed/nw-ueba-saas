@@ -15,7 +15,7 @@ import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
 
-public interface UserService {
+public interface UserService extends CachingService{
 	public void updateUserWithCurrentADInfo();
 	
 	public void updateUserWithADInfo(Long timestampepoch);
