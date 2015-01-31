@@ -7,6 +7,7 @@ import fortscale.streaming.service.SpringService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.TimestampUtils;
 import net.minidev.json.JSONValue;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -65,7 +66,8 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	/**
 	 * Map between the input topic and the relevant data-source
 	 */
-	protected Map<String, String> topicToDataSourceMap = new HashMap<>();
+	protected Map<String, dataSourceConfiguration> topicToDataSourceMap = new HashMap<>();
+
 
 	/**
 	 * Init task after spring context is up
@@ -91,7 +93,9 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		for (String dataSource : fieldsSubset.keySet()) {
 			String inputTopic = getConfigString(config, String.format("fortscale.data-source.input.topic.%s", dataSource));
 			String classifier = getConfigString(config, String.format("fortscale.data-source.classifier.%s", dataSource));
-			topicToDataSourceMap.put(inputTopic, classifier);
+			String successfulLoginField = getConfigString(config, String.format("fortscale.data-source.success.field.%s", dataSource));
+			String successfulLoginValue = getConfigString(config, String.format("fortscale.data-source.success.value.%s", dataSource));
+			topicToDataSourceMap.put(inputTopic, new dataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue));
 		}
 
 	}
@@ -114,12 +118,12 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) JSONValue.parseWithException(messageText);
 
 		// get the timestamp from the event
-		Long timestamp = TimestampUtils.convertToMilliSeconds(convertToLong(message.get(timestampField)));
-		
-		if (timestamp == null) {
+		Long timestampSeconds = convertToLong(message.get(timestampField));
+		if (timestampSeconds == null) {
 			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
 			throw new StreamMessageNotContainFieldException(messageText, timestampField);
 		}
+		Long timestamp = TimestampUtils.convertToMilliSeconds(timestampSeconds);
 
 		// get the username from the event
 		String normalizedUsername = convertToString(message.get(usernameField));
@@ -131,8 +135,20 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		// Get the input topic
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
-		// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
-		updateLastActivityInStore(timestamp, normalizedUsername, topic);
+		// Get relevant data source according to topic
+		dataSourceConfiguration dataSourceConfiguration = topicToDataSourceMap.get(topic);
+		if (dataSourceConfiguration == null) {
+			logger.error("No data source is defined for input topic {} ", topic);
+			return;
+		}
+
+		// check that the event represent successful login
+		if (convertToString(message.get(dataSourceConfiguration.successField)).equalsIgnoreCase(dataSourceConfiguration.successValue)) {
+			// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
+			updateLastActivityInStore(timestamp, normalizedUsername, dataSourceConfiguration.mongoClassifierId);
+
+		}
+
 
 
 		// No output topic -> this is the last task in the chain
@@ -143,9 +159,9 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	 * Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
 	 * @param timestamp    the time of the event
 	 * @param normalizedUsername    the user
-	 * @param topic	The input topic
+	 * @param classifierId	The classifier in Mongo for this data-source
 	 */
-	private void updateLastActivityInStore(Long timestamp, String normalizedUsername, String topic) {
+	private void updateLastActivityInStore(Long timestamp, String normalizedUsername, String classifierId) {
 
 		Map<String, Long> dataSourceToTimestamp = store.get(normalizedUsername);
 
@@ -155,11 +171,6 @@ public class UserLastActivityTask extends AbstractStreamTask {
 			store.put(normalizedUsername, dataSourceToTimestamp);
 		}
 
-		// Get relevant data source according to topic
-		String classifierId = topicToDataSourceMap.get(topic);
-		if (classifierId == null) {
-			logger.error("No data source is defined for input topic {} ", topic);
-		}
 
 		Long userLastActivity = dataSourceToTimestamp.get(classifierId);
 		if(userLastActivity == null || userLastActivity < timestamp){
@@ -215,6 +226,23 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		}
 
 	}
+
+	/**
+	 * Private class for saving data-source specific configuration in-memory
+	 */
+	protected static class dataSourceConfiguration {
+
+		protected dataSourceConfiguration(String mongoClassifierId, String successField, String successValue) {
+			this.mongoClassifierId = mongoClassifierId;
+			this.successField = successField;
+			this.successValue = successValue;
+		}
+
+		public String mongoClassifierId;
+		public String successField;
+		public String successValue;
+	}
+
 
 
 }
