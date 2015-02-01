@@ -33,7 +33,6 @@ public class MemoryBasedCache<K,T> extends CacheHandler<K,T> {
             builder.maximumSize(maxSize);
         if (timeToExpire>0)
             builder.expireAfterWrite(timeToExpire, TimeUnit.SECONDS);
-
         cache = builder.build();
     }
 
@@ -58,6 +57,11 @@ public class MemoryBasedCache<K,T> extends CacheHandler<K,T> {
     @Override
     public void remove(K key) {
         cache.invalidate(key);
+    }
+
+    @Override
+    public void clear() {
+        cache.invalidateAll();
     }
 
     @Override

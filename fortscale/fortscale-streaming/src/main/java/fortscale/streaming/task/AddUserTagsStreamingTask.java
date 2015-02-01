@@ -27,6 +27,7 @@ import fortscale.streaming.service.UserTagsService;
 /**
  * Streaming task that adds user tags to events that pass through 
  */
+@Deprecated
 public class AddUserTagsStreamingTask extends AbstractStreamTask implements InitableTask {
 
 	private String outputTopic;

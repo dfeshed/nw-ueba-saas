@@ -34,9 +34,5 @@ public class AdministratorAccountServiceImpl extends UserTagServiceAbstract{
 	public boolean isUserAdministrator(String username) {
 		return isUserTagged(username);
 	}
-	
-	@Override
-	public void updateUserTag(String username, boolean isTagTheUser){
-		userRepository.updateUserTag(User.administratorAccountField, username, isTagTheUser);
-	}
+
 }

@@ -22,7 +22,6 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
@@ -43,16 +42,7 @@ public class UserUpdateScoreServiceTest {
 				
 	@Mock
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
-	
-	@Mock
-	private AccessDAO loginDAO;
-	
-	@Mock
-	private AccessDAO sshDAO;
-	
-	@Mock
-	private AccessDAO vpnDAO;
-				
+					
 	@Mock
 	private ImpalaWriterFactory impalaWriterFactory;
 	
@@ -67,12 +57,6 @@ public class UserUpdateScoreServiceTest {
 		MockitoAnnotations.initMocks(this);
 	}
 	
-//	@Test(expected=IllegalArgumentException.class)
-//	@Parameters({"vpn", "active_directory", "active_directory_group_membership", "total"})
-//	public void updateUserWithAuthScoreWrongClassifierTest(String classifierString){
-//		Classifier classifier = Classifier.valueOf(classifierString);
-//		userUpdateScoreService.updateUserWithAuthScore(classifier);
-//	}
 	
 	@Test
 	public void thisAlwaysPasses() {

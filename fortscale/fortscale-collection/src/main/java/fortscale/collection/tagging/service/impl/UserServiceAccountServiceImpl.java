@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import fortscale.services.UserService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -23,7 +24,8 @@ import fortscale.utils.logging.Logger;
 public class UserServiceAccountServiceImpl implements UserTagService, InitializingBean {
 
 	@Autowired
-	private UserRepository userRepository;
+	protected UserService userService;
+
 	@Autowired
 	private UserTaggingService userTaggingService;
 
@@ -36,6 +38,8 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 	private String deletionSymbol;
 
 	private Set<String> serviceAccounts = null;
+
+	private UserTagEnum tag = UserTagEnum.service;
 
 	@Override
 	public boolean isUserTagged(String username) {
@@ -126,16 +130,14 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 
 		List<String> ousToTag = new LinkedList<>();
 		ousToTag.add(userName);
-		return userRepository.findByUserInOU(ousToTag);
+		return userService.findNamesInOU(ousToTag);
 	}
 
 	private boolean removeTagFromUser(String userName) {
-
 		if (serviceAccounts.contains(userName)) {
-			boolean userExists = userRepository.findIfUserExists(userName);
+			boolean userExists = userService.findIfUserExists(userName);
 			if (userExists) {
-				userRepository.updateUserTag(User.userServiceAccountField, userName, false);
-				userRepository.syncTags(userName, Collections.<String>emptyList(), Arrays.asList(UserTagEnum.service.getId()));
+				userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, false);
 				serviceAccounts.remove(userName);
 				return true;
 			}
@@ -144,12 +146,10 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 	}
 
 	private boolean tagServiceAccount(String userName) {
-
 		if (!serviceAccounts.contains(userName)) {
-			boolean userExists = userRepository.findIfUserExists(userName);
+			boolean userExists = userService.findIfUserExists(userName);
 			if (userExists) {
-				userRepository.updateUserTag(User.userServiceAccountField, userName, true);
-				userRepository.syncTags(userName, Arrays.asList(UserTagEnum.service.getId()), Collections.<String>emptyList());
+				userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, true);
 				serviceAccounts.add(userName);
 				return true;
 			}
@@ -164,7 +164,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 
 	private Set<String> loadUserServiceAccountTagFromMongo() {
 
-		return userRepository.findNameByTag(getTagMongoField(), true);
+		return userService.findNamesByTag(getTagMongoField(), true);
 	}
 
 	public String getDeletionSymbol() {
@@ -191,6 +191,12 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 	public String getTagMongoField() {
 
 		return User.userServiceAccountField;
+	}
+
+	@Override
+	public UserTagEnum getTag() {
+
+		return tag;
 	}
 
 	public Set<String> getServiceAccounts() {

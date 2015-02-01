@@ -15,7 +15,7 @@ public class ModelRepositoryImpl implements ModelRepositoryCustom {
 		// update the model json for the user model name, is not exist insert a new document 
 		Query query = new Query();
 		query.addCriteria(Criteria.where(Model.MODEL_NAME_FIELD).is(model.getModelName()));
-		query.addCriteria(Criteria.where(Model.USER_NAME_FIELD).is(model.getUserName()));
+		query.addCriteria(Criteria.where(Model.CONTEXT_NAME_FIELD).is(model.getContext()));
 		
 		Model existing = mongoTemplate.findOne(query, Model.class);
 		if (existing==null) {
