@@ -44,13 +44,6 @@ public class MemoryBasedCacheTest {
 	}
 
 	@Test
-	public void size_should_return_the_size_of_the_inner_cache() throws IOException {
-		when(cache.size()).thenReturn(5l);
-		long size = subject.size();
-		assertEquals(5, size);
-	}
-
-	@Test
 	public void clear_should_invalidateAll_entries_in_the_inner_cache() throws IOException {
 		subject.clear();
 		verify(cache, times(1)).invalidateAll();

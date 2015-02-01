@@ -279,8 +279,6 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 	
 	public void update(){
-		HashMap<String, String> tmpMap = new HashMap<>();
-		
 		List<User> users = userRepository.findAllExcludeAdInfo();
 		usernameToUserIdCache.clear();
 		for(User user: users){
@@ -298,7 +296,6 @@ public class UsernameService implements InitializingBean, CachingService{
 			}
 			logUsernameSetList.set(logEventsEnum.ordinal(), logUsernameSet);
 		}
-		logger.debug("username set contain {} elements", usernameToUserIdCache.size());
 	}
 	
 	public void addLogNormalizedUsername(LogEventsEnum eventId, String userId, String username){

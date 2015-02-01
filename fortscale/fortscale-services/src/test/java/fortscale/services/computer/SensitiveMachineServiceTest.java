@@ -55,10 +55,6 @@ public class SensitiveMachineServiceTest {
 				simpleCacheImpl.clear();
 			}
 
-			@Override public long size() {
-				return simpleCacheImpl.size();
-			}
-
 			@Override public void close() throws IOException {
 				simpleCacheImpl = null;
 			}

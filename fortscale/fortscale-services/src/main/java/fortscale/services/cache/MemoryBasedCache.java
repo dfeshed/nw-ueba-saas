@@ -60,11 +60,6 @@ public class MemoryBasedCache<K,T> extends CacheHandler<K,T> {
     }
 
     @Override
-    public long size() {
-        return cache.size();
-    }
-
-    @Override
     public void clear() {
         cache.invalidateAll();
     }

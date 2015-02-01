@@ -55,13 +55,6 @@ public class KafkaPropogateUpdatesCacheTest {
     }
 
     @Test
-    public void size_should_return_the_size_of_the_inner_cache() throws IOException {
-        when(innerCache.size()).thenReturn(5l);
-        long size = subject.size();
-        assertEquals(5, size);
-    }
-
-    @Test
     public void clear_should_clear_the_inner_cache() throws IOException {
         subject.clear();
         verify(innerCache, times(1)).clear();

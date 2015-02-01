@@ -62,10 +62,6 @@ public class ComputerServiceTest {
 				simpleCacheImpl.clear();
 			}
 
-			@Override public long size() {
-				return simpleCacheImpl.size();
-			}
-
 			@Override public void close() throws IOException {
 				simpleCacheImpl = null;
 			}

@@ -131,7 +131,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		// add the tagService to update input topics map
 		if (userService != null) {
 			userService.setCache(new LevelDbBasedCache<String, Set>((KeyValueStore<String, Set>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), Set.class));
-			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), usernameService);
+			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), userService);
 		}
 	}
 
@@ -140,8 +140,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// parse the message into json 
 		String messageText = (String)envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-
 		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
@@ -155,7 +153,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				cachingService.getCache().putFromString(key, (String) envelope.getMessage());
 			}
 		} else {
-
+			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 			// Get configuration for data source
 			Entry<String, UsernameNormalizationService> configuration = inputTopicToConfiguration.get(inputTopic);
 			if (configuration == null) {

@@ -108,7 +108,8 @@ public class UserServiceImpl implements UserService{
 	
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
 
-	private CacheHandler<String, Set<String>> tagsCache;
+	@Autowired
+	private CacheHandler<String, Set<String>> userTagsCache;
 	
 	@Override
 	public User createUser(UserApplication userApplication, String username, String appUsername){
@@ -164,7 +165,7 @@ public class UserServiceImpl implements UserService{
 		user = userRepository.save(user);
 		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
 		if (user.getTags() != null && user.getTags().size() > 0){
-			tagsCache.put(user.getUsername(),user.getTags());
+			userTagsCache.put(user.getUsername(),user.getTags());
 		}
 		return user;
 	}
@@ -174,7 +175,7 @@ public class UserServiceImpl implements UserService{
 		for (User user : users) {
 			//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
 			if (user.getTags() != null && user.getTags().size() > 0) {
-				tagsCache.put(user.getUsername(), user.getTags());
+				userTagsCache.put(user.getUsername(), user.getTags());
 			}
 		}
 	}
@@ -783,33 +784,33 @@ public class UserServiceImpl implements UserService{
 		// call the repository to update mongodb with the tags settings
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 		//also update the tags cache with the new updates
-		Set<String> tags = tagsCache.get(username);
+		Set<String> tags = userTagsCache.get(username);
 		tags.addAll(tagsToAdd);
 		tags.removeAll(tagsToRemove);
-		tagsCache.put(username,tags);
+		userTagsCache.put(username,tags);
 	}
 
 
 	@Override
 	public boolean isUserTagged(String username, String tag) {
 		// check if the user tags are kept in cache
-		Set<String> tags = tagsCache.get(username);
+		Set<String> tags = userTagsCache.get(username);
 		if (tags==null) {
 			// get tags from mongodb and add to cache
 			tags = userRepository.getUserTags(username);
 			if (tags!=null)
-				tagsCache.put(username, tags);
+				userTagsCache.put(username, tags);
 		}
 			
 		return tags!=null & tags.contains(tag);
 	}
 
 	@Override public CacheHandler getCache() {
-		return tagsCache;
+		return userTagsCache;
 	}
 
 	@Override public void setCache(CacheHandler cache) {
-		tagsCache = cache;
+		userTagsCache = cache;
 	}
 
 	@Override
@@ -840,13 +841,16 @@ public class UserServiceImpl implements UserService{
 		}
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 		//also update the tags cache with the new updates
-		Set<String> tags = tagsCache.get(username);
+		Set<String> tags = userTagsCache.get(username);
+		if (tags == null){
+			tags = new HashSet<String>();
+		}
 		if (value) {
 			tags.add(tagField);
 		}
 		else {
 			tags.remove(tagField);
 		}
-		tagsCache.put(username, tags);
+		userTagsCache.put(username, tags);
 	}
 }

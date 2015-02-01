@@ -22,7 +22,7 @@ public class LevelDbBasedCacheTest {
 	@Before
 	public void setUp() {
 		store = mock(KeyValueStore.class);
-		subject = new LevelDbBasedCache<String,String>(store,String.class,2);
+		subject = new LevelDbBasedCache<String,String>(store,String.class);
 	}
 
 	@Test
