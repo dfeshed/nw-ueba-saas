@@ -163,6 +163,7 @@ public class UserServiceImpl implements UserService{
 
 	private User saveUser(User user){
 		user = userRepository.save(user);
+		usernameService.updateUsernameCache(user);
 		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
 		if (user.getTags() != null && user.getTags().size() > 0){
 			userTagsCache.put(user.getUsername(),user.getTags());
@@ -173,6 +174,7 @@ public class UserServiceImpl implements UserService{
 	private void saveUsers(List<User> users) {
 		userRepository.save(users);
 		for (User user : users) {
+			usernameService.updateUsernameCache(user);
 			//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
 			if (user.getTags() != null && user.getTags().size() > 0) {
 				userTagsCache.put(user.getUsername(), user.getTags());
