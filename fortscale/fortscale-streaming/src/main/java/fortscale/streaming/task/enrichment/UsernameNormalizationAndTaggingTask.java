@@ -1,12 +1,6 @@
 package fortscale.streaming.task.enrichment;
 
-import fortscale.domain.core.Computer;
 import fortscale.services.CachingService;
-import fortscale.services.ComputerService;
-import fortscale.services.UserService;
-import fortscale.services.computer.SensitiveMachineService;
-import fortscale.services.computer.SensitiveMachineServiceImpl;
-import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
@@ -18,8 +12,6 @@ import fortscale.streaming.task.AbstractStreamTask;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -37,9 +29,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToString;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Several enrichment regarding the user:
@@ -202,7 +194,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			// send the event to the output topic
 			String outputTopic = configuration.getOutputTopic();
 			try {
-				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(inputTopic, message), message.toJSONString()));
+				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(configuration.getPartitionField(), message), message.toJSONString()));
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, messageText), exception);
 			}

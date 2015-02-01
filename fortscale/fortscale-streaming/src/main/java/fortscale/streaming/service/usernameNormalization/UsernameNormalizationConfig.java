@@ -1,8 +1,5 @@
 package fortscale.streaming.service.usernameNormalization;
 
-import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
-
-import java.util.List;
 
 /**
  * Configuration for computer tagging and clustering on a specific event type. This should be constructed from the topology
