@@ -93,16 +93,30 @@
         <constructor-arg name="clazz" value="java.lang.String" />
     </bean>
 
+
     <!-- Username normalization -->
-    <bean id="SecurityUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService">
+    <bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
+        <property name="matchersString" value="${collection.vpn.etl.username.normalize.matchers}"/>
+        <property name="usernameService" ref="usernameService"/>
+    </bean>
+    <bean id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
+        <property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
+        <property name="usernameService" ref="usernameService"/>
+    </bean>
+    <bean id="sshUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
+        <property name="matchersString" value="${collection.ssh.etl.username.normalize.matchers}"/>
+        <property name="usernameService" ref="usernameService"/>
+    </bean>
+
+    <bean id="SecurityUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="secUsernameNormalizer"/>
     </bean>
-    <bean id="VpnUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService">
+    <bean id="VpnUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="vpnUsernameNormalizer"/>
     </bean>
-    <bean id="SshUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.SshUsernameNormalizationService">
+    <bean id="SshUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.SshUsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="sshUsernameNormalizer"/>
     </bean>

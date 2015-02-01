@@ -16,19 +16,6 @@
 	</bean>
 	<bean id="saltSource" class="fortscale.services.security.FortscaleSaltSource"/>
 
-	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
-		<property name="matchersString" value="${collection.vpn.etl.username.normalize.matchers}"/>
-		<property name="usernameService" ref="usernameService"/>
-	</bean>
-	<bean id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
-		<property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
-		<property name="usernameService" ref="usernameService"/>
-	</bean>
-	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer">
-		<property name="matchersString" value="${collection.ssh.etl.username.normalize.matchers}"/>
-		<property name="usernameService" ref="usernameService"/>
-	</bean>
-
     <!-- Data Entities -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="classpath:META-INF/entities.properties" />
