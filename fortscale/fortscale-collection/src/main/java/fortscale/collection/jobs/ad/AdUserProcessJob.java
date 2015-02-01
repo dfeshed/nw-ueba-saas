@@ -3,7 +3,7 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.collection.tagging.service.UserTaggingService;
-import fortscale.collection.usersfiltering.service.SupportedUsersService;
+import fortscale.services.users.SupportedUsersService;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdGroupRepository;

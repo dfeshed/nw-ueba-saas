@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Value;
 
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.collection.usersfiltering.service.SSHUsersWhitelistService;
+import fortscale.services.users.SSHUsersWhitelistService;
 import fortscale.services.impl.UsernameNormalizer;
 
-
+@Deprecated
 @Configurable(preConstruction=true)
 public class SSHNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphCmdBuilder {
 	

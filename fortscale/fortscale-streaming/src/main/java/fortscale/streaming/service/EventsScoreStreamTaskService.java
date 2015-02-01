@@ -1,10 +1,14 @@
 package fortscale.streaming.service;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.utils.ConversionUtils.convertToString;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.utils.ConversionUtils.convertToLong;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -18,58 +22,63 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
-import com.google.common.collect.Iterables;
-
-import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.utils.StringPredicates;
+import fortscale.streaming.scorer.EventMessage;
+import fortscale.streaming.scorer.Scorer;
+import fortscale.streaming.scorer.ScorerContext;
+import fortscale.streaming.scorer.ScorerFactoryService;
+import fortscale.utils.logging.Logger;
 
+@Configurable(preConstruction=true)
 public class EventsScoreStreamTaskService {
 
-	private static final Logger logger = LoggerFactory.getLogger(EventsScoreStreamTaskService.class);
+	private static final Logger logger = Logger.getLogger(EventsScoreStreamTaskService.class);
 	
+	@Autowired
+	private ScorerFactoryService scorerFactoryService;
 
 	private ModelService modelService;
 
 	private String outputTopic;
-	private String usernameField;
-	private String modelName;
+	private String sourceType;
+	private String entityType;
+	private String timestampField;
+	private List<Scorer> scorersToRun;
 	
 	private Counter processedMessageCount;
-	private Map<String, String> outputFields = new HashMap<String, String>();
-	private String eventScoreField;
+	private Counter lastTimestampCount;
+	
 	
 	
 	public EventsScoreStreamTaskService(Config config, TaskContext context, ModelService modelService) throws Exception{
+		this.modelService = modelService;
 		// get task configuration parameters
-		usernameField = getConfigString(config, "fortscale.username.field");
+		sourceType = getConfigString(config, "fortscale.source.type");
+		entityType = getConfigString(config, "fortscale.entity.type");
+		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		outputTopic = config.get("fortscale.output.topic", "");
-		fillModelConfig(config);
-		eventScoreField = getConfigString(config, "fortscale.event.score.field");
+		
+		fillScoreConfig(config);
 		
 		// create counter metric for processed messages
-		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-event-score-message-count", modelName));
-		this.modelService = modelService;
+		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-%s-event-score-message-count", sourceType, entityType));
+		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-%s-event-score-message-epochime", sourceType, entityType));
 	}
 	
-	private void fillModelConfig(Config config) throws Exception {
-		// get the model name and fields to include from configuration
-		modelName = getConfigString(config, "fortscale.model.name");
-		
-		Config fieldsSubset = config.subset("fortscale.fields.");		
-		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".model"))) {
-			String fieldName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".model"));
-			String outputField = getConfigString(config, String.format("fortscale.fields.%s.output", fieldName));
-			
-			if (outputField==null)
-				logger.error("output field is null for field {}", fieldName);
-			else
-				outputFields.put(fieldName, outputField);
+	private void fillScoreConfig(Config config) throws Exception {
+		List<String> scorers = getConfigStringList(config, "fortscale.scorers");
+		ScorerContext context = new ScorerContext(config);
+		context.setBean("modelService", modelService);
+		scorersToRun = new ArrayList<>();
+		for(String ScorerStr: scorers){
+			Scorer scorer = (Scorer) context.resolve(Scorer.class, ScorerStr);
+			checkNotNull(scorer);
+			scorersToRun.add(scorer);
 		}
 	}
 	
@@ -79,36 +88,26 @@ public class EventsScoreStreamTaskService {
 		String messageText = (String)envelope.getMessage();
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 		
-		
-		// get the username, so that we can get the model from store
-		String username = convertToString(message.get(usernameField));
-		if (StringUtils.isEmpty(username)) {
-			//logger.error("message {} does not contains username in field {}", messageText, usernameField);
-			throw new StreamMessageNotContainFieldException(messageText, usernameField);
+		// get the timestamp from the message
+		// the timestamp for now is only used for monitoring but later it will be used in order to recieve the right model.
+		Long timestamp = convertToLong(message.get(timestampField));
+		if (timestamp==null) {
+			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
+			throw new StreamMessageNotContainFieldException(messageText, timestampField);
 		}
-				
-		// go over each field in the event and add it to the model
-		PrevalanceModel model = modelService.getModelForUser(username, modelName);
+
 		
-		double eventScore = 0;
-		for (String fieldName : model.getFieldNames()) {
-			double score = 0;
-			if(model != null){
-				score = model.calculateScore(message, fieldName);
+		EventMessage eventMessage = new EventMessage(message);
+		for (Scorer scorer: scorersToRun) {
+			scorer.calculateScore(eventMessage);
+		}
 		
-				// set the max field score as the event score
-				if (model.shouldAffectEventScore(fieldName))
-					eventScore = Math.max(eventScore, score);
-			}
-			
-			// store the field score in the message
-			String outputFieldname = outputFields.get(fieldName); 
-			if (outputFieldname!=null)
-				message.put(outputFieldname, score);
+		Iterator<Entry<String, Double>> iter = eventMessage.getScoreIterator();
+		while (iter.hasNext()) {
+			Entry<String, Double> entry = iter.next();
+			message.put(entry.getKey(), entry.getValue());
 		}
 	
-		// put the event score in the message
-		message.put(eventScoreField, eventScore);
 		
 		// publish the event with score to the subsequent topic in the topology
 		if (StringUtils.isNotEmpty(outputTopic)){
@@ -120,5 +119,6 @@ public class EventsScoreStreamTaskService {
 		}
 		
 		processedMessageCount.inc();
+		lastTimestampCount.set(timestamp);
 	}
 }

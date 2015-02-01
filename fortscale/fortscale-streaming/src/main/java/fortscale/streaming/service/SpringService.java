@@ -54,6 +54,10 @@ public class SpringService {
 		return context.getBean(requiredType);
 	}
 
+	public Object resolve(String requiredName) {
+		return context.getBean(requiredName);
+	}
+
     public <T> Collection<T> resolveAll(Class<T> requiredType) {
         return context.getBeansOfType(requiredType).values();
     }

@@ -23,7 +23,7 @@ public class CumulativeAverageFieldModel implements FieldModel{
 	private double average;
 	
 	@Override
-	public void init(String fieldName, Config config) {}
+	public void init(String prefix, String fieldName, Config config) {}
 	
 	@Override
 	public void add(Object value, long timestamp) {
@@ -46,17 +46,7 @@ public class CumulativeAverageFieldModel implements FieldModel{
 	}
 	
 	@Override
-	public boolean shouldSkipEvent(Object value) {
-		return false;
-	}
-
-	@Override
 	public double calculateScore(Object value) {
 		return average;
-	}
-
-	@Override
-	public boolean shouldAffectEventScore() {
-		return false;
 	}
 }

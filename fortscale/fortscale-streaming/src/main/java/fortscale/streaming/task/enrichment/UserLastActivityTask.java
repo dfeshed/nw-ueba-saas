@@ -172,6 +172,7 @@ public class UserLastActivityTask extends AbstractStreamTask {
 		}
 
 
+
 		Long userLastActivity = dataSourceToTimestamp.get(classifierId);
 		if(userLastActivity == null || userLastActivity < timestamp){
 			// update last activity in level DB

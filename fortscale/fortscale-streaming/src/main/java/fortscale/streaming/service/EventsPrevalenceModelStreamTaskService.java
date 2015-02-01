@@ -5,7 +5,9 @@ import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -26,6 +28,7 @@ import com.google.common.collect.Iterables;
 import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.model.prevalance.PrevalanceModelBuilderImpl;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
+import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.utils.StringPredicates;
 
@@ -34,58 +37,71 @@ public class EventsPrevalenceModelStreamTaskService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTaskService.class);
 	
-	private PrevalanceModelStreamingService prevalanceModelStreamingService;
+	private Map<String,PrevalanceModelStreamingService> prevalanceModelStreamingServiceMap;
+	private Map<String,String> modelToContextFieldNameMap;
+	private List<String> modelsNamesOrder;
 
-	private String usernameField;
 	private String timestampField;
-	private String modelName;
+	private String sourceType;
+	private String entityType;
 	
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
 	private Counter lastTimestampCount;
 	private List<String> discriminatorsFields;
 	
-	@SuppressWarnings("unchecked")
 	public EventsPrevalenceModelStreamTaskService(Config config, TaskContext context) throws Exception {
-		// get task configuration parameters
-		usernameField = getConfigString(config, "fortscale.username.field");
+		// get model task configuration parameters
+		sourceType = getConfigString(config, "fortscale.source.type");
+		entityType = getConfigString(config, "fortscale.entity.type");
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		discriminatorsFields = getConfigStringList(config, "fortscale.discriminator.fields");
 		
+		createPrevalanceModelStreamingServices(config, context);
+		
+		// create counter metric for processed messages
+		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-%s-model-message-count", sourceType,entityType));
+		skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-%s-model-skip-count", sourceType,entityType));
+		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-%s-model-message-epochime", sourceType,entityType));
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void createPrevalanceModelStreamingServices(Config config, TaskContext context) throws Exception{
+		modelsNamesOrder = getConfigStringList(config, "fortscale.models.names.order");
 		// get the store that holds models
 		String storeName = getConfigString(config, "fortscale.store.name");
 		KeyValueStore<String, PrevalanceModel> store = (KeyValueStore<String, PrevalanceModel>)context.getStore(storeName);
-		
-		// create a model builder based on fields configuration
-		PrevalanceModelBuilderImpl modelBuilder = createModelBuilder(config);
-		
-		// create model service based on the store and model builder
-		prevalanceModelStreamingService = new PrevalanceModelStreamingService(store,modelBuilder);
-		
-		// create counter metric for processed messages
-		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-model-message-count", modelName));
-		skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-model-skip-count", modelName));
-		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-model-message-epochime", modelName));
+		prevalanceModelStreamingServiceMap = new HashMap<>();
+		modelToContextFieldNameMap = new HashMap<>();
+		for(String modelName: modelsNamesOrder){
+			String contextField = getConfigString(config, String.format("fortscale.model.%s.context.fieldname", modelName));
+			modelToContextFieldNameMap.put(modelName, contextField);
+			// create a model builder based on fields configuration
+			PrevalanceModelBuilderImpl modelBuilder = createModelBuilder(modelName, config);
+			// create model service based on the store and model builder
+			PrevalanceModelStreamingService prevalanceModelStreamingService = new PrevalanceModelStreamingService(store,modelBuilder);
+			prevalanceModelStreamingServiceMap.put(modelName, prevalanceModelStreamingService);
+		}
 	}
 	
-	public PrevalanceModelStreamingService getPrevalanceModelStreamingService(){
-		return prevalanceModelStreamingService;
-	}
-	
-	private PrevalanceModelBuilderImpl createModelBuilder(Config config) throws Exception {
-		// get the model name and fields to include from configuration
-		modelName = getConfigString(config, "fortscale.model.name");
-		PrevalanceModelBuilderImpl modelBuilder = PrevalanceModelBuilderImpl.createModel(modelName, config);
+	private PrevalanceModelBuilderImpl createModelBuilder(String modelName, Config config) throws Exception {
+		// get the fields to include from configuration
+		String configPrefix = String.format("fortscale.model.%s.fields", modelName);
+		PrevalanceModelBuilderImpl modelBuilder = PrevalanceModelBuilderImpl.createModel(modelName, config, configPrefix);
 		
-		Config fieldsSubset = config.subset("fortscale.fields.");		
+		String fieldsPrefix = String.format("fortscale.model.%s.fields.", modelName);
+		Config fieldsSubset = config.subset(fieldsPrefix);
 		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".model"))) {
 			String fieldName = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".model"));
-			String fieldModel = getConfigString(config, String.format("fortscale.fields.%s.model", fieldName));
-			String fieldBooster = config.get(String.format("fortscale.fields.%s.booster", fieldName), "");
+			String fieldModel = getConfigString(config, String.format("%s%s.model", fieldsPrefix,fieldName));
 			
-			modelBuilder.withField(fieldName, fieldModel, fieldBooster);
+			modelBuilder.withField(fieldName, fieldModel);
 		}
 		return modelBuilder;
+	}
+	
+	public ModelService getModelStreamingService(){
+		return new PrevalenceModelServiceMap(prevalanceModelStreamingServiceMap);
 	}
 	
 	/** Process incoming events and update the user models stats */
@@ -94,14 +110,6 @@ public class EventsPrevalenceModelStreamTaskService {
 		String messageText = (String)envelope.getMessage();
 		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 		
-		
-		// get the username, so that we can get the model from store
-		String username = convertToString(message.get(usernameField));
-		if (StringUtils.isEmpty(username)) {
-			//logger.error("message {} does not contains username in field {}", messageText, usernameField);
-			throw new StreamMessageNotContainFieldException(messageText, usernameField);
-		}
-		
 		// get the timestamp from the message
 		Long timestamp = convertToLong(message.get(timestampField));
 		if (timestamp==null) {
@@ -109,23 +117,42 @@ public class EventsPrevalenceModelStreamTaskService {
 			throw new StreamMessageNotContainFieldException(messageText, timestampField);
 		}
 		
-		// go over each field in the event and add it to the model
-		PrevalanceModel model = prevalanceModelStreamingService.getModelForUser(username,modelName);
-		
-		// skip events that occur before the model time mark in case the task is configured
-		// to perform both model computation and scoring (the normal case)
 		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);
-		boolean afterTimeMark = model.getBarrier().isEventAfterBarrier(timestamp, discriminator);
-		
-		// skip events that occur before the model mark in case the task is configured to
-		// perform only model computation and not event scoring 
-		if (afterTimeMark) {
+		boolean isFirst = true;
+		boolean afterTimeMark = false;
+		for(String modelName: modelsNamesOrder){
+			// get the context, so that we can get the model from store
+			String contextField = modelToContextFieldNameMap.get(modelName);
+			String context = convertToString(message.get(contextField));
+			if (StringUtils.isEmpty(context)) {
+				//logger.error("message {} does not contains username in field {}", messageText, usernameField);
+				throw new StreamMessageNotContainFieldException(messageText, contextField);
+			}
+			
+			PrevalanceModelStreamingService prevalanceModelStreamingService = prevalanceModelStreamingServiceMap.get(modelName);
+			// go over each field in the event and add it to the model
+			PrevalanceModel model = prevalanceModelStreamingService.getModel(context);
+			if(isFirst){
+				// skip events that occur before the model time mark in case the task is configured
+				// to perform both model computation and scoring (the normal case)
+				afterTimeMark = model.getBarrier().isEventAfterBarrier(timestamp, discriminator);
+				
+				// skip events that occur before the model mark in case the task is configured to
+				// perform only model computation and not event scoring 
+				if (!afterTimeMark) {
+					break;
+				}
+				isFirst = false;
+			}	
+			
 			model.addFieldValues(message, timestamp);
 			model.getBarrier().updateBarrier(timestamp, discriminator);
-			prevalanceModelStreamingService.updateUserModel(username, model);
+			prevalanceModelStreamingService.updateModel(context, model);
+		}
+		
+		if (afterTimeMark) {
 			// update timestamp counter
 			lastTimestampCount.set(timestamp);
-			
 			processedMessageCount.inc();
 		} else{
 			skippedMessageCount.inc();
@@ -136,15 +163,19 @@ public class EventsPrevalenceModelStreamTaskService {
 	
 	/** periodically save the state to mongodb as a secondary backing store */
 	public void window(MessageCollector collector, TaskCoordinator coordinator) {
-		if (prevalanceModelStreamingService!=null)
-			prevalanceModelStreamingService.exportModels();
+		exportModels();
+	}
+	
+	private void exportModels(){
+		if(prevalanceModelStreamingServiceMap != null){
+			for(PrevalanceModelStreamingService prevalanceModelStreamingService: prevalanceModelStreamingServiceMap.values()){
+				prevalanceModelStreamingService.exportModels();
+			}
+		}
 	}
 
 	/** save the state to mongodb when the job shutsdown */
 	public void close() throws Exception {
-		if (prevalanceModelStreamingService!=null) {
-			prevalanceModelStreamingService.exportModels();
-		}
-		prevalanceModelStreamingService = null;
+		exportModels();
 	}
 }

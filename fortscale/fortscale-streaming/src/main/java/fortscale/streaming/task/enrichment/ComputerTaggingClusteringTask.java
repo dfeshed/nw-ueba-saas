@@ -48,7 +48,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 	protected ComputerTaggingService computerTaggingService;
 
-	// map between input topic name and relevant service
+	// Map between (update) input topic name and relevant caching service
 	protected Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
 

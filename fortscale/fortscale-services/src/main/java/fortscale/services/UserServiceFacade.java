@@ -1,6 +1,5 @@
 package fortscale.services;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,11 +32,7 @@ public interface UserServiceFacade {
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit); 
 	
 	public List<UserMachine> getUserMachines(String uid);
-	
-	public void updateUserWithAuthScore(Classifier classifier);
-	
-	public void updateUserWithAuthScore(Classifier classifier, Date runtime);
-		
+			
 	public void updateUserWithGroupMembershipScore();
 		
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);

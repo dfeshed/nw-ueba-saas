@@ -10,7 +10,7 @@ public final class ConfigUtils {
 
 	public static String getConfigString(Config config, Object key) throws ConfigException {
 		String value = config.get(key);
-		if (StringUtils.isEmpty(value))
+		if (StringUtils.isBlank(value))
 			throw new ConfigException("configuration is missing key " + key);
 		return value;
 	}
