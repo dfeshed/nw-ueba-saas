@@ -2,23 +2,21 @@ package fortscale.streaming.task.enrichment;
 
 import com.google.common.collect.Iterables;
 import fortscale.domain.core.Computer;
-import fortscale.domain.core.ComputerUsageType;
 import fortscale.services.CachingService;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
-import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
+import fortscale.services.impl.ComputerServiceImpl;
+import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
-import net.minidev.json.JSONValue;
 import net.minidev.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
+import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -29,13 +27,13 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.springframework.core.env.Environment;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.isConfigContainKey;
-import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
  * Created by danal on 18/01/2015.
@@ -54,6 +52,15 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	protected Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
 
+	/**
+	 * This method response to the initiation of the streaming job
+	 * First step is to create the caching based on spring configuration
+	 * Then we retrieve the needed values from the property  file
+	 * Last step is to create the tagging service that will handel the entire logeic at the process part
+	 * @param config - represent the config from the Samza framework based on the task property file
+	 * @param context
+	 * @throws Exception
+	 */
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
@@ -106,6 +113,15 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 		computerTaggingService = new ComputerTaggingService(computerService, sensitiveMachineService, configs);
 	}
 
+
+	/**
+	 * This is the process part of the Samza job
+	 * At this part we retrieve message from the needed topic and based on the input topic we start the needed service
+	 * @param envelope
+	 * @param collector
+	 * @param coordinator
+	 * @throws Exception
+	 */
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
 			TaskCoordinator coordinator) throws Exception {

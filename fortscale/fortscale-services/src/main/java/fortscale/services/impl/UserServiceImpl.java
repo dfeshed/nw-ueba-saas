@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.ad.AdUserThumbnail;
@@ -32,12 +32,7 @@ import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
-import fortscale.domain.core.AdUserDirectReport;
-import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.Computer;
-import fortscale.domain.core.EmailAddress;
-import fortscale.domain.core.User;
-import fortscale.domain.core.UserAdInfo;
+import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
@@ -51,6 +46,24 @@ import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.mortbay.log.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
@@ -268,7 +281,7 @@ public class UserServiceImpl implements UserService{
 		// get user by username
 		User user = userRepository.getLastActivityByUserName(username);
 		if (user == null) {
-			logger.warn("Can't find user {} - Not going to update last activity");
+			logger.warn("Can't find user {} - Not going to update last activity",username);
 			return;
 		}
 
