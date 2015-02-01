@@ -20,6 +20,7 @@ public class ContinuousValuesFieldModelTest {
 	private static double a1 = 35.0/3;
 	private static double largestPValue = 0.2;
 	private static final String fieldName ="testField";
+	private static final String prefix = "fortscale.fields";
 	
 	private Config config;
 	
@@ -31,25 +32,25 @@ public class ContinuousValuesFieldModelTest {
 	
 	private ContinuousValuesFieldModel createContinuousValuesFieldModel(){
 		ContinuousValuesFieldModel continuousValuesFieldModel = new ContinuousValuesFieldModel();
-		when(config.getBoolean(String.format(ContinuousValuesFieldModel.SCORE_FOR_LARGE_VALUE_CONFIG_FORMAT, fieldName), 
+		when(config.getBoolean(String.format(ContinuousValuesFieldModel.SCORE_FOR_LARGE_VALUE_CONFIG_FORMAT, prefix, fieldName), 
 				continuousValuesFieldModel.getContinuousValuesModel().isScoreForLargeValues()))
 				.thenReturn(scoreForLargeValues);
-		when(config.getBoolean(String.format(ContinuousValuesFieldModel.SCORE_FOR_SMALL_VALUE_CONFIG_FORMAT, fieldName), 
+		when(config.getBoolean(String.format(ContinuousValuesFieldModel.SCORE_FOR_SMALL_VALUE_CONFIG_FORMAT, prefix, fieldName), 
 				continuousValuesFieldModel.getContinuousValuesModel().isScoreForSmallValues()))
 				.thenReturn(scoreForSmallValues);
-		when(config.getDouble(String.format(ContinuousValuesFieldModel.A1_CONFIG_FORMAT, fieldName), 
+		when(config.getDouble(String.format(ContinuousValuesFieldModel.A1_CONFIG_FORMAT, prefix, fieldName), 
 				continuousValuesFieldModel.getContinuousValuesModel().getA1()))
 				.thenReturn(a1);
-		when(config.getDouble(String.format(ContinuousValuesFieldModel.A2_CONFIG_FORMAT, fieldName), 
+		when(config.getDouble(String.format(ContinuousValuesFieldModel.A2_CONFIG_FORMAT, prefix, fieldName), 
 				continuousValuesFieldModel.getContinuousValuesModel().getA2()))
 				.thenReturn(a2);
-		when(config.getDouble(String.format(ContinuousValuesFieldModel.LARGEST_PVALUE_CONFIG_FORMAT, fieldName), 
+		when(config.getDouble(String.format(ContinuousValuesFieldModel.LARGEST_PVALUE_CONFIG_FORMAT, prefix, fieldName), 
 				continuousValuesFieldModel.getContinuousValuesModel().getLargestPValue()))
 				.thenReturn(largestPValue);
-		when(config.getInt(String.format(ContinuousValuesFieldModel.MAX_NUM_OF_HISTOGRAM_ELEMENTS_CONFIG_FORMAT, fieldName), 
+		when(config.getInt(String.format(ContinuousValuesFieldModel.MAX_NUM_OF_HISTOGRAM_ELEMENTS_CONFIG_FORMAT, prefix, fieldName), 
 				continuousValuesFieldModel.getContinuousValuesModel().getMaxNumOfHistogramElements()))
 				.thenReturn(maxNumOfHistogramElements);
-		continuousValuesFieldModel.init(fieldName, config);
+		continuousValuesFieldModel.init(prefix,fieldName, config);
 		
 		return continuousValuesFieldModel;
 	}

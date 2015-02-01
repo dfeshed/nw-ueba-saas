@@ -44,6 +44,12 @@ public class MemoryBasedCacheTest {
 	}
 
 	@Test
+	public void clear_should_invalidateAll_entries_in_the_inner_cache() throws IOException {
+		subject.clear();
+		verify(cache, times(1)).invalidateAll();
+	}
+
+	@Test
 	public void close_should_cleanup_the_inner_cache() throws IOException {
 		subject.close();
 		verify(cache, times(1)).cleanUp();

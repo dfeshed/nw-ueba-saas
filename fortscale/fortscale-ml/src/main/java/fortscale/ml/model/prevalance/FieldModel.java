@@ -13,15 +13,10 @@ public interface FieldModel {
 	
 	/**
 	 * Initialize the field model with configuration values
+	 * The fieldModel only states the suffix of the configration key. The prefix should be given by the caller.
 	 */
-	void init(String fieldName, Config config);
-	
-	/**
-	 * Return a boolean value indicating if the entire event should be skipped based 
-	 * on the field value
-	 */
-	boolean shouldSkipEvent(Object value);
-	
+	void init(String prefix, String fieldName, Config config);
+		
 	/**
 	 * Count the field value in the model, set at the given time stamp
 	 */
@@ -31,10 +26,5 @@ public interface FieldModel {
 	/**
 	 * calculate the score of the feature value.
 	 */
-	double calculateScore(Object value);
-	
-	/**
-	 * Determines if the field model should participate in event score
-	 */
-	boolean shouldAffectEventScore();
+	double calculateScore(Object value);	
 }

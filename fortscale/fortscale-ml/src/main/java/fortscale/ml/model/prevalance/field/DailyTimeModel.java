@@ -22,13 +22,8 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 	}
 	
 	@Override
-	public void init(String fieldName, Config config) {}
-	
-	@Override
-	public boolean shouldSkipEvent(Object value) {
-		return false;
-	}
-	
+	public void init(String prefix, String fieldName, Config config) {}
+		
 	@Override
 	public void add(Object value, long timestamp){
 		try {
@@ -84,10 +79,5 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 		}
 		
 		return ret;
-	}
-
-	@Override
-	public boolean shouldAffectEventScore() {
-		return true;
 	}
 }

@@ -30,11 +30,6 @@ public class ExecutiveAccountServiceImpl extends UserTagServiceAbstract{
 	public boolean isUserExecutive(String username) {
 		return isUserTagged(username);
 	}
-	
-	@Override
-	public void updateUserTag(String username, boolean isTagTheUser){
-		userRepository.updateUserTag(User.executiveAccountField, username, isTagTheUser);
-	}
 
 	@Override
 	public String getTagMongoField() {
