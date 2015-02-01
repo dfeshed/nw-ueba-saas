@@ -12,6 +12,7 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserTagsService;
+import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
 import net.minidev.json.JSONObject;
@@ -38,6 +39,7 @@ import java.util.Set;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToString;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Several enrichment regarding the user:
@@ -60,7 +62,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	/**
 	 * Map of configuration: from the data-source input topic, to an entry of normalization service and output topic
 	 */
-	protected Map<String, Pair<String,UsernameNormalizationService>> inputTopicToConfiguration = new HashMap<>();
+	protected Map<String, UsernameNormalizationConfig> inputTopicToConfiguration = new HashMap<>();
 
 	/**
 	 * Map between (update) input topic name and relevant caching service
@@ -99,12 +101,13 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String dataSource = ConfigField.getKey();
 			String inputTopic = ConfigField.getValue();
 			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
+			String partitionKey = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
 			String serviceName = getConfigString(config, String.format("fortscale.events.normalization.service.%s",dataSource));
 			UsernameNormalizationService service = (UsernameNormalizationService)SpringService.getInstance().resolve(serviceName);
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
 			usernameService.setCache(usernameStore);
-			inputTopicToConfiguration.put(inputTopic, new ImmutablePair<>(outputTopic, service));
+			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic, partitionKey, service));
 		}
 
 		// add the usernameService to update input topics map
@@ -155,7 +158,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		} else {
 			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 			// Get configuration for data source
-			Entry<String, UsernameNormalizationService> configuration = inputTopicToConfiguration.get(inputTopic);
+			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
 			if (configuration == null) {
 				logger.error("No configuration found for input topic {}. Dropping Record", inputTopic);
 				return;
@@ -174,7 +177,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					throw new StreamMessageNotContainFieldException(messageText, usernameField);
 				}
 
-				UsernameNormalizationService normalizationService = configuration.getValue();
+				UsernameNormalizationService normalizationService = configuration.getUsernameNormalizationService();
 				// checks in memory-cache and mongo if the user exists
 				normalizedUsername = normalizationService.normalizeUsername(username);
 				// check if we should drop the record (user doesn't exist)
@@ -197,10 +200,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			tagService.addTagsToEvent(normalizedUsername, message);
 
 			// send the event to the output topic
-			String outputTopic = configuration.getKey();
+			String outputTopic = configuration.getOutputTopic();
 			try {
-				// TODO send to partition according to username
-				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
+				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(inputTopic, message), message.toJSONString()));
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, messageText), exception);
 			}
@@ -217,4 +219,13 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// Do nothing
 	}
+
+	/** Get the partition key to use for outgoing message envelope for the given event */
+	private Object getPartitionKey(String partitionKeyField, JSONObject event) {
+		checkNotNull(partitionKeyField);
+		checkNotNull(event);
+		return event.get(partitionKeyField);
+	}
+
+
 }

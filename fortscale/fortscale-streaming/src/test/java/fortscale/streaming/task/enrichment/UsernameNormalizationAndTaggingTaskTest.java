@@ -1,6 +1,7 @@
 package fortscale.streaming.task.enrichment;
 
 import fortscale.streaming.service.UserTagsService;
+import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -48,7 +49,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// configuration
 		task.inputTopicToConfiguration = new HashMap<>();
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
-		task.inputTopicToConfiguration.put("input1" , new ImmutablePair<>("output1",usernameNormalizationService));
+		task.inputTopicToConfiguration.put("input1" , new UsernameNormalizationConfig("input1", "output1","key", usernameNormalizationService));
 
 		// tagging
 		task.tagService = Mockito.mock(UserTagsService.class);
