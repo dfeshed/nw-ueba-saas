@@ -11,11 +11,11 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.analyst.ScoreConfiguration;
 import fortscale.domain.analyst.ScoreWeight;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
@@ -69,28 +69,43 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	@Value("${total.score.page.size}")
 	private int totalScorePageSize;
 	
-
 	@Override
-	public void updateUserTotalScore(){
-		logger.info("getting all users");
-		List<User> users = userRepository.findAllExcludeAdInfo();
+	public void updateUserTotalScore() {
+		long count = userRepository.count();
+		if (count == 0)
+			return;
+		
+		ImpalaTotalScoreWriter writer = null;
 		Date lastRun = new Date();
 		
-		logger.info("update all user total score.");
-		for(User user: users){
-			try{
-				updateUserTotalScore(user, lastRun);
-				Update update = new Update();
-				update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
-				userService.updateUser(user, update);
-			} catch(Exception e){
-				logger.error(String.format("got the following exception while trying to recalculate the total score for user %s", user.getUsername()),e);
+		try {
+			writer = impalaWriterFactory.createImpalaTotalScoreWriter();
+			// Iterate pages
+			for (Pageable pageable = new PageRequest(0, totalScorePageSize); pageable != null; pageable = pageable.next()) {
+				// Get list of users on next page
+				List<User> users = userRepository.findAllExcludeAdInfo(pageable, count);
+				// Iterate these users
+				for (User user : users) {
+					try {
+						// Update total score
+						updateUserTotalScore(user, lastRun);
+						Update update = new Update();
+						update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
+						userService.updateUser(user, update);
+						// Write to Impala
+						writer.writeScores(user, lastRun, configurationService.getScoreConfiguration());
+					} catch (Exception e) {
+						logger.error(String.format("Exception while trying to update and write the total score of user %s", user.getUsername()), e);
+					}
+				}
 			}
+		} catch (Exception e) {
+			logger.error(String.format("Exception while trying to update the users' total scores"), e);
+		} finally {
+			if (writer != null)
+				writer.close();
 		}
-				
-		saveUserTotalScoreToImpala(users, lastRun, configurationService.getScoreConfiguration());
 	}
-	
 	
 	private void updateUserTotalScore(User user, Date lastRun){
 		ScoreInfo totalScore = calculateTotalScore(configurationService.getScoreConfiguration().getConfMap().values(), user.getScores(), lastRun);
@@ -123,33 +138,6 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		return ret;
 	}
 	
-	
-		
-	private void saveUserTotalScoreToImpala(List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
-		ImpalaTotalScoreWriter writer = null;
-		try{
-			writer = impalaWriterFactory.createImpalaTotalScoreWriter();
-	
-			saveUserTotalScoreToImpala(writer, users, timestamp, scoreConfiguration);			
-		} finally{
-			if(writer != null){
-				writer.close();
-			}
-		}
-	}
-	
-	private void saveUserTotalScoreToImpala(ImpalaTotalScoreWriter writer, List<User> users, Date timestamp, ScoreConfiguration scoreConfiguration){
-		logger.info("writing {} users total score to the file system.", users.size());
-		for(User user: users){
-			if(user.getScore(Classifier.total.getId()) != null){
-				writer.writeScores(user, timestamp, scoreConfiguration);
-			}
-		}
-	}
-
-	
-	
-		
 	@Override
 	public void updateUserWithGroupMembershipScore(){
 		Date lastRun = adUsersFeaturesExtractionRepository.getLatestTimeStamp();

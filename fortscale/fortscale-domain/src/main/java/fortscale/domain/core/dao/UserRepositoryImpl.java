@@ -180,7 +180,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public List<User> findByUsernames(Collection<String> usernames) {
 		return findByUniqueField(User.usernameField, usernames);
 	}
-
+	
+	@Override
+	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames) {
+		Query query = new Query(where(User.usernameField).in(usernames));
+		query.fields().exclude(User.adInfoField);
+		return mongoTemplate.find(query, User.class);
+	}
+	
 	@Override
 	public User findByAdEmailAddress(EmailAddress emailAddress) {
 		return findOneByField(User.getAdInfoField(UserAdInfo.emailAddressField), emailAddress);
@@ -246,6 +253,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public List<User> findAllExcludeAdInfo() {
 		Query query = new Query();
+		query.fields().exclude(User.adInfoField);
+		return mongoTemplate.find(query, User.class);
+	}
+
+	@Override
+	public List<User> findAllExcludeAdInfo(Pageable pageable, long count) {
+		Query query = new Query().with(pageable);
 		query.fields().exclude(User.adInfoField);
 		return mongoTemplate.find(query, User.class);
 	}
