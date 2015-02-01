@@ -18,7 +18,7 @@ public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 	private static final String MODEL_NAME = "sshuser";
 	private static final String CONTEXT = "testuser";
 	private static final String DATE_TIME_FIELD_NAME = "date_time_unix";
-	private static final String DATE_TIME_OUTPUT_FIELD_NAME = "date_timeScore";
+	private static final String DATE_TIME_OUTPUT_FIELD_NAME = "date_time_score";
 	private static final String NORMALIZE_DST_MACHINE_FIELD_NAME = "normalized_dst_machine";
 	private static final String NORMALIZE_DST_MACHINE_OUTPUT_FIELD_NAME = "normalized_dst_machine_score";
 	private static final String NORMALIZE_SRC_MACHINE_FIELD_NAME = "normalized_src_machine";
