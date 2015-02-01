@@ -51,17 +51,9 @@ public class LevelDbBasedCacheTest {
 		verify(store, times(1)).flush();
 	}
 
-	@Test
+	@Test(expected=UnsupportedOperationException.class)
 	public void clear_should_clear_the_inner_cache_from_all_its_records_using_2_external_iterations() throws IOException {
-		KeyValueIterator<String,String> keyValueIteratorFirstIteration = mock(KeyValueIterator.class);
-		when(keyValueIteratorFirstIteration.hasNext()).thenReturn(true);
-		when(keyValueIteratorFirstIteration.next()).thenReturn(new Entry<String, String>("key","value"));
-		KeyValueIterator<String,String> keyValueIteratorSecondIteration = mock(KeyValueIterator.class);
-		when(keyValueIteratorSecondIteration.hasNext()).thenReturn(true).thenReturn(false);
-		when(keyValueIteratorSecondIteration.next()).thenReturn(new Entry<String, String>("key","value"));
-		when(store.all()).thenReturn(keyValueIteratorFirstIteration).thenReturn(keyValueIteratorSecondIteration);
 		subject.clear();
-		verify(store, times(3)).delete(anyString());
 	}
 
 }
