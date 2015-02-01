@@ -33,9 +33,10 @@ public class ReductingScorer extends AbstractScorer {
 			if(reducingScore != null && reducingScore < ret){
 				ret = reducingScore * reducting + ret * (1-reducting);
 			}
+			eventMessage.setScore(outputFieldName, ret);
 		}
 		
-		eventMessage.setScore(outputFieldName, ret);
+		
 		
 		return ret;
 	}
