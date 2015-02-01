@@ -9,10 +9,9 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static junitparams.JUnitParamsRunner.$;
 
@@ -173,7 +172,7 @@ public class VpnF5Test {
 						$(
 								(String)null,
 								(String)null,
-								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
+								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,,",
 								(String)null
 						)
 				) ,
@@ -186,8 +185,8 @@ public class VpnF5Test {
 						),
 						$(
 								(String)null,
-								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false",
-								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,false,false"
+								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,",
+								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
 						)
 				),
 				$(
@@ -198,7 +197,7 @@ public class VpnF5Test {
 						),
 						$(
 								(String)null,
-								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false"
+								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,"
 						)
 				),
 				$(
@@ -221,8 +220,8 @@ public class VpnF5Test {
 						),
 						$(
 								(String)null,
-								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,false,false",
-								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,false,false"
+								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,",
+								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
 						)
 				),
 
@@ -234,7 +233,7 @@ public class VpnF5Test {
 						),
 						$(
 								(String)null,
-								Jan_2_19_06_26_OUT + "," + Jan_2_19_06_26_L + ",bartra,69.141.27.100,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
+								Jan_2_19_06_26_OUT + "," + Jan_2_19_06_26_L + ",bartra,69.141.27.100,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,,"
 						)
 				),
 
@@ -266,7 +265,7 @@ public class VpnF5Test {
 						),
 						$(
 								(String)null,
-								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.201,,SUCCESS,,,,,,,,,,,,,false,false"
+								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.201,,SUCCESS,,,,,,,,,,,,,,"
 						)
 				),
 
@@ -298,8 +297,8 @@ public class VpnF5Test {
 						),
 						$(
 								(String)null,
-								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,71.125.52.63,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
-								Apr_14_01_50_42_OUT + "," + Apr_14_01_50_42_L + ",kamalij,71.125.52.63,,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
+								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,71.125.52.63,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,,",
+								Apr_14_01_50_42_OUT + "," + Apr_14_01_50_42_L + ",kamalij,71.125.52.63,,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,,"
 						)
 				),
 				$(
