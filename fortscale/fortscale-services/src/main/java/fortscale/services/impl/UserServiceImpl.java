@@ -1,29 +1,6 @@
 package fortscale.services.impl;
 
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
-
-import java.text.ParseException;
-import java.util.*;
-import java.util.Map.Entry;
-
-import fortscale.services.CachingService;
-import fortscale.services.cache.CacheHandler;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.mortbay.log.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Service;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.ad.AdUserThumbnail;
@@ -40,6 +17,7 @@ import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.EventsToMachineCount;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
+import fortscale.services.cache.CacheHandler;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
@@ -56,7 +34,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.*;
