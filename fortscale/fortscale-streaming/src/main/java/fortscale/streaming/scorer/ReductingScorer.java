@@ -3,6 +3,9 @@ package fortscale.streaming.scorer;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.samza.config.Config;
 
 public class ReductingScorer extends AbstractScorer {
@@ -26,19 +29,27 @@ public class ReductingScorer extends AbstractScorer {
 	}
 	
 	@Override
-	public Double calculateScore(EventMessage eventMessage) throws Exception {
-		Double ret = mainScorer.calculateScore(eventMessage);
-		if(ret != null){
-			Double reducingScore = reductingScorer.calculateScore(eventMessage);
-			if(reducingScore != null && reducingScore < ret){
-				ret = reducingScore * reducting + ret * (1-reducting);
-			}
-			eventMessage.setScore(outputFieldName, ret);
+	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
+		FeatureScore featureScore = null;
+		FeatureScore mainScore = mainScorer.calculateScore(eventMessage);
+		if(mainScore != null){
+			FeatureScore reducingScore = reductingScorer.calculateScore(eventMessage);
+			if(reducingScore == null){
+				featureScore = mainScore;
+			} else{
+				List<FeatureScore> featureScores = new ArrayList<>();
+				featureScores.add(mainScore);
+				featureScores.add(reducingScore);
+				double score = mainScore.getScore();
+				if(reducingScore.getScore() < score){
+					score = reducingScore.getScore() * reducting + mainScore.getScore() * (1-reducting);
+					score = score*reducingScore.getCertainty() + mainScore.getScore() * (1 - reducingScore.getCertainty());
+				}
+				featureScore = new FeatureScore(outputFieldName, score, featureScores);
+			}			
 		}
 		
-		
-		
-		return ret;
+		return featureScore;
 	}
 
 }

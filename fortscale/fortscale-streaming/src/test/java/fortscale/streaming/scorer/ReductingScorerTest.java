@@ -66,13 +66,18 @@ public class ReductingScorerTest extends ScorerBaseTest{
 		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, CONST_SCORER_NAME1, CONST_SCORER_NAME2, reducting);
 		EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
 		addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
-		Double score = scorer.calculateScore(eventMessage);
+		testScore(scorer, eventMessage, mainScore, reductingScore, reducting);
+	}
+	
+	private void testScore(Scorer scorer, EventMessage eventMessage, int mainScore, int reductingScore, double reducting) throws Exception{
+		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);
-		double expectedScore = reductingScore*reducting + mainScore*(1-reducting);
-		Assert.assertEquals(expectedScore, score, 0.0);
-		score = eventMessage.getScore(OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score, 0.0);
+		double expectedScore = mainScore;
+		if(mainScore > reductingScore){
+			expectedScore = reductingScore*reducting + mainScore*(1-reducting);
+		}
+		Assert.assertEquals(expectedScore, score.getScore(), 0.0);
+		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
 	}
 	
 	@Test
@@ -84,13 +89,7 @@ public class ReductingScorerTest extends ScorerBaseTest{
 		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, CONST_SCORER_NAME1, CONST_SCORER_NAME2, reducting);
 		EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
 		addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
-		Double score = scorer.calculateScore(eventMessage);
-		Assert.assertNotNull(score);
-		double expectedScore = mainScore;
-		Assert.assertEquals(expectedScore, score, 0.0);
-		score = eventMessage.getScore(OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score, 0.0);
+		testScore(scorer, eventMessage, mainScore, reductingScore, reducting);
 	}
 	
 	@Test(expected=ConfigException.class)
