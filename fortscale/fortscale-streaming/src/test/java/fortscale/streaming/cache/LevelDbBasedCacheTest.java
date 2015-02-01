@@ -2,6 +2,8 @@ package fortscale.streaming.cache;
 
 import com.google.common.cache.Cache;
 import fortscale.services.cache.MemoryBasedCache;
+import org.apache.samza.storage.kv.Entry;
+import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +49,11 @@ public class LevelDbBasedCacheTest {
 	public void close_should_flush_the_inner_cache() throws IOException {
 		subject.close();
 		verify(store, times(1)).flush();
+	}
+
+	@Test(expected=UnsupportedOperationException.class)
+	public void clear_should_clear_the_inner_cache_from_all_its_records_using_2_external_iterations() throws IOException {
+		subject.clear();
 	}
 
 }

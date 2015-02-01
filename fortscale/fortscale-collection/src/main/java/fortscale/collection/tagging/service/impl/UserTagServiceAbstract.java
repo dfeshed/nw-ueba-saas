@@ -4,6 +4,8 @@ package fortscale.collection.tagging.service.impl;
 import java.io.File;
 import java.util.*;
 
+import fortscale.domain.core.User;
+import fortscale.services.UserService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -12,14 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.collection.tagging.service.UserTagService;
 import fortscale.collection.tagging.service.UserTaggingService;
-import fortscale.domain.core.dao.UserRepository;
 import fortscale.utils.logging.Logger;
 
 public abstract class UserTagServiceAbstract implements UserTagService, InitializingBean {
 
 	private static Logger logger = Logger.getLogger(UserTagServiceAbstract.class);
+
 	@Autowired
-	protected UserRepository userRepository;
+	protected UserService userService;
+
 	@Autowired
 	private UserTaggingService userTaggingService;
 
@@ -34,10 +37,6 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	 * This functions are being implemented in the child service
 	 */
 	protected abstract String getFilePath();
-
-	protected abstract void updateUserTag(String username, boolean isTagTheUser);
-
-	public abstract UserTagEnum getTag();
 
 	@Override
 	public void afterPropertiesSet()
@@ -105,10 +104,10 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 				// find users matching to the groups and the OUs (this solution might be problematic memory-wise in case there are many users)
 				taggedUsers = new HashSet<>();
 				if (!groupsToTag.isEmpty()) {
-					taggedUsers.addAll(userRepository.findByUserInGroup(groupsToTag));
+					taggedUsers.addAll(userService.findNamesInGroup(groupsToTag));
 				}
 				if (!ousToTag.isEmpty()) {
-					taggedUsers.addAll(userRepository.findByUserInOU(ousToTag));
+					taggedUsers.addAll(userService.findNamesInOU(ousToTag));
 				}
 				if (taggedUsers.isEmpty()) {
 					logger.warn(
@@ -139,7 +138,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	 */
 	private void updateAllUsersTags() {
 
-		Set<String> taggedInDB = userRepository.findNameByTag(getTagMongoField(), true);
+		Set<String> taggedInDB = userService.findNamesByTag(getTagMongoField(), true);
 		for (String user : taggedUsers) {
 			if (!taggedInDB.contains(user)) {
 				updateUserTag(user, true);
@@ -152,6 +151,9 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		}
 	}
 
+	public void updateUserTag(String username, boolean isTagTheUser){
+		userService.updateUserTag(getTagMongoField(), getTag().getId(), username, isTagTheUser);
+	}
 
 	@Override
 	public void update()
@@ -171,7 +173,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		}
 	}
 	protected Set<String> findTaggedUsersFromDb(){
-		return userRepository.findNameByTag(getTagMongoField(), true);
+		return userService.findNamesByTag(getTagMongoField(), true);
 	}	
 	
 	public Set<String> getTaggedUsers() {

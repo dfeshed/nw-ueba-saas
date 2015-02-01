@@ -4,16 +4,11 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
+import fortscale.services.CachingService;
+import fortscale.services.cache.CacheHandler;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -57,14 +52,10 @@ import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 
-@Service("userService")
 public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	
 	private static final String SEARCH_FIELD_PREFIX = "##";
-	
-	@Value("${user.service.tags.cache.max.items:10000}")
-	private int cacheMaxSize;
 	
 	@Autowired
 	private MongoOperations mongoTemplate;
@@ -116,13 +107,9 @@ public class UserServiceImpl implements UserService{
 
 	
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
-	private Cache<String, Set<String>> tagsCache;
-	
-	public UserServiceImpl() {
-		// construct user tags cache instances
-		tagsCache = CacheBuilder.newBuilder().maximumSize(cacheMaxSize).build();
-	}
-	
+
+	@Autowired
+	private CacheHandler<String, Set<String>> userTagsCache;
 	
 	@Override
 	public User createUser(UserApplication userApplication, String username, String appUsername){
@@ -164,7 +151,7 @@ public class UserServiceImpl implements UserService{
         } else{
 			User user = createUser(classifier.getUserApplication(), normalizedUsername, logUsername);
 			usernameService.updateLogUsername(user, eventId, logUsername);
-			user = userRepository.save(user);
+			saveUser(user);
 			if(user == null || user.getId() == null){
 				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifier, normalizedUsername, logUsername);
 			} else{
@@ -173,7 +160,28 @@ public class UserServiceImpl implements UserService{
 			}
 		}		
 	}
-	
+
+	private User saveUser(User user){
+		user = userRepository.save(user);
+		usernameService.updateUsernameCache(user);
+		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
+		if (user.getTags() != null && user.getTags().size() > 0){
+			userTagsCache.put(user.getUsername(),user.getTags());
+		}
+		return user;
+	}
+
+	private void saveUsers(List<User> users) {
+		userRepository.save(users);
+		for (User user : users) {
+			usernameService.updateUsernameCache(user);
+			//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
+			if (user.getTags() != null && user.getTags().size() > 0) {
+				userTagsCache.put(user.getUsername(), user.getTags());
+			}
+		}
+	}
+
 	@Override
 	public void updateUserLastActivityOfType(LogEventsEnum eventId, String username, DateTime dateTime){
 		Update update = new Update();
@@ -324,8 +332,7 @@ public class UserServiceImpl implements UserService{
 		for(User user: users){
 			user.removeClassifierScore(classifierId);
 		}
-		
-		userRepository.save(users);
+		saveUsers(users);
 	}
 
 	@Override
@@ -518,8 +525,7 @@ public class UserServiceImpl implements UserService{
 			}
 			user.setSearchField(searchField);
 			user.setWhenCreated(userAdInfo.getWhenCreated());
-			
-			userRepository.save(user);			
+			saveUser(user);
 		} else{
 			Update update = new Update();
 			update.set(User.adInfoField, userAdInfo);
@@ -623,8 +629,12 @@ public class UserServiceImpl implements UserService{
 	public String findByNormalizedUserName(String normalizedUsername) {
 		return userRepository.getUserIdByNormalizedUsername(normalizedUsername);
 	}
-	
-	
+
+	@Override
+	public boolean findIfUserExists(String username) {
+		return userRepository.findIfUserExists(username);
+	}
+
 	@Override
 	public String getTableName(LogEventsEnum eventId){
 		String tablename = null;
@@ -674,7 +684,7 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		if(isSave && isNewVal){
-			userRepository.save(user);
+			saveUser(user);
 		}
 		
 		return isNewVal;
@@ -769,27 +779,80 @@ public class UserServiceImpl implements UserService{
 			else
 				tagsToRemove.add(tag);
 		}
-		
+		updateTags(username, tagsToAdd, tagsToRemove);
+	}
+
+	private void updateTags(String username, List<String> tagsToAdd, List<String> tagsToRemove){
 		// call the repository to update mongodb with the tags settings
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
+		//also update the tags cache with the new updates
+		Set<String> tags = userTagsCache.get(username);
+		tags.addAll(tagsToAdd);
+		tags.removeAll(tagsToRemove);
+		userTagsCache.put(username,tags);
 	}
 
 
 	@Override
 	public boolean isUserTagged(String username, String tag) {
 		// check if the user tags are kept in cache
-		Set<String> tags = tagsCache.getIfPresent(username);
+		Set<String> tags = userTagsCache.get(username);
 		if (tags==null) {
 			// get tags from mongodb and add to cache
 			tags = userRepository.getUserTags(username);
 			if (tags!=null)
-				tagsCache.put(username, tags);
+				userTagsCache.put(username, tags);
 		}
 			
 		return tags!=null & tags.contains(tag);
 	}
-	
-	public void invalidateCache() {
-		tagsCache.invalidateAll();
+
+	@Override public CacheHandler getCache() {
+		return userTagsCache;
+	}
+
+	@Override public void setCache(CacheHandler cache) {
+		userTagsCache = cache;
+	}
+
+	@Override
+	public Set<String> findNamesInGroup(List<String> groupsToTag){
+		return userRepository.findByUserInGroup(groupsToTag);
+	}
+
+	@Override
+	public Set<String> findNamesInOU(List<String> ousToTag){
+		return userRepository.findByUserInOU(ousToTag);
+	}
+
+	@Override
+	public Set<String> findNamesByTag(String tagFieldName, Boolean value){
+		return userRepository.findNameByTag(tagFieldName, value);
+	}
+
+	@Override
+	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value){
+		userRepository.updateUserTag(tagField, username, value);
+		List<String> tagsToAdd = new ArrayList<>();
+		List<String> tagsToRemove = new ArrayList<>();
+		if (value) {
+			tagsToAdd.add(userTagEnumId);
+		}
+		else{
+			tagsToRemove.add(userTagEnumId);
+		}
+		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
+		//also update the tags cache with the new updates
+		Set<String> tags = userTagsCache.get(username);
+		if (tags == null){
+			tags = new HashSet<String>();
+		}
+		if (value) {
+			tags.add(tagField);
+		}
+		else {
+			tags.remove(tagField);
+		}
+		userTagsCache.put(username, tags);
 	}
 }

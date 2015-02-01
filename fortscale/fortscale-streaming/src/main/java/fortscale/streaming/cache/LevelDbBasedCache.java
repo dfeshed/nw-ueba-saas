@@ -1,9 +1,15 @@
 package fortscale.streaming.cache;
 
 import fortscale.services.cache.CacheHandler;
+import org.apache.samza.storage.kv.Entry;
+import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
+import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Resolving cached value which is based on leveldb keyvalue store provided by streaming
@@ -26,13 +32,17 @@ public class LevelDbBasedCache<K,T> extends CacheHandler<K,T> {
 
     @Override
     public void put(K key, T value) {
-
         store.put(key, value);
     }
 
     @Override
     public void remove(K key) {
         store.delete(key);
+    }
+
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException();
     }
 
     /**
