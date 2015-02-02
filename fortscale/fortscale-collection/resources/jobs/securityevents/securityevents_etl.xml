@@ -107,7 +107,7 @@
 				</entry>
 				<entry>
 					<key>partitionKeyFieldsLoginEvt</key>
-					<value>${impala.rawdata.security.events.login.table.field.normalized_username}</value>
+					<value>${impala.rawdata.security.events.login.table.field.account_name}</value>
 				</entry>
 				<entry>
 					<key>timestampFieldLoginEvt</key>
