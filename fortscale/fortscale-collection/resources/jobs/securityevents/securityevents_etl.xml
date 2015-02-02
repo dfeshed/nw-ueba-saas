@@ -103,31 +103,31 @@
 				</entry>
 				<entry>
 					<key>outputFieldsLoginEvt</key>
-					<value>${impala.data.security.events.login.table.fields}</value>
+					<value>${impala.rawdata.security.events.login.table.fields}</value>
 				</entry>
 				<entry>
 					<key>partitionKeyFieldsLoginEvt</key>
-					<value>${impala.data.security.events.login.table.field.normalized_username}</value>
+					<value>${impala.rawdata.security.events.login.table.field.normalized_username}</value>
 				</entry>
 				<entry>
 					<key>timestampFieldLoginEvt</key>
-					<value>${impala.data.security.events.login.table.field.date_time_unix}</value>
+					<value>${impala.rawdata.security.events.login.table.field.date_time_unix}</value>
 				</entry>
 				<entry>
 					<key>outputSeparatorLoginEvt</key>
-					<value>${impala.data.security.events.login.table.delimiter}</value>
+					<value>${impala.rawdata.security.events.login.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>hadoopPathLoginEvt</key>
-					<value>${hdfs.user.data.security.events.login.path}</value>
+					<value>${hdfs.user.rawdata.security.events.login.path}</value>
 				</entry>
 				<entry>
 					<key>hadoopFilenameLoginEvt</key>
-					<value>datalogindata.csv</value>
+					<value>rawdatalogindata.csv</value>
 				</entry>
 				<entry>
 					<key>impalaTableNameLoginEvt</key>
-					<value>${impala.data.security.events.login.table.name}</value>
+					<value>${impala.rawdata.security.events.login.table.name}</value>
 				</entry>
 				<entry>
 					<key>streamingTopicLoginEvt</key>
