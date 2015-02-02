@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mockito="http://www.mockito.org/spring/mockito"
+	   xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+	   			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+				http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
+
+
+	<context:spring-configured />
+    <context:annotation-config />
+	<context:component-scan base-package="fortscale.geoip"/>
+
+	<bean id="vpnGeolocationConfig" class="fortscale.streaming.service.vpn.VpnGeolocationConfig">
+		<constructor-arg name="ipField" value="ip_field"/>
+		<constructor-arg name="countryFieldName" value="country_field"/>
+		<constructor-arg name="countryIsoCodeFieldName" value="country_code_field"/>
+		<constructor-arg name="regionFieldName" value="region_field"/>
+		<constructor-arg name="cityFieldName" value="city_field"/>
+		<constructor-arg name="ispFieldName" value="isp_field"/>
+		<constructor-arg name="usageTypeFieldName" value="usage_type_field"/>
+		<constructor-arg name="longtitudeFieldName" value="longtitude_field"/>
+		<constructor-arg name="latitudeFieldName" value="latitude_field"/>
+	</bean>
+	<bean id="vpnEnrichConfig" class="fortscale.streaming.service.vpn.VpnEnrichConfig">
+		<constructor-arg name="inputTopic" value="input-1"/>
+		<constructor-arg name="outputTopic" value="output-1"/>
+		<constructor-arg name="partitionField" value="partition-1"/>
+		<constructor-arg name="vpnGeolocationConfig" ref="vpnGeolocationConfig"/>
+	</bean>
+	<bean id="vpnEnrichService" class="fortscale.streaming.service.vpn.VpnEnrichService">
+		<constructor-arg name="config" ref="vpnEnrichConfig"/>
+	</bean>
+
+
+</beans>

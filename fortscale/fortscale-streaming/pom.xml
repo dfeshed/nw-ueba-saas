@@ -213,6 +213,17 @@
 			<artifactId>spring-data-mongodb</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.kubek2k</groupId>
+			<artifactId>springockito</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.kubek2k</groupId>
+			<artifactId>springockito-annotations</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- fortscale dependencies -->
 		<dependency>
 			<groupId>fortscale</groupId>

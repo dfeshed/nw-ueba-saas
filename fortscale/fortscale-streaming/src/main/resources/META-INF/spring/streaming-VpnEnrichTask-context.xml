@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mockito="http://www.mockito.org/spring/mockito"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
+
+
+
+    <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
+    <import resource="classpath*:META-INF/spring/monitor-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
+
+
+    <context:spring-configured />
+    <context:annotation-config />
+    <context:component-scan base-package="fortscale" />
+
+    <!-- Geolocation service -->
+    <mockito:mock id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService"/>
+</beans>
