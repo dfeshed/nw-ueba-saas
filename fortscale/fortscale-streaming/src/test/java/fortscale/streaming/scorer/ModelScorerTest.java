@@ -74,12 +74,10 @@ public class ModelScorerTest extends ScorerBaseTest{
 		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
 		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
 		
-		Double score = scorer.calculateScore(eventMessage);
+		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);
-		Assert.assertEquals(40.0d, score, 0.0);
-		score = eventMessage.getScore(OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(40.0d, score, 0.0);
+		Assert.assertEquals(40.0d, score.getScore(), 0.0);
+		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
 	}
 	
 	@Test(expected=StreamMessageNotContainFieldException.class)
@@ -99,12 +97,10 @@ public class ModelScorerTest extends ScorerBaseTest{
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
 		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
 		
-		Double score = scorer.calculateScore(eventMessage);
+		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);
-		Assert.assertEquals(0d, score, 0.0);
-		score = eventMessage.getScore(OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(0d, score, 0.0);
+		Assert.assertEquals(0d, score.getScore(), 0.0);
+		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
 	}
 	
 	@Test(expected=ConfigException.class)

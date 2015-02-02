@@ -299,6 +299,7 @@ public class EventProcessJob implements Job {
 			appender.writeLine(output, timestamp.longValue());
 			
 			// ensure user exists in mongodb
+			//todo - Think how to depricate this part or move it to the streaming
 			updateOrCreateUserWithClassifierUsername(record);
 			
 			// output event to streaming platform
