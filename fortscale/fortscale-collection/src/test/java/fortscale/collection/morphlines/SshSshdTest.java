@@ -11,11 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import static junitparams.JUnitParamsRunner.$;
 
@@ -84,20 +82,20 @@ public class SshSshdTest {
         		$ (
         		"Successful Password Authentication",
 						Nov_19_14_58_32 + " dev-gever sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
-						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,,false,false,false"
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.200.254,dev-gever,root,Accepted,password,,,,false,,,,"
 				),
         		$ (
         		"Successful Public Key Authentication",
 						Nov_19_14_58_32 + " dev-gever sshd[2591]: Accepted publickey for root from 192.168.55.55 port 38681 ssh2",
-						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.55.55,dev-gever,root,Accepted,publickey,,,,false,,false,false,false"),
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.55.55,dev-gever,root,Accepted,publickey,,,,false,,,,"),
         		$ (
         		"Successful Public Key Authentication from NAT address",
 						Nov_19_14_58_32 + " dev-gever sshd[2591]: Accepted publickey for root from 192.168.0.22 port 38681 ssh2",
-						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.0.22,dev-gever,root,Accepted,publickey,,,,true,,false,false,false"),
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.0.22,dev-gever,root,Accepted,publickey,,,,true,,,,"),
         		$ (
         		"Password Failed Authentication",
 						Nov_19_14_58_32 + " inter-psg-01 sshd[22525]: Failed password for root from 192.168.211.112 port 59420 ssh2",
-						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.211.112,inter-psg-01,root,Failed,password,,,,false,,false,false,false"),
+						Nov_19_14_58_32_OUT + "," + runtime + ",192.168.211.112,inter-psg-01,root,Failed,password,,,,false,,,,"),
         		$ (
 
         		"Invalid User Failed Authentication",

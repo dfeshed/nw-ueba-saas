@@ -1,5 +1,8 @@
 package fortscale.streaming.scorer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.samza.config.Config;
 
 public class MaxScorerContainer extends ScorerContainer {
@@ -9,18 +12,18 @@ public class MaxScorerContainer extends ScorerContainer {
 	}
 
 	@Override
-	public Double calculateScore(EventMessage eventMessage) throws Exception {
+	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
 		double maxScore = 0;
+		List<FeatureScore> featureScores = new ArrayList<>();
 		for(Scorer scorer: scorers) {
-			Double score = scorer.calculateScore(eventMessage);
-			if(score != null){
-				maxScore = Math.max(maxScore, score);
+			FeatureScore featureScore = scorer.calculateScore(eventMessage);
+			if(featureScore != null){
+				featureScores.add(featureScore);
+				maxScore = Math.max(maxScore, featureScore.getScore());
 			}
 		}
 		
-		eventMessage.setScore(outputFieldName, maxScore);
-		
-		return maxScore;
+		return new FeatureScore(outputFieldName, maxScore, featureScores);
 	}
 
 }
