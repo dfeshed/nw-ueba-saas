@@ -11,9 +11,7 @@ public interface UserUpdateScoreService {
 	public void updateUserWithAuthScore(Classifier classifier);
 	
 	public void updateUserWithAuthScore(Classifier classifier, Date runtime);
-			
-	public void updateUserWithGroupMembershipScore();
-	
+
 	public void recalculateTotalScore();
 	
 	public void updateUserTotalScore();

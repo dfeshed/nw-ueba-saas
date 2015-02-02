@@ -222,78 +222,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		
 		logger.info("finished updating the user collection with {} score.", classifier);
 	}	
-	
-		
-	@Override
-	public void updateUserWithGroupMembershipScore(){
-		Date lastRun = adUsersFeaturesExtractionRepository.getLatestTimeStamp();
-		if(lastRun == null){
-			logger.warn("there is no timestamp. probably the table is empty.");
-			return;
-		}
-		updateUserWithGroupMembershipScore(lastRun);
-	}	
-	
-	private void updateUserWithGroupMembershipScore(final Date lastRun){
-		logger.info("start updating the user collection with group membership score");
-		long count = adUsersFeaturesExtractionRepository.countByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun); 
-		if(count == 0){
-			logger.warn("the group membership for timestamp ({}) is empty.", lastRun);
-			return;
-		}
-		
-		logger.info("total number of group membership score is {}", count);
-		
-		logger.info("calculating average score...");
-		final double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(Classifier.groups.getId(), lastRun);
-		logger.info("average score is {}", avgScore);
-				
-		int numOfPages = (int) (((count -1) / groupMembershipScorePageSize) + 1); 
-		
-		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = null;
-		try{
-			impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
-			for(int i = 0; i < numOfPages; i++){
-				logger.info("retrieving page #{} of group membership score documents. page size is {}.", i, groupMembershipScorePageSize);
-				PageRequest pageRequest = new PageRequest(i, groupMembershipScorePageSize);
-				List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun, pageRequest);
-				
-				logger.info("updating the user collection and the hdfs with group membership score");
-				for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-					User user = updateUserWithGroupMembershipScore(lastRun, avgScore, extraction);
-					if(user != null){
-						impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
-					}
-				}
-				
-				logger.info("finished updating the user collection and the hdfs with group membership score");
-				
-			}
-		} finally{
-			if(impalaGroupsScoreWriter != null){
-				impalaGroupsScoreWriter.close();
-			}
-		}
-		
-		logger.info("finished group membership score update.");
-	}
-			
-	private User updateUserWithGroupMembershipScore(final Date lastRun, double avgScore, AdUserFeaturesExtraction extraction){		
-		User user = userService.findByUserId(extraction.getUserId());
-		if(user == null){
-			logger.warn("user with id ({}) was not found in user table", extraction.getUserId());
-			return null;
-		}
-		//updating the user with the new score.
-		user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false);
-	
-		Update update = new Update();
-		update.set(User.getClassifierScoreField(Classifier.groups.getId()), user.getScore(Classifier.groups.getId()));
-		userService.updateUser(user, update);
-		
-		return user;
-	}
-	
+
 	@Override
 	public void recalculateTotalScore(){
 		List<User> users = userRepository.findAllExcludeAdInfo();

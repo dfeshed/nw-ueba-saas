@@ -129,11 +129,6 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	public void updateUserWithAuthScore(Classifier classifier, Date runtime) {
 		userUpdateScoreService.updateUserWithAuthScore(classifier, runtime);
 	}
-	
-	@Override
-	public void updateUserWithGroupMembershipScore() {
-		userUpdateScoreService.updateUserWithGroupMembershipScore();
-	}
 
 	@Override
 	public void recalculateTotalScore() {
