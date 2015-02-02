@@ -55,7 +55,7 @@
             <cron>
                 <name>sec_evt_fetch_hourly_trigger</name>
                 <group>SecurityEvents</group>
-                <job-name>Fetch</job-name>
+                <job-name>Fetch4624</job-name>
                 <job-group>SecurityEvents</job-group>
                 <cron-expression>0 5 * * * ?</cron-expression>
             </cron>
