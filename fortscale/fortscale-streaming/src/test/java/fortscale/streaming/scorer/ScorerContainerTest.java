@@ -62,12 +62,14 @@ public class ScorerContainerTest extends ScorerBaseTest{
 		Scorer scorer = buildScorer(scorerType, SCORER_NAME, OUTPUT_FIELD_NAME, scorers);
 		EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
 		addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
-		Double score = scorer.calculateScore(eventMessage);
+		testScore(scorer, expectedScore, eventMessage);
+	}
+	
+	private void testScore(Scorer scorer, double expectedScore, EventMessage eventMessage) throws Exception{
+		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score, 0.0);
-		score = eventMessage.getScore(OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score, 0.0);
+		Assert.assertEquals(expectedScore, score.getScore(), 0.0);
+		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
 	}
 	
 	protected void testBuildScorerWithScore2(String scorerType, double expectedScore) throws Exception{
@@ -75,12 +77,7 @@ public class ScorerContainerTest extends ScorerBaseTest{
 		Scorer scorer = buildScorer(scorerType, SCORER_NAME, OUTPUT_FIELD_NAME, scorers);
 		EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "tesA1B");
 		addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
-		Double score = scorer.calculateScore(eventMessage);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score, 0.0);
-		score = eventMessage.getScore(OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score, 0.0);
+		testScore(scorer, expectedScore, eventMessage);
 	}
 	
 	protected void testBuildScorerWithScore3(String scorerType, double expectedScore) throws Exception{
@@ -88,12 +85,7 @@ public class ScorerContainerTest extends ScorerBaseTest{
 		Scorer scorer = buildScorer(scorerType, SCORER_NAME, OUTPUT_FIELD_NAME, scorers);
 		EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "tesA1B");
 		addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unt908o");
-		Double score = scorer.calculateScore(eventMessage);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score, 0.0);
-		score = eventMessage.getScore(OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score, 0.0);
+		testScore(scorer, expectedScore, eventMessage);
 	}
 	
 	protected void testBuildScorerWithScore4(String scorerType, double expectedScore) throws Exception{
@@ -101,12 +93,7 @@ public class ScorerContainerTest extends ScorerBaseTest{
 		Scorer scorer = buildScorer(scorerType, SCORER_NAME, OUTPUT_FIELD_NAME, Lists.reverse(scorers));
 		EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
 		addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
-		Double score = scorer.calculateScore(eventMessage);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score, 0.0);
-		score = eventMessage.getScore(OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score, 0.0);
+		testScore(scorer, expectedScore, eventMessage);
 	}
 	
 	protected void testBuildScorerWithNoScorerName(String scorerType) throws Exception{
