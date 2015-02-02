@@ -72,25 +72,27 @@ public class MySqlFromPartGenerator extends QueryPartGenerator {
                 ConditionField condition = (ConditionField) childTerm;
                 //if it's the performance field
                 if (condition.getField().getId().equals(dataEntitiesConfig.getEntityPerformanceTableField(entityId))) {
-                    // If it's a between operator
-                    if (condition.getOperator() == QueryOperator.between) {
-                        String[] values = condition.getValue().split(",");
-                        int value = Integer.parseInt(values[0]);
+                    if (condition.getOperator() == QueryOperator.between || greaterThanOrEqualsOperators.contains(condition.getOperator())) {
+                        int value = 0;
+                        if (condition.getOperator() == QueryOperator.between) {
+                            String[] values = condition.getValue().split(",");
+                            // If it's a between operator get the smaller value between the two.
+                            value = Math.min(Integer.parseInt(values[0]),Integer.parseInt(values[1]));
+                        } else if (greaterThanOrEqualsOperators.contains(condition.getOperator())) {
+                            value = Integer.parseInt(condition.getValue());
+                        }
                         //if its value is equal or greater than the one required to the performance value, we can use the performance table.
                         if (value >= dataEntitiesConfig.getEntityPerformanceTableFieldMinValue(entityId)) {
                             returnValue = true;
+                        } else {
+                            // But if there is a condition on the performance field with a value that doesn't allow to use the performance field, the isHighScore method should return false:
+                            return false;
                         }
                     }
-                    // If it's a >= , > , = operator
-                    else if (greaterThanOrEqualsOperators.contains(condition.getOperator())) {
-                        int value = Integer.parseInt(condition.getValue());
-                        //if the smaller value is equal or greater than the one required to the performance value, we can use the performance table.
-                        if (value >= dataEntitiesConfig.getEntityPerformanceTableFieldMinValue(entityId)) {
-                            returnValue = true;
-                        }
+                    // But if there is a condition on the performance field with operator that doesn't allow to use the performance field, the isHighScore method should return false:
+                    else {
+                        return false;
                     }
-                    // But if there is a condition on the performance field that doesn't allow to use the performance field, the isHighScore method should return false:
-                    return false;
                 }
             } else if (isHighScore(entityId, (ConditionTerm) childTerm))
                 returnValue = true;
@@ -98,5 +100,4 @@ public class MySqlFromPartGenerator extends QueryPartGenerator {
 
         return returnValue;
     }
-
 }
