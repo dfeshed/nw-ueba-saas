@@ -14,10 +14,10 @@ public class ModelScorer extends AbstractScorer{
 //	private static final Logger logger = Logger.getLogger(EventFeatureScorer.class);
 	
 	
-	private ModelService modelService;
-	private String modelName;
-	private String contextFieldName;
-	private String featureFieldName;
+	protected ModelService modelService;
+	protected String modelName;
+	protected String contextFieldName;
+	protected String featureFieldName;
 
 	public ModelScorer(String scorerName, Config config, ScorerContext context){
 		super(scorerName,config);

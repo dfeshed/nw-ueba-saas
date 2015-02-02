@@ -10,6 +10,11 @@ public class ModelFeatureScore extends FeatureScore {
 		super(name, score, featureScores);
 		this.certainty = certainty;
 	}
+	
+	public ModelFeatureScore(String name, Double score,	double certainty) {
+		super(name, score);
+		this.certainty = certainty;
+	}
 
 	@Override
 	public double getCertainty(){
