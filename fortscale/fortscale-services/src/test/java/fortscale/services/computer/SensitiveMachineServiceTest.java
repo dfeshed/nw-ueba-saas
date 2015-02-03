@@ -51,6 +51,10 @@ public class SensitiveMachineServiceTest {
 				simpleCacheImpl.remove(key);
 			}
 
+			@Override public void clear() {
+				simpleCacheImpl.clear();
+			}
+
 			@Override public void close() throws IOException {
 				simpleCacheImpl = null;
 			}

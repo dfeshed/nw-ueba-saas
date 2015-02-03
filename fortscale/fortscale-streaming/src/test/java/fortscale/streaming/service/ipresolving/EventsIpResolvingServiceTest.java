@@ -1,8 +1,5 @@
 package fortscale.streaming.service.ipresolving;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
@@ -12,19 +9,26 @@ import org.junit.Test;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
+
 public class EventsIpResolvingServiceTest {
 
     private EventsIpResolvingService service;
+	private EventsIpResolvingService service2;
     private IpToHostnameResolver resolver;
 
     @Before
     public void setUp() {
-        List<EventResolvingConfig> configs = new LinkedList<>();
-        configs.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, "time", "partition"));
+		List<EventResolvingConfig> configs = new LinkedList<>();
+		configs.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, false, "time", "partition"));
 
-        resolver = mock(IpToHostnameResolver.class);
-        service = new EventsIpResolvingService(resolver, configs);
-    }
+		List<EventResolvingConfig> configs2 = new LinkedList<>();
+		configs2.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, true, "time", "partition"));
+
+		resolver = mock(IpToHostnameResolver.class);
+		service = new EventsIpResolvingService(resolver, configs);
+		service2 = new EventsIpResolvingService(resolver, configs2);
+	}
 
 
     @Test
@@ -92,5 +96,27 @@ public class EventsIpResolvingServiceTest {
         Object actual = service.getPartitionKey("input", event);
         Assert.assertEquals("part-A", actual);
     }
+
+	@Test
+	public void service_should_drop_events_that_cant_resolved()
+	{
+		JSONObject event = new JSONObject();
+		event.put("hostname", null);
+		boolean res = service.dropEvent("input",event);
+		Assert.assertTrue(!res);
+
+
+		res = service2.dropEvent("input",event);
+		Assert.assertTrue(res);
+
+		event.put("hostname", "");
+
+
+		res = service2.dropEvent("input",event);
+		Assert.assertTrue(res);
+
+
+
+	}
 
 }

@@ -1,15 +1,15 @@
-package fortscale.streaming.task;
-
-import static fortscale.streaming.ConfigUtils.*;
+package fortscale.streaming.task.enrichment;
 
 import com.google.common.collect.Iterables;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.services.ipresolving.IpToHostnameResolver;
+import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.cache.LevelDbBasedCache;
-import fortscale.streaming.service.ipresolving.*;
+import fortscale.streaming.service.ipresolving.EventResolvingConfig;
+import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
+import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import static fortscale.streaming.ConfigUtils.getConfigString;
 
 /**
  * Streaming task that receive events from input streams and resolves ip addresses in each event according to a
@@ -91,12 +93,13 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                 boolean restrictToADName = config.getBoolean(String.format("fortscale.events.%s.restrictToADName", eventType));
                 boolean shortName = config.getBoolean(String.format("fortscale.events.%s.shortName", eventType));
                 boolean isRemoveLastDot = config.getBoolean(String.format("fortscale.events.%s.isRemoveLastDot", eventType));
+				boolean dropWhenFail = config.getBoolean(String.format("fortscale.events.%s.dropWhenFail", eventType));
                 String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
 
 
                 // build EventResolvingConfig for the event type
                 resolvingConfigList.add(EventResolvingConfig.build(inputTopic, ipField, hostField, outputTopic,
-                        restrictToADName, shortName, isRemoveLastDot, timestampField, partitionField));
+                        restrictToADName, shortName, isRemoveLastDot,dropWhenFail, timestampField, partitionField));
             }
 
             // construct the resolving service
@@ -122,16 +125,21 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
             event = service.enrichEvent(topic, event);
 
-            // construct outgoing message
-            try {
-                OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
-                        new SystemStream("kafka", service.getOutputTopic(topic)),
-                        service.getPartitionKey(topic, event),
-                        event.toJSONString());
-                collector.send(output);
-            } catch(Exception exception){
-                throw new KafkaPublisherException(String.format("failed to send event to from input topic %s, topic %s after ip resolving", topic, service.getOutputTopic(topic)), exception);
-            }
+
+			//move to the next topic only if you are not event that need to drop
+			if (!service.dropEvent(topic, event)) {
+
+				// construct outgoing message
+				try {
+					OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(
+							new SystemStream("kafka", service.getOutputTopic(topic)),
+							service.getPartitionKey(topic, event),
+							event.toJSONString());
+					collector.send(output);
+				} catch (Exception exception) {
+					throw new KafkaPublisherException(String.format("failed to send event to from input topic %s, topic %s after ip resolving", topic, service.getOutputTopic(topic)), exception);
+				}
+			}
         }
     }
 

@@ -11,9 +11,11 @@ public class UsernameNormalizer implements InitializingBean{
 	private RegexMatcher regexMatcher;
 	
 	private UsernameService usernameService;
-	
-	
-	
+
+	public UsernameService getUsernameService() {
+		return usernameService;
+	}
+
 	public void setUsernameService(UsernameService usernameService) {
 		this.usernameService = usernameService;
 	}

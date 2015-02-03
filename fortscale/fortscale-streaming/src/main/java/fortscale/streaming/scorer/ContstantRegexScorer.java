@@ -12,11 +12,10 @@ public class ContstantRegexScorer extends RegexScorer{
 	}
 
 	@Override
-	public Double calculateScore(EventMessage eventMessage) throws Exception {
-		Double ret = null;
+	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
+		FeatureScore ret = null;
 		if(matches(eventMessage)){
-			ret = (double) constantScore;
-			eventMessage.setScore(outputFieldName, ret);
+			ret = new FeatureScore(outputFieldName, (double) constantScore);
 		}
 		
 		return ret;
