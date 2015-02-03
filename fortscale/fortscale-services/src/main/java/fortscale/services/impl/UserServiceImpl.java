@@ -21,6 +21,7 @@ import fortscale.services.cache.CacheHandler;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
+import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
@@ -255,7 +256,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void updateUsersInfo(String username, Map<String, MutablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
+	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
 
 
 
@@ -353,10 +354,10 @@ public class UserServiceImpl implements UserService{
 	 * @param dataSourceUpdateOnlyFlagMap - Map: <DataSource,update only flag>
 	 * @return - boolean need to only update or not
 	 */
-	private boolean  udpateOnly(Map<String, MutablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap){
+	private boolean  udpateOnly(Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap){
 		boolean result = true;
 
-		for (Entry<String, MutablePair<Long,String>> entry : userInfo.entrySet() )
+		for (Entry<String, JksonSerilaizablePair<Long,String>> entry : userInfo.entrySet() )
 		{
 			if (dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
 			{
@@ -374,12 +375,12 @@ public class UserServiceImpl implements UserService{
 	 * @param dataSourceUpdateOnlyFlagMap - Map: <DataSource,update only flag>
 	 * @return - the Classifier of the win event
 	 */
-	private Classifier getFirstClassifier(Map<String, MutablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap)
+	private Classifier getFirstClassifier(Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap)
 	{
 		Classifier result = null;
-		Entry<String, MutablePair<Long,String>> earlierEntry = null;
+		Entry<String, JksonSerilaizablePair<Long,String>> earlierEntry = null;
 
-		for (Entry<String, MutablePair<Long,String>> entry : userInfo.entrySet() )
+		for (Entry<String, JksonSerilaizablePair<Long,String>> entry : userInfo.entrySet() )
 		{
 			if (!dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
 			{

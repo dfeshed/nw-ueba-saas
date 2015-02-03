@@ -5,10 +5,9 @@ import fortscale.services.UserService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.TimestampUtils;
 import net.minidev.json.JSONValue;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.math3.util.Pair;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -196,8 +195,8 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		if (dataSourceToUserInfo == null) {
 			dataSourceToUserInfo = new UserInfoForUpdate();
 			// Since the same user will be always on the same partition, no need to synchronize this
-			Map<String,MutablePair<Long,String>> dataSourceToUserInfoHashMap  = new HashMap<>();
-			dataSourceToUserInfoHashMap.put(classifierId,new MutablePair<Long, String>(null,logUserNameFromEvent));
+			Map<String,JksonSerilaizablePair<Long,String>> dataSourceToUserInfoHashMap  = new HashMap<>();
+			dataSourceToUserInfoHashMap.put(classifierId,new JksonSerilaizablePair<Long, String>(null,logUserNameFromEvent));
 
 			dataSourceToUserInfo.setUserInfo(dataSourceToUserInfoHashMap);
 
@@ -208,7 +207,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		if (dataSourceToUserInfo.getUserInfo().get(classifierId) == null)
 		{
 
-			dataSourceToUserInfo.getUserInfo().put(classifierId,new MutablePair<Long, String>(null,logUserNameFromEvent));
+			dataSourceToUserInfo.getUserInfo().put(classifierId,new JksonSerilaizablePair<Long, String>(null,logUserNameFromEvent));
 			store.put(normalizedUsername, dataSourceToUserInfo);
 
 		}
@@ -220,7 +219,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		//update in case that last activity need to be update
 		if(userLastActivity == null || userLastActivity < timestamp){
 			// update last activity and logusername  in level DB
-			dataSourceToUserInfo.getUserInfo().put(classifierId, new MutablePair<Long, String>(timestamp, logUserNameFromEvent));
+			dataSourceToUserInfo.getUserInfo().put(classifierId, new JksonSerilaizablePair<Long, String>(timestamp, logUserNameFromEvent));
 			store.put(normalizedUsername, dataSourceToUserInfo);
 		}
 
