@@ -131,8 +131,8 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	}
 
 	@Override
-	public void updateUserWithGroupMembershipScore() {
-		userUpdateScoreService.updateUserWithGroupMembershipScore();
+	public void updateUserWithGroupMembership() {
+		userUpdateScoreService.updateUserWithGroupMembership();
 	}
 
 	@Override

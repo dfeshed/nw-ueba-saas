@@ -12,7 +12,7 @@ public interface UserUpdateScoreService {
 	
 	public void updateUserWithAuthScore(Classifier classifier, Date runtime);
 
-	public void updateUserWithGroupMembershipScore();
+	public void updateUserWithGroupMembership();
 
 	public void recalculateTotalScore();
 	

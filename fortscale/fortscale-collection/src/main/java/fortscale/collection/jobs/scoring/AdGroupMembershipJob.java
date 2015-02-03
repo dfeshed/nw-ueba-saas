@@ -20,7 +20,7 @@ import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
 
 @DisallowConcurrentExecution
-public class AdGroupMembershipScoringJob extends FortscaleJob {
+public class AdGroupMembershipJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(AdProcessJob.class);
 
@@ -64,12 +64,12 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
     @Override
     protected void runSteps() throws Exception {
 
-        boolean isSucceeded = runGroupMembershipScoring();
+        boolean isSucceeded = runGroupMembership();
         if(!isSucceeded){
             return;
         }
 
-        isSucceeded = updateGroupMembershipScore();
+        isSucceeded = updateGroupMembership();
         if(!isSucceeded){
             return;
         }
@@ -95,7 +95,7 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
         finishStep();
     }
 
-    private boolean updateGroupMembershipScore() throws JobExecutionException{
+    private boolean updateGroupMembership() throws JobExecutionException{
         startNewStep("update");
         try {
             impalaWriterFactory.createGroupsScoreAppender(hadoopDirPath, hadoopFilename);
@@ -106,7 +106,7 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
         }
 
         try {
-            userServiceFacade.updateUserWithGroupMembershipScore();
+            userServiceFacade.updateUserWithGroupMembership();
         } catch(Exception e){
             logger.error("got an exception during the process of updating group membership.", e);
             monitor.error(getMonitorId(), getStepName(),String.format("got an exception during the process of updating group membership: %s", e.toString()));
@@ -126,7 +126,7 @@ public class AdGroupMembershipScoringJob extends FortscaleJob {
         return true;
     }
 
-    private boolean runGroupMembershipScoring() throws JobExecutionException, IOException, InterruptedException{
+    private boolean runGroupMembership() throws JobExecutionException, IOException, InterruptedException{
         startNewStep("scoring");
         BufferedLineReader reader = null;
         try {

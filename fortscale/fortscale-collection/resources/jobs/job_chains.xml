@@ -76,7 +76,7 @@
 			<group>AD</group>
 		</first>
 		<second>
-			<name>Group_Membership_Scoring</name>
+			<name>Group_Membership</name>
 			<group>AD</group>
 		</second>
 	</chain>

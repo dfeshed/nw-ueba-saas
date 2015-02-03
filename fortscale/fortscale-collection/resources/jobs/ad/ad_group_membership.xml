@@ -7,10 +7,10 @@
 
     <schedule>
         <job>
-            <name>Group_Membership_Scoring</name>
+            <name>Group_Membership</name>
             <group>AD</group>
-            <description>Running Group Membership Scoring</description>
-            <job-class>fortscale.collection.jobs.scoring.AdGroupMembershipScoringJob</job-class>
+            <description>Running Group Membership </description>
+            <job-class>fortscale.collection.jobs.scoring.AdGroupMembershipJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
             <job-data-map>

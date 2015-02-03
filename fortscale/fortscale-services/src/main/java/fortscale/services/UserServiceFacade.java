@@ -38,7 +38,7 @@ public interface UserServiceFacade {
 	
 	public void updateUserWithAuthScore(Classifier classifier, Date runtime);
 
-	public void updateUserWithGroupMembershipScore();
+	public void updateUserWithGroupMembership();
 
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 	

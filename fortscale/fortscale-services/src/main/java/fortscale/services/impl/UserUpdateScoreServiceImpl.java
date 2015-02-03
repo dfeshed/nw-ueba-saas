@@ -224,16 +224,16 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	}
 
 	@Override
-	public void updateUserWithGroupMembershipScore(){
+	public void updateUserWithGroupMembership(){
 		Date lastRun = adUsersFeaturesExtractionRepository.getLatestTimeStamp();
 		if(lastRun == null){
 			logger.warn("there is no timestamp. probably the table is empty.");
 			return;
 		}
-		updateUserWithGroupMembershipScore(lastRun);
+		updateUserWithGroupMembership(lastRun);
 	}
 
-	private void updateUserWithGroupMembershipScore(final Date lastRun){
+	private void updateUserWithGroupMembership(final Date lastRun){
 		logger.info("start updating the user collection with group membership score");
 		long count = adUsersFeaturesExtractionRepository.countByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun);
 		if(count == 0){
