@@ -43,7 +43,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	/**
 	 * The level DB store name
 	 */
-	private static final String storeName = "user-mongo-user-udpdate";
+	private static final String storeName = "user-mongo-update";
 
 	/**
 	 * Logger
