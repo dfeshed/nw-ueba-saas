@@ -24,6 +24,7 @@ import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
+import javafx.util.Pair;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -253,26 +254,52 @@ public class UserServiceImpl implements UserService{
 
 	}
 
-	public void updateUsersLastActivityGeneralAndPerType(String username, Map<String, Long> lastActivityMap) {
+	@Override
+	public void updateUsersInfo(String username, Map<String, Pair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
+
+		Classifier classifier = getFirstClassifier(userInfo,dataSourceUpdateOnlyFlagMap);
+		LogEventsEnum eventId = classifier.getLogEventsEnum();
+		String logUsernameValue = userInfo.get(classifier.getDisplayName()).getValue();
 
 		// get user by username
 		User user = userRepository.getLastActivityByUserName(username);
+
+
+
 		if (user == null) {
-			logger.warn("Can't find user {} - Not going to update last activity",username);
-			return;
+
+			//in case that this user not need to be create in mongo (doesnt have data source info that related to OnlyUpdate flag = false)
+			if (udpateOnly(userInfo,dataSourceUpdateOnlyFlagMap)) {
+				logger.warn("Can't find user {} - Not going to update last activity and user info", username);
+				return;
+			}
+
+
+			// need to create the user at mongo
+			user = createUser(classifier.getUserApplication(), username, logUsernameValue);
+
+			saveUser(user);
+			if(user == null || user.getId() == null) {
+				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifier, username, logUsernameValue);
+			}
+
+
 		}
 
 		DateTime userCurrLast = user.getLastActivity();
+
+
 
 		try {
 
 			Update update = null;
 
-			for (String classifierId : lastActivityMap.keySet()) {
+			for (String classifierId : userInfo.keySet()) {
 
 				// get the time of the event
-				DateTime currTime = new DateTime(lastActivityMap.get(classifierId), DateTimeZone.UTC);
+				DateTime currTime = new DateTime(userInfo.get(classifierId).getKey(), DateTimeZone.UTC);
 				LogEventsEnum logEventsEnum = LogEventsEnum.valueOf(classifierId);
+
 
 				// last activity
 				if (userCurrLast == null || currTime.isAfter(userCurrLast)) {
@@ -290,7 +317,18 @@ public class UserServiceImpl implements UserService{
 					update.set(User.getLogLastActivityField(logEventsEnum), currTime);
 				}
 
+
+				//update the logusername if needed
+				boolean isLogUserNameExist = user.containsLogUsername(usernameService.getLogname(logEventsEnum));
+
+				if (!isLogUserNameExist)
+				{
+
+					update.set(User.getLogUserNameField(usernameService.getLogname(logEventsEnum)), logUsernameValue);
+				}
+
 			}
+
 
 			// update user
 			if (update != null) {
@@ -301,6 +339,51 @@ public class UserServiceImpl implements UserService{
 			logger.error("Failed to update last activity of user {} : {}", username, e.getMessage());
 		}
 
+	}
+
+	/**
+	 * This method will determine if fir that user we need to only update the mongo or also create the user if needed
+	 * @param userInfo - Map: <DataSource,Pair <lastActivity,logUserName>>
+	 * @param dataSourceUpdateOnlyFlagMap - Map: <DataSource,update only flag>
+	 * @return - boolean need to only update or not
+	 */
+	private boolean  udpateOnly(Map<String, Pair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap){
+		boolean result = true;
+
+		for (Entry<String, Pair<Long,String>> entry : userInfo.entrySet() )
+		{
+			if (dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
+			{
+				return false;
+			}
+		}
+		return result;
+
+
+	}
+
+	/**
+	 * This method will return the earliest event classifier that trigger new user creation
+	 * @param userInfo - Map: <DataSource,Pair <lastActivity,logUserName>>
+	 * @param dataSourceUpdateOnlyFlagMap - Map: <DataSource,update only flag>
+	 * @return - the Classifier of the win event
+	 */
+	private Classifier getFirstClassifier(Map<String, Pair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap)
+	{
+		Classifier result = null;
+		Entry<String, Pair<Long,String>> earlierEntry = null;
+
+		for (Entry<String, Pair<Long,String>> entry : userInfo.entrySet() )
+		{
+			if (dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
+			{
+				if (earlierEntry == null  || earlierEntry.getValue().getKey() > entry.getValue().getKey())
+					earlierEntry = entry;
+			}
+		}
+
+		result = earlierEntry != null ? Classifier.valueOf(earlierEntry.getKey()) : null;
+		return result;
 	}
 
 	@Override

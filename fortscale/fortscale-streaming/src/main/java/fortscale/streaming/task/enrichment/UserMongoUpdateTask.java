@@ -6,8 +6,8 @@ import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.utils.TimestampUtils;
+import javafx.util.Pair;
 import net.minidev.json.JSONValue;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -19,34 +19,41 @@ import org.apache.samza.task.TaskCoordinator;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
- * Update User's last activity:
+ * Update User's info to mongo :
+ * 	a. last activity
+ * 	b. create user if need (based on configuration)
+ * 	c. update the logusername
+ *
  * 1. In level DB (state) during process
  * 2. In Mongo from time to time
  * Date: 1/11/2015.
  */
-public class UserLastActivityTask extends AbstractStreamTask {
+public class UserMongoUpdateTask extends AbstractStreamTask {
 
 	/**
 	 * The level DB store name
 	 */
-	private static final String storeName = "user-last-activity";
+	private static final String storeName = "user-mongo-user-udpdate";
 
 	/**
 	 * Logger
 	 */
-	private static Logger logger = LoggerFactory.getLogger(UserLastActivityTask.class);
+	private static Logger logger = LoggerFactory.getLogger(UserMongoUpdateTask.class);
 
 	/**
 	 * The level DB store: username to last activity (map of data-source to time)
 	 */
-	protected KeyValueStore<String, Map<String, Long>> store;
+	protected KeyValueStore<String, Map<String, Pair<Long,String>>> store;
 
 	/**
 	 * The time field in the input event
@@ -54,7 +61,7 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	protected String timestampField;
 
 	/**
-	 * The username field in the input event
+	 * The username field in the input event that we will use in streaming
 	 */
 	protected String usernameField;
 
@@ -68,6 +75,12 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	 */
 	protected Map<String, dataSourceConfiguration> topicToDataSourceMap = new HashMap<>();
 
+	/**
+	 * Map between classifier id to updateonly flag
+	 */
+
+	protected Map<String,Boolean> updateOnlyPerClassifire = new HashMap<>();
+
 
 	/**
 	 * Init task after spring context is up
@@ -79,7 +92,7 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 		// Get the levelDB store
-		store = (KeyValueStore<String, Map<String, Long>>) context.getStore(storeName);
+		store = (KeyValueStore<String, Map<String, Pair<Long,String>>>) context.getStore(storeName);
 
 		// Get field names
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
@@ -95,7 +108,10 @@ public class UserLastActivityTask extends AbstractStreamTask {
 			String classifier = getConfigString(config, String.format("fortscale.data-source.classifier.%s", dataSource));
 			String successfulLoginField = getConfigString(config, String.format("fortscale.data-source.success.field.%s", dataSource));
 			String successfulLoginValue = getConfigString(config, String.format("fortscale.data-source.success.value.%s", dataSource));
-			topicToDataSourceMap.put(inputTopic, new dataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue));
+			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.data-source.updateOnly.%s", dataSource));
+			String logUserNameField = String.format("fortscale.data-source.logusername.field.%s", dataSource);
+			topicToDataSourceMap.put(inputTopic, new dataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue,udpateOnlyFlag,logUserNameField));
+			updateOnlyPerClassifire.put(classifier,udpateOnlyFlag);
 		}
 
 	}
@@ -110,8 +126,7 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
-			TaskCoordinator coordinator) throws Exception {
+	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,TaskCoordinator coordinator) throws Exception {
 
 		// parse the message into json
 		String messageText = (String) envelope.getMessage();
@@ -132,6 +147,8 @@ public class UserLastActivityTask extends AbstractStreamTask {
 			throw new StreamMessageNotContainFieldException(messageText, usernameField);
 		}
 
+
+
 		// Get the input topic
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
@@ -142,10 +159,18 @@ public class UserLastActivityTask extends AbstractStreamTask {
 			return;
 		}
 
+		//get the actual username from the event - using for assigning to logusername
+		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.logUserNameField));
+		if (logUserNameFromEvent == null) {
+			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.logUserNameField);
+			return;
+		}
+
+
 		// check that the event represent successful login
 		if (convertToString(message.get(dataSourceConfiguration.successField)).equalsIgnoreCase(dataSourceConfiguration.successValue)) {
 			// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
-			updateLastActivityInStore(timestamp, normalizedUsername, dataSourceConfiguration.mongoClassifierId);
+			updateUserInfoInStore(timestamp, normalizedUsername, dataSourceConfiguration.mongoClassifierId,logUserNameFromEvent);
 
 		}
 
@@ -161,24 +186,39 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	 * @param normalizedUsername    the user
 	 * @param classifierId	The classifier in Mongo for this data-source
 	 */
-	private void updateLastActivityInStore(Long timestamp, String normalizedUsername, String classifierId) {
+	private void updateUserInfoInStore(Long timestamp, String normalizedUsername, String classifierId,String logUserNameFromEvent) {
 
-		Map<String, Long> dataSourceToTimestamp = store.get(normalizedUsername);
+		Map<String, Pair<Long,String>> dataSourceToUserInfo = store.get(normalizedUsername);
 
-		if (dataSourceToTimestamp == null) {
+
+		//in case that the user doesnt exist in the LevelDB
+		if (dataSourceToUserInfo == null) {
 			// Since the same user will be always on the same partition, no need to synchronize this
-			dataSourceToTimestamp = new HashMap<>();
-			store.put(normalizedUsername, dataSourceToTimestamp);
+			dataSourceToUserInfo = new HashMap<>();
+			dataSourceToUserInfo.put(classifierId,new Pair<Long, String>(null,logUserNameFromEvent));
+			store.put(normalizedUsername, dataSourceToUserInfo);
+		}
+
+		//in case the user have no entry for the current data source
+		if (dataSourceToUserInfo.get(classifierId) == null)
+		{
+			dataSourceToUserInfo.put(classifierId,new Pair<Long, String>(null,logUserNameFromEvent));
+			store.put(normalizedUsername, dataSourceToUserInfo);
+
 		}
 
 
+		Long userLastActivity = dataSourceToUserInfo.get(classifierId).getKey();
 
-		Long userLastActivity = dataSourceToTimestamp.get(classifierId);
+
+		//update in case that last activity need to be update
 		if(userLastActivity == null || userLastActivity < timestamp){
-			// update last activity in level DB
-			dataSourceToTimestamp.put(classifierId, timestamp);
-			store.put(normalizedUsername, dataSourceToTimestamp);
+			// update last activity and logusername  in level DB
+			dataSourceToUserInfo.put(classifierId, new Pair<Long, String>(timestamp,logUserNameFromEvent));
+			store.put(normalizedUsername, dataSourceToUserInfo);
 		}
+
+
 	}
 
 	@Override
@@ -211,12 +251,14 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	 * Go over all users in the last-activity map and write them to Mongo
 	 */
 	private void copyLevelDbToMongoDB() {
-		KeyValueIterator<String, Map<String, Long>> iter = store.all();
+
+		KeyValueIterator<String, Map<String, Pair<Long,String>>> iter = store.all();
+
 		List<String> usernames = new LinkedList<>();
 		while (iter.hasNext()) {
-			Entry<String, Map<String, Long>> user = iter.next();
+			Entry<String, Map<String, Pair<Long,String>>> user = iter.next();
 			// update user in mongo
-			userService.updateUsersLastActivityGeneralAndPerType(user.getKey(), user.getValue());
+			userService.updateUsersInfo(user.getKey(), user.getValue(),updateOnlyPerClassifire );
 			usernames.add(user.getKey());
 		}
 		iter.close();
@@ -233,15 +275,20 @@ public class UserLastActivityTask extends AbstractStreamTask {
 	 */
 	protected static class dataSourceConfiguration {
 
-		protected dataSourceConfiguration(String mongoClassifierId, String successField, String successValue) {
+		protected dataSourceConfiguration(String mongoClassifierId, String successField, String successValue,boolean udpateOnlyFlag,String logUserNameField) {
 			this.mongoClassifierId = mongoClassifierId;
 			this.successField = successField;
 			this.successValue = successValue;
+			this.dataSourceUpdateOnlyFlag = udpateOnlyFlag;
+			this.logUserNameField = logUserNameField;
+
 		}
 
 		public String mongoClassifierId;
 		public String successField;
 		public String successValue;
+		public boolean dataSourceUpdateOnlyFlag;
+		public String logUserNameField;
 	}
 
 
