@@ -2,8 +2,7 @@ package fortscale.streaming.task.enrichment;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,17 +16,11 @@ import java.util.Map;
 public class UserInfoForUpdate {
 
 
-	public Map<String,Pair<Long,String>> userInfo;
+	public Map<String, MutablePair<Long,String>> userInfo;
 
 
 	//CTOs
 	@JsonCreator
-	public UserInfoForUpdate(@JsonProperty("userInfo")  Map<String,Pair<Long,String>> userInfo) {
-
-		this.userInfo =userInfo;
-
-	}
-
 	public UserInfoForUpdate() {
 
 		this.userInfo = new HashMap<>();
@@ -35,11 +28,12 @@ public class UserInfoForUpdate {
 	}
 
 
-	public Map<String, Pair<Long, String>> getUserInfo() {
+
+	public Map<String, MutablePair<Long, String>> getUserInfo() {
 		return userInfo;
 	}
 
-	public void setUserInfo(Map<String, Pair<Long, String>> userInfo) {
+	public void setUserInfo(Map<String, MutablePair<Long, String>> userInfo) {
 		this.userInfo = userInfo;
 	}
 }
