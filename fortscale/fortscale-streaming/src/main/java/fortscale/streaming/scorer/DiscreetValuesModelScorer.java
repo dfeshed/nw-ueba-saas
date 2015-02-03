@@ -48,7 +48,7 @@ public class DiscreetValuesModelScorer extends ModelScorer {
 		if(numOfFeatureValues >= enoughNumOfDiscreetValuesToInfluence){
 			certainty = 1;
 		} else if(numOfFeatureValues >= minNumOfDiscreetValuesToInfluence){
-			certainty = (numOfFeatureValues - minNumOfDiscreetValuesToInfluence + 1) / (enoughNumOfDiscreetValuesToInfluence - minNumOfDiscreetValuesToInfluence + 1);
+			certainty = ((double)(numOfFeatureValues - minNumOfDiscreetValuesToInfluence + 1)) / (enoughNumOfDiscreetValuesToInfluence - minNumOfDiscreetValuesToInfluence + 1);
 		}
 		
 		double score = 0;

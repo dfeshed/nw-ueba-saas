@@ -1,60 +1,18 @@
 package fortscale.streaming.scorer;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.apache.samza.config.ConfigException;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import fortscale.ml.model.prevalance.PrevalanceModel;
-import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 
 
-public class ModelScorerTest extends ScorerBaseTest{
-	private static final String FIELD_NAME = "testFieldName";
-	private static final String FIELD_VALUE = "testFieldValue";
-	private static final String OUTPUT_FIELD_NAME = "outputTestField";
-	private static final String SCORER_NAME = "ModelScorerTestScorerName";
-	private static final String MODEL_NAME = "testModelName";
-	private static final String CONTEXT_NAME = "testContextName";
-	private static final String CONTEXT = "testuser";
-	
-	private ScorerContext context;
-	private ModelService modelService;
-	private PrevalanceModel model;
-	
-	@Before
-	public void setUp(){
-		super.setUp();
-		context = new ScorerContext(config);
-		modelService = mock(ModelService.class);
-		model = mock(PrevalanceModel.class);
-		try {
-			when(modelService.getModel(CONTEXT, MODEL_NAME)).thenReturn(model);
-		} catch (Exception e) {
-			Assert.fail(e.toString());
-		}
-		context.setBean("modelService", modelService);
-	}
+public class ModelScorerTest extends ModelScorerBaseTest{
 	
 	private Scorer buildScorer(String scorerName, String outputFieldName, String modelName, String fieldName, String contextName) throws Exception{
-		if(scorerName !=null){
-			when(config.get(String.format("fortscale.score.%s.scorer", scorerName))).thenReturn(ModelScorerFactory.SCORER_TYPE);
-			if(modelName != null){
-				when(config.get(String.format("fortscale.score.%s.model.name", scorerName))).thenReturn(modelName);
-				if(fieldName != null){
-					when(config.get(String.format("fortscale.score.%s.%s.fieldname", scorerName, modelName))).thenReturn(fieldName);
-				}
-				if(contextName != null){
-					when(config.get(String.format("fortscale.score.%s.%s.context.fieldname", scorerName, modelName))).thenReturn(contextName);
-				}
-			}
-			if(outputFieldName != null)
-				when(config.get(String.format("fortscale.score.%s.output.field.name", scorerName))).thenReturn(outputFieldName);
-		}
+		prepareConfig(ModelScorerFactory.SCORER_TYPE, scorerName, outputFieldName, modelName, fieldName, contextName);
 		
 		return (Scorer) context.resolve(Scorer.class, scorerName);
 	}
