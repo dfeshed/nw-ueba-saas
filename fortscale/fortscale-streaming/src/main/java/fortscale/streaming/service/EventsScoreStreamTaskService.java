@@ -94,9 +94,11 @@ public class EventsScoreStreamTaskService {
 		EventMessage eventMessage = new EventMessage(message);
 		for (Scorer scorer: scorersToRun) {
 			FeatureScore eventFeatureScore = scorer.calculateScore(eventMessage);
-			message.put(eventFeatureScore.getName(), eventFeatureScore.getScore());
-			for(FeatureScore featureScore: eventFeatureScore.getFeatureScores()){
-				message.put(featureScore.getName(), featureScore.getScore());
+			message.put(eventFeatureScore.getName(), (double)Math.round(eventFeatureScore.getScore()));
+			if(eventFeatureScore.getFeatureScores() != null){
+				for(FeatureScore featureScore: eventFeatureScore.getFeatureScores()){
+					message.put(featureScore.getName(), (double)Math.round(featureScore.getScore()));
+				}
 			}
 		}
 	
