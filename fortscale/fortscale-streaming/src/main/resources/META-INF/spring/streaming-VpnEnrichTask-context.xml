@@ -23,5 +23,9 @@
     <context:component-scan base-package="fortscale" />
 
     <!-- Geolocation service -->
-    <mockito:mock id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService"/>
+    <bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
+        <constructor-arg name="geoIpDbResource" value="file:${ip.to.location.db.full.path}"/>
+        <constructor-arg name="geoIpV6DbResource" value="file:${ip.to.location.db.full.path}"/>
+        <constructor-arg name="fullLicenseKeyResource" value="file:${ip.to.location.license.key.full.path}"/>
+    </bean>
 </beans>
