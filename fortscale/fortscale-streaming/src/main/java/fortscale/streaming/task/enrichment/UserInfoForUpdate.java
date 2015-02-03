@@ -24,7 +24,7 @@ public class UserInfoForUpdate {
 	@JsonCreator
 	public UserInfoForUpdate(@JsonProperty("userInfo")  Map<String,Pair<Long,String>> userInfo) {
 
-		this.userInfo = new HashMap<>();
+		this.userInfo =userInfo;
 
 	}
 
