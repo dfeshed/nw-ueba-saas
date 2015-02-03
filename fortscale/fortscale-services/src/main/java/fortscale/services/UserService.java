@@ -7,7 +7,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.query.Update;
 
@@ -67,7 +67,7 @@ public interface UserService extends CachingService{
 	 * @param dataSourceUpdateOnlyFlagMap	Map: dupdateOnlyFlag - data source
 	 * @param userInfo Map: datasource - <lastActivity,logusername>
 	 */
-	public void updateUsersInfo(String username, Map<String, Pair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap);
+	public void updateUsersInfo(String username, Map<String, MutablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap);
 
 	public void updateUserLastActivity(String username, DateTime dateTime);
 
