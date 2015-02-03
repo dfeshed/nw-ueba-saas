@@ -3,7 +3,6 @@ package fortscale.streaming.task.enrichment;
 
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
-import org.apache.commons.math3.util.Pair;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;
@@ -59,10 +58,10 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
-		Map<String, Pair<Long,String>> userInfo1 = task.store.get("user1");
+		UserInfoForUpdate userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);
-		assertEquals("User1 - VPN event", new Long(1000), userInfo1.get("vpn").getKey());
-		assertEquals("User1 - VPN event", "user1", userInfo1.get("vpn").getValue());
+		assertEquals("User1 - VPN event", new Long(1000), userInfo1.getUserInfo().get("vpn").getKey());
+		assertEquals("User1 - VPN event", "user1", userInfo1.getUserInfo().get("vpn").getValue());
 
 		// User1, VPN event with time 2
 
@@ -73,9 +72,9 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);
-		assertEquals("User1 - VPN event", new Long(2000), userInfo1.get("vpn").getKey());
-		assertEquals("User1 - VPN event", null,userInfo1.get("ssh"));
-		assertEquals("User1 - VPN event", "user1", userInfo1.get("vpn").getValue());
+		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("vpn").getKey());
+		assertEquals("User1 - VPN event", null,userInfo1.getUserInfo().get("ssh"));
+		assertEquals("User1 - VPN event", "user1", userInfo1.getUserInfo().get("vpn").getValue());
 
 		// User1, SSH event with time 1
 
@@ -86,10 +85,10 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - SSH event", userInfo1);
-		assertEquals("User1 - SSH event", new Long(1000), userInfo1.get("ssh").getKey());
-		assertEquals("User1 - VPN event", new Long(2000), userInfo1.get("vpn").getKey());
-		assertEquals("User1 - SSH event", "user1", userInfo1.get("ssh").getValue());
-		assertEquals("User1 - VPN event", "user1", userInfo1.get("vpn").getValue());
+		assertEquals("User1 - SSH event", new Long(1000), userInfo1.getUserInfo().get("ssh").getKey());
+		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("vpn").getKey());
+		assertEquals("User1 - SSH event", "user1", userInfo1.getUserInfo().get("ssh").getValue());
+		assertEquals("User1 - VPN event", "user1", userInfo1.getUserInfo().get("vpn").getValue());
 
 		// message without success status - shouldn't update last-activity
 
@@ -100,8 +99,8 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - SSH event", userInfo1);
-		assertEquals("User1 - SSH event", new Long(1000), userInfo1.get("ssh").getKey());
-		assertEquals("User1 - VPN event", new Long(2000), userInfo1.get("vpn").getKey());
+		assertEquals("User1 - SSH event", new Long(1000), userInfo1.getUserInfo().get("ssh").getKey());
+		assertEquals("User1 - VPN event", new Long(2000), userInfo1.getUserInfo().get("vpn").getKey());
 
 	}
 

@@ -19,10 +19,7 @@ import org.apache.samza.task.TaskCoordinator;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToLong;
@@ -53,7 +50,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	/**
 	 * The level DB store: username to last activity (map of data-source to time)
 	 */
-	protected KeyValueStore<String, Map<String, Pair<Long,String>>> store;
+	protected KeyValueStore<String, UserInfoForUpdate> store;
 
 	/**
 	 * The time field in the input event
@@ -92,7 +89,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 		// Get the levelDB store
-		store = (KeyValueStore<String, Map<String, Pair<Long,String>>>) context.getStore(storeName);
+		store = (KeyValueStore<String, UserInfoForUpdate>) context.getStore(storeName);
 
 		// Get field names
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
@@ -188,33 +185,38 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 */
 	private void updateUserInfoInStore(Long timestamp, String normalizedUsername, String classifierId,String logUserNameFromEvent) {
 
-		Map<String, Pair<Long,String>> dataSourceToUserInfo = store.get(normalizedUsername);
+		UserInfoForUpdate dataSourceToUserInfo = store.get(normalizedUsername);
 
 
 		//in case that the user doesnt exist in the LevelDB
 		if (dataSourceToUserInfo == null) {
+			dataSourceToUserInfo = new UserInfoForUpdate();
 			// Since the same user will be always on the same partition, no need to synchronize this
-			dataSourceToUserInfo = new HashMap<>();
-			dataSourceToUserInfo.put(classifierId,new Pair<Long, String>(null,logUserNameFromEvent));
+			Map<String,Pair<Long,String>> dataSourceToUserInfoHashMap  = new HashMap<>();
+			dataSourceToUserInfoHashMap.put(classifierId,new Pair<Long, String>(null,logUserNameFromEvent));
+
+			dataSourceToUserInfo.setUserInfo(dataSourceToUserInfoHashMap);
+
 			store.put(normalizedUsername, dataSourceToUserInfo);
 		}
 
 		//in case the user have no entry for the current data source
-		if (dataSourceToUserInfo.get(classifierId) == null)
+		if (dataSourceToUserInfo.getUserInfo().get(classifierId) == null)
 		{
-			dataSourceToUserInfo.put(classifierId,new Pair<Long, String>(null,logUserNameFromEvent));
+
+			dataSourceToUserInfo.getUserInfo().put(classifierId,new Pair<Long, String>(null,logUserNameFromEvent));
 			store.put(normalizedUsername, dataSourceToUserInfo);
 
 		}
 
 
-		Long userLastActivity = dataSourceToUserInfo.get(classifierId).getKey();
+		Long userLastActivity = dataSourceToUserInfo.getUserInfo().get(classifierId).getKey();
 
 
 		//update in case that last activity need to be update
 		if(userLastActivity == null || userLastActivity < timestamp){
 			// update last activity and logusername  in level DB
-			dataSourceToUserInfo.put(classifierId, new Pair<Long, String>(timestamp,logUserNameFromEvent));
+			dataSourceToUserInfo.getUserInfo().put(classifierId, new Pair<Long, String>(timestamp, logUserNameFromEvent));
 			store.put(normalizedUsername, dataSourceToUserInfo);
 		}
 
@@ -252,13 +254,13 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 */
 	private void copyLevelDbToMongoDB() {
 
-		KeyValueIterator<String, Map<String, Pair<Long,String>>> iter = store.all();
+		KeyValueIterator<String, UserInfoForUpdate> iter = store.all();
 
 		List<String> usernames = new LinkedList<>();
 		while (iter.hasNext()) {
-			Entry<String, Map<String, Pair<Long,String>>> user = iter.next();
+			Entry<String, UserInfoForUpdate> user = iter.next();
 			// update user in mongo
-			userService.updateUsersInfo(user.getKey(), user.getValue(),updateOnlyPerClassifire );
+			userService.updateUsersInfo(user.getKey(), user.getValue().getUserInfo(),updateOnlyPerClassifire );
 			usernames.add(user.getKey());
 		}
 		iter.close();
