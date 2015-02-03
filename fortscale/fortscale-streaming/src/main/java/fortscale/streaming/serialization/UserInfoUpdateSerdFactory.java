@@ -9,7 +9,7 @@ import org.apache.samza.serializers.SerdeFactory;
 /**
  * Created by idanp on 2/3/2015.
  */
-public class UserInfoUpdateSerd implements SerdeFactory<UserInfoForUpdate> {
+public class UserInfoUpdateSerdFactory implements SerdeFactory<UserInfoForUpdate> {
 
 	@Override
 	public Serde<UserInfoForUpdate> getSerde (String name, Config config)
