@@ -3,7 +3,7 @@ package fortscale.streaming.task.enrichment;
 
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
-import javafx.util.Pair;
+import org.apache.commons.math3.util.Pair;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;

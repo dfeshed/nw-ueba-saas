@@ -7,7 +7,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
-import javafx.util.Pair;
+import org.apache.commons.math3.util.Pair;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.query.Update;
 
