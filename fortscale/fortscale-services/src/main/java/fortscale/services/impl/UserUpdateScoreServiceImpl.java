@@ -259,8 +259,9 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 
 				logger.info("updating the user collection and the hdfs with group membership score");
 				for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-					User user = updateUserWithGroupMembershipScore(lastRun, avgScore, extraction);
+					User user = userService.findByUserId(extraction.getUserId());
 					if(user != null){
+						//writeScore doesn't write only the score, but the entire row of data.
 						impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
 					}
 				}
@@ -276,25 +277,6 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 
 		logger.info("finished group membership score update.");
 	}
-
-	private User updateUserWithGroupMembershipScore(final Date lastRun, double avgScore, AdUserFeaturesExtraction extraction){
-		User user = userService.findByUserId(extraction.getUserId());
-		if(user == null){
-			logger.warn("user with id ({}) was not found in user table", extraction.getUserId());
-			return null;
-		}
-		//updating the user with the new score.
-		user = updateUserScore(user, new Date(extraction.getTimestamp().getTime()), Classifier.groups.getId(), extraction.getScore(), avgScore, false);
-
-		Update update = new Update();
-		update.set(User.getClassifierScoreField(Classifier.groups.getId()), user.getScore(Classifier.groups.getId()));
-		userService.updateUser(user, update);
-
-		return user;
-	}
-
-
-
 
 
 	@Override
