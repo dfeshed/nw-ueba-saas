@@ -23,7 +23,9 @@ public class FeatureCalibration{
 	private String featureValueWithMinCount = null;
 	
 		
-	
+	public int getNumOfFeatureValues(){
+		return featureValueToCountMap.size();
+	}
 	
 	public Double getFeatureValueCount(String featureValue){
 		return featureValueToCountMap.get(featureValue);

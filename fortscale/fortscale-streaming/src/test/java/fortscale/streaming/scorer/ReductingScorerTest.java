@@ -50,9 +50,9 @@ public class ReductingScorerTest extends ScorerBaseTest{
 			if(reductingScorer != null)
 				when(config.get(String.format("fortscale.score.%s.reducting.scorer", scorerName))).thenReturn(reductingScorer);
 			if(reducting != null)
-				when(config.getDouble(String.format("fortscale.score.%s.reducting", scorerName))).thenReturn(reducting);
+				when(config.getDouble(String.format("fortscale.score.%s.reducting.weight", scorerName))).thenReturn(reducting);
 			else
-				when(config.getDouble(String.format("fortscale.score.%s.reducting", scorerName))).thenThrow(ConfigException.class);
+				when(config.getDouble(String.format("fortscale.score.%s.reducting.weight", scorerName))).thenThrow(ConfigException.class);
 		}
 		return (Scorer) context.resolve(Scorer.class, scorerName);
 	}
