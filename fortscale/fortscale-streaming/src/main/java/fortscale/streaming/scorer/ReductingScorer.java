@@ -12,13 +12,13 @@ public class ReductingScorer extends AbstractScorer {
 	
 	private Scorer mainScorer;
 	private Scorer reductingScorer;
-	private double reducting;
+	private double reductingWeight;
 
 	public ReductingScorer(String scorerName, Config config, ScorerContext context) {
 		super(scorerName, config);
 		mainScorer = getScorer(String.format("fortscale.score.%s.main.scorer", scorerName), config, context);
 		reductingScorer = getScorer(String.format("fortscale.score.%s.reducting.scorer", scorerName), config, context);
-		reducting = config.getDouble(String.format("fortscale.score.%s.reducting", scorerName));
+		reductingWeight = config.getDouble(String.format("fortscale.score.%s.reducting.weight", scorerName));
 	}
 	
 	private Scorer getScorer(String scorerNamePath, Config config, ScorerContext context){
@@ -32,7 +32,7 @@ public class ReductingScorer extends AbstractScorer {
 	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
 		FeatureScore featureScore = null;
 		FeatureScore mainScore = mainScorer.calculateScore(eventMessage);
-		if(mainScore != null){
+		if(mainScore != null && mainScore.getScore() > 0){
 			FeatureScore reducingScore = reductingScorer.calculateScore(eventMessage);
 			if(reducingScore == null){
 				featureScore = mainScore;
@@ -42,8 +42,8 @@ public class ReductingScorer extends AbstractScorer {
 				featureScores.add(reducingScore);
 				double score = mainScore.getScore();
 				if(reducingScore.getScore() < score){
-					score = reducingScore.getScore() * reducting + mainScore.getScore() * (1-reducting);
-					score = score*reducingScore.getCertainty() + mainScore.getScore() * (1 - reducingScore.getCertainty());
+					double reductingWeightMulitiplyCertainty = reductingWeight * reducingScore.getCertainty(); // The weight of the reducting score depands on the certainty of the score.
+					score = reducingScore.getScore() * reductingWeightMulitiplyCertainty + mainScore.getScore() * (1-reductingWeightMulitiplyCertainty);
 				}
 				featureScore = new FeatureScore(outputFieldName, score, featureScores);
 			}			
