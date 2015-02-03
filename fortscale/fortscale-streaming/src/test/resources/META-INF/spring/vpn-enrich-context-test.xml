@@ -25,11 +25,18 @@
 		<constructor-arg name="longtitudeFieldName" value="longtitude_field"/>
 		<constructor-arg name="latitudeFieldName" value="latitude_field"/>
 	</bean>
+	<bean id="vpnDataBucketsConfig" class="fortscale.streaming.service.vpn.VpnDataBucketsConfig">
+		<constructor-arg name="totalbytesFieldName" value="totalbytesFieldName"/>
+		<constructor-arg name="readbytesFieldName" value="readbytesFieldName"/>
+		<constructor-arg name="durationFieldName" value="durationFieldName"/>
+		<constructor-arg name="databucketFieldName" value="databucketFieldName"/>
+	</bean>
 	<bean id="vpnEnrichConfig" class="fortscale.streaming.service.vpn.VpnEnrichConfig">
 		<constructor-arg name="inputTopic" value="input-1"/>
 		<constructor-arg name="outputTopic" value="output-1"/>
 		<constructor-arg name="partitionField" value="partition-1"/>
 		<constructor-arg name="vpnGeolocationConfig" ref="vpnGeolocationConfig"/>
+		<constructor-arg name="vpnDataBucketsConfig" ref="vpnDataBucketsConfig"/>
 	</bean>
 	<bean id="vpnEnrichService" class="fortscale.streaming.service.vpn.VpnEnrichService">
 		<constructor-arg name="config" ref="vpnEnrichConfig"/>

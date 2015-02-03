@@ -61,7 +61,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
     @Test
     public void wrappedProcess_normal() throws Exception {
         //stub
-        when(vpnEnrichService.processGeolocation(any(JSONObject.class))).thenReturn(new JSONObject());
+        when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject());
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
@@ -69,7 +69,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         task.wrappedProcess(envelope , messageCollector, taskCoordinator);
         task.wrappedClose();
         // validate the services were read
-        verify(vpnEnrichService).processGeolocation(any(JSONObject.class));
+        verify(vpnEnrichService).processVpnEvent(any(JSONObject.class));
         verify(vpnEnrichService).getPartitionKey(any(JSONObject.class));
         verify(messageCollector).send(any(OutgoingMessageEnvelope.class));
 
@@ -85,7 +85,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
     @Test(expected = KafkaPublisherException.class)
     public void wrappedProcess_kafkaException() throws Exception {
         //stub
-        when(vpnEnrichService.processGeolocation(any(JSONObject.class))).thenReturn(new JSONObject());
+        when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject());
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
         doThrow(new RuntimeException()).when(messageCollector).send(any(OutgoingMessageEnvelope.class));
 

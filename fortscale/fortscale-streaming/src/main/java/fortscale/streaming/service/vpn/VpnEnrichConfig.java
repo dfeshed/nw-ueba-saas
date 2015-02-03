@@ -14,12 +14,14 @@ public class VpnEnrichConfig {
     private String partitionField;
 
     private VpnGeolocationConfig vpnGeolocationConfig;
+    private VpnDataBucketsConfig vpnDataBucketsConfig;
 
-    public VpnEnrichConfig(String inputTopic, String outputTopic, String partitionField, VpnGeolocationConfig vpnGeolocationConfig) {
+    public VpnEnrichConfig(String inputTopic, String outputTopic, String partitionField, VpnGeolocationConfig vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig) {
         this.inputTopic = inputTopic;
         this.outputTopic = outputTopic;
         this.partitionField = partitionField;
         this.vpnGeolocationConfig = vpnGeolocationConfig;
+        this.vpnDataBucketsConfig = vpnDataBucketsConfig;
     }
 
     public String getInputTopic() {
@@ -52,5 +54,13 @@ public class VpnEnrichConfig {
 
     public void setVpnGeolocationConfig(VpnGeolocationConfig vpnGeolocationConfig) {
         this.vpnGeolocationConfig = vpnGeolocationConfig;
+    }
+
+    public VpnDataBucketsConfig getVpnDataBucketsConfig() {
+        return vpnDataBucketsConfig;
+    }
+
+    public void setVpnDataBucketsConfig(VpnDataBucketsConfig vpnDataBucketsConfig) {
+        this.vpnDataBucketsConfig = vpnDataBucketsConfig;
     }
 }

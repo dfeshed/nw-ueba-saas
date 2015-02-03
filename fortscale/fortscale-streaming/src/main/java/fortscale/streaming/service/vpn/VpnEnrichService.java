@@ -41,11 +41,14 @@ public class VpnEnrichService {
         this.config = config;
     }
 
-    public JSONObject processGeolocation(JSONObject event) {
+    public JSONObject processVpnEvent(JSONObject event) {
         checkNotNull(event);
+        event = processGeolocation(event);
+        event = processDataBuckets(event);
+        return event;
+    }
 
-        // get the configuration for the input topic, if not found skip this event
-
+    public JSONObject processGeolocation(JSONObject event) {
         VpnGeolocationConfig vpnGeolocationConfig = config.getVpnGeolocationConfig();
         String ipAddress = convertToString(event.get(vpnGeolocationConfig.getIpField()));
         // If the geo ip service is available
@@ -63,6 +66,27 @@ public class VpnEnrichService {
             event.put(vpnGeolocationConfig.getLatitudeFieldName(), geoIPInfo.getLatitude());
         } catch (Exception e) {
             logger.warn("error resolving geo2ip for {}, exception: {}", ipAddress, e.toString());
+        }
+
+        return event;
+    }
+    public JSONObject processDataBuckets(JSONObject event) {
+        VpnDataBucketsConfig vpnDataBucketsConfig = config.getVpnDataBucketsConfig();
+        // get duration
+        Long duration = convertToLong(event.get(vpnDataBucketsConfig.getDurationFieldName()));
+
+        // get bytes (get "total" if there are no "read" bytes)
+        Long readBytes = convertToLong(event.get(vpnDataBucketsConfig.getReadbytesFieldName()));
+        if(readBytes == null){
+            readBytes = convertToLong(event.get(vpnDataBucketsConfig.getTotalbytesFieldName()));
+        }
+
+        // calculate bucket - in case that we don't have duration, we will not add the bucket field and the score will be 0
+        if(duration != null ){
+            if(duration > 0){
+                Long bytePerSec = (Long.valueOf(readBytes)/(20*60 + duration));
+                event.put(vpnDataBucketsConfig.getDatabucketFieldName(), bytePerSec);
+            }
         }
 
         return event;

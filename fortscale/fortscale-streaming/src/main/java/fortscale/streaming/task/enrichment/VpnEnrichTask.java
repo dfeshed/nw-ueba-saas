@@ -4,6 +4,7 @@ import fortscale.geoip.GeoIPInfo;
 import fortscale.geoip.IpToLocationGeoIPService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.vpn.VpnDataBucketsConfig;
 import fortscale.streaming.service.vpn.VpnEnrichConfig;
 import fortscale.streaming.service.vpn.VpnEnrichService;
 import fortscale.streaming.service.vpn.VpnGeolocationConfig;
@@ -65,6 +66,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
         String inputTopic = getConfigString(config, String.format("task.inputs"));
         String outputTopic = getConfigString(config, String.format("fortscale.output.topic"));
         String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.partition.field")));
+        //geolocation field names:
         String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.ip.field")));
         String countryFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.country.field")));
         String countryIsoCodeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.countryIsoCode.field")));
@@ -74,9 +76,15 @@ public class VpnEnrichTask extends AbstractStreamTask {
         String usageTypeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.usageType.field")));
         String longtitudeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.longtitude.field")));
         String latitudeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.latitude.field")));
+        //data buckets field names:
+        String totalbytesFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.totalbytes.field")));
+        String readbytesFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.readbytes.field")));
+        String durationFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.duration.field")));
+        String databucketFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.databucket.field")));
 
         VpnGeolocationConfig vpnGeolocationConfig = new VpnGeolocationConfig(ipField, countryFieldName, countryIsoCodeFieldName, regionFieldName, cityFieldName, ispFieldName, usageTypeFieldName, longtitudeFieldName, latitudeFieldName);
-        VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(inputTopic, outputTopic, partitionField, vpnGeolocationConfig);
+        VpnDataBucketsConfig vpnDataBucketsConfig = new VpnDataBucketsConfig(totalbytesFieldName, readbytesFieldName, durationFieldName, databucketFieldName);
+        VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(inputTopic, outputTopic, partitionField, vpnGeolocationConfig, vpnDataBucketsConfig);
         vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
     }
 
@@ -85,7 +93,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
         // parse the message into json
         String messageText = (String) envelope.getMessage();
         JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-        message = vpnEnrichService.processGeolocation(message);
+        message = vpnEnrichService.processVpnEvent(message);
         try {
             OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", vpnEnrichService.getOutputTopic()), vpnEnrichService.getPartitionKey(message), message.toJSONString());
             collector.send(output);
