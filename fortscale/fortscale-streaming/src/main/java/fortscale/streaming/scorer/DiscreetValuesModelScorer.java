@@ -15,8 +15,8 @@ public class DiscreetValuesModelScorer extends ModelScorer {
 
 	public DiscreetValuesModelScorer(String scorerName, Config config, ScorerContext context) {
 		super(scorerName, config, context);
-		minNumOfDiscreetValuesToInfluence = config.getInt(String.format("fortscale.score.%s.discreet.values.min", scorerName), 0);
-		enoughNumOfDiscreetValuesToInfluence = Math.max(config.getInt(String.format("fortscale.score.%s.discreet.values.min", scorerName), 0), minNumOfDiscreetValuesToInfluence);
+		minNumOfDiscreetValuesToInfluence = config.getInt(String.format("fortscale.score.%s.discreet.values.to.influence.min", scorerName), 0);
+		enoughNumOfDiscreetValuesToInfluence = Math.max(config.getInt(String.format("fortscale.score.%s.discreet.values.to.influence.enough", scorerName), 0), minNumOfDiscreetValuesToInfluence);
 	}
 
 	@Override
