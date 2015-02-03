@@ -28,6 +28,12 @@ public class UserInfoForUpdate {
 
 	}
 
+	public UserInfoForUpdate() {
+
+		this.userInfo = new HashMap<>();
+
+	}
+
 
 	public Map<String, Pair<Long, String>> getUserInfo() {
 		return userInfo;
