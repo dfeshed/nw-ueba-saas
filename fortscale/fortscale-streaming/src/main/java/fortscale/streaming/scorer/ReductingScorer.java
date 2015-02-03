@@ -32,21 +32,25 @@ public class ReductingScorer extends AbstractScorer {
 	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
 		FeatureScore featureScore = null;
 		FeatureScore mainScore = mainScorer.calculateScore(eventMessage);
-		if(mainScore != null && mainScore.getScore() > 0){
-			FeatureScore reducingScore = reductingScorer.calculateScore(eventMessage);
-			if(reducingScore == null){
+		if(mainScore != null){
+			if(mainScore.getScore() == 0){
 				featureScore = mainScore;
 			} else{
-				List<FeatureScore> featureScores = new ArrayList<>();
-				featureScores.add(mainScore);
-				featureScores.add(reducingScore);
-				double score = mainScore.getScore();
-				if(reducingScore.getScore() < score){
-					double reductingWeightMulitiplyCertainty = reductingWeight * reducingScore.getCertainty(); // The weight of the reducting score depands on the certainty of the score.
-					score = reducingScore.getScore() * reductingWeightMulitiplyCertainty + mainScore.getScore() * (1-reductingWeightMulitiplyCertainty);
+				FeatureScore reducingScore = reductingScorer.calculateScore(eventMessage);
+				if(reducingScore == null){
+					featureScore = mainScore;
+				} else{
+					List<FeatureScore> featureScores = new ArrayList<>();
+					featureScores.add(mainScore);
+					featureScores.add(reducingScore);
+					double score = mainScore.getScore();
+					if(reducingScore.getScore() < score){
+						double reductingWeightMulitiplyCertainty = reductingWeight * reducingScore.getCertainty(); // The weight of the reducting score depands on the certainty of the score.
+						score = reducingScore.getScore() * reductingWeightMulitiplyCertainty + mainScore.getScore() * (1-reductingWeightMulitiplyCertainty);
+					}
+					featureScore = new FeatureScore(outputFieldName, score, featureScores);
 				}
-				featureScore = new FeatureScore(outputFieldName, score, featureScores);
-			}			
+			}
 		}
 		
 		return featureScore;

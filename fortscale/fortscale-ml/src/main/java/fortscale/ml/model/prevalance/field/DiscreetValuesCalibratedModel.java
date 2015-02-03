@@ -21,6 +21,11 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 	private FeatureCalibration featureCalibration = new FeatureCalibration();
 	private Pattern ignoreValues;
 	
+	
+	public int getNumOfFeatureValues(){
+		return featureCalibration.getNumOfFeatureValues();
+	}
+	
 	@Override
 	public void init(String prefix, String fieldName, Config config) {
 		// get the ignore score values from configuration
