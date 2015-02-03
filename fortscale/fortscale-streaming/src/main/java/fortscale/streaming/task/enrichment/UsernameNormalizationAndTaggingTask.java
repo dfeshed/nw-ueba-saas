@@ -25,9 +25,9 @@ import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -125,7 +125,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		CachingService userService = tagService.getUserService();
 		// add the tagService to update input topics map
 		if (userService != null) {
-			userService.setCache(new LevelDbBasedCache<String, Set>((KeyValueStore<String, Set>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), Set.class));
+			userService.setCache(new LevelDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class));
 			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), userService);
 		}
 	}
