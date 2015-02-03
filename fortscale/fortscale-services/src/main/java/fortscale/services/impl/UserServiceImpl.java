@@ -26,7 +26,6 @@ import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.mortbay.log.Log;
@@ -359,7 +358,7 @@ public class UserServiceImpl implements UserService{
 
 		for (Entry<String, JksonSerilaizablePair<Long,String>> entry : userInfo.entrySet() )
 		{
-			if (dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
+			if (!dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
 			{
 				return false;
 			}
