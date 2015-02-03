@@ -25,7 +25,7 @@ import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.math3.util.Pair;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.mortbay.log.Log;
@@ -255,7 +255,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void updateUsersInfo(String username, Map<String, Pair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
+	public void updateUsersInfo(String username, Map<String, MutablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
 
 
 
@@ -353,10 +353,10 @@ public class UserServiceImpl implements UserService{
 	 * @param dataSourceUpdateOnlyFlagMap - Map: <DataSource,update only flag>
 	 * @return - boolean need to only update or not
 	 */
-	private boolean  udpateOnly(Map<String, Pair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap){
+	private boolean  udpateOnly(Map<String, MutablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap){
 		boolean result = true;
 
-		for (Entry<String, Pair<Long,String>> entry : userInfo.entrySet() )
+		for (Entry<String, MutablePair<Long,String>> entry : userInfo.entrySet() )
 		{
 			if (dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
 			{
@@ -374,12 +374,12 @@ public class UserServiceImpl implements UserService{
 	 * @param dataSourceUpdateOnlyFlagMap - Map: <DataSource,update only flag>
 	 * @return - the Classifier of the win event
 	 */
-	private Classifier getFirstClassifier(Map<String, Pair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap)
+	private Classifier getFirstClassifier(Map<String, MutablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap)
 	{
 		Classifier result = null;
-		Entry<String, Pair<Long,String>> earlierEntry = null;
+		Entry<String, MutablePair<Long,String>> earlierEntry = null;
 
-		for (Entry<String, Pair<Long,String>> entry : userInfo.entrySet() )
+		for (Entry<String, MutablePair<Long,String>> entry : userInfo.entrySet() )
 		{
 			if (!dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
 			{
