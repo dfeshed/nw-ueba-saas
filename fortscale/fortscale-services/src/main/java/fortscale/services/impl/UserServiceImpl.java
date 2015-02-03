@@ -257,9 +257,9 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateUsersInfo(String username, Map<String, Pair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
 
-		Classifier classifier = getFirstClassifier(userInfo,dataSourceUpdateOnlyFlagMap);
-		LogEventsEnum eventId = classifier.getLogEventsEnum();
-		String logUsernameValue = userInfo.get(classifier.getDisplayName()).getValue();
+
+
+
 
 		// get user by username
 		User user = userRepository.getLastActivityByUserName(username);
@@ -267,6 +267,9 @@ public class UserServiceImpl implements UserService{
 
 
 		if (user == null) {
+
+			Classifier classifier = getFirstClassifier(userInfo,dataSourceUpdateOnlyFlagMap);
+			String logUsernameValue = userInfo.get(classifier.getId()).getValue();
 
 			//in case that this user not need to be create in mongo (doesnt have data source info that related to OnlyUpdate flag = false)
 			if (udpateOnly(userInfo,dataSourceUpdateOnlyFlagMap)) {
@@ -294,11 +297,14 @@ public class UserServiceImpl implements UserService{
 
 			Update update = null;
 
+
+
 			for (String classifierId : userInfo.keySet()) {
 
 				// get the time of the event
 				DateTime currTime = new DateTime(userInfo.get(classifierId).getKey(), DateTimeZone.UTC);
 				LogEventsEnum logEventsEnum = LogEventsEnum.valueOf(classifierId);
+				String logUsernameValue = userInfo.get(classifierId).getValue();
 
 
 				// last activity
@@ -375,7 +381,7 @@ public class UserServiceImpl implements UserService{
 
 		for (Entry<String, Pair<Long,String>> entry : userInfo.entrySet() )
 		{
-			if (dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
+			if (!dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
 			{
 				if (earlierEntry == null  || earlierEntry.getValue().getKey() > entry.getValue().getKey())
 					earlierEntry = entry;
