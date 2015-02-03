@@ -39,6 +39,10 @@ public class PrevalanceModel {
 		fields.put(field, model);
 	}
 	
+	public FieldModel getFieldModel(String field){
+		return fields.get(field);
+	}
+	
 	public UserTimeBarrier getBarrier() {
 		if (barrier==null)
 			barrier = new UserTimeBarrier();
