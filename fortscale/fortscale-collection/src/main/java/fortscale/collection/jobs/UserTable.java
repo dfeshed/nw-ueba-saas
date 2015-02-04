@@ -102,11 +102,6 @@ public class UserTable implements IUserTable {
 		return vpnUsernames;
 	}
 
-	@Override
-	public Double getGroupMemebershipScore() {
-		return getScore(Classifier.groups);
-	}
-	
 	private Double getScore(Classifier classifier){
 		Double ret = null;
 		ClassifierScore classifierScore = user.getScore(classifier.getId());

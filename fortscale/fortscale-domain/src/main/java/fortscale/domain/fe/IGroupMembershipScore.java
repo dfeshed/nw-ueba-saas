@@ -18,9 +18,7 @@ public interface IGroupMembershipScore {
 	public ImpalaDateTime getTime_stamp();
 	
 	public String getGroup_dn();
-	
-	public Double getFscore();
-	
+
 	public Double getFdist();
 	
 	public Integer getFcount();

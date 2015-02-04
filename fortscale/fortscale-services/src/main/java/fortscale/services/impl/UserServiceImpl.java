@@ -21,6 +21,7 @@ import fortscale.services.cache.CacheHandler;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
+import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
@@ -99,7 +100,7 @@ public class UserServiceImpl implements UserService{
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
 
 	@Autowired
-	private CacheHandler<String, Set<String>> userTagsCache;
+	private CacheHandler<String, List<String>> userTagsCache;
 	
 	@Override
 	public User createUser(UserApplication userApplication, String username, String appUsername){
@@ -156,7 +157,7 @@ public class UserServiceImpl implements UserService{
 		usernameService.updateUsernameCache(user);
 		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
 		if (user.getTags() != null && user.getTags().size() > 0){
-			userTagsCache.put(user.getUsername(),user.getTags());
+			userTagsCache.put(user.getUsername(),new ArrayList<String>(user.getTags()));
 		}
 		return user;
 	}
@@ -167,7 +168,7 @@ public class UserServiceImpl implements UserService{
 			usernameService.updateUsernameCache(user);
 			//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
 			if (user.getTags() != null && user.getTags().size() > 0) {
-				userTagsCache.put(user.getUsername(), user.getTags());
+				userTagsCache.put(user.getUsername(), new ArrayList<String>(user.getTags()));
 			}
 		}
 	}
@@ -194,13 +195,14 @@ public class UserServiceImpl implements UserService{
 		update.set(User.lastActivityField, maxTime);
 		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
 	}
-	
+
+	@Deprecated
 	@Override
 	public void updateUsersLastActivity(Map<String, Long> userLastActivityMap){
 		Iterator<Entry<String, Long>> entries = userLastActivityMap.entrySet().iterator();
 		while(entries.hasNext()){
 			Entry<String, Long> entry = entries.next();
-			User user = userRepository.getLastActivityByUserName(entry.getKey());
+			User user = userRepository.getLastActivityAndLogUserNameByUserName(entry.getKey());
 			if(user == null){
 				return;
 			}
@@ -253,26 +255,55 @@ public class UserServiceImpl implements UserService{
 
 	}
 
-	public void updateUsersLastActivityGeneralAndPerType(String username, Map<String, Long> lastActivityMap) {
+	@Override
+	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
+
 
 		// get user by username
-		User user = userRepository.getLastActivityByUserName(username);
+		User user = userRepository.getLastActivityAndLogUserNameByUserName(username);
+
+
+
 		if (user == null) {
-			logger.warn("Can't find user {} - Not going to update last activity",username);
-			return;
+
+			//in case that this user not need to be create in mongo (doesnt have data source info that related to OnlyUpdate flag = false)
+			if (udpateOnly(userInfo,dataSourceUpdateOnlyFlagMap)) {
+				logger.warn("Can't find user {} - Not going to update last activity and user info", username);
+				return;
+			}
+
+			Classifier classifier = getFirstClassifier(userInfo,dataSourceUpdateOnlyFlagMap);
+			String logUsernameValue = userInfo.get(classifier.getId()).getValue();
+
+
+			// need to create the user at mongo
+			user = createUser(classifier.getUserApplication(), username, logUsernameValue);
+
+			saveUser(user);
+			if(user == null || user.getId() == null) {
+				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifier, username, logUsernameValue);
+			}
+
+
 		}
 
 		DateTime userCurrLast = user.getLastActivity();
+
+
 
 		try {
 
 			Update update = null;
 
-			for (String classifierId : lastActivityMap.keySet()) {
+
+
+			for (String classifierId : userInfo.keySet()) {
 
 				// get the time of the event
-				DateTime currTime = new DateTime(lastActivityMap.get(classifierId), DateTimeZone.UTC);
+				DateTime currTime = new DateTime(userInfo.get(classifierId).getKey(), DateTimeZone.UTC);
 				LogEventsEnum logEventsEnum = LogEventsEnum.valueOf(classifierId);
+				String logUsernameValue = userInfo.get(classifierId).getValue();
+
 
 				// last activity
 				if (userCurrLast == null || currTime.isAfter(userCurrLast)) {
@@ -290,7 +321,20 @@ public class UserServiceImpl implements UserService{
 					update.set(User.getLogLastActivityField(logEventsEnum), currTime);
 				}
 
+
+				//update the logusername if needed
+				boolean isLogUserNameExist = user.containsLogUsername(usernameService.getLogname(logEventsEnum));
+
+				if (!isLogUserNameExist)
+				{
+
+					if (update == null)
+						update = new Update();
+					update.set(User.getLogUserNameField(usernameService.getLogname(logEventsEnum)), logUsernameValue);
+				}
+
 			}
+
 
 			// update user
 			if (update != null) {
@@ -301,6 +345,51 @@ public class UserServiceImpl implements UserService{
 			logger.error("Failed to update last activity of user {} : {}", username, e.getMessage());
 		}
 
+	}
+
+	/**
+	 * This method will determine if fir that user we need to only update the mongo or also create the user if needed
+	 * @param userInfo - Map: <DataSource,Pair <lastActivity,logUserName>>
+	 * @param dataSourceUpdateOnlyFlagMap - Map: <DataSource,update only flag>
+	 * @return - boolean need to only update or not
+	 */
+	private boolean  udpateOnly(Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap){
+		boolean result = true;
+
+		for (Entry<String, JksonSerilaizablePair<Long,String>> entry : userInfo.entrySet() )
+		{
+			if (!dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
+			{
+				return false;
+			}
+		}
+		return result;
+
+
+	}
+
+	/**
+	 * This method will return the earliest event classifier that trigger new user creation
+	 * @param userInfo - Map: <DataSource,Pair <lastActivity,logUserName>>
+	 * @param dataSourceUpdateOnlyFlagMap - Map: <DataSource,update only flag>
+	 * @return - the Classifier of the win event
+	 */
+	private Classifier getFirstClassifier(Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap)
+	{
+		Classifier result = null;
+		Entry<String, JksonSerilaizablePair<Long,String>> earlierEntry = null;
+
+		for (Entry<String, JksonSerilaizablePair<Long,String>> entry : userInfo.entrySet() )
+		{
+			if (!dataSourceUpdateOnlyFlagMap.get(entry.getKey()))
+			{
+				if (earlierEntry == null  || earlierEntry.getValue().getKey() > entry.getValue().getKey())
+					earlierEntry = entry;
+			}
+		}
+
+		result = earlierEntry != null ? Classifier.valueOf(earlierEntry.getKey()) : null;
+		return result;
 	}
 
 	@Override
@@ -776,9 +865,13 @@ public class UserServiceImpl implements UserService{
 		// call the repository to update mongodb with the tags settings
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 		//also update the tags cache with the new updates
-		Set<String> tags = userTagsCache.get(username);
-		tags.addAll(tagsToAdd);
-		tags.removeAll(tagsToRemove);
+		List<String> tags = userTagsCache.get(username);
+		if (tags!=null) {
+			Set<String> tagSet = new HashSet<String>(tags);
+			tagSet.addAll(tagsToAdd);
+			tagSet.removeAll(tagsToRemove);
+			tags = new ArrayList<String>(tagSet);
+		}
 		userTagsCache.put(username,tags);
 	}
 
@@ -786,14 +879,15 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public boolean isUserTagged(String username, String tag) {
 		// check if the user tags are kept in cache
-		Set<String> tags = userTagsCache.get(username);
+		List<String> tags = userTagsCache.get(username);
 		if (tags==null) {
 			// get tags from mongodb and add to cache
-			tags = userRepository.getUserTags(username);
-			if (tags!=null)
+			Set<String> tagSet = userRepository.getUserTags(username);
+			if (tagSet != null) {
+				tags = new ArrayList<String>(tagSet);
 				userTagsCache.put(username, tags);
+			}
 		}
-			
 		return tags!=null & tags.contains(tag);
 	}
 
@@ -833,12 +927,14 @@ public class UserServiceImpl implements UserService{
 		}
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 		//also update the tags cache with the new updates
-		Set<String> tags = userTagsCache.get(username);
+		List<String> tags = userTagsCache.get(username);
 		if (tags == null){
-			tags = new HashSet<String>();
+			tags = new ArrayList<String>();
 		}
 		if (value) {
-			tags.add(tagField);
+			if (!tags.contains(tagField)) {
+				tags.add(tagField);
+			}
 		}
 		else {
 			tags.remove(tagField);

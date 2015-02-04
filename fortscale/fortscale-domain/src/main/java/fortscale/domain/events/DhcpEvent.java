@@ -1,5 +1,7 @@
 package fortscale.domain.events;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import fortscale.utils.TimestampUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -7,13 +9,12 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import fortscale.utils.TimestampUtils;
-
 
 @Document(collection=DhcpEvent.collectionName)
 @CompoundIndexes({
 	@CompoundIndex(name="ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}")
 })
+@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
 public class DhcpEvent extends IpToHostname{
 
 	private static final long serialVersionUID = -8351203425124420491L;
@@ -42,16 +43,15 @@ public class DhcpEvent extends IpToHostname{
 	
 	@Field(ACTION_FIELD_NAME)
 	private String action;
-	
-	
-	public boolean isADHostName() {
+
+	public boolean isAdHostName() {
 		return (adHostName==null)? false : adHostName;
 	}
-	
-	public void setADHostName(Boolean adHostName) {
+
+	public void setAdHostName(boolean adHostName) {
 		this.adHostName = adHostName;
 	}
-	
+
 	public String getAction() {
 		return action;
 	}

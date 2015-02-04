@@ -9,7 +9,6 @@ public interface IUserTable {
 	public String getSecUsernames();
 	public String getSshUsernames();
 	public String getVpnUsernames();
-	public Double getGroupMemebershipScore();
 	public Double getSecScore();
 	public Double getSshScore();
 	public Double getVpnScore();
