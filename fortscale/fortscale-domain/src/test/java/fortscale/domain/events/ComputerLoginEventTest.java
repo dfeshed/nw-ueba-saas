@@ -2,10 +2,12 @@ package fortscale.domain.events;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import junit.framework.Assert;
-import junit.framework.TestCase;
-import org.datanucleus.util.StringUtils;
 import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ComputerLoginEventTest {
 
@@ -19,7 +21,21 @@ public class ComputerLoginEventTest {
         event.setTimestampepoch(113L);
 
         String actual = mapper.writeValueAsString(event);
-        Assert.assertTrue(StringUtils.notEmpty(actual));
+        assertEquals("{\"id\":null,\"createdAt\":null,\"timestampepoch\":113000,\"ipaddress\":\"1.1.1.1\",\"hostname\":\"ddd\"}", actual);
+    }
+
+    @Test
+    public void login_event_should_be_deserialized_from_json_using_object_mapper() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        String message = "{\"id\":null,\"createdAt\":null,\"timestampepoch\":113000,\"ipaddress\":\"1.1.1.1\",\"hostname\":\"ddd\"}";
+        ComputerLoginEvent actual = mapper.readValue(message, ComputerLoginEvent.class);
+
+        assertNull(actual.getCreatedAt());
+        assertEquals(new Long(113000), actual.getTimestampepoch());
+        assertEquals("1.1.1.1", actual.getIpaddress());
+        assertEquals("ddd", actual.getHostname());
+
     }
 
 }

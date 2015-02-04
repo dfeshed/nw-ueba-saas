@@ -1,13 +1,12 @@
 package fortscale.domain.events;
 
+import fortscale.utils.TimestampUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import fortscale.utils.TimestampUtils;
 
 
 @Document(collection=DhcpEvent.collectionName)
@@ -32,7 +31,7 @@ public class DhcpEvent extends IpToHostname{
 	
 	
 	@Field(IS_AD_HOSTNAME_FIELD_NAME)
-	private Boolean adHostName;
+	private Boolean aDHostName;
 	
 	@Field(MAC_ADDRESS_FIELD_NAME)
 	private String macAddress;
@@ -45,11 +44,11 @@ public class DhcpEvent extends IpToHostname{
 	
 	
 	public boolean isADHostName() {
-		return (adHostName==null)? false : adHostName;
+		return (aDHostName==null)? false : aDHostName;
 	}
 	
-	public void setADHostName(Boolean adHostName) {
-		this.adHostName = adHostName;
+	public void setADHostName(Boolean aDHostName) {
+		this.aDHostName = aDHostName;
 	}
 	
 	public String getAction() {
@@ -100,7 +99,7 @@ public class DhcpEvent extends IpToHostname{
 				.append("timestamp", timestampepoch)
 				.append("expiration", expiration)
 				.append("action", action)
-				.append("isADHost", adHostName)
+				.append("isADHost", aDHostName)
 				.build();
 	}
 	
