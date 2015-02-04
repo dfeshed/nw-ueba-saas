@@ -1,9 +1,6 @@
 package fortscale.domain.core;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.IndexDirection;
@@ -11,8 +8,13 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 @Document(collection=Computer.COLLECTION_NAME)
 @TypeAlias(value="Computer")
+@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
 public class Computer extends AbstractDocument {
 	
 	/**

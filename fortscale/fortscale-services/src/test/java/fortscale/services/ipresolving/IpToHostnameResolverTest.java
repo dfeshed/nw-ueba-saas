@@ -231,7 +231,7 @@ public class IpToHostnameResolverTest {
 		DhcpEvent dhcpEvent = new DhcpEvent();
 		dhcpEvent.setHostname("pc1");
 		dhcpEvent.setTimestampepoch(100L);
-		dhcpEvent.setADHostName(false);
+		dhcpEvent.setAdHostName(false);
 		when(dhcpResolver.getLatestDhcpEventBeforeTimestamp("192.168.1.1", 155)).thenReturn(dhcpEvent);
 		when(computerService.isHostnameInAD("pc1")).thenReturn(false);
 		
