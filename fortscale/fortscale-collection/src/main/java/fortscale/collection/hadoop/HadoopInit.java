@@ -3,7 +3,6 @@ package fortscale.collection.hadoop;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaClient;
-
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
@@ -35,7 +34,19 @@ public class HadoopInit implements InitializingBean{
 	private String impalaUserTableName;
 	@Value("${hdfs.user.data.users.path}")
 	private String impalaUsersDirectory;
-	
+
+	// Security Events Login Raw Data table
+	@Value("${impala.rawdata.security.events.login.table.fields}")
+	private String impalaSecLoginRawDataTableFields;
+	@Value("${impala.rawdata.security.events.login.table.delimiter}")
+	private String impalaSecLoginRawDataTableDelimiter;
+	@Value("${impala.rawdata.security.events.login.table.name}")
+	private String impalaSecLoginRawDataTableName;
+	@Value("${hdfs.user.rawdata.security.events.login.path}")
+	private String impalaSecLoginRawDataDirectory;
+	@Value("${impala.rawdata.security.events.login.table.partition.type}")
+	private String  impalaSecLoginRawDataTablePartitionType;
+
 	// Security Events Login Data table
 	@Value("${impala.data.security.events.login.table.fields}")
 	private String impalaSecLoginTableFields;
@@ -278,7 +289,12 @@ public class HadoopInit implements InitializingBean{
 		//Security Events Login table
         partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecLoginTablePartitionType);
 		createTable(impalaSecLoginTableName, impalaSecLoginTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecLoginTableDelimiter, impalaSecLoginDirectory);
-		
+
+		//Security Events Login raw data table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecLoginRawDataTablePartitionType);
+		createTable(impalaSecLoginRawDataTableName, impalaSecLoginRawDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecLoginRawDataTableDelimiter, impalaSecLoginRawDataDirectory);
+
+
 		//Security Events Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecScoringTablePartitionType);
 		createTable(impalaSecScoringTableName, impalaSecScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecScoringTableDelimiter, impalaSecScoringDirectory);
