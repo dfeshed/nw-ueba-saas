@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * Created by idanp on 2/3/2015.
+ * This class will hold for User the information that need to update at mongo - Last activity and logusernmae for each data source
  */
 
 @JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)

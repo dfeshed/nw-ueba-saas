@@ -6,6 +6,7 @@ import java.util.Map;
 
 /**
  * Created by idanp on 2/3/2015.
+ * This class will implement Pair <K,V> that can be serialize by Jackson
  */
 public class JksonSerilaizablePair<K,V> implements Map.Entry<K, V> {
 
