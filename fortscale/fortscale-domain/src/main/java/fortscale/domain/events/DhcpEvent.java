@@ -33,7 +33,7 @@ public class DhcpEvent extends IpToHostname{
 	
 	
 	@Field(IS_AD_HOSTNAME_FIELD_NAME)
-	private Boolean aDHostName;
+	private Boolean adHostName;
 	
 	@Field(MAC_ADDRESS_FIELD_NAME)
 	private String macAddress;
@@ -43,16 +43,15 @@ public class DhcpEvent extends IpToHostname{
 	
 	@Field(ACTION_FIELD_NAME)
 	private String action;
-	
-	
-	public boolean isADHostName() {
-		return (aDHostName==null)? false : aDHostName;
+
+	public Boolean isAdHostName() {
+		return adHostName;
 	}
-	
-	public void setADHostName(Boolean aDHostName) {
-		this.aDHostName = aDHostName;
+
+	public void setAdHostName(Boolean adHostName) {
+		this.adHostName = adHostName;
 	}
-	
+
 	public String getAction() {
 		return action;
 	}
@@ -101,7 +100,7 @@ public class DhcpEvent extends IpToHostname{
 				.append("timestamp", timestampepoch)
 				.append("expiration", expiration)
 				.append("action", action)
-				.append("isADHost", aDHostName)
+				.append("isADHost", adHostName)
 				.build();
 	}
 	
