@@ -258,7 +258,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public List<User> findAllExcludeAdInfo(Pageable pageable, long count) {
+	public List<User> findAllExcludeAdInfo(Pageable pageable) {
 		Query query = new Query().with(pageable);
 		query.fields().exclude(User.adInfoField);
 		return mongoTemplate.find(query, User.class);

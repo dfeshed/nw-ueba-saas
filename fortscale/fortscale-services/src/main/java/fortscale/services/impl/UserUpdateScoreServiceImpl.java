@@ -80,10 +80,12 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		
 		try {
 			writer = impalaWriterFactory.createImpalaTotalScoreWriter();
-			// Iterate pages
-			for (Pageable pageable = new PageRequest(0, totalScorePageSize); pageable != null; pageable = pageable.next()) {
+			// Calculate number of pages and iterate them
+			int numOfPages = (int)(((count - 1) / totalScorePageSize) + 1);
+			for (int i = 0; i < numOfPages; i++) {
+				Pageable pageable = new PageRequest(i, totalScorePageSize);
 				// Get list of users on next page
-				List<User> users = userRepository.findAllExcludeAdInfo(pageable, count);
+				List<User> users = userRepository.findAllExcludeAdInfo(pageable);
 				// Iterate these users
 				for (User user : users) {
 					try {

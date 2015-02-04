@@ -6,8 +6,11 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import fortscale.streaming.exceptions.LevelDbException;
 import fortscale.streaming.model.UserTopEvents;
@@ -200,16 +203,17 @@ public class UserScoreStreamingService {
 	}
 	
 	public void updateDb(long lastUpdateEpochTime) {
-		double avgScore = updateLevelDb(lastUpdateEpochTime);
-		updateMongoDb(lastUpdateEpochTime, avgScore);
-	}
-	
-	private double updateLevelDb(long lastUpdateEpochTime) {
 		// When no events were received yet and the
 		// current time is taken out of the latest event
 		if (lastUpdateEpochTime == 0)
-			return 0;
+			return;
 		
+		Map<String, Double> map = new HashMap<String, Double>();
+		double avgScore = updateLevelDb(lastUpdateEpochTime, map);
+		updateMongoDb(lastUpdateEpochTime, avgScore, map);
+	}
+	
+	private double updateLevelDb(long lastUpdateEpochTime, Map<String, Double> map) {
 		KeyValueIterator<String, UserTopEvents> iterator = store.all();
 		double avgScore = 0;
 		int numOfUsers = 0;
@@ -217,17 +221,21 @@ public class UserScoreStreamingService {
 		// Iterate the users' top events to calculate the average score
 		while (iterator.hasNext()) {
 			Entry<String, UserTopEvents> entry = iterator.next();
+			String username = entry.getKey();
 			UserTopEvents userTopEvents = entry.getValue();
 			
 			// Model might be null in case of a serialization error, in that case we
 			// don't want to fail here and the error is logged in the SerDe implementation
 			if (userTopEvents != null) {
+				// Calculate user score and update store
 				double currentScore = userTopEvents.calculateUserScore(lastUpdateEpochTime);
 				userTopEvents.setLastUpdatedScore(currentScore);
 				userTopEvents.setLastUpdateScoreEpochTime(lastUpdateEpochTime);
-				store.put(entry.getKey(), userTopEvents);
+				store.put(username, userTopEvents);
+				// Update average and add entry to map
 				avgScore += currentScore;
 				numOfUsers++;
+				map.put(username, currentScore);
 			}
 		}
 		iterator.close();
@@ -237,40 +245,36 @@ public class UserScoreStreamingService {
 		return avgScore;
 	}
 	
-	private void updateMongoDb(long lastUpdateEpochTime, double avgScore) {
-		KeyValueIterator<String, UserTopEvents> iterator = store.all();
+	private void updateMongoDb(long lastUpdateEpochTime, double avgScore, Map<String, Double> map) {
+		Iterator<String> iterator = map.keySet().iterator();
 		
 		try {
 			while (iterator.hasNext()) {
-				Map<String, UserTopEvents> map = new HashMap<String, UserTopEvents>();
-				// Get next UPDATE_MONGO_DB_ITER_MAX_USERS users and store in map
+				Set<String> subset = new HashSet<String>();
+				// Get next UPDATE_MONGO_DB_ITER_MAX_USERS users and store in subset
 				do {
-					Entry<String, UserTopEvents> entry = iterator.next();
-					map.put(entry.getKey(), entry.getValue());
-				} while (iterator.hasNext() && map.size() < UPDATE_MONGO_DB_ITER_MAX_USERS);
+					subset.add(iterator.next());
+				} while (iterator.hasNext() && subset.size() < UPDATE_MONGO_DB_ITER_MAX_USERS);
 				
 				// Get these users from mongoDb and iterate them
-				List<User> users = userRepository.findByUsernamesExcludeAdInfo(map.keySet());
+				List<User> users = userRepository.findByUsernamesExcludeAdInfo(subset);
 				for (User user : users) {
-					// Update scores of next user
+					String username = user.getUsername();
+					// Update scores of user
 					try {
-						double userScore = map.get(user.getUsername()).calculateUserScore(lastUpdateEpochTime);
-						updateUserScore(user, lastUpdateEpochTime, classifierId, userScore);
+						updateUserScore(user, lastUpdateEpochTime, classifierId, map.get(username));
 						updateUserAvgScore(user, avgScore);
 						Update update = new Update();
 						update.set(User.getClassifierScoreField(classifierId), user.getScore(classifierId));
-						mongoTemplate.updateFirst(query(where(User.usernameField).is(user.getUsername())), update, User.class);
+						mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
 					} catch (Exception e) {
-						logger.error(String.format("Exception while trying to update the scores of user %s", user.getUsername()), e);
+						logger.error(String.format("Exception while trying to update the scores of user %s", username), e);
 					}
 				}
 			}
 		} catch (Exception e) {
 			logger.error("Exception while trying to update the users' scores in mongoDb", e);
 			Throwables.propagateIfInstanceOf(e, org.springframework.dao.DataAccessResourceFailureException.class);
-		} finally {
-			if (iterator != null)
-				iterator.close();
 		}
 	}
 	
