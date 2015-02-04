@@ -44,11 +44,11 @@ public class DhcpEvent extends IpToHostname{
 	@Field(ACTION_FIELD_NAME)
 	private String action;
 
-	public Boolean isAdHostName() {
-		return adHostName;
+	public boolean isAdHostName() {
+		return (adHostName==null)? false : adHostName;
 	}
 
-	public void setAdHostName(Boolean adHostName) {
+	public void setAdHostName(boolean adHostName) {
 		this.adHostName = adHostName;
 	}
 
