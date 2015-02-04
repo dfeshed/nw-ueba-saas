@@ -8,7 +8,7 @@ import org.apache.samza.serializers.SerdeFactory;
 /**
  * Created by idanp on 7/7/2014.
  */
-public class DHCPEventSerdeFactory1 implements SerdeFactory<DhcpEvent> {
+public class DHCPEventSerdeFactory implements SerdeFactory<DhcpEvent> {
 
     @Override
     public Serde<DhcpEvent> getSerde (String name, Config config)
