@@ -300,7 +300,7 @@ public class EventProcessJob implements Job {
 			
 			// ensure user exists in mongodb
 			//todo - Think how to depricate this part or move it to the streaming
-			updateOrCreateUserWithClassifierUsername(record);
+			//updateOrCreateUserWithClassifierUsername(record);
 			
 			// output event to streaming platform
 			streamMessage(recordKeyExtractor.process(record),recordToString.toJSON(record));
