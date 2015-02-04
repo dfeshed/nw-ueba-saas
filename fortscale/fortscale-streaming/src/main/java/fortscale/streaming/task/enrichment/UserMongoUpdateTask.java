@@ -170,6 +170,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		// check that the event represent successful login
 		if (convertToString(message.get(dataSourceConfiguration.successField)).equalsIgnoreCase(dataSourceConfiguration.successValue)) {
 			// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
+			//update the logusername if needed
 			updateUserInfoInStore(timestamp, normalizedUsername, dataSourceConfiguration.mongoClassifierId,logUserNameFromEvent);
 
 		}
@@ -182,6 +183,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 	/**
 	 * Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
+	 * update the logusername if needed
 	 * @param timestamp    the time of the event
 	 * @param normalizedUsername    the user
 	 * @param classifierId	The classifier in Mongo for this data-source

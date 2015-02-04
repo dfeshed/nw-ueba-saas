@@ -195,13 +195,14 @@ public class UserServiceImpl implements UserService{
 		update.set(User.lastActivityField, maxTime);
 		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
 	}
-	
+
+	@Deprecated
 	@Override
 	public void updateUsersLastActivity(Map<String, Long> userLastActivityMap){
 		Iterator<Entry<String, Long>> entries = userLastActivityMap.entrySet().iterator();
 		while(entries.hasNext()){
 			Entry<String, Long> entry = entries.next();
-			User user = userRepository.getLastActivityByUserName(entry.getKey());
+			User user = userRepository.getLastActivityAndLogUserNameByUserName(entry.getKey());
 			if(user == null){
 				return;
 			}
@@ -258,24 +259,21 @@ public class UserServiceImpl implements UserService{
 	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
 
 
-
-
-
 		// get user by username
-		User user = userRepository.getLastActivityByUserName(username);
+		User user = userRepository.getLastActivityAndLogUserNameByUserName(username);
 
 
 
 		if (user == null) {
-
-			Classifier classifier = getFirstClassifier(userInfo,dataSourceUpdateOnlyFlagMap);
-			String logUsernameValue = userInfo.get(classifier.getId()).getValue();
 
 			//in case that this user not need to be create in mongo (doesnt have data source info that related to OnlyUpdate flag = false)
 			if (udpateOnly(userInfo,dataSourceUpdateOnlyFlagMap)) {
 				logger.warn("Can't find user {} - Not going to update last activity and user info", username);
 				return;
 			}
+
+			Classifier classifier = getFirstClassifier(userInfo,dataSourceUpdateOnlyFlagMap);
+			String logUsernameValue = userInfo.get(classifier.getId()).getValue();
 
 
 			// need to create the user at mongo
@@ -330,6 +328,8 @@ public class UserServiceImpl implements UserService{
 				if (!isLogUserNameExist)
 				{
 
+					if (update == null)
+						update = new Update();
 					update.set(User.getLogUserNameField(usernameService.getLogname(logEventsEnum)), logUsernameValue);
 				}
 
