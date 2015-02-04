@@ -81,8 +81,8 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		UsernameNormalizationAndTaggingTask task = new UsernameNormalizationAndTaggingTask();
 
 		// fields
-		task.normalizedUsernameField = "normalized_name";
-		task.usernameField = "name";
+		String normalizedUsernameField = "normalized_name";
+		String usernameField = "name";
 
 		// Mocks
 		SystemStreamPartition systemStreamPartition = Mockito.mock(SystemStreamPartition.class);
@@ -92,7 +92,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// configuration
 		task.inputTopicToConfiguration = new HashMap<>();
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
-		task.inputTopicToConfiguration.put("input1" , new UsernameNormalizationConfig("input1", "output1","key", usernameNormalizationService));
+		task.inputTopicToConfiguration.put("input1" , new UsernameNormalizationConfig("input1", "output1",usernameField, normalizedUsernameField , "key", usernameNormalizationService));
 
 		// tagging
 		task.tagService = Mockito.mock(UserTagsService.class);
@@ -124,7 +124,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.verify(usernameNormalizationService).normalizeUsername("user1");
 		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(eq("user1"),any(JSONObject.class));
 		// validate tagging
-		message.put(task.normalizedUsernameField, "User 1");
+		message.put(normalizedUsernameField, "User 1");
 		Mockito.verify(task.tagService).addTagsToEvent("User 1", message);
 
 
@@ -158,7 +158,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.verify(usernameNormalizationService).normalizeUsername("user4");
 		Mockito.verify(usernameNormalizationService).getUsernameAsNormalizedUsername(eq("user4"), any(JSONObject.class));
 		// validate tagging
-		message.put(task.normalizedUsernameField, "User 4");
+		message.put(normalizedUsernameField, "User 4");
 		Mockito.verify(task.tagService).addTagsToEvent("User 4", message);
 
 
