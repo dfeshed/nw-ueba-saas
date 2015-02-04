@@ -1,6 +1,5 @@
 package fortscale.streaming.service.usernameNormalization;
 
-
 /**
  * Configuration for computer tagging and clustering on a specific event type. This should be constructed from the topology
  * settings or from the streaming task configuration and passed to the ComputerTaggingService in order
@@ -10,13 +9,18 @@ public class UsernameNormalizationConfig {
 
 	private String inputTopic;
 	private String outputTopic;
+	private String usernameField;
+	private String normalizedUsernameField;
 	private String partitionField;
 	private UsernameNormalizationService usernameNormalizationService;
 
-	public UsernameNormalizationConfig(String inputTopic, String outputTopic, String partitionField,
+
+	public UsernameNormalizationConfig(String inputTopic, String outputTopic, String usernameField, String normalizedUsernameField, String partitionField,
 			UsernameNormalizationService usernameNormalizationService) {
 		this.inputTopic = inputTopic;
 		this.outputTopic = outputTopic;
+		this.usernameField = usernameField;
+		this.normalizedUsernameField = normalizedUsernameField;
 		this.partitionField = partitionField;
 		this.usernameNormalizationService = usernameNormalizationService;
 	}
@@ -35,6 +39,22 @@ public class UsernameNormalizationConfig {
 
 	public void setOutputTopic(String outputTopic) {
 		this.outputTopic = outputTopic;
+	}
+
+	public String getUsernameField() {
+		return usernameField;
+	}
+
+	public void setUsernameField(String usernameField) {
+		this.usernameField = usernameField;
+	}
+
+	public String getNormalizedUsernameField() {
+		return normalizedUsernameField;
+	}
+
+	public void setNormalizedUsernameField(String normalizedUsernameField) {
+		this.normalizedUsernameField = normalizedUsernameField;
 	}
 
 	public String getPartitionField() {
