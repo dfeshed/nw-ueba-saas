@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,9 +21,7 @@ import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.AdUserFeaturesExtraction;
-import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.domain.fe.dao.AdUsersFeaturesExtractionRepository;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
@@ -51,16 +48,7 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	
 	@Autowired
 	private AdUsersFeaturesExtractionRepository adUsersFeaturesExtractionRepository;
-	
-	@Autowired
-	private AccessDAO loginDAO;
-	
-	@Autowired
-	private AccessDAO sshDAO;
-	
-	@Autowired
-	private AccessDAO vpnDAO;
-	
+		
 	@Autowired
 	private ImpalaWriterFactory impalaWriterFactory;
 	
@@ -158,71 +146,10 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 			}
 		}
 	}
-	
-	private AccessDAO getAccessDAO(LogEventsEnum eventId){
-		AccessDAO ret = null;
-		switch(eventId){
-			case login:
-				ret = loginDAO;
-				break;
-			case ssh:
-				ret = sshDAO;
-				break;
-			case vpn:
-				ret = vpnDAO;
-				break;
-		default:
-			break;
-		}
-		
-		return ret;
-	}
 
-	public void updateUserWithAuthScore(Classifier classifier){
-		Date runtime = new Date();
-		updateUserWithAuthScore(classifier, runtime);
-	}
 	
-	@Override
-	public void updateUserWithAuthScore(Classifier classifier, Date runtime) {
-		AccessDAO accessDAO = getAccessDAO(classifier.getLogEventsEnum());
+	
 		
-		double sum = 0;
-		
-		logger.info("getting all users");
-		List<User> users = userRepository.findAllExcludeAdInfo();
-		
-		logger.info("calculating {} scores for all users", classifier);
-		
-		Map<String, Double> userIdToScoreMap = new HashMap<>();
-		DateTime oldestEventDateTime = new DateTime();
-		oldestEventDateTime = oldestEventDateTime.minusSeconds(userScoreOldestEventDiffFromNowInSeconds);
-		for(User user: users){
-			List<Map<String, Object>> authScores = accessDAO.findTopEventsByNormalizedUsername(user.getUsername(), userScoreNumOfTopEvents, oldestEventDateTime, SCORE_DECAY_FIELD_NAME);
-			double userSum = 0;
-			for(Map<String, Object> authScore: authScores){
-				userSum += (Double)authScore.get(SCORE_DECAY_FIELD_NAME);
-			}
-			double userScore = Math.round(userSum/5);
-			userIdToScoreMap.put(user.getId(), userScore);
-			sum += userScore;
-		}
-		
-		logger.info("updating all the {} users with new scores.", users.size());
-		double avg = Math.round(sum / users.size());
-		for(User user: users){
-			double userScore = userIdToScoreMap.get(user.getId());
-			User updatedUser = updateUserScore(user, runtime, classifier.getId(), userScore, avg, false);
-			if(updatedUser != null){
-				Update update = new Update();
-				userService.fillUpdateUserScore(update, user, classifier);
-				userService.updateUser(user, update);
-			}
-		}
-		
-		logger.info("finished updating the user collection with {} score.", classifier);
-	}
-
 	@Override
 	public void updateUserWithGroupMembership(){
 		Date lastRun = adUsersFeaturesExtractionRepository.getLatestTimeStamp();

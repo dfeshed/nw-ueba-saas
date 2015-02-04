@@ -1,5 +1,5 @@
 
-package fortscale.collection.usersfiltering.service.impl;
+package fortscale.services.users.impl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import fortscale.collection.usersfiltering.service.SSHUsersWhitelistService;
+import fortscale.services.users.SSHUsersWhitelistService;
 
 @Service("sshUsersWhitelist")
 public class SSHUsersWhitelistServiceImpl implements SSHUsersWhitelistService, InitializingBean {

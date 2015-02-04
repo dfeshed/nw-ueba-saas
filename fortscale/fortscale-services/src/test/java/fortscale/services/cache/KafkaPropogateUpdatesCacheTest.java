@@ -55,6 +55,12 @@ public class KafkaPropogateUpdatesCacheTest {
     }
 
     @Test
+    public void clear_should_clear_the_inner_cache() throws IOException {
+        subject.clear();
+        verify(innerCache, times(1)).clear();
+    }
+
+    @Test
     public void close_should_close_the_kafka_writer() throws IOException {
         subject.close();
         verify(kafkaWriter, times(1)).close();

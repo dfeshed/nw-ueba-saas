@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import fortscale.services.UserService;
 import org.junit.Test;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -25,7 +26,7 @@ import fortscale.services.impl.UsernameNormalizer;
 public class UserServiceAccountServiceTest {
 
 	@Mock
-	private UserRepository repository;
+	private UserService userService;
 	@Mock
 	private UsernameNormalizer secUsernameNormalizer;
 	@InjectMocks
@@ -64,12 +65,12 @@ public class UserServiceAccountServiceTest {
 		service.setFilePath(getFile("user3\nuser4"));
 		when(secUsernameNormalizer.normalize(anyString())).thenReturn(
 			"user3", "user4");
-		when(repository.findIfUserExists(anyString())).thenReturn(
+		when(userService.findIfUserExists(anyString())).thenReturn(
 			true);
 		service.setDeletionSymbol("-");
 		service.update();
 
-		verify(repository, times(2)).findIfUserExists(anyString());
+		verify(userService, times(2)).findIfUserExists(anyString());
 		assertTrue(service.getServiceAccounts().contains("user3") == true);
 		assertTrue(service.getServiceAccounts().contains("user4") == true);
 	}
@@ -87,12 +88,12 @@ public class UserServiceAccountServiceTest {
 		service.setFilePath(getFile("-user1\nuser4"));
 		when(secUsernameNormalizer.normalize(anyString())).thenReturn(
 			"user4", "user1");
-		when(repository.findIfUserExists(anyString())).thenReturn(
+		when(userService.findIfUserExists(anyString())).thenReturn(
 			true);
 		service.setDeletionSymbol("-");
 		service.update();
 
-		verify(repository, times(2)).findIfUserExists(anyString());
+		verify(userService, times(2)).findIfUserExists(anyString());
 		assertTrue(service.getServiceAccounts().contains("user1") == false);
 		assertTrue(service.getServiceAccounts().contains("user4") == true);
 	}

@@ -53,6 +53,11 @@ public class KafkaPropogateUpdatesCache<K,T> extends CacheHandler<K,T> {
         topicWriter.send(keyAsString(key),null);
     }
 
+    @Override
+    public void clear() {
+        innerCache.clear();
+    }
+
     protected String keyAsString(K key){
         return key.toString();
     }

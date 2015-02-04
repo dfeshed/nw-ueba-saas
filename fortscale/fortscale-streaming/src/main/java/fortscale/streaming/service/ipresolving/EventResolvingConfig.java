@@ -15,6 +15,7 @@ public class EventResolvingConfig {
     private boolean restrictToADName;
     private boolean shortName;
     private boolean isRemoveLastDot;
+	private boolean dropWhenFail;
     private String partitionField;
 
     /**
@@ -22,7 +23,7 @@ public class EventResolvingConfig {
      */
     public static EventResolvingConfig build(String inputTopic, String ipFieldName, String hostFieldName,
                                              String outputTopic, boolean restrictToADName, boolean shortName,
-                                             boolean isRemoveLastDot, String timestampFieldName, String partitionField) {
+                                             boolean isRemoveLastDot,boolean dropWhenFail, String timestampFieldName, String partitionField) {
         EventResolvingConfig config = new EventResolvingConfig();
         config.setHostFieldName(hostFieldName);
         config.setInputTopic(inputTopic);
@@ -31,6 +32,7 @@ public class EventResolvingConfig {
         config.setRestrictToADName(restrictToADName);
         config.setShortName(shortName);
         config.setRemoveLastDot(isRemoveLastDot);
+		config.setDropWhenFail(dropWhenFail);
         config.setTimestampFieldName(timestampFieldName);
         config.setPartitionField(partitionField);
         return config;
@@ -107,4 +109,8 @@ public class EventResolvingConfig {
     public void setPartitionField(String partitionField) {
         this.partitionField = partitionField;
     }
+
+	public boolean isDropWhenFail() {return dropWhenFail;}
+
+	public void setDropWhenFail(boolean dropWhenFail) {this.dropWhenFail = dropWhenFail;}
 }

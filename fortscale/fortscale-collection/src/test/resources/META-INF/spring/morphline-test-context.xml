@@ -36,5 +36,5 @@
 
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.global,fortscale.utils,fortscale.collection,fortscale.services.notifications" />
+    <context:component-scan base-package="fortscale.services.users,fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.global,fortscale.utils,fortscale.collection,fortscale.services.notifications" />
 </beans>

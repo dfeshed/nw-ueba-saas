@@ -16,6 +16,7 @@ import com.typesafe.config.Config;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.services.impl.UsernameNormalizer;
 
+@Deprecated
 @Configurable()
 public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 	

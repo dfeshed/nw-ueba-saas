@@ -1,10 +1,5 @@
 package fortscale.streaming.service.ipresolving;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.utils.ConversionUtils.convertToBoolean;
-import static fortscale.utils.ConversionUtils.convertToLong;
-import static fortscale.utils.ConversionUtils.convertToString;
-
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +9,10 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.utils.ConversionUtils.convertToLong;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
  * Service that receive and event from a specific input topic, resolve the required ip field in it and
@@ -81,5 +80,23 @@ public class EventsIpResolvingService {
 
         return event.get(config.getPartitionField()).toString();
     }
+
+	/** Drop Event when resolving fail??
+	 *
+	 */
+	public boolean dropEvent(String inputTopic, JSONObject event)
+	{
+		checkNotNull(inputTopic);
+		checkNotNull(event);
+
+
+		// get the configuration for the input topic, if not found skip this event
+		EventResolvingConfig config = configs.get(inputTopic);
+
+		return (config.isDropWhenFail() && (event.get(config.getHostFieldName()) == null || convertToString(event.get(config.getHostFieldName())).isEmpty()));
+
+	}
+
+
 
 }

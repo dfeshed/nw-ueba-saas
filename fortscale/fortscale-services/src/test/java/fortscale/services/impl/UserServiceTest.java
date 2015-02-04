@@ -17,6 +17,7 @@ import junitparams.JUnitParamsRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -78,8 +79,11 @@ public class UserServiceTest {
 	private ImpalaWriterFactory impalaWriterFactory;
 	
 	@Mock
-	private ADParser adUserParser; 
-		
+	private ADParser adUserParser;
+
+	@Mock
+	private UsernameService usernameService;
+
 	@InjectMocks
 	private UserServiceImpl	userService;
 	
@@ -94,6 +98,7 @@ public class UserServiceTest {
 		User user = new NewUser("test");
 		UserApplication userApplication = UserApplication.active_directory;
 		String username = "usernameTest";
+		when(userRepository.save(user)).thenReturn(user);
 		boolean isNewVal = userService.createNewApplicationUserDetails(user, userApplication, username, true);
 		assertEquals(true, isNewVal);
 		assertEquals(username, user.getApplicationUserDetails(userApplication.getId()).getUserName());

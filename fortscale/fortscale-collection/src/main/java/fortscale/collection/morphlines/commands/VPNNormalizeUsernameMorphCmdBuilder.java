@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import fortscale.services.impl.UsernameNormalizer;
 
-
+@Deprecated
 @Configurable(preConstruction=true)
 public class VPNNormalizeUsernameMorphCmdBuilder extends	NormalizeUsernameMorphCmdBuilder {
 

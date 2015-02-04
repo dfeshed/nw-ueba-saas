@@ -27,4 +27,12 @@ public class UserTagsService {
 			message.put(fieldName, userService.isUserTagged(username, tagName));
 		}
 	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
 }
