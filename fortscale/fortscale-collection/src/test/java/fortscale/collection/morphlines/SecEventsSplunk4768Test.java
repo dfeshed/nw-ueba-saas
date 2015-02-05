@@ -6,6 +6,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +22,17 @@ public class SecEventsSplunk4768Test {
 	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
 
-    //private static ClassPathXmlApplicationContext testContextManager;
+    private static ClassPathXmlApplicationContext testContextManager;
 
     @BeforeClass
     public static void setUpClass() {
-        //testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
+        testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
     }
 
     @AfterClass
     public static void finalizeTestClass(){
-        //testContextManager.close();
-        //testContextManager = null;
+        testContextManager.close();
+        testContextManager = null;
     }
 
 
