@@ -15,13 +15,15 @@ public class VpnEnrichConfig {
 
     private VpnGeolocationConfig vpnGeolocationConfig;
     private VpnDataBucketsConfig vpnDataBucketsConfig;
+    private VpnSessionUpdateConfig vpnSessionUpdateConfig;
 
-    public VpnEnrichConfig(String inputTopic, String outputTopic, String partitionField, VpnGeolocationConfig vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig) {
+    public VpnEnrichConfig(String inputTopic, String outputTopic, String partitionField, VpnGeolocationConfig vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig, VpnSessionUpdateConfig vpnSessionUpdateConfig) {
         this.inputTopic = inputTopic;
         this.outputTopic = outputTopic;
         this.partitionField = partitionField;
         this.vpnGeolocationConfig = vpnGeolocationConfig;
         this.vpnDataBucketsConfig = vpnDataBucketsConfig;
+        this.vpnSessionUpdateConfig = vpnSessionUpdateConfig;
     }
 
     public String getInputTopic() {
@@ -62,5 +64,13 @@ public class VpnEnrichConfig {
 
     public void setVpnDataBucketsConfig(VpnDataBucketsConfig vpnDataBucketsConfig) {
         this.vpnDataBucketsConfig = vpnDataBucketsConfig;
+    }
+
+    public VpnSessionUpdateConfig getVpnSessionUpdateConfig() {
+        return vpnSessionUpdateConfig;
+    }
+
+    public void setVpnSessionUpdateConfig(VpnSessionUpdateConfig vpnSessionUpdateConfig) {
+        this.vpnSessionUpdateConfig = vpnSessionUpdateConfig;
     }
 }

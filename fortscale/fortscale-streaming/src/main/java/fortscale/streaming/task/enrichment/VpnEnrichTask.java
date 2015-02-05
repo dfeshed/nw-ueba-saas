@@ -4,10 +4,7 @@ import fortscale.geoip.GeoIPInfo;
 import fortscale.geoip.IpToLocationGeoIPService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.vpn.VpnDataBucketsConfig;
-import fortscale.streaming.service.vpn.VpnEnrichConfig;
-import fortscale.streaming.service.vpn.VpnEnrichService;
-import fortscale.streaming.service.vpn.VpnGeolocationConfig;
+import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -63,28 +60,38 @@ public class VpnEnrichTask extends AbstractStreamTask {
         // get spring environment to resolve properties values using configuration files
         Environment env = SpringService.getInstance().resolve(Environment.class);
 
-        String inputTopic = getConfigString(config, String.format("task.inputs"));
-        String outputTopic = getConfigString(config, String.format("fortscale.output.topic"));
-        String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.partition.field")));
+        String inputTopic = getConfigString(config, "task.inputs");
+        String outputTopic = getConfigString(config, "fortscale.output.topic");
+        String partitionField = env.getProperty(getConfigString(config, "fortscale.events.vpn.partition.field"));
         //geolocation field names:
-        String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.ip.field")));
-        String countryFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.country.field")));
-        String countryIsoCodeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.countryIsoCode.field")));
-        String regionFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.region.field")));
-        String cityFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.city.field")));
-        String ispFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.isp.field")));
-        String usageTypeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.usageType.field")));
-        String longtitudeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.longtitude.field")));
-        String latitudeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.latitude.field")));
+        String ipField = env.getProperty(getConfigString(config, "fortscale.events.vpn.ip.field"));
+        String countryFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.country.field"));
+        String countryIsoCodeFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.countryIsoCode.field"));
+        String regionFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.region.field"));
+        String cityFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.city.field"));
+        String ispFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.isp.field"));
+        String usageTypeFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.usageType.field"));
+        String longtitudeFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.longtitude.field"));
+        String latitudeFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.latitude.field"));
         //data buckets field names:
-        String totalbytesFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.totalbytes.field")));
-        String readbytesFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.readbytes.field")));
-        String durationFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.duration.field")));
-        String databucketFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.vpn.databucket.field")));
+        String totalbytesFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.totalbytes.field"));
+        String readbytesFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.readbytes.field"));
+        String durationFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.duration.field"));
+        String databucketFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.databucket.field"));
+        //session update field names:
+        String vpnGeoHoppingOpenSessionThresholdInHours = env.getProperty(getConfigString(config, "fortscale.events.vpn.geoHoppingOpenSessionThresholdInHours"));
+        String vpnGeoHoppingCloseSessionThresholdInHours = env.getProperty(getConfigString(config, "fortscale.events.vpn.geoHoppingCloseSessionThresholdInHours"));
+        String sessionIdFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.sessionid.field"));
+        String runGeoHopping = env.getProperty(getConfigString(config, "fortscale.events.vpn.runGeoHopping.field"));
+        String addSessionDataFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.databucket.field"));
+
 
         VpnGeolocationConfig vpnGeolocationConfig = new VpnGeolocationConfig(ipField, countryFieldName, countryIsoCodeFieldName, regionFieldName, cityFieldName, ispFieldName, usageTypeFieldName, longtitudeFieldName, latitudeFieldName);
         VpnDataBucketsConfig vpnDataBucketsConfig = new VpnDataBucketsConfig(totalbytesFieldName, readbytesFieldName, durationFieldName, databucketFieldName);
-        VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(inputTopic, outputTopic, partitionField, vpnGeolocationConfig, vpnDataBucketsConfig);
+        VpnSessionUpdateConfig vpnSessionUpdateConfig = new VpnSessionUpdateConfig(countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName,
+                Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours), Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours),
+                sessionIdFieldName, Boolean.getBoolean(runGeoHopping), Boolean.getBoolean(addSessionDataFieldName));
+        VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(inputTopic, outputTopic, partitionField, vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig);
         vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
     }
 
