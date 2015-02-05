@@ -216,7 +216,6 @@ public class UserScoreStreamingService {
 	private double updateLevelDb(long lastUpdateEpochTime, Map<String, Double> map) {
 		KeyValueIterator<String, UserTopEvents> iterator = store.all();
 		double avgScore = 0;
-		int numOfUsers = 0;
 		
 		// Iterate the users' top events to calculate the average score
 		while (iterator.hasNext()) {
@@ -234,19 +233,19 @@ public class UserScoreStreamingService {
 				store.put(username, userTopEvents);
 				// Update average and add entry to map
 				avgScore += currentScore;
-				numOfUsers++;
 				map.put(username, currentScore);
 			}
 		}
 		iterator.close();
 		
-		if (numOfUsers > 1)
-			avgScore /= numOfUsers;
+		if (map.size() > 1)
+			avgScore /= map.size();
 		return avgScore;
 	}
 	
 	private void updateMongoDb(long lastUpdateEpochTime, double avgScore, Map<String, Double> map) {
 		Iterator<String> iterator = map.keySet().iterator();
+		int numOfMissingUsers = 0;
 		
 		try {
 			while (iterator.hasNext()) {
@@ -271,7 +270,13 @@ public class UserScoreStreamingService {
 						logger.error(String.format("Exception while trying to update the scores of user %s", username), e);
 					}
 				}
+				
+				// Update number of users that do not exist in mongoDb
+				numOfMissingUsers += subset.size() - users.size();
 			}
+			
+			if (numOfMissingUsers > 0)
+				logger.warn("Received events of {} users that do not exist in mongoDb", numOfMissingUsers);
 		} catch (Exception e) {
 			logger.error("Exception while trying to update the users' scores in mongoDb", e);
 			Throwables.propagateIfInstanceOf(e, org.springframework.dao.DataAccessResourceFailureException.class);
