@@ -19,8 +19,8 @@ import static junitparams.JUnitParamsRunner.$;
 public class SecEventsSA4769Test {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "resources/conf-files/readSecEvt_securityAnalytics.conf";
-	private String conf4769File = "resources/conf-files/processSecEvtSA4769.conf";
+	private String confFile = "resources/conf-files/securityAnalytics/readSecEvt_securityAnalytics.conf";
+	private String conf4769File = "resources/conf-files/securityAnalytics/processSecEvtSA4769.conf";
 	private String confSecEnrich = "resources/conf-files/enrichment/readSEC_enrich.conf";
 
 	final static String Mar_17_15_49_21 = "Mar 17 15:49:21";

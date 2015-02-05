@@ -1,24 +1,23 @@
 package fortscale.collection.morphlines;
 
-import static junitparams.JUnitParamsRunner.$;
-
-import java.util.Arrays;
-import java.util.List;
-
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static junitparams.JUnitParamsRunner.$;
 
 
 @RunWith(JUnitParamsRunner.class)
 public class SecEventsSA4768RouterTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
-	private String confFile = "resources/conf-files/readSecEvtRouter_securityAnalytics.conf";
+	private String confFile = "resources/conf-files/securityAnalytics/readSecEvtRouter_securityAnalytics.conf";
 
 	
 	@Before
