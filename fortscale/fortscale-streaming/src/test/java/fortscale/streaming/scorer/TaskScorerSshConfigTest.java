@@ -4,7 +4,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,59 +48,43 @@ public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 	
 	@Test
 	public void testDateTimeScoreHighest() throws Exception{
-		List<Scorer> scorers = buildScorersFromTaskConfig("config/ssh-prevalance-stats.properties");
-		Scorer scorer = scorers.get(0);
+		Map<String, Double> fieldToScoreMap = new HashMap<String, Double>();
+		fieldToScoreMap.put(DATE_TIME_OUTPUT_FIELD_NAME, 50d);
+		fieldToScoreMap.put(NORMALIZE_DST_MACHINE_OUTPUT_FIELD_NAME, 40d);
+		fieldToScoreMap.put(NORMALIZE_SRC_MACHINE_OUTPUT_FIELD_NAME, 30d);
+		fieldToScoreMap.put(AUTH_METHOD_OUTPUT_FIELD_NAME, 20d);
 		
-		EventMessage eventMessage = buildEventMessage(true, CONTEXT_NAME, CONTEXT);
-//		addToEventMessage(eventMessage, DATE_TIME_FIELD_NAME, CONTEXT);
-		when(model.calculateScore(eventMessage.getJsonObject(), DATE_TIME_FIELD_NAME)).thenReturn(50d);
-		when(model.calculateScore(eventMessage.getJsonObject(), NORMALIZE_DST_MACHINE_FIELD_NAME)).thenReturn(40d);
-		when(model.calculateScore(eventMessage.getJsonObject(), NORMALIZE_SRC_MACHINE_FIELD_NAME)).thenReturn(30d);
-		when(model.calculateScore(eventMessage.getJsonObject(), AUTH_METHOD_FIELD_NAME)).thenReturn(20d);
-		
-		Double score = scorer.calculateScore(eventMessage);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(50.0d, score, 0.0);
-		score = eventMessage.getScore(DATE_TIME_OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(50.0d, score, 0.0);
-		score = eventMessage.getScore(NORMALIZE_DST_MACHINE_OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(40.0d, score, 0.0);
-		score = eventMessage.getScore(NORMALIZE_SRC_MACHINE_OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(30.0d, score, 0.0);
-		score = eventMessage.getScore(AUTH_METHOD_OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(20.0d, score, 0.0);
+		runTest("config/ssh-prevalance-stats.properties", 50d, fieldToScoreMap);
 	}
 	
 	@Test
 	public void testDstMachineScoreHighest() throws Exception{
-		List<Scorer> scorers = buildScorersFromTaskConfig("config/ssh-prevalance-stats.properties");
+		Map<String, Double> fieldToScoreMap = new HashMap<String, Double>();
+		fieldToScoreMap.put(DATE_TIME_OUTPUT_FIELD_NAME, 50d);
+		fieldToScoreMap.put(NORMALIZE_DST_MACHINE_OUTPUT_FIELD_NAME, 90d);
+		fieldToScoreMap.put(NORMALIZE_SRC_MACHINE_OUTPUT_FIELD_NAME, 30d);
+		fieldToScoreMap.put(AUTH_METHOD_OUTPUT_FIELD_NAME, 20d);
+		
+		runTest("config/ssh-prevalance-stats.properties", 90d, fieldToScoreMap);
+	}
+	
+	private void runTest(String configFilePath, Double eventScore, Map<String, Double> fieldToScoreMap) throws Exception{
+		List<Scorer> scorers = buildScorersFromTaskConfig(configFilePath);
 		Scorer scorer = scorers.get(0);
 		
 		EventMessage eventMessage = buildEventMessage(true, CONTEXT_NAME, CONTEXT);
-//		addToEventMessage(eventMessage, DATE_TIME_FIELD_NAME, CONTEXT);
-		when(model.calculateScore(eventMessage.getJsonObject(), DATE_TIME_FIELD_NAME)).thenReturn(50d);
-		when(model.calculateScore(eventMessage.getJsonObject(), NORMALIZE_DST_MACHINE_FIELD_NAME)).thenReturn(90d);
-		when(model.calculateScore(eventMessage.getJsonObject(), NORMALIZE_SRC_MACHINE_FIELD_NAME)).thenReturn(30d);
-		when(model.calculateScore(eventMessage.getJsonObject(), AUTH_METHOD_FIELD_NAME)).thenReturn(20d);
 		
-		Double score = scorer.calculateScore(eventMessage);
+		when(model.calculateScore(eventMessage.getJsonObject(), DATE_TIME_FIELD_NAME)).thenReturn(fieldToScoreMap.get(DATE_TIME_OUTPUT_FIELD_NAME));
+		when(model.calculateScore(eventMessage.getJsonObject(), NORMALIZE_DST_MACHINE_FIELD_NAME)).thenReturn(fieldToScoreMap.get(NORMALIZE_DST_MACHINE_OUTPUT_FIELD_NAME));
+		when(model.calculateScore(eventMessage.getJsonObject(), NORMALIZE_SRC_MACHINE_FIELD_NAME)).thenReturn(fieldToScoreMap.get(NORMALIZE_SRC_MACHINE_OUTPUT_FIELD_NAME));
+		when(model.calculateScore(eventMessage.getJsonObject(), AUTH_METHOD_FIELD_NAME)).thenReturn(fieldToScoreMap.get(AUTH_METHOD_OUTPUT_FIELD_NAME));
+		
+		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);
-		Assert.assertEquals(90.0d, score, 0.0);
-		score = eventMessage.getScore(DATE_TIME_OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(50.0d, score, 0.0);
-		score = eventMessage.getScore(NORMALIZE_DST_MACHINE_OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(90.0d, score, 0.0);
-		score = eventMessage.getScore(NORMALIZE_SRC_MACHINE_OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(30.0d, score, 0.0);
-		score = eventMessage.getScore(AUTH_METHOD_OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(20.0d, score, 0.0);
+		Assert.assertEquals(eventScore, score.getScore(), 0.0);
+		Assert.assertEquals(fieldToScoreMap.size(), score.getFeatureScores().size());
+		for(FeatureScore featureScore: score.getFeatureScores()){
+			Assert.assertEquals(fieldToScoreMap.get(featureScore.getName()), featureScore.getScore(), 0.0);
+		}
 	}
 }

@@ -1,12 +1,5 @@
 package fortscale.services;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-import org.springframework.data.mongodb.core.query.Update;
-
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
@@ -14,6 +7,13 @@ import fortscale.domain.core.User;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
+import fortscale.utils.JksonSerilaizablePair;
+import org.joda.time.DateTime;
+import org.springframework.data.mongodb.core.query.Update;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface UserService extends CachingService{
 	public void updateUserWithCurrentADInfo();
@@ -62,11 +62,12 @@ public interface UserService extends CachingService{
 	public void updateUsersLastActivityGeneralAndPerType(LogEventsEnum eventId, Map<String, Long> userLastActivityMap);
 
 	/**
-	 * Update the last activities of specific user: both the general last-activity and per-type
+	 * Update user's info - the last activities of specific user: both the general last-activity and per-type , the logusernmae or create the user if needed
 	 * @param username	The username to update
-	 * @param lastActivityMap	Map: data-source to last activity
+	 * @param dataSourceUpdateOnlyFlagMap	Map: dupdateOnlyFlag - data source
+	 * @param userInfo Map: datasource - <lastActivity,logusername>
 	 */
-	public void updateUsersLastActivityGeneralAndPerType(String username, Map<String, Long> lastActivityMap);
+	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap);
 
 	public void updateUserLastActivity(String username, DateTime dateTime);
 

@@ -1,17 +1,13 @@
 package fortscale.domain.core.dao;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
-import static org.springframework.data.mongodb.core.query.Update.update;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.mongodb.BasicDBObjectBuilder;
+import fortscale.domain.ad.AdUser;
+import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.EmailAddress;
+import fortscale.domain.core.User;
+import fortscale.domain.core.UserAdInfo;
+import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.dao.Threshold;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,15 +19,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.mongodb.BasicDBObjectBuilder;
+import java.util.*;
 
-import fortscale.domain.ad.AdUser;
-import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.EmailAddress;
-import fortscale.domain.core.User;
-import fortscale.domain.core.UserAdInfo;
-import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.dao.Threshold;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+import static org.springframework.data.mongodb.core.query.Update.update;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 
@@ -328,12 +320,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
 	}
 
+
+
 	@Override
-	public User getLastActivityByUserName(String userName) {
+	public User getLastActivityAndLogUserNameByUserName(String userName) {
 		Criteria criteria = Criteria.where(User.usernameField).is(userName);
 		Query query = new Query(criteria);
 		query.fields().include(User.lastActivityField);
 		query.fields().include(User.logLastActivityField);
+		query.fields().include(User.logUsernameField);
 		List<User> users = mongoTemplate.find(query, User.class);
 
 		if (users.size() > 0) {

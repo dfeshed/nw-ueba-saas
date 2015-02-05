@@ -32,9 +32,9 @@ public interface UserServiceFacade {
 	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit); 
 	
 	public List<UserMachine> getUserMachines(String uid);
-			
-	public void updateUserWithGroupMembershipScore();
-		
+	
+	public void updateUserWithGroupMembership();
+
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 	
 	public String findByNormalizedUserName(String normalizedUsername);

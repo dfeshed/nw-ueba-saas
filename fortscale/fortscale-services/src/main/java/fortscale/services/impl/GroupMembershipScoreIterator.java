@@ -70,10 +70,6 @@ public class GroupMembershipScoreIterator implements IGroupMembershipScore{
 		return feature.getFeatureUniqueName();
 	}
 	@Override
-	public Double getFscore(){
-		return feature.getFeatureScore();
-	}
-	@Override
 	public Double getFdist(){
 		Double dist = null;
 		if(feature.getFeatureExplanation() != null){

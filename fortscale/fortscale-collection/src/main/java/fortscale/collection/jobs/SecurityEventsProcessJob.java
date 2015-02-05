@@ -151,7 +151,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 							handler.appender.writeLine(output, timestamp.longValue());
 
 							// ensure user exists in mongodb
-							updateOrCreateUserWithClassifierUsername(record);
+							//updateOrCreateUserWithClassifierUsername(record);
 
 							// output event to streaming platform
 							if (handler.streamWriter!=null && sendToKafka == true)

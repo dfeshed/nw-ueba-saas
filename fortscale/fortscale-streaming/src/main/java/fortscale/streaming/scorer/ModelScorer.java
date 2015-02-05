@@ -14,10 +14,10 @@ public class ModelScorer extends AbstractScorer{
 //	private static final Logger logger = Logger.getLogger(EventFeatureScorer.class);
 	
 	
-	private ModelService modelService;
-	private String modelName;
-	private String contextFieldName;
-	private String featureFieldName;
+	protected ModelService modelService;
+	protected String modelName;
+	protected String contextFieldName;
+	protected String featureFieldName;
 
 	public ModelScorer(String scorerName, Config config, ScorerContext context){
 		super(scorerName,config);
@@ -29,7 +29,7 @@ public class ModelScorer extends AbstractScorer{
 	}
 
 	@Override
-	public Double calculateScore(EventMessage eventMessage) throws Exception {
+	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
 		// get the context, so that we can get the model
 		String context = eventMessage.getEventStringValue(contextFieldName);
 		if (StringUtils.isEmpty(context)) {
@@ -44,8 +44,6 @@ public class ModelScorer extends AbstractScorer{
 			score = model.calculateScore(eventMessage.getJsonObject(), featureFieldName);
 		}
 		
-		eventMessage.setScore(outputFieldName, score);
-		
-		return score;
+		return new FeatureScore(outputFieldName, score);
 	}
 }

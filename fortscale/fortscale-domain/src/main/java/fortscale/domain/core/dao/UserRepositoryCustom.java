@@ -39,7 +39,7 @@ public interface UserRepositoryCustom {
 	
 	public User findByAdEmailAddress(EmailAddress emailAddress);
 	
-	public User getLastActivityByUserName(String userName);
+	public User getLastActivityAndLogUserNameByUserName(String userName);
 	@Deprecated
 	public User getLastActivityByUserName(LogEventsEnum eventId, String username);
 	

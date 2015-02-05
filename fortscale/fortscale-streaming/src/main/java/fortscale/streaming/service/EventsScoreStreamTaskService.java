@@ -6,9 +6,7 @@ import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -22,16 +20,15 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.scorer.EventMessage;
+import fortscale.streaming.scorer.FeatureScore;
 import fortscale.streaming.scorer.Scorer;
 import fortscale.streaming.scorer.ScorerContext;
-import fortscale.streaming.scorer.ScorerFactoryService;
 import fortscale.utils.logging.Logger;
 
 @Configurable(preConstruction=true)
@@ -39,9 +36,6 @@ public class EventsScoreStreamTaskService {
 
 	private static final Logger logger = Logger.getLogger(EventsScoreStreamTaskService.class);
 	
-	@Autowired
-	private ScorerFactoryService scorerFactoryService;
-
 	private ModelService modelService;
 
 	private String outputTopic;
@@ -99,13 +93,13 @@ public class EventsScoreStreamTaskService {
 		
 		EventMessage eventMessage = new EventMessage(message);
 		for (Scorer scorer: scorersToRun) {
-			scorer.calculateScore(eventMessage);
-		}
-		
-		Iterator<Entry<String, Double>> iter = eventMessage.getScoreIterator();
-		while (iter.hasNext()) {
-			Entry<String, Double> entry = iter.next();
-			message.put(entry.getKey(), entry.getValue());
+			FeatureScore eventFeatureScore = scorer.calculateScore(eventMessage);
+			message.put(eventFeatureScore.getName(), (double)Math.round(eventFeatureScore.getScore()));
+			if(eventFeatureScore.getFeatureScores() != null){
+				for(FeatureScore featureScore: eventFeatureScore.getFeatureScores()){
+					message.put(featureScore.getName(), (double)Math.round(featureScore.getScore()));
+				}
+			}
 		}
 	
 		

@@ -93,12 +93,10 @@ public class ConstantRegexScorerTest extends ScorerBaseTest{
 		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, FIELD_NAME, "test.*", 100);
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, "testA1B");
-		Double score = scorer.calculateScore(eventMessage);
+		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);
-		Assert.assertEquals(100.0d, score, 0.0);
-		score = eventMessage.getScore(OUTPUT_FIELD_NAME);
-		Assert.assertNotNull(score);
-		Assert.assertEquals(100.0d, score, 0.0);
+		Assert.assertEquals(100.0d, score.getScore(), 0.0);
+		Assert.assertEquals(OUTPUT_FIELD_NAME,score.getName());
 	}
 	
 	@Test
@@ -106,9 +104,7 @@ public class ConstantRegexScorerTest extends ScorerBaseTest{
 		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, FIELD_NAME, "test.*", 100);
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, "tesA1B");
-		Double score = scorer.calculateScore(eventMessage);
-		Assert.assertNull(score);
-		score = eventMessage.getScore(OUTPUT_FIELD_NAME);
+		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNull(score);
 	}
 }

@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 import java.util.regex.Pattern;
 
@@ -100,7 +98,7 @@ public class IpToHostnameResolver {
 			// 1. it is not in blacklist
 			// 2. hostname is in AD and we were asked to restrictToADNames
 			if (!isHostnameInBlacklist(dhcpHostname) && 
-					(!restrictToADName || dhcpEvent.isADHostName() ||  isHostnameInAD(dhcpHostname))) {
+					(!restrictToADName || dhcpEvent.isAdHostName() ||  isHostnameInAD(dhcpHostname))) {
 				return dhcpHostname;
 			}
 		}
