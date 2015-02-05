@@ -263,7 +263,7 @@ public class ApiUserController extends BaseController{
 		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
 		DateTime dateLimit = DateTime.now(dateTimeZone);
 		dateLimit = dateLimit.withTimeAtStartOfDay();
-		dateLimit = dateLimit.minusDays(limit-1);
+		dateLimit = dateLimit.minusDays(limit);
 		DateTime prevElementStartDay = null;
 		for(IUserScoreHistoryElement element: userServiceFacade.getUserScoresHistory(uid, classifierId, 0, limit+1)){
 			DateTime curElementStartDay = new DateTime(element.getDate().getTime(), dateTimeZone);
