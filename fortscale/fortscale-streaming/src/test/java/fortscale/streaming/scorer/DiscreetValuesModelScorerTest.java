@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import fortscale.ml.model.prevalance.field.DiscreetValuesCalibratedModel;
-import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 
 public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	
@@ -23,8 +22,9 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	
 	@SuppressWarnings("unchecked")
 	protected void prepareConfig(String scorerName, String outputFieldName, String modelName, String fieldName, String contextName,
+			String optionalContextReplacementFieldName,
 			Integer minNumOfDiscreetValuesToInfluence, Integer enoughNumOfDiscreetValuesToInfluence){
-		prepareConfig(DiscreetValuesModelScorerFactory.SCORER_TYPE, scorerName, outputFieldName, modelName, fieldName, contextName);
+		prepareConfig(DiscreetValuesModelScorerFactory.SCORER_TYPE, scorerName, outputFieldName, modelName, fieldName, contextName, optionalContextReplacementFieldName);
 		if(scorerName !=null){
 			if(minNumOfDiscreetValuesToInfluence != null)
 				when(config.getInt(String.format("fortscale.score.%s.discreet.values.to.influence.min", scorerName),0)).thenReturn(minNumOfDiscreetValuesToInfluence);
@@ -39,15 +39,15 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	}
 	
 	private Scorer buildScorer(String scorerName, String outputFieldName, String modelName, String fieldName, String contextName,
-			Integer minNumOfDiscreetValuesToInfluence, Integer enoughNumOfDiscreetValuesToInfluence) throws Exception{
-		prepareConfig(scorerName, outputFieldName, modelName, fieldName, contextName, minNumOfDiscreetValuesToInfluence, enoughNumOfDiscreetValuesToInfluence);
+			String optionalContextReplacementFieldName, Integer minNumOfDiscreetValuesToInfluence, Integer enoughNumOfDiscreetValuesToInfluence) throws Exception{
+		prepareConfig(scorerName, outputFieldName, modelName, fieldName, contextName, optionalContextReplacementFieldName, minNumOfDiscreetValuesToInfluence, enoughNumOfDiscreetValuesToInfluence);
 		
 		return (Scorer) context.resolve(Scorer.class, scorerName);
 	}
 	
 	@Test 
 	public void testScorerBuild() throws Exception{
-		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, 2, 10);
+		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null, 2, 10);
 		Assert.assertNotNull(scorer);
 		Assert.assertTrue(scorer instanceof ModelScorer);
 	}
@@ -62,7 +62,7 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	public void testScoreAndCertaintyOfNumOfFeatureValuesBelowMin() throws Exception{
 		int min = 2;
 		int enough = 10;
-		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, min, enough);
+		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null, min, enough);
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
 		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
@@ -79,7 +79,7 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	public void testScoreAndCertaintyOfNumOfFeatureValuesEqualsToEnough() throws Exception{
 		int min = 2;
 		int enough = 10;
-		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, min, enough);
+		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null, min, enough);
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
 		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
@@ -96,7 +96,7 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	public void testScoreAndCertaintyOfNumOfFeatureValuesEqualsToMin() throws Exception{
 		int min = 2;
 		int enough = 10;
-		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, min, enough);
+		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null, min, enough);
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
 		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
@@ -110,19 +110,23 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
 	}
 	
-	@Test(expected=StreamMessageNotContainFieldException.class)
+	@Test
 	public void testScoreWithNoContextInEventMessage() throws Exception{
-		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME,2,10);
+		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null,2,10);
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
 		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
 		
-		scorer.calculateScore(eventMessage);
+		FeatureScore score = scorer.calculateScore(eventMessage);
+		Assert.assertNotNull(score);
+		Assert.assertEquals(0d, score.getScore(), 0.0);
+		Assert.assertEquals(0d, score.getCertainty(), 0.0);
+		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
 	}
 	
 	@Test
 	public void testScoreWithNoModel() throws Exception{
-		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME,2,10);
+		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null,2,10);
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
 		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
@@ -135,46 +139,46 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithNoScorerName() throws Exception{
-		buildScorer(null, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME,2,10);
+		buildScorer(null, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null,2,10);
 	}
 	
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithNoOutputField() throws Exception{
-		buildScorer(SCORER_NAME, null, MODEL_NAME, FIELD_NAME, CONTEXT_NAME,2,10);
+		buildScorer(SCORER_NAME, null, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null,2,10);
 	}
 	
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithBlankOutputField() throws Exception{
-		buildScorer(SCORER_NAME, "  ", MODEL_NAME, FIELD_NAME, CONTEXT_NAME,2,10);
+		buildScorer(SCORER_NAME, "  ", MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null,2,10);
 	}
 	
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithNoModelName() throws Exception{
-		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, null, FIELD_NAME, CONTEXT_NAME,2,10);
+		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, null, FIELD_NAME, CONTEXT_NAME, null,2,10);
 	}
 	
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithBlankModelName() throws Exception{
-		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, " ", FIELD_NAME, CONTEXT_NAME,2,10);
+		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, " ", FIELD_NAME, CONTEXT_NAME, null,2,10);
 	}
 	
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithNoFieldName() throws Exception{
-		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, null, CONTEXT_NAME,2,10);
+		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, null, CONTEXT_NAME, null,2,10);
 	}
 	
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithBlankFieldName() throws Exception{
-		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, "", CONTEXT_NAME,2,10);
+		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, "", CONTEXT_NAME, null,2,10);
 	}
 	
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithNoContextName() throws Exception{
-		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, null,2,10);
+		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, null, null,2,10);
 	}
 	
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithBlankContextName() throws Exception{
-		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, "    ",2,10);
+		buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, "    ", null,2,10);
 	}
 }

@@ -5,6 +5,7 @@ import static fortscale.streaming.ConfigUtils.getConfigStringList;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class EventsPrevalenceModelStreamTaskService {
 	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTaskService.class);
 	
 	private Map<String,PrevalanceModelStreamingService> prevalanceModelStreamingServiceMap;
-	private Map<String,String> modelToContextFieldNameMap;
+	private Map<String,List<String>> modelToContextFieldNameMap;
 	private List<String> modelsNamesOrder;
 
 	private String timestampField;
@@ -74,8 +75,14 @@ public class EventsPrevalenceModelStreamTaskService {
 		prevalanceModelStreamingServiceMap = new HashMap<>();
 		modelToContextFieldNameMap = new HashMap<>();
 		for(String modelName: modelsNamesOrder){
+			List<String> contextFieldList = new ArrayList<>();
 			String contextField = getConfigString(config, String.format("fortscale.model.%s.context.fieldname", modelName));
-			modelToContextFieldNameMap.put(modelName, contextField);
+			contextFieldList.add(contextField);
+			String optionalContextFieldReplacement = config.get(String.format("fortscale.model.%s.context.fieldname.optional.replacement", modelName));
+			if(optionalContextFieldReplacement != null && StringUtils.isNotBlank(optionalContextFieldReplacement)){
+				contextFieldList.add(optionalContextFieldReplacement);
+			}
+			modelToContextFieldNameMap.put(modelName, contextFieldList);
 			// create a model builder based on fields configuration
 			PrevalanceModelBuilderImpl modelBuilder = createModelBuilder(modelName, config);
 			// create model service based on the store and model builder
@@ -118,21 +125,20 @@ public class EventsPrevalenceModelStreamTaskService {
 		}
 		
 		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);
-		boolean isFirst = true;
 		boolean afterTimeMark = false;
-		for(String modelName: modelsNamesOrder){
+		for(int i = 0; i < modelsNamesOrder.size(); i++){
+			String modelName = modelsNamesOrder.get(i);
 			// get the context, so that we can get the model from store
-			String contextField = modelToContextFieldNameMap.get(modelName);
-			String context = convertToString(message.get(contextField));
-			if (StringUtils.isEmpty(context)) {
-				//logger.error("message {} does not contains username in field {}", messageText, usernameField);
-				throw new StreamMessageNotContainFieldException(messageText, contextField);
+			String context = getModelContext(modelName, message);
+			if (StringUtils.isBlank(context)) {
+				logger.warn("message {} does not contains context in one of the fields {}", messageText, StringUtils.join(modelToContextFieldNameMap.get(modelName),','));
+				continue;
 			}
 			
 			PrevalanceModelStreamingService prevalanceModelStreamingService = prevalanceModelStreamingServiceMap.get(modelName);
 			// go over each field in the event and add it to the model
 			PrevalanceModel model = prevalanceModelStreamingService.getModel(context);
-			if(isFirst){
+			if(i == 0){
 				// skip events that occur before the model time mark in case the task is configured
 				// to perform both model computation and scoring (the normal case)
 				afterTimeMark = model.getBarrier().isEventAfterBarrier(timestamp, discriminator);
@@ -142,7 +148,6 @@ public class EventsPrevalenceModelStreamTaskService {
 				if (!afterTimeMark) {
 					break;
 				}
-				isFirst = false;
 			}	
 			
 			model.addFieldValues(message, timestamp);
@@ -159,6 +164,17 @@ public class EventsPrevalenceModelStreamTaskService {
 		}
 	}
 
+	private String getModelContext(String modelName, JSONObject message){
+		String context = null;
+		for(String contextField: modelToContextFieldNameMap.get(modelName)){
+			context = convertToString(message.get(contextField));
+			if(StringUtils.isNotBlank(context)){
+				break;
+			}
+		}
+		
+		return context;
+	}
 	
 	
 	/** periodically save the state to mongodb as a secondary backing store */

@@ -1,12 +1,10 @@
 package fortscale.streaming.scorer;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 
 import fortscale.ml.model.prevalance.FieldModel;
 import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.model.prevalance.field.DiscreetValuesCalibratedModel;
-import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 
 public class DiscreetValuesModelScorer extends ModelScorer {
 	
@@ -20,25 +18,14 @@ public class DiscreetValuesModelScorer extends ModelScorer {
 	}
 
 	@Override
-	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
+	public FeatureScore calculateModelScore(EventMessage eventMessage, PrevalanceModel model) throws Exception {
 		if(enoughNumOfDiscreetValuesToInfluence < 2){
-			return super.calculateScore(eventMessage);
+			return super.calculateModelScore(eventMessage, model);
 		}
-		
-		
-		
-		// get the context, so that we can get the model
-		String context = eventMessage.getEventStringValue(contextFieldName);
-		if (StringUtils.isEmpty(context)) {
-			throw new StreamMessageNotContainFieldException(eventMessage.toJSONString(), contextFieldName);
-		}
-		
-		// go over each field in the event and add it to the model
-		PrevalanceModel model = modelService.getModel(context, modelName);
 		
 		FieldModel fieldModel = model.getFieldModel(featureFieldName);
 		if(!(fieldModel instanceof DiscreetValuesCalibratedModel)){
-			return super.calculateScore(eventMessage);
+			return super.calculateModelScore(eventMessage, model);
 		}
 		
 		
