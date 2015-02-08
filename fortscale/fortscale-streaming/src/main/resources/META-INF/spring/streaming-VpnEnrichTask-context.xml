@@ -28,4 +28,6 @@
         <constructor-arg name="geoIpV6DbResource" value="file:${ip.to.location.db.full.path}"/>
         <constructor-arg name="fullLicenseKeyResource" value="file:${ip.to.location.license.key.full.path}"/>
     </bean>
+
+    <bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
 </beans>
