@@ -30,4 +30,5 @@
     </bean>
 
     <bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
+    <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
 </beans>
