@@ -127,6 +127,10 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
 
 			//move to the next topic only if you are not event that need to drop
+            //we are dropping only security events in the case the resolving is not successful.
+            // we are doing so, to prevent cases of 4769 events from a machine to itself.
+            // most of the cases we can't resolve the host name in 4769 events are self connect.
+            //TODO: in next versions we want to add extra check if this is the case or not.
 			if (!service.dropEvent(topic, event)) {
 
 				// construct outgoing message

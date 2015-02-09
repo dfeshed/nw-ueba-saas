@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class MySqlFromPartGeneratorTest extends DataQueryGeneratorTest {
 
@@ -63,4 +63,18 @@ public class MySqlFromPartGeneratorTest extends DataQueryGeneratorTest {
         String expectedString = "FROM ([query1] UNION [query2]) as t1";
         assertEquals("SQL From Part with subQuery" , expectedString, sqlStr);
     }
+
+	@Test
+	public void generateQueryPart_should_return_ldapauth_table_for_between_operator_on_performance_field() throws Exception{
+		String sqlStr = generator.generateQueryPart(bug_FV_5557DTO);
+		String expectedString = "FROM ldapauth";
+		assertEquals(expectedString, sqlStr);
+	}
+
+	@Test
+	public void generateQueryPart_should_return_ldapauth_top_table_for_between_operator_on_performance_field() throws Exception{
+		String sqlStr = generator.generateQueryPart(bug_FV_5557_top_DTO);
+		String expectedString = "FROM ldapauth_top as ldapauth";
+		assertEquals(expectedString, sqlStr);
+	}
 }

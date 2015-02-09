@@ -42,7 +42,35 @@
  				<cron-expression>0 55 3 * * ?</cron-expression>
 			</cron>
 		</trigger>
-		
+
+		<trigger>
+			<cron>
+				<name>4768_rawdata_partition_sync_hourly_trigger</name>
+				<group>SecurityEvents</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>SecurityEvents</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.rawdata.security.events.login.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.rawdata.security.events.login.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>${impala.rawdata.security.events.login.table.partition.type}</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>${hdfs.user.rawdata.security.events.login.retention}</value>
+					</entry>
+				</job-data-map>
+				<cron-expression>0 56 3 * * ?</cron-expression>
+			</cron>
+		</trigger>
+
 		<trigger>
 			<cron>
 				<name>wmievents4768_raw_partition_sync_hourly_trigger</name>

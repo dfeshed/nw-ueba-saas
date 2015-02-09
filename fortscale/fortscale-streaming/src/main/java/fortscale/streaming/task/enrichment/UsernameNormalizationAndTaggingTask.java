@@ -25,9 +25,9 @@ import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -63,15 +63,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	//
 	protected Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
-	/**
-	 * The username field in the input event
-	 */
-	protected String usernameField;
-
-	/**
-	 * The normalized username field
-	 */
-	protected String normalizedUsernameField;
 
 	/**
 	 * Service for tagging events according to user-tag
@@ -93,26 +84,21 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String dataSource = ConfigField.getKey();
 			String inputTopic = ConfigField.getValue();
 			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
+			String usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s",dataSource));
+			String normalizedUsernameField =getConfigString(config, String.format("fortscale.events.normalizedusername.field.%s",dataSource));
 			String partitionKey = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
 			String serviceName = getConfigString(config, String.format("fortscale.events.normalization.service.%s",dataSource));
 			UsernameNormalizationService service = (UsernameNormalizationService)SpringService.getInstance().resolve(serviceName);
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
 			usernameService.setCache(usernameStore);
-			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic, partitionKey, service));
+			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic, usernameField, normalizedUsernameField, partitionKey, service));
 		}
 
 		// add the usernameService to update input topics map
 		if (usernameService != null) {
 			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, usernameKey)), usernameService);
 		}
-
-
-		// Get field names
-		normalizedUsernameField = getConfigString(config, "fortscale.normalizedusername.field");
-		usernameField = getConfigString(config, "fortscale.username.field");
-
-
 
 		// construct tagging service with the tags that are required from configuration
 		Map<String, String> tags = new HashMap<String, String>();
@@ -125,7 +111,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		CachingService userService = tagService.getUserService();
 		// add the tagService to update input topics map
 		if (userService != null) {
-			userService.setCache(new LevelDbBasedCache<String, Set>((KeyValueStore<String, Set>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), Set.class));
+			userService.setCache(new LevelDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class));
 			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), userService);
 		}
 	}
@@ -159,14 +145,14 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			// Normalized username
 
 			// get the normalized username from input record
-			String normalizedUsername = convertToString(message.get(normalizedUsernameField));
+			String normalizedUsername = convertToString(message.get(configuration.getNormalizedUsernameField()));
 			if (StringUtils.isEmpty(normalizedUsername)) {
 
 				// get username
-				String username = convertToString(message.get(usernameField));
+				String username = convertToString(message.get(configuration.getUsernameField()));
 				if (StringUtils.isEmpty(username)) {
-					logger.error("message {} does not contains username in field {}", messageText, usernameField);
-					throw new StreamMessageNotContainFieldException(messageText, usernameField);
+					logger.error("message {} does not contains username in field {}", messageText, configuration.getUsernameField());
+					throw new StreamMessageNotContainFieldException(messageText, configuration.getUsernameField());
 				}
 
 				UsernameNormalizationService normalizationService = configuration.getUsernameNormalizationService();
@@ -184,7 +170,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					// normalization failed, but we keep the record and generate normalized
 					normalizedUsername = normalizationService.getUsernameAsNormalizedUsername(username, message);
 				}
-				message.put(normalizedUsernameField, normalizedUsername);
+				message.put(configuration.getNormalizedUsernameField(), normalizedUsername);
 
 			}
 

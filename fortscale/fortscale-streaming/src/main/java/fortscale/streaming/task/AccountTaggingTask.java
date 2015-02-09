@@ -1,32 +1,24 @@
 package fortscale.streaming.task;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.utils.ConversionUtils.convertToBoolean;
-import static fortscale.utils.ConversionUtils.convertToLong;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.List;
-
+import fortscale.domain.core.ComputerUsageType;
+import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.model.tagging.AccountMachineAccess;
+import fortscale.streaming.service.tagging.TagService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
+import org.apache.samza.task.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fortscale.domain.core.ComputerUsageType;
-import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.streaming.model.tagging.AccountMachineAccess;
-import fortscale.streaming.service.tagging.TagService;
+import java.util.List;
+
+import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.utils.ConversionUtils.*;
 
 /**
  * Created by idanp on 7/7/2014.
@@ -103,7 +95,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 
         // get the is service account flag
         // in case that there is other value then true or there is no value at all the isServiceAccount will get false
-        boolean  isServiceAccount = convertToBoolean(message.get(isServiceAccountField));
+        boolean  isServiceAccount = message.get(isServiceAccountField)==null? false : convertToBoolean(message.get(isServiceAccountField));
 
         // get the failure code  and manipulate it for define the isEventSuccess flag
         String failureCode = convertToString(message.get(failureCodeField));

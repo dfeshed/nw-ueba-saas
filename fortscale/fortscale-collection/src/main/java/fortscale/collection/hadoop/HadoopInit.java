@@ -3,7 +3,6 @@ package fortscale.collection.hadoop;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaClient;
-
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
@@ -35,7 +34,19 @@ public class HadoopInit implements InitializingBean{
 	private String impalaUserTableName;
 	@Value("${hdfs.user.data.users.path}")
 	private String impalaUsersDirectory;
-	
+
+	// Security Events Login Raw Data table
+	@Value("${impala.rawdata.security.events.login.table.fields}")
+	private String impalaSecLoginRawDataTableFields;
+	@Value("${impala.rawdata.security.events.login.table.delimiter}")
+	private String impalaSecLoginRawDataTableDelimiter;
+	@Value("${impala.rawdata.security.events.login.table.name}")
+	private String impalaSecLoginRawDataTableName;
+	@Value("${hdfs.user.rawdata.security.events.login.path}")
+	private String impalaSecLoginRawDataDirectory;
+	@Value("${impala.rawdata.security.events.login.table.partition.type}")
+	private String  impalaSecLoginRawDataTablePartitionType;
+
 	// Security Events Login Data table
 	@Value("${impala.data.security.events.login.table.fields}")
 	private String impalaSecLoginTableFields;
@@ -264,7 +275,43 @@ public class HadoopInit implements InitializingBean{
 	private String impalaGroupMembershipScoringDirectory;
 	@Value("${impala.ldap.group.membership.scores.table.partition.type}")
 	private String impalaGroupMembershipScoringTablePartitionType;
-		
+
+	// Security Events (4769) Enriched Data table
+	@Value("${impala.enricheddata.security.events.table.fields}")
+	private String impalaSecEnrichedDataTableFields;
+	@Value("${impala.enricheddata.security.events.table.delimiter}")
+	private String impalaSecEnrichedDataTableDelimiter;
+	@Value("${impala.enricheddata.security.events.table.name}")
+	private String impalaSecEnrichedDataTableName;
+	@Value("${hdfs.user.enricheddata.security.events.path}")
+	private String impalaSecEnrichedDataDirectory;
+	@Value("${impala.enricheddata.security.events.table.partition.type}")
+	private String impalaSecEnrichedDataTablePartitionType;
+
+	// SSH Enriched Data table
+	@Value("${impala.enricheddata.ssh.table.fields}")
+	private String impalaSshEnrichedDataTableFields;
+	@Value("${impala.enricheddata.ssh.table.delimiter}")
+	private String impalaSshEnrichedDataTableDelimiter;
+	@Value("${impala.enricheddata.ssh.table.name}")
+	private String impalaSshEnrichedDataTableName;
+	@Value("${hdfs.user.enricheddata.ssh.path}")
+	private String impalaSshEnrichedDataDirectory;
+	@Value("${impala.enricheddata.ssh.table.partition.type}")
+	private String impalaSshEnrichedDataTablePartitionType;
+
+	// VPN Enriched Data table
+	@Value("${impala.enricheddata.vpn.table.fields}")
+	private String impalaVpnEnrichedDataTableFields;
+	@Value("${impala.enricheddata.vpn.table.delimiter}")
+	private String impalaVpnEnrichedDataTableDelimiter;
+	@Value("${impala.enricheddata.vpn.table.name}")
+	private String impalaVpnEnrichedDataTableName;
+	@Value("${hdfs.user.enricheddata.vpn.path}")
+	private String impalaVpnEnrichedDataDirectory;
+	@Value("${impala.enricheddata.vpn.table.partition.type}")
+	private String impalaVpnEnrichedDataTablePartitionType;
+
 	public void createImpalaTables() throws IOException{
 
 		PartitionStrategy partitionStrategy;
@@ -278,7 +325,12 @@ public class HadoopInit implements InitializingBean{
 		//Security Events Login table
         partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecLoginTablePartitionType);
 		createTable(impalaSecLoginTableName, impalaSecLoginTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecLoginTableDelimiter, impalaSecLoginDirectory);
-		
+
+		//Security Events Login raw data table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecLoginRawDataTablePartitionType);
+		createTable(impalaSecLoginRawDataTableName, impalaSecLoginRawDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecLoginRawDataTableDelimiter, impalaSecLoginRawDataDirectory);
+
+
 		//Security Events Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecScoringTablePartitionType);
 		createTable(impalaSecScoringTableName, impalaSecScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecScoringTableDelimiter, impalaSecScoringDirectory);
@@ -346,7 +398,18 @@ public class HadoopInit implements InitializingBean{
 		//Group Membership Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);
 		createTable(impalaGroupMembershipScoringTableName, impalaGroupMembershipScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaGroupMembershipScoringTableDelimiter, impalaGroupMembershipScoringDirectory);
-		
+
+		// Security Events (4769) Enriched Data table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecEnrichedDataTablePartitionType);
+		createTable(impalaSecEnrichedDataTableName, impalaSecEnrichedDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecEnrichedDataTableDelimiter, impalaSecEnrichedDataDirectory);
+
+		// SSH Enriched Data table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSshEnrichedDataTablePartitionType);
+		createTable(impalaSshEnrichedDataTableName, impalaSshEnrichedDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSshEnrichedDataTableDelimiter, impalaSshEnrichedDataDirectory);
+
+		// VPN Enriched Data table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnEnrichedDataTablePartitionType);
+		createTable(impalaVpnEnrichedDataTableName, impalaVpnEnrichedDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaVpnEnrichedDataTableDelimiter, impalaVpnEnrichedDataDirectory);
 	}
 	
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException{
