@@ -2,25 +2,25 @@
 <beans
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:context="http://www.springframework.org/schema/context"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mockito="http://www.mockito.org/spring/mockito"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
+                        http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-
-
-    <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
-    <import resource="classpath*:META-INF/spring/fortscale-logging-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
-    <import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
-    <import resource="classpath*:META-INF/spring/monitor-context.xml"/>
+    <import resource="classpath*:META-INF/spring/monitor-context.xml" />
     <import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
 
 
+    <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
+
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale" />
+    <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.services.event,fortscale.services.notifications,fortscale.streaming" />
 
     <!-- Geolocation service -->
     <bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
@@ -29,6 +29,4 @@
         <constructor-arg name="fullLicenseKeyResource" value="file:${ip.to.location.license.key.full.path}"/>
     </bean>
 
-    <bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
-    <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
 </beans>

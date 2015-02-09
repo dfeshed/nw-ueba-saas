@@ -71,8 +71,8 @@ public class VpnEnrichTask extends AbstractStreamTask {
         String cityFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.city.field"));
         String ispFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.isp.field"));
         String usageTypeFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.usageType.field"));
-        String longtitudeFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.longtitude.field"));
-        String latitudeFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.latitude.field"));
+        String longtitudeFieldName = getConfigString(config, "fortscale.events.vpn.longtitude.field");
+        String latitudeFieldName = getConfigString(config, "fortscale.events.vpn.latitude.field");
         //data buckets field names:
         String totalbytesFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.totalbytes.field"));
         String readbytesFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.readbytes.field"));
@@ -81,16 +81,16 @@ public class VpnEnrichTask extends AbstractStreamTask {
         //session update field names:
         String vpnGeoHoppingOpenSessionThresholdInHours = env.getProperty(getConfigString(config, "fortscale.events.vpn.geoHoppingOpenSessionThresholdInHours"));
         String vpnGeoHoppingCloseSessionThresholdInHours = env.getProperty(getConfigString(config, "fortscale.events.vpn.geoHoppingCloseSessionThresholdInHours"));
-        String sessionIdFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.sessionid.field"));
-        String runGeoHopping = env.getProperty(getConfigString(config, "fortscale.events.vpn.runGeoHopping.field"));
-        String addSessionDataFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.databucket.field"));
+        String sessionIdFieldName = getConfigString(config, "fortscale.events.vpn.sessionid.field");
+        String runGeoHoppingFieldName = getConfigString(config, "fortscale.events.vpn.runGeoHopping.field");
+        String addSessionDataFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.addSessionData.field"));
 
 
         VpnGeolocationConfig vpnGeolocationConfig = new VpnGeolocationConfig(ipField, countryFieldName, countryIsoCodeFieldName, regionFieldName, cityFieldName, ispFieldName, usageTypeFieldName, longtitudeFieldName, latitudeFieldName);
         VpnDataBucketsConfig vpnDataBucketsConfig = new VpnDataBucketsConfig(totalbytesFieldName, readbytesFieldName, durationFieldName, databucketFieldName);
         VpnSessionUpdateConfig vpnSessionUpdateConfig = new VpnSessionUpdateConfig(countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName,
-                Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours), Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours),
-                sessionIdFieldName, Boolean.getBoolean(runGeoHopping), Boolean.getBoolean(addSessionDataFieldName));
+                Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours), Integer.parseInt(vpnGeoHoppingCloseSessionThresholdInHours),
+                sessionIdFieldName, runGeoHoppingFieldName, addSessionDataFieldName);
         VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(inputTopic, outputTopic, partitionField, vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig);
         vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
     }

@@ -133,7 +133,7 @@ public class VpnEnrichService {
          * when <code>addSessionData</code> is false: if there is a close session event without an open event we drop this session
          * if true: we can create a session without the stat session event as we have all attributes in the close session event.
          */
-        Boolean isAddSessionData = convertToBoolean(vpnSessionUpdateConfig.getAddSessionData());
+        Boolean isAddSessionData = convertToBoolean( vpnSessionUpdateConfig.getAddSessionDataFieldName());
         if(vpnSession.getClosedAt() != null && isAddSessionData){
             VpnSession vpnOpenSession = getOpenSessionDataToRecord(vpnSession);
             if(vpnOpenSession == null){
@@ -144,7 +144,7 @@ public class VpnEnrichService {
             }
         }
 
-        Boolean isRunGeoHopping = vpnSessionUpdateConfig.getRunGeoHopping();
+        Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()));
         if(isRunGeoHopping != null && isRunGeoHopping){
             processGeoHopping(vpnSessionUpdateConfig, vpnSession);
         }
@@ -170,16 +170,16 @@ public class VpnEnrichService {
 
 
     private void addOpenSessionDataToRecord(VpnSessionUpdateConfig vpnSessionUpdateConfig, JSONObject event, VpnSession openVpnSessionData){
-        if(event.get(vpnEvents.NORMALIZED_USERNAME).equals("")){
+        if(event.get(vpnEvents.NORMALIZED_USERNAME) == null || event.get(vpnEvents.NORMALIZED_USERNAME).equals("")){
             event.put(vpnEvents.NORMALIZED_USERNAME, openVpnSessionData.getNormalizeUsername());
         }
-        if(event.get(vpnEvents.USERNAME).equals("")){
+        if(event.get(vpnEvents.USERNAME) == null || event.get(vpnEvents.USERNAME).equals("")){
             event.put(vpnEvents.USERNAME, openVpnSessionData.getUsername());
         }
-        if(event.get(vpnEvents.HOSTNAME).equals("")){
+        if(event.get(vpnEvents.HOSTNAME) == null || event.get(vpnEvents.HOSTNAME).equals("")){
             event.put(vpnEvents.HOSTNAME, openVpnSessionData.getHostname());
         }
-        if(event.get(vpnEvents.SOURCE_IP).equals("")){
+        if(event.get(vpnEvents.SOURCE_IP) == null || event.get(vpnEvents.SOURCE_IP).equals("")){
             event.put(vpnEvents.SOURCE_IP, openVpnSessionData.getSourceIp());
             event.put(vpnEvents.CITY, openVpnSessionData.getCity());
             event.put(vpnEvents.COUNTRY, openVpnSessionData.getCountry());
@@ -190,7 +190,7 @@ public class VpnEnrichService {
             event.put(vpnSessionUpdateConfig.getLongtitudeFieldName(), openVpnSessionData.getLongtitude());
             event.put(vpnSessionUpdateConfig.getLatitudeFieldName(), openVpnSessionData.getLatitude());
         }
-        if(event.get(vpnEvents.LOCAL_IP).equals("")){
+        if(event.get(vpnEvents.LOCAL_IP) == null || event.get(vpnEvents.LOCAL_IP).equals("")){
             event.put(vpnEvents.LOCAL_IP, openVpnSessionData.getLocalIp());
         }
     }

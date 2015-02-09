@@ -518,39 +518,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>com.googlecode.maven-download-plugin</groupId>
-				<artifactId>maven-download-plugin</artifactId>
-				<version>${maven-download-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>download-iptolocation-for-test</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-SAMPLE.BIN</url>
-							<outputDirectory>data/geoip</outputDirectory>
-							<outputFileName>iptolocationdata.bin</outputFileName>
-							<skipCache>true</skipCache>
-						</configuration>
-					</execution>
-					<execution>
-						<id>download-iptolocation</id>
-						<phase>package</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</url>
-							<outputDirectory>target/data/geoip</outputDirectory>
-							<outputFileName>iptolocationdata.bin</outputFileName>
-							<skipCache>true</skipCache>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

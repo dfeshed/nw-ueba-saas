@@ -12,10 +12,10 @@ public class VpnSessionUpdateConfig {
     private Integer vpnGeoHoppingOpenSessionThresholdInHours;
     private Integer vpnGeoHoppingCloseSessionThresholdInHours;
     private String sessionIdFieldName;
-    private Boolean runGeoHopping;
-    private Boolean addSessionData;
+    private String runGeoHoppingFieldName;
+    private String addSessionDataFieldName;
 
-    public VpnSessionUpdateConfig(String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, int vpnGeoHoppingOpenSessionThresholdInHours, int vpnGeoHoppingCloseSessionThresholdInHours, String sessionIdFieldName, boolean runGeoHopping, boolean addSessionData) {
+    public VpnSessionUpdateConfig(String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, int vpnGeoHoppingOpenSessionThresholdInHours, int vpnGeoHoppingCloseSessionThresholdInHours, String sessionIdFieldName, String runGeoHoppingFieldName, String addSessionDataFieldName) {
 
         this.countryIsoCodeFieldName = countryIsoCodeFieldName;
         this.longtitudeFieldName = longtitudeFieldName;
@@ -23,8 +23,8 @@ public class VpnSessionUpdateConfig {
         this.vpnGeoHoppingOpenSessionThresholdInHours = vpnGeoHoppingOpenSessionThresholdInHours;
         this.vpnGeoHoppingCloseSessionThresholdInHours = vpnGeoHoppingCloseSessionThresholdInHours;
         this.sessionIdFieldName = sessionIdFieldName;
-        this.runGeoHopping = runGeoHopping;
-        this.addSessionData = addSessionData;
+        this.runGeoHoppingFieldName = runGeoHoppingFieldName;
+        this.addSessionDataFieldName = addSessionDataFieldName;
     }
 
     public String getCountryIsoCodeFieldName() {
@@ -75,19 +75,19 @@ public class VpnSessionUpdateConfig {
         this.sessionIdFieldName = sessionIdFieldName;
     }
 
-    public Boolean getRunGeoHopping() {
-        return runGeoHopping;
+    public String getRunGeoHoppingFieldName() {
+        return runGeoHoppingFieldName;
     }
 
-    public void setRunGeoHopping(Boolean runGeoHopping) {
-        this.runGeoHopping = runGeoHopping;
+    public void setRunGeoHoppingFieldName(String runGeoHoppingFieldName) {
+        this.runGeoHoppingFieldName = runGeoHoppingFieldName;
     }
 
-    public Boolean getAddSessionData() {
-        return addSessionData;
+    public String getAddSessionDataFieldName() {
+        return addSessionDataFieldName;
     }
 
-    public void setAddSessionData(Boolean addSessionData) {
-        this.addSessionData = addSessionData;
+    public void setAddSessionDataFieldName(String addSessionDataFieldName) {
+        this.addSessionDataFieldName = addSessionDataFieldName;
     }
 }
