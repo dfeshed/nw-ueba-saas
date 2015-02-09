@@ -276,18 +276,6 @@ public class HadoopInit implements InitializingBean{
 	@Value("${impala.ldap.group.membership.scores.table.partition.type}")
 	private String impalaGroupMembershipScoringTablePartitionType;
 
-	// Security Events Login (4768) Enriched Data table
-	@Value("${impala.enricheddata.security.events.login.table.fields}")
-	private String impalaSecLoginEnrichedDataTableFields;
-	@Value("${impala.enricheddata.security.events.login.table.delimiter}")
-	private String impalaSecLoginEnrichedDataTableDelimiter;
-	@Value("${impala.enricheddata.security.events.login.table.name}")
-	private String impalaSecLoginEnrichedDataTableName;
-	@Value("${hdfs.user.enricheddata.security.events.login.path}")
-	private String impalaSecLoginEnrichedDataDirectory;
-	@Value("${impala.enricheddata.security.events.login.table.partition.type}")
-	private String impalaSecLoginEnrichedDataTablePartitionType;
-
 	// Security Events (4769) Enriched Data table
 	@Value("${impala.enricheddata.security.events.table.fields}")
 	private String impalaSecEnrichedDataTableFields;
@@ -410,10 +398,6 @@ public class HadoopInit implements InitializingBean{
 		//Group Membership Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);
 		createTable(impalaGroupMembershipScoringTableName, impalaGroupMembershipScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaGroupMembershipScoringTableDelimiter, impalaGroupMembershipScoringDirectory);
-
-		// Security Events Login (4768) Enriched Data table
-		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecLoginEnrichedDataTablePartitionType);
-		createTable(impalaSecLoginEnrichedDataTableName, impalaSecLoginEnrichedDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecLoginEnrichedDataTableDelimiter, impalaSecLoginEnrichedDataDirectory);
 
 		// Security Events (4769) Enriched Data table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecEnrichedDataTablePartitionType);
