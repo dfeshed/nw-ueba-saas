@@ -26,7 +26,7 @@ import fortscale.services.event.VpnService;
 import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
 
 
-
+@Deprecated
 public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {	
 	private static Logger logger = LoggerFactory.getLogger(VpnSessionUpdateMorphCmdBuilder.class);
 	

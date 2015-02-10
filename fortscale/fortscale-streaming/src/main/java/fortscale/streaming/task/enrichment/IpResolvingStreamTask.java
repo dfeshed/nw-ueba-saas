@@ -1,6 +1,7 @@
 package fortscale.streaming.task.enrichment;
 
 import com.google.common.collect.Iterables;
+import fortscale.domain.core.Computer;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.services.ipresolving.IpToHostnameResolver;
@@ -47,6 +48,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
     private static String dhcpCacheKey = "dhcp-cache";
     private static String loginCacheKey = "login-cache";
+    private static String computerCacheKey = "computer-cache";
 
 
     @Override
@@ -69,11 +71,16 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                     (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), loginCache);
 
+            LevelDbBasedCache<String, Computer> computerCache = new LevelDbBasedCache<String, Computer>((
+                    KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerCacheKey))), Computer.class);
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerCacheKey)), computerCache);
+
 
             // pass the caches to the ip resolving services
             IpToHostnameResolver resolver = SpringService.getInstance().resolve(IpToHostnameResolver.class);
             resolver.getDhcpResolver().setCache(dhcpCache);
             resolver.getComputerLoginResolver().setCache(loginCache);
+            resolver.getComputerService().setCache(computerCache);
 
             // get spring environment to resolve properties values using configuration files
             Environment env = SpringService.getInstance().resolve(Environment.class);
@@ -127,6 +134,10 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
 
 			//move to the next topic only if you are not event that need to drop
+            //we are dropping only security events in the case the resolving is not successful.
+            // we are doing so, to prevent cases of 4769 events from a machine to itself.
+            // most of the cases we can't resolve the host name in 4769 events are self connect.
+            //TODO: in next versions we want to add extra check if this is the case or not.
 			if (!service.dropEvent(topic, event)) {
 
 				// construct outgoing message
