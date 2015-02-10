@@ -29,11 +29,11 @@
 		<property name="jobFactory" ref="autowiringSpringBeanJobFactory"/>
 	</bean>
 	
-	<bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
+	<!--<bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
 		<constructor-arg name="geoIpDbResource" value="file:${ip.to.location.db.full.path}"/>
 		<constructor-arg name="geoIpV6DbResource" value="file:${ip.to.location.db.full.path}"/>
 		<constructor-arg name="fullLicenseKeyResource" value="file:${ip.to.location.license.key.full.path}"/>
-	</bean>
+	</bean>-->
 
 
 	<!-- ip resolving caches that uses memory based implementation are injected here -->
