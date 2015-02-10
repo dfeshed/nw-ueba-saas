@@ -21,10 +21,8 @@ public class RecordToVpnSessionConverter {
 
 	public VpnSession convert(JSONObject event, String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, String sessionIdFieldName){
 		String status = convertToString(event.get(vpnEvents.STATUS));
-//		String status = RecordExtensions.getStringValue(event, vpnEvents.STATUS);
 		boolean isFailed = false;
 		Long epochtime = convertToLong(event.get(vpnEvents.DATE_TIME_UNIX));
-//		Long epochtime = RecordExtensions.getLongValue(event, vpnEvents.DATE_TIME_UNIX);
 		epochtime = TimestampUtils.convertToMilliSeconds(epochtime);
 		VpnSession vpnSession = new VpnSession();
 		switch(status){
