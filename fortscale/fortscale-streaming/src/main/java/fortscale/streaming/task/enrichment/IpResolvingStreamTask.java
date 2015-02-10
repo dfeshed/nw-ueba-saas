@@ -1,6 +1,7 @@
 package fortscale.streaming.task.enrichment;
 
 import com.google.common.collect.Iterables;
+import fortscale.domain.core.Computer;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.services.ipresolving.IpToHostnameResolver;
@@ -47,6 +48,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
     private static String dhcpCacheKey = "dhcp-cache";
     private static String loginCacheKey = "login-cache";
+    private static String computerCacheKey = "computer-cache";
 
 
     @Override
@@ -69,11 +71,16 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                     (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), loginCache);
 
+            LevelDbBasedCache<String, Computer> computerCache = new LevelDbBasedCache<String, Computer>((
+                    KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerCacheKey))), Computer.class);
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerCacheKey)), computerCache);
+
 
             // pass the caches to the ip resolving services
             IpToHostnameResolver resolver = SpringService.getInstance().resolve(IpToHostnameResolver.class);
             resolver.getDhcpResolver().setCache(dhcpCache);
             resolver.getComputerLoginResolver().setCache(loginCache);
+            resolver.getComputerService().setCache(computerCache);
 
             // get spring environment to resolve properties values using configuration files
             Environment env = SpringService.getInstance().resolve(Environment.class);
