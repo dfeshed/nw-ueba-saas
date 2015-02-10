@@ -2,10 +2,14 @@ package fortscale.services.cache;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 
 public abstract class CacheHandler<K,T> implements Closeable {
+
+    private static Logger logger = LoggerFactory.getLogger(CacheHandler.class);
 
     private Class<T> clazz;
 
@@ -19,6 +23,8 @@ public abstract class CacheHandler<K,T> implements Closeable {
             mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
             mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+        } else {
+            logger.error("CacheHandler created with null clazz");
         }
     }
 

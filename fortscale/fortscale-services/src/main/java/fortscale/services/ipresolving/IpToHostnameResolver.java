@@ -197,4 +197,8 @@ public class IpToHostnameResolver {
 	public DnsResolver getDnsResolver() {
 		return dnsResolver;
 	}
+
+    public ComputerService getComputerService() {
+        return computerService;
+    }
 }
