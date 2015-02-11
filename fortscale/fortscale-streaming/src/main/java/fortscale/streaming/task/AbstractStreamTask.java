@@ -54,6 +54,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		
 		// call specific task init method
 		wrappedInit(config, context);
+        logger.info("Task init finished");
 	}
 	
 	@Override
@@ -81,9 +82,11 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override 
 	public void close() throws Exception {
 		try {
+            logger.info("initiating task close");
 			wrappedClose();
 		} finally {
 			SpringService.shutdown();
 		}
+        logger.info("task closed");
 	}
 }
