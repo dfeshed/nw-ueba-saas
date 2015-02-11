@@ -96,7 +96,7 @@ public class PrevalanceModelStreamingService extends ModelServiceImpl{
 			for(PrevalanceModelKey key: changedModelsTimestampMap.keySet()){
 				String context = key.getContext();
 				try {
-					PrevalanceModel model = getModel(context, key.getModelName());
+					PrevalanceModel model = getModel(context);
 					if (model!=null) {
 						// model might be null in case of a serialization error, in that case
 						// we don't want to fail here and the error is logged in the serde implementation

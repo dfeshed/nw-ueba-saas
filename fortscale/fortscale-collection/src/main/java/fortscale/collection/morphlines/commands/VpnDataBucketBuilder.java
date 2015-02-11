@@ -17,7 +17,7 @@ import com.typesafe.config.Config;
 import fortscale.collection.morphlines.RecordExtensions;
 
 
-
+@Deprecated
 @Configurable(preConstruction=true)
 public class VpnDataBucketBuilder implements CommandBuilder {
 	

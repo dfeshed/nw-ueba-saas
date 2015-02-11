@@ -23,6 +23,13 @@
   			<include>log4j.xml</include>
   		</includes>
   	</fileSet>
+  	<fileSet>
+  		<outputDirectory>data/geoip</outputDirectory>
+  		<directory>${basedir}/target/data/geoip/</directory>
+  		<includes>
+  			<include>*</include>
+  		</includes>
+  	</fileSet>
   </fileSets>
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
