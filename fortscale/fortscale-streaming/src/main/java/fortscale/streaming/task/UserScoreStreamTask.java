@@ -93,10 +93,7 @@ public class UserScoreStreamTask  extends AbstractStreamTask  implements Initabl
 	
 	/** periodically save the state to mongodb as a secondary backing store and update the user score in mongodb*/
 	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
-		if (userScoreStreamingService!=null){
-			userScoreStreamingService.updateDb();
-			userScoreStreamingService.exportSnapshot();
-		}
+		return;
 	}
 	
 	/** save the state to mongodb when the job shutsdown */
