@@ -63,16 +63,16 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		// Get configuration properties
 		FortscaleStringValueResolver res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
 
-		timestampField = res.resolveStringValue(getConfigString(config, "fortscale.timestamp.field"));
-		usernameField = res.resolveStringValue(getConfigString(config, "fortscale.username.field"));
-		List<String> discriminatorsFields = res.resolveStringValues(getConfigStringList(config, "fortscale.discriminator.fields"));
-		fields = ImpalaParser.getTableFieldNames(res.resolveStringValue(getConfigString(config, "fortscale.fields")));
-		separator = res.resolveStringValue(config.get("fortscale.separator", ","));
-		String hdfsRootPath = res.resolveStringValue(getConfigString(config, "fortscale.hdfs.root"));
-		tableName = res.resolveStringValue(getConfigString(config, "fortscale.table.name"));
-		String fileName = res.resolveStringValue(getConfigString(config, "fortscale.file.name"));
-		partitionStrategy = PartitionsUtils.getPartitionStrategy(res.resolveStringValue(getConfigString(config, "fortscale.partition.strategy")));
-		String splitClassName = res.resolveStringValue(getConfigString(config, "fortscale.split.strategy"));
+		timestampField = resolveStringValue(config, "fortscale.timestamp.field", res);
+		usernameField = resolveStringValue(config, "fortscale.username.field", res);
+		List<String> discriminatorsFields = resolveStringValues(config, "fortscale.discriminator.fields", res);
+		fields = ImpalaParser.getTableFieldNames(resolveStringValue(config, "fortscale.fields", res));
+		separator = resolveStringValueDefault(config, "fortscale.separator", ",", res);
+		String hdfsRootPath = resolveStringValue(config, "fortscale.hdfs.root", res);
+		tableName = resolveStringValue(config, "fortscale.table.name", res);
+		String fileName = resolveStringValue(config, "fortscale.file.name", res);
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(resolveStringValue(config, "fortscale.partition.strategy", res));
+		String splitClassName = resolveStringValue(config, "fortscale.split.strategy", res);
 		int eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
 
 		storeName = storeNamePrefix + tableName;
@@ -99,6 +99,18 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			filter.init(filterName, config);
 			filters.add(filter);
 		}
+	}
+
+	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
+		return resolver.resolveStringValue(getConfigString(config, string));
+	}
+
+	private List<String> resolveStringValues(Config config, String string, FortscaleStringValueResolver resolver) {
+		return resolver.resolveStringValues(getConfigStringList(config, string));
+	}
+
+	private String resolveStringValueDefault(Config config, String string, String def, FortscaleStringValueResolver resolver) {
+		return resolver.resolveStringValue(config.get(string, def));
 	}
 
 	/** Write the incoming message fields to hdfs */
