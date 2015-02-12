@@ -5,6 +5,7 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.filters.MessageFilter;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.BarrierService;
+import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.HdfsService;
 import fortscale.streaming.service.SpringService;
 import fortscale.utils.TimestampUtils;
@@ -21,7 +22,6 @@ import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
-import org.springframework.core.env.Environment;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -60,29 +60,23 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		// get configuration properties
-		String hdfsRootPath = getConfigString(config, "fortscale.hdfs.root");
-		String fileName = getConfigString(config, "fortscale.file.name");
-		separator = config.get("fortscale.separator", ",");
-		timestampField = getConfigString(config, "fortscale.timestamp.field");
-		usernameField = getConfigString(config, "fortscale.username.field");
+		// Get configuration properties
+		FortscaleStringValueResolver res = SpringService.getInstance().resolve(FortscaleStringValueResolver.class);
 
-		List<String> discriminatorsFields = getConfigStringList(config, "fortscale.discriminator.fields");
-		tableName = getConfigString(config, "fortscale.table.name");
+		timestampField = resolveStringValue(config, "fortscale.timestamp.field", res);
+		usernameField = resolveStringValue(config, "fortscale.username.field", res);
+		List<String> discriminatorsFields = resolveStringValues(config, "fortscale.discriminator.fields", res);
+		fields = ImpalaParser.getTableFieldNames(resolveStringValue(config, "fortscale.fields", res));
+		separator = resolveStringValueDefault(config, "fortscale.separator", ",", res);
+		String hdfsRootPath = resolveStringValue(config, "fortscale.hdfs.root", res);
+		tableName = resolveStringValue(config, "fortscale.table.name", res);
+		String fileName = resolveStringValue(config, "fortscale.file.name", res);
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(resolveStringValue(config, "fortscale.partition.strategy", res));
+		String splitClassName = resolveStringValue(config, "fortscale.split.strategy", res);
 		int eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
+
 		storeName = storeNamePrefix + tableName;
-
-
-        //Resolve the fields names
-        Environment env =  SpringService.getInstance().resolve(Environment.class);
-        fields = ImpalaParser.getTableFieldNames(env.getProperty(getConfigString(config,"fortscale.fields")));
-
-        //Resolve the partition strategy
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(env.getProperty(getConfigString(config,"fortscale.partition.strategy")));
-
-
-		String splitClassName = getConfigString(config, "fortscale.split.strategy");
-		FileSplitStrategy splitStrategy = (FileSplitStrategy) Class.forName(splitClassName).newInstance();
+		FileSplitStrategy splitStrategy = (FileSplitStrategy)Class.forName(splitClassName).newInstance();
 
 		// create HDFS appender service
 		service = new HdfsService(hdfsRootPath, fileName, partitionStrategy, splitStrategy, tableName, eventsCountFlushThreshold);
@@ -105,6 +99,18 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			filter.init(filterName, config);
 			filters.add(filter);
 		}
+	}
+
+	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
+		return resolver.resolveStringValue(getConfigString(config, string));
+	}
+
+	private List<String> resolveStringValues(Config config, String string, FortscaleStringValueResolver resolver) {
+		return resolver.resolveStringValues(getConfigStringList(config, string));
+	}
+
+	private String resolveStringValueDefault(Config config, String string, String def, FortscaleStringValueResolver resolver) {
+		return resolver.resolveStringValue(config.get(string, def));
 	}
 
 	/** Write the incoming message fields to hdfs */
