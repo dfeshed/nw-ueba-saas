@@ -188,6 +188,17 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 
         entity.setSessionEntity(entitySessionEntity);
 
+        Boolean isAbstractEntity = entityConfig.getIsAbstractEntity();
+        if (isAbstractEntity == null){
+            String isAbstractEntityStr   = getExtendableValue(entityId, "is_abstract");
+            isAbstractEntity = isAbstractEntityStr != null && isAbstractEntityStr.equals("true");
+            entityConfig.setIsAbstractEntity(isAbstractEntity);
+        }
+        entity.setIsAbstract(isAbstractEntity);
+
+        String extendsEntity = getBaseEntityId(entityId);
+        entity.setExtendsEntity(extendsEntity);
+
         List<String> fieldIds = getAllEntityFields(entityId);
         ArrayList<DataEntityField> fields = new ArrayList<>();
 

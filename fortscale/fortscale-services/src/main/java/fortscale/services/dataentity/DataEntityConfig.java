@@ -25,6 +25,7 @@ public class DataEntityConfig {
     private String partitions;
     private List<String> partitionsBaseField;
     private String table;
+    private Boolean isAbstractEntity;
     private List<QuerySort> defaultSort;
 
     public String getId() {
@@ -166,4 +167,7 @@ public class DataEntityConfig {
     public void setDefaultSort(List<QuerySort> defaultSort) {
         this.defaultSort = defaultSort;
     }
+    public Boolean getIsAbstractEntity() {return isAbstractEntity;}
+
+    public void setIsAbstractEntity(Boolean isAbstractEntity){this.isAbstractEntity = isAbstractEntity;}
 }
