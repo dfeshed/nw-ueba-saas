@@ -38,17 +38,17 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 public class IpResolvingStreamTask extends AbstractStreamTask {
 
     // map between input topic name and relevant resolving cache instance
-    private Map<String, LevelDbBasedCache<String,?>> topicToCacheMap = new HashMap<>();
+    private static Map<String, LevelDbBasedCache<String,?>> topicToCacheMap = new HashMap<>();
 
     private static EventsIpResolvingService service;
 
 
-    private static String topicConfigKeyFormat = "fortscale.%s.topic";
-    private static String storeConfigKeyFormat = "fortscale.%s.store";
+    private final static String topicConfigKeyFormat = "fortscale.%s.topic";
+    private final static String storeConfigKeyFormat = "fortscale.%s.store";
 
-    private static String dhcpCacheKey = "dhcp-cache";
-    private static String loginCacheKey = "login-cache";
-    private static String computerCacheKey = "computer-cache";
+    private final static String dhcpCacheKey = "dhcp-cache";
+    private final static String loginCacheKey = "login-cache";
+    private final static String computerCacheKey = "computer-cache";
 
 
     @Override
