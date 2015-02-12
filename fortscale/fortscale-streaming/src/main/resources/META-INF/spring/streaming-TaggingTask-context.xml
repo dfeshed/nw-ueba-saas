@@ -3,9 +3,8 @@
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:context="http://www.springframework.org/schema/context"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-						http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 
@@ -121,9 +120,9 @@
         <property name="usernameNormalizer" ref="sshUsernameNormalizer"/>
     </bean>
 
-    <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="prototype" />
+    <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
 
-    <bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="prototype" />
+    <bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
 
     <bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="prototype"/>
 
