@@ -41,13 +41,9 @@ public class DhcpResolver extends CachingServiceWithBlackList<String,DhcpEvent> 
 	private CacheHandler<String,TimeRange> ipBlackListCache;
 
 	public DhcpResolver() {
-		this(DhcpEvent.class);
+		super(DhcpEvent.class);
 	}
 
-
-	public DhcpResolver(Class<DhcpEvent> clazz) {
-		super(clazz);
-	}
 
 	@Override public CacheHandler<String, DhcpEvent> getCache() {
 		return cache;

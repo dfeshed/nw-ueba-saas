@@ -52,12 +52,9 @@ public class ComputerLoginResolver extends CachingServiceWithBlackList<String,Co
 	private CacheHandler<String,TimeRange> ipBlackListCache;
 
 	public ComputerLoginResolver() {
-		this(ComputerLoginEvent.class);
+		super(ComputerLoginEvent.class);
 	}
 
-	public ComputerLoginResolver(Class<ComputerLoginEvent> clazz) {
-		super(clazz);
-	}
 
 	@Override public CacheHandler<String, ComputerLoginEvent> getCache() {
 		return cache;
