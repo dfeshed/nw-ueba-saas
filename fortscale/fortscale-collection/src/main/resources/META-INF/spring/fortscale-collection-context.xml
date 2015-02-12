@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans 
-	xmlns="http://www.springframework.org/schema/beans" 
-	xmlns:hdp="http://www.springframework.org/schema/hadoop"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-						http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd
-						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<beans
+		xmlns="http://www.springframework.org/schema/beans"
+		xmlns:hdp="http://www.springframework.org/schema/hadoop"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd">
 						
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
  		<property name="location" value="file:resources/fortscale-collection-overriding.properties"/>
@@ -61,6 +59,11 @@
 		</constructor-arg>
 		<constructor-arg name="clazz" value="fortscale.domain.events.DhcpEvent" />
 	</bean>
+	<bean id="dhcpBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${dhcp.resolver.cache.max.items:30000}" />
+		<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="fortscale.utils.TimeRange" />
+	</bean>
 	<bean id="loginResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
 			<bean class="fortscale.services.cache.MemoryBasedCache">
@@ -74,6 +77,11 @@
 			</bean>
 		</constructor-arg>
 		<constructor-arg name="clazz" value="fortscale.domain.events.ComputerLoginEvent" />
+	</bean>
+	<bean id="loginBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${dhcp.resolver.cache.max.items:30000}" />
+		<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="fortscale.utils.TimeRange" />
 	</bean>
 
 
