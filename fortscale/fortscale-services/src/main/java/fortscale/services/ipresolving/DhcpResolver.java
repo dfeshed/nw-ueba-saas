@@ -1,36 +1,54 @@
 package fortscale.services.ipresolving;
 
-import java.util.List;
-
+import fortscale.domain.events.DhcpEvent;
+import fortscale.domain.events.dao.DhcpEventRepository;
 import fortscale.services.cache.CacheHandler;
+import fortscale.utils.TimestampUtils;
+import org.apache.commons.lang3.Range;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
-import fortscale.domain.events.DhcpEvent;
-import fortscale.domain.events.dao.DhcpEventRepository;
-import fortscale.utils.TimestampUtils;
+import java.util.List;
 
 
-public class DhcpResolver {
+public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 
+	private static Logger logger = LoggerFactory.getLogger(DhcpResolver.class);
 	@Autowired
 	private DhcpEventRepository dhcpEventRepository;
 	
 	@Value("${dhcp.resolver.leaseTimeInMins:1}")
 	private int graceTimeInMins;
-	
+
 	@Autowired
 	@Qualifier("dhcpResolverCache")
 	private CacheHandler<String,DhcpEvent> cache;
-	
+
+
+
+	public DhcpResolver(boolean shouldUseBlackList, CacheHandler<String,Range<Long>> ipBlackListCache) {
+		super(shouldUseBlackList, ipBlackListCache, DhcpEvent.class);
+	}
+
+	public DhcpResolver(){
+
+	}
+
+	@Override public CacheHandler<String, DhcpEvent> getCache() {
+		return cache;
+	}
+
 	public void setCache(CacheHandler<String,DhcpEvent> cache) {
 		this.cache = cache;
 	}
-	
-	
+
+
 	/**
 	 * Handle the dhcp event and update repository when required.
 	 * Dhcp event can contain assign, release to expired action codes.
@@ -70,11 +88,14 @@ public class DhcpResolver {
 						// update the existing event in mongodb and in the cache
 						cache.put(cached.getIpaddress(), cached);
 						dhcpEventRepository.save(cached);
+						removeFromBlackList(cached);
 					}
 
 					// update cache with the new event only if it is not older event than the existing one
-					if (cached.getTimestampepoch() < event.getTimestampepoch())
+					if (cached.getTimestampepoch() < event.getTimestampepoch()) {
 						cache.put(event.getIpaddress(), event);
+						removeFromBlackList(event);
+					}
 					dhcpEventRepository.save(event);
 				} else {
 					// for the same hostname as cached event, check if we need to update the 
@@ -83,6 +104,7 @@ public class DhcpResolver {
 						cached.setExpiration(event.getExpiration());
 						cache.put(event.getIpaddress(), event);
 						dhcpEventRepository.save(event);
+						removeFromBlackList(event);
 					}
 				}
 			}
@@ -94,6 +116,7 @@ public class DhcpResolver {
 			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration() > event.getTimestampepoch()) {
 				cached.setExpiration(event.getExpiration());
 				cache.put(cached.getIpaddress(), cached);
+				removeFromBlackList(cached);
 			}
 			
 			// update saved event in repository as well
@@ -105,10 +128,13 @@ public class DhcpResolver {
 					// mark previous event as expired once the ip is released
 					existing.setExpiration(event.getTimestampepoch());
 					dhcpEventRepository.save(existing);
+					removeFromBlackList(existing);
 
 					// update cache
-					if (cached==null)
+					if (cached==null) {
+						removeFromBlackList(existing);
 						cache.put(existing.getIpaddress(), existing);
+					}
 				}
 			}
 		}
@@ -118,30 +144,45 @@ public class DhcpResolver {
 		if(dhcpEventRepository == null){
 			return null;
 		}
-		
+
 		ts = TimestampUtils.convertToMilliSeconds(ts);
-		long upperTsLimit = (graceTimeInMins > 0)? ts + graceTimeInMins * 60 * 1000 : ts;
-		
-		// see if we have a matching event in cache
-		DhcpEvent cached = cache.get(ip);
-		if (cached!=null && cached.getTimestampepoch()<=upperTsLimit && cached.getExpiration() >= ts) {
-			// return cached event
-			return cached;
+
+		// if
+		// 1. Need to use the blacklist and
+		// 2. The IP is in the blacklist
+		// 3. The ts is included in the time range.
+		//	Than the ip is not in the cache or MongoDB and we should skip it.
+		Range<Long> timeRange = ipBlackListCache.get(ip);
+		if (shouldUseBlackList && timeRange != null && timeRange.contains(ts)) {
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("IP %s is in the black list and the ts %s is between time range %s - %s. Skipping it.", ip, ts, timeRange.getMinimum(), timeRange.getMaximum()));
+			}
+			return null;
 		}
-		
+
+		long upperTsLimit = (graceTimeInMins > 0)? ts + graceTimeInMins * 60 * 1000 : ts;
+
+		// see if we have a matching event in cache
+		DhcpEvent dhcpEvent = cache.get(ip);
+		if (dhcpEvent!=null && dhcpEvent.getTimestampepoch()<=upperTsLimit && dhcpEvent.getExpiration() >= ts) {
+			// return cached event
+			return dhcpEvent;
+		}
+
 		// if the event was not in cache than look for it in the repository
 		List<DhcpEvent> dhcpEvents = dhcpEventRepository.findByIpaddressAndTimestampepochLessThan(ip, upperTsLimit,
 				new PageRequest(0, 1, Direction.DESC, DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME));
 		if(!dhcpEvents.isEmpty()){
 			// check if the ip assignment is not expired
-			DhcpEvent saved = dhcpEvents.get(0);
-			if (saved.getExpiration() >= ts) {
+			dhcpEvent = dhcpEvents.get(0);
+			if (dhcpEvent.getExpiration() >= ts) {
 				// also add the event to the cache for next time
-				cache.put(ip, saved);
-				return saved;
+				cache.put(ip, dhcpEvent);
+				return dhcpEvent;
 			}
 		}
-		
+		long lowerLimitTs = dhcpEvent != null ? dhcpEvent.getExpiration() : 0;
+		addToBlackList(ip, lowerLimitTs, upperTsLimit);
 		return null;
 	}
 	
@@ -149,4 +190,14 @@ public class DhcpResolver {
 		DhcpEvent event = getLatestDhcpEventBeforeTimestamp(ip, ts);
 		return (event!=null)? event.getHostname() : null;
 	}
+
+	protected List<DhcpEvent> getNextEvents(String ip, Long upperTsLimit) {
+		return dhcpEventRepository.findByIpaddressAndTimestampepochGreaterThanEqual(ip, upperTsLimit, new PageRequest(0, 1, Sort.Direction.ASC, DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME));
+	}
+
+	@Override
+	protected void removeFromBlackList(DhcpEvent event) {
+		removeFromBlackList(event.getIpaddress(), event.getTimestampepoch(), event.getExpiration());
+	}
+
 }

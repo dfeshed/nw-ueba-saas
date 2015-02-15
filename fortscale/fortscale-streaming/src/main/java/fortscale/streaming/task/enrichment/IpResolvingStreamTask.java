@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import fortscale.domain.core.Computer;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
+import fortscale.services.CachingService;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
@@ -38,7 +39,7 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 public class IpResolvingStreamTask extends AbstractStreamTask {
 
     // map between input topic name and relevant resolving cache instance
-    private static Map<String, LevelDbBasedCache<String,?>> topicToCacheMap = new HashMap<>();
+    private static Map<String, CachingService> topicToCacheMap = new HashMap<>();
 
     private static EventsIpResolvingService service;
 
@@ -62,25 +63,23 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         // init or process methods here, so it is safe to check for initialization the way we did.
         if (service==null) {
 
-            // create leveldb based caches for ip resolving services (dhcp, login)
+            IpToHostnameResolver resolver = SpringService.getInstance().resolve(IpToHostnameResolver.class);
+
+            // create leveldb based caches for ip resolving services (dhcp, login, computer) and pass the caches to the ip resolving services
             LevelDbBasedCache<String,DhcpEvent> dhcpCache = new LevelDbBasedCache<String, DhcpEvent>(
                     (KeyValueStore<String, DhcpEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dhcpCacheKey))),DhcpEvent.class);
-            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dhcpCacheKey)), dhcpCache);
+            resolver.getDhcpResolver().setCache(dhcpCache);
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dhcpCacheKey)), resolver.getDhcpResolver());
 
             LevelDbBasedCache<String,ComputerLoginEvent> loginCache = new LevelDbBasedCache<String,ComputerLoginEvent>(
                     (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);
-            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), loginCache);
+            resolver.getComputerLoginResolver().setCache(loginCache);
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), resolver.getComputerLoginResolver());
 
             LevelDbBasedCache<String, Computer> computerCache = new LevelDbBasedCache<String, Computer>((
                     KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerCacheKey))), Computer.class);
-            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerCacheKey)), computerCache);
-
-
-            // pass the caches to the ip resolving services
-            IpToHostnameResolver resolver = SpringService.getInstance().resolve(IpToHostnameResolver.class);
-            resolver.getDhcpResolver().setCache(dhcpCache);
-            resolver.getComputerLoginResolver().setCache(loginCache);
             resolver.getComputerService().setCache(computerCache);
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerCacheKey)), resolver.getComputerService());
 
             // get spring environment to resolve properties values using configuration files
             Environment env = SpringService.getInstance().resolve(Environment.class);
@@ -123,8 +122,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
         if (topicToCacheMap.containsKey(topic)) {
             // get the concrete cache and pass it the update check  message that arrive
-            LevelDbBasedCache<String,?> cache = topicToCacheMap.get(topic);
-            cache.putFromString((String) envelope.getKey(), (String) envelope.getMessage());
+            CachingService cachingService = topicToCacheMap.get(topic);
+            cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
         } else {
             // process event message
             String messageText = (String)envelope.getMessage();
@@ -160,7 +159,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     @Override
     protected void wrappedClose() throws Exception {
         // close all leveldb resolving caches
-        for (LevelDbBasedCache<String,?> cache : topicToCacheMap.values())
-            cache.close();
+        for(CachingService cachingService: topicToCacheMap.values()) {
+            cachingService.getCache().close();
+        }
     }
 }

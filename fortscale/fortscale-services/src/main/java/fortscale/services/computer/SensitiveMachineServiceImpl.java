@@ -1,27 +1,22 @@
 
 package fortscale.services.computer;
 
+import fortscale.domain.core.dao.ComputerRepository;
+import fortscale.services.cache.CacheHandler;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import fortscale.services.cache.CacheHandler;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
-import fortscale.services.computer.SensitiveMachineService;
-import fortscale.domain.core.dao.ComputerRepository;
 
 public class SensitiveMachineServiceImpl implements SensitiveMachineService, InitializingBean {
 
@@ -139,5 +134,14 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService, Ini
 	public void setDeletionSymbol(String deletionSymbol) {
 
 		this.deletionSymbol = deletionSymbol;
+	}
+
+	@Override public void handleNewValue(String key, String value) throws Exception {
+		if(value == null){
+			getCache().remove(key);
+		}
+		else {
+			getCache().putFromString(key, value);
+		}
 	}
 }

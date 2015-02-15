@@ -941,4 +941,13 @@ public class UserServiceImpl implements UserService{
 		}
 		userTagsCache.put(username, tags);
 	}
+
+	@Override public void handleNewValue(String key, String value) throws Exception {
+		if(value == null){
+			getCache().remove(key);
+		}
+		else {
+			getCache().putFromString(key, value);
+		}
+	}
 }

@@ -1,26 +1,21 @@
 package fortscale.services.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.CachingService;
 import fortscale.services.cache.CacheHandler;
+import fortscale.services.fe.Classifier;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Update;
 
-import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.User;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.dao.EventScoreDAO;
-import fortscale.services.fe.Classifier;
-import fortscale.utils.logging.Logger;
+import java.util.*;
 
 public class UsernameService implements InitializingBean, CachingService{
 	private static Logger logger = Logger.getLogger(UsernameService.class);
@@ -331,5 +326,14 @@ public class UsernameService implements InitializingBean, CachingService{
 
 	@Override public void setCache(CacheHandler cache) {
 		usernameToUserIdCache = cache;
+	}
+
+	@Override public void handleNewValue(String key, String value) throws Exception {
+		if(value == null){
+			getCache().remove(key);
+		}
+		else {
+			getCache().putFromString(key, value);
+		}
 	}
 }
