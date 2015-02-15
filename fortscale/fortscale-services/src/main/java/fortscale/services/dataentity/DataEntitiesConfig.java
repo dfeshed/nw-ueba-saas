@@ -4,8 +4,10 @@ import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querydto.QuerySort;
 import fortscale.services.dataqueries.querydto.SortDirection;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.utils.TreeNode;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
@@ -20,6 +22,7 @@ import java.util.List;
  */
 @Component
 public class DataEntitiesConfig implements EmbeddedValueResolverAware {
+
     @Override
     public void setEmbeddedValueResolver(StringValueResolver resolver) {
         this.stringValueResolver = resolver;
@@ -36,6 +39,11 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 	 * All entities (lazy initialization)
 	 */
     private List<DataEntity> allDataEntities;
+
+	/**
+	 * Entity Hierarchy tree (lazy initialization)
+	 */
+	private List<TreeNode<DataEntity>> entitiesHierarchyTreeCach;
 
     /**
      * Gets a DataEntityConfig object from cache, or creates a new one under the specified entityId if not found.
@@ -93,7 +101,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 
         try{
             String[] configFields = stringValueResolver.resolveStringValue(getPropertyKey(entityId, "fields")).split("\\s*,[,\\s]*");
-            Collections.addAll(fieldsList, configFields);
+			Collections.addAll(fieldsList, configFields);
         }
         catch(Exception error){
             return null;
@@ -128,6 +136,125 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         allDataEntities = entities;
         return entities;
     }
+
+	/**
+	 * This method will return a list of trees that will represent the inheritance hierarchy of the entities.properties file
+	 * The tree will build exhaustive bottom up
+	 */
+	public List<TreeNode<DataEntity>> getEntitiesTrees() throws Exception
+	{
+
+		if (entitiesHierarchyTreeCach != null)
+			return entitiesHierarchyTreeCach;
+
+		// get the roots entities for the trees
+		String[]  leaffEntities = stringValueResolver.resolveStringValue("${entities}").split("\\s*,[,\\s]*");
+
+		List<TreeNode<DataEntity>> entitiesTrees = new ArrayList<>() ;
+
+
+		//start build the sub trees for each leaf
+		for (String leaf : leaffEntities)
+		{
+			DataEntity dataEntity = getLogicalEntity(leaf);
+			TreeNode<DataEntity> entityNode = new TreeNode<>(dataEntity);
+			TreeNode<DataEntity> tree = getSubTree(entityNode);
+			entitiesTrees = mergerEntitiesSubTrees(tree,entitiesTrees);
+
+		}
+
+		entitiesHierarchyTreeCach = entitiesTrees;
+
+		return entitiesTrees;
+
+	}
+
+	private TreeNode<DataEntity> getSubTree(TreeNode<DataEntity> treeNode) throws Exception
+	{
+
+		try {
+			//get the parent entity from the entity properties file
+			String parentEntityId = stringValueResolver.resolveStringValue(String.format("${entities.%s.extends}", treeNode.getData().getId()));
+
+			if (!StringUtils.isEmpty(parentEntityId)) {
+				DataEntity parentEntity = getLogicalEntity(parentEntityId);
+				TreeNode<DataEntity> parentTreeNode = new TreeNode<>(parentEntity);
+
+				// set the parent node to the current tree node
+				treeNode.setParent(parentTreeNode);
+
+				//set the current node to be child of the parent node
+				parentTreeNode.setChaild(treeNode);
+
+				return getSubTree(parentTreeNode);
+			}
+		}
+		catch (Exception e){
+			return treeNode;
+		}
+
+		return treeNode;
+
+
+	}
+
+
+
+
+	private List<TreeNode<DataEntity>> mergerEntitiesSubTrees (TreeNode<DataEntity> tree , List<TreeNode<DataEntity>> entitiesTrees )
+	{
+
+		for (TreeNode<DataEntity> subTree : entitiesTrees)
+		{
+			if (mergerTwoTrees(tree,subTree))
+				return entitiesTrees;
+		}
+
+		entitiesTrees.add(tree);
+		return entitiesTrees;
+
+
+	}
+
+	/**
+	 * This method get two potential sub trees and trying to merger sub tree number 1 to sub tree number 2
+	 * If those tress are complete strange (doesn't share the same root) it will return false
+	 * @param tree1
+	 * @param tree2
+	 * @return
+	 */
+	private boolean mergerTwoTrees(TreeNode<DataEntity> tree1 , TreeNode<DataEntity> tree2 )
+	{
+		boolean result = false;
+
+		//check if the roots are equal in that case we merger two sub trees from the same tree
+		TreeNode<DataEntity> potentialParent = tree1.getData().equals(tree2.getData()) == true ? tree2 : null ;
+
+		// if the roots are not equals the two sub  trees are not from the same tree
+		if (potentialParent == null)
+		{
+			return result;
+		}
+
+
+		//find the connection point
+		for (TreeNode<DataEntity> child : tree1)
+		{
+			TreeNode<DataEntity> exist  = tree2.peekFromTree(child);
+
+			//we found connection point
+			if (exist == null)
+			{
+				potentialParent.setChaild(child);
+				result = true;
+				break;
+			}
+			potentialParent = exist;
+			result = mergerTwoTrees(child,potentialParent);
+		}
+		return result;
+	}
+
 
     /**
      * Gets the DB type that should be used to generate the query for the given entity

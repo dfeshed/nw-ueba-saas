@@ -92,4 +92,14 @@ public class DataEntity {
     public void setDefaultSort(List<QuerySort> defaultSort) {
         this.defaultSort = defaultSort;
     }
+
+
+	@Override
+	public boolean equals( Object toThat)
+	{
+		return this.id.equals(((DataEntity)toThat).getId());
+
+	}
+
+
 }

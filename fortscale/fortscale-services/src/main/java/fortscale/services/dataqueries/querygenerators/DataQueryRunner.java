@@ -1,10 +1,12 @@
 package fortscale.services.dataqueries.querygenerators;
 
+import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.QueryFieldFunction;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querydto.FieldFunction;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.utils.TreeNode;
 
 
 import java.util.ArrayList;
@@ -61,6 +63,62 @@ public abstract class DataQueryRunner {
         // Finally, generate the query and return it:
         return generateQuery(totalDataQueryDTO);
     }
+
+	/**
+	 * This method will get data query object and in case of abstract data query she will translate it to
+	 * list of leaf data queries
+	 * @param dataQueryDTO - the input data query
+	 * @return
+	 */
+	public List<DataQueryDTO> translateAbstarctDataQuery(DataQueryDTO dataQueryDTO,List<TreeNode<DataEntity>> entitiestree)  throws Exception
+	{
+		List<DataQueryDTO> result = null;
+
+
+
+		result = translateTheMainEntity(dataQueryDTO,entitiestree);
+
+		List<DataQueryDTO> joinTranslation = new ArrayList<>();
+
+		for (DataQueryDTO dto : result)
+		{
+			//joinTranslation.addAll(translateTheJoins(dto));
+		}
+
+		result.addAll(joinTranslation);
+
+		List<DataQueryDTO> subQueryTransaltion = new ArrayList<>();
+		for (DataQueryDTO dto : result)
+		{
+			//subQueryTransaltion.addAll(translateTheSubQueries(dto));
+		}
+
+		result = subQueryTransaltion;
+
+
+
+
+
+
+		return result;
+
+	}
+
+	/**
+	 *
+	 * @param dto
+	 * @param entitiestree
+	 * @return
+	 */
+	private List<DataQueryDTO> translateTheMainEntity(DataQueryDTO dto , List<TreeNode<DataEntity>> entitiestree)
+	{
+		List<DataQueryDTO> result = null;
+
+
+		return result;
+
+	}
+
 
 	/**
 	 * runs query according to the DTO

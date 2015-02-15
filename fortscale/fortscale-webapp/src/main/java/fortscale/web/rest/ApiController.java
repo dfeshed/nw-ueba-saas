@@ -1,25 +1,23 @@
 package fortscale.web.rest;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-
-import fortscale.services.dataentity.DataEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import fortscale.services.UserServiceFacade;
 import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataentity.QueryFieldFunction;
+import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querydto.DataQueryField;
-import fortscale.services.dataqueries.querydto.FieldFunction;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.services.UserServiceFacade;
 import fortscale.services.exceptions.InvalidValueException;
+import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.ClassifierService;
-
 import fortscale.utils.logging.Logger;
+import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
+import fortscale.web.beans.DataBean;
+import fortscale.web.beans.UserIdBean;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
@@ -31,14 +29,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
-import fortscale.services.exceptions.UnknownResourceException;
-import fortscale.utils.logging.annotation.LogException;
-import fortscale.web.beans.DataBean;
-import fortscale.web.beans.UserIdBean;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("/api/**")
@@ -60,6 +53,8 @@ public class ApiController extends BaseController {
     private DataEntitiesConfig dataEntitiesConfig;
 
 	private Cache<String, DataBean<List<Map<String, Object>>>> investigateQueryCache;
+
+
 
 	/**
 	 * Limit for results of 1 query in the cache
@@ -193,6 +188,7 @@ public class ApiController extends BaseController {
         DataBean<List<DataEntity>> entities = new DataBean<List<DataEntity>>();
         try {
             entities.setData(dataEntitiesConfig.getAllLogicalEntities());
+
         }
         catch(Exception error){
             throw new InvalidValueException("Can't get entities. Error: " + error.getMessage());
@@ -227,6 +223,7 @@ public class ApiController extends BaseController {
         DataQueryDTO dataQueryObject;
         DataQueryRunner dataQueryRunner;
 
+
         try {
             dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
         } catch (Exception e) {
@@ -242,8 +239,24 @@ public class ApiController extends BaseController {
             throw new InvalidValueException("Couldn't create query generator: " + error.getMessage());
         }
 
+
+
+
         try {
-            // Generates query
+
+
+
+			//translate the data query if needed (in case he have base entity referring break it to n data queries  for each leaf that extend this base entities )
+			List<DataQueryDTO> translatedDataQuery = dataQueryRunner.translateAbstarctDataQuery(dataQueryObject,dataEntitiesConfig.getEntitiesTrees());
+
+
+			//Execute each dto in the translated queries list and combine the result in the end
+			for (DataQueryDTO partOfTranslatedQuyre : translatedDataQuery)
+			{
+
+			}
+
+			// Generates query
             String query = dataQueryRunner.generateQuery(dataQueryObject);
 
             // Add offset and limit according to page
@@ -310,7 +323,14 @@ public class ApiController extends BaseController {
         catch (InvalidQueryException e) {
             throw new InvalidValueException("Invalid query to parse. Error: " + e.getMessage());
         }
+
+		catch (Exception e)
+		{
+			throw new InvalidValueException("Invalid query to parse. Error: " + e.getMessage());
+		}
     }
+
+
 
 	/**
 	 *
