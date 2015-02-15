@@ -94,14 +94,21 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
     @Test(expected = KafkaPublisherException.class)
     public void wrappedProcess_kafkaException() throws Exception {
         //stub
-        when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject());
+        Map map = new HashMap();
+        map.put("username", "myUser");
+        when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
         doThrow(new RuntimeException()).when(messageCollector).send(any(OutgoingMessageEnvelope.class));
 
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
         // run the process on the envelope
+        task.setUsernameFieldName("username");
         task.wrappedProcess(envelope , messageCollector, taskCoordinator);
+        task.wrappedClose();
 
+        //reset the mocks so it clears counters for the sake of next test
+        reset(vpnEnrichService);
+        reset(messageCollector);
     }
 }
