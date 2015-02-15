@@ -196,6 +196,14 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         }
         entity.setIsAbstract(isAbstractEntity);
 
+        Boolean showInExplore = entityConfig.getShowInExplore();
+        if (showInExplore == null){
+            String showInExploreStr   = getExtendableValue(entityId, "show_in_explore");
+            showInExplore = showInExploreStr != null && showInExploreStr.equals("true");
+            entityConfig.setShowInExplore(showInExplore);
+        }
+        entity.setShowInExplore(showInExplore);
+
         String extendsEntity = getBaseEntityId(entityId);
         entity.setExtendsEntity(extendsEntity);
 

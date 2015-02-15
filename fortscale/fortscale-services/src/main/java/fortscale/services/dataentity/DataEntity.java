@@ -15,6 +15,7 @@ public class DataEntity {
     String shortName;
     String extendsEntity;
     Boolean isAbstract;
+    Boolean showInExplore;
     List<DataEntityField> fields;
     HashMap<String, DataEntityField> fieldsIndex;
     List<QuerySort> defaultSort;
@@ -79,6 +80,9 @@ public class DataEntity {
     public Boolean getIsAbstract(){return isAbstract;}
 
     public void setIsAbstract(Boolean isAbstract){this.isAbstract = isAbstract;}
+
+    public void setShowInExplore(Boolean showInExplore){this.showInExplore = showInExplore;}
+    public Boolean getShowInExplore(){return showInExplore;}
 
     public List<DataEntityField> getFields() {
         return fields;
