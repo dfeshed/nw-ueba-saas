@@ -5,7 +5,6 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.services.CachingService;
-import fortscale.services.CachingServiceWithBlackList;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
@@ -124,10 +123,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         if (topicToCacheMap.containsKey(topic)) {
             // get the concrete cache and pass it the update check  message that arrive
             CachingService cachingService = topicToCacheMap.get(topic);
-            cachingService.getCache().putFromString((String) envelope.getKey(), (String) envelope.getMessage());
-            if (cachingService instanceof CachingServiceWithBlackList){
-                ((CachingServiceWithBlackList) cachingService).removeFromBlackList((String) envelope.getMessage());
-            }
+            cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
         } else {
             // process event message
             String messageText = (String)envelope.getMessage();

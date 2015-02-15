@@ -3,7 +3,7 @@ package fortscale.services.ipresolving;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.dao.ComputerLoginEventRepository;
 import fortscale.services.cache.CacheHandler;
-import fortscale.utils.TimeRange;
+import org.apache.commons.lang3.Range;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -29,7 +29,7 @@ public class ComputerLoginResolverTest {
 	private CacheHandler<String,ComputerLoginEvent> cache;
 
 	@Mock
-	private CacheHandler<String,TimeRange> ipBlackListCache;
+	private CacheHandler<String,Range> ipBlackListCache;
 
 	@InjectMocks
 	private ComputerLoginResolver computerLoginResolver;
@@ -43,6 +43,7 @@ public class ComputerLoginResolverTest {
 		MockitoAnnotations.initMocks(this);
 		computerLoginResolver.setShouldUseBlackList(true);
 		computerLoginResolver.setUseCacheForResolving(true);
+		computerLoginResolver.setIpToHostNameUpdateResolutionInMins(60);
 		computerLoginResolver = spy(computerLoginResolver);
 		now = System.currentTimeMillis();
 	}
@@ -72,7 +73,7 @@ public class ComputerLoginResolverTest {
 
 	@Test
 	public void isToUpdate_should_return_true_when_cached_resolved_is_old(){
-		ComputerLoginEvent newEvent = createComputerLoginEvent("192.168.1.1", "pick-me", now + 150);
+		ComputerLoginEvent newEvent = createComputerLoginEvent("192.168.1.1", "pick-me", now + 60*60*1000 +150);
 		ComputerLoginEvent cached = createComputerLoginEvent("192.168.1.1", "pick-me", now + 100);
 		when(cache.get("192.168.1.1")).thenReturn(cached);
 		assertEquals(true, computerLoginResolver.isToUpdate(newEvent));
@@ -92,7 +93,7 @@ public class ComputerLoginResolverTest {
 		ComputerLoginEvent actual = computerLoginResolver.getComputerLoginEvent("192.168.1.1", now + 150);
 
 		// assert
-		verify(computerLoginResolver, times(1)).addToBlackList("192.168.1.1",now+150,null,now+150, now+150);
+		verify(computerLoginResolver, times(1)).addToBlackList("192.168.1.1",now+150, now+150);
 	}
 
 	@Test
@@ -112,7 +113,7 @@ public class ComputerLoginResolverTest {
 		ComputerLoginEvent cached = createComputerLoginEvent("192.168.1.1", "pick-me", now + 100);
 		when(cache.get("192.168.1.1")).thenReturn(cached);
 		when(ipBlackListCache.containsKey("192.168.1.1")).thenReturn(true);
-		when(ipBlackListCache.get("192.168.1.1")).thenReturn(new TimeRange(now+90,now+270));
+		when(ipBlackListCache.get("192.168.1.1")).thenReturn(Range.between(now+90,now+270));
 
 		// act
 		ComputerLoginEvent actual = computerLoginResolver.getComputerLoginEvent("192.168.1.1", now + 100);
@@ -157,30 +158,30 @@ public class ComputerLoginResolverTest {
 	public void addToBlackList_should_do_nothing_since_should_not_use_blacklist(){
 		ComputerLoginEvent cached = createComputerLoginEvent("192.168.1.1", "pick-me", now + 100);
 		computerLoginResolver.setShouldUseBlackList(false);
-		computerLoginResolver.addToBlackList(cached.getIpaddress(),cached.getTimestampepoch(), cached, cached.getTimestampepoch() - 100, cached.getTimestampepoch() + 2 );
-		verify(ipBlackListCache,never()).put(anyString(),any(TimeRange.class));
+		computerLoginResolver.addToBlackList(cached.getIpaddress(),cached.getTimestampepoch() - 100, cached.getTimestampepoch() + 2 );
+		verify(ipBlackListCache,never()).put(anyString(),any(Range.class));
 	}
 
 	@Test
 	public void addToBlackList_should_add_ip_to_blacklist_with_empty_range(){
 
-		computerLoginResolver.addToBlackList("192.168.1.1",123l, null,456l,789l);
-		verify(ipBlackListCache, times(1)).put(anyString(), eq(new TimeRange(456l, null)));
+		computerLoginResolver.addToBlackList("192.168.1.1",456l,789l);
+		verify(ipBlackListCache, times(1)).put(anyString(), eq(Range.between(456l, Long.MAX_VALUE)));
 	}
 
 	@Test
 	public void addToBlackList_should_add_ip_to_blacklist_with_only_start_timestamp(){
 		ComputerLoginEvent cached = createComputerLoginEvent("192.168.1.1", "pick-me", now + 100);
-		computerLoginResolver.addToBlackList(cached.getIpaddress(),cached.getTimestampepoch() + 205, cached, cached.getTimestampepoch() - 100, cached.getTimestampepoch() + 210);
-		verify(ipBlackListCache, times(1)).put(eq(cached.getIpaddress()),eq(new TimeRange(cached.getTimestampepoch() - 100,null)));
+		computerLoginResolver.addToBlackList(cached.getIpaddress(),cached.getTimestampepoch() - 100, cached.getTimestampepoch() + 210);
+		verify(ipBlackListCache, times(1)).put(eq(cached.getIpaddress()),eq(Range.between(cached.getTimestampepoch() - 100,Long.MAX_VALUE)));
 	}
 
 	@Test
 	public void addToBlackList_should_add_ip_to_blacklist_with_only_end_timestamp(){
 		ComputerLoginEvent saved = createComputerLoginEvent("192.168.1.1", "pick-me", now + 210);
 		when(computerLoginEventRepository.findByIpaddressAndTimestampepochGreaterThanEqual(anyString(), any(Long.class), any(Pageable.class))).thenReturn(Arrays.asList(saved));
-		computerLoginResolver.addToBlackList(saved.getIpaddress(), 123l, null, 456l,789l);
-		verify(ipBlackListCache, times(1)).put(eq(saved.getIpaddress()),eq(new TimeRange(456l,now+210)));
+		computerLoginResolver.addToBlackList(saved.getIpaddress(), 456l,789l);
+		verify(ipBlackListCache, times(1)).put(eq(saved.getIpaddress()),eq(Range.between(456l,now+210)));
 	}
 
 	@Test
@@ -188,8 +189,8 @@ public class ComputerLoginResolverTest {
 		ComputerLoginEvent cached = createComputerLoginEvent("192.168.1.1", "pick-me", now + 100);
 		ComputerLoginEvent saved = createComputerLoginEvent("192.168.1.1", "pick-me", now + 210);
 		when(computerLoginEventRepository.findByIpaddressAndTimestampepochGreaterThanEqual(anyString(), any(Long.class), any(Pageable.class))).thenReturn(Arrays.asList(saved));
-		computerLoginResolver.addToBlackList(cached.getIpaddress(), cached.getTimestampepoch() + 205, cached,cached.getTimestampepoch() - 100, cached.getTimestampepoch() + 210);
-		verify(ipBlackListCache, times(1)).put(eq(saved.getIpaddress()),eq(new TimeRange(cached.getTimestampepoch() - 100,now+210)));
+		computerLoginResolver.addToBlackList(cached.getIpaddress(), cached.getTimestampepoch() - 100, cached.getTimestampepoch() + 210);
+		verify(ipBlackListCache, times(1)).put(eq(saved.getIpaddress()),eq(Range.between(cached.getTimestampepoch() - 100,now+210)));
 	}
 
 	@Test
@@ -198,9 +199,9 @@ public class ComputerLoginResolverTest {
 		ComputerLoginEvent saved = createComputerLoginEvent("192.168.1.1", "pick-me", now + 210);
 		when(computerLoginEventRepository.findByIpaddressAndTimestampepochGreaterThanEqual(anyString(), any(Long.class), any(Pageable.class))).thenReturn(Arrays.asList(saved));
 		when(ipBlackListCache.containsKey(cached.getIpaddress())).thenReturn(true);
-		when(ipBlackListCache.get(cached.getIpaddress())).thenReturn(new TimeRange(now+600,null));
-		computerLoginResolver.addToBlackList(cached.getIpaddress(), cached.getTimestampepoch() + 205, cached,cached.getTimestampepoch() - 100, cached.getTimestampepoch() + 210);
-		verify(ipBlackListCache, never()).put(eq(saved.getIpaddress()),any(TimeRange.class));
+		when(ipBlackListCache.get(cached.getIpaddress())).thenReturn(Range.between(now+600,Long.MAX_VALUE));
+		computerLoginResolver.addToBlackList(cached.getIpaddress(), cached.getTimestampepoch() - 100, cached.getTimestampepoch() + 210);
+		verify(ipBlackListCache, never()).put(eq(saved.getIpaddress()),any(Range.class));
 	}
 
 
@@ -210,14 +211,14 @@ public class ComputerLoginResolverTest {
 		computerLoginResolver.setShouldUseBlackList(false);
 		computerLoginResolver.removeFromBlackList(cached);
 		verify(ipBlackListCache,never()).remove(anyString());
-		verify(ipBlackListCache,never()).put(eq(cached.getIpaddress()),any(TimeRange.class));
+		verify(ipBlackListCache,never()).put(eq(cached.getIpaddress()),any(Range.class));
 	}
 
 	@Test
-	public void removeFromBlackList_should_remove_from_blacklist_when_new_time_range_intersact_with_the_old_one(){
+	public void removeFromBlackList_should_remove_from_blacklist_when_new_time_range_intersect_with_the_old_one(){
 		ComputerLoginEvent newEvent = createComputerLoginEvent("192.168.1.1", "pick-me", now + 100);
 		when(ipBlackListCache.containsKey(newEvent.getIpaddress())).thenReturn(true);
-		when(ipBlackListCache.get(newEvent.getIpaddress())).thenReturn(new TimeRange(now+150,now+270));
+		when(ipBlackListCache.get(newEvent.getIpaddress())).thenReturn(Range.between(now + 150, now + 270));
 		computerLoginResolver.removeFromBlackList(newEvent);
 		verify(ipBlackListCache, times(1)).remove(newEvent.getIpaddress());
 	}
@@ -226,8 +227,8 @@ public class ComputerLoginResolverTest {
 	public void removeFromBlackList_should_update_blacklist_when_new_time_range_limits_the_old_one(){
 		ComputerLoginEvent newEvent = createComputerLoginEvent("192.168.1.1", "pick-me", now + 100);
 		when(ipBlackListCache.containsKey(newEvent.getIpaddress())).thenReturn(true);
-		when(ipBlackListCache.get(newEvent.getIpaddress())).thenReturn(new TimeRange(now+90,now+270));
+		when(ipBlackListCache.get(newEvent.getIpaddress())).thenReturn(Range.between(now+90,now+270));
 		computerLoginResolver.removeFromBlackList(newEvent);
-		verify(ipBlackListCache,times(1)).put(eq(newEvent.getIpaddress()), eq(new TimeRange(now + 90, now + 100)));
+		verify(ipBlackListCache,times(1)).put(eq(newEvent.getIpaddress()), eq(Range.between(now + 90, now + 100)));
 	}
 }

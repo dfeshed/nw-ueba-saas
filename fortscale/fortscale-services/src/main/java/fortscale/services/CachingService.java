@@ -12,4 +12,6 @@ public interface CachingService<K,T> {
 	CacheHandler<K,T> getCache();
 
 	void setCache(CacheHandler<K,T> cache);
+
+	void handleNewValue(String key, String value) throws Exception;
 }

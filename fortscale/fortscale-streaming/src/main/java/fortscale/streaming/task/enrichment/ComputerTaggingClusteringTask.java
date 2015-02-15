@@ -141,12 +141,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 		if (topicToServiceMap.containsKey(inputTopic)) {
 			String key = (String) envelope.getKey();
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
-			if(envelope.getMessage() == null){
-				cachingService.getCache().remove(key);
-			}
-			else {
-				cachingService.getCache().putFromString(key, (String) envelope.getMessage());
-			}
+			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
 			// parse the message into json
 			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);

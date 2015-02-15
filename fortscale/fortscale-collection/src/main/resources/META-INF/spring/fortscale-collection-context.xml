@@ -87,8 +87,14 @@
 
 	<!-- ip to hostname singleton service bean for use in fortscale collection -->
 	<bean id="dnsResolver" class="fortscale.services.ipresolving.DnsResolver" scope="singleton" />
-	<bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" />
-	<bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" />
+	<bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" >
+		<constructor-arg name="shouldUseBlackList" value="${dhcp.resolver.shouldUseBlackList:true}" />
+		<constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
+	</bean>
+	<bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" >
+		<constructor-arg name="shouldUseBlackList" value="${computer.login.resolver.shouldUseBlackList:true}" />
+		<constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
+	</bean>
 	<bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
 
 
