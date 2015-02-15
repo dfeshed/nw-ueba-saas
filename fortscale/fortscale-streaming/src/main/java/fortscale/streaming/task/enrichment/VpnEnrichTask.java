@@ -116,7 +116,9 @@ public class VpnEnrichTask extends AbstractStreamTask {
     }
 
 
-
+    public void setUsernameFieldName(String usernameFieldName) {
+        this.usernameFieldName = usernameFieldName;
+    }
 
     @Override
     protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {

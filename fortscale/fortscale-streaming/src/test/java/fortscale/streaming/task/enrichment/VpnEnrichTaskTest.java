@@ -5,6 +5,7 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.vpn.VpnEnrichService;
 import fortscale.streaming.task.GeneralTaskTest;
 import net.minidev.json.JSONObject;
+import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
@@ -21,6 +22,11 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
@@ -61,11 +67,14 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
     @Test
     public void wrappedProcess_normal() throws Exception {
         //stub
-        when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject());
+        Map map = new HashMap();
+        map.put("username", "myUser");
+        when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
         // run the process on the envelope
+        task.setUsernameFieldName("username");
         task.wrappedProcess(envelope , messageCollector, taskCoordinator);
         task.wrappedClose();
         // validate the services were read
