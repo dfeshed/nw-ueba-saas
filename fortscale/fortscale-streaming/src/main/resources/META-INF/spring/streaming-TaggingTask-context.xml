@@ -56,7 +56,7 @@
     <bean id="dhcpBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${dhcp.resolver.cache.max.items:30000}" />
         <constructor-arg name="timeToExpire" value="${dhcp.resolver.blacklist.timeToExpireSec:3600}" />
-        <constructor-arg name="clazz" value="fortscale.utils.TimeRange" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
     <bean id="loginResolverCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
@@ -65,7 +65,7 @@
     <bean id="loginBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
         <constructor-arg name="timeToExpire" value="${computer.login.resolver.blacklist.timeToExpireSec:3600}" />
-        <constructor-arg name="clazz" value="fortscale.utils.TimeRange" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
 
     <!-- ip to hostname non-singleton service bean for use in fortscale collection -->
