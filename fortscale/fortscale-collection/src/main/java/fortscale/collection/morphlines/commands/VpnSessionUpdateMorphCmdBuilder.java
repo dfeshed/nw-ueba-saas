@@ -132,7 +132,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			if(closeVpnSessionData.getSessionId() != null){
 				vpnOpenSession = vpnService.findBySessionId(closeVpnSessionData.getSessionId());
 			} else{
-				vpnOpenSession = vpnService.findByNormalizeUsernameAndSourceIp(closeVpnSessionData.getNormalizeUsername(), closeVpnSessionData.getSourceIp());
+				vpnOpenSession = vpnService.findByUsernameAndSourceIp(closeVpnSessionData.getNormalizeUsername(), closeVpnSessionData.getSourceIp());
 			}
 			return vpnOpenSession;
 		}
