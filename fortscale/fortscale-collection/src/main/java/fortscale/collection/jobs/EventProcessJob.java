@@ -1,9 +1,7 @@
 package fortscale.collection.jobs;
 
-
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.io.BufferedLineReader;
-import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -19,6 +17,7 @@ import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.*;
@@ -354,7 +353,13 @@ public class EventProcessJob implements Job {
 			}
 		}
 		partitionsWriter.clearNewPartitions();
-		
+		try {
+			partitionsWriter.close();
+		} catch (Exception e) {
+			exceptions.add(e);
+		}
+
+
 		try {
 			impalaClient.refreshTable(impalaTableName);
 		} catch (Exception e) {
