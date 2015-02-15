@@ -74,7 +74,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
         String usageTypeFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.usageType.field"));
         String longtitudeFieldName = getConfigString(config, "fortscale.events.vpn.longtitude.field");
         String latitudeFieldName = getConfigString(config, "fortscale.events.vpn.latitude.field");
-        usernameFieldName = getConfigString(config, "fortscale.events.vpn.username.field");
+        usernameFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.username.field"));
                 //data buckets field names:
                 String totalbytesFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.totalbytes.field"));
         String readbytesFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.readbytes.field"));
