@@ -1,13 +1,8 @@
 package fortscale.utils.hdfs;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import fortscale.utils.TimestampUtils;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
+import fortscale.utils.hdfs.split.FileSplitStrategy;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -17,9 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-import fortscale.utils.TimestampUtils;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
-import fortscale.utils.hdfs.split.FileSplitStrategy;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HDFS writer that writes to partitioned files
@@ -129,6 +128,7 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 		}
 				
 		// cleanup members
+		fs.close();
 		fs = null;
 		writers = new HashMap<String, BufferedWriter>(2);
 		
