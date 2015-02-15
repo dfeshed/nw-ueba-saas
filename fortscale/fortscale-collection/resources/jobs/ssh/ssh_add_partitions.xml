@@ -39,7 +39,7 @@
 						<value>${hdfs.user.data.ssh.retention}</value>
 					</entry>
 	            </job-data-map>
- 				<cron-expression>0 36 3 * * ?</cron-expression>
+ 				<cron-expression>0 10 2 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
@@ -67,7 +67,7 @@
 						<value>${hdfs.user.processeddata.sshscores.retention}</value>
 					</entry>
             	</job-data-map>
- 				<cron-expression>0 52 3 * * ?</cron-expression>
+ 				<cron-expression>0 20 2 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
@@ -95,7 +95,7 @@
 						<value>${hdfs.user.processeddata.sshscores.top.retention}</value>
 					</entry>
             	</job-data-map>
- 				<cron-expression>0 52 4 * * ?</cron-expression>
+ 				<cron-expression>0 30 2 * * ?</cron-expression>
 			</cron>
 		</trigger>
 
@@ -123,7 +123,7 @@
 						<value>${hdfs.user.enricheddata.ssh.retention}</value>
 					</entry>
 				</job-data-map>
-				<cron-expression>0 36 3 * * ?</cron-expression>
+				<cron-expression>0 40 2 * * ?</cron-expression>
 			</cron>
 		</trigger>
 	</schedule>

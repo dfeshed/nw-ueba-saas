@@ -7,37 +7,35 @@
 
 	<schedule>
 		<job>
-			<name>Scoring</name>
-			<group>SSH</group>
-			<description>Running ssh Scoring</description>
+			<name>4769Enriched</name>
+			<group>SecurityEvents</group>
+			<description>Running enriched 4769 scoring</description>
 			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.data.ssh.table.name}</value>
+					<value>${impala.enricheddata.security.events.table.name}</value>
 				</entry>
 				<entry>
 					<key>epochtimeField</key>
-					<value>${impala.data.table.fields.epochtime}</value>
+					<value>${impala.enricheddata.security.events.table.field.date_time_unix}</value>
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>${kafka.ssh.struct.topic}</value>
+					<value>kafka.fortscale-4769-event-filtered</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>
-					<value>${impala.data.ssh.table.field.username}</value>
+					<value>${impala.enricheddata.security.events.table.field.account_name}</value>
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>
-					<value>${impala.data.ssh.table.fields}</value>
+					<value>${impala.enricheddata.security.events.table.fields}</value>
 				</entry>
 			</job-data-map>
-			
 		</job>
 	</schedule>
-
 
 </job-scheduling-data>
