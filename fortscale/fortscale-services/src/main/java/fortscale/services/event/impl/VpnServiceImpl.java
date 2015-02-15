@@ -77,8 +77,8 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 	
 	@Override
-	public VpnSession findByNormalizeUsernameAndSourceIp(String normalizeUsername, String sourceIp){
-		return vpnSessionRepository.findByNormalizeUsernameAndSourceIp(normalizeUsername, sourceIp);
+	public VpnSession findByUsernameAndSourceIp(String normalizeUsername, String sourceIp){
+		return vpnSessionRepository.findByUsernameAndSourceIp(normalizeUsername, sourceIp);
 	}
 	
 	@Override
@@ -125,7 +125,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		if(StringUtils.isNotEmpty(vpnSessionUpdate.getSessionId())){
 			ret = vpnSessionRepository.findBySessionId(vpnSessionUpdate.getSessionId());
 		} else if(StringUtils.isNotEmpty(vpnSessionUpdate.getNormalizeUsername()) && StringUtils.isNotEmpty(vpnSessionUpdate.getSourceIp())){
-			ret = vpnSessionRepository.findByNormalizeUsernameAndSourceIp(vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
+			ret = vpnSessionRepository.findByUsernameAndSourceIp(vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
 		}
 		
 		return ret;
@@ -271,7 +271,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		logger.debug("looking for vpn sessions from {} which were created at most {} hours before {} and closed at most {} hours before that same time", prevCountry, vpnGeoHoppingOpenSessionThresholdInHours, curVpnSession.getCreatedAt(),
 				vpnGeoHoppingCloseSessionThresholdInHours);
 		PageRequest pageRequest = new PageRequest(0, 10, Direction.DESC, VpnSession.createdAtEpochFieldName);
-		List<VpnSession> vpnSessions = vpnSessionRepository.findByNormalizeUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
+		List<VpnSession> vpnSessions = vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
 		List<VpnSession> ret = new ArrayList<>();
 		for(VpnSession vpnSession: vpnSessions){
 			if(!isCountryValid(vpnSession)){
@@ -294,7 +294,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		GeoHoppingData ret = userToGeoHoppingData.get(curVpnSession.getNormalizeUsername());
 		if(ret == null){
 			PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
-			List<VpnSession> vpnSessions = vpnSessionRepository.findByNormalizeUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
+			List<VpnSession> vpnSessions = vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
 			if(!vpnSessions.isEmpty()){
 				for(VpnSession vpnSession: vpnSessions){
 					if(!isCountryValid(vpnSession)){

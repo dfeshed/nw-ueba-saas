@@ -13,8 +13,8 @@ import fortscale.domain.core.AbstractDocument;
 
 @Document(collection=VpnSession.collectionName)
 @CompoundIndexes({
-	@CompoundIndex(name="normalizeUsernameSourcIpIdx", def = "{'normalizeUsername': 1, 'sourceIp': 1}"),
-	@CompoundIndex(name="normalizeUsernameCreatedAtEpochIdx", def = "{'normalizeUsername': 1, 'createdAtEpoch': -1}"),
+	@CompoundIndex(name="usernameSourcIpIdx", def = "{'username': 1, 'sourceIp': 1}"),
+	@CompoundIndex(name="usernameCreatedAtEpochIdx", def = "{'username': 1, 'createdAtEpoch': -1}"),
 })
 public class VpnSession extends AbstractDocument{
 	/**
@@ -29,7 +29,7 @@ public class VpnSession extends AbstractDocument{
 	
 	
 	@Indexed
-	private String normalizeUsername;
+	private String username;
 	
 	@Indexed
 	private String sourceIp;
@@ -52,7 +52,7 @@ public class VpnSession extends AbstractDocument{
 	
 	private String hostname;	
 	
-	private String username;
+	private String normalizeUsername;
 	
 	private String country;
 	
