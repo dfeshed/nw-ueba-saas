@@ -98,7 +98,34 @@
  				<cron-expression>0 52 4 * * ?</cron-expression>
 			</cron>
 		</trigger>
-		
+
+		<trigger>
+			<cron>
+				<name>ssh_enriched_events_partition_sync_hourly_trigger</name>
+				<group>SSH</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>SSH</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.enricheddata.ssh.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.enricheddata.ssh.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>${impala.enricheddata.ssh.table.partition.type}</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>${hdfs.user.enricheddata.ssh.retention}</value>
+					</entry>
+				</job-data-map>
+				<cron-expression>0 36 3 * * ?</cron-expression>
+			</cron>
+		</trigger>
 	</schedule>
 
 </job-scheduling-data>

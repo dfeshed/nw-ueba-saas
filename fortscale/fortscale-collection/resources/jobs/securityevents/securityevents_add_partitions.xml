@@ -183,9 +183,34 @@
  				<cron-expression>0 52 3 * * ?</cron-expression>
 			</cron>
 		</trigger>
-		
-		
-		
+
+		<trigger>
+			<cron>
+				<name>4769_enriched_events_partition_sync_hourly_trigger</name>
+				<group>SecurityEvents</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>SecurityEvents</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.enricheddata.security.events.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.enricheddata.security.events.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>${impala.enricheddata.security.events.table.partition.type}</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>${hdfs.user.enricheddata.security.events.retention}</value>
+					</entry>
+				</job-data-map>
+				<cron-expression>0 37 3 * * ?</cron-expression>
+			</cron>
+		</trigger>
 	</schedule>
 
 </job-scheduling-data>
