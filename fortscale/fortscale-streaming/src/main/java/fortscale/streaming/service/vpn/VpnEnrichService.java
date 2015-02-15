@@ -170,9 +170,7 @@ public class VpnEnrichService {
 
 
     private void addOpenSessionDataToRecord(VpnSessionUpdateConfig vpnSessionUpdateConfig, JSONObject event, VpnSession openVpnSessionData){
-        if(event.get(vpnEvents.NORMALIZED_USERNAME) == null || event.get(vpnEvents.NORMALIZED_USERNAME).equals("")){
-            event.put(vpnEvents.NORMALIZED_USERNAME, openVpnSessionData.getNormalizeUsername());
-        }
+
         if(event.get(vpnEvents.USERNAME) == null || event.get(vpnEvents.USERNAME).equals("")){
             event.put(vpnEvents.USERNAME, openVpnSessionData.getUsername());
         }

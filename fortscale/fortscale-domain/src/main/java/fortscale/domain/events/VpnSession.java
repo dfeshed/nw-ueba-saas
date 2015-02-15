@@ -52,8 +52,6 @@ public class VpnSession extends AbstractDocument{
 	
 	private String hostname;	
 	
-	private String normalizeUsername;
-	
 	private String country;
 	
 	private String countryIsoCode;
@@ -81,14 +79,6 @@ public class VpnSession extends AbstractDocument{
 	private Double latitude;
 	
 	private Boolean geoHopping = false;
-
-	public String getNormalizeUsername() {
-		return normalizeUsername;
-	}
-
-	public void setNormalizeUsername(String normalizeUsername) {
-		this.normalizeUsername = normalizeUsername;
-	}
 
 	public String getSourceIp() {
 		return sourceIp;

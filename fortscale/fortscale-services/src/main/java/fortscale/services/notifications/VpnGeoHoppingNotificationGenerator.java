@@ -54,21 +54,21 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 	public void createNotifications(List<VpnSession> vpnSessions){
 		List<Notification> notifications = new ArrayList<>();
 		for(VpnSession vpnSession: vpnSessions){
-			User user = userRepository.findByUsername(vpnSession.getNormalizeUsername());
+			User user = userRepository.findByUsername(vpnSession.getUsername());
 			Notification notification = new Notification();
 			long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() : vpnSession.getCreatedAtEpoch();
 			notification.setTs(TimestampUtils.convertToSeconds(ts));
 			notification.setIndex(buildIndex(vpnSession));
 			notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
-			notification.setName(vpnSession.getNormalizeUsername());
+			notification.setName(vpnSession.getUsername());
 			notification.setCause(VPN_GEO_HOPPING_CAUSE);
 			notification.setUuid(UUID.randomUUID().toString());
 			if(user != null){
 				notification.setDisplayName(user.getDisplayName());
 				notification.setFsId(user.getId());
 			} else{
-				notification.setDisplayName(vpnSession.getNormalizeUsername());
-				notification.setFsId(vpnSession.getNormalizeUsername());
+				notification.setDisplayName(vpnSession.getUsername());
+				notification.setFsId(vpnSession.getUsername());
 			}
 			
 			notification.setAttributes(getVpnSessionAttributes(vpnSession));
@@ -88,7 +88,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 	
 	private String buildIndex(VpnSession vpnSession){
 		StringBuilder builder = new StringBuilder();
-		builder.append(VPN_GEO_HOPPING_CAUSE).append("_").append(vpnSession.getNormalizeUsername()).append("_").append(vpnSession.getCountry()).append("_").append(vpnSession.getCreatedAtEpoch());
+		builder.append(VPN_GEO_HOPPING_CAUSE).append("_").append(vpnSession.getUsername()).append("_").append(vpnSession.getCountry()).append("_").append(vpnSession.getCreatedAtEpoch());
 		
 		return builder.toString();
 	}
