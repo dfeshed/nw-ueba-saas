@@ -39,6 +39,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
 
 
     private VpnEnrichService vpnEnrichService;
+    private String usernameFieldName;
 
 
     @Override
@@ -73,8 +74,9 @@ public class VpnEnrichTask extends AbstractStreamTask {
         String usageTypeFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.usageType.field"));
         String longtitudeFieldName = getConfigString(config, "fortscale.events.vpn.longtitude.field");
         String latitudeFieldName = getConfigString(config, "fortscale.events.vpn.latitude.field");
-        //data buckets field names:
-        String totalbytesFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.totalbytes.field"));
+        usernameFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.username.field"));
+                //data buckets field names:
+                String totalbytesFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.totalbytes.field"));
         String readbytesFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.readbytes.field"));
         String durationFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.duration.field"));
         String databucketFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.databucket.field"));
@@ -101,6 +103,10 @@ public class VpnEnrichTask extends AbstractStreamTask {
         String messageText = (String) envelope.getMessage();
         JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
         message = vpnEnrichService.processVpnEvent(message);
+        if(message.get(usernameFieldName) == null || message.get(usernameFieldName).equals("")){
+            logger.error("No username field in event {}. Dropping Record", messageText);
+            return;
+        }
         try {
             OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", vpnEnrichService.getOutputTopic()), vpnEnrichService.getPartitionKey(message), message.toJSONString());
             collector.send(output);
@@ -110,7 +116,9 @@ public class VpnEnrichTask extends AbstractStreamTask {
     }
 
 
-
+    public void setUsernameFieldName(String usernameFieldName) {
+        this.usernameFieldName = usernameFieldName;
+    }
 
     @Override
     protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {

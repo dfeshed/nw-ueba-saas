@@ -173,10 +173,10 @@ public class VpnF5Test {
 								(String)null,
 								(String)null,
 								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,",
-								(String)null
+								Apr_14_00_23_29_OUT + ",1397424209,,,,CLOSED,,,,,,,,0,0,0,,,,"
 						)
 				) ,
-				/*$(
+				$(
 						"Regular (BS) Successful VPN Authentication",
 						$(
 								Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
@@ -186,9 +186,9 @@ public class VpnF5Test {
 						$(
 								(String)null,
 								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,",
-								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
+								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
 						)
-				),*/
+				),
 				$(
 						"Regular (BS) Successful VPN Authentication in reverse order",
 						$(
@@ -211,7 +211,7 @@ public class VpnF5Test {
 								(String)null
 						)
 				),
-				/*$(
+				$(
 						"Regular (BS) Successful VPN Authentication in reverse order with end session",
 						$(
 								Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8784: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
@@ -221,9 +221,9 @@ public class VpnF5Test {
 						$(
 								(String)null,
 								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,",
-								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
+								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
 						)
-				),*/
+				),
 
 				$(
 						"Regular (BS) Failed VPN Authentication",
@@ -275,7 +275,7 @@ public class VpnF5Test {
 								Jan_2_19_11_09 + " server.bs.dom Feb 28 17:11:31 server notice tmm2[20226]: 01490521:5: 0a6c7b51: Session statistics - bytes in: 632880, bytes out: 2649665"
 						),
 						$(
-								(String) null
+								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
 						)
 				),
 
@@ -311,7 +311,7 @@ public class VpnF5Test {
 						$(
 								(String)null,
 								(String)null,
-								(String)null
+								Apr_14_00_23_29_OUT + "," + Apr_14_00_23_29_L + ",,,,CLOSED,,,,,,,,0,0,0,,,,"
 						)
 				)
 		);

@@ -77,8 +77,8 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 	
 	@Override
-	public VpnSession findByNormalizeUsernameAndSourceIp(String normalizeUsername, String sourceIp){
-		return vpnSessionRepository.findByNormalizeUsernameAndSourceIp(normalizeUsername, sourceIp);
+	public VpnSession findByUsernameAndSourceIp(String username, String sourceIp){
+		return vpnSessionRepository.findByUsernameAndSourceIp(username, sourceIp);
 	}
 	
 	@Override
@@ -93,7 +93,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 			vpnSession = vpnSessionUpdate;
 		} else{
 			vpnSession.setSourceIp(vpnSessionUpdate.getSourceIp());
-			vpnSession.setNormalizeUsername(vpnSessionUpdate.getNormalizeUsername());
+			vpnSession.setUsername(vpnSessionUpdate.getUsername());
 			vpnSession.setCreatedAt(vpnSessionUpdate.getCreatedAt());
 			vpnSession.setClosedAtEpoch(null);
 			vpnSession.setClosedAt(null);
@@ -124,8 +124,8 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		VpnSession ret = null;
 		if(StringUtils.isNotEmpty(vpnSessionUpdate.getSessionId())){
 			ret = vpnSessionRepository.findBySessionId(vpnSessionUpdate.getSessionId());
-		} else if(StringUtils.isNotEmpty(vpnSessionUpdate.getNormalizeUsername()) && StringUtils.isNotEmpty(vpnSessionUpdate.getSourceIp())){
-			ret = vpnSessionRepository.findByNormalizeUsernameAndSourceIp(vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
+		} else if(StringUtils.isNotEmpty(vpnSessionUpdate.getUsername()) && StringUtils.isNotEmpty(vpnSessionUpdate.getSourceIp())){
+			ret = vpnSessionRepository.findByUsernameAndSourceIp(vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
 		}
 		
 		return ret;
@@ -135,7 +135,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	public void updateCloseVpnSession(VpnSession vpnSessionUpdate) {
 		VpnSession vpnSession = findVpnSession(vpnSessionUpdate);
 		if(vpnSession == null){
-			logger.info("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
+			logger.info("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
 			return;
 		}
 
@@ -271,7 +271,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		logger.debug("looking for vpn sessions from {} which were created at most {} hours before {} and closed at most {} hours before that same time", prevCountry, vpnGeoHoppingOpenSessionThresholdInHours, curVpnSession.getCreatedAt(),
 				vpnGeoHoppingCloseSessionThresholdInHours);
 		PageRequest pageRequest = new PageRequest(0, 10, Direction.DESC, VpnSession.createdAtEpochFieldName);
-		List<VpnSession> vpnSessions = vpnSessionRepository.findByNormalizeUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
+		List<VpnSession> vpnSessions = vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
 		List<VpnSession> ret = new ArrayList<>();
 		for(VpnSession vpnSession: vpnSessions){
 			if(!isCountryValid(vpnSession)){
@@ -291,10 +291,10 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	
 	
 	private GeoHoppingData getGeoHoppingData(VpnSession curVpnSession, int vpnGeoHoppingOpenSessionThresholdInHours){
-		GeoHoppingData ret = userToGeoHoppingData.get(curVpnSession.getNormalizeUsername());
+		GeoHoppingData ret = userToGeoHoppingData.get(curVpnSession.getUsername());
 		if(ret == null){
 			PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
-			List<VpnSession> vpnSessions = vpnSessionRepository.findByNormalizeUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
+			List<VpnSession> vpnSessions = vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
 			if(!vpnSessions.isEmpty()){
 				for(VpnSession vpnSession: vpnSessions){
 					if(!isCountryValid(vpnSession)){
@@ -313,7 +313,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 					}
 				}
 				if(ret != null){
-					userToGeoHoppingData.put(curVpnSession.getNormalizeUsername(), ret);
+					userToGeoHoppingData.put(curVpnSession.getUsername(), ret);
 				}
 			}
 		}
@@ -325,7 +325,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		GeoHoppingData geoHoppingData = new GeoHoppingData();
 		geoHoppingData.curCountry = curVpnSession.getCountry();
 		geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
-		userToGeoHoppingData.put(curVpnSession.getNormalizeUsername(), geoHoppingData);
+		userToGeoHoppingData.put(curVpnSession.getUsername(), geoHoppingData);
 	}
 	
 	private boolean isCountryValid(VpnSession vpnSession){

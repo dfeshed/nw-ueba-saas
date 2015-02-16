@@ -123,8 +123,8 @@ public class VpnEnrichService {
             return event;
         }
 
-        // validate fields: session-ID or (Normalize-username and source-IP)
-        if (StringUtils.isEmpty(vpnSession.getSessionId()) && (StringUtils.isEmpty(vpnSession.getNormalizeUsername()) || StringUtils.isEmpty(vpnSession.getSourceIp()))) {
+        // validate fields: session-ID or (username and source-IP)
+        if (StringUtils.isEmpty(vpnSession.getSessionId()) && (StringUtils.isEmpty(vpnSession.getUsername()) || StringUtils.isEmpty(vpnSession.getSourceIp()))) {
             logger.warn("vpnSession should have either sessionId or username and sourceIP. Original record is: {}", event.toString());
             return event;
         }
@@ -163,16 +163,14 @@ public class VpnEnrichService {
         if(closeVpnSessionData.getSessionId() != null){
             vpnOpenSession = vpnService.findBySessionId(closeVpnSessionData.getSessionId());
         } else{
-            vpnOpenSession = vpnService.findByNormalizeUsernameAndSourceIp(closeVpnSessionData.getNormalizeUsername(), closeVpnSessionData.getSourceIp());
+            vpnOpenSession = vpnService.findByUsernameAndSourceIp(closeVpnSessionData.getUsername(), closeVpnSessionData.getSourceIp());
         }
         return vpnOpenSession;
     }
 
 
     private void addOpenSessionDataToRecord(VpnSessionUpdateConfig vpnSessionUpdateConfig, JSONObject event, VpnSession openVpnSessionData){
-        if(event.get(vpnEvents.NORMALIZED_USERNAME) == null || event.get(vpnEvents.NORMALIZED_USERNAME).equals("")){
-            event.put(vpnEvents.NORMALIZED_USERNAME, openVpnSessionData.getNormalizeUsername());
-        }
+
         if(event.get(vpnEvents.USERNAME) == null || event.get(vpnEvents.USERNAME).equals("")){
             event.put(vpnEvents.USERNAME, openVpnSessionData.getUsername());
         }

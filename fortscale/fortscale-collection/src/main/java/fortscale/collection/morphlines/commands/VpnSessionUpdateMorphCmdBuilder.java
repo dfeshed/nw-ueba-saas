@@ -93,7 +93,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			}
 
 			// validate fields: session-ID or (Normalize-username and source-IP)
-			if (StringUtils.isEmpty(vpnSession.getSessionId()) && (StringUtils.isEmpty(vpnSession.getNormalizeUsername()) || StringUtils.isEmpty(vpnSession.getSourceIp()))) {
+			if (StringUtils.isEmpty(vpnSession.getSessionId()) && (StringUtils.isEmpty(vpnSession.getUsername()) || StringUtils.isEmpty(vpnSession.getSourceIp()))) {
 				logger.warn("vpnSession should have either sessionId or username and sourceIP. Original record is: {}", inputRecord.toString());
 				return super.doProcess(inputRecord);
 			}
@@ -132,7 +132,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			if(closeVpnSessionData.getSessionId() != null){
 				vpnOpenSession = vpnService.findBySessionId(closeVpnSessionData.getSessionId());
 			} else{
-				vpnOpenSession = vpnService.findByNormalizeUsernameAndSourceIp(closeVpnSessionData.getNormalizeUsername(), closeVpnSessionData.getSourceIp());
+				vpnOpenSession = vpnService.findByUsernameAndSourceIp(closeVpnSessionData.getUsername(), closeVpnSessionData.getSourceIp());
 			}
 			return vpnOpenSession;
 		}
@@ -140,7 +140,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 		
 		private void addOpenSessionDataToRecord(Record record, VpnSession openVpnSessionData){
 			if(record.get(vpnEvents.NORMALIZED_USERNAME).isEmpty()){
-				record.put(vpnEvents.NORMALIZED_USERNAME, openVpnSessionData.getNormalizeUsername());
+				record.put(vpnEvents.NORMALIZED_USERNAME, openVpnSessionData.getUsername());
 			}
 			if(record.get(vpnEvents.USERNAME).isEmpty()){
 				record.put(vpnEvents.USERNAME, openVpnSessionData.getUsername());
