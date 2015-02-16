@@ -13,13 +13,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
 
 public class UsernameService implements InitializingBean, CachingService{
 	private static Logger logger = Logger.getLogger(UsernameService.class);
-
+	private static final int USERNAME_SERVICE_PAGE_SIZE = 1000;
 
 	private List<Set<String>> logUsernameSetList;
 	private List<HashMap<String, String>> logUsernameToUserIdMapList;
@@ -277,27 +279,42 @@ public class UsernameService implements InitializingBean, CachingService{
 	private String formatUserIdWithLogUsername(String userId, String logUsername){
 		return String.format("%s%s", userId, logUsername);
 	}
-	
-	public void update(){
-		List<User> users = userRepository.findAllExcludeAdInfo();
+
+	public void update() {
+		// Get number of users and calculate number of pages
+		long count = userRepository.count();
+		int numOfPages = (int)(((count - 1) / USERNAME_SERVICE_PAGE_SIZE) + 1);
+
+		// Initialize a map from LogEventsEnum to a set of UserIdWithLogUsername
+		Map<LogEventsEnum, Set<String>> map = new HashMap<>();
+		for (LogEventsEnum logEventsEnum : LogEventsEnum.values())
+			map.put(logEventsEnum, new HashSet<String>());
+
 		usernameToUserIdCache.clear();
-		for(User user: users){
-			if(user.getUsername() != null){
-				usernameToUserIdCache.put(user.getUsername(), user.getId());
-			}
-		}
-		for(LogEventsEnum logEventsEnum: LogEventsEnum.values()){
-			Set<String> logUsernameSet = new HashSet<>();
-			for(User user: users){
-				String logUsername = getLogUsername(logEventsEnum, user);
-				if(logUsername != null){
-					logUsernameSet.add(formatUserIdWithLogUsername(user.getId(), logUsername));
+		for (int i = 0; i < numOfPages; i++) {
+			Pageable pageable = new PageRequest(i, USERNAME_SERVICE_PAGE_SIZE);
+			List<User> listOfUsers = userRepository.findAllExcludeAdInfo(pageable);
+			// Iterate users on current page
+			for (User user : listOfUsers) {
+				String username = user.getUsername();
+				String userId = user.getId();
+
+				if (username != null)
+					usernameToUserIdCache.put(username, userId);
+
+				for (Map.Entry<LogEventsEnum, Set<String>> entry : map.entrySet()) {
+					String logUsername = getLogUsername(entry.getKey(), user);
+					if (logUsername != null)
+						entry.getValue().add(formatUserIdWithLogUsername(userId, logUsername));
 				}
 			}
-			logUsernameSetList.set(logEventsEnum.ordinal(), logUsernameSet);
 		}
+
+		// Update logUsername sets
+		for (Map.Entry<LogEventsEnum, Set<String>> entry : map.entrySet())
+			logUsernameSetList.set(entry.getKey().ordinal(), entry.getValue());
 	}
-	
+
 	public void addLogNormalizedUsername(LogEventsEnum eventId, String userId, String username){
 		logUsernameToUserIdMapList.get(eventId.ordinal()).put(username, userId);
 	}
