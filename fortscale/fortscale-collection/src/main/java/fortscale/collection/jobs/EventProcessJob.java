@@ -52,7 +52,7 @@ public class EventProcessJob implements Job {
 	private String normalizedUsernameField;
 	@Value("${impala.table.fields.username}")
 	private String usernameField;
-	@Value("${hadoop.writer.buffer.size:3000}")
+	@Value("${hadoop.writer.buffer.size:10000}")
 	protected int maxBufferSize;
 	@Value("${etl.sendTo.kafka:true}")
 	protected boolean defaultSendToKafka;
