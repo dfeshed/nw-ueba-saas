@@ -128,8 +128,11 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 		}
 				
 		// cleanup members
-		fs.close();
-		fs = null;
+        if (fs!=null) {
+			fs.close();
+			fs = null;
+		}
+
 		writers = new HashMap<String, BufferedWriter>(2);
 		
 		if (lastException!=null)
