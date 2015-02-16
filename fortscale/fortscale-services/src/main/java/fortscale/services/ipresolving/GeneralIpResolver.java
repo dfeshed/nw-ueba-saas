@@ -34,6 +34,7 @@ public abstract class GeneralIpResolver<T extends IpToHostname>  implements Cach
 
 	public GeneralIpResolver(boolean shouldUseBlackList, CacheHandler<String,Range<Long>> ipBlackListCache, Class<T> clazz ) {
 		this.ipBlackListCache = ipBlackListCache;
+		this.shouldUseBlackList = shouldUseBlackList;
         if (clazz != null) {
 			this.clazz = clazz;
 
