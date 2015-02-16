@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>VpnEnriched</name>
+			<name>VpnEnrichedToStreaming</name>
 			<group>VPN</group>
 			<description>Running enriched VPN scoring</description>
 			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
@@ -24,11 +24,11 @@
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>kafka.fortscale-vpn-event-filtered</value>
+					<value>fortscale-vpn-event-filtered</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>
-					<value>${impala.enricheddata.vpn.table.field.username}</value>
+					<value>${impala.enricheddata.vpn.table.field.normalized_username}</value>
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>

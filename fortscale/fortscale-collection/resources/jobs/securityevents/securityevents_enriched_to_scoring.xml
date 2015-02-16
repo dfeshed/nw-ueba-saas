@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>4769Enriched</name>
+			<name>4769EnrichedToStreaming</name>
 			<group>SecurityEvents</group>
 			<description>Running enriched 4769 scoring</description>
 			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
@@ -24,11 +24,11 @@
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>kafka.fortscale-4769-event-filtered</value>
+					<value>fortscale-4769-event-filtered</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>
-					<value>${impala.enricheddata.security.events.table.field.account_name}</value>
+					<value>${impala.enricheddata.security.events.table.field.normalized_username}</value>
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>

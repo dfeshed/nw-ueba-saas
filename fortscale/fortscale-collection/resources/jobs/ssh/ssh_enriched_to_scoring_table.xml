@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>SshEnriched</name>
+			<name>SshEnrichedToStreaming</name>
 			<group>SSH</group>
 			<description>Running enriched SSH scoring</description>
 			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
@@ -24,11 +24,11 @@
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>kafka.fortscale-ssh-computer-tagged-clustered</value>
+					<value>fortscale-ssh-computer-tagged-clustered</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>
-					<value>${impala.enricheddata.ssh.table.field.username}</value>
+					<value>${impala.enricheddata.ssh.table.field.normalized_username}</value>
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>
