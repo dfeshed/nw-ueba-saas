@@ -33,7 +33,8 @@ public abstract class GeneralIpResolver<T extends IpToHostname>  implements Cach
 	protected boolean shouldUseBlackList;
 
 	public GeneralIpResolver(boolean shouldUseBlackList, CacheHandler<String,Range<Long>> ipBlackListCache, Class<T> clazz ) {
-		if (clazz != null) {
+		this.ipBlackListCache = ipBlackListCache;
+        if (clazz != null) {
 			this.clazz = clazz;
 
 			mapper = new ObjectMapper();

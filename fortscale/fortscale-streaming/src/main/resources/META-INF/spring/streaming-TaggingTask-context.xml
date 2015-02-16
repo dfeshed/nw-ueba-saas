@@ -55,7 +55,7 @@
     </bean>
     <bean id="dhcpBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${dhcp.resolver.cache.max.items:30000}" />
-        <constructor-arg name="timeToExpire" value="${dhcp.resolver.blacklist.timeToExpireSec:3600}" />
+        <constructor-arg name="timeToExpire" value="${dhcp.resolver.blacklist.timeToExpireSec:7200}" />
         <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
     <bean id="loginResolverCache" class="fortscale.services.cache.MemoryBasedCache">
@@ -64,7 +64,7 @@
     </bean>
     <bean id="loginBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
-        <constructor-arg name="timeToExpire" value="${computer.login.resolver.blacklist.timeToExpireSec:3600}" />
+        <constructor-arg name="timeToExpire" value="${computer.login.resolver.blacklist.timeToExpireSec:7200}" />
         <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
 
@@ -72,11 +72,11 @@
     <bean id="dnsResolver" class="fortscale.services.ipresolving.DnsResolver" scope="singleton" />
     <bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" >
         <constructor-arg name="shouldUseBlackList" value="${dhcp.resolver.shouldUseBlackList:true}" />
-        <constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
+        <constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
     </bean>
     <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" >
         <constructor-arg name="shouldUseBlackList" value="${computer.login.resolver.shouldUseBlackList:true}" />
-        <constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
+        <constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
     </bean>
     <bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
 
