@@ -47,7 +47,9 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(EventsFromDataTableToStreamingJob.class);
 	
 	private static int EVENTS_DELTA_TIME_IN_SEC_DEFAULT = 14*24*60*60;
-	private static int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 1;
+	private static int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 1440; // 1 day
+	private static String IMPALA_TABLE_PARTITION_TYPE_DEFAULT = "daily";
+
 	private static final String IMPALA_TABLE_NAME_JOB_PARAMETER = "impalaTableName";
 	private static final String IMPALA_TABLE_FIELDS_JOB_PARAMETER = "impalaTableFields";
 	private static final String LATEST_EVENT_TIME_JOB_PARAMETER = "latestEventTime";
@@ -59,9 +61,10 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	private static final String SLEEP_FIELD_JOB_PARAMETER = "sleep";
 	private static final String FETCH_EVENTS_STEP_IN_MINUTES_JOB_PARAMETER = "fetchEventsStepInMinutes";
 	private static final String FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER = "fieldClusterGroupsRegexResource";
-	
+	private static final String IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER = "impalaTablePartitionType";
+
 	@Autowired
-	private JdbcOperations impalaJdbcTemplate;	
+	private JdbcOperations impalaJdbcTemplate;
 	
 	//parameters:
 	private String impalaTableName;
@@ -74,6 +77,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	private long latestEventTime;
 	private long deltaTimeInSec;
 	private int fetchEventsStepInMinutes;
+	private String impalaTablePartitionType;
 	private Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap<String, FieldRegexMatcherConverter>();
 
 	protected String getTableName(){
@@ -85,22 +89,19 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 
 		// get parameters values from the job data map
-		
 		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_NAME_JOB_PARAMETER);
 		impalaTableFields = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_FIELDS_JOB_PARAMETER);
-		
 		epochtimeField = jobDataMapExtension.getJobDataMapStringValue(map, EPOCH_TIME_FIELD_JOB_PARAMETER);
 		streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_FIELD_JOB_PARAMETER);
 		whereCriteria = jobDataMapExtension.getJobDataMapStringValue(map, WHERE_CRITERIA_FIELD_JOB_PARAMETER, null);
 		sleepField = jobDataMapExtension.getJobDataMapLongValue(map, SLEEP_FIELD_JOB_PARAMETER, null);
 		streamingTopicKey = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER);
-		
 		latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER, System.currentTimeMillis());
 		latestEventTime = TimestampUtils.convertToSeconds(latestEventTime);
-
 		deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, DELTA_TIME_IN_SEC_JOB_PARAMETER, (long)EVENTS_DELTA_TIME_IN_SEC_DEFAULT);
-
 		fetchEventsStepInMinutes = jobDataMapExtension.getJobDataMapIntValue(map, FETCH_EVENTS_STEP_IN_MINUTES_JOB_PARAMETER, FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT);
+		impalaTablePartitionType = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER, IMPALA_TABLE_PARTITION_TYPE_DEFAULT);
+
 		if(map.containsKey(FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER)){
 			Resource fieldClusterGroupsRegexResource = jobDataMapExtension.getJobDataMapResourceValue(map, FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER);
 			try{
@@ -131,7 +132,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	}
 
 	private void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime) {
-		PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy("daily");
+		PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTablePartitionType);
 		String earliestValue = partitionStrategy.getImpalaPartitionValue(earliestTime);
 		String latestValue = partitionStrategy.getImpalaPartitionValue(latestTime);
 		if (earliestValue.equals(latestValue)) {

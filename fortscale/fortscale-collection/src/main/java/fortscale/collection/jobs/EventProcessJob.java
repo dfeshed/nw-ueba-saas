@@ -56,8 +56,6 @@ public class EventProcessJob implements Job {
 	protected int maxBufferSize;
 	@Value("${etl.sendTo.kafka:true}")
 	protected boolean defaultSendToKafka;
-	@Value("${etl.writeTo.hdfs:true}")
-	protected boolean writeToHdfs;
 	protected boolean sendToKafka;
 
 	protected String filesFilter;
@@ -294,16 +292,16 @@ public class EventProcessJob implements Job {
 		// append to hadoop, if there is data to be written
 		if (output!=null) {
 			// append to hadoop
-			if (writeToHdfs) {
-				Long timestamp = RecordExtensions.getLongValue(record, timestampField);
-				appender.writeLine(output, timestamp.longValue());
-				// ensure user exists in mongodb
-				// todo - Think how to deprecate this part or move it to the streaming
-				// updateOrCreateUserWithClassifierUsername(record);
-			}
+			Long timestamp = RecordExtensions.getLongValue(record, timestampField);
+			appender.writeLine(output, timestamp.longValue());
+
+			// ensure user exists in mongodb
+			// todo - Think how to deprecate this part or move it to the streaming
+			// updateOrCreateUserWithClassifierUsername(record);
+
 			// output event to streaming platform
 			streamMessage(recordKeyExtractor.process(record),recordToString.toJSON(record));
-			
+
 			return true;
 		} else {
 			return false;
