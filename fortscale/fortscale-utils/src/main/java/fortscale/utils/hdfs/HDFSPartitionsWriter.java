@@ -127,9 +127,10 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 			}
 		}
 				
-		// cleanup members
-		fs.close();
+
+		// cleanup members - not closing the fileSystem since it's a shared resource getting from a static CACHE inside FileSystem
 		fs = null;
+
 		writers = new HashMap<String, BufferedWriter>(2);
 		
 		if (lastException!=null)
