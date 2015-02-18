@@ -156,7 +156,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 				ImpalaQuery query = new ImpalaQuery();
 				query.select("count(*)").from(impalaTableName);
 				query.andWhere(gte(epochtimeField, Long.toString(timestampCursor)));
-				if (whereCriteria != null && StringUtils.isNotBlank(whereCriteria))
+				if (StringUtils.isNotBlank(whereCriteria))
 					query.andWhere(whereCriteria);
 				addPartitionFilterToQuery(query, timestampCursor, nextTimestampCursor);
 				if (nextTimestampCursor==latestEventTime)
