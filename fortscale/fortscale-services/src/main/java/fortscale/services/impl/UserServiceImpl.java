@@ -45,7 +45,7 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
-	
+	private static final int USER_SERVICE_IMPL_PAGE_SIZE = 1000;
 	private static final String SEARCH_FIELD_PREFIX = "##";
 	
 	@Autowired
@@ -404,14 +404,18 @@ public class UserServiceImpl implements UserService{
 		
 		return ret;
 	}
-	
+
 	@Override
-	public void removeClassifierFromAllUsers(String classifierId){		
-		List<User> users = userRepository.findAll();
-		for(User user: users){
-			user.removeClassifierScore(classifierId);
+	public void removeClassifierFromAllUsers(String classifierId) {
+		int numOfPages = (int)(((userRepository.count() - 1) / USER_SERVICE_IMPL_PAGE_SIZE) + 1);
+
+		for (int i = 0; i < numOfPages; i++) {
+			PageRequest pageRequest = new PageRequest(i, USER_SERVICE_IMPL_PAGE_SIZE);
+			List<User> listOfUsers = userRepository.findAllExcludeAdInfo(pageRequest);
+			for (User user : listOfUsers)
+				user.removeClassifierScore(classifierId);
+			saveUsers(listOfUsers);
 		}
-		saveUsers(users);
 	}
 
 	@Override
@@ -424,20 +428,22 @@ public class UserServiceImpl implements UserService{
 		}
 		
 	}
-	
+
 	@Override
 	public void updateUserWithADInfo(final Long timestampepoch) {
 		logger.info("Starting to update users with ad info.");
-		
-		Iterable<AdUser> adUsers = adUserRepository.findByTimestampepoch(timestampepoch);
-		for(AdUser adUser: adUsers){
-			updateUserWithADInfo(adUser);
+
+		int numOfPages = (int)(((adUserRepository.count() - 1) / USER_SERVICE_IMPL_PAGE_SIZE) + 1);
+		for (int i = 0; i < numOfPages; i++) {
+			PageRequest pageRequest = new PageRequest(i, USER_SERVICE_IMPL_PAGE_SIZE);
+			Iterable<AdUser> listOfAdUsers = adUserRepository.findByTimestampepoch(timestampepoch, pageRequest);
+			for (AdUser adUser : listOfAdUsers)
+				updateUserWithADInfo(adUser);
 		}
-		
-		logger.info("finished updating users with ad info.");
+
+		logger.info("Finished updating users with ad info.");
 	}
-	
-		
+
 	@Override
 	public void updateUserWithADInfo(AdUser adUser) {
 		if(adUser.getObjectGUID() == null) {
