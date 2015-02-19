@@ -21,7 +21,6 @@ import java.util.*;
 
 public class UsernameService implements InitializingBean, CachingService{
 	private static Logger logger = Logger.getLogger(UsernameService.class);
-	private static final int USERNAME_SERVICE_PAGE_SIZE = 1000;
 
 	private List<Set<String>> logUsernameSetList;
 	private List<HashMap<String, String>> logUsernameToUserIdMapList;
@@ -51,8 +50,10 @@ public class UsernameService implements InitializingBean, CachingService{
 	
 	@Value("${ssh.to.ad.username.regex.format:^%s@.*(?i)}")
 	private String sshToAdUsernameRegexFormat;
-	
-	
+
+	@Value("${username.service.page.size:1000}")
+	private int usernameServicePageSize;
+
 	public void setLazy(boolean isLazy) {
 		this.isLazy = isLazy;
 	}
@@ -283,7 +284,7 @@ public class UsernameService implements InitializingBean, CachingService{
 	public void update() {
 		// Get number of users and calculate number of pages
 		long count = userRepository.count();
-		int numOfPages = (int)(((count - 1) / USERNAME_SERVICE_PAGE_SIZE) + 1);
+		int numOfPages = (int)(((count - 1) / usernameServicePageSize) + 1);
 
 		// Initialize a map from LogEventsEnum to a set of UserIdWithLogUsername
 		Map<LogEventsEnum, Set<String>> map = new HashMap<>();
@@ -292,7 +293,7 @@ public class UsernameService implements InitializingBean, CachingService{
 
 		usernameToUserIdCache.clear();
 		for (int i = 0; i < numOfPages; i++) {
-			Pageable pageable = new PageRequest(i, USERNAME_SERVICE_PAGE_SIZE);
+			Pageable pageable = new PageRequest(i, usernameServicePageSize);
 			List<User> listOfUsers = userRepository.findAllExcludeAdInfo(pageable);
 			// Iterate users on current page
 			for (User user : listOfUsers) {
