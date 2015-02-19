@@ -53,10 +53,8 @@ public interface UserRepositoryCustom {
 	
 	public User findByAdInfoObjectGUID(String objectGUID);
 	public User findByObjectGUID(String objectGUID);
-	public HashMap<String, String> findAllUsernames();
-	
 	public User findLastActiveUser(LogEventsEnum eventId);
-	
+
 	public Set<String> findByUserInGroup(Collection<String> groups);
 	public Set<String> findByUserInOU(Collection<String> ouList);
 	public void updateUserTag(String tagField, String username, boolean value);

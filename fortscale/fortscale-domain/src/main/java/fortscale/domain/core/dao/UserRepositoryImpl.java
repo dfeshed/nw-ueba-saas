@@ -257,18 +257,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public HashMap<String, String> findAllUsernames() {
-		Query query = new Query();
-		query.fields().include(User.usernameField);
-		HashMap<String, String> ret = new HashMap<>();
-		for(UsernameWrapper username: mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)){
-			ret.put(username.getUsername(), username.getId());
-		}
-
-		return ret;
-	}
-
-	@Override
 	public Set<String> findByUserInGroup(Collection<String> groups) {
 		Query query = new Query(where(User.getAdInfoField(String.format("%s.%s",UserAdInfo.groupsField,UserAdInfo.adDnField))).in(groups));
 		query.fields().include(User.usernameField);
