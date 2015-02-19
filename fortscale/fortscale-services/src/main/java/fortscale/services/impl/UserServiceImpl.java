@@ -45,7 +45,6 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
-	private static final int USER_SERVICE_IMPL_PAGE_SIZE = 1000;
 	private static final String SEARCH_FIELD_PREFIX = "##";
 	
 	@Autowired
@@ -59,7 +58,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private AdGroupRepository adGroupRepository;
-		
+
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -83,20 +82,19 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UsernameService usernameService;
-	
-	
+
 	@Autowired 
 	private ADParser adUserParser; 
-	
-	
-	
+
 	@Value("${ad.info.update.read.page.size:1000}")
 	private int readPageSize;
-	
-    @Value("${users.ou.filter:}")
-    private String usersOUfilter;
 
-	
+	@Value("${users.ou.filter:}")
+	private String usersOUfilter;
+
+	@Value("${user.service.impl.page.size:1000}")
+	private int userServiceImplPageSize;
+
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
 
 	@Autowired
@@ -407,10 +405,10 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void removeClassifierFromAllUsers(String classifierId) {
-		int numOfPages = (int)(((userRepository.count() - 1) / USER_SERVICE_IMPL_PAGE_SIZE) + 1);
+		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
 
 		for (int i = 0; i < numOfPages; i++) {
-			PageRequest pageRequest = new PageRequest(i, USER_SERVICE_IMPL_PAGE_SIZE);
+			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
 			List<User> listOfUsers = userRepository.findAllExcludeAdInfo(pageRequest);
 			for (User user : listOfUsers)
 				user.removeClassifierScore(classifierId);
@@ -433,9 +431,9 @@ public class UserServiceImpl implements UserService{
 	public void updateUserWithADInfo(final Long timestampepoch) {
 		logger.info("Starting to update users with ad info.");
 
-		int numOfPages = (int)(((adUserRepository.count() - 1) / USER_SERVICE_IMPL_PAGE_SIZE) + 1);
+		int numOfPages = (int)(((adUserRepository.count() - 1) / userServiceImplPageSize) + 1);
 		for (int i = 0; i < numOfPages; i++) {
-			PageRequest pageRequest = new PageRequest(i, USER_SERVICE_IMPL_PAGE_SIZE);
+			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
 			Iterable<AdUser> listOfAdUsers = adUserRepository.findByTimestampepoch(timestampepoch, pageRequest);
 			for (AdUser adUser : listOfAdUsers)
 				updateUserWithADInfo(adUser);
