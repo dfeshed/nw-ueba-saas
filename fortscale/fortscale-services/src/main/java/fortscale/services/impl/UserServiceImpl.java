@@ -900,8 +900,15 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Set<String> findNamesInGroup(List<String> groupsToTag){
-		return userRepository.findByUserInGroup(groupsToTag);
+	public Set<String> findNamesInGroup(List<String> groupsToTag) {
+		int userServiceImplPageSize = 1000; // TODO remove!
+		Set<String> namesInGroups = new HashSet<String>();
+		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
+		for (int i = 0; i < numOfPages; i++) {
+			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
+			namesInGroups.addAll(userRepository.findByUserInGroup(groupsToTag, pageRequest));
+		}
+		return namesInGroups;
 	}
 
 	@Override
