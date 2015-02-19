@@ -266,23 +266,20 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public Set<String> findByUserInOU(Collection<String> ouList) {
-
-		// get users according to OU (users that their DN ends with the requested OU)
+	public Set<String> findByUserInOU(Collection<String> ouList, Pageable pageable) {
+		// Get users according to OU (users that their DN ends with the requested OU)
 		StringBuffer ouRegexp = new StringBuffer();
-		for (String ou : ouList) {
+		for (String ou : ouList)
 			ouRegexp.append("|,").append(ou).append("$");
-		}
-		Query query = new Query(where(User.getAdInfoField(UserAdInfo.adDnField))
-						.regex(ouRegexp.substring(1), "i"));
+		Query query = new Query().with(pageable);
+		String adInfoField = User.getAdInfoField(UserAdInfo.adDnField);
+		query.addCriteria(where(adInfoField).regex(ouRegexp.substring(1), "i"));
 
-		// take only username field from the document
+		// Take only the username field from the document
 		query.fields().include(User.usernameField);
 
-		// Take only user-names
+		// Take only the users' names
 		return getUsernameFromWrapper(query);
-
-
 	}
 
 	private Set<String> getUsernameFromWrapper(Query query) {

@@ -56,7 +56,7 @@ public interface UserRepositoryCustom {
 	public User findLastActiveUser(LogEventsEnum eventId);
 
 	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable);
-	public Set<String> findByUserInOU(Collection<String> ouList);
+	public Set<String> findByUserInOU(Collection<String> ouList, Pageable pageable);
 	public void updateUserTag(String tagField, String username, boolean value);
 	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime);
 
