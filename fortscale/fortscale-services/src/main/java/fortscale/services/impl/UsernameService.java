@@ -54,6 +54,16 @@ public class UsernameService implements InitializingBean, CachingService{
 	@Value("${username.service.page.size:1000}")
 	private int usernameServicePageSize;
 
+	// For unit tests only
+	protected int getPageSize() {
+		return usernameServicePageSize;
+	}
+
+	// For unit tests only
+	protected void setPageSize(int pageSize) {
+		usernameServicePageSize = pageSize;
+	}
+
 	public void setLazy(boolean isLazy) {
 		this.isLazy = isLazy;
 	}
