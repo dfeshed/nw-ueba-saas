@@ -243,13 +243,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public List<User> findAllExcludeAdInfo() {
-		Query query = new Query();
-		query.fields().exclude(User.adInfoField);
-		return mongoTemplate.find(query, User.class);
-	}
-
-	@Override
 	public List<User> findAllExcludeAdInfo(Pageable pageable) {
 		Query query = new Query().with(pageable);
 		query.fields().exclude(User.adInfoField);

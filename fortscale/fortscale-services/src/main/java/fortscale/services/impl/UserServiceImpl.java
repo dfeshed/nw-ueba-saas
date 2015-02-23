@@ -915,7 +915,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public Set<String> findNamesInGroup(List<String> groupsToTag) {
-		int userServiceImplPageSize = 1000; // TODO remove!
 		Set<String> namesInGroups = new HashSet<String>();
 		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
 		for (int i = 0; i < numOfPages; i++) {
@@ -927,7 +926,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public Set<String> findNamesInOU(List<String> ousToTag) {
-		int userServiceImplPageSize = 1000; // TODO remove!
 		Set<String> namesInOu = new HashSet<String>();
 		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
 		for (int i = 0; i < numOfPages; i++) {

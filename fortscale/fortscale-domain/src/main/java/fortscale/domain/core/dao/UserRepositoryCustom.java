@@ -34,9 +34,8 @@ public interface UserRepositoryCustom {
 	public List<User> findByIds(Collection<String> ids);
 	public List<User> findByUsernames(Collection<String> usernames);
 	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames);
-	public List<User> findAllExcludeAdInfo();
 	public List<User> findAllExcludeAdInfo(Pageable pageable);
-	
+
 	public User findByAdEmailAddress(EmailAddress emailAddress);
 	
 	public User getLastActivityAndLogUserNameByUserName(String userName);
