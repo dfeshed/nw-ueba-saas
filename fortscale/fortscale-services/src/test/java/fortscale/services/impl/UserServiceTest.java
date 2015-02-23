@@ -1,34 +1,13 @@
 package fortscale.services.impl;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import junitparams.JUnitParamsRunner;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.data.mongodb.core.MongoOperations;
-
+import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.ComputerRepository;
@@ -36,15 +15,30 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.UserApplication;
 import fortscale.utils.actdir.ADParser;
+import junitparams.JUnitParamsRunner;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-
-
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(JUnitParamsRunner.class)
 public class UserServiceTest {
-
 	@Mock
 	private MongoOperations mongoTemplate;
 	
@@ -53,7 +47,7 @@ public class UserServiceTest {
 	
 	@Mock
 	private AdUserThumbnailRepository adUserThumbnailRepository;
-				
+
 	@Mock
 	private AdGroupRepository adGroupRepository;
 	
@@ -68,7 +62,7 @@ public class UserServiceTest {
 	
 	@Mock
 	private EventScoreDAO loginDAO;
-				
+
 	@Mock
 	private EventScoreDAO sshDAO;
 	
@@ -85,14 +79,13 @@ public class UserServiceTest {
 	private UsernameService usernameService;
 
 	@InjectMocks
-	private UserServiceImpl	userService;
+	private UserServiceImpl userService;
 	
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 	}
-	
-	
+
 	@Test
 	public void createNewApplicationUserDetailsTest(){
 		User user = new NewUser("test");
@@ -143,23 +136,115 @@ public class UserServiceTest {
 		comp2.setName("HOSTNAME2");
 		comp2.setOperatingSystem("LINUX");
 		when(comp2.getIsSensitive()).thenReturn(true);
-		when(comp2.getUsageClassifiers()).thenReturn(null);		
+		when(comp2.getUsageClassifiers()).thenReturn(null);
 		ArrayList<Computer> computersList = new ArrayList<Computer>();
 		computersList.add(comp1);
 		computersList.add(comp2);
-		
+
 		when(computerRepository.getComputersFromNames(any(List.class))).thenReturn(computersList);
-		
 		userService.getUserMachines("123");
-		
+
 		assertEquals(machine1.getIsSensitive(), false);
 		assertEquals(machine1.getOperatingSystem(), "WIN");
 		assertEquals(machine1.getUsageClassifiers(), null);
-		
 
 		assertEquals(machine2.getIsSensitive(), true);
 		assertEquals(machine2.getOperatingSystem(), "LINUX");
 		assertEquals(machine2.getUsageClassifiers(), null);
-		
+	}
+
+	@Test
+	public void removeClassifierFromAllUsersTest() {
+		// Arrange
+		int numOfUsers = 100;
+		int pageSize = 23;
+
+		List<User> listOfUsers = new ArrayList<>(numOfUsers);
+		Set<List<User>> subLists = new HashSet<>();
+		userService.setPageSize(pageSize);
+
+		for (int i = 0; i < numOfUsers; i++) {
+			User user = new User();
+			user.setUsername("user" + i);
+
+			ClassifierScore score = new ClassifierScore();
+			score.setClassifierId("Login");
+			user.putClassifierScore(score);
+
+			score = new ClassifierScore();
+			score.setClassifierId("SSH");
+			user.putClassifierScore(score);
+
+			score = new ClassifierScore();
+			score.setClassifierId("VPN");
+			user.putClassifierScore(score);
+
+			listOfUsers.add(user);
+		}
+
+		when(userRepository.count()).thenReturn((long)numOfUsers);
+		int numOfPages = ((numOfUsers - 1) / pageSize) + 1;
+		for (int i = 0; i < numOfPages; i++) {
+			PageRequest pageRequest = new PageRequest(i, pageSize);
+			int first = i * pageSize;
+			int last = Math.min((i + 1) * pageSize, numOfUsers);
+			List<User> subList = listOfUsers.subList(first, last);
+			when(userRepository.findAllExcludeAdInfo(pageRequest)).thenReturn(subList);
+			subLists.add(subList);
+		}
+
+		// Act
+		userService.removeClassifierFromAllUsers("Login");
+		userService.removeClassifierFromAllUsers("SSH");
+		userService.removeClassifierFromAllUsers("VPN");
+
+		// Assert
+		for (List<User> subList : subLists)
+			verify(userRepository, times(3)).save(subList);
+
+		for (User user : listOfUsers) {
+			verify(usernameService, times(3)).updateUsernameCache(user);
+			assertTrue(user.getTags().size() == 0);
+			assertTrue(user.getScores().isEmpty());
+		}
+	}
+
+	@Test
+	public void updateUserWithADInfoTest() {
+		// Arrange
+		int numOfUsers = 100;
+		int pageSize = 23;
+
+		List<AdUser> listOfAdUsers = new ArrayList<>(numOfUsers);
+		userService.setPageSize(pageSize);
+
+		for (int i = 0; i < numOfUsers; i++) {
+			AdUser adUser = new AdUser();
+			adUser.setDistinguishedName("distinguished" + i);
+			adUser.setObjectGUID("user" + i);
+			adUser.setsAMAccountName("account" + i);
+			adUser.setUserPrincipalName("principal" + i);
+			listOfAdUsers.add(adUser);
+		}
+
+		when(adUserRepository.count()).thenReturn((long)numOfUsers);
+		Long timestampEpoch = new Long(0);
+		int numOfPages = ((numOfUsers - 1) / pageSize) + 1;
+		for (int i = 0; i < numOfPages; i++) {
+			PageRequest pageRequest = new PageRequest(i, pageSize);
+			int first = i * pageSize;
+			int last = Math.min((i + 1) * pageSize, numOfUsers);
+			List<AdUser> subList = listOfAdUsers.subList(first, last);
+			when(adUserRepository.findByTimestampepoch(timestampEpoch, pageRequest)).thenReturn(subList);
+		}
+		when(userRepository.save(any(User.class))).thenReturn(new User());
+
+		// Act
+		userService.updateUserWithADInfo(timestampEpoch);
+
+		// Assert
+		verify(userRepository, times(numOfUsers)).save(any(User.class));
+		verify(usernameService, times(numOfUsers)).updateUsernameCache(any(User.class));
+		verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), any(Class.class));
 	}
 }
