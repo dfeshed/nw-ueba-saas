@@ -46,13 +46,13 @@ public class UsernameServiceTest {
 
 		try { usernameService.afterPropertiesSet(); } catch (Exception e) {}
 		List<User> listOfUsers = new ArrayList<>(numOfUsers);
-		usernameService.setPageSize(pageSize); // + arrange imports
+		usernameService.setPageSize(pageSize);
 
 		for (int i = 0; i < numOfUsers; i++) {
 			User user = new User();
 			user.setUsername("user" + i);
 			for (LogEventsEnum value : LogEventsEnum.values())
-				user.addLogUsername(value.name(), user.getUsername());
+				user.addLogUsername(value.name(), getDataSourceUsername(value, user));
 			listOfUsers.add(user);
 		}
 
@@ -66,8 +66,9 @@ public class UsernameServiceTest {
 			when(userRepository.findAllExcludeAdInfo(pageRequest)).thenReturn(subList);
 		}
 
-		for (LogEventsEnum value : LogEventsEnum.values())
-			when(usernameService.getTableName(value)).thenReturn(value.name());
+		when(loginDAO.getTableName()).thenReturn(LogEventsEnum.login.name());
+		when(sshDAO.getTableName()).thenReturn(LogEventsEnum.ssh.name());
+		when(vpnDAO.getTableName()).thenReturn(LogEventsEnum.vpn.name());
 
 		// Act
 		usernameService.update();
@@ -78,7 +79,11 @@ public class UsernameServiceTest {
 		for (User user : listOfUsers) {
 			verify(usernameToUserIdCache, times(1)).put(user.getUsername(), user.getId());
 			for (LogEventsEnum value : LogEventsEnum.values())
-				assertTrue(usernameService.isLogUsernameExist(value, user.getUsername(), user.getId()));
+				assertTrue(usernameService.isLogUsernameExist(value, getDataSourceUsername(value, user), user.getId()));
 		}
+	}
+
+	private String getDataSourceUsername(LogEventsEnum value, User user) {
+		return value.getId() + user.getUsername();
 	}
 }
