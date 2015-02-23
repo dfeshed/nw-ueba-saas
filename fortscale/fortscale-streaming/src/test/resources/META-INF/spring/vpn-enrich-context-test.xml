@@ -47,6 +47,7 @@
 		<constructor-arg name="sessionIdFieldName" value="session_id_field"/>
 		<constructor-arg name="runGeoHoppingFieldName" value="false"/>
 		<constructor-arg name="addSessionDataFieldName" value="true"/>
+		<constructor-arg name="resolveIpFieldName" value="true"/>
 
 
 	</bean>

@@ -14,8 +14,9 @@ public class VpnSessionUpdateConfig {
     private String sessionIdFieldName;
     private String runGeoHoppingFieldName;
     private String addSessionDataFieldName;
+    private String resolveIpFieldName;
 
-    public VpnSessionUpdateConfig(String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, int vpnGeoHoppingOpenSessionThresholdInHours, int vpnGeoHoppingCloseSessionThresholdInHours, String sessionIdFieldName, String runGeoHoppingFieldName, String addSessionDataFieldName) {
+    public VpnSessionUpdateConfig(String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, int vpnGeoHoppingOpenSessionThresholdInHours, int vpnGeoHoppingCloseSessionThresholdInHours, String sessionIdFieldName, String runGeoHoppingFieldName, String addSessionDataFieldName, String resolveIpFieldName) {
 
         this.countryIsoCodeFieldName = countryIsoCodeFieldName;
         this.longtitudeFieldName = longtitudeFieldName;
@@ -25,6 +26,7 @@ public class VpnSessionUpdateConfig {
         this.sessionIdFieldName = sessionIdFieldName;
         this.runGeoHoppingFieldName = runGeoHoppingFieldName;
         this.addSessionDataFieldName = addSessionDataFieldName;
+        this.resolveIpFieldName = resolveIpFieldName;
     }
 
     public String getCountryIsoCodeFieldName() {
@@ -89,5 +91,13 @@ public class VpnSessionUpdateConfig {
 
     public void setAddSessionDataFieldName(String addSessionDataFieldName) {
         this.addSessionDataFieldName = addSessionDataFieldName;
+    }
+
+    public String getResolveIpFieldName() {
+        return resolveIpFieldName;
+    }
+
+    public void setResolveIpFieldName(String resolveIpFieldName) {
+        this.resolveIpFieldName = resolveIpFieldName;
     }
 }

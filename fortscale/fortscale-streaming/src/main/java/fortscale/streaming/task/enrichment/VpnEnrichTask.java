@@ -86,13 +86,14 @@ public class VpnEnrichTask extends AbstractStreamTask {
         String sessionIdFieldName = getConfigString(config, "fortscale.events.vpn.sessionid.field");
         String runGeoHoppingFieldName = getConfigString(config, "fortscale.events.vpn.runGeoHopping.field");
         String addSessionDataFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.addSessionData.field"));
+        String resolveIpFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.resolveIp.field"));
 
 
         VpnGeolocationConfig vpnGeolocationConfig = new VpnGeolocationConfig(ipField, countryFieldName, countryIsoCodeFieldName, regionFieldName, cityFieldName, ispFieldName, usageTypeFieldName, longtitudeFieldName, latitudeFieldName);
         VpnDataBucketsConfig vpnDataBucketsConfig = new VpnDataBucketsConfig(totalbytesFieldName, readbytesFieldName, durationFieldName, databucketFieldName);
         VpnSessionUpdateConfig vpnSessionUpdateConfig = new VpnSessionUpdateConfig(countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName,
                 Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours), Integer.parseInt(vpnGeoHoppingCloseSessionThresholdInHours),
-                sessionIdFieldName, runGeoHoppingFieldName, addSessionDataFieldName);
+                sessionIdFieldName, runGeoHoppingFieldName, addSessionDataFieldName, resolveIpFieldName);
         VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(inputTopic, outputTopic, partitionField, vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig);
         vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
     }

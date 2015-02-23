@@ -45,6 +45,8 @@ public class VpnEnrichService {
     @Autowired
     private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
 
+    private static final int CONST_30_SEC = 30 * 1000;
+
     public VpnEnrichService(VpnEnrichConfig config) {
         checkNotNull(config);
         this.config = config;
@@ -163,9 +165,36 @@ public class VpnEnrichService {
         if(closeVpnSessionData.getSessionId() != null){
             vpnOpenSession = vpnService.findBySessionId(closeVpnSessionData.getSessionId());
         } else{
-            vpnOpenSession = vpnService.findByUsernameAndSourceIp(closeVpnSessionData.getUsername(), closeVpnSessionData.getSourceIp());
+            Boolean isResolveIp = convertToBoolean( config.getVpnSessionUpdateConfig().getResolveIpFieldName());
+            if (isResolveIp) { //for Cisco ASA needs to resolve IP from VPN Open session events
+                Long StartSessionTime = closeVpnSessionData.getClosedAt().minusMillis(closeVpnSessionData.getDuration() * 1000).getMillis();
+                List<VpnSession> vpnOpenSessions = vpnService.findByUsernameAndCreatedAtEpochGreaterThan(closeVpnSessionData.getUsername(), StartSessionTime - CONST_30_SEC);
+                if (vpnOpenSessions != null && vpnOpenSessions.size() > 0) {
+                    vpnOpenSession = findFittestSession(vpnOpenSessions, StartSessionTime);
+                }
+            } else {
+                vpnOpenSession = vpnService.findByUsernameAndSourceIp(closeVpnSessionData.getUsername(), closeVpnSessionData.getSourceIp());
+            }
         }
         return vpnOpenSession;
+    }
+
+    private VpnSession findFittestSession(List<VpnSession> vpnOpenSessions, Long startSessionTime) {
+        Long gap = null;
+        VpnSession vpnSession = null;
+
+        if (vpnOpenSessions.size() == 1){
+            return vpnOpenSessions.get(0);
+        }
+
+        for (VpnSession vpnOpenSession : vpnOpenSessions){
+            long localGap = Math.abs(vpnOpenSession.getCreatedAtEpoch() - startSessionTime);
+            if (gap == null || localGap < gap){
+                gap = localGap;
+                vpnSession = vpnOpenSession;
+            }
+        }
+        return vpnSession;
     }
 
 
