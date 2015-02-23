@@ -925,7 +925,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public Set<String> findNamesByTag(String tagFieldName, Boolean value) {
-		int userServiceImplPageSize = 1000; // TODO remove!
 		Set<String> namesByTag = new HashSet<String>();
 		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
 		for (int i = 0; i < numOfPages; i++) {
