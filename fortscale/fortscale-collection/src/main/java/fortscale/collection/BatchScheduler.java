@@ -147,12 +147,12 @@ public class BatchScheduler {
 
 			// build job data map if given
 			JobDataMap dataMap = new JobDataMap();
-			if (params!=null && params.length>0) {
+			if (params != null && params.length > 0) {
 				for (String param : params) {
-					String[] entry = param.split("=");
+					String[] entry = param.split("=", 2);
 					dataMap.put(entry[0], entry[1]);
 				}
-			}	
+			}
 
 			if (!dataMap.isEmpty())
 				scheduler.triggerJob(jobKey, dataMap);

@@ -114,7 +114,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 			// so we rely on the cache to hold only the newest timestamp for resolving, thus we can make sure there is not other hostname for that ip
 			return computerLoginEvents.get(0);
 		}
-		addToBlackList(ip, lowerLimitTs, upperLimitTs);
+		addToBlackList(ip, ts, upperLimitTs);
 		return null;
 	}
 	

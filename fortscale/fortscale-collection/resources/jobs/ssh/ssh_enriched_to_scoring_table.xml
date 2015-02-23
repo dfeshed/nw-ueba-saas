@@ -34,6 +34,10 @@
 					<key>impalaTableFields</key>
 					<value>${impala.enricheddata.ssh.table.fields}</value>
 				</entry>
+				<entry>
+					<key>impalaTablePartitionType</key>
+					<value>${impala.enricheddata.ssh.table.partition.type}</value>
+				</entry>
 			</job-data-map>
 		</job>
 	</schedule>

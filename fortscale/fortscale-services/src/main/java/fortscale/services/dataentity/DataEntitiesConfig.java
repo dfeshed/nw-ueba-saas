@@ -6,6 +6,7 @@ import fortscale.services.dataqueries.querydto.SortDirection;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
@@ -19,7 +20,7 @@ import java.util.List;
  * Utilities for all data queries
  */
 @Component
-public class DataEntitiesConfig implements EmbeddedValueResolverAware {
+public class DataEntitiesConfig  implements EmbeddedValueResolverAware,InitializingBean {
     @Override
     public void setEmbeddedValueResolver(StringValueResolver resolver) {
         this.stringValueResolver = resolver;
@@ -36,6 +37,15 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 	 * All entities (lazy initialization)
 	 */
     private List<DataEntity> allDataEntities;
+
+
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+
+		// will fill the entities cache and will encapsulate the actual logic execution from the UI
+		getAllLogicalEntities();
+	}
 
     /**
      * Gets a DataEntityConfig object from cache, or creates a new one under the specified entityId if not found.
