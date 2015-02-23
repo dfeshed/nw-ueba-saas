@@ -95,6 +95,16 @@ public class UserServiceImpl implements UserService{
 	@Value("${user.service.impl.page.size:1000}")
 	private int userServiceImplPageSize;
 
+	// For unit tests only
+	protected int getPageSize() {
+		return userServiceImplPageSize;
+	}
+
+	// For unit tests only
+	protected void setPageSize(int pageSize) {
+		userServiceImplPageSize = pageSize;
+	}
+
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
 
 	@Autowired
