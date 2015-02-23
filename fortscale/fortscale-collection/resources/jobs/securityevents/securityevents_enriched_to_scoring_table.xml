@@ -34,6 +34,10 @@
 					<key>impalaTableFields</key>
 					<value>${impala.enricheddata.security.events.table.fields}</value>
 				</entry>
+				<entry>
+					<key>impalaTablePartitionType</key>
+					<value>${impala.enricheddata.security.events.table.partition.type}</value>
+				</entry>
 			</job-data-map>
 		</job>
 	</schedule>

@@ -44,15 +44,16 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	@Value("${hadoop.writer.buffer.size:10000}")
 	protected int maxBufferSize;
 
-	private HDFSPartitionsWriter groupsScoreAppender;
+	private BufferedHDFSWriter groupsScoreAppender;
 	private BufferedHDFSWriter totalScoreAppender;
 
-	private String totalScoreAppenderFileName;
+
 	
 	public void createGroupsScoreAppender(String basePath, String filename) throws IOException{
 		if(groupsScoreAppender == null){
 			PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);
-			groupsScoreAppender = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
+			HDFSPartitionsWriter appender = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
+			groupsScoreAppender = new BufferedHDFSWriter(appender, filename, maxBufferSize);
 		}
 		groupsScoreAppender.open(filename);
 	}
@@ -64,7 +65,7 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	public List<String> getGroupsScoreNewPartitions(){
 		List<String> ret = null;
 		if(groupsScoreAppender != null){
-			ret = groupsScoreAppender.getNewPartitions();
+			ret = ((HDFSPartitionsWriter)groupsScoreAppender.getWriter()).getNewPartitions();
 		} else{
 			ret = Collections.emptyList();
 		}
@@ -85,10 +86,9 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	
 	public void createTotalScoreAppender(String basePath, String filename) throws IOException{
 		if(totalScoreAppender == null){
-			totalScoreAppenderFileName = filename;
             PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTotalScoringTablePartitionType);
 			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
-			totalScoreAppender = new BufferedHDFSWriter(writer, totalScoreAppenderFileName, maxBufferSize);
+			totalScoreAppender = new BufferedHDFSWriter(writer, filename, maxBufferSize);
 		}
 //		totalScoreAppender.open(filename);
 	}
