@@ -1,20 +1,14 @@
 package fortscale.streaming.service;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.base.Throwables;
+import fortscale.domain.core.ClassifierScore;
+import fortscale.domain.core.ScoreInfo;
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.streaming.user.UserScoreSnapshot;
+import fortscale.domain.streaming.user.dao.UserScoreSnapshotRepository;
 import fortscale.streaming.exceptions.LevelDbException;
 import fortscale.streaming.model.UserTopEvents;
-
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -22,25 +16,21 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.Throwables;
+import java.util.*;
 
-import fortscale.domain.core.ClassifierScore;
-import fortscale.domain.core.ScoreInfo;
-import fortscale.domain.core.User;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.streaming.user.UserScoreSnapshot;
-import fortscale.domain.streaming.user.dao.UserScoreSnapshotRepository;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
 public class UserScoreStreamingService {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(UserScoreStreamingService.class);
-	private static final int UPDATE_MONGO_DB_ITER_MAX_USERS = 1000;
-	
+
 	public static int MAX_NUM_OF_PREV_SCORES = 14;
 	
 	@Autowired
@@ -51,7 +41,10 @@ public class UserScoreStreamingService {
 	
 	@Autowired
 	private MongoOperations mongoTemplate;
-	
+
+	@Value("${user.score.streaming.service.page.size:1000}")
+	private int userScoreStreamingServicePageSize;
+
 	private KeyValueStore<String, UserTopEvents> store;
 	private String classifierId;
 	private long latestEventTimeInMillis = 0;
@@ -250,10 +243,10 @@ public class UserScoreStreamingService {
 		try {
 			while (iterator.hasNext()) {
 				Set<String> subset = new HashSet<String>();
-				// Get next UPDATE_MONGO_DB_ITER_MAX_USERS users and store in subset
+				// Get next userScoreStreamingServicePageSize users and store in subset
 				do {
 					subset.add(iterator.next());
-				} while (iterator.hasNext() && subset.size() < UPDATE_MONGO_DB_ITER_MAX_USERS);
+				} while (iterator.hasNext() && subset.size() < userScoreStreamingServicePageSize);
 				
 				// Get these users from mongoDb and iterate them
 				List<User> users = userRepository.findByUsernamesExcludeAdInfo(subset);
