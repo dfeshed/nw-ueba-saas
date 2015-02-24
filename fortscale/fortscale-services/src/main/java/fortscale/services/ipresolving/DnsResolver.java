@@ -1,8 +1,7 @@
 package fortscale.services.ipresolving;
 
-import java.io.IOException;
-
 import fortscale.services.cache.CacheHandler;
+import fortscale.utils.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,22 +9,15 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.xbill.DNS.DClass;
-import org.xbill.DNS.ExtendedResolver;
-import org.xbill.DNS.Message;
-import org.xbill.DNS.Name;
-import org.xbill.DNS.Resolver;
-import org.xbill.DNS.ReverseMap;
-import org.xbill.DNS.Section;
-import org.xbill.DNS.Type;
+import org.xbill.DNS.*;
 
-import fortscale.utils.TimestampUtils;
+import java.io.IOException;
 
 
 public class DnsResolver implements InitializingBean {
 	private static Logger logger = LoggerFactory.getLogger(DnsResolver.class);
 	
-	private static final char DNS_SERVERS_SEPERATOR = ',';
+	private static final char DNS_SERVERS_SEPARATOR = ',';
 
 	// dnsCache is used to cache ip lookups results returned from the dns server, thus lowering the number of
 	// requests against the dns server
@@ -42,19 +34,21 @@ public class DnsResolver implements InitializingBean {
 	private int maxQueries;
 	@Value("${dns.resolver.dnsServers:}")
 	private String dnsServers;
-	@Value("${dns.resolver.timeoutInSeconds:-1}")
+	@Value("${dns.resolver.timeoutInSeconds:1}")
 	private int timeoutInSeconds;
+	@Value("${dns.resolver.retries:1}")
+	private int retries;
 	@Value("${dns.resolver.skip.past.events:false}")
 	private boolean skipPastEvents;
 	@Value("${dns.resolver.past.events.period.minutes:720}")
 	private long pastEventPeriodMin;
-	@Value("${dns.resolver.can.return.ipAddress:false}")
+	@Value("${dns.resolver.can.return.ipAddress:true}")
 	private boolean returnIpAddresses;
 	
 	private long lookupTimestamp = 0L;
 	private int dnsLookupCounter = 0;
 
-	private String[] dnsServersArray;
+	private ExtendedResolver extendedResolver;
 
 	public void setDnsCache(CacheHandler<String,String> dnsCache) {
 		this.dnsCache = dnsCache;
@@ -67,8 +61,21 @@ public class DnsResolver implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// prepare dns servers array from configuration
+		String[] dnsServersArray = {};
 		if (!StringUtils.isEmpty(dnsServers)) {
-			dnsServersArray = StringUtils.split(dnsServers, DNS_SERVERS_SEPERATOR);
+			dnsServersArray = StringUtils.split(dnsServers, DNS_SERVERS_SEPARATOR);
+			if((dnsServersArray.length > 0) && (!dnsServersArray[0].equals(""))) {
+				extendedResolver = new ExtendedResolver(dnsServersArray);
+			}
+		}
+		if (extendedResolver == null) {
+			extendedResolver = new ExtendedResolver();
+		}
+		if (timeoutInSeconds != -1) {
+			extendedResolver.setTimeout(timeoutInSeconds);
+		}
+		if (retries != -1){
+			extendedResolver.setRetries(retries);
 		}
 	}
 
@@ -102,7 +109,7 @@ public class DnsResolver implements InitializingBean {
 			dnsLookupCounter++;
 			lookupTimestamp = (lookupTimestamp==0L) ? System.currentTimeMillis() : lookupTimestamp;
 			try {
-				resolvedHostname = reverseDns(ip_address,dnsServersArray,this.timeoutInSeconds);
+				resolvedHostname = reverseDns(ip_address);
 				if (StringUtils.isNotEmpty(resolvedHostname)) {
 					// some dns might return the ip address as part of the name in case it cannot be resolved correctly
 					// skip them in case the service is configured to do so
@@ -128,25 +135,14 @@ public class DnsResolver implements InitializingBean {
 		return resolvedHostname;
 	}
 	
-	private static String reverseDns(String hostIp,String[] dnsServers,int timeoutInSecs) throws IOException {
-		Resolver res = null;
-		if ((dnsServers!= null ) && (dnsServers.length > 0) && (!dnsServers[0].equals(""))){
-			res = new ExtendedResolver(dnsServers);
-		}
-		else {
-			res = new ExtendedResolver();
-		}
-
-		if (timeoutInSecs != -1) {				
-			res.setTimeout(timeoutInSecs);
-		}
+	private String reverseDns(String hostIp) throws IOException {
 		Name name = ReverseMap.fromAddress(hostIp);
 		int type = Type.PTR;
-		int dclass = DClass.IN;
+		int dClass = DClass.IN;
 
-		org.xbill.DNS.Record rec = org.xbill.DNS.Record.newRecord(name, type, dclass);
+		org.xbill.DNS.Record rec = org.xbill.DNS.Record.newRecord(name, type, dClass);
 		Message query = Message.newQuery(rec);
-		Message response = res.send(query);
+		Message response = extendedResolver.send(query);
 
 		org.xbill.DNS.Record[] answers = response.getSectionArray(Section.ANSWER);
 		if (answers.length == 0)
