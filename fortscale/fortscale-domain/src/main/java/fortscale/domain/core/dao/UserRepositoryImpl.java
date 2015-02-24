@@ -413,20 +413,19 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
             mongoTemplate.updateFirst(usernameCriteria, update, User.class);
         }
 	}
-	
+
 	@Override
-	public Set<String> findNameByTag(String tagFieldName, Boolean value) {
-		Query query = new Query();
+	public Set<String> findNameByTag(String tagFieldName, Boolean value, Pageable pageable) {
+		Query query = new Query().with(pageable);
 		Criteria criteria = where(tagFieldName).is(value);
 		query.fields().include(User.usernameField);
 		query.addCriteria(criteria);
 		Set<String> res = new HashSet<String>();
-		for(UsernameWrapper usernameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)){
+		for (UsernameWrapper usernameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName))
 			res.add(usernameWrapper.getUsername());
-		}
 		return res;
 	}
-	
+
 	public Set<String> getUserTags(String normalizedUsername) {
 		Query query = new Query(where(User.usernameField).is(normalizedUsername));
 		query.fields().include(User.tagsField);
