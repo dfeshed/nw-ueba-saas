@@ -252,8 +252,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable) {
 		Query query = new Query().with(pageable);
-		String string = String.format("%s.%s", UserAdInfo.groupsField, UserAdInfo.adDnField);
-		query.addCriteria(where(User.getAdInfoField(string)).in(groups));
+		String adInfoFieldName = String.format("%s.%s", UserAdInfo.groupsField, UserAdInfo.adDnField);
+		query.addCriteria(where(User.getAdInfoField(adInfoFieldName)).in(groups));
 		query.fields().include(User.usernameField);
 		return getUsernameFromWrapper(query);
 	}
