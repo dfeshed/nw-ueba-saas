@@ -34,9 +34,9 @@ public class DnsResolver implements InitializingBean {
 	private int maxQueries;
 	@Value("${dns.resolver.dnsServers:}")
 	private String dnsServers;
-	@Value("${dns.resolver.timeoutInSeconds:-1}")
+	@Value("${dns.resolver.timeoutInSeconds:1}")
 	private int timeoutInSeconds;
-	@Value("${dns.resolver.retries:-1}")
+	@Value("${dns.resolver.retries:1}")
 	private int retries;
 	@Value("${dns.resolver.skip.past.events:false}")
 	private boolean skipPastEvents;
