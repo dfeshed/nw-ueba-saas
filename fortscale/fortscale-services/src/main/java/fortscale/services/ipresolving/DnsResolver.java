@@ -38,11 +38,11 @@ public class DnsResolver implements InitializingBean {
 	private int timeoutInSeconds;
 	@Value("${dns.resolver.retries:1}")
 	private int retries;
-	@Value("${dns.resolver.skip.past.events:false}")
+	@Value("${dns.resolver.skip.past.events:true}")
 	private boolean skipPastEvents;
 	@Value("${dns.resolver.past.events.period.minutes:720}")
 	private long pastEventPeriodMin;
-	@Value("${dns.resolver.can.return.ipAddress:true}")
+	@Value("${dns.resolver.can.return.ipAddress:false}")
 	private boolean returnIpAddresses;
 	
 	private long lookupTimestamp = 0L;
