@@ -42,7 +42,7 @@ public class DnsResolver implements InitializingBean {
 	private boolean skipPastEvents;
 	@Value("${dns.resolver.past.events.period.minutes:720}")
 	private long pastEventPeriodMin;
-	@Value("${dns.resolver.can.return.ipAddress:false}")
+	@Value("${dns.resolver.can.return.ipAddress:true}")
 	private boolean returnIpAddresses;
 	
 	private long lookupTimestamp = 0L;
