@@ -26,6 +26,7 @@ import fortscale.services.fe.ClassifierService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.BaseController;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -219,8 +220,10 @@ public class ApiController extends BaseController {
 					   HttpServletRequest request,
 					   HttpServletResponse response) throws IOException {
 
+		DateTime now = DateTime.now();
 		response.setContentType("text/csv");
-		response.setHeader("content-Disposition", "attachment; filename=events.csv");
+		response.setHeader("content-Disposition",
+				String.format("attachment; filename=export_%d%02d%02d.csv", now.getYear(), now.getMonthOfYear(), now.getDayOfMonth()));
 
 
 		ServletOutputStream output = response.getOutputStream();
