@@ -262,7 +262,7 @@ public class ApiController extends BaseController {
 
 			// advance query to the next page
 			currentPageNum++;
-			dataQuery(dataQuery, false, true, currentPageNum, pageSize);
+			page = dataQuery(dataQuery, false, true, currentPageNum, pageSize);
 		}
 	}
 
