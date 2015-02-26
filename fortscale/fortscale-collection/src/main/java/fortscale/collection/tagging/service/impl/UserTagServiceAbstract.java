@@ -32,6 +32,15 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	private List<String> groupsToTag;
 	private Set<String> taggedUsers = new HashSet<String>();
 
+	// Getter and Setter are only for unit tests
+	protected int getPageSize() {
+		return pageSize;
+	}
+
+	protected void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
 	// -------- abstract functions ---------
 	/**
 	 * This functions are being implemented in the child service
