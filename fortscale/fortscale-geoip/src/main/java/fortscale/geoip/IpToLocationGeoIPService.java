@@ -13,7 +13,7 @@ import com.ip2location.IPResult;
 import fortscale.utils.logging.Logger;
 
 
-public class IpToLocationGeoIPService extends CachedGeoIPService {
+public class IpToLocationGeoIPService implements GeoIPService {
 	
 	private static Logger logger = Logger.getLogger(IpToLocationGeoIPService.class);
 
@@ -85,7 +85,8 @@ public class IpToLocationGeoIPService extends CachedGeoIPService {
 	 * @return GeoIPInfo
 	 * @throws UnknownHostException
 	 */
-	protected GeoIPInfo doGetGeoIPInfo(String IPAddress) throws UnknownHostException {
+	@Override
+	public IGeoIPInfo getGeoIPInfo(String IPAddress) throws UnknownHostException {
 		// Convert to IP address
 		InetAddress byName = InetAddress.getByName(IPAddress);
 

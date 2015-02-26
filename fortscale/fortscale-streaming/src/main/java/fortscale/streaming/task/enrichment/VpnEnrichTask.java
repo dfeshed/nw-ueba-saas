@@ -1,13 +1,9 @@
 package fortscale.streaming.task.enrichment;
 
-import fortscale.geoip.GeoIPInfo;
-import fortscale.geoip.IpToLocationGeoIPService;
-import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.vpn.*;
-import fortscale.streaming.task.AbstractStreamTask;
+import static fortscale.streaming.ConfigUtils.getConfigString;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -15,13 +11,18 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
-
-import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.utils.ConversionUtils.convertToString;
+import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.vpn.VpnDataBucketsConfig;
+import fortscale.streaming.service.vpn.VpnEnrichConfig;
+import fortscale.streaming.service.vpn.VpnEnrichService;
+import fortscale.streaming.service.vpn.VpnGeolocationConfig;
+import fortscale.streaming.service.vpn.VpnSessionUpdateConfig;
+import fortscale.streaming.task.AbstractStreamTask;
 
 /**
  * Created by rans on 01/02/15.

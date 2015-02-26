@@ -13,5 +13,5 @@ public interface GeoIPService {
 	 * @return GeoIPInfo
 	 * @throws UnknownHostException
 	 */
-	public GeoIPInfo getGeoIPInfo(String IPAddress) throws UnknownHostException;
+	public IGeoIPInfo getGeoIPInfo(String IPAddress) throws UnknownHostException;
 }

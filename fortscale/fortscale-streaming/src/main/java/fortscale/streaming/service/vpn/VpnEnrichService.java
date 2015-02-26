@@ -1,25 +1,27 @@
 package fortscale.streaming.service.vpn;
 
-import fortscale.domain.events.VpnSession;
-import fortscale.domain.schema.VpnEvents;
-import fortscale.geoip.GeoIPInfo;
-import fortscale.geoip.IpToLocationGeoIPService;
-import fortscale.services.event.VpnService;
-import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.utils.ConversionUtils.convertToBoolean;
+import static fortscale.utils.ConversionUtils.convertToLong;
+import static fortscale.utils.ConversionUtils.convertToString;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minidev.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.utils.ConversionUtils.convertToBoolean;
-import static fortscale.utils.ConversionUtils.convertToLong;
-import static fortscale.utils.ConversionUtils.convertToString;
+import fortscale.domain.events.VpnSession;
+import fortscale.domain.schema.VpnEvents;
+import fortscale.geoip.GeoIPService;
+import fortscale.geoip.IGeoIPInfo;
+import fortscale.services.event.VpnService;
+import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
 
 /**
  * Service that receive and event from a vpn input topic, and provides three services:
@@ -35,11 +37,11 @@ public class VpnEnrichService {
     private VpnEnrichConfig config;
 
     @Autowired
-    IpToLocationGeoIPService ipToLocationGeoIPService;
+    private GeoIPService multiProviderGeoIpService;
     @Autowired
     private VpnEvents vpnEvents;
     @Autowired
-    VpnService vpnService;
+    private VpnService vpnService;
     @Autowired
     private RecordToVpnSessionConverter recordToVpnSessionConverter;
     @Autowired
@@ -65,14 +67,14 @@ public class VpnEnrichService {
         String ipAddress = convertToString(event.get(vpnGeolocationConfig.getIpField()));
         // If the geo ip service is available
         try {
-            GeoIPInfo geoIPInfo = ipToLocationGeoIPService.getGeoIPInfo(ipAddress);
+        	IGeoIPInfo geoIPInfo = multiProviderGeoIpService.getGeoIPInfo(ipAddress);
 
             // Write the ip info:  country, city, isp, usageType
-            event.put(vpnGeolocationConfig.getCountryFieldName(), geoIPInfo.getCountryName());
-            event.put(vpnGeolocationConfig.getCountryIsoCodeFieldName(), geoIPInfo.getCountryISOCode());
-            event.put(vpnGeolocationConfig.getRegionFieldName(), geoIPInfo.getRegionName());
-            event.put(vpnGeolocationConfig.getCityFieldName(), geoIPInfo.getCityName());
-            event.put(vpnGeolocationConfig.getIspFieldName(), geoIPInfo.getISP());
+            event.put(vpnGeolocationConfig.getCountryFieldName(), geoIPInfo.getCountryName() != null ? geoIPInfo.getCountryName() : "");
+            event.put(vpnGeolocationConfig.getCountryIsoCodeFieldName(), geoIPInfo.getCountryISOCode() != null ? geoIPInfo.getCountryISOCode() : "");
+            event.put(vpnGeolocationConfig.getRegionFieldName(), geoIPInfo.getRegionName() != null ? geoIPInfo.getRegionName() : "");
+            event.put(vpnGeolocationConfig.getCityFieldName(), geoIPInfo.getCityName() != null ? geoIPInfo.getCityName() : "");
+            event.put(vpnGeolocationConfig.getIspFieldName(), geoIPInfo.getISP() != null ? geoIPInfo.getISP() : "");
             event.put(vpnGeolocationConfig.getUsageTypeFieldName(), geoIPInfo.getUsageType() != null ? geoIPInfo.getUsageType().getId() : "");
             event.put(vpnGeolocationConfig.getLongtitudeFieldName(), geoIPInfo.getLongitude());
             event.put(vpnGeolocationConfig.getLatitudeFieldName(), geoIPInfo.getLatitude());

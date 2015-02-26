@@ -1,12 +1,14 @@
 package fortscale.streaming.service.vpn;
 
-import fortscale.domain.schema.VpnEvents;
-import fortscale.geoip.GeoIPInfo;
-import fortscale.geoip.IpToLocationGeoIPService;
-import fortscale.services.event.VpnService;
-import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
-import fortscale.utils.junit.SpringAware;
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.reset;
+
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Date;
+
 import net.minidev.json.JSONObject;
+
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,13 +24,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Date;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.reset;
+import fortscale.domain.schema.VpnEvents;
+import fortscale.geoip.GeoIPInfo;
+import fortscale.geoip.GeoIPService;
+import fortscale.services.event.VpnService;
+import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
+import fortscale.utils.junit.SpringAware;
 
 /**
  * Created by rans on 02/02/15.
@@ -54,7 +55,7 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
 
     @Autowired
     @ReplaceWithMock
-    IpToLocationGeoIPService geoIPServiceMock;
+    private GeoIPService geoIPServiceMock;
     @Autowired
     private VpnEvents vpnEvents;
     @Autowired
