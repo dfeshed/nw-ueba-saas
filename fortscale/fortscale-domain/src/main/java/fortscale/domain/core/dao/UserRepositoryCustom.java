@@ -63,8 +63,8 @@ public interface UserRepositoryCustom {
 	public long getNumberOfDisabledAccounts();
 	public long getNumberOfDisabledAccountsBeforeTime(DateTime time);
 	public long getNumberOfInactiveAccounts();
-	
-	public Set<String> findNameByTag(String tagFieldName, Boolean value);
+
+	public Set<String> findNameByTag(String tagFieldName, Boolean value, Pageable pageable);
 	public boolean findIfUserExists(String username);
 	public String getUserIdByNormalizedUsername(String username);
 	public HashSet<String> getUsersGUID();

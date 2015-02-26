@@ -74,12 +74,13 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(resolveStringValue(config, "fortscale.partition.strategy", res));
 		String splitClassName = resolveStringValue(config, "fortscale.split.strategy", res);
 		int eventsCountFlushThreshold = config.getInt("fortscale.events.flush.threshold");
+		long windowDuration = config.getLong("task.window.ms");
 
 		storeName = storeNamePrefix + tableName;
 		FileSplitStrategy splitStrategy = (FileSplitStrategy)Class.forName(splitClassName).newInstance();
 
 		// create HDFS appender service
-		service = new HdfsService(hdfsRootPath, fileName, partitionStrategy, splitStrategy, tableName, eventsCountFlushThreshold);
+		service = new HdfsService(hdfsRootPath, fileName, partitionStrategy, splitStrategy, tableName, eventsCountFlushThreshold, windowDuration);
 
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", tableName));

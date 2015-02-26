@@ -24,8 +24,14 @@ public class HdfsService {
 	private String fileName;
 	private ImpalaClient impalaClient;
 	private BufferedHDFSWriter buffer;
+
+	// minimum time to refresh impala table (will not refresh it more often than this, unless there are new partitions)
+	private long impalaRefreshWindow;
+
+	// latest time we refreshed impala table
+	private long lastImpalaRefreshEpoch;
 	
-	public HdfsService(String hdfsRootPath, String fileName, PartitionStrategy partition, FileSplitStrategy split, String tableName, int flushPerItemsCount) throws IOException {
+	public HdfsService(String hdfsRootPath, String fileName, PartitionStrategy partition, FileSplitStrategy split, String tableName, int flushPerItemsCount, long impalaRefreshWindow) throws IOException {
 		// create hdfs appender
 		this.fileName = fileName;
 		appender = new HDFSPartitionsWriter(hdfsRootPath, partition, split);
@@ -33,6 +39,7 @@ public class HdfsService {
 		// create impala client
 		this.tableName = tableName;
 		impalaClient = SpringService.getInstance().resolve(ImpalaClient.class);
+		this.impalaRefreshWindow = impalaRefreshWindow;
 		
 		// create buffer for items written to hdfs
 		buffer = new BufferedHDFSWriter(appender, fileName, flushPerItemsCount);
@@ -49,6 +56,8 @@ public class HdfsService {
 	}
 	
 	public void flushHdfs() throws HdfsException {
+		// force flush requires us to refresh impala, so we set the last time to be start of epoch
+		lastImpalaRefreshEpoch = 0L;
 		writeBuffer();
 	}
 	
@@ -73,7 +82,11 @@ public class HdfsService {
 			
 			// refresh the impala table with new partitions data
 			try {
-				impalaClient.refreshTable(tableName);
+				// check if we passed the refresh window duration
+				if (System.currentTimeMillis() - lastImpalaRefreshEpoch >= impalaRefreshWindow) {
+					impalaClient.refreshTable(tableName);
+					lastImpalaRefreshEpoch = System.currentTimeMillis();
+				}
 			} catch (Exception e) {
 				logger.error("error refreshing table " + tableName, e);
 				if (firstException==null)
