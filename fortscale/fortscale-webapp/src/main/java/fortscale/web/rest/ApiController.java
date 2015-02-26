@@ -1,10 +1,15 @@
 package fortscale.web.rest;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Joiner;
 import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.QueryFieldFunction;
@@ -201,7 +206,86 @@ public class ApiController extends BaseController {
         return entities;
     }
 
-    /**
+
+	/**
+	 * download query content to a csv file
+	 */
+	@RequestMapping(value="/exportEvents", method = RequestMethod.GET)
+	@LogException
+	public void export(@RequestParam(required=true) String dataQuery,
+					   @RequestParam(defaultValue = "10000") int numResults,
+					   @RequestParam(defaultValue = "true") boolean dumpHeaders,
+					   @RequestParam(defaultValue = ",") String delimiter,
+					   HttpServletRequest request,
+					   HttpServletResponse response) throws IOException {
+
+		response.setContentType("text/csv");
+		response.setHeader("content-Disposition", "attachment; filename=events.csv");
+
+
+		ServletOutputStream output = response.getOutputStream();
+
+		int pageSize = 20;
+		int currentPageNum = 0;
+		int maxPages = (int) ((numResults-1) / pageSize) + 1;
+		List<String> fields = new LinkedList<String>();
+
+		// run the query in pages, keep running in loop until we exhausted all results or reached all pages
+		DataBean<List<Map<String, Object>>> page = dataQuery(dataQuery, false, true, currentPageNum, pageSize);
+		while (currentPageNum < maxPages && !page.getData().isEmpty()) {
+
+			// if we are on the first page dump the headers row
+			if (currentPageNum==0) {
+				// write the headers line to the output
+				if (!page.getData().isEmpty()) {
+					// copy the list of field names to the fields list so we will write them in consistent
+					// order for each row, and dump them to the output header row
+					for (String field : page.getData().get(0).keySet()) {
+						fields.add(field);
+					}
+
+					if (dumpHeaders) {
+						String headerLine = Joiner.on(delimiter).join(fields);
+						output.println(headerLine);
+					}
+				}
+			}
+
+
+			// dump the page content
+			convertQueryResultsToText(page.getData(), fields, delimiter, output);
+			output.flush();
+
+
+			// advance query to the next page
+			currentPageNum++;
+			dataQuery(dataQuery, false, true, currentPageNum, pageSize);
+		}
+	}
+
+
+	private void convertQueryResultsToText(List<Map<String, Object>> rows, List<String> fields, String delimiter, ServletOutputStream output) throws IOException {
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		for (Map<String, Object> row : rows) {
+			StringBuilder sb = new StringBuilder();
+			for (String field : fields) {
+				// convert the field to text
+				Object value = row.get(field);
+				String strValue = (value==null)? "" : (value instanceof Date)? sdf.format(value) : value.toString();
+				strValue.replaceAll(delimiter, "");
+
+				sb.append(strValue);
+				sb.append(delimiter);
+			}
+			// get rid of the last delimiter char (this does not copy the inner array as opposed to deleteCharAt)
+			sb.setLength(sb.length() - 1);
+
+			output.println(sb.toString());
+		}
+	}
+
+
+	/**
      *
      * @param dataQuery	The query object from the client.
      * 						This query shouldn't contain the "LIMIT" and "OFFSET" in case of paging
