@@ -1,24 +1,26 @@
-
 package fortscale.collection.tagging.service.impl;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
-import fortscale.services.UserService;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import fortscale.collection.tagging.service.UserTagEnum;
 import fortscale.collection.tagging.service.UserTagService;
 import fortscale.collection.tagging.service.UserTaggingService;
 import fortscale.domain.core.User;
-import fortscale.domain.core.dao.UserRepository;
+import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 @Service("userServiceAccountService")
 public class UserServiceAccountServiceImpl implements UserTagService, InitializingBean {
@@ -36,6 +38,9 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 
 	@Value("${user.list.service_account.deletion_symbol:}")
 	private String deletionSymbol;
+
+	@Value("${user.service.account.service.impl.page.size:1000}")
+	private int pageSize;
 
 	private Set<String> serviceAccounts = null;
 
@@ -126,11 +131,21 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 		}
 	}
 
-	private Set<String> findUsersByOU(String userName) {
+	private Set<String> findUsersByOU(List<String> usernames) {
+		Set<String> usersByOu = new HashSet<String>();
+		for (Pageable pageable = new PageRequest(0, pageSize); ; pageable = pageable.next()) {
+			Set<String> subset = userService.findNamesInOU(usernames, pageable);
+			usersByOu.addAll(subset);
+			if (subset.size() < pageSize)
+				break;
+		}
+		return usersByOu;
+	}
 
+	private Set<String> findUsersByOU(String username) {
 		List<String> ousToTag = new LinkedList<>();
-		ousToTag.add(userName);
-		return userService.findNamesInOU(ousToTag);
+		ousToTag.add(username);
+		return findUsersByOU(ousToTag);
 	}
 
 	private boolean removeTagFromUser(String userName) {

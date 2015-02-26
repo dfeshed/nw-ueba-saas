@@ -919,14 +919,8 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Set<String> findNamesInOU(List<String> ousToTag) {
-		Set<String> namesInOu = new HashSet<String>();
-		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
-		for (int i = 0; i < numOfPages; i++) {
-			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
-			namesInOu.addAll(userRepository.findByUserInOU(ousToTag, pageRequest));
-		}
-		return namesInOu;
+	public Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable) {
+		return userRepository.findByUserInOU(ousToTag, pageable);
 	}
 
 	@Override

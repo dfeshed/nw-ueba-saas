@@ -84,7 +84,7 @@ public interface UserService extends CachingService{
 
 	public Set<String> findNamesInGroup(List<String> groupsToTag, Pageable pageable);
 
-	public Set<String> findNamesInOU(List<String> ousToTag);
+	public Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable);
 
 	public Set<String> findNamesByTag(String tagFieldName, Boolean value);
 

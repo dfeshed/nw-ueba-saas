@@ -112,7 +112,12 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 					}
 				}
 				if (!ousToTag.isEmpty()) {
-					taggedUsers.addAll(userService.findNamesInOU(ousToTag));
+					for (Pageable pageable = new PageRequest(0, pageSize); ; pageable = pageable.next()) {
+						Set<String> subset = userService.findNamesInOU(ousToTag, pageable);
+						taggedUsers.addAll(subset);
+						if (subset.size() < pageSize)
+							break;
+					}
 				}
 				if (taggedUsers.isEmpty()) {
 					logger.warn(
