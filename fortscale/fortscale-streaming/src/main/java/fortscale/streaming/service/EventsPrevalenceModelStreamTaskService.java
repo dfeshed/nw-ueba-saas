@@ -83,10 +83,12 @@ public class EventsPrevalenceModelStreamTaskService {
 				contextFieldList.add(optionalContextFieldReplacement);
 			}
 			modelToContextFieldNameMap.put(modelName, contextFieldList);
+			// get the task windows from config and use it as the time gap to update models
+			long timeGapForModelUpdates = config.getLong("task.window.ms");
 			// create a model builder based on fields configuration
 			PrevalanceModelBuilderImpl modelBuilder = createModelBuilder(modelName, config);
 			// create model service based on the store and model builder
-			PrevalanceModelStreamingService prevalanceModelStreamingService = new PrevalanceModelStreamingService(store,modelBuilder);
+			PrevalanceModelStreamingService prevalanceModelStreamingService = new PrevalanceModelStreamingService(store,modelBuilder,timeGapForModelUpdates);
 			prevalanceModelStreamingServiceMap.put(modelName, prevalanceModelStreamingService);
 		}
 	}
