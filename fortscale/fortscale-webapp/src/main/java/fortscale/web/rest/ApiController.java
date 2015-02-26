@@ -266,7 +266,7 @@ public class ApiController extends BaseController {
 		}
 	}
 
-
+	// receives a batch of rows and convert them into csv row that is written to the given output stream. Used by the export data query method
 	private void convertQueryResultsToText(List<Map<String, Object>> rows, List<String> fields, String delimiter, ServletOutputStream output) throws IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		for (Map<String, Object> row : rows) {
