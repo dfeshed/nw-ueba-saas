@@ -105,14 +105,25 @@ public abstract class DataQueryRunner {
 	}
 
 	/**
-	 *
+	 * This method will translate the main entity in the given data query DTO in to a list of data queries DTOs that will based on the leaf successor entities  from the abstract entity
 	 * @param dto
-	 * @param entitiestree
+	 * @param entitiestrees
 	 * @return
 	 */
-	private List<DataQueryDTO> translateTheMainEntity(DataQueryDTO dto , List<TreeNode<DataEntity>> entitiestree)
+	private List<DataQueryDTO> translateTheMainEntity(DataQueryDTO dto , List<TreeNode<DataEntity>> entitiestrees)
 	{
 		List<DataQueryDTO> result = null;
+
+        // for each tree in the tree list bring all the leaf successor of the dto
+        for (TreeNode<DataEntity> tree : entitiestrees )
+        {
+            if (tree.peekFromTree(tree) != null){
+
+            }
+        }
+
+
+
 
 
 		return result;
