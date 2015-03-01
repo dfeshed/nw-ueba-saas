@@ -113,20 +113,22 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 				// find users matching to the groups and the OUs (this solution might be problematic memory-wise in case there are many users)
 				taggedUsers = new HashSet<>();
 				if (!groupsToTag.isEmpty()) {
-					for (Pageable pageable = new PageRequest(0, pageSize); ; pageable = pageable.next()) {
-						Set<String> subset = userService.findNamesInGroup(groupsToTag, pageable);
+					Set<String> subset;
+					Pageable pageable = new PageRequest(0, pageSize);
+					do {
+						subset = userService.findNamesInGroup(groupsToTag, pageable);
 						taggedUsers.addAll(subset);
-						if (subset.size() < pageSize)
-							break;
-					}
+						pageable = pageable.next();
+					} while (subset.size() == pageSize);
 				}
 				if (!ousToTag.isEmpty()) {
-					for (Pageable pageable = new PageRequest(0, pageSize); ; pageable = pageable.next()) {
-						Set<String> subset = userService.findNamesInOU(ousToTag, pageable);
+					Set<String> subset;
+					Pageable pageable = new PageRequest(0, pageSize);
+					do {
+						subset = userService.findNamesInOU(ousToTag, pageable);
 						taggedUsers.addAll(subset);
-						if (subset.size() < pageSize)
-							break;
-					}
+						pageable = pageable.next();
+					} while (subset.size() == pageSize);
 				}
 				if (taggedUsers.isEmpty()) {
 					logger.warn(

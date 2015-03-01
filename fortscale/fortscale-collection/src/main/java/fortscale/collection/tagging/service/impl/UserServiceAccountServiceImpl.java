@@ -133,12 +133,13 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 
 	private Set<String> findUsersByOU(List<String> usernames) {
 		Set<String> usersByOu = new HashSet<String>();
-		for (Pageable pageable = new PageRequest(0, pageSize); ; pageable = pageable.next()) {
-			Set<String> subset = userService.findNamesInOU(usernames, pageable);
+		Set<String> subset;
+		Pageable pageable = new PageRequest(0, pageSize);
+		do {
+			subset = userService.findNamesInOU(usernames, pageable);
 			usersByOu.addAll(subset);
-			if (subset.size() < pageSize)
-				break;
-		}
+			pageable = pageable.next();
+		} while (subset.size() == pageSize);
 		return usersByOu;
 	}
 
