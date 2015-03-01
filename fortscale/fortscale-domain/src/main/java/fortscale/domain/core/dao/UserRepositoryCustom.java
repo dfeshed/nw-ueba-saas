@@ -34,9 +34,8 @@ public interface UserRepositoryCustom {
 	public List<User> findByIds(Collection<String> ids);
 	public List<User> findByUsernames(Collection<String> usernames);
 	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames);
-	public List<User> findAllExcludeAdInfo();
 	public List<User> findAllExcludeAdInfo(Pageable pageable);
-	
+
 	public User findByAdEmailAddress(EmailAddress emailAddress);
 	
 	public User getLastActivityAndLogUserNameByUserName(String userName);
@@ -53,12 +52,10 @@ public interface UserRepositoryCustom {
 	
 	public User findByAdInfoObjectGUID(String objectGUID);
 	public User findByObjectGUID(String objectGUID);
-	public HashMap<String, String> findAllUsernames();
-	
 	public User findLastActiveUser(LogEventsEnum eventId);
-	
-	public Set<String> findByUserInGroup(Collection<String> groups);
-	public Set<String> findByUserInOU(Collection<String> ouList);
+
+	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable);
+	public Set<String> findByUserInOU(Collection<String> ouList, Pageable pageable);
 	public void updateUserTag(String tagField, String username, boolean value);
 	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime);
 

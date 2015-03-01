@@ -1,6 +1,5 @@
 package fortscale.services.impl;
 
-
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.ad.AdUserThumbnail;
@@ -32,6 +31,7 @@ import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
@@ -914,13 +914,13 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Set<String> findNamesInGroup(List<String> groupsToTag){
-		return userRepository.findByUserInGroup(groupsToTag);
+	public Set<String> findNamesInGroup(List<String> groupsToTag, Pageable pageable) {
+		return userRepository.findByUserInGroup(groupsToTag, pageable);
 	}
 
 	@Override
-	public Set<String> findNamesInOU(List<String> ousToTag){
-		return userRepository.findByUserInOU(ousToTag);
+	public Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable) {
+		return userRepository.findByUserInOU(ousToTag, pageable);
 	}
 
 	@Override
