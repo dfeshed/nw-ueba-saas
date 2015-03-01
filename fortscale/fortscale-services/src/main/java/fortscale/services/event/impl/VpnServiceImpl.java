@@ -82,9 +82,9 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 
 	@Override
-	public List<VpnSession> findByUsernameAndCreatedAtEpochGreaterThan(String normalizeUsername, Long createdAtEpoch){
+	public List<VpnSession> findByUsernameAndCreatedAtEpochBetween(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo){
 		PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
-		return vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(normalizeUsername, createdAtEpoch, pageRequest);
+		return vpnSessionRepository.findByUsernameAndCreatedAtEpochBetween(normalizeUsername, createdAtEpochFrom, createdAtEpochTo, pageRequest);
 	}
 
 	@Override

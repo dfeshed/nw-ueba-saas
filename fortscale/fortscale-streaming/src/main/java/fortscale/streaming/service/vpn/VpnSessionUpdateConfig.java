@@ -15,8 +15,10 @@ public class VpnSessionUpdateConfig {
     private String runGeoHoppingFieldName;
     private String addSessionDataFieldName;
     private String resolveIpFieldName;
+    private Long timeGapForResolveIpFrom;
+    private Long timeGapForResolveIpTo;
 
-    public VpnSessionUpdateConfig(String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, int vpnGeoHoppingOpenSessionThresholdInHours, int vpnGeoHoppingCloseSessionThresholdInHours, String sessionIdFieldName, String runGeoHoppingFieldName, String addSessionDataFieldName, String resolveIpFieldName) {
+    public VpnSessionUpdateConfig(String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, int vpnGeoHoppingOpenSessionThresholdInHours, int vpnGeoHoppingCloseSessionThresholdInHours, String sessionIdFieldName, String runGeoHoppingFieldName, String addSessionDataFieldName, String resolveIpFieldName, Long timeGapForResolveIpFrom, Long timeGapForResolveIpTo) {
 
         this.countryIsoCodeFieldName = countryIsoCodeFieldName;
         this.longtitudeFieldName = longtitudeFieldName;
@@ -27,6 +29,8 @@ public class VpnSessionUpdateConfig {
         this.runGeoHoppingFieldName = runGeoHoppingFieldName;
         this.addSessionDataFieldName = addSessionDataFieldName;
         this.resolveIpFieldName = resolveIpFieldName;
+        this.timeGapForResolveIpFrom= timeGapForResolveIpFrom * 1000;
+        this.timeGapForResolveIpTo= timeGapForResolveIpTo * 1000;
     }
 
     public String getCountryIsoCodeFieldName() {
@@ -99,5 +103,21 @@ public class VpnSessionUpdateConfig {
 
     public void setResolveIpFieldName(String resolveIpFieldName) {
         this.resolveIpFieldName = resolveIpFieldName;
+    }
+
+    public Long getTimeGapForResolveIpFrom() {
+        return timeGapForResolveIpFrom;
+    }
+
+    public void setTimeGapForResolveIpFrom(Long timeGapForResolveIpFrom) {
+        this.timeGapForResolveIpFrom = timeGapForResolveIpFrom;
+    }
+
+    public Long getTimeGapForResolveIpTo() {
+        return timeGapForResolveIpTo;
+    }
+
+    public void setTimeGapForResolveIpTo(Long timeGapForResolveIpTo) {
+        this.timeGapForResolveIpTo = timeGapForResolveIpTo;
     }
 }
