@@ -8,6 +8,16 @@ public class DataQueryJoin {
     private DataQueryJoinField right;
     private String entity;
 
+    //copy constructor
+    public DataQueryJoin(DataQueryJoin copy)
+    {
+        this.left = copy.left;
+        this.right = copy.right;
+        this.entity = copy.entity;
+
+    }
+
+
     private JoinType type;
 
     public JoinType getType() {

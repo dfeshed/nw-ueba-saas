@@ -12,6 +12,7 @@ import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,18 +39,18 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 	/**
 	 * All entities (lazy initialization)
 	 */
-    private List<DataEntity> allDataEntities;
+    private HashMap<String,DataEntity> allDataEntities;
 
 	/**
 	 * All base entities (lazy initialization)
 	 */
-	private List<DataEntity> allBaseDataEntities;
+	private HashMap<String,DataEntity> allBaseDataEntities;
 
 
 	/**
 	 * All leaf entities (lazy initialization)
 	 */
-	private List<DataEntity> allLeafDataEntities;
+	private HashMap<String,DataEntity> allLeafDataEntities;
 
 	/**
 	 * Entity Hierarchy tree (lazy initialization)
@@ -134,36 +135,40 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public List<DataEntity> getAllLogicalEntities() throws Exception{
-        if (allDataEntities != null)
-            return allDataEntities;
 
-        List<DataEntity> baseEntities = getAllBaseEntities();
-		List<DataEntity> leafEntities = getAllLeafeEntities();
+        if (allDataEntities != null){
 
-        ArrayList<DataEntity> entities = new ArrayList<>();
-		entities.addAll(baseEntities);
-		entities.addAll(leafEntities);
+            return new ArrayList<>(allDataEntities.values());
+        }
+
+
+        HashMap<String,DataEntity> baseEntities = getAllBaseEntities();
+        HashMap<String,DataEntity> leafEntities = getAllLeafeEntities();
+
+        HashMap<String,DataEntity> entities = new HashMap<>();
+		entities.putAll(baseEntities);
+		entities.putAll(leafEntities);
 
 
 
 
         allDataEntities = entities;
-        return entities;
+        return new ArrayList<>(entities.values());
     }
 
 	/**
 	 * Gets all the base entities that are present in entities.properties.
 	 * @return
 	 */
-	public List<DataEntity> getAllBaseEntities() throws Exception{
+	public HashMap<String,DataEntity> getAllBaseEntities() throws Exception{
 		if (allBaseDataEntities != null)
 			return allBaseDataEntities;
 
 		String[] entityIds = stringValueResolver.resolveStringValue("${base_entities}").split("\\s*,[,\\s]*");
-		ArrayList<DataEntity> entities = new ArrayList<>();
+		HashMap<String,DataEntity> entities  = new HashMap<>();
 
 		for(String entityId: entityIds){
-			entities.add(getLogicalEntity(entityId));
+			entities.put(entityId, getLogicalEntity(entityId));
 		}
 
 		allBaseDataEntities = entities;
@@ -174,15 +179,15 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 	 * Gets all the leaf entities that are present in entities.properties.
 	 * @return
 	 */
-	public List<DataEntity> getAllLeafeEntities() throws Exception{
+	public HashMap<String,DataEntity> getAllLeafeEntities() throws Exception{
 		if (allLeafDataEntities != null)
 			return allLeafDataEntities;
 
 		String[] entityIds = stringValueResolver.resolveStringValue("${leaf_entities}").split("\\s*,[,\\s]*");
-		ArrayList<DataEntity> entities = new ArrayList<>();
+        HashMap<String,DataEntity> entities = new HashMap<>();
 
 		for(String entityId: entityIds){
-			entities.add(getLogicalEntity(entityId));
+			entities.put(entityId, getLogicalEntity(entityId));
 		}
 
 		allLeafDataEntities = entities;
@@ -330,6 +335,14 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
      * @return
      */
     public DataEntity getLogicalEntity(String entityId) throws Exception{
+
+
+        // Peek from cahce if we already have this entity
+        if(allDataEntities.containsKey(entityId))
+        {
+            return allDataEntities.get(entityId);
+        }
+
         DataEntityConfig entityConfig = getEntityFromCache(entityId);
 
         DataEntity entity = new DataEntity();
@@ -735,5 +748,30 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         int minValue = Integer.parseInt(value);
         entityConfig.setPerformanceFieldMinValue(minValue);
         return minValue;
+    }
+
+    public DataEntity getEntityFromOverAllCache(String entityId)
+    {
+        return getEntityFromCache(entityId,allDataEntities);
+
+    }
+
+    public DataEntity getLeafEntityFromCache(String entityId)
+    {
+        return getEntityFromCache(entityId,allLeafDataEntities);
+
+    }
+
+
+    public DataEntity getBasetEntityFromCache(String entityId)
+    {
+        return getEntityFromCache(entityId,allBaseDataEntities);
+
+    }
+
+    private DataEntity getEntityFromCache (String entityId , HashMap<String,DataEntity> cache)
+    {
+       return cache.get(entityId);
+
     }
 }
