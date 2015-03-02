@@ -49,7 +49,7 @@ public class VpnEnrichService {
     public VpnEnrichService(VpnEnrichConfig config) {
         checkNotNull(config);
         this.config = config;
-        isResolveIp = convertToBoolean( config.getVpnSessionUpdateConfig().getResolveIpFieldName());
+        isResolveIp = convertToBoolean(config.getVpnSessionUpdateConfig().getResolveIpFieldName());
 
     }
 
@@ -212,7 +212,8 @@ public class VpnEnrichService {
         if(event.get(vpnEvents.HOSTNAME) == null || event.get(vpnEvents.HOSTNAME).equals("")){
             event.put(vpnEvents.HOSTNAME, openVpnSessionData.getHostname());
         }
-        if(event.get(vpnEvents.SOURCE_IP) == null || event.get(vpnEvents.SOURCE_IP).equals("")){
+        //when isResolveIp=true => need to override all those fields from open session to close session
+        if(event.get(vpnEvents.SOURCE_IP) == null || event.get(vpnEvents.SOURCE_IP).equals("") || isResolveIp){
             event.put(vpnEvents.SOURCE_IP, openVpnSessionData.getSourceIp());
             event.put(vpnEvents.CITY, openVpnSessionData.getCity());
             event.put(vpnEvents.COUNTRY, openVpnSessionData.getCountry());
