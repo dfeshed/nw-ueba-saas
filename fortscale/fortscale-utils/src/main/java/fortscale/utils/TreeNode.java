@@ -65,6 +65,31 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
 		return result;
 	}
 
+	/**
+	 * This method will return the list of leaf of current tree
+	 * @return
+	 */
+	public ArrayList<TreeNode<T>> getListOfLeaf ()
+	{
+		ArrayList<TreeNode<T>> listOfLeaf = new ArrayList<>();
+
+		if (childrens.size() == 0)
+			listOfLeaf.add(this);
+
+		for (TreeNode<T> child : childrens)
+		{
+			if (child.getChildrens().size() == 0)
+				listOfLeaf.add(child);
+			else
+				listOfLeaf.addAll(child.getListOfLeaf());
+
+
+		}
+
+		return listOfLeaf;
+
+	}
+
 
 	public Iterator<TreeNode<T>> iterator ()
 	{

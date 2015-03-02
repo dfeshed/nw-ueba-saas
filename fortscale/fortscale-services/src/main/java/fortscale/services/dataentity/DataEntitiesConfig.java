@@ -41,6 +41,17 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
     private List<DataEntity> allDataEntities;
 
 	/**
+	 * All base entities (lazy initialization)
+	 */
+	private List<DataEntity> allBaseDataEntities;
+
+
+	/**
+	 * All leaf entities (lazy initialization)
+	 */
+	private List<DataEntity> allLeafDataEntities;
+
+	/**
 	 * Entity Hierarchy tree (lazy initialization)
 	 */
 	private List<TreeNode<DataEntity>> entitiesHierarchyTreeCach;
@@ -126,16 +137,57 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         if (allDataEntities != null)
             return allDataEntities;
 
-        String[] entityIds = stringValueResolver.resolveStringValue("${entities}").split("\\s*,[,\\s]*");
-        ArrayList<DataEntity> entities = new ArrayList<>();
+        List<DataEntity> baseEntities = getAllBaseEntities();
+		List<DataEntity> leafEntities = getAllLeafeEntities();
 
-        for(String entityId: entityIds){
-            entities.add(getLogicalEntity(entityId));
-        }
+        ArrayList<DataEntity> entities = new ArrayList<>();
+		entities.addAll(baseEntities);
+		entities.addAll(leafEntities);
+
+
+
 
         allDataEntities = entities;
         return entities;
     }
+
+	/**
+	 * Gets all the base entities that are present in entities.properties.
+	 * @return
+	 */
+	public List<DataEntity> getAllBaseEntities() throws Exception{
+		if (allBaseDataEntities != null)
+			return allBaseDataEntities;
+
+		String[] entityIds = stringValueResolver.resolveStringValue("${base_entities}").split("\\s*,[,\\s]*");
+		ArrayList<DataEntity> entities = new ArrayList<>();
+
+		for(String entityId: entityIds){
+			entities.add(getLogicalEntity(entityId));
+		}
+
+		allBaseDataEntities = entities;
+		return entities;
+	}
+
+	/**
+	 * Gets all the leaf entities that are present in entities.properties.
+	 * @return
+	 */
+	public List<DataEntity> getAllLeafeEntities() throws Exception{
+		if (allLeafDataEntities != null)
+			return allLeafDataEntities;
+
+		String[] entityIds = stringValueResolver.resolveStringValue("${leaf_entities}").split("\\s*,[,\\s]*");
+		ArrayList<DataEntity> entities = new ArrayList<>();
+
+		for(String entityId: entityIds){
+			entities.add(getLogicalEntity(entityId));
+		}
+
+		allLeafDataEntities = entities;
+		return entities;
+	}
 
 	/**
 	 * This method will return a list of trees that will represent the inheritance hierarchy of the entities.properties file

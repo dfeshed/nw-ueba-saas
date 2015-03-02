@@ -247,7 +247,7 @@ public class ApiController extends BaseController {
 
 
 			//translate the data query if needed (in case he have base entity referring break it to n data queries  for each leaf that extend this base entities )
-			List<DataQueryDTO> translatedDataQuery = dataQueryRunner.translateAbstarctDataQuery(dataQueryObject,dataEntitiesConfig.getEntitiesTrees());
+			List<DataQueryDTO> translatedDataQuery = dataQueryRunner.translateAbstarctDataQuery(dataQueryObject,dataEntitiesConfig);
 
 
 			//Execute each dto in the translated queries list and combine the result in the end

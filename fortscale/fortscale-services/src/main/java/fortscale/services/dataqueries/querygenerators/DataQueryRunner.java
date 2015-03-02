@@ -1,6 +1,8 @@
 package fortscale.services.dataqueries.querygenerators;
 
+import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
+import fortscale.services.dataentity.DataEntityConfig;
 import fortscale.services.dataentity.QueryFieldFunction;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryField;
@@ -70,30 +72,35 @@ public abstract class DataQueryRunner {
 	 * @param dataQueryDTO - the input data query
 	 * @return
 	 */
-	public List<DataQueryDTO> translateAbstarctDataQuery(DataQueryDTO dataQueryDTO,List<TreeNode<DataEntity>> entitiestree)  throws Exception
+	public List<DataQueryDTO> translateAbstarctDataQuery(DataQueryDTO dataQueryDTO,DataEntitiesConfig dataEntitiesConfig)  throws Exception
 	{
+
+		List<TreeNode<DataEntity>> entitiestree = dataEntitiesConfig.getEntitiesTrees();
+
+		
 		List<DataQueryDTO> result = null;
 
+		for (String entityId : dataQueryDTO.getEntities()) {
 
+			DataEntity lightDataEntity = new DataEntity(entityId);
 
-		result = translateTheMainEntity(dataQueryDTO,entitiestree);
+			result = translateTheMainEntity(dataQueryDTO, entitiestree);
 
-		List<DataQueryDTO> joinTranslation = new ArrayList<>();
+			List<DataQueryDTO> joinTranslation = new ArrayList<>();
 
-		for (DataQueryDTO dto : result)
-		{
-			//joinTranslation.addAll(translateTheJoins(dto));
+			for (DataQueryDTO dto : result) {
+				//joinTranslation.addAll(translateTheJoins(dto));
+			}
+
+			result.addAll(joinTranslation);
+
+			List<DataQueryDTO> subQueryTransaltion = new ArrayList<>();
+			for (DataQueryDTO dto : result) {
+				//subQueryTransaltion.addAll(translateTheSubQueries(dto));
+			}
+
+			result = subQueryTransaltion;
 		}
-
-		result.addAll(joinTranslation);
-
-		List<DataQueryDTO> subQueryTransaltion = new ArrayList<>();
-		for (DataQueryDTO dto : result)
-		{
-			//subQueryTransaltion.addAll(translateTheSubQueries(dto));
-		}
-
-		result = subQueryTransaltion;
 
 
 
@@ -113,12 +120,16 @@ public abstract class DataQueryRunner {
 	private List<DataQueryDTO> translateTheMainEntity(DataQueryDTO dto , List<TreeNode<DataEntity>> entitiestrees)
 	{
 		List<DataQueryDTO> result = null;
+		TreeNode<DataEntity> abstractEntity = new TreeNode<>(new DataEntity())
 
-        // for each tree in the tree list bring all the leaf successor of the dto
+        // for each entities tree in the tree list bring all the leaf successor of that entity
         for (TreeNode<DataEntity> tree : entitiestrees )
         {
-            if (tree.peekFromTree(tree) != null){
+			TreeNode<DataEntity> subTree  = tree.peekFromTree(tree);
 
+			//in case that the
+            if (subTree != null){
+				ArrayList<TreeNode<DataEntity>> children = subTree.getChildrens();
             }
         }
 
