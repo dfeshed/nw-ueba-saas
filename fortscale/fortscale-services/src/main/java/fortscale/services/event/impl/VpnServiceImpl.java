@@ -141,7 +141,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	public void updateCloseVpnSession(VpnSession vpnSessionUpdate) {
 		VpnSession vpnSession = findVpnSession(vpnSessionUpdate);
 		if(vpnSession == null){
-			logger.info("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
+			logger.debug("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
 			return;
 		}
 
