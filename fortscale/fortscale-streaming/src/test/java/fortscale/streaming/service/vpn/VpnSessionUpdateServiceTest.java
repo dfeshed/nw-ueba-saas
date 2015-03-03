@@ -1,15 +1,19 @@
 package fortscale.streaming.service.vpn;
 
-import fortscale.domain.events.VpnSession;
-import fortscale.domain.schema.VpnEvents;
-import fortscale.geoip.GeoIPInfo;
-import fortscale.geoip.IpToLocationGeoIPService;
-import fortscale.services.event.VpnService;
-import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
-import fortscale.utils.junit.SpringAware;
+
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
+
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-import org.junit.Before;
+
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,18 +31,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import fortscale.domain.events.VpnSession;
+import fortscale.domain.schema.VpnEvents;
+import fortscale.geoip.GeoIPInfo;
+import fortscale.geoip.GeoIPService;
+import fortscale.services.event.VpnService;
+import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
+import fortscale.utils.junit.SpringAware;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by rans on 02/02/15.
@@ -64,7 +64,7 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
 
     @Autowired
     @ReplaceWithMock
-    IpToLocationGeoIPService geoIPServiceMock;
+    private GeoIPService geoIPServiceMock;
     @Autowired
     private VpnEvents vpnEvents;
     @Autowired
