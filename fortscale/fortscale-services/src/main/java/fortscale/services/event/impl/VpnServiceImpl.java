@@ -80,7 +80,13 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	public VpnSession findByUsernameAndSourceIp(String username, String sourceIp){
 		return vpnSessionRepository.findByUsernameAndSourceIp(username, sourceIp);
 	}
-	
+
+	@Override
+	public List<VpnSession> findByUsernameAndCreatedAtEpochBetween(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo){
+		PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
+		return vpnSessionRepository.findByUsernameAndCreatedAtEpochBetween(normalizeUsername, createdAtEpochFrom, createdAtEpochTo, pageRequest);
+	}
+
 	@Override
 	public void saveVpnSession(VpnSession vpnSession){
 		vpnSessionRepository.save(vpnSession);
@@ -135,7 +141,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	public void updateCloseVpnSession(VpnSession vpnSessionUpdate) {
 		VpnSession vpnSession = findVpnSession(vpnSessionUpdate);
 		if(vpnSession == null){
-			logger.info("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
+			logger.debug("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
 			return;
 		}
 

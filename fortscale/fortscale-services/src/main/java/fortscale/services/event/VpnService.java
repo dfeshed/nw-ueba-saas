@@ -15,4 +15,5 @@ public interface VpnService {
 	List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours);
 	VpnSession findBySessionId(String sessionId);
 	VpnSession findByUsernameAndSourceIp(String username, String sourceIp);
+	List<VpnSession> findByUsernameAndCreatedAtEpochBetween(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo);
 }
