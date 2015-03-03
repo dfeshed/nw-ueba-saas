@@ -1,5 +1,6 @@
 package fortscale.streaming.service.vpn;
 
+import fortscale.utils.TimestampUtils;
 import javolution.io.Struct;
 
 /**
@@ -14,8 +15,11 @@ public class VpnSessionUpdateConfig {
     private String sessionIdFieldName;
     private String runGeoHoppingFieldName;
     private String addSessionDataFieldName;
+    private String resolveIpFieldName;
+    private Long timeGapForResolveIpFrom;
+    private Long timeGapForResolveIpTo;
 
-    public VpnSessionUpdateConfig(String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, int vpnGeoHoppingOpenSessionThresholdInHours, int vpnGeoHoppingCloseSessionThresholdInHours, String sessionIdFieldName, String runGeoHoppingFieldName, String addSessionDataFieldName) {
+    public VpnSessionUpdateConfig(String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, int vpnGeoHoppingOpenSessionThresholdInHours, int vpnGeoHoppingCloseSessionThresholdInHours, String sessionIdFieldName, String runGeoHoppingFieldName, String addSessionDataFieldName, String resolveIpFieldName, Long timeGapForResolveIpFrom, Long timeGapForResolveIpTo) {
 
         this.countryIsoCodeFieldName = countryIsoCodeFieldName;
         this.longtitudeFieldName = longtitudeFieldName;
@@ -25,6 +29,9 @@ public class VpnSessionUpdateConfig {
         this.sessionIdFieldName = sessionIdFieldName;
         this.runGeoHoppingFieldName = runGeoHoppingFieldName;
         this.addSessionDataFieldName = addSessionDataFieldName;
+        this.resolveIpFieldName = resolveIpFieldName;
+        this.timeGapForResolveIpFrom = TimestampUtils.normalizeTimestamp(timeGapForResolveIpFrom);
+        this.timeGapForResolveIpTo = TimestampUtils.normalizeTimestamp(timeGapForResolveIpTo);
     }
 
     public String getCountryIsoCodeFieldName() {
@@ -89,5 +96,29 @@ public class VpnSessionUpdateConfig {
 
     public void setAddSessionDataFieldName(String addSessionDataFieldName) {
         this.addSessionDataFieldName = addSessionDataFieldName;
+    }
+
+    public String getResolveIpFieldName() {
+        return resolveIpFieldName;
+    }
+
+    public void setResolveIpFieldName(String resolveIpFieldName) {
+        this.resolveIpFieldName = resolveIpFieldName;
+    }
+
+    public Long getTimeGapForResolveIpFrom() {
+        return timeGapForResolveIpFrom;
+    }
+
+    public void setTimeGapForResolveIpFrom(Long timeGapForResolveIpFrom) {
+        this.timeGapForResolveIpFrom = timeGapForResolveIpFrom;
+    }
+
+    public Long getTimeGapForResolveIpTo() {
+        return timeGapForResolveIpTo;
+    }
+
+    public void setTimeGapForResolveIpTo(Long timeGapForResolveIpTo) {
+        this.timeGapForResolveIpTo = timeGapForResolveIpTo;
     }
 }
