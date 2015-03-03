@@ -1,5 +1,6 @@
 package fortscale.streaming.service.vpn;
 
+import fortscale.utils.TimestampUtils;
 import javolution.io.Struct;
 
 /**
@@ -29,8 +30,8 @@ public class VpnSessionUpdateConfig {
         this.runGeoHoppingFieldName = runGeoHoppingFieldName;
         this.addSessionDataFieldName = addSessionDataFieldName;
         this.resolveIpFieldName = resolveIpFieldName;
-        this.timeGapForResolveIpFrom= timeGapForResolveIpFrom * 1000;
-        this.timeGapForResolveIpTo= timeGapForResolveIpTo * 1000;
+        this.timeGapForResolveIpFrom = TimestampUtils.normalizeTimestamp(timeGapForResolveIpFrom);
+        this.timeGapForResolveIpTo = TimestampUtils.normalizeTimestamp(timeGapForResolveIpTo);
     }
 
     public String getCountryIsoCodeFieldName() {
