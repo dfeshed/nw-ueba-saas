@@ -2,6 +2,7 @@ package fortscale.services.dataqueries.querydto;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,13 +18,32 @@ public class DataQueryDTO {
      * @param anotherDataQueryDTO
      */
     public DataQueryDTO(DataQueryDTO anotherDataQueryDTO){
-        this.fields = anotherDataQueryDTO.getFields();
-        this.conditions = anotherDataQueryDTO.getConditions();
+
+		if (anotherDataQueryDTO.getFields() != null) {
+			this.fields = new ArrayList<>(anotherDataQueryDTO.getFields());
+		}
+		if (anotherDataQueryDTO.getConditions() != null) {
+			this.conditions = new ConditionTerm(anotherDataQueryDTO.getConditions());
+		}
         this.entities = anotherDataQueryDTO.getEntities();
-        this.subQuery = anotherDataQueryDTO.getSubQuery();
-        this.join = anotherDataQueryDTO.getJoin();
-        this.groupBy = anotherDataQueryDTO.getGroupBy();
-        this.sort = anotherDataQueryDTO.getSort();
+		if (anotherDataQueryDTO.getSubQuery() != null) {
+			this.subQuery = new MultipleDataQueryDTO(anotherDataQueryDTO.getSubQuery());
+		}
+		if (anotherDataQueryDTO.getJoin() != null) {
+			this.join = new ArrayList<>();
+			for (DataQueryJoin dataQueryJoin : anotherDataQueryDTO.getJoin())
+			{
+				this.join.add(new DataQueryJoin(dataQueryJoin));
+			}
+
+
+		}
+		if(anotherDataQueryDTO.getGroupBy() != null) {
+			this.groupBy = new ArrayList<>(anotherDataQueryDTO.getGroupBy());
+		}
+		if (anotherDataQueryDTO.getSort() != null) {
+			this.sort = new ArrayList<>(anotherDataQueryDTO.getSort());
+		}
         this.limit = anotherDataQueryDTO.getLimit();
         this.offset = anotherDataQueryDTO.getOffset();
     }

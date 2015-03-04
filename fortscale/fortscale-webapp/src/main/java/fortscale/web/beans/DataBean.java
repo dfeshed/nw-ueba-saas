@@ -1,12 +1,13 @@
 package fortscale.web.beans;
 
+import java.util.List;
 import java.util.Map;
 
 public class DataBean<T> {
 	private T data;
 	private int total = 1;
 	private int offset = 0;
-	private WarningMessage warning;
+	private List<WarningMessage> warning = new java.util.ArrayList<>();
 	private Map<String, Object> info;
 
 	public T getData() {
@@ -42,15 +43,20 @@ public class DataBean<T> {
 	}
 
 	public WarningMessage getWarning() {
-		return warning;
+
+		if (warning.size()>0)
+			return warning.get(0);
+		return null;
 	}
 
 	public void setWarning(WarningMessage warning) {
-		this.warning = warning;
+		WarningMessage warningMsg = new WarningMessage(warning.getCode(), warning.getMessage());
+		this.warning.add(warningMsg);
 	}
 	
 	public void setWarning(DataWarningsEnum warning) {
-		this.warning = new WarningMessage(warning.getCode(), warning.getMessage());
+		WarningMessage warningMsg = new WarningMessage(warning.getCode(), warning.getMessage());
+		this.warning.add(warningMsg);
 	}
 
 

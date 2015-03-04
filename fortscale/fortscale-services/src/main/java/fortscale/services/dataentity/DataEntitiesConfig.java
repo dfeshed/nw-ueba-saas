@@ -12,7 +12,6 @@ import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -205,7 +204,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 			return entitiesHierarchyTreeCach;
 
 		// get the roots entities for the trees
-		String[]  leaffEntities = stringValueResolver.resolveStringValue("${entities}").split("\\s*,[,\\s]*");
+		String[]  leaffEntities = stringValueResolver.resolveStringValue("${leaf_entities}").split("\\s*,[,\\s]*");
 
 		List<TreeNode<DataEntity>> entitiesTrees = new ArrayList<>() ;
 
@@ -338,7 +337,7 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 
 
         // Peek from cahce if we already have this entity
-        if(allDataEntities.containsKey(entityId))
+        if(allDataEntities!=null && allDataEntities.containsKey(entityId))
         {
             return allDataEntities.get(entityId);
         }

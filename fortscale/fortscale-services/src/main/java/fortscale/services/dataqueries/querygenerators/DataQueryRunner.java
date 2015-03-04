@@ -2,12 +2,10 @@ package fortscale.services.dataqueries.querygenerators;
 
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
-import fortscale.services.dataentity.DataEntityConfig;
 import fortscale.services.dataentity.QueryFieldFunction;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.TreeNode;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,21 +81,8 @@ public abstract class DataQueryRunner {
 
         for (DataQueryDTO dto : result) {
             translateTheJoins(dto, entitiestree, dataEntitiesConfig);
+			translateTheSubQueries(dto, entitiestree, dataEntitiesConfig);
         }
-
-
-
-
-        for (DataQueryDTO dto : result) {
-            subQueryTransaltion.addAll(translateTheSubQueries(dto));
-        }
-
-
-
-
-
-
-
 
 		return result;
 
@@ -133,7 +118,7 @@ public abstract class DataQueryRunner {
                     if (subTree != null){
 
 
-                        ArrayList<TreeNode<DataEntity>> children = subTree.getChildrens();
+                        ArrayList<TreeNode<DataEntity>> children = subTree.getListOfLeaf();
 
                         //in case that the subtree is a leaf (doesn't have children in the tree)
                         if (children.size() == 0 )
@@ -142,12 +127,20 @@ public abstract class DataQueryRunner {
                             break;
                         }
 
+						//Create the translated leaf data query dto
                         for (TreeNode<DataEntity> dataEntityTreeNode : children)
                         {
+							//replace the main entity
                             DataQueryDTO childDto = new DataQueryDTO(dto);
                             String[] entities = new String[1];
                             entities[0] = dataEntityTreeNode.getData().getId();
-                            result.add(childDto);
+							childDto.setEntities(entities);
+
+							//replace the joins params
+							childDto.setJoin(replaceJoinParams(childDto.getJoin(),entityId, entities[0]));
+
+
+							result.add(childDto);
                         }
 
                         break;
@@ -162,12 +155,37 @@ public abstract class DataQueryRunner {
 
 	}
 
+	/**
+	 * This method will replace the base  entity in the join param with the leaf value that will represent the translated data query dto
+	 * @param where
+	 * @param what
+	 * @param inWhat
+	 * @return
+	 */
+	private List<DataQueryJoin> replaceJoinParams (List<DataQueryJoin> where,String what,String inWhat )
+	{
+		for (DataQueryJoin dataQueryJoin : where)
+		{
+			if (dataQueryJoin.getLeft().getEntity().equals(what))
+				dataQueryJoin.getLeft().setEntity(inWhat);
+			if (dataQueryJoin.getRight().getEntity().equals(what))
+				dataQueryJoin.getRight().setEntity(inWhat);
+
+		}
+
+		return where;
+
+	}
+
     /**
      * This method will translate each data query dto  with abstract entity in the join to list of data query dto with leaf entities
      * @param dto
      * @return
      */
     private DataQueryDTO translateTheJoins(DataQueryDTO dto,List<TreeNode<DataEntity>> entitiestrees,DataEntitiesConfig dataEntitiesConfig){
+
+		if(dto.getJoin() == null || dto.getJoin().size() ==0)
+			return dto;
 
         //this list will mark which data query joins need to remove from the list cause they are base entities
         List<DataQueryJoin> listToRemove = new ArrayList<>();
@@ -230,6 +248,9 @@ public abstract class DataQueryRunner {
 
         MultipleDataQueryDTO subQuery =  dto.getSubQuery();
 
+		if (subQuery == null)
+			return dto;
+
 
         //this list will mark which data query in the sub query that need to remove from the list cause they are base entities
         List<DataQueryDTO> listToRemove = new ArrayList<>();
@@ -258,15 +279,16 @@ public abstract class DataQueryRunner {
                         if (children.size() == 0 )
                             break;
 
-
-                        listToRemove.add(dataQueryJoin);
+                        listToRemove.add(dataQueryDTO);
 
                         for (TreeNode<DataEntity> dataEntityTreeNode : children)
                         {
 
-                            DataQueryJoin  leafEntityJoin = new DataQueryJoin(dataQueryJoin);
-                            leafEntityJoin.setEntity(dataEntityTreeNode.getData().getId());
-                            listToAdd.add(leafEntityJoin);
+							DataQueryDTO  leafSubQuery = new DataQueryDTO(dataQueryDTO);
+							String [] entity = new String[1];
+							entity[0] = dataEntityTreeNode.getData().getId();
+							leafSubQuery.setEntities(entity);
+                            listToAdd.add(leafSubQuery);
 
                         }
 
@@ -276,8 +298,9 @@ public abstract class DataQueryRunner {
             }
 
         }
-        dto.getJoin().addAll(listToAdd);
-        dto.getJoin().removeAll(listToRemove);
+		subQuery.getDataQueries().addAll(listToAdd);
+		subQuery.getDataQueries().removeAll(listToRemove);
+		dto.setSubQuery(subQuery);
         return dto;
     }
 

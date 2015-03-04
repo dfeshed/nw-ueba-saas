@@ -1,5 +1,6 @@
 package fortscale.services.dataqueries.querydto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,6 +9,13 @@ import java.util.List;
 public class MultipleDataQueryDTO {
     private List<DataQueryDTO> dataQueries;
     private DataQueryCombineMethod combineMethod;
+
+	public MultipleDataQueryDTO (){}
+	public MultipleDataQueryDTO (MultipleDataQueryDTO other)
+	{
+		this.dataQueries = new ArrayList<>(other.getDataQueries());
+		this. combineMethod = other.combineMethod;
+	}
 
     public List<DataQueryDTO> getDataQueries() {
         return dataQueries;

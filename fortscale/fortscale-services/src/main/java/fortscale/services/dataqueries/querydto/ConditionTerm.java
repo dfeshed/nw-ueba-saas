@@ -1,5 +1,6 @@
 package fortscale.services.dataqueries.querydto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,6 +9,13 @@ import java.util.List;
 public class ConditionTerm extends Term{
     private List<Term> terms;
     private LogicalOperator operator;
+
+	public ConditionTerm(){}
+	public ConditionTerm(ConditionTerm other)
+	{
+		this.terms = new ArrayList<>(other.getTerms());
+		this.operator = other.operator;
+	}
 
     public List<Term> getTerms() {
         return terms;

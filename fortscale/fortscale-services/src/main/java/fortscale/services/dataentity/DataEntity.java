@@ -105,6 +105,7 @@ public class DataEntity {
 	@Override
 	public boolean equals( Object toThat)
 	{
+		if (!(toThat instanceof DataEntity)) return false;
 		return this.id.equals(((DataEntity)toThat).getId());
 
 	}
