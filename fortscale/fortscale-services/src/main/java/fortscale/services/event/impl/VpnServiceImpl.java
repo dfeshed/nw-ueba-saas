@@ -77,10 +77,16 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 	
 	@Override
-	public VpnSession findByNormalizeUsernameAndSourceIp(String normalizeUsername, String sourceIp){
-		return vpnSessionRepository.findByNormalizeUsernameAndSourceIp(normalizeUsername, sourceIp);
+	public VpnSession findByUsernameAndSourceIp(String username, String sourceIp){
+		return vpnSessionRepository.findByUsernameAndSourceIp(username, sourceIp);
 	}
-	
+
+	@Override
+	public List<VpnSession> findByUsernameAndCreatedAtEpochBetween(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo){
+		PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
+		return vpnSessionRepository.findByUsernameAndCreatedAtEpochBetween(normalizeUsername, createdAtEpochFrom, createdAtEpochTo, pageRequest);
+	}
+
 	@Override
 	public void saveVpnSession(VpnSession vpnSession){
 		vpnSessionRepository.save(vpnSession);
@@ -93,7 +99,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 			vpnSession = vpnSessionUpdate;
 		} else{
 			vpnSession.setSourceIp(vpnSessionUpdate.getSourceIp());
-			vpnSession.setNormalizeUsername(vpnSessionUpdate.getNormalizeUsername());
+			vpnSession.setUsername(vpnSessionUpdate.getUsername());
 			vpnSession.setCreatedAt(vpnSessionUpdate.getCreatedAt());
 			vpnSession.setClosedAtEpoch(null);
 			vpnSession.setClosedAt(null);
@@ -124,8 +130,8 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		VpnSession ret = null;
 		if(StringUtils.isNotEmpty(vpnSessionUpdate.getSessionId())){
 			ret = vpnSessionRepository.findBySessionId(vpnSessionUpdate.getSessionId());
-		} else if(StringUtils.isNotEmpty(vpnSessionUpdate.getNormalizeUsername()) && StringUtils.isNotEmpty(vpnSessionUpdate.getSourceIp())){
-			ret = vpnSessionRepository.findByNormalizeUsernameAndSourceIp(vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
+		} else if(StringUtils.isNotEmpty(vpnSessionUpdate.getUsername()) && StringUtils.isNotEmpty(vpnSessionUpdate.getSourceIp())){
+			ret = vpnSessionRepository.findByUsernameAndSourceIp(vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
 		}
 		
 		return ret;
@@ -135,7 +141,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	public void updateCloseVpnSession(VpnSession vpnSessionUpdate) {
 		VpnSession vpnSession = findVpnSession(vpnSessionUpdate);
 		if(vpnSession == null){
-			logger.info("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getNormalizeUsername(), vpnSessionUpdate.getSourceIp());
+			logger.debug("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
 			return;
 		}
 
@@ -173,7 +179,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	@Override
 	public List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
 
-		if(!isCountryValid(curVpnSession) || skipBasedOnBlackList(curVpnSession)){
+		if(!isValidSessionForGeoHopping(curVpnSession)){
 			return Collections.emptyList();
 		}
 
@@ -241,6 +247,68 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		return vpnSessions;
 	}
 
+	// Returns vpn sessions that are from the given prevCountry and with in the given thresholds bounds.
+	private List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, String prevCountry, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
+		logger.debug("looking for vpn sessions from {} which were created at most {} hours before {} and closed at most {} hours before that same time", prevCountry, vpnGeoHoppingOpenSessionThresholdInHours, curVpnSession.getCreatedAt(),
+				vpnGeoHoppingCloseSessionThresholdInHours);
+		PageRequest pageRequest = new PageRequest(0, 10, Direction.DESC, VpnSession.createdAtEpochFieldName);
+		List<VpnSession> vpnSessions = vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
+		List<VpnSession> ret = new ArrayList<>();
+		for(VpnSession vpnSession: vpnSessions){
+			if(!isValidSessionForGeoHopping(vpnSession)){
+				continue;
+			}
+			if(!vpnSession.getCountry().equals(prevCountry)){
+				logger.debug("got vpn session with different country then {}, hence all the event before it got notification if there was a need. VpnSession: sessionid({}), sourceIp({}), country ({})",prevCountry, vpnSession.getSessionId(),
+						vpnSession.getSourceIp(), vpnSession.getCountry());
+				break;
+			} else if(vpnSession.getClosedAt() == null || vpnSession.getClosedAt().plusHours(vpnGeoHoppingCloseSessionThresholdInHours).isAfter(curVpnSession.getCreatedAt())){
+				ret.add(vpnSession);
+			}
+		}
+		
+		return ret;
+	}
+	
+	
+	private GeoHoppingData getGeoHoppingData(VpnSession curVpnSession, int vpnGeoHoppingOpenSessionThresholdInHours){
+		GeoHoppingData ret = userToGeoHoppingData.get(curVpnSession.getUsername());
+		if(ret == null){
+			PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
+			List<VpnSession> vpnSessions = vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
+			if(!vpnSessions.isEmpty()){
+				for(VpnSession vpnSession: vpnSessions){
+					if(!isValidSessionForGeoHopping(vpnSession)){
+						continue;
+					}
+					if(ret == null){
+						ret = new GeoHoppingData();
+						ret.curCountry = vpnSession.getCountry();
+						ret.curCountryTime = vpnSession.getCreatedAt();
+					}else if(ret.otherOpenSessionCountryTime == null && vpnSession.getClosedAt() == null && !vpnSession.getCountry().equals(ret.curCountry)){
+						ret.otherOpenSessionCountryTime = vpnSession.getCreatedAt();
+					}else if(vpnSession.getClosedAt() != null && 
+							!vpnSession.getCountry().equals(ret.curCountry) && 
+							(ret.otherCloseSessionCountryTime == null || ret.otherCloseSessionCountryTime.isBefore(vpnSession.getClosedAt()))){
+						ret.otherCloseSessionCountryTime = vpnSession.getClosedAt();
+					}
+				}
+				if(ret != null){
+					userToGeoHoppingData.put(curVpnSession.getUsername(), ret);
+				}
+			}
+		}
+		
+		return ret;
+	}
+	
+	private void addNewGeoHoppingData(VpnSession curVpnSession){
+		GeoHoppingData geoHoppingData = new GeoHoppingData();
+		geoHoppingData.curCountry = curVpnSession.getCountry();
+		geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
+		userToGeoHoppingData.put(curVpnSession.getUsername(), geoHoppingData);
+	}
+	
 	/**
 	 * This method validate the current event geo hopping needed - In case that we have blacklist we want to check if this event belong to that list
 	 * In case that the event is not belong we will continue to process the geo - hopping on it other case we will return empty list (filter this event from geo hopping)
@@ -265,71 +333,9 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 
 		return false;
 	}
-
-	// Returns vpn sessions that are from the given prevCountry and with in the given thresholds bounds.
-	private List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, String prevCountry, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
-		logger.debug("looking for vpn sessions from {} which were created at most {} hours before {} and closed at most {} hours before that same time", prevCountry, vpnGeoHoppingOpenSessionThresholdInHours, curVpnSession.getCreatedAt(),
-				vpnGeoHoppingCloseSessionThresholdInHours);
-		PageRequest pageRequest = new PageRequest(0, 10, Direction.DESC, VpnSession.createdAtEpochFieldName);
-		List<VpnSession> vpnSessions = vpnSessionRepository.findByNormalizeUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
-		List<VpnSession> ret = new ArrayList<>();
-		for(VpnSession vpnSession: vpnSessions){
-			if(!isCountryValid(vpnSession)){
-				continue;
-			}
-			if(!vpnSession.getCountry().equals(prevCountry)){
-				logger.debug("got vpn session with different country then {}, hence all the event before it got notification if there was a need. VpnSession: sessionid({}), sourceIp({}), country ({})",prevCountry, vpnSession.getSessionId(),
-						vpnSession.getSourceIp(), vpnSession.getCountry());
-				break;
-			} else if(vpnSession.getClosedAt() == null || vpnSession.getClosedAt().plusHours(vpnGeoHoppingCloseSessionThresholdInHours).isAfter(curVpnSession.getCreatedAt())){
-				ret.add(vpnSession);
-			}
-		}
-		
-		return ret;
-	}
 	
-	
-	private GeoHoppingData getGeoHoppingData(VpnSession curVpnSession, int vpnGeoHoppingOpenSessionThresholdInHours){
-		GeoHoppingData ret = userToGeoHoppingData.get(curVpnSession.getNormalizeUsername());
-		if(ret == null){
-			PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
-			List<VpnSession> vpnSessions = vpnSessionRepository.findByNormalizeUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getNormalizeUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
-			if(!vpnSessions.isEmpty()){
-				for(VpnSession vpnSession: vpnSessions){
-					if(!isCountryValid(vpnSession)){
-						continue;
-					}
-					if(ret == null){
-						ret = new GeoHoppingData();
-						ret.curCountry = vpnSession.getCountry();
-						ret.curCountryTime = vpnSession.getCreatedAt();
-					}else if(ret.otherOpenSessionCountryTime == null && vpnSession.getClosedAt() == null && !vpnSession.getCountry().equals(ret.curCountry)){
-						ret.otherOpenSessionCountryTime = vpnSession.getCreatedAt();
-					}else if(vpnSession.getClosedAt() != null && 
-							!vpnSession.getCountry().equals(ret.curCountry) && 
-							(ret.otherCloseSessionCountryTime == null || ret.otherCloseSessionCountryTime.isBefore(vpnSession.getClosedAt()))){
-						ret.otherCloseSessionCountryTime = vpnSession.getClosedAt();
-					}
-				}
-				if(ret != null){
-					userToGeoHoppingData.put(curVpnSession.getNormalizeUsername(), ret);
-				}
-			}
-		}
-		
-		return ret;
-	}
-	
-	private void addNewGeoHoppingData(VpnSession curVpnSession){
-		GeoHoppingData geoHoppingData = new GeoHoppingData();
-		geoHoppingData.curCountry = curVpnSession.getCountry();
-		geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
-		userToGeoHoppingData.put(curVpnSession.getNormalizeUsername(), geoHoppingData);
-	}
-	
-	private boolean isCountryValid(VpnSession vpnSession){
-		return StringUtils.isNotEmpty(vpnSession.getCountry()) && !GeoIPInfo.RESERVED_RANGE.equalsIgnoreCase(vpnSession.getCountry());
+	private boolean isValidSessionForGeoHopping(VpnSession vpnSession){
+		return StringUtils.isNotEmpty(vpnSession.getCountry()) && !GeoIPInfo.RESERVED_RANGE.equalsIgnoreCase(vpnSession.getCountry()) && !skipBasedOnBlackList(vpnSession);
 	}
 	
 	private class GeoHoppingData{

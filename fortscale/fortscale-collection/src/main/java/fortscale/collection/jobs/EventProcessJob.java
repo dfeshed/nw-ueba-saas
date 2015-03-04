@@ -1,9 +1,7 @@
 package fortscale.collection.jobs;
 
-
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.io.BufferedLineReader;
-import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -19,6 +17,7 @@ import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.*;
@@ -53,14 +52,12 @@ public class EventProcessJob implements Job {
 	private String normalizedUsernameField;
 	@Value("${impala.table.fields.username}")
 	private String usernameField;
-	@Value("${hadoop.writer.buffer.size:3000}")
+	@Value("${hadoop.writer.buffer.size:10000}")
 	protected int maxBufferSize;
 	@Value("${etl.sendTo.kafka:true}")
 	protected boolean defaultSendToKafka;
-	
 	protected boolean sendToKafka;
-	
-	
+
 	protected String filesFilter;
 	protected MorphlinesItemsProcessor morphline;
 	protected MorphlinesItemsProcessor morphlineEnrichment;
@@ -297,14 +294,14 @@ public class EventProcessJob implements Job {
 			// append to hadoop
 			Long timestamp = RecordExtensions.getLongValue(record, timestampField);
 			appender.writeLine(output, timestamp.longValue());
-			
+
 			// ensure user exists in mongodb
-			//todo - Think how to depricate this part or move it to the streaming
-			//updateOrCreateUserWithClassifierUsername(record);
-			
+			// todo - Think how to deprecate this part or move it to the streaming
+			// updateOrCreateUserWithClassifierUsername(record);
+
 			// output event to streaming platform
 			streamMessage(recordKeyExtractor.process(record),recordToString.toJSON(record));
-			
+
 			return true;
 		} else {
 			return false;
@@ -354,7 +351,13 @@ public class EventProcessJob implements Job {
 			}
 		}
 		partitionsWriter.clearNewPartitions();
-		
+		try {
+			partitionsWriter.close();
+		} catch (Exception e) {
+			exceptions.add(e);
+		}
+
+
 		try {
 			impalaClient.refreshTable(impalaTableName);
 		} catch (Exception e) {

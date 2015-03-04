@@ -4,12 +4,15 @@ import fortscale.services.impl.ImpalaGroupsScoreWriter;
 import fortscale.services.impl.ImpalaTotalScoreWriter;
 import fortscale.services.impl.ImpalaUseridToAppUsernameWriter;
 import fortscale.services.impl.ImpalaWriterFactory;
+import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,7 +23,8 @@ import java.util.List;
 
 @Component
 public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
-	
+
+	private static Logger logger = LoggerFactory.getLogger(ImpalaWriterFactoryImpl.class);
 	@Autowired
 	protected ImpalaClient impalaClient;
 	
@@ -37,14 +41,19 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	private String impalaTotalScoringTableDelimiter;
     @Value(("${impala.total.scores.table.partition.type}"))
     private String impalaTotalScoringTablePartitionType;
+	@Value("${hadoop.writer.buffer.size:10000}")
+	protected int maxBufferSize;
 
-	private HDFSPartitionsWriter groupsScoreAppender;
-	private HDFSPartitionsWriter totalScoreAppender;
+	private BufferedHDFSWriter groupsScoreAppender;
+	private BufferedHDFSWriter totalScoreAppender;
+
+
 	
 	public void createGroupsScoreAppender(String basePath, String filename) throws IOException{
 		if(groupsScoreAppender == null){
 			PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);
-			groupsScoreAppender = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
+			HDFSPartitionsWriter appender = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
+			groupsScoreAppender = new BufferedHDFSWriter(appender, filename, maxBufferSize);
 		}
 		groupsScoreAppender.open(filename);
 	}
@@ -56,7 +65,7 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	public List<String> getGroupsScoreNewPartitions(){
 		List<String> ret = null;
 		if(groupsScoreAppender != null){
-			ret = groupsScoreAppender.getNewPartitions();
+			ret = ((HDFSPartitionsWriter)groupsScoreAppender.getWriter()).getNewPartitions();
 		} else{
 			ret = Collections.emptyList();
 		}
@@ -67,7 +76,7 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	public List<String> getTotalScoreNewPartitions(){
 		List<String> ret = null;
 		if(totalScoreAppender != null){
-			ret = totalScoreAppender.getNewPartitions();
+			ret = ((HDFSPartitionsWriter)totalScoreAppender.getWriter()).getNewPartitions();
 		} else{
 			ret = Collections.emptyList();
 		}
@@ -78,9 +87,10 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	public void createTotalScoreAppender(String basePath, String filename) throws IOException{
 		if(totalScoreAppender == null){
             PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTotalScoringTablePartitionType);
-			totalScoreAppender = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
+			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
+			totalScoreAppender = new BufferedHDFSWriter(writer, filename, maxBufferSize);
 		}
-		totalScoreAppender.open(filename);
+//		totalScoreAppender.open(filename);
 	}
 	
 	public void closeTotalScoreAppender() throws IOException{

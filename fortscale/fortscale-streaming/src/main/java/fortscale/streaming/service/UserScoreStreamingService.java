@@ -1,15 +1,14 @@
 package fortscale.streaming.service;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.google.common.base.Throwables;
+import fortscale.domain.core.ClassifierScore;
+import fortscale.domain.core.ScoreInfo;
+import fortscale.domain.core.User;
+import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.streaming.user.UserScoreSnapshot;
+import fortscale.domain.streaming.user.dao.UserScoreSnapshotRepository;
 import fortscale.streaming.exceptions.LevelDbException;
 import fortscale.streaming.model.UserTopEvents;
-
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -17,24 +16,21 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.Throwables;
+import java.util.*;
 
-import fortscale.domain.core.ClassifierScore;
-import fortscale.domain.core.ScoreInfo;
-import fortscale.domain.core.User;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.streaming.user.UserScoreSnapshot;
-import fortscale.domain.streaming.user.dao.UserScoreSnapshotRepository;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
 public class UserScoreStreamingService {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(UserScoreStreamingService.class);
-	
+
 	public static int MAX_NUM_OF_PREV_SCORES = 14;
 	
 	@Autowired
@@ -45,7 +41,10 @@ public class UserScoreStreamingService {
 	
 	@Autowired
 	private MongoOperations mongoTemplate;
-	
+
+	@Value("${user.score.streaming.service.page.size:1000}")
+	private int userScoreStreamingServicePageSize;
+
 	private KeyValueStore<String, UserTopEvents> store;
 	private String classifierId;
 	private long latestEventTimeInMillis = 0;
@@ -196,61 +195,84 @@ public class UserScoreStreamingService {
 		updateDb(getCurrentEpochTimeInMillis());
 	}
 	
-	public void updateDb(long lastUpdateEpochTime){
-		if(lastUpdateEpochTime == 0){
-			return; //This happens when no event was recieved yet and the current time is taken out of the latest event.
-		}
+	public void updateDb(long lastUpdateEpochTime) {
+		// When no events were received yet and the
+		// current time is taken out of the latest event
+		if (lastUpdateEpochTime == 0)
+			return;
 		
-		// go over all users top events in the store and persist them to mongodb
+		Map<String, Double> map = new HashMap<String, Double>();
+		double avgScore = updateLevelDb(lastUpdateEpochTime, map);
+		updateMongoDb(lastUpdateEpochTime, avgScore, map);
+	}
+	
+	private double updateLevelDb(long lastUpdateEpochTime, Map<String, Double> map) {
 		KeyValueIterator<String, UserTopEvents> iterator = store.all();
-		List<User> users = new ArrayList<>();
 		double avgScore = 0;
-		int numOfUsersThatDoesNotExist = 0;
-		try { 
+		
+		// Iterate the users' top events to calculate the average score
+		while (iterator.hasNext()) {
+			Entry<String, UserTopEvents> entry = iterator.next();
+			String username = entry.getKey();
+			UserTopEvents userTopEvents = entry.getValue();
+			
+			// Model might be null in case of a serialization error, in that case we
+			// don't want to fail here and the error is logged in the SerDe implementation
+			if (userTopEvents != null) {
+				// Calculate user score and update store
+				double currentScore = userTopEvents.calculateUserScore(lastUpdateEpochTime);
+				userTopEvents.setLastUpdatedScore(currentScore);
+				userTopEvents.setLastUpdateScoreEpochTime(lastUpdateEpochTime);
+				store.put(username, userTopEvents);
+				// Update average and add entry to map
+				avgScore += currentScore;
+				map.put(username, currentScore);
+			}
+		}
+		iterator.close();
+		
+		if (map.size() > 1)
+			avgScore /= map.size();
+		return avgScore;
+	}
+	
+	private void updateMongoDb(long lastUpdateEpochTime, double avgScore, Map<String, Double> map) {
+		Iterator<String> iterator = map.keySet().iterator();
+		int numOfMissingUsers = 0;
+		
+		try {
 			while (iterator.hasNext()) {
-				Entry<String, UserTopEvents> entry = iterator.next();
-				UserTopEvents userTopEvents = entry.getValue();
-				if(userTopEvents != null){
-					// model might be null in case of a serialization error, in that case
-					// we don't want to fail here and the error is logged in the serde implementation
-					String username = entry.getKey();
-					double curScore = userTopEvents.calculateUserScore(lastUpdateEpochTime);
-					
-					User user = userRepository.findByUsername(username);
-					if(user != null){
-						updateUserScore(user, lastUpdateEpochTime, classifierId, curScore);
-						avgScore += user.getScore(classifierId).getScore();
-						users.add(user);
-						
-						userTopEvents.setLastUpdatedScore(curScore);
-						userTopEvents.setLastUpdateScoreEpochTime(lastUpdateEpochTime);
-						store.put(username, userTopEvents);
-					} else{
-						numOfUsersThatDoesNotExist++;
-						logger.info("A user has userScoreTopEvents store but doesn't exist in our db. username: {}", username);
+				Set<String> subset = new HashSet<String>();
+				// Get next userScoreStreamingServicePageSize users and store in subset
+				do {
+					subset.add(iterator.next());
+				} while (iterator.hasNext() && subset.size() < userScoreStreamingServicePageSize);
+				
+				// Get these users from mongoDb and iterate them
+				List<User> users = userRepository.findByUsernamesExcludeAdInfo(subset);
+				for (User user : users) {
+					String username = user.getUsername();
+					// Update scores of user
+					try {
+						updateUserScore(user, lastUpdateEpochTime, classifierId, map.get(username));
+						updateUserAvgScore(user, avgScore);
+						Update update = new Update();
+						update.set(User.getClassifierScoreField(classifierId), user.getScore(classifierId));
+						mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
+					} catch (Exception e) {
+						logger.error(String.format("Exception while trying to update the scores of user %s", username), e);
 					}
 				}
-			}
-			if(numOfUsersThatDoesNotExist > 0){
-				logger.warn("got events of {} users that do not exist.", numOfUsersThatDoesNotExist);
-			}
-			if(users.size() > 1){
-				avgScore = avgScore / users.size();
+				
+				// Update number of users that do not exist in mongoDb
+				numOfMissingUsers += subset.size() - users.size();
 			}
 			
-			
-			for(User user: users){
-				Update update = new Update();
-				updateUserAvgScore(user, avgScore);
-				update.set(User.getClassifierScoreField(classifierId), user.getScore(classifierId));
-				mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
-			}
+			if (numOfMissingUsers > 0)
+				logger.warn("Received events of {} users that do not exist in mongoDb", numOfMissingUsers);
 		} catch (Exception e) {
-			logger.error("error updating mongo with users scores", e);
+			logger.error("Exception while trying to update the users' scores in mongoDb", e);
 			Throwables.propagateIfInstanceOf(e, org.springframework.dao.DataAccessResourceFailureException.class);
-		} finally {
-			if (iterator!=null)
-				iterator.close();
 		}
 	}
 	

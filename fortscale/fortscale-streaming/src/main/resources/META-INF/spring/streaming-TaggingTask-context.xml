@@ -3,9 +3,8 @@
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:context="http://www.springframework.org/schema/context"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-						http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 
@@ -54,15 +53,31 @@
         <constructor-arg name="maxSize" value="${dhcp.resolver.cache.max.items:30000}" />
         <constructor-arg name="clazz" value="fortscale.domain.events.DhcpEvent" />
     </bean>
+    <bean id="dhcpBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${dhcp.resolver.cache.max.items:30000}" />
+        <constructor-arg name="timeToExpire" value="${dhcp.resolver.blacklist.timeToExpireSec:7200}" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+    </bean>
     <bean id="loginResolverCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
         <constructor-arg name="clazz" value="fortscale.domain.events.ComputerLoginEvent" />
     </bean>
+    <bean id="loginBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
+        <constructor-arg name="timeToExpire" value="${computer.login.resolver.blacklist.timeToExpireSec:7200}" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+    </bean>
 
     <!-- ip to hostname non-singleton service bean for use in fortscale collection -->
     <bean id="dnsResolver" class="fortscale.services.ipresolving.DnsResolver" scope="singleton" />
-    <bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" />
-    <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" />
+    <bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" >
+        <constructor-arg name="shouldUseBlackList" value="${dhcp.resolver.shouldUseBlackList:true}" />
+        <constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
+    </bean>
+    <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" >
+        <constructor-arg name="shouldUseBlackList" value="${computer.login.resolver.shouldUseBlackList:true}" />
+        <constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
+    </bean>
     <bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
 
     <!-- computer service cache that uses memory based implementation are injected here -->
@@ -121,9 +136,9 @@
         <property name="usernameNormalizer" ref="sshUsernameNormalizer"/>
     </bean>
 
-    <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="prototype" />
+    <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
 
-    <bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="prototype" />
+    <bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
 
     <bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="prototype"/>
 

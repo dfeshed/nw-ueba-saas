@@ -70,7 +70,7 @@ public class VpnF5Test {
 
 	@BeforeClass
 	public static void setUpClass(){
-		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
+		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context.xml");
 		VpnSessionRepository vpnSessionRepository = testContextManager.getBean(VpnSessionRepository.class);
 		vpnSessionRepository.deleteAll();
 	}
@@ -172,8 +172,8 @@ public class VpnF5Test {
 						$(
 								(String)null,
 								(String)null,
-								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,,",
-								(String)null
+								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,",
+								Apr_14_00_23_29_OUT + ",1397424209,,,,CLOSED,,,,,,,,0,0,0,,,,"
 						)
 				) ,
 				$(
@@ -186,7 +186,7 @@ public class VpnF5Test {
 						$(
 								(String)null,
 								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,",
-								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
+								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
 						)
 				),
 				$(
@@ -221,7 +221,7 @@ public class VpnF5Test {
 						$(
 								(String)null,
 								Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,",
-								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",chavier,75.26.245.200,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
+								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
 						)
 				),
 
@@ -233,7 +233,7 @@ public class VpnF5Test {
 						),
 						$(
 								(String)null,
-								Jan_2_19_06_26_OUT + "," + Jan_2_19_06_26_L + ",bartra,69.141.27.100,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,,"
+								Jan_2_19_06_26_OUT + "," + Jan_2_19_06_26_L + ",bartra,69.141.27.100,,FAIL,,,,,,,,,,,,,,"
 						)
 				),
 
@@ -275,7 +275,7 @@ public class VpnF5Test {
 								Jan_2_19_11_09 + " server.bs.dom Feb 28 17:11:31 server notice tmm2[20226]: 01490521:5: 0a6c7b51: Session statistics - bytes in: 632880, bytes out: 2649665"
 						),
 						$(
-								(String) null
+								Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,"
 						)
 				),
 
@@ -297,8 +297,8 @@ public class VpnF5Test {
 						),
 						$(
 								(String)null,
-								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,71.125.52.63,,FAIL,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,,",
-								Apr_14_01_50_42_OUT + "," + Apr_14_01_50_42_L + ",kamalij,71.125.52.63,,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,,"
+								Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,71.125.52.63,,FAIL,,,,,,,,,,,,,,",
+								Apr_14_01_50_42_OUT + "," + Apr_14_01_50_42_L + ",kamalij,71.125.52.63,,SUCCESS,,,,,,,,,,,,,,"
 						)
 				),
 				$(
@@ -311,7 +311,7 @@ public class VpnF5Test {
 						$(
 								(String)null,
 								(String)null,
-								(String)null
+								Apr_14_00_23_29_OUT + "," + Apr_14_00_23_29_L + ",,,,CLOSED,,,,,,,,0,0,0,,,,"
 						)
 				)
 		);

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@Deprecated
 @Configurable(preConstruction=true)
 public class VpnContinuousDataBucketBuilder implements CommandBuilder {
 

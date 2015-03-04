@@ -13,6 +13,9 @@ public class DataEntity {
     String id;
     String name;
     String shortName;
+    String extendsEntity;
+    Boolean isAbstract;
+    Boolean showInExplore;
     List<DataEntityField> fields;
     HashMap<String, DataEntityField> fieldsIndex;
     List<QuerySort> defaultSort;
@@ -76,6 +79,18 @@ public class DataEntity {
     public void setSessionEntity(String sessionEntity) {
         this.sessionEntity = sessionEntity;
     }
+
+    public void setExtendsEntity(String extendsEntity){
+        this.extendsEntity = extendsEntity;
+    }
+    public String getExtendsEntity(){return extendsEntity;}
+
+    public Boolean getIsAbstract(){return isAbstract;}
+
+    public void setIsAbstract(Boolean isAbstract){this.isAbstract = isAbstract;}
+
+    public void setShowInExplore(Boolean showInExplore){this.showInExplore = showInExplore;}
+    public Boolean getShowInExplore(){return showInExplore;}
 
     public List<DataEntityField> getFields() {
         return fields;

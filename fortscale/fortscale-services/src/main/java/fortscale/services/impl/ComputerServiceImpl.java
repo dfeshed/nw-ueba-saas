@@ -1,39 +1,31 @@
 package fortscale.services.impl;
 
-import static org.python.google.common.base.Preconditions.checkNotNull;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
-import fortscale.services.cache.CacheHandler;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
 import fortscale.domain.ad.AdComputer;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.ComputerService;
 import fortscale.services.FilterMachinesService;
+import fortscale.services.cache.CacheHandler;
 import fortscale.services.computer.EndpointDetectionService;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.actdir.ADParser;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.python.google.common.base.Preconditions.checkNotNull;
 
 
 
@@ -242,5 +234,14 @@ public class ComputerServiceImpl implements ComputerService {
 
 	@Override public void setCache(CacheHandler cache) {
 		this.cache = cache;
+	}
+
+	@Override public void handleNewValue(String key, String value) throws Exception {
+		if(value == null){
+			getCache().remove(key);
+		}
+		else {
+			getCache().putFromString(key, value);
+		}
 	}
 }

@@ -1,30 +1,26 @@
 package fortscale.services.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import fortscale.services.CachingService;
-import fortscale.services.cache.CacheHandler;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.query.Update;
-
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.EventScoreDAO;
+import fortscale.services.CachingService;
+import fortscale.services.cache.CacheHandler;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.query.Update;
+
+import java.util.*;
 
 public class UsernameService implements InitializingBean, CachingService{
 	private static Logger logger = Logger.getLogger(UsernameService.class);
-
 
 	private List<Set<String>> logUsernameSetList;
 	private List<HashMap<String, String>> logUsernameToUserIdMapList;
@@ -54,8 +50,20 @@ public class UsernameService implements InitializingBean, CachingService{
 	
 	@Value("${ssh.to.ad.username.regex.format:^%s@.*(?i)}")
 	private String sshToAdUsernameRegexFormat;
-	
-	
+
+	@Value("${username.service.page.size:1000}")
+	private int usernameServicePageSize;
+
+	// For unit tests only
+	protected int getPageSize() {
+		return usernameServicePageSize;
+	}
+
+	// For unit tests only
+	protected void setPageSize(int pageSize) {
+		usernameServicePageSize = pageSize;
+	}
+
 	public void setLazy(boolean isLazy) {
 		this.isLazy = isLazy;
 	}
@@ -282,27 +290,42 @@ public class UsernameService implements InitializingBean, CachingService{
 	private String formatUserIdWithLogUsername(String userId, String logUsername){
 		return String.format("%s%s", userId, logUsername);
 	}
-	
-	public void update(){
-		List<User> users = userRepository.findAllExcludeAdInfo();
+
+	public void update() {
+		// Get number of users and calculate number of pages
+		long count = userRepository.count();
+		int numOfPages = (int)(((count - 1) / usernameServicePageSize) + 1);
+
+		// Initialize a map from LogEventsEnum to a set of UserIdWithLogUsername
+		Map<LogEventsEnum, Set<String>> map = new HashMap<>();
+		for (LogEventsEnum logEventsEnum : LogEventsEnum.values())
+			map.put(logEventsEnum, new HashSet<String>());
+
 		usernameToUserIdCache.clear();
-		for(User user: users){
-			if(user.getUsername() != null){
-				usernameToUserIdCache.put(user.getUsername(), user.getId());
-			}
-		}
-		for(LogEventsEnum logEventsEnum: LogEventsEnum.values()){
-			Set<String> logUsernameSet = new HashSet<>();
-			for(User user: users){
-				String logUsername = getLogUsername(logEventsEnum, user);
-				if(logUsername != null){
-					logUsernameSet.add(formatUserIdWithLogUsername(user.getId(), logUsername));
+		for (int i = 0; i < numOfPages; i++) {
+			Pageable pageable = new PageRequest(i, usernameServicePageSize);
+			List<User> listOfUsers = userRepository.findAllExcludeAdInfo(pageable);
+			// Iterate users on current page
+			for (User user : listOfUsers) {
+				String username = user.getUsername();
+				String userId = user.getId();
+
+				if (username != null)
+					usernameToUserIdCache.put(username, userId);
+
+				for (Map.Entry<LogEventsEnum, Set<String>> entry : map.entrySet()) {
+					String logUsername = getLogUsername(entry.getKey(), user);
+					if (logUsername != null)
+						entry.getValue().add(formatUserIdWithLogUsername(userId, logUsername));
 				}
 			}
-			logUsernameSetList.set(logEventsEnum.ordinal(), logUsernameSet);
 		}
+
+		// Update logUsername sets
+		for (Map.Entry<LogEventsEnum, Set<String>> entry : map.entrySet())
+			logUsernameSetList.set(entry.getKey().ordinal(), entry.getValue());
 	}
-	
+
 	public void addLogNormalizedUsername(LogEventsEnum eventId, String userId, String username){
 		logUsernameToUserIdMapList.get(eventId.ordinal()).put(username, userId);
 	}
@@ -331,5 +354,14 @@ public class UsernameService implements InitializingBean, CachingService{
 
 	@Override public void setCache(CacheHandler cache) {
 		usernameToUserIdCache = cache;
+	}
+
+	@Override public void handleNewValue(String key, String value) throws Exception {
+		if(value == null){
+			getCache().remove(key);
+		}
+		else {
+			getCache().putFromString(key, value);
+		}
 	}
 }

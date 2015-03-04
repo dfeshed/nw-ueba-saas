@@ -8,6 +8,7 @@ import fortscale.utils.TreeNode;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
@@ -21,8 +22,7 @@ import java.util.List;
  * Utilities for all data queries
  */
 @Component
-public class DataEntitiesConfig implements EmbeddedValueResolverAware {
-
+public class DataEntitiesConfig  implements EmbeddedValueResolverAware,InitializingBean {
     @Override
     public void setEmbeddedValueResolver(StringValueResolver resolver) {
         this.stringValueResolver = resolver;
@@ -55,6 +55,15 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
 	 * Entity Hierarchy tree (lazy initialization)
 	 */
 	private List<TreeNode<DataEntity>> entitiesHierarchyTreeCach;
+
+
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+
+		// will fill the entities cache and will encapsulate the actual logic execution from the UI
+		getAllLogicalEntities();
+	}
 
     /**
      * Gets a DataEntityConfig object from cache, or creates a new one under the specified entityId if not found.
@@ -378,6 +387,25 @@ public class DataEntitiesConfig implements EmbeddedValueResolverAware {
         }
 
         entity.setSessionEntity(entitySessionEntity);
+
+        Boolean isAbstractEntity = entityConfig.getIsAbstractEntity();
+        if (isAbstractEntity == null){
+            String isAbstractEntityStr   = getExtendableValue(entityId, "is_abstract");
+            isAbstractEntity = isAbstractEntityStr != null && isAbstractEntityStr.equals("true");
+            entityConfig.setIsAbstractEntity(isAbstractEntity);
+        }
+        entity.setIsAbstract(isAbstractEntity);
+
+        Boolean showInExplore = entityConfig.getShowInExplore();
+        if (showInExplore == null){
+            String showInExploreStr   = getExtendableValue(entityId, "show_in_explore");
+            showInExplore = showInExploreStr != null && showInExploreStr.equals("true");
+            entityConfig.setShowInExplore(showInExplore);
+        }
+        entity.setShowInExplore(showInExplore);
+
+        String extendsEntity = getBaseEntityId(entityId);
+        entity.setExtendsEntity(extendsEntity);
 
         List<String> fieldIds = getAllEntityFields(entityId);
         ArrayList<DataEntityField> fields = new ArrayList<>();

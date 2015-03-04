@@ -34,10 +34,13 @@
 					<key>impalaTableFields</key>
 					<value>${impala.data.vpn.table.fields}</value>
 				</entry>
+				<entry>
+					<key>impalaTablePartitionType</key>
+					<value>${impala.data.vpn.table.partition.type}</value>
+				</entry>
 			</job-data-map>
 			
 		</job>
-	
 	</schedule>
 
 

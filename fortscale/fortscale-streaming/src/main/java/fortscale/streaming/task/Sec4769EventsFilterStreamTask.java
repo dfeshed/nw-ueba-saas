@@ -21,6 +21,9 @@ private static final String NAT_SRC_MACHINE = "nat_src_machine";
 	private Pattern accountNamePattern;
 	private Pattern destinationPattern;
 	
+	private boolean filterVpnPool;
+	private Pattern vpnIpPool;
+
 	@Override
 	public void init(Config config, TaskContext context) throws Exception {
 		super.init(config, context);
@@ -35,6 +38,15 @@ private static final String NAT_SRC_MACHINE = "nat_src_machine";
 		String destinationRegex = serversListConfiguration.getLoginServiceRegex();
 		if (StringUtils.isNotBlank(destinationRegex))
 			destinationPattern = Pattern.compile(destinationRegex, Pattern.CASE_INSENSITIVE);
+
+
+		// load vpn address pool filter settings
+		filterVpnPool = config.getBoolean("fortscale.filter.vpnpool.enabled", false);
+		if (filterVpnPool) {
+			// load vpn address pool regex pattern
+			String ips = convertToString(config.get("fortscale.filter.vpnpool.ip"));
+			vpnIpPool = Pattern.compile(ips);
+	}
 	}
 	
 	@Override
@@ -60,6 +72,28 @@ private static final String NAT_SRC_MACHINE = "nat_src_machine";
 		String normalized_src_machine = convertToString(message.get("normalized_src_machine")); 		
 		Boolean is_nat = convertToBoolean(message.get("is_nat"));
 		message.put(NAT_SRC_MACHINE, (Boolean.TRUE.equals(is_nat))? "" : normalized_src_machine);	
+				
+
+		// omit resolved machines names in cases where the source ip is from a vpn address pool
+		// and the machine name does not resembles the user account name
+		if (filterVpnPool) {
+			// check if the source machine is not empty and the client address belongs to the vpn pool
+			String clientIp = convertToString(message.get("client_address"));
+			if (StringUtils.isNotEmpty(machine_name) && vpnIpPool.matcher(clientIp).matches()) {
+				// strip the user name and machine name from seperator chars
+				String coreMachineName = machine_name.split("-")[0].toLowerCase();
+				String coreUserName = account_name.split("@")[0].split(".")[0].toLowerCase();
+				if (!coreMachineName.equals(coreUserName)) {
+					// replace the machine name and normalized src machine with empty values
+					message.put("machine_name", "");
+					message.put("normalized_src_machine", "");
+					message.put("is_nat", true);
+				}
+			}
+		}
+
+
+        super.acceptMessage(message);
 		
 		return true;
 	}

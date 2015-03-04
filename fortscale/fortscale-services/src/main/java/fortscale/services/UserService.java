@@ -9,6 +9,7 @@ import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
 import org.joda.time.DateTime;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.List;
@@ -81,9 +82,9 @@ public interface UserService extends CachingService{
 	
 	public String findByNormalizedUserName(String normalizedUsername);
 
-	public Set<String> findNamesInGroup(List<String> groupsToTag);
+	public Set<String> findNamesInGroup(List<String> groupsToTag, Pageable pageable);
 
-	public Set<String> findNamesInOU(List<String> ousToTag);
+	public Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable);
 
 	public Set<String> findNamesByTag(String tagFieldName, Boolean value);
 

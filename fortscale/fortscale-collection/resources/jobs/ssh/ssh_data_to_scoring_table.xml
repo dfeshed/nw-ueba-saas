@@ -34,10 +34,13 @@
 					<key>impalaTableFields</key>
 					<value>${impala.data.ssh.table.fields}</value>
 				</entry>
+				<entry>
+					<key>impalaTablePartitionType</key>
+					<value>${impala.data.ssh.table.partition.type}</value>
+				</entry>
 			</job-data-map>
 			
 		</job>
-	
 	</schedule>
 
 

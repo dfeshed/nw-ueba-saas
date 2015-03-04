@@ -40,30 +40,36 @@ import static fortscale.streaming.ConfigUtils.isConfigContainKey;
  */
 public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
-	private static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
-	private static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
+	private final static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
+	private final static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
 
-	private static String computerKey = "computer";
-	private static String sensitiveMachineKey = "sensitive-machine";
+	private final static String computerKey = "computer";
+	private final static String sensitiveMachineKey = "sensitive-machine";
 
-	protected ComputerTaggingService computerTaggingService;
+	protected static ComputerTaggingService computerTaggingService;
 
 	// Map between (update) input topic name and relevant caching service
-	protected Map<String, CachingService> topicToServiceMap = new HashMap<>();
-
+	protected static Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
 	/**
 	 * This method response to the initiation of the streaming job
 	 * First step is to create the caching based on spring configuration
 	 * Then we retrieve the needed values from the property  file
 	 * Last step is to create the tagging service that will handel the entire logeic at the process part
-	 * @param config - represent the config from the Samza framework based on the task property file
+	 *
+	 * @param config  - represent the config from the Samza framework based on the task property file
 	 * @param context
 	 * @throws Exception
 	 */
-	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
+		// initialize the computer tagging service only once for all streaming task instances. Since we can
+		// host several task instances in this process, we want all of them to share the same computer and tagging cache
+		// instances. To do so, we can have the ComputerTaggingService defined as a static member and be shared
+		// for all task instances. We won't have a problem for concurrent accesses here, since samza is a single
+		// threaded and all task instances run on the same thread, meaning we cannot have concurrent calls to
+		// init or process methods here, so it is safe to check for initialization the way we did.
+		if (computerTaggingService == null) {
 		// create the computer service with the levelDB cache
 		ComputerService computerService = SpringService.getInstance().resolve(ComputerServiceImpl.class);
 		computerService.setCache(new LevelDbBasedCache<String, Computer>((KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerKey))), Computer.class));
@@ -99,8 +105,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 				String clusteringField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.%s.clustering.field", eventType, tagType)));
 				String isSensitiveMachineField = null;
 				String isSensitiveMachineFieldKey = String.format("fortscale.events.%s.%s.is-sensitive-machine.field", eventType, tagType);
-				if (isConfigContainKey(config,isSensitiveMachineFieldKey ))
-				{
+				if (isConfigContainKey(config, isSensitiveMachineFieldKey)) {
 					isSensitiveMachineField = env.getProperty(getConfigString(config, isSensitiveMachineFieldKey));
 				}
 				boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.%s.%s.create-new-computer-instances", eventType, tagType));
@@ -112,6 +117,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 		computerTaggingService = new ComputerTaggingService(computerService, sensitiveMachineService, configs);
 	}
+}
 
 
 	/**
@@ -135,12 +141,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 		if (topicToServiceMap.containsKey(inputTopic)) {
 			String key = (String) envelope.getKey();
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
-			if(envelope.getMessage() == null){
-				cachingService.getCache().remove(key);
-			}
-			else {
-				cachingService.getCache().putFromString(key, (String) envelope.getMessage());
-			}
+			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
 			// parse the message into json
 			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
