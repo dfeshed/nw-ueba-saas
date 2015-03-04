@@ -243,13 +243,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public List<User> findAllExcludeAdInfo() {
-		Query query = new Query();
-		query.fields().exclude(User.adInfoField);
-		return mongoTemplate.find(query, User.class);
-	}
-
-	@Override
 	public List<User> findAllExcludeAdInfo(Pageable pageable) {
 		Query query = new Query().with(pageable);
 		query.fields().exclude(User.adInfoField);
@@ -257,42 +250,29 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public HashMap<String, String> findAllUsernames() {
-		Query query = new Query();
-		query.fields().include(User.usernameField);
-		HashMap<String, String> ret = new HashMap<>();
-		for(UsernameWrapper username: mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)){
-			ret.put(username.getUsername(), username.getId());
-		}
-
-		return ret;
-	}
-
-	@Override
-	public Set<String> findByUserInGroup(Collection<String> groups) {
-		Query query = new Query(where(User.getAdInfoField(String.format("%s.%s",UserAdInfo.groupsField,UserAdInfo.adDnField))).in(groups));
+	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable) {
+		Query query = new Query().with(pageable);
+		String adInfoFieldName = String.format("%s.%s", UserAdInfo.groupsField, UserAdInfo.adDnField);
+		query.addCriteria(where(User.getAdInfoField(adInfoFieldName)).in(groups));
 		query.fields().include(User.usernameField);
 		return getUsernameFromWrapper(query);
 	}
 
 	@Override
-	public Set<String> findByUserInOU(Collection<String> ouList) {
-
-		// get users according to OU (users that their DN ends with the requested OU)
+	public Set<String> findByUserInOU(Collection<String> ouList, Pageable pageable) {
+		// Get users according to OU (users that their DN ends with the requested OU)
 		StringBuffer ouRegexp = new StringBuffer();
-		for (String ou : ouList) {
+		for (String ou : ouList)
 			ouRegexp.append("|,").append(ou).append("$");
-		}
-		Query query = new Query(where(User.getAdInfoField(UserAdInfo.adDnField))
-						.regex(ouRegexp.substring(1), "i"));
+		Query query = new Query().with(pageable);
+		String adInfoField = User.getAdInfoField(UserAdInfo.adDnField);
+		query.addCriteria(where(adInfoField).regex(ouRegexp.substring(1), "i"));
 
-		// take only username field from the document
+		// Take only the username field from the document
 		query.fields().include(User.usernameField);
 
-		// Take only user-names
+		// Take only the users' names
 		return getUsernameFromWrapper(query);
-
-
 	}
 
 	private Set<String> getUsernameFromWrapper(Query query) {
@@ -413,20 +393,19 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
             mongoTemplate.updateFirst(usernameCriteria, update, User.class);
         }
 	}
-	
+
 	@Override
-	public Set<String> findNameByTag(String tagFieldName, Boolean value) {
-		Query query = new Query();
+	public Set<String> findNameByTag(String tagFieldName, Boolean value, Pageable pageable) {
+		Query query = new Query().with(pageable);
 		Criteria criteria = where(tagFieldName).is(value);
 		query.fields().include(User.usernameField);
 		query.addCriteria(criteria);
 		Set<String> res = new HashSet<String>();
-		for(UsernameWrapper usernameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName)){
+		for (UsernameWrapper usernameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName))
 			res.add(usernameWrapper.getUsername());
-		}
 		return res;
 	}
-	
+
 	public Set<String> getUserTags(String normalizedUsername) {
 		Query query = new Query(where(User.usernameField).is(normalizedUsername));
 		query.fields().include(User.tagsField);

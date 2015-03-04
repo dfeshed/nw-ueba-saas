@@ -195,22 +195,26 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 		logger.info("finished group membership score update.");
 	}
 
-
 	@Override
-	public void recalculateTotalScore(){
-		List<User> users = userRepository.findAllExcludeAdInfo();
-		for(User user: users){
-			try{
-				recalculateTotalScore(user);
-				Update update = new Update();
-				update.set(User.getClassifierScoreField(Classifier.total.getId()), user.getScore(Classifier.total.getId()));
-				userService.updateUser(user, update);
-			} catch(Exception e){
-				logger.error(String.format("got the following exception while trying to recalculate the total score for user %s", user.getUsername()),e);
+	public void recalculateTotalScore() {
+		String totalScoreId = Classifier.total.getId();
+		int numOfPages = (int)(((userRepository.count() - 1) / totalScorePageSize) + 1);
+		for (int i = 0; i < numOfPages; i++) {
+			Pageable pageable = new PageRequest(i, totalScorePageSize);
+			Iterable<User> users = userRepository.findAllExcludeAdInfo(pageable);
+			for (User user : users) {
+				try {
+					recalculateTotalScore(user);
+					Update update = new Update();
+					update.set(User.getClassifierScoreField(totalScoreId), user.getScore(totalScoreId));
+					userService.updateUser(user, update);
+				} catch (Exception e) {
+					logger.error(String.format("Received following exception while trying to recalculate total score of user %s", user.getUsername()), e);
+				}
 			}
 		}
 	}
-	
+
 	private void recalculateTotalScore(User user){
 		List<ClassifierScore> classifierScores = new ArrayList<>();
 		for(ClassifierScore classifierScore: user.getScores().values()){

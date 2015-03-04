@@ -1,20 +1,19 @@
-
 package fortscale.collection.tagging.service.impl;
 
-import java.io.File;
-import java.util.*;
-
-import fortscale.domain.core.User;
+import fortscale.collection.tagging.service.UserTagService;
+import fortscale.collection.tagging.service.UserTaggingService;
 import fortscale.services.UserService;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import fortscale.collection.tagging.service.UserTagEnum;
-import fortscale.collection.tagging.service.UserTagService;
-import fortscale.collection.tagging.service.UserTaggingService;
-import fortscale.utils.logging.Logger;
+import java.io.File;
+import java.util.*;
 
 public abstract class UserTagServiceAbstract implements UserTagService, InitializingBean {
 
@@ -26,11 +25,21 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	@Autowired
 	private UserTaggingService userTaggingService;
 
+	@Value("${user.tag.service.abstract.page.size:1000}")
+	private int pageSize;
+
 	private List<String> ousToTag;
 	private List<String> groupsToTag;
 	private Set<String> taggedUsers = new HashSet<String>();
 
-	
+	// Getter and Setter are only for unit tests
+	protected int getPageSize() {
+		return pageSize;
+	}
+
+	protected void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
 
 	// -------- abstract functions ---------
 	/**
@@ -104,10 +113,22 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 				// find users matching to the groups and the OUs (this solution might be problematic memory-wise in case there are many users)
 				taggedUsers = new HashSet<>();
 				if (!groupsToTag.isEmpty()) {
-					taggedUsers.addAll(userService.findNamesInGroup(groupsToTag));
+					Set<String> subset;
+					Pageable pageable = new PageRequest(0, pageSize);
+					do {
+						subset = userService.findNamesInGroup(groupsToTag, pageable);
+						taggedUsers.addAll(subset);
+						pageable = pageable.next();
+					} while (subset.size() == pageSize);
 				}
 				if (!ousToTag.isEmpty()) {
-					taggedUsers.addAll(userService.findNamesInOU(ousToTag));
+					Set<String> subset;
+					Pageable pageable = new PageRequest(0, pageSize);
+					do {
+						subset = userService.findNamesInOU(ousToTag, pageable);
+						taggedUsers.addAll(subset);
+						pageable = pageable.next();
+					} while (subset.size() == pageSize);
 				}
 				if (taggedUsers.isEmpty()) {
 					logger.warn(

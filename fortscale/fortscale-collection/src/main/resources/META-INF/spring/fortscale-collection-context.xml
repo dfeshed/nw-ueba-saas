@@ -26,13 +26,6 @@
 	<bean id="jobScheduler" factory-bean="stdSchedulerFactory" factory-method="getScheduler">
 		<property name="jobFactory" ref="autowiringSpringBeanJobFactory"/>
 	</bean>
-	
-	<!--<bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
-		<constructor-arg name="geoIpDbResource" value="file:${ip.to.location.db.full.path}"/>
-		<constructor-arg name="geoIpV6DbResource" value="file:${ip.to.location.db.full.path}"/>
-		<constructor-arg name="fullLicenseKeyResource" value="file:${ip.to.location.license.key.full.path}"/>
-	</bean>-->
-
 
 	<!-- ip resolving caches that uses memory based implementation are injected here -->
 	<bean id="dnsResolverCache" class="fortscale.services.cache.MemoryBasedCache">

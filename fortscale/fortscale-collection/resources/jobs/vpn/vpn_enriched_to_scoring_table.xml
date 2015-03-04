@@ -24,7 +24,7 @@
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>fortscale-vpn-event-filtered</value>
+					<value>fortscale-vpn-normalized-tagged-event</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>

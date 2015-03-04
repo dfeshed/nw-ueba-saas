@@ -1,7 +1,7 @@
 package fortscale.geoip;
 
 
-public class GeoIPInfo {
+public class GeoIPInfo implements IGeoIPInfo{
 	public static String RESERVED_RANGE = "Reserved Range";
 
 	private String countryName = "";

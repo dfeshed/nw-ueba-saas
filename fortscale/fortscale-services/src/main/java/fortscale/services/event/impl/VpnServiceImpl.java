@@ -80,7 +80,13 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	public VpnSession findByUsernameAndSourceIp(String username, String sourceIp){
 		return vpnSessionRepository.findByUsernameAndSourceIp(username, sourceIp);
 	}
-	
+
+	@Override
+	public List<VpnSession> findByUsernameAndCreatedAtEpochBetween(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo){
+		PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
+		return vpnSessionRepository.findByUsernameAndCreatedAtEpochBetween(normalizeUsername, createdAtEpochFrom, createdAtEpochTo, pageRequest);
+	}
+
 	@Override
 	public void saveVpnSession(VpnSession vpnSession){
 		vpnSessionRepository.save(vpnSession);
@@ -135,7 +141,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	public void updateCloseVpnSession(VpnSession vpnSessionUpdate) {
 		VpnSession vpnSession = findVpnSession(vpnSessionUpdate);
 		if(vpnSession == null){
-			logger.info("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
+			logger.debug("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
 			return;
 		}
 
@@ -173,7 +179,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	@Override
 	public List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
 
-		if(!isCountryValid(curVpnSession) || skipBasedOnBlackList(curVpnSession)){
+		if(!isValidSessionForGeoHopping(curVpnSession)){
 			return Collections.emptyList();
 		}
 
@@ -241,31 +247,6 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		return vpnSessions;
 	}
 
-	/**
-	 * This method validate the current event geo hopping needed - In case that we have blacklist we want to check if this event belong to that list
-	 * In case that the event is not belong we will continue to process the geo - hopping on it other case we will return empty list (filter this event from geo hopping)
-	 * @param curVpnSession
-	 * @return
-	 */
-	private boolean skipBasedOnBlackList(VpnSession curVpnSession) {
-
-		String currCountry = curVpnSession.getCountry();
-		String currCity = curVpnSession.getCity();
-		String source_ip = curVpnSession.getSourceIp();
-
-
-		if(geoHoppingBlackListRepresentation.getSourceIp().contains(source_ip))
-			return true;
-		if (geoHoppingBlackListRepresentation.getCountry().contains(currCountry))
-			return true;
-		if (geoHoppingBlackListRepresentation.getCountryCityMap().containsKey(currCountry) &&  geoHoppingBlackListRepresentation.getCountryCityMap().get(currCountry).contains(currCity) )
-		{
-			return true;
-		}
-
-		return false;
-	}
-
 	// Returns vpn sessions that are from the given prevCountry and with in the given thresholds bounds.
 	private List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, String prevCountry, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
 		logger.debug("looking for vpn sessions from {} which were created at most {} hours before {} and closed at most {} hours before that same time", prevCountry, vpnGeoHoppingOpenSessionThresholdInHours, curVpnSession.getCreatedAt(),
@@ -274,7 +255,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		List<VpnSession> vpnSessions = vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
 		List<VpnSession> ret = new ArrayList<>();
 		for(VpnSession vpnSession: vpnSessions){
-			if(!isCountryValid(vpnSession)){
+			if(!isValidSessionForGeoHopping(vpnSession)){
 				continue;
 			}
 			if(!vpnSession.getCountry().equals(prevCountry)){
@@ -297,7 +278,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 			List<VpnSession> vpnSessions = vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(curVpnSession.getUsername(), curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).getMillis(), pageRequest);
 			if(!vpnSessions.isEmpty()){
 				for(VpnSession vpnSession: vpnSessions){
-					if(!isCountryValid(vpnSession)){
+					if(!isValidSessionForGeoHopping(vpnSession)){
 						continue;
 					}
 					if(ret == null){
@@ -328,8 +309,33 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		userToGeoHoppingData.put(curVpnSession.getUsername(), geoHoppingData);
 	}
 	
-	private boolean isCountryValid(VpnSession vpnSession){
-		return StringUtils.isNotEmpty(vpnSession.getCountry()) && !GeoIPInfo.RESERVED_RANGE.equalsIgnoreCase(vpnSession.getCountry());
+	/**
+	 * This method validate the current event geo hopping needed - In case that we have blacklist we want to check if this event belong to that list
+	 * In case that the event is not belong we will continue to process the geo - hopping on it other case we will return empty list (filter this event from geo hopping)
+	 * @param curVpnSession
+	 * @return
+	 */
+	private boolean skipBasedOnBlackList(VpnSession curVpnSession) {
+
+		String currCountry = curVpnSession.getCountry();
+		String currCity = curVpnSession.getCity();
+		String source_ip = curVpnSession.getSourceIp();
+
+
+		if(geoHoppingBlackListRepresentation.getSourceIp().contains(source_ip))
+			return true;
+		if (geoHoppingBlackListRepresentation.getCountry().contains(currCountry))
+			return true;
+		if (geoHoppingBlackListRepresentation.getCountryCityMap().containsKey(currCountry) &&  geoHoppingBlackListRepresentation.getCountryCityMap().get(currCountry).contains(currCity) )
+		{
+			return true;
+		}
+
+		return false;
+	}
+	
+	private boolean isValidSessionForGeoHopping(VpnSession vpnSession){
+		return StringUtils.isNotEmpty(vpnSession.getCountry()) && !GeoIPInfo.RESERVED_RANGE.equalsIgnoreCase(vpnSession.getCountry()) && !skipBasedOnBlackList(vpnSession);
 	}
 	
 	private class GeoHoppingData{

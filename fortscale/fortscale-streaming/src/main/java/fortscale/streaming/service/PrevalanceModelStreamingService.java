@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import fortscale.utils.TimestampUtils;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,20 +25,20 @@ import fortscale.streaming.exceptions.LevelDbException;
 public class PrevalanceModelStreamingService extends ModelServiceImpl{
 
 	private static final Logger logger = LoggerFactory.getLogger(PrevalanceModelStreamingService.class);
-	private static final long MIN_DIFF_TO_UPDATE_MODEL_SERVICE = 3600;
 	
 	private KeyValueStore<String, PrevalanceModel> store;
 	private PrevalanceModelBuilder modelBuilder;
 	private Map<PrevalanceModelKey, Long> changedModelsTimestampMap = new HashMap<>();
-	
+	private long timeGapToUpdateModelsMS;
 
 
-	public PrevalanceModelStreamingService(KeyValueStore<String, PrevalanceModel> store, PrevalanceModelBuilder modelBuilder){
+	public PrevalanceModelStreamingService(KeyValueStore<String, PrevalanceModel> store, PrevalanceModelBuilder modelBuilder, long timeGapToUpdateModelsMS){
 		checkNotNull(store);
 		checkNotNull(modelBuilder);
 		
 		this.store = store;
 		this.modelBuilder = modelBuilder;
+		this.timeGapToUpdateModelsMS = timeGapToUpdateModelsMS;
 	}
 	
 	
@@ -72,9 +73,10 @@ public class PrevalanceModelStreamingService extends ModelServiceImpl{
 			store.put(buildStoreKey(key.getModelName(),key.getContext()), model);
 			
 			Long timestamp = changedModelsTimestampMap.get(key);
+			long currentTimestamp = TimestampUtils.convertToMilliSeconds(model.getBarrier().getTimestamp());
 			if(timestamp == null){
-				changedModelsTimestampMap.put(key, model.getBarrier().getTimestamp());
-			} else if(model.getBarrier().getTimestamp() - timestamp > MIN_DIFF_TO_UPDATE_MODEL_SERVICE){
+				changedModelsTimestampMap.put(key, currentTimestamp);
+			} else if(currentTimestamp - timestamp > timeGapToUpdateModelsMS){
 				super.updateModel(context, model);
 				changedModelsTimestampMap.remove(key);
 			}

@@ -1,13 +1,9 @@
 package fortscale.streaming.task.enrichment;
 
-import fortscale.geoip.GeoIPInfo;
-import fortscale.geoip.IpToLocationGeoIPService;
-import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.SpringService;
-import fortscale.streaming.service.vpn.*;
-import fortscale.streaming.task.AbstractStreamTask;
+import static fortscale.streaming.ConfigUtils.getConfigString;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -15,13 +11,18 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
-
-import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.utils.ConversionUtils.convertToString;
+import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.vpn.VpnDataBucketsConfig;
+import fortscale.streaming.service.vpn.VpnEnrichConfig;
+import fortscale.streaming.service.vpn.VpnEnrichService;
+import fortscale.streaming.service.vpn.VpnGeolocationConfig;
+import fortscale.streaming.service.vpn.VpnSessionUpdateConfig;
+import fortscale.streaming.task.AbstractStreamTask;
 
 /**
  * Created by rans on 01/02/15.
@@ -86,13 +87,16 @@ public class VpnEnrichTask extends AbstractStreamTask {
         String sessionIdFieldName = getConfigString(config, "fortscale.events.vpn.sessionid.field");
         String runGeoHoppingFieldName = getConfigString(config, "fortscale.events.vpn.runGeoHopping.field");
         String addSessionDataFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.addSessionData.field"));
+        String resolveIpFieldName = env.getProperty(getConfigString(config, "fortscale.events.vpn.resolveIp.field"));
+        String timeGapForResolveIpFrom = env.getProperty(getConfigString(config, "fortscale.events.vpn.timeGapForResolveIpFrom"));
+        String timeGapForResolveIpTo = env.getProperty(getConfigString(config, "fortscale.events.vpn.timeGapForResolveIpTo"));
 
 
         VpnGeolocationConfig vpnGeolocationConfig = new VpnGeolocationConfig(ipField, countryFieldName, countryIsoCodeFieldName, regionFieldName, cityFieldName, ispFieldName, usageTypeFieldName, longtitudeFieldName, latitudeFieldName);
         VpnDataBucketsConfig vpnDataBucketsConfig = new VpnDataBucketsConfig(totalbytesFieldName, readbytesFieldName, durationFieldName, databucketFieldName);
         VpnSessionUpdateConfig vpnSessionUpdateConfig = new VpnSessionUpdateConfig(countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName,
                 Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours), Integer.parseInt(vpnGeoHoppingCloseSessionThresholdInHours),
-                sessionIdFieldName, runGeoHoppingFieldName, addSessionDataFieldName);
+                sessionIdFieldName, runGeoHoppingFieldName, addSessionDataFieldName, resolveIpFieldName, Long.parseLong(timeGapForResolveIpFrom), Long.parseLong(timeGapForResolveIpTo));
         VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(inputTopic, outputTopic, partitionField, vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig);
         vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
     }

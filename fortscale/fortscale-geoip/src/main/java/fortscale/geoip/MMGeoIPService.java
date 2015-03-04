@@ -11,7 +11,7 @@ import com.maxmind.geoip2.model.CityResponse;
 
 import fortscale.utils.logging.Logger;
 
-public class MMGeoIPService extends CachedGeoIPService {
+public class MMGeoIPService implements GeoIPService {
 	private static Logger logger = Logger.getLogger(MMGeoIPService.class);
 
 	private static final String MM_DB_FILENAME = "GeoLite2-City.mmdb";
@@ -55,7 +55,8 @@ public class MMGeoIPService extends CachedGeoIPService {
 	 * @return GeoIPInfo
 	 * @throws UnknownHostException
 	 */
-	protected GeoIPInfo doGetGeoIPInfo(String IPAddress) throws UnknownHostException {
+	@Override
+	public IGeoIPInfo getGeoIPInfo(String IPAddress) throws UnknownHostException {
 		// Convert to IP address
 		InetAddress byName = InetAddress.getByName(IPAddress);
 
