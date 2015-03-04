@@ -6,15 +6,17 @@ import fortscale.utils.ConversionUtils;
 import org.apache.samza.config.Config;
 import org.springframework.util.Assert;
 
-import java.io.IOException;
-
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
 public class LowValuesScoreReducer extends AbstractScorer {
 	protected Scorer baseScorer = null;
 	protected ReductionConfigurations reductionConfigs = null;
 
-	public LowValuesScoreReducer(String name, Config config, ScorerContext context) {
+	public LowValuesScoreReducer(String name, Config config) {
+		super(name, config);
+	}
+
+	public LowValuesScoreReducer(String name, Config config, ScorerContext context) throws Exception {
 		super(name, config);
 
 		// Get the base scorer
@@ -25,11 +27,7 @@ public class LowValuesScoreReducer extends AbstractScorer {
 		// Get the reduction configurations
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonConfig = getConfigString(config, String.format("fortscale.score.%s.reduction.configs", name));
-		try {
-			reductionConfigs = mapper.readValue(jsonConfig, ReductionConfigurations.class);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		reductionConfigs = mapper.readValue(jsonConfig, ReductionConfigurations.class);
 	}
 
 	@Override

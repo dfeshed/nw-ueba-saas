@@ -18,7 +18,7 @@ public class LowValuesScoreReducerFactory implements InitializingBean, ScorerFac
 	}
 
 	@Override
-	public Scorer getScorer(String name, Config config, ScorerContext context) {
+	public Scorer getScorer(String name, Config config, ScorerContext context) throws Exception {
 		return new LowValuesScoreReducer(name, config, context);
 	}
 }
