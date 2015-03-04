@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.streaming.scorer.ReductionConfigurations.ReductionConfiguration;
 import fortscale.utils.ConversionUtils;
 import org.apache.samza.config.Config;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 
@@ -19,8 +20,7 @@ public class LowValuesScoreReducer extends AbstractScorer {
 		// Get the base scorer
 		String baseScorerName = getConfigString(config, String.format("fortscale.score.%s.base.scorer", name));
 		baseScorer = (Scorer)context.resolve(Scorer.class, baseScorerName);
-		if (baseScorer == null)
-			throw new NullPointerException();
+		Assert.notNull(baseScorer, "Unable to resolve baseScorerName");
 
 		// Get the reduction configurations
 		ObjectMapper mapper = new ObjectMapper();
@@ -34,13 +34,9 @@ public class LowValuesScoreReducer extends AbstractScorer {
 
 	@Override
 	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
-		FeatureScore featureScore = calculateBaseScore(eventMessage);
+		FeatureScore featureScore = baseScorer.calculateScore(eventMessage);
 		double reducedScore = reduceScore(eventMessage, featureScore.getScore());
 		return new FeatureScore(featureScore.getName(), reducedScore, featureScore.getFeatureScores());
-	}
-
-	private FeatureScore calculateBaseScore(EventMessage eventMessage) throws Exception {
-		return baseScorer.calculateScore(eventMessage);
 	}
 
 	private double reduceScore(EventMessage eventMessage, double score) {

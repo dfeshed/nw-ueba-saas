@@ -1,5 +1,7 @@
 package fortscale.streaming.scorer;
 
+import org.springframework.util.Assert;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +36,10 @@ public class ReductionConfigurations {
 		private double minValueForNoReduction;
 
 		public ReductionConfiguration(String reducingValueName, double reductionFactor, double maxValueForFullReduction, double minValueForNoReduction) {
+			Assert.notNull(reducingValueName, "reducingValueName cannot be null");
+			Assert.isTrue(0 <= reductionFactor && reductionFactor <= 1, "reductionFactor must be in the range of [0,1]");
+			Assert.isTrue(maxValueForFullReduction <= minValueForNoReduction); // print default message
+
 			this.reducingValueName = reducingValueName;
 			this.reductionFactor = reductionFactor;
 			this.maxValueForFullReduction = maxValueForFullReduction;
