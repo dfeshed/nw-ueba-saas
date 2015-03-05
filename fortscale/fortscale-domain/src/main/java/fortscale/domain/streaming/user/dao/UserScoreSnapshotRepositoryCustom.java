@@ -1,5 +1,5 @@
 package fortscale.domain.streaming.user.dao;
 
-public interface UserScoreSnapshotCustom {
+public interface UserScoreSnapshotRepositoryCustom {
 	void removeAllSnapshotsForClassifier(String classifierId);
 }
