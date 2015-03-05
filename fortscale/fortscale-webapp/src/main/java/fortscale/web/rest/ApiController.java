@@ -471,8 +471,7 @@ public class ApiController extends BaseController {
 		//sort the result depend on orderByFinalResult
 		Collections.sort(unionResult,new OrderByComarator(orderByFinalResult));
 		if (page != null) {
-
-			result.setData(result.getData().subList(offsetInQuery, CACHE_LIMIT));
+			result.setData(unionResult.subList(offsetInQuery, CACHE_LIMIT));
 		}
 		else{
 			result.setData(unionResult);

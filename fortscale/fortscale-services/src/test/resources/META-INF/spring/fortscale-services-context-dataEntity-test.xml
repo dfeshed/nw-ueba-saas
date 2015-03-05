@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
-						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
-						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <description>services context for testing.</description>
 
@@ -13,16 +9,13 @@
 
     <!-- Data Entities -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="classpath:META-INF/entities_test.properties" />
+        <property name="locations">
+            <list>
+                <value>classpath:META-INF/entities_test.properties</value>
+                <value>classpath:META-INF/fortscale-config_test.properties</value>
+            </list>
+        </property>
         <property name="order" value="1"/>
-        <property name="ignoreUnresolvablePlaceholders" value="false" />
-        <property name="localOverride" value="true" />
-    </bean>
-
-    <!-- Global config for test -->
-    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="classpath:META-INF/fortscale-config_test.properties" />
-        <property name="order" value="2"/>
         <property name="ignoreUnresolvablePlaceholders" value="false" />
         <property name="localOverride" value="true" />
     </bean>
