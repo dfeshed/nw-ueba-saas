@@ -154,6 +154,23 @@ public class UserScoreStreamingService {
 		return ret;
 	}
 
+	public void cleanupScores(String dataSource) {
+		// go over all leveldb data and clean the specific data
+		KeyValueIterator<String, UserScoreState> iterator = store.all();
+		while (iterator.hasNext()) {
+			Entry<String, UserScoreState> entry = iterator.next();
+			UserScoreState state = entry.getValue();
+			if (state!=null) {
+				state.removeDataSource(dataSource);
+				store.put(entry.getKey(), state);
+			}
+		}
+		iterator.close();
+
+		// delete all relevant snapshots in mongodb
+		userScoreSnapshotRepository.deleteAllSnapshotsForClassifier(dataSource);
+	}
+
 	public void exportSnapshot(){
 		// go over all users top events in the store and persist them to mongodb
 		KeyValueIterator<String, UserScoreState> iterator = store.all();

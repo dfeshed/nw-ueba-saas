@@ -26,6 +26,10 @@ public class UserScoreState {
 		return dataSourcesMap.containsKey(dataSource);
 	}
 
+	public void removeDataSource(String dataSource) {
+		dataSourcesMap.remove(dataSource);
+	}
+
 	public UserTopEvents getUserTopEvents(String dataSource) {
 		if (!dataSourcesMap.containsKey(dataSource)) {
 			UserTopEvents topEvents = new UserTopEvents(dataSource);

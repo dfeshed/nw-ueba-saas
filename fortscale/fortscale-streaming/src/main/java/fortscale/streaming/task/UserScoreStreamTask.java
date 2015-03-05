@@ -36,13 +36,17 @@ public class UserScoreStreamTask  extends AbstractStreamTask  implements Initabl
 
 	private static Logger logger = LoggerFactory.getLogger(UserScoreStreamTask.class);
 
+	// magic message to cleanup data source scores, contains a fixed text and data source name
+	private static String cleanupSignalEvent = "CLEANUP-";
+
 	private Map<String, TopicConfiguration> topicToDataSourceMap = new HashMap<>();
 	private UserScoreStreamingService userScoreStreamingService;
-	
+
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+
 		// get task configuration parameters
 		boolean isUseLatestEventTimeAsCurrentTime = config.getBoolean("fortscale.use.latest.event.time.as.current.time", false);
 		
@@ -85,31 +89,42 @@ public class UserScoreStreamTask  extends AbstractStreamTask  implements Initabl
 
 		// parse the message into json
 		String messageText = (String)envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-		// get the username, so that we can get the model from store
-		String username = convertToString(message.get(topicConfiguration.usernameField));
-		if (StringUtils.isEmpty(username)) {
-			//logger.error("message {} does not contains username in field {}", messageText, usernameField);
-			throw new StreamMessageNotContainFieldException(messageText, topicConfiguration.usernameField);
+		// check if we received a magical cleanup event to delete a data source scores
+		if (messageText.startsWith(cleanupSignalEvent)) {
+			// get the data source classifier from the message
+			String classifierId = messageText.substring(cleanupSignalEvent.length());
+			userScoreStreamingService.cleanupScores(classifierId);
+
+		} else {
+			// process regular scored event message
+
+			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+
+			// get the username, so that we can get the model from store
+			String username = convertToString(message.get(topicConfiguration.usernameField));
+			if (StringUtils.isEmpty(username)) {
+				//logger.error("message {} does not contains username in field {}", messageText, usernameField);
+				throw new StreamMessageNotContainFieldException(messageText, topicConfiguration.usernameField);
+			}
+
+			// get the timestamp from the message
+			Long timestamp = convertToLong(message.get(topicConfiguration.timestampField));
+			if (timestamp == null) {
+				//logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
+				throw new StreamMessageNotContainFieldException(messageText, topicConfiguration.timestampField);
+			}
+
+			// get the event score from the message
+			Double eventScore = convertToDouble(message.get(topicConfiguration.eventScoreField));
+			if (eventScore == null) {
+				//logger.error("message {} does not contains event score in field {}", messageText, eventScoreField);
+				throw new StreamMessageNotContainFieldException(messageText, topicConfiguration.eventScoreField);
+			}
+
+			userScoreStreamingService.updateUserWithEventScore(username, topicConfiguration.classifierId, eventScore, TimestampUtils.convertToMilliSeconds(timestamp));
+			topicConfiguration.topicCounter.set(timestamp);
 		}
-		
-		// get the timestamp from the message
-		Long timestamp = convertToLong(message.get(topicConfiguration.timestampField));
-		if (timestamp==null) {
-			//logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
-			throw new StreamMessageNotContainFieldException(messageText, topicConfiguration.timestampField);
-		}
-		
-		// get the event score from the message
-		Double eventScore = convertToDouble(message.get(topicConfiguration.eventScoreField));
-		if (eventScore==null) {
-			//logger.error("message {} does not contains event score in field {}", messageText, eventScoreField);
-			throw new StreamMessageNotContainFieldException(messageText, topicConfiguration.eventScoreField);
-		}
-		
-		userScoreStreamingService.updateUserWithEventScore(username, topicConfiguration.classifierId, eventScore, TimestampUtils.convertToMilliSeconds(timestamp));
-		topicConfiguration.topicCounter.set(timestamp);
 	}
 	
 	/** periodically save the state to mongodb as a secondary backing store and update the user score in mongodb*/
