@@ -168,7 +168,7 @@ public class UserScoreStreamingService {
 		iterator.close();
 
 		// delete all relevant snapshots in mongodb
-		userScoreSnapshotRepository.deleteAllSnapshotsForClassifier(dataSource);
+		userScoreSnapshotRepository.removeAllSnapshotsForClassifier(dataSource);
 	}
 
 	public void exportSnapshot(){

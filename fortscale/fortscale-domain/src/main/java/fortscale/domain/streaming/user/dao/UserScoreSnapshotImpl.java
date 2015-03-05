@@ -12,7 +12,7 @@ public class UserScoreSnapshotImpl implements UserScoreSnapshotCustom {
 	private MongoTemplate mongoTemplate;
 
 	@Override
-	public void deleteAllSnapshotsForClassifier(String classifierId) {
+	public void removeAllSnapshotsForClassifier(String classifierId) {
 		Query query = new Query(Criteria.where(UserScoreSnapshot.CLASSIFIER_ID_FIELD).is(classifierId));
 		mongoTemplate.remove(query, UserScoreSnapshot.class);
 	}
