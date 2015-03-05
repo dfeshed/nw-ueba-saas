@@ -8,6 +8,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.streaming.user.UserScoreSnapshot;
 import fortscale.domain.streaming.user.dao.UserScoreSnapshotRepository;
 import fortscale.streaming.exceptions.LevelDbException;
+import fortscale.streaming.model.UserScoreState;
 import fortscale.streaming.model.UserTopEvents;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -45,64 +46,63 @@ public class UserScoreStreamingService {
 	@Value("${user.score.streaming.service.page.size:1000}")
 	private int userScoreStreamingServicePageSize;
 
-	private KeyValueStore<String, UserTopEvents> store;
-	private String classifierId;
-	private long latestEventTimeInMillis = 0;
-	
+	private KeyValueStore<String, UserScoreState> store;
+
 	private boolean isUseLatestEventTimeAsCurrentTime = false;
 
-	public void setStore(KeyValueStore<String, UserTopEvents> store) {
+	public void setStore(KeyValueStore<String, UserScoreState> store) {
 		this.store = store;
 	}
 	
-	private long getCurrentEpochTimeInMillis(){
+	private long getCurrentEpochTimeInMillis(UserTopEvents userTopEvents){
 		if(isUseLatestEventTimeAsCurrentTime){
-			return latestEventTimeInMillis;
+			return userTopEvents.getLatestRecievedEventEpochTime();
 		} else{
 			return System.currentTimeMillis();
 		}
 	}
 	
-	private void updateLatestEventTime(long eventTimeInMillis){
+	private void checkIfNeedToUpdatePastScores(String dataSource, long latestEventTimeInMillis, long eventTimeInMillis){
 		if(latestEventTimeInMillis < eventTimeInMillis){
 			if(isUseLatestEventTimeAsCurrentTime && !isOnSameDay(eventTimeInMillis, latestEventTimeInMillis)){
 				if(latestEventTimeInMillis > 0){
 					DateTime dateTime = new DateTime(latestEventTimeInMillis).withTimeAtStartOfDay().plusDays(1).minusSeconds(1);
 					while(!isOnSameDay(eventTimeInMillis, dateTime.getMillis())){
-						updateDb(dateTime.getMillis());
+						updateDb(dataSource, dateTime.getMillis());
 						dateTime = dateTime.plusDays(1);
 					}
 				}
-				updateDb(eventTimeInMillis);
+				updateDb(dataSource, eventTimeInMillis);
 				exportSnapshot();
 			}
-			latestEventTimeInMillis = eventTimeInMillis;
 		}
 	}
 	
-	public void updateUserWithEventScore(String username, double score, long eventTimeInMillis) throws LevelDbException{
-		updateLatestEventTime(eventTimeInMillis);
-		
-		long currentEpochTime = getCurrentEpochTimeInMillis();
-		
-		UserTopEvents userTopEvents = store.get(username);
-		
+	public void updateUserWithEventScore(String username, String dataSource, double score, long eventTimeInMillis) throws LevelDbException{
+		UserScoreState userScoreState = store.get(username);
+
 		boolean hasToUpdateUserRepository = false;
-		boolean hasToUpdateStore = false;
-		if(userTopEvents == null){
-			userTopEvents = new UserTopEvents(classifierId);
+		if(userScoreState == null){
+			userScoreState = new UserScoreState(username);
 		}
-		
-		if(!userTopEvents.isFull()){
+
+		boolean hasToUpdateStore = !userScoreState.containsDataSource(dataSource);
+
+		UserTopEvents userTopEvents = userScoreState.getUserTopEvents(dataSource);
+		if(!userTopEvents.isFull()) {
 			hasToUpdateUserRepository = true;
 		}
+
+		checkIfNeedToUpdatePastScores(dataSource, userTopEvents.getLatestRecievedEventEpochTime(), eventTimeInMillis);
 		
 		if(userTopEvents.updateEventScores(score, eventTimeInMillis)){
 			hasToUpdateStore = true;
 		}
-		
+
+		long currentEpochTime = getCurrentEpochTimeInMillis(userTopEvents);
+
+		// determine if we need to update user score in mongodb, if the score changed considerably
 		double curScore = userTopEvents.calculateUserScore(currentEpochTime);
-		
 		if(!hasToUpdateUserRepository ){
 			double ratio = (1-userTopEvents.getLastUpdatedScore()) / (1-curScore);
 			if(ratio > 1.5){
@@ -119,7 +119,7 @@ public class UserScoreStreamingService {
 		if(hasToUpdateStore){
 			userTopEvents.setLastUpdateEpochTime(currentEpochTime);
 			try{
-				store.put(username, userTopEvents);
+				store.put(username, userScoreState);
 			} catch(Exception exception){
             	logger.error("error storing value. username: {} exception: {}", username, exception);
                 logger.error("error storing value.", exception);
@@ -131,6 +131,7 @@ public class UserScoreStreamingService {
 	private boolean updateDb(String username, UserTopEvents userTopEvents, long lastUpdateTime, double curScore){
 		boolean ret = false;
 		try {
+			String classifierId = userTopEvents.getEventType();
 			User user = userRepository.findByUsername(username);
 			if(user != null && user.getScore(classifierId) != null){
 				ClassifierScore cScore = user.getScore(classifierId);
@@ -147,40 +148,34 @@ public class UserScoreStreamingService {
 				ret = true;
 			}
 		} catch (Exception e) {
-			logger.error("error updating score for user {} in mongodb from user score stream task", username, e);
+			logger.error("error updating score for user {} and classifier {} in mongodb from user score stream task", username, userTopEvents.getEventType(), e);
 			Throwables.propagateIfInstanceOf(e, org.springframework.dao.DataAccessResourceFailureException.class);
 		}
 		return ret;
 	}
 
-	public String getClassifierId() {
-		return classifierId;
-	}
-
-	public void setClassifierId(String classifierId) {
-		this.classifierId = classifierId;
-	}
-	
 	public void exportSnapshot(){
 		// go over all users top events in the store and persist them to mongodb
-		KeyValueIterator<String, UserTopEvents> iterator = store.all();
+		KeyValueIterator<String, UserScoreState> iterator = store.all();
 		try { 
 			while (iterator.hasNext()) {
-				Entry<String, UserTopEvents> entry = iterator.next();
-				UserTopEvents userTopEvents = entry.getValue();
-				if(userTopEvents != null){
+				Entry<String, UserScoreState> entry = iterator.next();
+				UserScoreState userScoreState = entry.getValue();
+				if(userScoreState != null){
 					// model might be null in case of a serialization error, in that case
 					// we don't want to fail here and the error is logged in the serde implementation
 					String username = entry.getKey();
-					UserScoreSnapshot userScoreSnapshot = userScoreSnapshotRepository.findByUserNameAndClassifierId(username, classifierId);
-					if(userScoreSnapshot == null){
-						userScoreSnapshot = new UserScoreSnapshot();
-						userScoreSnapshot.setClassifierId(classifierId);
-						userScoreSnapshot.setUserName(username);
-						userScoreSnapshot.setSnapshot(userTopEvents);
+					for (UserTopEvents userTopEvents : userScoreState.getUserTopEvents()) {
+						String classifierId = userTopEvents.getEventType();
+						UserScoreSnapshot userScoreSnapshot = userScoreSnapshotRepository.findByUserNameAndClassifierId(username, classifierId);
+						if(userScoreSnapshot == null){
+							userScoreSnapshot = new UserScoreSnapshot();
+							userScoreSnapshot.setUserName(username);
+							userScoreSnapshot.setSnapshot(userScoreState);
+						}
+						userScoreSnapshot.setSnapshot(userScoreState);
+						userScoreSnapshotRepository.save(userScoreSnapshot);
 					}
-					userScoreSnapshot.setSnapshot(userTopEvents);
-					userScoreSnapshotRepository.save(userScoreSnapshot);
 				}
 			}
 		} catch (Exception e) {
@@ -191,52 +186,53 @@ public class UserScoreStreamingService {
 		}
 	}
 	
-	public void updateDb(){
-		updateDb(getCurrentEpochTimeInMillis());
-	}
-	
-	public void updateDb(long lastUpdateEpochTime) {
+	public void updateDb(String dataSource,long lastUpdateEpochTime) {
 		// When no events were received yet and the
 		// current time is taken out of the latest event
 		if (lastUpdateEpochTime == 0)
 			return;
 		
 		Map<String, Double> map = new HashMap<String, Double>();
-		double avgScore = updateLevelDb(lastUpdateEpochTime, map);
-		updateMongoDb(lastUpdateEpochTime, avgScore, map);
+		double avgScore = updateLevelDb(dataSource, lastUpdateEpochTime, map);
+		updateMongoDb(dataSource, lastUpdateEpochTime, avgScore, map);
 	}
 	
-	private double updateLevelDb(long lastUpdateEpochTime, Map<String, Double> map) {
-		KeyValueIterator<String, UserTopEvents> iterator = store.all();
+	private double updateLevelDb(String dataSource, long lastUpdateEpochTime, Map<String, Double> userScores) {
+		KeyValueIterator<String, UserScoreState> iterator = store.all();
+
 		double avgScore = 0;
-		
+
 		// Iterate the users' top events to calculate the average score
 		while (iterator.hasNext()) {
-			Entry<String, UserTopEvents> entry = iterator.next();
+			Entry<String, UserScoreState> entry = iterator.next();
 			String username = entry.getKey();
-			UserTopEvents userTopEvents = entry.getValue();
+			UserScoreState userScoreState = entry.getValue();
 			
 			// Model might be null in case of a serialization error, in that case we
 			// don't want to fail here and the error is logged in the SerDe implementation
-			if (userTopEvents != null) {
-				// Calculate user score and update store
+			if (userScoreState != null) {
+				// go over all data sources and calculate user score and update store
+				UserTopEvents userTopEvents = userScoreState.getUserTopEvents(dataSource);
+
 				double currentScore = userTopEvents.calculateUserScore(lastUpdateEpochTime);
 				userTopEvents.setLastUpdatedScore(currentScore);
 				userTopEvents.setLastUpdateScoreEpochTime(lastUpdateEpochTime);
-				store.put(username, userTopEvents);
+
 				// Update average and add entry to map
 				avgScore += currentScore;
-				map.put(username, currentScore);
+				userScores.put(username, currentScore);
+
+				store.put(username, userScoreState);
 			}
 		}
 		iterator.close();
 		
-		if (map.size() > 1)
-			avgScore /= map.size();
+		if (userScores.size() > 1)
+			avgScore /= userScores.size();
 		return avgScore;
 	}
 	
-	private void updateMongoDb(long lastUpdateEpochTime, double avgScore, Map<String, Double> map) {
+	private void updateMongoDb(String dataSource, long lastUpdateEpochTime, double avgScore, Map<String, Double> map) {
 		Iterator<String> iterator = map.keySet().iterator();
 		int numOfMissingUsers = 0;
 		
@@ -254,10 +250,10 @@ public class UserScoreStreamingService {
 					String username = user.getUsername();
 					// Update scores of user
 					try {
-						updateUserScore(user, lastUpdateEpochTime, classifierId, map.get(username));
-						updateUserAvgScore(user, avgScore);
+						updateUserScore(user, lastUpdateEpochTime, dataSource, map.get(username));
+						updateUserAvgScore(user, dataSource, avgScore);
 						Update update = new Update();
-						update.set(User.getClassifierScoreField(classifierId), user.getScore(classifierId));
+						update.set(User.getClassifierScoreField(dataSource), user.getScore(dataSource));
 						mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
 					} catch (Exception e) {
 						logger.error(String.format("Exception while trying to update the scores of user %s", username), e);
@@ -276,7 +272,7 @@ public class UserScoreStreamingService {
 		}
 	}
 	
-	private void updateUserAvgScore(User user,double avgScore){
+	private void updateUserAvgScore(User user, String classifierId, double avgScore){
 		ClassifierScore cScore = user.getScore(classifierId);
 		cScore.setAvgScore(avgScore);
 		cScore.getPrevScores().get(0).setAvgScore(avgScore);
@@ -351,12 +347,7 @@ public class UserScoreStreamingService {
 		return false;
 	}
 
-	public boolean isUseLatestEventTimeAsCurrentTime() {
-		return isUseLatestEventTimeAsCurrentTime;
-	}
-
-	public void setUseLatestEventTimeAsCurrentTime(
-			boolean isUseLatestEventTimeAsCurrentTime) {
+	public void setUseLatestEventTimeAsCurrentTime(boolean isUseLatestEventTimeAsCurrentTime) {
 		this.isUseLatestEventTimeAsCurrentTime = isUseLatestEventTimeAsCurrentTime;
 	}
 }
