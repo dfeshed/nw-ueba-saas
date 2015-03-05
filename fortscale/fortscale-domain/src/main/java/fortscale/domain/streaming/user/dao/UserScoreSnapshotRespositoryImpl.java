@@ -12,7 +12,7 @@ public class UserScoreSnapshotRespositoryImpl implements UserScoreSnapshotReposi
 	private MongoTemplate mongoTemplate;
 
 	@Override
-	public void removeAllSnapshotsForClassifier(String classifierId) {
+	public void clearAllSnapshotsForClassifier(String classifierId) {
 		Query query = new Query(Criteria.where(UserScoreSnapshot.CLASSIFIER_ID_FIELD).is(classifierId));
 		mongoTemplate.remove(query, UserScoreSnapshot.class);
 	}
