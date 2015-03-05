@@ -6,13 +6,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-public class UserScoreSnapshotRespositoryImpl implements UserScoreSnapshotRepositoryCustom {
+public class UserScoreSnapshotRepositoryImpl implements UserScoreSnapshotRepositoryCustom {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	@Override
-	public void clearAllSnapshotsForClassifier(String classifierId) {
+	public void clearAllClassifiersScores(String classifierId) {
 		Query query = new Query(Criteria.where(UserScoreSnapshot.CLASSIFIER_ID_FIELD).is(classifierId));
 		mongoTemplate.remove(query, UserScoreSnapshot.class);
 	}
