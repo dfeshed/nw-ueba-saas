@@ -68,25 +68,27 @@ public abstract class DataQueryRunner {
 	 * @param dataQueryDTO - the input data query
 	 * @return
 	 */
-	public List<DataQueryDTO> translateAbstarctDataQuery(DataQueryDTO dataQueryDTO,DataEntitiesConfig dataEntitiesConfig)  throws Exception
-	{
+	public List<DataQueryDTO> translateAbstarctDataQuery(DataQueryDTO dataQueryDTO,DataEntitiesConfig dataEntitiesConfig)  throws Exception {
 
-		List<TreeNode<DataEntity>> entitiestree = dataEntitiesConfig.getEntitiesTrees();
+        List<TreeNode<DataEntity>> entitiestree = dataEntitiesConfig.getEntitiesTrees();
 
+        List<DataQueryDTO> result = new ArrayList<>();
 
-		List<DataQueryDTO> result = new ArrayList<>();
+        result.addAll(translateTheMainEntity(dataQueryDTO, entitiestree, dataEntitiesConfig));
 
-        result.addAll(translateTheMainEntity(dataQueryDTO, entitiestree,dataEntitiesConfig));
-
-
-        for (DataQueryDTO dto : result) {
-            translateTheJoins(dto, entitiestree, dataEntitiesConfig);
-			translateTheSubQueries(dto, entitiestree, dataEntitiesConfig);
+        if (result.isEmpty()) {
+            translateTheSubQueries(dataQueryDTO, entitiestree, dataEntitiesConfig);
+            result.add(dataQueryDTO);
+        } else {
+            for (DataQueryDTO dto : result) {
+                translateTheJoins(dto, entitiestree, dataEntitiesConfig);
+                translateTheSubQueries(dto, entitiestree, dataEntitiesConfig);
+            }
         }
 
-		return result;
+        return result;
 
-	}
+    }
 
 
 	/**
@@ -164,17 +166,16 @@ public abstract class DataQueryRunner {
 	 */
 	private List<DataQueryJoin> replaceJoinParams (List<DataQueryJoin> where,String what,String inWhat )
 	{
-		for (DataQueryJoin dataQueryJoin : where)
-		{
-			if (dataQueryJoin.getLeft().getEntity().equals(what))
-				dataQueryJoin.getLeft().setEntity(inWhat);
-			if (dataQueryJoin.getRight().getEntity().equals(what))
-				dataQueryJoin.getRight().setEntity(inWhat);
+        if (where != null) {
+            for (DataQueryJoin dataQueryJoin : where) {
+                if (dataQueryJoin.getLeft().getEntity().equals(what))
+                    dataQueryJoin.getLeft().setEntity(inWhat);
+                if (dataQueryJoin.getRight().getEntity().equals(what))
+                    dataQueryJoin.getRight().setEntity(inWhat);
 
-		}
-
+            }
+        }
 		return where;
-
 	}
 
     /**

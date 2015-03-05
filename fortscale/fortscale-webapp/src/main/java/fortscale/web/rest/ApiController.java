@@ -1,20 +1,10 @@
 package fortscale.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Joiner;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import fortscale.services.UserServiceFacade;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.google.common.base.Joiner;
-import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataqueries.OrderByComarator;
@@ -43,7 +33,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -392,10 +386,11 @@ public class ApiController extends BaseController {
 
 
 					//add the type to the entity (ssh , vpn, ad ...)
-					String type = partOfTranslatedQuyre.getEntities()[0].equals("kerberos_logins") ? "AD" : partOfTranslatedQuyre.getEntities()[0];
-					for (Map<String, Object> rowMap :resultsMap )
-					{
-						rowMap.put("type",type);
+					if (partOfTranslatedQuyre.getEntities().length > 0) {
+						String type = partOfTranslatedQuyre.getEntities()[0].equals("kerberos_logins") ? "AD" : partOfTranslatedQuyre.getEntities()[0];
+						for (Map<String, Object> rowMap : resultsMap) {
+							rowMap.put("type", type);
+						}
 					}
 
 					retBean.setData(resultsMap);
@@ -475,11 +470,12 @@ public class ApiController extends BaseController {
 
 		//sort the result depend on orderByFinalResult
 		Collections.sort(unionResult,new OrderByComarator(orderByFinalResult));
-
-
 		if (page != null) {
 
 			result.setData(result.getData().subList(offsetInQuery, CACHE_LIMIT));
+		}
+		else{
+			result.setData(unionResult);
 		}
 		return result;
 
