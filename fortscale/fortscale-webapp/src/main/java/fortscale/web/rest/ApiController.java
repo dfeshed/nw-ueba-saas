@@ -1,30 +1,25 @@
 package fortscale.web.rest;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
-import fortscale.services.dataentity.DataEntity;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import fortscale.services.UserServiceFacade;
 import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataentity.QueryFieldFunction;
+import fortscale.services.dataentity.DataEntity;
+import fortscale.services.dataentity.DataEntityField;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querydto.DataQueryField;
-import fortscale.services.dataqueries.querydto.FieldFunction;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.services.UserServiceFacade;
 import fortscale.services.exceptions.InvalidValueException;
+import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.ClassifierService;
-
 import fortscale.utils.logging.Logger;
+import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
+import fortscale.web.beans.DataBean;
+import fortscale.web.beans.UserIdBean;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +32,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
-import fortscale.services.exceptions.UnknownResourceException;
-import fortscale.utils.logging.annotation.LogException;
-import fortscale.web.beans.DataBean;
-import fortscale.web.beans.UserIdBean;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("/api/**")
@@ -68,6 +62,11 @@ public class ApiController extends BaseController {
 	private Cache<String, DataBean<List<Map<String, Object>>>> investigateQueryCache;
 
 	/**
+	 * Pretty Names for the fields we write to the exported CSV file
+	 */
+	private Map<String, String> fieldsPrettyNamesExportMap = new HashMap<>();
+
+	/**
 	 * Limit for results of 1 query in the cache
 	 */
 	protected static final Integer CACHE_LIMIT = 200;
@@ -76,9 +75,30 @@ public class ApiController extends BaseController {
 		// initialize investigate caching 
 		//CacheBuilder<String, DataBean<List<Map<String, Object>>>>
 		investigateQueryCache = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).maximumSize(300).build();
+
+		// init fields names
+		initFieldsName();
 	}
-	
-	
+
+	/*
+	 * Current implementation assume each field id has the same name for all entities.
+	 * since the query send to export is not link to a specific entity, we can't connect the field using the entity.
+	 * in the future if we will have to use the same field id with different field names, we will have to change the implementation.
+	 */
+	private void initFieldsName() {
+
+		try {
+			for(DataEntity dataEntity : dataEntitiesConfig.getAllLogicalEntities()) {
+				for(DataEntityField dataEntityField : dataEntity.getFields()) {
+					fieldsPrettyNamesExportMap.put(dataEntityField.getId(),dataEntityField.getName());
+				}
+			}
+		} catch (Exception e) {
+			throw new InvalidValueException("Can't get entities. Error: " + e.getMessage());
+		}
+	}
+
+
 	@RequestMapping("/**")
 	@LogException
     public void unmappedRequest(HttpServletRequest request) {
@@ -243,12 +263,15 @@ public class ApiController extends BaseController {
 				if (!page.getData().isEmpty()) {
 					// copy the list of field names to the fields list so we will write them in consistent
 					// order for each row, and dump them to the output header row
+					List<String> prettyFields = new LinkedList<>();
 					for (String field : page.getData().get(0).keySet()) {
 						fields.add(field);
+						String prettyFieldName = fieldsPrettyNamesExportMap.get(field);
+						prettyFields.add(prettyFieldName == null ? field : prettyFieldName);
 					}
 
 					if (dumpHeaders) {
-						String headerLine = Joiner.on(delimiter).join(fields);
+						String headerLine = Joiner.on(delimiter).join(prettyFields);
 						output.println(headerLine);
 					}
 				}
@@ -274,7 +297,7 @@ public class ApiController extends BaseController {
 			for (String field : fields) {
 				// convert the field to text
 				Object value = row.get(field);
-				String strValue = (value==null)? "" : (value instanceof Date)? sdf.format(value) : value.toString();
+				String strValue = getValueAsString(sdf, field, value);
 				strValue.replaceAll(delimiter, "");
 
 				sb.append(strValue);
@@ -287,6 +310,28 @@ public class ApiController extends BaseController {
 		}
 	}
 
+	private String getValueAsString(SimpleDateFormat sdf, String field, Object value) {
+		String strValue;
+		if (value==null) {
+			strValue = "";
+		} else if (value instanceof Date) {
+			strValue = sdf.format(value);
+		} else if (value instanceof Long && field.equals("date_time_unix")) {
+			strValue = sdf.format((Long) value * 1000);
+		} else if (value instanceof Long && field.equals("daytime")) {
+			long longVal = (Long) value;
+			long seconds = longVal % 60;
+			long minutes = longVal / 60;
+			long hours = minutes / 60;
+			minutes = minutes % 60;
+			strValue = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+		} else if (value instanceof Double && field.contains("score")) {
+			strValue = String.format("%.0f", (Double)value);
+		} else {
+			strValue = value.toString();
+		}
+		return strValue;
+	}
 
 	/**
      *
