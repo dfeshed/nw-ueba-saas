@@ -3,12 +3,17 @@ package fortscale.streaming.scorer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.streaming.scorer.ReductionConfigurations.ReductionConfiguration;
 import fortscale.utils.ConversionUtils;
+import groovy.lang.MissingPropertyException;
 import org.apache.samza.config.Config;
-import org.springframework.util.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.isConfigContainKey;
 
 public class LowValuesScoreReducer extends AbstractScorer {
+	private static final Logger logger = LoggerFactory.getLogger(LowValuesScoreReducer.class);
+
 	protected Scorer baseScorer = null;
 	protected ReductionConfigurations reductionConfigs = null;
 
@@ -20,14 +25,36 @@ public class LowValuesScoreReducer extends AbstractScorer {
 		super(name, config);
 
 		// Get the base scorer
-		String baseScorerName = getConfigString(config, String.format("fortscale.score.%s.base.scorer", name));
+		String configKey = String.format("fortscale.score.%s.base.scorer", name);
+		if (!isConfigContainKey(config, configKey)) {
+			String errorMsg = String.format("Configuration does not contain key %s", configKey);
+			logger.error(errorMsg);
+			throw new MissingPropertyException(errorMsg);
+		}
+
+		String baseScorerName = getConfigString(config, configKey);
 		baseScorer = (Scorer)context.resolve(Scorer.class, baseScorerName);
-		Assert.notNull(baseScorer, "Unable to resolve baseScorerName");
+		if (baseScorer == null) {
+			String errorMsg = String.format("Could not find class of scorer %s", baseScorerName);
+			logger.error(errorMsg);
+			throw new IllegalArgumentException(errorMsg);
+		}
 
 		// Get the reduction configurations
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonConfig = getConfigString(config, String.format("fortscale.score.%s.reduction.configs", name));
-		reductionConfigs = mapper.readValue(jsonConfig, ReductionConfigurations.class);
+		configKey = String.format("fortscale.score.%s.reduction.configs", name);
+		if (!isConfigContainKey(config, configKey)) {
+			String errorMsg = String.format("Configuration does not contain key %s", configKey);
+			logger.error(errorMsg);
+			throw new MissingPropertyException(errorMsg);
+		}
+
+		String jsonConfig = getConfigString(config, configKey);
+		reductionConfigs = (new ObjectMapper()).readValue(jsonConfig, ReductionConfigurations.class);
+		if (reductionConfigs == null) {
+			String errorMsg = String.format("Failed to deserialize json %s", jsonConfig);
+			logger.error(errorMsg);
+			throw new IllegalArgumentException(errorMsg);
+		}
 	}
 
 	@Override
