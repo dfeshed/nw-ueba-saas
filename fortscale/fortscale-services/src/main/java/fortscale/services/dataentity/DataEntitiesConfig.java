@@ -4,8 +4,10 @@ import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querydto.QuerySort;
 import fortscale.services.dataqueries.querydto.SortDirection;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.utils.TreeNode;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
@@ -36,7 +38,23 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
 	/**
 	 * All entities (lazy initialization)
 	 */
-    private List<DataEntity> allDataEntities;
+    private HashMap<String,DataEntity> allDataEntities;
+
+	/**
+	 * All base entities (lazy initialization)
+	 */
+	private HashMap<String,DataEntity> allBaseDataEntities;
+
+
+	/**
+	 * All leaf entities (lazy initialization)
+	 */
+	private HashMap<String,DataEntity> allLeafDataEntities;
+
+	/**
+	 * Entity Hierarchy tree (lazy initialization)
+	 */
+	private List<TreeNode<DataEntity>> entitiesHierarchyTreeCach;
 
 
 
@@ -103,7 +121,7 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
 
         try{
             String[] configFields = stringValueResolver.resolveStringValue(getPropertyKey(entityId, "fields")).split("\\s*,[,\\s]*");
-            Collections.addAll(fieldsList, configFields);
+			Collections.addAll(fieldsList, configFields);
         }
         catch(Exception error){
             return null;
@@ -125,19 +143,183 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
      * @return
      */
     public List<DataEntity> getAllLogicalEntities() throws Exception{
-        if (allDataEntities != null)
-            return allDataEntities;
 
-        String[] entityIds = stringValueResolver.resolveStringValue("${entities}").split("\\s*,[,\\s]*");
-        ArrayList<DataEntity> entities = new ArrayList<>();
+        if (allDataEntities != null){
 
-        for(String entityId: entityIds){
-            entities.add(getLogicalEntity(entityId));
+            return new ArrayList<>(allDataEntities.values());
         }
 
+
+        HashMap<String,DataEntity> baseEntities = getAllBaseEntities();
+        HashMap<String,DataEntity> leafEntities = getAllLeafeEntities();
+
+        HashMap<String,DataEntity> entities = new HashMap<>();
+		entities.putAll(baseEntities);
+		entities.putAll(leafEntities);
+
+
+
+
         allDataEntities = entities;
-        return entities;
+        return new ArrayList<>(entities.values());
     }
+
+	/**
+	 * Gets all the base entities that are present in entities.properties.
+	 * @return
+	 */
+	public HashMap<String,DataEntity> getAllBaseEntities() throws Exception{
+		if (allBaseDataEntities != null)
+			return allBaseDataEntities;
+
+		String[] entityIds = stringValueResolver.resolveStringValue("${base_entities}").split("\\s*,[,\\s]*");
+		HashMap<String,DataEntity> entities  = new HashMap<>();
+
+		for(String entityId: entityIds){
+			entities.put(entityId, getLogicalEntity(entityId));
+		}
+
+		allBaseDataEntities = entities;
+		return entities;
+	}
+
+	/**
+	 * Gets all the leaf entities that are present in entities.properties.
+	 * @return
+	 */
+	public HashMap<String,DataEntity> getAllLeafeEntities() throws Exception{
+		if (allLeafDataEntities != null)
+			return allLeafDataEntities;
+
+		String[] entityIds = stringValueResolver.resolveStringValue("${leaf_entities}").split("\\s*,[,\\s]*");
+        HashMap<String,DataEntity> entities = new HashMap<>();
+
+		for(String entityId: entityIds){
+			entities.put(entityId, getLogicalEntity(entityId));
+		}
+
+		allLeafDataEntities = entities;
+		return entities;
+	}
+
+	/**
+	 * This method will return a list of trees that will represent the inheritance hierarchy of the entities.properties file
+	 * The tree will build exhaustive bottom up
+	 */
+	public List<TreeNode<DataEntity>> getEntitiesTrees() throws Exception
+	{
+
+		if (entitiesHierarchyTreeCach != null)
+			return entitiesHierarchyTreeCach;
+
+		// get the roots entities for the trees
+		String[]  leaffEntities = stringValueResolver.resolveStringValue("${leaf_entities}").split("\\s*,[,\\s]*");
+
+		List<TreeNode<DataEntity>> entitiesTrees = new ArrayList<>() ;
+
+
+		//start build the sub trees for each leaf
+		for (String leaf : leaffEntities)
+		{
+			DataEntity dataEntity = getLogicalEntity(leaf);
+			TreeNode<DataEntity> entityNode = new TreeNode<>(dataEntity);
+			TreeNode<DataEntity> tree = getSubTree(entityNode);
+			entitiesTrees = mergerEntitiesSubTrees(tree,entitiesTrees);
+
+		}
+
+		entitiesHierarchyTreeCach = entitiesTrees;
+
+		return entitiesTrees;
+
+	}
+
+	private TreeNode<DataEntity> getSubTree(TreeNode<DataEntity> treeNode) throws Exception
+	{
+
+		try {
+			//get the parent entity from the entity properties file
+			String parentEntityId = stringValueResolver.resolveStringValue(String.format("${entities.%s.extends}", treeNode.getData().getId()));
+
+			if (!StringUtils.isEmpty(parentEntityId)) {
+				DataEntity parentEntity = getLogicalEntity(parentEntityId);
+				TreeNode<DataEntity> parentTreeNode = new TreeNode<>(parentEntity);
+
+				// set the parent node to the current tree node
+				treeNode.setParent(parentTreeNode);
+
+				//set the current node to be child of the parent node
+				parentTreeNode.setChaild(treeNode);
+
+				return getSubTree(parentTreeNode);
+			}
+		}
+		catch (Exception e){
+			return treeNode;
+		}
+
+		return treeNode;
+
+
+	}
+
+
+
+
+	private List<TreeNode<DataEntity>> mergerEntitiesSubTrees (TreeNode<DataEntity> tree , List<TreeNode<DataEntity>> entitiesTrees )
+	{
+
+		for (TreeNode<DataEntity> subTree : entitiesTrees)
+		{
+			if (mergerTwoTrees(tree,subTree))
+				return entitiesTrees;
+		}
+
+		entitiesTrees.add(tree);
+		return entitiesTrees;
+
+
+	}
+
+	/**
+	 * This method get two potential sub trees and trying to merger sub tree number 1 to sub tree number 2
+	 * If those tress are complete strange (doesn't share the same root) it will return false
+	 * @param tree1
+	 * @param tree2
+	 * @return
+	 */
+	private boolean mergerTwoTrees(TreeNode<DataEntity> tree1 , TreeNode<DataEntity> tree2 )
+	{
+		boolean result = false;
+
+		//check if the roots are equal in that case we merger two sub trees from the same tree
+		TreeNode<DataEntity> potentialParent = tree1.getData().equals(tree2.getData()) == true ? tree2 : null ;
+
+		// if the roots are not equals the two sub  trees are not from the same tree
+		if (potentialParent == null)
+		{
+			return result;
+		}
+
+
+		//find the connection point
+		for (TreeNode<DataEntity> child : tree1)
+		{
+			TreeNode<DataEntity> exist  = tree2.peekFromTree(child);
+
+			//we found connection point
+			if (exist == null)
+			{
+				potentialParent.setChaild(child);
+				result = true;
+				break;
+			}
+			potentialParent = exist;
+			result = mergerTwoTrees(child,potentialParent);
+		}
+		return result;
+	}
+
 
     /**
      * Gets the DB type that should be used to generate the query for the given entity
@@ -161,6 +343,14 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
      * @return
      */
     public DataEntity getLogicalEntity(String entityId) throws Exception{
+
+
+        // Peek from cahce if we already have this entity
+        if(allDataEntities!=null && allDataEntities.containsKey(entityId))
+        {
+            return allDataEntities.get(entityId);
+        }
+
         DataEntityConfig entityConfig = getEntityFromCache(entityId);
 
         DataEntity entity = new DataEntity();
@@ -585,5 +775,39 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
         int minValue = Integer.parseInt(value);
         entityConfig.setPerformanceFieldMinValue(minValue);
         return minValue;
+    }
+
+
+	//This method will get entityid and will return the DataEntity from the allDataEntites cache
+	//The assumption that what doesn't exist in the cache is not a valid entity and the result will be null
+    public DataEntity getEntityFromOverAllCache(String entityId)
+    {
+        return getEntityFromCache(entityId,allDataEntities);
+
+    }
+
+	//This method will get entityid and will return the DataEntity from the allLeafDataEntities cache
+	//The assumption that what doesn't exist in the cache is not a valid entity and the result will be null
+    public DataEntity getLeafEntityFromCache(String entityId)
+    {
+        return getEntityFromCache(entityId,allLeafDataEntities);
+
+    }
+
+
+	//This method will get entityid and will return the DataEntity from the allBaseDataEntities cache
+	//The assumption that what doesn't exist in the cache is not a valid entity and the result will be null
+    public DataEntity getBasetEntityFromCache(String entityId)
+    {
+        return getEntityFromCache(entityId,allBaseDataEntities);
+
+    }
+
+	//This method will get entityid and specific cache and will return the DataEntity from the specific cache
+	//The assumption that what doesn't exist in the cache is not a valid entity and the result will be null
+    private DataEntity getEntityFromCache (String entityId , HashMap<String,DataEntity> cache)
+    {
+       return cache.get(entityId);
+
     }
 }
