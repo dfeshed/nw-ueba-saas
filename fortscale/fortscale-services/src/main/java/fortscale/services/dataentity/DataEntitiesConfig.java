@@ -777,12 +777,17 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
         return minValue;
     }
 
+
+	//This method will get entityid and will return the DataEntity from the allDataEntites cache
+	//The assumption that what doesn't exist in the cache is not a valid entity and the result will be null
     public DataEntity getEntityFromOverAllCache(String entityId)
     {
         return getEntityFromCache(entityId,allDataEntities);
 
     }
 
+	//This method will get entityid and will return the DataEntity from the allLeafDataEntities cache
+	//The assumption that what doesn't exist in the cache is not a valid entity and the result will be null
     public DataEntity getLeafEntityFromCache(String entityId)
     {
         return getEntityFromCache(entityId,allLeafDataEntities);
@@ -790,12 +795,16 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
     }
 
 
+	//This method will get entityid and will return the DataEntity from the allBaseDataEntities cache
+	//The assumption that what doesn't exist in the cache is not a valid entity and the result will be null
     public DataEntity getBasetEntityFromCache(String entityId)
     {
         return getEntityFromCache(entityId,allBaseDataEntities);
 
     }
 
+	//This method will get entityid and specific cache and will return the DataEntity from the specific cache
+	//The assumption that what doesn't exist in the cache is not a valid entity and the result will be null
     private DataEntity getEntityFromCache (String entityId , HashMap<String,DataEntity> cache)
     {
        return cache.get(entityId);

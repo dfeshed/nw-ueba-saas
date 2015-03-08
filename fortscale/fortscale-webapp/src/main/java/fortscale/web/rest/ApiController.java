@@ -7,7 +7,7 @@ import com.google.common.cache.CacheBuilder;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
-import fortscale.services.dataqueries.OrderByComarator;
+import fortscale.services.dataqueries.OrderByComparator;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.QuerySort;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
@@ -432,7 +432,7 @@ public class ApiController extends BaseController {
 
 
 
-            return collectResults(results,page,offsetInQuery,orderByFinalResult);
+            return collectResults(results,page,offsetInQuery,orderByFinalResult,pageSize);
         }
         catch (InvalidQueryException e) {
             throw new InvalidValueException("Invalid query to parse. Error: " + e.getMessage());
@@ -450,7 +450,7 @@ public class ApiController extends BaseController {
 	 * @param results
 	 * @return
 	 */
-	private DataBean<List<Map<String, Object>>> collectResults(List<DataBean<List<Map<String, Object>>>> results, Integer page,int offsetInQuery,List<QuerySort> orderByFinalResult )
+	private DataBean<List<Map<String, Object>>> collectResults(List<DataBean<List<Map<String, Object>>>> results, Integer page,int offsetInQuery,List<QuerySort> orderByFinalResult,Integer pageSize )
 	{
 		DataBean<List<Map<String, Object>>> result = new DataBean<>();
 
@@ -469,9 +469,9 @@ public class ApiController extends BaseController {
 		}
 
 		//sort the result depend on orderByFinalResult
-		Collections.sort(unionResult,new OrderByComarator(orderByFinalResult));
+		Collections.sort(unionResult,new OrderByComparator(orderByFinalResult));
 		if (page != null) {
-			result.setData(unionResult.subList(offsetInQuery, CACHE_LIMIT));
+			result.setData(unionResult.subList(offsetInQuery, pageSize));
 		}
 		else{
 			result.setData(unionResult);

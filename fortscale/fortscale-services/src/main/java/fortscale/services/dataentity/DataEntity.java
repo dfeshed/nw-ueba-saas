@@ -125,5 +125,8 @@ public class DataEntity {
 
 	}
 
-
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
 }

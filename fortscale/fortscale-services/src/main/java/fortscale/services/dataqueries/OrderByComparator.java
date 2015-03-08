@@ -11,12 +11,12 @@ import java.util.Map;
 /**
  * Created by idanp on 3/4/2015.
  */
-public class OrderByComarator implements Comparator<Map<String,Object>> {
+public class OrderByComparator implements Comparator<Map<String,Object>> {
 
 	List<QuerySort> sortProeprties = new ArrayList<>();
 
 
-	public OrderByComarator (List<QuerySort> sortProeprties)
+	public OrderByComparator(List<QuerySort> sortProeprties)
 	{
 		this.sortProeprties = sortProeprties;
 	}
