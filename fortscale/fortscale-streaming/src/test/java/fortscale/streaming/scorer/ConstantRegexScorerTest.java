@@ -12,28 +12,26 @@ public class ConstantRegexScorerTest extends ScorerBaseTest{
 	private static final String FIELD_NAME = "testFieldName";
 	private static final String OUTPUT_FIELD_NAME = "outputTestField";
 	private static final String SCORER_NAME = "ConstantRegexScorerTestScorerName";
-	
-	
-	private Scorer buildScorer(String scorerName, String outputFieldName, String fieldName, String regex, Integer constant){
-		if(scorerName !=null){
-			if(outputFieldName != null)
+
+	private Scorer buildScorer(String scorerName, String outputFieldName, String fieldName, String regex, Integer constant) throws Exception {
+		if (scorerName != null) {
+			if (outputFieldName != null)
 				when(config.get(String.format("fortscale.score.%s.output.field.name", scorerName))).thenReturn(outputFieldName);
-			if(fieldName != null)
+			if (fieldName != null)
 				when(config.get(String.format("fortscale.score.%s.regex.fieldname", scorerName))).thenReturn(fieldName);
-			if(regex != null)
+			if (regex != null)
 				when(config.get(String.format("fortscale.score.%s.regex", scorerName))).thenReturn(regex);
-			if(constant != null)
+			if (constant != null)
 				when(config.getInt(String.format("fortscale.score.%s.constant", scorerName))).thenReturn(constant);
-			else{
+			else {
 				String k = String.format("fortscale.score.%s.constant", scorerName);
 				when(config.getInt(k)).thenThrow(new ConfigException("Missing key " + k + "."));
 			}
 		}
-		return scorerFactoryService.getScorer(ContstantRegexScorerFactory.SCORER_TYPE,scorerName, config, null);
+
+		return scorerFactoryService.getScorer(ContstantRegexScorerFactory.SCORER_TYPE, scorerName, config, null);
 	}
-	
-	
-	
+
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithNoScorerName() throws Exception{
 		@SuppressWarnings("unused")

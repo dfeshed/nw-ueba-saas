@@ -52,9 +52,13 @@ public class ScorerContext {
 //			throw new Exception(String.format("the bean actual class (%s) is not as expected (%s)", bean.getClass(), beanclass);
 //		}
 	}
-	
-	private Scorer buildScorer(String scorerName){
+
+	private Scorer buildScorer(String scorerName) {
 		String scorerType = getConfigString(config, String.format("fortscale.score.%s.scorer", scorerName));
-		return scorerFactoryService.getScorer(scorerType, scorerName, config, this);
+		try {
+			return scorerFactoryService.getScorer(scorerType, scorerName, config, this);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }
