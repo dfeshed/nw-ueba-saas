@@ -53,12 +53,8 @@ public class ScorerContext {
 //		}
 	}
 
-	private Scorer buildScorer(String scorerName) {
+	private Scorer buildScorer(String scorerName){
 		String scorerType = getConfigString(config, String.format("fortscale.score.%s.scorer", scorerName));
-		try {
-			return scorerFactoryService.getScorer(scorerType, scorerName, config, this);
-		} catch (Exception e) {
-			return null;
-		}
+		return scorerFactoryService.getScorer(scorerType, scorerName, config, this);
 	}
 }

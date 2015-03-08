@@ -8,6 +8,8 @@ import org.apache.samza.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.isConfigContainKey;
 
@@ -21,7 +23,7 @@ public class LowValuesScoreReducer extends AbstractScorer {
 		super(name, config);
 	}
 
-	public LowValuesScoreReducer(String name, Config config, ScorerContext context) throws Exception {
+	public LowValuesScoreReducer(String name, Config config, ScorerContext context) {
 		super(name, config);
 
 		// Get the base scorer
@@ -49,8 +51,9 @@ public class LowValuesScoreReducer extends AbstractScorer {
 		}
 
 		String jsonConfig = getConfigString(config, configKey);
-		reductionConfigs = (new ObjectMapper()).readValue(jsonConfig, ReductionConfigurations.class);
-		if (reductionConfigs == null) {
+		try {
+			reductionConfigs = (new ObjectMapper()).readValue(jsonConfig, ReductionConfigurations.class);
+		} catch (Exception e) {
 			String errorMsg = String.format("Failed to deserialize json %s", jsonConfig);
 			logger.error(errorMsg);
 			throw new IllegalArgumentException(errorMsg);
