@@ -32,6 +32,14 @@ public class DataEntity {
      */
     String sessionEntity;
 
+	public DataEntity(){
+
+	}
+
+	public DataEntity(String id){
+		this.id = id;
+	}
+
     public String getId() {
         return id;
     }
@@ -107,4 +115,18 @@ public class DataEntity {
     public void setDefaultSort(List<QuerySort> defaultSort) {
         this.defaultSort = defaultSort;
     }
+
+
+	@Override
+	public boolean equals( Object toThat)
+	{
+		if (!(toThat instanceof DataEntity)) return false;
+		return this.id.equals(((DataEntity)toThat).getId());
+
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
 }
