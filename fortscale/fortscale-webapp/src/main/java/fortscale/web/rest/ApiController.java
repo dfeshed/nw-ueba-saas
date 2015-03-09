@@ -430,9 +430,11 @@ public class ApiController extends BaseController {
 
 			}
 
+			if (results.size()>1)
+				return collectResults(results,page,offsetInQuery,orderByFinalResult,pageSize);
 
 
-            return collectResults(results,page,offsetInQuery,orderByFinalResult,pageSize);
+            return results.get(0);
         }
         catch (InvalidQueryException e) {
             throw new InvalidValueException("Invalid query to parse. Error: " + e.getMessage());
