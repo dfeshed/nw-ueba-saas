@@ -457,14 +457,12 @@ public class ApiController extends BaseController {
 
 		Map<String, Object> info = new HashMap<>();
 		List<Map<String, Object>> unionResult = new ArrayList<>();
-		int unionTotal = 0;
 
 
 		for (DataBean<List<Map<String, Object>>> queryResult : results)
 		{
 			unionResult.addAll(queryResult.getData());
 			info.putAll(queryResult.getInfo());
-			unionTotal+=queryResult.getTotal();
 
 		}
 
@@ -472,10 +470,13 @@ public class ApiController extends BaseController {
 		Collections.sort(unionResult,new OrderByComparator(orderByFinalResult));
 		if (page != null) {
 			result.setData(unionResult.subList(offsetInQuery, pageSize));
+
 		}
 		else{
 			result.setData(unionResult);
 		}
+
+		result.setTotal(result.getData().size());
 		return result;
 
 	}
