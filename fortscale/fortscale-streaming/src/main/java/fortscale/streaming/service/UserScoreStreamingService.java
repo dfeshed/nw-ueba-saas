@@ -189,7 +189,7 @@ public class UserScoreStreamingService {
 				Entry<UserEventTypePair, UserTopEvents> entry = iterator.next();
 				UserEventTypePair key = entry.getKey();
 				UserTopEvents userTopEvents = entry.getValue();
-				if(key != null && userTopEvents != null)) {
+				if (key != null && userTopEvents != null) {
 					// model might be null in case of a serialization error, in that case
 					// we don't want to fail here and the error is logged in the serde implementation
 					String username = key.getUsername();
