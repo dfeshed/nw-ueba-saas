@@ -5,7 +5,7 @@ import static fortscale.utils.ConversionUtils.convertToDouble;
 import static fortscale.utils.ConversionUtils.convertToLong;
 import static fortscale.utils.ConversionUtils.convertToString;
 
-import fortscale.streaming.model.UserScoreState;
+import fortscale.streaming.model.UserEventTypePair;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
@@ -52,7 +52,7 @@ public class UserScoreStreamTask  extends AbstractStreamTask  implements Initabl
 		
 		// get the store that holds user top events
 		String storeName = getConfigString(config, "fortscale.store.name");
-		KeyValueStore<String, UserScoreState> store = (KeyValueStore<String, UserScoreState>)context.getStore(storeName);
+		KeyValueStore<UserEventTypePair, UserTopEvents> store = (KeyValueStore<UserEventTypePair, UserTopEvents>)context.getStore(storeName);
 		
 		//get the user score streaming service and set it with the store and the classifier id.
 		userScoreStreamingService = SpringService.getInstance().resolve(UserScoreStreamingService.class);

@@ -8,7 +8,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.streaming.user.UserScoreSnapshot;
 import fortscale.domain.streaming.user.dao.UserScoreSnapshotRepository;
 import fortscale.streaming.exceptions.LevelDbException;
-import fortscale.streaming.model.UserScoreState;
+import fortscale.streaming.model.UserEventTypePair;
 import fortscale.streaming.model.UserTopEvents;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -46,11 +46,11 @@ public class UserScoreStreamingService {
 	@Value("${user.score.streaming.service.page.size:1000}")
 	private int userScoreStreamingServicePageSize;
 
-	private KeyValueStore<String, UserScoreState> store;
+	private KeyValueStore<UserEventTypePair, UserTopEvents> store;
 
 	private boolean isUseLatestEventTimeAsCurrentTime = false;
 
-	public void setStore(KeyValueStore<String, UserScoreState> store) {
+	public void setStore(KeyValueStore<UserEventTypePair, UserTopEvents> store) {
 		this.store = store;
 	}
 	
@@ -73,22 +73,29 @@ public class UserScoreStreamingService {
 					}
 				}
 				updateDb(dataSource, eventTimeInMillis);
-				exportSnapshot();
+				exportSnapshotForDataSource(dataSource);
 			}
 		}
 	}
 	
 	public void updateUserWithEventScore(String username, String dataSource, double score, long eventTimeInMillis) throws LevelDbException{
-		UserScoreState userScoreState = store.get(username);
+		// build a store key and get the top scores from the store
+		UserEventTypePair key = new UserEventTypePair(username, dataSource);
+		UserTopEvents userTopEvents = store.get(key);
 
-		boolean hasToUpdateUserRepository = false;
-		if(userScoreState == null){
-			userScoreState = new UserScoreState(username);
+		boolean hasToUpdateUserRepository = (userTopEvents == null);
+		boolean hasToUpdateStore = (userTopEvents == null);
+		if(userTopEvents == null){
+			userTopEvents = new UserTopEvents(username);
 		}
 
-		boolean hasToUpdateStore = !userScoreState.containsDataSource(dataSource);
-
-		UserTopEvents userTopEvents = userScoreState.getUserTopEvents(dataSource);
+		// Update mongodb in case we are adding a new event score to the state, or in case the score has changed
+		// significantly. The check below ensure that we update mongodb in case of new event score added to the
+		// store and the check after the call to userTopEvents.calculateUserScore ensure that we update also
+		// in case the score changed significantly.
+		// We distinguish between the cases, since we don't want to update mongodb in case we replaced a score of 90
+		// with a score of 92 in the state as the impact on the user score is minimal so the trade-off by not updating
+		// mongodb is negligible.
 		if(!userTopEvents.isFull()) {
 			hasToUpdateUserRepository = true;
 		}
@@ -119,7 +126,7 @@ public class UserScoreStreamingService {
 		if(hasToUpdateStore){
 			userTopEvents.setLastUpdateEpochTime(currentEpochTime);
 			try{
-				store.put(username, userScoreState);
+				store.put(key, userTopEvents);
 			} catch(Exception exception){
             	logger.error("error storing value. username: {} exception: {}", username, exception);
                 logger.error("error storing value.", exception);
@@ -156,13 +163,12 @@ public class UserScoreStreamingService {
 
 	public void cleanupScores(String dataSource) {
 		// go over all leveldb data and clean the specific data
-		KeyValueIterator<String, UserScoreState> iterator = store.all();
+		KeyValueIterator<UserEventTypePair, UserTopEvents> iterator = store.all();
 		while (iterator.hasNext()) {
-			Entry<String, UserScoreState> entry = iterator.next();
-			UserScoreState state = entry.getValue();
-			if (state!=null) {
-				state.removeDataSource(dataSource);
-				store.put(entry.getKey(), state);
+			Entry<UserEventTypePair, UserTopEvents> entry = iterator.next();
+			UserEventTypePair key = entry.getKey();
+			if (key!=null && dataSource.equals(key.getEventType())) {
+				store.delete(key);
 			}
 		}
 		iterator.close();
@@ -171,26 +177,31 @@ public class UserScoreStreamingService {
 		userScoreSnapshotRepository.clearAllClassifiersScores(dataSource);
 	}
 
-	public void exportSnapshot(){
+	/**
+	 * export snapshot for a specific data source or for all data source. null value passed to the data source
+	 * parameter signal all data sources.
+	 */
+	private void exportSnapshotForDataSource(String dataSource) {
 		// go over all users top events in the store and persist them to mongodb
-		KeyValueIterator<String, UserScoreState> iterator = store.all();
-		try { 
+		KeyValueIterator<UserEventTypePair, UserTopEvents> iterator = store.all();
+		try {
 			while (iterator.hasNext()) {
-				Entry<String, UserScoreState> entry = iterator.next();
-				UserScoreState userScoreState = entry.getValue();
-				if(userScoreState != null){
+				Entry<UserEventTypePair, UserTopEvents> entry = iterator.next();
+				UserEventTypePair key = entry.getKey();
+				UserTopEvents userTopEvents = entry.getValue();
+				if(key != null && userTopEvents != null)) {
 					// model might be null in case of a serialization error, in that case
 					// we don't want to fail here and the error is logged in the serde implementation
-					String username = entry.getKey();
-					for (UserTopEvents userTopEvents : userScoreState.getUserTopEvents()) {
-						String classifierId = userTopEvents.getEventType();
+					String username = key.getUsername();
+					String classifierId = key.getEventType();
+					if (dataSource==null || dataSource.equals(classifierId)) {
 						UserScoreSnapshot userScoreSnapshot = userScoreSnapshotRepository.findByUserNameAndClassifierId(username, classifierId);
-						if(userScoreSnapshot == null){
+						if (userScoreSnapshot == null) {
 							userScoreSnapshot = new UserScoreSnapshot();
 							userScoreSnapshot.setUserName(username);
-							userScoreSnapshot.setSnapshot(userScoreState);
+							userScoreSnapshot.setClassifierId(classifierId);
 						}
-						userScoreSnapshot.setSnapshot(userScoreState);
+						userScoreSnapshot.setSnapshot(userTopEvents);
 						userScoreSnapshotRepository.save(userScoreSnapshot);
 					}
 				}
@@ -201,6 +212,10 @@ public class UserScoreStreamingService {
 			if (iterator!=null)
 				iterator.close();
 		}
+	}
+
+	public void exportSnapshot(){
+		exportSnapshotForDataSource(null);
 	}
 	
 	public void updateDb(String dataSource,long lastUpdateEpochTime) {
@@ -215,31 +230,29 @@ public class UserScoreStreamingService {
 	}
 	
 	private double updateLevelDb(String dataSource, long lastUpdateEpochTime, Map<String, Double> userScores) {
-		KeyValueIterator<String, UserScoreState> iterator = store.all();
+		KeyValueIterator<UserEventTypePair, UserTopEvents> iterator = store.all();
 
 		double avgScore = 0;
 
 		// Iterate the users' top events to calculate the average score
 		while (iterator.hasNext()) {
-			Entry<String, UserScoreState> entry = iterator.next();
-			String username = entry.getKey();
-			UserScoreState userScoreState = entry.getValue();
+			Entry<UserEventTypePair, UserTopEvents> entry = iterator.next();
+			UserEventTypePair key = entry.getKey();
+			UserTopEvents userTopEvents = entry.getValue();
 			
 			// Model might be null in case of a serialization error, in that case we
 			// don't want to fail here and the error is logged in the SerDe implementation
-			if (userScoreState != null) {
+			if (key != null && dataSource.equals(key.getEventType())) {
 				// go over all data sources and calculate user score and update store
-				UserTopEvents userTopEvents = userScoreState.getUserTopEvents(dataSource);
-
 				double currentScore = userTopEvents.calculateUserScore(lastUpdateEpochTime);
 				userTopEvents.setLastUpdatedScore(currentScore);
 				userTopEvents.setLastUpdateScoreEpochTime(lastUpdateEpochTime);
 
 				// Update average and add entry to map
 				avgScore += currentScore;
-				userScores.put(username, currentScore);
+				userScores.put(key.getUsername(), currentScore);
 
-				store.put(username, userScoreState);
+				store.put(key, userTopEvents);
 			}
 		}
 		iterator.close();
