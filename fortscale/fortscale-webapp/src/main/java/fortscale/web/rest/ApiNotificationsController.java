@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.domain.core.*;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,10 +25,6 @@ import com.google.common.base.Optional;
 
 import fortscale.domain.analyst.Analyst;
 import fortscale.domain.analyst.AnalystAuth;
-import fortscale.domain.core.Notification;
-import fortscale.domain.core.NotificationAggregate;
-import fortscale.domain.core.NotificationComment;
-import fortscale.domain.core.NotificationResource;
 import fortscale.domain.core.dao.NotificationResourcesRepository;
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.services.analyst.AnalystService;
@@ -39,6 +37,8 @@ import fortscale.web.beans.DataBean;
 public class ApiNotificationsController extends BaseController {
 
 	private static final String TIME_STAMP = "ts";
+
+	private static Logger logger = Logger.getLogger(ApiNotificationsController.class);
 
 	@Autowired
 	private NotificationsRepository notificationsRepository;
@@ -205,6 +205,26 @@ public class ApiNotificationsController extends BaseController {
 				notification.setDismissed(true);
 				notificationsRepository.save(notification);
 			}
+		}
+	}
+
+	/**
+	 * Mark notification with flag
+	 */
+	@RequestMapping(value = "/flag/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public void markNotificationWithFlag(@PathVariable("id") String id,
+			@RequestParam(value="flag", required=false) NotificationFlag flag) {
+
+		// find notification
+		Notification notification = notificationsRepository.findOne(id);
+		if (notification!=null) {
+			// set flag
+			notification.setFlag(flag);
+			notificationsRepository.save(notification);
+		} else {
+			logger.warn("Couldn't find notification with ID {}. Ignoring flag...", id);
 		}
 	}
 	

@@ -42,6 +42,7 @@ public class Notification extends AbstractDocument implements Serializable {
 	private int commentsCount;
 	private Map<String, String> attributes;
 	private List<NotificationComment> comments = new LinkedList<NotificationComment>();
+	private NotificationFlag flag;
 	
 	public Notification() {}
 	
@@ -186,5 +187,13 @@ public class Notification extends AbstractDocument implements Serializable {
 
 	public void setEventsEnd(Long eventsEnd) {
 		this.eventsEnd = eventsEnd;
+	}
+
+	public NotificationFlag getFlag() {
+		return flag;
+	}
+
+	public void setFlag(NotificationFlag flag) {
+		this.flag = flag;
 	}
 }

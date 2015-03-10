@@ -1,5 +1,7 @@
 package fortscale.web.rest;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.times;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import fortscale.domain.core.NotificationFlag;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -211,6 +214,56 @@ public class ApiNotificationsControllerTest {
 		ArgumentCaptor<Notification> notificationCapture = ArgumentCaptor.forClass(Notification.class);
 		verify(notificationRepository).save(notificationCapture.capture());
 		assertTrue(!notificationCapture.getValue().isDismissed());
+	}
+
+	@Test
+	public void flag_should_succeed_adding_flag_with_valid_notification_id() throws Exception {
+		// mock repository to return notification
+		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
+		when(notificationRepository.findOne("1")).thenReturn(notification);
+
+		// perform rest call to the controller
+		mockMvc.perform(get("/api/notifications/flag/1?flag=FP").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+		// verify interactions with the repository
+		ArgumentCaptor<Notification> notificationCapture = ArgumentCaptor.forClass(Notification.class);
+		verify(notificationRepository).save(notificationCapture.capture());
+		assertEquals(NotificationFlag.FP,notificationCapture.getValue().getFlag());
+	}
+
+	@Test
+	 public void flag_should_succeed_removing_flag_with_valid_notification_id() throws Exception {
+		// mock repository to return notification
+		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
+		notification.setFlag(NotificationFlag.FN);
+		when(notificationRepository.findOne("1")).thenReturn(notification);
+
+		// perform rest call to the controller
+		mockMvc.perform(get("/api/notifications/flag/1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+		// verify interactions with the repository
+		ArgumentCaptor<Notification> notificationCapture = ArgumentCaptor.forClass(Notification.class);
+		verify(notificationRepository).save(notificationCapture.capture());
+		assertNull(notificationCapture.getValue().getFlag());
+	}
+
+	@Test
+	public void flag_should_succeed_updating_flag_with_valid_notification_id() throws Exception {
+		// mock repository to return notification
+		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
+		notification.setFlag(NotificationFlag.TN);
+		when(notificationRepository.findOne("1")).thenReturn(notification);
+
+		// perform rest call to the controller
+		mockMvc.perform(get("/api/notifications/flag/1?flag=TP").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+		// verify interactions with the repository
+		ArgumentCaptor<Notification> notificationCapture = ArgumentCaptor.forClass(Notification.class);
+		verify(notificationRepository).save(notificationCapture.capture());
+		assertEquals(NotificationFlag.TP,notificationCapture.getValue().getFlag());
 	}
 	
 	
