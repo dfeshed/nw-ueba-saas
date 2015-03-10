@@ -12,8 +12,8 @@ public class ConstantRegexScorerTest extends ScorerBaseTest{
 	private static final String FIELD_NAME = "testFieldName";
 	private static final String OUTPUT_FIELD_NAME = "outputTestField";
 	private static final String SCORER_NAME = "ConstantRegexScorerTestScorerName";
-
-
+	
+	
 	private Scorer buildScorer(String scorerName, String outputFieldName, String fieldName, String regex, Integer constant){
 		if(scorerName !=null){
 			if(outputFieldName != null)
@@ -31,9 +31,9 @@ public class ConstantRegexScorerTest extends ScorerBaseTest{
 		}
 		return scorerFactoryService.getScorer(ContstantRegexScorerFactory.SCORER_TYPE,scorerName, config, null);
 	}
-
-
-
+	
+	
+	
 	@Test(expected=ConfigException.class)
 	public void testBuildScorerWithNoScorerName() throws Exception{
 		@SuppressWarnings("unused")

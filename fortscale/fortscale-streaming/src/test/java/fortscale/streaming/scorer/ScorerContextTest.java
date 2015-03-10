@@ -7,8 +7,8 @@ import org.junit.Test;
 
 
 
-public class ScorerContextTest extends ScorerBaseTest{
-
+public class ScorerContextTest extends ScorerBaseTest{	
+	
 	@Test(expected=RuntimeException.class)
 	public void testCyclicDefinitionCauseException(){
 		String scorerName = "testScorer";
@@ -17,10 +17,10 @@ public class ScorerContextTest extends ScorerBaseTest{
 		ScorerFactory scorerFactory = new CyclicDefinitionScorerFactory();
 		scorerFactory.getScorer(scorerName, config, context);
 	}
-
+	
 	public class CyclicDefinitionScorerFactory implements ScorerFactory{
 		public static final String SCORER_NAME="testFactory";
-
+		
 		public CyclicDefinitionScorerFactory(){
 			scorerFactoryService.register(SCORER_NAME, this);
 		}
@@ -30,6 +30,6 @@ public class ScorerContextTest extends ScorerBaseTest{
 			return (Scorer) context.resolve(Scorer.class, name);
 		}
 	}
-
-
+	
+	
 }
