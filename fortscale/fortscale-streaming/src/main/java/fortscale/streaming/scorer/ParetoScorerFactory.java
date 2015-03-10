@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CorrelationCombinedScoresScorerFactory implements InitializingBean, ScorerFactory {
-	public static final String SCORER_TYPE = "correlation-combined-scores-scorer";
+public class ParetoScorerFactory implements InitializingBean, ScorerFactory {
+	public static final String SCORER_TYPE = "pareto-scorer";
 
 	@Autowired
 	private ScorerFactoryService scorerFactoryService;
@@ -19,6 +19,6 @@ public class CorrelationCombinedScoresScorerFactory implements InitializingBean,
 
 	@Override
 	public Scorer getScorer(String name, Config config, ScorerContext context) {
-		return new CorrelationCombinedScoresScorer(name, config, context);
+		return new ParetoScorer(name, config, context);
 	}
 }

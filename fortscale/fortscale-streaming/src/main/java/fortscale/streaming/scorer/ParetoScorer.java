@@ -8,12 +8,12 @@ import java.util.List;
 
 import static fortscale.streaming.ConfigUtils.getConfigPositiveDouble;
 
-public class CorrelationCombinedScoresScorer extends ScorerContainer {
+public class ParetoScorer extends ScorerContainer {
 	private static final double MAX_SCORE = 100;
 
 	private double highestScoreWeight;
 
-	public CorrelationCombinedScoresScorer(String name, Config config, ScorerContext context) {
+	public ParetoScorer(String name, Config config, ScorerContext context) {
 		super(name, config, context);
 		highestScoreWeight = getConfigPositiveDouble(config, String.format("fortscale.score.%s.highest.score.weight", name));
 	}
