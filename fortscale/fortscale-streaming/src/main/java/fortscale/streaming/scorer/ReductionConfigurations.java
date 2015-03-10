@@ -2,14 +2,17 @@ package fortscale.streaming.scorer;
 
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ReductionConfigurations {
-	private List<ReductionConfiguration> reductionConfigs = new ArrayList<>();
+	private List<ReductionConfiguration> reductionConfigs;
 
 	public List<ReductionConfiguration> getReductionConfigs() {
 		return reductionConfigs;
+	}
+
+	public void setReductionConfigs(List<ReductionConfiguration> reductionConfigs) {
+		this.reductionConfigs = reductionConfigs;
 	}
 
 	@Override
@@ -35,31 +38,38 @@ public class ReductionConfigurations {
 		private double maxValueForFullReduction;
 		private double minValueForNoReduction;
 
-		public ReductionConfiguration(String reducingValueName, double reductionFactor, double maxValueForFullReduction, double minValueForNoReduction) {
-			Assert.notNull(reducingValueName, "reducingValueName cannot be null");
-			Assert.isTrue(0 <= reductionFactor && reductionFactor <= 1, "reductionFactor must be in the range of [0,1]");
-			Assert.isTrue(maxValueForFullReduction <= minValueForNoReduction); // print default message
-
-			this.reducingValueName = reducingValueName;
-			this.reductionFactor = reductionFactor;
-			this.maxValueForFullReduction = maxValueForFullReduction;
-			this.minValueForNoReduction = minValueForNoReduction;
-		}
-
 		public String getReducingValueName() {
 			return reducingValueName;
+		}
+
+		public void setReducingValueName(String reducingValueName) {
+			Assert.notNull(reducingValueName, "reducingValueName cannot be null");
+			this.reducingValueName = reducingValueName;
 		}
 
 		public double getReductionFactor() {
 			return reductionFactor;
 		}
 
+		public void setReductionFactor(double reductionFactor) {
+			Assert.isTrue(0 <= reductionFactor && reductionFactor <= 1, "reductionFactor must be in the range of [0,1]");
+			this.reductionFactor = reductionFactor;
+		}
+
 		public double getMaxValueForFullReduction() {
 			return maxValueForFullReduction;
 		}
 
+		public void setMaxValueForFullReduction(double maxValueForFullReduction) {
+			this.maxValueForFullReduction = maxValueForFullReduction;
+		}
+
 		public double getMinValueForNoReduction() {
 			return minValueForNoReduction;
+		}
+
+		public void setMinValueForNoReduction(double minValueForNoReduction) {
+			this.minValueForNoReduction = minValueForNoReduction;
 		}
 
 		@Override

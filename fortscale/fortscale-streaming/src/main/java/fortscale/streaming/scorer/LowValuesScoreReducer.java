@@ -3,24 +3,32 @@ package fortscale.streaming.scorer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.streaming.scorer.ReductionConfigurations.ReductionConfiguration;
 import fortscale.utils.ConversionUtils;
-import groovy.lang.MissingPropertyException;
 import org.apache.samza.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.streaming.ConfigUtils.isConfigContainKey;
 
 public class LowValuesScoreReducer extends AbstractScorer {
 	private static final Logger logger = LoggerFactory.getLogger(LowValuesScoreReducer.class);
 
-	protected Scorer baseScorer = null;
-	protected ReductionConfigurations reductionConfigs = null;
+	protected Scorer baseScorer;
+	protected ReductionConfigurations reductionConfigs;
 
-	public LowValuesScoreReducer(String name, Config config) {
-		super(name, config);
+	public Scorer getBaseScorer() {
+		return baseScorer;
+	}
+
+	public void setBaseScorer(Scorer baseScorer) {
+		this.baseScorer = baseScorer;
+	}
+
+	public ReductionConfigurations getReductionConfigs() {
+		return reductionConfigs;
+	}
+
+	public void setReductionConfigs(ReductionConfigurations reductionConfigs) {
+		this.reductionConfigs = reductionConfigs;
 	}
 
 	public LowValuesScoreReducer(String name, Config config, ScorerContext context) {
@@ -28,12 +36,6 @@ public class LowValuesScoreReducer extends AbstractScorer {
 
 		// Get the base scorer
 		String configKey = String.format("fortscale.score.%s.base.scorer", name);
-		if (!isConfigContainKey(config, configKey)) {
-			String errorMsg = String.format("Configuration does not contain key %s", configKey);
-			logger.error(errorMsg);
-			throw new MissingPropertyException(errorMsg);
-		}
-
 		String baseScorerName = getConfigString(config, configKey);
 		baseScorer = (Scorer)context.resolve(Scorer.class, baseScorerName);
 		if (baseScorer == null) {
@@ -44,19 +46,13 @@ public class LowValuesScoreReducer extends AbstractScorer {
 
 		// Get the reduction configurations
 		configKey = String.format("fortscale.score.%s.reduction.configs", name);
-		if (!isConfigContainKey(config, configKey)) {
-			String errorMsg = String.format("Configuration does not contain key %s", configKey);
-			logger.error(errorMsg);
-			throw new MissingPropertyException(errorMsg);
-		}
-
 		String jsonConfig = getConfigString(config, configKey);
 		try {
 			reductionConfigs = (new ObjectMapper()).readValue(jsonConfig, ReductionConfigurations.class);
 		} catch (Exception e) {
 			String errorMsg = String.format("Failed to deserialize json %s", jsonConfig);
-			logger.error(errorMsg);
-			throw new IllegalArgumentException(errorMsg);
+			logger.error(errorMsg, e);
+			throw new IllegalArgumentException(errorMsg, e);
 		}
 	}
 
