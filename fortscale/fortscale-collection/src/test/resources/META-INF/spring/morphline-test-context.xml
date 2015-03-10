@@ -30,7 +30,6 @@
     <mockito:mock id="impalaWriterFactoryImpl" class="fortscale.collection.jobs.scoring.ImpalaWriterFactoryImpl"/>
     <mockito:mock id="hadoopFs" class="org.apache.hadoop.fs.FileSystem"/>
 
-    <!--<mockito:mock id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService"/>-->
     <mockito:mock id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer"/>
     <mockito:mock id="userService" class="fortscale.services.impl.UserServiceImpl"/>
 

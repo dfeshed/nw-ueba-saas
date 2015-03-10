@@ -1,30 +1,26 @@
 package fortscale.web.rest;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
-import fortscale.services.dataentity.DataEntity;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import fortscale.services.UserServiceFacade;
 import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataentity.QueryFieldFunction;
+import fortscale.services.dataentity.DataEntity;
+import fortscale.services.dataqueries.OrderByComparator;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querydto.DataQueryField;
-import fortscale.services.dataqueries.querydto.FieldFunction;
+import fortscale.services.dataqueries.querydto.QuerySort;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.services.UserServiceFacade;
 import fortscale.services.exceptions.InvalidValueException;
+import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.ClassifierService;
-
 import fortscale.utils.logging.Logger;
+import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
+import fortscale.web.beans.DataBean;
+import fortscale.web.beans.UserIdBean;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +33,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
-import fortscale.services.exceptions.UnknownResourceException;
-import fortscale.utils.logging.annotation.LogException;
-import fortscale.web.beans.DataBean;
-import fortscale.web.beans.UserIdBean;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("/api/**")
@@ -313,9 +308,29 @@ public class ApiController extends BaseController {
         ObjectMapper mapper = new ObjectMapper();
         DataQueryDTO dataQueryObject;
         DataQueryRunner dataQueryRunner;
+		int location;
+		Integer offsetInLimit = null;
+		int offsetInQuery = 0;
+
+		//prepare the offset and limit according to page
+		if (page != null) {
+			if (page < 0) throw new InvalidValueException("Page number must be greater than 0");
+			if (pageSize > CACHE_LIMIT) throw new InvalidValueException("Page size must be less than " + CACHE_LIMIT);
+			location = page * pageSize;
+			offsetInLimit = (location % CACHE_LIMIT);
+			offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
+		}
+
+		//will hold the final result
+		List<DataBean<List<Map<String, Object>>>> results = new ArrayList<>();
+
+		//will mark how to order the final result
+		List<QuerySort> orderByFinalResult;
+
 
         try {
             dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
+			orderByFinalResult = dataQueryObject.getSort();
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             throw new InvalidValueException("Couldn't parse dataQuery.");
@@ -329,75 +344,146 @@ public class ApiController extends BaseController {
             throw new InvalidValueException("Couldn't create query generator: " + error.getMessage());
         }
 
+
         try {
-            // Generates query
-            String query = dataQueryRunner.generateQuery(dataQueryObject);
 
-            // Add offset and limit according to page
-            Integer offsetInLimit = null;
-            if (page != null) {
-                if (page < 0) throw new InvalidValueException("Page number must be greater than 0");
-                if (pageSize > CACHE_LIMIT) throw new InvalidValueException("Page size must be less than " + CACHE_LIMIT);
-                int location = page * pageSize;
-                offsetInLimit = (location % CACHE_LIMIT);
-                int offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
-                query += " LIMIT " + CACHE_LIMIT + " OFFSET " + offsetInQuery;
-            }
-
-            // check if the query is in the cache before returning results
-            if (useCache) {
-                DataBean<List<Map<String, Object>>> cachedResults = investigateQueryCache.getIfPresent(query);
-                if (cachedResults!=null) {
-                    if (page != null) {
-                        // take only relevant page from cache
-                        return createDataForPage(pageSize, offsetInLimit, cachedResults);
-                    } else {
-                        return cachedResults;
-                    }
-                }
-            }
+			//translate the data query if needed (in case he have base entity referring break it to n data queries  for each leaf that extend this base entities )
+			List<DataQueryDTO> translatedDataQuery = dataQueryRunner.translateAbstarctDataQuery(dataQueryObject,dataEntitiesConfig);
 
 
-            // execute Query
-			DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
-			List<Map<String, Object>> resultsMap = dataQueryRunner.executeQuery(query);
-			retBean.setData(resultsMap);
+			//Execute each dto in the translated queries list and combine the result in the end
+			for (DataQueryDTO partOfTranslatedQuyre : translatedDataQuery)
+			{
+				// Generates query
+				String query = dataQueryRunner.generateQuery(partOfTranslatedQuyre);
 
-            DataBean<List<Map<String, Object>>> retBeanForPage = retBean;
+				// Add offset and limit according to page
+				if (page != null) {
+					query += " LIMIT " + CACHE_LIMIT + " OFFSET " + offsetInQuery;
+				}
 
-            // TODO: Add a QA authority to the analyst or something, so this isn't returned for all analysts:
-            // if (getThisAnalystAuth().getAuthorities())
-            Map<String, Object> info = new HashMap<>();
-            info.put("query", query);
 
-            int total = resultsMap.size();
+				boolean cacheUsed=false;
+				// check if the query is in the cache before returning results
+				if (useCache) {
+					DataBean<List<Map<String, Object>>> cachedResults = investigateQueryCache.getIfPresent(query);
+					if (cachedResults!=null) {
+						if (page != null) {
+							// take only relevant page from cache
+							results.add(createDataForPage(pageSize, offsetInLimit, cachedResults));
+						} else {
+							results.add(cachedResults);
+						}
+						cacheUsed = true;
+					}
+				}
 
-            // If the API caller requested a total count, generate a query for it and set the total to that instead of the current results:
-            if(requestTotal) {
-                String totalQuery = dataQueryRunner.generateTotalQuery(dataQueryObject);
-                total = impalaJdbcTemplate.queryForInt(totalQuery);
-                info.put("totalQuery", totalQuery);
-            }
+				if ( (useCache && !cacheUsed) ||!useCache )
+				{
+					// execute Query
+					DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
+					List<Map<String, Object>> resultsMap = dataQueryRunner.executeQuery(query);
 
-            retBean.setTotal(total);
 
-			retBeanForPage.setInfo(info);
+					//add the type to the entity (ssh , vpn, ad ...)
+					if (partOfTranslatedQuyre.getEntities().length > 0) {
+						String type = partOfTranslatedQuyre.getEntities()[0].equals("kerberos_logins") ? "AD" : partOfTranslatedQuyre.getEntities()[0];
+						for (Map<String, Object> rowMap : resultsMap) {
+							rowMap.put("type", type);
+						}
+					}
 
-            // take only relevant page from results
-            if (page != null) {
-                retBeanForPage = createDataForPage(pageSize, offsetInLimit, retBean);
-            }
+					retBean.setData(resultsMap);
+					DataBean<List<Map<String, Object>>> retBeanForPage = retBean;
 
-            // cache results if needed, store results with up to 200 rows in the cache to protect memory
-            if (useCache && retBean.getData().size() <= CACHE_LIMIT) // Query real size is 200.
-                investigateQueryCache.put(query, retBean);
+					// TODO: Add a QA authority to the analyst or something, so this isn't returned for all analysts:
+					// if (getThisAnalystAuth().getAuthorities())
+					Map<String, Object> info = new HashMap<>();
+					info.put("query", query);
 
-            return retBeanForPage;
+					int total = resultsMap.size();
+
+					// If the API caller requested a total count, generate a query for it and set the total to that instead of the current results:
+					if(requestTotal) {
+						String totalQuery = dataQueryRunner.generateTotalQuery(dataQueryObject);
+						total = impalaJdbcTemplate.queryForInt(totalQuery);
+						info.put("totalQuery", totalQuery);
+					}
+
+					retBean.setTotal(total);
+					retBeanForPage.setInfo(info);
+
+					// take only relevant page from results
+					if (page != null) {
+						retBeanForPage = createDataForPage(pageSize, offsetInLimit, retBean);
+					}
+
+
+					// cache results if needed, store results with up to 200 rows in the cache to protect memory
+					if (useCache && retBean.getData().size() <= CACHE_LIMIT) // Query real size is 200.
+						investigateQueryCache.put(query, retBean);
+
+					results.add(retBeanForPage);
+
+				}
+
+
+			}
+
+			if (results.size()>1)
+				return collectResults(results,page,offsetInQuery,orderByFinalResult,pageSize);
+
+
+            return results.get(0);
         }
         catch (InvalidQueryException e) {
             throw new InvalidValueException("Invalid query to parse. Error: " + e.getMessage());
         }
+
+		catch (Exception e)
+		{
+			throw new InvalidValueException("Invalid query to parse. Error: " + e.getMessage());
+		}
     }
+
+
+	/**
+	 * This method responsible to collect list of DataBean results into one union DataBean result
+	 * @param results
+	 * @return
+	 */
+	private DataBean<List<Map<String, Object>>> collectResults(List<DataBean<List<Map<String, Object>>>> results, Integer page,int offsetInQuery,List<QuerySort> orderByFinalResult,Integer pageSize )
+	{
+		DataBean<List<Map<String, Object>>> result = new DataBean<>();
+
+
+		Map<String, Object> info = new HashMap<>();
+		List<Map<String, Object>> unionResult = new ArrayList<>();
+
+
+		for (DataBean<List<Map<String, Object>>> queryResult : results)
+		{
+			unionResult.addAll(queryResult.getData());
+			info.putAll(queryResult.getInfo());
+
+		}
+
+		//sort the result depend on orderByFinalResult
+		Collections.sort(unionResult,new OrderByComparator(orderByFinalResult));
+		if (page != null) {
+			result.setData(unionResult.subList(offsetInQuery, pageSize));
+
+		}
+		else{
+			result.setData(unionResult);
+		}
+
+		result.setTotal(result.getData().size());
+		return result;
+
+	}
+
+
 
 	/**
 	 *

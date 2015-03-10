@@ -1,12 +1,19 @@
 package fortscale.streaming.service.vpn;
 
-import fortscale.domain.schema.VpnEvents;
-import fortscale.geoip.GeoIPInfo;
-import fortscale.geoip.IpToLocationGeoIPService;
-import fortscale.services.event.VpnService;
-import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
-import fortscale.utils.junit.SpringAware;
+
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
+
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,18 +24,21 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kubek2k.springockito.annotations.ReplaceWithMock;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Date;
+import fortscale.domain.events.VpnSession;
+import fortscale.domain.schema.VpnEvents;
+import fortscale.geoip.GeoIPInfo;
+import fortscale.geoip.GeoIPService;
+import fortscale.services.event.VpnService;
+import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
+import fortscale.utils.junit.SpringAware;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.reset;
 
 /**
  * Created by rans on 02/02/15.
@@ -54,7 +64,7 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
 
     @Autowired
     @ReplaceWithMock
-    IpToLocationGeoIPService geoIPServiceMock;
+    private GeoIPService geoIPServiceMock;
     @Autowired
     private VpnEvents vpnEvents;
     @Autowired
@@ -69,91 +79,55 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
     //geolocation fields:
     private String inputTopic = "input-1";
     private String outputTopic = "output-1";
-    private String partitionField = "partition-1";
-    private String ipField = "ip_field";
-//    private String countryFieldName = "country_field";
-    private String countryIsoCodeFieldName = "country_code_field";
-    private String regionFieldName = "region_field";
-//    private String cityFieldName = "city_field";
-    private String ispFieldName = "isp_field";
-    private String usageTypeFieldName = "usage_type_field";
-//    private String longtitudeFieldName = "longtitude_field";
-//    private String latitudeFieldName = "latitude_field";
 
     private static String IP = "172.16.0.0";
     private static String PARTITION = "part-1";
-    private static Long READ_BYTES;
-    private static Long TOTAL_BYTES;
-    private static Long DURATUIN;
-
-    //data buckets fields:
-//    private String totalbytesFieldName = "totalbytesFieldName";
-    private String readbytesFieldName = "readbytesFieldName";
-    private String durationFieldName = "durationFieldName";
-    private String databucketFieldName = "databucketFieldName";
-
-    //session update field:
-    private String sessionIdFieldName = "session_id_field";
-    private String addSessionDataName = "addsessiondata";
-    private String countryCodeFieldName = "country_code_field";
-    private String longtitudeFieldName = "longtitude_field";
-    private String latitudeFieldName = "latitude_field";
-    private String dateTimeUnixFieldName = "date_time_unix";
-    private String statusFieldName = "status";
-    private String cityFieldName = "city";
-    private String countryFieldName = "country";
-    private String usernameFieldName = "username";
-    private String normalizedUsernameFieldName = "normalized_username";
-//    private String
 
     GeoIPInfo geoIPInfo = new GeoIPInfo("");
 
-    private String hostnameFieldName;
-    private String localIpFieldName;
-    private String sourcepFieldName;
-    private String totalbytesFieldName;
-    private String writebytesFieldName;
-
     //Constructor setting:
     String TEST_CASE;
+    String EVENT;
+    String UPDATED_LOCAL_IP;
+    String UPDATED_SOURCE_IP;
     String STATUS;
+    Long StartSessionTime1;
+    Long StartSessionTime2;
+    JSONObject event;
+    String username;
 
-    public VpnSessionUpdateServiceTest(String TEST_CASE, String STATUS) {
+    public VpnSessionUpdateServiceTest(String TEST_CASE, String eventObj, String updatedLocalIp, String updatedSourceIp, String status, Long StartSessionTime1, Long StartSessionTime2, String username) {
         this.TEST_CASE = TEST_CASE;
-        this.STATUS = STATUS;
+        this.EVENT = eventObj;
+        this.UPDATED_LOCAL_IP = updatedLocalIp;
+        this.UPDATED_SOURCE_IP = updatedSourceIp;
+        this.STATUS = status;
+        this.StartSessionTime1 = StartSessionTime1;
+        this.StartSessionTime2 = StartSessionTime2;
+        this.username = username;
+
     }
+
+
 
     @Test
     @Parameters(name = "Run test: {index} {1})")
     public void testSessionUpdate() throws UnknownHostException {
         //stubs:
-//        when(geoIPServiceMock.getGeoIPInfo(anyString())).thenReturn(geoIPInfo);
+        event = (JSONObject)JSONValue.parse(EVENT);
+        Long startSessionTime = (Long)event.get("date_time_unix") - (Integer)event.get("duration") * 1000;
+        when(vpnService.findByUsernameAndCreatedAtEpochBetween(eq(username), eq(startSessionTime - 30000), eq(startSessionTime + 30000))). thenAnswer(new Answer(){
+
+
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+
+                return getVpnSessions(StartSessionTime1, StartSessionTime2, username);
+            }
+        });
         //init
-        JSONObject event = new JSONObject();
-        event.put(ipField, IP);
-        event.put(partitionField, PARTITION);
-        event.put(readbytesFieldName, READ_BYTES);
-        event.put(durationFieldName, DURATUIN);
-        event.put(totalbytesFieldName, TOTAL_BYTES);
-        event.put(dateTimeUnixFieldName, new Date().getTime());
-        event.put(statusFieldName, "CLOSED");
-        event.put(cityFieldName, "Jerusalem");
-        event.put(countryFieldName, "Israel");
-        event.put(DATABUCKET_FIELD, 23);
-        event.put(DURATION_FIELD, 24);
-        event.put(usernameFieldName, "John Dow");
-        event.put(normalizedUsernameFieldName, "John Dow");
-        event.put(sessionIdFieldName, "123456AAA");
-        hostnameFieldName = "hostname";
-        event.put(hostnameFieldName, "my-pc1");
-        localIpFieldName = "local_ip";
-        event.put(localIpFieldName, "168.51.12.3");
-        sourcepFieldName = "source_ip";
-        event.put(sourcepFieldName, "171.19.1.4");
-        totalbytesFieldName = "totalbytes";
-        event.put(totalbytesFieldName, TOTAL_BYTES);
-        writebytesFieldName = "writebytes";
-        event.put(writebytesFieldName, 1200211L);
+
+
 
         //run test:
         event = vpnEnrichService.processSessionUpdate(event);
@@ -161,11 +135,38 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
         //Validations
 //        verify(geoIPServiceMock).getGeoIPInfo(IP);
 
-        assertEquals(vpnEnrichService.getInputTopic(), inputTopic);
-        assertEquals(vpnEnrichService.getOutputTopic(), outputTopic);
-        assertEquals(vpnEnrichService.getPartitionKey(event), PARTITION);
+        assertEquals(inputTopic, vpnEnrichService.getInputTopic());
+        assertEquals(outputTopic, vpnEnrichService.getOutputTopic());
+        assertEquals(PARTITION, vpnEnrichService.getPartitionKey(event));
+        assertEquals(UPDATED_LOCAL_IP, event.get("local_ip"));
+        assertEquals(UPDATED_SOURCE_IP, event.get("source_ip"));
+        assertEquals(STATUS, event.get("status"));
         //assert session update fields
         reset(geoIPServiceMock);
+    }
+
+    /**
+     * helper function to create stub list of 2 VPN open session events
+     * @param StartSessionStartSearchTimeFrom
+     * @param StartSessionStartSearchTimeTo
+     * @param username
+     * @return
+     */
+    private List<VpnSession> getVpnSessions(Long StartSessionStartSearchTimeFrom, Long StartSessionStartSearchTimeTo, String username) {
+        List<VpnSession> vpnSessions = new ArrayList<VpnSession>();
+        if (StartSessionStartSearchTimeFrom != null && StartSessionStartSearchTimeTo != null) {
+            VpnSession vpnSession1 = new VpnSession();
+            vpnSession1.setCreatedAtEpoch(StartSessionStartSearchTimeFrom);
+            vpnSession1.setLocalIp("171.19.1.14");
+            vpnSession1.setSourceIp("171.181.1.14");
+            vpnSessions.add(vpnSession1);
+            VpnSession vpnSession2 = new VpnSession();
+            vpnSession2.setCreatedAtEpoch(StartSessionStartSearchTimeTo);
+            vpnSession2.setLocalIp("171.19.1.16");
+            vpnSession2.setSourceIp("171.181.1.16");
+            vpnSessions.add(vpnSession2);
+        }
+        return vpnSessions;
     }
 
     @Parameters()
@@ -173,12 +174,44 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
         return Arrays.asList(new Object[][]
                 {
                         {
-                                "VPN Session Update: Open & Close",
-                                "OPEN"
+                                "VPN Session Update: Open",
+                                "{'local_ip':'171.19.1.4','status':'SUCCESS','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':'12345AAA','duration':24,'username':'John Dow','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
+                                "171.19.1.4", //expected local ip
+                                "10.19.121.11",//expected source ip
+                                "SUCCESS", //expected status
+                                1424700115626L,
+                                1424700175626L,
+                                "John Dow" //expected username
                         },
                         {
-                                "VPN Session Update: Open & Close",
-                                "CLOSE"
+                                "VPN Session Update: Close",
+                                "{'local_ip':'171.19.1.4','status':'CLOSED','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':'12345AAA','duration':104,'username':'Martin K','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
+                                "171.19.1.4",
+                                "10.19.121.11",
+                                "CLOSED",
+                                1424700115626L,
+                                1424700175626L,
+                                "Martin K"
+                        },
+                        {
+                                "VPN Cisco ASA: Retrieve local_ip for close session from start session event",
+                                "{'local_ip':null,'status':'CLOSED','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':null,'duration':24,'username':'Martin K','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
+                                "171.19.1.16", //expected local ip
+                                "171.181.1.16", //expectes source ip
+                                "CLOSED", //expected status
+                                1424700115620L, //start time for looking for VPN start session event
+                                1424700175629L, //end time for looking for VPN start session event
+                                "Martin K" //expected username
+                        },
+                        {
+                                "VPN Cisco ASA: Retrieve local_ip for close session from start session event",
+                                "{'local_ip':null,'status':'CLOSED','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':null,'duration':24,'username':'Martin K','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
+                                (String)null,
+                                "10.19.121.11",
+                                "CLOSED",
+                                (Long)null,
+                                (Long)null,
+                                "Martin K"
                         }
                 }
         );

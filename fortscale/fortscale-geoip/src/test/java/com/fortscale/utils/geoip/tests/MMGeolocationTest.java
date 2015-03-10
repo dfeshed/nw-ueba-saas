@@ -13,6 +13,7 @@ import org.junit.Test;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 
 import fortscale.geoip.GeoIPInfo;
+import fortscale.geoip.IGeoIPInfo;
 import fortscale.geoip.MMGeoIPService;
 
 public class MMGeolocationTest {
@@ -31,11 +32,11 @@ public class MMGeolocationTest {
 		String IP_Fortscale = "79.176.104.190";
 		String IP_Google = "8.8.8.8";
 
-		GeoIPInfo geoIPFs = geoLocService.getGeoIPInfo(IP_Fortscale);
+		IGeoIPInfo geoIPFs = geoLocService.getGeoIPInfo(IP_Fortscale);
 		assertEquals("israel", geoIPFs.getCountryName().toLowerCase());
 		assertEquals("il", geoIPFs.getCountryISOCode().toLowerCase());
 
-		GeoIPInfo geoIPGoogle = geoLocService.getGeoIPInfo(IP_Google);
+		IGeoIPInfo geoIPGoogle = geoLocService.getGeoIPInfo(IP_Google);
 		assertEquals("united states", geoIPGoogle.getCountryName().toLowerCase());
 		assertEquals("us", geoIPGoogle.getCountryISOCode().toLowerCase());
 	}
@@ -65,7 +66,7 @@ public class MMGeolocationTest {
 		expected.add(res4);
 
 		for (GeoIPInfo ex : expected) {
-			GeoIPInfo res = geoLocService.getGeoIPInfo(ex.getIp());
+			IGeoIPInfo res = geoLocService.getGeoIPInfo(ex.getIp());
 			assertEquals(ex, res);
 		}
 
@@ -76,7 +77,7 @@ public class MMGeolocationTest {
 		GeoIPInfo first = new GeoIPInfo("2001:0db8:85a3:0000:0000:8a2e:0370:7334");
 		GeoIPInfo second = new GeoIPInfo("2001:db8:85a3:0:0:8a2e:370:7334");
 
-		GeoIPInfo res = geoLocService.getGeoIPInfo(first.getIp());
+		IGeoIPInfo res = geoLocService.getGeoIPInfo(first.getIp());
 		assertEquals(first, res);
 
 		res = geoLocService.getGeoIPInfo(second.getIp());
@@ -86,7 +87,7 @@ public class MMGeolocationTest {
 	@Test
 	public void testReservedIPRange() throws IOException, GeoIp2Exception {
 		String IPAddress = "10.0.0.1";
-		GeoIPInfo geoIPInfo = geoLocService.getGeoIPInfo(IPAddress);
+		IGeoIPInfo geoIPInfo = geoLocService.getGeoIPInfo(IPAddress);
 		assertEquals(GeoIPInfo.RESERVED_RANGE, geoIPInfo.getCountryName());
 		assertEquals("", geoIPInfo.getCountryISOCode().toLowerCase());
 	}
@@ -96,7 +97,7 @@ public class MMGeolocationTest {
 		String IPAddress = "";
 
 		GeoIPInfo expected = new GeoIPInfo();
-		GeoIPInfo result = geoLocService.getGeoIPInfo(IPAddress);
+		IGeoIPInfo result = geoLocService.getGeoIPInfo(IPAddress);
 		assertEquals(expected, result);
 	}
 

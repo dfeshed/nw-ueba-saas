@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
@@ -17,10 +18,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.*;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -70,6 +70,12 @@ public class ApiControllerTest {
 		DataQueryRunner dataQueryRunner = Mockito.mock(DataQueryRunner.class);
 		when(dataQueryRunner.generateQuery(any(DataQueryDTO.class))).thenReturn("select A from B");
 		when(dataQueryRunner.executeQuery(any(String.class))).thenReturn(resultsMap);
+		ArrayList<DataQueryDTO> dataQueryDTOs = new ArrayList<DataQueryDTO>();
+		DataQueryDTO dataQueryDTO = Mockito.mock(DataQueryDTO.class);
+		String []  entities = {"vpn"};
+		when(dataQueryDTO.getEntities()).thenReturn(entities);
+		dataQueryDTOs.add(dataQueryDTO);
+		when(dataQueryRunner.translateAbstarctDataQuery(any(DataQueryDTO.class),any(DataEntitiesConfig.class))).thenReturn(dataQueryDTOs);
 		when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(dataQueryRunner);
 
 
@@ -211,7 +217,6 @@ public class ApiControllerTest {
 
 		mockMvc.perform(get("/api/dataQuery")
 										.param("pageSize", PAGE_SIZE.toString())
-										.param("page", "1") // page 1
 										.param("dataQuery", jsonQuery)
 										.accept(MediaType.APPLICATION_JSON))
 						.andExpect(status().isOk())

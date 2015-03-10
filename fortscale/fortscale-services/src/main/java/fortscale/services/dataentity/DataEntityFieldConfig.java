@@ -1,6 +1,7 @@
 package fortscale.services.dataentity;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Yossi on 10/11/2014.
@@ -12,6 +13,7 @@ public class DataEntityFieldConfig {
     private QueryValueType type;
     private int rank = 100;
     private boolean defaultRank = true;
+    private List<String> attributes;
 
     public static final String IS_LOGICAL_ONLY = "is_logical_only";
     public static final String EXPLICIT = "explicit";
@@ -108,5 +110,13 @@ public class DataEntityFieldConfig {
     public void setRank(int rank) {
         this.rank = rank;
         defaultRank = false;
+    }
+
+    public List<String> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<String> attributes) {
+        this.attributes = attributes;
     }
 }
