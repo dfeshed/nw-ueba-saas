@@ -37,19 +37,18 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		return String.format("{\"reductionConfigs\":[%s]}", member);
 	}
 
-	private LowValuesScoreReducer buildScorer(String reductionConfigs) {
+	private LowValuesScoreReducer buildScorer(String reductionConfigs, double score) throws Exception {
 		when(config.get(String.format("fortscale.score.%s.scorer", SCORER_NAME))).thenReturn(LowValuesScoreReducerFactory.SCORER_TYPE);
 		when(config.get(String.format("fortscale.score.%s.output.field.name", SCORER_NAME))).thenReturn("output.field.name.scorer");
 		when(config.get(String.format("fortscale.score.%s.base.scorer", SCORER_NAME))).thenReturn(BASE_SCORER_NAME);
 		when(config.get(String.format("fortscale.score.%s.reduction.configs", SCORER_NAME))).thenReturn(reductionConfigs);
 
-		when(config.get(String.format("fortscale.score.%s.scorer", BASE_SCORER_NAME))).thenReturn(ContstantRegexScorerFactory.SCORER_TYPE);
-		when(config.get(String.format("fortscale.score.%s.output.field.name", BASE_SCORER_NAME))).thenReturn("output.field.name.base.scorer");
-		when(config.get(String.format("fortscale.score.%s.regex.fieldname", BASE_SCORER_NAME))).thenReturn("regex.fieldname");
-		when(config.get(String.format("fortscale.score.%s.regex", BASE_SCORER_NAME))).thenReturn("regex");
-
+		context.setBean(BASE_SCORER_NAME, mock(ContstantRegexScorer.class));
 		LowValuesScoreReducer reducer = (LowValuesScoreReducer)context.resolve(LowValuesScoreReducer.class, SCORER_NAME);
-		reducer.setBaseScorer(mock(ContstantRegexScorer.class));
+
+		FeatureScore featureScore = new FeatureScore("scoreName", score, null);
+		when(reducer.getBaseScorer().calculateScore(any(EventMessage.class))).thenReturn(featureScore);
+
 		return reducer;
 	}
 
@@ -111,10 +110,7 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 	@Test
 	public void low_value_not_present_no_reduction() throws Exception {
 		String configJson = String.format(CONFIG_FORMAT, "readBytes", 0.8, 100000000.0, 500000000.0);
-		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson));
-
-		FeatureScore featureScore = new FeatureScore("scoreName", 90.0, null);
-		when(reducer.getBaseScorer().calculateScore(any(EventMessage.class))).thenReturn(featureScore);
+		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 90.0);
 
 		JSONObject json = new JSONObject();
 		EventMessage eventMessage = new EventMessage(json);
@@ -122,17 +118,14 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		// Arrange
 		json.put("writeBytes", 50000000.0);
 		// Act
-		featureScore = reducer.calculateScore(eventMessage);
+		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
 		assertEquals(new Double(90.0), featureScore.getScore());
 	}
 
 	@Test public void low_value_present_full_reduction() throws Exception {
 		String configJson = String.format(CONFIG_FORMAT, "readBytes", 0.8, 200000000.0, 400000000.0);
-		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson));
-
-		FeatureScore featureScore = new FeatureScore("scoreName", 80.0, null);
-		when(reducer.getBaseScorer().calculateScore(any(EventMessage.class))).thenReturn(featureScore);
+		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 80.0);
 
 		JSONObject json = new JSONObject();
 		EventMessage eventMessage = new EventMessage(json);
@@ -140,17 +133,14 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		// Arrange
 		json.put("readBytes", 100000000.0);
 		// Act
-		featureScore = reducer.calculateScore(eventMessage);
+		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
 		assertEquals(new Double(64.0), featureScore.getScore());
 	}
 
 	@Test public void low_value_is_max_full_reduction() throws Exception {
 		String configJson = String.format(CONFIG_FORMAT, "writeBytes", 0.7, 100000000.0, 500000000.0);
-		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson));
-
-		FeatureScore featureScore = new FeatureScore("scoreName", 70.0, null);
-		when(reducer.getBaseScorer().calculateScore(any(EventMessage.class))).thenReturn(featureScore);
+		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 70.0);
 
 		JSONObject json = new JSONObject();
 		EventMessage eventMessage = new EventMessage(json);
@@ -158,17 +148,14 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		// Arrange
 		json.put("writeBytes", 100000000.0);
 		// Act
-		featureScore = reducer.calculateScore(eventMessage);
+		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
 		assertEquals(new Double(49.0), featureScore.getScore());
 	}
 
 	@Test public void low_value_present_half_reduction() throws Exception {
 		String configJson = String.format(CONFIG_FORMAT, "readBytes", 0.7, 200000000.0, 400000000.0);
-		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson));
-
-		FeatureScore featureScore = new FeatureScore("scoreName", 60.0, null);
-		when(reducer.getBaseScorer().calculateScore(any(EventMessage.class))).thenReturn(featureScore);
+		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 60.0);
 
 		JSONObject json = new JSONObject();
 		EventMessage eventMessage = new EventMessage(json);
@@ -176,17 +163,14 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		// Arrange
 		json.put("readBytes", 300000000.0);
 		// Act
-		featureScore = reducer.calculateScore(eventMessage);
+		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
 		assertEquals(new Double(51.0), featureScore.getScore());
 	}
 
 	@Test public void low_value_is_min_no_reduction() throws Exception {
 		String configJson = String.format(CONFIG_FORMAT, "writeBytes", 0.5, 100000000.0, 500000000.0);
-		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson));
-
-		FeatureScore featureScore = new FeatureScore("scoreName", 100.0, null);
-		when(reducer.getBaseScorer().calculateScore(any(EventMessage.class))).thenReturn(featureScore);
+		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 100.0);
 
 		JSONObject json = new JSONObject();
 		EventMessage eventMessage = new EventMessage(json);
@@ -194,17 +178,14 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		// Arrange
 		json.put("writeBytes", 500000000.0);
 		// Act
-		featureScore = reducer.calculateScore(eventMessage);
+		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
 		assertEquals(new Double(100.0), featureScore.getScore());
 	}
 
 	@Test public void low_value_present_no_reduction() throws Exception {
 		String configJson = String.format(CONFIG_FORMAT, "totalBytes", 0.5, 200000000.0, 400000000.0);
-		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson));
-
-		FeatureScore featureScore = new FeatureScore("scoreName", 99.0, null);
-		when(reducer.getBaseScorer().calculateScore(any(EventMessage.class))).thenReturn(featureScore);
+		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 99.0);
 
 		JSONObject json = new JSONObject();
 		EventMessage eventMessage = new EventMessage(json);
@@ -212,7 +193,7 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		// Arrange
 		json.put("totalBytes", 600000000.0);
 		// Act
-		featureScore = reducer.calculateScore(eventMessage);
+		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
 		assertEquals(new Double(99.0), featureScore.getScore());
 	}

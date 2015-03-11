@@ -89,16 +89,7 @@ public class ReductionConfigurations {
 
 		@Override
 		public int hashCode() {
-			int result;
-			long temp;
-			result = reducingValueName.hashCode();
-			temp = Double.doubleToLongBits(reductionFactor);
-			result = 31 * result + (int)(temp ^ (temp >>> 32));
-			temp = Double.doubleToLongBits(maxValueForFullReduction);
-			result = 31 * result + (int)(temp ^ (temp >>> 32));
-			temp = Double.doubleToLongBits(minValueForNoReduction);
-			result = 31 * result + (int)(temp ^ (temp >>> 32));
-			return result;
+			return reducingValueName.hashCode();
 		}
 	}
 }

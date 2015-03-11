@@ -15,19 +15,19 @@ public class LowValuesScoreReducer extends AbstractScorer {
 	protected Scorer baseScorer;
 	protected ReductionConfigurations reductionConfigs;
 
-	public Scorer getBaseScorer() {
+	protected Scorer getBaseScorer() {
 		return baseScorer;
 	}
 
-	public void setBaseScorer(Scorer baseScorer) {
+	protected void setBaseScorer(Scorer baseScorer) {
 		this.baseScorer = baseScorer;
 	}
 
-	public ReductionConfigurations getReductionConfigs() {
+	protected ReductionConfigurations getReductionConfigs() {
 		return reductionConfigs;
 	}
 
-	public void setReductionConfigs(ReductionConfigurations reductionConfigs) {
+	protected void setReductionConfigs(ReductionConfigurations reductionConfigs) {
 		this.reductionConfigs = reductionConfigs;
 	}
 
