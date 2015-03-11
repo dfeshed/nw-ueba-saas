@@ -6,7 +6,5 @@ package fortscale.domain.core;
  */
 public enum NotificationFlag {
 	FP, // False Positive
-	FN, // False Negative
-	TP, // True Positive
-	TN  // True Negative
+	TP // True Positive
 }

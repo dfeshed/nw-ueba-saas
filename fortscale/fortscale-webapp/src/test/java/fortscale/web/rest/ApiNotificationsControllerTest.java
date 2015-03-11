@@ -236,7 +236,7 @@ public class ApiNotificationsControllerTest {
 	 public void flag_should_succeed_removing_flag_with_valid_notification_id() throws Exception {
 		// mock repository to return notification
 		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
-		notification.setFlag(NotificationFlag.FN);
+		notification.setFlag(NotificationFlag.FP);
 		when(notificationRepository.findOne("1")).thenReturn(notification);
 
 		// perform rest call to the controller
@@ -253,7 +253,7 @@ public class ApiNotificationsControllerTest {
 	public void flag_should_succeed_updating_flag_with_valid_notification_id() throws Exception {
 		// mock repository to return notification
 		Notification notification = new Notification("1", 1L, "my-index", "my-generator", "name", "cause", "displayName", "uuid", "fsId", "type", true, 0);
-		notification.setFlag(NotificationFlag.TN);
+		notification.setFlag(NotificationFlag.FP);
 		when(notificationRepository.findOne("1")).thenReturn(notification);
 
 		// perform rest call to the controller
