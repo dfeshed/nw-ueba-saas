@@ -7,9 +7,8 @@ import com.google.common.cache.CacheBuilder;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.DataEntity;
-import fortscale.services.dataqueries.OrderByComparator;
-import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataentity.DataEntityField;
+import fortscale.services.dataqueries.OrderByComparator;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.QuerySort;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
@@ -18,6 +17,7 @@ import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryExc
 import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.ClassifierService;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
@@ -26,6 +26,7 @@ import fortscale.web.beans.UserIdBean;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Controller;
@@ -47,6 +48,8 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/api/**")
 public class ApiController extends BaseController {
 
+	private static Logger logger = Logger.getLogger(ApiController.class);
+
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
 
@@ -64,41 +67,23 @@ public class ApiController extends BaseController {
 
 	private Cache<String, DataBean<List<Map<String, Object>>>> investigateQueryCache;
 
-	/**
-	 * Pretty Names for the fields we write to the exported CSV file
-	 */
-	private Map<String, String> fieldsPrettyNamesExportMap = new HashMap<>();
 
 	/**
 	 * Limit for results of 1 query in the cache
 	 */
 	protected static final Integer CACHE_LIMIT = 200;
-	
+
+	/**
+	 *  The format of the dates in the exported file
+	 */
+	@Value("${export.data.date.format:MMM dd yyyy HH:mm:ss 'GMT'Z}")
+	private String exportDateFormat;
+
+
 	public ApiController() {
 		// initialize investigate caching 
 		//CacheBuilder<String, DataBean<List<Map<String, Object>>>>
 		investigateQueryCache = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).maximumSize(300).build();
-
-		// init fields names
-		initFieldsName();
-	}
-
-	/*
-	 * Current implementation assume each field id has the same name for all entities.
-	 * since the query send to export is not link to a specific entity, we can't connect the field using the entity.
-	 * in the future if we will have to use the same field id with different field names, we will have to change the implementation.
-	 */
-	private void initFieldsName() {
-
-		try {
-			for(DataEntity dataEntity : dataEntitiesConfig.getAllLogicalEntities()) {
-				for(DataEntityField dataEntityField : dataEntity.getFields()) {
-					fieldsPrettyNamesExportMap.put(dataEntityField.getId(),dataEntityField.getName());
-				}
-			}
-		} catch (Exception e) {
-			throw new InvalidValueException("Can't get entities. Error: " + e.getMessage());
-		}
 	}
 
 
@@ -240,28 +225,36 @@ public class ApiController extends BaseController {
 					   @RequestParam(defaultValue = "10000") int numResults,
 					   @RequestParam(defaultValue = "true") boolean dumpHeaders,
 					   @RequestParam(defaultValue = ",") String delimiter,
+			           @RequestParam(required = false) String timezoneOffsetMins,
 					   HttpServletRequest request,
-					   HttpServletResponse response) throws IOException {
+					   HttpServletResponse response, Locale locale) throws IOException {
 
 		DateTime now = DateTime.now();
 		response.setContentType("text/csv");
 		response.setHeader("content-Disposition",
 				String.format("attachment; filename=export_%d%02d%02d.csv", now.getYear(), now.getMonthOfYear(), now.getDayOfMonth()));
 
-
+		DataQueryDTO dataQueryObject;
 		ServletOutputStream output = response.getOutputStream();
 
-		int pageSize = 20;
+		int pageSize = CACHE_LIMIT;
 		int currentPageNum = 0;
 		int maxPages = (int) ((numResults-1) / pageSize) + 1;
 		List<String> fields = new LinkedList<String>();
 
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new InvalidValueException("Couldn't parse dataQuery.");
+		}
 		// run the query in pages, keep running in loop until we exhausted all results or reached all pages
-		DataBean<List<Map<String, Object>>> page = dataQuery(dataQuery, false, true, currentPageNum, pageSize);
+		DataBean<List<Map<String, Object>>> page = dataQueryHandler(dataQueryObject, false, true, currentPageNum, pageSize);
 		while (currentPageNum < maxPages && !page.getData().isEmpty()) {
 
 			// if we are on the first page dump the headers row
-			if (currentPageNum==0) {
+			if (currentPageNum==0 && dumpHeaders) {
 				// write the headers line to the output
 				if (!page.getData().isEmpty()) {
 					// copy the list of field names to the fields list so we will write them in consistent
@@ -269,32 +262,39 @@ public class ApiController extends BaseController {
 					List<String> prettyFields = new LinkedList<>();
 					for (String field : page.getData().get(0).keySet()) {
 						fields.add(field);
-						String prettyFieldName = fieldsPrettyNamesExportMap.get(field);
-						prettyFields.add(prettyFieldName == null ? field : prettyFieldName);
+						String fieldName = field;
+						for (String dataEntityId : dataQueryObject.getEntities()) {
+							DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntityId);
+							if (dataEntity != null) {
+								DataEntityField dataEntityField = dataEntity.getField(field);
+								if (dataEntityField != null && dataEntityField.getName() != null) {
+									fieldName = dataEntity.getField(field).getName();
+									break;
+								}
+							}
+						}
+						prettyFields.add(fieldName);
 					}
-
-					if (dumpHeaders) {
-						String headerLine = Joiner.on(delimiter).join(prettyFields);
-						output.println(headerLine);
-					}
+					String headerLine = Joiner.on(delimiter).join(prettyFields);
+					output.println(headerLine);
 				}
 			}
 
 
 			// dump the page content
-			convertQueryResultsToText(page.getData(), fields, delimiter, output);
+			convertQueryResultsToText(page.getData(), fields, delimiter, output, locale, timezoneOffsetMins);
 			output.flush();
 
 
 			// advance query to the next page
 			currentPageNum++;
-			page = dataQuery(dataQuery, false, true, currentPageNum, pageSize);
+			page = dataQueryHandler(dataQueryObject, false, true, currentPageNum, pageSize);
 		}
 	}
 
 	// receives a batch of rows and convert them into csv row that is written to the given output stream. Used by the export data query method
-	private void convertQueryResultsToText(List<Map<String, Object>> rows, List<String> fields, String delimiter, ServletOutputStream output) throws IOException {
-		SimpleDateFormat sdf = new SimpleDateFormat();
+	private void convertQueryResultsToText(List<Map<String, Object>> rows, List<String> fields, String delimiter, ServletOutputStream output, Locale locale, String timezoneOffsetMinsStr) throws IOException {
+		SimpleDateFormat sdf = createSimpleDateFormat(locale, timezoneOffsetMinsStr);
 		for (Map<String, Object> row : rows) {
 			StringBuilder sb = new StringBuilder();
 			for (String field : fields) {
@@ -313,6 +313,36 @@ public class ApiController extends BaseController {
 		}
 	}
 
+	/**
+	 * Create date formatter according to locale and timezone
+	 * @param locale locale Add a comment to this line
+	 * @param timezoneOffsetMinsStr timezone offset in minutes
+	 * @return the formatter
+	 */
+	private SimpleDateFormat createSimpleDateFormat(Locale locale, String timezoneOffsetMinsStr) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat(exportDateFormat, locale);
+
+		// calculate timezone according to offset in minutes
+		int timezoneOffset = 0;
+		int minutes = 0;
+		if (timezoneOffsetMinsStr != null) {
+			try {
+				Integer timezoneOffsetMins = Integer.valueOf(timezoneOffsetMinsStr);
+				timezoneOffset = timezoneOffsetMins / 60;
+				minutes = Math.abs(timezoneOffsetMins % 60);
+			} catch (NumberFormatException e) {
+				logger.warn("Failed to parse timezone offset {}", timezoneOffsetMinsStr);
+			}
+		}
+
+		// set timezone
+		String timeZone = String.format("GMT%s%02d:%02d", (timezoneOffset >= 0 ? "+" : ""), timezoneOffset, minutes);
+		sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
+
+		return sdf;
+				}
+
 	private String getValueAsString(SimpleDateFormat sdf, String field, Object value) {
 		String strValue;
 		if (value==null) {
@@ -320,7 +350,7 @@ public class ApiController extends BaseController {
 		} else if (value instanceof Date) {
 			strValue = sdf.format(value);
 		} else if (value instanceof Long && field.equals("date_time_unix")) {
-			strValue = sdf.format((Long) value * 1000);
+			strValue = sdf.format(TimestampUtils.convertToMilliSeconds((Long)value));
 		} else if (value instanceof Long && field.equals("daytime")) {
 			long longVal = (Long) value;
 			long seconds = longVal % 60;
@@ -356,23 +386,22 @@ public class ApiController extends BaseController {
                                                          @RequestParam(defaultValue="true") boolean useCache,
                                                          @RequestParam(required=false) Integer page, // starting from 0
                                                          @RequestParam(defaultValue="20") Integer pageSize){
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			DataQueryDTO dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
+		return dataQueryHandler(dataQueryObject, requestTotal, useCache, page, pageSize);
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new InvalidValueException("Couldn't parse dataQuery.");
+		}
+    }
 
-        Logger logger = Logger.getLogger(DataQueryDTO.class);
-        ObjectMapper mapper = new ObjectMapper();
-        DataQueryDTO dataQueryObject;
-        DataQueryRunner dataQueryRunner;
+	private DataBean<List<Map<String,Object>>> dataQueryHandler(DataQueryDTO dataQueryObject, boolean requestTotal, boolean useCache, Integer page, Integer pageSize){
+
+		DataQueryRunner dataQueryRunner;
 		int location;
 		Integer offsetInLimit = null;
 		int offsetInQuery = 0;
-
-		//prepare the offset and limit according to page
-		if (page != null) {
-			if (page < 0) throw new InvalidValueException("Page number must be greater than 0");
-			if (pageSize > CACHE_LIMIT) throw new InvalidValueException("Page size must be less than " + CACHE_LIMIT);
-			location = page * pageSize;
-			offsetInLimit = (location % CACHE_LIMIT);
-			offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
-		}
 
 		//will hold the final result
 		List<DataBean<List<Map<String, Object>>>> results = new ArrayList<>();
@@ -381,24 +410,35 @@ public class ApiController extends BaseController {
 		List<QuerySort> orderByFinalResult;
 
 
-        try {
-            dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
+		try {
+
 			orderByFinalResult = dataQueryObject.getSort();
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-            throw new InvalidValueException("Couldn't parse dataQuery.");
-        }
+			//prepare the offset and limit according to page
+			if (page != null) {
+				if (page < 0) throw new InvalidValueException("Page number must be greater than 0");
+				if (pageSize > CACHE_LIMIT) throw new InvalidValueException("Page size must be less than " + CACHE_LIMIT);
+				location = page * pageSize;
+				offsetInLimit = (location % CACHE_LIMIT);
+				offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
+				// Add offset and limit according to page
+				dataQueryObject.setLimit(CACHE_LIMIT);
+				dataQueryObject.setOffset(offsetInQuery);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new InvalidValueException("Couldn't parse dataQuery.");
+		}
 
-        // create and run query
-        try {
-            dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryObject);
-        }
-        catch(Exception error){
-            throw new InvalidValueException("Couldn't create query generator: " + error.getMessage());
-        }
+		// create and run query
+		try {
+			dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryObject);
+		}
+		catch(Exception error){
+			throw new InvalidValueException("Couldn't create query generator: " + error.getMessage());
+		}
 
 
-        try {
+		try {
 
 			//translate the data query if needed (in case he have base entity referring break it to n data queries  for each leaf that extend this base entities )
 			List<DataQueryDTO> translatedDataQuery = dataQueryRunner.translateAbstarctDataQuery(dataQueryObject,dataEntitiesConfig);
@@ -409,12 +449,6 @@ public class ApiController extends BaseController {
 			{
 				// Generates query
 				String query = dataQueryRunner.generateQuery(partOfTranslatedQuyre);
-
-				// Add offset and limit according to page
-				if (page != null) {
-					query += " LIMIT " + CACHE_LIMIT + " OFFSET " + offsetInQuery;
-				}
-
 
 				boolean cacheUsed=false;
 				// check if the query is in the cache before returning results
@@ -482,7 +516,6 @@ public class ApiController extends BaseController {
 
 
 			}
-
 			if (results.size()>1)
 				return collectResults(results,page,offsetInQuery,orderByFinalResult,pageSize);
 
@@ -497,7 +530,7 @@ public class ApiController extends BaseController {
 		{
 			throw new InvalidValueException("Invalid query to parse. Error: " + e.getMessage());
 		}
-    }
+	}
 
 
 	/**
@@ -516,16 +549,25 @@ public class ApiController extends BaseController {
 
 		for (DataBean<List<Map<String, Object>>> queryResult : results)
 		{
-			unionResult.addAll(queryResult.getData());
-			info.putAll(queryResult.getInfo());
+			if (queryResult.getData() != null) {
+				unionResult.addAll(queryResult.getData());
+			}
+			if (queryResult.getInfo() != null) {
+				info.putAll(queryResult.getInfo());
+			}
 
 		}
 
 		//sort the result depend on orderByFinalResult
 		Collections.sort(unionResult,new OrderByComparator(orderByFinalResult));
 		if (page != null) {
-			result.setData(unionResult.subList(offsetInQuery, pageSize));
-
+			if (unionResult != null) {
+				if (unionResult.size() > pageSize) {
+					result.setData(unionResult.subList(offsetInQuery, pageSize));
+				} else {
+					result.setData(unionResult);
+				}
+			}
 		}
 		else{
 			result.setData(unionResult);
