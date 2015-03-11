@@ -19,10 +19,10 @@ public class ScorerContainerTest extends ScorerBaseTest{
 	protected static final String CONST_SCORER_NAME2 = "ConstantRegexScorerTestScorerName2";
 	protected static final String OUTPUT_FIELD_NAME = "outputTestField";
 	protected static final String SCORER_NAME = "MaxScorerContainerTestScorerName";
-	
+
+	protected double delta = 0.0;
 	private ScorerContext context;
 
-	
 	@Before
 	public void setUp(){
 		super.setUp();
@@ -68,7 +68,7 @@ public class ScorerContainerTest extends ScorerBaseTest{
 	private void testScore(Scorer scorer, double expectedScore, EventMessage eventMessage) throws Exception{
 		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);
-		Assert.assertEquals(expectedScore, score.getScore(), 0.0);
+		Assert.assertEquals(expectedScore, score.getScore(), delta);
 		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
 	}
 	

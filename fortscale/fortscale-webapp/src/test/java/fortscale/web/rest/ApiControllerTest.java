@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
@@ -15,10 +16,7 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -72,6 +70,12 @@ public class ApiControllerTest {
 		DataQueryRunner dataQueryRunner = Mockito.mock(DataQueryRunner.class);
 		when(dataQueryRunner.generateQuery(any(DataQueryDTO.class))).thenReturn("select A from B");
 		when(dataQueryRunner.executeQuery(any(String.class))).thenReturn(resultsMap);
+		ArrayList<DataQueryDTO> dataQueryDTOs = new ArrayList<DataQueryDTO>();
+		DataQueryDTO dataQueryDTO = Mockito.mock(DataQueryDTO.class);
+		String []  entities = {"vpn"};
+		when(dataQueryDTO.getEntities()).thenReturn(entities);
+		dataQueryDTOs.add(dataQueryDTO);
+		when(dataQueryRunner.translateAbstarctDataQuery(any(DataQueryDTO.class),any(DataEntitiesConfig.class))).thenReturn(dataQueryDTOs);
 		when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(dataQueryRunner);
 
 

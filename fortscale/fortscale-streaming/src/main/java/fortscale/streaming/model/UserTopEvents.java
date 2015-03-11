@@ -36,6 +36,10 @@ public class UserTopEvents {
 		return eventScores.size() == MAX_NUM_OF_EVENTS_IN_LIST;
 	}
 
+	public long getLatestRecievedEventEpochTime() {
+		return latestRecievedEventEpochTime;
+	}
+
 	public boolean updateEventScores(double score, long eventTimeInMillis) {
 		if(eventTimeInMillis <= latestRecievedEventEpochTime){
 			return false;

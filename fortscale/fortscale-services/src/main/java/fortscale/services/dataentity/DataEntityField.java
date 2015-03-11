@@ -1,5 +1,7 @@
 package fortscale.services.dataentity;
 
+import java.util.List;
+
 /**
 * Created by Yossi on 10/11/2014.
 */
@@ -24,6 +26,11 @@ public class DataEntityField implements Comparable<DataEntityField> {
      * Flag that indicates that this field can be searched by the front-end, to be used by autocomplete or other such components.
      */
     private Boolean searchable = false;
+
+    /**
+     * Attributes are strings that are used by the front-end, for example in render conditions or to decide whether to use a menu
+     */
+    private List<String> attributes;
 
     public String getId() {
         return id;
@@ -87,6 +94,14 @@ public class DataEntityField implements Comparable<DataEntityField> {
 
     public void setRank(int rank) {
         this.rank = rank;
+    }
+
+    public List<String> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<String> attributes) {
+        this.attributes = attributes;
     }
 
     @Override

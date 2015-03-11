@@ -473,6 +473,20 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
                 }
                 field.setRank(rank);
 
+                List<String> attributes = fieldConfig.getAttributes();
+                if (attributes == null){
+                    String attributesStr = getExtendableValue(entityId, "field", fieldId, "attributes");
+                    if (attributesStr != null){
+                        attributes = new ArrayList<String>();
+                        String[] attributesArr = attributesStr.split("\\s*,[,\\s]*");
+                        for(String attribute: attributesArr){
+                            attributes.add(attribute);
+                        }
+                    }
+                    fieldConfig.setAttributes(attributes);
+                }
+                field.setAttributes(attributes);
+
                 fields.add(field);
             } catch(Exception error){
                 throw new Exception(String.format("Can't read field %s of entity %s", fieldId, entityId));
