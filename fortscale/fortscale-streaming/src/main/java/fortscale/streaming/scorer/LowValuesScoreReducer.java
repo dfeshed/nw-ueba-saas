@@ -7,6 +7,9 @@ import org.apache.samza.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
 public class LowValuesScoreReducer extends AbstractScorer {
@@ -60,7 +63,9 @@ public class LowValuesScoreReducer extends AbstractScorer {
 	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
 		FeatureScore featureScore = baseScorer.calculateScore(eventMessage);
 		double reducedScore = reduceScore(eventMessage, featureScore.getScore());
-		return new FeatureScore(featureScore.getName(), reducedScore, featureScore.getFeatureScores());
+		List<FeatureScore> featureScores = new ArrayList<>();
+		featureScores.add(featureScore);
+		return new FeatureScore(outputFieldName, reducedScore, featureScores);
 	}
 
 	private double reduceScore(EventMessage eventMessage, double score) {
