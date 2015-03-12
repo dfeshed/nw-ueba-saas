@@ -1,0 +1,90 @@
+package fortscale.streaming.scorer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.streaming.scorer.ReductionConfigurations.ReductionConfiguration;
+import fortscale.utils.ConversionUtils;
+import org.apache.samza.config.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static fortscale.streaming.ConfigUtils.getConfigString;
+
+public class LowValuesScoreReducer extends AbstractScorer {
+	private static final Logger logger = LoggerFactory.getLogger(LowValuesScoreReducer.class);
+
+	protected Scorer baseScorer;
+	protected ReductionConfigurations reductionConfigs;
+
+	protected Scorer getBaseScorer() {
+		return baseScorer;
+	}
+
+	protected void setBaseScorer(Scorer baseScorer) {
+		this.baseScorer = baseScorer;
+	}
+
+	protected ReductionConfigurations getReductionConfigs() {
+		return reductionConfigs;
+	}
+
+	protected void setReductionConfigs(ReductionConfigurations reductionConfigs) {
+		this.reductionConfigs = reductionConfigs;
+	}
+
+	public LowValuesScoreReducer(String name, Config config, ScorerContext context) {
+		super(name, config);
+
+		// Get the base scorer
+		String configKey = String.format("fortscale.score.%s.base.scorer", name);
+		String baseScorerName = getConfigString(config, configKey);
+		baseScorer = (Scorer)context.resolve(Scorer.class, baseScorerName);
+		if (baseScorer == null) {
+			String errorMsg = String.format("Could not find class of scorer %s", baseScorerName);
+			logger.error(errorMsg);
+			throw new IllegalArgumentException(errorMsg);
+		}
+
+		// Get the reduction configurations
+		configKey = String.format("fortscale.score.%s.reduction.configs", name);
+		String jsonConfig = getConfigString(config, configKey);
+		try {
+			reductionConfigs = (new ObjectMapper()).readValue(jsonConfig, ReductionConfigurations.class);
+		} catch (Exception e) {
+			String errorMsg = String.format("Failed to deserialize json %s", jsonConfig);
+			logger.error(errorMsg, e);
+			throw new IllegalArgumentException(errorMsg, e);
+		}
+	}
+
+	@Override
+	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
+		FeatureScore featureScore = baseScorer.calculateScore(eventMessage);
+		double reducedScore = reduceScore(eventMessage, featureScore.getScore());
+		return new FeatureScore(featureScore.getName(), reducedScore, featureScore.getFeatureScores());
+	}
+
+	private double reduceScore(EventMessage eventMessage, double score) {
+		for (ReductionConfiguration reductionConfig : reductionConfigs.getReductionConfigs())
+			score = reduceScore(eventMessage, score, reductionConfig);
+		return score;
+	}
+
+	private double reduceScore(EventMessage eventMessage, double score, ReductionConfiguration reductionConfig) {
+		String valueAsString = eventMessage.getEventStringValue(reductionConfig.getReducingValueName());
+		Double value = ConversionUtils.convertToDouble(valueAsString);
+		double factor = 1;
+
+		if (value != null) {
+			if (value <= reductionConfig.getMaxValueForFullReduction())
+				factor = reductionConfig.getReductionFactor();
+			else if (value < reductionConfig.getMinValueForNoReduction()) {
+				double numerator = value - reductionConfig.getMaxValueForFullReduction();
+				double denominator = reductionConfig.getMinValueForNoReduction() - reductionConfig.getMaxValueForFullReduction();
+				double partToAdd = numerator / denominator;
+				factor = reductionConfig.getReductionFactor() + (1 - reductionConfig.getReductionFactor()) * partToAdd;
+			}
+		}
+
+		return score * factor;
+	}
+}
