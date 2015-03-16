@@ -14,17 +14,13 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class ContinuousValuesModel {
+	public static final int SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY = 1;
 	private Map<Double, Double> histogram = new HashMap<Double, Double>();
 	private double roundNumber = 1;
 	private int maxNumOfHistogramElements = 100;
 	private double histogramAvg = 0;
 	private double histogramStd = 0;
-	private long N = 0;
-	private boolean scoreForLargeValues = true;
-	private boolean scoreForSmallValues = true;
-	private double a2 = 100.0/3;
-	private double a1 = 35.0/3;
-	private double largestPValue = 0.2;
+	private long N = 0;	
 	
 	
 	@JsonCreator
@@ -107,19 +103,18 @@ public class ContinuousValuesModel {
 		
 		double roundedVal = roundValue(val);
 		
-		double ret = calculatScore(roundedVal);
-		return Math.round(ret*100);
+		return calculatScore(roundedVal);
+		
 	}
 	
 	private double calculatScore(double val){
 		double z = (val - histogramAvg) / histogramStd;
 		TDistribution tDistribution = new TDistribution(N-1);
-		double p = tDistribution.density(z);
-		if(p > largestPValue || (z > 0 && !scoreForLargeValues) || (z < 0 && !scoreForSmallValues)){
-			return 0;
-		}
-		
-		 return Math.max(a2*Math.pow(p, 2) - a1*p + 1, 0);
+
+		double p = z>0 ? tDistribution.density(z) + SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY : -1*tDistribution.density(z) - SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY;
+
+
+		return p;
 	}
 	
 	
@@ -130,45 +125,5 @@ public class ContinuousValuesModel {
 
 	public void setMaxNumOfHistogramElements(int maxNumOfHistogramElements) {
 		this.maxNumOfHistogramElements = maxNumOfHistogramElements;
-	}
-
-	public boolean isScoreForLargeValues() {
-		return scoreForLargeValues;
-	}
-
-	public void setScoreForLargeValues(boolean scoreForLargeValues) {
-		this.scoreForLargeValues = scoreForLargeValues;
-	}
-
-	public boolean isScoreForSmallValues() {
-		return scoreForSmallValues;
-	}
-
-	public void setScoreForSmallValues(boolean scoreForSmallValues) {
-		this.scoreForSmallValues = scoreForSmallValues;
-	}
-
-	public double getA2() {
-		return a2;
-	}
-
-	public void setA2(double a2) {
-		this.a2 = a2;
-	}
-
-	public double getA1() {
-		return a1;
-	}
-
-	public void setA1(double a1) {
-		this.a1 = a1;
-	}
-
-	public double getLargestPValue() {
-		return largestPValue;
-	}
-
-	public void setLargestPValue(double largestPValue) {
-		this.largestPValue = largestPValue;
 	}
 }

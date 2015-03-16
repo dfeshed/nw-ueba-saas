@@ -18,7 +18,7 @@ public class DiscreetValuesModelScorer extends ModelScorer {
 	}
 
 	@Override
-	public FeatureScore calculateModelScore(EventMessage eventMessage, PrevalanceModel model) throws Exception {
+	protected FeatureScore calculateModelScore(EventMessage eventMessage, PrevalanceModel model) throws Exception {
 		if(enoughNumOfDiscreetValuesToInfluence < 2){
 			return super.calculateModelScore(eventMessage, model);
 		}

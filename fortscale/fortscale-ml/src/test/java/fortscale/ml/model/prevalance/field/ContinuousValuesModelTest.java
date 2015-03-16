@@ -17,20 +17,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class ContinuousValuesModelTest {
 
 	private static int maxNumOfHistogramElements = 100;
-	private static boolean scoreForLargeValues = true;
-	private static boolean scoreForSmallValues = true;
 	private static double a2 = 100.0/3;
 	private static double a1 = 35.0/3;
 	private static double largestPValue = 0.2;
 	
 	private ContinuousValuesModel createContinuousValuesModel(double roundNumber){
 		ContinuousValuesModel continuousValuesModel = new ContinuousValuesModel(roundNumber);
-		continuousValuesModel.setA1(a1);
-		continuousValuesModel.setA2(a2);
-		continuousValuesModel.setLargestPValue(largestPValue);
 		continuousValuesModel.setMaxNumOfHistogramElements(maxNumOfHistogramElements);
-		continuousValuesModel.setScoreForLargeValues(scoreForLargeValues);
-		continuousValuesModel.setScoreForSmallValues(scoreForSmallValues);
 		
 		return continuousValuesModel;
 	}
@@ -55,8 +48,24 @@ public class ContinuousValuesModelTest {
 		}
 		
 		for(Long value: valueToScoreMap.keySet()){
-			Assert.assertEquals(valueToScoreMap.get(value), continuousValuesModel.calculateScore(value.doubleValue()),0.5);
+			double score = calculateScore(continuousValuesModel, value.doubleValue(), true, true);
+			Assert.assertEquals(valueToScoreMap.get(value), score,0.5);
 		}
+	}
+	
+	private double calculateScore(ContinuousValuesModel continuousValuesModel, double value, boolean isScoreForLargeValues, boolean isScoreForSmallValues){
+		double score = 0;
+
+		double val = continuousValuesModel.calculateScore(value);
+		double p = Math.abs(val) - ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY;
+		
+		if(p < largestPValue && 
+				((val > 0 && isScoreForLargeValues) || (val < 0 && isScoreForSmallValues)) ){
+			score = Math.max(a2*Math.pow(p, 2) - a1*p + 1, 0);
+			score = Math.round(score*100);
+		}
+		
+		return score;
 	}
 	
 	@Test
@@ -84,12 +93,15 @@ public class ContinuousValuesModelTest {
 			}
 		}
 		
-		Assert.assertEquals(21.0,continuousValuesModel.calculateScore(startVal),0.1);
+		double score = calculateScore(continuousValuesModel, startVal, true, true);
+		Assert.assertEquals(21.0,score,0.1);
 		
-		Assert.assertEquals(0.0,continuousValuesModel.calculateScore(startVal+50000),0.0);
+		score = calculateScore(continuousValuesModel, startVal+50000, true, true);
+		Assert.assertEquals(0.0,score,0.0);
 		
 		for(double val: vals){
-			Assert.assertEquals(11.0,continuousValuesModel.calculateScore(val),11.0);
+			score = calculateScore(continuousValuesModel, val, true, true);
+			Assert.assertEquals(11.0,score,11.0);
 		}
 	}
 	
