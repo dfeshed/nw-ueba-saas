@@ -35,6 +35,7 @@ public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 	private static final Logger logger = LoggerFactory.getLogger(GracefulShutdownLocalJobFactory.class);
 	
 	private List<ThreadJob> jobs = new LinkedList<ThreadJob>();
+	private static int shutdownTimeout;
 	
 	public GracefulShutdownLocalJobFactory() {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -45,7 +46,7 @@ public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 				// go over jobs and kill them all
 				for (ThreadJob job : jobs) { 
 					job.kill();
-					job.waitForFinish(10000);
+					job.waitForFinish(shutdownTimeout);
 				}
 			}
 		});
@@ -53,6 +54,9 @@ public class GracefulShutdownLocalJobFactory extends LocalJobFactory {
 	
 	@Override
 	public StreamJob getJob(Config config) {
+		// get the shutdown timeout if exists in configuration
+		shutdownTimeout = config.getInt("job.shutdown.timeout.ms", 10000);
+	
 		// get the task name from configuration file
 		String taskName = config.get("job.name");
 
