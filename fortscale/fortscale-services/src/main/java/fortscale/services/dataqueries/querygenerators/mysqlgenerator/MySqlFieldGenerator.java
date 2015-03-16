@@ -130,19 +130,23 @@ public class MySqlFieldGenerator {
     private void addRegularField(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId, Boolean mapToColumn, StringBuilder fieldSB) throws InvalidQueryException{
     	if (dataQueryDTO.getSubQuery() != null)
             aliasAsId = mapToColumn = false;
-    	else if (field.getEntity() != null)
-            addFieldTable(field.getEntity(), field.getId(), fieldSB);
+
+        String entityId = field.getEntity();
+        if (entityId == null)
+            entityId = dataQueryDTO.getEntities()[0];
+
+        addFieldTable(entityId, field.getId(), fieldSB);
 
         String columnName;
         if (mapToColumn){
-            String entityId = field.getEntity();
-            if (entityId == null)
-                entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
+            String fieldEntityId = field.getEntity();
+            if (fieldEntityId == null)
+                fieldEntityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
-            if (entityId == null)
+            if (fieldEntityId == null)
                 throw new InvalidQueryException("Can't map field '" + field.getId() + "' to column, unknown entity.");
 
-            columnName = dataEntitiesConfig.getFieldColumn(entityId, field.getId());
+            columnName = dataEntitiesConfig.getFieldColumn(fieldEntityId, field.getId());
         }
         else
             columnName = field.getId();
