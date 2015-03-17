@@ -47,25 +47,22 @@ public class ContinuousValuesModelTest {
 			continuousValuesModel.add(value.doubleValue());
 		}
 		
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		
 		for(Long value: valueToScoreMap.keySet()){
-			double score = calculateScore(continuousValuesModel, value.doubleValue(), true, true);
+			double score = calculateScore(continuousValuesModel, value.doubleValue(), calibrationForContModel);
 			Assert.assertEquals(valueToScoreMap.get(value), score,0.5);
 		}
 	}
+	private double calculateScore(ContinuousValuesModel continuousValuesModel, double value){
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		return calculateScore(continuousValuesModel, value, calibrationForContModel);
+	}
 	
-	private double calculateScore(ContinuousValuesModel continuousValuesModel, double value, boolean isScoreForLargeValues, boolean isScoreForSmallValues){
-		double score = 0;
-
-		double val = continuousValuesModel.calculateScore(value);
-		double p = Math.abs(val) - ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY;
+	private double calculateScore(ContinuousValuesModel continuousValuesModel, double value, QuadPolyCalibrationForContModel calibrationForContModel){
+		double modelScore = continuousValuesModel.calculateScore(value);
 		
-		if(p < largestPValue && 
-				((val > 0 && isScoreForLargeValues) || (val < 0 && isScoreForSmallValues)) ){
-			score = Math.max(a2*Math.pow(p, 2) - a1*p + 1, 0);
-			score = Math.round(score*100);
-		}
-		
-		return score;
+		return calibrationForContModel.calculateScore(modelScore);
 	}
 	
 	@Test
@@ -93,14 +90,16 @@ public class ContinuousValuesModelTest {
 			}
 		}
 		
-		double score = calculateScore(continuousValuesModel, startVal, true, true);
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		
+		double score = calculateScore(continuousValuesModel, startVal, calibrationForContModel);
 		Assert.assertEquals(21.0,score,0.1);
 		
-		score = calculateScore(continuousValuesModel, startVal+50000, true, true);
+		score = calculateScore(continuousValuesModel, startVal+50000, calibrationForContModel);
 		Assert.assertEquals(0.0,score,0.0);
 		
 		for(double val: vals){
-			score = calculateScore(continuousValuesModel, val, true, true);
+			score = calculateScore(continuousValuesModel, val, calibrationForContModel);
 			Assert.assertEquals(11.0,score,11.0);
 		}
 	}
@@ -120,18 +119,24 @@ public class ContinuousValuesModelTest {
 			}
 		}
 		
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		
 		//adding the outlier
 		double outlierVal = startVal*2;
 		continuousValuesModel.add(outlierVal);
 		
-		Assert.assertEquals(100,continuousValuesModel.calculateScore(outlierVal),0.0);
+		double score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(100,score,0.0);
 		
-		Assert.assertEquals(21.0,continuousValuesModel.calculateScore(startVal),0.1);
+		score = calculateScore(continuousValuesModel, startVal, calibrationForContModel);
+		Assert.assertEquals(21.0,score,0.1);
 		
-		Assert.assertEquals(0.0,continuousValuesModel.calculateScore(startVal+50000),0.0);
+		score = calculateScore(continuousValuesModel, startVal+50000, calibrationForContModel);
+		Assert.assertEquals(0.0,score,0.0);
 		
 		for(double val: vals){
-			Assert.assertEquals(11.0,continuousValuesModel.calculateScore(val),11.0);
+			score = calculateScore(continuousValuesModel, val, calibrationForContModel);
+			Assert.assertEquals(11.0,score,11.0);
 		}
 		
 		
@@ -148,33 +153,43 @@ public class ContinuousValuesModelTest {
 			vals.add(val);
 		}
 		
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		
 		//adding the outlier
 		double outlierVal = startVal+1100;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(54.0,continuousValuesModel.calculateScore(outlierVal),0.1);
+		double score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(54.0,score,0.1);
 		
 		outlierVal = startVal+1200;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(76.0,continuousValuesModel.calculateScore(outlierVal),0.1);
+		score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(76.0,score,0.1);
 		
 		outlierVal = startVal+1300;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(89.0,continuousValuesModel.calculateScore(outlierVal),0.1);
+		score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(89.0,score,0.1);
 		
 		outlierVal = startVal+1400;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(96.0,continuousValuesModel.calculateScore(outlierVal),0.1);
+		score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(96.0,score,0.1);
 		
 		outlierVal = startVal+1500;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(99.0,continuousValuesModel.calculateScore(outlierVal),0.1);
+		score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(99.0,score,0.1);
 		
-		Assert.assertEquals(24.0,continuousValuesModel.calculateScore(startVal),0.1);
+		score = calculateScore(continuousValuesModel, startVal, calibrationForContModel);
+		Assert.assertEquals(24.0,score,0.1);
 		
-		Assert.assertEquals(0.0,continuousValuesModel.calculateScore(startVal+500),0.0);
+		score = calculateScore(continuousValuesModel, startVal+500, calibrationForContModel);
+		Assert.assertEquals(0.0,score,0.0);
 		
 		for(double val: vals){
-			Assert.assertEquals(12.0,continuousValuesModel.calculateScore(val),12.0);
+			score = calculateScore(continuousValuesModel, val, calibrationForContModel);
+			Assert.assertEquals(12.0,score,12.0);
 		}
 		
 		
@@ -191,33 +206,43 @@ public class ContinuousValuesModelTest {
 			vals.add(val);
 		}
 		
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		
 		//adding the outlier
 		double outlierVal = startVal+1.1;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(54.0,continuousValuesModel.calculateScore(outlierVal),0.1);
+		double score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(54.0,score,0.1);
 		
 		outlierVal = startVal+1.2;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(76.0,continuousValuesModel.calculateScore(outlierVal),0.1);
+		score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(76.0,score,0.1);
 		
 		outlierVal = startVal+1.3;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(89.0,continuousValuesModel.calculateScore(outlierVal),0.1);
+		score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(89.0,score,0.1);
 		
 		outlierVal = startVal+1.4;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(96.0,continuousValuesModel.calculateScore(outlierVal),0.1);
+		score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(96.0,score,0.1);
 		
 		outlierVal = startVal+1.5;
 		continuousValuesModel.add(outlierVal);
-		Assert.assertEquals(99.0,continuousValuesModel.calculateScore(outlierVal),0.1);
+		score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(99.0,score,0.1);
 		
-		Assert.assertEquals(24.0,continuousValuesModel.calculateScore(startVal),0.1);
+		score = calculateScore(continuousValuesModel, startVal, calibrationForContModel);
+		Assert.assertEquals(24.0,score,0.1);
 		
-		Assert.assertEquals(0.0,continuousValuesModel.calculateScore(startVal+0.5),0.0);
+		score = calculateScore(continuousValuesModel, startVal+0.5, calibrationForContModel);
+		Assert.assertEquals(0.0,score,0.0);
 		
 		for(double val: vals){
-			Assert.assertEquals(12.0,continuousValuesModel.calculateScore(val),12.0);
+			score = calculateScore(continuousValuesModel, val, calibrationForContModel);
+			Assert.assertEquals(12.0,score,12.0);
 		}
 		
 		
@@ -234,14 +259,17 @@ public class ContinuousValuesModelTest {
 			vals.add(val);
 		}
 		
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		
 		//adding the outlier
 		double outlierVal = startVal/2;
 		continuousValuesModel.add(outlierVal);
-		
-		Assert.assertEquals(100,continuousValuesModel.calculateScore(outlierVal),0.0);
+		double score = calculateScore(continuousValuesModel, outlierVal, calibrationForContModel);
+		Assert.assertEquals(100,score,0.0);
 				
 		for(double val: vals){
-			Assert.assertEquals(0.0,continuousValuesModel.calculateScore(val),0.0);
+			score = calculateScore(continuousValuesModel, val, calibrationForContModel);
+			Assert.assertEquals(0.0,score,0.0);
 		}
 		
 		
@@ -270,13 +298,15 @@ public class ContinuousValuesModelTest {
 	@Test
 	public void model_should_deserialize_from_json() throws Exception {
 		
-        byte[] json = "{\"roundNumber\":19.2,\"histogram\":{\"38.4\":2.0,\"19.2\":1.0},\"maxNumOfHistogramElements\":2,\"histogramAvg\":32.0,\"histogramStd\":9.050966799187808,\"N\":3,\"scoreForLargeValues\":true,\"scoreForSmallValues\":true,\"a2\":33.333333333333336,\"a1\":11.666666666666666,\"largestPValue\":0.2}".getBytes("UTF-8");
+        byte[] json = "{\"roundNumber\":19.2,\"histogram\":{\"38.4\":2.0,\"19.2\":1.0},\"maxNumOfHistogramElements\":2,\"histogramAvg\":32.0,\"histogramStd\":9.050966799187808,\"N\":3}".getBytes("UTF-8");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		ContinuousValuesModel continuousValuesModel = mapper.readValue(json, ContinuousValuesModel.class);
 		
 		Assert.assertNotNull(continuousValuesModel);
-		Assert.assertEquals(0, continuousValuesModel.calculateScore(40.0),0.01);
-		Assert.assertEquals(6.0, continuousValuesModel.calculateScore(22.0),0.01);
+		double score = calculateScore(continuousValuesModel, 40.0);
+		Assert.assertEquals(0, score,0.01);
+		score = calculateScore(continuousValuesModel, 22.0);
+		Assert.assertEquals(6.0, score,0.01);
 	}
 }
