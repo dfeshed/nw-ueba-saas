@@ -148,4 +148,42 @@ public class FieldValueScoreReducerTest extends ScorerBaseTest {
 		// Assert
 		assertEquals(new Double(100), featureScore.getScore());
 	}
+
+	@Test
+	public void one_limiter_so_there_should_be_a_reduction() throws Exception {
+		// Create scorer
+		String json = buildJson("city", "\"London\":50");
+		FieldValueScoreReducer reducer = buildScorer(json, 80.0);
+
+		// Create event message
+		JSONObject eventJson = new JSONObject();
+		eventJson.put("city", "London");
+		eventJson.put("source_ip", "3.3.3.3");
+
+		// Act
+		FeatureScore featureScore = reducer.calculateScore(new EventMessage(eventJson));
+
+		// Assert
+		assertEquals(new Double(40), featureScore.getScore());
+	}
+
+	@Test
+	public void two_limiters_but_should_reduce_according_to_first() throws Exception {
+		// Create scorer
+		String json = buildJson(
+			"city", "\"London\":50",
+			"source_ip", "\"3.3.3.3\":33");
+		FieldValueScoreReducer reducer = buildScorer(json, 70.0);
+
+		// Create event message
+		JSONObject eventJson = new JSONObject();
+		eventJson.put("city", "London");
+		eventJson.put("source_ip", "3.3.3.3");
+
+		// Act
+		FeatureScore featureScore = reducer.calculateScore(new EventMessage(eventJson));
+
+		// Assert
+		assertEquals(new Double(35), featureScore.getScore());
+	}
 }
