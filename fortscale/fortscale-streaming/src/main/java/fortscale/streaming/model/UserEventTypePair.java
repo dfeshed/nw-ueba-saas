@@ -12,6 +12,9 @@ public class UserEventTypePair {
 	private String username;
 	private String eventType;
 
+	// default c'tor used by samza key value serde serialization instantiation
+	public UserEventTypePair() {}
+
 	@JsonCreator
 	public UserEventTypePair(@JsonProperty("username") String username, @JsonProperty("eventType") String eventType) {
 		this.username = username;
