@@ -12,7 +12,7 @@ public class GenericJacksonSerdeFactory implements SerdeFactory {
     @Override
     public Serde getSerde(String name, Config config) {
         // get the the class name to serialize
-        Class underlying = config.getClass(String.format("serializers.registry.%s.underlying.class", name));
+        Class underlying = config.getClass(String.format("serializers.%s.underlying.class", name));
         return new GenericJacksonSerde(underlying);
     }
 }
