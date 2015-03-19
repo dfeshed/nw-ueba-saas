@@ -26,6 +26,7 @@ public class SecEventsSA4769Test {
 	final static String Mar_17_15_49_21 = "Mar 17 15:49:21";
 	static String Mar_17_15_49_21_OUT1;
 	static String Mar_17_15_49_21_OUT2;
+	static Long Mar_17_15_49_21_LONG;
 
 
 	static {
@@ -33,10 +34,11 @@ public class SecEventsSA4769Test {
 	}
 
 	private static void prepareDates() {
-		TestUtils.init("yyyy MMM dd HH:mm:ss", "Asia/Jerusalem");
+		TestUtils.init("yyyy MMM dd HH:mm:ss", "UTC");
 		Date date = TestUtils.constuctDate(Mar_17_15_49_21);
 		Mar_17_15_49_21_OUT1 = TestUtils.getOutputDate(date, "yyyy-MM-dd'T'HH:mm:ss");
 		Mar_17_15_49_21_OUT2 = TestUtils.getOutputDate(date, "yyyy-MM-dd HH:mm:ss");
+		Mar_17_15_49_21_LONG = TestUtils.getUnixDate(date);
 	}
 
 	@Before
@@ -71,7 +73,7 @@ public class SecEventsSA4769Test {
         		$ (
 		        "Successfull 4769 Event Type 1",
 						Mar_17_15_49_21 + " IL-DC2 microsoft-windows-security-auditing[success] 4769 A Kerberos service ticket was requested.#177#177Account Information:#177Account Name:roman_s@IL.PLAYTECH.CORP#177Account Domain:IL.PLAYTECH.CORP#177Logon GUID:#177{EBB1D035-9AE8-D80F-366E-0BD293955C58}#177#177Service Information:#177Service Name:IL-EXCH$#177Service ID:#177S-1-5-21-2289726844-590661003-2420928919-6123#177#177Network Information:#177Client Address:#177::ffff:192.168.158.167#177Client Port:62952#177#177Additional Information:#177Ticket Options:0x40810000#177Ticket Encryption Type:0x12#177Failure Code:0x0#177Transited Services:-#177#177This event is generated every time access is requested to a#177resource such as a computer or a Windows service.  The#177service name indicates the resource to which access was#177requested.#177#177This event can be correlated with Windows logon events by#177comparing the Logon GUID fields in each event.  The logon#177event occurs on the machine that was accessed, which is#177often a different machine than the domain controller which#177issued the service ticket.#177#177Ticket options, encr ",
-						Mar_17_15_49_21_OUT1 + ".000Z," + Mar_17_15_49_21_OUT2 + ",,4769,,,microsoft-windows-security-auditing,roman_s@IL.PLAYTECH.CORP,IL.PLAYTECH.CORP,IL-EXCH,S-1-5-21-2289726844-590661003-2420928919-6123,192.168.158.167,0x40810000,0x0,,1395071361,false,,,,,,,,"
+						Mar_17_15_49_21_OUT1 + ".000Z," + Mar_17_15_49_21_OUT2 + ",,4769,,,microsoft-windows-security-auditing,roman_s@IL.PLAYTECH.CORP,IL.PLAYTECH.CORP,IL-EXCH,S-1-5-21-2289726844-590661003-2420928919-6123,192.168.158.167,0x40810000,0x0,," + Mar_17_15_49_21_LONG + ",false,,,,,,,,"
         		),
 
         		$ (

@@ -26,10 +26,12 @@ public class SecEventsSA4768Test {
 	final static String Mar_17_15_49_21 = "Mar 17 15:49:21";
 	static String Mar_17_15_49_21_OUT1;
 	static String Mar_17_15_49_21_OUT2;
+	static Long Mar_17_15_49_21_LONG;
 
 	final static String Mar_17_15_49_28 = "Mar 17 15:49:28";
 	static String Mar_17_15_49_28_OUT1;
 	static String Mar_17_15_49_28_OUT2;
+	static Long Mar_17_15_49_28_LONG;
 
 
 	static {
@@ -37,14 +39,16 @@ public class SecEventsSA4768Test {
 	}
 
 	private static void prepareDates() {
-		TestUtils.init("yyyy MMM dd HH:mm:ss", "Asia/Jerusalem");
+		TestUtils.init("yyyy MMM dd HH:mm:ss", "UTC");
 		Date date = TestUtils.constuctDate(Mar_17_15_49_21);
 		Mar_17_15_49_21_OUT1 = TestUtils.getOutputDate(date, "yyyy-MM-dd'T'HH:mm:ss");
 		Mar_17_15_49_21_OUT2 = TestUtils.getOutputDate(date, "yyyy-MM-dd HH:mm:ss");
+		Mar_17_15_49_21_LONG = TestUtils.getUnixDate(date);
 
 		date = TestUtils.constuctDate(Mar_17_15_49_28);
 		Mar_17_15_49_28_OUT1 = TestUtils.getOutputDate(date, "yyyy-MM-dd'T'HH:mm:ss");
 		Mar_17_15_49_28_OUT2 = TestUtils.getOutputDate(date, "yyyy-MM-dd HH:mm:ss");
+		Mar_17_15_49_28_LONG = TestUtils.getUnixDate(date);
 	}
 
 	@Before
@@ -78,13 +82,13 @@ public class SecEventsSA4768Test {
     		$ (
 	        "Successful 4768 Event Type 1",
 					Mar_17_15_49_21 + " IL-DC2 microsoft-windows-security-auditing[success] 4768 A Kerberos authentication ticket (TGT) was requested.#177#177Account Information:#177Account Name:avi_m#177Supplied Realm Name:il#177User ID:#177S-1-5-21-2289726844-590661003-2420928919-2295#177#177Service Information:#177Service Name:krbtgt#177Service ID:#177S-1-5-21-2289726844-590661003-2420928919-502#177#177Network Information:#177Client Address:#177::ffff:192.168.158.226#177Client Port:56284#177#177Additional Information:#177Ticket Options:0x40810010#177Result Code:0x0#177Ticket Encryption Type:0x12#177Pre-Authentication Type:2#177#177Certificate Information:#177Certificate Issuer Name:#177Certificate Serial Number:#177Certificate Thumbprint:#177#177Certificate information is only provided if a certificate#177was used for pre-authentication.#177#177Pre-authentication types, ticket options, encryption types#177and result codes are defined in RFC 4120. ",
-					Mar_17_15_49_21_OUT1 + ".000Z," + Mar_17_15_49_21_OUT2 + ",1395071361,avi_m,il,S-1-5-21-2289726844-590661003-2420928919-2295,4768,192.168.158.226,,SUCCESS,0x0,2,0x40810010,True,False,False,False,False,False,false,,,"
+					Mar_17_15_49_21_OUT1 + ".000Z," + Mar_17_15_49_21_OUT2 + "," + Mar_17_15_49_21_LONG + ",avi_m,il,S-1-5-21-2289726844-590661003-2420928919-2295,4768,192.168.158.226,,SUCCESS,0x0,2,0x40810010,True,False,False,False,False,False,false,,,"
     		),
     		
     		$ (
 	        "Failure 4768 Event Type 1",
 					Mar_17_15_49_28 + " IL-DC2 microsoft-windows-security-auditing[failure] 4768 A Kerberos authentication ticket (TGT) was requested.#177#177Account Information:#177Account Name:alon_b#177Supplied Realm Name:IL#177User ID:S-1-0-0#177#177Service Information:#177Service Name:krbtgt/IL#177Service ID:S-1-0-0#177#177Network Information:#177Client Address:#177::ffff:192.168.158.38#177Client Port:51496#177#177Additional Information:#177Ticket Options:0x40810010#177Result Code:0x6#177Ticket Encryption Type:0xffffffff#177Pre-Authentication Type:-#177#177Certificate Information:#177Certificate Issuer Name:#177Certificate Serial Number:#177Certificate Thumbprint:#177#177Certificate information is only provided if a certificate#177was used for pre-authentication.#177#177Pre-authentication types, ticket options, encryption types#177and result codes are defined in RFC 4120. ",
-					Mar_17_15_49_28_OUT1 + ".000Z," + Mar_17_15_49_28_OUT2 + ",1395071368,alon_b,IL,S-1-0-0,4768,192.168.158.38,,FAILURE,0x6,-,0x40810010,True,False,False,False,False,False,false,,,"
+					Mar_17_15_49_28_OUT1 + ".000Z," + Mar_17_15_49_28_OUT2 + "," + Mar_17_15_49_28_LONG + ",alon_b,IL,S-1-0-0,4768,192.168.158.38,,FAILURE,0x6,-,0x40810010,True,False,False,False,False,False,false,,,"
     		),
     		
         	$ (
@@ -96,7 +100,7 @@ public class SecEventsSA4768Test {
     		$ (
 	        "Successful 4768 Event Type 1 with ' in Account Name",
 					Mar_17_15_49_21 + " IL-DC2 microsoft-windows-security-auditing[success] 4768 A Kerberos authentication ticket (TGT) was requested.#177#177Account Information:#177Account Name:avi'm#177Supplied Realm Name:il#177User ID:#177S-1-5-21-2289726844-590661003-2420928919-2295#177#177Service Information:#177Service Name:krbtgt#177Service ID:#177S-1-5-21-2289726844-590661003-2420928919-502#177#177Network Information:#177Client Address:#177::ffff:192.168.158.226#177Client Port:56284#177#177Additional Information:#177Ticket Options:0x40810010#177Result Code:0x0#177Ticket Encryption Type:0x12#177Pre-Authentication Type:2#177#177Certificate Information:#177Certificate Issuer Name:#177Certificate Serial Number:#177Certificate Thumbprint:#177#177Certificate information is only provided if a certificate#177was used for pre-authentication.#177#177Pre-authentication types, ticket options, encryption types#177and result codes are defined in RFC 4120. ",
-					Mar_17_15_49_21_OUT1 + ".000Z," + Mar_17_15_49_21_OUT2 + ",1395071361,avim,il,S-1-5-21-2289726844-590661003-2420928919-2295,4768,192.168.158.226,,SUCCESS,0x0,2,0x40810010,True,False,False,False,False,False,false,,,"
+					Mar_17_15_49_21_OUT1 + ".000Z," + Mar_17_15_49_21_OUT2 + "," + Mar_17_15_49_21_LONG + ",avim,il,S-1-5-21-2289726844-590661003-2420928919-2295,4768,192.168.158.226,,SUCCESS,0x0,2,0x40810010,True,False,False,False,False,False,false,,,"
     		),
 
         	$ (
