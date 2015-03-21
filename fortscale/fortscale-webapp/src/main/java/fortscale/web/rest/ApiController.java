@@ -229,13 +229,8 @@ public class ApiController extends BaseController {
 					   HttpServletRequest request,
 					   HttpServletResponse response, Locale locale) throws IOException {
 
-		DateTime now = DateTime.now();
-		response.setContentType("text/csv");
-		response.setHeader("content-Disposition",
-				String.format("attachment; filename=export_%d%02d%02d.csv", now.getYear(), now.getMonthOfYear(), now.getDayOfMonth()));
 
 		DataQueryDTO dataQueryObject;
-		ServletOutputStream output = response.getOutputStream();
 
 		int pageSize = CACHE_LIMIT;
 		int currentPageNum = 0;
@@ -249,6 +244,15 @@ public class ApiController extends BaseController {
 			logger.error(e.getMessage(),e);
 			throw new InvalidValueException("Couldn't parse dataQuery.");
 		}
+
+		DateTime now = DateTime.now();
+		response.setContentType("text/csv");
+		response.setHeader("content-Disposition",
+						String.format("attachment; filename=export_%s_%d%02d%02d_%d.csv", dataEntitiesConfig.getEntityFromOverAllCache(dataQueryObject.getEntities()[0]).getName(),
+										now.getYear(), now.getMonthOfYear(), now.getDayOfMonth(), now.getMillis()));
+
+		ServletOutputStream output = response.getOutputStream();
+
 		// run the query in pages, keep running in loop until we exhausted all results or reached all pages
 		DataBean<List<Map<String, Object>>> page = dataQueryHandler(dataQueryObject, false, true, currentPageNum, pageSize);
 		while (currentPageNum < maxPages && !page.getData().isEmpty()) {
