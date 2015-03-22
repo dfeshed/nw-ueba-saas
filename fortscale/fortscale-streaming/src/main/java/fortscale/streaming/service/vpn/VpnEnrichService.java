@@ -153,7 +153,7 @@ public class VpnEnrichService {
             }
         }
 
-        Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()));
+        Boolean isRunGeoHopping = convertToBoolean(event.get(vpnSessionUpdateConfig.getRunGeoHoppingFieldName()), true);
         if(isRunGeoHopping != null && isRunGeoHopping){
             processGeoHopping(vpnSessionUpdateConfig, vpnSession);
         }
