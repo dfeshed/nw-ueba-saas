@@ -65,6 +65,10 @@ public final class ConversionUtils {
 	}
 	
 	public static Boolean convertToBoolean(Object value) {
+		return convertToBoolean(value, false);
+
+	}
+	public static Boolean convertToBoolean(Object value, boolean defaultValue) {
 		if (value==null)
 			return null;
 		
@@ -76,7 +80,7 @@ public final class ConversionUtils {
 				return Boolean.valueOf((String)value);
 			
 		} catch (Exception e) {}
-		return false;
+		return defaultValue;
 		
 	}
 	
