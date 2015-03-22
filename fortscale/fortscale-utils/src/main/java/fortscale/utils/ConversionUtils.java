@@ -70,7 +70,7 @@ public final class ConversionUtils {
 	}
 	public static Boolean convertToBoolean(Object value, boolean defaultValue) {
 		if (value==null)
-			return null;
+			return defaultValue;
 		
 		try {
 			if (value instanceof Boolean)
