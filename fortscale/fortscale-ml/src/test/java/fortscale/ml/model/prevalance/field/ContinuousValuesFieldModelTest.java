@@ -14,11 +14,6 @@ import org.junit.Test;
 public class ContinuousValuesFieldModelTest {
 
 	private static int maxNumOfHistogramElements = 10;
-	private static boolean scoreForLargeValues = true;
-	private static boolean scoreForSmallValues = true;
-	private static double a2 = 100.0/3;
-	private static double a1 = 35.0/3;
-	private static double largestPValue = 0.2;
 	private static final String fieldName ="testField";
 	private static final String prefix = "fortscale.fields";
 	
@@ -32,21 +27,7 @@ public class ContinuousValuesFieldModelTest {
 	
 	private ContinuousValuesFieldModel createContinuousValuesFieldModel(){
 		ContinuousValuesFieldModel continuousValuesFieldModel = new ContinuousValuesFieldModel();
-		when(config.getBoolean(String.format(ContinuousValuesFieldModel.SCORE_FOR_LARGE_VALUE_CONFIG_FORMAT, prefix, fieldName), 
-				continuousValuesFieldModel.getContinuousValuesModel().isScoreForLargeValues()))
-				.thenReturn(scoreForLargeValues);
-		when(config.getBoolean(String.format(ContinuousValuesFieldModel.SCORE_FOR_SMALL_VALUE_CONFIG_FORMAT, prefix, fieldName), 
-				continuousValuesFieldModel.getContinuousValuesModel().isScoreForSmallValues()))
-				.thenReturn(scoreForSmallValues);
-		when(config.getDouble(String.format(ContinuousValuesFieldModel.A1_CONFIG_FORMAT, prefix, fieldName), 
-				continuousValuesFieldModel.getContinuousValuesModel().getA1()))
-				.thenReturn(a1);
-		when(config.getDouble(String.format(ContinuousValuesFieldModel.A2_CONFIG_FORMAT, prefix, fieldName), 
-				continuousValuesFieldModel.getContinuousValuesModel().getA2()))
-				.thenReturn(a2);
-		when(config.getDouble(String.format(ContinuousValuesFieldModel.LARGEST_PVALUE_CONFIG_FORMAT, prefix, fieldName), 
-				continuousValuesFieldModel.getContinuousValuesModel().getLargestPValue()))
-				.thenReturn(largestPValue);
+		
 		when(config.getInt(String.format(ContinuousValuesFieldModel.MAX_NUM_OF_HISTOGRAM_ELEMENTS_CONFIG_FORMAT, prefix, fieldName), 
 				continuousValuesFieldModel.getContinuousValuesModel().getMaxNumOfHistogramElements()))
 				.thenReturn(maxNumOfHistogramElements);
@@ -68,27 +49,27 @@ public class ContinuousValuesFieldModelTest {
 		//adding the outlier
 		double outlierVal = startVal+1100;
 		continuousValuesFieldModel.add(outlierVal,0);
-		Assert.assertEquals(54.0,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY + 0.04567,continuousValuesFieldModel.calculateScore(outlierVal),0.00001);
 		
 		outlierVal = startVal+1200;
 		continuousValuesFieldModel.add(outlierVal,0);
-		Assert.assertEquals(82.0,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY + 0.0157,continuousValuesFieldModel.calculateScore(outlierVal),0.00001);
 		
 		outlierVal = startVal+1300;
 		continuousValuesFieldModel.add(outlierVal,0);
-		Assert.assertEquals(68.0,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY + 0.0295,continuousValuesFieldModel.calculateScore(outlierVal),0.00001);
 		
 		outlierVal = startVal+1400;
 		continuousValuesFieldModel.add(outlierVal,0);
-		Assert.assertEquals(97.0,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY + 0.002442,continuousValuesFieldModel.calculateScore(outlierVal),0.00001);
 		
 		outlierVal = startVal+1500;
 		continuousValuesFieldModel.add(outlierVal,0);
-		Assert.assertEquals(97.0,continuousValuesFieldModel.calculateScore(outlierVal),0.1);
+		Assert.assertEquals(ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY + 0.00258,continuousValuesFieldModel.calculateScore(outlierVal),0.00001);
 		
-		Assert.assertEquals(74.0,continuousValuesFieldModel.calculateScore(startVal),0.1);
+		Assert.assertEquals(-ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY - 0.02439,continuousValuesFieldModel.calculateScore(startVal),0.00001);
 		
-		Assert.assertEquals(0.0,continuousValuesFieldModel.calculateScore(startVal+500),0.0);		
+		Assert.assertEquals(-ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY - 0.3489,continuousValuesFieldModel.calculateScore(startVal+500),0.00001);		
 		
 	}
 	
@@ -107,10 +88,11 @@ public class ContinuousValuesFieldModelTest {
 		double outlierVal = startVal/2;
 		continuousValuesFieldModel.add(outlierVal,0);
 		
-		Assert.assertEquals(100,continuousValuesFieldModel.calculateScore(outlierVal),0.0);
+		Assert.assertEquals(-ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY,continuousValuesFieldModel.calculateScore(outlierVal),0.0);
 		
 		for(double val: vals){
-			Assert.assertEquals(0.0,continuousValuesFieldModel.calculateScore(val),0.0);
+			double pvalue = continuousValuesFieldModel.calculateScore(val);
+			Assert.assertTrue(String.format("assertion for value %s. the p value is : %s", val, pvalue), pvalue > ContinuousValuesModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY + 0.398);
 		}
 		
 		

@@ -11,11 +11,6 @@ import fortscale.utils.ConversionUtils;
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class ContinuousValuesFieldModel implements FieldModel{
 	
-	public static final String A1_CONFIG_FORMAT = "%s.%s.continuous.model.a1";
-	public static final String A2_CONFIG_FORMAT = "%s.%s.continuous.model.a2";
-	public static final String LARGEST_PVALUE_CONFIG_FORMAT = "%s.%s.continuous.model.largest.p.value";
-	public static final String SCORE_FOR_LARGE_VALUE_CONFIG_FORMAT = "%s.%s.continuous.model.large.value";
-	public static final String SCORE_FOR_SMALL_VALUE_CONFIG_FORMAT = "%s.%s.continuous.model.small.value";
 	public static final String MAX_NUM_OF_HISTOGRAM_ELEMENTS_CONFIG_FORMAT = "%s.%s.continuous.model.max.numof.histogram.elements";
 	public static final String ROUND_NUMBER_CONFIG_FORMAT = "%s.%s.continuous.model.round.number";
 	
@@ -28,16 +23,6 @@ public class ContinuousValuesFieldModel implements FieldModel{
 		
 		continuousValuesModel = new ContinuousValuesModel(roundNumber);
 		
-		double a1 = config.getDouble(String.format(A1_CONFIG_FORMAT, prefix, fieldName), continuousValuesModel.getA1());
-		continuousValuesModel.setA1(a1);
-		double a2 = config.getDouble(String.format(A2_CONFIG_FORMAT, prefix, fieldName), continuousValuesModel.getA2());
-		continuousValuesModel.setA2(a2);
-		double largestPValue = config.getDouble(String.format(LARGEST_PVALUE_CONFIG_FORMAT, prefix, fieldName), continuousValuesModel.getLargestPValue());
-		continuousValuesModel.setLargestPValue(largestPValue);
-		boolean scoreForLargeValues = config.getBoolean(String.format(SCORE_FOR_LARGE_VALUE_CONFIG_FORMAT, prefix, fieldName), continuousValuesModel.isScoreForLargeValues());
-		continuousValuesModel.setScoreForLargeValues(scoreForLargeValues);
-		boolean scoreForSmallValues = config.getBoolean(String.format(SCORE_FOR_SMALL_VALUE_CONFIG_FORMAT, prefix, fieldName), continuousValuesModel.isScoreForSmallValues());
-		continuousValuesModel.setScoreForSmallValues(scoreForSmallValues);
 		int maxNumOfHistogramElements = config.getInt(String.format(MAX_NUM_OF_HISTOGRAM_ELEMENTS_CONFIG_FORMAT, prefix, fieldName), continuousValuesModel.getMaxNumOfHistogramElements());
 		continuousValuesModel.setMaxNumOfHistogramElements(maxNumOfHistogramElements);
 	}

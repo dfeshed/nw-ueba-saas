@@ -20,7 +20,6 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 		calibratedModel = mock(DiscreetValuesCalibratedModel.class);
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected void prepareConfig(String scorerName, String outputFieldName, String modelName, String fieldName, String contextName,
 			String optionalContextReplacementFieldName,
 			Integer minNumOfDiscreetValuesToInfluence, Integer enoughNumOfDiscreetValuesToInfluence){
@@ -29,12 +28,12 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 			if(minNumOfDiscreetValuesToInfluence != null)
 				when(config.getInt(String.format("fortscale.score.%s.discreet.values.to.influence.min", scorerName),0)).thenReturn(minNumOfDiscreetValuesToInfluence);
 			else
-				when(config.getInt(String.format("fortscale.score.%s.discreet.values.to.influence.min", scorerName),0)).thenThrow(ConfigException.class);
+				when(config.getInt(String.format("fortscale.score.%s.discreet.values.to.influence.min", scorerName),0)).thenReturn(0);
 			
 			if(enoughNumOfDiscreetValuesToInfluence != null)
 				when(config.getInt(String.format("fortscale.score.%s.discreet.values.to.influence.enough", scorerName),0)).thenReturn(enoughNumOfDiscreetValuesToInfluence);
 			else
-				when(config.getInt(String.format("fortscale.score.%s.discreet.values.to.influence.enough", scorerName),0)).thenThrow(ConfigException.class);
+				when(config.getInt(String.format("fortscale.score.%s.discreet.values.to.influence.enough", scorerName),0)).thenReturn(0);
 		}
 	}
 	
@@ -53,7 +52,7 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	}
 	
 	private void prepareModelMock(EventMessage eventMessage, double score, int numOfFeatureValues){
-		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
+		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(score);
 		when(model.getFieldModel(FIELD_NAME)).thenReturn(calibratedModel);
 		when(calibratedModel.getNumOfFeatureValues()).thenReturn(numOfFeatureValues);
 	}
@@ -61,6 +60,23 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	@Test
 	public void testScoreAndCertaintyOfNumOfFeatureValuesBelowMin() throws Exception{
 		int min = 2;
+		int enough = 10;
+		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null, min, enough);
+		
+		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
+		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
+		prepareModelMock(eventMessage, 40d, min-1);
+		
+		FeatureScore score = scorer.calculateScore(eventMessage);
+		Assert.assertNotNull(score);
+		Assert.assertEquals(40d, score.getScore(), 0.0);
+		Assert.assertEquals(0d, score.getCertainty(), 0.0);
+		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
+	}
+	
+	@Test
+	public void testScoreAndCertaintyOfNumOfFeatureValuesBelowMinAndMinGreaterThanEnough() throws Exception{
+		int min = 20;
 		int enough = 10;
 		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null, min, enough);
 		
@@ -93,6 +109,23 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	}
 	
 	@Test
+	public void testScoreAndCertaintyOfNumOfFeatureValuesEqualsToEnoughAndMinGreaterThanEnough() throws Exception{
+		int min = 10;
+		int enough = 2;
+		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null, min, enough);
+		
+		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
+		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
+		prepareModelMock(eventMessage, 40d, enough);
+		
+		FeatureScore score = scorer.calculateScore(eventMessage);
+		Assert.assertNotNull(score);
+		Assert.assertEquals(40d, score.getScore(), 0.0);
+		Assert.assertEquals(0d, score.getCertainty(), 0.0);
+		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
+	}
+	
+	@Test
 	public void testScoreAndCertaintyOfNumOfFeatureValuesEqualsToMin() throws Exception{
 		int min = 2;
 		int enough = 10;
@@ -106,6 +139,24 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 		Assert.assertNotNull(score);
 		Assert.assertEquals(40d, score.getScore(), 0.0);
 		double expectedCertainty = 1d/(enough-min+1);
+		Assert.assertEquals(expectedCertainty, score.getCertainty(), 0.0);
+		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
+	}
+	
+	@Test
+	public void testScoreAndCertaintyOfNumOfFeatureValuesEqualsToMinAndMinGreaterThanEnough() throws Exception{
+		int min = 2;
+		int enough = 1;
+		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null, min, enough);
+		
+		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
+		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
+		prepareModelMock(eventMessage, 40d, min);
+		
+		FeatureScore score = scorer.calculateScore(eventMessage);
+		Assert.assertNotNull(score);
+		Assert.assertEquals(40d, score.getScore(), 0.0);
+		double expectedCertainty = 1d;
 		Assert.assertEquals(expectedCertainty, score.getCertainty(), 0.0);
 		Assert.assertEquals(OUTPUT_FIELD_NAME, score.getName());
 	}
