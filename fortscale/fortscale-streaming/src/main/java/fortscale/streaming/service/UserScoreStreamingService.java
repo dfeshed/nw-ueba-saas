@@ -49,16 +49,44 @@ public class UserScoreStreamingService {
 	private KeyValueStore<UserEventTypePair, UserTopEvents> store;
 
 	private boolean isUseLatestEventTimeAsCurrentTime = false;
+	private Map<String, Long> latestEventTimeInMillis = new HashMap<>();
+
 
 	public void setStore(KeyValueStore<UserEventTypePair, UserTopEvents> store) {
 		this.store = store;
 	}
 	
-	private long getCurrentEpochTimeInMillis(UserTopEvents userTopEvents){
-		if(isUseLatestEventTimeAsCurrentTime){
-			return userTopEvents.getLatestRecievedEventEpochTime();
-		} else{
+	private long getCurrentEpochTimeInMillis(String classifier) {
+		if (isUseLatestEventTimeAsCurrentTime) {
+			if (latestEventTimeInMillis.containsKey(classifier)) {
+				return latestEventTimeInMillis.get(classifier);
+			} else {
+				// go over the user score store and look for the latest user event to initialize the map
+				long latestEvent = 0;
+				KeyValueIterator<UserEventTypePair, UserTopEvents> iterator = store.all();
+				while (iterator.hasNext()) {
+					Entry<UserEventTypePair, UserTopEvents> entry = iterator.next();
+					if (entry.getKey()!=null && entry.getKey().getEventType().equals(classifier)) {
+						if (entry.getValue()!=null && entry.getValue().getLatestRecievedEventEpochTime() > latestEvent) {
+							latestEvent = entry.getValue().getLatestRecievedEventEpochTime();
+						}
+					}
+				}
+				// store the latest event ts in the map and return it
+				latestEventTimeInMillis.put(classifier, latestEvent);
+				return latestEvent;
+			}
+		} else {
 			return System.currentTimeMillis();
+		}
+	}
+
+	private void updateCurrentEpochTimeInMillis(String classifier, long timestamp) {
+		if (latestEventTimeInMillis.containsKey(classifier)) {
+			if (latestEventTimeInMillis.get(classifier) < timestamp)
+				latestEventTimeInMillis.put(classifier, timestamp);
+		} else {
+			latestEventTimeInMillis.put(classifier, timestamp);
 		}
 	}
 	
@@ -75,6 +103,7 @@ public class UserScoreStreamingService {
 				updateDb(dataSource, eventTimeInMillis);
 				exportSnapshotForDataSource(dataSource);
 			}
+			updateCurrentEpochTimeInMillis(dataSource, eventTimeInMillis);
 		}
 	}
 	
@@ -106,7 +135,7 @@ public class UserScoreStreamingService {
 			hasToUpdateStore = true;
 		}
 
-		long currentEpochTime = getCurrentEpochTimeInMillis(userTopEvents);
+		long currentEpochTime = getCurrentEpochTimeInMillis(dataSource);
 
 		// determine if we need to update user score in mongodb, if the score changed considerably
 		double curScore = userTopEvents.calculateUserScore(currentEpochTime);
