@@ -35,7 +35,7 @@ public class LowValuesScoreReducer extends AbstractScorer {
 	}
 
 	public LowValuesScoreReducer(String name, Config config, ScorerContext context) {
-		super(name, config);
+		super(name, config, context);
 
 		// Get the base scorer
 		String configKey = String.format("fortscale.score.%s.base.scorer", name);
@@ -75,7 +75,7 @@ public class LowValuesScoreReducer extends AbstractScorer {
 	}
 
 	private double reduceScore(EventMessage eventMessage, double score, ReductionConfiguration reductionConfig) {
-		String valueAsString = eventMessage.getEventStringValue(reductionConfig.getReducingValueName());
+		String valueAsString = ConversionUtils.convertToString(featureExtractionService.extract(reductionConfig.getReducingValueName(), eventMessage.getJsonObject()));
 		Double value = ConversionUtils.convertToDouble(valueAsString);
 		double factor = 1;
 

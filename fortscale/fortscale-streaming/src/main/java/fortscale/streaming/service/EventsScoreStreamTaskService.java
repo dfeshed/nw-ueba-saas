@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.scorer.EventMessage;
 import fortscale.streaming.scorer.FeatureScore;
 import fortscale.streaming.scorer.Scorer;
@@ -49,7 +50,7 @@ public class EventsScoreStreamTaskService {
 	
 	
 	
-	public EventsScoreStreamTaskService(Config config, TaskContext context, ModelService modelService) throws Exception{
+	public EventsScoreStreamTaskService(Config config, TaskContext context, ModelService modelService, FeatureExtractionService featureExtractionService) throws Exception{
 		this.modelService = modelService;
 		// get task configuration parameters
 		sourceType = getConfigString(config, "fortscale.source.type");
@@ -57,17 +58,18 @@ public class EventsScoreStreamTaskService {
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		outputTopic = config.get("fortscale.output.topic", "");
 		
-		fillScoreConfig(config);
+		fillScoreConfig(config, featureExtractionService);
 		
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-%s-event-score-message-count", sourceType, entityType));
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-%s-event-score-message-epochime", sourceType, entityType));
 	}
 	
-	private void fillScoreConfig(Config config) throws Exception {
+	private void fillScoreConfig(Config config, FeatureExtractionService featureExtractionService) throws Exception {
 		List<String> scorers = getConfigStringList(config, "fortscale.scorers");
 		ScorerContext context = new ScorerContext(config);
 		context.setBean("modelService", modelService);
+		context.setBean("featureExtractionService", featureExtractionService);
 		scorersToRun = new ArrayList<>();
 		for(String ScorerStr: scorers){
 			Scorer scorer = (Scorer) context.resolve(Scorer.class, ScorerStr);
