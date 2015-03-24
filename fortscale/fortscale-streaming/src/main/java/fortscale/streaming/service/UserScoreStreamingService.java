@@ -62,19 +62,23 @@ public class UserScoreStreamingService {
 				return latestEventTimeInMillis.get(classifier);
 			} else {
 				// go over the user score store and look for the latest user event to initialize the map
-				long latestEvent = 0;
 				KeyValueIterator<UserEventTypePair, UserTopEvents> iterator = store.all();
 				while (iterator.hasNext()) {
 					Entry<UserEventTypePair, UserTopEvents> entry = iterator.next();
-					if (entry.getKey()!=null && entry.getKey().getEventType().equals(classifier)) {
-						if (entry.getValue()!=null && entry.getValue().getLatestRecievedEventEpochTime() > latestEvent) {
-							latestEvent = entry.getValue().getLatestRecievedEventEpochTime();
+					UserEventTypePair key = entry.getKey();
+					UserTopEvents value = entry.getValue();
+					if (key!=null && value!=null) {
+						if (!latestEventTimeInMillis.containsKey(key.getEventType()) ||
+								value.getLatestRecievedEventEpochTime() > latestEventTimeInMillis.get(key.getEventType())) {
+							latestEventTimeInMillis.put(key.getEventType(), value.getLatestRecievedEventEpochTime());
 						}
 					}
 				}
 				// store the latest event ts in the map and return it
-				latestEventTimeInMillis.put(classifier, latestEvent);
-				return latestEvent;
+				if (latestEventTimeInMillis.containsKey(classifier))
+					return latestEventTimeInMillis.get(classifier);
+				else
+					return 0L;
 			}
 		} else {
 			return System.currentTimeMillis();
@@ -90,7 +94,8 @@ public class UserScoreStreamingService {
 		}
 	}
 	
-	private void checkIfNeedToUpdatePastScores(String dataSource, long latestEventTimeInMillis, long eventTimeInMillis){
+	private void checkIfNeedToUpdatePastScores(String dataSource, long eventTimeInMillis){
+		long latestEventTimeInMillis = getCurrentEpochTimeInMillis(dataSource);
 		if(latestEventTimeInMillis < eventTimeInMillis){
 			if(isUseLatestEventTimeAsCurrentTime && !isOnSameDay(eventTimeInMillis, latestEventTimeInMillis)){
 				if(latestEventTimeInMillis > 0){
