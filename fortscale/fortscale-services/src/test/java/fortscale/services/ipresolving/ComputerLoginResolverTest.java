@@ -44,6 +44,7 @@ public class ComputerLoginResolverTest {
 		computerLoginResolver.setShouldUseBlackList(true);
 		computerLoginResolver.setUseCacheForResolving(true);
 		computerLoginResolver.setIpToHostNameUpdateResolutionInMins(60);
+		computerLoginResolver.setLeaseTimeInMins(1);
 		computerLoginResolver = spy(computerLoginResolver);
 		now = System.currentTimeMillis();
 	}
@@ -143,11 +144,11 @@ public class ComputerLoginResolverTest {
 		ComputerLoginEvent cached = createComputerLoginEvent("192.168.1.1", "pick-me", now + 100);
 		when(cache.get("192.168.1.1")).thenReturn(cached);
 
-		ComputerLoginEvent saved = createComputerLoginEvent("192.168.1.1", "pick-me", now + 250);
+		ComputerLoginEvent saved = createComputerLoginEvent("192.168.1.1", "pick-me", now + 60250);
 		when(computerLoginEventRepository.findByIpaddressAndTimestampepochBetween(anyString(), any(Long.class), any(Long.class),any(Pageable.class))).thenReturn(Arrays.asList(saved));
 
 		// act
-		ComputerLoginEvent actual = computerLoginResolver.getComputerLoginEvent("192.168.1.1", now + 250);
+		ComputerLoginEvent actual = computerLoginResolver.getComputerLoginEvent("192.168.1.1", now + 60250);
 
 		// assert
 		assertEquals(saved, actual);
