@@ -880,12 +880,19 @@ public class UserServiceImpl implements UserService{
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 		//also update the tags cache with the new updates
 		List<String> tags = userTagsCache.get(username);
+		Set<String> tagSet = new HashSet<String>();
 		if (tags!=null) {
-			Set<String> tagSet = new HashSet<String>(tags);
-			tagSet.addAll(tagsToAdd);
-			tagSet.removeAll(tagsToRemove);
-			tags = new ArrayList<String>(tagSet);
+			tagSet = new HashSet<String>(tags);
 		}
+		if (tagsToAdd != null)
+			tagSet.addAll(tagsToAdd);
+		if (tagsToRemove != null)
+			tagSet.removeAll(tagsToRemove);
+
+
+		tags = new ArrayList<String>(tagSet);
+
+
 		userTagsCache.put(username,tags);
 	}
 
