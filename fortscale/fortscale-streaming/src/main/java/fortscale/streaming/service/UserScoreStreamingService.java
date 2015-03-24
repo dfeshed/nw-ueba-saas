@@ -134,7 +134,7 @@ public class UserScoreStreamingService {
 			hasToUpdateUserRepository = true;
 		}
 
-		checkIfNeedToUpdatePastScores(dataSource, userTopEvents.getLatestRecievedEventEpochTime(), eventTimeInMillis);
+		checkIfNeedToUpdatePastScores(dataSource, eventTimeInMillis);
 		
 		if(userTopEvents.updateEventScores(score, eventTimeInMillis)){
 			hasToUpdateStore = true;
