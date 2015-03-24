@@ -312,6 +312,30 @@ public class HadoopInit implements InitializingBean{
 	@Value("${impala.enricheddata.vpn.table.partition.type}")
 	private String impalaVpnEnrichedDataTablePartitionType;
 
+	// AMT Scoring table
+	@Value("${impala.score.amt.table.fields}")
+	private String impalaAmtScoringTableFields;
+	@Value("${impala.score.amt.table.delimiter}")
+	private String impalaAmtScoringTableDelimiter;
+	@Value("${impala.score.amt.table.name}")
+	private String impalaAmtScoringTableName;
+	@Value("${hdfs.user.processeddata.amtscores.path}")
+	private String impalaAmtScoringDirectory;
+	@Value("${impala.score.amt.table.partition.type}")
+	private String impalaAmtScoringTablePartitionType;
+
+	// Top AMT Scoring table
+	@Value("${impala.score.amt_top.table.fields}")
+	private String impalaTopAmtScoringTableFields;
+	@Value("${impala.score.amt_top.table.delimiter}")
+	private String impalaTopAmtScoringTableDelimiter;
+	@Value("${impala.score.amt_top.table.name}")
+	private String impalaTopAmtScoringTableName;
+	@Value("${hdfs.user.processeddata.amtscores.top.path}")
+	private String impalaTopAmtScoringDirectory;
+	@Value("${impala.score.amt_top.table.partition.type}")
+	private String impalaTopAmtScoringTablePartitionType;
+
 	public void createImpalaTables() throws IOException{
 
 		PartitionStrategy partitionStrategy;
@@ -410,6 +434,14 @@ public class HadoopInit implements InitializingBean{
 		// VPN Enriched Data table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaVpnEnrichedDataTablePartitionType);
 		createTable(impalaVpnEnrichedDataTableName, impalaVpnEnrichedDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaVpnEnrichedDataTableDelimiter, impalaVpnEnrichedDataDirectory);
+
+		// AMT Scoring table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaAmtScoringTablePartitionType);
+		createTable(impalaAmtScoringTableName, impalaAmtScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAmtScoringTableDelimiter, impalaAmtScoringDirectory);
+
+		// Top AMT Scoring table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopAmtScoringTablePartitionType);
+		createTable(impalaTopAmtScoringTableName, impalaTopAmtScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopAmtScoringTableDelimiter, impalaTopAmtScoringDirectory);
 	}
 	
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException{
