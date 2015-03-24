@@ -520,11 +520,12 @@ public class ApiController extends BaseController {
 
 
 			}
-			if (results.size()>1)
-				return collectResults(results,page,offsetInQuery,orderByFinalResult,pageSize);
+
+			return collectResults(results,page,offsetInQuery,orderByFinalResult,pageSize);
 
 
-            return results.get(0);
+
+
         }
         catch (InvalidQueryException e) {
             throw new InvalidValueException("Invalid query to parse. Error: " + e.getMessage());
@@ -544,6 +545,10 @@ public class ApiController extends BaseController {
 	 */
 	private DataBean<List<Map<String, Object>>> collectResults(List<DataBean<List<Map<String, Object>>>> results, Integer page,int offsetInQuery,List<QuerySort> orderByFinalResult,Integer pageSize )
 	{
+
+		if (results.size()>1)
+			return results.get(0);
+
 		DataBean<List<Map<String, Object>>> result = new DataBean<>();
 
 

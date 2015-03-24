@@ -77,8 +77,8 @@ public abstract class DataQueryRunner {
         result.addAll(translateTheMainEntity(dataQueryDTO, entitiestree, dataEntitiesConfig));
 
         if (result.isEmpty()) {
-            translateTheSubQueries(dataQueryDTO, entitiestree, dataEntitiesConfig);
-            result.add(dataQueryDTO);
+            if (translateTheSubQueries(dataQueryDTO, entitiestree, dataEntitiesConfig))
+            	result.add(dataQueryDTO);
         } else {
             for (DataQueryDTO dto : result) {
                 translateTheJoins(dto, entitiestree, dataEntitiesConfig);
@@ -244,13 +244,13 @@ public abstract class DataQueryRunner {
      * @param dataEntitiesConfig
      * @return
      */
-    private DataQueryDTO translateTheSubQueries (DataQueryDTO dto,List<TreeNode<DataEntity>> entitiestrees,DataEntitiesConfig dataEntitiesConfig)
+    private boolean  translateTheSubQueries (DataQueryDTO dto,List<TreeNode<DataEntity>> entitiestrees,DataEntitiesConfig dataEntitiesConfig)
     {
 
         MultipleDataQueryDTO subQuery =  dto.getSubQuery();
 
 		if (subQuery == null)
-			return dto;
+			return false;
 
 
         //this list will mark which data query in the sub query that need to remove from the list cause they are base entities
@@ -302,7 +302,7 @@ public abstract class DataQueryRunner {
 		subQuery.getDataQueries().addAll(listToAdd);
 		subQuery.getDataQueries().removeAll(listToRemove);
 		dto.setSubQuery(subQuery);
-        return dto;
+        return true;
     }
 
 
