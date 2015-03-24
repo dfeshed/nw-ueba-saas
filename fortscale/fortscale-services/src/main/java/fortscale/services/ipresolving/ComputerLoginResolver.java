@@ -30,7 +30,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	
 	@Value("${computer.login.resolver.leaseTimeInMins:600}") // TGT lease time is default to 10 hours
 	private int leaseTimeInMins;
-	@Value("${computer.login.resolver.ipToHostNameUpdateResolutionInMins:60}") 
+	@Value("${computer.login.resolver.ipToHostNameUpdateResolutionInMins:60}")
 	private int ipToHostNameUpdateResolutionInMins;
 	@Value("${computer.login.resolver.graceTimeInMins:1}")
 	private int graceTimeInMins;
@@ -67,6 +67,10 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	//for testing
 	protected void setIpToHostNameUpdateResolutionInMins(int ipToHostNameUpdateResolutionInMins) {
 		this.ipToHostNameUpdateResolutionInMins = ipToHostNameUpdateResolutionInMins;
+	}
+	//for testing
+	protected void setLeaseTimeInMins(int leaseTimeInMins) {
+		this.leaseTimeInMins = leaseTimeInMins;
 	}
 
 	public String getHostname(String ip, long ts) {
@@ -171,7 +175,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 
 	@Override
 	protected void removeFromBlackList(ComputerLoginEvent event) {
-		removeFromBlackList(event.getIpaddress(), event.getTimestampepoch(), event.getTimestampepoch() +  (ipToHostNameUpdateResolutionInMins * 60 * 1000));
+		removeFromBlackList(event.getIpaddress(), event.getTimestampepoch() - (graceTimeInMins * 60 * 1000), event.getTimestampepoch() +  (leaseTimeInMins * 60 * 1000));
 	}
 
 
