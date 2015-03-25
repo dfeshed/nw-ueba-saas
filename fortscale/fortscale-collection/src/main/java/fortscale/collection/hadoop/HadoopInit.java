@@ -336,6 +336,18 @@ public class HadoopInit implements InitializingBean{
 	@Value("${impala.score.amt_top.table.partition.type}")
 	private String impalaTopAmtScoringTablePartitionType;
 
+	// AMT Session Data table
+	@Value("${impala.sessiondata.amt.table.fields}")
+	private String impalaAmtSessionDataTableFields;
+	@Value("${impala.sessiondata.amt.table.delimiter}")
+	private String impalaAmtSessionDataTableDelimiter;
+	@Value("${impala.sessiondata.amt.table.name}")
+	private String impalaAmtSessionDataTableName;
+	@Value("${hdfs.user.processeddata.amtsession.path}")
+	private String impalaAmtSessionDataDirectory;
+	@Value("${impala.sessiondata.amt.table.partition.type}")
+	private String impalaAmtSessionDataTablePartitionType;
+
 	public void createImpalaTables() throws IOException{
 
 		PartitionStrategy partitionStrategy;
@@ -442,6 +454,10 @@ public class HadoopInit implements InitializingBean{
 		// Top AMT Scoring table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTopAmtScoringTablePartitionType);
 		createTable(impalaTopAmtScoringTableName, impalaTopAmtScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTopAmtScoringTableDelimiter, impalaTopAmtScoringDirectory);
+
+		// AMT Session Data table
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaAmtSessionDataTablePartitionType);
+		createTable(impalaAmtSessionDataTableName, impalaAmtSessionDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAmtSessionDataTableDelimiter, impalaAmtSessionDataDirectory);
 	}
 	
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException{
