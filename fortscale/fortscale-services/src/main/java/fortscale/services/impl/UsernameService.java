@@ -13,8 +13,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
@@ -24,18 +24,21 @@ public class UsernameService implements InitializingBean, CachingService{
 
 	private List<Set<String>> logUsernameSetList;
 	private List<HashMap<String, String>> logUsernameToUserIdMapList;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private EventScoreDAO loginDAO;
-	
+
 	@Autowired
 	private EventScoreDAO sshDAO;
-	
+
 	@Autowired
 	private EventScoreDAO vpnDAO;
+
+	@Autowired
+	private EventScoreDAO amtDAO;
 
 	@Autowired
 	private CacheHandler<String, String> usernameToUserIdCache;
@@ -79,26 +82,31 @@ public class UsernameService implements InitializingBean, CachingService{
 	public User findByLogUsername(LogEventsEnum eventId, String username){
 		return userRepository.findByLogUsername(getLogname(eventId), username);
 	}
-	
-	public String getTableName(LogEventsEnum eventId){
-		String tablename = null;
-		switch(eventId){
+
+	public String getTableName(LogEventsEnum eventId) {
+		String tableName = null;
+
+		switch (eventId) {
 		case login:
-			tablename = loginDAO.getTableName();
+			tableName = loginDAO.getTableName();
 			break;
 		case ssh:
-			tablename = sshDAO.getTableName();
+			tableName = sshDAO.getTableName();
 			break;
 		case vpn:
-			tablename = vpnDAO.getTableName();
+			tableName = vpnDAO.getTableName();
 			break;
+		case amt:
+			tableName = amtDAO.getTableName();
+			break;
+
 		default:
 			break;
 		}
-		
-		return tablename;
+
+		return tableName;
 	}
-	
+
 	public String getLogname(LogEventsEnum eventId){
 		return getTableName(eventId);
 	}
