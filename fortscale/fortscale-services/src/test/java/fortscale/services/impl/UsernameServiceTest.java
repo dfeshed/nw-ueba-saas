@@ -27,8 +27,8 @@ public class UsernameServiceTest {
 	private EventScoreDAO sshDAO;
 	@Mock
 	private EventScoreDAO vpnDAO;
-	@Mock
-	private EventScoreDAO amtDAO;
+//	@Mock
+//	private EventScoreDAO amtDAO;
 	@Mock
 	private CacheHandler<String, String> usernameToUserIdCache;
 
