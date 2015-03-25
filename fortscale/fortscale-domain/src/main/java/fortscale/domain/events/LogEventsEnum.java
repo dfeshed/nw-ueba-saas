@@ -1,10 +1,11 @@
 package fortscale.domain.events;
 
 public enum LogEventsEnum {
-	login("login","login"),
-	ssh("ssh","ssh"),
-	vpn("vpn","vpn");
-	
+	login("login", "login"),
+	ssh("ssh", "ssh"),
+	vpn("vpn", "vpn"),
+	amt("amt", "amt");
+
 	private String id;
 	private String displayName;
 	
