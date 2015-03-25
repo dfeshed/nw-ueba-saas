@@ -541,33 +541,33 @@ public class ApiController extends BaseController {
 	{
 		DataBean<List<Map<String, Object>>> result = new DataBean<>();
 
+		if (results != null) {
+			Map<String, Object> info = new HashMap<>();
+			List<Map<String, Object>> unionResult = new ArrayList<>();
 
-		Map<String, Object> info = new HashMap<>();
-		List<Map<String, Object>> unionResult = new ArrayList<>();
-
-
-		for (DataBean<List<Map<String, Object>>> queryResult : results)
-		{
-			if (queryResult.getData() != null) {
-				unionResult.addAll(queryResult.getData());
+			for (DataBean<List<Map<String, Object>>> queryResult : results) {
+				if (queryResult.getData() != null) {
+					unionResult.addAll(queryResult.getData());
+				}
+				if (queryResult.getInfo() != null) {
+					info.putAll(queryResult.getInfo());
+				}
 			}
-			if (queryResult.getInfo() != null) {
-				info.putAll(queryResult.getInfo());
-			}
-		}
 
-		//sort the result depend on orderByFinalResult
-		Collections.sort(unionResult,new OrderByComparator(orderByFinalResult));
-		if (unionResult.size() > limitInQuery){
-			unionResult = unionResult.subList(offsetInQuery, limitInQuery);
-		}
-		if (page != null) {
-			if (unionResult.size() > pageSize) {
-				unionResult = unionResult.subList(offsetInQuery, pageSize);
+			//sort the result depend on orderByFinalResult
+			Collections.sort(unionResult, new OrderByComparator(orderByFinalResult));
+			if (unionResult.size() > limitInQuery) {
+				unionResult = unionResult.subList(offsetInQuery, limitInQuery);
 			}
+			if (page != null) {
+				if (unionResult.size() > pageSize) {
+					unionResult = unionResult.subList(offsetInQuery, pageSize);
+				}
+			}
+			result.setData(unionResult);
+			result.setTotal(result.getData().size());
+			result.setInfo(info);
 		}
-		result.setData(unionResult);
-		result.setTotal(result.getData().size());
 		return result;
 
 	}
