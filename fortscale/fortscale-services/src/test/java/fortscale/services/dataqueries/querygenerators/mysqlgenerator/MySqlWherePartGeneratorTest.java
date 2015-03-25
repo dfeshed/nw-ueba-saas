@@ -1,14 +1,11 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
-import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataentity.QueryValueType;
 import fortscale.services.dataqueries.DataQueryGeneratorTest;
-import fortscale.services.dataqueries.querydto.*;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
@@ -53,6 +50,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 		partitionsBaseFields.add("event_time_utc");
 
 		when(dataEntitiesConfig.getEntityPartitionBaseField(any(String.class))).thenReturn(partitionsBaseFields);
+		when(dataEntitiesConfig.getEntityTable(any(String.class))).thenReturn("entity");
 		when(dataEntitiesConfig.getFieldColumn(any(String.class), any(String.class))).thenReturn("date_time_unix");
 		when(dataEntitiesConfig.getFieldColumn(any(String.class), eq("yearmonthday"))).thenReturn("date_time_unix");
 
@@ -72,7 +70,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 			throws Exception {
 
 		String sqlStr = mySqlWherePartGenerator.generateQueryPart(dataQueryDTO1);
-		String expectedString = "WHERE yearmonthday >= 20141024 AND yearmonthday <= 20141026 AND (eventscore >= 50 AND date_time_unix >= 1414184400 AND date_time_unix <= 1414360799)";
+		String expectedString = "WHERE entity.yearmonthday >= 20141024 AND entity.yearmonthday <= 20141026 AND (entity.eventscore >= 50 AND entity.date_time_unix >= 1414184400 AND entity.date_time_unix <= 1414360799)";
 		assertEquals("SQL Where part for DTO1" , expectedString, sqlStr);
 	}
 
@@ -80,7 +78,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 	public void mySqlWherePartGenerator_should_generate_correct_where_condition()
 			throws Exception {
 		String sqlStr = mySqlWherePartGenerator.generateQueryPart(complexWhereDTO);
-		String expectedString = "WHERE yearmonthday >= 20141024 AND yearmonthday <= 20141026 AND (date_time_unix >= 1414184400 AND date_time_unix <= 1414360799 AND eventscore IN ( 50 , 70 ) AND date_time_unix IN ( \"my_user_name\" ) AND date_time_unix BETWEEN  \"my_user_name1\" AND \"my_user_name2\"  AND date_time_unix BETWEEN  1414360799 AND 1414360800  AND date_time_unix LIKE \"%my_user_name\" AND date_time_unix LIKE \"my_user_name%\" AND date_time_unix LIKE \"%my_user_name%\" AND eventscore IS NOT NULL  AND eventscore IS NULL )";
+		String expectedString = "WHERE entity.yearmonthday >= 20141024 AND entity.yearmonthday <= 20141026 AND (entity.date_time_unix >= 1414184400 AND entity.date_time_unix <= 1414360799 AND entity.eventscore IN ( 50 , 70 ) AND entity.date_time_unix IN ( \"my_user_name\" ) AND entity.date_time_unix BETWEEN  \"my_user_name1\" AND \"my_user_name2\"  AND entity.date_time_unix BETWEEN  1414360799 AND 1414360800  AND entity.date_time_unix LIKE \"%my_user_name\" AND entity.date_time_unix LIKE \"my_user_name%\" AND entity.date_time_unix LIKE \"%my_user_name%\" AND entity.eventscore IS NOT NULL  AND entity.eventscore IS NULL )";
 		assertEquals("SQL Where part for complexWhereDTO" , expectedString, sqlStr);
 	}
 
@@ -88,7 +86,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
     public void mySqlWherePartGenerator_between_date_time()
             throws Exception {
         String sqlStr = mySqlWherePartGenerator.generateQueryPart(betweenPartitionDTO);
-        String expectedString = "WHERE yearmonthday >= 20141024 AND yearmonthday <= 20141026 AND (date_time_unix BETWEEN  1414184400 AND 1414360799 )";
+        String expectedString = "WHERE entity.yearmonthday >= 20141024 AND entity.yearmonthday <= 20141026 AND (entity.date_time_unix BETWEEN  1414184400 AND 1414360799 )";
         assertEquals("SQL Where part for betweenPartitionDTO" , expectedString, sqlStr);
     }
 }

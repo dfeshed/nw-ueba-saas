@@ -405,7 +405,6 @@ public class ApiController extends BaseController {
 		DataQueryRunner dataQueryRunner;
 		int location;
 		Integer offsetInLimit = null;
-		int offsetInQuery = 0;
 
 		//will hold the final result
 		List<DataBean<List<Map<String, Object>>>> results = new ArrayList<>();
@@ -423,7 +422,7 @@ public class ApiController extends BaseController {
 				if (pageSize > CACHE_LIMIT) throw new InvalidValueException("Page size must be less than " + CACHE_LIMIT);
 				location = page * pageSize;
 				offsetInLimit = (location % CACHE_LIMIT);
-				offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
+				Integer offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
 				// Add offset and limit according to page
 				dataQueryObject.setLimit(CACHE_LIMIT);
 				dataQueryObject.setOffset(offsetInQuery);
@@ -520,12 +519,7 @@ public class ApiController extends BaseController {
 
 
 			}
-
-			return collectResults(results,page,offsetInQuery,orderByFinalResult,pageSize);
-
-
-
-
+			return collectResults(results,page,dataQueryObject.getOffset(),dataQueryObject.getLimit(), orderByFinalResult,pageSize);
         }
         catch (InvalidQueryException e) {
             throw new InvalidValueException("Invalid query to parse. Error: " + e.getMessage());
@@ -543,48 +537,38 @@ public class ApiController extends BaseController {
 	 * @param results
 	 * @return
 	 */
-	private DataBean<List<Map<String, Object>>> collectResults(List<DataBean<List<Map<String, Object>>>> results, Integer page,int offsetInQuery,List<QuerySort> orderByFinalResult,Integer pageSize )
-	{
-
-		if (results.size()>1)
+	private DataBean<List<Map<String, Object>>> collectResults(List<DataBean<List<Map<String, Object>>>> results, Integer page,int offsetInQuery, Integer limitInQuery ,List<QuerySort> orderByFinalResult,Integer pageSize ) {
+		if (results.size() == 1) {
 			return results.get(0);
+		}
 
 		DataBean<List<Map<String, Object>>> result = new DataBean<>();
-
-
 		Map<String, Object> info = new HashMap<>();
 		List<Map<String, Object>> unionResult = new ArrayList<>();
 
-
-		for (DataBean<List<Map<String, Object>>> queryResult : results)
-		{
+		for (DataBean<List<Map<String, Object>>> queryResult : results) {
 			if (queryResult.getData() != null) {
 				unionResult.addAll(queryResult.getData());
 			}
 			if (queryResult.getInfo() != null) {
 				info.putAll(queryResult.getInfo());
 			}
-
 		}
 
 		//sort the result depend on orderByFinalResult
-		Collections.sort(unionResult,new OrderByComparator(orderByFinalResult));
+		Collections.sort(unionResult, new OrderByComparator(orderByFinalResult));
+		if (unionResult.size() > limitInQuery) {
+			unionResult = unionResult.subList(offsetInQuery, limitInQuery);
+		}
 		if (page != null) {
-			if (unionResult != null) {
-				if (unionResult.size() > pageSize) {
-					result.setData(unionResult.subList(offsetInQuery, pageSize));
-				} else {
-					result.setData(unionResult);
-				}
+			if (unionResult.size() > pageSize) {
+				unionResult = unionResult.subList(offsetInQuery, pageSize);
 			}
 		}
-		else{
-			result.setData(unionResult);
-		}
-
+		result.setData(unionResult);
 		result.setTotal(result.getData().size());
+		result.setInfo(info);
 		return result;
-
 	}
 
 
