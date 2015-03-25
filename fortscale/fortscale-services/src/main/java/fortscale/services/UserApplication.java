@@ -1,10 +1,11 @@
 package fortscale.services;
 
 public enum UserApplication {
-	active_directory("active_directory","User Profile"),
-	vpn("vpn","vpn"),
-	ssh("ssh","ssh");
-	
+	active_directory("active_directory", "User Profile"),
+	vpn("vpn", "vpn"),
+	ssh("ssh", "ssh"),
+	amt("amt", "amt");
+
 	private String id;
 	private String displayName;
 	
