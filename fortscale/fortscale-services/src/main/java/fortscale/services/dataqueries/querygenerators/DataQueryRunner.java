@@ -107,6 +107,7 @@ public abstract class DataQueryRunner {
 
             DataEntity dataEntity = dataEntitiesConfig.getBasetEntityFromCache(entityId);
 
+			//get the base entity from the entities tree
             if (dataEntity != null) {
 
                 TreeNode<DataEntity> abstractEntity = new TreeNode<>(dataEntity);
@@ -150,6 +151,16 @@ public abstract class DataQueryRunner {
                 }
 
             }
+			//the main entity at the data query DTO is leaf entity
+			else
+			{
+				DataEntity leafDataEntity = dataEntitiesConfig.getLeafEntityFromCache(entityId);
+				if (leafDataEntity != null)
+				{
+					result.add(dto);
+				}
+
+			}
 
         }
 
