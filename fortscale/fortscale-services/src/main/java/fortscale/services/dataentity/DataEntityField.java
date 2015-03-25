@@ -13,6 +13,14 @@ public class DataEntityField implements Comparable<DataEntityField> {
     private QueryValueType type;
 
     /**
+     * A string key for defining directional links between entities. A joinFrom key should match a joinTo key in another entity's field.
+     * When a match is found, it means that a JOIN operation is possible between those entities, on those fields.
+     * The directionality exists to retain some control on which entities can be joined.
+     */
+    private String joinFrom;
+    private String joinTo;
+
+    /**
      * A number to be used for sorting fields in an entity, relevant to how the front-end displays fields if the order isn't explicitly specified in the front-end.
      */
     private int rank = 100;
@@ -104,8 +112,25 @@ public class DataEntityField implements Comparable<DataEntityField> {
         this.attributes = attributes;
     }
 
+    public String getJoinFrom() {
+        return joinFrom;
+    }
+
+    public void setJoinFrom(String joinFrom) {
+        this.joinFrom = joinFrom;
+    }
+
+    public String getJoinTo() {
+        return joinTo;
+    }
+
+    public void setJoinTo(String joinTo) {
+        this.joinTo = joinTo;
+    }
+
     @Override
     public int compareTo(DataEntityField o) {
         return this.rank - o.rank;
     }
+
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Created by Yossi on 10/11/2014.
+ * Represents the configuration for a DataEntityField. Used when loading properties from entities.properties into fields.
  */
 public class DataEntityFieldConfig {
     private String name;
@@ -14,6 +15,8 @@ public class DataEntityFieldConfig {
     private int rank = 100;
     private boolean defaultRank = true;
     private List<String> attributes;
+    private String joinFrom;
+    private String joinTo;
 
     public static final String IS_LOGICAL_ONLY = "is_logical_only";
     public static final String EXPLICIT = "explicit";
@@ -118,5 +121,21 @@ public class DataEntityFieldConfig {
 
     public void setAttributes(List<String> attributes) {
         this.attributes = attributes;
+    }
+
+    public String getJoinTo() {
+        return joinTo;
+    }
+
+    public void setJoinTo(String joinTo) {
+        this.joinTo = joinTo;
+    }
+
+    public String getJoinFrom() {
+        return joinFrom;
+    }
+
+    public void setJoinFrom(String joinFrom) {
+        this.joinFrom = joinFrom;
     }
 }
