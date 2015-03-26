@@ -31,7 +31,12 @@ public class FeatureExtractionService implements IFeatureExtractionService{
 			String featureExtractorClass = getConfigString(config, fieldConfigKey);
 			String featureExtractorClassJson = getConfigString(config, String.format(CLASS_JSON_CONFIG_FORMAT, featureName));
 			try {
-				FeatureExtractor featureExtractor = (FeatureExtractor) (new ObjectMapper()).readValue(featureExtractorClassJson, Class.forName(featureExtractorClass));
+				FeatureExtractor featureExtractor = null;
+				if(featureExtractorClassJson != null){
+					featureExtractor = (FeatureExtractor) (new ObjectMapper()).readValue(featureExtractorClassJson, Class.forName(featureExtractorClass));
+				} else{
+					featureExtractor = (FeatureExtractor) Class.forName(featureExtractorClass).newInstance();
+				}
 				featureExtractorMap.put(featureName, featureExtractor);
 			} catch (Exception e) {
 				String errorMsg = String.format("Failed to deserialize json %s", featureExtractorClassJson);

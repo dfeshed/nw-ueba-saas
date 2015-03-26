@@ -54,45 +54,15 @@ public class AMTSessionsModelStreamTask extends EventsPrevalenceModelStreamTask 
 		normalizeFieldList = mapper.readValue(normalizeFieldsJSON, NormalizeFieldList.class);
 	}
 
- /*
-  *
-  * This method use for normalizing a field according to the session duration
-  * there is an extra condition before the normalization to make sure the field value is grater than a given value.
-  *
-  */
-	private void normalizeField(JSONObject message, Double duration, int durationAdditionInMin, String  originalFieldName, String normalizedFieldName ){
-		Integer  originalFieldValue = convertToInteger(message.get(originalFieldName));
-		double durationForRate = 0;
-		if(duration != null){
-			durationForRate = duration + durationAdditionInMin/60;
-		}
-		Double normalized_count = (originalFieldValue==null || durationForRate==0)? null : originalFieldValue / durationForRate;
-		message.put(normalizedFieldName, normalized_count);
-	}
+
 
 	@Override
 	protected boolean acceptMessage(JSONObject message) {
-
-		Double duration = convertToDouble(message.get("duration"));
-
-		for(NormalizeField normalizeField : normalizeFieldList.getNormalizeFields()){
-			normalizeField(message, duration, normalizeField.durationAdditionInMin, normalizeField.originalFieldName, normalizeField.normalizedFieldName );
-		}
 		
-		// compute inverse of avg time in yid so that it can be used with the continues
-		// values model. Since the model gives high score to big numbers we invert the 
-		// field value by 1/(1+x).
-		Double avg_time_in_yid = convertToDouble(message.get("avg_time_in_yid"));
-		Double inv_avg_time_in_yid = (avg_time_in_yid==null || avg_time_in_yid==0)? null : 1.0/(avg_time_in_yid+1.0);		
-		message.put("inv_avg_time_in_yid", inv_avg_time_in_yid);
+		
 
 		// normalize hostname according to configuration
-		String hostname = convertToString(message.get("amt_host"));
-		if (StringUtils.isNotEmpty(hostname) && StringUtils.isNotEmpty(hostPattern)) {
-			// strip numbers from the hostname
-			hostname = hostname.replaceAll(Matcher.quoteReplacement(hostPattern), Matcher.quoteReplacement(hostReplacement));
-
-		}
+		
 		
 		//Adding start time epoch in order to use DailyTimeModel
 		DateTime startTime = null;

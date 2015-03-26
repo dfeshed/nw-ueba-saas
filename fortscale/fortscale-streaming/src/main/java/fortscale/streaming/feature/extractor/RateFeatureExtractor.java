@@ -3,34 +3,28 @@ package fortscale.streaming.feature.extractor;
 import static fortscale.utils.ConversionUtils.*;
 import net.minidev.json.JSONObject;
 
-public class RateFeatureExtractor implements FeatureExtractor {
+public class RateFeatureExtractor extends MessageFeatureExtractor {
 	
 	private int durationAdditionInMin;
-	private String  originalFieldName;
-	private String normalizedFieldName;
 	private String durationFieldName;
 	
 	
 	public RateFeatureExtractor(){}
 	
 	public RateFeatureExtractor(int durationAdditionInMin, String originalFieldName, String normalizedFieldName, String durationFieldName) {
+		super(originalFieldName, normalizedFieldName);
 		this.durationAdditionInMin = durationAdditionInMin;
-		this.originalFieldName = originalFieldName;
-		this.normalizedFieldName = normalizedFieldName;
 		this.durationFieldName = durationFieldName;
 	}
 
 	@Override
-	public Object extract(JSONObject message) {
+	protected Object extractValue(JSONObject message) {
 		Integer  originalFieldValue = convertToInteger(message.get(originalFieldName));
 		Double duration = convertToDouble(message.get("duration"));
 		Double normalized_count = null;
 		if(duration != null && originalFieldValue != null){
 			double durationForRate = duration + durationAdditionInMin/60;
 			normalized_count = originalFieldValue / durationForRate;
-		}
-		if(normalizedFieldName != null){
-			message.put(normalizedFieldName, normalized_count);
 		}
 		
 		return normalized_count;
@@ -44,22 +38,14 @@ public class RateFeatureExtractor implements FeatureExtractor {
 		this.durationAdditionInMin = durationAdditionInMin;
 	}
 
-	public String getOriginalFieldName() {
-		return originalFieldName;
+	public String getDurationFieldName() {
+		return durationFieldName;
 	}
 
-	public void setOriginalFieldName(String originalFieldName) {
-		this.originalFieldName = originalFieldName;
+	public void setDurationFieldName(String durationFieldName) {
+		this.durationFieldName = durationFieldName;
 	}
-
-	public String getNormalizedFieldName() {
-		return normalizedFieldName;
-	}
-
-	public void setNormalizedFieldName(String normalizedFieldName) {
-		this.normalizedFieldName = normalizedFieldName;
-	}
-
+	
 	@Override public boolean equals(Object o) {
 		if (this == o)
 			return true;
@@ -76,21 +62,6 @@ public class RateFeatureExtractor implements FeatureExtractor {
 			return false;
 
 		return true;
-	}
-
-	@Override public int hashCode() {
-		int result = durationAdditionInMin;
-		result = 31 * result + (originalFieldName != null ? originalFieldName.hashCode() : 0);
-		result = 31 * result + (normalizedFieldName != null ? normalizedFieldName.hashCode() : 0);
-		return originalFieldName.hashCode();
-	}
-
-	public String getDurationFieldName() {
-		return durationFieldName;
-	}
-
-	public void setDurationFieldName(String durationFieldName) {
-		this.durationFieldName = durationFieldName;
 	}
 	
 }
