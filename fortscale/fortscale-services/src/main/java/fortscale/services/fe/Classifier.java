@@ -10,6 +10,7 @@ public enum Classifier {
 	auth("auth", "Logins", LogEventsEnum.login, UserApplication.active_directory),
 	ssh("ssh", "SSH", LogEventsEnum.ssh, UserApplication.ssh),
 	amt("amt", "AMT", LogEventsEnum.amt, UserApplication.amt),
+	amtsession("amtsession", "AmtSession", LogEventsEnum.amtsession, UserApplication.amtsession),
 	total("total", "Total Score", null, null);
 
 	private String id;

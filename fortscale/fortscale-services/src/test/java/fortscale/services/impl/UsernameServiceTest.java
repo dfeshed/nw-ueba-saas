@@ -82,7 +82,7 @@ public class UsernameServiceTest {
 		for (User user : listOfUsers) {
 			verify(usernameToUserIdCache, times(1)).put(user.getUsername(), user.getId());
 			for (LogEventsEnum value : LogEventsEnum.values()) {
-				if (value != LogEventsEnum.amt) { // TODO remove!
+				if (value != LogEventsEnum.amt && value != LogEventsEnum.amtsession) { // TODO remove!
 					assertTrue(usernameService.isLogUsernameExist(value, getDataSourceUsername(value, user), user.getId()));
 				}
 			}
