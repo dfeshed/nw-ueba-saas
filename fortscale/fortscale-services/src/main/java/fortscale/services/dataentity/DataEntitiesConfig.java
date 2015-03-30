@@ -438,6 +438,13 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
                 }
                 field.setScoreField(scoreField);
 
+                String format = fieldConfig.getFormat();
+                if (format == null){
+                    format = getExtendableValue(entityId, "field", fieldId, "format");
+                    fieldConfig.setFormat(format);
+                }
+                field.setFormat(format);
+
                 String joinFrom = fieldConfig.getJoinFrom();
                 if (joinFrom == null){
                     joinFrom = getExtendableValue(entityId, "field", fieldId, "joinFrom");
