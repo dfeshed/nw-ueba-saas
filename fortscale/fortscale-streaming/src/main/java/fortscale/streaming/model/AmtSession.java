@@ -261,7 +261,7 @@ public class AmtSession {
 		}
 	}
 
-	private static final String formatTime(long instant) {
+	private static String formatTime(long instant) {
 		DateTime when = new DateTime(TimestampUtils.convertToMilliSeconds(instant), DateTimeZone.forID("UTC"));
 		return when.toString("yyyy-MM-dd HH:mm:ss");
 	}
