@@ -1,27 +1,23 @@
 package fortscale.streaming.service.vpn;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.utils.ConversionUtils.convertToBoolean;
-import static fortscale.utils.ConversionUtils.convertToLong;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minidev.json.JSONObject;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
 import fortscale.geoip.GeoIPService;
 import fortscale.geoip.IGeoIPInfo;
 import fortscale.services.event.VpnService;
 import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
+import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.utils.ConversionUtils.*;
 
 /**
  * Service that receive and event from a vpn input topic, and provides three services:
@@ -57,9 +53,14 @@ public class VpnEnrichService {
 
     public JSONObject processVpnEvent(JSONObject event) {
         checkNotNull(event);
-        event = processGeolocation(event);
-        event = processDataBuckets(event);
-        event = processSessionUpdate(event);
+
+		if (config.getVpnGeolocationConfig() != null)
+        	event = processGeolocation(event);
+		if (config.getVpnDataBucketsConfig() != null)
+        	event = processDataBuckets(event);
+		if (config.getVpnSessionUpdateConfig() != null)
+        	event = processSessionUpdate(event);
+
         return event;
     }
 

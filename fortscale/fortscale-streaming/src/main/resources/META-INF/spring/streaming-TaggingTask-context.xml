@@ -122,6 +122,10 @@
         <property name="matchersString" value="${collection.ssh.etl.username.normalize.matchers}"/>
         <property name="usernameService" ref="usernameService"/>
     </bean>
+    <bean id="amtUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
+        <property name="matchersString" value="${collection.amt.etl.username.normalize.matchers}"/>
+        <property name="usernameService" ref="usernameService"/>
+    </bean>
 
     <bean id="SecurityUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${normalizedUser.fail.filter:false}"/>
@@ -134,6 +138,10 @@
     <bean id="SshUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.SshUsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="sshUsernameNormalizer"/>
+    </bean>
+    <bean id="AMTUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
+        <property name="dropOnFail" value="${normalizedUser.fail.filter:false}"/>
+        <property name="usernameNormalizer" ref="amtUsernameNormalizer"/>
     </bean>
 
     <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />

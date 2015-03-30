@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+
+    <schedule>
+        <job>
+            <name>ETL</name>
+            <group>AMT</group>
+            <description>process amt events received from splunk into files</description>
+            <job-class>fortscale.collection.jobs.AMTEventProcessJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+
+            <job-data-map>
+                <entry>
+                    <key>filesFilter</key>
+                    <value>AMT_\d+.csv$</value>
+                </entry>
+                <entry>
+                    <key>outputFields</key>
+                    <value>${impala.data.amt.table.fields}</value>
+                </entry>
+                <entry>
+                    <key>timestampField</key>
+                    <value>${impala.data.table.fields.epochtime}</value>
+                </entry>
+                <entry>
+                    <key>outputSeparator</key>
+                    <value>${impala.data.amt.table.delimiter}</value>
+                </entry>
+                <entry>
+                    <key>morphlineFile</key>
+                    <value>${AMTParsingMorphline}</value>
+                </entry>
+                <entry>
+                    <key>morphlineEnrichment</key>
+                    <value>${AMTEnrichMorphline}</value>
+                </entry>
+                <entry>
+                    <key>hadoopPath</key>
+                    <value>${hdfs.user.data.amt.path}</value>
+                </entry>
+                <entry>
+                    <key>hadoopFilename</key>
+                    <value>amtData.csv</value>
+                </entry>
+                <entry>
+                    <key>impalaTableName</key>
+                    <value>${impala.data.amt.table.name}</value>
+                </entry>
+                <entry>
+                    <key>streamingTopic</key>
+                    <value>${kafka.amt.struct.topic}</value>
+                </entry>
+                <entry>
+                    <key>partitionStrategy</key>
+                    <value>${impala.data.amt.table.partition.type}</value>
+                </entry>
+            </job-data-map>
+        </job>
+
+    </schedule>
+
+</job-scheduling-data>
