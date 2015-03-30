@@ -1,29 +1,36 @@
 package fortscale.streaming.feature.extractor;
 
-import static fortscale.utils.ConversionUtils.*;
+import static fortscale.utils.ConversionUtils.convertToDouble;
 import net.minidev.json.JSONObject;
 
-public class RateFeatureExtractor extends MessageFeatureExtractor {
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+
+
+
+
+@JsonTypeName(RateFeatureAdjustor.RATE_FEATURE_ADJUSTOR_TYPE)
+public class RateFeatureAdjustor implements FeatureAdjustor {
+	protected static final String RATE_FEATURE_ADJUSTOR_TYPE = "rate_feature_adjustor";
 	
 	private int durationAdditionInMin;
 	private String durationFieldName;
 	
 	
-	public RateFeatureExtractor(){}
+	public RateFeatureAdjustor(){}
 	
-	public RateFeatureExtractor(int durationAdditionInMin, String originalFieldName, String normalizedFieldName, String durationFieldName) {
-		super(originalFieldName, normalizedFieldName);
+	public RateFeatureAdjustor(int durationAdditionInMin, String durationFieldName) {
 		this.durationAdditionInMin = durationAdditionInMin;
 		this.durationFieldName = durationFieldName;
 	}
 
 	@Override
-	protected Object extractValue(JSONObject message) {
-		Integer  originalFieldValue = convertToInteger(message.get(originalFieldName));
-		Double duration = convertToDouble(message.get("duration"));
+	public Object adjust(Object feature, JSONObject message) {
+		Double  originalFieldValue = convertToDouble(feature);
+		Double duration = convertToDouble(message.get(durationFieldName));
 		Double normalized_count = null;
 		if(duration != null && originalFieldValue != null){
-			double durationForRate = duration + durationAdditionInMin/60;
+			double durationForRate = duration + durationAdditionInMin/60.0;
 			normalized_count = originalFieldValue / durationForRate;
 		}
 		
@@ -46,22 +53,25 @@ public class RateFeatureExtractor extends MessageFeatureExtractor {
 		this.durationFieldName = durationFieldName;
 	}
 	
-	@Override public boolean equals(Object o) {
+	@Override
+	public boolean equals(Object o) {
 		if (this == o)
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
 
-		RateFeatureExtractor that = (RateFeatureExtractor) o;
+		RateFeatureAdjustor that = (RateFeatureAdjustor) o;
 
 		if (durationAdditionInMin != that.durationAdditionInMin)
 			return false;
-		if (normalizedFieldName != null ? !normalizedFieldName.equals(that.normalizedFieldName) : that.normalizedFieldName != null)
-			return false;
-		if (originalFieldName != null ? !originalFieldName.equals(that.originalFieldName) : that.originalFieldName != null)
+		if (!durationFieldName.equals(that.durationFieldName))
 			return false;
 
 		return true;
 	}
 	
+	@Override
+	public int hashCode() {
+		return durationFieldName.hashCode();
+	}
 }
