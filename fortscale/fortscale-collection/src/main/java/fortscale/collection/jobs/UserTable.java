@@ -1,18 +1,13 @@
 package fortscale.collection.jobs;
 
-import org.joda.time.DateTime;
-
 import fortscale.domain.ad.AdUserGroup;
-import fortscale.domain.core.AdUserDirectReport;
-import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.ClassifierScore;
-import fortscale.domain.core.IUserTable;
-import fortscale.domain.core.User;
+import fortscale.domain.core.*;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.UserApplication;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
+import org.joda.time.DateTime;
 
 public class UserTable implements IUserTable {
 	private static Logger logger = Logger.getLogger(UserTable.class);
@@ -24,6 +19,7 @@ public class UserTable implements IUserTable {
 	private String secUsernames;
 	private String sshUsernames;
 	private String vpnUsernames;
+	private String amtUsernames;
 	
 	
 	public UserTable(User user, User manager){
@@ -87,6 +83,10 @@ public class UserTable implements IUserTable {
 		this.vpnUsernames = vpnUsernames;
 	}
 
+	public void setAmtUsernames(String amtUsernames) {
+		this.amtUsernames = amtUsernames;
+	}
+
 	@Override
 	public String getSecUsernames() {
 		return secUsernames;
@@ -100,6 +100,11 @@ public class UserTable implements IUserTable {
 	@Override
 	public String getVpnUsernames() {
 		return vpnUsernames;
+	}
+
+	@Override
+	public String getAmtUsernames() {
+		return amtUsernames;
 	}
 
 	private Double getScore(Classifier classifier){
@@ -128,6 +133,11 @@ public class UserTable implements IUserTable {
 	@Override
 	public Double getVpnScore() {
 		return getScore(Classifier.vpn);
+	}
+
+	@Override
+	public Double getAmtScore() {
+		return getScore(Classifier.amt);
 	}
 
 	@Override
@@ -365,6 +375,11 @@ public class UserTable implements IUserTable {
 	@Override
 	public Long getLoginLastActivityTime() {
 		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.login));
+	}
+
+	@Override
+	public Long getAmtLastActivityTime() {
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.amt));
 	}
 
 }
