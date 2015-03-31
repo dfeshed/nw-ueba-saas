@@ -63,7 +63,7 @@ public class FieldTaggingService {
 
 				for (String value : setOfValusFromFile) {
 					String strValue = value.toUpperCase();
-					this.listOfValuToTag.put(strValue, null);
+					this.listOfValuToTag.put(strValue, strValue);
 
 					}
 			}
