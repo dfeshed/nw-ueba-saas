@@ -23,7 +23,7 @@ public class AMTWithOngoingParsingTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String parsConfFile ="resources/conf-files/processAMTParsingOngoingEvents.conf";
-	private String logicConfFile = "resources/conf-files/readAMT_enrich.conf";
+	private String logicConfFile = "resources/conf-files/enrichment/readAMT_enrich.conf";
 
 
 
@@ -146,7 +146,7 @@ public class AMTWithOngoingParsingTest {
 								"2014-10-01T05:00:30.980+00:00|10.0.0.1|10.0.0.2|nicholle|Comm = cailsg1, yid = cailsg1|EMAILLOOKUP|EMAILLOOKUP|19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR"
 						),
 						$(
-								"2014-10-01 05:00:30,1412139630,10.0.0.2,,UNKNOWN,10.0.0.1,,nicholle,SUCCESS,,,false,false,false,false,cailsg1,EMAILLOOKUP,EMAILLOOKUP,19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR,Reserved Range,Reserved Range,nicholle"
+								"2014-10-01 05:00:30,1412139630,10.0.0.2,,UNKNOWN,10.0.0.1,,nicholle,SUCCESS,,,false,false,false,false,cailsg1,EMAILLOOKUP,EMAILLOOKUP,19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR,,,"
 						)
 				),
 
@@ -156,7 +156,7 @@ public class AMTWithOngoingParsingTest {
 								"2014-10-01T05:00:30.980+00:00|10.0.0.1|10.0.0.2|nicholle| yid = cailsg1, Comm = cailsg1|EMAILLOOKUP|EMAILLOOKUP|19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR"
 						),
 						$(
-								"2014-10-01 05:00:30,1412139630,10.0.0.2,,UNKNOWN,10.0.0.1,,nicholle,SUCCESS,,,false,false,false,false,cailsg1,EMAILLOOKUP,EMAILLOOKUP,19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR,Reserved Range,Reserved Range,nicholle"
+								"2014-10-01 05:00:30,1412139630,10.0.0.2,,UNKNOWN,10.0.0.1,,nicholle,SUCCESS,,,false,false,false,false,cailsg1,EMAILLOOKUP,EMAILLOOKUP,19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR,,,"
 						)
 				),
 
@@ -167,7 +167,7 @@ public class AMTWithOngoingParsingTest {
 								"2014-10-10T07:41:48.000+00:00|10.0.0.1|10.0.0.2|rashid|nanu|VIEW|145342234|1ser2ef&b=234234%s=6v"
 						),
 						$(
-								"2014-10-10 07:41:48,1412926908,10.0.0.2,,UNKNOWN,10.0.0.1,,rashid,SUCCESS,,,false,false,false,false,nanu,VIEW,145342234,1ser2ef&b=234234%s=6v,Reserved Range,Reserved Range,rashid"
+								"2014-10-10 07:41:48,1412926908,10.0.0.2,,UNKNOWN,10.0.0.1,,rashid,SUCCESS,,,false,false,false,false,nanu,VIEW,145342234,1ser2ef&b=234234%s=6v,,,"
 						)
 				),
 				$(
