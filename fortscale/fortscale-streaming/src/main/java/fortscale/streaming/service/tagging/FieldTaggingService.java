@@ -51,7 +51,7 @@ public class FieldTaggingService {
 
 
 		//clear the current cache
-		listOfValuToTag.clear();
+		//listOfValuToTag.clear();
 
 
 		//initialize the cache with the current values
