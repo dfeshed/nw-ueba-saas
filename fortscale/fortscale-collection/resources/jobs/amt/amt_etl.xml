@@ -33,11 +33,11 @@
                 </entry>
                 <entry>
                     <key>morphlineFile</key>
-                    <value>${AMTParsingMorphline}</value>
+                    <value>${readAMT.morphline}</value>
                 </entry>
                 <entry>
                     <key>morphlineEnrichment</key>
-                    <value>${AMTEnrichMorphline}</value>
+                    <value>${enrichAMT.morphline}</value>
                 </entry>
                 <entry>
                     <key>hadoopPath</key>
