@@ -52,6 +52,10 @@
                     <value>${impala.data.amt.table.name}</value>
                 </entry>
                 <entry>
+                    <key>partitionKeyFields</key>
+                    <value>${impala.data.amt.table.field.username}</value>
+                </entry>
+                <entry>
                     <key>streamingTopic</key>
                     <value>${kafka.amt.struct.topic}</value>
                 </entry>
