@@ -16,7 +16,7 @@
             <job-data-map>
                 <entry>
                     <key>impalaTableName</key>
-                    <value>${impala.data.amt.table.name}</value>
+                    <value>${impala.enricheddata.amt.table.name}</value>
                 </entry>
                 <entry>
                     <key>epochtimeField</key>

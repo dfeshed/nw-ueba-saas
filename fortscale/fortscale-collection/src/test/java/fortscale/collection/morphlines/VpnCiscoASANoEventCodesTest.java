@@ -36,6 +36,7 @@ public class VpnCiscoASANoEventCodesTest {
 		testContextManager = null;
 	}
 
+
 	@Before
 	public void setUp() throws Exception {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
@@ -82,7 +83,7 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-14 02:17:26,1418516246,poorman,73.189.60.63,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
+								"2014-12-14 02:17:26,1418516246,poorman,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
 								(String)null,
 								(String)null
 						)
@@ -98,7 +99,7 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-14 02:17:26,1418516246,poorman,73.189.60.63,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
+								"2014-12-14 02:17:26,1418516246,poorman,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,"
 						)
 				),
 
@@ -123,7 +124,7 @@ public class VpnCiscoASANoEventCodesTest {
 								"2014-12-14T23:59:46.000+00:00|device-id=gi-0-1.rav2-1-gci.sydney.corp.fortscale.com User authentication failed: Uname: "
 						),
 						$(
-								"2014-12-15 01:59:46,1418601586,admin,,,FAIL,,,,,,,,,,,,,false,false",
+								"2014-12-15 01:59:46,1418601586,admin,,,FAIL,,,,,,,,,,,,,,",
 								(String)null
 						)
 				),
@@ -139,8 +140,8 @@ public class VpnCiscoASANoEventCodesTest {
 								"2014-12-14T23:59:44.000+00:00|device-id=gi-0-1.rav1-1-gci.corp.tw1.fortscale.com AAA user authentication Rejected : reason = AAA failure : server = 67.195.88.201 : user = "
 						),
 						$(
-								"2014-12-15 01:59:43,1418601583,admin,,,FAIL,,,,,,,,,,,,,false,false",
-								"2014-12-15 01:59:44,1418601584,niniyni,,,FAIL,,,,,,,,,,,,,false,false",
+								"2014-12-15 01:59:43,1418601583,admin,,,FAIL,,,,,,,,,,,,,,",
+								"2014-12-15 01:59:44,1418601584,niniyni,,,FAIL,,,,,,,,,,,,,,",
 								(String)null
 						)
 				),
@@ -157,8 +158,8 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-14 02:00:28,1418515228,vferreira,73.189.60.63,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
-								"2014-12-14 03:01:29,1418518889,vferreira,73.189.60.63,10.72.116.99,CLOSED,United States,US,Not_supported,Not_supported,Not_supported,isp,,,233909584,29339131,3661,48119,false,false"
+								"2014-12-14 02:00:28,1418515228,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
+								"2014-12-14 03:01:29,1418518889,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,3661,,,"
 						)
 				),
 
@@ -182,7 +183,7 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-14 02:17:26,1418516246,moav,73.189.60.63,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false"
+								"2014-12-14 02:17:26,1418516246,moav,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,"
 						)
 				),
 				$(
@@ -198,12 +199,12 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-14 02:01:20,1418515280,vferreira,73.189.60.63,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
+								"2014-12-14 02:01:20,1418515280,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
 								(String)null,
-								"2014-12-14 02:01:27,1418515287,vferreira,73.189.60.65,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
+								"2014-12-14 02:01:27,1418515287,vferreira,73.189.60.65,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
 								(String)null,
-								"2014-12-14 02:02:27,1418515347,vferreira,73.189.60.67,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
-								"2014-12-14 03:02:29,1418518949,vferreira,73.189.60.65,10.72.116.99,CLOSED,United States,US,Not_supported,Not_supported,Not_supported,isp,,,233909584,29339131,3661,48119,false,false"
+								"2014-12-14 02:02:27,1418515347,vferreira,73.189.60.67,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
+								"2014-12-14 03:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,3661,,,"
 						)
 				),
 
@@ -220,12 +221,12 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-13 02:01:20,1418428880,vferreira,73.189.60.63,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
+								"2014-12-13 02:01:20,1418428880,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
 								(String)null,
-								"2014-12-14 02:01:27,1418515287,vferreira,73.189.60.65,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
+								"2014-12-14 02:01:27,1418515287,vferreira,73.189.60.65,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
 								(String)null,
-								"2014-12-14 02:02:27,1418515347,vferreira,73.189.60.67,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
-								"2014-12-14 03:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,Japan,JP,Not_supported,Not_supported,Not_supported,isp,,,233909584,29339131,36061,6277,false,false"
+								"2014-12-14 02:02:27,1418515347,vferreira,73.189.60.67,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
+								"2014-12-14 03:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,36061,,,"
 						)
 				),
 
@@ -238,8 +239,9 @@ public class VpnCiscoASANoEventCodesTest {
 						),
 						$(
 								(String)null,
-								"2014-12-13 02:01:20,1418428880,vferreira,73.189.60.63,10.72.116.99,SUCCESS,United States,US,Not_supported,Not_supported,Not_supported,isp,,,,,,,false,false",
-								"2014-12-14 03:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,Japan,JP,Not_supported,Not_supported,Not_supported,isp,,,233909584,29339131,0,,false,false"
+								"2014-12-13 02:01:20,1418428880,vferreira,73.189.60.63,10.72.116.99,SUCCESS,,,,,,,,,,,,,,",
+								"2014-12-14 03:02:29,1418518949,vferreira,220.36.32.118,,CLOSED,,,,,,,,,233909584,29339131,,,," +
+										""
 						)
 				)
 

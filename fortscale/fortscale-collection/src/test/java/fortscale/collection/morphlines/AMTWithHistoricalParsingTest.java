@@ -19,7 +19,7 @@ public class AMTWithHistoricalParsingTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String parsConfFile ="resources/conf-files/processAMTParsingHistoricalEvents.conf";
-	private String logicConfFile = "resources/conf-files/processAMT_enrich.conf";
+	private String logicConfFile = "resources/conf-files/readAMT_enrich.conf";
 
 
 
