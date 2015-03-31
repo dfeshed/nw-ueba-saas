@@ -106,7 +106,7 @@ public class AmtSummaryService {
 		outputTime = env.getProperty("impala.sessiondata.amt.table.field.date_time_unix");
 		outputDuration = env.getProperty("impala.sessiondata.amt.table.field.duration");
 		outputYidCount = env.getProperty("impala.sessiondata.amt.table.field.distinct_yid_count");
-		outputUsername = env.getProperty("impala.sessiondata.amt.table.field.usrename");
+		outputUsername = env.getProperty("impala.sessiondata.amt.table.field.username");
 		outputNormalizedUsername = env.getProperty("impala.sessiondata.amt.table.field.normalized_username");
 		outputAvgYidCount = env.getProperty("impala.sessiondata.amt.table.field.avg_yid_counts");
 		outputAvgTimeInYid = env.getProperty("impala.sessiondata.amt.table.field.avg_time_in_yid");

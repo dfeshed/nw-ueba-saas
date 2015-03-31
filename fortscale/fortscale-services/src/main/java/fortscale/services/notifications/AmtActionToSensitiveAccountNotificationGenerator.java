@@ -29,7 +29,7 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 	private static Logger logger = Logger.getLogger(AmtActionToSensitiveAccountNotificationGenerator.class);
 	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_CAUSE = "amt_action_to_sensitive_account";
 	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_NAME = AMT_ACTION_TO_SENSITIVE_ACCOUNT_CAUSE;
-	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_MSG_FOR_SINGLE = "  has accessed a VIP account - {{attributes.yid}}";
+	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_MSG_FOR_SINGLE = "   has accessed a VIP account - {{attributes.yid}}";
 	private static final String AMT_RESET_PWD_MSG_FOR_AGG = "   have accessed a VIP account";
 
 	@Autowired
@@ -42,26 +42,25 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 	private List<String> amtEventFields;
 
 	/**
-	 * This Method will create notifications for a given username, YID and timestamp, based on the Json message.
+	 * This method will create notifications for a given username, YID and timestamp, based on the Json message.
 	 * The notification will be related to some sensitive action that was taken on a sensitive YID.
 	 *
-	 * @param msg               - The Json message from the Kafka topic.
-	 * @param normalizeUsername - The normalized username as was retrieved from the Json msg.
-	 * @param yid               - The YID that was retrieved from the Json msg.
-	 * @param dateTimeUnix      - The date time unix that was retrieved from the Json msg.
+	 * @param msg                - The Json message from the Kafka topic.
+	 * @param normalizedUsername - The normalized username as was retrieved from the Json msg.
+	 * @param yid                - The YID that was retrieved from the Json msg.
+	 * @param dateTimeUnix       - The date time unix that was retrieved from the Json msg.
 	 *
 	 * @throws JSONException - The method might throw an exception due to a Json parsing exception.
 	 */
-	public void createNotifications(JSONObject msg, String normalizeUsername, String yid, long dateTimeUnix) throws JSONException {
+	public void createNotifications(JSONObject msg, String normalizedUsername, String yid, long dateTimeUnix) throws JSONException {
 		List<Notification> notifications = new ArrayList<>();
-		User user = userRepository.findByUsername(normalizeUsername);
+		User user = userRepository.findByUsername(normalizedUsername);
 		Notification notification = new Notification();
-		long timestamp = dateTimeUnix;
 
-		notification.setTs(TimestampUtils.convertToSeconds(timestamp));
-		notification.setIndex(buildIndex(normalizeUsername, yid, dateTimeUnix));
+		notification.setTs(TimestampUtils.convertToSeconds(dateTimeUnix));
+		notification.setIndex(buildIndex(normalizedUsername, yid, dateTimeUnix));
 		notification.setGenerator_name(AmtActionToSensitiveAccountNotificationGenerator.class.getSimpleName());
-		notification.setName(normalizeUsername);
+		notification.setName(normalizedUsername);
 		notification.setCause(AMT_ACTION_TO_SENSITIVE_ACCOUNT_CAUSE);
 		notification.setUuid(UUID.randomUUID().toString());
 
@@ -69,8 +68,8 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 			notification.setDisplayName(user.getDisplayName());
 			notification.setFsId(user.getId());
 		} else {
-			notification.setDisplayName(normalizeUsername);
-			notification.setFsId(normalizeUsername);
+			notification.setDisplayName(normalizedUsername);
+			notification.setFsId(normalizedUsername);
 		}
 
 		notification.setAttributes(getAmtEventsAttributes(msg));
@@ -86,9 +85,9 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 		}
 	}
 
-	private String buildIndex(String NormalizeUsername, String yid, long dateTimeUnix) {
+	private String buildIndex(String normalizedUsername, String yid, long dateTimeUnix) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(AMT_ACTION_TO_SENSITIVE_ACCOUNT_CAUSE).append("_").append(NormalizeUsername).append("_").append(yid).append("_").append(dateTimeUnix);
+		builder.append(AMT_ACTION_TO_SENSITIVE_ACCOUNT_CAUSE).append("_").append(normalizedUsername).append("_").append(yid).append("_").append(dateTimeUnix);
 		return builder.toString();
 	}
 
