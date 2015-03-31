@@ -4,7 +4,8 @@ public enum UserApplication {
 	active_directory("active_directory", "User Profile"),
 	vpn("vpn", "vpn"),
 	ssh("ssh", "ssh"),
-	amt("amt", "amt");
+	amt("amt", "amt"),
+	amtsession("amtsession", "amtsession");
 
 	private String id;
 	private String displayName;

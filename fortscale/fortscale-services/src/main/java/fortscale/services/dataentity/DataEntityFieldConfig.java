@@ -17,6 +17,7 @@ public class DataEntityFieldConfig {
     private List<String> attributes;
     private String joinFrom;
     private String joinTo;
+    private String format;
 
     public static final String IS_LOGICAL_ONLY = "is_logical_only";
     public static final String EXPLICIT = "explicit";
@@ -137,5 +138,13 @@ public class DataEntityFieldConfig {
 
     public void setJoinFrom(String joinFrom) {
         this.joinFrom = joinFrom;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 }
