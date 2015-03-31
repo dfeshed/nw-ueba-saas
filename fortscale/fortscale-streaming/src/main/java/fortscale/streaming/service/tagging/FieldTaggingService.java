@@ -107,7 +107,7 @@ public class FieldTaggingService {
 			String fieldValue = convertToString(event.get(taggingBaesdFieldName));
 
 			// check if need to tag this event
-			if (this.listOfValuToTag.containsKey(fieldValue))
+			if (this.listOfValuToTag.containsKey(fieldValue) || this.listOfValuToTag.containsKey(fieldValue.toUpperCase()))
 			{
 				event.put(tagFieldName,true);
 			}
