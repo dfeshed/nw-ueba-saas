@@ -10,6 +10,8 @@ import org.apache.samza.metrics.MetricsRegistry;
 import org.apache.samza.task.TaskContext;
 import org.junit.Before;
 
+import fortscale.streaming.TaskTestUtil;
+import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.service.EventsScoreStreamTaskService;
 
 public class EventsScoreStreamTaskServiceTest extends TaskScorerConfigTest{
@@ -27,11 +29,11 @@ public class EventsScoreStreamTaskServiceTest extends TaskScorerConfigTest{
 	}
 	
 	protected EventsScoreStreamTaskService createEventsScoreStreamTaskService(String taskConfigPropertiesFilePath) throws Exception{
-		Config config = buildTaskConfig(taskConfigPropertiesFilePath);
+		Config config = TaskTestUtil.buildTaskConfig(taskConfigPropertiesFilePath);
 		when(context.getMetricsRegistry()).thenReturn(metricsRegistry);
 		when(metricsRegistry.newCounter((String)anyObject(), (String)anyObject())).thenReturn(counter);
 		
-		EventsScoreStreamTaskService eventsScoreStreamTaskService = new EventsScoreStreamTaskService(config, context, modelService);
+		EventsScoreStreamTaskService eventsScoreStreamTaskService = new EventsScoreStreamTaskService(config, context, modelService, new FeatureExtractionService(config));
 		return eventsScoreStreamTaskService;
 	}
 	

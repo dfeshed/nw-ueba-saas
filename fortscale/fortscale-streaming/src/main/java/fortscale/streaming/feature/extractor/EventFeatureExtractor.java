@@ -1,28 +1,39 @@
 package fortscale.streaming.feature.extractor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minidev.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import fortscale.utils.logging.Logger;
+
+
+
+
+@JsonTypeName(EventFeatureExtractor.EVENT_FEATURE_EXTRACTOR_TYPE)
 public class EventFeatureExtractor implements FeatureExtractor{
+	private static final Logger logger = Logger.getLogger(EventFeatureExtractor.class);
+	protected static final String EVENT_FEATURE_EXTRACTOR_TYPE = "event_feature_extractor";
+	
 	private String originalFieldName;
 	private String normalizedFieldName;
-	private List<FeatureAdjustor> featureAdjustorPriorityList = new ArrayList<>();
+	private FeatureAdjustor featureAdjustor;
 
 	public EventFeatureExtractor(){}
 	
-	public EventFeatureExtractor(String originalFieldName, String normalizedFieldName, List<FeatureAdjustor> featureAdjustorPriorityList) {
+	public EventFeatureExtractor(String originalFieldName, String normalizedFieldName, FeatureAdjustor featureAdjustor) {
 		this.originalFieldName = originalFieldName;
 		this.normalizedFieldName = normalizedFieldName;
-		this.featureAdjustorPriorityList = featureAdjustorPriorityList;
+		this.featureAdjustor = featureAdjustor;
 	}
 
 	@Override
 	public Object extract(JSONObject message) {
-		Object ret = extractValue(message);
+		Object ret = null;
+		try{
+			ret = extractValue(message);
+		} catch(Exception e){
+			logger.debug("got the following exception while trying to extract feature", e);
+		}
 		
 		saveToMessage(message, ret);
 		
@@ -31,20 +42,11 @@ public class EventFeatureExtractor implements FeatureExtractor{
 	
 	protected Object extractValue(JSONObject message){
 		Object ret = message.get(originalFieldName);
-		for(FeatureAdjustor adjustor: featureAdjustorPriorityList){
-			ret = adjustor.adjust(ret, message);
-			if(ret instanceof String){
-				if(!StringUtils.isBlank((String) ret)){
-					break;
-				}
-			}else{
-				if(ret != null){
-					break;
-				}
-			}
+		if(featureAdjustor!=null){
+			return featureAdjustor.adjust(ret, message);
+		} else{
+			return ret;
 		}
-		
-		return ret;
 	}
 	
 	protected void saveToMessage(JSONObject message, Object val){
@@ -69,15 +71,16 @@ public class EventFeatureExtractor implements FeatureExtractor{
 		this.normalizedFieldName = normalizedFieldName;
 	}
 
-	public List<FeatureAdjustor> getFeatureAdjustorPriorityList() {
-		return featureAdjustorPriorityList;
+	public FeatureAdjustor getFeatureAdjustor() {
+		return featureAdjustor;
 	}
 
-	public void setFeatureAdjustorPriorityList(List<FeatureAdjustor> featureAdjustorPriorityList) {
-		this.featureAdjustorPriorityList = featureAdjustorPriorityList;
+	public void setFeatureAdjustor(FeatureAdjustor featureAdjustor) {
+		this.featureAdjustor = featureAdjustor;
 	}
 
-	@Override public boolean equals(Object o) {
+	@Override
+	public boolean equals(Object o) {
 		if (this == o)
 			return true;
 		if (o == null || getClass() != o.getClass())
@@ -89,7 +92,7 @@ public class EventFeatureExtractor implements FeatureExtractor{
 			return false;
 		if (originalFieldName != null ? !originalFieldName.equals(that.originalFieldName) : that.originalFieldName != null)
 			return false;
-		if(!featureAdjustorPriorityList.equals(that.featureAdjustorPriorityList)){
+		if(!featureAdjustor.equals(that.featureAdjustor)){
 			return false;
 		}
 

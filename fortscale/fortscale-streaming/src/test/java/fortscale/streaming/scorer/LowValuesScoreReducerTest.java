@@ -61,10 +61,10 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		double min = 500.0;
 
 		ReductionConfiguration config = new ReductionConfiguration();
-		config.setReducingValueName(name);
-		config.setReductionFactor(factor);
-		config.setMaxValueForFullReduction(max);
-		config.setMinValueForNoReduction(min);
+		config.setReducingFeatureName(name);
+		config.setReducingFactor(factor);
+		config.setMaxValueForFullyReduce(max);
+		config.setMinValueForNotReduce(min);
 
 		ReductionConfigurations configs = new ReductionConfigurations();
 		configs.setReductionConfigs(new ArrayList<ReductionConfiguration>());
@@ -101,10 +101,10 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		assertEquals(1, configs.getReductionConfigs().size());
 		ReductionConfiguration config = configs.getReductionConfigs().get(0);
 		assertNotNull(config);
-		assertEquals(name, config.getReducingValueName());
-		assertEquals(factor, new Double(config.getReductionFactor()));
-		assertEquals(max, new Double(config.getMaxValueForFullReduction()));
-		assertEquals(min, new Double(config.getMinValueForNoReduction()));
+		assertEquals(name, config.getReducingFeatureName());
+		assertEquals(factor, new Double(config.getReducingFactor()));
+		assertEquals(max, new Double(config.getMaxValueForFullyReduce()));
+		assertEquals(min, new Double(config.getMinValueForNotReduce()));
 	}
 
 	@Test
