@@ -275,10 +275,6 @@ public class ClassifierServiceImpl implements ClassifierService{
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", userId));
 		}
-		String logUsername = user.getLogUsernameMap().get(accessDAO.getTableName());
-		if(StringUtils.isEmpty(logUsername)){
-			return Collections.emptyList();
-		}
 		String orderByArray[] = processAuthScoreOrderByFieldName(accessDAO, orderBy);
 		Pageable pageable = new ImpalaPageRequest(offset + limit, new Sort(direction, orderByArray));
 		List<Map<String, Object>> authScores = accessDAO.findEventsByNormalizedUsernameAndGtEventScoreAndBetweenTimes(user.getUsername(), minScore, latestDate, earliestDate, pageable);
