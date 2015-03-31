@@ -23,7 +23,7 @@ public class AMTWithOngoingParsingTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String parsConfFile ="resources/conf-files/processAMTParsingOngoingEvents.conf";
-	private String logicConfFile = "resources/conf-files/processAMT_enrich.conf";
+	private String logicConfFile = "resources/conf-files/readAMT_enrich.conf";
 
 
 
