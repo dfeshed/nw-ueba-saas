@@ -48,7 +48,7 @@ public class IPv4FeatureAdjustor implements FeatureAdjustor{
 				} else if(mask<=0){
 					builder.append("0");
 				} else{
-					builder.append(maskClass(classes[i], mask));
+					builder.append(maskClass(classes[i], 8 - mask));
 				}
 				
 			}
