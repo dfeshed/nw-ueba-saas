@@ -1,35 +1,36 @@
 package fortscale.streaming.scorer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 
-import static fortscale.streaming.scorer.ReductionConfigurations.ReductionConfiguration;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fortscale.streaming.scorer.ReductionConfigurations.ReductionConfiguration;
 
 public class LowValuesScoreReducerTest extends ScorerBaseTest {
 	private static final String CONFIG_FORMAT = configFormat();
 	private static final String SCORER_NAME = "LowValuesScoreReducerTestScorer";
 	private static final String BASE_SCORER_NAME = "LowValuesScoreReducerTestBaseScorer";
 
-	private ScorerContext context;
 
 	@Before
 	public void setUp() {
 		super.setUp();
-		context = new ScorerContext(config);
 	}
 
 	private static String configFormat() {
-		String nameFormat = "\"reducingValueName\":\"%s\"";
-		String factorFormat = "\"reductionFactor\":%.1f";
-		String maxFormat = "\"maxValueForFullReduction\":%.1f";
-		String minFormat = "\"minValueForNoReduction\":%.1f";
+		String nameFormat = "\"reducingFeatureName\":\"%s\"";
+		String factorFormat = "\"reducingFactor\":%.1f";
+		String maxFormat = "\"maxValueForFullyReduce\":%.1f";
+		String minFormat = "\"minValueForNotReduce\":%.1f";
 		return String.format("{%s,%s,%s,%s}", nameFormat, factorFormat, maxFormat, minFormat);
 	}
 
@@ -109,14 +110,11 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 
 	@Test
 	public void low_value_not_present_no_reduction() throws Exception {
+		// Arrange
 		String configJson = String.format(CONFIG_FORMAT, "readBytes", 0.8, 100000000.0, 500000000.0);
 		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 90.0);
+		EventMessage eventMessage = buildEventMessage(true, "writeBytes", 50000000.0);
 
-		JSONObject json = new JSONObject();
-		EventMessage eventMessage = new EventMessage(json);
-
-		// Arrange
-		json.put("writeBytes", 50000000.0);
 		// Act
 		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
@@ -124,14 +122,11 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 	}
 
 	@Test public void low_value_present_full_reduction() throws Exception {
+		// Arrange
 		String configJson = String.format(CONFIG_FORMAT, "readBytes", 0.8, 200000000.0, 400000000.0);
 		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 80.0);
+		EventMessage eventMessage = buildEventMessage(true, "readBytes", 100000000.0);
 
-		JSONObject json = new JSONObject();
-		EventMessage eventMessage = new EventMessage(json);
-
-		// Arrange
-		json.put("readBytes", 100000000.0);
 		// Act
 		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
@@ -139,14 +134,11 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 	}
 
 	@Test public void low_value_is_max_full_reduction() throws Exception {
+		// Arrange
 		String configJson = String.format(CONFIG_FORMAT, "writeBytes", 0.7, 100000000.0, 500000000.0);
 		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 70.0);
-
-		JSONObject json = new JSONObject();
-		EventMessage eventMessage = new EventMessage(json);
-
-		// Arrange
-		json.put("writeBytes", 100000000.0);
+		EventMessage eventMessage = buildEventMessage(true, "writeBytes", 100000000.0);
+		
 		// Act
 		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
@@ -154,14 +146,12 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 	}
 
 	@Test public void low_value_present_half_reduction() throws Exception {
+		// Arrange
 		String configJson = String.format(CONFIG_FORMAT, "readBytes", 0.7, 200000000.0, 400000000.0);
 		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 60.0);
 
-		JSONObject json = new JSONObject();
-		EventMessage eventMessage = new EventMessage(json);
+		EventMessage eventMessage = buildEventMessage(true, "readBytes", 300000000.0);
 
-		// Arrange
-		json.put("readBytes", 300000000.0);
 		// Act
 		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
@@ -169,14 +159,11 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 	}
 
 	@Test public void low_value_is_min_no_reduction() throws Exception {
+		// Arrange
 		String configJson = String.format(CONFIG_FORMAT, "writeBytes", 0.5, 100000000.0, 500000000.0);
 		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 100.0);
+		EventMessage eventMessage = buildEventMessage(true, "writeBytes", 500000000.0);
 
-		JSONObject json = new JSONObject();
-		EventMessage eventMessage = new EventMessage(json);
-
-		// Arrange
-		json.put("writeBytes", 500000000.0);
 		// Act
 		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
@@ -184,14 +171,11 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 	}
 
 	@Test public void low_value_present_no_reduction() throws Exception {
+		// Arrange
 		String configJson = String.format(CONFIG_FORMAT, "totalBytes", 0.5, 200000000.0, 400000000.0);
 		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 99.0);
-
-		JSONObject json = new JSONObject();
-		EventMessage eventMessage = new EventMessage(json);
-
-		// Arrange
-		json.put("totalBytes", 600000000.0);
+		EventMessage eventMessage = buildEventMessage(true, "totalBytes", 600000000.0);
+		
 		// Act
 		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
