@@ -90,21 +90,31 @@ public class AmtSession {
 		}
 	}
 
+	/*
+	 * Cleanup all YIDs that haven't been touched in the last 2 hours
+	 */
 	private void removeOutstandingYids(long currentTimestamp) {
-		// Cleanup all YIDs that haven't benn touched in the last 2 hours
+		long minTimestampMillis = currentTimestamp * 1000 - staleYidSessionTimeoutMillis;
+
+		int counter = 0;
+		long durationSum = 0;
 		List<String> yidsToRemove = new LinkedList<>();
 
+		// Sum up duration of (new) untouched YIDs and count them
 		for (Entry<String, AmtYidStat> entry : yids.entrySet()) {
 			AmtYidStat stat = entry.getValue();
-			if (stat.getEndTime() * 1000 < currentTimestamp * 1000 - staleYidSessionTimeoutMillis) {
+			if (stat.getEndTime() * 1000 < minTimestampMillis) {
+				counter++;
+				durationSum += stat.getDurationMillis();
 				yidsToRemove.add(entry.getKey());
-				yidCountInSession++;
-				avgTimeOnYid = (stat.getDurationMillis() + avgTimeOnYid * (yidCountInSession - 1)) / yidCountInSession;
-			} else {
-				// Once a new stat is reached,
-				// we can stop processing the others
+			} else
 				break;
-			}
+		}
+
+		// Update global average and counter
+		if (counter > 0) {
+			avgTimeOnYid = (avgTimeOnYid * yidCountInSession + durationSum) / (yidCountInSession + counter);
+			yidCountInSession += counter;
 		}
 
 		for (String yid : yidsToRemove)
@@ -164,11 +174,19 @@ public class AmtSession {
 		calculateAvgTimeOnYid();
 	}
 
+	/*
+	 * Go over all the YIDs in the session and calculate the average duration on a YID
+	 */
 	private void calculateAvgTimeOnYid() {
-		// Go over all the YIDs in the session and calculate the average duration on a YID
-		for (AmtYidStat yid : yids.values()) {
-			yidCountInSession++;
-			avgTimeOnYid = (yid.getDurationMillis() + avgTimeOnYid * (yidCountInSession - 1)) / yidCountInSession;
+		Collection<AmtYidStat> values = yids.values();
+		long durationSum = 0;
+
+		for (AmtYidStat yid : values)
+			durationSum += yid.getDurationMillis();
+
+		if (values.size() > 0) {
+			avgTimeOnYid = (avgTimeOnYid * yidCountInSession + durationSum) / (yidCountInSession + values.size());
+			yidCountInSession += values.size();
 		}
 	}
 
@@ -193,8 +211,7 @@ public class AmtSession {
 	}
 
 	public double getAverageYids() {
-		double newValue = getYidRate();
-		return roundTo2Digits((newValue + avgYidCountInSession * (sessionCountTillNow - 1)) / sessionCountTillNow);
+		return roundTo2Digits((getYidRate() + avgYidCountInSession * (sessionCountTillNow - 1)) / sessionCountTillNow);
 	}
 
 	public boolean isHasRealActions() {

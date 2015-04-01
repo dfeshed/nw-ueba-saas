@@ -83,4 +83,62 @@ public class AmtSessionTest {
 		AmtSession session = new AmtSession("testAvgYIDDuration", "testAvgYIDDuration@fortscale.com");
 		assertEquals(session.getActionTypeCount(AmtSession.ActionType.Failed), 0);
 	}
+
+	@Test
+	public void testRemoveOutstandingYids() {
+		AmtSession amtSession = new AmtSession("testRemoveOutstandingYids", "testRemoveOutstandingYids@fortscale.com");
+		long timestamp = 1420074000;
+
+		amtSession.addYid("yid1", timestamp);
+		timestamp += 5;
+		amtSession.addYid("yid2", timestamp);
+		timestamp += 5;
+		amtSession.addYid("yid3", timestamp);
+		timestamp += 5;
+		amtSession.addYid("yid1", timestamp);
+		timestamp += 25;
+		amtSession.addYid("yid2", timestamp);
+		timestamp += 10;
+		amtSession.addYid("yid3", timestamp);
+
+		// yid1 duration = 15 seconds
+		// yid2 duration = 35 seconds
+		// yid3 duration = 40 seconds
+		// average duration = 30 seconds = 0.5 minutes
+
+		// Force session timeout for existing YIDs
+		timestamp += AmtSession.staleYidSessionTimeoutMillis;
+		amtSession.addYid("yid4", timestamp);
+
+		assertEquals(3, amtSession.getYidCount());
+		assertEquals(new Double(0.5), (Double)amtSession.getAverageTimeInYid());
+
+		timestamp += 10;
+		amtSession.addYid("yid5", timestamp);
+		timestamp += 20;
+		amtSession.addYid("yid6", timestamp);
+		timestamp += 30;
+		amtSession.addYid("yid4", timestamp);
+		timestamp += 10;
+		amtSession.addYid("yid5", timestamp);
+		timestamp += 50;
+		amtSession.addYid("yid6", timestamp);
+
+		// yid4 duration = 60 seconds
+		// yid5 duration = 60 seconds
+		// yid6 duration = 90 seconds
+		// new total average = (15 + 35 + 40 + 60 + 60 + 90) / 6 = 50 seconds = 0.833 minutes
+
+		// Force session timeout for existing YIDs
+		timestamp += AmtSession.staleYidSessionTimeoutMillis;
+		amtSession.addYid("yid0", timestamp); // duration = 1 second
+
+		assertEquals(6, amtSession.getYidCount());
+		assertEquals(new Double(0.83), (Double)amtSession.getAverageTimeInYid());
+
+		amtSession.closeSession();
+		// final average = (15 + 35 + 40 + 60 + 60 + 90 + 1) / 7 = 43 seconds = 0.716 minutes
+		assertEquals(7, amtSession.getYidCount());
+		assertEquals(new Double(0.72), (Double)amtSession.getAverageTimeInYid());
+	}
 }

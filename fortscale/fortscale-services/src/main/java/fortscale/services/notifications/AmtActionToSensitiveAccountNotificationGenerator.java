@@ -53,7 +53,6 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 	 * @throws JSONException - The method might throw an exception due to a Json parsing exception.
 	 */
 	public void createNotifications(JSONObject msg, String normalizedUsername, String yid, long dateTimeUnix) throws JSONException {
-		List<Notification> notifications = new ArrayList<>();
 		User user = userRepository.findByUsername(normalizedUsername);
 		Notification notification = new Notification();
 
@@ -74,10 +73,9 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 
 		notification.setAttributes(getAmtEventsAttributes(msg));
 		logger.info("Adding AMT reset password with the index {}", notification.getIndex());
-		notifications.add(notification);
 
 		try {
-			notificationsRepository.save(notifications);
+			notificationsRepository.save(notification);
 		} catch (DuplicateKeyException e) {
 			logger.info("Received AmtActionToSensitiveAccountNotificationGenerator notification duplication exception", e);
 		} catch (Exception e) {
