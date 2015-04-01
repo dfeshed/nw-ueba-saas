@@ -19,7 +19,6 @@ import org.springframework.core.env.Environment;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -41,7 +40,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
 
 
 	// Map between (update) input topic name and relevant enrich service
-	protected static Map<String, VpnEnrichService> topicToServiceMap = new HashMap<>();
+	protected static Map<String, VpnEnrichService> topicToServiceMap;
 
     private String usernameFieldName;
 
