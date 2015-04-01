@@ -2,7 +2,7 @@ package fortscale.streaming.feature.extractor;
 
 import org.junit.Test;
 
-public class TaskFeatureExtractorServiceConfigAmtTest extends TaskFeatureExtractorServiceConfigTestBase{
+public class TaskFeatureExtractorServiceConfigAmtSessionPrevalenceTest extends TaskFeatureExtractorServiceConfigTestBase{
 	
 	@Test
 	public void testSanity() throws Exception{
