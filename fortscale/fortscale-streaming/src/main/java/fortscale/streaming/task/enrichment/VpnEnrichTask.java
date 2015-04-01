@@ -19,6 +19,7 @@ import org.springframework.core.env.Environment;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -62,6 +63,10 @@ public class VpnEnrichTask extends AbstractStreamTask {
     private void initGeolocation(Config config) {
 
 		if (topicToServiceMap == null) {
+
+			topicToServiceMap = new HashMap<>();
+
+
 			// get spring environment to resolve properties values using configuration files
 			Environment env = SpringService.getInstance().resolve(Environment.class);
 
