@@ -45,7 +45,7 @@ public class AmtLoginAsMailNotificationGenerator implements InitializingBean {
 
 	public void createNotifications(Record record){
 
-		String normalizeUsername = record.get("normalized_username").get(0).toString();
+		String normalizeUsername = record.get("username").get(0).toString();
 		String yid = record.get("yid").get(0).toString();
 		long date_time_unix = Long.parseLong(record.get("date_time_unix").get(0).toString());
 

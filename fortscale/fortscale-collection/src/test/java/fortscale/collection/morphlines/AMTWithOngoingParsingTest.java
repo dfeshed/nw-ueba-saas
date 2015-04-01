@@ -141,6 +141,21 @@ public class AMTWithOngoingParsingTest {
             */
 
 				$(
+						"Test Yahoo merege",
+						$(
+								"2015-03-27T12:42:43.000+00:00|192.168.61.67|12.48.102.0|yahoousr3|yid3@yahoo.com|STARTATT|STARTATT_String|abcdef==",
+								"2015-03-28T11:11:53.000+00:00|192.168.61.67|12.48.102.0|yahoousr3|yid3@yahoo.com|LOGINASMAIL|STARTATT_String|abcdef=="
+						),
+						$(
+								"2015-03-27 12:42:43,1427460163,12.48.102.0,,UNKNOWN,192.168.61.67,,yahoousr3,SUCCESS,,,false,false,false,false,yid3@yahoo.com,STARTATT,STARTATT_String,abcdef==,,,",
+								"2015-03-28 11:11:53,1427541113,12.48.102.0,,UNKNOWN,192.168.61.67,,yahoousr3,SUCCESS,,,false,false,false,false,yid3@yahoo.com,LOGINASMAIL,STARTATT_String,abcdef==,,,"
+
+						)
+				),
+
+
+
+				$(
 						"Test second type of lines - mobile,email,comm - Ongoing events",
 						$(
 								"2014-10-01T05:00:30.980+00:00|10.0.0.1|10.0.0.2|nicholle|Comm = cailsg1, yid = cailsg1|EMAILLOOKUP|EMAILLOOKUP|19oqra9a2309f&b=4&d=vU6UaP1pYEKqIGqMUbyy5SwboOh-&s=4e&i=ZwYi5Z71ltrVGw4r39rR"
