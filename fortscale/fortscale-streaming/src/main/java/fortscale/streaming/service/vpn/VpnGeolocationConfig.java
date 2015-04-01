@@ -15,6 +15,10 @@ public class VpnGeolocationConfig {
     private String longtitudeFieldName;
     private String latitudeFieldName;
 
+
+
+	private String resolveIpFieldName;
+
     public VpnGeolocationConfig(String ipField, String countryFieldName, String countryIsoCodeFieldName, String regionFieldName, String cityFieldName, String ispFieldName, String usageTypeFieldName, String longtitudeFieldName, String latitudeFieldName) {
         this.ipField = ipField;
         this.countryFieldName = countryFieldName;
@@ -98,4 +102,12 @@ public class VpnGeolocationConfig {
     public void setLatitudeFieldName(String latitudeFieldName) {
         this.latitudeFieldName = latitudeFieldName;
     }
+
+	public String getResolveIpFieldName() {
+		return resolveIpFieldName;
+	}
+
+	public void setResolveIpFieldName(String resolveIpFieldName) {
+		this.resolveIpFieldName = resolveIpFieldName;
+	}
 }

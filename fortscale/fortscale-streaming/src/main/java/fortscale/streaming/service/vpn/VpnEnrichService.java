@@ -47,7 +47,7 @@ public class VpnEnrichService {
     public VpnEnrichService(VpnEnrichConfig config) {
         checkNotNull(config);
         this.config = config;
-        isResolveIp = convertToBoolean(config.getVpnSessionUpdateConfig().getResolveIpFieldName());
+        isResolveIp = convertToBoolean(config.getVpnGeolocationConfig().getResolveIpFieldName());
 
     }
 
