@@ -33,43 +33,43 @@ public class ReductionConfigurations {
 	}
 
 	protected static final class ReductionConfiguration {
-		private String reducingValueName;
-		private double reductionFactor;
-		private double maxValueForFullReduction;
-		private double minValueForNoReduction;
+		private String reducingFeatureName;
+		private double reducingFactor;
+		private double maxValueForFullyReduce;
+		private double minValueForNotReduce;
 
-		public String getReducingValueName() {
-			return reducingValueName;
+		public String getReducingFeatureName() {
+			return reducingFeatureName;
 		}
 
-		public void setReducingValueName(String reducingValueName) {
-			Assert.notNull(reducingValueName, "reducingValueName cannot be null");
-			this.reducingValueName = reducingValueName;
+		public void setReducingFeatureName(String reducingFeatureName) {
+			Assert.notNull(reducingFeatureName, "reducingValueName cannot be null");
+			this.reducingFeatureName = reducingFeatureName;
 		}
 
-		public double getReductionFactor() {
-			return reductionFactor;
+		public double getReducingFactor() {
+			return reducingFactor;
 		}
 
-		public void setReductionFactor(double reductionFactor) {
-			Assert.isTrue(0 <= reductionFactor && reductionFactor <= 1, "reductionFactor must be in the range of [0,1]");
-			this.reductionFactor = reductionFactor;
+		public void setReducingFactor(double reducingFactor) {
+			Assert.isTrue(0 <= reducingFactor && reducingFactor <= 1, "reductionFactor must be in the range of [0,1]");
+			this.reducingFactor = reducingFactor;
 		}
 
-		public double getMaxValueForFullReduction() {
-			return maxValueForFullReduction;
+		public double getMaxValueForFullyReduce() {
+			return maxValueForFullyReduce;
 		}
 
-		public void setMaxValueForFullReduction(double maxValueForFullReduction) {
-			this.maxValueForFullReduction = maxValueForFullReduction;
+		public void setMaxValueForFullyReduce(double maxValueForFullyReduce) {
+			this.maxValueForFullyReduce = maxValueForFullyReduce;
 		}
 
-		public double getMinValueForNoReduction() {
-			return minValueForNoReduction;
+		public double getMinValueForNotReduce() {
+			return minValueForNotReduce;
 		}
 
-		public void setMinValueForNoReduction(double minValueForNoReduction) {
-			this.minValueForNoReduction = minValueForNoReduction;
+		public void setMinValueForNotReduce(double minValueForNotReduce) {
+			this.minValueForNotReduce = minValueForNotReduce;
 		}
 
 		@Override
@@ -79,17 +79,17 @@ public class ReductionConfigurations {
 
 			ReductionConfiguration that = (ReductionConfiguration)o;
 
-			if (!reducingValueName.equals(that.reducingValueName)) return false;
-			if (Double.compare(that.reductionFactor, reductionFactor) != 0) return false;
-			if (Double.compare(that.maxValueForFullReduction, maxValueForFullReduction) != 0) return false;
-			if (Double.compare(that.minValueForNoReduction, minValueForNoReduction) != 0) return false;
+			if (!reducingFeatureName.equals(that.reducingFeatureName)) return false;
+			if (Double.compare(that.reducingFactor, reducingFactor) != 0) return false;
+			if (Double.compare(that.maxValueForFullyReduce, maxValueForFullyReduce) != 0) return false;
+			if (Double.compare(that.minValueForNotReduce, minValueForNotReduce) != 0) return false;
 
 			return true;
 		}
 
 		@Override
 		public int hashCode() {
-			return reducingValueName.hashCode();
+			return reducingFeatureName.hashCode();
 		}
 	}
 }

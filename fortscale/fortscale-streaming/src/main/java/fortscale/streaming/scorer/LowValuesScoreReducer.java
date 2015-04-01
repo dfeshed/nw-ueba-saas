@@ -35,7 +35,7 @@ public class LowValuesScoreReducer extends AbstractScorer {
 	}
 
 	public LowValuesScoreReducer(String name, Config config, ScorerContext context) {
-		super(name, config);
+		super(name, config, context);
 
 		// Get the base scorer
 		String configKey = String.format("fortscale.score.%s.base.scorer", name);
@@ -75,18 +75,18 @@ public class LowValuesScoreReducer extends AbstractScorer {
 	}
 
 	private double reduceScore(EventMessage eventMessage, double score, ReductionConfiguration reductionConfig) {
-		String valueAsString = eventMessage.getEventStringValue(reductionConfig.getReducingValueName());
+		String valueAsString = ConversionUtils.convertToString(featureExtractionService.extract(reductionConfig.getReducingFeatureName(), eventMessage.getJsonObject()));
 		Double value = ConversionUtils.convertToDouble(valueAsString);
 		double factor = 1;
 
 		if (value != null) {
-			if (value <= reductionConfig.getMaxValueForFullReduction())
-				factor = reductionConfig.getReductionFactor();
-			else if (value < reductionConfig.getMinValueForNoReduction()) {
-				double numerator = value - reductionConfig.getMaxValueForFullReduction();
-				double denominator = reductionConfig.getMinValueForNoReduction() - reductionConfig.getMaxValueForFullReduction();
+			if (value <= reductionConfig.getMaxValueForFullyReduce())
+				factor = reductionConfig.getReducingFactor();
+			else if (value < reductionConfig.getMinValueForNotReduce()) {
+				double numerator = value - reductionConfig.getMaxValueForFullyReduce();
+				double denominator = reductionConfig.getMinValueForNotReduce() - reductionConfig.getMaxValueForFullyReduce();
 				double partToAdd = numerator / denominator;
-				factor = reductionConfig.getReductionFactor() + (1 - reductionConfig.getReductionFactor()) * partToAdd;
+				factor = reductionConfig.getReducingFactor() + (1 - reductionConfig.getReducingFactor()) * partToAdd;
 			}
 		}
 

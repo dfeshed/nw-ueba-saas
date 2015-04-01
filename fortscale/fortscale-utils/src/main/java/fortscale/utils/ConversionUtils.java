@@ -49,6 +49,12 @@ public final class ConversionUtils {
 			if (value instanceof Double)
 				return (Double)value;
 			
+			if (value instanceof Integer)
+				return ((Integer)value).doubleValue();
+			
+			if (value instanceof Long)
+				return ((Long)value).doubleValue();
+			
 			String str = value.toString();
 			return Double.valueOf(str);
 		} catch (Exception e) {

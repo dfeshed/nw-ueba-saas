@@ -29,7 +29,7 @@ public class ConstantRegexScorerTest extends ScorerBaseTest{
 				when(config.getInt(k)).thenThrow(new ConfigException("Missing key " + k + "."));
 			}
 		}
-		return scorerFactoryService.getScorer(ContstantRegexScorerFactory.SCORER_TYPE,scorerName, config, null);
+		return scorerFactoryService.getScorer(ContstantRegexScorerFactory.SCORER_TYPE,scorerName, config, context);
 	}
 	
 	

@@ -2,6 +2,7 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
+import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.filters.MessageFilter;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.BarrierService;
@@ -54,6 +55,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private BarrierService barrier;
 	private List<MessageFilter> filters = new LinkedList<MessageFilter>();
     private PartitionStrategy partitionStrategy;
+    
+    private FeatureExtractionService featureExtractionService;
 
 
     /** reads task configuration from job config and initialize hdfs appender */
@@ -81,6 +84,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		// create HDFS appender service
 		service = new HdfsService(hdfsRootPath, fileName, partitionStrategy, splitStrategy, tableName, eventsCountFlushThreshold, windowDuration);
+		featureExtractionService = new FeatureExtractionService(config);
 
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", tableName));
@@ -174,7 +178,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			else
 				line.append(separator);
 
-			Object value = message.get(field);
+			Object value = featureExtractionService.extract(field, message);
 			if (value != null)
 				line.append(value.toString());
 		}
