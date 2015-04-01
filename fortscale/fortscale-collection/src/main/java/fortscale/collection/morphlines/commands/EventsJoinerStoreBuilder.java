@@ -1,10 +1,6 @@
 package fortscale.collection.morphlines.commands;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
+import com.typesafe.config.Config;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -12,7 +8,10 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Notifications;
 
-import com.typesafe.config.Config;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -48,7 +47,7 @@ public class EventsJoinerStoreBuilder implements CommandBuilder {
 			super(builder, config, parent, child, context);
 			keys = getConfigs().getStringList(config, "keys");
 			String cacheName = getConfigs().getString(config, "cacheName");
-			cache = EventsJoinerCache.getInstance(cacheName);
+			cache = EventsJoinerCache.getInstance(cacheName,null);
 		}
 	
 		@Override

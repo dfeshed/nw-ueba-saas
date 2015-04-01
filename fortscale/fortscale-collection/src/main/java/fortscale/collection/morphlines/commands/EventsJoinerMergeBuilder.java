@@ -1,6 +1,7 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.morphlines.RecordExtensions;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -42,15 +43,21 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 		private List<String> keys;
 		private List<String> mergeFields;
 		private EventsJoinerCache cache;
+		private boolean dropFromCache;
 		private boolean dropWhenNoMatch;
-		
+        private long timeToCacheMiliSec;
+        private String timeField;
+
 		public EventsJoinerMerge(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 			keys = getConfigs().getStringList(config, "keys");
 			mergeFields = getConfigs().getStringList(config, "mergeFields");
+			dropFromCache = getConfigs().getBoolean(config, "dropFromCache", false);
 			dropWhenNoMatch = getConfigs().getBoolean(config, "dropWhenNoMatch", true);
 			String cacheName = getConfigs().getString(config, "cacheName");
-			cache = EventsJoinerCache.getInstance(cacheName);
+            timeToCacheMiliSec = getConfigs().getLong(config,"timeToCacheMiliSec",-1);
+            timeField = getConfigs().getString(config, "timeField","");
+			cache = EventsJoinerCache.getInstance(cacheName,timeField);
 		}
 		
 		@Override
@@ -58,14 +65,42 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 			
 			// get the key fields from the record and look for the record to merge from
 			String key = EventsJoinerCache.buildKey(inputRecord, keys);
-			Record previousEvent = cache.fetch(key);
-			
+			Record previousEvent = (dropFromCache)? cache.fetch(key) : cache.peek(key);
+
 			if (previousEvent==null && dropWhenNoMatch) {
 				// drop record, halt current record execution
 				return true;
 			}
 
             if (previousEvent!=null ) {
+
+
+                //in case that we have time to cache - check if it doesn't expire
+                if (timeToCacheMiliSec > -1 && !timeField.equals(""))
+                {
+
+
+                    long current_record_utc_date_time = RecordExtensions.getLongValue(inputRecord, timeField)*1000;
+
+
+                    long prev_utc_date_time = RecordExtensions.getLongValue(previousEvent,timeField)*1000;
+
+                    long delta = current_record_utc_date_time - timeToCacheMiliSec;
+
+
+                    // in case that the prev event caching was expired
+                    if (prev_utc_date_time < delta)
+                    {
+                        //remove the prev event from cache
+                        Record tmpEvent = cache.fetch(key);
+                        // continue processing in the command chain
+                        return super.doProcess(inputRecord);
+
+                    }
+
+
+                }
+
                 // get the fields to merge from the previous record and put them
                 // into the current record
                 for (String field : mergeFields) {
