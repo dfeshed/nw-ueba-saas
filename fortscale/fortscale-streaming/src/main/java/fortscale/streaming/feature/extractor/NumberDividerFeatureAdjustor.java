@@ -31,7 +31,9 @@ public class NumberDividerFeatureAdjustor implements FeatureAdjustor {
 		Double dividedValue = null;
 		if (originalValue != null && denominator != null) {
 			denominator += additionToDenominator;
-			dividedValue = originalValue / denominator;
+			if(denominator != 0){
+				dividedValue = originalValue / denominator;
+			}
 		}
 
 		return dividedValue;
