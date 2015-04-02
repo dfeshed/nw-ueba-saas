@@ -15,7 +15,7 @@ public class ReductingScorer extends AbstractScorer {
 	private double reductingWeight;
 
 	public ReductingScorer(String scorerName, Config config, ScorerContext context) {
-		super(scorerName, config);
+		super(scorerName, config, context);
 		mainScorer = getScorer(String.format("fortscale.score.%s.main.scorer", scorerName), config, context);
 		reductingScorer = getScorer(String.format("fortscale.score.%s.reducting.scorer", scorerName), config, context);
 		reductingWeight = config.getDouble(String.format("fortscale.score.%s.reducting.weight", scorerName));

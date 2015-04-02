@@ -19,7 +19,7 @@ public class ContstantRegexScorerFactory implements InitializingBean, ScorerFact
 
 	@Override
 	public Scorer getScorer(String name, Config config, ScorerContext context) {
-		return new ContstantRegexScorer(name, config);
+		return new ContstantRegexScorer(name, config, context);
 	}
 	
 }

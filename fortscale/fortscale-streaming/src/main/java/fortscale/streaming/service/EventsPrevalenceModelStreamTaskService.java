@@ -31,6 +31,7 @@ import fortscale.ml.model.prevalance.PrevalanceModelBuilderImpl;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.ml.service.ModelService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.utils.StringPredicates;
 
 
@@ -46,10 +47,14 @@ public class EventsPrevalenceModelStreamTaskService {
 	private String sourceType;
 	private String entityType;
 	
+	private FeatureExtractionService featureExtractionService;
+	
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
 	private Counter lastTimestampCount;
 	private List<String> discriminatorsFields;
+	
+	
 	
 	public EventsPrevalenceModelStreamTaskService(Config config, TaskContext context) throws Exception {
 		// get model task configuration parameters
@@ -59,6 +64,7 @@ public class EventsPrevalenceModelStreamTaskService {
 		discriminatorsFields = getConfigStringList(config, "fortscale.discriminator.fields");
 		
 		createPrevalanceModelStreamingServices(config, context);
+		featureExtractionService = new FeatureExtractionService(config);
 		
 		// create counter metric for processed messages
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-%s-model-message-count", sourceType,entityType));
@@ -113,6 +119,10 @@ public class EventsPrevalenceModelStreamTaskService {
 		return new PrevalenceModelServiceMap(prevalanceModelStreamingServiceMap);
 	}
 	
+	public FeatureExtractionService getFeatureExtractionService() {
+		return featureExtractionService;
+	}
+
 	/** Process incoming events and update the user models stats */
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// parse the message into json 
@@ -152,7 +162,7 @@ public class EventsPrevalenceModelStreamTaskService {
 				}
 			}	
 			
-			model.addFieldValues(message, timestamp);
+			model.addFieldValues(featureExtractionService, message, timestamp);
 			model.getBarrier().updateBarrier(timestamp, discriminator);
 			prevalanceModelStreamingService.updateModel(context, model);
 		}

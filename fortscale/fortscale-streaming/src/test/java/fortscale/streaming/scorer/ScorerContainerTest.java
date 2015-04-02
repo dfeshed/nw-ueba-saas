@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
 
 import com.google.common.collect.Lists;
 
@@ -21,13 +20,6 @@ public class ScorerContainerTest extends ScorerBaseTest{
 	protected static final String SCORER_NAME = "MaxScorerContainerTestScorerName";
 
 	protected double delta = 0.0;
-	private ScorerContext context;
-
-	@Before
-	public void setUp(){
-		super.setUp();
-		context = new ScorerContext(config);
-	}
 	
 	private void configConstantScorer(String scorerName, String outputFieldName, String fieldName, String regex, Integer constant){
 		when(config.get(String.format("fortscale.score.%s.scorer", scorerName))).thenReturn(ContstantRegexScorerFactory.SCORER_TYPE);

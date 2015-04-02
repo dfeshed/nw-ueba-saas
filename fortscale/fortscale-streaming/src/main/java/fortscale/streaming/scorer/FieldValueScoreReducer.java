@@ -19,7 +19,7 @@ public class FieldValueScoreReducer extends AbstractScorer {
 	private FieldValueScoreLimiters limiters;
 
 	public FieldValueScoreReducer(String name, Config config, ScorerContext context) {
-		super(name, config);
+		super(name, config, context);
 
 		// Get the base scorer
 		String configKey = String.format("fortscale.score.%s.base.scorer", name);

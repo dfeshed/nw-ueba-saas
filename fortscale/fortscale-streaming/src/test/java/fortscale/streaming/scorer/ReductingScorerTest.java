@@ -4,7 +4,6 @@ import static org.mockito.Mockito.when;
 
 import org.apache.samza.config.ConfigException;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 public class ReductingScorerTest extends ScorerBaseTest{
@@ -17,14 +16,6 @@ public class ReductingScorerTest extends ScorerBaseTest{
 	protected static final String OUTPUT_FIELD_NAME = "outputTestField";
 	protected static final String SCORER_NAME = "ReductingScorerTestScorerName";
 	
-	private ScorerContext context;
-
-	
-	@Before
-	public void setUp(){
-		super.setUp();
-		context = new ScorerContext(config);
-	}
 	
 	private void configConstantScorer(String scorerName, String outputFieldName, String fieldName, String regex, Integer constant){
 		when(config.get(String.format("fortscale.score.%s.scorer", scorerName))).thenReturn(ContstantRegexScorerFactory.SCORER_TYPE);
