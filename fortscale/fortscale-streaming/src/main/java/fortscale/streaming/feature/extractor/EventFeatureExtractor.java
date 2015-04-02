@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.util.Assert;
 
 @JsonTypeName(EventFeatureExtractor.EVENT_FEATURE_EXTRACTOR_TYPE)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -61,6 +63,7 @@ public class EventFeatureExtractor implements FeatureExtractor{
 	}
 
 	public void setOriginalFieldName(String originalFieldName) {
+		Assert.isTrue(StringUtils.isNotBlank(originalFieldName), "Illegal blank field name");
 		this.originalFieldName = originalFieldName;
 	}
 

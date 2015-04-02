@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.util.Assert;
 
 import java.util.regex.Matcher;
 
@@ -40,6 +41,7 @@ public class PatternReplacementFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	public void setPattern(String pattern) {
+		Assert.isTrue(StringUtils.isNotEmpty(pattern), "Illegal empty pattern");
 		this.pattern = pattern;
 	}
 
