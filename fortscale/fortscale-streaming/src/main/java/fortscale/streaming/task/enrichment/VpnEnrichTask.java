@@ -102,7 +102,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
 					String ispFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.isp.field", eventType)));
 					String usageTypeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.usageType.field", eventType)));
 
-					vpnGeolocationConfig = new VpnGeolocationConfig(ipField, countryFieldName, countryIsoCodeFieldName, regionFieldName, cityFieldName, ispFieldName, usageTypeFieldName, longtitudeFieldName, latitudeFieldName);
+					vpnGeolocationConfig = new VpnGeolocationConfig(ipField, countryFieldName, countryIsoCodeFieldName, regionFieldName, cityFieldName, ispFieldName, usageTypeFieldName, longtitudeFieldName, latitudeFieldName,resolveIpFieldName);
 				}
 
 
