@@ -23,7 +23,7 @@ public class IPv4FeatureAdjustor implements FeatureAdjustor{
 	public IPv4FeatureAdjustor(){}
 	
 	public IPv4FeatureAdjustor(int subnetMask){
-		Assert.isTrue(subnetMask>=0 && subnetMask<=31, "classToChange should be between 0 to 31");
+		Assert.isTrue(subnetMask>=0 && subnetMask<=31, "subnetMask should be between 0 to 31");
 		this.subnetMask = subnetMask;
 	}
 
