@@ -1,28 +1,28 @@
 package fortscale.streaming.feature.extractor;
 
-import static fortscale.utils.ConversionUtils.convertToString;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import net.minidev.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.util.Assert;
 
 import java.util.regex.Matcher;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
-import net.minidev.json.JSONObject;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 @JsonTypeName(PatternReplacementFeatureAdjustor.PATTERN_REPLACEMENT_FEATURE_ADJUSTOR_TYPE)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class PatternReplacementFeatureAdjustor implements FeatureAdjustor {
 	protected static final String PATTERN_REPLACEMENT_FEATURE_ADJUSTOR_TYPE = "pattern_replacment_feature_adjustor";
-	
+
 	private String pattern;
 	private String replacement;
-	
-	
-	public PatternReplacementFeatureAdjustor(){}
-	
-	public PatternReplacementFeatureAdjustor(String pattern, String replacement) {
-		this.pattern = pattern;
-		this.replacement = replacement;
+
+	public PatternReplacementFeatureAdjustor(@JsonProperty("pattern") String pattern, @JsonProperty("replacement") String replacement) {
+		setPattern(pattern);
+		setReplacement(replacement);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class PatternReplacementFeatureAdjustor implements FeatureAdjustor {
 			// strip numbers from the hostname
 			originalFieldValue = originalFieldValue.replaceAll(Matcher.quoteReplacement(pattern), Matcher.quoteReplacement(replacement));
 		}
-		
+
 		return originalFieldValue;
 	}
 
@@ -41,6 +41,7 @@ public class PatternReplacementFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	public void setPattern(String pattern) {
+		Assert.isTrue(StringUtils.isNotEmpty(pattern), "Illegal empty pattern");
 		this.pattern = pattern;
 	}
 
@@ -51,7 +52,7 @@ public class PatternReplacementFeatureAdjustor implements FeatureAdjustor {
 	public void setReplacement(String replacement) {
 		this.replacement = replacement;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -59,8 +60,7 @@ public class PatternReplacementFeatureAdjustor implements FeatureAdjustor {
 		if (o == null || getClass() != o.getClass())
 			return false;
 
-		PatternReplacementFeatureAdjustor that = (PatternReplacementFeatureAdjustor) o;
-
+		PatternReplacementFeatureAdjustor that = (PatternReplacementFeatureAdjustor)o;
 		if (!pattern.equals(that.pattern))
 			return false;
 		if (!replacement.equals(that.replacement))
@@ -68,7 +68,7 @@ public class PatternReplacementFeatureAdjustor implements FeatureAdjustor {
 
 		return true;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return pattern.hashCode();
