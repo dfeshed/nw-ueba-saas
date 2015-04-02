@@ -24,8 +24,8 @@ public class InverseValueFeatureAdjustor implements FeatureAdjustor {
 	@Override
 	public Object adjust(Object feature, JSONObject message) {
 		Double originalFieldValue = convertToDouble(feature);
-		Assert.isTrue(originalFieldValue + denominator != 0, "Illegal division by 0");
-		Double invOriginalFieldValue = (originalFieldValue == null || originalFieldValue == 0) ? null : 1.0 / (originalFieldValue + denominator);
+
+		Double invOriginalFieldValue = (originalFieldValue == null || originalFieldValue + denominator == 0) ? null : 1.0 / (originalFieldValue + denominator);
 
 		return invOriginalFieldValue;
 	}
