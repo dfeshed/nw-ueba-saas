@@ -25,12 +25,10 @@ public class FieldValueScoreReducerTest extends ScorerBaseTest {
 	private static final String LIMITER_FORMAT = "{\"fieldName\":\"%s\",\"valueToMaxScoreMap\":{%s}}";
 	private static final String LIMITERS_FORMAT = "{\"limiters\":[%s]}";
 
-	private ScorerContext context;
 
 	@Before
 	public void setUp() {
 		super.setUp();
-		context = new ScorerContext(config);
 	}
 
 	private String buildJson(String... args) {
