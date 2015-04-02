@@ -20,7 +20,7 @@ public class ModelScorer extends AbstractScorer{
 	protected String featureFieldName;
 
 	public ModelScorer(String scorerName, Config config, ScorerContext context){
-		super(scorerName,config);
+		super(scorerName,config, context);
 		modelName = getConfigString(config, String.format("fortscale.score.%s.model.name", scorerName));
 		featureFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.fieldname", scorerName, modelName));
 		contextFieldName = getConfigString(config, String.format("fortscale.score.%s.%s.context.fieldname", scorerName, modelName));

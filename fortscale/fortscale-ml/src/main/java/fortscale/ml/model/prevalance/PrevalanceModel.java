@@ -13,6 +13,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
+import fortscale.ml.feature.extractor.IFeatureExtractionService;
+
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class PrevalanceModel {
@@ -49,10 +51,10 @@ public class PrevalanceModel {
 		return barrier;
 	}
 	
-	public void addFieldValues(JSONObject message, long timestamp) {		
+	public void addFieldValues(IFeatureExtractionService featureExtractionService, JSONObject message, long timestamp) {		
 		// add the fields to the model if passed the skip event check
 		for (String fieldName : getFieldNames()) {
-			Object value = message.get(fieldName);
+			Object value = featureExtractionService.extract(fieldName, message);
 			addFieldValue(fieldName, value, timestamp);
 		}
 	}

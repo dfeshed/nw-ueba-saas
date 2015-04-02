@@ -1,35 +1,25 @@
 package fortscale.web.rest;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
+import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.EventScore;
+import fortscale.domain.fe.dao.EmptyTableException;
+import fortscale.domain.fe.dao.EventLoginDayCount;
+import fortscale.services.exceptions.InvalidValueException;
+import fortscale.services.fe.*;
+import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.BaseController;
+import fortscale.web.beans.DataBean;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.EventScore;
-import fortscale.domain.fe.dao.EmptyTableException;
-import fortscale.domain.fe.dao.EventLoginDayCount;
-import fortscale.services.exceptions.InvalidValueException;
-import fortscale.services.fe.Classifier;
-import fortscale.services.fe.ClassifierService;
-import fortscale.services.fe.IClassifierScoreDistribution;
-import fortscale.services.fe.IScoreDistribution;
-import fortscale.services.fe.ISuspiciousUserInfo;
-import fortscale.utils.logging.annotation.LogException;
-import fortscale.web.BaseController;
-import fortscale.web.beans.DataBean;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/classifier/**")
@@ -76,7 +66,7 @@ public class ApiClassifierController extends BaseController {
 	@ResponseBody
 	@LogException
 	public DataBean<List<?>> events(@PathVariable LogEventsEnum id, @RequestParam(required = false) Long latestDate, @RequestParam(required = false) Long earliestDate, @RequestParam(required = false) String uid, @RequestParam(defaultValue = "0") Integer offset,
-			@RequestParam(defaultValue = "10") Integer limit, @RequestParam(required = false) String orderBy, @RequestParam(defaultValue = "DESC") String orderByDirection,
+			@RequestParam(defaultValue = "20") Integer limit, @RequestParam(required = false) String orderBy, @RequestParam(defaultValue = "DESC") String orderByDirection,
 			@RequestParam(defaultValue = "0") Integer minScore, @RequestParam(defaultValue = "false") Boolean followedOnly, Model model) {
 		Direction direction = convertStringToDirection(orderByDirection);
 

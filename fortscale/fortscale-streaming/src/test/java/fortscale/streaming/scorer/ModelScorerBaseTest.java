@@ -20,7 +20,7 @@ public class ModelScorerBaseTest extends ScorerBaseTest{
 	protected static final String OPTIONAL_CONTEXT_NAME = "optionalTestContextName";
 	protected static final String OPTIONAL_CONTEXT = "optionTestip";
 	
-	protected ScorerContext context;
+	
 	protected ModelService modelService;
 	protected PrevalanceModel model;
 	protected PrevalanceModel optionalModel;
@@ -28,7 +28,7 @@ public class ModelScorerBaseTest extends ScorerBaseTest{
 	@Before
 	public void setUp(){
 		super.setUp();
-		context = new ScorerContext(config);
+		
 		modelService = mock(ModelService.class);
 		model = mock(PrevalanceModel.class);
 		optionalModel = mock(PrevalanceModel.class);

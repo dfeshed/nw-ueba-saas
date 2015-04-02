@@ -88,7 +88,6 @@
 		<maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>
 		<maven-download-plugin.version>1.1.0</maven-download-plugin.version>
-		<json-smart.version>1.2</json-smart.version>
 	</properties>
 
 	<dependencies>

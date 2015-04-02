@@ -3,10 +3,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions.MySqlFunctionAggregate;
-import fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions.MySqlFunctionCount;
-import fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions.MySqlFunctionDateDiff;
-import fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions.MySqlFunctionToDate;
+import fortscale.services.dataqueries.querygenerators.mysqlgenerator.functions.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +19,7 @@ public class MySqlFieldFunctionGenerator {
     @Autowired private MySqlFunctionToDate mySqlFunctionToDate;
     @Autowired private MySqlFunctionAggregate mySqlFunctionAggregate;
     @Autowired private MySqlFunctionDateDiff mySqlFunctionDateDiff;
+    @Autowired private MySqlFunctionHour mySqlFunctionHour;
 
 
     /**
@@ -39,6 +37,7 @@ public class MySqlFieldFunctionGenerator {
             case avg:
             case sum: return mySqlFunctionAggregate.generateSql(field, dataQueryDTO);
             case datediff: return mySqlFunctionDateDiff.generateSql(field, dataQueryDTO);
+            case hour: return mySqlFunctionHour.generateSql(field, dataQueryDTO);
             default:
                 throw new InvalidQueryException(String.format("There's no implementation for field function %s.", field.getFunc().getName()));
         }

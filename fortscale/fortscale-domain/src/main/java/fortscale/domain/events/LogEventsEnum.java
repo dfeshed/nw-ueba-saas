@@ -4,7 +4,8 @@ public enum LogEventsEnum {
 	login("login", "login"),
 	ssh("ssh", "ssh"),
 	vpn("vpn", "vpn"),
-	amt("amt", "amt");
+	amt("amt", "amt"),
+	amtsession("amtsession", "amtsession");
 
 	private String id;
 	private String displayName;

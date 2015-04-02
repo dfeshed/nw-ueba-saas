@@ -27,8 +27,10 @@ public class UsernameServiceTest {
 	private EventScoreDAO sshDAO;
 	@Mock
 	private EventScoreDAO vpnDAO;
-//	@Mock
-//	private EventScoreDAO amtDAO;
+	@Mock
+	private EventScoreDAO amtDAO;
+	@Mock
+	private EventScoreDAO amtsessionDAO;
 	@Mock
 	private CacheHandler<String, String> usernameToUserIdCache;
 
@@ -71,7 +73,8 @@ public class UsernameServiceTest {
 		when(loginDAO.getTableName()).thenReturn(LogEventsEnum.login.name());
 		when(sshDAO.getTableName()).thenReturn(LogEventsEnum.ssh.name());
 		when(vpnDAO.getTableName()).thenReturn(LogEventsEnum.vpn.name());
-//		when(amtDAO.getTableName()).thenReturn(LogEventsEnum.amt.name());
+		when(amtDAO.getTableName()).thenReturn(LogEventsEnum.amt.name());
+		when(amtsessionDAO.getTableName()).thenReturn(LogEventsEnum.amtsession.name());
 
 		// Act
 		usernameService.update();
@@ -81,11 +84,8 @@ public class UsernameServiceTest {
 		when(userRepository.findOne(any(String.class))).thenReturn(null);
 		for (User user : listOfUsers) {
 			verify(usernameToUserIdCache, times(1)).put(user.getUsername(), user.getId());
-			for (LogEventsEnum value : LogEventsEnum.values()) {
-				if (value != LogEventsEnum.amt) { // TODO remove!
-					assertTrue(usernameService.isLogUsernameExist(value, getDataSourceUsername(value, user), user.getId()));
-				}
-			}
+			for (LogEventsEnum value : LogEventsEnum.values())
+				assertTrue(usernameService.isLogUsernameExist(value, getDataSourceUsername(value, user), user.getId()));
 		}
 	}
 

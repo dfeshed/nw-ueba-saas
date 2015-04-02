@@ -6,8 +6,8 @@ public class ContstantRegexScorer extends RegexScorer{
 	
 	private int constantScore;
 
-	public ContstantRegexScorer(String scorerName, Config config) {
-		super(scorerName, config);
+	public ContstantRegexScorer(String scorerName, Config config, ScorerContext context) {
+		super(scorerName, config, context);
 		this.constantScore = config.getInt(String.format("fortscale.score.%s.constant", scorerName));
 	}
 
