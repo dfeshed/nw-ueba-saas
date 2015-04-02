@@ -76,14 +76,14 @@ public class VpnEnrichService {
         	IGeoIPInfo geoIPInfo = multiProviderGeoIpService.getGeoIPInfo(ipAddress);
 
             // Write the ip info:  country, city, isp, usageType
-            event.put(vpnGeolocationConfig.getCountryFieldName(), geoIPInfo.getCountryName() != null ? geoIPInfo.getCountryName() : "");
-            event.put(vpnGeolocationConfig.getCountryIsoCodeFieldName(), geoIPInfo.getCountryISOCode() != null ? geoIPInfo.getCountryISOCode() : "");
-            event.put(vpnGeolocationConfig.getRegionFieldName(), geoIPInfo.getRegionName() != null ? geoIPInfo.getRegionName() : "");
-            event.put(vpnGeolocationConfig.getCityFieldName(), geoIPInfo.getCityName() != null ? geoIPInfo.getCityName() : "");
-            event.put(vpnGeolocationConfig.getIspFieldName(), geoIPInfo.getISP() != null ? geoIPInfo.getISP() : "");
-            event.put(vpnGeolocationConfig.getUsageTypeFieldName(), geoIPInfo.getUsageType() != null ? geoIPInfo.getUsageType().getId() : "");
-            event.put(vpnGeolocationConfig.getLongtitudeFieldName(), geoIPInfo.getLongitude());
-            event.put(vpnGeolocationConfig.getLatitudeFieldName(), geoIPInfo.getLatitude());
+            event.put(vpnGeolocationConfig.getCountryFieldName() != null ? vpnGeolocationConfig.getCountryFieldName() : "missingCountryFieldName", geoIPInfo.getCountryName() != null ? geoIPInfo.getCountryName() : "");
+            event.put(vpnGeolocationConfig.getCountryIsoCodeFieldName() != null ? vpnGeolocationConfig.getCountryIsoCodeFieldName() : "missingIsoCodeFieldName" , geoIPInfo.getCountryISOCode() != null ? geoIPInfo.getCountryISOCode() : "");
+            event.put(vpnGeolocationConfig.getRegionFieldName() != null ? vpnGeolocationConfig.getRegionFieldName() : "missingRegionFieldName"  , geoIPInfo.getRegionName() != null ? geoIPInfo.getRegionName() : "");
+            event.put(vpnGeolocationConfig.getCityFieldName() != null ? vpnGeolocationConfig.getCityFieldName() : "missingCityFieldName", geoIPInfo.getCityName() != null ? geoIPInfo.getCityName() : "");
+            event.put(vpnGeolocationConfig.getIspFieldName() != null ? vpnGeolocationConfig.getIspFieldName() : "missingIspFieldName" , geoIPInfo.getISP() != null ? geoIPInfo.getISP() : "");
+            event.put(vpnGeolocationConfig.getUsageTypeFieldName() != null ? vpnGeolocationConfig.getUsageTypeFieldName() : "missingUsageTypeFieldName", geoIPInfo.getUsageType() != null ? geoIPInfo.getUsageType().getId() : "");
+            event.put(vpnGeolocationConfig.getLongtitudeFieldName() != null ? vpnGeolocationConfig.getLongtitudeFieldName() : "missinglongtitudeFieldName", geoIPInfo.getLongitude());
+            event.put(vpnGeolocationConfig.getLatitudeFieldName() != null ? vpnGeolocationConfig.getLatitudeFieldName() : "missingLatitudeFieldName", geoIPInfo.getLatitude());
         } catch (Exception e) {
             logger.warn("error resolving geo2ip for {}, exception: {}", ipAddress, e.toString());
         }
