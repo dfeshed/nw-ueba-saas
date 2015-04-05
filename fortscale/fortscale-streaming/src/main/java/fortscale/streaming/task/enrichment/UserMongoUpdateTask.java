@@ -167,8 +167,12 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		}
 
 
-		// check that the event represent successful login
-		if (convertToString(message.get(dataSourceConfiguration.successField)).equalsIgnoreCase(dataSourceConfiguration.successValue)) {
+
+
+		//in case that the success field is equal to #AnyRow# in the configuration file
+		//update the last activity for any row
+		// or check that the event represent successful login
+		if (dataSourceConfiguration.successField.equals("#AnyRow#") || convertToString(message.get(dataSourceConfiguration.successField)).equalsIgnoreCase(dataSourceConfiguration.successValue)) {
 			// Find the last activity of the user (if exist) and update it if the event is newer than the event's activity
 			//update the logusername if needed
 			updateUserInfoInStore(timestamp, normalizedUsername, dataSourceConfiguration.mongoClassifierId,logUserNameFromEvent);

@@ -1,7 +1,6 @@
 package fortscale.streaming.service.vpn;
 
 import fortscale.utils.TimestampUtils;
-import javolution.io.Struct;
 
 /**
  * Created by rans on 03/02/15.

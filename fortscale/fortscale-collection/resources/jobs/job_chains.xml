@@ -3,6 +3,16 @@
 	<chain>
 		<first>
 			<name>Fetch</name>
+			<group>AMT</group>
+		</first>
+		<second>
+			<name>ETL</name>
+			<group>AMT</group>
+		</second>
+	</chain>
+	<chain>
+		<first>
+			<name>Fetch</name>
 			<group>VPN</group>
 		</first>
 		<second>

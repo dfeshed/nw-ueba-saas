@@ -5,28 +5,22 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.vpn.VpnEnrichService;
 import fortscale.streaming.task.GeneralTaskTest;
 import net.minidev.json.JSONObject;
-import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
@@ -45,8 +39,11 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
 
     @InjectMocks
     VpnEnrichTask task;
-    @Mock
-    private VpnEnrichService vpnEnrichService;
+
+
+	@Mock
+	VpnEnrichService vpnEnrichService;
+
 
     @Mock
     private SystemStreamPartition systemStreamPartition;
@@ -66,11 +63,19 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
      */
     @Test
     public void wrappedProcess_normal() throws Exception {
+
+
+
+		Map<String, VpnEnrichService> topicToServiceMap = new HashMap<>();
+		topicToServiceMap.put(INPUT_TOPIC,vpnEnrichService);
+		VpnEnrichTask.setTopicToServiceMap(topicToServiceMap);
+
         //stub
         Map map = new HashMap();
         map.put("username", "myUser");
         when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
+
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
         // run the process on the envelope
@@ -93,9 +98,16 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
      */
     @Test(expected = KafkaPublisherException.class)
     public void wrappedProcess_kafkaException() throws Exception {
+
+
+
         //stub
         Map map = new HashMap();
         map.put("username", "myUser");
+		Map<String, VpnEnrichService> topicToServiceMap = new HashMap<>();
+		topicToServiceMap.put(INPUT_TOPIC,vpnEnrichService);
+		VpnEnrichTask.setTopicToServiceMap(topicToServiceMap);
+
         when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
         doThrow(new RuntimeException()).when(messageCollector).send(any(OutgoingMessageEnvelope.class));
