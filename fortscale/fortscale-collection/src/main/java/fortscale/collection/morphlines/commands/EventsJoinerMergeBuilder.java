@@ -2,6 +2,7 @@ package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
 import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.utils.TimestampUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -80,10 +81,10 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
                 {
 
 
-                    long current_record_utc_date_time = RecordExtensions.getLongValue(inputRecord, timeField)*1000;
+                    long current_record_utc_date_time = TimestampUtils.convertToMilliSeconds(RecordExtensions.getLongValue(inputRecord, timeField));
 
 
-                    long prev_utc_date_time = RecordExtensions.getLongValue(previousEvent,timeField)*1000;
+                    long prev_utc_date_time = TimestampUtils.convertToMilliSeconds(RecordExtensions.getLongValue(previousEvent,timeField));
 
                     long delta = current_record_utc_date_time - timeToCacheMiliSec;
 

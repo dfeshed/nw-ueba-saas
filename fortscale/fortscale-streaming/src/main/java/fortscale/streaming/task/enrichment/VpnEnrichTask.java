@@ -80,7 +80,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
 				String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", eventType));
 				String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
 
-				Boolean doGeoHoping = config.getBoolean(String.format("fortscale.events.%s.doGeoHoping", eventType));
+				Boolean doGeoLocationh = config.getBoolean(String.format("fortscale.events.%s.doGeoLocationh", eventType));
 				Boolean doDataBuckets = config.getBoolean(String.format("fortscale.events.%s.doDataBuckets", eventType));
 				Boolean doSessionUpdate = config.getBoolean(String.format("fortscale.events.%s.doSessionUpdate", eventType));
 				usernameFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.username.field", eventType)));
@@ -92,7 +92,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
 				VpnDataBucketsConfig vpnDataBucketsConfig = null;
 				VpnSessionUpdateConfig vpnSessionUpdateConfig = null;
 
-				if (doGeoHoping) {
+				if (doGeoLocationh) {
 					//geolocation field names:
 					String ipField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.ip.field", eventType)));
 					String countryFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.country.field", eventType)));
