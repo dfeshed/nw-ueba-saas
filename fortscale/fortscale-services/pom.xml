@@ -127,20 +127,17 @@
 			<artifactId>JUnitParams</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+        <!-- json parsing library -->
         <dependency>
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
-            <version>1.2</version>
+            <version>${json-smart.version}</version>
         </dependency>
 
-
-		<!-- json parsing library -->
-		<dependency>
-			<groupId>net.minidev</groupId>
-			<artifactId>json-smart</artifactId>
-			<version>${json-smart.version}</version>
-		</dependency>
     </dependencies>
+
+
 
 
 </project>

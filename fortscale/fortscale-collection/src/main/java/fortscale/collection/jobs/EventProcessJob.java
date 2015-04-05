@@ -297,7 +297,8 @@ public class EventProcessJob implements Job {
 
 			// ensure user exists in mongodb
 			// todo - Think how to deprecate this part or move it to the streaming
-			// updateOrCreateUserWithClassifierUsername(record);
+			//move the implemintation tot he relevant data source job - cause we need it only for AMT for now
+			updateOrCreateUserWithClassifierUsername(record);
 
 			// output event to streaming platform
 			streamMessage(recordKeyExtractor.process(record),recordToString.toJSON(record));
@@ -309,12 +310,7 @@ public class EventProcessJob implements Job {
 	}
 	
 	protected void updateOrCreateUserWithClassifierUsername(Record record){
-		Classifier classifier = getClassifier();
-		if(classifier != null){
-			String normalizedUsername = extractNormalizedUsernameFromRecord(record);
-			String logUsername = extractUsernameFromRecord(record);
-			userService.updateOrCreateUserWithClassifierUsername(classifier, normalizedUsername, logUsername, isOnlyUpdateUser(record), isUpdateAppUsername());
-		}
+
 	}
 	
 	protected Classifier getClassifier(){
