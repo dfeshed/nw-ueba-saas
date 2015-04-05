@@ -15,6 +15,8 @@
 			<recover>true</recover>
 		</job>
 
+
+
 		<trigger>
 			<cron>
 				<name>amtScores_partition_sync_hourly_trigger</name>
@@ -98,5 +100,36 @@
 				<cron-expression>0 10 4 * * ?</cron-expression>
 			</cron>
 		</trigger>
+
+        <trigger>
+            <cron>
+                <name>amtdata_partitions_hourly_trigger</name>
+                <group>AMT</group>
+                <job-name>Add_Partitions</job-name>
+                <job-group>AMT</job-group>
+                <job-data-map>
+                    <entry>
+                        <key>hdfsPath</key>
+                        <value>${hdfs.user.data.amt.path}</value>
+                    </entry>
+                    <entry>
+                        <key>tableName</key>
+                        <value>${impala.data.amt.table.name}</value>
+                    </entry>
+                    <entry>
+                        <key>partitionStrategy</key>
+                        <value>${impala.data.amt.table.partition.type}</value>
+                    </entry>
+                    <entry>
+                        <key>daysToRetain</key>
+                        <value>${hdfs.user.data.amt.retention}</value>
+                    </entry>
+                </job-data-map>
+                <cron-expression>0 20 4 * * ?</cron-expression>
+            </cron>
+        </trigger>
+
+
+
 	</schedule>
 </job-scheduling-data>

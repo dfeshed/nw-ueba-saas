@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+
+    <schedule>
+        <job>
+            <name>Fetch</name>
+            <group>AMT</group>
+            <description>Fetch data from splunk hourly</description>
+            <job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+
+            <job-data-map>
+                <entry>
+                    <key>earliest</key>
+                    <value>-1h@h</value>
+                </entry>
+                <entry>
+                    <key>latest</key>
+                    <value>-0h@h</value>
+                </entry>
+                <entry>
+                    <key>savedQuery</key>
+                    <value>getAMTdata</value>
+                </entry>
+                <entry>
+                    <key>returnKeys</key>
+                    <value>_time,amt_server,amt_client,amt_user,yid,action_code,action_string,uri</value>
+                </entry>
+                <entry>
+                    <key>filenameFormat</key>
+                    <value>AMT_%d.csv</value>
+                </entry>
+                <entry>
+                    <key>delimiter</key>
+                    <value>|</value>
+                </entry>
+                <entry>
+                    <key>encloseQuotes</key>
+                    <value>false</value>
+                </entry>
+            </job-data-map>
+        </job>
+
+        <trigger>
+            <cron>
+                <name>amt_fetch_hourly_trigger</name>
+                <group>AMT</group>
+                <job-name>Fetch</job-name>
+                <job-group>AMT</job-group>
+                <cron-expression>0 45 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+
+    </schedule>
+
+</job-scheduling-data>

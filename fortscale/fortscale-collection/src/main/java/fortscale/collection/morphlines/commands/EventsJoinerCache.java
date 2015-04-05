@@ -1,6 +1,12 @@
 package fortscale.collection.morphlines.commands;
 
-import static com.google.common.base.Preconditions.*;
+import fortscale.domain.eventscache.CachedRecord;
+import fortscale.domain.eventscache.CachedRecordRepository;
+import org.kitesdk.morphline.api.Record;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -10,14 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kitesdk.morphline.api.Record;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
-import fortscale.domain.eventscache.CachedRecord;
-import fortscale.domain.eventscache.CachedRecordRepository;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.collection.morphlines.RecordExtensions.getLongValue;
+import static fortscale.utils.TimestampUtils.convertToSeconds;
 
 /**
  * Cache for stored record that are used during processing of
@@ -44,13 +45,13 @@ public class EventsJoinerCache implements Closeable {
 	 * Get an instance of the EventsJoinerCache that is separate for each 
 	 * morphline execution instance
 	 */
-	public static EventsJoinerCache getInstance(String name) {
+	public static EventsJoinerCache getInstance(String name, String currentRecordDateField) {
 		checkNotNull(name);
 		
 		
 		// lookup the hash code in the instances map
 		if (!instances.containsKey(name)) {
-			EventsJoinerCache instance = new EventsJoinerCache(name);
+			EventsJoinerCache instance = new EventsJoinerCache(name, currentRecordDateField);
 			instances.put(name, instance);
 		}
 		return instances.get(name);
@@ -88,17 +89,26 @@ public class EventsJoinerCache implements Closeable {
 	private boolean isClosed;
 	private String instanceId;
 	private Map<String,Record> records;
-	
+	//default value meaning don't use ttl mechanism
+	private long deprecationTs = -1;
+	private String currentRecordDateField;
+
 	@Autowired
 	private CachedRecordRepository repository;
 	
-	protected EventsJoinerCache(String instanceId) {
+	protected EventsJoinerCache(String instanceId, String currentRecordDateField ) {
 		this.instanceId = instanceId;
+		this.currentRecordDateField = currentRecordDateField;
 		this.isClosed = false;
 		this.records = new HashMap<String, Record>();
+
 		load();
 	}
-	
+
+	public void setDeprecationTs(long deprecationTs) {
+		this.deprecationTs = deprecationTs;
+	}
+
 	public void store(String key, Record record) {
 		checkNotNull(key);
 		checkNotNull(record);
@@ -145,12 +155,21 @@ public class EventsJoinerCache implements Closeable {
 	 * jobs executions. The method should be called by the close method in the cache.
 	 */
 	private void persist() {
-	
-		if (repository!=null) {
+
+		if (repository != null) {
 			// store all cache records into mongo
 			List<CachedRecord> batchToInsert = new LinkedList<CachedRecord>();
 			for (String key : records.keySet()) {
-				batchToInsert.add(new CachedRecord(instanceId, key, records.get(key)));
+				CachedRecord cachedRecord = new CachedRecord(instanceId, key, records.get(key));
+				//only if need to use ttl mechanism
+				if (deprecationTs != -1) {
+					long recordTs = convertToSeconds(getLongValue(cachedRecord.getRecord(), currentRecordDateField, 0L));
+					//the current record is older than the deprecationTs, don't add the current record to mongo.
+					if (recordTs < deprecationTs) {
+						continue;
+					}
+				}
+				batchToInsert.add(cachedRecord);
 			}
 			if (!batchToInsert.isEmpty())
 				repository.save(batchToInsert);
@@ -158,8 +177,7 @@ public class EventsJoinerCache implements Closeable {
 			// should be null when running in unit test context
 			logger.error("mongo repository not injected");
 		}
-			
-		
+
 		this.records.clear();
 	}
 	

@@ -1,11 +1,12 @@
 package fortscale.collection.morphlines.commands;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
+import com.typesafe.config.Config;
 import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.collection.morphlines.RecordToVpnSessionConverter;
+import fortscale.domain.events.VpnSession;
+import fortscale.domain.schema.VpnEvents;
+import fortscale.services.event.VpnService;
+import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -17,13 +18,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.typesafe.config.Config;
-
-import fortscale.collection.morphlines.RecordToVpnSessionConverter;
-import fortscale.domain.events.VpnSession;
-import fortscale.domain.schema.VpnEvents;
-import fortscale.services.event.VpnService;
-import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 
 @Deprecated

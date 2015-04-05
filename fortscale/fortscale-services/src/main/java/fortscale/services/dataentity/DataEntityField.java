@@ -11,6 +11,7 @@ public class DataEntityField implements Comparable<DataEntityField> {
     private String scoreField;
     private Boolean isDefaultEnabled = true;
     private QueryValueType type;
+    private String format;
 
     /**
      * A string key for defining directional links between entities. A joinFrom key should match a joinTo key in another entity's field.
@@ -126,6 +127,14 @@ public class DataEntityField implements Comparable<DataEntityField> {
 
     public void setJoinTo(String joinTo) {
         this.joinTo = joinTo;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     @Override

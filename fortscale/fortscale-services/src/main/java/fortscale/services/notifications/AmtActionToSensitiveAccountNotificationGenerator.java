@@ -36,6 +36,7 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 	private NotificationsRepository notificationsRepository;
 	@Autowired
 	private NotificationResourcesRepository notificationResourcesRepository;
+
 	@Autowired
 	private UserRepository userRepository;
 
@@ -101,6 +102,7 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 			}
 		}
 
+
 		return attributes;
 	}
 
@@ -118,4 +120,5 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 		String impalaTableFields = resolver.getProperty("impala.data.amt.table.fields");
 		amtEventFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 	}
+
 }
