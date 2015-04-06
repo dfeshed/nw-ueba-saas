@@ -1,19 +1,17 @@
 package fortscale.domain.core.dao;
 
-import java.util.List;
-
+import com.google.common.base.Optional;
+import fortscale.domain.core.Notification;
+import fortscale.domain.core.NotificationAggregate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import com.google.common.base.Optional;
-
-import fortscale.domain.core.Notification;
-import fortscale.domain.core.NotificationAggregate;
+import java.util.List;
 
 public interface NotificationsRepositoryCustom {
 
-	List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed, Optional<Integer> daysToFetch);
+	List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed, long before, long after);
 	
 	List<Notification> findByTsGreaterThanExcludeComments(long ts, Sort sort);
 	

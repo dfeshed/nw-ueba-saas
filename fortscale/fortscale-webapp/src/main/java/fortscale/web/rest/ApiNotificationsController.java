@@ -1,12 +1,16 @@
 package fortscale.web.rest;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.base.Optional;
+import fortscale.domain.analyst.Analyst;
+import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.*;
+import fortscale.domain.core.dao.NotificationResourcesRepository;
+import fortscale.domain.core.dao.NotificationsRepository;
+import fortscale.services.analyst.AnalystService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.logging.annotation.LogException;
+import fortscale.web.BaseController;
+import fortscale.web.beans.DataBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,22 +19,12 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.google.common.base.Optional;
-
-import fortscale.domain.analyst.Analyst;
-import fortscale.domain.analyst.AnalystAuth;
-import fortscale.domain.core.dao.NotificationResourcesRepository;
-import fortscale.domain.core.dao.NotificationsRepository;
-import fortscale.services.analyst.AnalystService;
-import fortscale.utils.logging.annotation.LogException;
-import fortscale.web.BaseController;
-import fortscale.web.beans.DataBean;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/notifications")
@@ -118,10 +112,11 @@ public class ApiNotificationsController extends BaseController {
 	@LogException
 	public DataBean<List<Notification>> userNotifications(@PathVariable("fsid") String fsid,
 			@RequestParam(defaultValue="False") boolean includeDissmissed,
-			@RequestParam(defaultValue="0") int daysToFetch) {
+			@RequestParam(required=false, defaultValue="0") long after,
+			@RequestParam(required=false, defaultValue="0") long before) {
 		
-		Optional<Integer> earliest = (daysToFetch==0)? Optional.<Integer>absent() : Optional.of(daysToFetch);
-		Iterable<Notification> userNotifications = notificationsRepository.findByFsIdExcludeComments(fsid, includeDissmissed, earliest);
+
+		Iterable<Notification> userNotifications = notificationsRepository.findByFsIdExcludeComments(fsid, includeDissmissed, before, after);
 		return notificationsDataSingle(userNotifications, Optional.<Long>absent());
 	}
 
@@ -129,7 +124,7 @@ public class ApiNotificationsController extends BaseController {
 	@ResponseBody
 	@LogException
 	public ResponseEntity<DataBean<List<Notification>>> list(
-			@RequestParam(defaultValue="0", required=false) int page,
+			@RequestParam(defaultValue="1", required=false) int page,
 			@RequestParam(defaultValue="20", required=false) int size,
 			@RequestParam(required=false) final List<String> includeFsIds,
 			@RequestParam(required=false) final List<String> excludeFsIds,
@@ -139,7 +134,8 @@ public class ApiNotificationsController extends BaseController {
 			@RequestParam(required=false, defaultValue="0") long after,
 			@RequestParam(required=false, defaultValue="0") long before,
 			@RequestParam(defaultValue="True") boolean sortDesc) {
-		
+
+		page = Math.max(0,page-1);
 		// calculate the page request based on the parameters given
 		PageRequest request = new PageRequest(page, size, 
 				sortDesc ? Direction.DESC : Direction.ASC, TIME_STAMP);
