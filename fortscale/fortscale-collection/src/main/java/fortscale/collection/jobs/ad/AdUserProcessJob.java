@@ -97,17 +97,22 @@ public class AdUserProcessJob extends AdProcessJob {
 			return false;
 		}
 		adUser.setLastModified(new Date());
+
+		//in case that we don't filter by ou or we have white list and the current user appear at the white list
 		if(StringUtils.isEmpty(ouUsersFilter) || supportedUsersService.isSupportedUsername(adUser.getUserPrincipalName()) ||
 				supportedUsersService.isSupportedUsername(adUser.getsAMAccountName())){
 			adUserRepository.save(adUser);
 			userServiceFacade.updateUserWithADInfo(adUser);
-		}else{
+		}
+		else{
+			// in case that add new user flag is false and this is not the first run
 			if(addUsers == false && jobFirstRun == false){
 				if(supportedUsersService.isSupportedUser(adUser.getObjectGUID())){
 					adUserRepository.save(adUser);
 					userServiceFacade.updateUserWithADInfo(adUser);
 				}
-			}else{
+			}
+			else{
 				adUserRepository.save(adUser);	
 			}
 		}
@@ -141,6 +146,8 @@ public class AdUserProcessJob extends AdProcessJob {
                 }
 			}
 		}
+
+
 	}
 	
 	protected void updateSupportedUsers(List<AdUser> users){
@@ -164,7 +171,7 @@ public class AdUserProcessJob extends AdProcessJob {
 	
 	protected void runFinalStep() throws Exception{
 		startNewStep("update username set");
-		usernameService.update();
+
 		// Update admin tag
 		userTaggingService.update(UserTagEnum.executive.getId());
 		userTaggingService.update(UserTagEnum.admin.getId());
@@ -178,6 +185,9 @@ public class AdUserProcessJob extends AdProcessJob {
 				adUserRepository.deleteAll();
 			}
 		}
+
+		//update the username serivice cahce with the user that was updated in the User collection at the mongo
+		usernameService.update();
 		finishStep();
 	}
 }
