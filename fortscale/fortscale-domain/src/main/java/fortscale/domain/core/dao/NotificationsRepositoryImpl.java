@@ -1,9 +1,9 @@
 package fortscale.domain.core.dao;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import com.google.common.base.Optional;
+import fortscale.domain.core.Notification;
+import fortscale.domain.core.NotificationAggregate;
+import fortscale.utils.TimestampUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,14 +12,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
-import com.google.common.base.Optional;
-
-import fortscale.domain.core.Notification;
-import fortscale.domain.core.NotificationAggregate;
-import fortscale.utils.TimestampUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class NotificationsRepositoryImpl implements NotificationsRepositoryCustom {
 
@@ -27,15 +25,19 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 	private MongoTemplate mongoTemplate;
 	
 	@Override
-	public List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed, Optional<Integer> daysToFetch) {
+	public List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed, long before, long after) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("fsId").is(fsid));
 		if (!includeDissmissed)
 			query.addCriteria(new Criteria().orOperator(Criteria.where("dismissed").is(false), Criteria.where("dismissed").exists(false)));
-		// limit the days to fetch is a criteria is given
-		if (daysToFetch.isPresent()) {
-			long earliest = (new DateTime()).minusDays(daysToFetch.get()).getMillis();
-			query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(earliest)));
+		// limit the ts to fetch
+		if (before!=0L && after!=0L) {
+			query.addCriteria(Criteria.where("ts").lte(TimestampUtils.convertToSeconds(before)).gte(TimestampUtils.convertToSeconds(after)));
+		} else {
+			if (before!=0L)
+				query.addCriteria(Criteria.where("ts").lte(TimestampUtils.convertToSeconds(before)));
+			if (after!=0L)
+				query.addCriteria(Criteria.where("ts").gte(TimestampUtils.convertToSeconds(after)));
 		}
 		
 		query.with(new Sort(Direction.DESC, "ts")).limit(10);
