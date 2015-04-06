@@ -77,7 +77,14 @@ public class SshTelcomItaliaTest {
 						"1409522849 2014-09-01T00:07:26+02:00 FAC=auth 192.168.70.65 PROG=sshd PID=271913 LEV=[info] Accepted publickey for logarc from 10.41.152.66 port 63935 ssh2",
 						null
 
+				),
+				$ (
+						"gssapi-with-mic as auth method ",
+						"1409556949 2014-09-01T09:35:44+02:00 FAC=auth npatas1/npatas1 PROG=sshd PID=416884 LEV=[info] Accepted gssapi-with-mic for UE016550 from 10.23.202.50 port 49303 ssh2",
+						"2014-09-01 09:35:44,1409564144,10.23.202.50,npatas1/npatas1,UE016550,Accepted,gssapi-with-mic,,,,false,,,,"
+
 				)
+
 
 
 		);
