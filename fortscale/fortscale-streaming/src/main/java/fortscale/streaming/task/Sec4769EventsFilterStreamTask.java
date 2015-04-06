@@ -82,11 +82,12 @@ private static final String NAT_SRC_MACHINE = "nat_src_machine";
 			if (StringUtils.isNotEmpty(machine_name) && vpnIpPool.matcher(clientIp).matches()) {
 				// strip the user name and machine name from seperator chars
 				String coreMachineName = machine_name.split("-")[0].toLowerCase();
-				String coreUserName = account_name.split("@")[0].split(".")[0].toLowerCase();
+				String coreUserName = account_name.split("@")[0].split("\\.")[0].toLowerCase();
 				if (!coreMachineName.equals(coreUserName)) {
 					// replace the machine name and normalized src machine with empty values
 					message.put("machine_name", "");
 					message.put("normalized_src_machine", "");
+					message.put(NAT_SRC_MACHINE, "");
 					message.put("is_nat", true);
 				}
 			}
