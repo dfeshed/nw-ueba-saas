@@ -96,7 +96,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 		// Get field names
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
-		usernameField = getConfigString(config, "fortscale.username.field");
+		//usernameField = getConfigString(config, "fortscale.username.field");
 
 		// Get the user service (for Mongo) from spring
 		userService = SpringService.getInstance().resolve(UserService.class);
@@ -110,6 +110,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			String successfulLoginValue = getConfigString(config, String.format("fortscale.data-source.success.value.%s", dataSource));
 			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.data-source.updateOnly.%s", dataSource));
 			String logUserNameField =getConfigString(config, String.format("fortscale.data-source.logusername.field.%s", dataSource));
+			usernameField = getConfigString(config, String.format("fortscale.source.username.field.%s", dataSource));
 			topicToDataSourceMap.put(inputTopic, new dataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue,udpateOnlyFlag,logUserNameField));
 			updateOnlyPerClassifire.put(classifier,udpateOnlyFlag);
 		}
