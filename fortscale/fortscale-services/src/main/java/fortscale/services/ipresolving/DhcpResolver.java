@@ -181,7 +181,8 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 				return dhcpEvent;
 			}
 		}
-		long lowerLimitTs = dhcpEvent != null ? dhcpEvent.getExpiration() : 0;
+		//take the expiration date as the lower limit of the black list period only if the given event is previous to the given event ts
+		long lowerLimitTs = dhcpEvent != null && (dhcpEvent.getExpiration() < ts) ? dhcpEvent.getExpiration() : 0;
 		addToBlackList(ip, lowerLimitTs, upperTsLimit);
 		return null;
 	}
