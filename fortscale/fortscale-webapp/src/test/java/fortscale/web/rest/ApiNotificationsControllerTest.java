@@ -1,21 +1,11 @@
 package fortscale.web.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
+import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationFlag;
+import fortscale.domain.core.NotificationResource;
+import fortscale.domain.core.dao.NotificationResourcesRepository;
+import fortscale.domain.core.dao.NotificationsRepository;
+import fortscale.web.beans.DataBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -30,11 +20,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import fortscale.domain.core.Notification;
-import fortscale.domain.core.NotificationResource;
-import fortscale.domain.core.dao.NotificationResourcesRepository;
-import fortscale.domain.core.dao.NotificationsRepository;
-import fortscale.web.beans.DataBean;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ApiNotificationsControllerTest {
 
@@ -118,7 +118,7 @@ public class ApiNotificationsControllerTest {
 
 		// verify interaction with repository
 		verify(notificationRepository).findByPredicates(null, null, true, 
-				null, null, 0, 0, new PageRequest(2, 100, Direction.DESC, "ts"));
+				null, null, 0, 0, new PageRequest(1, 100, Direction.DESC, "ts"));
 	}
 	
 	@Test
