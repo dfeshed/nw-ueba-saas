@@ -49,6 +49,9 @@ public class VpnSession extends AbstractDocument{
 	private DateTime modifiedAt;
 	
 	private String localIp;
+
+
+	private String normalizedUserName;
 	
 	private String hostname;	
 	
@@ -270,5 +273,14 @@ public class VpnSession extends AbstractDocument{
 
 	public void setGeoHopping(Boolean geoHopping) {
 		this.geoHopping = geoHopping;
+	}
+
+
+	public String getNormalizedUserName() {
+		return normalizedUserName;
+	}
+
+	public void setNormalizedUserName(String normalizedUserName) {
+		this.normalizedUserName = normalizedUserName;
 	}
 }

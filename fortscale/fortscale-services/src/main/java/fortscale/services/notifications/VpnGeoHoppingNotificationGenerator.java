@@ -1,19 +1,5 @@
 package fortscale.services.notifications;
 
-import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
-
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.NotificationResource;
 import fortscale.domain.core.User;
@@ -24,6 +10,15 @@ import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+
+import java.beans.PropertyDescriptor;
+import java.util.*;
 
 
 @Component("vpnGeoHoppingNotificationGenerator")
@@ -54,7 +49,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 	public void createNotifications(List<VpnSession> vpnSessions){
 		List<Notification> notifications = new ArrayList<>();
 		for(VpnSession vpnSession: vpnSessions){
-			User user = userRepository.findByUsername(vpnSession.getUsername());
+			User user = userRepository.findByUsername(vpnSession.getNormalizedUserName());
 			Notification notification = new Notification();
 			long ts = vpnSession.getClosedAtEpoch() != null ? vpnSession.getClosedAtEpoch() : vpnSession.getCreatedAtEpoch();
 			notification.setTs(TimestampUtils.convertToSeconds(ts));

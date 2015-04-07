@@ -123,6 +123,7 @@ public class VpnEnrichService {
         String longtitudeFieldName = vpnSessionUpdateConfig.getLongtitudeFieldName();
         String latitudeFieldName = vpnSessionUpdateConfig.getLatitudeFieldName();
         String sessionIdFieldName = vpnSessionUpdateConfig.getSessionIdFieldName();
+
         VpnSession vpnSession = recordToVpnSessionConverter.convert(event, countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName, sessionIdFieldName);
 
         // check if failed event

@@ -48,7 +48,7 @@ public class RecordToVpnSessionConverter {
 			vpnSession.setIsp(convertToString(event.get(vpnEvents.ISP)));
 			vpnSession.setIspUsage(convertToString(event.get(vpnEvents.IPUSAGE)));
 			vpnSession.setLocalIp(convertToString(event.get(vpnEvents.LOCAL_IP)));
-			vpnSession.setUsername(convertToString(event.get(vpnEvents.NORMALIZED_USERNAME)));
+			vpnSession.setNormalizedUserName(convertToString(event.get(vpnEvents.NORMALIZED_USERNAME)));
 			vpnSession.setReadBytes(convertToLong(event.get(vpnEvents.READ_BYTES)));
 			vpnSession.setRegion(convertToString(event.get(vpnEvents.REGION)));
 			vpnSession.setSourceIp(convertToString(event.get(vpnEvents.SOURCE_IP)));
