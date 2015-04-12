@@ -36,18 +36,12 @@ public class AmtDAOImpl extends AccessDAO {
 	public String HOSTNAME;
 	@Value("${impala.score.amt.table.field.normalized_src_machine}")
 	public String NORMALIZED_SRC_MACHINE;
-	@Value("${impala.score.amt.table.field.normalized_src_machine_score}")
-	public String NORMALIZED_SRC_MACHINE_SCORE;
 	@Value("${impala.score.amt.table.field.target_machine}")
 	public String TARGET_MACHINE;
 	@Value("${impala.score.amt.table.field.normalized_dst_machine}")
 	public String NORMALIZED_DST_MACHINE;
-	@Value("${impala.score.amt.table.field.normalized_dst_machine_score}")
-	public String NORMALIZED_DST_MACHINE_SCORE;
 	@Value("${impala.score.amt.table.field.yid}")
 	public String YID;
-	@Value("${impala.score.amt.table.field.yid_score}")
-	public String YID_SCORE;
 	@Value("${impala.score.amt.table.field.action_code}")
 	public String ACTION_CODE;
 	@Value("${impala.score.amt.table.field.action_code_score}")
