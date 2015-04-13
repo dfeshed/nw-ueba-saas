@@ -6,10 +6,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.samza.config.Config;
+import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -51,20 +53,35 @@ public class TaskScorerConfigTest extends ScorerBaseTest{
 	}
 
 	
-	protected List<Scorer> buildScorersFromTaskConfig(String taskConfigPropertiesFilePath) throws IOException{
-		Config config = TaskTestUtil.buildTaskConfig(taskConfigPropertiesFilePath);
+	protected Map<String, Scorer> buildScorersFromTaskConfig(String taskConfigPropertiesFilePath) throws IOException{
+		config = TaskTestUtil.buildTaskConfig(taskConfigPropertiesFilePath);
 
 		List<String> scorers = getConfigStringList(config, "fortscale.scorers");
-		ScorerContext context = new ScorerContext(config);
+		context = new ScorerContext(config);
 		context.setBean("modelService", modelService);
-		FeatureExtractionService featureExtractionService = new FeatureExtractionService(config);
+		featureExtractionService = new FeatureExtractionService(config);
 		context.setBean("featureExtractionService", featureExtractionService);
-		List<Scorer> scorersToRun = new ArrayList<>();
+		Map<String, Scorer> scorersToRun = new HashMap<>();
 		for(String ScorerStr: scorers){
 			Scorer scorer = (Scorer) context.resolve(Scorer.class, ScorerStr);
 			checkNotNull(scorer);
-			scorersToRun.add(scorer);
+			scorersToRun.put(ScorerStr, scorer);
 		}
 		return scorersToRun;
+	}
+	
+	protected EventMessage buildEventMessage(boolean isAddInput, String fieldName, Object fieldValue){
+		JSONObject jsonObject = null;
+		if(isAddInput){
+			jsonObject = new JSONObject();
+			jsonObject.put(fieldName, fieldValue);
+		}
+		
+		return new EventMessage(jsonObject);
+	}
+	
+	protected void addToEventMessage(EventMessage eventMessage, String fieldName, Object fieldValue){
+		JSONObject jsonObject = eventMessage.getJsonObject();
+		jsonObject.put(fieldName, fieldValue);
 	}
 }

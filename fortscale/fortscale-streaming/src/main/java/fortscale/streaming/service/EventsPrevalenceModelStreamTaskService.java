@@ -179,7 +179,7 @@ public class EventsPrevalenceModelStreamTaskService {
 	private String getModelContext(String modelName, JSONObject message){
 		String context = null;
 		for(String contextField: modelToContextFieldNameMap.get(modelName)){
-			context = convertToString(message.get(contextField));
+			context = convertToString(featureExtractionService.extract(contextField, message));
 			if(StringUtils.isNotBlank(context)){
 				break;
 			}

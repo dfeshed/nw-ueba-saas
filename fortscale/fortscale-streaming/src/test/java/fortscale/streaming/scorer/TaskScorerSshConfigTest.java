@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -69,8 +68,8 @@ public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 	}
 	
 	private void runTest(String configFilePath, Double eventScore, Map<String, Double> fieldToScoreMap) throws Exception{
-		List<Scorer> scorers = buildScorersFromTaskConfig(configFilePath);
-		Scorer scorer = scorers.get(0);
+		Map<String, Scorer> scorers = buildScorersFromTaskConfig(configFilePath);
+		Scorer scorer = scorers.values().iterator().next();
 		
 		EventMessage eventMessage = buildEventMessage(true, CONTEXT_NAME, CONTEXT);
 		
