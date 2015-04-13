@@ -77,7 +77,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 	
 	@Override
-	public VpnSession findByUsernameAndSourceIp(String username, String sourceIp){
+	public List<VpnSession> findByUsernameAndSourceIp(String username, String sourceIp){
 		return vpnSessionRepository.findByUsernameAndSourceIp(username, sourceIp);
 	}
 
@@ -93,8 +93,11 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 
 	@Override
-	public void createOrUpdateOpenVpnSession(VpnSession vpnSessionUpdate) {
-		VpnSession vpnSession = findVpnSession(vpnSessionUpdate);
+	public void createOrUpdateOpenVpnSession(VpnSession vpnSessionUpdate, boolean allowDuplicates) {
+		VpnSession vpnSession = null;
+		if (!allowDuplicates) {
+			vpnSession = findVpnSession(vpnSessionUpdate);
+		}
 		if(vpnSession == null){
 			vpnSession = vpnSessionUpdate;
 		} else{
@@ -131,10 +134,34 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		if(StringUtils.isNotEmpty(vpnSessionUpdate.getSessionId())){
 			ret = vpnSessionRepository.findBySessionId(vpnSessionUpdate.getSessionId());
 		} else if(StringUtils.isNotEmpty(vpnSessionUpdate.getUsername()) && StringUtils.isNotEmpty(vpnSessionUpdate.getSourceIp())){
-			ret = vpnSessionRepository.findByUsernameAndSourceIp(vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
+			List<VpnSession> sessions = vpnSessionRepository.findByUsernameAndSourceIp(vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
+			if (sessions.size() == 0 ){
+				ret = null;
+			} else {
+				Long startSessionTime = vpnSessionUpdate.getClosedAt().minusMillis(vpnSessionUpdate.getDuration() * 1000).getMillis();
+				ret = findFittestSession(sessions, startSessionTime);
+			}
 		}
 		
 		return ret;
+	}
+
+	public static VpnSession findFittestSession(List<VpnSession> vpnOpenSessions, Long startSessionTime) {
+		Long gap = null;
+		VpnSession vpnSession = null;
+
+		if (vpnOpenSessions.size() == 1){
+			return vpnOpenSessions.get(0);
+		}
+
+		for (VpnSession vpnOpenSession : vpnOpenSessions){
+			long localGap = Math.abs(vpnOpenSession.getCreatedAtEpoch() - startSessionTime);
+			if (gap == null || localGap < gap){
+				gap = localGap;
+				vpnSession = vpnOpenSession;
+			}
+		}
+		return vpnSession;
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import fortscale.domain.schema.VpnEvents;
 import fortscale.geoip.GeoIPService;
 import fortscale.geoip.IGeoIPInfo;
 import fortscale.services.event.VpnService;
+import fortscale.services.event.impl.VpnServiceImpl;
 import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -163,7 +164,8 @@ public class VpnEnrichService {
         }
 
         if(vpnSession.getCreatedAt() != null){
-            vpnService.createOrUpdateOpenVpnSession(vpnSession);
+            //when isResolveIp is true, we allow using duplicate session per user/IP, cause there might be several open and several closes and we need to track them all.
+            vpnService.createOrUpdateOpenVpnSession(vpnSession, isResolveIp);
         } else{
             vpnService.updateCloseVpnSession(vpnSession);
         }
@@ -179,36 +181,22 @@ public class VpnEnrichService {
             if (isResolveIp) { //for Cisco ASA needs to resolve IP from VPN Open session events
                 Long timeGapForResolveIpFrom = convertToLong(config.getVpnSessionUpdateConfig().getTimeGapForResolveIpFrom());
                 Long timeGapForResolveIpTo = convertToLong(config.getVpnSessionUpdateConfig().getTimeGapForResolveIpTo());
-                Long StartSessionTime = closeVpnSessionData.getClosedAt().minusMillis(closeVpnSessionData.getDuration() * 1000).getMillis();
-                List<VpnSession> vpnOpenSessions = vpnService.findByUsernameAndCreatedAtEpochBetween(closeVpnSessionData.getUsername(), StartSessionTime - timeGapForResolveIpFrom, StartSessionTime + timeGapForResolveIpTo);
+                Long startSessionTime = closeVpnSessionData.getClosedAt().minusMillis(closeVpnSessionData.getDuration() * 1000).getMillis();
+                List<VpnSession> vpnOpenSessions = vpnService.findByUsernameAndCreatedAtEpochBetween(closeVpnSessionData.getUsername(), startSessionTime - timeGapForResolveIpFrom, startSessionTime + timeGapForResolveIpTo);
                 if (vpnOpenSessions != null && vpnOpenSessions.size() > 0) {
-                    vpnOpenSession = findFittestSession(vpnOpenSessions, StartSessionTime);
+                    vpnOpenSession = VpnServiceImpl.findFittestSession(vpnOpenSessions, startSessionTime);
+                }
+                if (vpnOpenSession != null && !StringUtils.isEmpty(vpnOpenSession.getSourceIp()) ){
+                    closeVpnSessionData.setSourceIp(vpnOpenSession.getSourceIp());
                 }
             } else {
-                vpnOpenSession = vpnService.findByUsernameAndSourceIp(closeVpnSessionData.getUsername(), closeVpnSessionData.getSourceIp());
+                List<VpnSession> vpnOpenSessions = vpnService.findByUsernameAndSourceIp(closeVpnSessionData.getUsername(), closeVpnSessionData.getSourceIp());
+                //when !isResolveIp, there should be only one session per user/IP. so we return 1st index
+                vpnOpenSession = vpnOpenSessions.get(0);
             }
         }
         return vpnOpenSession;
     }
-
-    private VpnSession findFittestSession(List<VpnSession> vpnOpenSessions, Long startSessionTime) {
-        Long gap = null;
-        VpnSession vpnSession = null;
-
-        if (vpnOpenSessions.size() == 1){
-            return vpnOpenSessions.get(0);
-        }
-
-        for (VpnSession vpnOpenSession : vpnOpenSessions){
-            long localGap = Math.abs(vpnOpenSession.getCreatedAtEpoch() - startSessionTime);
-            if (gap == null || localGap < gap){
-                gap = localGap;
-                vpnSession = vpnOpenSession;
-            }
-        }
-        return vpnSession;
-    }
-
 
     private void addOpenSessionDataToRecord(VpnSessionUpdateConfig vpnSessionUpdateConfig, JSONObject event, VpnSession openVpnSessionData){
 
