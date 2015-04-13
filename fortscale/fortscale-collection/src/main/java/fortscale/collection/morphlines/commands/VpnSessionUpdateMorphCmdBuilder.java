@@ -116,7 +116,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			}
 			
 			if(vpnSession.getCreatedAt() != null){
-				vpnService.createOrUpdateOpenVpnSession(vpnSession);
+				vpnService.createOrUpdateOpenVpnSession(vpnSession, false);
 			} else{
 				vpnService.updateCloseVpnSession(vpnSession);
 			}
@@ -130,7 +130,7 @@ public class VpnSessionUpdateMorphCmdBuilder implements CommandBuilder {
 			if(closeVpnSessionData.getSessionId() != null){
 				vpnOpenSession = vpnService.findBySessionId(closeVpnSessionData.getSessionId());
 			} else{
-				vpnOpenSession = vpnService.findByUsernameAndSourceIp(closeVpnSessionData.getUsername(), closeVpnSessionData.getSourceIp());
+				vpnOpenSession = vpnService.findByUsernameAndSourceIp(closeVpnSessionData.getUsername(), closeVpnSessionData.getSourceIp()).get(0);
 			}
 			return vpnOpenSession;
 		}
