@@ -45,7 +45,7 @@ public class VpnSession extends AbstractDocument{
 	
 	private Long closedAtEpoch;
 	
-	@Indexed(unique = false, expireAfterSeconds=60*60*24*4)
+	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
 	private DateTime modifiedAt;
 	
 	private String localIp;
