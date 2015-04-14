@@ -193,16 +193,7 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
                                 1424700175626L,
                                 "Martin K"
                         },
-                        {
-                                "VPN Cisco ASA: Retrieve local_ip for close session from start session event",
-                                "{'local_ip':null,'status':'CLOSED','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':null,'duration':24,'username':'Martin K','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
-                                "171.19.1.16", //expected local ip
-                                "171.181.1.16", //expectes source ip
-                                "CLOSED", //expected status
-                                1424700115620L, //start time for looking for VPN start session event
-                                1424700175629L, //end time for looking for VPN start session event
-                                "Martin K" //expected username
-                        },
+
                         {
                                 "VPN Cisco ASA: Retrieve local_ip for close session from start session event",
                                 "{'local_ip':null,'status':'CLOSED','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':null,'duration':24,'username':'Martin K','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",

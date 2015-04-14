@@ -48,6 +48,7 @@
 		<constructor-arg name="runGeoHoppingFieldName" value="false"/>
 		<constructor-arg name="addSessionDataFieldName" value="true"/>
 		<constructor-arg name="resolveIpFieldName" value="true"/>
+		<constructor-arg name="dropCloseEventWhenOpenMissingFieldName" value="true"/>
 		<constructor-arg name="timeGapForResolveIpFrom" value="30"/>
 		<constructor-arg name="timeGapForResolveIpTo" value="30"/>
 
