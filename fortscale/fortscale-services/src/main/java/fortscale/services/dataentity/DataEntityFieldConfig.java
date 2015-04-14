@@ -15,6 +15,7 @@ public class DataEntityFieldConfig {
     private int rank = 100;
     private boolean defaultRank = true;
     private List<String> attributes;
+    private List<String> tags;
     private String joinFrom;
     private String joinTo;
     private String format;
@@ -122,6 +123,14 @@ public class DataEntityFieldConfig {
 
     public void setAttributes(List<String> attributes) {
         this.attributes = attributes;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     public String getJoinTo() {
