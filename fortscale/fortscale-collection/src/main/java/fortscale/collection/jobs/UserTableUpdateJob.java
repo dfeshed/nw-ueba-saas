@@ -52,6 +52,8 @@ public class UserTableUpdateJob extends FortscaleJob {
 	private String loginTableName;
 	@Value("${impala.score.ssh.table.name}")
 	private String sshTableName;
+	@Value("${impala.score.amt.table.name}")
+	private String amtTableName;
 	@Value("${impala.user.fields}")
 	private String impalaUserFields;
 	@Value("${impala.user.table.delimiter}")
@@ -185,7 +187,8 @@ public class UserTableUpdateJob extends FortscaleJob {
 		userTable.setSecUsernames(user.getLogUserName(loginTableName));
 		userTable.setSshUsernames(user.getLogUserName(sshTableName));
 		userTable.setVpnUsernames(user.getLogUserName(vpnTableName));
-		
+		userTable.setAmtUsernames(user.getLogUserName(amtTableName));
+
 		List<String> values = new ArrayList<>();
 		HashMap<String, Class<?>> impalaUserFieldsMap = ImpalaParser.getTableFieldDefinitionMap(impalaUserFields);
 		for(String fieldDef: ImpalaParser.getTableFieldNames(impalaUserFields)){
