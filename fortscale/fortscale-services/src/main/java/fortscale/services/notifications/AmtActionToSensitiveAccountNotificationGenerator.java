@@ -17,6 +17,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static fortscale.utils.ConversionUtils.convertToString;
@@ -31,6 +32,7 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_NAME = AMT_ACTION_TO_SENSITIVE_ACCOUNT_CAUSE;
 	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_MSG_FOR_SINGLE = "   has accessed a VIP account - {{attributes.yid}}";
 	private static final String AMT_RESET_PWD_MSG_FOR_AGG = "   have accessed a VIP account";
+	private SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
 
 	@Autowired
 	private NotificationsRepository notificationsRepository;
@@ -86,7 +88,8 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 
 	private String buildIndex(String normalizedUsername, String yid, long dateTimeUnix) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(AMT_ACTION_TO_SENSITIVE_ACCOUNT_CAUSE).append("_").append(normalizedUsername).append("_").append(yid).append("_").append(dateTimeUnix);
+		String day = format.format(new Date(TimestampUtils.convertToMilliSeconds(dateTimeUnix)));
+		builder.append(AMT_ACTION_TO_SENSITIVE_ACCOUNT_CAUSE).append("_").append(normalizedUsername).append("_").append(yid).append("_").append(day);
 		return builder.toString();
 	}
 
