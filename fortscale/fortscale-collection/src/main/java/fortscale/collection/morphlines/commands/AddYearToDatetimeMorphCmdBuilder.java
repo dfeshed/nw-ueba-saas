@@ -53,7 +53,7 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 		protected boolean doProcess(Record inputRecord) {
 			//Adding year from the system current date to the date_time.
 			try {
-				Object date_time = RecordExtensions.getStringValue(inputRecord, "date_time");
+				String date_time = RecordExtensions.getStringValue(inputRecord, "date_time");
 				TimeZone outputTimeZone = TimeZone.getTimeZone(RecordExtensions.getStringValue(inputRecord, timeZone, "UTC"));
 
 				if (date_time==null) {
@@ -63,7 +63,7 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 				cal = Calendar.getInstance(outputTimeZone);
 				year = Integer.toString(cal.get(Calendar.YEAR));
 				sdf.setTimeZone(outputTimeZone);
-				Date parsedDate = sdf.parse(year + " " + date_time.toString());
+				Date parsedDate = sdf.parse(year + " " + date_time);
 
 
 				Date currentDate = cal.getTime();
