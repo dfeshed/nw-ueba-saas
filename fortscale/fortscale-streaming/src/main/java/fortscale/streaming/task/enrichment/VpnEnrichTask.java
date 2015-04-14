@@ -127,14 +127,13 @@ public class VpnEnrichTask extends AbstractStreamTask {
 					String runGeoHoppingFieldName = getConfigString(config, String.format("fortscale.events.%s.runGeoHopping.field", eventType));
 					String addSessionDataFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.addSessionData.field", eventType)));
 					String resolveIpFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.resolveIp.field", eventType)));
-					String dropCloseEventWhenOpenMissingFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.dropCloseEventWhenOpenMissing.field", eventType)));
 					String timeGapForResolveIpFrom = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.timeGapForResolveIpFrom", eventType)));
 					String timeGapForResolveIpTo = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.timeGapForResolveIpTo", eventType)));
 
 
 					vpnSessionUpdateConfig = new VpnSessionUpdateConfig(countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName,
 							Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours), Integer.parseInt(vpnGeoHoppingCloseSessionThresholdInHours),
-							sessionIdFieldName, runGeoHoppingFieldName, addSessionDataFieldName, resolveIpFieldName, dropCloseEventWhenOpenMissingFieldName, Long.parseLong(timeGapForResolveIpFrom), Long.parseLong(timeGapForResolveIpTo));
+							sessionIdFieldName, runGeoHoppingFieldName, addSessionDataFieldName,resolveIpFieldName, Long.parseLong(timeGapForResolveIpFrom), Long.parseLong(timeGapForResolveIpTo));
 
 				}
 

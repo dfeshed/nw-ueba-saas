@@ -15,11 +15,10 @@ public class VpnSessionUpdateConfig {
     private String runGeoHoppingFieldName;
     private String addSessionDataFieldName;
     private String resolveIpFieldName;
-    private String dropCloseEventWhenOpenMissingFieldName;
     private Long timeGapForResolveIpFrom;
     private Long timeGapForResolveIpTo;
 
-    public VpnSessionUpdateConfig(String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, int vpnGeoHoppingOpenSessionThresholdInHours, int vpnGeoHoppingCloseSessionThresholdInHours, String sessionIdFieldName, String runGeoHoppingFieldName, String addSessionDataFieldName, String resolveIpFieldName, String dropCloseEventWhenOpenMissingFieldName, Long timeGapForResolveIpFrom, Long timeGapForResolveIpTo) {
+    public VpnSessionUpdateConfig(String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, int vpnGeoHoppingOpenSessionThresholdInHours, int vpnGeoHoppingCloseSessionThresholdInHours, String sessionIdFieldName, String runGeoHoppingFieldName, String addSessionDataFieldName, String resolveIpFieldName, Long timeGapForResolveIpFrom, Long timeGapForResolveIpTo) {
 
         this.countryIsoCodeFieldName = countryIsoCodeFieldName;
         this.longtitudeFieldName = longtitudeFieldName;
@@ -30,7 +29,6 @@ public class VpnSessionUpdateConfig {
         this.runGeoHoppingFieldName = runGeoHoppingFieldName;
         this.addSessionDataFieldName = addSessionDataFieldName;
         this.resolveIpFieldName = resolveIpFieldName;
-        this.dropCloseEventWhenOpenMissingFieldName = dropCloseEventWhenOpenMissingFieldName;
         this.timeGapForResolveIpFrom = TimestampUtils.normalizeTimestamp(timeGapForResolveIpFrom);
         this.timeGapForResolveIpTo = TimestampUtils.normalizeTimestamp(timeGapForResolveIpTo);
     }
@@ -105,14 +103,6 @@ public class VpnSessionUpdateConfig {
 
     public void setResolveIpFieldName(String resolveIpFieldName) {
         this.resolveIpFieldName = resolveIpFieldName;
-    }
-
-    public String getDropCloseEventWhenOpenMissingFieldName() {
-        return dropCloseEventWhenOpenMissingFieldName;
-    }
-
-    public void setDropCloseEventWhenOpenMissingFieldName(String dropCloseEventWhenOpenMissingFieldName) {
-        this.dropCloseEventWhenOpenMissingFieldName = dropCloseEventWhenOpenMissingFieldName;
     }
 
     public Long getTimeGapForResolveIpFrom() {
