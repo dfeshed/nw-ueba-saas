@@ -73,10 +73,10 @@ public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 		
 		EventMessage eventMessage = buildEventMessage(true, CONTEXT_NAME, CONTEXT);
 		
-		when(model.calculateScore(eventMessage.getJsonObject(), DATE_TIME_FIELD_NAME)).thenReturn(fieldToScoreMap.get(DATE_TIME_OUTPUT_FIELD_NAME));
-		when(model.calculateScore(eventMessage.getJsonObject(), NORMALIZE_DST_MACHINE_FIELD_NAME)).thenReturn(fieldToScoreMap.get(NORMALIZE_DST_MACHINE_OUTPUT_FIELD_NAME));
-		when(model.calculateScore(eventMessage.getJsonObject(), NORMALIZE_SRC_MACHINE_FIELD_NAME)).thenReturn(fieldToScoreMap.get(NORMALIZE_SRC_MACHINE_OUTPUT_FIELD_NAME));
-		when(model.calculateScore(eventMessage.getJsonObject(), AUTH_METHOD_FIELD_NAME)).thenReturn(fieldToScoreMap.get(AUTH_METHOD_OUTPUT_FIELD_NAME));
+		when(model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), DATE_TIME_FIELD_NAME)).thenReturn(fieldToScoreMap.get(DATE_TIME_OUTPUT_FIELD_NAME));
+		when(model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), NORMALIZE_DST_MACHINE_FIELD_NAME)).thenReturn(fieldToScoreMap.get(NORMALIZE_DST_MACHINE_OUTPUT_FIELD_NAME));
+		when(model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), NORMALIZE_SRC_MACHINE_FIELD_NAME)).thenReturn(fieldToScoreMap.get(NORMALIZE_SRC_MACHINE_OUTPUT_FIELD_NAME));
+		when(model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), AUTH_METHOD_FIELD_NAME)).thenReturn(fieldToScoreMap.get(AUTH_METHOD_OUTPUT_FIELD_NAME));
 		
 		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);

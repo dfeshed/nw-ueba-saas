@@ -28,7 +28,7 @@ public class ModelScorerTest extends ModelScorerBaseTest{
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
 		addToEventMessage(eventMessage, CONTEXT_NAME, CONTEXT);
-		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
+		when(model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
 		
 		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);
@@ -42,7 +42,7 @@ public class ModelScorerTest extends ModelScorerBaseTest{
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
 		addToEventMessage(eventMessage, OPTIONAL_CONTEXT_NAME, OPTIONAL_CONTEXT);
-		when(optionalModel.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(50d);
+		when(optionalModel.calculateScore(featureExtractionService, eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(50d);
 		
 		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);
@@ -55,7 +55,7 @@ public class ModelScorerTest extends ModelScorerBaseTest{
 		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null);
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
-		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
+		when(model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
 		
 		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);

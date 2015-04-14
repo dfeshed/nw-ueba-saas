@@ -40,7 +40,7 @@ public class DiscreetValuesModelScorer extends ModelScorer {
 		
 		double score = 0;
 		if(model != null){
-			score = model.calculateScore(eventMessage.getJsonObject(), featureFieldName);
+			score = model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), featureFieldName);
 		}
 		
 		return new ModelFeatureScore(outputFieldName, score, certainty);

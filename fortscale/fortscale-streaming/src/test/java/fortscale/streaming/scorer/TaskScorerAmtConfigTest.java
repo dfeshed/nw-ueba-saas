@@ -19,6 +19,7 @@ public class TaskScorerAmtConfigTest extends TaskScorerConfigTest{
 	private static final String AMT_SESSION_HOST_CONTEXT = "testhost";
 	private static final String CONTEXT_USER_FIELD_NAME = "username";
 	private static final String CONTEXT_HOST_FIELD_NAME = "normalized_amt_host";
+	private static final String HOST_FIELD_NAME = "amt_host";
 	private static final String HOST_SCORER_NAME = "hostScorer";
 	private static final double HOST_SCORER_REDUCTING_WEIGHT = 0.5;
 	private static final String HOST_SCORER_OUTPUT_FIELD_NAME = "amt_host_score";
@@ -47,12 +48,12 @@ public class TaskScorerAmtConfigTest extends TaskScorerConfigTest{
 		buildScorersFromTaskConfig("config/amtsessions-prevalance-stats.properties");
 		
 		EventMessage eventMessage = buildEventMessage(true, CONTEXT_USER_FIELD_NAME, AMT_SESSION_USER_CONTEXT);
-		addToEventMessage(eventMessage, CONTEXT_HOST_FIELD_NAME, AMT_SESSION_HOST_CONTEXT);
+		addToEventMessage(eventMessage, HOST_FIELD_NAME, AMT_SESSION_HOST_CONTEXT);
 		
 		double mainScore = 80;
 		double reductingScore = 20;
-		when(amtsessionsuserModel.calculateScore(eventMessage.getJsonObject(), CONTEXT_HOST_FIELD_NAME)).thenReturn(mainScore);
-		when(amtsessionshostModel.calculateScore(eventMessage.getJsonObject(), CONTEXT_USER_FIELD_NAME)).thenReturn(reductingScore);
+		when(amtsessionsuserModel.calculateScore(featureExtractionService, eventMessage.getJsonObject(), CONTEXT_HOST_FIELD_NAME)).thenReturn(mainScore);
+		when(amtsessionshostModel.calculateScore(featureExtractionService, eventMessage.getJsonObject(), CONTEXT_USER_FIELD_NAME)).thenReturn(reductingScore);
 		
 		Scorer hostScorer = (Scorer) context.resolve(Scorer.class, HOST_SCORER_NAME);
 		
