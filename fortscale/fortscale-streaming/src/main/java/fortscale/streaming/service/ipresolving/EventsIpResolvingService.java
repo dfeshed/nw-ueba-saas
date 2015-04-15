@@ -54,7 +54,20 @@ public class EventsIpResolvingService {
 
         // get the hostname from the resolver and put it into the event message
         String hostname = resolver.resolve(ip, timestamp, config.isRestrictToADName(), config.isShortName(), config.isRemoveLastDot());
-        event.put(config.getHostFieldName(), hostname);
+        if (StringUtils.isNotEmpty(hostname)) {
+            event.put(config.getHostFieldName(), hostname);
+        } else {
+            // check if we received an hostname to use externally - this could be in the case of
+            // 4769 security event with 127.0.0.1 ip, in this case just normalize the name.
+            // We do this after the ip resolving, to give a chance to resolve the ip to something correct in case
+            // we will receive hostname field in the event in other cases than 127.0.0.1 for 4769, so it would be
+            // better to override that hostname
+            String eventHostname = convertToString(event.get(config.getHostFieldName()));
+            if (StringUtils.isNotEmpty(eventHostname)) {
+                eventHostname = resolver.normalizeHostname(eventHostname, config.isRemoveLastDot(), config.isShortName());
+                event.put(config.getHostFieldName(), hostname);
+            }
+        }
 
         return event;
     }
@@ -93,7 +106,7 @@ public class EventsIpResolvingService {
 		// get the configuration for the input topic, if not found skip this event
 		EventResolvingConfig config = configs.get(inputTopic);
 
-		return (config.isDropWhenFail() && (event.get(config.getHostFieldName()) == null || convertToString(event.get(config.getHostFieldName())).isEmpty()));
+		return (config.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(config.getHostFieldName()))));
 
 	}
 
