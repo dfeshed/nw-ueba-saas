@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component("amtLoginAsMailNotificationGenerator")
@@ -27,7 +28,7 @@ public class AmtLoginAsMailNotificationGenerator implements InitializingBean {
 	private static final String MSG_NAME = CAUSE;
 	private static final String MSG_FOR_SINGLE = " performed loginasmail without an appropriate action path";
 	private static final String MSG_FOR_AGG = MSG_FOR_SINGLE;
-
+	private SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
 
 
 	@Autowired
@@ -84,7 +85,8 @@ public class AmtLoginAsMailNotificationGenerator implements InitializingBean {
 
 	private String buildIndex(String NormalizeUsername, String yid, long date_time_unix){
 		StringBuilder builder = new StringBuilder();
-		builder.append(CAUSE).append("_").append(NormalizeUsername).append("_").append(yid).append("_").append(date_time_unix);
+		String day = format.format(new Date(TimestampUtils.convertToMilliSeconds(date_time_unix)));
+		builder.append(CAUSE).append("_").append(NormalizeUsername).append("_").append(yid).append("_").append(day);
 
 		return builder.toString();
 	}

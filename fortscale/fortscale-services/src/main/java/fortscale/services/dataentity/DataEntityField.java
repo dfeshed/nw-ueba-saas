@@ -41,6 +41,11 @@ public class DataEntityField implements Comparable<DataEntityField> {
      */
     private List<String> attributes;
 
+    /**
+     * tags are strings that are used by the front-end to decide whether to use tags
+     */
+    private List<String> tags;
+
     public String getId() {
         return id;
     }
@@ -111,6 +116,14 @@ public class DataEntityField implements Comparable<DataEntityField> {
 
     public void setAttributes(List<String> attributes) {
         this.attributes = attributes;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     public String getJoinFrom() {
