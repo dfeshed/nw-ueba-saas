@@ -117,7 +117,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
         String timestamp = iter.next().toString();
         boolean foundMatchingFormat = false;
         for (SimpleDateFormat inputFormat : inputFormats) {
-          DateTime date;
+          DateTime date = null;
           boolean isUnixTime;
           if (inputFormat == UNIX_TIME_IN_MILLIS || inputFormat == UNIX_TIME_IN_SECONDS) {
             isUnixTime = true;
@@ -125,7 +125,9 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
           } else {
             isUnixTime = false;
             pos.setIndex(0);
-            date = new DateTime(inputFormat.parse(timestamp, pos));
+            Date parsed = inputFormat.parse(timestamp, pos);
+            if (parsed!=null)
+              date = new DateTime(parsed);
           }
           if (date != null) {
             // change the time zone to the output time zone
