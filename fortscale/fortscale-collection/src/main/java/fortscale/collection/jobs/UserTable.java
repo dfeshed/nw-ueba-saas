@@ -147,7 +147,7 @@ public class UserTable implements IUserTable {
 
 	@Override
 	public String getDisplayName() {
-		return user.getAdInfo().getDisplayName();
+		return user.getDisplayName();
 	}
 
 	@Override
