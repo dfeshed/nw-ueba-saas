@@ -136,7 +136,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
             } else if (outputFormat == UNIX_TIME_IN_SECONDS) {
               result = String.valueOf(date.getMillis() / 1000);
             } else {
-              result = outputFormat.format(date);
+              result = outputFormat.format(date.toDate());
             }
             iter.set(result);
             foundMatchingFormat = true;
