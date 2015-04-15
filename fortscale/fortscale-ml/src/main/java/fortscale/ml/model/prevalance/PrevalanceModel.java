@@ -69,13 +69,13 @@ public class PrevalanceModel {
 		model.add(value, convertToMilliSeconds(timestamp));
 	}
 	
-	public double calculateScore(JSONObject message, String fieldName){
+	public double calculateScore(IFeatureExtractionService featureExtractionService, JSONObject message, String fieldName){
 		checkNotNull(fieldName);
 		if (message==null || !fields.containsKey(fieldName))
 			return 0 ; 
 				
 		FieldModel model = fields.get(fieldName);
-		Object fieldValue = message.get(fieldName);
+		Object fieldValue = featureExtractionService.extract(fieldName, message);
 		return model.calculateScore(fieldValue);
 	}		
 }

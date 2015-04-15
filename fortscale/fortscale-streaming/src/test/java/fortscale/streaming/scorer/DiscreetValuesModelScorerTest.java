@@ -52,7 +52,7 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 	}
 	
 	private void prepareModelMock(EventMessage eventMessage, double score, int numOfFeatureValues){
-		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(score);
+		when(model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(score);
 		when(model.getFieldModel(FIELD_NAME)).thenReturn(calibratedModel);
 		when(calibratedModel.getNumOfFeatureValues()).thenReturn(numOfFeatureValues);
 	}
@@ -166,7 +166,7 @@ public class DiscreetValuesModelScorerTest  extends ModelScorerBaseTest{
 		Scorer scorer = buildScorer(SCORER_NAME, OUTPUT_FIELD_NAME, MODEL_NAME, FIELD_NAME, CONTEXT_NAME, null,2,10);
 		
 		EventMessage eventMessage = buildEventMessage(true, FIELD_NAME, FIELD_VALUE);
-		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
+		when(model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(40d);
 		
 		FeatureScore score = scorer.calculateScore(eventMessage);
 		Assert.assertNotNull(score);

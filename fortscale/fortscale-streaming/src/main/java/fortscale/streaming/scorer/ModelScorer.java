@@ -31,9 +31,9 @@ public class ModelScorer extends AbstractScorer{
 	}
 	
 	protected String resolveContext(EventMessage eventMessage){
-		String context = eventMessage.getEventStringValue(contextFieldName);
+		String context = (String) featureExtractionService.extract(contextFieldName, eventMessage.getJsonObject());
 		if(StringUtils.isBlank(context) && optionalContextReplacementFieldName != null){
-			context = eventMessage.getEventStringValue(optionalContextReplacementFieldName);
+			context = (String) featureExtractionService.extract(optionalContextReplacementFieldName, eventMessage.getJsonObject());
 		}
 		
 		return context;
@@ -60,7 +60,7 @@ public class ModelScorer extends AbstractScorer{
 	protected FeatureScore calculateModelScore(EventMessage eventMessage, PrevalanceModel model) throws Exception{
 		double score = 0;
 		if(model != null){
-			score = model.calculateScore(eventMessage.getJsonObject(), featureFieldName);
+			score = model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), featureFieldName);
 		}
 		
 		return new FeatureScore(outputFieldName, score);

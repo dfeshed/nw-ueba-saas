@@ -62,6 +62,6 @@ public class ModelScorerBaseTest extends ScorerBaseTest{
 	}
 	
 	protected void prepareModelMock(EventMessage eventMessage, double score){
-		when(model.calculateScore(eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(score);
+		when(model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), FIELD_NAME)).thenReturn(score);
 	}
 }
