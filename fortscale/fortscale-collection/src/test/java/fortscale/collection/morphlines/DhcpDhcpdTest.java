@@ -34,7 +34,7 @@ public class DhcpDhcpdTest {
 	}
 
 	private static void prepareDates() {
-		TestUtils.init("yyyy MMM dd HH:mm:ss", "Asia/Jerusalem");
+		TestUtils.init("yyyy MMM dd HH:mm:ss", "UTC");
 
 		Date date = TestUtils.constuctDate(Nov_19_23_59_54);
 		Nov_19_23_59_54_L = TestUtils.getUnixDate(date);

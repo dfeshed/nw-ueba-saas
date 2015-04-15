@@ -13,6 +13,9 @@ import java.util.ListIterator;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import fortscale.utils.TimestampUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineCompilationException;
@@ -114,27 +117,28 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
         String timestamp = iter.next().toString();
         boolean foundMatchingFormat = false;
         for (SimpleDateFormat inputFormat : inputFormats) {
-          Date date;
+          DateTime date = null;
           boolean isUnixTime;
-          if (inputFormat == UNIX_TIME_IN_MILLIS) {
+          if (inputFormat == UNIX_TIME_IN_MILLIS || inputFormat == UNIX_TIME_IN_SECONDS) {
             isUnixTime = true;
-            date = parseUnixTime(timestamp, 1);
-          } else if (inputFormat == UNIX_TIME_IN_SECONDS) {
-            isUnixTime = true;
-            date = parseUnixTime(timestamp, 1000);
+            date = parseUnixTime(timestamp, DateTimeZone.forTimeZone(inputTimeZone));
           } else {
             isUnixTime = false;
             pos.setIndex(0);
-            date = inputFormat.parse(timestamp, pos);
+            Date parsed = inputFormat.parse(timestamp, pos);
+            if (parsed!=null)
+              date = new DateTime(parsed);
           }
-          if (date != null && (isUnixTime || pos.getIndex() == timestamp.length())) {
+          if (date != null) {
+            // change the time zone to the output time zone
+            date = date.withZone(DateTimeZone.forTimeZone(outputTimeZone));
             String result;
             if (outputFormat == UNIX_TIME_IN_MILLIS) {
-              result = String.valueOf(date.getTime());
+              result = String.valueOf(date.getMillis());
             } else if (outputFormat == UNIX_TIME_IN_SECONDS) {
-              result = String.valueOf(date.getTime() / 1000);
+              result = String.valueOf(date.getMillis() / 1000);
             } else {
-              result = outputFormat.format(date);
+              result = outputFormat.format(date.toDate());
             }
             iter.set(result);
             foundMatchingFormat = true;
@@ -169,9 +173,9 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     }
     
     // work around the fact that SimpleDateFormat doesn't understand Unix time format
-    private Date parseUnixTime(String timestamp, long scale) {
+    private DateTime parseUnixTime(String timestamp, DateTimeZone tz) {
       try {
-        return new Date(scale * Long.parseLong(timestamp));
+        return new DateTime(TimestampUtils.convertToMilliSeconds(Long.parseLong(timestamp)), tz);
       } catch (NumberFormatException e) {
         return null;
       }

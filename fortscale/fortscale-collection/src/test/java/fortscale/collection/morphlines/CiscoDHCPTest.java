@@ -57,6 +57,11 @@ public class CiscoDHCPTest {
 				"EXPIRED ip event",
 				"2014-11-08T00:00:00.000+00:00,EXPIRED,171.68.24.166,router-ubuntu02,3c:a9:f4:64:eb:84,",
 				"1415404800,EXPIRED,171.68.24.166,router-ubuntu02,3c:a9:f4:64:eb:84,"
+				),
+				$(
+				"time should be parsed according to input field timezone (expiration and assignment) (FV-6251)",
+				"2015-04-12T12:00:00.000+03:00,,192.168.170.1,dhcpusr0_PC,3c:a9:f4:64:eb:84,04/14/2015 7:00:00 IDT",
+				"1428829200,ASSIGN,192.168.170.1,dhcpusr0_PC,3c:a9:f4:64:eb:84,1428984000"
 				)
         		);
     }
