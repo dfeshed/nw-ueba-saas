@@ -34,7 +34,8 @@ public class ReductingScorer extends AbstractScorer {
 		FeatureScore mainScore = mainScorer.calculateScore(eventMessage);
 		if(mainScore != null){
 			if(mainScore.getScore() == 0){
-				featureScore = mainScore;
+				// get the score from the main scorer, but replace the output field name
+				featureScore = new FeatureScore(outputFieldName, mainScore.getScore());
 			} else{
 				FeatureScore reducingScore = reductingScorer.calculateScore(eventMessage);
 				if(reducingScore == null){
