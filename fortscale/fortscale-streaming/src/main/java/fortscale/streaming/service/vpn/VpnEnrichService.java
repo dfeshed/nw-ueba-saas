@@ -44,12 +44,16 @@ public class VpnEnrichService {
     private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
 
     Boolean isResolveIp;
+    Boolean dropCloseEventWhenOpenMissingAndSessionDataIsNeeded;
+
     public VpnEnrichService(VpnEnrichConfig config) {
         checkNotNull(config);
         this.config = config;
 
-		if (config.getVpnSessionUpdateConfig() != null )
-        	isResolveIp = convertToBoolean(config.getVpnSessionUpdateConfig().getResolveIpFieldName());
+		if (config.getVpnSessionUpdateConfig() != null ) {
+            isResolveIp = convertToBoolean(config.getVpnSessionUpdateConfig().getResolveIpFieldName());
+            dropCloseEventWhenOpenMissingAndSessionDataIsNeeded = convertToBoolean(config.getVpnSessionUpdateConfig().getDropCloseEventWhenOpenMissingFieldName());
+        }
 
     }
 
@@ -144,13 +148,14 @@ public class VpnEnrichService {
          */
         Boolean isAddSessionData = convertToBoolean( vpnSessionUpdateConfig.getAddSessionDataFieldName());
         if(vpnSession.getClosedAt() != null && isAddSessionData){
-            VpnSession vpnOpenSession = getOpenSessionDataToRecord(vpnSession);
+            VpnSession vpnOpenSession = vpnService.findOpenVpnSession(vpnSession);
             if(vpnOpenSession == null){
-                //if there is no vpnOpenSession, then skip this event.
-                // Unless isResolveIp=true, which means that we need the open session only to resolve IP but we do not drop this event in case it is missing.
-                if ( !isResolveIp) {
-                    logger.debug("got close vpn session for non existing or failed session");
+                logger.debug("got close vpn session for non existing or failed session");
+                if ( dropCloseEventWhenOpenMissingAndSessionDataIsNeeded) {
+                    //There is no vpnOpenSession ==> skip this event.
                     return event;
+                } else if(isResolveIp){
+                    cleanSourceIpInfoFromEvent(event);
                 }
             } else{
                 addOpenSessionDataToRecord(vpnSessionUpdateConfig, event, vpnOpenSession);
@@ -162,8 +167,8 @@ public class VpnEnrichService {
             processGeoHopping(vpnSessionUpdateConfig, vpnSession);
         }
 
-        if(vpnSession.getCreatedAt() != null){
-            vpnService.createOrUpdateOpenVpnSession(vpnSession);
+        if(vpnSession.getCreatedAt() != null) {
+            vpnService.createOpenVpnSession(vpnSession);
         } else{
             vpnService.updateCloseVpnSession(vpnSession);
         }
@@ -171,43 +176,19 @@ public class VpnEnrichService {
         return event;
     }
 
-    private VpnSession getOpenSessionDataToRecord(VpnSession closeVpnSessionData){
-        VpnSession vpnOpenSession = null;
-        if(closeVpnSessionData.getSessionId() != null){
-            vpnOpenSession = vpnService.findBySessionId(closeVpnSessionData.getSessionId());
-        } else{
-            if (isResolveIp) { //for Cisco ASA needs to resolve IP from VPN Open session events
-                Long timeGapForResolveIpFrom = convertToLong(config.getVpnSessionUpdateConfig().getTimeGapForResolveIpFrom());
-                Long timeGapForResolveIpTo = convertToLong(config.getVpnSessionUpdateConfig().getTimeGapForResolveIpTo());
-                Long StartSessionTime = closeVpnSessionData.getClosedAt().minusMillis(closeVpnSessionData.getDuration() * 1000).getMillis();
-                List<VpnSession> vpnOpenSessions = vpnService.findByUsernameAndCreatedAtEpochBetween(closeVpnSessionData.getUsername(), StartSessionTime - timeGapForResolveIpFrom, StartSessionTime + timeGapForResolveIpTo);
-                if (vpnOpenSessions != null && vpnOpenSessions.size() > 0) {
-                    vpnOpenSession = findFittestSession(vpnOpenSessions, StartSessionTime);
-                }
-            } else {
-                vpnOpenSession = vpnService.findByUsernameAndSourceIp(closeVpnSessionData.getUsername(), closeVpnSessionData.getSourceIp());
-            }
-        }
-        return vpnOpenSession;
+    private void cleanSourceIpInfoFromEvent(JSONObject event){
+        VpnSessionUpdateConfig vpnSessionUpdateConfig = config.getVpnSessionUpdateConfig();
+        event.put(vpnEvents.SOURCE_IP, "");
+        event.put(vpnEvents.CITY, "");
+        event.put(vpnEvents.COUNTRY, "");
+        event.put(vpnSessionUpdateConfig.getCountryIsoCodeFieldName(), "");
+        event.put(vpnEvents.ISP, "");
+        event.put(vpnEvents.IPUSAGE, "");
+        event.put(vpnEvents.REGION, "");
+        event.put(vpnSessionUpdateConfig.getLongtitudeFieldName(), null);
+        event.put(vpnSessionUpdateConfig.getLatitudeFieldName(), null);
     }
 
-    private VpnSession findFittestSession(List<VpnSession> vpnOpenSessions, Long startSessionTime) {
-        Long gap = null;
-        VpnSession vpnSession = null;
-
-        if (vpnOpenSessions.size() == 1){
-            return vpnOpenSessions.get(0);
-        }
-
-        for (VpnSession vpnOpenSession : vpnOpenSessions){
-            long localGap = Math.abs(vpnOpenSession.getCreatedAtEpoch() - startSessionTime);
-            if (gap == null || localGap < gap){
-                gap = localGap;
-                vpnSession = vpnOpenSession;
-            }
-        }
-        return vpnSession;
-    }
 
 
     private void addOpenSessionDataToRecord(VpnSessionUpdateConfig vpnSessionUpdateConfig, JSONObject event, VpnSession openVpnSessionData){
