@@ -122,7 +122,7 @@ public class IpToHostnameResolver {
 		return computerService.isHostnameInAD(hostname);
 	}
 	
-	private String normalizeHostname(String hostname, boolean isRemoveLastDot, boolean shortName) {
+	public String normalizeHostname(String hostname, boolean isRemoveLastDot, boolean shortName) {
 		if (StringUtils.isEmpty(hostname))
 			return null;
 		
