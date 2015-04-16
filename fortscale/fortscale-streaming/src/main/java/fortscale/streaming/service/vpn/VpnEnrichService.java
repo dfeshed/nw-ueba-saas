@@ -189,23 +189,6 @@ public class VpnEnrichService {
         event.put(vpnSessionUpdateConfig.getLatitudeFieldName(), null);
     }
 
-    private VpnSession findFittestSession(List<VpnSession> vpnOpenSessions, Long startSessionTime) {
-        Long gap = null;
-        VpnSession vpnSession = null;
-
-        if (vpnOpenSessions.size() == 1){
-            return vpnOpenSessions.get(0);
-        }
-
-        for (VpnSession vpnOpenSession : vpnOpenSessions){
-            long localGap = Math.abs(vpnOpenSession.getCreatedAtEpoch() - startSessionTime);
-            if (gap == null || localGap < gap){
-                gap = localGap;
-                vpnSession = vpnOpenSession;
-            }
-        }
-        return vpnSession;
-    }
 
 
     private void addOpenSessionDataToRecord(VpnSessionUpdateConfig vpnSessionUpdateConfig, JSONObject event, VpnSession openVpnSessionData){

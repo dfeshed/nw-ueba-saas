@@ -38,9 +38,9 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	private String geoHoppingBlackListFilePath;
 
 	@Value("${time.gap.for.resolve.ip.from:30}")
-	private Long timeGapForResolveIpFrom;
+	Long timeGapForResolveIpFrom;
 	@Value("${time.gap.for.resolve.ip.to:30}")
-	private Long timeGapForResolveIpTo;
+	Long timeGapForResolveIpTo;
 
 
 	private GeoHoppingBlackListRepresentation geoHoppingBlackListRepresentation;

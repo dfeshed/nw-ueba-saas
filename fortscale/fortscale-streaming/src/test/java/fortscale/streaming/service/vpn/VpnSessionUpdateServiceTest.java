@@ -2,9 +2,8 @@ package fortscale.streaming.service.vpn;
 
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -116,13 +115,13 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
         //stubs:
         event = (JSONObject)JSONValue.parse(EVENT);
         Long startSessionTime = (Long)event.get("date_time_unix") - (Integer)event.get("duration") * 1000;
-        when(vpnService.findByUsernameAndCreatedAtEpochBetween(eq(username), eq(startSessionTime - 30000), eq(startSessionTime + 30000))). thenAnswer(new Answer(){
+        when(vpnService.findOpenVpnSession(any(VpnSession.class))). thenAnswer(new Answer() {
 
 
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
 
-                return getVpnSessions(StartSessionTime1, StartSessionTime2, username);
+                return getVpnSession(StartSessionTime1, StartSessionTime2, username);
             }
         });
         //init
@@ -169,6 +168,17 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
         return vpnSessions;
     }
 
+    private VpnSession getVpnSession(Long StartSessionStartSearchTimeFrom, Long StartSessionStartSearchTimeTo, String username) {
+        if (StartSessionStartSearchTimeFrom != null && StartSessionStartSearchTimeTo != null) {
+            VpnSession vpnSession1 = new VpnSession();
+            vpnSession1.setCreatedAtEpoch(StartSessionStartSearchTimeFrom);
+            vpnSession1.setLocalIp("171.19.1.14");
+            vpnSession1.setSourceIp("171.181.1.14");
+            return vpnSession1;
+        }
+        return null;
+    }
+
     @Parameters()
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][]
@@ -187,7 +197,7 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
                                 "VPN Session Update: Close",
                                 "{'local_ip':'171.19.1.4','status':'CLOSED','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':'12345AAA','duration':104,'username':'Martin K','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
                                 "171.19.1.4",
-                                "10.19.121.11",
+                                "171.181.1.14",
                                 "CLOSED",
                                 1424700115626L,
                                 1424700175626L,
@@ -198,7 +208,7 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
                                 "VPN Cisco ASA: Retrieve local_ip for close session from start session event",
                                 "{'local_ip':null,'status':'CLOSED','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':null,'duration':24,'username':'Martin K','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
                                 (String)null,
-                                "10.19.121.11",
+                                "",
                                 "CLOSED",
                                 (Long)null,
                                 (Long)null,
