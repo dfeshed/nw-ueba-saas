@@ -81,12 +81,6 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 	
 	@Override
-	public List<VpnSession> findByUsernameAndSourceIp(String username, String sourceIp){
-		PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
-		return vpnSessionRepository.findByUsernameAndSourceIp(username, sourceIp, pageRequest);
-	}
-
-	@Override
 	public List<VpnSession> findByUsernameAndCreatedAtEpochBetween(String normalizeUsername, Long createdAtEpochFrom, Long createdAtEpochTo){
 		PageRequest pageRequest = new PageRequest(0, 100, Direction.DESC, VpnSession.createdAtEpochFieldName);
 		return vpnSessionRepository.findByUsernameAndCreatedAtEpochBetween(normalizeUsername, createdAtEpochFrom, createdAtEpochTo, pageRequest);
@@ -113,7 +107,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		} else if(StringUtils.isNotEmpty(closeVpnSession.getUsername()) && StringUtils.isNotEmpty(closeVpnSession.getSourceIp())){
 			Integer duration = closeVpnSession.getDuration();
 
-			if (duration != null) { //for Cisco ASA needs to resolve IP from VPN Open session events
+			if (duration != null) {
 				Long startSessionTime = closeVpnSession.getClosedAt().minusMillis(duration * 1000).getMillis();
 				List<VpnSession> vpnOpenSessions = findByUsernameAndCreatedAtEpochBetween(closeVpnSession.getUsername(), startSessionTime - timeGapForResolveIpFrom * 1000, startSessionTime + timeGapForResolveIpTo * 1000);
 				if (vpnOpenSessions != null && vpnOpenSessions.size() > 0) {
