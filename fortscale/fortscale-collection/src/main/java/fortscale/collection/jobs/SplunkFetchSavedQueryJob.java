@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
+import fortscale.utils.EncryptionUtils;
+import org.jets3t.service.security.EncryptionUtil;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -78,7 +80,7 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		// connect to splunk
 		logger.debug("trying to connect splunk at {}@{}:{}", username, hostName, port);
 		monitor.startStep(getMonitorId(), "Query Splunk", 2);
-		SplunkApi splunkApi = new SplunkApi(hostName, port, username, password);
+		SplunkApi splunkApi = new SplunkApi(hostName, port, username, EncryptionUtils.decrypt(password));
 
 		// try to create output file
 		createOutputFile(outputDir);
