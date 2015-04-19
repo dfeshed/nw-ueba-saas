@@ -1,39 +1,46 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
+import fortscale.services.dataqueries.querydto.LogicalOperator;
 import fortscale.services.dataqueries.querydto.QueryOperator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Yossi on 04/11/2014.
  * Defines how condition operators are handled by MySQL
  */
 public class MySqlConditionOperators {
-    private static HashMap<QueryOperator, MySqlOperator> operators = new HashMap<QueryOperator, MySqlOperator>();
+    static HashMap<QueryOperator, MySqlOperatorsList> operatorsList = new HashMap<QueryOperator, MySqlOperatorsList>();
 
     static{
-        operators.put(QueryOperator.equals, new MySqlOperator("=", true));
-        operators.put(QueryOperator.notEquals, new MySqlOperator("!=", true));
-        operators.put(QueryOperator.greaterThan, new MySqlOperator(">", true));
-        operators.put(QueryOperator.greaterThanOrEquals, new MySqlOperator(">=", true));
-        operators.put(QueryOperator.lesserThan, new MySqlOperator("<", true));
-        operators.put(QueryOperator.lesserThanOrEquals, new MySqlOperator("<=", true));
-        operators.put(QueryOperator.in, new MySqlInOperator());
-        operators.put(QueryOperator.between, new MySqlBetweenOperator());
-        operators.put(QueryOperator.like, new MySqlOperator("LIKE", true));
-        operators.put(QueryOperator.startsWith, new MySqlStartsWithOperator());
-        operators.put(QueryOperator.endsWith, new MySqlEndsWithOperator());
-        operators.put(QueryOperator.contains, new MySqlContainsOperator());
-        operators.put(QueryOperator.hasValue, new MySqlOperator("IS NOT NULL", false));
-        operators.put(QueryOperator.hasNoValue, new MySqlOperator("IS NULL", false));
+        operatorsList.put(QueryOperator.equals, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("=", true))), null));
+        operatorsList.put(QueryOperator.equals, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("=", true))), null));
+        operatorsList.put(QueryOperator.notEquals, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("!=", true))), null));
+        operatorsList.put(QueryOperator.greaterThan, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator(">", true))), null));
+        operatorsList.put(QueryOperator.greaterThanOrEquals, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator(">=", true))), null));
+        operatorsList.put(QueryOperator.lesserThan, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("<", true))), null));
+        operatorsList.put(QueryOperator.lesserThanOrEquals, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("<=", true))), null));
+        operatorsList.put(QueryOperator.in, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlInOperator())), null));
+        operatorsList.put(QueryOperator.between, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlBetweenOperator())), null));
+        operatorsList.put(QueryOperator.like, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("LIKE", true))), null));
+        operatorsList.put(QueryOperator.startsWith, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlStartsWithOperator())), null));
+        operatorsList.put(QueryOperator.endsWith, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlEndsWithOperator())), null));
+        operatorsList.put(QueryOperator.contains, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlContainsOperator())), null));
+        operatorsList.put(QueryOperator.hasValue, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("IS NOT NULL", false), new MySqlOperator("!= ''", false))), LogicalOperator.AND));
+        operatorsList.put(QueryOperator.hasNoValue, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("IS NULL", false), new MySqlOperator("=''", false))), LogicalOperator.OR));
     }
 
-    public static MySqlOperator getOperator(QueryOperator operator) throws InvalidQueryException {
-		MySqlOperator mySqlOperator = operators.get(operator);
-		if (mySqlOperator == null)
-			throw new InvalidQueryException("Unknown operator for MySql: " + operator + ".");
-		return mySqlOperator;
+    public static MySqlOperatorsList getOperator(QueryOperator operator) throws InvalidQueryException {
+        MySqlOperatorsList mySqlOperatorList = operatorsList.get(operator);
+		if (mySqlOperatorList == null || mySqlOperatorList.getMySqlOperators().size() == 0
+                || mySqlOperatorList.getMySqlOperators().size() > 1 && mySqlOperatorList.getLogicalOperator() == null) {
+            throw new InvalidQueryException("Unknown operator for MySql: " + operator + ".");
+        }
+		return mySqlOperatorList;
     }
 }

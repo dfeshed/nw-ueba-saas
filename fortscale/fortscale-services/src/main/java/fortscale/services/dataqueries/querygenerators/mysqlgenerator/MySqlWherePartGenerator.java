@@ -6,6 +6,7 @@ import fortscale.services.dataentity.QueryValueType;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators.MySqlOperator;
+import fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators.MySqlOperatorsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -124,30 +125,38 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
     
     private String getConditionFieldSql(ConditionField conditionField, DataQueryDTO dataQueryDTO, Boolean mapToColumn) throws InvalidQueryException{
         StringBuilder sb = new StringBuilder();
+        sb.append("(");
 
-        sb.append(mySqlFieldGenerator.generateSql(conditionField.getField(), dataQueryDTO, false, mapToColumn));
-        sb.append(" ");
+        MySqlOperatorsList operatorList = MySqlConditionOperators.getOperator(conditionField.getOperator());
+        boolean firstElement = true;
+        for (MySqlOperator operator : operatorList.getMySqlOperators()){
+            if (!firstElement){
+                sb.append(" ").append(operatorList.getLogicalOperator().toString()).append(" ");
+            }
+            firstElement = false;
+            sb.append(mySqlFieldGenerator.generateSql(conditionField.getField(), dataQueryDTO, false, mapToColumn));
+            sb.append(" ");
 
-        MySqlOperator operator = MySqlConditionOperators.getOperator(conditionField.getOperator());
+            if (operator.requiresValue && conditionField.getValue() == null && conditionField.getValueField() == null)
+                throw new InvalidQueryException("Can't create MySQL query, the " + conditionField.getOperator().name() + " operator requires a value, but none was specified.");
 
-        if (operator.requiresValue && conditionField.getValue() == null && conditionField.getValueField() == null)
-            throw new InvalidQueryException("Can't create MySQL query, the " + conditionField.getOperator().name() + " operator requires a value, but none was specified.");
+            sb.append(operator.sqlOperator);
+            sb.append(" ");
 
-        sb.append(operator.sqlOperator);
-        sb.append(" ");
+            String entityId = conditionField.getField().getEntity();
+            if (entityId == null)
+                entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
-        String entityId = conditionField.getField().getEntity();
-        if (entityId == null)
-            entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
-
-        if (conditionField.getValueField() != null)
-            sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, true));
-        else {
-            // The operator might need to add something to the value:
-            QueryValueType type = dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn);
-            String value = operator.getOperatorValue(mySqlValueGenerator, conditionField.getValue(), type );
-            sb.append(value);
+            if (conditionField.getValueField() != null)
+                sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, true));
+            else {
+                // The operator might need to add something to the value:
+                QueryValueType type = dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn);
+                String value = operator.getOperatorValue(mySqlValueGenerator, conditionField.getValue(), type);
+                sb.append(value);
+            }
         }
+        sb.append(")");
         return sb.toString();
     }
 
