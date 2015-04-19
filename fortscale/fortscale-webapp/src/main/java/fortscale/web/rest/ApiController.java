@@ -477,7 +477,7 @@ public class ApiController extends BaseController {
 
 					//add the type to the entity (ssh , vpn, ad ...)
 					if (partOfTranslatedQuyre.getEntities().length > 0) {
-						String type = partOfTranslatedQuyre.getEntities()[0].equals("kerberos_logins") ? "AD" : partOfTranslatedQuyre.getEntities()[0];
+						String type = dataEntitiesConfig.getAllLeafeEntities().get(partOfTranslatedQuyre.getEntities()[0]).getName();
 						for (Map<String, Object> rowMap : resultsMap) {
 							rowMap.put("type", type);
 						}
