@@ -32,7 +32,7 @@ public class ADParser {
 		return dn.substring(ouStartIndex, ouLastIndex);  
 	}
 	
-	public String parseFirstCNFromDN(String dn) {
+	public static String parseFirstCNFromDN(String dn) {
 		int cnStartIndex = dn.indexOf(ATTRIBUTE_CN_PREFIX);
 		if(cnStartIndex == -1){
 			return null;
@@ -71,11 +71,11 @@ public class ADParser {
 	}
 
 	
-	public String[] getUserGroups(String memberOf) {
+	public static String[] getUserGroups(String memberOf) {
 		return StringUtils.isEmpty(memberOf) ? new String[]{} : memberOf.split(";");
 	}
 	
-	public String[] getDirectReports(String directReports) {
+	public static String[] getDirectReports(String directReports) {
 		return StringUtils.isEmpty(directReports) ? new String[]{} : directReports.split(";");
 	}
 	
