@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService{
 		usernameService.updateUsernameCache(user);
 		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
 		if (user.getTags() != null && user.getTags().size() > 0){
-			userTagsCache.put(user.getUsername(),new ArrayList<String>(user.getTags()));
+			userTagsCache.put(user.getUsername(), new ArrayList<String>(user.getTags()));
 		}
 		return user;
 	}
@@ -474,9 +474,22 @@ public class UserServiceImpl implements UserService{
 			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
 		}
 
+		// calculate user groups so we can use it in the skip logic below and in the user update code further down this method
+		Set<AdUserGroup> groups = calculateUserGroups(adUser);
+
+		// calculate the user direct reports so we can use it in the skip logic below and in the user update code further down this method
+		Set<AdUserDirectReport> directReports = calculateDirectReports(adUser);
+
 		// skip when the existing user's when-changed is newer then the AD-user's
 		if(user != null && whenChanged != null && user.getAdInfo().getWhenChanged() != null && !user.getAdInfo().getWhenChanged().before(whenChanged)){
-			return;
+			// check if the groups did not changed, since this property does not updates the whenChanged field
+			// 1. build a AdUserGroup set from the adUser instance
+			// 2. see that the two sets are equal
+			// 3. do the same for the direct reports
+			if (groups.equals(user.getAdInfo().getGroups()) && directReports.equals(user.getAdInfo().getDirectReports())) {
+				// skip user if groups and direct reports did not change
+				return;
+			}
 		}
 		
 		final UserAdInfo userAdInfo = new UserAdInfo();
@@ -541,38 +554,12 @@ public class UserServiceImpl implements UserService{
 		}
 		userAdInfo.setIsAccountDisabled(isAccountDisable);
 		
-		ADParser adUserParser = new ADParser();
-		String[] groups = adUserParser.getUserGroups(adUser.getMemberOf());
-		if(groups != null){
-			for(String groupDN: groups){
-				String groupName = groupDnToNameMap.get(groupDN);
-				if(groupName == null){
-//					AdGroup adGroup = adGroupRepository.findByDistinguishedName(groupDN);
-//					if(adGroup != null){
-//						groupName = adGroup.getName();
-//					}else{
-//						Log.warn("the user ({}) group ({}) was not found", adUser.getDistinguishedName(), groupDN);
-						groupName = adUserParser.parseFirstCNFromDN(groupDN);
-						if(groupName == null){
-							Log.warn("invalid group dn ({}) for user ({})", groupDN, adUser.getDistinguishedName());
-							continue;
-						}
-//					}
-					groupDnToNameMap.put(groupDN, groupName);
-				}
-				userAdInfo.addGroup(new AdUserGroup(groupDN, groupName));
-			}
-		}
-		
-		String[] directReports = adUserParser.getDirectReports(adUser.getDirectReports());
-		if(directReports != null){
-			for(String directReportsDN: directReports){
-				String displayName = adUserParser.parseFirstCNFromDN(directReportsDN);
-				AdUserDirectReport adUserDirectReport = new AdUserDirectReport(directReportsDN, displayName);
-				userAdInfo.addDirectReport(adUserDirectReport);
-			}
-		}
-		
+		// update user's groups
+		userAdInfo.setGroups(groups);
+
+		// update user's direct reports
+		userAdInfo.setAdDirectReports(directReports);
+
 		DateTime disableAccountTime = null;
 		if(userAdInfo.getIsAccountDisabled() != null && userAdInfo.getIsAccountDisabled()){
 			if(user == null || !user.getAdInfo().getIsAccountDisabled()){
@@ -635,7 +622,38 @@ public class UserServiceImpl implements UserService{
 			updateUser(user, update);
 		}
 	}
-	
+
+
+	private  Set<AdUserDirectReport> calculateDirectReports(AdUser adUser) {
+		Set<AdUserDirectReport> reports = new HashSet<>();
+
+		for (String directReportsDN : ADParser.getDirectReports(adUser.getDirectReports())) {
+			String displayName = ADParser.parseFirstCNFromDN(directReportsDN);
+			reports.add(new AdUserDirectReport(directReportsDN, displayName));
+		}
+		return reports;
+	}
+
+
+	private Set<AdUserGroup> calculateUserGroups(AdUser adUser) {
+		Set<AdUserGroup> groups = new HashSet<>();
+
+		for (String groupDN : ADParser.getUserGroups(adUser.getMemberOf())) {
+			String groupName = groupDnToNameMap.get(groupDN);
+			if(groupName == null) {
+				groupName = ADParser.parseFirstCNFromDN(groupDN);
+			}
+			if(groupName == null){
+				Log.warn("invalid group dn ({}) for user ({})", groupDN, adUser.getDistinguishedName());
+				continue;
+			}
+
+			groups.add(new AdUserGroup(groupDN, groupName));
+		}
+
+		return groups;
+	}
+
 	private User findUserByObjectGUID(String objectGUID){
 		return userRepository.findByObjectGUID(objectGUID);
 	}
