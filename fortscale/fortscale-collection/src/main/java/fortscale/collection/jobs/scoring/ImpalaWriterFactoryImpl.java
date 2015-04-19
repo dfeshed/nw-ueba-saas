@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.scoring;
 
-import fortscale.services.impl.ImpalaGroupsScoreWriter;
 import fortscale.services.impl.ImpalaTotalScoreWriter;
 import fortscale.services.impl.ImpalaUseridToAppUsernameWriter;
 import fortscale.services.impl.ImpalaWriterFactory;
@@ -37,25 +36,8 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	@Value("${hadoop.writer.buffer.size:10000}")
 	protected int maxBufferSize;
 
-	private BufferedHDFSWriter groupsScoreAppender;
 	private BufferedHDFSWriter totalScoreAppender;
 
-
-	public void closeGroupsScoreAppender() throws IOException{
-		groupsScoreAppender.close();
-	}
-	
-	public List<String> getGroupsScoreNewPartitions(){
-		List<String> ret = null;
-		if(groupsScoreAppender != null){
-			ret = ((HDFSPartitionsWriter)groupsScoreAppender.getWriter()).getNewPartitions();
-		} else{
-			ret = Collections.emptyList();
-		}
-		
-		return ret;
-	}
-	
 	public List<String> getTotalScoreNewPartitions(){
 		List<String> ret = null;
 		if(totalScoreAppender != null){

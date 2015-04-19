@@ -33,8 +33,6 @@ public interface UserServiceFacade {
 	
 	public List<UserMachine> getUserMachines(String uid);
 	
-	public void updateUserWithGroupMembership();
-
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 	
 	public String findByNormalizedUserName(String normalizedUsername);
