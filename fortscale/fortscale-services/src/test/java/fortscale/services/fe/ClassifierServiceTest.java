@@ -141,41 +141,6 @@ public class ClassifierServiceTest{
 		expectedScoreDistributions.put(startThreshold.getName(), new ScoreDistribution(startThreshold.getName(), (startCount - endCount), (int)percent, startThreshold.getValue(), endThreshold.getValue()));
 	}
 	
-	@Test
-	public void testgetGroupSuspiciousUsers() {
-//		List<Threshold> thresholds = getThresholds();
-//		List<SeverityElement> severityElements = getSeverityElements(thresholds);
-//		Mockito.when(configurationService.getSeverityElements()).thenReturn(severityElements);
-		
-		List<User> users = new ArrayList<>();
-		double avgScore = 30;
-		double prevScore = 70;
-		double prevAvgScore = 20;
-		double score = 99.6;
-		int limit = 4;
-		int step = 5;
-		for(int i = 0; i < limit; i++){
-			users.add( createUser(String.format("test%d",i), score -i*step, avgScore, prevScore, prevAvgScore));
-		}
-		
-		String severityId = "Critical";
-		Range severityRange = new IntRange(90, 100);
-		Mockito.when(configurationService.getRange(severityId)).thenReturn(severityRange);
-		String classifierId = Classifier.groups.getId();
-		Pageable pageable = new PageRequest(0, limit, Direction.DESC, User.getClassifierScoreCurrentScoreField(classifierId), User.getClassifierScoreCurrentTrendScoreField(classifierId));
-		PageImpl<User> usersPage = new PageImpl<>(users, pageable, users.size());
-		Mockito.when(userRepository.findByClassifierIdAndScoreBetweenAndTimeGteAsData(eq(classifierId), eq(severityRange.getMinimumInteger()), eq(severityRange.getMaximumInteger()), any(Date.class), eq(pageable))).thenReturn(usersPage);
-		Page<ISuspiciousUserInfo> suspiciousUserInfos = classifierService.getSuspiciousUsersByScore(Classifier.groups, severityId, 0, limit, false);
-		Assert.assertEquals(limit, suspiciousUserInfos.getNumberOfElements());
-		for(int i = 0; i < limit; i++){
-			ISuspiciousUserInfo suspiciousUserInfo = suspiciousUserInfos.getContent().get(i);
-			User user = users.get(i);
-			Assert.assertEquals(user.getId(), suspiciousUserInfo.getUserId());
-			Assert.assertEquals((int)Math.floor(user.getScore(classifierId).getScore()), suspiciousUserInfo.getScore());
-		}
-		
-	}
-	
 	private TestUser createUser(String id) {
 		TestUser retUser = new TestUser(id + "-dn");
 		retUser.setId(id);
@@ -184,7 +149,6 @@ public class ClassifierServiceTest{
 	
 	private TestUser createUser(String id, double score, double avgScore, double prevScore, double prevAvgScore) {
 		TestUser user = createUser(id);
-		user.putClassifierScore(createClassifierScore(Classifier.groups.getId(), score, avgScore, createPrevScoreInfoList(prevScore, prevAvgScore)));
 		user.putClassifierScore(createClassifierScore(Classifier.auth.getId(), score, avgScore, createPrevScoreInfoList(prevScore, prevAvgScore)));
 		return user;
 	}

@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.scoring;
 
-import fortscale.services.impl.ImpalaGroupsScoreWriter;
 import fortscale.services.impl.ImpalaTotalScoreWriter;
 import fortscale.services.impl.ImpalaUseridToAppUsernameWriter;
 import fortscale.services.impl.ImpalaWriterFactory;
@@ -27,14 +26,7 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	private static Logger logger = LoggerFactory.getLogger(ImpalaWriterFactoryImpl.class);
 	@Autowired
 	protected ImpalaClient impalaClient;
-	
-	@Value("${impala.ldap.group.membership.scores.table.fields}")
-	private String impalaGroupMembershipScoringTableFields;
-	@Value("${impala.ldap.group.membership.scores.table.delimiter}")
-	private String impalaGroupMembershipScoringTableDelimiter;
-	@Value("${impala.ldap.group.membership.scores.table.partition.type}")
-	private String impalaGroupMembershipScoringTablePartitionType;
-	
+
 	@Value("${impala.total.scores.table.fields}")
 	private String impalaTotalScoringTableFields;
 	@Value("${impala.total.scores.table.delimiter}")
@@ -44,35 +36,8 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	@Value("${hadoop.writer.buffer.size:10000}")
 	protected int maxBufferSize;
 
-	private BufferedHDFSWriter groupsScoreAppender;
 	private BufferedHDFSWriter totalScoreAppender;
 
-
-	
-	public void createGroupsScoreAppender(String basePath, String filename) throws IOException{
-		if(groupsScoreAppender == null){
-			PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);
-			HDFSPartitionsWriter appender = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
-			groupsScoreAppender = new BufferedHDFSWriter(appender, filename, maxBufferSize);
-		}
-		groupsScoreAppender.open(filename);
-	}
-	
-	public void closeGroupsScoreAppender() throws IOException{
-		groupsScoreAppender.close();
-	}
-	
-	public List<String> getGroupsScoreNewPartitions(){
-		List<String> ret = null;
-		if(groupsScoreAppender != null){
-			ret = ((HDFSPartitionsWriter)groupsScoreAppender.getWriter()).getNewPartitions();
-		} else{
-			ret = Collections.emptyList();
-		}
-		
-		return ret;
-	}
-	
 	public List<String> getTotalScoreNewPartitions(){
 		List<String> ret = null;
 		if(totalScoreAppender != null){
@@ -95,17 +60,6 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	
 	public void closeTotalScoreAppender() throws IOException{
 		totalScoreAppender.close();
-	}
-
-	@Override
-	public ImpalaGroupsScoreWriter createImpalaGroupsScoreWriter() {
-		ImpalaGroupsScoreWriter writer = null;
-		if(groupsScoreAppender != null){
-			writer = new ImpalaGroupsScoreWriter(groupsScoreAppender, impalaParser, ImpalaParser.getTableFieldNames(impalaGroupMembershipScoringTableFields), impalaGroupMembershipScoringTableDelimiter);
-		} else{
-			writer = new ImpalaGroupsScoreWriter(impalaParser, ImpalaParser.getTableFieldNames(impalaGroupMembershipScoringTableFields), impalaGroupMembershipScoringTableDelimiter);
-		}
-		return writer;
 	}
 
 	@Override

@@ -33,8 +33,6 @@ import fortscale.domain.events.LogEventsEnum;
 		@CompoundIndex(name="logUsername_sshscores_1", def = "{'logUsername.sshscores': 1}"),
 		@CompoundIndex(name="totalScoreCurScore", def = "{'scores.total.score': -1}"),
 		@CompoundIndex(name="totalScoreCurTrend", def = "{'scores.total.trendScore': -1}"),
-		@CompoundIndex(name="active_directory_group_membershipScoreCurScore", def = "{'scores.active_directory_group_membership.score': -1}"),
-		@CompoundIndex(name="active_directory_group_membershipScoreCurTrend", def = "{'scores.active_directory_group_membership.trendScore': -1}"),
 		@CompoundIndex(name="authScoreCurScore", def = "{'scores.auth.score': -1}"),
 		@CompoundIndex(name="authScoreCurTrend", def = "{'scores.auth.trendScore': -1}"),
 		@CompoundIndex(name="sshScoreCurScore", def = "{'scores.ssh.score': -1}"),

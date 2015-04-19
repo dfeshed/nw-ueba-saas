@@ -10,12 +10,7 @@ import fortscale.utils.impala.ImpalaParser;
 
 
 public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
-	
-	@Value("${impala.ldap.group.membership.scores.table.fields}")
-	private String impalaGroupMembershipScoringTableFields;
-	@Value("${impala.ldap.group.membership.scores.table.delimiter}")
-	private String impalaGroupMembershipScoringTableDelimiter;
-	
+
 	@Value("${impala.total.scores.table.fields}")
 	private String impalaTotalScoringTableFields;
 	@Value("${impala.total.scores.table.delimiter}")
@@ -31,14 +26,6 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	}
 	
 
-	public ImpalaGroupsScoreWriter createImpalaGroupsScoreWriter(){
-		if(StringUtils.isEmpty(userAdScoreCsvFileFullPathString)){
-			return new ImpalaGroupsScoreWriter(impalaParser, ImpalaParser.getTableFieldNames(impalaGroupMembershipScoringTableFields), impalaGroupMembershipScoringTableDelimiter);
-		} else{
-			return new ImpalaGroupsScoreWriter(getFile(userAdScoreCsvFileFullPathString), impalaParser, ImpalaParser.getTableFieldNames(impalaGroupMembershipScoringTableFields), impalaGroupMembershipScoringTableDelimiter);
-		}
-	}
-	
 	public ImpalaTotalScoreWriter createImpalaTotalScoreWriter(){
 		if(StringUtils.isEmpty(userTotalScoreCsvFileFullPathString)){
 			return new ImpalaTotalScoreWriter(impalaParser, ImpalaParser.getTableFieldNames(impalaTotalScoringTableFields), impalaTotalScoringTableDelimiter);

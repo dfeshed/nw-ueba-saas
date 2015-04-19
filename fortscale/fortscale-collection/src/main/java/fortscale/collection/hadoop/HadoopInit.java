@@ -264,18 +264,6 @@ public class HadoopInit implements InitializingBean{
     @Value("${impala.ldapusers.table.partition.type}")
     private String impalaADUsersDataTablePartitionType;
 	
-	//Group Membership Score table
-	@Value("${impala.ldap.group.membership.scores.table.fields}")
-	private String impalaGroupMembershipScoringTableFields;
-	@Value("${impala.ldap.group.membership.scores.table.delimiter}")
-	private String impalaGroupMembershipScoringTableDelimiter;
-	@Value("${impala.ldap.group.membership.scores.table.name}")
-	private String impalaGroupMembershipScoringTableName;
-	@Value("${hdfs.user.processeddata.group.membership.score.path}")
-	private String impalaGroupMembershipScoringDirectory;
-	@Value("${impala.ldap.group.membership.scores.table.partition.type}")
-	private String impalaGroupMembershipScoringTablePartitionType;
-
 	// Security Events (4769) Enriched Data table
 	@Value("${impala.enricheddata.security.events.table.fields}")
 	private String impalaSecEnrichedDataTableFields;
@@ -471,10 +459,6 @@ public class HadoopInit implements InitializingBean{
         partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaADUsersDataTablePartitionType);
 		createTable(impalaAdUserTableName, impalaAdUserTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAdUserTableDelimiter, impalaAdUserDirectory);
 				
-		//Group Membership Scoring table
-		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);
-		createTable(impalaGroupMembershipScoringTableName, impalaGroupMembershipScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaGroupMembershipScoringTableDelimiter, impalaGroupMembershipScoringDirectory);
-
 		// Security Events (4769) Enriched Data table
 		partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaSecEnrichedDataTablePartitionType);
 		createTable(impalaSecEnrichedDataTableName, impalaSecEnrichedDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaSecEnrichedDataTableDelimiter, impalaSecEnrichedDataDirectory);

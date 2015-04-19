@@ -141,61 +141,6 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	}
 	
 	@Override
-	public void updateUserWithGroupMembership(){
-		Date lastRun = adUsersFeaturesExtractionRepository.getLatestTimeStamp();
-		if(lastRun == null){
-			logger.warn("there is no timestamp. probably the table is empty.");
-			return;
-		}
-		updateUserWithGroupMembership(lastRun);
-	}
-
-	private void updateUserWithGroupMembership(final Date lastRun){
-		logger.info("start updating the user collection with group membership score");
-		long count = adUsersFeaturesExtractionRepository.countByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun);
-		if(count == 0){
-			logger.warn("the group membership for timestamp ({}) is empty.", lastRun);
-			return;
-		}
-
-		logger.info("total number of group membership score is {}", count);
-
-		logger.info("calculating average score...");
-		final double avgScore = adUsersFeaturesExtractionRepository.calculateAvgScore(Classifier.groups.getId(), lastRun);
-		logger.info("average score is {}", avgScore);
-
-		int numOfPages = (int) (((count -1) / groupMembershipScorePageSize) + 1);
-
-		ImpalaGroupsScoreWriter impalaGroupsScoreWriter = null;
-		try{
-			impalaGroupsScoreWriter = impalaWriterFactory.createImpalaGroupsScoreWriter();
-			for(int i = 0; i < numOfPages; i++){
-				logger.info("retrieving page #{} of group membership score documents. page size is {}.", i, groupMembershipScorePageSize);
-				PageRequest pageRequest = new PageRequest(i, groupMembershipScorePageSize);
-				List<AdUserFeaturesExtraction> adUserFeaturesExtractions = adUsersFeaturesExtractionRepository.findByClassifierIdAndTimestamp(Classifier.groups.getId(), lastRun, pageRequest);
-
-				logger.info("updating the user collection and the hdfs with group membership score");
-				for(AdUserFeaturesExtraction extraction: adUserFeaturesExtractions){
-					User user = userService.findByUserId(extraction.getUserId());
-					if(user != null){
-						//writeScore doesn't write only the score, but the entire row of data.
-						impalaGroupsScoreWriter.writeScore(user, extraction, avgScore);
-					}
-				}
-
-				logger.info("finished updating the user collection and the hdfs with group membership score");
-
-			}
-		} finally{
-			if(impalaGroupsScoreWriter != null){
-				impalaGroupsScoreWriter.close();
-			}
-		}
-
-		logger.info("finished group membership score update.");
-	}
-
-	@Override
 	public void recalculateTotalScore() {
 		String totalScoreId = Classifier.total.getId();
 		int numOfPages = (int)(((userRepository.count() - 1) / totalScorePageSize) + 1);

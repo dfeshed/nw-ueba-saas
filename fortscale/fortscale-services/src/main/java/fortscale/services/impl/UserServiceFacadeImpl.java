@@ -119,11 +119,6 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 		return userScoreService.getUserScoresHistory(uid, classifierId, offset, limit);
 	}
 
-	
-	@Override
-	public void updateUserWithGroupMembership() {
-		userUpdateScoreService.updateUserWithGroupMembership();
-	}
 
 	@Override
 	public void recalculateTotalScore() {

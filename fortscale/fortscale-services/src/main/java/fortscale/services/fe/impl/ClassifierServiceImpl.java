@@ -57,9 +57,6 @@ public class ClassifierServiceImpl implements ClassifierService{
 	@Autowired
 	private AccessDAO amtsessionDAO;
 
-    @Autowired
-    private GroupMembershipDAO groupMembershipDAO;
-
 	@Autowired
 	private UserService userService;
 	
@@ -402,11 +399,4 @@ public class ClassifierServiceImpl implements ClassifierService{
 		
 	}
 
-
-    @Override
-    public Long getLatestRuntime(String tableName) {
-
-        return groupMembershipDAO.getLastRuntime();
-
-    }
 }
