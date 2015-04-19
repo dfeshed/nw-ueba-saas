@@ -27,14 +27,7 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	private static Logger logger = LoggerFactory.getLogger(ImpalaWriterFactoryImpl.class);
 	@Autowired
 	protected ImpalaClient impalaClient;
-	
-	@Value("${impala.ldap.group.membership.scores.table.fields}")
-	private String impalaGroupMembershipScoringTableFields;
-	@Value("${impala.ldap.group.membership.scores.table.delimiter}")
-	private String impalaGroupMembershipScoringTableDelimiter;
-	@Value("${impala.ldap.group.membership.scores.table.partition.type}")
-	private String impalaGroupMembershipScoringTablePartitionType;
-	
+
 	@Value("${impala.total.scores.table.fields}")
 	private String impalaTotalScoringTableFields;
 	@Value("${impala.total.scores.table.delimiter}")
@@ -48,16 +41,6 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	private BufferedHDFSWriter totalScoreAppender;
 
 
-	
-	public void createGroupsScoreAppender(String basePath, String filename) throws IOException{
-		if(groupsScoreAppender == null){
-			PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaGroupMembershipScoringTablePartitionType);
-			HDFSPartitionsWriter appender = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
-			groupsScoreAppender = new BufferedHDFSWriter(appender, filename, maxBufferSize);
-		}
-		groupsScoreAppender.open(filename);
-	}
-	
 	public void closeGroupsScoreAppender() throws IOException{
 		groupsScoreAppender.close();
 	}
@@ -95,17 +78,6 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	
 	public void closeTotalScoreAppender() throws IOException{
 		totalScoreAppender.close();
-	}
-
-	@Override
-	public ImpalaGroupsScoreWriter createImpalaGroupsScoreWriter() {
-		ImpalaGroupsScoreWriter writer = null;
-		if(groupsScoreAppender != null){
-			writer = new ImpalaGroupsScoreWriter(groupsScoreAppender, impalaParser, ImpalaParser.getTableFieldNames(impalaGroupMembershipScoringTableFields), impalaGroupMembershipScoringTableDelimiter);
-		} else{
-			writer = new ImpalaGroupsScoreWriter(impalaParser, ImpalaParser.getTableFieldNames(impalaGroupMembershipScoringTableFields), impalaGroupMembershipScoringTableDelimiter);
-		}
-		return writer;
 	}
 
 	@Override
