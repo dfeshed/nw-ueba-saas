@@ -55,15 +55,15 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean{
 			notification.setTs(TimestampUtils.convertToSeconds(ts));
 			notification.setIndex(buildIndex(vpnSession));
 			notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
-			notification.setName(vpnSession.getUsername());
+			notification.setName(vpnSession.getNormalizedUserName());
 			notification.setCause(VPN_GEO_HOPPING_CAUSE);
 			notification.setUuid(UUID.randomUUID().toString());
 			if(user != null){
 				notification.setDisplayName(user.getDisplayName());
 				notification.setFsId(user.getId());
 			} else{
-				notification.setDisplayName(vpnSession.getUsername());
-				notification.setFsId(vpnSession.getUsername());
+				notification.setDisplayName(vpnSession.getNormalizedUserName());
+				notification.setFsId(vpnSession.getNormalizedUserName());
 			}
 			
 			notification.setAttributes(getVpnSessionAttributes(vpnSession));

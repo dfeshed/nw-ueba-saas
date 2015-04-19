@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import fortscale.services.dataentity.DataEntitiesConfig;
+import fortscale.services.dataentity.DataEntity;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
@@ -36,6 +37,9 @@ public class ApiControllerTest {
 
 	@Mock
 	private DataQueryRunnerFactory dataQueryRunnerFactory;
+
+	@Mock
+	private	DataEntitiesConfig dataEntitiesConfig;
 
 	@InjectMocks
 	private ApiController controller;
@@ -77,6 +81,9 @@ public class ApiControllerTest {
 		dataQueryDTOs.add(dataQueryDTO);
 		when(dataQueryRunner.translateAbstarctDataQuery(any(DataQueryDTO.class),any(DataEntitiesConfig.class))).thenReturn(dataQueryDTOs);
 		when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(dataQueryRunner);
+		HashMap<String,DataEntity> baseEntities = new HashMap<String,DataEntity>();
+		baseEntities.put("vpn",new DataEntity());
+		when(dataEntitiesConfig.getAllLeafeEntities()).thenReturn(baseEntities);
 
 
 		this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
