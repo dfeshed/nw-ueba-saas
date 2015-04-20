@@ -70,7 +70,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 			throws Exception {
 
 		String sqlStr = mySqlWherePartGenerator.generateQueryPart(dataQueryDTO1);
-		String expectedString = "WHERE entity.yearmonthday >= 20141024 AND entity.yearmonthday <= 20141026 AND (entity.eventscore >= 50 AND entity.date_time_unix >= 1414184400 AND entity.date_time_unix <= 1414360799)";
+		String expectedString = "WHERE (entity.yearmonthday >= 20141024) AND (entity.yearmonthday <= 20141026) AND ((entity.eventscore >= 50) AND (entity.date_time_unix >= 1414184400) AND (entity.date_time_unix <= 1414360799))";
 		assertEquals("SQL Where part for DTO1" , expectedString, sqlStr);
 	}
 
@@ -78,7 +78,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 	public void mySqlWherePartGenerator_should_generate_correct_where_condition()
 			throws Exception {
 		String sqlStr = mySqlWherePartGenerator.generateQueryPart(complexWhereDTO);
-		String expectedString = "WHERE entity.yearmonthday >= 20141024 AND entity.yearmonthday <= 20141026 AND (entity.date_time_unix >= 1414184400 AND entity.date_time_unix <= 1414360799 AND entity.eventscore IN ( 50 , 70 ) AND entity.date_time_unix IN ( \"my_user_name\" ) AND entity.date_time_unix BETWEEN  \"my_user_name1\" AND \"my_user_name2\"  AND entity.date_time_unix BETWEEN  1414360799 AND 1414360800  AND entity.date_time_unix LIKE \"%my_user_name\" AND entity.date_time_unix LIKE \"my_user_name%\" AND entity.date_time_unix LIKE \"%my_user_name%\" AND entity.eventscore IS NOT NULL  AND entity.eventscore IS NULL )";
+		String expectedString = "WHERE (entity.yearmonthday >= 20141024) AND (entity.yearmonthday <= 20141026) AND ((entity.date_time_unix >= 1414184400) AND (entity.date_time_unix <= 1414360799) AND (entity.eventscore IN ( 50 , 70 )) AND (entity.date_time_unix IN ( \"my_user_name\" )) AND (entity.date_time_unix BETWEEN  \"my_user_name1\" AND \"my_user_name2\" ) AND (entity.date_time_unix BETWEEN  1414360799 AND 1414360800 ) AND (entity.date_time_unix LIKE \"%my_user_name\") AND (entity.date_time_unix LIKE \"my_user_name%\") AND (entity.date_time_unix LIKE \"%my_user_name%\") AND (entity.eventscore IS NOT NULL  AND entity.eventscore != '' ) AND (entity.eventscore IS NULL  OR entity.eventscore ='' ))";
 		assertEquals("SQL Where part for complexWhereDTO" , expectedString, sqlStr);
 	}
 
@@ -86,7 +86,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
     public void mySqlWherePartGenerator_between_date_time()
             throws Exception {
         String sqlStr = mySqlWherePartGenerator.generateQueryPart(betweenPartitionDTO);
-        String expectedString = "WHERE entity.yearmonthday >= 20141024 AND entity.yearmonthday <= 20141026 AND (entity.date_time_unix BETWEEN  1414184400 AND 1414360799 )";
+        String expectedString = "WHERE (entity.yearmonthday >= 20141024) AND (entity.yearmonthday <= 20141026) AND ((entity.date_time_unix BETWEEN  1414184400 AND 1414360799 ))";
         assertEquals("SQL Where part for betweenPartitionDTO" , expectedString, sqlStr);
     }
 }
