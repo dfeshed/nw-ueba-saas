@@ -19,11 +19,12 @@ public class DataEntityFieldConfig {
     private String joinFrom;
     private String joinTo;
     private String format;
+	private String shownForSpecificEntity;
 
     public static final String IS_LOGICAL_ONLY = "is_logical_only";
     public static final String EXPLICIT = "explicit";
     public static final String SEARCHABLE = "searchable";
-	public static final String USER_SHOW_ONLY ="shownOnlyForUsers";
+
 
     HashMap<String, Boolean> flags = new HashMap<>();
 
@@ -95,10 +96,10 @@ public class DataEntityFieldConfig {
         flags.put(SEARCHABLE, searchable);
     }
 
-	public Boolean isOnlyShowForUser(){return flags.get(USER_SHOW_ONLY);}
+	public String getShownForSpecificEntity(){return shownForSpecificEntity;}
 
-	public void setOnlyShowForUser (Boolean showOnlyForUsers){
-		flags.put(USER_SHOW_ONLY, showOnlyForUsers);
+	public void setShownForSpecificEntityr (String shownForSpecificEntity){
+		this.shownForSpecificEntity = shownForSpecificEntity;
 	}
 
     public Boolean getFlag(String flagName){
