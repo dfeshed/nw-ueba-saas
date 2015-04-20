@@ -35,8 +35,15 @@ public class MySqlConditionOperators {
         operatorsList.put(QueryOperator.hasNoValue, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("IS NULL", false), new MySqlOperator("=''", false))), LogicalOperator.OR));
     }
 
+    /**
+     *
+     * @param operator an operator that is passed from the REST API
+     * @return MySqlOperatorsList: list of {@link MySqlOperatorsList} that holds SQL condition expression
+     * @throws InvalidQueryException
+     */
     public static MySqlOperatorsList getOperator(QueryOperator operator) throws InvalidQueryException {
         MySqlOperatorsList mySqlOperatorList = operatorsList.get(operator);
+        //The mySqlOperatorList should not be null or empty. If there is more than one entry, then the LogicalOperator should not be null
 		if (mySqlOperatorList == null || mySqlOperatorList.getMySqlOperators().size() == 0
                 || mySqlOperatorList.getMySqlOperators().size() > 1 && mySqlOperatorList.getLogicalOperator() == null) {
             throw new InvalidQueryException("Unknown operator for MySql: " + operator + ".");

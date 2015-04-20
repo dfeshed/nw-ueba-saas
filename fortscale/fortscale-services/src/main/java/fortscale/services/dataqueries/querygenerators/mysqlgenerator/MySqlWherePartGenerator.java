@@ -122,7 +122,15 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
     private String getConditionFieldSql(ConditionField conditionField, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
     	return getConditionFieldSql(conditionField, dataQueryDTO, true);
     }
-    
+
+    /**
+     * Builds the SQL condition statement
+     * @param conditionField field that is sent from the API that represent the logical condition
+     * @param dataQueryDTO the dataQuery object that is passed recursively
+     * @param mapToColumn boolean value whether to map field to column
+     * @return the SQL Statement fragment string
+     * @throws InvalidQueryException
+     */
     private String getConditionFieldSql(ConditionField conditionField, DataQueryDTO dataQueryDTO, Boolean mapToColumn) throws InvalidQueryException{
         StringBuilder sb = new StringBuilder();
         sb.append("(");

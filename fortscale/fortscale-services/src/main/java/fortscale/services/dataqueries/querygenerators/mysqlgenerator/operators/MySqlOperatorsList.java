@@ -9,11 +9,19 @@ import java.util.List;
 
 /**
  * Created by rans on 19/04/15.
+ * A Helper class that holds list of SQL operators and the logical operator that needs to be assigned to them
  */
 public class MySqlOperatorsList {
 
 
+    /**
+     * list of SQL operators that is be applied in a WHERE condition for one fields
+     */
     List<MySqlOperator> mySqlOperators;
+    /**
+     * a logical operator for the relationship between the SQL operators
+     * Can be null when only one SQL operator exists
+     */
     LogicalOperator logicalOperator;
 
     public MySqlOperatorsList(List<MySqlOperator> mySqlOperators, LogicalOperator logicalOperator) {
