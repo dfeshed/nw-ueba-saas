@@ -1,2 +1,2 @@
 #!/bin/bash
-java -cp "../../lib/*" fortscale.utils.EncryptionUtils encrypt $1
+java -cp "/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target/lib/*" fortscale.utils.EncryptionUtils encrypt $1
