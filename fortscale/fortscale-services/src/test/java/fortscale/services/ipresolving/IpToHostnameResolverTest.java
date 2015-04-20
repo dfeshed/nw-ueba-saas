@@ -32,7 +32,7 @@ public class IpToHostnameResolverTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		// set blacklist on resolver for tests
-		resolver.setHostnameBlacklist("localhost*|my-pc");
+		resolver.setHostnameBlacklist("localhost*|my-pc|UNKNOWN-*");
 		
 		// set all providers enabled
 		resolver.setDhcpProviderEnabled(true);
@@ -40,8 +40,7 @@ public class IpToHostnameResolverTest {
 		resolver.setFileProviderEnabled(true);
 		resolver.setLoginProviderEnabled(true);
 	}
-	
-	
+
 	@Test
 	public void resolve_should_return_null_if_dns_name_not_in_ad_and_restrictADNames_is_true() {
 		resolver.setDhcpProviderEnabled(false);
@@ -59,8 +58,8 @@ public class IpToHostnameResolverTest {
 		resolver.setDhcpProviderEnabled(false);
 		resolver.setFileProviderEnabled(false);
 		resolver.setLoginProviderEnabled(false);	
-		when(dnsResolver.getHostname("192.168.1.1", 155)).thenReturn("localhost");
-		when(computerService.isHostnameInAD("localhost")).thenReturn(true);
+		when(dnsResolver.getHostname("192.168.1.1", 155)).thenReturn("UNKNOWN-192-168-0-X.yahoo.com");
+		when(computerService.isHostnameInAD("UNKNOWN-192-168-0-X.yahoo.com")).thenReturn(true);
 		
 		String actual = resolver.resolve("192.168.1.1", 155L, true, true, false);
 		assertNull(actual);
