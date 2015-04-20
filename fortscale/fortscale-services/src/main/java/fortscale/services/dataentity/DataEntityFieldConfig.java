@@ -98,7 +98,7 @@ public class DataEntityFieldConfig {
 
 	public String getShownForSpecificEntity(){return shownForSpecificEntity;}
 
-	public void setShownForSpecificEntityr (String shownForSpecificEntity){
+	public void setShownForSpecificEntity (String shownForSpecificEntity){
 		this.shownForSpecificEntity = shownForSpecificEntity;
 	}
 

@@ -484,7 +484,7 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
 				if (shownForSpecificEntity == null){
 					shownForSpecificEntity = getExtendableValue(entityId, "field", fieldId, "showForSpecificEntity");
 
-					fieldConfig.setShownForSpecificEntityr(shownForSpecificEntity);
+					fieldConfig.setShownForSpecificEntity(shownForSpecificEntity);
 				}
 
 				field.setShownForSpecificEntity(shownForSpecificEntity);
