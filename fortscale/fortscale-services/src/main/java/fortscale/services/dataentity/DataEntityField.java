@@ -36,6 +36,11 @@ public class DataEntityField implements Comparable<DataEntityField> {
      */
     private Boolean searchable = false;
 
+	/**
+	 * Flag that indicates the specific entity that this field will be shown on .
+	 */
+	private String shownForSpecificEntity ;
+
     /**
      * Attributes are strings that are used by the front-end, for example in render conditions or to decide whether to use a menu
      */
@@ -150,7 +155,18 @@ public class DataEntityField implements Comparable<DataEntityField> {
         this.format = format;
     }
 
-    @Override
+	public String getShownForSpecificEntity() {
+		return shownForSpecificEntity;
+	}
+
+	public void setShownForSpecificEntity(String shownForSpecificEntity) {
+		this.shownForSpecificEntity = shownForSpecificEntity;
+	}
+
+
+
+
+	@Override
     public int compareTo(DataEntityField o) {
         return this.rank - o.rank;
     }

@@ -477,6 +477,21 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
                 }
                 field.setLogicalOnly(isLogicalOnly);
 
+
+				//in case that its user entity - get the ShowOnlyForUser properite
+				//this property will mark that this field suppose to be shown only at User
+				String shownForSpecificEntity = fieldConfig.getShownForSpecificEntity();
+				if (shownForSpecificEntity == null){
+					shownForSpecificEntity = getExtendableValue(entityId, "field", fieldId, "showForSpecificEntity");
+
+					fieldConfig.setShownForSpecificEntity(shownForSpecificEntity);
+				}
+
+				field.setShownForSpecificEntity(shownForSpecificEntity);
+
+
+
+
                 Boolean isSearchable = fieldConfig.isSearchable();
                 if (isSearchable == null){
                     String isSearchableStr = getExtendableValue(entityId, "field", fieldId, "searchable");
