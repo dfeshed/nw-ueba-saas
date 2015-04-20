@@ -546,13 +546,7 @@ public class UserServiceImpl implements UserService{
 			}
 		}
 		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
-		Boolean isAccountDisable = null;
-		try {
-			isAccountDisable = userAdInfo.getUserAccountControl() != null ? adUserParser.isAccountIsDisabled(userAdInfo.getUserAccountControl()) : null;
-		} catch (NumberFormatException e) {
-			logger.warn("got NumberFormatException while trying to parse user account control.", userAdInfo.getUserAccountControl());
-		}
-		userAdInfo.setIsAccountDisabled(isAccountDisable);
+		userAdInfo.setIsAccountDisabled(adUserParser.isAccountIsDisabled(userAdInfo.getUserAccountControl()));
 		
 		// update user's groups
 		userAdInfo.setGroups(groups);
@@ -561,8 +555,8 @@ public class UserServiceImpl implements UserService{
 		userAdInfo.setAdDirectReports(directReports);
 
 		DateTime disableAccountTime = null;
-		if(userAdInfo.getIsAccountDisabled() != null && userAdInfo.getIsAccountDisabled()){
-			if(user == null || !user.getAdInfo().getIsAccountDisabled()){
+		if (userAdInfo.getIsAccountDisabled()){
+			if (user == null || !user.getAdInfo().getIsAccountDisabled()){
 				disableAccountTime = new DateTime(whenChanged);
 			} else{
 				disableAccountTime = user.getAdInfo().getDisableAccountTime();

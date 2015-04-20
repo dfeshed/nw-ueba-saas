@@ -95,7 +95,7 @@ public class UserAdInfo {
 	@Field(disableAccountTimeField)
 	private DateTime disableAccountTime;
 	@Field(isAccountDisabledField)
-	private Boolean isAccountDisabled;
+	private boolean isAccountDisabled;
 	
 	
 	
@@ -422,11 +422,11 @@ public class UserAdInfo {
 		this.disableAccountTime = disableAccountTime;
 	}
 
-	public Boolean getIsAccountDisabled() {
+	public boolean getIsAccountDisabled() {
 		return isAccountDisabled;
 	}
 
-	public void setIsAccountDisabled(Boolean isAccountIsDisabled) {
+	public void setIsAccountDisabled(boolean isAccountIsDisabled) {
 		this.isAccountDisabled = isAccountIsDisabled;
 	}
 	
