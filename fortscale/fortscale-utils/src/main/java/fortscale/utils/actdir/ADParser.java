@@ -86,7 +86,7 @@ public class ADParser {
 	
 	public boolean isAccountIsDisabled(Integer userAccountControl) {
 		int flag = 0x00000002;
-		return ((userAccountControl & flag) == flag);
+		return ((userAccountControl!=null) && ((userAccountControl & flag) == flag));
 	}
 	
 	public boolean isLockout(Integer userAccountControl) {

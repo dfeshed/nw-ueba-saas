@@ -195,7 +195,11 @@ public class UserTableUpdateJob extends FortscaleJob {
 			try {
 				String val = BeanUtils.getProperty(userTable, fieldDef);
 				if(StringUtils.isEmpty(val)){
-					val = ImpalaParser.IMPALA_NULL_VALUE;
+					// store null boolean value as false in impala table
+					if (impalaUserFieldsMap.get(fieldDef).equals(Boolean.class))
+						val = Boolean.FALSE.toString();
+					else
+						val = ImpalaParser.IMPALA_NULL_VALUE;
 				} else if(impalaUserFieldsMap.get(fieldDef).equals(ImpalaDateTime.class)){
 					val = ImpalaDateTime.formatTimeDate(new DateTime(Long.parseLong(val), DateTimeZone.UTC));
 				}
