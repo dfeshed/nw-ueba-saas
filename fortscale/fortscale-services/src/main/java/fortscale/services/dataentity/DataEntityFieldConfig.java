@@ -23,6 +23,7 @@ public class DataEntityFieldConfig {
     public static final String IS_LOGICAL_ONLY = "is_logical_only";
     public static final String EXPLICIT = "explicit";
     public static final String SEARCHABLE = "searchable";
+	public static final String USER_SHOW_ONLY ="shownOnlyForUsers";
 
     HashMap<String, Boolean> flags = new HashMap<>();
 
@@ -88,9 +89,17 @@ public class DataEntityFieldConfig {
         return flags.get(SEARCHABLE);
     }
 
+
+
     public void setSearchable(Boolean searchable){
         flags.put(SEARCHABLE, searchable);
     }
+
+	public Boolean isOnlyShowForUser(){return flags.get(USER_SHOW_ONLY);}
+
+	public void setOnlyShowForUser (Boolean showOnlyForUsers){
+		flags.put(USER_SHOW_ONLY, showOnlyForUsers);
+	}
 
     public Boolean getFlag(String flagName){
         return flags.get(flagName);

@@ -36,6 +36,11 @@ public class DataEntityField implements Comparable<DataEntityField> {
      */
     private Boolean searchable = false;
 
+	/**
+	 * Flag that indicates that this field will show only for pure user entities (Explore - users or Packages -Active directory Packages ).
+	 */
+	private Boolean shownOnlyForUsers = false;
+
     /**
      * Attributes are strings that are used by the front-end, for example in render conditions or to decide whether to use a menu
      */
@@ -149,6 +154,14 @@ public class DataEntityField implements Comparable<DataEntityField> {
     public void setFormat(String format) {
         this.format = format;
     }
+
+	public Boolean getShownOnlyForUsers() {
+		return shownOnlyForUsers;
+	}
+
+	public void setShownOnlyForUsers(Boolean shownOnlyForUsers) {
+		this.shownOnlyForUsers = shownOnlyForUsers;
+	}
 
     @Override
     public int compareTo(DataEntityField o) {
