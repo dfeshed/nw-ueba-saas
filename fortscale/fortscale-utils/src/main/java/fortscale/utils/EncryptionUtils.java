@@ -55,10 +55,10 @@ public class EncryptionUtils {
 
 		switch (mode) {
 			case "encrypt":
-				System.out.println(encrypt(value));
+				System.out.print(encrypt(value));
 				break;
 			case "decrypt":
-				System.out.println(decrypt(value));
+				System.out.print(decrypt(value));
 				break;
 			default:
 				System.out.println("Usage: <encrypt/decrypt> <value>");
