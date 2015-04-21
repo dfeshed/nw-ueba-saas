@@ -12,16 +12,20 @@ public class UsernameNormalizationConfig {
 	private String usernameField;
 	private String normalizedUsernameField;
 	private String partitionField;
+	private Boolean updateOnlyFlag;
+	private String classifier;
 	private UsernameNormalizationService usernameNormalizationService;
 
 
-	public UsernameNormalizationConfig(String inputTopic, String outputTopic, String usernameField, String normalizedUsernameField, String partitionField,
+	public UsernameNormalizationConfig(String inputTopic, String outputTopic, String usernameField, String normalizedUsernameField, String partitionField, Boolean updateOnlyFlag, String classifier,
 			UsernameNormalizationService usernameNormalizationService) {
 		this.inputTopic = inputTopic;
 		this.outputTopic = outputTopic;
 		this.usernameField = usernameField;
 		this.normalizedUsernameField = normalizedUsernameField;
 		this.partitionField = partitionField;
+		this.updateOnlyFlag = updateOnlyFlag;
+		this.classifier = classifier;
 		this.usernameNormalizationService = usernameNormalizationService;
 	}
 
@@ -63,6 +67,22 @@ public class UsernameNormalizationConfig {
 
 	public void setPartitionField(String partitionField) {
 		this.partitionField = partitionField;
+	}
+
+	public Boolean getUpdateOnlyFlag() {
+		return updateOnlyFlag;
+	}
+
+	public void setUpdateOnlyFlag(Boolean updateOnlyFlag) {
+		this.updateOnlyFlag = updateOnlyFlag;
+	}
+
+	public String getClassifier() {
+		return classifier;
+	}
+
+	public void setClassifier(String classifier) {
+		this.classifier = classifier;
 	}
 
 	public UsernameNormalizationService getUsernameNormalizationService() {
