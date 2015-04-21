@@ -1,6 +1,7 @@
 package fortscale.streaming.task.enrichment;
 
 import fortscale.services.CachingService;
+import fortscale.services.fe.Classifier;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
@@ -37,6 +38,8 @@ import static fortscale.utils.ConversionUtils.convertToString;
  * Several enrichment regarding the user:
  * 1. Username normalization
  * 2. User tagging
+ *
+ * Since we are using the users in mongo when creating the notifications we must create the users in mongo after the normalization and not as part of regular updates in UserMongoUpdateTask.
  */
 public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask implements InitableTask {
 
@@ -88,11 +91,13 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String normalizedUsernameField =getConfigString(config, String.format("fortscale.events.normalizedusername.field.%s",dataSource));
 			String partitionKey = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
 			String serviceName = getConfigString(config, String.format("fortscale.events.normalization.service.%s",dataSource));
+			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.updateOnly.%s", dataSource));
+			String classifier = getConfigString(config, String.format("fortscale.events.classifier.%s", dataSource));
 			UsernameNormalizationService service = (UsernameNormalizationService)SpringService.getInstance().resolve(serviceName);
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
 			usernameService.setCache(usernameStore);
-			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic, usernameField, normalizedUsernameField, partitionKey, service));
+			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic, usernameField, normalizedUsernameField, partitionKey, updateOnlyFlag, classifier, service));
 		}
 
 		// add the usernameService to update input topics map
@@ -164,6 +169,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				if (normalizedUsername == null) {
 					// normalization failed, but we keep the record and generate normalized
 					normalizedUsername = normalizationService.getUsernameAsNormalizedUsername(username, message);
+					//Updating/Creating the user in mongoDB if needed.
+					tagService.getUserService().updateOrCreateUserWithClassifierUsername(Classifier.valueOf(configuration.getClassifier()),normalizedUsername,normalizedUsername,configuration.getUpdateOnlyFlag(),true);
 				}
 				message.put(configuration.getNormalizedUsernameField(), normalizedUsername);
 

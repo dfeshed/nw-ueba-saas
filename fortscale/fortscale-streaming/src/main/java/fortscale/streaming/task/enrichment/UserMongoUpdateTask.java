@@ -31,11 +31,15 @@ import static fortscale.utils.ConversionUtils.convertToString;
 /**
  * Update User's info to mongo :
  * 	a. last activity
- * 	b. create user if need (based on configuration)
+ * 	b. create user if need (based on configuration) -
+ * 		New addition - Since we are using the users in mongo when creating the notifications we must create the users in mongo after the normalization and not here as part of updates.
+ * 		You can see writes to mongo also from UsernameNormalizationAndTaggingTask
  * 	c. update the logusername
  *
  * 1. In level DB (state) during process
  * 2. In Mongo from time to time
+ *
+ *
  * Date: 1/11/2015.
  */
 public class UserMongoUpdateTask extends AbstractStreamTask {
