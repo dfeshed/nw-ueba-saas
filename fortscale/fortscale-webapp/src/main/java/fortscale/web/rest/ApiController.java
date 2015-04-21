@@ -40,6 +40,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -246,12 +247,13 @@ public class ApiController extends BaseController {
 		}
 
 		DateTime now = DateTime.now();
-		response.setContentType("text/csv");
+		response.setContentType("text/csv; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		response.setHeader("content-Disposition",
 						String.format("attachment; filename=export_%s_%d%02d%02d_%d.csv", dataEntitiesConfig.getEntityFromOverAllCache(dataQueryObject.getEntities()[0]).getName(),
 										now.getYear(), now.getMonthOfYear(), now.getDayOfMonth(), now.getMillis()));
 
-		ServletOutputStream output = response.getOutputStream();
+		PrintWriter writer = response.getWriter();
 
 		// run the query in pages, keep running in loop until we exhausted all results or reached all pages
 		DataBean<List<Map<String, Object>>> page = dataQueryHandler(dataQueryObject, false, true, currentPageNum, pageSize);
@@ -280,14 +282,14 @@ public class ApiController extends BaseController {
 						prettyFields.add(fieldName);
 					}
 					String headerLine = Joiner.on(delimiter).join(prettyFields);
-					output.println(headerLine);
+					writer.println(headerLine);
 				}
 			}
 
 
 			// dump the page content
-			convertQueryResultsToText(page.getData(), fields, delimiter, output, locale, timezoneOffsetMins);
-			output.flush();
+			convertQueryResultsToText(page.getData(), fields, delimiter, writer, locale, timezoneOffsetMins);
+			writer.flush();
 
 
 			// advance query to the next page
@@ -297,7 +299,7 @@ public class ApiController extends BaseController {
 	}
 
 	// receives a batch of rows and convert them into csv row that is written to the given output stream. Used by the export data query method
-	private void convertQueryResultsToText(List<Map<String, Object>> rows, List<String> fields, String delimiter, ServletOutputStream output, Locale locale, String timezoneOffsetMinsStr) throws IOException {
+	private void convertQueryResultsToText(List<Map<String, Object>> rows, List<String> fields, String delimiter, PrintWriter output, Locale locale, String timezoneOffsetMinsStr) throws IOException {
 		SimpleDateFormat sdf = createSimpleDateFormat(locale, timezoneOffsetMinsStr);
 		for (Map<String, Object> row : rows) {
 			StringBuilder sb = new StringBuilder();
