@@ -92,10 +92,11 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// configuration
 		task.inputTopicToConfiguration = new HashMap<>();
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
-		task.inputTopicToConfiguration.put("input1" , new UsernameNormalizationConfig("input1", "output1",usernameField, normalizedUsernameField , "key", usernameNormalizationService));
+		task.inputTopicToConfiguration.put("input1" , new UsernameNormalizationConfig("input1", "output1",usernameField, normalizedUsernameField , "key", true, "vpn", usernameNormalizationService));
 
 		// tagging
 		task.tagService = Mockito.mock(UserTagsService.class);
+		Mockito.when(task.tagService.getUserService()).thenReturn(Mockito.mock(UserService.class));
 
 
 		// User2 with normalized username
