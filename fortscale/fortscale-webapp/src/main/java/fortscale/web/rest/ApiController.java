@@ -281,7 +281,7 @@ public class ApiController extends BaseController {
 			}
 
 			for (DataEntityField field : dataEntity.getFields()) {
-				if (field.getIsDefaultEnabled() && !field.getAttributes().contains("internal")) {
+				if (field.getIsDefaultEnabled() && (field.getAttributes()==null || !field.getAttributes().contains("internal"))) {
 					fields.add(field.getId());
 				}
 			}
