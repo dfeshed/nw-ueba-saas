@@ -364,6 +364,17 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
 
         entity.setName(entityName);
 
+        String entityNameForMenu = entityConfig.getNameForMenu();
+        if (entityNameForMenu == null){
+            entityNameForMenu = getExtendableValue(entityId, "nameForMenu");
+            entityConfig.setNameForMenu(entityNameForMenu);
+        }
+
+        entity.setNameForMenu(entityNameForMenu);
+
+
+
+
         String entityShortName = entityConfig.getShortName();
         if (entityShortName == null){
             entityShortName = getExtendableValue(entityId, "short_name");

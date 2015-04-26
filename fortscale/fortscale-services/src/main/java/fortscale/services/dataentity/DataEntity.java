@@ -12,6 +12,7 @@ import java.util.List;
 public class DataEntity {
     String id;
     String name;
+    String nameForMenu;
     String shortName;
     String extendsEntity;
     Boolean isAbstract;
@@ -54,6 +55,14 @@ public class DataEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNameForMenu() {
+        return nameForMenu;
+    }
+
+    public void setNameForMenu(String nameForMenu) {
+        this.nameForMenu = nameForMenu;
     }
 
     public String getShortName() {

@@ -12,6 +12,7 @@ import java.util.List;
 public class DataEntityConfig {
     private String id;
     private String name;
+    private String nameForMenu;
     private String shortName;
     private HashMap<String, DataEntityFieldConfig> fields = new HashMap<>();
     private ArrayList<String> fieldsList;
@@ -91,6 +92,14 @@ public class DataEntityConfig {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNameForMenu() {
+        return nameForMenu;
+    }
+
+    public void setNameForMenu(String nameForMenu) {
+        this.nameForMenu = nameForMenu;
     }
 
     public HashMap<String, DataEntityFieldConfig> getFields() {
