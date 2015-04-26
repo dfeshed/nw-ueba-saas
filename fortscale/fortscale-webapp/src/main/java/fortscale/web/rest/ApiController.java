@@ -227,6 +227,7 @@ public class ApiController extends BaseController {
 					   @RequestParam(defaultValue = "true") boolean dumpHeaders,
 					   @RequestParam(defaultValue = ",") String delimiter,
 			           @RequestParam(required = false) String timezoneOffsetMins,
+					   @RequestParam(required = false) String returnFields,
 					   HttpServletRequest request,
 					   HttpServletResponse response, Locale locale) throws IOException {
 
@@ -250,10 +251,42 @@ public class ApiController extends BaseController {
 		response.setContentType("text/csv; charset=UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		response.setHeader("content-Disposition",
-						String.format("attachment; filename=export_%s_%d%02d%02d_%d.csv", dataEntitiesConfig.getEntityFromOverAllCache(dataQueryObject.getEntities()[0]).getName(),
-										now.getYear(), now.getMonthOfYear(), now.getDayOfMonth(), now.getMillis()));
+				String.format("attachment; filename=export_%s_%d%02d%02d_%d.csv", dataEntitiesConfig.getEntityFromOverAllCache(dataQueryObject.getEntities()[0]).getName(),
+						now.getYear(), now.getMonthOfYear(), now.getDayOfMonth(), now.getMillis()));
 
 		PrintWriter writer = response.getWriter();
+
+		// build a list of the output fields
+		if (StringUtils.isNotEmpty(returnFields)) {
+			// get the list of fields from the REST parameter
+			fields.addAll(Arrays.asList(returnFields.split(",")));
+		} else {
+			// get the list of fields from the entities configuration, using the main entity in the query
+			// if the query contains several entities take the non-user entity, otherwise take the single entity
+			String entity = dataQueryObject.getEntities()[0];
+			if (dataQueryObject.getEntities().length>1) {
+				for (String item : dataQueryObject.getEntities()) {
+					if (!"users".equals(item)) {
+						entity = item;
+						break;
+					}
+				}
+			}
+
+			// get the default fields for that entity
+			DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(entity);
+			if (dataEntity==null) {
+				logger.error("Could not get metadata for entity {}", entity);
+				throw new InvalidValueException("Query with invalid entity type");
+			}
+
+			for (DataEntityField field : dataEntity.getFields()) {
+				if (field.getIsDefaultEnabled() && !field.getAttributes().contains("internal")) {
+					fields.add(field.getId());
+				}
+			}
+		}
+
 
 		// run the query in pages, keep running in loop until we exhausted all results or reached all pages
 		DataBean<List<Map<String, Object>>> page = dataQueryHandler(dataQueryObject, false, true, currentPageNum, pageSize);
@@ -261,41 +294,53 @@ public class ApiController extends BaseController {
 
 			// if we are on the first page dump the headers row
 			if (currentPageNum==0 && dumpHeaders) {
-				// write the headers line to the output
-				if (!page.getData().isEmpty()) {
-					// copy the list of field names to the fields list so we will write them in consistent
-					// order for each row, and dump them to the output header row
-					List<String> prettyFields = new LinkedList<>();
-					for (String field : page.getData().get(0).keySet()) {
-						fields.add(field);
-						String fieldName = field;
-						for (String dataEntityId : dataQueryObject.getEntities()) {
-							DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntityId);
-							if (dataEntity != null) {
-								DataEntityField dataEntityField = dataEntity.getField(field);
-								if (dataEntityField != null && dataEntityField.getName() != null) {
-									fieldName = dataEntity.getField(field).getName();
-									break;
-								}
-							}
-						}
-						prettyFields.add(fieldName);
-					}
-					String headerLine = Joiner.on(delimiter).join(prettyFields);
-					writer.println(headerLine);
-				}
+				// copy the list of field names to the fields list so we will write them in consistent
+				// order for each row, and dump them to the output header row
+				List<String> prettyFields = new LinkedList<>();
+				for (String field : fields)
+					prettyFields.add(getFieldDisplayName(field, dataQueryObject));
+				String headerLine = Joiner.on(delimiter).join(prettyFields);
+				writer.println(headerLine);
 			}
-
 
 			// dump the page content
 			convertQueryResultsToText(page.getData(), fields, delimiter, writer, locale, timezoneOffsetMins);
 			writer.flush();
 
-
 			// advance query to the next page
 			currentPageNum++;
 			page = dataQueryHandler(dataQueryObject, false, true, currentPageNum, pageSize);
 		}
+	}
+
+	/**
+	 * Get the field name in an entity and return the display name for it. The field format might be either
+	 * "<field id>" or "<entity id>.<field id>". If entity if was not passed, we will use the first entity from
+	 * the query that has that field.
+	 */
+	private String getFieldDisplayName(String field, DataQueryDTO dataQueryObject) {
+		String entity = (field.contains(".")? field.split("\\.")[0] : null);
+		String fieldId = (field.contains(".")? field.split("\\.")[1] : field);
+
+		// get the relevant data entity
+		DataEntity dataEntity = null;
+		if (entity!=null) {
+			dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(entity);
+		} else {
+			for (String dataEntityId : dataQueryObject.getEntities()) {
+				dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntityId);
+				if (dataEntity!=null && dataEntity.getField(fieldId)!=null && dataEntity.getField(fieldId).getName()!=null)
+					break;;
+			}
+		}
+
+		// get the field name from the data entity
+		DataEntityField dataEntityField = dataEntity.getField(fieldId);
+		if (dataEntityField!=null && dataEntityField.getName()!=null)
+			return dataEntityField.getName();
+		else
+			return fieldId;
+
 	}
 
 	// receives a batch of rows and convert them into csv row that is written to the given output stream. Used by the export data query method
@@ -305,7 +350,9 @@ public class ApiController extends BaseController {
 			StringBuilder sb = new StringBuilder();
 			for (String field : fields) {
 				// convert the field to text
-				Object value = row.get(field);
+				String fieldName = (field.contains(".")? field.substring(field.indexOf(".")+1): field);
+
+				Object value = row.get(fieldName);
 				String strValue = getValueAsString(sdf, field, value);
 
 				sb.append(escapeValue(strValue));
