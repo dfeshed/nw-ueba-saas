@@ -307,9 +307,8 @@ public class ApiController extends BaseController {
 				// convert the field to text
 				Object value = row.get(field);
 				String strValue = getValueAsString(sdf, field, value);
-				strValue.replaceAll(delimiter, "");
 
-				sb.append(strValue);
+				sb.append(escapeValue(strValue));
 				sb.append(delimiter);
 			}
 			// get rid of the last delimiter char (this does not copy the inner array as opposed to deleteCharAt)
@@ -317,6 +316,24 @@ public class ApiController extends BaseController {
 
 			output.println(sb.toString());
 		}
+	}
+
+	/**
+	 * Escapes string value of a field to be used in csv.
+	 * 1. If the value contains a comma, newline or double quote, then the String value should be returned enclosed in double quotes.
+	 * 2. Any double quote characters in the value should be escaped with another double quote.
+	 * 3. If the value does not contain a comma, newline or double quote, then the String value should be returned unchanged.
+	 */
+	private String escapeValue(String value) {
+		boolean encloseInQuotes = ( value.contains(",") || value.contains("\n") || value.contains("\"") );
+
+		// escape double quotes with additional double quotes
+		value = value.replaceAll("\"", "\"\"");
+
+		if (encloseInQuotes)
+			return String.format("\"%s\"", value);
+		else
+			return  value;
 	}
 
 	/**
