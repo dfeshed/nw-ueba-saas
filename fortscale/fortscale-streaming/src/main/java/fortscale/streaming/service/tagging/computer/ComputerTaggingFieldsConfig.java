@@ -79,7 +79,7 @@ public class ComputerTaggingFieldsConfig {
 	}
 
 	public boolean runClustering(){
-		return !StringUtils.isEmpty(getClassificationField());
+		return !StringUtils.isEmpty(getClusteringField());
 	}
 
 	public boolean runIsSensitiveMachine(){
