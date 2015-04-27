@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -145,27 +146,45 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
             sb.append(mySqlFieldGenerator.generateSql(conditionField.getField(), dataQueryDTO, false, mapToColumn));
             sb.append(" ");
 
-            if (operator.requiresValue && conditionField.getValue() == null && conditionField.getValueField() == null)
+            if (operator.requiresValue && conditionField.getValue() == null && conditionField.getValueField() == null) {
                 throw new InvalidQueryException("Can't create MySQL query, the " + conditionField.getOperator().name() + " operator requires a value, but none was specified.");
+            }
+            //when the column is a string with tokens(s) we do not need to add the value afterwards, but rather replace it with the token(s)
+            if (conditionField.getValue() != null && dataEntitiesConfig.getFieldIsTokenized(conditionField.getField().getEntity(), conditionField.getField().getId())){
+                sb = replaceTokens(sb, conditionField.getValue());
+            } else {
+                sb.append(operator.sqlOperator);
+                sb.append(" ");
 
-            sb.append(operator.sqlOperator);
-            sb.append(" ");
+                String entityId = conditionField.getField().getEntity();
+                if (entityId == null)
+                    entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
-            String entityId = conditionField.getField().getEntity();
-            if (entityId == null)
-                entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
-
-            if (conditionField.getValueField() != null)
-                sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, true));
-            else {
-                // The operator might need to add something to the value:
-                QueryValueType type = dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn);
-                String value = operator.getOperatorValue(mySqlValueGenerator, conditionField.getValue(), type);
-                sb.append(value);
+                if (conditionField.getValueField() != null)
+                    sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, true));
+                else {
+                    // The operator might need to add something to the value:
+                    QueryValueType type = dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn);
+                    String value = operator.getOperatorValue(mySqlValueGenerator, conditionField.getValue(), type);
+                    sb.append(value);
+                }
             }
         }
         sb.append(")");
         return sb.toString();
+    }
+
+    /**
+     * replacing a token inside a column expression.
+     * The token can be multiple values and then multiple tokens. E.g., date between two values
+     * @param sb
+     * @param tokenArray
+     * @return
+     */
+    private StringBuilder replaceTokens(StringBuilder sb, String tokenArray) {
+        String[] tokens = tokenArray.split(",");
+        String message = MessageFormat.format(sb.toString(), tokens);
+        return new StringBuilder(message);
     }
 
     public List<ConditionField> getPartitionConditionFields(PartitionStrategy partitionStrategy, ConditionField condition){
