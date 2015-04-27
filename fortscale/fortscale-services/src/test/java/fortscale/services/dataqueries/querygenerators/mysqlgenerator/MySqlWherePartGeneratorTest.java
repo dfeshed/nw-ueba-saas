@@ -61,6 +61,8 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 		when(dataEntitiesConfig.getFieldType(any(String.class), eq("user_name"),any(Boolean.class))).thenReturn(QueryValueType.STRING);
 		when(dataEntitiesConfig.getFieldType(any(String.class), eq("date_time_unix"),any(Boolean.class))).thenReturn(QueryValueType.TIMESTAMP);
 		when(dataEntitiesConfig.getFieldType(any(String.class), eq("event_time_utc"),any(Boolean.class))).thenReturn(QueryValueType.TIMESTAMP);
+		when(dataEntitiesConfig.getFieldColumn(any(String.class), eq("session_time_utc"))).thenReturn("start_time BETWEEN {0} AND {1} OR end_time BETWEEN {0} AND {1}");
+		when(dataEntitiesConfig.getFieldIsTokenized(eq("vpn_session"), eq("session_time_utc"))).thenReturn(true);
 
 
 	}
@@ -79,6 +81,14 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 			throws Exception {
 		String sqlStr = mySqlWherePartGenerator.generateQueryPart(complexWhereDTO);
 		String expectedString = "WHERE (entity.yearmonthday >= 20141024) AND (entity.yearmonthday <= 20141026) AND ((entity.date_time_unix >= 1414184400) AND (entity.date_time_unix <= 1414360799) AND (entity.eventscore IN ( 50 , 70 )) AND (entity.date_time_unix IN ( \"my_user_name\" )) AND (entity.date_time_unix BETWEEN  \"my_user_name1\" AND \"my_user_name2\" ) AND (entity.date_time_unix BETWEEN  1414360799 AND 1414360800 ) AND (entity.date_time_unix LIKE \"%my_user_name\") AND (entity.date_time_unix LIKE \"my_user_name%\") AND (entity.date_time_unix LIKE \"%my_user_name%\") AND (entity.eventscore IS NOT NULL  AND entity.eventscore != '' ) AND (entity.eventscore IS NULL  OR entity.eventscore ='' ))";
+		assertEquals("SQL Where part for complexWhereDTO" , expectedString, sqlStr);
+	}
+
+	@Test
+	public void mySqlWherePartGenerator_tokenize_values_in_expression()
+			throws Exception {
+		String sqlStr = mySqlWherePartGenerator.generateQueryPart(tokenizedExpression);
+		String expectedString = "WHERE ((entity.start_time BETWEEN 1427407200 AND 1430168399 OR end_time BETWEEN 1427407200 AND 1430168399 ) AND (entity.date_time_unix >= 50))";
 		assertEquals("SQL Where part for complexWhereDTO" , expectedString, sqlStr);
 	}
 

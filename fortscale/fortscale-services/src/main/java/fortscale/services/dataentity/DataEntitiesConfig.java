@@ -488,6 +488,13 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
                 }
                 field.setLogicalOnly(isLogicalOnly);
 
+                Boolean isTokenized = fieldConfig.isTokenized();
+                if (isTokenized == null){
+                    String isTokenizedStr = getExtendableValue(entityId, "field", fieldId, "is_tokenized");
+                    isTokenized = isTokenizedStr != null && isTokenizedStr.equalsIgnoreCase("true");
+                    fieldConfig.setIsTokenized(isTokenized);
+                }
+                field.setTokenized(isTokenized);
 
 				//in case that its user entity - get the ShowOnlyForUser properite
 				//this property will mark that this field suppose to be shown only at User
@@ -678,6 +685,10 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
 
     public Boolean getFieldIsLogicalOnly(String entityId, String fieldId) throws InvalidQueryException{
         return getFieldFlag(DataEntityFieldConfig.IS_LOGICAL_ONLY, entityId, fieldId);
+    }
+
+    public Boolean getFieldIsTokenized(String entityId, String fieldId) throws InvalidQueryException{
+        return getFieldFlag(DataEntityFieldConfig.IS_TOKENIZED, entityId, fieldId);
     }
 
     public Boolean getFieldIsExplicit(String entityId, String fieldId) throws InvalidQueryException{

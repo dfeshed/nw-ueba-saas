@@ -22,6 +22,7 @@ public class DataEntityFieldConfig {
 	private String shownForSpecificEntity;
 
     public static final String IS_LOGICAL_ONLY = "is_logical_only";
+    public static final String IS_TOKENIZED = "is_tokenized";
     public static final String EXPLICIT = "explicit";
     public static final String SEARCHABLE = "searchable";
 
@@ -76,6 +77,14 @@ public class DataEntityFieldConfig {
 
     public void setLogicalOnly(Boolean logicalOnly) {
         flags.put(IS_LOGICAL_ONLY, logicalOnly);
+    }
+
+    public Boolean isTokenized() {
+        return flags.get(IS_TOKENIZED);
+    }
+
+    public void setIsTokenized(Boolean tokenized) {
+        flags.put(IS_TOKENIZED, tokenized);
     }
 
     public Boolean isExplicit(){
