@@ -32,6 +32,11 @@ public class DataEntityField implements Comparable<DataEntityField> {
     private Boolean logicalOnly = false;
 
     /**
+     * Whether the value of a SQL expression is passed via token and should be parsed this way
+     */
+    private Boolean tokenized = false;
+
+    /**
      * Flag that indicates that this field can be searched by the front-end, to be used by autocomplete or other such components.
      */
     private Boolean searchable = false;
@@ -97,6 +102,14 @@ public class DataEntityField implements Comparable<DataEntityField> {
 
     public void setLogicalOnly(Boolean logicalOnly) {
         this.logicalOnly = logicalOnly;
+    }
+
+    public Boolean isTokenized() {
+        return tokenized;
+    }
+
+    public void setTokenized(Boolean tokenized) {
+        this.tokenized = tokenized;
     }
 
     public Boolean isSearchable() {

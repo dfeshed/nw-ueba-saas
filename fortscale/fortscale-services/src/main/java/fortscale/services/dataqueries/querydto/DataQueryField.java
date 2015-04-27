@@ -13,6 +13,7 @@ public class DataQueryField {
     private String entity;
     private String value;
     private Boolean logicalOnly;
+    private Boolean tokenized;
     private Boolean allFields;
 
     private FieldFunction func;
@@ -53,6 +54,14 @@ public class DataQueryField {
 
     public void setLogicalOnly(Boolean logicalOnly) {
         this.logicalOnly = logicalOnly;
+    }
+
+    public Boolean isTokenized() {
+        return tokenized;
+    }
+
+    public void setTokenized(Boolean tokenized) {
+        this.tokenized = tokenized;
     }
 
     public Boolean isAllFields() {
