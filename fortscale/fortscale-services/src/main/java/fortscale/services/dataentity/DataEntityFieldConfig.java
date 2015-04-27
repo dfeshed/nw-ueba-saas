@@ -19,6 +19,7 @@ public class DataEntityFieldConfig {
     private String joinFrom;
     private String joinTo;
     private String format;
+    private List<String> valueList;
 	private String shownForSpecificEntity;
 
     public static final String IS_LOGICAL_ONLY = "is_logical_only";
@@ -99,7 +100,13 @@ public class DataEntityFieldConfig {
         return flags.get(SEARCHABLE);
     }
 
+    public List<String> getValueList() {
+        return valueList;
+    }
 
+    public void setValueList(List<String> valueList) {
+        this.valueList = valueList;
+    }
 
     public void setSearchable(Boolean searchable){
         flags.put(SEARCHABLE, searchable);
