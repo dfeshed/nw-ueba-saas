@@ -456,6 +456,22 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
                 }
                 field.setFormat(format);
 
+
+                List<String> valueList = fieldConfig.getValueList();
+                if (valueList == null){
+                    String valueListStr = getExtendableValue(entityId, "field", fieldId, "valueList");
+                    if (valueListStr != null){
+                        valueList = new ArrayList<String>();
+                        String[] valueListArr = valueListStr.split("\\s*,[,\\s]*");
+                        for(String value: valueListArr){
+                            valueList.add(value);
+                        }
+                    }
+                    fieldConfig.setValueList(valueList);
+                }
+                field.setValueList(valueList);
+
+
                 String joinFrom = fieldConfig.getJoinFrom();
                 if (joinFrom == null){
                     joinFrom = getExtendableValue(entityId, "field", fieldId, "joinFrom");

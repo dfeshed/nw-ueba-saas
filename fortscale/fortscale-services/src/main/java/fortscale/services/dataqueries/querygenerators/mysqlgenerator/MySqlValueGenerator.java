@@ -25,6 +25,8 @@ public class MySqlValueGenerator {
         switch (type){
             case STRING:
                 return getStringValue(value);
+            case SELECT:
+            return getStringValue(value);
             case DATE_TIME:
                 long timestamp = new Long(value);
                 Date date = new Date(TimestampUtils.convertToMilliSeconds(timestamp));

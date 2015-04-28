@@ -14,6 +14,11 @@ public class DataEntityField implements Comparable<DataEntityField> {
     private String format;
 
     /**
+     * for fields with close list of values, displayed in a select input
+     */
+    private List<String> valueList;
+
+    /**
      * A string key for defining directional links between entities. A joinFrom key should match a joinTo key in another entity's field.
      * When a match is found, it means that a JOIN operation is possible between those entities, on those fields.
      * The directionality exists to retain some control on which entities can be joined.
@@ -118,6 +123,14 @@ public class DataEntityField implements Comparable<DataEntityField> {
 
     public void setSearchable(Boolean searchable) {
         this.searchable = searchable;
+    }
+
+    public List<String> getValueList() {
+        return valueList;
+    }
+
+    public void setValueList(List<String> valueList) {
+        this.valueList = valueList;
     }
 
     public int getRank() {
