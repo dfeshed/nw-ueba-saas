@@ -3,6 +3,7 @@ package fortscale.utils.actdir;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -58,6 +59,7 @@ public class ADParser {
 	
 	public Date parseDate(String dateString) throws ParseException {
 		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
+		pattern.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return pattern.parse(dateString);
 	}
 
