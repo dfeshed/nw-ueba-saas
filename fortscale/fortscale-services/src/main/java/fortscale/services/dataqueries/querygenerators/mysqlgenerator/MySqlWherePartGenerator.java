@@ -1,20 +1,19 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
-
 import fortscale.services.dataentity.QueryValueType;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
+import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators.MySqlOperator;
 import fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators.MySqlOperatorsList;
+import fortscale.utils.hdfs.partition.PartitionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
-
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Generate the "where" part of the query in MySql
@@ -172,7 +171,7 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
 
 
                 if (isConditionField)
-                    sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, true));
+                    sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, false));
                 else {
                     // The operator might need to add something to the value:
                     String value = operator.getOperatorValue(mySqlValueGenerator, conditionField.getValue(), type, enforcefiledValueToLowererCase);
