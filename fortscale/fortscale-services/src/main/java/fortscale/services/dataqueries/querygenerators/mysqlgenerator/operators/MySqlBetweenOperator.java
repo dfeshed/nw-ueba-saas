@@ -16,19 +16,19 @@ public class MySqlBetweenOperator extends MySqlOperator {
     }
 
     @Override
-    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type) {
+    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type, boolean enforcefiledValueToLowererCase) {
         if (value != null) {
             String[] valuesArray = value.split(",");
             if (valuesArray != null && valuesArray.length == 2) {
                 StringBuilder sb = new StringBuilder(" ");
                 Arrays.sort(valuesArray, new MySqlValueComparator(type));
-                sb.append(super.getOperatorValue(mySqlValueGenerator, valuesArray[0], type));
+                sb.append(super.getOperatorValue(mySqlValueGenerator, valuesArray[0], type, enforcefiledValueToLowererCase));
                 sb.append(" AND ");
-                sb.append(super.getOperatorValue(mySqlValueGenerator, valuesArray[1], type));
+                sb.append(super.getOperatorValue(mySqlValueGenerator, valuesArray[1], type, enforcefiledValueToLowererCase));
                 sb.append(" ");
                 return sb.toString();
             }
         }
-        return super.getOperatorValue(mySqlValueGenerator, value, type);
+        return super.getOperatorValue(mySqlValueGenerator, value, type, enforcefiledValueToLowererCase);
     }
 }

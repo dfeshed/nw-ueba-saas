@@ -15,7 +15,7 @@ import java.util.Date;
 public class MySqlValueGenerator {
     final static SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public String generateSql(String value, QueryValueType type){
+    public String generateSql(String value, QueryValueType type, boolean enforcefiledValueToLowererCase){
         if (value == null)
             return "null";
 
@@ -24,20 +24,24 @@ public class MySqlValueGenerator {
 
         switch (type){
             case STRING:
-                return getStringValue(value);
+                return getStringValue(value, enforcefiledValueToLowererCase);
             case SELECT:
-            return getStringValue(value);
+                return getStringValue(value, enforcefiledValueToLowererCase);
             case DATE_TIME:
                 long timestamp = new Long(value);
                 Date date = new Date(TimestampUtils.convertToMilliSeconds(timestamp));
                 String formattedDate = DATE_TIME_FORMAT.format(date);
-                return getStringValue(formattedDate);
+                return getStringValue(formattedDate, false);
             default:
                 return value;
         }
     }
 
-    private String getStringValue(String str){
+    private String getStringValue(String str, boolean enforcefiledValueToLowererCase){
+        //use enforcefiledValueToLowererCase to check if we need to convert the value to lower case before adding it to query
+        if (enforcefiledValueToLowererCase){
+            str = str.toLowerCase();
+        }
         return new StringBuilder("\"").append(str).append("\"").toString();
     }
 }

@@ -46,7 +46,7 @@ public class MySqlGroupByPartGeneratorTest extends DataQueryGeneratorTest {
         dataQueryDtoWithGroupByLogicalField.setGroupBy(groupBy);
 
 		for (DataQueryField dataQueryField : dataQueryDTO2.getGroupBy()) {
-			Mockito.when(mySqlFieldGenerator.generateSql(dataQueryField, dataQueryDTO2)).thenReturn(dataQueryField.getId());
+			Mockito.when(mySqlFieldGenerator.generateSql(dataQueryField, dataQueryDTO2, false, false)).thenReturn(dataQueryField.getId());
 		}
 
         DataEntity kerberosLoginsEntity = new DataEntity();

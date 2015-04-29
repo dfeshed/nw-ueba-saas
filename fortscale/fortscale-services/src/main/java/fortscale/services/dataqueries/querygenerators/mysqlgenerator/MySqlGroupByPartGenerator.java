@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import fortscale.services.dataentity.*;
 import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
@@ -48,7 +47,7 @@ public class MySqlGroupByPartGenerator extends QueryPartGenerator {
                         if (fieldConfig.isLogicalOnly())
                             fieldsSql.add(fieldConfig.getId());
                         else
-                            fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO));
+                            fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO,  false, false));
                     }
                     catch(Exception error){
                         throw new InvalidQueryException(error.getMessage(), error);

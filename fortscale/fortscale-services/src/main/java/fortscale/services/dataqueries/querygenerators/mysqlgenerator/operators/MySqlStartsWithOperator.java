@@ -14,7 +14,7 @@ public class MySqlStartsWithOperator extends MySqlOperator {
     }
     
     @Override
-    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type){
-        return super.getOperatorValue(mySqlValueGenerator, value + "%", type);
+    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type, boolean enforcefiledValueToLowererCase){
+        return super.getOperatorValue(mySqlValueGenerator, value + "%", type, enforcefiledValueToLowererCase);
     }
 }

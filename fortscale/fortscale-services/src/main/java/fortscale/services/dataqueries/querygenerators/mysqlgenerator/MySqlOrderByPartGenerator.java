@@ -5,7 +5,6 @@ import fortscale.services.dataqueries.querydto.DataQueryDTO;
 import fortscale.services.dataqueries.querydto.QuerySort;
 import fortscale.services.dataqueries.querygenerators.QueryPartGenerator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class MySqlOrderByPartGenerator extends QueryPartGenerator {
         for(QuerySort sort: dataQueryDTO.getSort()){
             String field = sort.getField().getAlias();
             if (field == null)
-                field = mySqlFieldGenerator.generateSql(sort.getField(), dataQueryDTO);
+                field = mySqlFieldGenerator.generateSql(sort.getField(), dataQueryDTO,  false, false);
 
             sorts.add( field+ (sort.getDirection() != null ? " " + sort.getDirection().name() : ""));
         }

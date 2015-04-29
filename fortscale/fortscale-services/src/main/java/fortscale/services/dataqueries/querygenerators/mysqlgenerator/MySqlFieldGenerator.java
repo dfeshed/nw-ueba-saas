@@ -16,6 +16,10 @@ import java.util.List;
  */
 @Component
 public class MySqlFieldGenerator {
+
+    private final String LOWER_PREFIX = "lower(";
+    private final String LOWER_POSTFIX = ")";
+
     @Autowired
     private DataEntitiesConfig dataEntitiesConfig;
 
@@ -28,7 +32,7 @@ public class MySqlFieldGenerator {
     @Autowired
     DataQueryDtoHelper dataQueryDtoHelper;
 
-    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId, Boolean mapToColumn) throws InvalidQueryException {
+    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId, Boolean mapToColumn,  boolean enforcefiledValueToLowererCase) throws InvalidQueryException {
         StringBuilder fieldSB = new StringBuilder();
 
         if (field.getValue() != null)
@@ -38,7 +42,7 @@ public class MySqlFieldGenerator {
         else if (field.isAllFields() != null && field.isAllFields() == true)
             addFieldAllFields(field, dataQueryDTO, fieldSB);
         else
-            addRegularField(field, dataQueryDTO, aliasAsId, mapToColumn, fieldSB);
+            addRegularField(field, dataQueryDTO, aliasAsId, mapToColumn, fieldSB, enforcefiledValueToLowererCase);
 
         return fieldSB.toString();
     }
@@ -61,7 +65,7 @@ public class MySqlFieldGenerator {
         if (field.getAlias() == null)
             throw new InvalidQueryException(String.format("An alias should be specified for field value '%s'.", field.getValue()));
 
-        fieldSB.append(mySqlValueGenerator.generateSql(field.getValue(), field.getValueType()));
+        fieldSB.append(mySqlValueGenerator.generateSql(field.getValue(), field.getValueType(), false));
         fieldSB.append(" as '").append(field.getAlias()).append("'");
     }
 
@@ -125,16 +129,22 @@ public class MySqlFieldGenerator {
      * @param aliasAsId If true, the field's SQL is rendered as '[value] as [fieldId]'. This is required to return logical field names by the API.
      * @param mapToColumn If true, maps a field to a physical column. This should be usually true, since we want to map logical fields to physical ones.
      * @param fieldSB
+     * @param  enforcefiledValueToLowererCase - if true, the query will wrap the column name with "lower(column_name)"
      * @throws InvalidQueryException
      */
-    private void addRegularField(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId, Boolean mapToColumn, StringBuilder fieldSB) throws InvalidQueryException{
+    private void addRegularField(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId, Boolean mapToColumn, StringBuilder fieldSB, boolean enforcefiledValueToLowererCase) throws InvalidQueryException{
     	if (dataQueryDTO.getSubQuery() != null)
             aliasAsId = mapToColumn = false;
 
         String entityId = field.getEntity();
-        if (entityId == null)
-            entityId = dataQueryDTO.getEntities()[0];
+        //Add the "lower(" before the entity name
+        if (enforcefiledValueToLowererCase){
+            fieldSB.append(LOWER_PREFIX);
+        }
 
+        if (entityId == null) {
+            entityId = dataQueryDTO.getEntities()[0];
+        }
         addFieldTable(entityId, field.getId(), fieldSB);
 
         String columnName;
@@ -151,7 +161,13 @@ public class MySqlFieldGenerator {
         else
             columnName = field.getId();
 
+
+
         fieldSB.append(columnName);
+        //End the "lower(entity.column" with ")".
+        if (enforcefiledValueToLowererCase){
+            fieldSB.append(LOWER_POSTFIX);
+        }
 
         if (field.getAlias() != null)
             fieldSB.append(" as '").append(field.getAlias()).append("'");
@@ -159,13 +175,10 @@ public class MySqlFieldGenerator {
             fieldSB.append(" as '").append(field.getId()).append("'");
     }
 
-    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId) throws InvalidQueryException{
-        return generateSql(field, dataQueryDTO, aliasAsId, true);
+    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO, Boolean aliasAsId,  boolean enforcefiledValueToLowererCase) throws InvalidQueryException{
+        return generateSql(field, dataQueryDTO, aliasAsId, true, enforcefiledValueToLowererCase);
     }
-    
-    public String generateSql(DataQueryField field, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
-        return generateSql(field, dataQueryDTO, false, true);
-    }
+
 
     public void setDataEntitiesConfig(DataEntitiesConfig dataEntitiesConfig){
         this.dataEntitiesConfig = dataEntitiesConfig;

@@ -47,10 +47,10 @@ public class MySqlFieldGeneratorTest extends DataQueryGeneratorTest {
      * Tests a field that has allFields = true, which should return all the fields of its entity.
      */
     public void testAllFieldsField() throws Exception {
-        String sqlStrJoin = mySqlFieldGenerator.generateSql(allFields, joinDTO);
+        String sqlStrJoin = mySqlFieldGenerator.generateSql(allFields, joinDTO, false, false);
         String expectedString = entityTable + ".source_machine_column as 'source_machine', " + entityTable + ".event_time_column as 'event_time'";
         assertEquals("JOIN CLAUSE: Field SQL generator for all fields of an entity" , expectedString, sqlStrJoin);
-        String sqlStrNoJoin = mySqlFieldGenerator.generateSql(allFields,noJoinDTO);
+        String sqlStrNoJoin = mySqlFieldGenerator.generateSql(allFields,noJoinDTO, false, false);
         expectedString =  "source_machine_column as 'source_machine', event_time_column as 'event_time'";
         assertEquals("NO JOIN CLAUSE: Field SQL generator for all fields of an entity" , expectedString, sqlStrNoJoin);
     }

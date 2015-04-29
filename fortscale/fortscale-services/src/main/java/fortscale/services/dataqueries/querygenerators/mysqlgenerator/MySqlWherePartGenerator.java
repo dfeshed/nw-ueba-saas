@@ -70,7 +70,7 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
         if (partitionStrategy == null)
             return "";
 
-        String partitionConditions =  createPartitionSql(partitionStrategy, dataQueryDTO.getConditions(), entityId,dataQueryDTO);
+        String partitionConditions =  createPartitionSql(partitionStrategy, dataQueryDTO.getConditions(), entityId, dataQueryDTO);
 
 
         return partitionConditions;
@@ -143,7 +143,19 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
                 sb.append(" ").append(operatorList.getLogicalOperator().toString()).append(" ");
             }
             firstElement = false;
-            sb.append(mySqlFieldGenerator.generateSql(conditionField.getField(), dataQueryDTO, false, mapToColumn));
+            //Calculate enforcefiledValueToLowererCase -
+            //Columns names and string values should be translated to lower case if the condition is of the form of
+            //<column_name> = value  and also the value could be case sensitive (type is string, select, etc..)
+            String entityId = conditionField.getField().getEntity();
+            if (entityId == null) {
+                entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
+            }
+            QueryValueType type = dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn);
+
+            boolean isConditionField = (conditionField.getValueField() != null);
+
+            boolean enforcefiledValueToLowererCase = !isConditionField  && type !=null && type.isCaseSensitive();
+            sb.append(mySqlFieldGenerator.generateSql(conditionField.getField(), dataQueryDTO, false, mapToColumn, enforcefiledValueToLowererCase));
             sb.append(" ");
 
             if (operator.requiresValue && conditionField.getValue() == null && conditionField.getValueField() == null) {
@@ -156,16 +168,12 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
                 sb.append(operator.sqlOperator);
                 sb.append(" ");
 
-                String entityId = conditionField.getField().getEntity();
-                if (entityId == null)
-                    entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
-                if (conditionField.getValueField() != null)
+                if (isConditionField)
                     sb.append(mySqlFieldGenerator.generateSql(conditionField.getValueField(), dataQueryDTO, false, true));
                 else {
                     // The operator might need to add something to the value:
-                    QueryValueType type = dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn);
-                    String value = operator.getOperatorValue(mySqlValueGenerator, conditionField.getValue(), type);
+                    String value = operator.getOperatorValue(mySqlValueGenerator, conditionField.getValue(), type, enforcefiledValueToLowererCase);
                     sb.append(value);
                 }
             }
