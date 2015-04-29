@@ -132,7 +132,7 @@
         <property name="usernameNormalizer" ref="secUsernameNormalizer"/>
     </bean>
     <bean id="VpnUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
-        <property name="dropOnFail" value="${vpn.normalizedUser.fail.filter:false}"/>
+        <property name="dropOnFail" value="${vpn.normalizedUser.fail.filter:true}"/>
         <property name="usernameNormalizer" ref="vpnUsernameNormalizer"/>
     </bean>
     <bean id="SshUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.SshUsernameNormalizationService" scope="prototype">
