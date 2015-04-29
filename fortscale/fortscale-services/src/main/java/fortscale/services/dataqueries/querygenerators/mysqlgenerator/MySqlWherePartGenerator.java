@@ -152,6 +152,8 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
             }
             QueryValueType type = dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn);
 
+            //ConditionField - Compare given field to other field instead of comparing to given value.
+            //If ConditionField is false - we compare the given field to given value
             boolean isConditionField = (conditionField.getValueField() != null);
 
             boolean enforcefiledValueToLowererCase = !isConditionField  && type !=null && type.isCaseSensitive();
