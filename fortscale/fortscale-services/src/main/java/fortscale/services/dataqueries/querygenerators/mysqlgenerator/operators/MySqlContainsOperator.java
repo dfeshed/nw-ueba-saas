@@ -13,7 +13,7 @@ public class MySqlContainsOperator extends MySqlOperator {
         this.requiresValue = true;
     }
     @Override
-    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type){
-        return super.getOperatorValue(mySqlValueGenerator, "%" + value + "%", type);
+    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type, boolean enforcefiledValueToLowererCase){
+        return super.getOperatorValue(mySqlValueGenerator, "%" + value + "%", type, enforcefiledValueToLowererCase);
     }
 }

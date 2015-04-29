@@ -14,13 +14,13 @@ public class MySqlInOperator extends MySqlOperator {
     }
 
     @Override
-    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type){
+    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type, boolean enforcefiledValueToLowererCase){
         if (value != null) {
             String[] valuesArray = value.split(",");
             if (valuesArray != null && valuesArray.length > 0) {
                 StringBuilder sb = new StringBuilder("( ");
                 for (String singleValue : valuesArray) {
-                    sb.append(super.getOperatorValue(mySqlValueGenerator, singleValue, type));
+                    sb.append(super.getOperatorValue(mySqlValueGenerator, singleValue, type, enforcefiledValueToLowererCase));
                     sb.append(" , ");
                 }
                 sb.replace(sb.length()-3,sb.length(),"");
@@ -28,6 +28,6 @@ public class MySqlInOperator extends MySqlOperator {
                 return sb.toString();
             }
         }
-        return super.getOperatorValue(mySqlValueGenerator, value, type);
+        return super.getOperatorValue(mySqlValueGenerator, value, type, enforcefiledValueToLowererCase);
     }
 }

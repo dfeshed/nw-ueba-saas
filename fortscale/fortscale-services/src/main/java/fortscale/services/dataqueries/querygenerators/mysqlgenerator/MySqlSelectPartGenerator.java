@@ -35,7 +35,7 @@ public class MySqlSelectPartGenerator extends QueryPartGenerator {
 
         for (DataQueryField field : fields) {
             if (field != null)
-                fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO, true));
+                fieldsSql.add(mySqlFieldGenerator.generateSql(field, dataQueryDTO, true, false));
         }
 
         sb.append(joiner.join(fieldsSql));

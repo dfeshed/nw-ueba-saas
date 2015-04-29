@@ -1,6 +1,8 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataqueries.DataQueryGeneratorTest;
+import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querydto.QuerySort;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,9 +18,8 @@ public class MySqlOrderByPartGeneratorTest extends DataQueryGeneratorTest {
         generator = new MySqlOrderByPartGenerator();
 
 		super.setUp();
-
 		for(QuerySort sort: dataQueryDTO1.getSort()){
-			Mockito.when(mySqlFieldGenerator.generateSql(sort.getField(), dataQueryDTO1)).thenReturn(sort.getField().getId());
+			Mockito.when(mySqlFieldGenerator.generateSql(Mockito.eq(sort.getField()), Mockito.eq(dataQueryDTO1), Mockito.eq(false), Mockito.eq(false))).thenReturn(sort.getField().getId());;
 		}
 	}
 

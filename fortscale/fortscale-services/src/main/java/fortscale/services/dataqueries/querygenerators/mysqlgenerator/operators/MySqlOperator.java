@@ -24,12 +24,16 @@ public class MySqlOperator{
      */
     public Boolean requiresValue;
 
+
+
     /**
      * Gets an SQL value and returns the value with anything the operator should add. For example, the 'contains' operator should add '%' before and after the value.
      * @param value
+     * @param type - the type of the value of the field
+     * @param enforcefiledValueToLowererCase - if true, the value generator will convert the value to lower case
      * @return
      */
-    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type){
-        return requiresValue ? mySqlValueGenerator.generateSql(value,type) : "" ;
+    public String getOperatorValue(MySqlValueGenerator mySqlValueGenerator, String value, QueryValueType type, boolean enforcefiledValueToLowererCase){
+        return requiresValue ? mySqlValueGenerator.generateSql(value,type, enforcefiledValueToLowererCase) : "" ;
     }
 }
