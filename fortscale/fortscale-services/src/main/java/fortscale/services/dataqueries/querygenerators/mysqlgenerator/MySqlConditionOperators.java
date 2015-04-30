@@ -1,5 +1,6 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
+import fortscale.services.dataentity.QueryValueType;
 import fortscale.services.dataqueries.querydto.LogicalOperator;
 import fortscale.services.dataqueries.querydto.QueryOperator;
 import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
@@ -8,7 +9,6 @@ import fortscale.services.dataqueries.querygenerators.mysqlgenerator.operators.*
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Yossi on 04/11/2014.
@@ -30,8 +30,10 @@ public class MySqlConditionOperators {
         operatorsList.put(QueryOperator.startsWith, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlStartsWithOperator())), null));
         operatorsList.put(QueryOperator.endsWith, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlEndsWithOperator())), null));
         operatorsList.put(QueryOperator.contains, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlContainsOperator())), null));
-        operatorsList.put(QueryOperator.hasValue, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("IS NOT NULL", false), new MySqlOperator("!= ''", false))), LogicalOperator.AND));
-        operatorsList.put(QueryOperator.hasNoValue, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("IS NULL", false), new MySqlOperator("=''", false))), LogicalOperator.OR));
+        operatorsList.put(QueryOperator.hasValue, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("IS NOT NULL", false))), null));
+        operatorsList.put(QueryOperator.hasNoValue, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("IS NULL", false))), null));
+        operatorsList.put(QueryOperator.stringHasValue, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("IS NOT NULL", false), new MySqlOperator("!= ''", false))), LogicalOperator.AND));
+        operatorsList.put(QueryOperator.stringHasNoValue, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("IS NULL", false), new MySqlOperator("=''", false))), LogicalOperator.OR));
     }
 
     /**
@@ -40,7 +42,15 @@ public class MySqlConditionOperators {
      * @return MySqlOperatorsList: list of {@link MySqlOperatorsList} that holds SQL condition expression
      * @throws InvalidQueryException
      */
-    public static MySqlOperatorsList getOperator(QueryOperator operator) throws InvalidQueryException {
+    public static MySqlOperatorsList getOperator(QueryOperator operator,QueryValueType queryValueType) throws InvalidQueryException {
+        //If the field type is textual (string/select) and the operator is exists/notExists (need to expend for looking not only for null but also for empty string)
+        if (QueryValueType.STRING.equals(queryValueType) || QueryValueType.SELECT.equals(queryValueType)) {
+            if (QueryOperator.hasValue.equals(operator)) {
+                operator = QueryOperator.stringHasValue;
+            } else if (QueryOperator.hasNoValue.equals(operator)) {
+                operator = QueryOperator.stringHasNoValue;
+            }
+        }
         MySqlOperatorsList mySqlOperatorList = operatorsList.get(operator);
         //The mySqlOperatorList should not be null or empty. If there is more than one entry, then the LogicalOperator should not be null
 		if (mySqlOperatorList == null || mySqlOperatorList.getMySqlOperators().size() == 0

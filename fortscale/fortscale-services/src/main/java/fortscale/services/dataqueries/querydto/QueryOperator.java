@@ -13,5 +13,7 @@ public enum QueryOperator {
     startsWith, endsWith, contains,
     hasValue,
     hasNoValue,
+    stringHasValue,
+    stringHasNoValue,
     regex
 }

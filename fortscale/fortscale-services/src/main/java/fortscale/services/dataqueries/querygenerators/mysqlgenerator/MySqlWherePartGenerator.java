@@ -135,7 +135,7 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
         StringBuilder sb = new StringBuilder();
         sb.append("(");
 
-        MySqlOperatorsList operatorList = MySqlConditionOperators.getOperator(conditionField.getOperator());
+        MySqlOperatorsList operatorList = MySqlConditionOperators.getOperator(conditionField.getOperator(),conditionField.getValueType());
         boolean firstElement = true;
         for (MySqlOperator operator : operatorList.getMySqlOperators()){
             if (!firstElement){
