@@ -43,6 +43,7 @@ public class MySqlConditionOperators {
      * @throws InvalidQueryException
      */
     public static MySqlOperatorsList getOperator(QueryOperator operator,QueryValueType queryValueType) throws InvalidQueryException {
+        //If the field type is textual (string/select) and the operator is exists/notExists (need to expend for looking not only for null but also for empty string)
         if (QueryValueType.STRING.equals(queryValueType) || QueryValueType.SELECT.equals(queryValueType)) {
             if (QueryOperator.hasValue.equals(operator)) {
                 operator = QueryOperator.stringHasValue;
