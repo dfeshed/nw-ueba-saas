@@ -1,19 +1,18 @@
 package fortscale.web.beans;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Configurable(preConstruction = true, autowire=Autowire.BY_NAME, dependencyCheck=true)
 public class UserDetailsBean implements Serializable{
@@ -126,7 +125,11 @@ public class UserDetailsBean implements Serializable{
 	public Long getAdAcountExpires(){
 		return user.getAdInfo().getAccountExpires() != null ? user.getAdInfo().getAccountExpires().getTime() : null;
 	}
-	
+
+	public Long getAdDisabledOn(){
+		return user.getAdInfo().getDisableAccountTime() != null ? user.getAdInfo().getDisableAccountTime().toDate().getTime() : null;
+	}
+
 	public String getLogonHours(){
 		return user.getAdInfo().getLogonHours();
 	}
