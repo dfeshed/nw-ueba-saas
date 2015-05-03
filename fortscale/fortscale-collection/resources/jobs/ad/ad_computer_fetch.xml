@@ -36,7 +36,7 @@
 				<group>AD</group>
 				<job-name>Computer_Fetch</job-name>
 				<job-group>AD</job-group>
- 				<cron-expression>0 40 * * * ?</cron-expression>
+ 				<cron-expression>0 40 0/12 * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
