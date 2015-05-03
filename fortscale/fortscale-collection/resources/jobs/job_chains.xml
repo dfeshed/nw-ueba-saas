@@ -66,6 +66,16 @@
             <group>SecurityEvents</group>
         </first>
         <second>
+            <name>Comp_ETL</name>
+            <group>SecurityEvents</group>
+        </second>
+    </chain>
+    <chain>
+        <first>
+            <name>Comp_ETL</name>
+            <group>SecurityEvents</group>
+        </first>
+        <second>
             <name>ETL</name>
             <group>SecurityEvents</group>
         </second>
