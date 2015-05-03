@@ -1,15 +1,5 @@
 package fortscale.services.impl;
 
-import java.util.*;
-
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
-import fortscale.domain.analyst.ScoreWeight;
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
@@ -24,6 +14,14 @@ import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service("userScoreService")
 public class UserScoreServiceImpl implements UserScoreService{
@@ -127,30 +125,30 @@ public class UserScoreServiceImpl implements UserScoreService{
 				break;
 			}
 		}
-		
-		for(ScoreWeight scoreWeight: configurationService.getScoreConfiguration().getConfMap().values()){
-			String classifierId = scoreWeight.getId();
-			ClassifierScore classifierScore = user.getScore(classifierId);
-			if(classifierScore != null){
-				ScoreInfo latestScoreInfo = null;
-				for(ScoreInfo prevScoreInfo: classifierScore.getPrevScores()) {
-					if(dateTimeStart.isAfter(prevScoreInfo.getTimestampEpoc())) {
-						// skip classifier score which is before the time range
-						continue;
-					} else if(dateTimeEnd.isBefore(prevScoreInfo.getTimestampEpoc())) {
-						// skip classifier score which is after the time range
-						continue;
+
+		for(Classifier classifier: Classifier.values()){
+			if(!classifier.equals(Classifier.total)) {
+				String classifierId = classifier.getId();
+				ClassifierScore classifierScore = user.getScore(classifierId);
+				if(classifierScore != null){
+					ScoreInfo latestScoreInfo = null;
+					for(ScoreInfo prevScoreInfo: classifierScore.getPrevScores()) {
+						if(dateTimeStart.isAfter(prevScoreInfo.getTimestampEpoc())) {
+							// skip classifier score which is before the time range
+							continue;
+						} else if(dateTimeEnd.isBefore(prevScoreInfo.getTimestampEpoc())) {
+							// skip classifier score which is after the time range
+							continue;
+						}
+						// update the latest score info for that classifier
+						if ((latestScoreInfo==null) || (latestScoreInfo.getTimestampEpoc() < prevScoreInfo.getTimestampEpoc()))
+							latestScoreInfo = prevScoreInfo;
 					}
-					// update the latest score info for that classifier
-					if ((latestScoreInfo==null) || (latestScoreInfo.getTimestampEpoc() < prevScoreInfo.getTimestampEpoc()))
-						latestScoreInfo = prevScoreInfo;
-				}
-				if (latestScoreInfo!=null) {
-					// add the latest score info for the classifier into the results
-					Classifier classifier = classifierService.getClassifier(classifierId);
-					UserScore score = new UserScore(user.getId(), classifierId, classifier.getDisplayName(),
-							(int)Math.round(latestScoreInfo.getScore()), (int)Math.round(latestScoreInfo.getAvgScore()));
-					ret.put(classifierId, score);
+					if (latestScoreInfo!=null) {
+						// add the latest score info for the classifier into the results
+						UserScore score = new UserScore(user.getId(), classifierId, classifier.getDisplayName(), (int) Math.round(latestScoreInfo.getScore()), (int) Math.round(latestScoreInfo.getAvgScore()));
+						ret.put(classifierId, score);
+					}
 				}
 			}
 		}
