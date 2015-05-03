@@ -26,7 +26,7 @@ public class MySqlOrderByPartGenerator extends QueryPartGenerator {
             if (field == null)
                 field = mySqlFieldGenerator.generateSql(sort.getField(), dataQueryDTO,  false, false);
 
-            sorts.add( field+ (sort.getDirection() != null ? " " + sort.getDirection().name() : ""));
+            sorts.add( field+ (sort.getDirection() != null ? " " + sort.getDirection().name() : "") + " NULLS LAST ");
         }
 
         StringBuilder sb = new StringBuilder("ORDER BY ").append(joiner.join(sorts));

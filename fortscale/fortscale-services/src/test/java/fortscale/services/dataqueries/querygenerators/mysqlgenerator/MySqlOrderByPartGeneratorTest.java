@@ -1,8 +1,6 @@
 package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataqueries.DataQueryGeneratorTest;
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querydto.DataQueryField;
 import fortscale.services.dataqueries.querydto.QuerySort;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +26,7 @@ public class MySqlOrderByPartGeneratorTest extends DataQueryGeneratorTest {
 					throws Exception {
 
 		String sqlStr = generator.generateQueryPart(dataQueryDTO1);
-		String expectedString = "ORDER BY event_score DESC, event_time DESC";
+		String expectedString = "ORDER BY event_score DESC NULLS LAST , event_time DESC NULLS LAST ";
 		assertEquals("SQL order Part for DTO1" , expectedString, sqlStr);
 
 	}
