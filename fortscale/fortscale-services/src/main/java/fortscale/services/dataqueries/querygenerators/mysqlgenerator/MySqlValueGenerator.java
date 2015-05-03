@@ -2,6 +2,7 @@ package fortscale.services.dataqueries.querygenerators.mysqlgenerator;
 
 import fortscale.services.dataentity.QueryValueType;
 import fortscale.utils.TimestampUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -42,6 +43,8 @@ public class MySqlValueGenerator {
         if (enforcefiledValueToLowererCase){
             str = str.toLowerCase();
         }
+        //escape characters: (\), (/), (') and (") with preceding backslash (\)
+        str = StringEscapeUtils.escapeJavaScript(str);
         return new StringBuilder("\"").append(str).append("\"").toString();
     }
 }
