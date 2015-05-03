@@ -44,6 +44,7 @@ public class MySqlValueGenerator {
             str = str.toLowerCase();
         }
         //escape characters: (\), (/), (') and (") with preceding backslash (\)
+        // see: http://www.cloudera.com/content/cloudera/en/documentation/cloudera-impala/latest/topics/impala_literals.html#string_literals_unique_1
         str = StringEscapeUtils.escapeJavaScript(str);
         return new StringBuilder("\"").append(str).append("\"").toString();
     }
