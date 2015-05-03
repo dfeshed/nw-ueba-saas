@@ -135,27 +135,28 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
         StringBuilder sb = new StringBuilder();
         sb.append("(");
 
-        MySqlOperatorsList operatorList = MySqlConditionOperators.getOperator(conditionField.getOperator(),conditionField.getValueType());
+        //Calculate enforcefiledValueToLowererCase -
+        //Columns names and string values should be translated to lower case if the condition is of the form of
+        //<column_name> = value  and also the value could be case sensitive (type is string, select, etc..)
+        String entityId = conditionField.getField().getEntity();
+        if (entityId == null) {
+            entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
+        }
+        QueryValueType type = dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn);
+
+        //ConditionField - Compare given field to other field instead of comparing to given value.
+        //If ConditionField is false - we compare the given field to given value
+        boolean isConditionField = (conditionField.getValueField() != null);
+
+        boolean enforcefiledValueToLowererCase = !isConditionField  && type !=null && type.isCaseSensitive();
+
+        MySqlOperatorsList operatorList = MySqlConditionOperators.getOperator(conditionField.getOperator(),type);
         boolean firstElement = true;
         for (MySqlOperator operator : operatorList.getMySqlOperators()){
             if (!firstElement){
                 sb.append(" ").append(operatorList.getLogicalOperator().toString()).append(" ");
             }
             firstElement = false;
-            //Calculate enforcefiledValueToLowererCase -
-            //Columns names and string values should be translated to lower case if the condition is of the form of
-            //<column_name> = value  and also the value could be case sensitive (type is string, select, etc..)
-            String entityId = conditionField.getField().getEntity();
-            if (entityId == null) {
-                entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
-            }
-            QueryValueType type = dataEntitiesConfig.getFieldType(entityId, conditionField.getField().getId(), !mapToColumn);
-
-            //ConditionField - Compare given field to other field instead of comparing to given value.
-            //If ConditionField is false - we compare the given field to given value
-            boolean isConditionField = (conditionField.getValueField() != null);
-
-            boolean enforcefiledValueToLowererCase = !isConditionField  && type !=null && type.isCaseSensitive();
             sb.append(mySqlFieldGenerator.generateSql(conditionField.getField(), dataQueryDTO, false, mapToColumn, enforcefiledValueToLowererCase));
             sb.append(" ");
 
