@@ -19,7 +19,7 @@ public class MySqlConditionOperators {
 
     static{
         operatorsList.put(QueryOperator.equals, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("=", true))), null));
-        operatorsList.put(QueryOperator.notEquals, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("!=", true))), null));
+        operatorsList.put(QueryOperator.notEquals, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("!=", true),new MySqlOperator("IS NULL", false))), LogicalOperator.OR));
         operatorsList.put(QueryOperator.greaterThan, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator(">", true))), null));
         operatorsList.put(QueryOperator.greaterThanOrEquals, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator(">=", true))), null));
         operatorsList.put(QueryOperator.lesserThan, new MySqlOperatorsList(new ArrayList<MySqlOperator>(Arrays.asList(new MySqlOperator("<", true))), null));
