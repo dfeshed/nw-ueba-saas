@@ -239,17 +239,22 @@ public class ApiUserController extends BaseController{
 			@RequestParam(defaultValue="10") Integer limit,
 			@RequestParam(defaultValue="0") Integer tzShift,
 			Model model){
+
+
 		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
 		List<IUserScoreHistoryElement> userScores = new ArrayList<>();
 		int millisOffset = tzShift * 60 * 1000;
 		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
 		DateTime dateLimit = DateTime.now(dateTimeZone);
 		dateLimit = dateLimit.withTimeAtStartOfDay();
-		dateLimit = dateLimit.minusDays(limit);
+
+		//the day limit must be the start of the 6th day back (equivalnt to end of the 7th day)
+		dateLimit = dateLimit.minusDays(limit-1);
 		DateTime prevElementStartDay = null;
 		for(IUserScoreHistoryElement element: userServiceFacade.getUserScoresHistory(uid, classifierId, 0, limit+1)){
 			DateTime curElementStartDay = new DateTime(element.getDate().getTime(), dateTimeZone);
 			curElementStartDay = curElementStartDay.withTimeAtStartOfDay();
+
 			if(prevElementStartDay != null && curElementStartDay.isEqual(prevElementStartDay.getMillis())){
 				continue;
 			}
