@@ -1,27 +1,5 @@
 package fortscale.web.rest;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.User;
@@ -35,13 +13,17 @@ import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
-import fortscale.web.beans.DataBean;
-import fortscale.web.beans.DataListWrapperBean;
-import fortscale.web.beans.DataWarningsEnum;
-import fortscale.web.beans.FeatureBean;
-import fortscale.web.beans.UserDetailsBean;
-import fortscale.web.beans.UserMachinesBean;
-import fortscale.web.beans.UserSearchBean;
+import fortscale.web.beans.*;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 @Controller
 @RequestMapping("/api/user/**")
@@ -350,10 +332,10 @@ public class ApiUserController extends BaseController{
 			@PathVariable String uid,
 			@PathVariable String param,
 			@RequestParam(defaultValue="50") int minScore,
-			@RequestParam(defaultValue="14") int daysToGet,
+			@RequestParam(required = false) Long latestDate, @RequestParam(required = false) Long earliestDate,
 			@RequestParam(defaultValue="10") int maxValues) {
 		
-		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param, daysToGet, maxValues, minScore);
+		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param, latestDate,earliestDate, maxValues, minScore);
 
 		// convert the distribution properties to data bean
 		DataBean<Collection<PropertyEntry>> ret = new DataBean<Collection<PropertyEntry>>();

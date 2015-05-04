@@ -1,10 +1,10 @@
 package fortscale.domain.fe.dao;
 
-import java.util.Collection;
-import java.util.List;
-
 import fortscale.domain.fe.EventScore;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
+
+import java.util.Collection;
+import java.util.List;
 
 public interface EventScoreDAO {
 	public String getTableName();
@@ -29,7 +29,7 @@ public interface EventScoreDAO {
 	
 	public List<EventScore> getEventScores(String username, int daysBack, int limit);
 	
-	public List<EventsToMachineCount> getEventsToTargetMachineCount(String username, int daysBack, int minScore);
+	public List<EventsToMachineCount> getEventsToTargetMachineCount(String username, Long latestDate, Long earliestDate, int minScore);
 	
 	public String getNormalizedUsernameField();
 

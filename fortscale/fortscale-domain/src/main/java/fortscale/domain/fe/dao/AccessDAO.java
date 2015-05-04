@@ -1,14 +1,12 @@
 package fortscale.domain.fe.dao;
 
-import static fortscale.utils.impala.ImpalaCriteria.gte;
-import static fortscale.utils.impala.ImpalaCriteria.lte;
-import static fortscale.utils.impala.ImpalaCriteria.equalsTo;
-
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.*;
-
+import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.EventScore;
+import fortscale.domain.impala.ImpalaDAO;
+import fortscale.utils.TimestampUtils;
+import fortscale.utils.impala.ImpalaPageRequest;
+import fortscale.utils.impala.ImpalaQuery;
+import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -18,14 +16,15 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 
-import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.EventScore;
-import fortscale.domain.impala.ImpalaDAO;
-import fortscale.utils.TimestampUtils;
-import fortscale.utils.impala.ImpalaCriteria;
-import fortscale.utils.impala.ImpalaPageRequest;
-import fortscale.utils.impala.ImpalaQuery;
-import fortscale.utils.logging.Logger;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static fortscale.utils.impala.ImpalaCriteria.*;
 
 public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implements EventScoreDAO{
 	private static Logger logger = Logger.getLogger(AccessDAO.class);
@@ -113,22 +112,23 @@ public abstract class AccessDAO extends ImpalaDAO<Map<String, Object>> implement
 		return impalaJdbcTemplate.query(getEventLoginDayCountSqlQuery(username, numberOfDays), new EventLoginDayCountMapper());
 	}
 
-	public List<EventsToMachineCount> getEventsToTargetMachineCount(String username, int daysBack, int minScore) {
-		long startOfTime = (new DateTime()).minusDays(daysBack).getMillis();
-		
+	public List<EventsToMachineCount> getEventsToTargetMachineCount(String username, Long latestDate, Long earliestDate, int minScore) {
+
 		///build query for events in the last X days to each distinct target machine by the username
 		ImpalaQuery query = new ImpalaQuery();
 		query.select(getDestinationFieldName() + " as " + EventsToMachineCountRowMapper.HostnameField, "count(*) as " + EventsToMachineCountRowMapper.EventsCountField);
 		query.from(getTableName(minScore));
-		addPartitionFilterToQuery(query, startOfTime);
-			// get only success events
-		query.andWhere(ImpalaCriteria.equalsTo(getStatusFieldName(), getStatusSuccessValue(), true))
+		addPartitionFilterToQuery(query, earliestDate,latestDate);
 			// for the given user
-			.andWhere(getNormalizedUserNameEqualComparison(username))
-			// in the number of days that were requested
-			.andWhere(gte(getEventEpochTimeFieldName(), Long.toString(startOfTime)))
-			// group by target
-			.groupBy(getDestinationFieldName());
+		query.andWhere(getNormalizedUserNameEqualComparison(username))
+				//minscore
+				.andGte(getEventScoreFieldName(), minScore)
+			// from the earliestDate
+				.andWhere(gte(getEventEpochTimeFieldName(), Long.toString(TimestampUtils.convertToSeconds(earliestDate))))
+						// to the latestDate
+				.andWhere(lte(getEventEpochTimeFieldName(), Long.toString(TimestampUtils.convertToSeconds(latestDate))))
+								// group by target
+				.groupBy(getDestinationFieldName());
 		
 		return impalaJdbcTemplate.query(query.toSQL(), new EventsToMachineCountRowMapper());
 	}
