@@ -120,8 +120,13 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
         entityConfig.setFieldsList(fieldsList);
 
         try{
-            String[] configFields = stringValueResolver.resolveStringValue(getPropertyKey(entityId, "fields")).split("\\s*,[,\\s]*");
-			Collections.addAll(fieldsList, configFields);
+            //We must have the fields attribute, but if the list of fields is empty
+            //We can skip and conitunue to parent fields.
+            String fieldsListAsStrimg = stringValueResolver.resolveStringValue(getPropertyKey(entityId, "fields"));
+            if (StringUtils.isNotBlank(fieldsListAsStrimg)) {
+                String[] configFields = fieldsListAsStrimg.split("\\s*,[,\\s]*");
+                Collections.addAll(fieldsList, configFields);
+            }
         }
         catch(Exception error){
             return null;
@@ -581,8 +586,9 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
         Collections.sort(fields);
         entity.setFields(fields);
 
-        if (entityConfig.getDefaultSort() == null)
+        if (entityConfig.getDefaultSort() == null) {
             setDataEntityConfigDefaultSort(entityConfig, entity);
+        }
         entity.setDefaultSort(entityConfig.getDefaultSort());
 
         return entity;
