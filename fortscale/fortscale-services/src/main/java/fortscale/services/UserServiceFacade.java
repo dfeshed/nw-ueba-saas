@@ -1,10 +1,5 @@
 package fortscale.services;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.data.domain.Sort.Direction;
-
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
@@ -12,6 +7,10 @@ import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.IFeature;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
+import org.springframework.data.domain.Sort.Direction;
+
+import java.util.List;
+import java.util.Map;
 
 
 public interface UserServiceFacade {
@@ -57,5 +56,5 @@ public interface UserServiceFacade {
 	
 	public void updateOrCreateUserWithClassifierUsername(Classifier classifier, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
 	
-	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues, int minScore);
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore);
 }
