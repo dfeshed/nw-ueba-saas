@@ -30,8 +30,8 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 	private static Logger logger = Logger.getLogger(AmtActionToSensitiveAccountNotificationGenerator.class);
 	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_CAUSE = "amt_action_to_sensitive_account";
 	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_NAME = AMT_ACTION_TO_SENSITIVE_ACCOUNT_CAUSE;
-	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_MSG_FOR_SINGLE = "   has accessed a VIP account - {{attributes.yid}}";
-	private static final String AMT_RESET_PWD_MSG_FOR_AGG = "   have accessed a VIP account";
+	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_MSG_FOR_SINGLE = "   has accessed a VIP account - {yid}";
+	private static final String AMT_ACTION_TO_SENSITIVE_ACCOUNT_MSG_FOR_AGG = "   have accessed a VIP account";
 	private SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
 
 	@Autowired
@@ -114,7 +114,7 @@ public class AmtActionToSensitiveAccountNotificationGenerator {
 		// Add a notification resource
 		NotificationResource notificationResource = notificationResourcesRepository.findByMsg_name(AMT_ACTION_TO_SENSITIVE_ACCOUNT_NAME);
 		if (notificationResource == null) {
-			notificationResource = new NotificationResource(AMT_ACTION_TO_SENSITIVE_ACCOUNT_NAME, AMT_ACTION_TO_SENSITIVE_ACCOUNT_MSG_FOR_SINGLE, AMT_RESET_PWD_MSG_FOR_AGG);
+			notificationResource = new NotificationResource(AMT_ACTION_TO_SENSITIVE_ACCOUNT_NAME, AMT_ACTION_TO_SENSITIVE_ACCOUNT_MSG_FOR_SINGLE,AMT_ACTION_TO_SENSITIVE_ACCOUNT_MSG_FOR_AGG);
 			notificationResourcesRepository.save(notificationResource);
 		}
 
