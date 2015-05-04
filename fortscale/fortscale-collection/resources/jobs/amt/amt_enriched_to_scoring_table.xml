@@ -7,9 +7,9 @@
 
     <schedule>
         <job>
-            <name>Scoring</name>
+            <name>AmtEnrichedToStreaming</name>
             <group>AMT</group>
-            <description>Running amt Scoring</description>
+            <description>Running enriched AMT Scoring</description>
             <job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
@@ -28,7 +28,7 @@
                 </entry>
                 <entry>
 					<key>streamingTopicPartitionKey</key>
-					<value>${impala.data.table.fields.normalized_username}</value>
+					<value>${impala.enricheddata.amt.table.field.normalized_username}</value>
 				</entry>
                 <entry>
                     <key>impalaTableFields</key>
