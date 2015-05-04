@@ -10,8 +10,12 @@
 
 	<bean
 		class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-		<property name="location"
-			value="classpath:META-INF/application-config.properties" />
+        <property name="locations">
+            <list>
+                <value>classpath:META-INF/application-config.properties</value>
+                <value>classpath:META-INF/entities-overriding.properties</value>
+            </list>
+        </property>
 		<property name="order"
 			value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}" />
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
