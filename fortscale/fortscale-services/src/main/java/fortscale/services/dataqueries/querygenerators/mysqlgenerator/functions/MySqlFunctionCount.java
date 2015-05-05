@@ -16,8 +16,8 @@ public class MySqlFunctionCount extends MySqlFieldFunction {
 
         StringBuilder sb = new StringBuilder();
         String entityId = field.getEntity();
-        if (entityId == null)
-            entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
+//        if (entityId == null)
+//            entityId = dataQueryDtoHelper.getEntityId(dataQueryDTO);
 
         sb.append(sqlFunctionName);
         sb.append("(");
@@ -26,8 +26,14 @@ public class MySqlFunctionCount extends MySqlFieldFunction {
             if (field.getFunc().getParams().containsKey("all"))
                 sb.append("*");
             else {
+				// Distinct
                 if (field.getFunc().getParams().containsKey("distinct"))
                     sb.append("DISTINCT ");
+				// table name (myTable.)
+				if (entityId != null) {
+					sb.append(dataEntitiesConfig.getFieldTable(entityId, field.getId()));
+				}
+				// field name
                 sb.append(getFieldName(field, dataQueryDTO));
             }
         }

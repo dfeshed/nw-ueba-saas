@@ -44,6 +44,7 @@ public class MySqlWherePartGeneratorTest extends DataQueryGeneratorTest {
 
 		when(dataEntitiesConfig.getEntityPartitionBaseField(any(String.class))).thenReturn(partitionsBaseFields);
 		when(dataEntitiesConfig.getEntityTable(any(String.class))).thenReturn("entity");
+		when(dataEntitiesConfig.getFieldTable(any(String.class),any(String.class))).thenReturn("entity.");
 		when(dataEntitiesConfig.getFieldColumn(any(String.class), any(String.class))).thenReturn("date_time_unix");
 		when(dataEntitiesConfig.getFieldColumn(any(String.class), eq("yearmonthday"))).thenReturn("date_time_unix");
 
