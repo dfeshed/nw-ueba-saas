@@ -9,7 +9,7 @@
         <job>
             <name>AmtEnrichedToStreaming</name>
             <group>AMT</group>
-            <description>Running enriched AMT Scoring</description>
+            <description>Sending events from enriched AMT table to specified kafka topic.</description>
             <job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
@@ -24,7 +24,7 @@
                 </entry>
                 <entry>
                     <key>streamingTopic</key>
-                    <value>${fortscale-amt-geolocated}</value>
+                    <value>fortscale-amt-geolocated</value>
                 </entry>
                 <entry>
 					<key>streamingTopicPartitionKey</key>
