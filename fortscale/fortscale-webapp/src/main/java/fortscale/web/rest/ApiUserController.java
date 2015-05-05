@@ -30,29 +30,22 @@ import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserServiceFacade;
-import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
-import fortscale.web.beans.*;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
+import fortscale.web.beans.DataBean;
+import fortscale.web.beans.DataListWrapperBean;
+import fortscale.web.beans.DataWarningsEnum;
+import fortscale.web.beans.FeatureBean;
+import fortscale.web.beans.UserDetailsBean;
+import fortscale.web.beans.UserMachinesBean;
+import fortscale.web.beans.UserSearchBean;
 
 @Controller
 @RequestMapping("/api/user/**")
 public class ApiUserController extends BaseController{
-	private static final String FROM = "from";
-	private static final String TO = "to";
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
@@ -263,49 +256,37 @@ public class ApiUserController extends BaseController{
 	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId,
 			@RequestParam(defaultValue="10") Integer limit,
 			@RequestParam(defaultValue="0") Integer tzShift,
-			@RequestParam String dateRange,
 			Model model){
 		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
 		List<IUserScoreHistoryElement> userScores = new ArrayList<>();
 		int millisOffset = tzShift * 60 * 1000;
 		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
-		Map<String, DateTime> datesList = constructFromToDates(limit, tzShift, dateRange);
-		List<IUserScoreHistoryElement> userScoreHistory = userServiceFacade.getUserScoresHistory(uid, classifierId, datesList.get(FROM), datesList.get(TO));
-
-		Collections.reverse(userScoreHistory);
-		ret.setData(userScoreHistory);
-		ret.setTotal(userScoreHistory.size());
+		DateTime dateLimit = DateTime.now(dateTimeZone);
+		dateLimit = dateLimit.withTimeAtStartOfDay();
+		dateLimit = dateLimit.minusDays(limit);
+		DateTime prevElementStartDay = null;
+		for(IUserScoreHistoryElement element: userServiceFacade.getUserScoresHistory(uid, classifierId, 0, limit+1)){
+			DateTime curElementStartDay = new DateTime(element.getDate().getTime(), dateTimeZone);
+			curElementStartDay = curElementStartDay.withTimeAtStartOfDay();
+			if(prevElementStartDay != null && curElementStartDay.isEqual(prevElementStartDay.getMillis())){
+				continue;
+			}
+			if(dateLimit.isAfter(element.getDate().getTime())){
+				break;
+			}
+			userScores.add(element);
+			if(userScores.size() == limit){
+				break;
+			}
+			prevElementStartDay = curElementStartDay;
+		}
+		
+		Collections.reverse(userScores);
+		ret.setData(userScores);
+		ret.setTotal(userScores.size());
 		return ret;
 	}
-
-	private Map<String, DateTime> constructFromToDates(Integer limit, Integer tzShift, String dateRange)  {
-		Map<String, DateTime> datesList = new HashMap<>();
-		DateTimeZone timeZone = DateTimeZone.forID("UTC");
-		DateTime now = DateTime.now(timeZone);
-		DateTime todayStart = now.withTimeAtStartOfDay();
-		if (dateRange != null){
-
-			String[] datesStr = dateRange.split(",");
-
-			if (datesStr.length == 2){
-				DateTime from = new DateTime(Long.parseLong(datesStr[0]));
-				DateTime to = new DateTime(Long.parseLong(datesStr[1]));
-				datesList.put(FROM, from);
-				datesList.put(TO, to);
-			} else {
-				logger.error("dateRange paramter is not valid");
-				throw new InvalidValueException("Couldn't parse dataQuery. DateRange not valid: " + dateRange);
-			}
-		} else {
-			//if no dateRange parameter
-			DateTime from = todayStart.minusDays(limit);
-			DateTime to = todayStart.minusDays(tzShift);
-			datesList.put(FROM, from);
-			datesList.put(TO, to);
-		}
-		return datesList;
-	}
-
+	
 	@RequestMapping(value="/{uid}/classifier/{classifierId}/attributes", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -369,10 +350,10 @@ public class ApiUserController extends BaseController{
 			@PathVariable String uid,
 			@PathVariable String param,
 			@RequestParam(defaultValue="50") int minScore,
-			@RequestParam(required = false) Long latestDate, @RequestParam(required = false) Long earliestDate,
+			@RequestParam(defaultValue="14") int daysToGet,
 			@RequestParam(defaultValue="10") int maxValues) {
 		
-		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param, latestDate,earliestDate, maxValues, minScore);
+		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param, daysToGet, maxValues, minScore);
 
 		// convert the distribution properties to data bean
 		DataBean<Collection<PropertyEntry>> ret = new DataBean<Collection<PropertyEntry>>();
