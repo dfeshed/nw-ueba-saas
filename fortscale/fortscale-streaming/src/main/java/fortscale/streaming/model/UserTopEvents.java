@@ -70,8 +70,8 @@ public class UserTopEvents {
 	
 	public double timeDecayScore(double score, long eventTimeInMillis, long currentTimeInMillis){
 		// in order to maintain a fixed linear decay for all events, we reduce
-		// half a point from the score of an events for each passing day
-		double decayVal = (currentTimeInMillis - eventTimeInMillis) / (MILLIS_IN_DAY*2.0);
+		// 5 points from the score of an event for each passing day
+		double decayVal = (currentTimeInMillis - eventTimeInMillis)*5.0 / (MILLIS_IN_DAY);
 		return Math.max(0.0, score - decayVal);//Math.min( Math.exp( - ( System.currentTimeMillis() - eventTimeInMillis )/(MILLIS_IN_DAY*50.0) ), 1.0 );
 	}
 
