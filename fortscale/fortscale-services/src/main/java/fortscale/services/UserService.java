@@ -78,7 +78,7 @@ public interface UserService extends CachingService{
 	
 	public boolean isUserTagged(String username, String tag);
 	
-	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues, int minScore);
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore);
 	
 	public String findByNormalizedUserName(String normalizedUsername);
 

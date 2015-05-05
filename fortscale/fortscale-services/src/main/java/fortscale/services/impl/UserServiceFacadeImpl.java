@@ -8,6 +8,9 @@ import fortscale.domain.fe.IFeature;
 import fortscale.services.*;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
@@ -130,8 +133,8 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	}
 
 	@Override
-	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, int daysToGet, int maxValues, int minScore) {
-		return userService.getDestinationComputerPropertyDistribution(uid, propertyName, daysToGet, maxValues, minScore);
+	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore) {
+		return userService.getDestinationComputerPropertyDistribution(uid, propertyName, latestDate,earliestDate, maxValues, minScore);
 	}
 	
 	@Override
