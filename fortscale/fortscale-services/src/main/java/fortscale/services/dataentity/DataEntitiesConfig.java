@@ -717,6 +717,20 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
         return getFieldFlag(DataEntityFieldConfig.EXPLICIT, entityId, fieldId);
     }
 
+	/**
+	 * Return the name of the table
+	 * @param entityId	The entity
+	 * @param fieldId	The field
+	 * @return the table name (or empty string for logical fields)
+	 * @throws InvalidQueryException
+	 */
+	public String getFieldTable(String entityId, String fieldId) throws InvalidQueryException{
+		if (getFieldIsLogicalOnly(entityId, fieldId))
+			return "";
+
+		return getEntityTable(entityId) + ".";
+	}
+
     private Boolean getFieldFlag(String flagName, String entityId, String fieldId) throws InvalidQueryException{
         DataEntityFieldConfig fieldConfig = getFieldFromCache(entityId, fieldId);
         Boolean flagValue = fieldConfig.getFlag(flagName);

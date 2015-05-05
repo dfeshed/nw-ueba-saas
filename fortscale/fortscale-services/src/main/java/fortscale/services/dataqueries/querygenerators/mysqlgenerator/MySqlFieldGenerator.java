@@ -48,10 +48,7 @@ public class MySqlFieldGenerator {
     }
 
     private void addFieldTable(String entityId, String fieldId, StringBuilder sb) throws InvalidQueryException{
-        if (dataEntitiesConfig.getFieldIsLogicalOnly(entityId, fieldId))
-            return;
-
-        sb.append(dataEntitiesConfig.getEntityTable(entityId)).append(".");
+		sb.append(dataEntitiesConfig.getFieldTable(entityId, fieldId));
     }
 
     /**
