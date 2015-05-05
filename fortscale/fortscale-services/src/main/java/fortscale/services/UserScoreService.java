@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.springframework.data.domain.Sort.Direction;
 
 import fortscale.domain.core.User;
@@ -19,7 +20,7 @@ public interface UserScoreService {
 	
 	public Map<User,List<IFeature>> getFollowedUserAttributesScores(String classifierId, Long timestamp, String orderBy, Direction direction); 
 	
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit); 
+	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, DateTime fromDate, DateTime toDate);
 
 	public Map<User, List<IUserScore>> getUsersScoresByIds(List<String> uids);
 	

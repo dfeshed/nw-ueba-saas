@@ -1,26 +1,20 @@
 package fortscale.services.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.User;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.IFeature;
-import fortscale.services.IUserScore;
-import fortscale.services.IUserScoreHistoryElement;
-import fortscale.services.UserApplication;
-import fortscale.services.UserScoreService;
-import fortscale.services.UserService;
-import fortscale.services.UserServiceFacade;
-import fortscale.services.UserUpdateScoreService;
+import fortscale.services.*;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service("userServiceFacade")
 public class UserServiceFacadeImpl implements UserServiceFacade{
@@ -115,8 +109,8 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	}
 
 	@Override
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit) {
-		return userScoreService.getUserScoresHistory(uid, classifierId, offset, limit);
+	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, DateTime fromDate, DateTime toDate) {
+		return userScoreService.getUserScoresHistory(uid, classifierId, fromDate, toDate);
 	}
 
 

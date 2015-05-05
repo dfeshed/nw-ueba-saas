@@ -30,6 +30,7 @@ import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserServiceFacade;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.utils.logging.Logger;
@@ -46,6 +47,8 @@ import fortscale.web.beans.UserSearchBean;
 @Controller
 @RequestMapping("/api/user/**")
 public class ApiUserController extends BaseController{
+	private static final String FROM = "from";
+	private static final String TO = "to";
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
@@ -256,37 +259,49 @@ public class ApiUserController extends BaseController{
 	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId,
 			@RequestParam(defaultValue="10") Integer limit,
 			@RequestParam(defaultValue="0") Integer tzShift,
+			@RequestParam String dateRange,
 			Model model){
 		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
 		List<IUserScoreHistoryElement> userScores = new ArrayList<>();
 		int millisOffset = tzShift * 60 * 1000;
 		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
-		DateTime dateLimit = DateTime.now(dateTimeZone);
-		dateLimit = dateLimit.withTimeAtStartOfDay();
-		dateLimit = dateLimit.minusDays(limit);
-		DateTime prevElementStartDay = null;
-		for(IUserScoreHistoryElement element: userServiceFacade.getUserScoresHistory(uid, classifierId, 0, limit+1)){
-			DateTime curElementStartDay = new DateTime(element.getDate().getTime(), dateTimeZone);
-			curElementStartDay = curElementStartDay.withTimeAtStartOfDay();
-			if(prevElementStartDay != null && curElementStartDay.isEqual(prevElementStartDay.getMillis())){
-				continue;
-			}
-			if(dateLimit.isAfter(element.getDate().getTime())){
-				break;
-			}
-			userScores.add(element);
-			if(userScores.size() == limit){
-				break;
-			}
-			prevElementStartDay = curElementStartDay;
-		}
-		
-		Collections.reverse(userScores);
-		ret.setData(userScores);
-		ret.setTotal(userScores.size());
+		Map<String, DateTime> datesList = constructFromToDates(limit, tzShift, dateRange);
+		List<IUserScoreHistoryElement> userScoreHistory = userServiceFacade.getUserScoresHistory(uid, classifierId, datesList.get(FROM), datesList.get(TO));
+
+		Collections.reverse(userScoreHistory);
+		ret.setData(userScoreHistory);
+		ret.setTotal(userScoreHistory.size());
 		return ret;
 	}
-	
+
+	private Map<String, DateTime> constructFromToDates(Integer limit, Integer tzShift, String dateRange)  {
+		Map<String, DateTime> datesList = new HashMap<>();
+		DateTimeZone timeZone = DateTimeZone.forID("UTC");
+		DateTime now = DateTime.now(timeZone);
+		DateTime todayStart = now.withTimeAtStartOfDay();
+		if (dateRange != null){
+
+			String[] datesStr = dateRange.split(",");
+
+			if (datesStr.length == 2){
+				DateTime from = new DateTime(Long.parseLong(datesStr[0]));
+				DateTime to = new DateTime(Long.parseLong(datesStr[1]));
+				datesList.put(FROM, from);
+				datesList.put(TO, to);
+			} else {
+				logger.error("dateRange paramter is not valid");
+				throw new InvalidValueException("Couldn't parse dataQuery. DateRange not valid: " + dateRange);
+			}
+		} else {
+			//if no dateRange parameter
+			DateTime from = todayStart.minusDays(limit);
+			DateTime to = todayStart.minusDays(tzShift);
+			datesList.put(FROM, from);
+			datesList.put(TO, to);
+		}
+		return datesList;
+	}
+
 	@RequestMapping(value="/{uid}/classifier/{classifierId}/attributes", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException

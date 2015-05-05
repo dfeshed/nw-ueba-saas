@@ -155,15 +155,16 @@ public class UserScoreServiceImpl implements UserScoreService{
 		
 		return new ArrayList<IUserScore>(ret.values());
 	}
-	
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit){
+
+	@Override
+	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, DateTime fromDate, DateTime toDate){
 		Classifier.validateClassifierId(classifierId);
 		User user = userRepository.findOne(uid);
 		if(user == null){
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
 		}
 		
-		List<IUserScoreHistoryElement> ret = new ArrayList<IUserScoreHistoryElement>();
+		List<IUserScoreHistoryElement> ret = new ArrayList<>();
 		ClassifierScore classifierScore = user.getScore(classifierId);
 		if(classifierScore != null){
 			
@@ -172,8 +173,10 @@ public class UserScoreServiceImpl implements UserScoreService{
 				int i = 0;
 				if(isOnSameDay(classifierScore.getTimestamp(), scoreInfo.getTimestamp())){
 					if(classifierScore.getScore() >= scoreInfo.getScore()){
-						UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
-						ret.add(userScoreHistoryElement);
+						if (scoreInfo.getTimestampEpoc() > fromDate.getMillis() && scoreInfo.getTimestampEpoc() < toDate.getMillis()) {
+							UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
+							ret.add(userScoreHistoryElement);
+						}
 						i++;
 					}
 				} else{
@@ -182,8 +185,10 @@ public class UserScoreServiceImpl implements UserScoreService{
 				}
 				for(; i < classifierScore.getPrevScores().size(); i++){
 					scoreInfo = classifierScore.getPrevScores().get(i);
-					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
-					ret.add(userScoreHistoryElement);
+					if (scoreInfo.getTimestampEpoc() > fromDate.getMillis() && scoreInfo.getTimestampEpoc() < toDate.getMillis()) {
+						UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
+						ret.add(userScoreHistoryElement);
+					}
 				}
 			} else{
 				UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
@@ -191,15 +196,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 			}
 		}
 		
-		if(offset >ret.size()) {
-			return Collections.emptyList();
-		}
-		int toIndex = offset + limit;
-		if(toIndex > ret.size()) {
-			toIndex = ret.size();
-		}
-		
-		ret = ret.subList(offset, toIndex);
 		return ret;
 	}
 
