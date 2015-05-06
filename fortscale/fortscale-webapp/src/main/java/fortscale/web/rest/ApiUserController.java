@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
@@ -253,12 +255,19 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId,
-			@RequestParam(required=true) List<Long> dateRange,
+			@RequestParam(required=false) List<Long> dateRange,
 			@RequestParam(defaultValue="0") Integer tzShift,
+			@RequestParam(defaultValue="10") Integer limit,
 			Model model){
-		if(dateRange.size()!=2 || (dateRange.get(0)>=dateRange.get(1))){
-			logger.error("dateRange paramter {} is not in the list format [start,end]", dateRange);
-			throw new InvalidValueException(String.format("dateRange paramter %s is not in the list format [start,end]", dateRange));
+		if(dateRange == null || dateRange.size() == 0){
+			dateRange = new ArrayList<>();
+			dateRange.add(DateTime.now(DateTimeZone.UTC).withTimeAtStartOfDay().minusDays(limit-1).getMillis());
+			dateRange.add(DateTime.now(DateTimeZone.UTC).withTimeAtStartOfDay().plusDays(1).getMillis());			
+		} else{
+			if(dateRange.size()!=2 || (dateRange.get(0)>=dateRange.get(1))){
+				logger.error("dateRange paramter {} is not in the list format [start,end]", dateRange);
+				throw new InvalidValueException(String.format("dateRange paramter %s is not in the list format [start,end]", dateRange));
+			}
 		}
 		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
 		List<IUserScoreHistoryElement> userScoreHistory = userServiceFacade.getUserScoresHistory(uid, classifierId, dateRange.get(0), dateRange.get(1), tzShift);
