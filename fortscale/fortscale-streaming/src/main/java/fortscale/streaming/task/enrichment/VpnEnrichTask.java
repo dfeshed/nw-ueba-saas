@@ -126,7 +126,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
 					String sessionIdFieldName = getConfigString(config, String.format("fortscale.events.%s.sessionid.field", eventType));
 					String runGeoHoppingFieldName = getConfigString(config, String.format("fortscale.events.%s.runGeoHopping.field", eventType));
 					String addSessionDataFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.addSessionData.field", eventType)));
-					String resolveIpFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.resolveIp.field", eventType)));
+					String resolveIpFieldName = getConfigString(config, String.format("fortscale.events.%s.resolveIp.field", eventType));
 					String dropCloseEventWhenOpenMissingFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.dropCloseEventWhenOpenMissing.field", eventType)));
 					String timeGapForResolveIpFrom = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.timeGapForResolveIpFrom", eventType)));
 					String timeGapForResolveIpTo = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.timeGapForResolveIpTo", eventType)));
