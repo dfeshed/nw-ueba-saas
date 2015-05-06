@@ -19,7 +19,7 @@ public interface UserScoreService {
 	
 	public Map<User,List<IFeature>> getFollowedUserAttributesScores(String classifierId, Long timestamp, String orderBy, Direction direction); 
 	
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, int offset, int limit); 
+	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, long fromEpochTime, long toEpochTime, int tzShift);
 
 	public Map<User, List<IUserScore>> getUsersScoresByIds(List<String> uids);
 	

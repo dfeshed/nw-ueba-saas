@@ -1,5 +1,25 @@
 package fortscale.web.rest;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.AdUserDirectReport;
 import fortscale.domain.core.User;
@@ -8,22 +28,19 @@ import fortscale.domain.fe.IFeature;
 import fortscale.services.IUserScore;
 import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserServiceFacade;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
-import fortscale.web.beans.*;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
+import fortscale.web.beans.DataBean;
+import fortscale.web.beans.DataListWrapperBean;
+import fortscale.web.beans.DataWarningsEnum;
+import fortscale.web.beans.FeatureBean;
+import fortscale.web.beans.UserDetailsBean;
+import fortscale.web.beans.UserMachinesBean;
+import fortscale.web.beans.UserSearchBean;
 
 @Controller
 @RequestMapping("/api/user/**")
@@ -236,44 +253,22 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId,
-			@RequestParam(defaultValue="10") Integer limit,
+			@RequestParam(required=true) List<Long> dateRange,
 			@RequestParam(defaultValue="0") Integer tzShift,
 			Model model){
-
-
-		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
-		List<IUserScoreHistoryElement> userScores = new ArrayList<>();
-		int millisOffset = tzShift * 60 * 1000;
-		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
-		DateTime dateLimit = DateTime.now(dateTimeZone);
-		dateLimit = dateLimit.withTimeAtStartOfDay();
-
-		//the day limit must be the start of the 6th day back (equivalnt to end of the 7th day)
-		dateLimit = dateLimit.minusDays(limit-1);
-		DateTime prevElementStartDay = null;
-		for(IUserScoreHistoryElement element: userServiceFacade.getUserScoresHistory(uid, classifierId, 0, limit+1)){
-			DateTime curElementStartDay = new DateTime(element.getDate().getTime(), dateTimeZone);
-			curElementStartDay = curElementStartDay.withTimeAtStartOfDay();
-
-			if(prevElementStartDay != null && curElementStartDay.isEqual(prevElementStartDay.getMillis())){
-				continue;
-			}
-			if(dateLimit.isAfter(element.getDate().getTime())){
-				break;
-			}
-			userScores.add(element);
-			if(userScores.size() == limit){
-				break;
-			}
-			prevElementStartDay = curElementStartDay;
+		if(dateRange.size()!=2 || (dateRange.get(0)>=dateRange.get(1))){
+			logger.error("dateRange paramter {} is not in the list format [start,end]", dateRange);
+			throw new InvalidValueException(String.format("dateRange paramter %s is not in the list format [start,end]", dateRange));
 		}
-		
-		Collections.reverse(userScores);
-		ret.setData(userScores);
-		ret.setTotal(userScores.size());
+		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
+		List<IUserScoreHistoryElement> userScoreHistory = userServiceFacade.getUserScoresHistory(uid, classifierId, dateRange.get(0), dateRange.get(1), tzShift);
+
+		Collections.reverse(userScoreHistory);
+		ret.setData(userScoreHistory);
+		ret.setTotal(userScoreHistory.size());
 		return ret;
 	}
-	
+
 	@RequestMapping(value="/{uid}/classifier/{classifierId}/attributes", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
