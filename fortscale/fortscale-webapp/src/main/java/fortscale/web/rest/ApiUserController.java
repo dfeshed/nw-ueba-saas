@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
@@ -260,8 +261,8 @@ public class ApiUserController extends BaseController{
 			Model model){
 		if(dateRange == null || dateRange.size() == 0){
 			dateRange = new ArrayList<>();
-			dateRange.add(DateTime.now().withTimeAtStartOfDay().minusDays(limit-1).getMillis());
-			dateRange.add(DateTime.now().withTimeAtStartOfDay().plusDays(1).getMillis());			
+			dateRange.add(DateTime.now(DateTimeZone.UTC).withTimeAtStartOfDay().minusDays(limit-1).getMillis());
+			dateRange.add(DateTime.now(DateTimeZone.UTC).withTimeAtStartOfDay().plusDays(1).getMillis());			
 		} else{
 			if(dateRange.size()!=2 || (dateRange.get(0)>=dateRange.get(1))){
 				logger.error("dateRange paramter {} is not in the list format [start,end]", dateRange);
