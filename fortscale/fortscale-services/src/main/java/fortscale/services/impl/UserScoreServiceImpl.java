@@ -1,5 +1,21 @@
 package fortscale.services.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+
 import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.ScoreInfo;
 import fortscale.domain.core.User;
@@ -14,14 +30,6 @@ import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.exceptions.UnknownResourceException;
 import fortscale.services.fe.Classifier;
 import fortscale.services.fe.ClassifierService;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service("userScoreService")
 public class UserScoreServiceImpl implements UserScoreService{
@@ -88,7 +96,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 	private List<IUserScore> getUserScores(User user) {
 		List<IUserScore> ret = new ArrayList<IUserScore>();
 		for(ClassifierScore classifierScore: user.getScores().values()){
-			if(isOnSameDay(new Date(), classifierScore.getTimestamp(), MAX_NUM_OF_HISTORY_DAYS)) {
+			if(isOnSameDay(new Date(), classifierScore.getTimestamp(), 0, MAX_NUM_OF_HISTORY_DAYS)) {
 				Classifier classifier = classifierService.getClassifier(classifierScore.getClassifierId());
 				if(classifier == null){
 					continue;
@@ -157,7 +165,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 	}
 
 	@Override
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, DateTime fromDate, DateTime toDate){
+	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, long fromEpochTime, long toEpochTime, int tzShift){
 		Classifier.validateClassifierId(classifierId);
 		User user = userRepository.findOne(uid);
 		if(user == null){
@@ -171,28 +179,35 @@ public class UserScoreServiceImpl implements UserScoreService{
 			if(!classifierScore.getPrevScores().isEmpty()){
 				ScoreInfo scoreInfo = classifierScore.getPrevScores().get(0);
 				int i = 0;
-				if(isOnSameDay(classifierScore.getTimestamp(), scoreInfo.getTimestamp())){
-					if(classifierScore.getScore() >= scoreInfo.getScore()){
-						if (scoreInfo.getTimestampEpoc() > fromDate.getMillis() && scoreInfo.getTimestampEpoc() < toDate.getMillis()) {
-							UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
-							ret.add(userScoreHistoryElement);
-						}
+				if(classifierScore.getTimestampEpoc() >= fromEpochTime && classifierScore.getTimestampEpoc() <= toEpochTime){
+					UserScoreHistoryElement currentScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
+					//handling the case where the current score and the first prev score are on the same day.
+					if(isOnSameDay(classifierScore.getTimestamp(), scoreInfo.getTimestamp(), tzShift)){
 						i++;
+						//choosing the higher score.
+						if(classifierScore.getScore() < scoreInfo.getScore()){
+							currentScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
+						}
 					}
-				} else{
-					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
-					ret.add(userScoreHistoryElement);
+					ret.add(currentScoreHistoryElement);
 				}
 				for(; i < classifierScore.getPrevScores().size(); i++){
 					scoreInfo = classifierScore.getPrevScores().get(i);
-					if (scoreInfo.getTimestampEpoc() > fromDate.getMillis() && scoreInfo.getTimestampEpoc() < toDate.getMillis()) {
-						UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
-						ret.add(userScoreHistoryElement);
+					if(scoreInfo.getTimestampEpoc() > toEpochTime){
+						continue;
 					}
+					if (scoreInfo.getTimestampEpoc() < fromEpochTime){
+						break;
+					}
+
+					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
+					ret.add(userScoreHistoryElement);
 				}
 			} else{
-				UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
-				ret.add(userScoreHistoryElement);
+				if(classifierScore.getTimestampEpoc() >= fromEpochTime && classifierScore.getTimestampEpoc() <= toEpochTime){
+					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
+					ret.add(userScoreHistoryElement);
+				}
 			}
 		}
 		
@@ -309,13 +324,19 @@ public class UserScoreServiceImpl implements UserScoreService{
 	
 	@Override
 	public boolean isOnSameDay(Date date1, Date date2){
-		return isOnSameDay(date1, date2, 0);
+		return isOnSameDay(date1, date2, 0, 0);
 	}
 	
-	private boolean isOnSameDay(Date date1, Date date2, int dayThreshold){
-		DateTime dateTime1 = new DateTime(date1.getTime());
+	public boolean isOnSameDay(Date date1, Date date2, int tzShift){
+		return isOnSameDay(date1, date2, tzShift, 0);
+	}
+	
+	private boolean isOnSameDay(Date date1, Date date2, int tzShift, int dayThreshold){
+		int millisOffset = tzShift * 60 * 1000;
+ 		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
+		DateTime dateTime1 = new DateTime(date1.getTime(), dateTimeZone);
 		dateTime1 = dateTime1.withTimeAtStartOfDay();
-		DateTime dateTime2 = new DateTime(date2.getTime());
+		DateTime dateTime2 = new DateTime(date2.getTime(), dateTimeZone);
 		dateTime2 = dateTime2.withTimeAtStartOfDay();
 		if(dateTime1.equals(dateTime2)){
 			return true;

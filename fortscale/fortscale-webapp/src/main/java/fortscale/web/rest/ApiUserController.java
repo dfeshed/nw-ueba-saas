@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
@@ -47,8 +45,6 @@ import fortscale.web.beans.UserSearchBean;
 @Controller
 @RequestMapping("/api/user/**")
 public class ApiUserController extends BaseController{
-	private static final String FROM = "from";
-	private static final String TO = "to";
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
@@ -257,49 +253,20 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId,
-			@RequestParam(defaultValue="10") Integer limit,
+			@RequestParam(required=true) List<Long> dateRange,
 			@RequestParam(defaultValue="0") Integer tzShift,
-			@RequestParam String dateRange,
 			Model model){
+		if(dateRange.size()!=2 || (dateRange.get(0)>=dateRange.get(1))){
+			logger.error("dateRange paramter {} is not in the list format [start,end]", dateRange);
+			throw new InvalidValueException(String.format("dateRange paramter %s is not in the list format [start,end]", dateRange));
+		}
 		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
-		List<IUserScoreHistoryElement> userScores = new ArrayList<>();
-		int millisOffset = tzShift * 60 * 1000;
-		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
-		Map<String, DateTime> datesList = constructFromToDates(limit, tzShift, dateRange);
-		List<IUserScoreHistoryElement> userScoreHistory = userServiceFacade.getUserScoresHistory(uid, classifierId, datesList.get(FROM), datesList.get(TO));
+		List<IUserScoreHistoryElement> userScoreHistory = userServiceFacade.getUserScoresHistory(uid, classifierId, dateRange.get(0), dateRange.get(1), tzShift);
 
 		Collections.reverse(userScoreHistory);
 		ret.setData(userScoreHistory);
 		ret.setTotal(userScoreHistory.size());
 		return ret;
-	}
-
-	private Map<String, DateTime> constructFromToDates(Integer limit, Integer tzShift, String dateRange)  {
-		Map<String, DateTime> datesList = new HashMap<>();
-		DateTimeZone timeZone = DateTimeZone.forID("UTC");
-		DateTime now = DateTime.now(timeZone);
-		DateTime todayStart = now.withTimeAtStartOfDay();
-		if (dateRange != null){
-
-			String[] datesStr = dateRange.split(",");
-
-			if (datesStr.length == 2){
-				DateTime from = new DateTime(Long.parseLong(datesStr[0]));
-				DateTime to = new DateTime(Long.parseLong(datesStr[1]));
-				datesList.put(FROM, from);
-				datesList.put(TO, to);
-			} else {
-				logger.error("dateRange paramter is not valid");
-				throw new InvalidValueException("Couldn't parse dataQuery. DateRange not valid: " + dateRange);
-			}
-		} else {
-			//if no dateRange parameter
-			DateTime from = todayStart.minusDays(limit);
-			DateTime to = todayStart.minusDays(tzShift);
-			datesList.put(FROM, from);
-			datesList.put(TO, to);
-		}
-		return datesList;
 	}
 
 	@RequestMapping(value="/{uid}/classifier/{classifierId}/attributes", method=RequestMethod.GET)

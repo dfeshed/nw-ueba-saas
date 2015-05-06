@@ -3,7 +3,6 @@ package fortscale.services;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.springframework.data.domain.Sort.Direction;
 
 import fortscale.domain.ad.AdUser;
@@ -13,10 +12,6 @@ import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.IFeature;
 import fortscale.services.fe.Classifier;
 import fortscale.services.types.PropertiesDistribution;
-import org.springframework.data.domain.Sort.Direction;
-
-import java.util.List;
-import java.util.Map;
 
 
 public interface UserServiceFacade {
@@ -34,7 +29,7 @@ public interface UserServiceFacade {
 	
 	public Map<User,List<IFeature>> getFollowedUserAttributesScores(String classifierId, Long timestamp, String orderBy, Direction direction); 
 	
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, DateTime fromDate, DateTime toDate);
+	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, long fromEpochTime, long toEpochTime, int tzShift);
 	
 	public List<UserMachine> getUserMachines(String uid);
 	

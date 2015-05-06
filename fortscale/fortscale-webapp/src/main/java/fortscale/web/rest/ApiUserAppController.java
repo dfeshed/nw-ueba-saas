@@ -2,7 +2,6 @@ package fortscale.web.rest;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.ApplicationUserDetailsBean;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.UserDetailsBean;
-import fortscale.web.beans.UserIdBean;
 
 
 
