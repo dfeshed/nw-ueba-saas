@@ -8,6 +8,7 @@ import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserServiceFacade;
 import fortscale.services.impl.UserScoreHistoryElement;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -185,6 +186,8 @@ public class ApiUserControllerTest {
 		userScoreHistoryElements.add(element);
 		element = new UserScoreHistoryElement(new Date(), 80, 80);
 		userScoreHistoryElements.add(element);
+		Long currentStartOfDay = new DateTime(DateTimeZone.forID("UTC")).withTimeAtStartOfDay().plusDays(1).getMillis();
+		Long LastWeekStartOfDay = new DateTime(DateTimeZone.forID("UTC")).withTimeAtStartOfDay().minusDays(6).getMillis();
 
 		when(userServiceFacade.getUserScoresHistory(anyString(), anyString(), anyLong(), anyLong(), anyInt())).thenReturn(userScoreHistoryElements);
 
@@ -195,7 +198,7 @@ public class ApiUserControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
-		verify(userServiceFacade, times(1)).getUserScoresHistory(eq(UID), eq("total"), eq(1430438400000L), eq(1431043200000L), eq(0));
+		verify(userServiceFacade, times(1)).getUserScoresHistory(eq(UID), eq("total"), eq(LastWeekStartOfDay), eq(currentStartOfDay), eq(0));
 		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 		assertEquals(2, jsonObject.get("total"));
 		assertEquals(80, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("score"));
