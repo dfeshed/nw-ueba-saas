@@ -38,6 +38,10 @@
 					<key>impalaTablePartitionType</key>
 					<value>${impala.enricheddata.security.events.table.partition.type}</value>
 				</entry>
+				<entry>
+					<key>impalaDestinationTable</key>
+					<value>${impala.score.ldapauth.table.name}</value>
+				</entry>
 			</job-data-map>
 		</job>
 	</schedule>
