@@ -2,6 +2,7 @@ package fortscale.collection.jobs;
 
 import fortscale.services.impl.RegexMatcher;
 import fortscale.utils.ConfigurationUtils;
+import fortscale.utils.ConversionUtils;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
@@ -52,11 +53,12 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private static final String STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER = "streamingTopicPartitionKey";
     private static final String WHERE_CRITERIA_FIELD_JOB_PARAMETER = "where";
     private static final String SLEEP_FIELD_JOB_PARAMETER = "sleep";
+    private static final String TROTTLING_SLEEP_FIELD_JOB_PARAMETER = "throttlingSleep";
     private static final String FETCH_EVENTS_STEP_IN_MINUTES_JOB_PARAMETER = "fetchEventsStepInMinutes";
     private static final String FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER = "fieldClusterGroupsRegexResource";
     private static final String IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER = "impalaTablePartitionType";
     private static final String IMPALA_DESTINATION_TABLE_JOB_PARAMETER = "impalaDestinationTable";
-    private static final String MAX_SOURCE_DESTINATION_COUNT_GAP_JOB_PARAMETER = "maxSourceDestinationCountGap";
+    private static final String MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER = "maxSourceDestinationTimeGap";
 
     @Autowired
     private JdbcOperations impalaJdbcTemplate;
@@ -68,14 +70,15 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private String streamingTopic;
     private String whereCriteria;
     private Long sleepField;
+    private Long throttlingSleepField;
     private String streamingTopicKey;
     private long latestEventTime;
     private long deltaTimeInSec;
     private int fetchEventsStepInMinutes;
     private String impalaTablePartitionType;
     private String impalaDestinationTable;
-    private Long maxSourceDestinationCountGap;
-    private int totalEventsProcessed = 0;
+    private Long maxSourceDestinationTimeGap;
+    private long destinationTableLatestTime = 0;
     private Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap<String, FieldRegexMatcherConverter>();
 
     protected String getTableName() {
@@ -93,6 +96,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_FIELD_JOB_PARAMETER);
         whereCriteria = jobDataMapExtension.getJobDataMapStringValue(map, WHERE_CRITERIA_FIELD_JOB_PARAMETER, null);
         sleepField = jobDataMapExtension.getJobDataMapLongValue(map, SLEEP_FIELD_JOB_PARAMETER, null);
+        throttlingSleepField = jobDataMapExtension.getJobDataMapLongValue(map, TROTTLING_SLEEP_FIELD_JOB_PARAMETER, null);
         streamingTopicKey = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER);
         latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER, System.currentTimeMillis());
         latestEventTime = TimestampUtils.convertToSeconds(latestEventTime);
@@ -100,7 +104,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         fetchEventsStepInMinutes = jobDataMapExtension.getJobDataMapIntValue(map, FETCH_EVENTS_STEP_IN_MINUTES_JOB_PARAMETER, FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT);
         impalaTablePartitionType = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER, IMPALA_TABLE_PARTITION_TYPE_DEFAULT);
         impalaDestinationTable = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_JOB_PARAMETER, null);
-        maxSourceDestinationCountGap = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SOURCE_DESTINATION_COUNT_GAP_JOB_PARAMETER, null);
+        maxSourceDestinationTimeGap = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER, null);
 
         if (map.containsKey(FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER)) {
             Resource fieldClusterGroupsRegexResource = jobDataMapExtension.getJobDataMapResourceValue(map, FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER);
@@ -178,18 +182,19 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                     }
                     streamWriter.send(result.get(streamingTopicKey).toString(), json.toJSONString(JSONStyle.NO_COMPRESS));
                 }
-                totalEventsProcessed += resultsMap.size();
-                int countGap;
-                while ((countGap = Math.abs(totalEventsProcessed - countEventsInDestinationTable(earliestTimestamp, timestampCursor))) > maxSourceDestinationCountGap) {
-                    logger.warn("Gap of %d between events written to topic %s and scored events in table %s -> Sleeping...", countGap, streamingTopic, impalaDestinationTable);
-                    try {
-                        Thread.sleep(sleepField * 1000);
-                    }
-                    catch (InterruptedException e) {
-                    }
-                }
 
                 monitorDataReceived(query.toSQL(), resultsMap.size(), "Events");
+
+                if (throttlingSleepField != null) {
+                    long timeGap;
+                    while ((timeGap = getGapFromDestinationTable(nextTimestampCursor - 1)) > maxSourceDestinationTimeGap) {
+                        logger.warn("Gap of {} between events written to topic {} and scored events in table {} -> Sleeping...", timeGap, streamingTopic, impalaDestinationTable);
+                        try {
+                            Thread.sleep(throttlingSleepField * 1000);
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
 
                 timestampCursor = nextTimestampCursor;
 
@@ -226,12 +231,22 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         }
     }
 
-    private int countEventsInDestinationTable(long earliestTimestamp, long timestampCursor) {
+    private long getGapFromDestinationTable(long timestampCursor) {
         ImpalaQuery query = new ImpalaQuery();
-        query.select("count(*)").from(impalaDestinationTable);
-        addPartitionFilterToQuery(query, earliestTimestamp, timestampCursor);
-
-        return impalaJdbcTemplate.queryForObject(query.toSQL(), Integer.class);
+        query.select("*").from(impalaDestinationTable);
+        addPartitionFilterToQuery(query, destinationTableLatestTime, timestampCursor);
+        query.limitAndSort(new ImpalaPageRequest(1, new Sort(Direction.DESC, epochtimeField)));
+        List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
+        if (resultsMap == null || resultsMap.size() == 0) {
+            return timestampCursor;
+        }
+        Map<String, Object> result = resultsMap.get(0);
+        Object latestEpochTimeField = result.get(epochtimeField);
+        if (latestEpochTimeField == null) {
+            return timestampCursor;
+        }
+        destinationTableLatestTime = ConversionUtils.convertToLong(latestEpochTimeField);
+        return timestampCursor - destinationTableLatestTime;
     }
 
     @Override
