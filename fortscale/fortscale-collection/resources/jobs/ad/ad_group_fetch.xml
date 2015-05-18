@@ -24,8 +24,36 @@
 					<value>groups%d.csv</value>
 				</entry>
 				<entry>
-					<key>ldapSearchShellScript</key>
-					<value>${collection.shell.scripts.dir.path}/ldapGroupSearch.sh</value>
+					<key>filter</key>
+					<value>(objectclass=group)</value>
+				</entry>
+				<entry>
+					<key>adFields</key>
+					<value>distinguishedName,
+						name,
+						isCriticalSystemObject,
+						isDeleted,
+						groupType,
+						sAMAccountType,
+						memberOf,
+						managedBy,
+						managedObjects,
+						masteredBy,
+						member,
+						nonSecurityMember,
+						nonSecurityMemberBL,
+						directReports,
+						secretary,
+						whenChanged,
+						whenCreated,
+						accountNameHistory,
+						cn,
+						description,
+						displayName,
+						mail,
+						sAMAccountName,
+						objectSid,
+						objectGUID</value>
 				</entry>
             </job-data-map>
 		</job>
