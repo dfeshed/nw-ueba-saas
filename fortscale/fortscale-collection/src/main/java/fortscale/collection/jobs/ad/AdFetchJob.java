@@ -6,6 +6,8 @@ import fortscale.utils.logging.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -32,8 +34,8 @@ public class AdFetchJob extends FortscaleJob {
 	private String filter;
 	private String adFields;
 
-	//TODO - make it autowired
-	private AdConnections adConnections = new AdConnections();
+	@Autowired
+	private AdConnections adConnections;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -96,10 +98,12 @@ public class AdFetchJob extends FortscaleJob {
 		int pageSize = 1000;
 		FileWriter fileWriter = new FileWriter(outputTempFile);
 		for (AdConnection adConnection: adConnections.getAdConnections()) {
-			String dcAddress = adConnection.getDcAddress();
-			String baseSearch = adConnection.getBaseSearch();
-			String username = adConnection.getUsername();
-			String password = adConnection.getPassword();
+			String dcAddress = adConnection.getIp_address();
+			dcAddress = "ldap://" + dcAddress + ":389";
+			String baseSearch = adConnection.getDomain_base_search();
+			String username = adConnection.getDomain_name();
+			username = username + "\\\\" + adConnection.getDomain_user();
+			String password = adConnection.getDomain_password();
 			password = fortscale.utils.EncryptionUtils.decrypt(password);
 			Hashtable environment = new Hashtable();
 			environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -142,4 +146,5 @@ public class AdFetchJob extends FortscaleJob {
 	protected boolean shouldReportDataReceived() {
 		return true;
 	}
+
 }
