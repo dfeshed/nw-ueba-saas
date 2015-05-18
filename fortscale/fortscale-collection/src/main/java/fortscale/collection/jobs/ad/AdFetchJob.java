@@ -123,7 +123,7 @@ public class AdFetchJob extends FortscaleJob {
 					for (int i = 0; i < adFieldsArray.length; i++) {
 						fileWriter.append(String.valueOf(attributes.get(adFieldsArray[i])));
 						if (i < adFieldsArray.length - 1) {
-							fileWriter.append(",");
+							fileWriter.append("\n");
 						}
 					}
 					fileWriter.append("\n");
