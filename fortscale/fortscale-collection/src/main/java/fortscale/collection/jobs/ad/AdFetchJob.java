@@ -99,7 +99,7 @@ public class AdFetchJob extends FortscaleJob {
 		FileWriter fileWriter = new FileWriter(outputTempFile);
 		for (AdConnection adConnection: adConnections.getAdConnections()) {
 			String dcAddress = adConnection.getIp_address();
-			dcAddress = "ldap://" + dcAddress + ":389";
+			dcAddress = "ldap://" + dcAddress + ":3268";
 			String baseSearch = adConnection.getDomain_base_search();
 			String username = adConnection.getDomain_user();
 			String password = adConnection.getDomain_password();
