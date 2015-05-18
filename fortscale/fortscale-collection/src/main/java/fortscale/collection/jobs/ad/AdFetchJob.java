@@ -105,11 +105,11 @@ public class AdFetchJob extends FortscaleJob {
 			String password = adConnection.getDomain_password();
 			password = fortscale.utils.EncryptionUtils.decrypt(password);
 			Hashtable environment = new Hashtable();
+			environment.put(Context.REFERRAL, "follow");
 			environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 			environment.put(Context.PROVIDER_URL, dcAddress);
 			environment.put(Context.SECURITY_PRINCIPAL, username);
 			environment.put(Context.SECURITY_CREDENTIALS, password);
-			//environment.put(Context.REFERRAL, "follow");
 			LdapContext context = new InitialLdapContext(environment, null);
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
 			SearchControls searchControls = new SearchControls();
