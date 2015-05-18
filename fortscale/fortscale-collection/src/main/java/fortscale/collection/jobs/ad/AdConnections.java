@@ -13,7 +13,8 @@ public class AdConnections {
     public AdConnections() {
         adConnections = new ArrayList();
         //TODO - load data from file
-        AdConnection adConnection = new AdConnection("192.168.0.125", "DC=pitzy,DC=dom", "administrator", "P@ssw0rd");
+        AdConnection adConnection = new AdConnection("ldap://192.168.0.75:389", "DC=somebigcompany,DC=com",
+                "somebigcompany\\administrator", "iYTLjyA0VryKhpkvBrMMLQ==");
         adConnections.add(adConnection);
     }
 

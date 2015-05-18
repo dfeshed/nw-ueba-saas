@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.ad;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.quartz.DisallowConcurrentExecution;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.utils.logging.Logger;
@@ -33,8 +32,8 @@ public class AdFetchJob extends FortscaleJob {
 	private String filter;
 	private String adFields;
 
-	@Autowired
-	private AdConnections adConnections;
+	//TODO - make it autowired
+	private AdConnections adConnections = new AdConnections();
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
