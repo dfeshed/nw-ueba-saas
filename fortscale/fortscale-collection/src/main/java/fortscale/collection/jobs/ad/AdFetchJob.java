@@ -111,6 +111,7 @@ public class AdFetchJob extends FortscaleJob {
 			environment.put(Context.PROVIDER_URL, dcAddress);
 			environment.put(Context.SECURITY_PRINCIPAL, username);
 			environment.put(Context.SECURITY_CREDENTIALS, password);
+			environment.put("java.naming.ldap.attributes.binary", "objectSid objectGUID");
 			LdapContext context = new InitialLdapContext(environment, null);
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
 			SearchControls searchControls = new SearchControls();
@@ -137,15 +138,16 @@ public class AdFetchJob extends FortscaleJob {
 									}
 									fileWriter.append(key + ": " + value);
 								}
-							} else if (key.equals("distinguishedName")) {
-								String value = (String)values.nextElement();
-								fileWriter.append("dn: " + value);
-								fileWriter.append(key + ": " + value);
-							} else if (key.equals("objectGUID") || key.equals("objectSid")) {
-								String value = DatatypeConverter.printBase64Binary((byte[])values.nextElement());
-								fileWriter.append(key + ": " + value);
 							} else if (values.hasMoreElements()) {
-								String value = (String)values.nextElement();
+								String value;
+								if (key.equals("distinguishedName")) {
+									value = (String)values.nextElement();
+									fileWriter.append("dn: " + value);
+								} else if (key.equals("objectGUID") || key.equals("objectSid")) {
+									value = DatatypeConverter.printBase64Binary((byte[])values.nextElement());
+								} else {
+									value = (String)values.nextElement();
+								}
 								fileWriter.append(key + ": " + value);
 							}
 							fileWriter.append("\n");
