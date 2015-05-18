@@ -121,12 +121,15 @@ public class AdFetchJob extends FortscaleJob {
 					SearchResult result = (SearchResult)answer.next();
 					Attributes attributes = result.getAttributes();
 					for (int i = 0; i < adFieldsArray.length; i++) {
-						fileWriter.append(String.valueOf(attributes.get(adFieldsArray[i])));
+						String value = String.valueOf(attributes.get(adFieldsArray[i]));
+						if (value != null) {
+							fileWriter.append(value);
+						}
 						if (i < adFieldsArray.length - 1) {
 							fileWriter.append("\n");
 						}
 					}
-					fileWriter.append("\n");
+					fileWriter.append("\n\n");
 				}
 				cookie = parseControls(context.getResponseControls());
 				context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, cookie, Control.CRITICAL)});

@@ -25,7 +25,7 @@
 				</entry>
 				<entry>
 					<key>filter</key>
-					<value>(objectclass=group)</value>
+					<value>(&amp;(objectclass=group))</value>
 				</entry>
 				<entry>
 					<key>adFields</key>
