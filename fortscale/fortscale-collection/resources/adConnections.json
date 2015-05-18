@@ -7,7 +7,7 @@
     "domain_user": "administrator"
   },
   {
-    "ip_address": "192.168.0.75",
+    "ip_address": "192.168.0.76",
     "domain_base_search": "DC=somebigcompany,DC=com",
     "domain_password": "iYTLjyA0VryKhpkvBrMMLQ==",
     "domain_name": "somebigcompany",
