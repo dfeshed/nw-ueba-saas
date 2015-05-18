@@ -112,7 +112,6 @@ public class AdFetchJob extends FortscaleJob {
 			LdapContext context = new InitialLdapContext(environment, null);
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
 			SearchControls searchControls = new SearchControls();
-			adFields = "dn," + adFields;
 			String[] adFieldsArray = adFields.split(",");
 			searchControls.setReturningAttributes(adFieldsArray);
 			searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -124,11 +123,15 @@ public class AdFetchJob extends FortscaleJob {
 					for (int i = 0; i < adFieldsArray.length; i++) {
 						String value = String.valueOf(attributes.get(adFieldsArray[i]));
 						if (value != null && !value.equals("null")) {
+							if (value.contains("distinguishedName")) {
+								fileWriter.append("dn: " + value.split(":")[1]);
+								fileWriter.append("\n");
+							}
 							fileWriter.append(value);
 							fileWriter.append("\n");
 						}
 					}
-					fileWriter.append("\n\n");
+					fileWriter.append("\n");
 				}
 				cookie = parseControls(context.getResponseControls());
 				context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, cookie, Control.CRITICAL)});
