@@ -38,7 +38,8 @@ import fortscale.utils.StringPredicates;
 public class EventsPrevalenceModelStreamTaskService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTaskService.class);
-	
+	private static final String GLOBAL_MODEL_NAME = "global";
+
 	private Map<String,PrevalanceModelStreamingService> prevalanceModelStreamingServiceMap;
 	private Map<String,List<String>> modelToContextFieldNameMap;
 	private List<String> modelsNamesOrder;
@@ -53,9 +54,9 @@ public class EventsPrevalenceModelStreamTaskService {
 	private Counter skippedMessageCount;
 	private Counter lastTimestampCount;
 	private List<String> discriminatorsFields;
-	
-	
-	
+
+	private GlobalModelStreamTaskService globalModelStreamTaskService;
+
 	public EventsPrevalenceModelStreamTaskService(Config config, TaskContext context) throws Exception {
 		// get model task configuration parameters
 		sourceType = getConfigString(config, "fortscale.source.type");
@@ -81,6 +82,9 @@ public class EventsPrevalenceModelStreamTaskService {
 		prevalanceModelStreamingServiceMap = new HashMap<>();
 		modelToContextFieldNameMap = new HashMap<>();
 		for(String modelName: modelsNamesOrder){
+			if (modelName.equals(GLOBAL_MODEL_NAME))
+				continue;
+
 			List<String> contextFieldList = new ArrayList<>();
 			String contextField = getConfigString(config, String.format("fortscale.model.%s.context.fieldname", modelName));
 			contextFieldList.add(contextField);
@@ -97,6 +101,10 @@ public class EventsPrevalenceModelStreamTaskService {
 			PrevalanceModelStreamingService prevalanceModelStreamingService = new PrevalanceModelStreamingService(store,modelBuilder,timeGapForModelUpdates);
 			prevalanceModelStreamingServiceMap.put(modelName, prevalanceModelStreamingService);
 		}
+
+		// Create streaming service for global model
+		globalModelStreamTaskService = modelsNamesOrder.contains(GLOBAL_MODEL_NAME) ?
+			new GlobalModelStreamTaskService(config, GLOBAL_MODEL_NAME, store) : null;
 	}
 	
 	private PrevalanceModelBuilderImpl createModelBuilder(String modelName, Config config) throws Exception {
@@ -140,6 +148,9 @@ public class EventsPrevalenceModelStreamTaskService {
 		boolean afterTimeMark = false;
 		for(int i = 0; i < modelsNamesOrder.size(); i++){
 			String modelName = modelsNamesOrder.get(i);
+			if (modelName.equals(GLOBAL_MODEL_NAME))
+				continue;
+
 			// get the context, so that we can get the model from store
 			String context = getModelContext(modelName, message);
 			if (StringUtils.isBlank(context)) {
@@ -174,6 +185,10 @@ public class EventsPrevalenceModelStreamTaskService {
 		} else{
 			skippedMessageCount.inc();
 		}
+
+		// Update global model
+		if (globalModelStreamTaskService != null)
+			globalModelStreamTaskService.updateGlobalModel(timestamp);
 	}
 
 	private String getModelContext(String modelName, JSONObject message){
