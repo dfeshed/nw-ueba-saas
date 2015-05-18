@@ -447,7 +447,6 @@
 									<directory>src/main/resources</directory>
 									<includes>
 										<include>logback.xml</include>
-										<include>adConnections.json</include>
 									</includes>
 								</resource>
 							</resources>
