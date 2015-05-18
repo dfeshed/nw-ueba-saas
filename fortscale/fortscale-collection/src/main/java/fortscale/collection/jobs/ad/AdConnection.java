@@ -8,7 +8,6 @@ public class AdConnection {
     private String ip_address;
     private String domain_base_search;
     private String domain_user;
-    private String domain_name;
     private String domain_password;
 
     public String getIp_address() {
@@ -35,19 +34,8 @@ public class AdConnection {
         this.domain_user = domain_user;
     }
 
-    public String getDomain_password() {
-        return domain_password;
-    }
+    public String getDomain_password() { return domain_password; }
 
-    public void setDomain_password(String domain_password) {
-        this.domain_password = domain_password;
-    }
+    public void setDomain_password(String domain_password) { this.domain_password = domain_password; }
 
-    public String getDomain_name() {
-        return domain_name;
-    }
-
-    public void setDomain_name(String domain_name) {
-        this.domain_name = domain_name;
-    }
 }
