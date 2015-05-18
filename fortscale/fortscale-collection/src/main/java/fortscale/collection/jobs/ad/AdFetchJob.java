@@ -79,23 +79,8 @@ public class AdFetchJob extends FortscaleJob {
 		return true;
 	}
 
-	private byte[] parseControls(Control[] controls) throws NamingException {
-		byte[] serverCookie = null;
-		if (controls != null) {
-			for (int i = 0; i < controls.length; i++) {
-				if (controls[i] instanceof PagedResultsResponseControl) {
-					PagedResultsResponseControl pagedResultsResponseControl = (PagedResultsResponseControl)controls[i];
-					serverCookie = pagedResultsResponseControl.getCookie();
-				}
-			}
-		}
-		return (serverCookie == null) ? new byte[0] : serverCookie;
-	}
-
 	private boolean fetchAndWriteToFileStep() throws Exception {
 		startNewStep("Fetch and Write to file");
-		byte[] cookie;
-		int pageSize = 1000;
 		FileWriter fileWriter = new FileWriter(outputTempFile);
 		for (AdConnection adConnection: adConnections.getAdConnections()) {
 			String dcAddress = adConnection.getIp_address();
@@ -105,33 +90,27 @@ public class AdFetchJob extends FortscaleJob {
 			String password = adConnection.getDomain_password();
 			password = fortscale.utils.EncryptionUtils.decrypt(password);
 			Hashtable environment = new Hashtable();
-			environment.put(Context.REFERRAL, "follow");
 			environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 			environment.put(Context.PROVIDER_URL, dcAddress);
 			environment.put(Context.SECURITY_PRINCIPAL, username);
 			environment.put(Context.SECURITY_CREDENTIALS, password);
 			LdapContext context = new InitialLdapContext(environment, null);
-			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
 			SearchControls searchControls = new SearchControls();
 			String[] adFieldsArray = adFields.split(",");
 			searchControls.setReturningAttributes(adFieldsArray);
 			searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-			do {
-				NamingEnumeration answer = context.search(baseSearch, filter, searchControls);
-				while (answer != null && answer.hasMore()) {
-					SearchResult result = (SearchResult)answer.next();
-					Attributes attributes = result.getAttributes();
-					for (int i = 0; i < adFieldsArray.length; i++) {
-						fileWriter.append(String.valueOf(attributes.get(adFieldsArray[i])));
-						if (i < adFieldsArray.length - 1) {
-							fileWriter.append(",");
-						}
+			NamingEnumeration answer = context.search(baseSearch, filter, searchControls);
+			while (answer != null && answer.hasMore()) {
+				SearchResult result = (SearchResult)answer.next();
+				Attributes attributes = result.getAttributes();
+				for (int i = 0; i < adFieldsArray.length; i++) {
+					fileWriter.append(String.valueOf(attributes.get(adFieldsArray[i])));
+					if (i < adFieldsArray.length - 1) {
+						fileWriter.append(",");
 					}
-					fileWriter.append("\n");
 				}
-				cookie = parseControls(context.getResponseControls());
-				context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, cookie, Control.CRITICAL)});
-			} while ((cookie != null) && (cookie.length != 0));
+				fileWriter.append("\n");
+			}
 			context.close();
 		}
 		fileWriter.flush();
