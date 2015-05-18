@@ -129,13 +129,14 @@ public class AdFetchJob extends FortscaleJob {
 								while (values.hasMoreElements()) {
 									String value = (String)values.nextElement();
 									fileWriter.append(key + ": " + value);
+									fileWriter.append("\n");
 								}
 							} else if (values.hasMoreElements()) {
 								String value = (String)values.nextElement();
 								if (key.equals("distinguishedName")) {
 									fileWriter.append("dn: " + value);
 								} else if (key.equals("objectGUID") || key.equals("objectSid")) {
-									value = fortscale.utils.EncryptionUtils.encrypt(value);
+									//TODO - handle guid and sid
 								}
 								fileWriter.append(key + ": " + value);
 							}
