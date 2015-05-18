@@ -109,13 +109,13 @@ public class AdFetchJob extends FortscaleJob {
 			environment.put(Context.PROVIDER_URL, dcAddress);
 			environment.put(Context.SECURITY_PRINCIPAL, username);
 			environment.put(Context.SECURITY_CREDENTIALS, password);
-			environment.put(Context.REFERRAL, "follow");
+			//environment.put(Context.REFERRAL, "follow");
 			LdapContext context = new InitialLdapContext(environment, null);
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
 			SearchControls searchControls = new SearchControls();
 			String[] adFieldsArray = adFields.split(",");
 			searchControls.setReturningAttributes(adFieldsArray);
-			searchControls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+			searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			do {
 				NamingEnumeration answer = context.search(baseSearch, filter, searchControls);
 				while (answer != null && answer.hasMore()) {
