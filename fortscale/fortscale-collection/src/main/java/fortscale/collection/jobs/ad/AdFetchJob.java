@@ -142,6 +142,7 @@ public class AdFetchJob extends FortscaleJob {
 								if (key.equals("distinguishedName")) {
 									String value = (String)values.nextElement();
 									fileWriter.append("dn: " + value);
+									fileWriter.append("\n");
 									fileWriter.append(key + ": " + value);
 								} else if (key.equals("objectGUID") || key.equals("objectSid")) {
 									String value = DatatypeConverter.printBase64Binary((byte[])values.nextElement());
