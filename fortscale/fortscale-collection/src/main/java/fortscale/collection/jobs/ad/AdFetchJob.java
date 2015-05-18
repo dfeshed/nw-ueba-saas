@@ -13,6 +13,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.*;
 import javax.naming.ldap.*;
+import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Date;
@@ -126,17 +127,25 @@ public class AdFetchJob extends FortscaleJob {
 							String key = atr.getID();
 							Enumeration values = atr.getAll();
 							if (key.equals("member")) {
+								boolean first = true;
 								while (values.hasMoreElements()) {
 									String value = (String)values.nextElement();
+									if (first) {
+										first = false;
+									} else {
+										fileWriter.append("\n");
+									}
 									fileWriter.append(key + ": " + value);
-									fileWriter.append("\n");
 								}
 							} else if (values.hasMoreElements()) {
-								String value = (String)values.nextElement();
+								String value;
 								if (key.equals("distinguishedName")) {
+									value = (String)values.nextElement();
 									fileWriter.append("dn: " + value);
 								} else if (key.equals("objectGUID") || key.equals("objectSid")) {
-									//TODO - handle guid and sid
+									value = (DatatypeConverter.printBase64Binary((byte[])values.nextElement()));
+								} else {
+									value = (String)values.nextElement();
 								}
 								fileWriter.append(key + ": " + value);
 							}
