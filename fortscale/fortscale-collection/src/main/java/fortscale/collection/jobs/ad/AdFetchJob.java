@@ -117,7 +117,7 @@ public class AdFetchJob extends FortscaleJob {
 			searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			do {
 				NamingEnumeration answer = context.search(baseSearch, filter, searchControls);
-				while (answer != null && answer.hasMore()) {
+				while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
 					SearchResult result = (SearchResult)answer.next();
 					Attributes attributes = result.getAttributes();
 					for (int i = 0; i < adFieldsArray.length; i++) {
