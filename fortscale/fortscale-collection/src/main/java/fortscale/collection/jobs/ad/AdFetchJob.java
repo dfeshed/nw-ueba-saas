@@ -16,6 +16,7 @@ import javax.naming.ldap.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
@@ -112,22 +113,32 @@ public class AdFetchJob extends FortscaleJob {
 			LdapContext context = new InitialLdapContext(environment, null);
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
 			SearchControls searchControls = new SearchControls();
-			String[] adFieldsArray = adFields.split(",");
-			searchControls.setReturningAttributes(adFieldsArray);
+			searchControls.setReturningAttributes(adFields.split(","));
 			searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			do {
 				NamingEnumeration answer = context.search(baseSearch, filter, searchControls);
 				while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
 					SearchResult result = (SearchResult)answer.next();
 					Attributes attributes = result.getAttributes();
-					for (int i = 0; i < adFieldsArray.length; i++) {
-						String value = String.valueOf(attributes.get(adFieldsArray[i]));
-						if (value != null && !value.equals("null")) {
-							if (value.contains("distinguishedName")) {
-								fileWriter.append("dn: " + value.split(":")[1]);
-								fileWriter.append("\n");
+					if (attributes != null) {
+						for (NamingEnumeration index = attributes.getAll(); index.hasMoreElements();) {
+							Attribute atr = (Attribute)index.next();
+							String key = atr.getID();
+							Enumeration values = atr.getAll();
+							if (key.equals("member")) {
+								while (values.hasMoreElements()) {
+									String value = (String)values.nextElement();
+									fileWriter.append(key + ": " + value);
+								}
+							} else if (values.hasMoreElements()) {
+								String value = (String)values.nextElement();
+								if (key.equals("distinguishedName")) {
+									fileWriter.append("dn: " + value);
+								} else if (key.equals("objectGUID") || key.equals("objectSid")) {
+									value = fortscale.utils.EncryptionUtils.encrypt(value);
+								}
+								fileWriter.append(key + ": " + value);
 							}
-							fileWriter.append(value);
 							fileWriter.append("\n");
 						}
 					}
