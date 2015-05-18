@@ -138,19 +138,18 @@ public class AdFetchJob extends FortscaleJob {
 									}
 									fileWriter.append(key + ": " + value);
 								}
-							} else {
+							} else if (values.hasMoreElements()) {
+								String value;
 								if (key.equals("distinguishedName")) {
-									String value = (String)values.nextElement();
+									value = (String)values.nextElement();
 									fileWriter.append("dn: " + value);
 									fileWriter.append("\n");
-									fileWriter.append(key + ": " + value);
 								} else if (key.equals("objectGUID") || key.equals("objectSid")) {
-									String value = DatatypeConverter.printBase64Binary((byte[])values.nextElement());
-									fileWriter.append(key + ": " + value);
+									value = DatatypeConverter.printBase64Binary((byte[])values.nextElement());
 								} else {
-									String value = (String)values.nextElement();
-									fileWriter.append(key + ": " + value);
+									value = (String)values.nextElement();
 								}
+								fileWriter.append(key + ": " + value);
 							}
 							fileWriter.append("\n");
 						}
