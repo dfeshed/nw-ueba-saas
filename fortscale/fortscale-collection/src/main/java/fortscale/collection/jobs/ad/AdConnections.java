@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class AdConnections implements InitializingBean {
 
-    @Value("${ad.connections:}")
+    @Value("${ad.connections}")
     private String adConnectionsFile;
 
     private List<AdConnection> adConnections;
@@ -23,7 +23,8 @@ public class AdConnections implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        adConnections = mapper.readValue(new File(adConnectionsFile), new TypeReference<List<AdConnection>>(){});
+        File jsonFile = new File(adConnectionsFile);
+        adConnections = mapper.readValue(jsonFile, new TypeReference<List<AdConnection>>(){});
     }
 
     public List<AdConnection> getAdConnections() {
