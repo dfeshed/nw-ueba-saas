@@ -20,6 +20,11 @@ public class AdConnections implements InitializingBean {
 
     private List<AdConnection> adConnections;
 
+    public AdConnections(String adConnectionsFile) throws Exception {
+        this.adConnectionsFile = adConnectionsFile;
+        afterPropertiesSet();
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
         ObjectMapper mapper = new ObjectMapper();

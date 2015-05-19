@@ -1,21 +1,22 @@
 package fortscale.collection.jobs.ad;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.quartz.DisallowConcurrentExecution;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.utils.logging.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.*;
 import javax.naming.ldap.*;
 import javax.xml.bind.DatatypeConverter;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -45,7 +46,9 @@ public class AdFetchJob extends FortscaleJob {
 		// get parameters values from the job data map
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");
+		//AD search filter
 		filter = jobDataMapExtension.getJobDataMapStringValue(map, "filter");
+		//AD selected fields
 		adFields = jobDataMapExtension.getJobDataMapStringValue(map, "adFields");
 	}
 
@@ -81,27 +84,35 @@ public class AdFetchJob extends FortscaleJob {
 		return true;
 	}
 
-	private byte[] parseControls(Control[] controls) throws NamingException {
-		byte[] serverCookie = null;
-		if (controls != null) {
-			for (int i = 0; i < controls.length; i++) {
-				if (controls[i] instanceof PagedResultsResponseControl) {
-					PagedResultsResponseControl pagedResultsResponseControl = (PagedResultsResponseControl)controls[i];
-					serverCookie = pagedResultsResponseControl.getCookie();
-				}
-			}
-		}
-		return (serverCookie == null) ? new byte[0] : serverCookie;
-	}
-
 	private boolean fetchAndWriteToFileStep() throws Exception {
 		startNewStep("Fetch and Write to file");
+		FileWriter file = new FileWriter(outputTempFile);
+		BufferedWriter fileWriter = new BufferedWriter(file);
+		fetchFromAD(adConnections, fileWriter, filter, adFields, -1);
+		renameOutput(outputTempFile, outputFile);
+		monitorDataReceived(outputFile, "Ad");
+		finishStep();
+		return true;
+	}
+
+	/**
+	 * This is the main method for the job. It connects to all of the domains by iterating
+	 * over each one of them and attempting to connect to their DCs until one such connection is successful.
+	 * It then performs the requested search according to the filter and saves the results in fileWriter object.
+	 *
+	 * @param  _adConnections  A collection of all of the domain connection strings
+	 * @param  fileWriter      An object to save the results to (could be a file, STDOUT, String etc.)
+	 * @param  _filter		   The Active Directory search filter (which object class is required)
+	 * @param  _adFields	   The Active Directory attributes to return in the search
+	 * @param  resultLimit	   A limit on the search results (mostly for testing purposes) should be -1 for no limit
+	 */
+	public void fetchFromAD(AdConnections _adConnections, BufferedWriter fileWriter, String _filter, String
+			_adFields, int resultLimit) throws Exception {
 		byte[] cookie;
 		int pageSize = 1000;
 		int totalRecords = 0;
-		FileWriter fileWriter = new FileWriter(outputTempFile);
 		logger.debug("Connecting to domain controllers");
-		for (AdConnection adConnection: adConnections.getAdConnections()) {
+		for (AdConnection adConnection: _adConnections.getAdConnections()) {
 			logger.debug("Fetching from {}", adConnection.getDomain_name());
 			LdapContext context = null;
 			boolean connected = false;
@@ -138,46 +149,17 @@ public class AdFetchJob extends FortscaleJob {
 			String baseSearch = adConnection.getDomain_base_search();
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
 			SearchControls searchControls = new SearchControls();
-			searchControls.setReturningAttributes(adFields.split(","));
+			searchControls.setReturningAttributes(_adFields.split(","));
 			searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+			if (resultLimit > 0) {
+				searchControls.setCountLimit(resultLimit);
+			}
 			do {
-				NamingEnumeration answer = context.search(baseSearch, filter, searchControls);
+				NamingEnumeration answer = context.search(baseSearch, _filter, searchControls);
 				while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
 					SearchResult result = (SearchResult)answer.next();
 					Attributes attributes = result.getAttributes();
-					if (attributes != null) {
-						for (NamingEnumeration index = attributes.getAll(); index.hasMoreElements();) {
-							Attribute atr = (Attribute)index.next();
-							String key = atr.getID();
-							Enumeration values = atr.getAll();
-							if (key.equals("member")) {
-								boolean first = true;
-								while (values.hasMoreElements()) {
-									String value = (String)values.nextElement();
-									if (first) {
-										first = false;
-									} else {
-										fileWriter.append("\n");
-									}
-									fileWriter.append(key + ": " + value);
-								}
-							} else if (values.hasMoreElements()) {
-								String value;
-								if (key.equals("distinguishedName")) {
-									value = (String)values.nextElement();
-									fileWriter.append("dn: " + value);
-									fileWriter.append("\n");
-								} else if (key.equals("objectGUID") || key.equals("objectSid")) {
-									value = DatatypeConverter.printBase64Binary((byte[])values.nextElement());
-								} else {
-									value = (String)values.nextElement();
-								}
-								fileWriter.append(key + ": " + value);
-							}
-							fileWriter.append("\n");
-						}
-					}
-					fileWriter.append("\n");
+					handleAttributes(fileWriter, attributes);
 					records++;
 				}
 				cookie = parseControls(context.getResponseControls());
@@ -190,10 +172,59 @@ public class AdFetchJob extends FortscaleJob {
 		fileWriter.flush();
 		fileWriter.close();
 		logger.debug("Fetched a total of {} records", totalRecords);
-		renameOutput(outputTempFile, outputFile);
-		monitorDataReceived(outputFile, "Ad");
-		finishStep();
-		return true;
+	}
+
+	//auxiliary method that handles the current response from the server
+	private void handleAttributes(BufferedWriter fileWriter, Attributes attributes) throws NamingException,IOException {
+		if (attributes != null) {
+            for (NamingEnumeration index = attributes.getAll(); index.hasMoreElements();) {
+                Attribute atr = (Attribute)index.next();
+                String key = atr.getID();
+                Enumeration values = atr.getAll();
+				if (key.equals("logonHours")) {
+					continue;
+				} else if (key.equals("member")) {
+                    boolean first = true;
+                    while (values.hasMoreElements()) {
+                        String value = (String)values.nextElement();
+                        if (first) {
+                            first = false;
+                        } else {
+                            fileWriter.append("\n");
+                        }
+                        fileWriter.append(key + ": " + value);
+                    }
+                } else if (values.hasMoreElements()) {
+                    String value;
+                    if (key.equals("distinguishedName")) {
+                        value = (String)values.nextElement();
+                        fileWriter.append("dn: " + value);
+                        fileWriter.append("\n");
+                    } else if (key.equals("objectGUID") || key.equals("objectSid")) {
+                        value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
+                    } else {
+                        value = (String)values.nextElement();
+                    }
+                    fileWriter.append(key + ": " + value);
+                }
+                fileWriter.append("\n");
+            }
+        }
+		fileWriter.append("\n");
+	}
+
+	//used to determine if an additional page of results exists
+	private byte[] parseControls(Control[] controls) throws NamingException {
+		byte[] serverCookie = null;
+		if (controls != null) {
+			for (int i = 0; i < controls.length; i++) {
+				if (controls[i] instanceof PagedResultsResponseControl) {
+					PagedResultsResponseControl pagedResultsResponseControl = (PagedResultsResponseControl)controls[i];
+					serverCookie = pagedResultsResponseControl.getCookie();
+				}
+			}
+		}
+		return (serverCookie == null) ? new byte[0] : serverCookie;
 	}
 
 	@Override
