@@ -100,19 +100,29 @@ public class AdFetchJob extends FortscaleJob {
 		int pageSize = 1000;
 		FileWriter fileWriter = new FileWriter(outputTempFile);
 		for (AdConnection adConnection: adConnections.getAdConnections()) {
-			String dcAddress = adConnection.getIp_address();
-			dcAddress = "ldap://" + dcAddress + ":389";
+			LdapContext context = null;
+			for (String dcAddress: adConnection.getIp_addresses()) {
+				boolean connected = true;
+				dcAddress = "ldap://" + dcAddress + ":389";
+				String username = adConnection.getDomain_user();
+				String password = adConnection.getDomain_password();
+				password = fortscale.utils.EncryptionUtils.decrypt(password);
+				Hashtable environment = new Hashtable();
+				environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+				environment.put(Context.PROVIDER_URL, dcAddress);
+				environment.put(Context.SECURITY_PRINCIPAL, username);
+				environment.put(Context.SECURITY_CREDENTIALS, password);
+				environment.put("java.naming.ldap.attributes.binary", "objectSid objectGUID");
+				try {
+					context = new InitialLdapContext(environment, null);
+				} catch (javax.naming.CommunicationException ex) {
+					connected = false;
+				}
+				if (connected) {
+					break;
+				}
+			}
 			String baseSearch = adConnection.getDomain_base_search();
-			String username = adConnection.getDomain_user();
-			String password = adConnection.getDomain_password();
-			password = fortscale.utils.EncryptionUtils.decrypt(password);
-			Hashtable environment = new Hashtable();
-			environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-			environment.put(Context.PROVIDER_URL, dcAddress);
-			environment.put(Context.SECURITY_PRINCIPAL, username);
-			environment.put(Context.SECURITY_CREDENTIALS, password);
-			environment.put("java.naming.ldap.attributes.binary", "objectSid objectGUID");
-			LdapContext context = new InitialLdapContext(environment, null);
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
 			SearchControls searchControls = new SearchControls();
 			searchControls.setReturningAttributes(adFields.split(","));

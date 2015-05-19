@@ -1,22 +1,16 @@
 package fortscale.collection.jobs.ad;
 
+import java.util.List;
+
 /**
  * Created by Amir Keren on 17/05/2015.
  */
 public class AdConnection {
 
-    private String ip_address;
+    private List<String> ip_addresses;
     private String domain_base_search;
     private String domain_user;
     private String domain_password;
-
-    public String getIp_address() {
-        return ip_address;
-    }
-
-    public void setIp_address(String ip_address) {
-        this.ip_address = ip_address;
-    }
 
     public String getDomain_base_search() {
         return domain_base_search;
@@ -38,4 +32,8 @@ public class AdConnection {
 
     public void setDomain_password(String domain_password) { this.domain_password = domain_password; }
 
+    public List<String> getIp_addresses() { return ip_addresses; }
+
+    public void setIp_addresses(List<String> ip_addresses) { this.ip_addresses = ip_addresses; }
+    
 }
