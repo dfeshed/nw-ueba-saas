@@ -2,14 +2,12 @@ package fortscale.collection.ad;
 
 import org.junit.Before;
 import org.junit.Test;
-import fortscale.collection.jobs.ad.AdConnections;
 import fortscale.collection.jobs.ad.AdFetchJob;
 import static org.junit.Assert.assertTrue;
 
 public class ADMockFetchTest {
 
 	private AdFetchJob adFetchJob;
-	private AdConnections adConnections;
 
 	@Before
 	public void setUp() throws Exception {

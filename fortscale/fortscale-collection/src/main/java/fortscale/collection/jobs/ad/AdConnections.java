@@ -20,6 +20,8 @@ public class AdConnections implements InitializingBean {
 
     private List<AdConnection> adConnections;
 
+    public AdConnections() {}
+
     public AdConnections(String adConnectionsFile) throws Exception {
         this.adConnectionsFile = adConnectionsFile;
         afterPropertiesSet();
