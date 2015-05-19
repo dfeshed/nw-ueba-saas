@@ -42,6 +42,10 @@
 					<key>impalaDestinationTable</key>
 					<value>${impala.score.vpn.table.name}</value>
 				</entry>
+				<entry>
+					<key>throttlingSleep</key>
+					<value>${kafka.throttlingSleep}</value>
+				</entry>
 			</job-data-map>
 		</job>
 	</schedule>

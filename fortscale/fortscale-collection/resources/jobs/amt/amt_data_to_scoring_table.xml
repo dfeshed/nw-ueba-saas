@@ -38,6 +38,10 @@
 					<key>impalaTablePartitionType</key>
 					<value>${impala.data.amt.table.partition.type}</value>
 				</entry>
+                <entry>
+                    <key>throttlingSleep</key>
+                    <value>${kafka.throttlingSleep}</value>
+                </entry>
             </job-data-map>
 
         </job>
