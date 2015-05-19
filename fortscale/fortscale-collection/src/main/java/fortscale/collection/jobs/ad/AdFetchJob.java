@@ -98,13 +98,19 @@ public class AdFetchJob extends FortscaleJob {
 		startNewStep("Fetch and Write to file");
 		byte[] cookie;
 		int pageSize = 1000;
+		int totalRecords = 0;
 		FileWriter fileWriter = new FileWriter(outputTempFile);
+		logger.debug("Connecting to domain controllers");
 		for (AdConnection adConnection: adConnections.getAdConnections()) {
+			logger.debug("Fetching from {}", adConnection.getDomain_name());
 			LdapContext context = null;
+			boolean connected = false;
+			int records = 0;
 			for (String dcAddress: adConnection.getIp_addresses()) {
-				boolean connected = true;
+				logger.debug("Trying to connect to domain controller at {}", dcAddress);
+				connected = true;
 				dcAddress = "ldap://" + dcAddress + ":389";
-				String username = adConnection.getDomain_user();
+				String username = adConnection.getDomain_user() + "@" + adConnection.getDomain_name();
 				String password = adConnection.getDomain_password();
 				password = fortscale.utils.EncryptionUtils.decrypt(password);
 				Hashtable environment = new Hashtable();
@@ -116,11 +122,18 @@ public class AdFetchJob extends FortscaleJob {
 				try {
 					context = new InitialLdapContext(environment, null);
 				} catch (javax.naming.CommunicationException ex) {
+					logger.debug("Connection failed");
 					connected = false;
 				}
 				if (connected) {
 					break;
 				}
+			}
+			if (connected) {
+				logger.debug("Connection established");
+			} else {
+				logger.debug("Failed to connect to any domain controller");
+				continue;
 			}
 			String baseSearch = adConnection.getDomain_base_search();
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
@@ -165,14 +178,18 @@ public class AdFetchJob extends FortscaleJob {
 						}
 					}
 					fileWriter.append("\n");
+					records++;
 				}
 				cookie = parseControls(context.getResponseControls());
 				context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, cookie, Control.CRITICAL)});
 			} while ((cookie != null) && (cookie.length != 0));
 			context.close();
+			totalRecords += records;
+			logger.debug("Fetched {} records for domain {}", records, adConnection.getDomain_name());
 		}
 		fileWriter.flush();
 		fileWriter.close();
+		logger.debug("Fetched a total of {} records", totalRecords);
 		renameOutput(outputTempFile, outputFile);
 		monitorDataReceived(outputFile, "Ad");
 		finishStep();

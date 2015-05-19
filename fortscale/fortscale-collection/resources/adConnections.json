@@ -3,6 +3,7 @@
     "ip_addresses": ["192.168.0.76", "192.168.0.75"],
     "domain_base_search": "DC=somebigcompany,DC=com",
     "domain_password": "iYTLjyA0VryKhpkvBrMMLQ==",
-    "domain_user": "administrator@somebigcompany.com"
+    "domain_user": "administrator",
+    "domain_name": "somebigcompany.com"
   }
 ]
