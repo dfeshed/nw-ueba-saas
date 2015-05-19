@@ -5,6 +5,9 @@ import org.junit.Test;
 import fortscale.collection.jobs.ad.AdFetchJob;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Created by Amir Keren on 17/05/2015.
+ */
 public class ADMockFetchTest {
 
 	private AdFetchJob adFetchJob;

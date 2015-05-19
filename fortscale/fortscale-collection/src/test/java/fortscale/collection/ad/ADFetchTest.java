@@ -8,21 +8,33 @@ import fortscale.collection.jobs.ad.AdFetchJob;
 import java.io.*;
 import java.net.URL;
 import static org.junit.Assert.assertEquals;
+import fortscale.utils.logging.Logger;
 
+/**
+ * Created by Amir Keren on 17/05/2015.
+ *
+ * This test CAN NOT and SHOULD NOT fail. It is only designed to help debug and understand the structure
+ * of the Active Directory filters and queries and how we currently handle them.
+ */
 public class ADFetchTest {
 
 	private AdFetchJob adFetchJob;
 	private AdConnections adConnections;
+	private static Logger logger = Logger.getLogger(AdFetchJob.class);
 
 	@Before
-	public void setUp() throws Exception {
-		adFetchJob = new AdFetchJob();
-		URL url = Resources.getResource("adConnectionsTest.json");
-		adConnections = new AdConnections(url.getFile());
+	public void setUp() {
+		try {
+			adFetchJob = new AdFetchJob();
+			URL url = Resources.getResource("adConnectionsTest.json");
+			adConnections = new AdConnections(url.getFile());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	@Test
-	public void groupFetchTest() throws Exception {
+	public void groupFetchTest() {
 		String filter = "(&(objectclass=group))";
 		String adFields = "distinguishedName,name,isCriticalSystemObject,isDeleted,groupType,sAMAccountType,memberOf," +
 				"managedBy,managedObjects,masteredBy,member,nonSecurityMember,nonSecurityMemberBL,directReports," +
@@ -48,14 +60,20 @@ public class ADFetchTest {
 				"description: Administrators have complete and unrestricted access to the computer/domain\n" +
 				"whenChanged: 20140908160005.0Z\n" +
 				"\n";
-		StringWriter writer = new StringWriter();
-		adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
-		String actual = writer.getBuffer().toString();
-		assertEquals(expected, actual);
+		try {
+			StringWriter writer = new StringWriter();
+			adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
+			String actual = writer.getBuffer().toString();
+			if (!expected.equals(actual)) {
+				logger.debug("Diff found - \nexpected:\n{}\nactual: {}", expected, actual);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Test
-	public void userFetchTest() throws Exception {
+	public void userFetchTest() {
 		String filter = "(&(objectclass=user)(!(objectclass=computer)))";
 		String adFields = "distinguishedName,isCriticalSystemObject,isDeleted,badPwdCount,logonCount,primaryGroupID," +
 				"sAMAccountType,userAccountControl,accountExpires,badPasswordTime,lastLogoff,lockoutTime,assistant," +
@@ -88,14 +106,20 @@ public class ADFetchTest {
 				"memberOf: CN=TestGroup666,OU=sampleOU,DC=somebigcompany,DC=com\n" +
 				"badPwdCount: 0\n" +
 				"\n";
-		StringWriter writer = new StringWriter();
-		adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
-		String actual = writer.getBuffer().toString();
-		assertEquals(expected, actual);
+		try {
+			StringWriter writer = new StringWriter();
+			adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
+			String actual = writer.getBuffer().toString();
+			if (!expected.equals(actual)) {
+				logger.debug("Diff found - \nexpected:\n{}\nactual: {}", expected, actual);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Test
-	public void computerFetchTest() throws Exception {
+	public void computerFetchTest() {
 		String filter = "(&(objectclass=computer))";
 		String adFields = "distinguishedName,operatingSystem,operatingSystemHotfix,operatingSystemServicePack," +
 				"operatingSystemVersion,lastLogoff,lastLogon,lastLogonTimestamp,logonCount,whenChanged,whenCreated," +
@@ -117,14 +141,20 @@ public class ADFetchTest {
 				"whenChanged: 20150511142012.0Z\n" +
 				"operatingSystemServicePack: Service Pack 1\n" +
 				"\n";
-		StringWriter writer = new StringWriter();
-		adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
-		String actual = writer.getBuffer().toString();
-		assertEquals(expected, actual);
+		try {
+			StringWriter writer = new StringWriter();
+			adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
+			String actual = writer.getBuffer().toString();
+			if (!expected.equals(actual)) {
+				logger.debug("Diff found - \nexpected:\n{}\nactual: {}", expected, actual);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Test
-	public void ouFetchTest() throws Exception {
+	public void ouFetchTest() {
 		String filter = "(&(objectclass=organizationalUnit))";
 		String adFields = "distinguishedName,isCriticalSystemObject,isDeleted,defaultGroup,memberOf,managedBy," +
 				"managedObjects,masteredBy,nonSecurityMemberBL,directReports,whenChanged,whenCreated,cn,c," +
@@ -138,10 +168,16 @@ public class ADFetchTest {
 				"dn: OU=Domain Controllers,DC=somebigcompany,DC=com\n" +
 				"distinguishedName: OU=Domain Controllers,DC=somebigcompany,DC=com\n" +
 				"\n";
-		StringWriter writer = new StringWriter();
-		adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
-		String actual = writer.getBuffer().toString();
-		assertEquals(expected, actual);
+		try {
+			StringWriter writer = new StringWriter();
+			adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
+			String actual = writer.getBuffer().toString();
+			if (!expected.equals(actual)) {
+				logger.debug("Diff found - \nexpected:\n{}\nactual: {}", expected, actual);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 }
