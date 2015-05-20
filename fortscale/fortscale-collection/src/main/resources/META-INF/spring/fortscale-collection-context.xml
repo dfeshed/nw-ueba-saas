@@ -57,7 +57,7 @@
 		<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
 	</bean>
-	<bean id="iseResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
+	<!--<bean id="iseResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
 			<bean class="fortscale.services.cache.MemoryBasedCache">
 				<constructor-arg name="maxSize" value="${ise.resolver.cache.max.items:30000}" />
@@ -75,7 +75,7 @@
 		<constructor-arg name="maxSize" value="${ise.resolver.cache.max.items:30000}" />
 		<constructor-arg name="timeToExpire" value="${ise.resolver.blacklist.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
-	</bean>
+	</bean>-->
 	<bean id="loginResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
 			<bean class="fortscale.services.cache.MemoryBasedCache">
@@ -96,17 +96,16 @@
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
 	</bean>
 
-
 	<!-- ip to hostname singleton service bean for use in fortscale collection -->
 	<bean id="dnsResolver" class="fortscale.services.ipresolving.DnsResolver" scope="singleton" />
 	<bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" >
 		<constructor-arg name="shouldUseBlackList" value="${dhcp.resolver.shouldUseBlackList:true}" />
 		<constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
 	</bean>
-	<bean id="iseResolver" class="fortscale.services.ipresolving.IseResolver" scope="singleton" >
+	<!--<bean id="iseResolver" class="fortscale.services.ipresolving.IseResolver" scope="singleton" >
 		<constructor-arg name="shouldUseBlackList" value="${ise.resolver.shouldUseBlackList:true}" />
 		<constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
-	</bean>
+	</bean>-->
 	<bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" >
 		<constructor-arg name="shouldUseBlackList" value="${computer.login.resolver.shouldUseBlackList:true}" />
 		<constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
