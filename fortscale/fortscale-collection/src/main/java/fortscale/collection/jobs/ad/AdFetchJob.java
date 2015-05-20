@@ -181,9 +181,7 @@ public class AdFetchJob extends FortscaleJob {
                 Attribute atr = (Attribute)index.next();
                 String key = atr.getID();
                 Enumeration values = atr.getAll();
-				if (key.equals("logonHours")) {
-					continue;
-				} else if (key.equals("member")) {
+				if (key.equals("member")) {
                     boolean first = true;
                     while (values.hasMoreElements()) {
                         String value = (String)values.nextElement();

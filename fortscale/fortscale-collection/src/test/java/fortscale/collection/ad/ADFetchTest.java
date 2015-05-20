@@ -21,6 +21,7 @@ public class ADFetchTest {
 	private AdFetchJob adFetchJob;
 	private AdConnections adConnections;
 	private static Logger logger = Logger.getLogger(AdFetchJob.class);
+	private boolean initialized;
 
 	@Before
 	public void setUp() {
@@ -28,11 +29,13 @@ public class ADFetchTest {
 			adFetchJob = new AdFetchJob();
 			URL url = Resources.getResource("adConnectionsTest.json");
 			adConnections = new AdConnections(url.getFile());
+			initialized = true;
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.debug("Bad json file");
+			initialized = false;
 		}
 	}
-	
+
 	@Test
 	public void groupFetchTest() {
 		String filter = "(&(objectclass=group))";
@@ -60,15 +63,8 @@ public class ADFetchTest {
 				"description: Administrators have complete and unrestricted access to the computer/domain\n" +
 				"whenChanged: 20140908160005.0Z\n" +
 				"\n";
-		try {
-			StringWriter writer = new StringWriter();
-			adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
-			String actual = writer.getBuffer().toString();
-			if (!expected.equals(actual)) {
-				logger.debug("Diff found - \nexpected:\n{}\nactual: {}", expected, actual);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		if (initialized) {
+			runTest(filter, adFields, expected);
 		}
 	}
 
@@ -106,15 +102,8 @@ public class ADFetchTest {
 				"memberOf: CN=TestGroup666,OU=sampleOU,DC=somebigcompany,DC=com\n" +
 				"badPwdCount: 0\n" +
 				"\n";
-		try {
-			StringWriter writer = new StringWriter();
-			adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
-			String actual = writer.getBuffer().toString();
-			if (!expected.equals(actual)) {
-				logger.debug("Diff found - \nexpected:\n{}\nactual: {}", expected, actual);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		if (initialized) {
+			runTest(filter, adFields, expected);
 		}
 	}
 
@@ -141,15 +130,8 @@ public class ADFetchTest {
 				"whenChanged: 20150511142012.0Z\n" +
 				"operatingSystemServicePack: Service Pack 1\n" +
 				"\n";
-		try {
-			StringWriter writer = new StringWriter();
-			adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
-			String actual = writer.getBuffer().toString();
-			if (!expected.equals(actual)) {
-				logger.debug("Diff found - \nexpected:\n{}\nactual: {}", expected, actual);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		if (initialized) {
+			runTest(filter, adFields, expected);
 		}
 	}
 
@@ -168,6 +150,12 @@ public class ADFetchTest {
 				"dn: OU=Domain Controllers,DC=somebigcompany,DC=com\n" +
 				"distinguishedName: OU=Domain Controllers,DC=somebigcompany,DC=com\n" +
 				"\n";
+		if (initialized) {
+			runTest(filter, adFields, expected);
+		}
+	}
+
+	private void runTest(String filter, String adFields, String expected) {
 		try {
 			StringWriter writer = new StringWriter();
 			adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
