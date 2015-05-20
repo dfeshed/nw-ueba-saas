@@ -5,22 +5,22 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd">
-						
+
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
- 		<property name="location" value="file:resources/fortscale-collection-overriding.properties"/>
- 		<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
- 		<property name="ignoreUnresolvablePlaceholders" value="true"/>
- 		<property name="localOverride" value="true"/>
- 	</bean>
- 	
- 	<bean id="hadoopConfiguration" class="fortscale.collection.hadoop.HadoopConfigurationFactory">
- 		<property name="resourcesString" value="${hdfs.configuration.resources}"/>
- 	</bean>
+		<property name="location" value="file:resources/fortscale-collection-overriding.properties"/>
+		<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="localOverride" value="true"/>
+	</bean>
+
+	<bean id="hadoopConfiguration" class="fortscale.collection.hadoop.HadoopConfigurationFactory">
+		<property name="resourcesString" value="${hdfs.configuration.resources}"/>
+	</bean>
 
 	<hdp:pig-factory id="pigFactory" configuration-ref="hadoopConfiguration"/>
 	<hdp:file-system/>
 
-    <hdp:pig-template pig-factory-ref="pigFactory"/>
+	<hdp:pig-template pig-factory-ref="pigFactory"/>
 	<bean id="autowiringSpringBeanJobFactory" class="fortscale.collection.AutowiringSpringBeanJobFactory"/>
 	<bean id="stdSchedulerFactory" class="org.quartz.impl.StdSchedulerFactory"/>
 	<bean id="jobScheduler" factory-bean="stdSchedulerFactory" factory-method="getScheduler">
@@ -57,25 +57,6 @@
 		<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
 	</bean>
-	<!--<bean id="iseResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
-		<constructor-arg name="innerCache">
-			<bean class="fortscale.services.cache.MemoryBasedCache">
-				<constructor-arg name="maxSize" value="${ise.resolver.cache.max.items:30000}" />
-				<constructor-arg name="clazz" value="fortscale.domain.events.IseEvent" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg name="topicWriter">
-			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
-				<constructor-arg name="topic" value="${ise.resolver.cache.updates.topic}" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg name="clazz" value="fortscale.domain.events.IseEvent" />
-	</bean>
-	<bean id="iseBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
-		<constructor-arg name="maxSize" value="${ise.resolver.cache.max.items:30000}" />
-		<constructor-arg name="timeToExpire" value="${ise.resolver.blacklist.timeToExpireSec:3600}" />
-		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
-	</bean>-->
 	<bean id="loginResolverCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
 			<bean class="fortscale.services.cache.MemoryBasedCache">
@@ -96,16 +77,13 @@
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
 	</bean>
 
+
 	<!-- ip to hostname singleton service bean for use in fortscale collection -->
 	<bean id="dnsResolver" class="fortscale.services.ipresolving.DnsResolver" scope="singleton" />
 	<bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" >
 		<constructor-arg name="shouldUseBlackList" value="${dhcp.resolver.shouldUseBlackList:true}" />
 		<constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
 	</bean>
-	<!--<bean id="iseResolver" class="fortscale.services.ipresolving.IseResolver" scope="singleton" >
-		<constructor-arg name="shouldUseBlackList" value="${ise.resolver.shouldUseBlackList:true}" />
-		<constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
-	</bean>-->
 	<bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" >
 		<constructor-arg name="shouldUseBlackList" value="${computer.login.resolver.shouldUseBlackList:true}" />
 		<constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
