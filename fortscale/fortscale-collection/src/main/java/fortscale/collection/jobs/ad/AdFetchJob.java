@@ -104,7 +104,7 @@ public class AdFetchJob extends FortscaleJob {
 	 * @param  fileWriter      An object to save the results to (could be a file, STDOUT, String etc.)
 	 * @param  _filter		   The Active Directory search filter (which object class is required)
 	 * @param  _adFields	   The Active Directory attributes to return in the search
-	 * @param  resultLimit	   A limit on the search results (mostly for testing purposes) should be -1 for no limit
+	 * @param  resultLimit	   A limit on the search results (mostly for testing purposes) should be <= 0 for no limit
 	 */
 	public void fetchFromAD(AdConnections _adConnections, BufferedWriter fileWriter, String _filter, String
 			_adFields, int resultLimit) throws Exception {
@@ -143,7 +143,7 @@ public class AdFetchJob extends FortscaleJob {
 			if (connected) {
 				logger.debug("Connection established");
 			} else {
-				logger.debug("Failed to connect to any domain controller");
+				logger.debug("Failed to connect to any domain controller for {}", adConnection.getDomain_name());
 				continue;
 			}
 			String baseSearch = adConnection.getDomain_base_search();
