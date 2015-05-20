@@ -10,6 +10,7 @@ public class ConditionTerm extends Term{
     private List<Term> terms;
     private LogicalOperator logicalOperator;
 
+
 	public ConditionTerm(){}
 	public ConditionTerm(ConditionTerm other)
 	{
