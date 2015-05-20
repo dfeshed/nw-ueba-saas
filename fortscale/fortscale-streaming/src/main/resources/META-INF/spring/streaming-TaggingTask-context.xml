@@ -58,6 +58,15 @@
         <constructor-arg name="timeToExpire" value="${dhcp.resolver.blacklist.timeToExpireSec:7200}" />
         <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
+    <bean id="iseResolverCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${ise.resolver.cache.max.items:30000}" />
+        <constructor-arg name="clazz" value="fortscale.domain.events.IseEvent" />
+    </bean>
+    <bean id="iseBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${ise.resolver.cache.max.items:30000}" />
+        <constructor-arg name="timeToExpire" value="${ise.resolver.blacklist.timeToExpireSec:7200}" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+    </bean>
     <bean id="loginResolverCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
         <constructor-arg name="clazz" value="fortscale.domain.events.ComputerLoginEvent" />
