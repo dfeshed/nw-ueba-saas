@@ -31,7 +31,7 @@ public class IseEvent extends IpToHostname {
 
 
     @Field(MAC_ADDRESS_FIELD_NAME)
-    private String macAddress;
+    private String mac;
 
 
     @Field(IS_AD_HOSTNAME_FIELD_NAME)
@@ -46,11 +46,11 @@ public class IseEvent extends IpToHostname {
     }
 
     public String getMacAddress() {
-        return macAddress;
+        return mac;
     }
 
     public void setMacAddress(String macAddress) {
-        this.macAddress = macAddress;
+        this.mac = macAddress;
     }
 
     public boolean isAdHostName() {
@@ -71,7 +71,7 @@ public class IseEvent extends IpToHostname {
         IseEvent other = (IseEvent)obj;
         return new EqualsBuilder()
                 .append(expiration, other.expiration)
-                .append(macAddress, other.macAddress)
+                .append(mac, other.mac)
                 .append(timestampepoch, other.timestampepoch)
                 .isEquals();
     }
@@ -82,7 +82,7 @@ public class IseEvent extends IpToHostname {
                 .append("expiration", expiration)
                 .append("hostname", hostname)
                 .append("ip", ipaddress)
-                .append("mac", macAddress)
+                .append("mac", mac)
                 .append("timestamp", timestampepoch)
                 .append("isADHost", adHostName)
                 .build();
