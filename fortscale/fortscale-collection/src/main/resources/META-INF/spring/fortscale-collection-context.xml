@@ -185,5 +185,7 @@
 
 	<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
 
+	<bean id="adConnections" class="fortscale.collection.jobs.ad.AdConnections" scope="singleton"/>
+
 
 </beans>
