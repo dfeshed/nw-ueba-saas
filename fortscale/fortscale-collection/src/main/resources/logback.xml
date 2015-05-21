@@ -53,7 +53,6 @@
 
 	<root level="info">
 		<appender-ref ref="SYSLOG" />
-		<appender-ref ref="STDOUT" />
 		<appender-ref ref="LogFile" />
 	</root>
 	

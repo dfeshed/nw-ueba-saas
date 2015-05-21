@@ -23,7 +23,7 @@ public class IseEvent extends IpToHostname {
 
     public static final String EXPIRATION_FIELD_NAME = "expiration";
     public static final String MAC_ADDRESS_FIELD_NAME = "macAddress";
-    public static final String LOCATION_FIELD_NAME = "location";
+    //public static final String LOCATION_FIELD_NAME = "location";
     public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
 
     @Field(EXPIRATION_FIELD_NAME)

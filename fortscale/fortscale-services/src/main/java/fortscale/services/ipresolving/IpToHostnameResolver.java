@@ -21,7 +21,10 @@ import java.util.regex.Pattern;
  */
 public class IpToHostnameResolver {
 
+	// Queue init size
 	public static final int QUEUE_SIZE = 3;
+
+	// Default message to be return when there is no resolve
 	public static final String RESOLVING_DEFAULT_MESSAGE = null;
 
 	private static Logger logger = LoggerFactory.getLogger(IpToHostnameResolver.class);
@@ -54,6 +57,9 @@ public class IpToHostnameResolver {
 	@Value("${ip2hostname.dnsProvider.enabled:true}")
 	private boolean dnsProviderEnabled;
 
+	// PriorityQueue to hold the events.
+	// Will be init only once;
+	// Each resolve request will only clean the queue
 	private PriorityQueue<IpToHostname> ipToHostnameQueue;
 
 	/**
@@ -84,25 +90,16 @@ public class IpToHostnameResolver {
 		initializeIpToHostnameQueue();
 
 		// Add events to queue
-		// Ugly insert because of unresolved problem when the get event failed (=null)
-		// Preferably, the check for nullity should be inside the 'add' method
 		if (isLoginProviderEnabled()) {
-			ComputerLoginEvent loginEvent = computerLoginResolver.getComputerLoginEvent(ip, timestamp);
-			if (loginEvent != null) {
-				ipToHostnameQueue.add(loginEvent);
-			}
+			addToHostnameQueue(computerLoginResolver.getComputerLoginEvent(ip, timestamp));
 		}
+
 		if (isDhcpProviderEnabled()) {
-			DhcpEvent dhcpEvent = dhcpResolver.getLatestDhcpEventBeforeTimestamp(ip, timestamp);
-			if (dhcpEvent != null) {
-				ipToHostnameQueue.add(dhcpEvent);
-			}
+			addToHostnameQueue(dhcpResolver.getLatestDhcpEventBeforeTimestamp(ip, timestamp));
 		}
+
 		if (isIseProviderEnabled()) {
-			IseEvent iseEvent = iseResolver.getLatestIseEventBeforeTimestamp(ip, timestamp);
-			if (iseEvent != null) {
-				ipToHostnameQueue.add(iseEvent);
-			}
+			addToHostnameQueue(iseResolver.getLatestIseEventBeforeTimestamp(ip, timestamp));
 		}
 
 		// Try resolving IP using queue
