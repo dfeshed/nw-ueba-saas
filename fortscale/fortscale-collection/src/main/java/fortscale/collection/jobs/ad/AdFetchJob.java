@@ -113,16 +113,16 @@ public class AdFetchJob extends FortscaleJob {
 		int totalRecords = 0;
 		logger.debug("Connecting to domain controllers");
 		for (AdConnection adConnection: _adConnections.getAdConnections()) {
-			logger.debug("Fetching from {}", adConnection.getDomain_name());
+			logger.debug("Fetching from {}", adConnection.getDomainName());
 			LdapContext context = null;
 			boolean connected = false;
 			int records = 0;
-			for (String dcAddress: adConnection.getIp_addresses()) {
+			for (String dcAddress: adConnection.getIpAddresses()) {
 				logger.debug("Trying to connect to domain controller at {}", dcAddress);
 				connected = true;
 				dcAddress = "ldap://" + dcAddress + ":389";
-				String username = adConnection.getDomain_user() + "@" + adConnection.getDomain_name();
-				String password = adConnection.getDomain_password();
+				String username = adConnection.getDomainUser() + "@" + adConnection.getDomainName();
+				String password = adConnection.getDomainPassword();
 				password = fortscale.utils.EncryptionUtils.decrypt(password);
 				Hashtable environment = new Hashtable();
 				environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -143,10 +143,10 @@ public class AdFetchJob extends FortscaleJob {
 			if (connected) {
 				logger.debug("Connection established");
 			} else {
-				logger.debug("Failed to connect to any domain controller for {}", adConnection.getDomain_name());
+				logger.debug("Failed to connect to any domain controller for {}", adConnection.getDomainName());
 				continue;
 			}
-			String baseSearch = adConnection.getDomain_base_search();
+			String baseSearch = adConnection.getDomainBaseSearch();
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
 			SearchControls searchControls = new SearchControls();
 			searchControls.setReturningAttributes(_adFields.split(","));
@@ -167,7 +167,7 @@ public class AdFetchJob extends FortscaleJob {
 			} while ((cookie != null) && (cookie.length != 0));
 			context.close();
 			totalRecords += records;
-			logger.debug("Fetched {} records for domain {}", records, adConnection.getDomain_name());
+			logger.debug("Fetched {} records for domain {}", records, adConnection.getDomainName());
 		}
 		fileWriter.flush();
 		fileWriter.close();

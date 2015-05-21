@@ -18,11 +18,11 @@ public class ADConnectionsJSONTest {
 		List<AdConnection> adConnectionList = adConnections.getAdConnections();
 		assertFalse(adConnectionList.isEmpty());
 		AdConnection adConnection = adConnectionList.get(0);
-		assertFalse(adConnection.getDomain_base_search().isEmpty());
-		assertFalse(adConnection.getDomain_name().isEmpty());
-		assertFalse(adConnection.getDomain_password().isEmpty());
-		assertFalse(adConnection.getDomain_user().isEmpty());
-		List<String> ipAddresses = adConnection.getIp_addresses();
+		assertFalse(adConnection.getDomainBaseSearch().isEmpty());
+		assertFalse(adConnection.getDomainName().isEmpty());
+		assertFalse(adConnection.getDomainPassword().isEmpty());
+		assertFalse(adConnection.getDomainUser().isEmpty());
+		List<String> ipAddresses = adConnection.getIpAddresses();
 		assertFalse(ipAddresses.isEmpty());
 		String ipAddress = ipAddresses.get(0);
 		assertFalse(ipAddress.isEmpty());

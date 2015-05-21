@@ -7,36 +7,50 @@ import java.util.List;
  */
 public class AdConnection {
 
-    private List<String> ip_addresses;
-    private String domain_base_search;
-    private String domain_user;
-    private String domain_password;
-    private String domain_name;
+    private List<String> ipAddresses;
+    private String domainBaseSearch;
+    private String domainUser;
+    private String domainPassword;
+    private String domainName;
 
-    public String getDomain_base_search() {
-        return domain_base_search;
+    public List<String> getIpAddresses() {
+        return ipAddresses;
     }
 
-    public void setDomain_base_search(String domain_base_search) {
-        this.domain_base_search = domain_base_search;
+    public void setIpAddresses(List<String> ipAddresses) {
+        this.ipAddresses = ipAddresses;
     }
 
-    public String getDomain_user() { return domain_user; }
-
-    public void setDomain_user(String domain_user) {
-        this.domain_user = domain_user;
+    public String getDomainBaseSearch() {
+        return domainBaseSearch;
     }
 
-    public String getDomain_password() { return domain_password; }
+    public void setDomainBaseSearch(String domainBaseSearch) {
+        this.domainBaseSearch = domainBaseSearch;
+    }
 
-    public void setDomain_password(String domain_password) { this.domain_password = domain_password; }
+    public String getDomainUser() {
+        return domainUser;
+    }
 
-    public List<String> getIp_addresses() { return ip_addresses; }
+    public void setDomainUser(String domainUser) {
+        this.domainUser = domainUser;
+    }
 
-    public void setIp_addresses(List<String> ip_addresses) { this.ip_addresses = ip_addresses; }
+    public String getDomainPassword() {
+        return domainPassword;
+    }
 
-    public String getDomain_name() { return domain_name; }
+    public void setDomainPassword(String domainPassword) {
+        this.domainPassword = domainPassword;
+    }
 
-    public void setDomain_name(String domain_name) { this.domain_name = domain_name; }
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+    }
 
 }
