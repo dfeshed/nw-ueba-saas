@@ -5,12 +5,5 @@
     "domainPassword": "iYTLjyA0VryKhpkvBrMMLQ==",
     "domainUser": "administrator",
     "domainName": "somebigcompany.com"
-  },
-  {
-    "ipAddresses": ["192.168.0.125"],
-    "domainBaseSearch": "DC=pitzy,DC=dom",
-    "domainPassword": "iYTLjyA0VryKhpkvBrMMLQ==",
-    "domainUser": "administrator",
-    "domainName": "pitzy.dom"
   }
 ]
