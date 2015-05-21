@@ -32,12 +32,20 @@
 					<value>${collection.forward.vpn.default.minimal.score}</value>
 				</entry>
 				<entry>
+					<key>dataEntityTimestampField</key>
+					<value>${collection.forward.vpn.timestamp.field}</value>
+				</entry>
+				<entry>
 					<key>dataEntityUpdateTimestampField</key>
 					<value>${collection.forward.vpn.update.timestamp.field}</value>
 				</entry>
 				<entry>
 					<key>dataEntityDefaultStartUpdateTimestamp</key>
 					<value>${collection.forward.vpn.default.start.update.timestamp}</value>
+				</entry>
+				<entry>
+					<key>dataEntityLimit</key>
+					<value>${collection.forward.vpn.limit}</value>
 				</entry>
 			</job-data-map>
 		</job>

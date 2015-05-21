@@ -32,12 +32,20 @@
 					<value>${collection.forward.amt.default.minimal.score}</value>
 				</entry>
 				<entry>
+					<key>dataEntityTimestampField</key>
+					<value>${collection.forward.amt.timestamp.field}</value>
+				</entry>
+				<entry>
 					<key>dataEntityUpdateTimestampField</key>
 					<value>${collection.forward.amt.update.timestamp.field}</value>
 				</entry>
 				<entry>
 					<key>dataEntityDefaultStartUpdateTimestamp</key>
 					<value>${collection.forward.amt.default.start.update.timestamp}</value>
+				</entry>
+				<entry>
+					<key>dataEntityLimit</key>
+					<value>${collection.forward.amt.limit}</value>
 				</entry>
 			</job-data-map>
 		</job>

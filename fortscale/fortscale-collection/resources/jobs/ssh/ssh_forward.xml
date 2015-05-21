@@ -32,12 +32,20 @@
 					<value>${collection.forward.ssh.default.minimal.score}</value>
 				</entry>
 				<entry>
+					<key>dataEntityTimestampField</key>
+					<value>${collection.forward.ssh.timestamp.field}</value>
+				</entry>
+				<entry>
 					<key>dataEntityUpdateTimestampField</key>
 					<value>${collection.forward.ssh.update.timestamp.field}</value>
 				</entry>
 				<entry>
 					<key>dataEntityDefaultStartUpdateTimestamp</key>
 					<value>${collection.forward.ssh.default.start.update.timestamp}</value>
+				</entry>
+				<entry>
+					<key>dataEntityLimit</key>
+					<value>${collection.forward.ssh.limit}</value>
 				</entry>
 			</job-data-map>
 		</job>

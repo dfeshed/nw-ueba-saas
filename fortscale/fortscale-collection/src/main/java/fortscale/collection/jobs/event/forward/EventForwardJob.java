@@ -45,8 +45,15 @@ public class EventForwardJob implements Job {
 	protected int updateBufferSize;
 	@Value("${splunk.forward.connection.timeout:30000}")
 	protected int connectionTimeout;
-	@Value("${timestamp.safe.barrier.diff:30000}")
+	@Value("${splunk.forward.timestamp.safe.barrier.diff:30000}")
 	protected int timestampDiff;
+	@Value("${splunk.forward.sleep.time.between.retries:30000}")
+	protected int sleepTime;
+	@Value("${splunk.forward.retries.number:3}")
+	protected int retries;
+	//week back
+	@Value("${splunk.forward.timestamp.range.back:604800}")
+	protected int timestampRange;
 
 
 	@Autowired
@@ -62,6 +69,8 @@ public class EventForwardJob implements Job {
 	protected JobProgressReporter monitor;
 
 	protected String dataEntityUpdateTimestampField;
+
+	protected String dataEntityTimestampField;
 
 	protected long currentTimestamp;
 
@@ -79,7 +88,6 @@ public class EventForwardJob implements Job {
 		logger.info("{} {} job started", jobName, sourceName);
 		//for each configuration we have 2 steps + extra step for reading job parameters
 
-
 		String currentStep = null;
 		try {
 			// get parameters from job data map
@@ -87,43 +95,47 @@ public class EventForwardJob implements Job {
 			getJobParameters(context, sourceName);
 
 			int stepNumber = (forwardConfiguration.getConfList().size() * 3);
-			monitorId = monitor.startJob(sourceName, jobName, 3, true);
+			monitorId = monitor.startJob(sourceName, jobName, stepNumber, true);
 			// run configuration queries and forward data to Splunk
 			for (int i = 0; i < forwardConfiguration.getConfList().size(); i++) {
 				ForwardSingleConfiguration forwardSingleConfiguration = forwardConfiguration.getConfList().get(i);
 				if (forwardSingleConfiguration != null) {
-					//make sure we send all old unsent messages
-					forwardEvents(forwardSingleConfiguration, forwardSingleConfiguration.getCachedEvents());
-					//only if we succeed in sending old unsent messages we continue to new messages - to prevent out of memory problems.
-					if (forwardSingleConfiguration.getCachedEvents() == null || forwardSingleConfiguration.getCachedEvents().isEmpty()) {
-						//forward configuration data in 2 cases:
-						// 	1. continues configuration
-						//	2. single run and this is the first run
-						if (forwardSingleConfiguration.isContinues() || forwardSingleConfiguration.getRunNumber() == 0) {
-							DataQueryDTO dataQueryDTO = forwardSingleConfiguration.getDataQueryDTO();
-
-							currentStep = "Run Data Query";
+					//forward configuration data in 2 cases:
+					// 	1. continues configuration
+					//	2. single run and this is the first run
+					if (forwardSingleConfiguration.isContinues() || forwardSingleConfiguration.getRunNumber() == 0) {
+						//adding the upper bound of the time range to the current timestamp
+						List<String> messages = new ArrayList<String>();
+						boolean finishSuccessfully = true;
+						int page = 0;
+						while (page == 0 || (finishSuccessfully && !messages.isEmpty())) {
+							currentStep = "Run Data Query - page " + page;
 							monitor.startStep(monitorId, currentStep, 2 + (i * 2));
-							List<Map<String, Object>> resultsMap = runQuery(dataQueryDTO);
+							List<Map<String, Object>> resultsMap = runQuery(forwardSingleConfiguration);
 							monitor.finishStep(monitorId, currentStep);
 
-							currentStep = "Create syslog messages";
+							currentStep = "Create syslog messages - page " + page;
 							monitor.startStep(monitorId, currentStep, 3 + (i * 2));
-							List<String> messages = parseMessages(resultsMap);
-
-							updateConfiguration(forwardSingleConfiguration, messages);
+							messages = parseMessages(resultsMap);
 							monitor.finishStep(monitorId, currentStep);
 
-							currentStep = "Forward Events to Splunk";
+							currentStep = "Forward Events to Splunk - page " + page;
 							monitor.startStep(monitorId, currentStep, 4 + (i * 2));
-							forwardEvents(forwardSingleConfiguration, messages);
+							finishSuccessfully |= forwardEvents(forwardSingleConfiguration, messages);
 							monitor.finishStep(monitorId, currentStep);
+							page++;
+						}
+						if(finishSuccessfully){
+							int offset = getConfigurationOffset(forwardSingleConfiguration);
+							logger.info("Forward finished successfully - forward {} events", offset);
+							updateConfiguration(forwardSingleConfiguration);
+
 						}
 					}
 				}
 			}
 		} catch (Exception e) {
-			logger.error("unexpected error during event process job: " ,e);
+			logger.error("unexpected error during event process job: ", e);
 			monitor.error(monitorId, currentStep, e.toString());
 			throw new JobExecutionException(e);
 		} finally {
@@ -132,10 +144,13 @@ public class EventForwardJob implements Job {
 		}
 	}
 
-	private List<Map<String, Object>> runQuery(DataQueryDTO dataQueryDTO) throws Exception{
+	private List<Map<String, Object>> runQuery(ForwardSingleConfiguration forwardSingleConfiguration) throws Exception{
+		DataQueryDTO dataQueryDTO = forwardSingleConfiguration.getDataQueryDTO();
 		DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
-		//adding the upper bound of the time range to the current timestamp
-		setDataQueryFieldValue(dataQueryDTO, dataEntityUpdateTimestampField, ","+currentTimestamp,true);
+		//when running continues query for a new time range - update the time range
+		if(forwardSingleConfiguration.isContinues() && dataQueryDTO.getOffset() == 0){
+			setDataQueryTimeFieldValue(dataQueryDTO, currentTimestamp);
+		}
 		// Generates query
 		String query = dataQueryRunner.generateQuery(dataQueryDTO);
 		logger.info("Running the query: {}", query);
@@ -151,34 +166,58 @@ public class EventForwardJob implements Job {
 		return messages;
 	}
 
-	private void forwardEvents(ForwardSingleConfiguration forwardSingleConfiguration, List<String> messages){
+	private boolean forwardEvents(ForwardSingleConfiguration forwardSingleConfiguration, List<String> messages){
+		boolean sendSucceed = true;
 		if(messages != null) {
 			// Initialise sender
 			AbstractSyslogMessageSender messageSender = createMessageSender();
 
 			//send message and update forward progress as we go
-			sendMessages(messageSender, messages, forwardSingleConfiguration);
+			sendSucceed = sendMessages(messageSender, messages, forwardSingleConfiguration);
 
-			logger.info("Forward {} events", messages.size());
 		}
+		return sendSucceed;
 	}
 
-	private void sendMessages(AbstractSyslogMessageSender messageSender, List<String> messages, ForwardSingleConfiguration forwardSingleConfiguration){
-			int sendMessages = 1;
-			List<String> unsentMessages = new ArrayList<String>(messages);
-			for (String message : messages) {
-				try {
-					messageSender.sendMessage(message);
-					//if the succeed in sending the message delete it from the unsent messages array
-					unsentMessages.remove(message);
-				} catch (Exception e) {
-					//in the case of failure in sending the Syslog message continue without deleting the message from the unsentMessages
+	private boolean sendMessages(AbstractSyslogMessageSender messageSender, List<String> messages, ForwardSingleConfiguration forwardSingleConfiguration) {
+		int sendMessages = 0;
+		int bufferSendMessages = 1;
+		int offset = getConfigurationOffset(forwardSingleConfiguration);
+		for (String message : messages) {
+			try {
+				messageSender.sendMessage(message);
+				//if the succeed in sending the message update the offset
+				offset++;
+				sendMessages++;
+			} catch (Exception e) {
+				boolean sendSucceed = retrySendMessages(messageSender, message);
+				if (sendSucceed) {
+					offset++;
+					sendMessages++;
+				} else {
+					//in the case of failure in sending the Syslog message stop the process and save the current state
+					handleForwardProgress(forwardSingleConfiguration, offset, updateBufferSize);
+					logger.info("Forward encounter problems - forward {} events, and stopped on offset {}", sendMessages, offset);
+					return false;
 				}
-				// update mongoDB with unsent messages progress every updateBufferSize messages
-				sendMessages = handleForwardProgress(forwardSingleConfiguration, unsentMessages, sendMessages);
 			}
-			// update mongoDB when finished sending messages.
-			handleForwardProgress(forwardSingleConfiguration, unsentMessages, updateBufferSize);
+			// update mongoDB with new offset
+			bufferSendMessages = handleForwardProgress(forwardSingleConfiguration, offset, bufferSendMessages);
+		}
+		// update mongoDB when finished sending messages.
+		handleForwardProgress(forwardSingleConfiguration, offset, updateBufferSize);
+		return true;
+	}
+
+	private boolean retrySendMessages(AbstractSyslogMessageSender messageSender, String message) {
+		for (int i = 0; i < retries; i++) {
+			try {
+				Thread.sleep(sleepTime);
+				messageSender.sendMessage(message);
+				return true;
+			} catch (Exception e) {}
+		}
+		return false;
 	}
 
 	private AbstractSyslogMessageSender createMessageSender(){
@@ -215,9 +254,9 @@ public class EventForwardJob implements Job {
 	 *
 	 */
 
-	private int handleForwardProgress(ForwardSingleConfiguration forwardSingleConfiguration, List<String> unsentMessages, int sendMessages){
+	private int handleForwardProgress(ForwardSingleConfiguration forwardSingleConfiguration, int offset, int sendMessages){
 		if(sendMessages >= updateBufferSize){
-			forwardSingleConfiguration.setCachedEvents(unsentMessages);
+			setDataQueryOffset(forwardSingleConfiguration,offset);
 			forwardConfigurationRepository.save(forwardConfiguration);
 			return 1;
 		}
@@ -226,19 +265,14 @@ public class EventForwardJob implements Job {
 		}
 	}
 
-	private void updateConfiguration(ForwardSingleConfiguration forwardSingleConfiguration, List<String> messages){
+	private void updateConfiguration(ForwardSingleConfiguration forwardSingleConfiguration){
 		long runNumber = forwardSingleConfiguration.getRunNumber();
 		forwardSingleConfiguration.setRunNumber(runNumber + 1);
-		updateForwardProgress(forwardSingleConfiguration);
-		forwardSingleConfiguration.setCachedEvents(messages);
+		if(forwardSingleConfiguration.isContinues()) {
+			setDataQueryTimeFieldValue(forwardSingleConfiguration.getDataQueryDTO(), null);
+		}
+		setDataQueryOffset(forwardSingleConfiguration, 0);
 		forwardConfigurationRepository.save(forwardConfiguration);
-	}
-
-	private void updateForwardProgress(ForwardSingleConfiguration forwardSingleConfiguration) {
-		//add one millisecond to the latest timestamp - so in the between condition we won't get the same events again
-		String newUpdateTimestamp = String.valueOf(currentTimestamp+1);
-		DataQueryDTO dataQueryDTO = forwardSingleConfiguration.getDataQueryDTO();
-		setDataQueryFieldValue(dataQueryDTO, dataEntityUpdateTimestampField, newUpdateTimestamp,false);
 	}
 
 
@@ -248,18 +282,41 @@ public class EventForwardJob implements Job {
 	 *
 	 */
 
-	private void setDataQueryFieldValue(DataQueryDTO dataQueryDTO, String fieldName, String newValue, boolean append){
+	private void setDataQueryTimeFieldValue(DataQueryDTO dataQueryDTO, Long newValue){
 		for(Term term : dataQueryDTO.getConditions().getTerms()){
 			if(term instanceof ConditionField){
 				DataQueryField field = ((ConditionField) term).getField();
-				if (field != null && field.getId() != null && field.getId().equals(fieldName)){
-					if (append){
-						newValue = ((ConditionField) term).getValue() + newValue;
+				if (field != null && field.getId() != null && field.getId().equals(dataEntityUpdateTimestampField)){
+					String updateValue = "";
+					if (newValue == null){
+						//when setting value for next run
+						//add one millisecond to the latest timestamp - so in the between condition we won't get the same events again
+						long timestampUpperLimit = Long.parseLong(((ConditionField) term).getValue().split(",")[1]);
+						updateValue = String.valueOf(timestampUpperLimit+1);
 					}
-					((ConditionField) term).setValue(newValue);
+					else{
+						//when setting value for current run
+						//adding the current timestamp as an upper limit
+						updateValue = ((ConditionField) term).getValue() + "," + newValue;
+
+					}
+					((ConditionField) term).setValue(updateValue);
+				}
+				else if (newValue != null) {
+					if (field != null && field.getId() != null && field.getId().equals(dataEntityTimestampField)) {
+						((ConditionField) term).setValue((currentTimestamp/1000)-timestampRange+","+currentTimestamp/1000);
+					}
 				}
 			}
 		}
+	}
+
+	private void setDataQueryOffset(ForwardSingleConfiguration forwardSingleConfiguration, int offset){
+		forwardSingleConfiguration.getDataQueryDTO().setOffset(offset);
+	}
+
+	private int getConfigurationOffset(ForwardSingleConfiguration forwardSingleConfiguration){
+		return forwardSingleConfiguration.getDataQueryDTO().getOffset();
 	}
 
 
@@ -279,12 +336,14 @@ public class EventForwardJob implements Job {
 		String dataEntityScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "dataEntityScoreField");
 		int dataEntityDefaultMinimalScore = jobDataMapExtension.getJobDataMapIntValue(map, "dataEntityDefaultMinimalScore");
 		dataEntityUpdateTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "dataEntityUpdateTimestampField");
+		dataEntityTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "dataEntityTimestampField");
 		long dataEntityDefaultStartUpdateTimestamp = jobDataMapExtension.getJobDataMapLongValue(map, "dataEntityDefaultStartUpdateTimestamp");
+		int dataEntityLimit = jobDataMapExtension.getJobDataMapIntValue(map, "dataEntityLimit");
 		currentTimestamp = new Date().getTime() - timestampDiff;
 
 		forwardConfiguration = forwardConfigurationRepository.findByType(sourceName);
 		if (forwardConfiguration == null) {
-			DataQueryDTO dataQueryDTO = createDataQuery(dataEntity, defaultFieldsString, dataEntityScoreField,dataEntityDefaultMinimalScore, dataEntityDefaultStartUpdateTimestamp);
+			DataQueryDTO dataQueryDTO = createDataQuery(dataEntity, defaultFieldsString, dataEntityScoreField,dataEntityDefaultMinimalScore, dataEntityDefaultStartUpdateTimestamp, dataEntityLimit);
 			createForwardConfiguration(sourceName,dataQueryDTO);
 			forwardConfigurationRepository.save(forwardConfiguration);
 		}
@@ -311,7 +370,7 @@ public class EventForwardJob implements Job {
 	 *
 	 */
 
-	private DataQueryDTO createDataQuery(String dataEntity, String defaultFieldsString, String dataEntityScoreField,int dataEntityDefaultMinimalScore, long dataEntityDefaultStartUpdateTimestamp){
+	private DataQueryDTO createDataQuery(String dataEntity, String defaultFieldsString, String dataEntityScoreField,int dataEntityDefaultMinimalScore, long dataEntityDefaultStartUpdateTimestamp, int dataEntityLimit){
 		//entity to forward
 		DataQueryDTO dataQueryDTO = new DataQueryDTO();
 		String[] entities = { dataEntity };
@@ -330,7 +389,8 @@ public class EventForwardJob implements Job {
 		dataQueryDTO.setSort(querySortList);
 
 		//no limit when getting the data
-		dataQueryDTO.setLimit(Integer.MAX_VALUE);
+		dataEntityLimit = (dataEntityLimit == -1) ? Integer.MAX_VALUE : dataEntityLimit;
+		dataQueryDTO.setLimit(dataEntityLimit);
 		return dataQueryDTO;
 	}
 
@@ -360,7 +420,9 @@ public class EventForwardJob implements Job {
 		List<Term> terms = new ArrayList<Term>();
 		Term scoreTerm = createDefaultScoreTerm(dataEntityScoreField, dataEntityDefaultMinimalScore);
 		terms.add(scoreTerm);
-		Term timeTerm = createDefaultTimeTerm(dataEntityDefaultStartUpdateTimestamp);
+		Term updateTimeTerm = createDefaultUpdateTimeTerm(dataEntityDefaultStartUpdateTimestamp);
+		terms.add(updateTimeTerm);
+		Term timeTerm = createDefaultTimeTerm();
 		terms.add(timeTerm);
 		conditionTerm.setTerms(terms);
 		conditionTerm.setLogicalOperator(LogicalOperator.AND);
@@ -377,12 +439,23 @@ public class EventForwardJob implements Job {
 		return scoreTerm;
 	}
 
-	private Term createDefaultTimeTerm(long dataEntityDefaultStartUpdateTimestamp){
+	private Term createDefaultUpdateTimeTerm(long dataEntityDefaultStartUpdateTimestamp){
 		ConditionField updateTimestampTerm = new ConditionField();
 		updateTimestampTerm.setQueryOperator(QueryOperator.between);
 		updateTimestampTerm.setValue(String.valueOf(dataEntityDefaultStartUpdateTimestamp));
 		DataQueryField dataQueryUpdateTimestampField = new DataQueryField();
 		dataQueryUpdateTimestampField.setId(dataEntityUpdateTimestampField);
+		updateTimestampTerm.setField(dataQueryUpdateTimestampField);
+
+		return updateTimestampTerm;
+	}
+
+	private Term createDefaultTimeTerm(){
+		ConditionField updateTimestampTerm = new ConditionField();
+		updateTimestampTerm.setQueryOperator(QueryOperator.between);
+		updateTimestampTerm.setValue((currentTimestamp/1000)-timestampRange+","+currentTimestamp/1000);
+		DataQueryField dataQueryUpdateTimestampField = new DataQueryField();
+		dataQueryUpdateTimestampField.setId(dataEntityTimestampField);
 		updateTimestampTerm.setField(dataQueryUpdateTimestampField);
 
 		return updateTimestampTerm;
