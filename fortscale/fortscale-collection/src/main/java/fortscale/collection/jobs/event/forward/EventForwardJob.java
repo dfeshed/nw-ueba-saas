@@ -23,7 +23,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Job class to help build event process jobs from saved files into hadoop
+ * Job class to help forward event saved in hadoop into syslog server
+ *
+ * Every time the process run it query (in pages) the data updated in impala since the last run (according to update timestamp column)
+ * it also condition on the event time to get only data from the last week, in order to use the partitions
+ * every bufferSize events the process updates it's offset in mongo collection to allow recovery in the case of failure (process/network/destination)
+ * once the process is completed successfully the query is updated for the next run
+ * beside time range there is also a condition on the event score
+ * and will be easy to add new automatic conditions in the future (since the data query mechanism is used).
+ *
+ * beside there is a possibility to define other query to be run (also non continues) that will be run only once and forward historical data.
+ * all the process will work exactly the same beside the fact the query time range won't be changed once the forward is done.
+ *
+ * it is possible to changed the query configuration in mongo (fields, conditions, ... ) without a need to re run the process, on it's next run, it will use the new configuration.
  */
 @DisallowConcurrentExecution
 public class EventForwardJob implements Job {
