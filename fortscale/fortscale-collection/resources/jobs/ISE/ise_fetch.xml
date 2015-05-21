@@ -51,70 +51,10 @@
 						<value>-0h@h+15m</value>
 					</entry>
  				</job-data-map>
- 				<cron-expression>0 16 * * * ?</cron-expression>
+ 				<cron-expression>0 1/15 * * * ?</cron-expression>
 			</cron>
 		</trigger>
-		
-		<trigger>
-			<cron>
-				<name>ise_fetch_every_15min_second_trigger</name>
-				<group>ISE</group>
-				<job-name>Fetch</job-name>
-				<job-group>ISE</job-group>
- 				<job-data-map>
- 					<entry>
-						<key>earliest</key>
-						<value>-0h@h+15m</value>
-					</entry>
-					<entry>
-						<key>latest</key>
-						<value>-0h@h+30m</value>
-					</entry>
- 				</job-data-map>
- 				<cron-expression>0 31 * * * ?</cron-expression>
-			</cron>
-		</trigger>
-		
-		<trigger>
-			<cron>
-				<name>ise_fetch_every_15min_third_trigger</name>
-				<group>ISE</group>
-				<job-name>Fetch</job-name>
-				<job-group>ISE</job-group>
- 				<job-data-map>
- 					<entry>
-						<key>earliest</key>
-						<value>-0h@h+30m</value>
-					</entry>
-					<entry>
-						<key>latest</key>
-						<value>-0h@h+45m</value>
-					</entry>
- 				</job-data-map>
- 				<cron-expression>0 46 * * * ?</cron-expression>
-			</cron>
-		</trigger>
-		
-		<trigger>
-			<cron>
-				<name>ise_fetch_every_15min_fourth_trigger</name>
-				<group>ISE</group>
-				<job-name>Fetch</job-name>
-				<job-group>ISE</job-group>
- 				<job-data-map>
- 					<entry>
-						<key>earliest</key>
-						<value>-1h@h+45m</value>
-					</entry>
-					<entry>
-						<key>latest</key>
-						<value>-0h@h</value>
-					</entry>
- 				</job-data-map>
- 				<cron-expression>0 1 * * * ?</cron-expression>
-			</cron>
-		</trigger>
-				
+
 	</schedule>
 	
 </job-scheduling-data>
