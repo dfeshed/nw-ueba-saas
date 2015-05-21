@@ -185,6 +185,9 @@ public class AdFetchJob extends FortscaleJob {
                     boolean first = true;
                     while (values.hasMoreElements()) {
                         String value = (String)values.nextElement();
+						if (value.contains("\n") || value.contains("\r")) {
+							value = DatatypeConverter.printBase64Binary(value.getBytes());
+						}
                         if (first) {
                             first = false;
                         } else {
@@ -196,12 +199,18 @@ public class AdFetchJob extends FortscaleJob {
                     String value;
                     if (key.equals("distinguishedName")) {
                         value = (String)values.nextElement();
+						if (value.contains("\n") || value.contains("\r")) {
+							value = DatatypeConverter.printBase64Binary(value.getBytes());
+						}
                         fileWriter.append("dn: " + value);
                         fileWriter.append("\n");
                     } else if (key.equals("objectGUID") || key.equals("objectSid")) {
                         value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
                     } else {
                         value = (String)values.nextElement();
+						if (value.contains("\n") || value.contains("\r")) {
+							value = DatatypeConverter.printBase64Binary(value.getBytes());
+						}
                     }
                     fileWriter.append(key + ": " + value);
                 }
