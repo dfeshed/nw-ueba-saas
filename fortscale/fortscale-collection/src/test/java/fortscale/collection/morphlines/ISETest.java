@@ -17,7 +17,7 @@ public class ISETest {
 
     private MorphlinesTester morphlineTester = new MorphlinesTester();
     private String confFile = "resources/conf-files/parseISE.conf";
-    private String[] iseOutputFields = new String[]{"event_code", "timestampepoch", "hostname", "ipaddress", "mac"};
+    private String[] iseOutputFields = new String[]{"event_code", "timestampepoch", "hostname", "ipaddress", "macAddress"};
 
     @Before
     public void setUp() throws Exception {

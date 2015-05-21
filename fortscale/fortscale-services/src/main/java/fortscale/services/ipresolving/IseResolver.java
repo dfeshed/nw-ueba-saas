@@ -88,9 +88,7 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
         // Cache hit
         else {
             if (cached.getTimestampepoch().compareTo(event.getTimestampepoch()) < 0) {
-                IseEvent before = cache.get(event.getIpaddress());
                 cache.put(event.getIpaddress(), event);
-                IseEvent after = cache.get(event.getIpaddress());
                 removeFromBlackList(event);
                 if (!cached.getHostname().equals(event.getHostname())) {
                     iseEventRepository.save(event);
