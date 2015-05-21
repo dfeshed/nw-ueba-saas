@@ -17,9 +17,12 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 	private static Logger logger = Logger.getLogger(DiscreetValuesCalibratedModel.class);
 
 	private static final String IGNORE_VALUES_CONFIG_FORMAT = "%s.%s.ignore.score.regex";
+	private static final String DISTINCT_VALUES_LIMIT_CONFIG_FORMAT = "%s.%s.distinct.values.limit";
+	public static final int DISTINCT_VALUES_LIMIT_DEFAULT = 1000;
 	
 	private FeatureCalibration featureCalibration = new FeatureCalibration();
 	private Pattern ignoreValues;
+	private int distinctValuesLimit = DISTINCT_VALUES_LIMIT_DEFAULT;
 	
 	
 	public int getNumOfFeatureValues(){
@@ -33,6 +36,9 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 		String ignorePattern = config.get(String.format(IGNORE_VALUES_CONFIG_FORMAT, prefix, fieldName));
 		if (ignorePattern!=null)
 			ignoreValues = Pattern.compile(ignorePattern);
+		String distinctValuesLimitStr = config.get(String.format(DISTINCT_VALUES_LIMIT_CONFIG_FORMAT, prefix, fieldName));
+		if (distinctValuesLimitStr!=null)
+			distinctValuesLimit = Integer.valueOf(distinctValuesLimitStr);
 	}
 	
 	@Override
@@ -70,7 +76,7 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 	}
 	
 	private boolean isIgnoreValue(String value) {
-		if(StringUtils.isBlank(value)){
+		if(StringUtils.isBlank(value) || getNumOfFeatureValues() > distinctValuesLimit){
 			return true;
 		}
 		return (ignoreValues==null)? false : ignoreValues.matcher(value).matches();
