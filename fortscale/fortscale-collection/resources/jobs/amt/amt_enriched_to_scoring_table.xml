@@ -35,9 +35,17 @@
                     <value>${impala.enricheddata.amt.table.fields}</value>
                 </entry>
                 <entry>
-					<key>impalaTablePartitionType</key>
-					<value>${impala.enricheddata.amt.table.partition.type}</value>
-				</entry>
+                    <key>impalaTablePartitionType</key>
+                    <value>${impala.enricheddata.amt.table.partition.type}</value>
+                </entry>
+                <entry>
+                    <key>impalaDestinationTable</key>
+                    <value>${impala.score.amt.table.name}</value>
+                </entry>
+                <entry>
+                    <key>throttlingSleep</key>
+                    <value>${kafka.throttlingSleep}</value>
+                </entry>
             </job-data-map>
 
         </job>
