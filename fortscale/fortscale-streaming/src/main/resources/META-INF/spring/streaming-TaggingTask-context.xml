@@ -83,6 +83,10 @@
         <constructor-arg name="shouldUseBlackList" value="${dhcp.resolver.shouldUseBlackList:true}" />
         <constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
     </bean>
+    <bean id="iseResolver" class="fortscale.services.ipresolving.IseResolver" scope="singleton" >
+        <constructor-arg name="shouldUseBlackList" value="${ise.resolver.shouldUseBlackList:true}" />
+        <constructor-arg name="ipBlackListCache" ref="iseBlacklistCache" />
+    </bean>
     <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" >
         <constructor-arg name="shouldUseBlackList" value="${computer.login.resolver.shouldUseBlackList:true}" />
         <constructor-arg name="ipBlackListCache" ref="loginBlacklistCache" />
