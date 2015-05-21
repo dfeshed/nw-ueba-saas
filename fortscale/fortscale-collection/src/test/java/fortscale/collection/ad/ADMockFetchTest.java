@@ -24,8 +24,7 @@ public class ADMockFetchTest {
 	@Before
 	public void setUp() throws Exception {
 		adFetchJob = mock(AdFetchJob.class);
-		URL url = Resources.getResource("adConnectionsTest.json");
-		adConnections = new AdConnections(url.getFile());
+		adConnections = mock(AdConnections.class);
 	}
 
 	@Test
@@ -121,14 +120,12 @@ public class ADMockFetchTest {
 	}
 
 	private void runTest(String filter, String adFields, String expected) throws Exception {
-		StringWriter writer = new StringWriter();
-		adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
+		adFetchJob.fetchFromAD(adConnections, new BufferedWriter(new StringWriter()), filter, adFields, 1);
 		adFields = "dn," + adFields;
-		String actual = expected;
 		for (String adField: adFields.split(",")) {
 			String patternString = ".*" + adField + ": .*\n";
 			Pattern pattern = Pattern.compile(patternString, Pattern.DOTALL);
-			Matcher matcher = pattern.matcher(actual);
+			Matcher matcher = pattern.matcher(expected);
 			assertTrue(matcher.matches());
 		}
 	}
