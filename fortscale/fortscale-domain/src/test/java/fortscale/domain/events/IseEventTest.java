@@ -17,6 +17,7 @@ public class IseEventTest {
 
         IseEvent event = new IseEvent();
         event.setAdHostName(true);
+        event.setExpiration(12333L);
         event.setCreatedAt(new DateTime(1422189771865L));
         event.setIpaddress("1.1.1.1");
         event.setTimestampepoch(1420963260000L);
