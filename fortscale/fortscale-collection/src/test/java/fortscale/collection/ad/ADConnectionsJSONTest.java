@@ -14,19 +14,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 @RunWith(JUnitParamsRunner.class)
 public class ADConnectionsJSONTest {
 
-	private static ClassPathXmlApplicationContext testContextManager;
 	private String adConnectionsFile;
-
-	@BeforeClass
-	public static void setUpClass() {
-		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test.xml");
-	}
-
-	@AfterClass
-	public static void finalizeTestClass(){
-		testContextManager.close();
-		testContextManager = null;
-	}
 
 	@Before
 	public void setUp() throws Exception {
