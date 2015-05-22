@@ -27,8 +27,7 @@ public class ADFetchTest {
 	public void setUp() {
 		try {
 			adFetchJob = new AdFetchJob();
-			URL url = Resources.getResource("adConnectionsTest.json");
-			adConnections = new AdConnections(url.getFile());
+			adConnections = new AdConnections("resources/adConnections.json");
 			initialized = true;
 		} catch (Exception ex) {
 			logger.debug("Bad json file");
