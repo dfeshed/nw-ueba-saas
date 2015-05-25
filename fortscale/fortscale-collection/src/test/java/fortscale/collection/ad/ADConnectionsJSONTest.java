@@ -1,20 +1,30 @@
 package fortscale.collection.ad;
 
-import com.google.common.io.Resources;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 import fortscale.collection.jobs.ad.AdConnection;
 import fortscale.collection.jobs.ad.AdConnections;
-
-import java.net.URL;
 import java.util.List;
-import static org.junit.Assert.*;
+import fortscale.utils.properties.PropertiesResolver;
+import junitparams.JUnitParamsRunner;
+import org.junit.*;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+@RunWith(JUnitParamsRunner.class)
 public class ADConnectionsJSONTest {
 
+	private String adConnectionsFile;
+
+	@Before
+	public void setUp() throws Exception {
+		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
+		adConnectionsFile = propertiesResolver.getProperty("ad.connections");
+	}
+
 	@Test
-	public void checkJacksonMappingOfADConnections() throws Exception {
-		URL url = Resources.getResource("adConnectionsTest.json");
-		AdConnections adConnections = new AdConnections(url.getFile());
+	public void adConnectionsTest() throws Exception {
+		AdConnections adConnections = new AdConnections(adConnectionsFile);
 		List<AdConnection> adConnectionList = adConnections.getAdConnections();
 		assertFalse(adConnectionList.isEmpty());
 		AdConnection adConnection = adConnectionList.get(0);
