@@ -56,7 +56,7 @@
 				<group>AMT_SESSION</group>
 				<job-name>FORWARD</job-name>
 				<job-group>AMT_SESSION</job-group>
-				<cron-expression>0 50 * * * ?</cron-expression>
+				<cron-expression>0 30 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

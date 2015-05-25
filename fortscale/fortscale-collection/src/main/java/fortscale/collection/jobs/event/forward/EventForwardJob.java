@@ -3,56 +3,91 @@ package fortscale.collection.jobs.event.forward;
 import com.cloudbees.syslog.sender.AbstractSyslogMessageSender;
 import com.cloudbees.syslog.sender.TcpSyslogMessageSender;
 import com.cloudbees.syslog.sender.UdpSyslogMessageSender;
-import fortscale.collection.JobDataMapExtension;
-import fortscale.monitor.JobProgressReporter;
+import fortscale.collection.jobs.FortscaleJob;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.services.event.forward.ForwardConfiguration;
 import fortscale.services.event.forward.ForwardConfigurationRepository;
 import fortscale.services.event.forward.ForwardSingleConfiguration;
-import org.quartz.*;
+import fortscale.utils.TimestampUtils;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
- * Job class to help build event process jobs from saved files into hadoop
+ * Job class to help forward event saved in hadoop into syslog server
+ *
+ * Every time the process run it query (in pages) the data updated in impala since the last run (according to update timestamp column)
+ * it also condition on the event time to get only data from the last week, in order to use the partitions
+ * every bufferSize events the process updates it's offset in mongo collection to allow recovery in the case of failure (process/network/destination)
+ * once the process is completed successfully the query is updated for the next run
+ * beside time range there is also a condition on the event score
+ * and will be easy to add new automatic conditions in the future (since the data query mechanism is used).
+ *
+ * beside there is a possibility to define other query to be run (also non continues) that will be run only once and forward historical data.
+ * all the process will work exactly the same beside the fact the query time range won't be changed once the forward is done.
+ *
+ * it is possible to changed the query configuration in mongo (fields, conditions, ... ) without a need to re run the process, on it's next run, it will use the new configuration.
  */
 @DisallowConcurrentExecution
-public class EventForwardJob implements Job {
+public class EventForwardJob extends FortscaleJob {
 
 	private static Logger logger = LoggerFactory.getLogger(EventForwardJob.class);
 
-	// get common data from configuration
-	@Value("${destination.splunk.host}")
+	//get syslog server info from configuration
+	@Value("${destination.syslog.server.host}")
 	protected String hostName;
-	@Value("${destination.splunk.port}")
+	@Value("${destination.syslog.server.port}")
 	protected int port;
-	@Value("${destination.splunk.protocol}")
+	@Value("${destination.syslog.server.protocol}")
 	protected String protocol;
-	@Value("${destination.splunk.appName}")
+	@Value("${destination.syslog.server.appName}")
 	protected String appName;
-	@Value("${destination.splunk.use.ssl}")
+	@Value("${destination.syslog.server.use.ssl}")
 	protected boolean useSsl;
-	@Value("${splunk.forward.update.buffer.size:10}")
-	protected int updateBufferSize;
-	@Value("${splunk.forward.connection.timeout:30000}")
+
+	private static final String TCP_PROTOCOL = "tcp";
+
+
+	 // The format of the dates in the exported file
+	@Value("${syslog.server.forward.date.format:MMM dd yyyy HH:mm:ss 'GMT'Z}")
+	private String exportDateFormat;
+
+	// Timezone offset in minutes
+	@Value("${syslog.server.forward.time.zone:0}")
+	private Integer timezoneOffsetMins;
+
+	//syslog server - connection timeout in milliseconds
+	@Value("${syslog.server.forward.connection.timeout:30000}")
 	protected int connectionTimeout;
-	@Value("${splunk.forward.timestamp.safe.barrier.diff:30000}")
+
+	//buffer size to holds events forwarded before updating mongo
+	@Value("${syslog.server.forward.update.buffer.size:500}")
+	protected int updateBufferSize;
+
+	@Value("${syslog.server.forward.timestamp.safe.barrier.diff:30000}")
 	protected int timestampDiff;
-	@Value("${splunk.forward.sleep.time.between.retries:30000}")
-	protected int sleepTime;
-	@Value("${splunk.forward.retries.number:3}")
+
+	//when forward to syslog fails - retries before stopping the process
+	@Value("${syslog.server.forward.retries.number:3}")
 	protected int retries;
-	//week back
-	@Value("${splunk.forward.timestamp.range.back:604800}")
+
+	//sleep time between retries
+	@Value("${syslog.server.forward.sleep.time.between.retries:30000}")
+	protected int sleepTime;
+
+	//time in milliseconds (default - week)
+	//uses for performance - using the partitions (time range on the event time and not event write time)
+	@Value("${syslog.server.forward.timestamp.range.back:604800}")
 	protected int timestampRange;
 
 
@@ -60,13 +95,7 @@ public class EventForwardJob implements Job {
 	protected DataQueryRunnerFactory dataQueryRunnerFactory;
 
 	@Autowired
-	protected JobDataMapExtension jobDataMapExtension;
-
-	@Autowired
 	protected ForwardConfigurationRepository forwardConfigurationRepository;
-
-	@Autowired
-	protected JobProgressReporter monitor;
 
 	protected String dataEntityUpdateTimestampField;
 
@@ -74,75 +103,75 @@ public class EventForwardJob implements Job {
 
 	protected long currentTimestamp;
 
-	protected String monitorId;
+	private SimpleDateFormat sdf;
+
+	String sourceName;
+
+	String jobName;
 
 	protected ForwardConfiguration forwardConfiguration;
 
 	@Override
-	public void execute(JobExecutionContext context) throws JobExecutionException {
+	protected boolean shouldReportDataReceived() {
+		return true;
+	}
 
-		// get the job group name to be used using monitoring
-		String sourceName = context.getJobDetail().getKey().getGroup();
-		String jobName = context.getJobDetail().getKey().getName();
+	@Override
+	protected int getTotalNumOfSteps(){
+		//for each configuration we have 3 steps ( querying data , parsing , forwarding)
+		return (forwardConfiguration.getConfList().size() * 3);
+	}
+
+	@Override
+	protected void runSteps() throws Exception {
 
 		logger.info("{} {} job started", jobName, sourceName);
-		//for each configuration we have 2 steps + extra step for reading job parameters
 
-		String currentStep = null;
-		try {
-			// get parameters from job data map
-			currentStep = "Get Job Parameters";
-			getJobParameters(context, sourceName);
 
-			int stepNumber = (forwardConfiguration.getConfList().size() * 3);
-			monitorId = monitor.startJob(sourceName, jobName, stepNumber, true);
-			// run configuration queries and forward data to Splunk
-			for (int i = 0; i < forwardConfiguration.getConfList().size(); i++) {
-				ForwardSingleConfiguration forwardSingleConfiguration = forwardConfiguration.getConfList().get(i);
-				if (forwardSingleConfiguration != null) {
-					//forward configuration data in 2 cases:
-					// 	1. continues configuration
-					//	2. single run and this is the first run
-					if (forwardSingleConfiguration.isContinues() || forwardSingleConfiguration.getRunNumber() == 0) {
-						//adding the upper bound of the time range to the current timestamp
-						List<String> messages = new ArrayList<String>();
-						boolean finishSuccessfully = true;
-						int page = 0;
-						while (page == 0 || (finishSuccessfully && !messages.isEmpty())) {
-							currentStep = "Run Data Query - page " + page;
-							monitor.startStep(monitorId, currentStep, 2 + (i * 2));
-							List<Map<String, Object>> resultsMap = runQuery(forwardSingleConfiguration);
-							monitor.finishStep(monitorId, currentStep);
+		for (int i = 0; i < forwardConfiguration.getConfList().size(); i++) {
+			ForwardSingleConfiguration forwardSingleConfiguration = forwardConfiguration.getConfList().get(i);
+			if (forwardSingleConfiguration != null) {
+				//forward configuration data in 2 cases:
+				// 	1. continues configuration
+				//	2. single run and this is the first run
+				if (forwardSingleConfiguration.isContinues() || forwardSingleConfiguration.getRunNumber() == 0) {
+					//adding the upper bound of the time range to the current timestamp
+					List<String> messages = new ArrayList<String>();
+					boolean finishSuccessfully = true;
+					int page = 0;
+					while (page == 0 || (finishSuccessfully && !messages.isEmpty())) {
+						startNewStep("Run Data Query - page " + page);
+						List<Map<String, Object>> resultsMap = runQuery(forwardSingleConfiguration);
+						finishStep();
 
-							currentStep = "Create syslog messages - page " + page;
-							monitor.startStep(monitorId, currentStep, 3 + (i * 2));
-							messages = parseMessages(resultsMap);
-							monitor.finishStep(monitorId, currentStep);
+						startNewStep("Create syslog messages - page " + page);
+								messages = parseMessages(resultsMap);
+						finishStep();
 
-							currentStep = "Forward Events to Splunk - page " + page;
-							monitor.startStep(monitorId, currentStep, 4 + (i * 2));
-							finishSuccessfully |= forwardEvents(forwardSingleConfiguration, messages);
-							monitor.finishStep(monitorId, currentStep);
-							page++;
-						}
-						if(finishSuccessfully){
-							int offset = getConfigurationOffset(forwardSingleConfiguration);
-							logger.info("Forward finished successfully - forward {} events", offset);
-							updateConfiguration(forwardSingleConfiguration);
+						startNewStep("Forward Events to Syslog server - page " + page);
+						finishSuccessfully |= forwardEvents(forwardSingleConfiguration, messages);
+						finishStep();
+						page++;
+					}
+					if (finishSuccessfully) {
+						int offset = getConfigurationOffset(forwardSingleConfiguration);
+						logger.info("Forward finished successfully - forward {} events", offset);
+						updateConfiguration(forwardSingleConfiguration);
 
-						}
 					}
 				}
 			}
-		} catch (Exception e) {
-			logger.error("unexpected error during event process job: ", e);
-			monitor.error(monitorId, currentStep, e.toString());
-			throw new JobExecutionException(e);
-		} finally {
-			monitor.finishJob(monitorId);
-			logger.info("{} {} job finished", jobName, sourceName);
 		}
+		logger.info("{} {} job finished", jobName, sourceName);
 	}
+
+
+
+	/**
+	 *
+	 * Run Data Query
+	 *
+	 */
 
 	private List<Map<String, Object>> runQuery(ForwardSingleConfiguration forwardSingleConfiguration) throws Exception{
 		DataQueryDTO dataQueryDTO = forwardSingleConfiguration.getDataQueryDTO();
@@ -158,6 +187,14 @@ public class EventForwardJob implements Job {
 		return dataQueryRunner.executeQuery(query);
 	}
 
+
+
+	/**
+	 *
+	 * Create syslog messages
+	 *
+	 */
+
 	private List<String> parseMessages(List<Map<String, Object>> resultsMap){
 		List<String> messages = new ArrayList<String>();
 		for (Map<String, Object> event : resultsMap){
@@ -165,6 +202,36 @@ public class EventForwardJob implements Job {
 		}
 		return messages;
 	}
+
+	private String createSyslogMessage(Map<String, Object> event){
+		StringBuilder message = new StringBuilder();
+
+		for(Map.Entry<String,Object> entry : event.entrySet()) {
+			String value = getValueAsString(sdf, entry.getValue());
+			message.append(entry.getKey() + "=" + value + ";");
+		}
+		return message.toString();
+	}
+
+	private String getValueAsString(SimpleDateFormat sdf, Object value) {
+		String strValue;
+		if (value==null || value.toString().equalsIgnoreCase("null")) {
+			return "";
+		} else if (value instanceof Date) {
+			strValue = sdf.format(value);
+		} else {
+			strValue = value.toString();
+		}
+		return "\"" + strValue + "\"";
+	}
+
+
+
+	/**
+	 *
+	 * Forward Events to Syslog server
+	 *
+	 */
 
 	private boolean forwardEvents(ForwardSingleConfiguration forwardSingleConfiguration, List<String> messages){
 		boolean sendSucceed = true;
@@ -222,7 +289,7 @@ public class EventForwardJob implements Job {
 
 	private AbstractSyslogMessageSender createMessageSender(){
 		AbstractSyslogMessageSender messageSender = null;
-		if (protocol.equals("tcp")) {
+		if (protocol.equalsIgnoreCase(TCP_PROTOCOL)) {
 			messageSender = new TcpSyslogMessageSender();
 			((TcpSyslogMessageSender) messageSender).setSyslogServerHostname(hostName);
 			((TcpSyslogMessageSender) messageSender).setSyslogServerPort(port);
@@ -236,15 +303,6 @@ public class EventForwardJob implements Job {
 		}
 		return messageSender;
 	}
-
-	private String createSyslogMessage(Map<String, Object> event){
-		StringBuilder message = new StringBuilder();
-		for(Map.Entry<String,Object> entry : event.entrySet()){
-			message.append(entry.getKey()+"="+entry.getValue()+";");
-		}
-		return message.toString();
-	}
-
 
 
 
@@ -276,6 +334,7 @@ public class EventForwardJob implements Job {
 	}
 
 
+
 	/**
 	 *
 	 * set configuration values
@@ -304,7 +363,7 @@ public class EventForwardJob implements Job {
 				}
 				else if (newValue != null) {
 					if (field != null && field.getId() != null && field.getId().equals(dataEntityTimestampField)) {
-						((ConditionField) term).setValue((currentTimestamp/1000)-timestampRange+","+currentTimestamp/1000);
+						((ConditionField) term).setValue((TimestampUtils.convertToSeconds(currentTimestamp))-timestampRange+","+ TimestampUtils.convertToSeconds(currentTimestamp));
 					}
 				}
 			}
@@ -327,7 +386,13 @@ public class EventForwardJob implements Job {
 	 *
 	 */
 
-	protected void getJobParameters(JobExecutionContext context, String sourceName) throws JobExecutionException {
+	@Override
+	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
+
+		// get the job group name to be used using monitoring
+		sourceName = context.getJobDetail().getKey().getGroup();
+		jobName = context.getJobDetail().getKey().getName();
+
 		JobDataMap map = context.getMergedJobDataMap();
 
 		// get parameters values from the job data map
@@ -339,7 +404,9 @@ public class EventForwardJob implements Job {
 		dataEntityTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "dataEntityTimestampField");
 		long dataEntityDefaultStartUpdateTimestamp = jobDataMapExtension.getJobDataMapLongValue(map, "dataEntityDefaultStartUpdateTimestamp");
 		int dataEntityLimit = jobDataMapExtension.getJobDataMapIntValue(map, "dataEntityLimit");
-		currentTimestamp = new Date().getTime() - timestampDiff;
+		currentTimestamp = System.currentTimeMillis() - timestampDiff;
+
+		createSimpleDateFormat();
 
 		forwardConfiguration = forwardConfigurationRepository.findByType(sourceName);
 		if (forwardConfiguration == null) {
@@ -361,7 +428,24 @@ public class EventForwardJob implements Job {
 		forwardConfiguration.setConfList(forwardSingleConfigurationList);
 	}
 
+	/**
+	 * Create date formatter according to locale and timezone
+	 * @return the formatter
+	 */
+	private void createSimpleDateFormat() {
+		sdf = new SimpleDateFormat(exportDateFormat);
 
+		// calculate timezone according to offset in minutes
+		int timezoneOffset = 0;
+		int minutes = 0;
+		if (timezoneOffsetMins != null) {
+			timezoneOffset = timezoneOffsetMins / 60;
+			minutes = Math.abs(timezoneOffsetMins % 60);
+		}
+		// set timezone
+		String timeZone = String.format("GMT%s%02d:%02d", (timezoneOffset >= 0 ? "+" : ""), timezoneOffset, minutes);
+		sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
+	}
 
 
 	/**

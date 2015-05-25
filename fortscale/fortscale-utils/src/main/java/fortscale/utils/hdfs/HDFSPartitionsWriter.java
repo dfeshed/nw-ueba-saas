@@ -15,7 +15,10 @@ import org.springframework.util.Assert;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HDFS writer that writes to partitioned files
@@ -87,7 +90,7 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 			if (writer!=null) {
 				//adding new column with the write time, which allow uniform ordering of records
 				if (!text.isEmpty()){
-					text = text + separator +new Date().getTime();
+					text = text + separator + System.currentTimeMillis();
 				}
 				writer.write(text);
 				if (newLine)

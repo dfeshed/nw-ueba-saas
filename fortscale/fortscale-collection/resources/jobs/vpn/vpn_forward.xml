@@ -56,7 +56,7 @@
 				<group>VPN</group>
 				<job-name>FORWARD</job-name>
 				<job-group>VPN</job-group>
-				<cron-expression>0 50 * * * ?</cron-expression>
+				<cron-expression>0 40 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		

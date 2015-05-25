@@ -275,7 +275,7 @@
 			<version>${opencsv.version}</version>
 		</dependency>
 
-
+		<!-- required by event forwarding as syslog client -->
 		<dependency>
 			<groupId>com.cloudbees</groupId>
 			<artifactId>syslog-java-client</artifactId>
