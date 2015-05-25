@@ -537,7 +537,7 @@ public class EventForwardJob extends FortscaleJob {
 	private Term createDefaultTimeTerm(){
 		ConditionField updateTimestampTerm = new ConditionField();
 		updateTimestampTerm.setQueryOperator(QueryOperator.between);
-		updateTimestampTerm.setValue((currentTimestamp/1000)-timestampRange+","+currentTimestamp/1000);
+		updateTimestampTerm.setValue(TimestampUtils.convertToSeconds(currentTimestamp)-timestampRange+","+TimestampUtils.convertToSeconds(currentTimestamp));
 		DataQueryField dataQueryUpdateTimestampField = new DataQueryField();
 		dataQueryUpdateTimestampField.setId(dataEntityTimestampField);
 		updateTimestampTerm.setField(dataQueryUpdateTimestampField);
