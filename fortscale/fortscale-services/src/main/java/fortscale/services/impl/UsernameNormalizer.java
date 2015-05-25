@@ -29,7 +29,7 @@ public class UsernameNormalizer implements InitializingBean{
 		String ret = null;
 		if(regexMatcher != null){
 			for(String normalizedUsername: regexMatcher.match(username)){
-				if(usernameService.isUsernameExist(normalizedUsername)){
+				if(isUsernameExists(normalizedUsername)){
 					ret = normalizedUsername;
 					break;
 				}
@@ -37,6 +37,10 @@ public class UsernameNormalizer implements InitializingBean{
 		}
 		
 		return ret;
+	}
+
+	public boolean isUsernameExists(String normalizedUsername) {
+		return usernameService.isUsernameExist(normalizedUsername);
 	}
 
 	@Override

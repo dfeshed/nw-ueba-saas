@@ -20,12 +20,15 @@ public class UsernameNormalizationService {
 	 * @param username the original username
 	 * @return the normalized username (or null if failed to normalize)
 	 */
-	public String normalizeUsername(String username){
+	public String normalizeUsername(String username, String domain){
 		//if normalizedUsers.fail filter is set: function returns null if username normalization failed.
 		String ret = null;
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
 			ret = usernameNormalizer.normalize(username.toLowerCase());
+			if(ret == null && usernameNormalizer.isUsernameExists(username.toLowerCase() + "@" + domain.toLowerCase())){
+				ret = username.toLowerCase() + "@" + domain.toLowerCase();
+			}
 		}
 
 		return ret;
