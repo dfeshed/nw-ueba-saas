@@ -1,9 +1,6 @@
 package fortscale.services.ipresolving;
 
-import fortscale.domain.events.ComputerLoginEvent;
-import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.IpToHostname;
-import fortscale.domain.events.IseEvent;
 import fortscale.services.ComputerService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -68,12 +65,9 @@ public class IpToHostnameResolver {
 	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
 	 */
 	public String resolve(String ip, long timestamp, boolean restrictToADName) {
-		return resolve(ip, null, timestamp, restrictToADName, true, false);
+		return resolve(ip, timestamp, restrictToADName, true, false);
 	}
 
-	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName, boolean isRemoveLastDot) {
-		return resolve(ip, null, timestamp, restrictToADName, shortName, isRemoveLastDot);
-	}
 
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
@@ -82,7 +76,11 @@ public class IpToHostnameResolver {
 	 * @param isRemoveLastDot remove dot character from the hostname in case it is the last character in the name
 	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
 	 */
-	public String resolve(String ip, PriorityQueue<IpToHostname> ipToHostnameQueue, long timestamp, boolean restrictToADName, boolean shortName, boolean isRemoveLastDot) {
+	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName, boolean isRemoveLastDot) {
+
+		//define the local priority queue
+		PriorityQueue<IpToHostname> ipToHostnameQueue = null;
+
 		// get hostname from file resolver
 		if (isFileProviderEnabled()) {
 			String hostname = normalizeHostname(fileResolver.getHostname(ip), isRemoveLastDot, shortName);
@@ -166,17 +164,16 @@ public class IpToHostnameResolver {
 	 * Save items by Timestamp epoch when newest is on top
 	 */
 	private PriorityQueue<IpToHostname> initializeIpToHostnameQueue(PriorityQueue<IpToHostname> ipToHostnameQueue){
-		if (ipToHostnameQueue == null) {
+
 			ipToHostnameQueue = new PriorityQueue<IpToHostname>(QUEUE_SIZE, new Comparator<IpToHostname>() {
 				@Override
 				public int compare(IpToHostname o1, IpToHostname o2) {
 					return o2.getTimestampepoch().compareTo(o1.getTimestampepoch());
 				}
 			});
-		}
-		else {
-			ipToHostnameQueue.clear();
-		}
+
+
+
 
 		return ipToHostnameQueue;
 	}
@@ -205,7 +202,10 @@ public class IpToHostnameResolver {
 			if (event != null) {
 				String normalizeHostname = normalizeHostname(event.getHostname(), isRemoveLastDot, shortName);
 				if (!isHostnameInBlacklist(normalizeHostname) ) {
-					if (!restrictToADName || event.isAdHostName() || isHostnameInAD(normalizeHostname)) {
+					//return the resolve only in the next cases with OR between them :
+						//1. the data source is not restricted to AD
+						//2. The data source is restricted to AD and also the resolving event is for AD machine
+					if (!restrictToADName || event.isAdHostName()) {
 						return normalizeHostname;
 					}
 				}
