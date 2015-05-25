@@ -10,7 +10,7 @@
             <name>ETL</name>
             <group>AMT</group>
             <description>process amt events received from splunk into files</description>
-            <job-class>fortscale.collection.jobs.AMTEventProcessJob</job-class>
+            <job-class>fortscale.collection.jobs.event.process.AMTEventProcessJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
 

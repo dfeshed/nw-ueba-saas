@@ -1,10 +1,10 @@
 package fortscale.streaming.task;
 
+import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.filters.MessageFilter;
-import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.HdfsService;
@@ -16,7 +16,6 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -83,7 +82,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		FileSplitStrategy splitStrategy = (FileSplitStrategy)Class.forName(splitClassName).newInstance();
 
 		// create HDFS appender service
-		service = new HdfsService(hdfsRootPath, fileName, partitionStrategy, splitStrategy, tableName, eventsCountFlushThreshold, windowDuration);
+		service = new HdfsService(hdfsRootPath, fileName, partitionStrategy, splitStrategy, tableName, eventsCountFlushThreshold, windowDuration, separator);
 		featureExtractionService = new FeatureExtractionService(config);
 
 		// create counter metric for processed messages

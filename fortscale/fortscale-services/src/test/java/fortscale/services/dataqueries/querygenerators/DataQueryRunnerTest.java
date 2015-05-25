@@ -76,13 +76,13 @@ public class DataQueryRunnerTest implements EmbeddedValueResolverAware {
 			"    ],\n" +
 			"    \"conditions\": {\n" +
 			"        \"type\": \"term\",\n" +
-			"        \"operator\": \"AND\",\n" +
+			"        \"logicalOperator\": \"AND\",\n" +
 			"        \"terms\": [\n" +
 			"            {\n" +
 			"                \"field\": {\n" +
 			"                    \"id\": \"event_score\"\n" +
 			"                },\n" +
-			"                \"operator\": \"greaterThanOrEquals\",\n" +
+			"                \"queryOperator\": \"greaterThanOrEquals\",\n" +
 			"                \"type\": \"field\",\n" +
 			"                \"value\": 50\n" +
 			"            },\n" +
@@ -90,7 +90,7 @@ public class DataQueryRunnerTest implements EmbeddedValueResolverAware {
 			"                \"field\": {\n" +
 			"                    \"id\": \"event_time_utc\"\n" +
 			"                },\n" +
-			"                \"operator\": \"between\",\n" +
+			"                \"queryOperator\": \"between\",\n" +
 			"                \"type\": \"field\",\n" +
 			"                \"value\": \"1425294318,1425380718\"\n" +
 			"            }\n" +

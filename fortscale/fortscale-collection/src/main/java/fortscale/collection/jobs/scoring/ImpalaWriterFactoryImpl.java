@@ -52,7 +52,7 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 	public void createTotalScoreAppender(String basePath, String filename) throws IOException{
 		if(totalScoreAppender == null){
             PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTotalScoringTablePartitionType);
-			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy());
+			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(basePath, partitionStrategy, new DefaultFileSplitStrategy(),impalaTotalScoringTableDelimiter);
 			totalScoreAppender = new BufferedHDFSWriter(writer, filename, maxBufferSize);
 		}
 //		totalScoreAppender.open(filename);
