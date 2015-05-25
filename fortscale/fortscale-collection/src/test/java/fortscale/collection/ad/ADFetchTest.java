@@ -1,5 +1,6 @@
 package fortscale.collection.ad;
 
+import fortscale.utils.properties.PropertiesResolver;
 import org.junit.Before;
 import org.junit.Test;
 import com.google.common.io.Resources;
@@ -27,8 +28,8 @@ public class ADFetchTest {
 	public void setUp() {
 		try {
 			adFetchJob = new AdFetchJob();
-			URL url = Resources.getResource("adConnectionsTest.json");
-			adConnections = new AdConnections(url.getFile());
+			PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
+			adConnections = new AdConnections(propertiesResolver.getProperty("ad.connections"));
 			initialized = true;
 		} catch (Exception ex) {
 			logger.debug("Bad json file");
@@ -167,5 +168,4 @@ public class ADFetchTest {
 			ex.printStackTrace();
 		}
 	}
-
 }

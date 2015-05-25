@@ -1,3 +1,4 @@
+
 package fortscale.collection.jobs.ad;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,7 +134,7 @@ public class AdFetchJob extends FortscaleJob {
 				try {
 					context = new InitialLdapContext(environment, null);
 				} catch (javax.naming.CommunicationException ex) {
-					logger.debug("Connection failed");
+					logger.debug("Connection failed - {}", ex.getMessage());
 					connected = false;
 				}
 				if (connected) {
@@ -144,7 +145,7 @@ public class AdFetchJob extends FortscaleJob {
 				logger.debug("Connection established");
 			} else {
 				logger.debug("Failed to connect to any domain controller for {}", adConnection.getDomainName());
-				continue;
+				throw new Exception ("Failed to connect to any domain controller for " + adConnection.getDomainName());
 			}
 			String baseSearch = adConnection.getDomainBaseSearch();
 			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
@@ -238,5 +239,4 @@ public class AdFetchJob extends FortscaleJob {
 	protected boolean shouldReportDataReceived() {
 		return true;
 	}
-
 }
