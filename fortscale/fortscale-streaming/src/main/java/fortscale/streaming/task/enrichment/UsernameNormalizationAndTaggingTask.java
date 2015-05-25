@@ -166,7 +166,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				// checks in memory-cache and mongo if the user exists
 				normalizedUsername = normalizationService.normalizeUsername(username);
 				if (normalizedUsername == null && !StringUtils.isEmpty(domain)) {
-					normalizedUsername = username.toLowerCase() + "@" + domain.toLowerCase();
+					normalizedUsername = normalizationService.normalizeUsername(username + "@" + domain);
 				}
 				// check if we should drop the record (user doesn't exist)
 				if (normalizationService.shouldDropRecord(username, normalizedUsername)) {
