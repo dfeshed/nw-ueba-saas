@@ -1,9 +1,11 @@
 package fortscale.collection.jobs;
 
-import java.io.IOException;
-
+import fortscale.collection.JobDataMapExtension;
+import fortscale.collection.jobs.event.process.EventProcessJob;
+import fortscale.collection.morphlines.RecordToBeanItemConverter;
+import fortscale.domain.events.IseEvent;
+import fortscale.services.ipresolving.IseResolver;
 import org.kitesdk.morphline.api.Record;
-import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -11,11 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.JobDataMapExtension;
-import fortscale.collection.morphlines.MorphlinesItemsProcessor;
-import fortscale.collection.morphlines.RecordToBeanItemConverter;
-import fortscale.domain.events.IseEvent;
-import fortscale.services.ipresolving.IseResolver;
+import java.io.IOException;
 
 /**
  * Created by tomerd on 12/05/2015.
