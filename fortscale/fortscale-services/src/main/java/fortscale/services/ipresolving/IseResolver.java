@@ -40,7 +40,7 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
     }
 
     public IseResolver() {
-
+        super();
     }
 
     @Override
@@ -94,13 +94,6 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
                     iseEventRepository.save(event);
                 }
             }
-            /*
-            if (!cached.getHostname().equals(event.getHostname()) &&
-                    cached.getTimestampepoch().compareTo(event.getTimestampepoch()) < 0) {
-                cache.put(event.getIpaddress(), event);
-                iseEventRepository.save(event);
-                removeFromBlackList(event);
-            }*/
         }
     }
 
@@ -139,12 +132,11 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
         if (!iseEvents.isEmpty()) {
             // check if the ip assignment is not expired
             iseEvent = iseEvents.get(0);
-            if (iseEvent.getExpiration() >= ts) {
-                // also add the event to the cache for next time
-                cache.put(ip, iseEvent);
-                return iseEvent;
-            }
+            // also add the event to the cache for next time
+            cache.put(ip, iseEvent);
+            return iseEvent;
         }
+        
         //take the expiration date as the lower limit of the black list period only if the given event is previous to the given event ts
         long lowerLimitTs = iseEvent != null && (iseEvent.getExpiration() < ts) ? iseEvent.getExpiration() : 0;
         addToBlackList(ip, lowerLimitTs, upperTsLimit);

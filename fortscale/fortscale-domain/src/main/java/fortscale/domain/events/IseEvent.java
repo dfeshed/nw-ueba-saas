@@ -50,14 +50,6 @@ public class IseEvent extends IpToHostname {
         this.macAddress = macAddress;
     }
 
-    public boolean isAdHostName() {
-        return (adHostName == null) ? false : adHostName;
-    }
-
-    public void setAdHostName(boolean adHostName) {
-        this.adHostName = adHostName;
-    }
-
 
     @Override
     public boolean equals(Object obj) {

@@ -54,11 +54,6 @@ public class IpToHostnameResolver {
 	@Value("${ip2hostname.dnsProvider.enabled:true}")
 	private boolean dnsProviderEnabled;
 
-	// PriorityQueue to hold the events.
-	// Will be init only once;
-	// Each resolve request will only clean the queue
-	//private PriorityQueue<IpToHostname> ipToHostnameQueue;
-
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
 	 * @param restrictToADName should we return only hostnames that appear in AD and leave un-resolved otherwise
