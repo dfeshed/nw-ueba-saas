@@ -24,8 +24,12 @@
 					<value>ous%d.csv</value>
 				</entry>
 				<entry>
-					<key>ldapSearchShellScript</key>
-					<value>${collection.shell.scripts.dir.path}/ldapOuSearch.sh</value>
+					<key>filter</key>
+					<value>(&amp;(objectclass=organizationalUnit))</value>
+				</entry>
+				<entry>
+					<key>adFields</key>
+					<value>distinguishedName,isCriticalSystemObject,isDeleted,defaultGroup,memberOf,managedBy,managedObjects,masteredBy,nonSecurityMemberBL,directReports,whenChanged,whenCreated,cn,c,description,displayName,l,ou,objectSid,objectGUID</value>
 				</entry>
             </job-data-map>
 		</job>
