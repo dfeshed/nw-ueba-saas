@@ -1,8 +1,10 @@
-package fortscale.collection.jobs;
+package fortscale.collection.jobs.event.process;
 
-
-import java.io.IOException;
-
+import fortscale.collection.JobDataMapExtension;
+import fortscale.collection.morphlines.MorphlinesItemsProcessor;
+import fortscale.collection.morphlines.RecordToBeanItemConverter;
+import fortscale.domain.events.DhcpEvent;
+import fortscale.services.ipresolving.DhcpResolver;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -12,11 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.JobDataMapExtension;
-import fortscale.collection.morphlines.MorphlinesItemsProcessor;
-import fortscale.collection.morphlines.RecordToBeanItemConverter;
-import fortscale.domain.events.DhcpEvent;
-import fortscale.services.ipresolving.DhcpResolver;
+import java.io.IOException;
 
 /**
  * Scheduled job to process dhcp events into mongodb

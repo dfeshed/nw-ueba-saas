@@ -1,24 +1,6 @@
 package fortscale.collection.morphlines.commands;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.kitesdk.morphline.api.Command;
-import org.kitesdk.morphline.api.CommandBuilder;
-import org.kitesdk.morphline.api.MorphlineContext;
-import org.kitesdk.morphline.api.Record;
-import org.kitesdk.morphline.base.AbstractCommand;
-import org.kitesdk.morphline.base.Notifications;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import com.typesafe.config.Config;
-
 import fortscale.collection.morphlines.MorphlineConfigService;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -31,6 +13,22 @@ import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.IllegalStructuredProperty;
 import fortscale.utils.properties.PropertyNotExistException;
+import org.kitesdk.morphline.api.Command;
+import org.kitesdk.morphline.api.CommandBuilder;
+import org.kitesdk.morphline.api.MorphlineContext;
+import org.kitesdk.morphline.api.Record;
+import org.kitesdk.morphline.base.AbstractCommand;
+import org.kitesdk.morphline.base.Notifications;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 @Configurable(preConstruction=true)
 public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
@@ -69,8 +67,8 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 		
 		protected HDFSPartitionsWriter appender;
 		protected RecordToStringItemsProcessor recordToString;
-		
-		
+
+		String outputSeparator;
 
 		public HDFSPartitionsWrite(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) throws PropertyNotExistException, IllegalStructuredProperty, IOException {
 			super(builder, config, parent, child, context);
@@ -87,7 +85,7 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 				
 				// build record to items processor
 				String outputFields = getStringValue(config, "outputFields");
-				String outputSeparator = getStringValue(config, "outputSeparator");
+				outputSeparator = getStringValue(config, "outputSeparator");
 				recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 				
 				createOutputAppender();
@@ -131,7 +129,7 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 				logger.debug("initializing hadoop appender in {}", hadoopPath);
 
 				// calculate file directory path according to partition strategy
-				appender = new HDFSPartitionsWriter(hadoopPath, partitionStrategy, fileSplitStrategy);
+				appender = new HDFSPartitionsWriter(hadoopPath, partitionStrategy, fileSplitStrategy,outputSeparator);
 				appender.open(hadoopFilename);
 
 			} catch (IOException e) {
