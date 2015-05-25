@@ -205,13 +205,7 @@ public class IpToHostnameResolver {
 			if (event != null) {
 				String normalizeHostname = normalizeHostname(event.getHostname(), isRemoveLastDot, shortName);
 				if (!isHostnameInBlacklist(normalizeHostname) ) {
-					if (event instanceof DhcpEvent) {
-						DhcpEvent dhcpEvent = (DhcpEvent) event;
-						if (!restrictToADName || dhcpEvent.isAdHostName() ||  isHostnameInAD(normalizeHostname)){
-							return normalizeHostname;
-						}
-					}
-					else {
+					if (!restrictToADName || event.isAdHostName() || isHostnameInAD(normalizeHostname)) {
 						return normalizeHostname;
 					}
 				}
