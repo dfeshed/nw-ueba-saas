@@ -3,15 +3,18 @@ package fortscale.services.event.forward;
 import fortscale.services.dataqueries.querydto.DataQueryDTO;
 
 /**
- * Created by danal on 19/05/2015.
+ *
  * Uses to hold the configuration of a single forward process
  */
 public class ForwardSingleConfiguration {
 
+	//data query to run when using this configuration
 	private DataQueryDTO dataQueryDTO;
 
+	//if false run only once
 	private boolean continues;
 
+	// number of times this job had run
 	private long runNumber;
 
 	public DataQueryDTO getDataQueryDTO() {

@@ -56,7 +56,7 @@
 				<group>SSH</group>
 				<job-name>FORWARD</job-name>
 				<job-group>SSH</job-group>
-				<cron-expression>0 50 * * * ?</cron-expression>
+				<cron-expression>0 0 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
