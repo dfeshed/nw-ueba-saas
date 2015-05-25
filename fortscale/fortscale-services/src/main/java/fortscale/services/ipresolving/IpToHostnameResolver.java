@@ -1,7 +1,6 @@
 package fortscale.services.ipresolving;
 
-import fortscale.domain.events.ComputerLoginEvent;
-import fortscale.domain.events.DhcpEvent;
+import fortscale.domain.events.IpToHostname;
 import fortscale.services.ComputerService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -9,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.regex.Pattern;
 
 /**
@@ -17,12 +18,20 @@ import java.util.regex.Pattern;
  */
 public class IpToHostnameResolver {
 
+	// Queue init size
+	public static final int QUEUE_SIZE = 3;
+
+	// Default message to be return when there is no resolve
+	public static final String RESOLVING_DEFAULT_MESSAGE = null;
+
 	private static Logger logger = LoggerFactory.getLogger(IpToHostnameResolver.class);
 	
 	@Autowired
 	private ComputerLoginResolver computerLoginResolver;
 	@Autowired
 	private DhcpResolver dhcpResolver;
+	@Autowired
+	private IseResolver iseResolver;
 	@Autowired
 	private DnsResolver dnsResolver;
 	@Autowired
@@ -40,10 +49,10 @@ public class IpToHostnameResolver {
 	private boolean loginProviderEnabled;
 	@Value("${ip2hostname.dhcpProvider.enabled:true}")
 	private boolean dhcpProviderEnabled;
+	@Value("${ip2hostname.iseProvider.enabled:true}")
+	private boolean iseProviderEnabled;
 	@Value("${ip2hostname.dnsProvider.enabled:true}")
 	private boolean dnsProviderEnabled;
-
-
 
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
@@ -53,7 +62,8 @@ public class IpToHostnameResolver {
 	public String resolve(String ip, long timestamp, boolean restrictToADName) {
 		return resolve(ip, timestamp, restrictToADName, true, false);
 	}
-	
+
+
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
 	 * @param restrictToADName should we return only hostnames that appear in AD and leave un-resolved otherwise
@@ -62,50 +72,44 @@ public class IpToHostnameResolver {
 	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
 	 */
 	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName, boolean isRemoveLastDot) {
+
+		//define the local priority queue
+		PriorityQueue<IpToHostname> ipToHostnameQueue = null;
+
 		// get hostname from file resolver
 		if (isFileProviderEnabled()) {
 			String hostname = normalizeHostname(fileResolver.getHostname(ip), isRemoveLastDot, shortName);
 			if (StringUtils.isNotEmpty(hostname))
 				return hostname;
 		}
-		
-		// get hostname from security events and dhcp
-		ComputerLoginEvent loginEvent = isLoginProviderEnabled()? computerLoginResolver.getComputerLoginEvent(ip, timestamp) : null;
-		DhcpEvent dhcpEvent = isDhcpProviderEnabled()? dhcpResolver.getLatestDhcpEventBeforeTimestamp(ip, timestamp) : null;
-		
-		String loginHostname = (loginEvent==null)? null : normalizeHostname(loginEvent.getHostname(), isRemoveLastDot, shortName);
-		String dhcpHostname = (dhcpEvent==null)? null : normalizeHostname(dhcpEvent.getHostname(), isRemoveLastDot, shortName);
-		
-		// check if we can return the login event hostname
-		if (loginEvent!=null) {
-			// return login hostname in case:
-			// 1. dhcp is missing
-			// 2. it is newer than the dhcp event
-			// 3. dhcp and login event hostnames are the same
-			if (dhcpEvent==null || (loginEvent.getTimestampepoch() >= dhcpEvent.getTimestampepoch()) || (loginHostname.equals(dhcpHostname)))
-				return loginHostname;
-			else {
-				// log conflicts between dhcp and security events
-				if (dhcpEvent!=null && !loginHostname.equals(dhcpHostname))
-					logger.debug("Conflict in ip resolving between dhcp event [hn={},time={},exp={}] and security event [hn={},time={}] for ip {} at time {}", 
-							dhcpHostname, dhcpEvent.getTimestampepoch(), dhcpEvent.getExpiration(), loginHostname, loginEvent.getTimestampepoch(), ip, timestamp);
-			}
+
+		// Init queue
+		ipToHostnameQueue = initializeIpToHostnameQueue(ipToHostnameQueue);
+
+		// Add events to queue
+		if (isLoginProviderEnabled()) {
+			addToHostnameQueue(ipToHostnameQueue, computerLoginResolver.getComputerLoginEvent(ip, timestamp));
 		}
 
-		// check if we can return dhcp event
-		if (dhcpEvent!=null) {
-			// return dhcp hostname if (AND between criteria):
-			// 1. it is not in blacklist
-			// 2. hostname is in AD and we were asked to restrictToADNames
-			if (!isHostnameInBlacklist(dhcpHostname) && 
-					(!restrictToADName || dhcpEvent.isAdHostName() ||  isHostnameInAD(dhcpHostname))) {
-				return dhcpHostname;
-			}
+		if (isDhcpProviderEnabled()) {
+			addToHostnameQueue(ipToHostnameQueue, dhcpResolver.getLatestDhcpEventBeforeTimestamp(ip, timestamp));
 		}
-		
+
+		if (isIseProviderEnabled()) {
+			addToHostnameQueue(ipToHostnameQueue, iseResolver.getLatestIseEventBeforeTimestamp(ip, timestamp));
+		}
+
+		// Try resolving IP using queue
+		String hostname = getHostNameFromHostnameQueue(ipToHostnameQueue, isRemoveLastDot, shortName, restrictToADName);
+
+		// If we found match, return the hostname
+		if (hostname != null && !hostname.isEmpty()  && hostname != RESOLVING_DEFAULT_MESSAGE){
+			return  hostname;
+		}
+
 		// at last resolve to dns if all other failed
 		if (isDnsProviderEnabled()) {
-			String hostname = normalizeHostname(dnsResolver.getHostname(ip, timestamp), isRemoveLastDot, shortName);
+			hostname = normalizeHostname(dnsResolver.getHostname(ip, timestamp), isRemoveLastDot, shortName);
 			
 			// return dns name if (AND between criteria):
 			// 1. it is not in blacklist
@@ -115,7 +119,7 @@ public class IpToHostnameResolver {
 		}
 		
 		// return un resolved if all providers failed
-		return null;
+		return RESOLVING_DEFAULT_MESSAGE;
 	}
 	
 	private boolean isHostnameInAD(String hostname) {
@@ -148,8 +152,64 @@ public class IpToHostnameResolver {
 		
 		return blacklistMatcher.matcher(hostname).matches();
 	}
-	
-	
+
+
+	/**
+	 * Init the priority queue
+	 * Save items by Timestamp epoch when newest is on top
+	 */
+	private PriorityQueue<IpToHostname> initializeIpToHostnameQueue(PriorityQueue<IpToHostname> ipToHostnameQueue){
+
+			ipToHostnameQueue = new PriorityQueue<IpToHostname>(QUEUE_SIZE, new Comparator<IpToHostname>() {
+				@Override
+				public int compare(IpToHostname o1, IpToHostname o2) {
+					return o2.getTimestampepoch().compareTo(o1.getTimestampepoch());
+				}
+			});
+
+
+
+
+		return ipToHostnameQueue;
+	}
+
+	/**
+	 * Add item to queue
+	 * Before insert, checks that hostname isn't in the hostname blacklist
+ 	 * @param event to insert
+	 */
+	private void addToHostnameQueue(PriorityQueue<IpToHostname> ipToHostnameQueue, IpToHostname event) {
+		if (event != null) {
+			ipToHostnameQueue.add(event);
+		}
+	}
+
+	/**
+	 * Resolve IP using queue
+	 * @param isRemoveLastDot
+	 * @param shortName
+	 * @return The resolved hostname
+	 */
+	private String getHostNameFromHostnameQueue(PriorityQueue<IpToHostname> ipToHostnameQueue, boolean isRemoveLastDot, boolean shortName, boolean restrictToADName) {
+
+		while (!ipToHostnameQueue.isEmpty()) {
+			IpToHostname event = ipToHostnameQueue.poll();
+			if (event != null) {
+				String normalizeHostname = normalizeHostname(event.getHostname(), isRemoveLastDot, shortName);
+				if (!isHostnameInBlacklist(normalizeHostname) ) {
+					//return the resolve only in the next cases with OR between them :
+						//1. the data source is not restricted to AD
+						//2. The data source is restricted to AD and also the resolving event is for AD machine
+					if (!restrictToADName || event.isAdHostName()) {
+						return normalizeHostname;
+					}
+				}
+			}
+		}
+
+		return RESOLVING_DEFAULT_MESSAGE;
+	}
+
 	public void setHostnameBlacklist(String hostnameBlacklist) {
 		this.hostnameBlacklist = hostnameBlacklist;
 	}
@@ -178,6 +238,14 @@ public class IpToHostnameResolver {
 		this.dhcpProviderEnabled = dhcpProviderEnabled;
 	}
 
+	public boolean isIseProviderEnabled() {
+		return iseProviderEnabled;
+	}
+
+	public void setIseProviderEnabled(boolean iseProviderEnabled) {
+		this.iseProviderEnabled = iseProviderEnabled;
+	}
+
 	public boolean isDnsProviderEnabled() {
 		return dnsProviderEnabled;
 	}
@@ -192,6 +260,10 @@ public class IpToHostnameResolver {
 
 	public DhcpResolver getDhcpResolver() {
 		return dhcpResolver;
+	}
+
+	public IseResolver getIseResolver() {
+		return iseResolver;
 	}
 
 	public DnsResolver getDnsResolver() {

@@ -21,7 +21,7 @@ public class ComputerLoginEventTest {
         event.setTimestampepoch(113L);
 
         String actual = mapper.writeValueAsString(event);
-        assertEquals("{\"id\":null,\"createdAt\":null,\"timestampepoch\":113000,\"ipaddress\":\"1.1.1.1\",\"hostname\":\"ddd\"}", actual);
+        assertEquals("{\"id\":null,\"createdAt\":null,\"timestampepoch\":113000,\"ipaddress\":\"1.1.1.1\",\"hostname\":\"ddd\",\"adHostName\":false}", actual);
     }
 
     @Test

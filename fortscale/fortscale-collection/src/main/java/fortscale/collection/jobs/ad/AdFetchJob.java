@@ -1,3 +1,4 @@
+
 package fortscale.collection.jobs.ad;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -238,5 +239,4 @@ public class AdFetchJob extends FortscaleJob {
 	protected boolean shouldReportDataReceived() {
 		return true;
 	}
-
 }
