@@ -60,7 +60,7 @@ public class IpToHostnameResolver {
 	// PriorityQueue to hold the events.
 	// Will be init only once;
 	// Each resolve request will only clean the queue
-	private PriorityQueue<IpToHostname> ipToHostnameQueue;
+	//private PriorityQueue<IpToHostname> ipToHostnameQueue;
 
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
@@ -68,7 +68,11 @@ public class IpToHostnameResolver {
 	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
 	 */
 	public String resolve(String ip, long timestamp, boolean restrictToADName) {
-		return resolve(ip, timestamp, restrictToADName, true, false);
+		return resolve(ip, null, timestamp, restrictToADName, true, false);
+	}
+
+	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName, boolean isRemoveLastDot) {
+		return resolve(ip, null, timestamp, restrictToADName, shortName, isRemoveLastDot);
 	}
 
 	/**
@@ -78,7 +82,7 @@ public class IpToHostnameResolver {
 	 * @param isRemoveLastDot remove dot character from the hostname in case it is the last character in the name
 	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
 	 */
-	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName, boolean isRemoveLastDot) {
+	public String resolve(String ip, PriorityQueue<IpToHostname> ipToHostnameQueue, long timestamp, boolean restrictToADName, boolean shortName, boolean isRemoveLastDot) {
 		// get hostname from file resolver
 		if (isFileProviderEnabled()) {
 			String hostname = normalizeHostname(fileResolver.getHostname(ip), isRemoveLastDot, shortName);
@@ -87,23 +91,23 @@ public class IpToHostnameResolver {
 		}
 
 		// Init queue
-		initializeIpToHostnameQueue();
+		ipToHostnameQueue = initializeIpToHostnameQueue(ipToHostnameQueue);
 
 		// Add events to queue
 		if (isLoginProviderEnabled()) {
-			addToHostnameQueue(computerLoginResolver.getComputerLoginEvent(ip, timestamp));
+			addToHostnameQueue(ipToHostnameQueue, computerLoginResolver.getComputerLoginEvent(ip, timestamp));
 		}
 
 		if (isDhcpProviderEnabled()) {
-			addToHostnameQueue(dhcpResolver.getLatestDhcpEventBeforeTimestamp(ip, timestamp));
+			addToHostnameQueue(ipToHostnameQueue, dhcpResolver.getLatestDhcpEventBeforeTimestamp(ip, timestamp));
 		}
 
 		if (isIseProviderEnabled()) {
-			addToHostnameQueue(iseResolver.getLatestIseEventBeforeTimestamp(ip, timestamp));
+			addToHostnameQueue(ipToHostnameQueue, iseResolver.getLatestIseEventBeforeTimestamp(ip, timestamp));
 		}
 
 		// Try resolving IP using queue
-		String hostname = getHostNameFromHostnameQueue(isRemoveLastDot, shortName, restrictToADName);
+		String hostname = getHostNameFromHostnameQueue(ipToHostnameQueue, isRemoveLastDot, shortName, restrictToADName);
 
 		// If we found match, return the hostname
 		if (hostname != null && !hostname.isEmpty()  && hostname != RESOLVING_DEFAULT_MESSAGE){
@@ -161,7 +165,7 @@ public class IpToHostnameResolver {
 	 * Init the priority queue
 	 * Save items by Timestamp epoch when newest is on top
 	 */
-	private void initializeIpToHostnameQueue(){
+	private PriorityQueue<IpToHostname> initializeIpToHostnameQueue(PriorityQueue<IpToHostname> ipToHostnameQueue){
 		if (ipToHostnameQueue == null) {
 			ipToHostnameQueue = new PriorityQueue<IpToHostname>(QUEUE_SIZE, new Comparator<IpToHostname>() {
 				@Override
@@ -173,6 +177,8 @@ public class IpToHostnameResolver {
 		else {
 			ipToHostnameQueue.clear();
 		}
+
+		return ipToHostnameQueue;
 	}
 
 	/**
@@ -180,7 +186,7 @@ public class IpToHostnameResolver {
 	 * Before insert, checks that hostname isn't in the hostname blacklist
  	 * @param event to insert
 	 */
-	private void addToHostnameQueue(IpToHostname event) {
+	private void addToHostnameQueue(PriorityQueue<IpToHostname> ipToHostnameQueue, IpToHostname event) {
 		if (event != null) {
 			ipToHostnameQueue.add(event);
 		}
@@ -192,7 +198,7 @@ public class IpToHostnameResolver {
 	 * @param shortName
 	 * @return The resolved hostname
 	 */
-	private String getHostNameFromHostnameQueue(boolean isRemoveLastDot, boolean shortName, boolean restrictToADName) {
+	private String getHostNameFromHostnameQueue(PriorityQueue<IpToHostname> ipToHostnameQueue, boolean isRemoveLastDot, boolean shortName, boolean restrictToADName) {
 
 		while (!ipToHostnameQueue.isEmpty()) {
 			IpToHostname event = ipToHostnameQueue.poll();
