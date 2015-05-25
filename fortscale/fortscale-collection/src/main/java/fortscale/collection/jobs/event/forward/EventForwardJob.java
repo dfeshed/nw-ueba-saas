@@ -363,7 +363,7 @@ public class EventForwardJob extends FortscaleJob {
 				}
 				else if (newValue != null) {
 					if (field != null && field.getId() != null && field.getId().equals(dataEntityTimestampField)) {
-						((ConditionField) term).setValue((TimestampUtils.convertToSeconds(currentTimestamp))-timestampRange+","+ TimestampUtils.convertToSeconds(currentTimestamp));
+						((ConditionField) term).setValue(getTimeRange());
 					}
 				}
 			}
@@ -537,12 +537,16 @@ public class EventForwardJob extends FortscaleJob {
 	private Term createDefaultTimeTerm(){
 		ConditionField updateTimestampTerm = new ConditionField();
 		updateTimestampTerm.setQueryOperator(QueryOperator.between);
-		updateTimestampTerm.setValue(TimestampUtils.convertToSeconds(currentTimestamp)-timestampRange+","+TimestampUtils.convertToSeconds(currentTimestamp));
+		updateTimestampTerm.setValue(getTimeRange());
 		DataQueryField dataQueryUpdateTimestampField = new DataQueryField();
 		dataQueryUpdateTimestampField.setId(dataEntityTimestampField);
 		updateTimestampTerm.setField(dataQueryUpdateTimestampField);
 
 		return updateTimestampTerm;
+	}
+
+	private String getTimeRange(){
+		return (TimestampUtils.convertToSeconds(currentTimestamp)-timestampRange)+","+ TimestampUtils.convertToSeconds(currentTimestamp);
 	}
 }
 
