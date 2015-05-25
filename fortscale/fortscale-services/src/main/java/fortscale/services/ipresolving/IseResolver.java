@@ -136,7 +136,7 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
             cache.put(ip, iseEvent);
             return iseEvent;
         }
-        
+
         //take the expiration date as the lower limit of the black list period only if the given event is previous to the given event ts
         long lowerLimitTs = iseEvent != null && (iseEvent.getExpiration() < ts) ? iseEvent.getExpiration() : 0;
         addToBlackList(ip, lowerLimitTs, upperTsLimit);

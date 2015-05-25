@@ -56,11 +56,6 @@ public class ISETest {
     @SuppressWarnings("unused")
     private Object[] parametersForTestIseSingleLines() {
         return $(
-
-
-
-
-
                 $(
                         "Regular 3000 event",
                         "2015-05-07T00:00:07+00:00 isemtv-prd-09 CISE_RADIUS_Accounting 0009659552 1 0 2015-05-07 00:00:07.937 +00:00 0348597681 3000 NOTICE Radius-Accounting: RADIUS Accounting start request, ConfigVersionId=21, Device IP Address=171.68.33.133, RequestLatency=1, NetworkDeviceName=mtv5-mda2-dt-sw1, User-Name=CISCO\\\\\\\\sahota, NAS-IP-Address=171.68.33.133, NAS-Port=50136, Service-Type=Framed, Framed-IP-Address=171.68.33.159, Class=CACS:AB44218500003C86633F00A3:isemtv-prd-09/218277192/12720217, Called-Station-ID=30-F7-0D-D8-3D-A4, Calling-Station-ID=54-EE-75-49-B0-FF, Acct-Status-Type=Start, Acct-Delay-Time=0, Acct-Session-Id=00004404, Acct-Authentic=RADIUS, NAS-Port-Type=Ethernet, NAS-Port-Id=GigabitEthernet1/0/36, undefined-151=B5B585F5, cisco-av-pair=audit-session-id=AB44218500003C86633F00A3, cisco-av-pair=connect-progress=Call Up, cisco-av-pair=dhcp-option=dhcp-parameter-request-list=1\\\\, 15\\\\, 3\\\\, 6\\\\, 44\\\\, 46\\\\, 47\\\\, 31\\\\, 33\\\\, 121\\\\, 249\\\\, 43, cisco-av-pair=dhcp-option=dhcp-class-identifier=MSFT 5.0, cisco-av-pair=dhcp-option=client-fqdn=0\\\\, 0\\\\, 83\\\\, 65\\\\, 72\\\\, 79\\\\, 84\\\\, 45\\\\, 70\\\\, 76\\\\, 86\\\\, 54\\\\, 99\\\\, 105\\\\, 115\\\\, 111\\\\, 109, cisco-av-pair=dhcp-option=host-name=SAHOTA-FLVL6, cisco-av-pair=dhcp-option=dhcp-requested-address=171.68.33.159, cisco-av-pair=dhcp-option=dhcp-client-identifier=01:54:ee:75:49:b0:ff, AcsSessionID=isemtv-prd-09/218277192/12720278, SelectedAccessService=802.1x, Step=11004, Step=11017, Step=15049, Step=15008, Step=15004, Step=11005, NetworkDeviceGroups=Location#All Locations#US West#UNITED STATES#MOUNTAIN VIEW#MTV5, NetworkDeviceGroups=Device Type#All Device Types#C3750, CPMSessionID=AB44218500003C86633F00A3, AllowedProtocolMatchedRule=Wired Dot1X, Location=Location#All Locations#US West#UNITED STATES#MOUNTAIN VIEW#MTV5, Device Type=Device Type#All Device Types#C3750,",
