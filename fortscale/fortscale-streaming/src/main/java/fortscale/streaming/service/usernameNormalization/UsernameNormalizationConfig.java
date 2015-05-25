@@ -10,6 +10,7 @@ public class UsernameNormalizationConfig {
 	private String inputTopic;
 	private String outputTopic;
 	private String usernameField;
+	private String domainField;
 	private String normalizedUsernameField;
 	private String partitionField;
 	private Boolean updateOnlyFlag;
@@ -17,7 +18,8 @@ public class UsernameNormalizationConfig {
 	private UsernameNormalizationService usernameNormalizationService;
 
 
-	public UsernameNormalizationConfig(String inputTopic, String outputTopic, String usernameField, String normalizedUsernameField, String partitionField, Boolean updateOnlyFlag, String classifier,
+	public UsernameNormalizationConfig(String inputTopic, String outputTopic, String usernameField, String
+			domainField, String normalizedUsernameField, String partitionField, Boolean updateOnlyFlag, String classifier,
 			UsernameNormalizationService usernameNormalizationService) {
 		this.inputTopic = inputTopic;
 		this.outputTopic = outputTopic;
@@ -49,8 +51,16 @@ public class UsernameNormalizationConfig {
 		return usernameField;
 	}
 
+	public String getDomainField() {
+		return domainField;
+	}
+
 	public void setUsernameField(String usernameField) {
 		this.usernameField = usernameField;
+	}
+
+	public void setDomainField(String domainField) {
+		this.domainField = domainField;
 	}
 
 	public String getNormalizedUsernameField() {

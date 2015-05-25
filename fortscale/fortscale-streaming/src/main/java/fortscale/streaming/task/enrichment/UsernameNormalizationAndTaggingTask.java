@@ -86,8 +86,10 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
 			String dataSource = ConfigField.getKey();
 			String inputTopic = ConfigField.getValue();
-			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
+			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s", dataSource));
 			String usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s",dataSource));
+			String domainField = getConfigString(config, String.format("fortscale.events.username.domain.%s",
+					dataSource));
 			String normalizedUsernameField =getConfigString(config, String.format("fortscale.events.normalizedusername.field.%s",dataSource));
 			String partitionKey = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
 			String serviceName = getConfigString(config, String.format("fortscale.events.normalization.service.%s",dataSource));
@@ -97,7 +99,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
 			usernameService.setCache(usernameStore);
-			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic, usernameField, normalizedUsernameField, partitionKey, updateOnlyFlag, classifier, service));
+			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic,
+					usernameField, domainField, normalizedUsernameField, partitionKey, updateOnlyFlag, classifier,
+					service));
 		}
 
 		// add the usernameService to update input topics map
@@ -155,9 +159,15 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					throw new StreamMessageNotContainFieldException(messageText, configuration.getUsernameField());
 				}
 
+				// get domain
+				String domain = convertToString(message.get(configuration.getDomainField()));
+
 				UsernameNormalizationService normalizationService = configuration.getUsernameNormalizationService();
 				// checks in memory-cache and mongo if the user exists
 				normalizedUsername = normalizationService.normalizeUsername(username);
+				if (normalizedUsername == null && !StringUtils.isEmpty(domain)) {
+					normalizedUsername = username.toLowerCase() + "@" + domain.toLowerCase();
+				}
 				// check if we should drop the record (user doesn't exist)
 				if (normalizationService.shouldDropRecord(username, normalizedUsername)) {
 					if (logger.isDebugEnabled()) {
