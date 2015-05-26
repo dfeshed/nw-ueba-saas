@@ -116,6 +116,7 @@ public class EventForwardJob extends FortscaleJob {
 		return true;
 	}
 
+
 	@Override
 	protected int getTotalNumOfSteps(){
 		//for each configuration we have 3 steps ( querying data , parsing , forwarding)
@@ -544,6 +545,7 @@ public class EventForwardJob extends FortscaleJob {
 
 		return updateTimestampTerm;
 	}
+
 
 	private String getTimeRange(){
 		return (TimestampUtils.convertToSeconds(currentTimestamp)-timestampRange)+","+ TimestampUtils.convertToSeconds(currentTimestamp);
