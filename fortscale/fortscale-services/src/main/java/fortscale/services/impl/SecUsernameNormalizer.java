@@ -15,7 +15,7 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 	@Override
 	public String normalize(String username, String domain){
 		username = username.toLowerCase();
-		username = domain.toLowerCase();
+		domain = domain.toLowerCase();
 		String ret = null;
 		if(regexMatcher != null){
 			for(String normalizedUsername: regexMatcher.match(username)){

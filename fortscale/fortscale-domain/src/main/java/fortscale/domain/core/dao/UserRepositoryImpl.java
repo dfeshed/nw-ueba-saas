@@ -70,7 +70,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public User findByApplicationUserName(String applicationName, String username){
 		String appUserNameField = User.getAppUserNameField(applicationName);
-		Query query = new Query(where(appUserNameField).regex(String.format("^%s$", username),"i"));
+		Query query = new Query(where(appUserNameField).regex(String.format("^%s$", username), "i"));
 		return mongoTemplate.findOne(query, User.class);
 	}
 
@@ -172,7 +172,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public List<User> findByUsernames(Collection<String> usernames) {
 		return findByUniqueField(User.usernameField, usernames);
 	}
-	
+
+	@Override
+	public List<User> findUsersByUsername(String username) {
+		Query query = new Query(where(username));
+		return mongoTemplate.find(query, User.class);
+	}
+
 	@Override
 	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames) {
 		Query query = new Query(where(User.usernameField).in(usernames));

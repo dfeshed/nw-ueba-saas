@@ -246,11 +246,8 @@ public class UsernameService implements InitializingBean, CachingService{
 		if (usernameToUserIdCache.containsKey(username))
 			return true;
 
-		List<String> userNameList = new ArrayList();
-		userNameList.add(username);
-
 		// resort to lookup mongodb and save the user id in cache
-		List<User> users = userRepository.findByUsernames(userNameList);
+		List<User> users = userRepository.findUsersByUsername(username);
 		if (users.size() == 1) {
 			//TODO - should it update cache?
 			return updateUsernameCache(users.get(0));
