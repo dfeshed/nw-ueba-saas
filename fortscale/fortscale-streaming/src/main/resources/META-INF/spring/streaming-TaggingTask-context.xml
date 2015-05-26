@@ -117,8 +117,9 @@
         <property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
         <property name="usernameService" ref="usernameService"/>
     </bean>
-    <bean id="sshUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
+    <bean id="sshUsernameNormalizer" class="fortscale.services.impl.SSHUsernameNormalizer" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
+        <property name="computerService" ref="computerService"/>
     </bean>
     <bean id="amtUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
         <property name="usernameService" ref="usernameService"/>

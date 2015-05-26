@@ -19,8 +19,8 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 	@Autowired
 	SSHUsersWhitelistService sshUsersWhitelist;
 
-	@Value("${impala.data.ssh.table.field.target_machine}")
-	private String targetMachineField;
+	@Value("${impala.data.ssh.table.field.hostname}")
+	private String sourceMachineField;
 
 
 	@Override
@@ -69,8 +69,9 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 		}
 
 		// concat the target machine name to the username: user@target
-		String targetMachine = convertToString(message.get(targetMachineField));
-		return String.format("%s@%s", username, targetMachine);
+		String sourceMachine = convertToString(message.get(sourceMachineField));
+		return usernameNormalizer.postNormalize(username, sourceMachine);
+
 	}
 
 }

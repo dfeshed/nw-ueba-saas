@@ -63,7 +63,7 @@ public class UserServiceAccountServiceTest {
 
 		// arrange
 		service.setFilePath(getFile("user3\nuser4"));
-		when(secUsernameNormalizer.normalize(anyString())).thenReturn(
+		when(secUsernameNormalizer.normalize(anyString(), anyString())).thenReturn(
 			"user3", "user4");
 		when(userService.findIfUserExists(anyString())).thenReturn(
 			true);
@@ -86,7 +86,7 @@ public class UserServiceAccountServiceTest {
 		throws Exception {
 
 		service.setFilePath(getFile("-user1\nuser4"));
-		when(secUsernameNormalizer.normalize(anyString())).thenReturn(
+		when(secUsernameNormalizer.normalize(anyString(), anyString())).thenReturn(
 			"user4", "user1");
 		when(userService.findIfUserExists(anyString())).thenReturn(
 			true);

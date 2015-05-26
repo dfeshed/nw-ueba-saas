@@ -33,20 +33,24 @@ public class Computer extends AbstractDocument {
 	public static final String TIMESTAMP_FIELD = "timestamp";
 	public static final String SENSITIVE_MACHINE_FIELD = "sensitive";
 	public static final String OU_FIELD = "ou";
+	public static final String DOMAIN_FIELD = "domain";
 	
 	@Field(OPERATING_SYSTEM_FIELD)
 	private String operatingSystem;
-	
+
+	@Field(DOMAIN_FIELD)
+	private String domain;
+
 	@Field(OPERATING_SYSTEM_SERVICE_PACK_FIELD)
 	private String operatingSystemServicePack;
 	
 	@Field(OPERATING_SYSTEM_VERSION_FIELD)
 	private String operatingSystemVersion;
-	
-	@Indexed(unique = true)
+
 	@Field(NAME_FIELD)
 	private String name;
-	
+
+	@Indexed(unique = true)
 	@Field(DISTINGUISHED_NAME_FIELD)
 	private String distinguishedName;
 	
@@ -83,6 +87,12 @@ public class Computer extends AbstractDocument {
 	}
 	public void setOperatingSystem(String operatingSystem) {
 		this.operatingSystem = operatingSystem;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 	public String getOperatingSystemServicePack() {
 		return operatingSystemServicePack;
@@ -177,6 +187,7 @@ public class Computer extends AbstractDocument {
 		case Computer.DISTINGUISHED_NAME_FIELD : return getDistinguishedName();
 		case Computer.NAME_FIELD : return getName();
 		case Computer.OPERATING_SYSTEM_FIELD : return getOperatingSystem();
+		case Computer.DOMAIN_FIELD : return getDomain();
 		case Computer.OPERATING_SYSTEM_SERVICE_PACK_FIELD : return getOperatingSystemServicePack();
 		case Computer.OPERATING_SYSTEM_VERSION_FIELD : return getOperatingSystemVersion();
 		case Computer.SENSITIVE_MACHINE_FIELD : return getIsSensitive();

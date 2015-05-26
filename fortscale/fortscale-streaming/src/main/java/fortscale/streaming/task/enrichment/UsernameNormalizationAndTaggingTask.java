@@ -164,6 +164,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 				// get domain
 				String domain;
+				//if domain field value is fake, then take the fake.domain field's value
 				if (configuration.getDomainField().equals("fake")) {
 					domain = configuration.getFakeDomain();
 				} else {

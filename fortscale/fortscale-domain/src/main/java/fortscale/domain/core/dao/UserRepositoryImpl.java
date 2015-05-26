@@ -174,9 +174,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public List<User> findUsersByUsername(String username) {
-		Query query = new Query(where(username));
-		return mongoTemplate.find(query, User.class);
+	public List<User> findUsersBysAMAccountName(String username) {
+		PageRequest pageRequest = new PageRequest(0, 1000);
+		return findByField(User.getAdInfoField(UserAdInfo.sAMAccountNameField), username, pageRequest);
 	}
 
 	@Override

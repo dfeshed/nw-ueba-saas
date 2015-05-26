@@ -190,6 +190,16 @@ public class ComputerServiceImpl implements ComputerService {
 		return matcher.replaceInPlace(hostname).toUpperCase();
 	}
 
+	@Override
+	public String getDomainNameForHostname(String hostname) {
+		if (StringUtils.isEmpty(hostname))
+			return null;
+		Computer computer = getComputerFromCache(hostname);
+		if (computer == null || computer.getDomain() == null || computer.getDomain().isEmpty())
+			return null;
+		return computer.getDomain();
+	}
+
 	private RegexMatcher getClusterGroupsRegexMatcher() {
 		if (clusterMatcher == null) {
 			String[][] configPatternsArray = ConfigurationUtils.getStringArrays(clusterGroupsRegexProperty);

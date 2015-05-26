@@ -241,18 +241,9 @@ public class UsernameService implements InitializingBean, CachingService{
 		user.addLogUsername(getLogname(eventId), username);
 	}
 
-	public boolean isOnlyOneUserExists(String username){
-		//TODO - should it look in cache?
-		if (usernameToUserIdCache.containsKey(username))
-			return true;
-
-		// resort to lookup mongodb and save the user id in cache
-		List<User> users = userRepository.findUsersByUsername(username);
-		if (users.size() == 1) {
-			//TODO - should it update cache?
-			return updateUsernameCache(users.get(0));
-		}
-		return false;
+	public List<User> getUsersBysAMAccountName(String username){
+		//TODO - AMIR - caching?
+		return userRepository.findUsersBysAMAccountName(username);
 	}
 	
 	public boolean isUsernameExist(String username){
