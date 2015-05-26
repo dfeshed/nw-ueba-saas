@@ -4,10 +4,11 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-import org.springframework.dao.DataAccessException;
 
 @Component
 public class ImpalaClient {
@@ -16,7 +17,10 @@ public class ImpalaClient {
 	
 	@Autowired
 	protected JdbcOperations impalaJdbcTemplate;
-	
+
+	@Value("${impala.table.fields.updateTimestamp}")
+	private String impalaUpdateTimestampField;
+
 	public void refreshTable(String tableName) throws Exception {
 		Assert.hasText(tableName);
 			
@@ -78,6 +82,7 @@ public class ImpalaClient {
 		if (onlyIfNotExist) {
 			builder.append(" IF NOT EXISTS ");
 		}
+		fields += ", " + impalaUpdateTimestampField + " BIGINT";
 		builder.append(tableName).append("(").append(fields).append(")");
 		if(!StringUtils.isEmpty(partition)){
 			builder.append(" PARTITIONED BY (").append(partition).append(")");

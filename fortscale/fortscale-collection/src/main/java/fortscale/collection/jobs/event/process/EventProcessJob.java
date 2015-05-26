@@ -1,4 +1,4 @@
-package fortscale.collection.jobs;
+package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.io.BufferedLineReader;
@@ -74,7 +74,9 @@ public class EventProcessJob implements Job {
 	protected String streamingTopic;
 	protected KafkaEventsWriter streamWriter;
     protected PartitionStrategy partitionStrategy;
-	
+
+	String outputSeparator;
+
 	@Autowired
 	protected ImpalaClient impalaClient;
 	
@@ -108,7 +110,7 @@ public class EventProcessJob implements Job {
 		
 		// build record to items processor
 		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
-		String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
+		outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 		recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields"));
 
@@ -373,7 +375,7 @@ public class EventProcessJob implements Job {
 		logger.debug("initializing hadoop appender in {}", hadoopPath);
 
 		// calculate file directory path according to partition strategy
-		HDFSPartitionsWriter writer = new HDFSPartitionsWriter(hadoopPath, getPartitionStrategy(), getFileSplitStrategy());
+		HDFSPartitionsWriter writer = new HDFSPartitionsWriter(hadoopPath, getPartitionStrategy(), getFileSplitStrategy(), outputSeparator);
 		appender = new BufferedHDFSWriter(writer, hadoopFilename, maxBufferSize);
 	}
 	

@@ -9,14 +9,14 @@ public class ConditionField extends Term {
     public ConditionField(){}
     public ConditionField(ConditionField otherConditionField){
         this.field = otherConditionField.getField();
-        this.operator = otherConditionField.getOperator();
+        this.queryOperator = otherConditionField.getQueryOperator();
         this.valueField = otherConditionField.getValueField();
         this.value = otherConditionField.getValue();
         this.valueType = otherConditionField.getValueType();
     }
 
     private DataQueryField field;
-    private QueryOperator operator;
+    private QueryOperator queryOperator;
     private DataQueryField valueField;
     private String value;
     private QueryValueType valueType;
@@ -32,12 +32,12 @@ public class ConditionField extends Term {
         this.field = field;
     }
 
-    public QueryOperator getOperator() {
-        return operator;
+    public QueryOperator getQueryOperator() {
+        return queryOperator;
     }
 
-    public void setOperator(QueryOperator operator) {
-        this.operator = operator;
+    public void setQueryOperator(QueryOperator queryOperator) {
+        this.queryOperator = queryOperator;
     }
 
     public QueryValueType getValueType() {

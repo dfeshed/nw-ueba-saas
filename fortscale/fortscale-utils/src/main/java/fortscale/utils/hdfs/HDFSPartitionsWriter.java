@@ -34,9 +34,10 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 	private Map<String, BufferedWriter> writers = new HashMap<String, BufferedWriter>(2);
 	private FileSystem fs;
 	private List<String> newPartitions = new LinkedList<String>();
+	private String separator;
 	
 	
-	public HDFSPartitionsWriter(String basePath, PartitionStrategy partitionStrategy, FileSplitStrategy fileSplitStrategy) {
+	public HDFSPartitionsWriter(String basePath, PartitionStrategy partitionStrategy, FileSplitStrategy fileSplitStrategy, String separator) {
 		Assert.hasText(basePath);
 		Assert.notNull(partitionStrategy);
 		Assert.notNull(fileSplitStrategy);
@@ -44,6 +45,7 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 		this.basePath = basePath;
 		this.partitionStrategy = partitionStrategy;
 		this.fileSplitStrategy = fileSplitStrategy;
+		this.separator = separator;
 	}
 
 
@@ -86,6 +88,10 @@ public class HDFSPartitionsWriter implements HDFSWriter {
 			// get the writer needed according to the event time
 			BufferedWriter writer = ensureWriter(timestamp);
 			if (writer!=null) {
+				//adding new column with the write time, which allow uniform ordering of records
+				if (!text.isEmpty()){
+					text = text + separator + System.currentTimeMillis();
+				}
 				writer.write(text);
 				if (newLine)
 					writer.newLine();
