@@ -1,7 +1,6 @@
-package fortscale.collection.jobs;
+package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.JobDataMapExtension;
-import fortscale.collection.jobs.event.process.EventProcessJob;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.events.IseEvent;
 import fortscale.services.ipresolving.IseResolver;
