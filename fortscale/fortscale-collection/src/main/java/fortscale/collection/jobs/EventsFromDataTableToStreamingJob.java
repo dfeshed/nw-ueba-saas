@@ -21,6 +21,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -40,7 +41,6 @@ import static fortscale.utils.impala.ImpalaCriteria.*;
 public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(EventsFromDataTableToStreamingJob.class);
 
-	private static int EVENTS_DELTA_TIME_IN_SEC_DEFAULT = 14*24*60*60;
 	private static int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 1440; // 1 day
 	private static String IMPALA_TABLE_PARTITION_TYPE_DEFAULT = "daily";
 	private static long LOGGER_MAX_FREQUENCY = 20 * 60;
@@ -60,6 +60,16 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	private static final String IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER = "impalaTablePartitionType";
 	private static final String IMPALA_DESTINATION_TABLE_JOB_PARAMETER = "impalaDestinationTable";
 	private static final String MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER = "maxSourceDestinationTimeGap";
+
+    //define how much time to subtract from now to get the last event time to send to streaming job
+    //default of 3 hours - 60 * 60 * 3
+    @Value("${batch.sendTo.kafka.latest.events.time.diff.sec:10800}")
+    protected long latestEventsTimeDiffFromNowInSec;
+
+    //define how much time to subtract from the latest event time - this way to get the first event time to send
+    @Value("${batch.sendTo.kafka.events.delta.time.sec:3600}")
+    protected long eventsDeltaTimeInSec;
+
 
 	@Autowired
 	private JdbcOperations impalaJdbcTemplate;
@@ -100,9 +110,9 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 		sleepField = jobDataMapExtension.getJobDataMapLongValue(map, SLEEP_FIELD_JOB_PARAMETER, null);
 		throttlingSleepField = jobDataMapExtension.getJobDataMapLongValue(map, THROTTLING_SLEEP_FIELD_JOB_PARAMETER, null);
 		streamingTopicKey = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER);
-		latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER, System.currentTimeMillis());
+        latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER, (System.currentTimeMillis()- latestEventsTimeDiffFromNowInSec));
 		latestEventTime = TimestampUtils.convertToSeconds(latestEventTime);
-		deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, DELTA_TIME_IN_SEC_JOB_PARAMETER, (long) EVENTS_DELTA_TIME_IN_SEC_DEFAULT);
+        deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, DELTA_TIME_IN_SEC_JOB_PARAMETER, eventsDeltaTimeInSec);
 		fetchEventsStepInMinutes = jobDataMapExtension.getJobDataMapIntValue(map, FETCH_EVENTS_STEP_IN_MINUTES_JOB_PARAMETER, FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT);
 		impalaTablePartitionType = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER, IMPALA_TABLE_PARTITION_TYPE_DEFAULT);
 		impalaDestinationTable = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_JOB_PARAMETER, null);
@@ -156,7 +166,6 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 		try{
 			String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(impalaTableFields);
 			streamWriter = new KafkaEventsWriter(streamingTopic);
-			long earliestTimestamp = latestEventTime - deltaTimeInSec;
 			long timestampCursor = latestEventTime - deltaTimeInSec;
 			while(timestampCursor < latestEventTime){
 				long nextTimestampCursor = Math.min(latestEventTime, timestampCursor + fetchEventsStepInMinutes * DateTimeConstants.SECONDS_PER_MINUTE);
@@ -195,13 +204,13 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 				if (throttlingSleepField != null && impalaDestinationTable != null) {
 					long timeGap;
 					while ((timeGap = getGapFromDestinationTable(latestEpochTimeSent)) > maxSourceDestinationTimeGap) {
-						long currentTimeMillis = System.currentTimeMillis()/1000;
+                        long currentTimeMillis = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 						if (currentTimeMillis - latestLoggerWriteTime >= LOGGER_MAX_FREQUENCY) {
 							logger.info("Gap of {} between events written to topic {} and scored events in table {}. Latest epoch time sent is {}. Next timestamp cursor is {} -> Sleeping...", timeGap, streamingTopic, impalaDestinationTable, latestEpochTimeSent, nextTimestampCursor);
 							latestLoggerWriteTime = currentTimeMillis;
 						}
 						try {
-							Thread.sleep(throttlingSleepField * 1000);
+                            Thread.sleep(TimestampUtils.convertToMilliSeconds(throttlingSleepField));
 						} catch (InterruptedException e) {
 						}
 					}
@@ -211,7 +220,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 
 				if (sleepField != null) {
 					try {
-						Thread.sleep(sleepField * 1000);
+                        Thread.sleep(TimestampUtils.convertToMilliSeconds(sleepField));
 					} catch (InterruptedException e) {}
 				}
 			}
