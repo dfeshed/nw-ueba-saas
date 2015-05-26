@@ -10,7 +10,7 @@
 			<name>ETL</name>
 			<group>ISE</group>
 			<description>process ISE events received from splunk into files</description>
-			<job-class>fortscale.collection.jobs.ISEEventsProcessJob</job-class>
+			<job-class>fortscale.collection.jobs.event.process.ISEEventsProcessJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			
