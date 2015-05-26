@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import fortscale.domain.core.Computer;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
+import fortscale.domain.events.IseEvent;
 import fortscale.services.CachingService;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.LevelDbBasedCache;
@@ -65,11 +66,16 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
             IpToHostnameResolver resolver = SpringService.getInstance().resolve(IpToHostnameResolver.class);
 
-            // create leveldb based caches for ip resolving services (dhcp, login, computer) and pass the caches to the ip resolving services
+            // create leveldb based caches for ip resolving services (dhcp, ise, login, computer) and pass the caches to the ip resolving services
             LevelDbBasedCache<String,DhcpEvent> dhcpCache = new LevelDbBasedCache<String, DhcpEvent>(
                     (KeyValueStore<String, DhcpEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dhcpCacheKey))),DhcpEvent.class);
             resolver.getDhcpResolver().setCache(dhcpCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dhcpCacheKey)), resolver.getDhcpResolver());
+
+            LevelDbBasedCache<String, IseEvent> iseCache = new LevelDbBasedCache<String,IseEvent>(
+                    (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),IseEvent.class);
+            resolver.getIseResolver().setCache(iseCache);
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), resolver.getIseResolver());
 
             LevelDbBasedCache<String,ComputerLoginEvent> loginCache = new LevelDbBasedCache<String,ComputerLoginEvent>(
                     (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);

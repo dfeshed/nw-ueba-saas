@@ -53,6 +53,11 @@ public class IsADComputerBuilder implements CommandBuilder {
 				boolean isInAD = computerService.isHostnameInAD(hostname);
 				inputRecord.put(outputField, isInAD);
 			}
+
+			else
+				inputRecord.put(outputField, false);
+
+
 			return super.doProcess(inputRecord);
 		}
 	}

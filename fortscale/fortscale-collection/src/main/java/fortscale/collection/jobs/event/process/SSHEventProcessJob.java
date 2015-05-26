@@ -1,13 +1,12 @@
-package fortscale.collection.jobs;
-
-import org.kitesdk.morphline.api.Record;
-import org.quartz.DisallowConcurrentExecution;
-import org.springframework.beans.factory.annotation.Value;
+package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.services.fe.Classifier;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.hdfs.split.WeeklyFileSplitStrategy;
+import org.kitesdk.morphline.api.Record;
+import org.quartz.DisallowConcurrentExecution;
+import org.springframework.beans.factory.annotation.Value;
 
 @DisallowConcurrentExecution
 public class SSHEventProcessJob extends EventProcessJob {

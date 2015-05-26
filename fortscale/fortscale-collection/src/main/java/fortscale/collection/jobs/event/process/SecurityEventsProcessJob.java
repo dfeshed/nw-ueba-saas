@@ -1,6 +1,5 @@
-package fortscale.collection.jobs;
+package fortscale.collection.jobs.event.process;
 
-import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -11,6 +10,7 @@ import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.DailyFileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Record;
@@ -75,7 +75,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			handler.timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField" + impalaTable);
 
 			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + impalaTable);
-			String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + impalaTable);
+			outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + impalaTable);
 			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
 			handler.recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields" + impalaTable));
 
@@ -178,7 +178,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		for (EventTableHandlers handler : eventToTableHandlerMap.values()) {
 			// create partition strategy
 			logger.debug("opening hdfs file {} for append", handler.hadoopPath);
-			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(handler.hadoopPath,handler.partitionStrategy, new DailyFileSplitStrategy());
+			HDFSPartitionsWriter writer = new HDFSPartitionsWriter(handler.hadoopPath,handler.partitionStrategy, new DailyFileSplitStrategy(), outputSeparator);
 			handler.appender = new BufferedHDFSWriter(writer, handler.hadoopFilename, maxBufferSize);
 		}
 	}

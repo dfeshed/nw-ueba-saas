@@ -130,4 +130,14 @@
 			<group>DHCP</group>
 		</second>
 	</chain>
+	<chain>
+		<first>
+			<name>Fetch</name>
+			<group>ISE</group>
+		</first>
+		<second>
+			<name>ETL</name>
+			<group>ISE</group>
+		</second>
+	</chain>
 </chains-data>

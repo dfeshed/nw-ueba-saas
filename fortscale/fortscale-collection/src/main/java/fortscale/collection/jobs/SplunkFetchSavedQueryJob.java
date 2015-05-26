@@ -1,12 +1,9 @@
 package fortscale.collection.jobs;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Properties;
-
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.EncryptionUtils;
-import org.jets3t.service.security.EncryptionUtil;
+import fortscale.utils.splunk.SplunkApi;
+import fortscale.utils.splunk.SplunkEventsHandlerLogger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -15,9 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
-import fortscale.monitor.domain.JobDataReceived;
-import fortscale.utils.splunk.SplunkApi;
-import fortscale.utils.splunk.SplunkEventsHandlerLogger;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Properties;
 
 
 /**
@@ -29,13 +27,13 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 	private static Logger logger = LoggerFactory.getLogger(SplunkFetchSavedQueryJob.class);
 
 	// get common data from configuration
-	@Value("${splunk.host}")
+	@Value("${source.splunk.host}")
 	private String hostName;
-	@Value("${splunk.port}")
+	@Value("${source.splunk.port}")
 	private int port;
-	@Value("${splunk.user}")
+	@Value("${source.splunk.user}")
 	private String username;
-	@Value("${splunk.password}")
+	@Value("${source.splunk.password}")
 	private String password;
 
 	@Value("${collection.fetch.data.path}")
