@@ -26,8 +26,11 @@ public class UsernameNormalizationService {
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
 			ret = usernameNormalizer.normalize(username.toLowerCase());
-			if(ret == null && usernameNormalizer.isUsernameExists(username.toLowerCase() + "@" + domain.toLowerCase())){
-				ret = username.toLowerCase() + "@" + domain.toLowerCase();
+			if(ret == null){
+				String tempUsername = username.toLowerCase() + "@" + domain.toLowerCase();
+				if (usernameNormalizer.isUsernameExists(tempUsername)) {
+					ret = tempUsername;
+				}
 			}
 		}
 
