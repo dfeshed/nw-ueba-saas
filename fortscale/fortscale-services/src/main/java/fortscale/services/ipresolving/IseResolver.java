@@ -82,7 +82,15 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
             // TODO: make sure that the first event is the latest date
             else {
                 cached = iseEvents.get(0);
-                if (!cached.getHostname().equals(event.getHostname()) && cached.getTimestampepoch().compareTo(event.getTimestampepoch()) <= 0) {
+                // We will update the cache and the repository in case that:
+                // 1. IP was allocated
+                // 2. We have record in repository but not in cache
+                // 3. The ips of the new event and the event from the repository are the same
+                // 4. The time of the new event is more recent
+                // 5. The hostnames are different
+                if (cached.getIpaddress().equals(event.getIpaddress()) &&
+                        !cached.getHostname().equals(event.getHostname()) &&
+                        cached.getTimestampepoch().compareTo(event.getTimestampepoch()) <= 0) {
                     iseEventRepository.save(event);
                     cache.put((event.getIpaddress()), event);
                 }
