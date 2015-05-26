@@ -82,7 +82,14 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
             // TODO: make sure that the first event is the latest date
             else {
                 cached = iseEvents.get(0);
-                cache.put(cached.getIpaddress(), cached);
+                if (!cached.getHostname().equals(event.getHostname()) && cached.getTimestampepoch().compareTo(event.getTimestampepoch()) <= 0) {
+                    iseEventRepository.save(event);
+                    cache.put((event.getIpaddress()), event);
+                }
+                else {
+                    cache.put(cached.getIpaddress(), cached);
+                }
+
             }
         }
         // Cache hit
