@@ -16,9 +16,9 @@ import java.util.List;
 @TypeAlias(value="Computer")
 @JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
 public class Computer extends AbstractDocument {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3605143007220943382L;
 	public static final String COLLECTION_NAME = "computer";
@@ -33,47 +33,52 @@ public class Computer extends AbstractDocument {
 	public static final String TIMESTAMP_FIELD = "timestamp";
 	public static final String SENSITIVE_MACHINE_FIELD = "sensitive";
 	public static final String OU_FIELD = "ou";
-	
+	public static final String DOMAIN_FIELD = "domain";
+
 	@Field(OPERATING_SYSTEM_FIELD)
 	private String operatingSystem;
-	
+
+	@Field(DOMAIN_FIELD)
+	private String domain;
+
 	@Field(OPERATING_SYSTEM_SERVICE_PACK_FIELD)
 	private String operatingSystemServicePack;
-	
+
 	@Field(OPERATING_SYSTEM_VERSION_FIELD)
 	private String operatingSystemVersion;
-	
-	@Indexed(unique = true)
+
 	@Field(NAME_FIELD)
 	private String name;
-	
+
+	//The unique index will be on the distinguished Name cause he is more injective
+	@Indexed(unique = true)
 	@Field(DISTINGUISHED_NAME_FIELD)
 	private String distinguishedName;
-	
+
 	@Field(WHEN_CHANGED_FIELD)
 	private Date whenChanged;
-	
+
 	@Indexed(direction=IndexDirection.DESCENDING)
 	@Field(WHEN_CREATED_FIELD)
 	private Date whenCreated;
-	
+
 	@Field(USAGE_CLASSIFIERS_FIELD)
 	private List<ComputerUsageClassifier> usageClassifiers = new ArrayList<ComputerUsageClassifier>();
-	
+
 	@Field(TIMESTAMP_FIELD)
 	private Date timestamp;
-	
+
 	@Field(SENSITIVE_MACHINE_FIELD)
 	@Indexed
 	private Boolean isSensitive;
-	
+
 	@Field(OU_FIELD)
 	private String ou;
-	
+
 	public Computer() {
 		this.timestamp = new Date();
 	}
-	
+
 	public Boolean getIsSensitive() {
 		return isSensitive;
 	}
@@ -83,6 +88,12 @@ public class Computer extends AbstractDocument {
 	}
 	public void setOperatingSystem(String operatingSystem) {
 		this.operatingSystem = operatingSystem;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 	public String getOperatingSystemServicePack() {
 		return operatingSystemServicePack;
@@ -151,10 +162,10 @@ public class Computer extends AbstractDocument {
 			prevClassifier.setUsageType(classifier.getUsageType());
 			prevClassifier.setWhenComputed(classifier.getWhenComputed());
 		}
-	}	
+	}
 	public void removeUsageClassifier(String classifier) {
 		this.usageClassifiers.remove(classifier);
-	}	
+	}
 	public void clearUsageClassifiers() {
 		this.usageClassifiers.clear();
 	}
@@ -167,25 +178,26 @@ public class Computer extends AbstractDocument {
 				return classifier.getUsageType();
 		return ComputerUsageType.Unknown;
 	}
-	
+
 	public List<ComputerUsageClassifier> getUsageClassifiers() {
 		return usageClassifiers;
 	}
-	
+
 	public Object getPropertyValue(String propertyName) {
 		switch (propertyName) {
-		case Computer.DISTINGUISHED_NAME_FIELD : return getDistinguishedName();
-		case Computer.NAME_FIELD : return getName();
-		case Computer.OPERATING_SYSTEM_FIELD : return getOperatingSystem();
-		case Computer.OPERATING_SYSTEM_SERVICE_PACK_FIELD : return getOperatingSystemServicePack();
-		case Computer.OPERATING_SYSTEM_VERSION_FIELD : return getOperatingSystemVersion();
-		case Computer.SENSITIVE_MACHINE_FIELD : return getIsSensitive();
-		case Computer.TIMESTAMP_FIELD : return getTimestamp();
-		case Computer.USAGE_CLASSIFIERS_FIELD : return getUsageClassifiers();
-		case Computer.WHEN_CHANGED_FIELD : return getWhenChanged();
-		case Computer.WHEN_CREATED_FIELD : return getWhenCreated();
-		case Computer.ID_FIELD : return getId();
-		case Computer.OU_FIELD : return getOU();
+			case Computer.DISTINGUISHED_NAME_FIELD : return getDistinguishedName();
+			case Computer.NAME_FIELD : return getName();
+			case Computer.OPERATING_SYSTEM_FIELD : return getOperatingSystem();
+			case Computer.DOMAIN_FIELD : return getDomain();
+			case Computer.OPERATING_SYSTEM_SERVICE_PACK_FIELD : return getOperatingSystemServicePack();
+			case Computer.OPERATING_SYSTEM_VERSION_FIELD : return getOperatingSystemVersion();
+			case Computer.SENSITIVE_MACHINE_FIELD : return getIsSensitive();
+			case Computer.TIMESTAMP_FIELD : return getTimestamp();
+			case Computer.USAGE_CLASSIFIERS_FIELD : return getUsageClassifiers();
+			case Computer.WHEN_CHANGED_FIELD : return getWhenChanged();
+			case Computer.WHEN_CREATED_FIELD : return getWhenCreated();
+			case Computer.ID_FIELD : return getId();
+			case Computer.OU_FIELD : return getOU();
 		}
 		throw new IllegalArgumentException(propertyName);
 	}
