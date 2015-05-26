@@ -31,7 +31,7 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 	@Override
 	public String normalizeUsername(String username, String domain) {
 		if(usernameNormalizer != null){
-			return usernameNormalizer.normalize(username);
+			return usernameNormalizer.normalize(username, domain);
 		} else{
 			return super.normalizeUsername(username, domain);
 		}

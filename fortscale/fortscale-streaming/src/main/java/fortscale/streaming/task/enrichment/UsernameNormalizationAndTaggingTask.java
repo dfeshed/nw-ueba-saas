@@ -88,9 +88,12 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String inputTopic = ConfigField.getValue();
 			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s", dataSource));
 			String usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s",dataSource));
-			String domainField = getConfigString(config, String.format("fortscale.events.username.domain.%s",
+			String domainField = getConfigString(config, String.format("fortscale.events.domain.field.%s",
 					dataSource));
-			String normalizedUsernameField =getConfigString(config, String.format("fortscale.events.normalizedusername.field.%s",dataSource));
+			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events"
+							+ ".domain.fake.%s", dataSource)) : "";
+			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events"
+					+ ".normalizedusername.field.%s",dataSource));
 			String partitionKey = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
 			String serviceName = getConfigString(config, String.format("fortscale.events.normalization.service.%s",dataSource));
 			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.updateOnly.%s", dataSource));
@@ -100,8 +103,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			usernameService = service.getUsernameNormalizer().getUsernameService();
 			usernameService.setCache(usernameStore);
 			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic,
-					usernameField, domainField, normalizedUsernameField, partitionKey, updateOnlyFlag, classifier,
-					service));
+					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
+					classifier, service));
 		}
 
 		// add the usernameService to update input topics map
@@ -160,7 +163,12 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				}
 
 				// get domain
-				String domain = convertToString(message.get(configuration.getDomainField()));
+				String domain;
+				if (configuration.getDomainField().equals("fake")) {
+					domain = configuration.getFakeDomain();
+				} else {
+					domain = convertToString(message.get(configuration.getDomainField()));
+				}
 
 				UsernameNormalizationService normalizationService = configuration.getUsernameNormalizationService();
 				// checks in memory-cache and mongo if the user exists
