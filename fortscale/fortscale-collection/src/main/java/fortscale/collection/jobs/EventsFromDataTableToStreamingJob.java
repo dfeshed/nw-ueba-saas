@@ -61,12 +61,14 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 	private static final String IMPALA_DESTINATION_TABLE_JOB_PARAMETER = "impalaDestinationTable";
 	private static final String MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER = "maxSourceDestinationTimeGap";
 
+    //define how much time to subtract from now to get the last event time to send to streaming job
+    //default of 3 hours - 60 * 60 * 3
+    @Value("${batch.sendTo.kafka.latest.events.time.diff.sec:10800}")
+    protected long latestEventsTimeDiffFromNowInSec;
+
+    //define how much time to subtract from the latest event time - this way to get the first event time to send
     @Value("${batch.sendTo.kafka.events.delta.time.sec:3600}")
     protected long eventsDeltaTimeInSec;
-
-    //default of 3 hours - 60 * 60 * 3
-    @Value("${batch.sendTo.kafka.events.start.time.diff.sec:10800}")
-    protected long eventsStartTimeDiffFromNowInSec;
 
 
 	@Autowired
@@ -108,7 +110,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 		sleepField = jobDataMapExtension.getJobDataMapLongValue(map, SLEEP_FIELD_JOB_PARAMETER, null);
 		throttlingSleepField = jobDataMapExtension.getJobDataMapLongValue(map, THROTTLING_SLEEP_FIELD_JOB_PARAMETER, null);
 		streamingTopicKey = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER);
-        latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER, (System.currentTimeMillis()- eventsStartTimeDiffFromNowInSec));
+        latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER, (System.currentTimeMillis()- latestEventsTimeDiffFromNowInSec));
 		latestEventTime = TimestampUtils.convertToSeconds(latestEventTime);
         deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, DELTA_TIME_IN_SEC_JOB_PARAMETER, eventsDeltaTimeInSec);
 		fetchEventsStepInMinutes = jobDataMapExtension.getJobDataMapIntValue(map, FETCH_EVENTS_STEP_IN_MINUTES_JOB_PARAMETER, FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT);
