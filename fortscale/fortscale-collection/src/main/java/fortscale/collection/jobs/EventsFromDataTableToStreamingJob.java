@@ -65,8 +65,8 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     protected long eventsDeltaTimeInSec;
 
     //default of 3 hours - 60 * 60 * 3
-    @Value("${batch.sendTo.kafka.events.start.time.diff:10800}")
-    protected long eventsStartTimeDiff;
+    @Value("${batch.sendTo.kafka.events.start.time.diff.sec:10800}")
+    protected long eventsStartTimeDiffFromNowInSec;
 
 
     @Autowired
@@ -108,7 +108,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         sleepField = jobDataMapExtension.getJobDataMapLongValue(map, SLEEP_FIELD_JOB_PARAMETER, null);
         throttlingSleepField = jobDataMapExtension.getJobDataMapLongValue(map, THROTTLING_SLEEP_FIELD_JOB_PARAMETER, null);
         streamingTopicKey = jobDataMapExtension.getJobDataMapStringValue(map, STREAMING_TOPIC_PARTITION_FIELDS_JOB_PARAMETER);
-        latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER, (System.currentTimeMillis()- eventsStartTimeDiff));
+        latestEventTime = jobDataMapExtension.getJobDataMapLongValue(map, LATEST_EVENT_TIME_JOB_PARAMETER, (System.currentTimeMillis()- eventsStartTimeDiffFromNowInSec));
         latestEventTime = TimestampUtils.convertToSeconds(latestEventTime);
         deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, DELTA_TIME_IN_SEC_JOB_PARAMETER, eventsDeltaTimeInSec);
         fetchEventsStepInMinutes = jobDataMapExtension.getJobDataMapIntValue(map, FETCH_EVENTS_STEP_IN_MINUTES_JOB_PARAMETER, FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT);
