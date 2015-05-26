@@ -33,7 +33,8 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
  * - vpn geolocation
  *
  */
-public class VpnEnrichTask extends AbstractStreamTask {
+
+public class VpnEnrichTask extends AbstractStreamTask  {
 
 
     private static Logger logger = LoggerFactory.getLogger(VpnEnrichTask.class);
