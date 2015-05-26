@@ -58,6 +58,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private static final String FETCH_EVENTS_STEP_IN_MINUTES_JOB_PARAMETER = "fetchEventsStepInMinutes";
     private static final String FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER = "fieldClusterGroupsRegexResource";
     private static final String IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER = "impalaTablePartitionType";
+    private static final String IMPALA_DESTINATION_TABLE_PARTITION_TYPE_JOB_PARAMETER = "impalaDestinationTablePartitionType";
     private static final String IMPALA_DESTINATION_TABLE_JOB_PARAMETER = "impalaDestinationTable";
     private static final String MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER = "maxSourceDestinationTimeGap";
 
@@ -77,6 +78,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private long deltaTimeInSec;
     private int fetchEventsStepInMinutes;
     private String impalaTablePartitionType;
+    private  String impalaDestinationTablePartitionType;
     private String impalaDestinationTable;
     private Long maxSourceDestinationTimeGap;
     private long destinationTableLatestTime = 0;
@@ -105,6 +107,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         deltaTimeInSec = jobDataMapExtension.getJobDataMapLongValue(map, DELTA_TIME_IN_SEC_JOB_PARAMETER, (long) EVENTS_DELTA_TIME_IN_SEC_DEFAULT);
         fetchEventsStepInMinutes = jobDataMapExtension.getJobDataMapIntValue(map, FETCH_EVENTS_STEP_IN_MINUTES_JOB_PARAMETER, FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT);
         impalaTablePartitionType = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER, IMPALA_TABLE_PARTITION_TYPE_DEFAULT);
+        impalaDestinationTablePartitionType = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_PARTITION_TYPE_JOB_PARAMETER, IMPALA_TABLE_PARTITION_TYPE_DEFAULT);
         impalaDestinationTable = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_JOB_PARAMETER, null);
         maxSourceDestinationTimeGap = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER, null);
 
@@ -137,8 +140,8 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         return 1;
     }
 
-    private void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime) {
-        PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTablePartitionType);
+    private void addPartitionFilterToQuery(ImpalaQuery query, long earliestTime, long latestTime, String partitionType) {
+        PartitionStrategy partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
         String earliestValue = partitionStrategy.getImpalaPartitionValue(earliestTime);
         String latestValue = partitionStrategy.getImpalaPartitionValue(latestTime);
         if (earliestValue.equals(latestValue)) {
@@ -165,7 +168,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
                 query.andWhere(gte(epochtimeField, Long.toString(timestampCursor)));
                 if (StringUtils.isNotBlank(whereCriteria))
                     query.andWhere(whereCriteria);
-                addPartitionFilterToQuery(query, timestampCursor, nextTimestampCursor);
+                addPartitionFilterToQuery(query, timestampCursor, nextTimestampCursor, impalaTablePartitionType);
                 if (nextTimestampCursor == latestEventTime)
                     query.andWhere(lte(epochtimeField, Long.toString(nextTimestampCursor)));
                 else
@@ -192,7 +195,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 
                 monitorDataReceived(query.toSQL(), resultsMap.size(), "Events");
 
-                if (throttlingSleepField != null && impalaDestinationTable != null) {
+                if (throttlingSleepField != null && impalaDestinationTable != null && resultsMap.size() > 0) {
                     long timeGap;
                     while ((timeGap = getGapFromDestinationTable(latestEpochTimeSent)) > maxSourceDestinationTimeGap) {
                         long currentTimeMillis = System.currentTimeMillis()/1000;
@@ -245,7 +248,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private long getGapFromDestinationTable(long timestampCursor) {
         ImpalaQuery query = new ImpalaQuery();
         query.select("*").from(impalaDestinationTable);
-        addPartitionFilterToQuery(query, destinationTableLatestTime, timestampCursor);
+        addPartitionFilterToQuery(query, destinationTableLatestTime, timestampCursor, impalaDestinationTablePartitionType);
         query.limitAndSort(new ImpalaPageRequest(1, new Sort(Direction.DESC, epochtimeField)));
         List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
         if (resultsMap == null || resultsMap.size() == 0) {

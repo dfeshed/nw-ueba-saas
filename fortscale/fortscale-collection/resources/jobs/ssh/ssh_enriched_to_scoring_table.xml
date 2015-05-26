@@ -39,6 +39,10 @@
 					<value>${impala.enricheddata.ssh.table.partition.type}</value>
 				</entry>
 				<entry>
+					<key>impalaDestinationTablePartitionType</key>
+					<value>${impala.score.ssh.table.partition.type}</value>
+				</entry>
+				<entry>
 					<key>impalaDestinationTable</key>
 					<value>${impala.score.ssh.table.name}</value>
 				</entry>
