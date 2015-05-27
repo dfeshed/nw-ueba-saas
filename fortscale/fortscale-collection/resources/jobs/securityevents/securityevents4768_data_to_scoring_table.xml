@@ -58,8 +58,8 @@
 		<trigger>
 			<cron>
 				<name>sec4768_send_to_streaming_hourly_trigger</name>
-				<group>Send4768ToEnrichment</group>
-				<job-name>Fetch</job-name>
+				<group>SecurityEvents</group>
+				<job-name>Send4768ToEnrichment</job-name>
 				<job-group>SecurityEvents</job-group>
 				<cron-expression>0 15 * * * ?</cron-expression>
 			</cron>
