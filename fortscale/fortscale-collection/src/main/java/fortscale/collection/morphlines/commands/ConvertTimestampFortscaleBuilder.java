@@ -17,8 +17,12 @@ import java.util.*;
  * an input timezone) to an output date format (in an output timezone), while respecting daylight
  * savings time rules. Provides reasonable defaults for common use cases.
  *
+ * ******************************************************************************************************************************************************************************************
+ * ******************************************************************************************************************************************************************************************
  * if not provided the default input/output time zone is UTC
  * The different between our internal implementation and the standard convertTimestamp command is our command can get the timezone from a record value and not only as a constant input value
+ * *******************************************************************************************************************************************************************************************
+ * *******************************************************************************************************************************************************************************************
  */
 public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
@@ -46,7 +50,8 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     private final String outputLocaleField;
     private final String outputFormatField;
     
-    
+
+    private static final String DEFAULT_TIME_ZONE = "UTC";
     Locale inputLocale = null;
     Locale outputLocale = null;
     
@@ -62,10 +67,10 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       super(builder, config, parent, child, context);
       
       this.fieldName = getConfigs().getString(config, "field", Fields.TIMESTAMP);
-      this.inputTimezoneField = config.hasPath("inputTimezoneField") ?  getConfigs().getString(config, "inputTimezoneField") : "UTC";
+      this.inputTimezoneField = config.hasPath("inputTimezoneField") ?  getConfigs().getString(config, "inputTimezoneField") : DEFAULT_TIME_ZONE;
       this.inputLocaleField = getConfigs().getString(config, "inputLocale", "");
       this.inputFormatsField = getConfigs().getStringList(config, "inputFormats", DateUtil.DEFAULT_DATE_FORMATS);
-      this.outputTimezoneField= config.hasPath("outputTimezoneField") ? getConfigs().getString(config, "outputTimezoneField") : "UTC";
+      this.outputTimezoneField= config.hasPath("outputTimezoneField") ? getConfigs().getString(config, "outputTimezoneField") : DEFAULT_TIME_ZONE;
       this.outputLocaleField=getConfigs().getString(config, "outputLocale", "");  
       this.outputFormatField = getConfigs().getString(config, "outputFormat", NATIVE_SOLR_FORMAT);
       inputLocale = getLocale(this.inputLocaleField);
@@ -77,7 +82,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     @Override
     protected boolean doProcess(Record record) {
     	String tzInput = (String)record.getFirstValue(this.inputTimezoneField);
-        TimeZone inputTimeZone = getTimeZone(tzInput == null ? "UTC" : tzInput);
+        TimeZone inputTimeZone = getTimeZone(tzInput == null ? DEFAULT_TIME_ZONE : tzInput);
         
         List<SimpleDateFormat> inputFormats = new ArrayList<SimpleDateFormat>();
         for (String inputFormat : this.inputFormatsField) {
@@ -90,7 +95,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
           inputFormats.add(dateFormat);
         }
     	String tzOutput = (String)record.getFirstValue(this.outputTimezoneField);
-        TimeZone outputTimeZone = getTimeZone(tzOutput == null ? "UTC" : tzOutput);
+        TimeZone outputTimeZone = getTimeZone(tzOutput == null ? DEFAULT_TIME_ZONE : tzOutput);
         
         String outputFormatStr = this.outputFormatField;
         SimpleDateFormat outputFormat = getUnixTimeFormat(outputFormatStr, outputTimeZone);
