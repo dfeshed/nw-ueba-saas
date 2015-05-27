@@ -162,15 +162,13 @@
 
 	<!-- Username normalization -->
 	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="singleton">
-		<property name="matchersString" value="${collection.vpn.etl.username.normalize.matchers}"/>
 		<property name="usernameService" ref="usernameService"/>
 	</bean>
-	<bean id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="singleton">
+	<bean id="secUsernameNormalizer" class="fortscale.services.impl.SecUsernameNormalizer" scope="singleton">
 		<property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
 		<property name="usernameService" ref="usernameService"/>
 	</bean>
-	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="singleton">
-		<property name="matchersString" value="${collection.ssh.etl.username.normalize.matchers}"/>
+	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.SSHUsernameNormalizer" scope="singleton">
 		<property name="usernameService" ref="usernameService"/>
 	</bean>
 
