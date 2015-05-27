@@ -54,9 +54,9 @@
 		<trigger>
 			<cron>
 				<name>sec_send_to_streaming_hourly_trigger</name>
-				<group>AMT</group>
-				<job-name>Fetch</job-name>
-				<job-group>AMT</job-group>
+				<group>SecurityEvents</group>
+				<job-name>AuthScoring</job-name>
+				<job-group>SecurityEvents</job-group>
 				<cron-expression>0 15 * * * ?</cron-expression>
 			</cron>
 		</trigger>

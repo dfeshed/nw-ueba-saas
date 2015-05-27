@@ -7,57 +7,53 @@
 
 	<schedule>
 		<job>
-			<name>Scoring</name>
-			<group>SSH</group>
-			<description>Running ssh Scoring</description>
+			<name>Send4768ToEnrichment</name>
+			<group>SecurityEvents</group>
+			<description>Running ldap authentication Scoring</description>
 			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.data.ssh.table.name}</value>
+					<value>${impala.data.security.events.login.table.name}</value>
 				</entry>
 				<entry>
 					<key>epochtimeField</key>
-					<value>${impala.data.table.fields.epochtime}</value>
+					<value>${impala.data.security.events.login.table.field.date_time_unix}</value>
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>${kafka.ssh.struct.topic}</value>
+					<value>${kafka.4768.struc.topic}</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>
-					<value>${impala.data.ssh.table.field.username}</value>
+					<value>${impala.data.security.events.login.table.field.account_name}</value>
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>
-					<value>${impala.data.ssh.table.fields}</value>
+					<value>${impala.data.security.events.login.table.fields}</value>
 				</entry>
 				<entry>
 					<key>impalaTablePartitionType</key>
-					<value>${impala.data.ssh.table.partition.type}</value>
+					<value>${impala.data.security.events.login.table.partition.type}</value>
 				</entry>
 				<entry>
-					<key>impalaDestinationTable</key>
-					<value>${impala.score.ssh.table.name}</value>
-				</entry>
-				<entry>
-					<key>throttlingSleep</key>
-					<value>${kafka.throttlingSleep}</value>
+					<key>impalaDestinationTablePartitionType</key>
+					<value>${impala.score.ldapauth.table.partition.type}</value>
 				</entry>
 			</job-data-map>
-
+			
 		</job>
 
 		<!-- need to comment out when working in multi collector mode
 		<trigger>
 			<cron>
-				<name>ssh_send_to_streaming_hourly_trigger</name>
-				<group>SSH</group>
-				<job-name>Scoring</job-name>
-				<job-group>SSH</job-group>
-				<cron-expression>0 30 * * * ?</cron-expression>
+				<name>sec4768_send_to_streaming_hourly_trigger</name>
+				<group>Send4768ToEnrichment</group>
+				<job-name>Fetch</job-name>
+				<job-group>SecurityEvents</job-group>
+				<cron-expression>0 15 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		-->
