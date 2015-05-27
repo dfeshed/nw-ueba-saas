@@ -49,6 +49,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     private final static String storeConfigKeyFormat = "fortscale.%s.store";
 
     private final static String dhcpCacheKey = "dhcp-cache";
+	private final static String iseCacheKey = "ise-cache";
     private final static String loginCacheKey = "login-cache";
     private final static String computerCacheKey = "computer-cache";
 
@@ -73,9 +74,9 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dhcpCacheKey)), resolver.getDhcpResolver());
 
             LevelDbBasedCache<String, IseEvent> iseCache = new LevelDbBasedCache<String,IseEvent>(
-                    (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),IseEvent.class);
+                    (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, iseCacheKey))),IseEvent.class);
             resolver.getIseResolver().setCache(iseCache);
-            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), resolver.getIseResolver());
+            topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, iseCacheKey)), resolver.getIseResolver());
 
             LevelDbBasedCache<String,ComputerLoginEvent> loginCache = new LevelDbBasedCache<String,ComputerLoginEvent>(
                     (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);
