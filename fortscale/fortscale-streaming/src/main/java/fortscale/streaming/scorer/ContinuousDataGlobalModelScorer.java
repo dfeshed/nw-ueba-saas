@@ -2,12 +2,20 @@ package fortscale.streaming.scorer;
 
 import fortscale.ml.model.prevalance.FieldModel;
 import fortscale.ml.model.prevalance.PrevalanceModel;
+import fortscale.ml.service.ModelService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.springframework.util.Assert;
 
-public class ContinuousDataGlobalModelScorer extends ContiuousModelScorer {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ContinuousDataGlobalModelScorer extends AbstractScorer {
+	private Scorer continuousDataLocalModelScorer;
+	private ModelService modelService;
+
 	private String globalModelName;
+	private String globalContextConstant;
 	private String popQuantilesFieldModelName;
 	private String medQuantilesFieldModelName;
 
@@ -22,14 +30,27 @@ public class ContinuousDataGlobalModelScorer extends ContiuousModelScorer {
 	public ContinuousDataGlobalModelScorer(String scorerName, Config config, ScorerContext context) {
 		super(scorerName, config, context);
 
+		// Get continuous data local model scorer
+		String localModelScorerName = config.get(String.format("fortscale.score.%s.continuous.data.local.model.scorer", scorerName), null);
+		Assert.isTrue(StringUtils.isNotBlank(localModelScorerName), "Missing valid name of continuous data local model scorer");
+		continuousDataLocalModelScorer = (Scorer)context.resolve(Scorer.class, localModelScorerName);
+		Assert.notNull(continuousDataLocalModelScorer, String.format("Could not find class of scorer %s", localModelScorerName));
+
+		// Get model service
+		modelService = (ModelService)context.resolve(ModelService.class, "modelService");
+		Assert.notNull(modelService, "Could not resolve model service");
+
 		// Extract model names
 		globalModelName = config.get(String.format("fortscale.score.%s.global.model.name", scorerName), null);
-		popQuantilesFieldModelName = config.get(String.format("fortscale.score.%s.population.quantiles.field.model.name", scorerName), null);
-		medQuantilesFieldModelName = config.get(String.format("fortscale.score.%s.medians.quantiles.field.model.name", scorerName), null);
-
-		// Validate model names
 		Assert.isTrue(StringUtils.isNotBlank(globalModelName), "Missing valid global model name");
+
+		globalContextConstant = config.get(String.format("fortscale.model.%s.context.constant", scorerName), null);
+		Assert.isTrue(StringUtils.isNotBlank(globalContextConstant), "Missing global context constant");
+
+		popQuantilesFieldModelName = config.get(String.format("fortscale.score.%s.population.quantiles.field.model.name", scorerName), null);
 		Assert.isTrue(StringUtils.isNotBlank(popQuantilesFieldModelName), "Missing valid population quantiles field model name");
+
+		medQuantilesFieldModelName = config.get(String.format("fortscale.score.%s.medians.quantiles.field.model.name", scorerName), null);
 		Assert.isTrue(StringUtils.isNotBlank(medQuantilesFieldModelName), "Missing valid medians quantiles field model name");
 
 		// Extract algorithm parameters
@@ -43,16 +64,26 @@ public class ContinuousDataGlobalModelScorer extends ContiuousModelScorer {
 
 	@Override
 	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
-		Double oldScore = super.calculateScore(eventMessage).getScore();
-		PrevalanceModel globalModel = modelService.getModel("NO_CONTEXT", globalModelName);
+		// Get score according to continuous data local model
+		FeatureScore oldFeatureScore = continuousDataLocalModelScorer.calculateScore(eventMessage);
+		Double oldScore = oldFeatureScore.getScore();
 
+		// Get global prevalence model
+		PrevalanceModel globalModel = modelService.getModel(globalContextConstant, globalModelName);
+
+		// Calculate scoring factors
 		double qEvent = qEvent(oldScore, globalModel);
 		double qContext = qContext(oldScore, globalModel);
 		double factorEvent = factorEvent(qEvent);
 		double factorDeltaQ = factorDeltaQ(qEvent - qContext, qEvent); // 1st parameter = deltaQ
 
+		// Calculate new score
 		double newScore = Math.min(100, oldScore * factorEvent * factorDeltaQ);
-		return new FeatureScore(outputFieldName, newScore);
+
+		// Return new feature score
+		List<FeatureScore> featureScores = new ArrayList<>();
+		featureScores.add(oldFeatureScore);
+		return new FeatureScore(outputFieldName, newScore, featureScores);
 	}
 
 	private double qEvent(Double value, PrevalanceModel globalModel) {
