@@ -1,7 +1,6 @@
 package fortscale.streaming.task.enrichment;
 
 import fortscale.services.CachingService;
-import fortscale.services.fe.Classifier;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
@@ -24,12 +23,10 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToString;
@@ -173,7 +170,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 				UsernameNormalizationService normalizationService = configuration.getUsernameNormalizationService();
 				// checks in memory-cache and mongo if the user exists
-				normalizedUsername = normalizationService.normalizeUsername(username, domain);
+				normalizedUsername = normalizationService.normalizeUsername(username, domain, message, configuration);
 				// check if we should drop the record (user doesn't exist)
 				if (normalizationService.shouldDropRecord(username, normalizedUsername)) {
 					if (logger.isDebugEnabled()) {
@@ -181,12 +178,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					}
 					// drop record
 					return;
-				}
-				if (normalizedUsername == null) {
-					// normalization failed, but we keep the record and generate normalized
-					normalizedUsername = normalizationService.getUsernameAsNormalizedUsername(username, message);
-					//Updating/Creating the user in mongoDB if needed.
-					tagService.getUserService().updateOrCreateUserWithClassifierUsername(Classifier.valueOf(configuration.getClassifier()),normalizedUsername,normalizedUsername,configuration.getUpdateOnlyFlag(),true);
 				}
 				message.put(configuration.getNormalizedUsernameField(), normalizedUsername);
 

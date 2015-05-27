@@ -17,21 +17,9 @@ public class UsernameNormalizationServiceTest {
 		usernameNormalizationService = new UsernameNormalizationService();
 	}
 
-
-	@Test public void normalizeUsername_should_return_UsernameNormalizer_normalize_output() throws Exception {
-		String userName = "USER_NAME";
-		String domainName = "DOMAIN_NAME";
-		String normalizedUsername = "user_name_nnn";
-		UsernameNormalizer usernameNormalizer = mock(UsernameNormalizer.class);
-		when(usernameNormalizer.normalize(userName, domainName)).thenReturn(normalizedUsername.toUpperCase());
-		when(usernameNormalizer.normalize(userName.toLowerCase(), domainName.toLowerCase())).thenReturn(normalizedUsername);
-		usernameNormalizationService.setUsernameNormalizer(usernameNormalizer);
-		assertEquals(normalizedUsername, usernameNormalizationService.normalizeUsername(userName, domainName));
-	}
-
 	@Test public void getUsernameAsNormalizedUsername_should_return_username_in_lowercase() throws Exception {
 		String userName = "USER_NAME";
-		assertEquals(userName.toLowerCase(), usernameNormalizationService.getUsernameAsNormalizedUsername(userName,null));
+		assertEquals(userName.toLowerCase(), usernameNormalizationService.getUsernameAsNormalizedUsername(userName,null, null));
 	}
 
 	@Test public void shouldDropRecord_should_return_false_for_not_null_normalizedUsername() throws Exception {

@@ -46,7 +46,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
             ret = usernameNormalizer.normalize(RecordExtensions.getStringValue(inputRecord, usernameField)
-					.toLowerCase(), RecordExtensions.getStringValue(inputRecord, domainField));
+					.toLowerCase(), RecordExtensions.getStringValue(inputRecord, domainField), null, null, false);
         }  
         
 		return ret;

@@ -14,45 +14,50 @@ public class UsernameNormalizationAndTaggingTaskMockTest {
 	@Before
 	public void setUp() throws Exception {
 		usernameNormalizationService = mock(UsernameNormalizationService.class);
-		when(usernameNormalizationService.normalizeUsername("user","domain.com")).thenReturn("user@domain.com");
-		when(usernameNormalizationService.normalizeUsername("user@domain.com","domain.com")).thenReturn("user@domain"
-				+ ".com");
-		when(usernameNormalizationService.normalizeUsername("user","vpnConnect")).thenReturn("user@vpnConnect");
-		when(usernameNormalizationService.normalizeUsername("user","pc-destmachine")).thenReturn("user@pc-destmachine");
-		when(usernameNormalizationService.normalizeUsername("user","pc-sourcemachine")).thenReturn("user@domain.com");
+		when(usernameNormalizationService.normalizeUsername("user","domain.com", null, null)).thenReturn
+				("user@domain.com");
+		when(usernameNormalizationService.normalizeUsername("user@domain.com","domain.com", null, null))
+				.thenReturn
+				("user@domain" + ".com");
+		when(usernameNormalizationService.normalizeUsername("user","vpnConnect", null, null)).thenReturn
+				("user@vpnConnect");
+		when(usernameNormalizationService.normalizeUsername("user","pc-destmachine", null, null)).thenReturn
+				("user@pc-destmachine");
+		when(usernameNormalizationService.normalizeUsername("user","pc-sourcemachine", null, null)).thenReturn
+				("user@domain.com");
 	}
 
 	@Test
 	public void testKerberosLikeEventsUserNormalization1() throws Exception {
-		String actual = usernameNormalizationService.normalizeUsername("user", "domain.com");
+		String actual = usernameNormalizationService.normalizeUsername("user", "domain.com", null, null);
 		String expected = "user@domain.com";
 		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void testKerberosLikeEventsUserNormalization2() throws Exception {
-		String actual = usernameNormalizationService.normalizeUsername("user@domain.com", "domain.com");
+		String actual = usernameNormalizationService.normalizeUsername("user@domain.com", "domain.com", null, null);
 		String expected = "user@domain.com";
 		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void testVPNLikeEventsUserNormalization() throws Exception {
-		String actual = usernameNormalizationService.normalizeUsername("user", "vpnConnect");
+		String actual = usernameNormalizationService.normalizeUsername("user", "vpnConnect", null, null);
 		String expected = "user@vpnConnect";
 		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void testSSHLikeEventsUserNormalization1() throws Exception {
-		String actual = usernameNormalizationService.normalizeUsername("user", "pc-destmachine");
+		String actual = usernameNormalizationService.normalizeUsername("user", "pc-destmachine", null, null);
 		String expected = "user@pc-destmachine";
 		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void testSSHLikeEventsUserNormalization2() throws Exception {
-		String actual = usernameNormalizationService.normalizeUsername("user", "pc-sourcemachine");
+		String actual = usernameNormalizationService.normalizeUsername("user", "pc-sourcemachine", null, null);
 		String expected = "user@domain.com";
 		assertEquals(expected, actual);
 	}

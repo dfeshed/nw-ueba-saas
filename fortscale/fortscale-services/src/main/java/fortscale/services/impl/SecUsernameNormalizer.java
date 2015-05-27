@@ -1,6 +1,8 @@
 package fortscale.services.impl;
 
+import fortscale.services.fe.Classifier;
 import fortscale.utils.ConfigurationUtils;
+import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 
 public class SecUsernameNormalizer extends UsernameNormalizer {
@@ -17,7 +19,8 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 	}
 
 	@Override
-	public String normalize(String username, String domain){
+	public String normalize(String username, String domain, JSONObject message, Classifier classifier, boolean
+			updateOnly) {
 		username = username.toLowerCase();
 		domain = domain.toLowerCase();
 		String ret = null;
@@ -32,7 +35,7 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 			}
 		}
 		//no user was found or no matching regular expressions were found (most likely user is without @domain.com) -
-		//return the user with the account_domain valuea
+		//return the user with the account_domain value
 		if(ret == null && usernameService.isUsernameExist(username + "@" + domain)){
 			ret = username + "@" + domain;
 		}
