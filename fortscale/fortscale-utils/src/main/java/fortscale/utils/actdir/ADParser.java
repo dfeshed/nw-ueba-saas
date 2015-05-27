@@ -43,7 +43,8 @@ public class ADParser {
 			ret+=splited[i+1]+".";
 		}
 
-		ret = ret.substring(0,ret.length()-1);
+		if (ret.length()>0)
+			ret = ret.substring(0,ret.length()-1);
 
 		return ret;
 	}
