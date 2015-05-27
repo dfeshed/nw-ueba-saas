@@ -1,35 +1,24 @@
 package fortscale.collection.morphlines.commands;
 
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.TimeZone;
-
+import com.typesafe.config.Config;
 import fortscale.utils.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.kitesdk.morphline.api.Command;
-import org.kitesdk.morphline.api.CommandBuilder;
-import org.kitesdk.morphline.api.MorphlineCompilationException;
-import org.kitesdk.morphline.api.MorphlineContext;
-import org.kitesdk.morphline.api.Record;
+import org.kitesdk.morphline.api.*;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Fields;
 
-import com.typesafe.config.Config;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Command that converts the timestamps in a given field from one of a set of input date formats (in
  * an input timezone) to an output date format (in an output timezone), while respecting daylight
  * savings time rules. Provides reasonable defaults for common use cases.
+ *
+ * if not provided the default input/output time zone is UTC
+ * The different between our internal implementation and the standard convertTimestamp command is our command can get the timezone from a record value and not only as a constant input value
  */
 public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
