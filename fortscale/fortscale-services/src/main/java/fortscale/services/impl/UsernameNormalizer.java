@@ -5,9 +5,14 @@ import fortscale.services.UserService;
 import fortscale.services.fe.Classifier;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.InitializingBean;
+import parquet.org.slf4j.Logger;
+import parquet.org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 public class UsernameNormalizer implements InitializingBean{
+
+	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
 
 	protected UsernameService usernameService;
 	protected UserService userService;
@@ -34,13 +39,16 @@ public class UsernameNormalizer implements InitializingBean{
 		username = username.toLowerCase();
 		domain = domain.toLowerCase();
 		String ret;
+		logger.debug("Normalizing user - {}", username);
 		//get the list of users matching the samaccountname
 		List<User> users = usernameService.getUsersBysAMAccountName(username);
 		//if only one such user was found - return the full username (including domain)
 		if(users.size() == 1) {
 			ret = users.get(0).getUsername();
+			logger.debug("One user found - {}", ret);
 		}
 		else {
+			logger.debug("No users found");
 			ret = postNormalize(username, domain, classifier, updateOnly);
 		}
 		return ret;
@@ -50,6 +58,7 @@ public class UsernameNormalizer implements InitializingBean{
 		String ret = username + "@" + domain;
 		//update or create user in mongo
 		userService.updateOrCreateUserWithClassifierUsername(classifier, ret, ret, updateOnly, true);
+		logger.debug("Saved normalized user - {}", ret);
 		return ret;
 	}
 

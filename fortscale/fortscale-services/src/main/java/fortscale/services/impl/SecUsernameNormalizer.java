@@ -4,8 +4,12 @@ import fortscale.services.fe.Classifier;
 import fortscale.utils.ConfigurationUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import parquet.org.slf4j.Logger;
+import parquet.org.slf4j.LoggerFactory;
 
 public class SecUsernameNormalizer extends UsernameNormalizer {
+
+	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
 
 	private String matchersString;
 	private RegexMatcher regexMatcher;
@@ -24,20 +28,25 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 		username = username.toLowerCase();
 		domain = domain.toLowerCase();
 		String ret = null;
+		logger.debug("Normalizing user - {}", username);
 		if(regexMatcher != null){
+			logger.debug("Attempting to match regular expressions");
 			//get all matching regular expressions
 			for(String normalizedUsername: regexMatcher.match(username)){
 				//if username found, return it
 				if(usernameService.isUsernameExist(normalizedUsername)){
 					ret = normalizedUsername;
+					logger.debug("One user found - {}", ret);
 					break;
 				}
 			}
 		}
 		//no user was found or no matching regular expressions were found (most likely user is without @domain.com) -
 		//return the user with the account_domain value
+		logger.debug("No users found, trying to match user with domain - {}", domain);
 		if(ret == null && usernameService.isUsernameExist(username + "@" + domain)){
 			ret = username + "@" + domain;
+			logger.debug("One user found - {}", ret);
 		}
 		return ret;
 	}
