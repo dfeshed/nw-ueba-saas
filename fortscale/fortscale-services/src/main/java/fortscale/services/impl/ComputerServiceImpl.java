@@ -161,6 +161,7 @@ public class ComputerServiceImpl implements ComputerService {
 		computer.setOperatingSystemServicePack(adComputer.getOperatingSystemServicePack());
 		computer.setOperatingSystemVersion(adComputer.getOperatingSystemVersion());
 		computer.setOU(adComputer.getOu());
+		computer.setDomain(parser.parseDCFromDN(adComputer.getDistinguishedName()));
 		try {
 			computer.setWhenChanged(parser.parseDate(adComputer.getWhenChanged()));
 		} catch (ParseException e) {

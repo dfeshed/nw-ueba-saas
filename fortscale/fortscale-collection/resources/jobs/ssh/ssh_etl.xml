@@ -10,7 +10,7 @@
 			<name>ETL</name>
 			<group>SSH</group>
 			<description>process ssh events received from splunk into files</description>
-			<job-class>fortscale.collection.jobs.SSHEventProcessJob</job-class>
+			<job-class>fortscale.collection.jobs.event.process.SSHEventProcessJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			

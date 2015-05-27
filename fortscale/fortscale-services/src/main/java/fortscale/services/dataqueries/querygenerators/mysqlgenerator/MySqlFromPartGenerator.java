@@ -72,13 +72,13 @@ public class MySqlFromPartGenerator extends QueryPartGenerator {
                 ConditionField condition = (ConditionField) childTerm;
                 //if it's the performance field
                 if (condition.getField().getId().equals(dataEntitiesConfig.getEntityPerformanceTableField(entityId))) {
-                    if (condition.getOperator() == QueryOperator.between || greaterThanOrEqualsOperators.contains(condition.getOperator())) {
+                    if (condition.getQueryOperator() == QueryOperator.between || greaterThanOrEqualsOperators.contains(condition.getQueryOperator())) {
                         int value = 0;
-                        if (condition.getOperator() == QueryOperator.between) {
+                        if (condition.getQueryOperator() == QueryOperator.between) {
                             String[] values = condition.getValue().split(",");
                             // If it's a between operator get the smaller value between the two.
                             value = Math.min(Integer.parseInt(values[0]),Integer.parseInt(values[1]));
-                        } else if (greaterThanOrEqualsOperators.contains(condition.getOperator())) {
+                        } else if (greaterThanOrEqualsOperators.contains(condition.getQueryOperator())) {
                             value = Integer.parseInt(condition.getValue());
                         }
                         //if its value is equal or greater than the one required to the performance value, we can use the performance table.

@@ -61,6 +61,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 	
 	String[] outputFields;
 
+	String outputSeparator;
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
@@ -81,7 +83,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 		// build record to items processor
 		outputFields = ImpalaParser.getTableFieldNamesAsArray(jobDataMapExtension.getJobDataMapStringValue(map, "outputFields"));
-		String outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
+		outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, outputFields);
 
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
@@ -267,7 +269,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		try {
 			logger.debug("opening hdfs file {} for append", hadoopDirPath);
 
-			appender = new HDFSPartitionsWriter(hadoopDirPath, partitionStrategy, new DefaultFileSplitStrategy());
+			appender = new HDFSPartitionsWriter(hadoopDirPath, partitionStrategy, new DefaultFileSplitStrategy(), outputSeparator);
 			appender.open(hadoopFilename);
 
 		} catch (IOException e) {

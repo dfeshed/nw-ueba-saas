@@ -1,17 +1,18 @@
 package fortscale.utils.actdir;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-
-import org.apache.commons.lang.StringUtils;
 
 public class ADParser {
 	public static final String DATE_FORMAT = "yyyy/MM/dd'T'HH:mm:ss" ;
 	public static final String TIMESTAMP_FORMAT = "yyyy/MM/dd'T'HH:mm" ;
 	public static final String ATTRIBUTE_OU_PREFIX = "OU=";
 	public static final String ATTRIBUTE_CN_PREFIX = "CN=";
+	public static final String ATTRIBUTE_DC_PREFIX = ",DC=";
 	
 	
 	public String parseOUFromDN(String dn) {
@@ -31,6 +32,21 @@ public class ADParser {
 			ouLastIndex = dn.length();
 		}
 		return dn.substring(ouStartIndex, ouLastIndex);  
+	}
+
+	public String parseDCFromDN(String dn) {
+
+		String [] splited = dn.split(ATTRIBUTE_DC_PREFIX);
+		String ret = "";
+		for (int i=0; i<splited.length-1; i++)
+		{
+			ret+=splited[i+1]+".";
+		}
+
+		if (ret.length()>0)
+			ret = ret.substring(0,ret.length()-1);
+
+		return ret;
 	}
 	
 	public static String parseFirstCNFromDN(String dn) {
