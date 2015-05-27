@@ -16,11 +16,11 @@
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.data.security.events.login.table.name}</value>
+					<value>${impala.rawdata.security.events.login.table.name}</value>
 				</entry>
 				<entry>
 					<key>epochtimeField</key>
-					<value>${impala.data.security.events.login.table.field.date_time_unix}</value>
+					<value>${impala.rawdata.security.events.login.table.field.date_time_unix}</value>
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
@@ -32,16 +32,24 @@
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>
-					<value>${impala.data.security.events.login.table.fields}</value>
+					<value>${impala.rawdata.security.events.login.table.fields}</value>
 				</entry>
 				<entry>
 					<key>impalaTablePartitionType</key>
-					<value>${impala.data.security.events.login.table.partition.type}</value>
+					<value>${impala.rawdata.security.events.login.table.partition.type}</value>
 				</entry>
-				<entry>
-					<key>impalaDestinationTablePartitionType</key>
-					<value>${impala.score.ldapauth.table.partition.type}</value>
-				</entry>
+                <entry>
+                    <key>impalaDestinationTablePartitionType</key>
+                    <value>${impala.data.security.events.login.table.partition.type}</value>
+                </entry>
+                <entry>
+                    <key>impalaDestinationTable</key>
+                    <value>${impala.data.security.events.login.table.name}</value>
+                </entry>
+                <entry>
+                    <key>throttlingSleep</key>
+                    <value>${kafka.throttlingSleep}</value>
+                </entry>
 			</job-data-map>
 			
 		</job>
