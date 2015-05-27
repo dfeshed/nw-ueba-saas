@@ -44,6 +44,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
     private static int FETCH_EVENTS_STEP_IN_MINUTES_DEFAULT = 1440; // 1 day
     private static String IMPALA_TABLE_PARTITION_TYPE_DEFAULT = "daily";
     private static long LOGGER_MAX_FREQUENCY = 20 * 60;
+    private static long MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT = 10 * 60 * 60; // 10 hours gap as default
 
     private static final String IMPALA_TABLE_NAME_JOB_PARAMETER = "impalaTableName";
     private static final String IMPALA_TABLE_FIELDS_JOB_PARAMETER = "impalaTableFields";
@@ -118,7 +119,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         impalaTablePartitionType = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_TABLE_PARTITION_TYPE_JOB_PARAMETER, IMPALA_TABLE_PARTITION_TYPE_DEFAULT);
         impalaDestinationTablePartitionType = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_PARTITION_TYPE_JOB_PARAMETER, IMPALA_TABLE_PARTITION_TYPE_DEFAULT);
         impalaDestinationTable = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_JOB_PARAMETER, null);
-        maxSourceDestinationTimeGap = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER, null);
+        maxSourceDestinationTimeGap = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER, MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT);
 
         if (map.containsKey(FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER)) {
             Resource fieldClusterGroupsRegexResource = jobDataMapExtension.getJobDataMapResourceValue(map, FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER);
