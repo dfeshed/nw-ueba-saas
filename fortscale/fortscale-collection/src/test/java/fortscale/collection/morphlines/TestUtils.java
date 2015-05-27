@@ -48,7 +48,7 @@ public class TestUtils {
 
         DateFormat formatter = new SimpleDateFormat(dateFormat);
         Calendar cal = Calendar.getInstance();
-        cal.setTimeZone(tz);
+        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
         formatter.setCalendar(cal);
         return formatter.format(date);
     }
