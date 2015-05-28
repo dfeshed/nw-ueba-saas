@@ -36,9 +36,9 @@ public class IseEvent extends IpToHostname {
     @Field(IS_AD_HOSTNAME_FIELD_NAME)
     protected Boolean adHostName;
 
-
-    public boolean isAdHostName() {
-        return (adHostName==null)? adHostName : false;
+    @Override
+    public boolean isAdHostname() {
+        return (adHostName==null)? false : adHostName;
     }
 
     public void setAdHostName(boolean adHostName) {
@@ -62,13 +62,6 @@ public class IseEvent extends IpToHostname {
         this.macAddress = macAddress;
     }
     
-    @Override
-    public boolean isAdHostname()
-    {
-        return adHostName;
-    }
-
-
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;

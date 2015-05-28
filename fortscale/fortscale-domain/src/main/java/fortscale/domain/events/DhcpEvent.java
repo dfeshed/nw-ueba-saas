@@ -45,9 +45,15 @@ public class DhcpEvent extends IpToHostname{
 	@Field(IS_AD_HOSTNAME_FIELD_NAME)
 	protected Boolean adHostName;
 
-
+	/*
 	public boolean isAdHostName() {
-		return (adHostName==null)? adHostName : false;
+		return (adHostName==null)?  false : adHostName;
+	}*/
+
+	@Override
+	public boolean isAdHostname()
+	{
+		return (adHostName==null)?  false : adHostName;
 	}
 
 	public void setAdHostName(boolean adHostName) {
@@ -79,11 +85,7 @@ public class DhcpEvent extends IpToHostname{
 		this.macAddress = macAddress;
 	}
 
-	@Override
-	public boolean isAdHostname()
-	{
-		return adHostName;
-	}
+
 	
 	@Override
 	public boolean equals(Object obj) {
