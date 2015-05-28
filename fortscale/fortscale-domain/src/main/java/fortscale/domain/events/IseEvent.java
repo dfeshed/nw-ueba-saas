@@ -33,6 +33,18 @@ public class IseEvent extends IpToHostname {
     @Field(MAC_ADDRESS_FIELD_NAME)
     private String macAddress;
 
+    @Field(IS_AD_HOSTNAME_FIELD_NAME)
+    protected Boolean adHostName;
+
+
+    public boolean isAdHostName() {
+        return (adHostName==null)? adHostName : false;
+    }
+
+    public void setAdHostName(boolean adHostName) {
+        this.adHostName = adHostName;
+    }
+
 
     public long getExpiration() {
         return expiration;
@@ -48,6 +60,12 @@ public class IseEvent extends IpToHostname {
 
     public void setMacAddress(String macAddress) {
         this.macAddress = macAddress;
+    }
+    
+    @Override
+    public boolean isAdHostname()
+    {
+        return adHostName;
     }
 
 

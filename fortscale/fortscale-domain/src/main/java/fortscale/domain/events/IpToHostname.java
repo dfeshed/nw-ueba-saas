@@ -38,17 +38,7 @@ public class IpToHostname extends AbstractDocument{
 	@Field(HOSTNAME_FIELD_NAME)
 	protected String hostname;
 
-	@Field(IS_AD_HOSTNAME_FIELD_NAME)
-	protected Boolean adHostName;
 
-
-	public boolean isAdHostName() {
-		return (adHostName==null)? false : adHostName;
-	}
-
-	public void setAdHostName(boolean adHostName) {
-		this.adHostName = adHostName;
-	}
 
 
 	public DateTime getCreatedAt() {
@@ -82,4 +72,7 @@ public class IpToHostname extends AbstractDocument{
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
+
+	//This method will be override by the extending class that will hold the adHostname field
+	public boolean isAdHostname(){return true;};
 }
