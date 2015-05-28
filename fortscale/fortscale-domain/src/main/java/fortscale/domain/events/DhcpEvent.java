@@ -19,6 +19,8 @@ public class DhcpEvent extends IpToHostname{
 
 	private static final long serialVersionUID = -8351203425124420491L;
 
+	public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
+
 	// action codes
 	public static final String RELEASE_ACTION = "RELEASE";
 	public static final String EXPIRED_ACTION = "EXPIRED";
@@ -53,6 +55,24 @@ public class DhcpEvent extends IpToHostname{
 	@Field(ACTION_FIELD_NAME)
 	private String action;
 
+	@Field(IS_AD_HOSTNAME_FIELD_NAME)
+	protected Boolean adHostName;
+
+	/*
+	public boolean isAdHostName() {
+		return (adHostName==null)?  false : adHostName;
+	}*/
+
+	@Override
+	public boolean checkIsAdHostname()
+	{
+		return (adHostName==null)?  false : adHostName;
+	}
+
+	public void setAdHostName(boolean adHostName) {
+		this.adHostName = adHostName;
+	}
+
 
 	public String getAction() {
 		return action;
@@ -77,6 +97,8 @@ public class DhcpEvent extends IpToHostname{
 	public void setMacAddress(String macAddress) {
 		this.macAddress = macAddress;
 	}
+
+
 	
 	@Override
 	public boolean equals(Object obj) {
