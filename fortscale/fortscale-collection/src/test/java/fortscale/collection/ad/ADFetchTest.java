@@ -1,15 +1,14 @@
 package fortscale.collection.ad;
 
+import fortscale.collection.jobs.ad.AdConnections;
+import fortscale.collection.jobs.ad.AdFetchJob;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.properties.PropertiesResolver;
 import org.junit.Before;
 import org.junit.Test;
-import com.google.common.io.Resources;
-import fortscale.collection.jobs.ad.AdConnections;
-import fortscale.collection.jobs.ad.AdFetchJob;
-import java.io.*;
-import java.net.URL;
-import static org.junit.Assert.assertEquals;
-import fortscale.utils.logging.Logger;
+
+import java.io.BufferedWriter;
+import java.io.StringWriter;
 
 /**
  * Created by Amir Keren on 17/05/2015.

@@ -1,15 +1,16 @@
 package fortscale.collection.ad;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
 import fortscale.collection.jobs.ad.AdConnection;
 import fortscale.collection.jobs.ad.AdConnections;
-import java.util.List;
 import fortscale.utils.properties.PropertiesResolver;
 import junitparams.JUnitParamsRunner;
-import org.junit.*;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
 
 @RunWith(JUnitParamsRunner.class)
 public class ADConnectionsJSONTest {

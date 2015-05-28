@@ -35,8 +35,12 @@
                     <value>${impala.enricheddata.amt.table.fields}</value>
                 </entry>
                 <entry>
-                    <key>impalaTablePartitionType</key>
-                    <value>${impala.enricheddata.amt.table.partition.type}</value>
+					<key>impalaTablePartitionType</key>
+					<value>${impala.enricheddata.amt.table.partition.type}</value>
+				</entry>
+                <entry>
+                    <key>impalaDestinationTablePartitionType</key>
+                    <value>${impala.score.amt.table.partition.type}</value>
                 </entry>
                 <entry>
                     <key>impalaDestinationTable</key>

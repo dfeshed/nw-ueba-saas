@@ -39,6 +39,10 @@
 					<value>${impala.data.ssh.table.partition.type}</value>
 				</entry>
 				<entry>
+					<key>impalaDestinationTablePartitionType</key>
+					<value>${impala.score.ssh.table.partition.type}</value>
+				</entry>
+				<entry>
 					<key>impalaDestinationTable</key>
 					<value>${impala.score.ssh.table.name}</value>
 				</entry>
@@ -54,9 +58,10 @@
 		<trigger>
 			<cron>
 				<name>ssh_send_to_streaming_hourly_trigger</name>
-				<group>AMT</group>
-				<job-name>Fetch</job-name>
-				<job-group>AMT</job-group>
+
+				<group>SSH</group>
+				<job-name>Scoring</job-name>
+				<job-group>SSH</job-group>
 				<cron-expression>0 30 * * * ?</cron-expression>
 			</cron>
 		</trigger>
