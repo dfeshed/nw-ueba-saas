@@ -1,5 +1,6 @@
 package fortscale.domain.events;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fortscale.utils.json.JodaDateSerializer;
 import org.joda.time.DateTime;
@@ -39,6 +40,7 @@ public class IpToHostname extends AbstractDocument{
 	protected String hostname;
 
 	@Field(IS_AD_HOSTNAME_FIELD_NAME)
+	@JsonProperty(required=false)
 	protected Boolean adHostName;
 
 
