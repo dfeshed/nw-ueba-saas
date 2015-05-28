@@ -60,6 +60,7 @@
                 <name>amt_send_to_streaming_hourly_trigger</name>
                 <group>AMT</group>
                 <job-name>Scoring</job-name>
+
                 <job-group>AMT</job-group>
                 <cron-expression>0 0 * * * ?</cron-expression>
             </cron>

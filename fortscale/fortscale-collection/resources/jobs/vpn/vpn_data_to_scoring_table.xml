@@ -51,14 +51,13 @@
 					<value>${kafka.throttlingSleep}</value>
 				</entry>
 			</job-data-map>
-			
+
 		</job>
 
 		<!-- need to comment out when working in multi collector mode
 		<trigger>
 			<cron>
-				<name>vpn_send_to_streaming_hourly_trigger</name>
-				<group>VPN</group>
+	        <group>VPN</group>
 				<job-name>Scoring</job-name>
 				<job-group>VPN</job-group>
 				<cron-expression>0 45 * * * ?</cron-expression>
