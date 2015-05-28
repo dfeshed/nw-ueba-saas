@@ -10,14 +10,14 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
-
 @Document(collection = IseEvent.collectionName)
 @CompoundIndexes({
         @CompoundIndex(name = "ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}")
 })
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class IseEvent extends IpToHostname {
+
+	public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
 
     // collection properties
     public static final String collectionName = "IseEvent";
@@ -32,6 +32,24 @@ public class IseEvent extends IpToHostname {
 
     @Field(MAC_ADDRESS_FIELD_NAME)
     private String macAddress;
+
+
+	@Field(IS_AD_HOSTNAME_FIELD_NAME)
+    protected Boolean adHostName;
+
+    @Override
+    public boolean checkIsAdHostname() {
+        return (adHostName==null)? false : adHostName;
+    }
+
+	public Boolean getAdHostName() {
+		return adHostName;
+	}
+
+
+	public void setAdHostName(boolean adHostName) {
+        this.adHostName = adHostName;
+    }
 
 
     public long getExpiration() {
@@ -49,8 +67,7 @@ public class IseEvent extends IpToHostname {
     public void setMacAddress(String macAddress) {
         this.macAddress = macAddress;
     }
-
-
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;

@@ -20,7 +20,7 @@ public class IpToHostname extends AbstractDocument{
 	public static final String TIMESTAMP_EPOCH_FIELD_NAME = "timestampepoch";
 	public static final String IP_ADDRESS_FIELD_NAME = "ipaddress";
 	public static final String HOSTNAME_FIELD_NAME = "hostname";
-	public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
+
 	
 	// expire events after 50 hours, as we suspect that dhcp leases are usually for 24 or 48 hours
 	@Indexed(unique = false, expireAfterSeconds=60*60*50)
@@ -38,17 +38,7 @@ public class IpToHostname extends AbstractDocument{
 	@Field(HOSTNAME_FIELD_NAME)
 	protected String hostname;
 
-	@Field(IS_AD_HOSTNAME_FIELD_NAME)
-	protected Boolean adHostName;
 
-
-	public boolean isAdHostName() {
-		return (adHostName==null)? false : adHostName;
-	}
-
-	public void setAdHostName(boolean adHostName) {
-		this.adHostName = adHostName;
-	}
 
 
 	public DateTime getCreatedAt() {
@@ -82,4 +72,7 @@ public class IpToHostname extends AbstractDocument{
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
+
+	//This method will be override by the extending class that will hold the adHostname field
+	public boolean checkIsAdHostname(){return true;};
 }
