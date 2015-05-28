@@ -1,6 +1,5 @@
 package fortscale.streaming.service.usernameNormalization;
 
-import fortscale.services.fe.Classifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import fortscale.services.impl.UsernameNormalizer;
@@ -60,8 +59,8 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 
 		// concat the target machine name to the username: user@target
 		String sourceMachine = convertToString(message.get(sourceMachineField));
-		return usernameNormalizer.postNormalize(username, sourceMachine, Classifier
-				.valueOf(configuration.getClassifier()), configuration.getUpdateOnlyFlag());
+		return usernameNormalizer.postNormalize(username, sourceMachine, configuration.getClassifier(),
+				configuration.getUpdateOnlyFlag());
 
 	}
 

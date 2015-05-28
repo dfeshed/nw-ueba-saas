@@ -29,7 +29,7 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 	}
 
 	@Override
-	public String normalize(String username, String domain, JSONObject message, Classifier classifier, boolean
+	public String normalize(String username, String domain, JSONObject message, String classifier, boolean
 			updateOnly) {
 		username = username.toLowerCase();
 		domain = domain.toLowerCase();
@@ -41,7 +41,8 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 		if(users.size() == 0){
 			ret = username + "@" + domain;
 			//update or create user in mongo
-			userService.updateOrCreateUserWithClassifierUsername(classifier, ret, ret, updateOnly, true);
+			userService.updateOrCreateUserWithClassifierUsername(Classifier.valueOf(classifier), ret, ret, updateOnly,
+					true);
 			logger.debug("No users found, saved normalized user - {}", ret);
 		}else if(users.size() == 1){
 			//if only one such user was found - return the full username (including domain)
@@ -57,7 +58,7 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 	}
 
 	@Override
-	public String postNormalize(String username, String sourceMachine, Classifier classifier, boolean updateOnly) {
+	public String postNormalize(String username, String sourceMachine, String classifier, boolean updateOnly) {
 		String ret;
 		logger.debug("Normalizing according to source machine - {}", sourceMachine);
 		String domain = computerService.getDomainNameForHostname(sourceMachine);
@@ -70,7 +71,8 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 			ret = username.toLowerCase();
 		}
 		//update or create user in mongo
-		userService.updateOrCreateUserWithClassifierUsername(classifier, ret, ret, updateOnly, true);
+		userService.updateOrCreateUserWithClassifierUsername(Classifier.valueOf(classifier), ret, ret, updateOnly,
+				true);
 		logger.debug("Saved normalized user - {}", ret);
 		return ret;
 	}

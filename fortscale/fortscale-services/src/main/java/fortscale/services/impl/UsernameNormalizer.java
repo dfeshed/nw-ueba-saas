@@ -34,7 +34,7 @@ public class UsernameNormalizer implements InitializingBean{
 	}
 
 	//this is the normalizer for vpn and amt events
-	public String normalize(String username, String domain, JSONObject message, Classifier classifier,
+	public String normalize(String username, String domain, JSONObject message, String classifier,
 			boolean updateOnly) {
 		username = username.toLowerCase();
 		domain = domain.toLowerCase();
@@ -54,10 +54,11 @@ public class UsernameNormalizer implements InitializingBean{
 		return ret;
 	}
 
-	public String postNormalize(String username, String domain, Classifier classifier, boolean updateOnly) {
+	public String postNormalize(String username, String domain, String classifier, boolean updateOnly) {
 		String ret = username + "@" + domain;
 		//update or create user in mongo
-		userService.updateOrCreateUserWithClassifierUsername(classifier, ret, ret, updateOnly, true);
+		userService.updateOrCreateUserWithClassifierUsername(Classifier.valueOf(classifier), ret, ret, updateOnly,
+				true);
 		logger.debug("Saved normalized user - {}", ret);
 		return ret;
 	}

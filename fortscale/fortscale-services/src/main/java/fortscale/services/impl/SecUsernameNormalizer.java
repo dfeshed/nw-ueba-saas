@@ -23,7 +23,7 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 	}
 
 	@Override
-	public String normalize(String username, String domain, JSONObject message, Classifier classifier, boolean
+	public String normalize(String username, String domain, JSONObject message, String classifier, boolean
 			updateOnly) {
 		username = username.toLowerCase();
 		domain = domain.toLowerCase();

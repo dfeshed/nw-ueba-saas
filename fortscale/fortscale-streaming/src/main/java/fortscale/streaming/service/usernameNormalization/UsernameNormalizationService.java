@@ -1,7 +1,6 @@
 package fortscale.streaming.service.usernameNormalization;
 
 import fortscale.services.UserService;
-import fortscale.services.fe.Classifier;
 import fortscale.services.impl.UsernameNormalizer;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +29,8 @@ public class UsernameNormalizationService {
 		String ret = null;
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
-			ret = usernameNormalizer.normalize(username, domain, message, Classifier
-					.valueOf(configuration.getClassifier()), configuration.getUpdateOnlyFlag());
+			ret = usernameNormalizer.normalize(username, domain, message, configuration.getClassifier(),
+					configuration.getUpdateOnlyFlag());
 		}
 
 		return ret;
