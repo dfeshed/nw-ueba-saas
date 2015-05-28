@@ -19,6 +19,8 @@ public class DhcpEvent extends IpToHostname{
 
 	private static final long serialVersionUID = -8351203425124420491L;
 
+	public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
+
 	// action codes
 	public static final String RELEASE_ACTION = "RELEASE";
 	public static final String EXPIRED_ACTION = "EXPIRED";
@@ -51,7 +53,7 @@ public class DhcpEvent extends IpToHostname{
 	}*/
 
 	@Override
-	public boolean isAdHostname()
+	public boolean checkIsAdHostname()
 	{
 		return (adHostName==null)?  false : adHostName;
 	}
