@@ -29,10 +29,21 @@ public class DhcpEvent extends IpToHostname{
 	public static final String MAC_ADDRESS_FIELD_NAME = "macAddress";
 	public static final String EXPIRATION_FIELD_NAME = "expiration";
 	public static final String ACTION_FIELD_NAME = "action";
-	
-	
+	public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
 
-	
+	@Field(IS_AD_HOSTNAME_FIELD_NAME)
+	private Boolean adHostName;
+
+
+	public boolean isAdHostName() {
+		return (adHostName==null)? false : adHostName;
+	}
+
+	public void setAdHostName(boolean adHostName) {
+		this.adHostName = adHostName;
+	}
+
+
 	@Field(MAC_ADDRESS_FIELD_NAME)
 	private String macAddress;
 	
