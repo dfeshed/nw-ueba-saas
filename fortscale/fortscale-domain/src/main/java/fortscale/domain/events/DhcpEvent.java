@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection=DhcpEvent.collectionName)
 @CompoundIndexes({
-	@CompoundIndex(name="ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}")
+		@CompoundIndex(name="ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}")
 })
 @JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
 public class DhcpEvent extends IpToHostname{
@@ -24,34 +24,23 @@ public class DhcpEvent extends IpToHostname{
 	// action codes
 	public static final String RELEASE_ACTION = "RELEASE";
 	public static final String EXPIRED_ACTION = "EXPIRED";
-	public static final String ASSIGN_ACTION = "ASSIGN"; 
-	
+	public static final String ASSIGN_ACTION = "ASSIGN";
+
 	// collection properties
 	public static final String collectionName =  "DhcpEvent";
 	public static final String MAC_ADDRESS_FIELD_NAME = "macAddress";
 	public static final String EXPIRATION_FIELD_NAME = "expiration";
 	public static final String ACTION_FIELD_NAME = "action";
-	public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
-
-	@Field(IS_AD_HOSTNAME_FIELD_NAME)
-	private Boolean adHostName;
 
 
-	public boolean isAdHostName() {
-		return (adHostName==null)? false : adHostName;
-	}
-
-	public void setAdHostName(boolean adHostName) {
-		this.adHostName = adHostName;
-	}
 
 
 	@Field(MAC_ADDRESS_FIELD_NAME)
 	private String macAddress;
-	
+
 	@Field(EXPIRATION_FIELD_NAME)
 	private long expiration;
-	
+
 	@Field(ACTION_FIELD_NAME)
 	private String action;
 
@@ -77,15 +66,15 @@ public class DhcpEvent extends IpToHostname{
 	public String getAction() {
 		return action;
 	}
-	
+
 	public void setAction(String action) {
 		this.action = action;
 	}
-	
+
 	public long getExpiration() {
 		return expiration;
 	}
-	
+
 	public void setExpiration(long expiration) {
 		this.expiration = TimestampUtils.convertToMilliSeconds(expiration);
 	}
@@ -99,13 +88,13 @@ public class DhcpEvent extends IpToHostname{
 	}
 
 
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
 		if (obj == this) return true;
 		if (obj.getClass() != getClass()) return false;
-		
+
 		DhcpEvent other = (DhcpEvent)obj;
 		return new EqualsBuilder()
 				.append(expiration, other.expiration)
@@ -114,7 +103,7 @@ public class DhcpEvent extends IpToHostname{
 				.append(hostname, other.hostname)
 				.isEquals();
 	}
-	
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
@@ -127,5 +116,5 @@ public class DhcpEvent extends IpToHostname{
 				.append("isADHost", adHostName)
 				.build();
 	}
-	
+
 }

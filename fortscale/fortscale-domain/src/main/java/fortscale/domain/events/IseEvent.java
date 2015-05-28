@@ -17,14 +17,13 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class IseEvent extends IpToHostname {
 
-	public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
+    public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
 
     // collection properties
     public static final String collectionName = "IseEvent";
 
     public static final String EXPIRATION_FIELD_NAME = "expiration";
     public static final String MAC_ADDRESS_FIELD_NAME = "macAddress";
-    public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
     //public static final String LOCATION_FIELD_NAME = "location";
 
     @Field(EXPIRATION_FIELD_NAME)
@@ -34,20 +33,8 @@ public class IseEvent extends IpToHostname {
     @Field(MAC_ADDRESS_FIELD_NAME)
     private String macAddress;
 
+
     @Field(IS_AD_HOSTNAME_FIELD_NAME)
-    private Boolean adHostName;
-
-
-    public boolean isAdHostName() {
-        return (adHostName==null)? false : adHostName;
-    }
-
-    public void setAdHostName(boolean adHostName) {
-        this.adHostName = adHostName;
-    }
-
-
-	@Field(IS_AD_HOSTNAME_FIELD_NAME)
     protected Boolean adHostName;
 
     @Override
@@ -55,12 +42,12 @@ public class IseEvent extends IpToHostname {
         return (adHostName==null)? false : adHostName;
     }
 
-	public Boolean getAdHostName() {
-		return adHostName;
-	}
+    public Boolean getAdHostName() {
+        return adHostName;
+    }
 
 
-	public void setAdHostName(boolean adHostName) {
+    public void setAdHostName(boolean adHostName) {
         this.adHostName = adHostName;
     }
 
@@ -80,7 +67,7 @@ public class IseEvent extends IpToHostname {
     public void setMacAddress(String macAddress) {
         this.macAddress = macAddress;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
