@@ -48,6 +48,7 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 	private String delimiter;
 	private boolean encloseQuotes = true;
 	private String sortShellScript;
+	private int timeoutInSeconds;
 
 	private File outputTempFile;
 	private File outputFile;
@@ -100,7 +101,7 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		// execute the search
 		try {
 			logger.debug("running splunk saved query");
-			splunkApi.runSavedSearch(savedQuery, properties, null, handler);
+			splunkApi.runSavedSearch(savedQuery, properties, null, handler, timeoutInSeconds);
 		} catch (Exception e) {
 			// log error and delete output
 			logger.error("error running splunk query", e);
@@ -162,6 +163,9 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
 		// try and retrieve the enclose quotes value, if present in the job data map
 		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
+
+		// setting timeout for job (default is no-timeout)
+		timeoutInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "timeoutInSeconds", SplunkApi.NO_TIMEOUT);
 	}
 
 
