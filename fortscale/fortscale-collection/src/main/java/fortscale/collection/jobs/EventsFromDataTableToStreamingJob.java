@@ -204,7 +204,7 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
 
                 monitorDataReceived(query.toSQL(), resultsMap.size(), "Events");
 
-                if (throttlingSleepField != null && impalaDestinationTable != null && resultsMap.size() > 0) {
+                if (throttlingSleepField != null && throttlingSleepField > 0 && impalaDestinationTable != null && resultsMap.size() > 0) {
                     long timeGap;
                     while ((timeGap = getGapFromDestinationTable(latestEpochTimeSent)) > maxSourceDestinationTimeGap) {
                         long currentTimeMillis = TimestampUtils.convertToSeconds(System.currentTimeMillis());
