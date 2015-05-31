@@ -8,25 +8,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ContinuousDataDistribution implements FieldModel {
-	private static final double DEFAULT_BUCKET_SIZE = 1.0;
+	private static final int DEFAULT_MAX_DISTINCT_VALUES = 1000;
+	private static final double DEFAULT_INITIAL_BUCKET_SIZE = 0.01;
+	private static final double DEFAULT_MAX_BUCKET_SIZE = 1.0;
 
-	protected double bucketSize;
-	protected Map<Double, Long> distribution;
+	private double bucketSize;
+	private int maxDistinctValues;
+	private double initialBucketSize;
+	private double maxBucketSize;
+
+	private Map<Double, Long> distribution;
 	private Long totalCount; // number of non-unique values
 	private ContinuousDataModel continuousDataModel;
 
 	@Override
 	public void init(String prefix, String fieldName, Config config) {
-		this.bucketSize = DEFAULT_BUCKET_SIZE;
-
-		// Override default bucket size with configuration bucket size (if a valid one exists)
-		String bucketSizeFieldname = String.format("%s.%s.continuous.data.distribution.bucket.size", prefix, fieldName);
-		if (config.containsKey(bucketSizeFieldname)) {
-			double bucketSize = config.getDouble(bucketSizeFieldname);
-			if (bucketSize > 0) {
-				this.bucketSize = bucketSize;
-			}
-		}
+		bucketSize = 0;
+		String configKey = String.format("%s.%s.continuous.data.distribution.max.distinct.values", prefix, fieldName);
+		maxDistinctValues = config.getInt(configKey, DEFAULT_MAX_DISTINCT_VALUES);
+		configKey = String.format("%s.%s.continuous.data.distribution.initial.bucket.size", prefix, fieldName);
+		initialBucketSize = config.getDouble(configKey, DEFAULT_INITIAL_BUCKET_SIZE);
+		configKey = String.format("%s.%s.continuous.data.distribution.max.bucket.size", prefix, fieldName);
+		maxBucketSize = config.getDouble(configKey, DEFAULT_MAX_BUCKET_SIZE);
 
 		distribution = new HashMap<>();
 		totalCount = 0L;
@@ -62,17 +65,26 @@ public class ContinuousDataDistribution implements FieldModel {
 			return continuousDataModel.calculateScore(doubleValue);
 	}
 
-	protected double roundValue(double value) {
-		return bucketSize * Math.round(value / bucketSize);
+	private double roundValue(double value) {
+		return bucketSize > 0 ? bucketSize * Math.round(value / bucketSize) : value;
 	}
 
-	protected void updateDistribution() {
-		// No need to update distribution
+	private void updateDistribution() {
+		while (distribution.size() > maxDistinctValues && bucketSize < maxBucketSize) {
+			bucketSize = bucketSize > 0 ? bucketSize * 2 : initialBucketSize;
+			Map<Double, Long> newDistribution = new HashMap<>();
+
+			for (Map.Entry<Double, Long> entry : distribution.entrySet()) {
+				Double value = roundValue(entry.getKey());
+				Long oldCount = newDistribution.get(value);
+				Long newCount = oldCount == null ? 1 : oldCount + 1;
+				newDistribution.put(value, newCount);
+			}
+
+			distribution = newDistribution;
+		}
 	}
 
-	/**
-	 * Updates the continuous data model.
-	 */
 	private void updateModel() {
 		// Calculate mean
 		double sum = 0;

@@ -44,7 +44,7 @@ public class ContinuousDataGlobalModelScorer extends AbstractScorer {
 		globalModelName = config.get(String.format("fortscale.score.%s.global.model.name", scorerName), null);
 		Assert.isTrue(StringUtils.isNotBlank(globalModelName), "Missing valid global model name");
 
-		globalContextConstant = config.get(String.format("fortscale.model.%s.context.constant", scorerName), null);
+		globalContextConstant = config.get(String.format("fortscale.model.%s.context.constant", globalModelName), null);
 		Assert.isTrue(StringUtils.isNotBlank(globalContextConstant), "Missing global context constant");
 
 		popQuantilesFieldModelName = config.get(String.format("fortscale.score.%s.population.quantiles.field.model.name", scorerName), null);
