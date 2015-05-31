@@ -1,19 +1,25 @@
 package fortscale.collection.jobs;
 
+import fortscale.domain.fetch.FetchConfiguration;
+import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.EncryptionUtils;
+import fortscale.utils.TimestampUtils;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
+import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
@@ -39,6 +45,9 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 	@Value("${collection.fetch.data.path}")
 	private String outputPath;
 
+	@Autowired
+	private FetchConfigurationRepository fetchConfigurationRepository;
+
 	// data from job data map parameters
 	private String earliest;
 	private String latest;
@@ -48,6 +57,11 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 	private String delimiter;
 	private boolean encloseQuotes = true;
 	private String sortShellScript;
+	private int fetchIntervalInSeconds = -1;
+	private Date earliestDate;
+	private Date latestDate;
+	private boolean keepFetching = false;
+	private FetchConfiguration fetchConfiguration;
 
 	private File outputTempFile;
 	private File outputFile;
@@ -80,55 +94,78 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		monitor.startStep(getMonitorId(), "Query Splunk", 2);
 		SplunkApi splunkApi = new SplunkApi(hostName, port, username, EncryptionUtils.decrypt(password));
 
-		// try to create output file
-		createOutputFile(outputDir);
-		logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
-		monitor.finishStep(getMonitorId(), "Prepare sink file");
 
-		// configure events handler to save events to csv file
-		SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
-		handler.setSearchReturnKeys(returnKeys);
-		handler.setDelimiter(delimiter);
-		handler.setDisableQuotes(!encloseQuotes);
-		handler.setSkipFirstLine(true);
-		handler.setForceSingleLineEvents(true);
 
-		Properties properties = new Properties();
-		properties.put("args.earliest", earliest);
-		properties.put("args.latest", latest);
+		do {
 
-		// execute the search
-		try {
-			logger.debug("running splunk saved query");
-			splunkApi.runSavedSearch(savedQuery, properties, null, handler);
-		} catch (Exception e) {
-			// log error and delete output
-			logger.error("error running splunk query", e);
-			monitor.error(getMonitorId(), "Query Splunk", "error during events from splunk to file " + outputTempFile.getName() + "\n" + e.toString());
-			try {
-				outputTempFile.delete();
-			} catch (Exception ex) {
-				logger.error("cannot delete temp output file " + outputTempFile.getName());
-				monitor.error(getMonitorId(), "Query Splunk", "cannot delete temporary events file " + outputTempFile.getName());
+			if  (fetchIntervalInSeconds != -1 ) {
+				earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
+				Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
+				pageLatestDate = pageLatestDate.before(latestDate) ? pageLatestDate : latestDate;
+				latest = String.valueOf(TimestampUtils.convertToSeconds(pageLatestDate.getTime()));
+				//set for next page
+				earliestDate = pageLatestDate;
 			}
-			throw new JobExecutionException("error running splunk query");
-		}
-		monitor.finishStep(getMonitorId(), "Query Splunk");
 
-		// report to monitor the file size
-		monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
+			// try to create output file
+			createOutputFile(outputDir);
+			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
+			monitor.finishStep(getMonitorId(), "Prepare sink file");
 
-		if (sortShellScript != null) {
-			// sort the output
-			monitor.startStep(getMonitorId(), "Sort Output", 3);
-			sortOutput();
-			monitor.finishStep(getMonitorId(), "Sort Output");
-		} else {
-			// rename output file once get from splunk finished
-			monitor.startStep(getMonitorId(), "Rename Output", 3);
-			renameOutput();
-			monitor.finishStep(getMonitorId(), "Rename Output");
-		}
+			// configure events handler to save events to csv file
+			SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
+			handler.setSearchReturnKeys(returnKeys);
+			handler.setDelimiter(delimiter);
+			handler.setDisableQuotes(!encloseQuotes);
+			handler.setSkipFirstLine(true);
+			handler.setForceSingleLineEvents(true);
+
+			Properties properties = new Properties();
+			properties.put("args.earliest", earliest);
+			properties.put("args.latest", latest);
+
+			// execute the search
+			try {
+				logger.debug("running splunk saved query");
+				splunkApi.runSavedSearch(savedQuery, properties, null, handler);
+			} catch (Exception e) {
+				// log error and delete output
+				logger.error("error running splunk query", e);
+				monitor.error(getMonitorId(), "Query Splunk", "error during events from splunk to file " + outputTempFile.getName() + "\n" + e.toString());
+				try {
+					outputTempFile.delete();
+				} catch (Exception ex) {
+					logger.error("cannot delete temp output file " + outputTempFile.getName());
+					monitor.error(getMonitorId(), "Query Splunk", "cannot delete temporary events file " + outputTempFile.getName());
+				}
+				throw new JobExecutionException("error running splunk query");
+			}
+			monitor.finishStep(getMonitorId(), "Query Splunk");
+
+			// report to monitor the file size
+			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
+
+			if (sortShellScript != null) {
+				// sort the output
+				monitor.startStep(getMonitorId(), "Sort Output", 3);
+				sortOutput();
+				monitor.finishStep(getMonitorId(), "Sort Output");
+			} else {
+				// rename output file once get from splunk finished
+				monitor.startStep(getMonitorId(), "Rename Output", 3);
+				renameOutput();
+				monitor.finishStep(getMonitorId(), "Rename Output");
+			}
+
+			if  (fetchIntervalInSeconds != -1 ) {
+				fetchConfiguration.setLastFetchTime(latest);
+				fetchConfigurationRepository.save(fetchConfiguration);
+				if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)){
+					keepFetching = false;
+				}
+			}
+
+		} while(keepFetching);
 
 		logger.info("fetch job finished");
 
@@ -149,11 +186,41 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		JobDataMap map = context.getMergedJobDataMap();
 
 		// get parameters values from the job data map
-		earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
-		latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
+		try {
+			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
+			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
+		}
+		catch (Exception e){
+			// do nothing - this two parameters are only used in manual run
+		}
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
+
+		//get query run times in the case not provided as job params
+		if(earliest == null || latest == null) {
+			String type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
+			//time back (default 1 hour)
+			fetchIntervalInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchIntervalInSeconds", 3600);
+			int ceilingTimePartInt = jobDataMapExtension.getJobDataMapIntValue(map, "ceilingTimePartInt", Calendar.HOUR);
+			int fetchDiffInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchDiffInSeconds", 0);
+			//set fetch until the ceiling of now (according to the given interval
+			latestDate = DateUtils.ceiling(new Date(), ceilingTimePartInt);
+			latestDate = DateUtils.addSeconds(latestDate,-1*fetchDiffInSeconds);
+			keepFetching = true;
+
+			fetchConfiguration = fetchConfigurationRepository.findByType(type);
+			if (fetchConfiguration != null) {
+				earliest = fetchConfiguration.getLastFetchTime();
+				earliestDate = new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));
+			}
+			else {
+				fetchConfiguration = new FetchConfiguration(type);
+				earliestDate = DateUtils.addSeconds(latestDate,-1*fetchIntervalInSeconds);
+			}
+
+
+		}
 
 		// Sort command for the splunk output. Can be null (no sort is required)
 		sortShellScript = jobDataMapExtension.getJobDataMapStringValue(map, "sortShellScript", null);
