@@ -25,7 +25,9 @@ public interface ComputerService extends CachingService{
 	 * in the system.
 	 */
 	String getClusterGroupNameForHostname(String hostname);
-	
+
+	String getDomainNameForHostname(String hostname);
+
 	/**
 	 * Run classification on all computers
 	 */

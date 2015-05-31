@@ -146,7 +146,7 @@ public class VpnEnrichService {
          * when <code>addSessionData</code> is false: if there is a close session event without an open event we drop this session
          * if true: we can create a session without the stat session event as we have all attributes in the close session event.
          */
-        Boolean isAddSessionData = convertToBoolean( vpnSessionUpdateConfig.getAddSessionDataFieldName());
+        Boolean isAddSessionData = convertToBoolean(vpnSessionUpdateConfig.getAddSessionDataFieldName());
         if(vpnSession.getClosedAt() != null && isAddSessionData){
             VpnSession vpnOpenSession = vpnService.findOpenVpnSession(vpnSession);
             if(vpnOpenSession == null){
@@ -238,6 +238,9 @@ public class VpnEnrichService {
         }
     }
 
+    public String getUsernameFieldName() {
+        return config.getUsernameFieldName();
+    }
 
     public String getOutputTopic() {
         return config.getOutputTopic();

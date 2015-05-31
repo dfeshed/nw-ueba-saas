@@ -1,7 +1,6 @@
 package fortscale.streaming.task.enrichment;
 
 import fortscale.services.CachingService;
-import fortscale.services.fe.Classifier;
 import fortscale.streaming.cache.LevelDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
@@ -24,12 +23,10 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToString;
@@ -86,9 +83,14 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
 			String dataSource = ConfigField.getKey();
 			String inputTopic = ConfigField.getValue();
-			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
+			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s", dataSource));
 			String usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s",dataSource));
-			String normalizedUsernameField =getConfigString(config, String.format("fortscale.events.normalizedusername.field.%s",dataSource));
+			String domainField = getConfigString(config, String.format("fortscale.events.domain.field.%s",
+					dataSource));
+			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events"
+							+ ".domain.fake.%s", dataSource)) : "";
+			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events"
+					+ ".normalizedusername.field.%s",dataSource));
 			String partitionKey = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
 			String serviceName = getConfigString(config, String.format("fortscale.events.normalization.service.%s",dataSource));
 			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.updateOnly.%s", dataSource));
@@ -97,7 +99,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
 			usernameService.setCache(usernameStore);
-			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic, usernameField, normalizedUsernameField, partitionKey, updateOnlyFlag, classifier, service));
+			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic,
+					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
+					classifier, service));
 		}
 
 		// add the usernameService to update input topics map
@@ -155,9 +159,18 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					throw new StreamMessageNotContainFieldException(messageText, configuration.getUsernameField());
 				}
 
+				// get domain
+				String domain;
+				//if domain field value is fake, then take the fake.domain field's value
+				if (configuration.getDomainField().equals("fake")) {
+					domain = configuration.getFakeDomain();
+				} else {
+					domain = convertToString(message.get(configuration.getDomainField()));
+				}
+
 				UsernameNormalizationService normalizationService = configuration.getUsernameNormalizationService();
 				// checks in memory-cache and mongo if the user exists
-				normalizedUsername = normalizationService.normalizeUsername(username);
+				normalizedUsername = normalizationService.normalizeUsername(username, domain, message, configuration);
 				// check if we should drop the record (user doesn't exist)
 				if (normalizationService.shouldDropRecord(username, normalizedUsername)) {
 					if (logger.isDebugEnabled()) {
@@ -165,12 +178,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					}
 					// drop record
 					return;
-				}
-				if (normalizedUsername == null) {
-					// normalization failed, but we keep the record and generate normalized
-					normalizedUsername = normalizationService.getUsernameAsNormalizedUsername(username, message);
-					//Updating/Creating the user in mongoDB if needed.
-					tagService.getUserService().updateOrCreateUserWithClassifierUsername(Classifier.valueOf(configuration.getClassifier()),normalizedUsername,normalizedUsername,configuration.getUpdateOnlyFlag(),true);
 				}
 				message.put(configuration.getNormalizedUsernameField(), normalizedUsername);
 

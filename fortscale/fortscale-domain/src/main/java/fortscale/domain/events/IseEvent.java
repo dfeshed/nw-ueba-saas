@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class IseEvent extends IpToHostname {
 
-	public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
+    public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
 
     // collection properties
     public static final String collectionName = "IseEvent";
@@ -34,7 +34,7 @@ public class IseEvent extends IpToHostname {
     private String macAddress;
 
 
-	@Field(IS_AD_HOSTNAME_FIELD_NAME)
+    @Field(IS_AD_HOSTNAME_FIELD_NAME)
     protected Boolean adHostName;
 
     @Override
@@ -42,12 +42,12 @@ public class IseEvent extends IpToHostname {
         return (adHostName==null)? false : adHostName;
     }
 
-	public Boolean getAdHostName() {
-		return adHostName;
-	}
+    public Boolean getAdHostName() {
+        return adHostName;
+    }
 
 
-	public void setAdHostName(boolean adHostName) {
+    public void setAdHostName(boolean adHostName) {
         this.adHostName = adHostName;
     }
 
@@ -67,7 +67,7 @@ public class IseEvent extends IpToHostname {
     public void setMacAddress(String macAddress) {
         this.macAddress = macAddress;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;

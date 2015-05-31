@@ -63,8 +63,9 @@ public class UserServiceAccountServiceTest {
 
 		// arrange
 		service.setFilePath(getFile("user3\nuser4"));
-		when(secUsernameNormalizer.normalize(anyString())).thenReturn(
-			"user3", "user4");
+		when(secUsernameNormalizer.normalize(eq(anyString()), eq(anyString()), null, null, eq(false))).thenReturn
+				("user3",
+				"user4");
 		when(userService.findIfUserExists(anyString())).thenReturn(
 			true);
 		service.setDeletionSymbol("-");
@@ -86,7 +87,7 @@ public class UserServiceAccountServiceTest {
 		throws Exception {
 
 		service.setFilePath(getFile("-user1\nuser4"));
-		when(secUsernameNormalizer.normalize(anyString())).thenReturn(
+		when(secUsernameNormalizer.normalize(eq(anyString()), eq(anyString()), null, null, eq(false))).thenReturn(
 			"user4", "user1");
 		when(userService.findIfUserExists(anyString())).thenReturn(
 			true);

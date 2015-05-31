@@ -13,17 +13,30 @@ public class VpnEnrichConfig {
     private String outputTopic;
     private String partitionField;
 
+    public String getUsernameFieldName() {
+        return usernameFieldName;
+    }
+
+    public void setUsernameFieldName(String usernameFieldName) {
+        this.usernameFieldName = usernameFieldName;
+    }
+
+    private String usernameFieldName;
+
     private VpnGeolocationConfig vpnGeolocationConfig;
     private VpnDataBucketsConfig vpnDataBucketsConfig;
     private VpnSessionUpdateConfig vpnSessionUpdateConfig;
 
-    public VpnEnrichConfig(String inputTopic, String outputTopic, String partitionField, VpnGeolocationConfig vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig, VpnSessionUpdateConfig vpnSessionUpdateConfig) {
+    public VpnEnrichConfig(String inputTopic, String outputTopic, String partitionField, VpnGeolocationConfig
+            vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig, VpnSessionUpdateConfig
+            vpnSessionUpdateConfig, String usernameFieldName) {
         this.inputTopic = inputTopic;
         this.outputTopic = outputTopic;
         this.partitionField = partitionField;
         this.vpnGeolocationConfig = vpnGeolocationConfig;
         this.vpnDataBucketsConfig = vpnDataBucketsConfig;
         this.vpnSessionUpdateConfig = vpnSessionUpdateConfig;
+        this.usernameFieldName = usernameFieldName;
     }
 
     public String getInputTopic() {

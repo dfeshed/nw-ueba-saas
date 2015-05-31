@@ -1,5 +1,6 @@
 package fortscale.streaming.service.usernameNormalization;
 
+import fortscale.services.UserService;
 import fortscale.services.impl.UsernameNormalizer;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
  * Date: 24/01/2015.
  */
 public class UsernameNormalizationService {
+
+	private UserService userService;
 
 	@Value("${normalizedUser.fail.filter:false}")
 	protected boolean dropOnFail;
@@ -20,12 +23,14 @@ public class UsernameNormalizationService {
 	 * @param username the original username
 	 * @return the normalized username (or null if failed to normalize)
 	 */
-	public String normalizeUsername(String username){
+	public String normalizeUsername(String username, String domain, JSONObject message, UsernameNormalizationConfig
+			configuration){
 		//if normalizedUsers.fail filter is set: function returns null if username normalization failed.
 		String ret = null;
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
-			ret = usernameNormalizer.normalize(username.toLowerCase());
+			ret = usernameNormalizer.normalize(username, domain, message, configuration.getClassifier(),
+					configuration.getUpdateOnlyFlag());
 		}
 
 		return ret;
@@ -47,7 +52,9 @@ public class UsernameNormalizationService {
 	 * @param message	the entire message
 	 * @return	the normalized username to use
 	 */
-	public String getUsernameAsNormalizedUsername(String username, JSONObject message){
+	public String getUsernameAsNormalizedUsername(String username, String domain, JSONObject message,
+			UsernameNormalizationConfig
+			configuration){
 		return username.toLowerCase();
 	}
 
@@ -68,4 +75,5 @@ public class UsernameNormalizationService {
 	public void setUsernameNormalizer(UsernameNormalizer usernameNormalizer) {
 		this.usernameNormalizer = usernameNormalizer;
 	}
+
 }
