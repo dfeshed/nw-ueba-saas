@@ -242,7 +242,6 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	public List<User> getUsersBysAMAccountName(String username){
-		//TODO - AMIR - caching?
 		return userRepository.findUsersBysAMAccountName(username);
 	}
 	
