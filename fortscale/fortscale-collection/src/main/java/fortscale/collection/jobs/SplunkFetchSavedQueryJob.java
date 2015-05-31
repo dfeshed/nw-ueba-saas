@@ -98,6 +98,7 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 
 		do {
 
+			// preparer fetch page params
 			if  (fetchIntervalInSeconds != -1 ) {
 				earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
 				Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
@@ -157,6 +158,7 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 				monitor.finishStep(getMonitorId(), "Rename Output");
 			}
 
+			// update mongo with current fetch progress
 			if  (fetchIntervalInSeconds != -1 ) {
 				fetchConfiguration.setLastFetchTime(latest);
 				fetchConfigurationRepository.save(fetchConfiguration);
@@ -164,7 +166,7 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 					keepFetching = false;
 				}
 			}
-
+//support in smaller batches fetch - to avoid too big fetches
 		} while(keepFetching);
 
 		logger.info("fetch job finished");
@@ -197,7 +199,7 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 
-		//get query run times in the case not provided as job params
+		//calculate query run times from mongo in the case not provided as job params
 		if(earliest == null || latest == null) {
 			String type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
 			//time back (default 1 hour)
