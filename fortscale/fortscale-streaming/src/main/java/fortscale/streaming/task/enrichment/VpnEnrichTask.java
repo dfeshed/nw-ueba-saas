@@ -38,13 +38,14 @@ public class VpnEnrichTask extends AbstractStreamTask {
 
     private static Logger logger = LoggerFactory.getLogger(VpnEnrichTask.class);
 
+	public void setUsernameFieldName(String usernameFieldName) {
+		this.usernameFieldName = usernameFieldName;
+	}
 
+	private String usernameFieldName;
 
 	// Map between (update) input topic name and relevant enrich service
 	protected static Map<String, VpnEnrichService> topicToServiceMap;
-
-    private String usernameFieldName;
-
 
 	public static void setTopicToServiceMap(Map<String, VpnEnrichService> topicToServiceMap) {
 		VpnEnrichTask.topicToServiceMap = topicToServiceMap;
@@ -83,7 +84,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
 				Boolean doGeoLocationh = config.getBoolean(String.format("fortscale.events.%s.doGeoLocationh", eventType));
 				Boolean doDataBuckets = config.getBoolean(String.format("fortscale.events.%s.doDataBuckets", eventType));
 				Boolean doSessionUpdate = config.getBoolean(String.format("fortscale.events.%s.doSessionUpdate", eventType));
-				usernameFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.username.field", eventType)));
+				usernameFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s" + ".username.field", eventType)));
 				String longtitudeFieldName = getConfigString(config, String.format("fortscale.events.%s.longtitude.field", eventType));
 				String latitudeFieldName = getConfigString(config, String.format("fortscale.events.%s.latitude.field", eventType));
 				String countryIsoCodeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.countryIsoCode.field", eventType)));
@@ -138,7 +139,8 @@ public class VpnEnrichTask extends AbstractStreamTask {
 
 				}
 
-				VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(inputTopic, outputTopic, partitionField, vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig);
+				VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(inputTopic, outputTopic, partitionField,
+						vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName);
 				VpnEnrichService vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
 
 				topicToServiceMap.put(inputTopic, vpnEnrichService);
@@ -161,7 +163,9 @@ public class VpnEnrichTask extends AbstractStreamTask {
 
         message = vpnEnrichService.processVpnEvent(message);
 
-        if(message.get(usernameFieldName) == null || message.get(usernameFieldName).equals("")){
+		String usernameField = vpnEnrichService.getUsernameFieldName();
+
+        if(message.get(usernameField) == null || message.get(usernameField).equals("")){
             logger.error("No username field in event {}. Dropping Record", messageText);
             return;
         }
@@ -173,11 +177,6 @@ public class VpnEnrichTask extends AbstractStreamTask {
         }
     }
 
-
-    public void setUsernameFieldName(String usernameFieldName) {
-        this.usernameFieldName = usernameFieldName;
-    }
-
     @Override
     protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
@@ -187,4 +186,5 @@ public class VpnEnrichTask extends AbstractStreamTask {
     protected void wrappedClose() throws Exception {
 
     }
+
 }
