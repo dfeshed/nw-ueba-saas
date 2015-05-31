@@ -39,6 +39,12 @@
 					<value>${impala.data.security.events.4769.table.partition.type}</value>
 				</entry>
 				<entry>
+
+					<key>impalaDestinationTablePartitionType</key>
+					<value>${impala.score.ldapauth.table.partition.type}</value>
+				</entry>
+				<entry>
+
 					<key>impalaDestinationTable</key>
 					<value>${impala.score.ldapauth.table.name}</value>
 				</entry>
@@ -54,9 +60,11 @@
 		<trigger>
 			<cron>
 				<name>sec_send_to_streaming_hourly_trigger</name>
+
 				<group>SecurityEvents</group>
 				<job-name>AuthScoring</job-name>
 				<job-group>SecurityEvents</job-group>
+
 				<cron-expression>0 15 * * * ?</cron-expression>
 			</cron>
 		</trigger>

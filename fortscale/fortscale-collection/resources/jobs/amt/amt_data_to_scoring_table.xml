@@ -35,8 +35,12 @@
                     <value>${impala.data.amt.table.fields}</value>
                 </entry>
                 <entry>
-                    <key>impalaTablePartitionType</key>
-                    <value>${impala.data.amt.table.partition.type}</value>
+					<key>impalaTablePartitionType</key>
+					<value>${impala.data.amt.table.partition.type}</value>
+				</entry>
+                <entry>
+                    <key>impalaDestinationTablePartitionType</key>
+                    <value>${impala.score.amt.table.partition.type}</value>
                 </entry>
                 <entry>
                     <key>impalaDestinationTable</key>
@@ -56,6 +60,7 @@
                 <name>amt_send_to_streaming_hourly_trigger</name>
                 <group>AMT</group>
                 <job-name>Scoring</job-name>
+
                 <job-group>AMT</job-group>
                 <cron-expression>0 0 * * * ?</cron-expression>
             </cron>
