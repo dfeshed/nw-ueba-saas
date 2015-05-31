@@ -120,7 +120,7 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 		public String getTimeZone(String type,String host) {
 
 
-            //in case that the host is null return the first time zone the config list have
+            //in case that the host is null return the default time zone
             if (host != null) {
                 for (TimezoneUnit tzUnit : regexpList) {
                     if (tzUnit.type.equals(type)) {
