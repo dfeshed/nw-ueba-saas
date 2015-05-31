@@ -21,31 +21,31 @@
 				</entry>
 				<entry>
 					<key>dataEntityDefaultFields</key>
-					<value>${collection.forward.vpn.session.default.fields}</value>
+					<value>${collection.forward.vpn_session.default.fields}</value>
 				</entry>
 				<entry>
 					<key>dataEntityScoreField</key>
-					<value>${collection.forward.vpn.session.score.field}</value>
+					<value>${collection.forward.vpn_session.score.field}</value>
 				</entry>
 				<entry>
 					<key>dataEntityDefaultMinimalScore</key>
-					<value>${collection.forward.vpn.session.default.minimal.score}</value>
+					<value>${collection.forward.vpn_session.default.minimal.score}</value>
 				</entry>
 				<entry>
 					<key>dataEntityTimestampField</key>
-					<value>${collection.forward.vpn.session.timestamp.field}</value>
+					<value>${collection.forward.vpn_session.timestamp.field}</value>
 				</entry>
 				<entry>
 					<key>dataEntityUpdateTimestampField</key>
-					<value>${collection.forward.vpn.session.update.timestamp.field}</value>
+					<value>${collection.forward.vpn_session.update.timestamp.field}</value>
 				</entry>
 				<entry>
 					<key>dataEntityDefaultStartUpdateTimestamp</key>
-					<value>${collection.forward.vpn.session.default.start.update.timestamp}</value>
+					<value>${collection.forward.vpn_session.default.start.update.timestamp}</value>
 				</entry>
 				<entry>
 					<key>dataEntityLimit</key>
-					<value>${collection.forward.vpn.session.limit}</value>
+					<value>${collection.forward.vpn_session.limit}</value>
 				</entry>
 			</job-data-map>
 		</job>
