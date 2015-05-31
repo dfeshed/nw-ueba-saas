@@ -69,7 +69,7 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 		if(sourceMachineDomain != null) {
 			ret = username + "@" + sourceMachineDomain;
 		}else{
-			//could not locate domain name for the source machine or more than one machine found - return the username
+			//could not locate domain name for the source machine or more than one machine found
 			ret = username + "@" + targetMachine;
 		}
 		//update or create user in mongo
