@@ -38,12 +38,6 @@ public class VpnEnrichTask extends AbstractStreamTask {
 
     private static Logger logger = LoggerFactory.getLogger(VpnEnrichTask.class);
 
-	public void setUsernameFieldName(String usernameFieldName) {
-		this.usernameFieldName = usernameFieldName;
-	}
-
-	private String usernameFieldName;
-
 	// Map between (update) input topic name and relevant enrich service
 	protected static Map<String, VpnEnrichService> topicToServiceMap;
 
@@ -84,7 +78,7 @@ public class VpnEnrichTask extends AbstractStreamTask {
 				Boolean doGeoLocationh = config.getBoolean(String.format("fortscale.events.%s.doGeoLocationh", eventType));
 				Boolean doDataBuckets = config.getBoolean(String.format("fortscale.events.%s.doDataBuckets", eventType));
 				Boolean doSessionUpdate = config.getBoolean(String.format("fortscale.events.%s.doSessionUpdate", eventType));
-				usernameFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s" + ".username.field", eventType)));
+				String usernameFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s" + ".username.field", eventType)));
 				String longtitudeFieldName = getConfigString(config, String.format("fortscale.events.%s.longtitude.field", eventType));
 				String latitudeFieldName = getConfigString(config, String.format("fortscale.events.%s.latitude.field", eventType));
 				String countryIsoCodeFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.countryIsoCode.field", eventType)));
@@ -163,9 +157,9 @@ public class VpnEnrichTask extends AbstractStreamTask {
 
         message = vpnEnrichService.processVpnEvent(message);
 
-		String usernameField = vpnEnrichService.getUsernameFieldName();
+		String usernameFieldName = vpnEnrichService.getUsernameFieldName();
 
-        if(message.get(usernameField) == null || message.get(usernameField).equals("")){
+        if(message.get(usernameFieldName) == null || message.get(usernameFieldName).equals("")){
             logger.error("No username field in event {}. Dropping Record", messageText);
             return;
         }
