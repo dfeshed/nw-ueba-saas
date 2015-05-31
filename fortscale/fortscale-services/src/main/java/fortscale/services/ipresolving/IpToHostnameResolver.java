@@ -200,7 +200,7 @@ public class IpToHostnameResolver {
 					//return the resolve only in the next cases with OR between them :
 						//1. the data source is not restricted to AD
 						//2. The data source is restricted to AD and also the resolving event is for AD machine
-					if (!restrictToADName || event.isAdHostName()) {
+					if (!restrictToADName || event.checkIsAdHostname()) {
 						return normalizeHostname;
 					}
 				}

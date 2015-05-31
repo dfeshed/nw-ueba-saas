@@ -221,7 +221,7 @@ public class EventForwardJob extends FortscaleJob {
 		} else if (value instanceof Date) {
 			strValue = sdf.format(value);
 		} else {
-			strValue = value.toString();
+			strValue = value.toString().replace("\"","'");
 		}
 		return "\"" + strValue + "\"";
 	}
