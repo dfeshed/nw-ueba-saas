@@ -36,14 +36,14 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 				if(usernameService.isUsernameExist(normalizedUsername)){
 					ret = normalizedUsername;
 					logger.debug("One user found - {}", ret);
-					break;
+					return ret;
 				}
 			}
 		}
 		//no user was found or no matching regular expressions were found (most likely user is without @domain.com) -
 		//return the user with the account_domain value
 		logger.debug("No users found, trying to match user with domain - {}", domain);
-		if(ret == null && usernameService.isUsernameExist(username + "@" + domain)){
+		if(usernameService.isUsernameExist(username + "@" + domain)){
 			ret = username + "@" + domain;
 			logger.debug("One user found - {}", ret);
 		}

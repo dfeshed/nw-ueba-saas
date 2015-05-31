@@ -29,17 +29,17 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 	}
 
 	@Override
-	public String normalize(String username, String domain, JSONObject message, String classifier, boolean
+	public String normalize(String username, String targetMachine, JSONObject message, String classifier, boolean
 			updateOnly) {
 		username = username.toLowerCase();
-		domain = domain.toLowerCase();
+		targetMachine = targetMachine.toLowerCase();
 		String ret;
 		logger.debug("Normalizing user - {}", username);
 		//get the list of users matching the samaccountname
 		List<User> users = usernameService.getUsersBysAMAccountName(username);
 		//if no users were found - return the username with the fake suffix (target machine)
 		if(users.size() == 0){
-			ret = username + "@" + domain;
+			ret = username + "@" + targetMachine;
 			//update or create user in mongo
 			userService.updateOrCreateUserWithClassifierUsername(Classifier.valueOf(classifier), ret, ret, updateOnly,
 					true);
@@ -52,25 +52,25 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 			//if more than one user was found - return the post normalization that will include the source machine
 			//domain as the user domain
 			logger.debug("More than one user found");
-			ret = postNormalize(username, convertToString(message.get(sourceMachineField)), domain, classifier,
+			ret = postNormalize(username, convertToString(message.get(sourceMachineField)), targetMachine, classifier,
 					updateOnly);
 		}
 		return ret;
 	}
 
 	@Override
-	public String postNormalize(String username, String suffix, String domain, String classifier, boolean
+	public String postNormalize(String username, String sourceMachine, String targetMachine, String classifier, boolean
 			updateOnly) {
 		String ret;
-		logger.debug("Normalizing according to source machine - {}", suffix);
-		String sourceMachineDomain = computerService.getDomainNameForHostname(suffix);
+		logger.debug("Normalizing according to source machine - {}", sourceMachine);
+		String sourceMachineDomain = computerService.getDomainNameForHostname(sourceMachine);
 		logger.debug("Domain of source machine found - {}", sourceMachineDomain);
 		//if a domain name was found for the source machine (only one machine found) - return the username with it
 		if(sourceMachineDomain != null) {
 			ret = username + "@" + sourceMachineDomain;
 		}else{
 			//could not locate domain name for the source machine or more than one machine found - return the username
-			ret = username + "@" + suffix;
+			ret = username + "@" + targetMachine;
 		}
 		//update or create user in mongo
 		userService.updateOrCreateUserWithClassifierUsername(Classifier.valueOf(classifier), ret, ret, updateOnly,

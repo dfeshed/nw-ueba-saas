@@ -34,10 +34,10 @@ public class UsernameNormalizer implements InitializingBean{
 	}
 
 	//this is the normalizer for vpn and amt events
-	public String normalize(String username, String domain, JSONObject message, String classifier,
+	public String normalize(String username, String fakeDomain, JSONObject message, String classifier,
 			boolean updateOnly) {
 		username = username.toLowerCase();
-		domain = domain.toLowerCase();
+		fakeDomain = fakeDomain.toLowerCase();
 		String ret;
 		logger.debug("Normalizing user - {}", username);
 		//get the list of users matching the samaccountname
@@ -48,8 +48,8 @@ public class UsernameNormalizer implements InitializingBean{
 			logger.debug("One user found - {}", ret);
 		}
 		else {
-			logger.debug("No users found");
-			ret = postNormalize(username, domain, domain, classifier, updateOnly);
+			logger.debug("No users found or more than one found");
+			ret = postNormalize(username, fakeDomain, fakeDomain, classifier, updateOnly);
 		}
 		return ret;
 	}
