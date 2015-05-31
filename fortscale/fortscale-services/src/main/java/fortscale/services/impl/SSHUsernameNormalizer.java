@@ -52,23 +52,25 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 			//if more than one user was found - return the post normalization that will include the source machine
 			//domain as the user domain
 			logger.debug("More than one user found");
-			ret = postNormalize(username, convertToString(message.get(sourceMachineField)), classifier, updateOnly);
+			ret = postNormalize(username, convertToString(message.get(sourceMachineField)), domain, classifier,
+					updateOnly);
 		}
 		return ret;
 	}
 
 	@Override
-	public String postNormalize(String username, String sourceMachine, String classifier, boolean updateOnly) {
+	public String postNormalize(String username, String suffix, String domain, String classifier, boolean
+			updateOnly) {
 		String ret;
-		logger.debug("Normalizing according to source machine - {}", sourceMachine);
-		String domain = computerService.getDomainNameForHostname(sourceMachine);
-		logger.debug("Domain of source machine found - {}", domain);
-		//if a domain name was found for the source machine - return the username with it
-		if(domain != null) {
-			ret = username + "@" + domain;
+		logger.debug("Normalizing according to source machine - {}", suffix);
+		String sourceMachineDomain = computerService.getDomainNameForHostname(suffix);
+		logger.debug("Domain of source machine found - {}", sourceMachineDomain);
+		//if a domain name was found for the source machine (only one machine found) - return the username with it
+		if(sourceMachineDomain != null) {
+			ret = username + "@" + sourceMachineDomain;
 		}else{
-			//could not locate domain name for the source machine - only return the username
-			ret = username.toLowerCase();
+			//could not locate domain name for the source machine or more than one machine found - return the username
+			ret = username + "@" + suffix;
 		}
 		//update or create user in mongo
 		userService.updateOrCreateUserWithClassifierUsername(Classifier.valueOf(classifier), ret, ret, updateOnly,

@@ -1,10 +1,8 @@
 package fortscale.streaming.service.usernameNormalization;
 
-import fortscale.services.impl.UsernameNormalizer;
-import net.minidev.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-
+import net.minidev.json.JSONObject;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -25,7 +23,8 @@ public class SshUsernameNormalizationServiceTest {
 		String targetMachine = "TARGET_MACHINE";
 		JSONObject message = mock(JSONObject.class);
 		when(message.get(anyString())).thenReturn(targetMachine);
-		assertEquals(userName.toLowerCase(), sshUsernameNormalizationService.getUsernameAsNormalizedUsername(userName,message, null));
+		assertEquals(userName.toLowerCase(), sshUsernameNormalizationService.getUsernameAsNormalizedUsername
+				(userName,targetMachine,message, null));
 	}
 
 	@Test public void shouldDropRecord_should_return_false_for_not_null_normalizedUsername() throws Exception {

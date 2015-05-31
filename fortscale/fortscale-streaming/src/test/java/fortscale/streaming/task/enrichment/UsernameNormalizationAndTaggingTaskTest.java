@@ -125,8 +125,8 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate normalization for username
 		//Mockito.verify(usernameNormalizationService).normalizeUsername("user1", "domain", message);
-		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(eq("user1"),eq(any
-				(JSONObject.class)), null);
+		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(eq("user1"),eq
+				("domain"),eq(any(JSONObject.class)), null);
 		// validate tagging
 		message.put(normalizedUsernameField, "User 1");
 		//Mockito.verify(task.tagService).addTagsToEvent("User 1", message);
@@ -143,8 +143,8 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate normalization for username
 		//Mockito.verify(usernameNormalizationService).normalizeUsername("user3", "domain", message, null, false);
-		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(eq("user3"),eq(any
-				(JSONObject.class)), null);
+		Mockito.verify(usernameNormalizationService, never()).getUsernameAsNormalizedUsername(eq("user3"),eq
+				("domain"),eq(any(JSONObject.class)), null);
 		// validate tagging
 		Mockito.verify(task.tagService, never()).addTagsToEvent(anyString(), eq(message));
 
@@ -154,7 +154,8 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.when(usernameNormalizationService.normalizeUsername("user4", "domain", message, null)).thenReturn(null);
 		Mockito.when(usernameNormalizationService.shouldDropRecord("user4", null)).thenReturn(false);
 		message = (JSONObject) JSONValue.parseWithException(MESSAGE_4);
-		Mockito.when(usernameNormalizationService.getUsernameAsNormalizedUsername("user4", message, null)).thenReturn("User 4");
+		Mockito.when(usernameNormalizationService.getUsernameAsNormalizedUsername("user4", "domain", message, null))
+				.thenReturn("User 4");
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_4, "input1");
 		// run the process on the envelope

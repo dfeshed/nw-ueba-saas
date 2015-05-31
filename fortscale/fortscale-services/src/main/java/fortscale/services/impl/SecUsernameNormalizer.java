@@ -1,6 +1,5 @@
 package fortscale.services.impl;
 
-import fortscale.services.fe.Classifier;
 import fortscale.utils.ConfigurationUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;

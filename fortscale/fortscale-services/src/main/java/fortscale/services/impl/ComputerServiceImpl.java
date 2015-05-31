@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -195,7 +196,12 @@ public class ComputerServiceImpl implements ComputerService {
 	public String getDomainNameForHostname(String hostname) {
 		if (StringUtils.isEmpty(hostname))
 			return null;
-		Computer computer = getComputerFromCache(hostname);
+		List<String> hostNames = new ArrayList();
+		hostNames.add(hostname);
+		List<Computer> computers = repository.getComputersFromNames(hostNames);
+		if (computers == null || computers.isEmpty() || computers.size() > 1)
+			return null;
+		Computer computer = computers.get(0);
 		if (computer == null || computer.getDomain() == null || computer.getDomain().isEmpty())
 			return null;
 		return computer.getDomain();

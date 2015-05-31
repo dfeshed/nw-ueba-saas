@@ -50,16 +50,17 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 	}
 
 	@Override
-	public String getUsernameAsNormalizedUsername(String username, JSONObject message, UsernameNormalizationConfig
+	public String getUsernameAsNormalizedUsername(String username, String domain, JSONObject message,
+			UsernameNormalizationConfig
 			configuration) {
 
 		if (usernameNormalizer == null) {
-			return super.getUsernameAsNormalizedUsername(username, message, configuration);
+			return super.getUsernameAsNormalizedUsername(username, domain, message, configuration);
 		}
 
 		// concat the target machine name to the username: user@target
 		String sourceMachine = convertToString(message.get(sourceMachineField));
-		return usernameNormalizer.postNormalize(username, sourceMachine, configuration.getClassifier(),
+		return usernameNormalizer.postNormalize(username, sourceMachine, domain, configuration.getClassifier(),
 				configuration.getUpdateOnlyFlag());
 
 	}

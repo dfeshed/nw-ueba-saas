@@ -52,7 +52,8 @@ public class UsernameNormalizationService {
 	 * @param message	the entire message
 	 * @return	the normalized username to use
 	 */
-	public String getUsernameAsNormalizedUsername(String username, JSONObject message, UsernameNormalizationConfig
+	public String getUsernameAsNormalizedUsername(String username, String domain, JSONObject message,
+			UsernameNormalizationConfig
 			configuration){
 		return username.toLowerCase();
 	}

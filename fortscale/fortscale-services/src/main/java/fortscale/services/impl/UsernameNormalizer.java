@@ -49,13 +49,13 @@ public class UsernameNormalizer implements InitializingBean{
 		}
 		else {
 			logger.debug("No users found");
-			ret = postNormalize(username, domain, classifier, updateOnly);
+			ret = postNormalize(username, domain, domain, classifier, updateOnly);
 		}
 		return ret;
 	}
 
-	public String postNormalize(String username, String domain, String classifier, boolean updateOnly) {
-		String ret = username + "@" + domain;
+	public String postNormalize(String username, String suffix, String domain, String classifier, boolean updateOnly) {
+		String ret = username + "@" + suffix;
 		//update or create user in mongo
 		userService.updateOrCreateUserWithClassifierUsername(Classifier.valueOf(classifier), ret, ret, updateOnly,
 				true);
