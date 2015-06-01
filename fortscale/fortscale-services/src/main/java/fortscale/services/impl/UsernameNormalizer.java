@@ -1,16 +1,21 @@
 package fortscale.services.impl;
 
-import org.apache.commons.lang.StringUtils;
+import fortscale.domain.core.User;
+import fortscale.services.UserService;
+import fortscale.services.fe.Classifier;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.InitializingBean;
+import parquet.org.slf4j.Logger;
+import parquet.org.slf4j.LoggerFactory;
 
-import fortscale.utils.ConfigurationUtils;
+import java.util.List;
 
 public class UsernameNormalizer implements InitializingBean{
 
-	private String matchersString;
-	private RegexMatcher regexMatcher;
-	
-	private UsernameService usernameService;
+	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
+
+	protected UsernameService usernameService;
+	protected UserService userService;
 
 	public UsernameService getUsernameService() {
 		return usernameService;
@@ -20,46 +25,45 @@ public class UsernameNormalizer implements InitializingBean{
 		this.usernameService = usernameService;
 	}
 
-	public void setMatchersString(String matchersString) {
-		this.matchersString = matchersString;
+	public UserService getUserService() {
+		return userService;
 	}
-	
-	public String normalize(String username){
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	//this is the normalizer for vpn and amt events
+	public String normalize(String username, String fakeDomain, JSONObject message, String classifier,
+			boolean updateOnly) {
 		username = username.toLowerCase();
-		String ret = null;
-		if(regexMatcher != null){
-			for(String normalizedUsername: regexMatcher.match(username)){
-				if(usernameService.isUsernameExist(normalizedUsername)){
-					ret = normalizedUsername;
-					break;
-				}
-			}
+		fakeDomain = fakeDomain.toLowerCase();
+		String ret;
+		logger.debug("Normalizing user - {}", username);
+		//get the list of users matching the samaccountname
+		List<User> users = usernameService.getUsersBysAMAccountName(username);
+		//if only one such user was found - return the full username (including domain)
+		if(users.size() == 1) {
+			ret = users.get(0).getUsername();
+			logger.debug("One user found - {}", ret);
 		}
-		
+		else {
+			logger.debug("No users found or more than one found");
+			ret = postNormalize(username, fakeDomain, fakeDomain, classifier, updateOnly);
+		}
+		return ret;
+	}
+
+	public String postNormalize(String username, String suffix, String domain, String classifier, boolean updateOnly) {
+		String ret = username + "@" + suffix;
+		//update or create user in mongo
+		userService.updateOrCreateUserWithClassifierUsername(Classifier.valueOf(classifier), ret, ret, updateOnly,
+				true);
+		logger.debug("Saved normalized user - {}", ret);
 		return ret;
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		if(!StringUtils.isEmpty(matchersString)){
-			String[][] matchersArray = ConfigurationUtils.getStringArrays(matchersString); 
-			regexMatcher = new RegexMatcher(matchersArray);
-		}
-	}
-	
-	public static void main(String args[]) throws Exception{
-		UsernameNormalizer usernameNormalizer = new UsernameNormalizer();
-		String matchersString = "([\\S]+)@([^ \\t\\n\\x0B\\f\\r\\.]+)\\.([^ \\t\\n\\x0B\\f\\r\\.]+)# # #$1@$2.$3#####" +
-				"([^ \\t\\n\\x0B\\f\\r\\@]+)# # #$1@fortscale.com#####" +
-				"([\\S]+)@[^ \\t\\n\\x0B\\f\\r]+\\.([^ \\t\\n\\x0B\\f\\r\\.]+)\\.([^ \\t\\n\\x0B\\f\\r\\.]+)# # #$1@$2.$3";
-		usernameNormalizer.setMatchersString(matchersString);
-		usernameNormalizer.afterPropertiesSet();
-		
-		String strs[] = {"yarondl@corp.test.fortscale.com", "yarondl@fortscale.com", "yarondl", "yaron.delevie", "yarondl@com"};
-		for(String s: strs){
-			String s1 = usernameNormalizer.normalize(s);
-			System.out.println(s1);
-		}
-		
-	}
+	public void afterPropertiesSet() throws Exception {}
+
 }

@@ -10,6 +10,8 @@ public class UsernameNormalizationConfig {
 	private String inputTopic;
 	private String outputTopic;
 	private String usernameField;
+	private String domainField;
+	private String fakeDomain;
 	private String normalizedUsernameField;
 	private String partitionField;
 	private Boolean updateOnlyFlag;
@@ -17,11 +19,15 @@ public class UsernameNormalizationConfig {
 	private UsernameNormalizationService usernameNormalizationService;
 
 
-	public UsernameNormalizationConfig(String inputTopic, String outputTopic, String usernameField, String normalizedUsernameField, String partitionField, Boolean updateOnlyFlag, String classifier,
+	public UsernameNormalizationConfig(String inputTopic, String outputTopic, String usernameField, String
+			domainField, String fakeDomain, String normalizedUsernameField, String partitionField, Boolean
+			updateOnlyFlag, String classifier,
 			UsernameNormalizationService usernameNormalizationService) {
 		this.inputTopic = inputTopic;
 		this.outputTopic = outputTopic;
 		this.usernameField = usernameField;
+		this.domainField = domainField;
+		this.fakeDomain = fakeDomain;
 		this.normalizedUsernameField = normalizedUsernameField;
 		this.partitionField = partitionField;
 		this.updateOnlyFlag = updateOnlyFlag;
@@ -51,6 +57,22 @@ public class UsernameNormalizationConfig {
 
 	public void setUsernameField(String usernameField) {
 		this.usernameField = usernameField;
+	}
+
+	public String getDomainField() {
+		return domainField;
+	}
+
+	public void setDomainField(String domainField) {
+		this.domainField = domainField;
+	}
+
+	public String getFakeDomain() {
+		return fakeDomain;
+	}
+
+	public void setFakeDomain(String fakeDomain) {
+		this.fakeDomain = fakeDomain;
 	}
 
 	public String getNormalizedUsernameField() {

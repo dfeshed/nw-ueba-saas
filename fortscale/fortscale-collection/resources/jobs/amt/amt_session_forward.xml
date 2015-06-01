@@ -21,31 +21,31 @@
 				</entry>
 				<entry>
 					<key>dataEntityDefaultFields</key>
-					<value>${collection.forward.amt.session.default.fields}</value>
+					<value>${collection.forward.amt_session.default.fields}</value>
 				</entry>
 				<entry>
 					<key>dataEntityScoreField</key>
-					<value>${collection.forward.amt.session.score.field}</value>
+					<value>${collection.forward.amt_session.score.field}</value>
 				</entry>
 				<entry>
 					<key>dataEntityDefaultMinimalScore</key>
-					<value>${collection.forward.amt.session.default.minimal.score}</value>
+					<value>${collection.forward.amt_session.default.minimal.score}</value>
 				</entry>
 				<entry>
 					<key>dataEntityTimestampField</key>
-					<value>${collection.forward.amt.session.timestamp.field}</value>
+					<value>${collection.forward.amt_session.timestamp.field}</value>
 				</entry>
 				<entry>
 					<key>dataEntityUpdateTimestampField</key>
-					<value>${collection.forward.amt.session.update.timestamp.field}</value>
+					<value>${collection.forward.amt_session.update.timestamp.field}</value>
 				</entry>
 				<entry>
 					<key>dataEntityDefaultStartUpdateTimestamp</key>
-					<value>${collection.forward.amt.session.default.start.update.timestamp}</value>
+					<value>${collection.forward.amt_session.default.start.update.timestamp}</value>
 				</entry>
 				<entry>
 					<key>dataEntityLimit</key>
-					<value>${collection.forward.amt.session.limit}</value>
+					<value>${collection.forward.amt_session.limit}</value>
 				</entry>
 			</job-data-map>
 		</job>
