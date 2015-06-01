@@ -30,8 +30,10 @@ public class AdObject extends AbstractDocument{
 	@Indexed()
 	@Field(timestampepochField)
 	private Long timestampepoch;
-	
-	@Indexed(unique = false, expireAfterSeconds=60*60*24)
+
+
+    //The ttl for each document is 48 hours
+	@Indexed(unique = false, expireAfterSeconds=60*60*48)
 	@Field(lastModifiedField)
 	private Date lastModified;
 	
