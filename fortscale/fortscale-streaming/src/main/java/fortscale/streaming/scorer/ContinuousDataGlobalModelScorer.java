@@ -3,6 +3,7 @@ package fortscale.streaming.scorer;
 import fortscale.ml.model.prevalance.FieldModel;
 import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.service.ModelService;
+import fortscale.streaming.service.GlobalModelStreamTaskService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.springframework.util.Assert;
@@ -14,8 +15,6 @@ public class ContinuousDataGlobalModelScorer extends AbstractScorer {
 	private Scorer continuousDataLocalModelScorer;
 	private ModelService modelService;
 
-	private String globalModelName;
-	private String globalContextConstant;
 	private String popQuantilesFieldModelName;
 	private String medQuantilesFieldModelName;
 
@@ -41,15 +40,8 @@ public class ContinuousDataGlobalModelScorer extends AbstractScorer {
 		Assert.notNull(modelService, "Could not resolve model service");
 
 		// Extract model names
-		globalModelName = config.get(String.format("fortscale.score.%s.global.model.name", scorerName), null);
-		Assert.isTrue(StringUtils.isNotBlank(globalModelName), "Missing valid global model name");
-
-		globalContextConstant = config.get(String.format("fortscale.model.%s.context.constant", globalModelName), null);
-		Assert.isTrue(StringUtils.isNotBlank(globalContextConstant), "Missing global context constant");
-
 		popQuantilesFieldModelName = config.get(String.format("fortscale.score.%s.population.quantiles.field.model.name", scorerName), null);
 		Assert.isTrue(StringUtils.isNotBlank(popQuantilesFieldModelName), "Missing valid population quantiles field model name");
-
 		medQuantilesFieldModelName = config.get(String.format("fortscale.score.%s.medians.quantiles.field.model.name", scorerName), null);
 		Assert.isTrue(StringUtils.isNotBlank(medQuantilesFieldModelName), "Missing valid medians quantiles field model name");
 
@@ -69,7 +61,9 @@ public class ContinuousDataGlobalModelScorer extends AbstractScorer {
 		Double oldScore = oldFeatureScore.getScore();
 
 		// Get global prevalence model
-		PrevalanceModel globalModel = modelService.getModel(globalContextConstant, globalModelName);
+		PrevalanceModel globalModel = modelService.getModel(
+			GlobalModelStreamTaskService.GLOBAL_CONTEXT_CONSTANT,
+			GlobalModelStreamTaskService.GLOBAL_MODEL_NAME);
 
 		// Calculate scoring factors
 		double qEvent = qEvent(oldScore, globalModel);

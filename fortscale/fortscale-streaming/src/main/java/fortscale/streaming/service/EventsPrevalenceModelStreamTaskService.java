@@ -33,7 +33,6 @@ import static fortscale.utils.ConversionUtils.convertToString;
 
 public class EventsPrevalenceModelStreamTaskService {
 	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTaskService.class);
-	private static final String GLOBAL_MODEL_NAME = "global";
 
 	private Map<String,PrevalanceModelStreamingService> prevalanceModelStreamingServiceMap;
 	private Map<String,List<String>> modelToContextFieldNameMap;
@@ -93,9 +92,15 @@ public class EventsPrevalenceModelStreamTaskService {
 			prevalanceModelStreamingServiceMap.put(modelName, prevalanceModelStreamingService);
 		}
 
-		// Create streaming service for global model
-		globalModelStreamTaskService = config.getBoolean("fortscale.global.model.exists", false) ?
-			new GlobalModelStreamTaskService(config, GLOBAL_MODEL_NAME, prevalanceModelStreamingServiceMap, store) : null;
+		// Create stream task service for global model
+		if (config.containsKey("fortscale.model.global.field.model.names")) {
+			globalModelStreamTaskService = new GlobalModelStreamTaskService(config, store);
+			prevalanceModelStreamingServiceMap.put(
+				GlobalModelStreamTaskService.GLOBAL_MODEL_NAME,
+				globalModelStreamTaskService.getGlobalModelStreamingService());
+		} else {
+			globalModelStreamTaskService = null;
+		}
 	}
 	
 	private PrevalanceModelBuilderImpl createModelBuilder(String modelName, Config config) throws Exception {
@@ -200,7 +205,7 @@ public class EventsPrevalenceModelStreamTaskService {
 	private void exportModels() {
 		if (prevalanceModelStreamingServiceMap != null) {
 			for (String modelName : prevalanceModelStreamingServiceMap.keySet()) {
-				if (!modelName.equals(GLOBAL_MODEL_NAME)) {
+				if (!modelName.equals(GlobalModelStreamTaskService.GLOBAL_MODEL_NAME)) {
 					prevalanceModelStreamingServiceMap.get(modelName).exportModels();
 				}
 			}

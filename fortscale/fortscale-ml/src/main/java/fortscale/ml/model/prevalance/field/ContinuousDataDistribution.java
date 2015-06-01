@@ -8,13 +8,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ContinuousDataDistribution implements FieldModel {
-	private static final int DEFAULT_MAX_DISTINCT_VALUES = 1000;
-	private static final double DEFAULT_INITIAL_BUCKET_SIZE = 0.01;
+	private static final int DEFAULT_MIN_DISTINCT_VALUES = 100;
+	private static final int DEFAULT_MAX_DISTINCT_VALUES = 10000;
+	private static final double DEFAULT_MIN_BUCKET_SIZE = 0.01;
 	private static final double DEFAULT_MAX_BUCKET_SIZE = 1.0;
 
 	private double bucketSize;
+	private int minDistinctValues;
 	private int maxDistinctValues;
-	private double initialBucketSize;
+	private double minBucketSize;
 	private double maxBucketSize;
 
 	private Map<Double, Long> distribution;
@@ -24,10 +26,12 @@ public class ContinuousDataDistribution implements FieldModel {
 	@Override
 	public void init(String prefix, String fieldName, Config config) {
 		bucketSize = 0;
-		String configKey = String.format("%s.%s.continuous.data.distribution.max.distinct.values", prefix, fieldName);
+		String configKey = String.format("%s.%s.continuous.data.distribution.min.distinct.values", prefix, fieldName);
+		minDistinctValues = config.getInt(configKey, DEFAULT_MIN_DISTINCT_VALUES);
+		configKey = String.format("%s.%s.continuous.data.distribution.max.distinct.values", prefix, fieldName);
 		maxDistinctValues = config.getInt(configKey, DEFAULT_MAX_DISTINCT_VALUES);
-		configKey = String.format("%s.%s.continuous.data.distribution.initial.bucket.size", prefix, fieldName);
-		initialBucketSize = config.getDouble(configKey, DEFAULT_INITIAL_BUCKET_SIZE);
+		configKey = String.format("%s.%s.continuous.data.distribution.min.bucket.size", prefix, fieldName);
+		minBucketSize = config.getDouble(configKey, DEFAULT_MIN_BUCKET_SIZE);
 		configKey = String.format("%s.%s.continuous.data.distribution.max.bucket.size", prefix, fieldName);
 		maxBucketSize = config.getDouble(configKey, DEFAULT_MAX_BUCKET_SIZE);
 
@@ -70,8 +74,8 @@ public class ContinuousDataDistribution implements FieldModel {
 	}
 
 	private void updateDistribution() {
-		while (distribution.size() > maxDistinctValues && bucketSize < maxBucketSize) {
-			bucketSize = bucketSize > 0 ? bucketSize * 2 : initialBucketSize;
+		while ((distribution.size() > minDistinctValues && bucketSize < maxBucketSize) || distribution.size() > maxDistinctValues) {
+			bucketSize = bucketSize > 0 ? bucketSize * 2 : minBucketSize;
 			Map<Double, Long> newDistribution = new HashMap<>();
 
 			for (Map.Entry<Double, Long> entry : distribution.entrySet()) {

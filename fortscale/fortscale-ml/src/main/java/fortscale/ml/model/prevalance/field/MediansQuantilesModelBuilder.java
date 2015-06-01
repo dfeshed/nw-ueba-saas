@@ -1,30 +1,24 @@
 package fortscale.ml.model.prevalance.field;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class MediansQuantilesModelBuilder extends PopulationQuantilesModelBuilder {
 	@Override
 	protected void feedBuilder(ContinuousDataDistribution localDistribution) {
-		Map<Double, Long> dist = localDistribution.getDistribution();
-		Long count = localDistribution.getTotalCount();
-
-		// Get sorted list of keys
-		List<Double> sortedValues = new ArrayList<>(dist.keySet());
-		Collections.sort(sortedValues);
+		// Get sorted list of entries
+		List<Map.Entry<Double, Long>> sortedEntries = getSortedEntries(localDistribution.getDistribution());
 
 		// Calculate index of median value
-		double medianIndex = 0.5d * count;
+		double medianIndex = 0.5d * localDistribution.getTotalCount();
 
-		/* Iterate the list of keys and increment the running
-		 * index accordingly until the median is found */
-		long upperIndex = 0;
-		for (Double value : sortedValues) {
-			upperIndex += dist.get(value);
-			if (medianIndex <= upperIndex) {
-				addValue(value, 1L);
+		/* Iterate the list of entries and increment the running
+		 * index according to the counts until the median is found */
+		long currentIndex = 0;
+		for (Map.Entry<Double, Long> entry : sortedEntries) {
+			currentIndex += entry.getValue();
+			if (medianIndex <= currentIndex) {
+				addValue(entry.getKey(), 1L);
 				return;
 			}
 		}

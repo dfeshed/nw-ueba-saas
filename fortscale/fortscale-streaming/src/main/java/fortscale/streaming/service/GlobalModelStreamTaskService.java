@@ -9,7 +9,6 @@ import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,33 +19,25 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
 
 public class GlobalModelStreamTaskService {
+	public static final String GLOBAL_MODEL_NAME = "globalModelName";
+	public static final String GLOBAL_CONTEXT_CONSTANT = "globalContextConstant";
+
 	private static final Logger logger = LoggerFactory.getLogger(GlobalModelStreamTaskService.class);
 	private static final Long DEFAULT_SECONDS_BETWEEN_UPDATES = 24L * 60 * 60; // one day
 
-	ModelService modelService = new ModelServiceImpl();
-
 	private Config config;
-	private String globalModelName;
-	private String contextConstant;
 	private List<FieldModelProperties> fieldModels;
 	private KeyValueStore<String, PrevalanceModel> store;
+	private ModelService modelService = new ModelServiceImpl();
+	private Long minNextUpdateTimestamp = 0L;
 
-	public GlobalModelStreamTaskService(
-			Config config, String globalModelName,
-			Map<String, PrevalanceModelStreamingService> map,
-			KeyValueStore<String, PrevalanceModel> store) {
-
+	public GlobalModelStreamTaskService(Config config, KeyValueStore<String, PrevalanceModel> store) {
 		this.config = config;
-		this.globalModelName = globalModelName;
 		this.fieldModels = new ArrayList<>();
 		this.store = store;
 
-		// Get dummy context constant
-		contextConstant = config.get(String.format("fortscale.model.%s.context.constant", globalModelName), null);
-		Assert.isTrue(StringUtils.isNotBlank(contextConstant), "Missing global context constant");
-
 		// Parse global model configuration
-		Config subset = config.subset(String.format("fortscale.model.%s.field.model.", globalModelName));
+		Config subset = config.subset("fortscale.model.global.field.model.");
 		for (String fieldModelName : getConfigStringList(subset, "names")) {
 			String builderClassName = getConfigString(subset, String.format("%s.builder", fieldModelName));
 			Long secondsBetweenUpdates = subset.getLong(String.format("%s.seconds.between.updates", fieldModelName), DEFAULT_SECONDS_BETWEEN_UPDATES);
@@ -55,20 +46,28 @@ public class GlobalModelStreamTaskService {
 			if (StringUtils.isNotBlank(builderClassName))
 				fieldModels.add(new FieldModelProperties(fieldModelName, builderClassName, secondsBetweenUpdates));
 		}
+	}
 
-		PrevalanceModelBuilder builder = PrevalanceModelBuilderImpl.createModel(globalModelName, config, null);
-		PrevalanceModelStreamingService service = new PrevalanceModelStreamingService(store, builder, 0);
-		map.put(globalModelName, service);
+	/**
+	 * Returns the streaming service for the global prevalence model.
+	 * Since the global model scorer needs access to the global model,
+	 * and this can only be done using a Model Service that holds a service for each prevalence model,
+	 * the global prevalence model must have a service of its own as well.
+	 */
+	public PrevalanceModelStreamingService getGlobalModelStreamingService() {
+		PrevalanceModelBuilder builder = PrevalanceModelBuilderImpl.createModel(GLOBAL_MODEL_NAME, config, null);
+		return new PrevalanceModelStreamingService(store, builder, 0);
 	}
 
 	/**
 	 * Updates the global prevalence model in the store.
 	 */
 	public void updateGlobalModel(Long timestamp) {
+		if (timestamp < minNextUpdateTimestamp)
+			return;
+
 		// Get builders of field models that need to be updated
 		Map<String, FieldModelBuilder> builders = createBuilders(timestamp);
-		if (builders.isEmpty())
-			return;
 
 		// Iterate all prevalence models across all contexts and feed builders
 		KeyValueIterator<String, PrevalanceModel> iterator = store.all();
@@ -80,20 +79,20 @@ public class GlobalModelStreamTaskService {
 		iterator.close();
 
 		// Get global prevalence model from store/mongo or create a new one
-		PrevalanceModel globalModel = store.get(globalModelName + contextConstant);
+		String modelContextConcat = String.format("%s%s", GLOBAL_MODEL_NAME, GLOBAL_CONTEXT_CONSTANT);
+		PrevalanceModel globalModel = store.get(modelContextConcat);
 
 		if (globalModel == null) {
 			try {
-				globalModel = modelService.getModel(contextConstant, globalModelName);
+				globalModel = modelService.getModel(GLOBAL_CONTEXT_CONSTANT, GLOBAL_MODEL_NAME);
 			} catch (Exception e) {
-				String error = String.format("Exception while trying to get model %s from mongo DB (context is %s)", globalModelName, contextConstant);
-				logger.warn(error, e);
+				logger.warn("Exception while trying to get global model from mongo DB", e);
 				globalModel = null;
 			}
 		}
 
 		if (globalModel == null) {
-			globalModel = new PrevalanceModel(globalModelName);
+			globalModel = new PrevalanceModel(GLOBAL_MODEL_NAME);
 		}
 
 		for (Map.Entry<String, FieldModelBuilder> entry : builders.entrySet()) {
@@ -103,12 +102,11 @@ public class GlobalModelStreamTaskService {
 		}
 
 		// Update store and mongo with latest global model
-		store.put(globalModelName + contextConstant, globalModel);
+		store.put(modelContextConcat, globalModel);
 		try {
-			modelService.updateModel(contextConstant, globalModel);
+			modelService.updateModel(GLOBAL_CONTEXT_CONSTANT, globalModel);
 		} catch (Exception e) {
-			String error = String.format("Exception while trying to put model %s in mongo DB (context is %s)", globalModelName, contextConstant);
-			logger.warn(error, e);
+			logger.warn("Exception while trying to put global model in mongo DB", e);
 		}
 	}
 
@@ -121,7 +119,9 @@ public class GlobalModelStreamTaskService {
 		Map<String, FieldModelBuilder> builders = new HashMap<>();
 
 		for (FieldModelProperties fieldModel : fieldModels) {
-			if (timestamp >= fieldModel.lastUpdateTimestamp + fieldModel.secondsBetweenUpdates) {
+			Long nextUpdateTimestamp = fieldModel.lastUpdateTimestamp + fieldModel.secondsBetweenUpdates;
+
+			if (timestamp >= nextUpdateTimestamp) {
 				FieldModelBuilder builder = null;
 
 				try {
@@ -133,9 +133,16 @@ public class GlobalModelStreamTaskService {
 
 				if (builder != null) {
 					// Initialize the builder and update the relevant timestamp
-					builder.initBuilder(config, globalModelName, fieldModel.fieldModelName);
+					builder.initBuilder(config, fieldModel.fieldModelName);
 					builders.put(fieldModel.fieldModelName, builder);
 					fieldModel.lastUpdateTimestamp = timestamp;
+
+					// Update minimal next update timestamp
+					nextUpdateTimestamp = timestamp + fieldModel.secondsBetweenUpdates;
+					if (minNextUpdateTimestamp == 0)
+						minNextUpdateTimestamp = nextUpdateTimestamp;
+					else
+						minNextUpdateTimestamp = Math.min(minNextUpdateTimestamp, nextUpdateTimestamp);
 				}
 			}
 		}
