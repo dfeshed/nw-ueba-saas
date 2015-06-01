@@ -88,5 +88,7 @@ public interface UserService extends CachingService{
 
 	public Set<String> findNamesByTag(String tagFieldName, Boolean value);
 
+	public Set<String> findNamesByTag(String tagFieldName, String value);
+
 	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value);
 }
