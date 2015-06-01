@@ -954,6 +954,18 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	public Set<String> findNamesByTag(String tagFieldName, String value) {
+		Set<String> namesByTag = new HashSet<String>();
+		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
+		for (int i = 0; i < numOfPages; i++) {
+			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
+			namesByTag.addAll(userRepository.findNameByTag(tagFieldName, value, pageRequest));
+		}
+		return namesByTag;
+	}
+
+
+	@Override
 	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value){
 		userRepository.updateUserTag(tagField, username, value);
 		List<String> tagsToAdd = new ArrayList<>();
