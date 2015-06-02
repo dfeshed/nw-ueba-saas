@@ -15,7 +15,7 @@ public class ISETest {
 
     private MorphlinesTester morphlineTester = new MorphlinesTester();
     private String confFile = "resources/conf-files/parseISE.conf";
-    private String[] iseOutputFields = new String[]{"event_code", "timestampepoch", "hostname", "ipaddress", "macAddress","isADHostName"};
+    private String[] iseOutputFields = new String[]{"event_code", "timestampepoch", "hostname", "ipaddress", "macAddress","adHostName"};
 
 	private static ClassPathXmlApplicationContext testContextManager;
 
