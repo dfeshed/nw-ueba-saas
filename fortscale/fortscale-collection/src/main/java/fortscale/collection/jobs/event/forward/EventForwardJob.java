@@ -4,6 +4,9 @@ import com.cloudbees.syslog.sender.AbstractSyslogMessageSender;
 import com.cloudbees.syslog.sender.TcpSyslogMessageSender;
 import com.cloudbees.syslog.sender.UdpSyslogMessageSender;
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.services.dataentity.DataEntitiesConfig;
+import fortscale.services.dataentity.DataEntity;
+import fortscale.services.dataentity.DataEntityField;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
@@ -90,6 +93,8 @@ public class EventForwardJob extends FortscaleJob {
 	@Value("${syslog.server.forward.timestamp.range.back:604800}")
 	protected int timestampRange;
 
+	@Autowired
+	private DataEntitiesConfig dataEntitiesConfig;
 
 	@Autowired
 	protected DataQueryRunnerFactory dataQueryRunnerFactory;
@@ -462,7 +467,7 @@ public class EventForwardJob extends FortscaleJob {
 		dataQueryDTO.setEntities(entities);
 
 		//fields to forward - we don't necessarily want all the fields
-		List<DataQueryField> fieldsList = createQueryFields(defaultFieldsString);
+		List<DataQueryField> fieldsList = createQueryFields(defaultFieldsString, dataEntity);
 		dataQueryDTO.setFields(fieldsList);
 
 		//conditions on event time and score - not overflowing the client
@@ -479,12 +484,13 @@ public class EventForwardJob extends FortscaleJob {
 		return dataQueryDTO;
 	}
 
-	private List<DataQueryField> createQueryFields(String defaultFieldsString){
+	private List<DataQueryField> createQueryFields(String defaultFieldsString, String dataEntity){
 		List<DataQueryField> defaultFieldsList = new ArrayList<DataQueryField>();
 		String[] defaultFields = defaultFieldsString.split(",");
 		for (String field : defaultFields) {
 			DataQueryField dataQueryField = new DataQueryField();
 			dataQueryField.setId(field);
+			dataQueryField.setAlias(getFieldDisplayName(field,dataEntity));
 			defaultFieldsList.add(dataQueryField);
 		}
 		return defaultFieldsList;
@@ -549,6 +555,21 @@ public class EventForwardJob extends FortscaleJob {
 
 	private String getTimeRange(){
 		return (TimestampUtils.convertToSeconds(currentTimestamp)-timestampRange)+","+ TimestampUtils.convertToSeconds(currentTimestamp);
+	}
+
+	/**
+	 * Get the field name in an entity and return the display name for it.
+	 */
+	private String getFieldDisplayName(String field, String entity) {
+
+		// get the relevant data entity
+		DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(entity);
+		DataEntityField dataEntityField = dataEntity.getField(field);
+		if (dataEntityField!=null && dataEntityField.getName()!=null)
+			return dataEntityField.getName();
+		else
+			return field;
+
 	}
 }
 
