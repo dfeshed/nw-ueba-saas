@@ -1,3 +1,4 @@
+
 package fortscale.streaming.task.enrichment;
 
 import fortscale.services.CachingService;
@@ -170,7 +171,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 				UsernameNormalizationService normalizationService = configuration.getUsernameNormalizationService();
 				// checks in memory-cache and mongo if the user exists
-				normalizedUsername = normalizationService.normalizeUsername(username, domain, message, configuration);
+				normalizedUsername = normalizationService.normalizeUsername(username, domain, configuration);
 				// check if we should drop the record (user doesn't exist)
 				if (normalizationService.shouldDropRecord(username, normalizedUsername)) {
 					if (logger.isDebugEnabled()) {
@@ -213,6 +214,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		checkNotNull(event);
 		return event.get(partitionKeyField);
 	}
+
 
 
 }

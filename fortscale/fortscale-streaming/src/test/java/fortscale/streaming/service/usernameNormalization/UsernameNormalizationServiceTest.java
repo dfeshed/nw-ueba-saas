@@ -1,3 +1,4 @@
+
 package fortscale.streaming.service.usernameNormalization;
 
 import org.junit.Before;
@@ -16,7 +17,7 @@ public class UsernameNormalizationServiceTest {
 	@Test public void getUsernameAsNormalizedUsername_should_return_username_in_lowercase() throws Exception {
 		String userName = "USER_NAME";
 		assertEquals(userName.toLowerCase(), usernameNormalizationService.getUsernameAsNormalizedUsername(userName,
-				null,null, null));
+				null, null));
 	}
 
 	@Test public void shouldDropRecord_should_return_false_for_not_null_normalizedUsername() throws Exception {
@@ -44,4 +45,5 @@ public class UsernameNormalizationServiceTest {
 		usernameNormalizationService.setDropOnFail(false);
 		assertFalse(usernameNormalizationService.shouldDropRecord(null,null));
 	}
+
 }

@@ -1,3 +1,4 @@
+
 package fortscale.collection.morphlines.commands;
 
 import java.util.Collection;
@@ -46,7 +47,7 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
             ret = usernameNormalizer.normalize(RecordExtensions.getStringValue(inputRecord, usernameField)
-					.toLowerCase(), RecordExtensions.getStringValue(inputRecord, domainField), null, null, false);
+					.toLowerCase(), RecordExtensions.getStringValue(inputRecord, domainField), null, false);
         }  
         
 		return ret;
@@ -97,3 +98,4 @@ public class NormalizeUsernameMorphCmdBuilder implements CommandBuilder {
 		}
 	}
 }
+
