@@ -1,3 +1,4 @@
+
 package fortscale.streaming.service.usernameNormalization;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,6 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 
 	@Autowired
 	SSHUsersWhitelistService sshUsersWhitelist;
-
-	@Value("${impala.data.ssh.table.field.hostname}")
-	private String sourceMachineField;
 
 	@Override
 	public UsernameNormalizer getUsernameNormalizer(){
@@ -50,17 +48,15 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 	}
 
 	@Override
-	public String getUsernameAsNormalizedUsername(String username, String targetMachine, JSONObject message,
-			UsernameNormalizationConfig
+	public String getUsernameAsNormalizedUsername(String username, String targetMachine, UsernameNormalizationConfig
 			configuration) {
 
 		if (usernameNormalizer == null) {
-			return super.getUsernameAsNormalizedUsername(username, targetMachine, message, configuration);
+			return super.getUsernameAsNormalizedUsername(username, targetMachine, configuration);
 		}
 
 		// concat the target machine name to the username: user@target
-		String sourceMachine = convertToString(message.get(sourceMachineField));
-		return usernameNormalizer.postNormalize(username, sourceMachine, targetMachine, configuration.getClassifier(),
+		return usernameNormalizer.postNormalize(username, targetMachine, configuration.getClassifier(),
 				configuration.getUpdateOnlyFlag());
 
 	}
