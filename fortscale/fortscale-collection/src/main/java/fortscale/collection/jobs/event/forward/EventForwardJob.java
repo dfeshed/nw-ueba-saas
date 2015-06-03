@@ -156,6 +156,7 @@ public class EventForwardJob extends FortscaleJob {
 						finishStep();
 
 						startNewStep("Forward Events to Syslog server - page " + page);
+						// if any of the forward events failed - finishSuccessfully will be false
 						finishSuccessfully &= forwardEvents(forwardSingleConfiguration, messages);
 						finishStep();
 						page++;
