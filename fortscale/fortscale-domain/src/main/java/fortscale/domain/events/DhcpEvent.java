@@ -19,6 +19,8 @@ public class DhcpEvent extends IpToHostname{
 
 	private static final long serialVersionUID = -8351203425124420491L;
 
+	public static final int DHCP_PRIORITY = 2;
+
 	public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
 
 	// action codes
@@ -52,6 +54,11 @@ public class DhcpEvent extends IpToHostname{
 		return (adHostName==null)?  false : adHostName;
 	}*/
 
+	public DhcpEvent(){
+		super();
+		setEventPriority(DHCP_PRIORITY);
+	}
+
 	@Override
 	public boolean checkIsAdHostname()
 	{
@@ -70,6 +77,7 @@ public class DhcpEvent extends IpToHostname{
 	public void setAction(String action) {
 		this.action = action;
 	}
+
 
 	public long getExpiration() {
 		return expiration;
