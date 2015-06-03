@@ -23,13 +23,12 @@ public class UsernameNormalizationService {
 	 * @param username the original username
 	 * @return the normalized username (or null if failed to normalize)
 	 */
-	public String normalizeUsername(String username, String domain, JSONObject message, UsernameNormalizationConfig
-			configuration){
+	public String normalizeUsername(String username, String domain, UsernameNormalizationConfig	configuration){
 		//if normalizedUsers.fail filter is set: function returns null if username normalization failed.
 		String ret = null;
 		UsernameNormalizer usernameNormalizer = getUsernameNormalizer();
 		if(usernameNormalizer != null){
-			ret = usernameNormalizer.normalize(username, domain, message, configuration.getClassifier(),
+			ret = usernameNormalizer.normalize(username, domain, configuration.getClassifier(),
 					configuration.getUpdateOnlyFlag());
 		}
 
@@ -49,12 +48,10 @@ public class UsernameNormalizationService {
 	/**
 	 * Get the username as the normalized username
 	 * @param username    the original username
-	 * @param message	the entire message
 	 * @return	the normalized username to use
 	 */
-	public String getUsernameAsNormalizedUsername(String username, String domain, JSONObject message,
-			UsernameNormalizationConfig
-			configuration){
+	public String getUsernameAsNormalizedUsername(String username, String domain,
+			UsernameNormalizationConfig configuration){
 		return username.toLowerCase();
 	}
 

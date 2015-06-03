@@ -4,6 +4,9 @@ import com.cloudbees.syslog.sender.AbstractSyslogMessageSender;
 import com.cloudbees.syslog.sender.TcpSyslogMessageSender;
 import com.cloudbees.syslog.sender.UdpSyslogMessageSender;
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.services.dataentity.DataEntitiesConfig;
+import fortscale.services.dataentity.DataEntity;
+import fortscale.services.dataentity.DataEntityField;
 import fortscale.services.dataqueries.querydto.*;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
@@ -90,6 +93,8 @@ public class EventForwardJob extends FortscaleJob {
 	@Value("${syslog.server.forward.timestamp.range.back:604800}")
 	protected int timestampRange;
 
+	@Autowired
+	private DataEntitiesConfig dataEntitiesConfig;
 
 	@Autowired
 	protected DataQueryRunnerFactory dataQueryRunnerFactory;
@@ -138,6 +143,7 @@ public class EventForwardJob extends FortscaleJob {
 				if (forwardSingleConfiguration.isContinues() || forwardSingleConfiguration.getRunNumber() == 0) {
 					//adding the upper bound of the time range to the current timestamp
 					List<String> messages = new ArrayList<String>();
+					long totalNumberOfMessages = 0;
 					boolean finishSuccessfully = true;
 					int page = 0;
 					while (page == 0 || (finishSuccessfully && !messages.isEmpty())) {
@@ -150,13 +156,15 @@ public class EventForwardJob extends FortscaleJob {
 						finishStep();
 
 						startNewStep("Forward Events to Syslog server - page " + page);
-						finishSuccessfully |= forwardEvents(forwardSingleConfiguration, messages);
+						// if any of the forward events failed - finishSuccessfully will be false
+						finishSuccessfully &= forwardEvents(forwardSingleConfiguration, messages);
 						finishStep();
 						page++;
+						totalNumberOfMessages += messages.size();
 					}
 					if (finishSuccessfully) {
 						int offset = getConfigurationOffset(forwardSingleConfiguration);
-						logger.info("Forward finished successfully - forward {} events", offset);
+						logger.info("Forward finished successfully - forward {} events", totalNumberOfMessages);
 						updateConfiguration(forwardSingleConfiguration);
 
 					}
@@ -248,7 +256,6 @@ public class EventForwardJob extends FortscaleJob {
 	}
 
 	private boolean sendMessages(AbstractSyslogMessageSender messageSender, List<String> messages, ForwardSingleConfiguration forwardSingleConfiguration) {
-		int sendMessages = 0;
 		int bufferSendMessages = 1;
 		int offset = getConfigurationOffset(forwardSingleConfiguration);
 		for (String message : messages) {
@@ -256,16 +263,14 @@ public class EventForwardJob extends FortscaleJob {
 				messageSender.sendMessage(message);
 				//if the succeed in sending the message update the offset
 				offset++;
-				sendMessages++;
 			} catch (Exception e) {
 				boolean sendSucceed = retrySendMessages(messageSender, message);
 				if (sendSucceed) {
 					offset++;
-					sendMessages++;
 				} else {
 					//in the case of failure in sending the Syslog message stop the process and save the current state
 					handleForwardProgress(forwardSingleConfiguration, offset, updateBufferSize);
-					logger.info("Forward encounter problems - forward {} events, and stopped on offset {}", sendMessages, offset);
+					logger.info("Forward encounter problems - stopped on offset {}", offset);
 					return false;
 				}
 			}
@@ -357,8 +362,14 @@ public class EventForwardJob extends FortscaleJob {
 					else{
 						//when setting value for current run
 						//adding the current timestamp as an upper limit
-						updateValue = ((ConditionField) term).getValue() + "," + newValue;
-
+						if (((ConditionField) term).getValue().split(",").length == 1){
+							updateValue = ((ConditionField) term).getValue() + "," + newValue;
+						}
+						//else it means previous run was finished unsuccessful (in the middle of the run)
+						//still have range condition in update timestamp field and not only start time - and we keep the condition value as is
+						else{
+							updateValue = ((ConditionField) term).getValue();
+						}
 					}
 					((ConditionField) term).setValue(updateValue);
 				}
@@ -462,7 +473,7 @@ public class EventForwardJob extends FortscaleJob {
 		dataQueryDTO.setEntities(entities);
 
 		//fields to forward - we don't necessarily want all the fields
-		List<DataQueryField> fieldsList = createQueryFields(defaultFieldsString);
+		List<DataQueryField> fieldsList = createQueryFields(defaultFieldsString, dataEntity);
 		dataQueryDTO.setFields(fieldsList);
 
 		//conditions on event time and score - not overflowing the client
@@ -479,12 +490,13 @@ public class EventForwardJob extends FortscaleJob {
 		return dataQueryDTO;
 	}
 
-	private List<DataQueryField> createQueryFields(String defaultFieldsString){
+	private List<DataQueryField> createQueryFields(String defaultFieldsString, String dataEntity){
 		List<DataQueryField> defaultFieldsList = new ArrayList<DataQueryField>();
 		String[] defaultFields = defaultFieldsString.split(",");
 		for (String field : defaultFields) {
 			DataQueryField dataQueryField = new DataQueryField();
 			dataQueryField.setId(field);
+			dataQueryField.setAlias(getFieldDisplayName(field,dataEntity));
 			defaultFieldsList.add(dataQueryField);
 		}
 		return defaultFieldsList;
@@ -549,6 +561,21 @@ public class EventForwardJob extends FortscaleJob {
 
 	private String getTimeRange(){
 		return (TimestampUtils.convertToSeconds(currentTimestamp)-timestampRange)+","+ TimestampUtils.convertToSeconds(currentTimestamp);
+	}
+
+	/**
+	 * Get the field name in an entity and return the display name for it.
+	 */
+	private String getFieldDisplayName(String field, String entity) {
+
+		// get the relevant data entity
+		DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(entity);
+		DataEntityField dataEntityField = dataEntity.getField(field);
+		if (dataEntityField!=null && dataEntityField.getName()!=null)
+			return dataEntityField.getName();
+		else
+			return field;
+
 	}
 }
 

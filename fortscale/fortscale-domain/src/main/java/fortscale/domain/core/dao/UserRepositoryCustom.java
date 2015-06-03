@@ -1,21 +1,15 @@
 package fortscale.domain.core.dao;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.Threshold;
+import org.joda.time.DateTime;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.*;
 
 public interface UserRepositoryCustom {
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails);
@@ -66,6 +60,7 @@ public interface UserRepositoryCustom {
 	public long getNumberOfInactiveAccounts();
 
 	public Set<String> findNameByTag(String tagFieldName, Boolean value, Pageable pageable);
+	public Set<String> findNameByTag(String tagFieldName, String value, Pageable pageable);
 	public boolean findIfUserExists(String username);
 	public String getUserIdByNormalizedUsername(String username);
 	public HashSet<String> getUsersGUID();
