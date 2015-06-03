@@ -213,11 +213,11 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		JobDataMap map = context.getMergedJobDataMap();
 
 		// get parameters values from the job data map
-		try {
+		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") && jobDataMapExtension.isJobDataMapContainKey(map,"latest")){
 			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
 			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
 		}
-		catch (JobExecutionException e){
+		else{
 			//calculate query run times from mongo in the case not provided as job params
 			logger.info("No Time frame was specified as input param, continuing from the previous run ");
 			getRunTimeFrameFromMongo(map);
