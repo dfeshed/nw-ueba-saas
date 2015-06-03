@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by tomerd on 27/05/2015.
  */
-public class ActiveDirectoryGroupsHelper implements InitializingBean {
+public class ActiveDirectoryGroupsHelper {
 
 	@Autowired @Qualifier("adGroupsCache") private CacheHandler<String, String> adGroupsCache;
 
@@ -32,11 +32,9 @@ public class ActiveDirectoryGroupsHelper implements InitializingBean {
 	private boolean searchInRepositoryOnCacheMiss;
 
 	/**
-	 * Create new instance of the cache handler.
 	 * Warm up the cache by reading values from repository
 	 */
-	@Override public void afterPropertiesSet() throws Exception {
-
+	public void warmUpCache() {
 		// Read values from repository
 		List<AdGroup> collection = readFromRepository();
 
