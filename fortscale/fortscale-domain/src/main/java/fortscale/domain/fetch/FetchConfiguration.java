@@ -25,9 +25,11 @@ public class FetchConfiguration extends AbstractAuditableDocument {
 	private String lastFetchTime;
 
 
-	public FetchConfiguration(String type) {
+	public FetchConfiguration(String type, String lastFetchTime) {
 		checkNotNull(type);
+		checkNotNull(lastFetchTime);
 		this.type = type;
+		this.lastFetchTime = lastFetchTime;
 
 	}
 
