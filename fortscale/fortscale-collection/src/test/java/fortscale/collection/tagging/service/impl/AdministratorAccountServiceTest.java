@@ -1,5 +1,6 @@
 package fortscale.collection.tagging.service.impl;
 
+import fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper;
 import fortscale.domain.core.User;
 import fortscale.services.UserService;
 import org.junit.Before;
@@ -26,6 +27,9 @@ public class AdministratorAccountServiceTest {
 
 	@Mock
 	private UserService userService;
+
+	@Mock
+	private ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper;
 
 	@InjectMocks
 	private AdministratorAccountServiceImpl administratorAccountService;
