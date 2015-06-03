@@ -100,7 +100,7 @@ public class ContinuousDataGlobalModelScorer extends AbstractScorer {
 
 	private double factorDeltaQ(double deltaQ, double qEvent) {
 		if (deltaQ > deltaQUp) {
-			return Math.max(1, 1 + (deltaQ - deltaQUp) * increaseRate);
+			return 1 + (deltaQ - deltaQUp) * increaseRate;
 		} else if (deltaQ < deltaQDown && qEvent < qStopReducing) {
 			return Math.max(0, deltaQ / deltaQDown);
 		} else {

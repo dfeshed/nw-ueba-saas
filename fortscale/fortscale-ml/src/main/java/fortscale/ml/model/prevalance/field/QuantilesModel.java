@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class QuantilesModel implements FieldModel {
@@ -19,7 +20,7 @@ public class QuantilesModel implements FieldModel {
 	 * QuantilesModel constructor.
 	 */
 	public QuantilesModel() {
-		quantiles = new ArrayList<>(NUM_OF_QUANTILES);
+		quantiles = new ArrayList<>(Collections.nCopies(NUM_OF_QUANTILES, 0.0));
 	}
 
 	/**
@@ -78,7 +79,7 @@ public class QuantilesModel implements FieldModel {
 		if (valueAsDouble == null)
 			return 0;
 		else
-			return inverseQuantile(valueAsDouble);
+			return inverseQuantile(valueAsDouble) / NUM_OF_QUANTILES;
 	}
 
 	/* 'init' and 'add' are redundant, as initialization

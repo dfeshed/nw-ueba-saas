@@ -95,7 +95,7 @@ public class PopulationQuantilesModelBuilder implements FieldModelBuilder {
 		 * If so, set the quantile value to the model and advance to next quantile */
 		for (Map.Entry<Double, Long> entry : sortedEntries) {
 			currentIndex += entry.getValue();
-			if (quantileIndex <= currentIndex) {
+			while (quantileIndex <= currentIndex) {
 				model.setQuantile(quantile, entry.getKey());
 				quantile++;
 				quantileIndex = toIndex(quantile);
