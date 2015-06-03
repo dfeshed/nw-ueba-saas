@@ -34,7 +34,7 @@ public class SshSshdTest {
 	}
 
 	private static void prepareDates() {
-		TestUtils.init("yyyy MMM dd HH:mm:ss", "Asia/Jerusalem");
+		TestUtils.init("yyyy MMM dd HH:mm:ss", "UTC");
 		Date date = TestUtils.constuctDate(Nov_19_14_58_32);
 		Nov_19_14_58_32_OUT = TestUtils.getOutputDate(date);
 	}

@@ -1,14 +1,13 @@
+
 package fortscale.streaming.service.usernameNormalization;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import fortscale.services.impl.UsernameNormalizer;
 import fortscale.services.users.SSHUsersWhitelistService;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-
 import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
@@ -19,22 +18,9 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 	@Autowired
 	SSHUsersWhitelistService sshUsersWhitelist;
 
-	@Value("${impala.data.ssh.table.field.target_machine}")
-	private String targetMachineField;
-
-
 	@Override
 	public UsernameNormalizer getUsernameNormalizer(){
 		return usernameNormalizer;
-	}
-
-	@Override
-	public String normalizeUsername(String username) {
-		if(usernameNormalizer != null){
-			return usernameNormalizer.normalize(username);
-		} else{
-			return super.normalizeUsername(username);
-		}
 	}
 
 	@Override
@@ -62,15 +48,17 @@ public class SshUsernameNormalizationService extends UsernameNormalizationServic
 	}
 
 	@Override
-	public String getUsernameAsNormalizedUsername(String username, JSONObject message) {
+	public String getUsernameAsNormalizedUsername(String username, String targetMachine, UsernameNormalizationConfig
+			configuration) {
 
 		if (usernameNormalizer == null) {
-			return super.getUsernameAsNormalizedUsername(username, message);
+			return super.getUsernameAsNormalizedUsername(username, targetMachine, configuration);
 		}
 
 		// concat the target machine name to the username: user@target
-		String targetMachine = convertToString(message.get(targetMachineField));
-		return String.format("%s@%s", username, targetMachine);
+		return usernameNormalizer.postNormalize(username, targetMachine, configuration.getClassifier(),
+				configuration.getUpdateOnlyFlag());
+
 	}
 
 }

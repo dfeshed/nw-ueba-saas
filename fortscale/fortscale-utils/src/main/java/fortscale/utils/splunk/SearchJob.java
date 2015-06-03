@@ -18,7 +18,11 @@ public abstract class SearchJob {
 	protected abstract Job runJob(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception;
 	protected abstract int getDispatchMaxCount(Service service) throws Exception;
 	
-	public Job run(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception{
+	public Job run(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception {
+		return run(service, earliestTimeCursor, latestTimeCursor, -1);
+	}
+
+	public Job run(Service service, String earliestTimeCursor, String latestTimeCursor, int timeoutInSeconds) throws Exception{
 		Job ret = runJob(service, earliestTimeCursor, latestTimeCursor);
 		if (ret == null) {
 			return null;
@@ -26,12 +30,26 @@ public abstract class SearchJob {
 		
 		// Wait for the job to finish
         int i = 1;
+		int counter = 1;
 		while (!ret.isDone()) {
+
+			// sleep one second
 			Thread.sleep(1000);
+
+			// print progress every 2 minutes
 			if(i == 0){
 				logger.info("search progress: {}", ret.getDoneProgress() * 100);
 			}
 			i = (i+1)%120;
+
+			// increase counter, check for timeout
+			if (timeoutInSeconds > 0 && counter++ > timeoutInSeconds) {
+				logger.error("Fetch job has reached a timeout of {} seconds. Canceling job...", timeoutInSeconds);
+				ret.cancel();
+				throw new Exception("Timeout in job");
+			}
+
+			// check if done/failed
 			if(ret.isReady() && ret.isFailed()){
 				break;
 			}

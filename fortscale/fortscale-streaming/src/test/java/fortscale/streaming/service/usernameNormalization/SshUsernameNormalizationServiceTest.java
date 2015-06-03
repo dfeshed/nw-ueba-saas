@@ -1,10 +1,9 @@
+
 package fortscale.streaming.service.usernameNormalization;
 
-import fortscale.services.impl.UsernameNormalizer;
-import net.minidev.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-
+import net.minidev.json.JSONObject;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -20,36 +19,14 @@ public class SshUsernameNormalizationServiceTest {
 		sshUsernameNormalizationService = new SshUsernameNormalizationService();
 	}
 
-
-	@Test public void normalizeUsername_should_return_UsernameNormalizer_normalize_output() throws Exception {
-		String userName = "USER_NAME";
-		String normalizedUsername = "user_name_nnn";
-		UsernameNormalizer usernameNormalizer = mock(UsernameNormalizer.class);
-		when(usernameNormalizer.normalize(userName)).thenReturn(normalizedUsername);
-		when(usernameNormalizer.normalize(userName.toLowerCase())).thenReturn(normalizedUsername.toUpperCase());
-		sshUsernameNormalizationService.setUsernameNormalizer(usernameNormalizer);
-		assertEquals(normalizedUsername, sshUsernameNormalizationService.normalizeUsername(userName));
-	}
-
-	@Test public void getUsernameAsNormalizedUsername_should_use_target_machine_name_when_UsernameNormalizer_is_not_null() throws Exception {
-		String userName = "USER_NAME";
-		String targetMachine = "TARGET_MACHINE";
-		UsernameNormalizer usernameNormalizer = mock(UsernameNormalizer.class);
-		sshUsernameNormalizationService.setUsernameNormalizer(usernameNormalizer);
-		JSONObject message = mock(JSONObject.class);
-		when(message.get(anyString())).thenReturn(targetMachine);
-		assertEquals(userName + "@" + targetMachine, sshUsernameNormalizationService.getUsernameAsNormalizedUsername(userName,message));
-	}
-
 	@Test public void getUsernameAsNormalizedUsername_should_return_lowercase_username_when_UsernameNormalizer_is_null() throws Exception {
 		String userName = "USER_NAME";
 		String targetMachine = "TARGET_MACHINE";
 		JSONObject message = mock(JSONObject.class);
 		when(message.get(anyString())).thenReturn(targetMachine);
-		assertEquals(userName.toLowerCase(), sshUsernameNormalizationService.getUsernameAsNormalizedUsername(userName,message));
+		assertEquals(userName.toLowerCase(), sshUsernameNormalizationService.getUsernameAsNormalizedUsername
+				(userName,targetMachine,null));
 	}
-
-
 
 	@Test public void shouldDropRecord_should_return_false_for_not_null_normalizedUsername() throws Exception {
 
@@ -76,5 +53,6 @@ public class SshUsernameNormalizationServiceTest {
 		sshUsernameNormalizationService.setDropOnFail(false);
 		assertFalse(sshUsernameNormalizationService.shouldDropRecord(null,null));
 	}
+
 
 }

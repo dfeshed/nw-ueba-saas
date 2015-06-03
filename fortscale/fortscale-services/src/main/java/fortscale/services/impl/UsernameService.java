@@ -240,7 +240,10 @@ public class UsernameService implements InitializingBean, CachingService{
 	public void updateLogUsername(User user, LogEventsEnum eventId, String username) {
 		user.addLogUsername(getLogname(eventId), username);
 	}
-	
+
+	public List<User> getUsersBysAMAccountName(String username){
+		return userRepository.findUsersBysAMAccountName(username);
+	}
 	
 	public boolean isUsernameExist(String username){
 		return isUsernameExist(username, null);

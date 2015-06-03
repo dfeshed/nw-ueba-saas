@@ -70,7 +70,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public User findByApplicationUserName(String applicationName, String username){
 		String appUserNameField = User.getAppUserNameField(applicationName);
-		Query query = new Query(where(appUserNameField).regex(String.format("^%s$", username),"i"));
+		Query query = new Query(where(appUserNameField).regex(String.format("^%s$", username), "i"));
 		return mongoTemplate.findOne(query, User.class);
 	}
 
@@ -172,7 +172,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public List<User> findByUsernames(Collection<String> usernames) {
 		return findByUniqueField(User.usernameField, usernames);
 	}
-	
+
+	@Override
+	public List<User> findUsersBysAMAccountName(String username) {
+		PageRequest pageRequest = new PageRequest(0, 1000);
+		return findByField(User.getAdInfoField(UserAdInfo.sAMAccountNameField), username, pageRequest);
+	}
+
 	@Override
 	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames) {
 		Query query = new Query(where(User.usernameField).in(usernames));
@@ -396,6 +402,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public Set<String> findNameByTag(String tagFieldName, Boolean value, Pageable pageable) {
+		Query query = new Query().with(pageable);
+		Criteria criteria = where(tagFieldName).is(value);
+		query.fields().include(User.usernameField);
+		query.addCriteria(criteria);
+		Set<String> res = new HashSet<String>();
+		for (UsernameWrapper usernameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName))
+			res.add(usernameWrapper.getUsername());
+		return res;
+	}
+
+	@Override
+	public Set<String> findNameByTag(String tagFieldName, String value, Pageable pageable) {
 		Query query = new Query().with(pageable);
 		Criteria criteria = where(tagFieldName).is(value);
 		query.fields().include(User.usernameField);

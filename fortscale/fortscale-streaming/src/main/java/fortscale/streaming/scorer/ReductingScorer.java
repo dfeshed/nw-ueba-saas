@@ -10,15 +10,19 @@ import org.apache.samza.config.Config;
 
 public class ReductingScorer extends AbstractScorer {
 	
+	public static final double REDUCTING_ZERO_SCORE_WEIGHT_DEFAULT = 0.95;
+	
 	private Scorer mainScorer;
 	private Scorer reductingScorer;
 	private double reductingWeight;
+	private double reductingZeroScoreWeight;
 
 	public ReductingScorer(String scorerName, Config config, ScorerContext context) {
 		super(scorerName, config, context);
 		mainScorer = getScorer(String.format("fortscale.score.%s.main.scorer", scorerName), config, context);
 		reductingScorer = getScorer(String.format("fortscale.score.%s.reducting.scorer", scorerName), config, context);
 		reductingWeight = config.getDouble(String.format("fortscale.score.%s.reducting.weight", scorerName));
+		reductingZeroScoreWeight = config.getDouble(String.format("fortscale.score.%s.reducting.zero.score.weight", scorerName), REDUCTING_ZERO_SCORE_WEIGHT_DEFAULT);
 	}
 	
 	private Scorer getScorer(String scorerNamePath, Config config, ScorerContext context){
@@ -47,7 +51,13 @@ public class ReductingScorer extends AbstractScorer {
 					featureScores.add(reducingScore);
 					double score = mainScore.getScore();
 					if(reducingScore.getScore() < score){
-						double reductingWeightMulitiplyCertainty = reductingWeight * reducingScore.getCertainty(); // The weight of the reducting score depands on the certainty of the score.
+						// The weight of the reducting score depends on the certainty of the score.
+						double reductingWeightMulitiplyCertainty = 0;
+						if(reducingScore.getScore() == 0){
+							reductingWeightMulitiplyCertainty = reductingZeroScoreWeight * reducingScore.getCertainty();
+						} else{
+							reductingWeightMulitiplyCertainty = reductingWeight * reducingScore.getCertainty();
+						}
 						score = reducingScore.getScore() * reductingWeightMulitiplyCertainty + mainScore.getScore() * (1-reductingWeightMulitiplyCertainty);
 					}
 					featureScore = new FeatureScore(outputFieldName, score, featureScores);

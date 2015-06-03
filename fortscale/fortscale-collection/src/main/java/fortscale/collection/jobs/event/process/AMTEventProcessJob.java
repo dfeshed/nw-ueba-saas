@@ -1,4 +1,4 @@
-package fortscale.collection.jobs;
+package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;

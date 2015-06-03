@@ -13,6 +13,7 @@ import fortscale.domain.ad.AdUserGroup;
 public class UserAdInfo {
 	public static final String objectGUIDField = "objectGUID";
 	public static final String adDnField = "dn";
+	public static final String sAMAccountNameField = "sAMAccountName";
 	public static final String emailAddressField = "email";
 	public static final String lastnameField = "lastname";
 	public static final String userPrincipalNameField = "userPrincipalName";
@@ -20,6 +21,7 @@ public class UserAdInfo {
 	public static final String whenCreatedField = "whenCreated";
 	public static final String disableAccountTimeField = "disableAccountTime";
 	public static final String isAccountDisabledField = "isAccountDisabled";
+
 	@Field(objectGUIDField)
 	private String objectGUID;
 

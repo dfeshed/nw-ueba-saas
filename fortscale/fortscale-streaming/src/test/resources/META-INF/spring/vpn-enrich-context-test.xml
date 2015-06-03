@@ -61,6 +61,7 @@
 		<constructor-arg name="vpnGeolocationConfig" ref="vpnGeolocationConfig"/>
 		<constructor-arg name="vpnDataBucketsConfig" ref="vpnDataBucketsConfig"/>
 		<constructor-arg name="vpnSessionUpdateConfig" ref="vpnSessionUpdateConfig"/>
+		<constructor-arg name="usernameFieldName" value="username"/>
 	</bean>
 	<bean id="vpnEnrichService" class="fortscale.streaming.service.vpn.VpnEnrichService">
 		<constructor-arg name="config" ref="vpnEnrichConfig"/>

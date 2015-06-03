@@ -41,7 +41,7 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
 
     private String getConditionTermSql(ConditionTerm conditionTerm, DataQueryDTO dataQueryDTO) throws InvalidQueryException{
         ArrayList<String> terms = new ArrayList<String>();
-        Joiner joiner = Joiner.on(" " + conditionTerm.getOperator().toString() + " ").skipNulls();
+        Joiner joiner = Joiner.on(" " + conditionTerm.getLogicalOperator().toString() + " ").skipNulls();
 
         for(Term term: conditionTerm.getTerms()){
             if (term.getClass() == ConditionField.class)
@@ -93,7 +93,7 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
             return null;
 
         ArrayList<String> sqlConditions = new ArrayList<>();
-        Joiner joiner = Joiner.on(" " + term.getOperator().toString() + " ").skipNulls();
+        Joiner joiner = Joiner.on(" " + term.getLogicalOperator().toString() + " ").skipNulls();
         List<String> entityPartitionsBaeFields = dataEntitiesConfig.getEntityPartitionBaseField(entityId);
 
         for (Term childTerm: term.getTerms()){
@@ -150,7 +150,7 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
 
         boolean enforcefiledValueToLowererCase = !isConditionField  && type !=null && type.isCaseSensitive();
 
-        MySqlOperatorsList operatorList = MySqlConditionOperators.getOperator(conditionField.getOperator(),type);
+        MySqlOperatorsList operatorList = MySqlConditionOperators.getOperator(conditionField.getQueryOperator(),type);
         boolean firstElement = true;
         for (MySqlOperator operator : operatorList.getMySqlOperators()){
             if (!firstElement){
@@ -161,7 +161,7 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
             sb.append(" ");
 
             if (operator.requiresValue && conditionField.getValue() == null && conditionField.getValueField() == null) {
-                throw new InvalidQueryException("Can't create MySQL query, the " + conditionField.getOperator().name() + " operator requires a value, but none was specified.");
+                throw new InvalidQueryException("Can't create MySQL query, the " + conditionField.getQueryOperator().name() + " operator requires a value, but none was specified.");
             }
             //when the column is a string with tokens(s) we do not need to add the value afterwards, but rather replace it with the token(s)
             if (conditionField.getValue() != null && dataEntitiesConfig.getFieldIsTokenized(conditionField.getField().getEntity(), conditionField.getField().getId())){
@@ -202,17 +202,17 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
 
         // The partition can be a simple comparison operator (=, >, >=, <, <=) or a between operator, in which case it
         // is broken down to two (<=, >=) ConditionFields:
-        if (condition.getOperator() == QueryOperator.between){
+        if (condition.getQueryOperator() == QueryOperator.between){
             String[] values = condition.getValue().split(",");
 
             ConditionField firstBetweenValueConditionField = new ConditionField(condition);
             firstBetweenValueConditionField.setValue(values[0]);
-            firstBetweenValueConditionField.setOperator(QueryOperator.greaterThanOrEquals);
+            firstBetweenValueConditionField.setQueryOperator(QueryOperator.greaterThanOrEquals);
             partitionConditionFields.add(getPartitionConditionField(partitionStrategy, firstBetweenValueConditionField));
 
             ConditionField secondBetweenValueConditionField = new ConditionField(condition);
             secondBetweenValueConditionField.setValue(values[1]);
-            secondBetweenValueConditionField.setOperator(QueryOperator.lesserThanOrEquals);
+            secondBetweenValueConditionField.setQueryOperator(QueryOperator.lesserThanOrEquals);
             partitionConditionFields.add(getPartitionConditionField(partitionStrategy, secondBetweenValueConditionField));
         }
         else{
@@ -234,7 +234,7 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
 
         //TODO - need to make it more generic - the interface partition strategy is based on long as partition (timestamp) - need to abstract it to String and to parse the value in the implementations
         partitionCondition.setValue(partitionStrategy.getImpalaPartitionValue(Long.parseLong(condition.getValue())));
-        partitionCondition.setOperator(condition.getOperator());
+        partitionCondition.setQueryOperator(condition.getQueryOperator());
         partitionCondition.setField(new DataQueryField());
         partitionCondition.getField().setId(partitionStrategy.getImpalaPartitionFieldName());
         return partitionCondition;

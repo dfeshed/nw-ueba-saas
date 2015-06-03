@@ -1,9 +1,15 @@
 
+
 package fortscale.collection.tagging.service;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import fortscale.collection.tagging.service.impl.UserServiceAccountServiceImpl;
+import fortscale.services.UserService;
+import fortscale.services.impl.UsernameNormalizer;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,16 +18,9 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import fortscale.services.UserService;
-import org.junit.Test;
-import org.junit.Before;
-import org.mockito.Mock;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-
-import fortscale.collection.tagging.service.impl.UserServiceAccountServiceImpl;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.impl.UsernameNormalizer;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class UserServiceAccountServiceTest {
 
@@ -63,8 +62,9 @@ public class UserServiceAccountServiceTest {
 
 		// arrange
 		service.setFilePath(getFile("user3\nuser4"));
-		when(secUsernameNormalizer.normalize(anyString())).thenReturn(
-			"user3", "user4");
+		when(secUsernameNormalizer.normalize(eq(anyString()), eq(anyString()), null, false)).thenReturn
+				("user3",
+				"user4");
 		when(userService.findIfUserExists(anyString())).thenReturn(
 			true);
 		service.setDeletionSymbol("-");
@@ -86,7 +86,7 @@ public class UserServiceAccountServiceTest {
 		throws Exception {
 
 		service.setFilePath(getFile("-user1\nuser4"));
-		when(secUsernameNormalizer.normalize(anyString())).thenReturn(
+		when(secUsernameNormalizer.normalize(eq(anyString()), eq(anyString()), null, false)).thenReturn(
 			"user4", "user1");
 		when(userService.findIfUserExists(anyString())).thenReturn(
 			true);
@@ -99,3 +99,4 @@ public class UserServiceAccountServiceTest {
 	}
 
 }
+

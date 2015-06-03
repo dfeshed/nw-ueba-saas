@@ -10,7 +10,7 @@
 			<name>ETL</name>
 			<group>DHCP</group>
 			<description>process DHCP events received from splunk into files</description>
-			<job-class>fortscale.collection.jobs.DHCPEventsProcessJob</job-class>
+			<job-class>fortscale.collection.jobs.event.process.DHCPEventsProcessJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			

@@ -8,13 +8,14 @@ import java.util.List;
 */
 public class ConditionTerm extends Term{
     private List<Term> terms;
-    private LogicalOperator operator;
+    private LogicalOperator logicalOperator;
+
 
 	public ConditionTerm(){}
 	public ConditionTerm(ConditionTerm other)
 	{
 		this.terms = new ArrayList<>(other.getTerms());
-		this.operator = other.operator;
+		this.logicalOperator = other.logicalOperator;
 	}
 
     public List<Term> getTerms() {
@@ -25,11 +26,11 @@ public class ConditionTerm extends Term{
         this.terms = terms;
     }
 
-    public LogicalOperator getOperator() {
-        return operator;
+    public LogicalOperator getLogicalOperator() {
+        return logicalOperator;
     }
 
-    public void setOperator(LogicalOperator operator) {
-        this.operator = operator;
+    public void setLogicalOperator(LogicalOperator logicalOperator) {
+        this.logicalOperator = logicalOperator;
     }
 }

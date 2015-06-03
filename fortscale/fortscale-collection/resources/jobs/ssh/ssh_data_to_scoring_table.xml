@@ -38,9 +38,34 @@
 					<key>impalaTablePartitionType</key>
 					<value>${impala.data.ssh.table.partition.type}</value>
 				</entry>
+				<entry>
+					<key>impalaDestinationTablePartitionType</key>
+					<value>${impala.score.ssh.table.partition.type}</value>
+				</entry>
+				<entry>
+					<key>impalaDestinationTable</key>
+					<value>${impala.score.ssh.table.name}</value>
+				</entry>
+				<entry>
+					<key>throttlingSleep</key>
+					<value>${kafka.throttlingSleep}</value>
+				</entry>
 			</job-data-map>
-			
+
 		</job>
+
+		<!-- need to comment out when working in multi collector mode
+		<trigger>
+			<cron>
+				<name>ssh_send_to_streaming_hourly_trigger</name>
+
+				<group>SSH</group>
+				<job-name>Scoring</job-name>
+				<job-group>SSH</job-group>
+				<cron-expression>0 30 * * * ?</cron-expression>
+			</cron>
+		</trigger>
+		-->
 	</schedule>
 
 

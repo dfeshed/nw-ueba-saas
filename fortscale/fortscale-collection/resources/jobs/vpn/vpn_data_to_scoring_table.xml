@@ -38,9 +38,32 @@
 					<key>impalaTablePartitionType</key>
 					<value>${impala.data.vpn.table.partition.type}</value>
 				</entry>
+				<entry>
+					<key>impalaDestinationTablePartitionType</key>
+					<value>${impala.score.vpn.table.partition.type}</value>
+				</entry>
+				<entry>
+					<key>impalaDestinationTable</key>
+					<value>${impala.score.vpn.table.name}</value>
+				</entry>
+				<entry>
+					<key>throttlingSleep</key>
+					<value>${kafka.throttlingSleep}</value>
+				</entry>
 			</job-data-map>
-			
+
 		</job>
+
+		<!-- need to comment out when working in multi collector mode
+		<trigger>
+			<cron>
+	        <group>VPN</group>
+				<job-name>Scoring</job-name>
+				<job-group>VPN</job-group>
+				<cron-expression>0 45 * * * ?</cron-expression>
+			</cron>
+		</trigger>
+		-->
 	</schedule>
 
 

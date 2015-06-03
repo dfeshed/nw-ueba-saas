@@ -73,13 +73,14 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         //stub
         Map map = new HashMap();
         map.put("username", "myUser");
+
         when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
+        when(vpnEnrichService.getUsernameFieldName()).thenReturn("username");
 
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
         // run the process on the envelope
-        task.setUsernameFieldName("username");
         task.wrappedProcess(envelope , messageCollector, taskCoordinator);
         task.wrappedClose();
         // validate the services were read
@@ -110,12 +111,12 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
 
         when(vpnEnrichService.processVpnEvent(any(JSONObject.class))).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
+        when(vpnEnrichService.getUsernameFieldName()).thenReturn("username");
         doThrow(new RuntimeException()).when(messageCollector).send(any(OutgoingMessageEnvelope.class));
 
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
         // run the process on the envelope
-        task.setUsernameFieldName("username");
         task.wrappedProcess(envelope , messageCollector, taskCoordinator);
         task.wrappedClose();
 

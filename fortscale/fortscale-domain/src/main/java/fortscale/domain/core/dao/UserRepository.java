@@ -13,6 +13,7 @@ import fortscale.domain.core.User;
 
 public interface UserRepository extends MongoRepository<User, String>, UserRepositoryCustom{
 	public User findByUsername(String username);
+	public List<User> findUsersBysAMAccountName(String username);
 	public User findByNoDomainUsername(String noDomainUsername);
 	public List<User> findByUsernameContaining(String username);
 	public List<User> findByUsernameRegex(String usernameRegex);

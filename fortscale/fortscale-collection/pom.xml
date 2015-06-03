@@ -78,6 +78,7 @@
 		<commons-io.version>2.1</commons-io.version>
 		<commons-net.version>3.3</commons-net.version>
 		<minimal-json.version>0.9.1</minimal-json.version>
+		<syslog-client.version>1.0.6</syslog-client.version>
 		<!-- maven plugins versions -->
 		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
@@ -272,7 +273,15 @@
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>${opencsv.version}</version>
-		</dependency>            
+		</dependency>
+
+		<!-- required by event forwarding as syslog client -->
+		<dependency>
+			<groupId>com.cloudbees</groupId>
+			<artifactId>syslog-java-client</artifactId>
+			<version>${syslog-client.version}</version>
+		</dependency>
+
 
 		<!-- required by init script (system) -->
 		<dependency>

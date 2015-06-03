@@ -1,16 +1,15 @@
 package fortscale.streaming.service;
 
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fortscale.streaming.exceptions.HdfsException;
 import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * Service for hdfs and impala related operations
@@ -31,10 +30,10 @@ public class HdfsService {
 	// latest time we refreshed impala table
 	private long lastImpalaRefreshEpoch;
 	
-	public HdfsService(String hdfsRootPath, String fileName, PartitionStrategy partition, FileSplitStrategy split, String tableName, int flushPerItemsCount, long impalaRefreshWindow) throws IOException {
+	public HdfsService(String hdfsRootPath, String fileName, PartitionStrategy partition, FileSplitStrategy split, String tableName, int flushPerItemsCount, long impalaRefreshWindow, String separator) throws IOException {
 		// create hdfs appender
 		this.fileName = fileName;
-		appender = new HDFSPartitionsWriter(hdfsRootPath, partition, split);
+		appender = new HDFSPartitionsWriter(hdfsRootPath, partition, split, separator);
 		
 		// create impala client
 		this.tableName = tableName;

@@ -58,6 +58,15 @@
         <constructor-arg name="timeToExpire" value="${dhcp.resolver.blacklist.timeToExpireSec:7200}" />
         <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
+    <bean id="iseResolverCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${ise.resolver.cache.max.items:30000}" />
+        <constructor-arg name="clazz" value="fortscale.domain.events.IseEvent" />
+    </bean>
+    <bean id="iseBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${ise.resolver.cache.max.items:30000}" />
+        <constructor-arg name="timeToExpire" value="${ise.resolver.blacklist.timeToExpireSec:7200}" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+    </bean>
     <bean id="loginResolverCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${computer.login.resolver.cache.max.items:30000}" />
         <constructor-arg name="clazz" value="fortscale.domain.events.ComputerLoginEvent" />
@@ -73,6 +82,10 @@
     <bean id="dhcpResolver" class="fortscale.services.ipresolving.DhcpResolver" scope="singleton" >
         <constructor-arg name="shouldUseBlackList" value="${dhcp.resolver.shouldUseBlackList:true}" />
         <constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
+    </bean>
+    <bean id="iseResolver" class="fortscale.services.ipresolving.IseResolver" scope="singleton" >
+        <constructor-arg name="shouldUseBlackList" value="${ise.resolver.shouldUseBlackList:true}" />
+        <constructor-arg name="ipBlackListCache" ref="iseBlacklistCache" />
     </bean>
     <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver" scope="singleton" >
         <constructor-arg name="shouldUseBlackList" value="${computer.login.resolver.shouldUseBlackList:true}" />
@@ -111,20 +124,21 @@
 
     <!-- Username normalization -->
     <bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
-        <property name="matchersString" value="${collection.vpn.etl.username.normalize.matchers}"/>
         <property name="usernameService" ref="usernameService"/>
+        <property name="userService" ref="userService"/>
     </bean>
-    <bean id="secUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
+    <bean id="secUsernameNormalizer" class="fortscale.services.impl.SecUsernameNormalizer" scope="prototype">
         <property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
         <property name="usernameService" ref="usernameService"/>
     </bean>
-    <bean id="sshUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
-        <property name="matchersString" value="${collection.ssh.etl.username.normalize.matchers}"/>
+    <bean id="sshUsernameNormalizer" class="fortscale.services.impl.SSHUsernameNormalizer" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
+        <property name="computerService" ref="computerService"/>
+        <property name="userService" ref="userService"/>
     </bean>
     <bean id="amtUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
-        <property name="matchersString" value="${collection.amt.etl.username.normalize.matchers}"/>
         <property name="usernameService" ref="usernameService"/>
+        <property name="userService" ref="userService"/>
     </bean>
 
     <bean id="SecurityUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">

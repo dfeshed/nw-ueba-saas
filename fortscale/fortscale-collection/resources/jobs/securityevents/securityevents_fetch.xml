@@ -16,12 +16,22 @@
 			
 			<job-data-map>
 				<entry>
-					<key>earliest</key>
-					<value>-1h@h</value>
+					<key>type</key>
+					<value>securityEvents</value>
+				</entry>
+				<!-- HOUR = 10, MINUTE = 12, SECOND = 13, DATE = 5 -->
+				<entry>
+					<key>ceilingTimePartInt</key>
+					<value>10</value>
 				</entry>
 				<entry>
-					<key>latest</key>
-					<value>-0h@h</value>
+					<key>fetchIntervalInSeconds</key>
+					<value>3600</value>
+				</entry>
+				<!--since there is only ceiling function - we need to move our range one hour back - to get the previous hour and not the current one-->
+				<entry>
+					<key>fetchDiffInSeconds</key>
+					<value>3600</value>
 				</entry>
 				<entry>
 					<key>savedQuery</key>

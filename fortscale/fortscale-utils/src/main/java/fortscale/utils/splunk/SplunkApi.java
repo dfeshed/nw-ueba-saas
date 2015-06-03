@@ -31,7 +31,10 @@ import fortscale.utils.logging.Logger;
 
 public class SplunkApi {
 	private static final Logger logger = Logger.getLogger(SplunkApi.class);
-	
+
+	// No timeout for job
+	public static final int NO_TIMEOUT = -1;
+
 	private static String SPLUNK_SERVER_HOST_NAME_PROPERTY_FIELD_NAME = "splunkServer";
 	private static String SPLUNK_SERVER_PORT_PROPERTY_FIELD_NAME = "splunkPort";
 	private static String SPLUNK_SERVER_USER_PROPERTY_FIELD_NAME = "splunkUser";
@@ -267,31 +270,33 @@ public class SplunkApi {
 		
 		return timestamp;
 	}
+
+
+//	public String runSearchQuery(String splunkSearchQuery, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler) throws Exception{
+//		return runSearchQuery(splunkSearchQuery, earliestTimeCursor, splunkEventsHandler, true);
+//	}
+//
+//	public String runSearchQuery(String splunkSearchQuery, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler, boolean isContainTime) throws Exception{
+//		SearchJob searchJob = new SearchQueryJob(splunkSearchQuery);
+//		searchJob.setContainTime(isContainTime);
+//
+//		return runSearch(searchJob, earliestTimeCursor, splunkEventsHandler);
+//	}
 	
-	
-	public String runSearchQuery(String splunkSearchQuery, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler) throws Exception{
-		return runSearchQuery(splunkSearchQuery, earliestTimeCursor, splunkEventsHandler, true);
+	public String runSavedSearch(String savedSearchName, Properties arguments, String earliestTimeCursor,
+			ISplunkEventsHandler splunkEventsHandler, int timeoutInSeconds) throws Exception{
+		return runSavedSearch(savedSearchName, arguments, earliestTimeCursor, splunkEventsHandler, true, timeoutInSeconds);
 	}
 	
-	public String runSearchQuery(String splunkSearchQuery, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler, boolean isContainTime) throws Exception{
-		SearchJob searchJob = new SearchQueryJob(splunkSearchQuery);
-		searchJob.setContainTime(isContainTime);
-		
-		return runSearch(searchJob, earliestTimeCursor, splunkEventsHandler);
-	}
-	
-	public String runSavedSearch(String savedSearchName, Properties arguments, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler) throws Exception{
-		return runSavedSearch(savedSearchName, arguments, earliestTimeCursor, splunkEventsHandler, true);
-	}
-	
-	public String runSavedSearch(String savedSearchName, Properties arguments, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler, boolean isContainTime) throws Exception{
+	public String runSavedSearch(String savedSearchName, Properties arguments, String earliestTimeCursor,
+			ISplunkEventsHandler splunkEventsHandler, boolean isContainTime, int timeoutInSeconds) throws Exception{
 		SearchJob searchJob = new SavedSearchJob(savedSearchName, arguments);
 		searchJob.setContainTime(isContainTime);
 		
-		return runSearch(searchJob, earliestTimeCursor, splunkEventsHandler);
+		return runSearch(searchJob, earliestTimeCursor, splunkEventsHandler, timeoutInSeconds);
 	}
-	
-	private String runSearch(SearchJob searchJob, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler) throws Exception{
+
+	private String runSearch(SearchJob searchJob, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler, int timeoutInSeconds) throws Exception{
 		if(earliestTimeCursor != null){
 			logger.info("search with earliest time: " + earliestTimeCursor);
 		} else{
@@ -309,7 +314,7 @@ public class SplunkApi {
         
  		splunkEventsHandler.open();
         try{
-        	retCursor = runSearch(searchJob, maxresults, earliestTimeCursor, splunkEventsHandler, -1);
+        	retCursor = runSearch(searchJob, maxresults, earliestTimeCursor, splunkEventsHandler, -1, timeoutInSeconds);
         } finally{
     		splunkEventsHandler.flush();
     		splunkEventsHandler.close();
@@ -318,7 +323,7 @@ public class SplunkApi {
         return retCursor;
 	}
 	
-	private String runSearch(SearchJob searchJob, int maxresults, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler, int maxNumOfEvents) throws Exception{
+	private String runSearch(SearchJob searchJob, int maxresults, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler, int maxNumOfEvents, int timeoutInSeconds) throws Exception{
 		String retCursor = null;
 		
 		String cursor = null;
@@ -334,7 +339,7 @@ public class SplunkApi {
     		if(job != null){
 				job.cancel();
 			}
-    		job = searchJob.run(splunkService, earliestTimeCursor, cursor);
+    		job = searchJob.run(splunkService, earliestTimeCursor, cursor, timeoutInSeconds);
     		if(job == null){
     			break;
     		}

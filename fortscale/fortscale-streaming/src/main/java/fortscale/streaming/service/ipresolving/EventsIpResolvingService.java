@@ -65,7 +65,7 @@ public class EventsIpResolvingService {
             String eventHostname = convertToString(event.get(config.getHostFieldName()));
             if (StringUtils.isNotEmpty(eventHostname)) {
                 eventHostname = resolver.normalizeHostname(eventHostname, config.isRemoveLastDot(), config.isShortName());
-                event.put(config.getHostFieldName(), hostname);
+                event.put(config.getHostFieldName(), eventHostname);
             }
         }
 
