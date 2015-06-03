@@ -139,6 +139,9 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		taggedUsers = new HashSet<>();
 		if (!groupsToTag.isEmpty()) {
 
+			// Warm up the cache
+			adCacheHandler.warmUpCache();
+
 			// Extend the group list
 			groupsToTag.addAll(updateGroupsList());
 
