@@ -13,7 +13,7 @@ import fortscale.utils.TimestampUtils;
 public class IpToHostname extends AbstractDocument{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 4135830670048978765L;
 	public static final String CREATED_AT_FIELD_NAME = "createdAt";
@@ -21,25 +21,24 @@ public class IpToHostname extends AbstractDocument{
 	public static final String IP_ADDRESS_FIELD_NAME = "ipaddress";
 	public static final String HOSTNAME_FIELD_NAME = "hostname";
 
-	
+
 	// expire events after 50 hours, as we suspect that dhcp leases are usually for 24 or 48 hours
 	@Indexed(unique = false, expireAfterSeconds=60*60*50)
 	@CreatedDate
 	@Field(CREATED_AT_FIELD_NAME)
 	@JsonSerialize(using = JodaDateSerializer.class)
 	protected DateTime createdAt;
-	
+
 	@Field(TIMESTAMP_EPOCH_FIELD_NAME)
 	protected Long timestampepoch;
-	
+
 	@Field(IP_ADDRESS_FIELD_NAME)
 	protected String ipaddress;
-	
+
 	@Field(HOSTNAME_FIELD_NAME)
 	protected String hostname;
 
-
-
+	protected int eventPriority;
 
 	public DateTime getCreatedAt() {
 		return createdAt;
@@ -73,6 +72,18 @@ public class IpToHostname extends AbstractDocument{
 		this.hostname = hostname;
 	}
 
+	public int getEventPriority() {
+		return eventPriority;
+	}
+
+	public void setEventPriority(int eventPriority) {
+		this.eventPriority = eventPriority;
+	}
+
 	//This method will be override by the extending class that will hold the adHostname field
 	public boolean checkIsAdHostname(){return true;};
+
+	public long getExpiration() {
+		return 0;
+	}
 }

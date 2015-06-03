@@ -26,7 +26,7 @@ public class DhcpEventTest {
 
         String actual = mapper.writeValueAsString(event);
         Assert.assertTrue(StringUtils.notEmpty(actual));
-        Assert.assertEquals("{\"id\":null,\"createdAt\":1422189771865,\"timestampepoch\":1420963260000,\"ipaddress\":\"1.1.1.1\",\"hostname\":null,\"macAddress\":null,\"expiration\":12333000,\"action\":\"START\",\"adHostName\":true}", actual);
+        Assert.assertEquals("{\"id\":null,\"createdAt\":1422189771865,\"timestampepoch\":1420963260000,\"ipaddress\":\"1.1.1.1\",\"hostname\":null,\"eventPriority\":2,\"macAddress\":null,\"expiration\":12333000,\"action\":\"START\",\"adHostName\":true}", actual);
     }
 
     @Test
