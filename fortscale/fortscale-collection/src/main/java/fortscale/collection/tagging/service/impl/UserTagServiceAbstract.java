@@ -1,5 +1,6 @@
 package fortscale.collection.tagging.service.impl;
 
+import fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper;
 import fortscale.collection.tagging.service.UserTagService;
 import fortscale.collection.tagging.service.UserTaggingService;
 import fortscale.services.UserService;
@@ -29,8 +30,11 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	private int pageSize;
 
 	private List<String> ousToTag;
-	private List<String> groupsToTag;
+	private Set<String> groupsToTag;
 	private Set<String> taggedUsers = new HashSet<String>();
+
+	@Autowired
+	private ActiveDirectoryGroupsHelper adCacheHandler;
 
 	// Getter and Setter are only for unit tests
 	protected int getPageSize() {
@@ -88,67 +92,81 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	private void updateTaggedUsersList()
 		throws Exception {
 
+		// Get the file path
 		String filePath = getFilePath();
-		if (!StringUtils.isEmpty(filePath)) {
-			File f = new File(filePath);
-			if (f.exists() && f.isFile()) {
-				// read requested group from file
-				groupsToTag = FileUtils.readLines(new File(filePath));
-				if (isFileEmptyFromGroups()) {
-					logger.warn(
-						"Users Tagging [{}] file is Empty: {}", getTag(),
-						filePath);
-					taggedUsers = new HashSet<String>();
-					return;
-				}
-				// take OUs from groups
-				ousToTag = new LinkedList<>();
-				for (String group : groupsToTag) {
-					if (group.toLowerCase().startsWith("ou=")) {
-						// this is not a group but OU
-						ousToTag.add(group);
-					}
-				}
-				groupsToTag.removeAll(ousToTag);
-				// find users matching to the groups and the OUs (this solution might be problematic memory-wise in case there are many users)
-				taggedUsers = new HashSet<>();
-				if (!groupsToTag.isEmpty()) {
-					Set<String> subset;
-					Pageable pageable = new PageRequest(0, pageSize);
-					do {
-						subset = userService.findNamesInGroup(groupsToTag, pageable);
-						taggedUsers.addAll(subset);
-						pageable = pageable.next();
-					} while (subset.size() == pageSize);
-				}
-				if (!ousToTag.isEmpty()) {
-					Set<String> subset;
-					Pageable pageable = new PageRequest(0, pageSize);
-					do {
-						subset = userService.findNamesInOU(ousToTag, pageable);
-						taggedUsers.addAll(subset);
-						pageable = pageable.next();
-					} while (subset.size() == pageSize);
-				}
-				if (taggedUsers.isEmpty()) {
-					logger.warn(
-						"Users Tagging [{}] no users found in the user repository for groups {}",
-						getTag(), groupsToTag);
-				}
-			}
-			else {
-				groupsToTag = new ArrayList<String>();
-				taggedUsers = new HashSet<String>();
-				logger.warn(
-					"Users Tagging [{}] file not found in path: {}", getTag(),
+
+		// Input check
+		if (StringUtils.isEmpty(filePath)) {
+			groupsToTag = new HashSet<String>();
+			taggedUsers = new HashSet<String>();
+			logger.info("[Users Tagging [{}] file path not configured", getTag());
+			return;
+		}
+
+		File f = new File(filePath);
+		if (!f.exists() || !f.isFile()) {
+			groupsToTag = new  HashSet<String>();
+			taggedUsers = new HashSet<String>();
+			logger.warn("Users Tagging [{}] file not found in path: {}", getTag(), filePath);
+			return;
+		}
+
+		// read requested group from file
+		// Check it is not empty
+		groupsToTag = new HashSet<String>(FileUtils.readLines(f));
+		if (isFileEmptyFromGroups()) {
+			logger.warn(
+					"Users Tagging [{}] file is Empty: {}", getTag(),
 					filePath);
+			taggedUsers = new HashSet<String>();
+			return;
+		}
+
+		// take OUs from groups
+		ousToTag = new LinkedList<>();
+		for (String group : groupsToTag) {
+			if (group.toLowerCase().startsWith("ou=")) {
+				// this is not a group but OU
+				ousToTag.add(group);
 			}
 		}
-		else {
-			groupsToTag = new ArrayList<String>();
-			taggedUsers = new HashSet<String>();
-			logger.info(
-				"[Users Tagging [{}] file path not configured", getTag());
+		groupsToTag.removeAll(ousToTag);
+
+
+
+		// find users matching to the groups
+		// this solution might be problematic memory-wise in case there are many users
+		taggedUsers = new HashSet<>();
+		if (!groupsToTag.isEmpty()) {
+
+			// Extend the group list
+			groupsToTag.addAll(updateGroupsList());
+
+			Set<String> subset;
+			Pageable pageable = new PageRequest(0, pageSize);
+			do {
+				subset = userService.findNamesInGroup(new ArrayList<String>(groupsToTag), pageable);
+				taggedUsers.addAll(subset);
+				pageable = pageable.next();
+			} while (subset.size() == pageSize);
+		}
+
+		// Find users matching to the OUs
+		if (!ousToTag.isEmpty()) {
+			Set<String> subset;
+			Pageable pageable = new PageRequest(0, pageSize);
+			do {
+				subset = userService.findNamesInOU(ousToTag, pageable);
+				taggedUsers.addAll(subset);
+				pageable = pageable.next();
+			} while (subset.size() == pageSize);
+		}
+
+		// In case we didn't found users to tag
+		if (taggedUsers.isEmpty()) {
+			logger.warn(
+					"Users Tagging [{}] no users found in the user repository for groups {}",
+					getTag(), groupsToTag);
 		}
 	}
 
@@ -170,6 +188,43 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 				updateUserTag(user, false);
 			}
 		}
+	}
+
+	/**
+	 * Add nested groups to 'groupsToTag' list
+	 */
+	private Set<String> updateGroupsList(){
+
+		// Set to hold the groups need to be add
+		Set<String> completeGroupList = new HashSet<String>();
+
+		// Set to hold the group to be checked
+		Queue<String> groupsToCheck = new LinkedList<String>();
+
+		// Add all group to list to be checked
+		groupsToCheck.addAll(groupsToTag);
+
+		// Temp variable to hold the returned data from handler
+		String tempGroup;
+
+		while (!groupsToCheck.isEmpty()) {
+			String groupToCheck = groupsToCheck.remove();
+
+			// Get data from handler
+			tempGroup = adCacheHandler.get(groupToCheck);
+
+			// If we got value from cache and we didn't check this group before
+			if (tempGroup != null && !tempGroup.isEmpty() && !completeGroupList.contains(groupToCheck)) {
+
+				// Add the group to list
+				completeGroupList.add(groupToCheck);
+
+				// Add to list the group members
+				groupsToCheck.addAll(Arrays.asList(tempGroup.split(";")));
+			}
+		}
+
+		return completeGroupList;
 	}
 
 	public void updateUserTag(String username, boolean isTagTheUser){

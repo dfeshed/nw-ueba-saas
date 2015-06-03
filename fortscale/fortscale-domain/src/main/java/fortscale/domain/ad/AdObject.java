@@ -13,6 +13,8 @@ public class AdObject extends AbstractDocument{
 	 */
 	private static final long serialVersionUID = 4373713742111586501L;
 	public static final String dnField = "distinguishedName";
+	public static final String memberField = "member";
+	public static final String nameField = "name";
 	public static final String objectGUIDField = "objectGUID";
 	public static final String timestampepochField = "timestampepoch";
 	public static final String lastModifiedField = "lastModified";
