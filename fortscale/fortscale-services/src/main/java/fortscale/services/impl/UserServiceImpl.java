@@ -988,12 +988,12 @@ public class UserServiceImpl implements UserService{
 			tags = new ArrayList<String>();
 		}
 		if (value) {
-			if (!tags.contains(tagField)) {
-				tags.add(tagField);
+			if (!tags.contains(userTagEnumId)) {
+				tags.add(userTagEnumId);
 			}
 		}
 		else {
-			tags.remove(tagField);
+			tags.remove(userTagEnumId);
 		}
 		userTagsCache.put(username, tags);
 	}

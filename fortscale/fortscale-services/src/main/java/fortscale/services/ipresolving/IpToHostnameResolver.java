@@ -1,8 +1,8 @@
 package fortscale.services.ipresolving;
 
 import fortscale.domain.events.IpToHostname;
-import fortscale.domain.events.IseEvent;
 import fortscale.services.ComputerService;
+import fortscale.utils.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -277,7 +277,7 @@ public class IpToHostnameResolver {
 		}
 
 		if (event.getTimestampepoch().compareTo(event.getExpiration()) < 0) {
-			return timestamp > event.getTimestampepoch();
+			return TimestampUtils.convertToMilliSeconds(timestamp) > TimestampUtils.convertToMilliSeconds(event.getTimestampepoch());
 		}
 
 		return  true;
