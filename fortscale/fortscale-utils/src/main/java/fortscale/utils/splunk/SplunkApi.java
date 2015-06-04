@@ -1,33 +1,12 @@
 package fortscale.utils.splunk;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import com.splunk.*;
+import fortscale.utils.logging.Logger;
+
+import java.io.*;
 import java.net.Socket;
 import java.util.Properties;
-
-import com.splunk.Args;
-import com.splunk.Entity;
-import com.splunk.Event;
-import com.splunk.Index;
-import com.splunk.IndexCollection;
-import com.splunk.InputCollection;
-import com.splunk.InputKind;
-import com.splunk.Job;
-import com.splunk.JobArgs;
-import com.splunk.JobResultsArgs;
-import com.splunk.MonitorInput;
-import com.splunk.ResultsReaderXml;
-import com.splunk.Service;
-import com.splunk.ServiceArgs;
-
-import fortscale.utils.logging.Logger;
+import java.util.concurrent.*;
 
 public class SplunkApi {
 	private static final Logger logger = Logger.getLogger(SplunkApi.class);
@@ -322,7 +301,48 @@ public class SplunkApi {
         
         return retCursor;
 	}
-	
+
+
+	private Job runSearchJob(SearchJob searchJob, String earliestTimeCursor, String cursor,int timeoutInSeconds) throws Exception{
+		//inner class uses for running the job in a different thread
+		class RunJobCallable implements Callable<Job> {
+
+			SearchJob searchJob;
+			String earliestTimeCursor;
+			String cursor;
+
+			RunJobCallable(SearchJob searchJob, String earliestTimeCursor, String cursor){
+				this.searchJob = searchJob;
+				this.earliestTimeCursor = earliestTimeCursor;
+				this.cursor = cursor;
+			}
+
+			public Job call() throws Exception {
+				return searchJob.run(splunkService, earliestTimeCursor, cursor);
+			}
+		}
+		Job job = null;
+		ExecutorService exService = Executors.newSingleThreadExecutor();
+		Future<Job> futureJob = exService.submit(new RunJobCallable(searchJob, earliestTimeCursor,cursor));
+		try {
+			if (timeoutInSeconds > 0) {
+				job = futureJob.get(timeoutInSeconds, TimeUnit.SECONDS);
+			}
+			else {
+				job = futureJob.get();
+			}
+		}
+		catch (TimeoutException e){
+			// in the case of a timeout
+			logger.error("Fetch job has reached a timeout of {} seconds. Canceling job...", timeoutInSeconds);
+			throw new Exception("Timeout in job");
+		}
+		finally {
+			exService.shutdownNow();
+		}
+		return job;
+	}
+
 	private String runSearch(SearchJob searchJob, int maxresults, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler, int maxNumOfEvents, int timeoutInSeconds) throws Exception{
 		String retCursor = null;
 		
@@ -339,7 +359,7 @@ public class SplunkApi {
     		if(job != null){
 				job.cancel();
 			}
-    		job = searchJob.run(splunkService, earliestTimeCursor, cursor, timeoutInSeconds);
+			job = runSearchJob(searchJob, earliestTimeCursor, cursor, timeoutInSeconds);
     		if(job == null){
     			break;
     		}
