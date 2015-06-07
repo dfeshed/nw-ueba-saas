@@ -5,6 +5,7 @@ package fortscale.services.ipresolving;
  */
 
 import fortscale.domain.events.IseEvent;
+import fortscale.domain.events.IseEventsEnum;
 import fortscale.domain.events.dao.IseEventRepository;
 import fortscale.services.cache.CacheHandler;
 import fortscale.utils.TimestampUtils;
@@ -55,61 +56,28 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
 
     /**
      * Handle the ise event and update repository when required.
-     * Note: this implementation assumes all events are received in chronological order for each ip address, there
-     * are some cases where we will not handle events as expected if they are received out of order
+     */
+
+    /**
+     * Handle ISE events
+     * @param event
      */
     public void addIseEvent(IseEvent event) {
-        // add assigned events to repository
-        // see that we don't already have such an event in cache with the same
-        // expiration time and hostname
-        IseEvent cached = cache.get(event.getIpaddress());
-
-        // If have already have in cache an event with same host name and a more recent lease time, return
-        if (cached != null && cached.getHostname().equals(event.getHostname()) && cached.getTimestampepoch().compareTo(event.getTimestampepoch()) >= 0)
+        if (event == null) {
             return;
-
-        // Cache miss
-        if (cached == null) {
-            List<IseEvent> iseEvents = iseEventRepository.findByIpaddress(event.getIpaddress(),
-                    new PageRequest(0, 1, Direction.DESC, IseEvent.TIMESTAMP_EPOCH_FIELD_NAME));
-            // New IP - add it to repository and cache
-            if (iseEvents.isEmpty()) {
-                cache.put(event.getIpaddress(), event);
-                iseEventRepository.save(event);
-            }
-            // The IP was used before;
-            // Update the cache
-            // TODO: make sure that the first event is the latest date
-            else {
-                cached = iseEvents.get(0);
-                // We will update the cache and the repository in case that:
-                // 1. IP was allocated
-                // 2. We have record in repository but not in cache
-                // 3. The ips of the new event and the event from the repository are the same
-                // 4. The time of the new event is more recent
-                // 5. The hostnames are different
-                if (cached.getIpaddress().equals(event.getIpaddress()) &&
-                        !cached.getHostname().equals(event.getHostname()) &&
-                        cached.getTimestampepoch().compareTo(event.getTimestampepoch()) <= 0) {
-                    iseEventRepository.save(event);
-                    cache.put((event.getIpaddress()), event);
-                }
-                else {
-                    cache.put(cached.getIpaddress(), cached);
-                }
-
-            }
         }
-        // Cache hit
-        else {
-            if (cached.getTimestampepoch().compareTo(event.getTimestampepoch()) < 0) {
-                cache.put(event.getIpaddress(), event);
-                removeFromBlackList(event);
-                if (!cached.getHostname().equals(event.getHostname())) {
-                    iseEventRepository.save(event);
-                }
-            }
+
+        switch (event.getEventType()) {
+        case ipAllocation:
+            handleIpAllocationEvent(event);
+            break;
+        case ipRelease:
+            handleIpReleaseEvent(event);
+            break;
+        case unknown:
+            break;
         }
+
     }
 
     public IseEvent getLatestIseEventBeforeTimestamp(String ip, long ts) {
@@ -170,6 +138,101 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
     @Override
     protected void removeFromBlackList(IseEvent event) {
         removeFromBlackList(event.getIpaddress(), event.getTimestampepoch(), event.getExpiration());
+    }
+
+    /**
+     * Handle ISE IP allocation event
+     * Note: this implementation assumes all events are received in chronological order for each ip address, there
+     * are some cases where we will not handle events as expected if they are received out of order
+     * @param event
+     */
+    private void handleIpAllocationEvent(IseEvent event) {
+        // add assigned events to repository
+        // see that we don't already have such an event in cache with the same
+        // expiration time and hostname
+        IseEvent cached = cache.get(event.getIpaddress());
+
+        // If have already have in cache an event with same host name and a more recent lease time, return
+        if (cached != null && cached.getHostname().equals(event.getHostname()) && cached.getTimestampepoch().compareTo(event.getTimestampepoch()) >= 0)
+            return;
+
+        // Cache miss
+        if (cached == null) {
+            List<IseEvent> iseEvents = iseEventRepository.findByIpaddress(event.getIpaddress(),
+                    new PageRequest(0, 1, Direction.DESC, IseEvent.TIMESTAMP_EPOCH_FIELD_NAME));
+            // New IP - add it to repository and cache
+            if (iseEvents.isEmpty()) {
+                cache.put(event.getIpaddress(), event);
+                iseEventRepository.save(event);
+            }
+            // The IP was used before;
+            // Update the cache
+            // TODO: make sure that the first event is the latest date
+            else {
+                cached = iseEvents.get(0);
+                // We will update the cache and the repository in case that:
+                // 1. IP was allocated
+                // 2. We have record in repository but not in cache
+                // 3. The ips of the new event and the event from the repository are the same
+                // 4. The time of the new event is more recent
+                // 5. The hostnames are different
+                if (cached.getIpaddress().equals(event.getIpaddress()) &&
+                        !cached.getHostname().equals(event.getHostname()) &&
+                        cached.getTimestampepoch().compareTo(event.getTimestampepoch()) <= 0) {
+                    iseEventRepository.save(event);
+                    cache.put((event.getIpaddress()), event);
+                }
+                else {
+                    cache.put(cached.getIpaddress(), cached);
+                }
+
+            }
+        }
+        // Cache hit
+        else {
+            if (cached.getTimestampepoch().compareTo(event.getTimestampepoch()) < 0) {
+                cache.put(event.getIpaddress(), event);
+                removeFromBlackList(event);
+                if (!cached.getHostname().equals(event.getHostname())) {
+                    iseEventRepository.save(event);
+                }
+            }
+        }
+    }
+
+    /**
+     * Handle ISE IP release event
+     * @param event
+     */
+    private  void handleIpReleaseEvent(IseEvent event) {
+
+        // Get event from cache
+        IseEvent cached = cache.get(event.getIpaddress());
+
+        // If we have in cache event with different host name, ignore
+        if (cached != null && !cached.getHostname().equals(event.getHostname()))
+            return;
+
+        // Cache hit
+        if (cached != null) {
+            if (cached.getHostname().compareTo(event.getHostname()) == 0) {
+                cached.setExpiration(event.getTimestampepoch());
+                cache.put((cached.getIpaddress()), cached);
+            }
+        }
+
+        // Update the repository
+        List<IseEvent> iseEvents = iseEventRepository.findByIpaddress(event.getIpaddress(),
+                new PageRequest(0, 1, Direction.DESC, IseEvent.TIMESTAMP_EPOCH_FIELD_NAME));
+        if (!iseEvents.isEmpty()) {
+            cached = iseEvents.get(0);
+            // Update if this event is newer than the event from cache \ repository
+            if (event.getTimestampepoch().compareTo(cached.getTimestampepoch()) > 0 &&
+                    cached.getHostname().compareTo(event.getHostname()) == 0) {
+                cached.setExpiration(event.getTimestampepoch());
+                iseEventRepository.save(cached);
+            }
+        }
     }
 
 }
