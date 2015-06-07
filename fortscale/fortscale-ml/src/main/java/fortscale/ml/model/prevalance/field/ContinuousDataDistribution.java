@@ -81,7 +81,7 @@ public class ContinuousDataDistribution implements FieldModel {
 			for (Map.Entry<Double, Long> entry : distribution.entrySet()) {
 				Double value = roundValue(entry.getKey());
 				Long oldCount = newDistribution.get(value);
-				Long newCount = oldCount == null ? 1 : oldCount + 1;
+				Long newCount = oldCount == null ? entry.getValue() : oldCount + entry.getValue();
 				newDistribution.put(value, newCount);
 			}
 
