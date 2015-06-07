@@ -63,6 +63,6 @@ public class FixedDurationFeatureBucketStrategy {
 		// Calculate the start time of the feature bucket to which the message belongs
 		long startTime = (timestamp / durationInSeconds) * durationInSeconds;
 
-		return mongoStore.getFeatureBucket(contextFieldNameToValueMap, startTime, strategyId);
+		return mongoStore.getFeatureBucket(contextFieldNameToValueMap, strategyId, startTime);
 	}
 }
