@@ -76,6 +76,8 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
             break;
         case unknown:
             break;
+		default:
+			break;
         }
 
     }
