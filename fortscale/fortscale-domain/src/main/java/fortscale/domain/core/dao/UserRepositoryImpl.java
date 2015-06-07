@@ -229,7 +229,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	private List<User> findByFieldCaseInsensitive(String field, Object val, Pageable pageable) {
-		Criteria criteria = where(field).regex(Pattern.compile(val.toString(), Pattern.CASE_INSENSITIVE));
+		Criteria criteria = where(field).regex(Pattern.compile("^" + val.toString() + "$", Pattern.CASE_INSENSITIVE));
 		Query query = new Query(criteria);
 		if (pageable != null) {
 			query.with(pageable);
