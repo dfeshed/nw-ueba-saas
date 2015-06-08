@@ -97,6 +97,11 @@
 		<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
 	</bean>
+	<bean id="adGroupsCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
+		<constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+	</bean>
 
 
 	<!-- ip to hostname singleton service bean for use in fortscale collection -->
@@ -114,7 +119,7 @@
 		<constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
 	</bean>
 	<bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
-
+	<bean id="ActiveDirectoryGroupsHelper" class="fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper" scope="singleton" />
 
 
 	<!-- computer service cache that uses memory based implementation and send updates to kafka topics are injected here -->

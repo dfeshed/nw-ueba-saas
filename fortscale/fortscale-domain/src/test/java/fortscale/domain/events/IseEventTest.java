@@ -21,11 +21,12 @@ public class IseEventTest {
         event.setCreatedAt(new DateTime(1422189771865L));
         event.setIpaddress("1.1.1.1");
         event.setTimestampepoch(1420963260000L);
+        event.setEventCode("3000");
 
 
         String actual = mapper.writeValueAsString(event);
         Assert.assertTrue(StringUtils.notEmpty(actual));
-        Assert.assertEquals("{\"id\":null,\"createdAt\":1422189771865,\"timestampepoch\":1420963260000,\"ipaddress\":\"1.1.1.1\",\"hostname\":null,\"expiration\":12333000,\"macAddress\":null,\"adHostName\":true}", actual);
+        Assert.assertEquals("{\"id\":null,\"createdAt\":1422189771865,\"timestampepoch\":1420963260000,\"ipaddress\":\"1.1.1.1\",\"hostname\":null,\"eventPriority\":1,\"expiration\":12333000,\"macAddress\":null,\"eventCode\":\"3000\",\"adHostName\":true}", actual);
     }
 
     @Test

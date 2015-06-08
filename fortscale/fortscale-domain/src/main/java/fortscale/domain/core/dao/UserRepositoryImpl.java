@@ -1,3 +1,4 @@
+
 package fortscale.domain.core.dao;
 
 import com.mongodb.BasicDBObjectBuilder;
@@ -20,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -176,7 +178,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public List<User> findUsersBysAMAccountName(String username) {
 		PageRequest pageRequest = new PageRequest(0, 1000);
-		return findByField(User.getAdInfoField(UserAdInfo.sAMAccountNameField), username, pageRequest);
+		return findByFieldCaseInsensitive(User.getAdInfoField(UserAdInfo.sAMAccountNameField), username, pageRequest);
 	}
 
 	@Override
@@ -224,6 +226,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		List<Object> vals = new ArrayList<>();
 		vals.add(val);
 		return findByFields(fields, vals, pageable);
+	}
+
+	private List<User> findByFieldCaseInsensitive(String field, Object val, Pageable pageable) {
+		Criteria criteria = where(field).regex(Pattern.compile("^" + val.toString() + "$", Pattern.CASE_INSENSITIVE));
+		Query query = new Query(criteria);
+		if (pageable != null) {
+			query.with(pageable);
+		}
+		return mongoTemplate.find(query, User.class);
 	}
 
 	private User findOneByField(String field, Object val) {
@@ -518,3 +529,4 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 	
 }
+

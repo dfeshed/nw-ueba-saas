@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import fortscale.domain.ad.AdGroup;
 
+import java.util.List;
+import java.util.Map;
 
 public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdGroupRepositoryCustom {
 	@Autowired
@@ -24,6 +26,14 @@ public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdG
 		return latest!=null ? latest : null;
 	}
 
-	
+
+	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements) {
+		Query query = new Query(where(AdGroup.memberField).exists(true));
+		query.fields().include(AdGroup.memberField);
+		query.fields().include(AdGroup.dnField);
+		query.limit(maxNumberOfReturnElements);
+
+		return mongoTemplate.find(query, AdGroup.class);
+	}
 
 }
