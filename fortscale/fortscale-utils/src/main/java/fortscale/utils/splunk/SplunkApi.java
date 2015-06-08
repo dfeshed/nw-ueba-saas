@@ -384,12 +384,13 @@ public class SplunkApi {
 		        resultsArgs.setCount(maxresults);
 		        resultsArgs.setOutputMode(JobResultsArgs.OutputMode.XML);
 		        ResultsReaderXml reader = null;
+				Event event = null;
 		        try{
 			        // Display results in JSON using ResultsReaderJson
 			        InputStream results = job.getResults(resultsArgs);		        
 			        reader = new ResultsReaderXml(results);
 	
-			        Event event = null;
+
 			        Event lastEvent = null;
 			        while((event = getNextEvent(reader)) != null){
 			        	if(retCursor == null && searchJob.isContainTime()){
@@ -418,6 +419,12 @@ public class SplunkApi {
 			        	}
 			        }
 		        } finally{
+					// In case of a problem in reading the events, increment the loop counter.
+					// This ensures that we won't enter an endless loop
+					if	(event == null) {
+						logger.warn("Could not read event number: {}", Integer.toString(offset));
+						offset++;
+					}
 		        	if(reader != null){
 		        		reader.close();
 		        	}
