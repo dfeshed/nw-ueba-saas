@@ -377,6 +377,7 @@ public class SplunkApi {
 			
 			logger.info("going over {} events", numOfEvents);
 			int offset = 0;
+			Event event = null;
 			 // Specify JSON as the output mode for results
 			while(offset < numOfEvents && (maxNumOfEvents < 0 || ((eventSum + offset) < maxNumOfEvents) ) ){
 		        JobResultsArgs resultsArgs = new JobResultsArgs();
@@ -389,7 +390,7 @@ public class SplunkApi {
 			        InputStream results = job.getResults(resultsArgs);		        
 			        reader = new ResultsReaderXml(results);
 	
-			        Event event = null;
+
 			        Event lastEvent = null;
 			        while((event = getNextEvent(reader)) != null){
 			        	if(retCursor == null && searchJob.isContainTime()){
@@ -418,6 +419,12 @@ public class SplunkApi {
 			        	}
 			        }
 		        } finally{
+					// In case of a problem in reading the events, increment the loop counter.
+					// This ensures that we won't enter an endless loop
+					if	(event == null) {
+						logger.warn("Could not read event number: {}", Integer.toString(offset));
+						offset++;
+					}
 		        	if(reader != null){
 		        		reader.close();
 		        	}
