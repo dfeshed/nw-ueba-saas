@@ -2,19 +2,13 @@ package fortscale.streaming.service.aggregation;
 
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static fortscale.utils.ConversionUtils.convertToString;
 
 public class FixedDurationFeatureBucketStrategy {
-	private static final Logger logger = LoggerFactory.getLogger(FixedDurationFeatureBucketStrategy.class);
-
 	private List<String> contextFieldNames;
 	private long durationInSeconds;
 	private String strategyId;
@@ -42,27 +36,31 @@ public class FixedDurationFeatureBucketStrategy {
 	}
 
 	public FeatureBucket getFeatureBucket(JSONObject message, long timestamp) {
-		// Map each context field to its value in the message
+		Map<String, String> contextFieldNameToValueMap = mapContextFieldNamesToValues(message);
+		long startTime = (timestamp / durationInSeconds) * durationInSeconds;
+		return mongoStore.getFeatureBucket(contextFieldNameToValueMap, strategyId, startTime);
+	}
+
+	public void saveFeatureBucket(JSONObject message, long timestamp, FeatureBucket featureBucket) {
+		Map<String, String> contextFieldNameToValueMap = mapContextFieldNamesToValues(message);
+		long startTime = (timestamp / durationInSeconds) * durationInSeconds;
+		mongoStore.saveFeatureBucket(contextFieldNameToValueMap, strategyId, startTime, featureBucket);
+	}
+
+	private Map<String, String> mapContextFieldNamesToValues(JSONObject message) {
 		Map<String, String> contextFieldNameToValueMap = new HashMap<>();
 
 		for (String contextFieldName : contextFieldNames) {
-			if (!message.containsKey(contextFieldName)) {
-				logger.warn(String.format("Event message does not contain the field %s", contextFieldName));
-				return null;
-			}
+			if (message.containsKey(contextFieldName)) {
+				String contextValue = convertToString(message.get(contextFieldName));
 
-			String contextValue = convertToString(message.get(contextFieldName));
-			if (StringUtils.isBlank(contextValue)) {
-				logger.warn(String.format("Value of field %s in the event message is blank", contextFieldName));
-				return null;
+				// Add only valid context values
+				if (StringUtils.isBlank(contextValue)) {
+					contextFieldNameToValueMap.put(contextFieldName, contextValue);
+				}
 			}
-
-			contextFieldNameToValueMap.put(contextFieldName, contextValue);
 		}
 
-		// Calculate the start time of the feature bucket to which the message belongs
-		long startTime = (timestamp / durationInSeconds) * durationInSeconds;
-
-		return mongoStore.getFeatureBucket(contextFieldNameToValueMap, strategyId, startTime);
+		return contextFieldNameToValueMap;
 	}
 }

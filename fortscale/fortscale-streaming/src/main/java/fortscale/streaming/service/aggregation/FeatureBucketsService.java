@@ -1,9 +1,9 @@
 package fortscale.streaming.service.aggregation;
 
 import net.minidev.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class FeatureBucketsService {
 	private FixedDurationFeatureBucketStrategy fixedDurationStrategy;
@@ -21,6 +21,19 @@ public class FeatureBucketsService {
 	}
 
 	public void updateFeatureBuckets(JSONObject message, long timestamp) {
-		fixedDurationStrategy.getFeatureBucket(message, timestamp);
+		FeatureBucket featureBucket = fixedDurationStrategy.getFeatureBucket(message, timestamp);
+
+		if (featureBucket == null) {
+			featureBucket = new FeatureBucket();
+			featureBucket.addFeature("event_counter", EventCounterFeatureExtractor.createFeature());
+		}
+
+		for (Map.Entry<String, Object> entry : featureBucket.getFeatures().entrySet()) {
+			if (entry.getKey().equals("event_counter")) {
+				EventCounterFeatureExtractor.updateFeature(entry.getValue(), message);
+			}
+		}
+
+		fixedDurationStrategy.saveFeatureBucket(message, timestamp, featureBucket);
 	}
 }

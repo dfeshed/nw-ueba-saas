@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-
 import java.util.*;
 
 public class FeatureBucketsMongoStore {
@@ -28,6 +27,31 @@ public class FeatureBucketsMongoStore {
 		}
 
 		return null;
+	}
+
+	public void saveFeatureBucket(Map<String, String> contextFieldNameToValueMap, String strategyId, long startTime, FeatureBucket featureBucket) {
+		String collectionName = getCollectionName(contextFieldNameToValueMap.keySet());
+		FeatureBucket inMongoStore = getFeatureBucket(contextFieldNameToValueMap, strategyId, startTime);
+
+		if (inMongoStore == null) {
+			if (!mongoTemplate.collectionExists(collectionName)) {
+				mongoTemplate.createCollection(collectionName);
+			}
+
+			featureBucket.setStrategyId(strategyId);
+			featureBucket.setUserName(contextFieldNameToValueMap.get("normalized_username"));
+			featureBucket.setMachineName(contextFieldNameToValueMap.get("normalized_src_machine"));
+			featureBucket.setStartTime(startTime);
+			featureBucket.setEndTime(0);
+
+			// Save new feature bucket in mongo
+			mongoTemplate.save(featureBucket, collectionName);
+		} else {
+			inMongoStore.setFeatures(featureBucket.getFeatures());
+
+			// Update existing feature bucket in mongo
+			mongoTemplate.save(inMongoStore, collectionName);
+		}
 	}
 
 	private static String getCollectionName(Set<String> contextFieldNames) {
