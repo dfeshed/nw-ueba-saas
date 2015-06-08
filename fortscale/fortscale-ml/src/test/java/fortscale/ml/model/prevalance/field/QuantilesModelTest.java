@@ -17,7 +17,7 @@ public class QuantilesModelTest {
 			double score = quantilesModel.calculateScore(i);
 
 			// Assert
-			Assert.assertEquals((double)i, score);
+			Assert.assertEquals(i / 100.0, score);
 		}
 	}
 
@@ -32,17 +32,17 @@ public class QuantilesModelTest {
 		// Act
 		double score = quantilesModel.calculateScore(21.0);
 		// Assert
-		Assert.assertEquals(1.0, score);
+		Assert.assertEquals(0.01, score);
 
 		// Act
 		score = quantilesModel.calculateScore(42.0);
 		// Assert
-		Assert.assertEquals(51.0, score); // median index
+		Assert.assertEquals(0.51, score); // median index
 
 		// Act
 		score = quantilesModel.calculateScore(84.0);
 		// Assert
-		Assert.assertEquals(100.0, score);
+		Assert.assertEquals(1.00, score);
 	}
 
 	@Test
@@ -65,36 +65,36 @@ public class QuantilesModelTest {
 		// Act
 		double score = quantilesModel.calculateScore(125.0);
 		// Assert
-		Assert.assertEquals(13.0, score);
+		Assert.assertEquals(0.13, score);
 
 		// Act
 		score = quantilesModel.calculateScore(400.0);
 		// Assert
-		Assert.assertEquals(32.0, score);
+		Assert.assertEquals(0.32, score);
 
 		// Act
 		score = quantilesModel.calculateScore(555.0);
 		// Assert
-		Assert.assertEquals(46.0, score); // median index
+		Assert.assertEquals(0.46, score); // median index
 
 		// Act
 		score = quantilesModel.calculateScore(600.0);
 		// Assert
-		Assert.assertEquals(61.0, score);
+		Assert.assertEquals(0.61, score);
 
 		// Act
 		score = quantilesModel.calculateScore(925.0);
 		// Assert
-		Assert.assertEquals(93.0, score);
+		Assert.assertEquals(0.93, score);
 
 		// Act
 		score = quantilesModel.calculateScore(1000.0);
 		// Assert
-		Assert.assertEquals(100.0, score);
+		Assert.assertEquals(1.00, score);
 
 		// Act
 		score = quantilesModel.calculateScore(1111.0);
 		// Assert
-		Assert.assertEquals(100.0, score);
+		Assert.assertEquals(1.00, score);
 	}
 }

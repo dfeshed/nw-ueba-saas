@@ -40,12 +40,12 @@ public class MediansQuantilesModelBuilderTest {
 		FieldModel fieldModel = builder.buildModel();
 
 		// Assert
-		Assert.assertEquals(1.0, fieldModel.calculateScore(7.0));
-		Assert.assertEquals(17.0, fieldModel.calculateScore(8.0));
-		Assert.assertEquals(34.0, fieldModel.calculateScore(22.0));
-		Assert.assertEquals(50.0, fieldModel.calculateScore(23.0));
-		Assert.assertEquals(67.0, fieldModel.calculateScore(34.0));
-		Assert.assertEquals(84.0, fieldModel.calculateScore(35.0));
-		Assert.assertEquals(100.0, fieldModel.calculateScore(36.0));
+		Assert.assertEquals(0.01, fieldModel.calculateScore(7.0));
+		Assert.assertEquals(0.17, fieldModel.calculateScore(8.0));
+		Assert.assertEquals(0.34, fieldModel.calculateScore(22.0));
+		Assert.assertEquals(0.50, fieldModel.calculateScore(23.0));
+		Assert.assertEquals(0.67, fieldModel.calculateScore(34.0));
+		Assert.assertEquals(0.84, fieldModel.calculateScore(35.0));
+		Assert.assertEquals(1.00, fieldModel.calculateScore(36.0));
 	}
 }

@@ -87,21 +87,21 @@ public class PopulationQuantilesModelBuilderTest {
 		FieldModel fieldModel = builder.buildModel();
 
 		// Assert
-		Assert.assertEquals(1.0, fieldModel.calculateScore(12.0));
-		Assert.assertEquals(8.0, fieldModel.calculateScore(13.0));
-		Assert.assertEquals(15.0, fieldModel.calculateScore(16.0));
-		Assert.assertEquals(22.0, fieldModel.calculateScore(17.0));
-		Assert.assertEquals(29.0, fieldModel.calculateScore(18.0));
-		Assert.assertEquals(36.0, fieldModel.calculateScore(19.0));
-		Assert.assertEquals(43.0, fieldModel.calculateScore(22.0));
-		Assert.assertEquals(50.0, fieldModel.calculateScore(23.0));
-		Assert.assertEquals(58.0, fieldModel.calculateScore(28.0));
-		Assert.assertEquals(65.0, fieldModel.calculateScore(29.0));
-		Assert.assertEquals(72.0, fieldModel.calculateScore(30.0));
-		Assert.assertEquals(79.0, fieldModel.calculateScore(31.0));
-		Assert.assertEquals(86.0, fieldModel.calculateScore(36.0));
-		Assert.assertEquals(93.0, fieldModel.calculateScore(37.0));
-		Assert.assertEquals(100.0, fieldModel.calculateScore(38.0));
+		Assert.assertEquals(0.01, fieldModel.calculateScore(12.0));
+		Assert.assertEquals(0.08, fieldModel.calculateScore(13.0));
+		Assert.assertEquals(0.15, fieldModel.calculateScore(16.0));
+		Assert.assertEquals(0.22, fieldModel.calculateScore(17.0));
+		Assert.assertEquals(0.29, fieldModel.calculateScore(18.0));
+		Assert.assertEquals(0.36, fieldModel.calculateScore(19.0));
+		Assert.assertEquals(0.43, fieldModel.calculateScore(22.0));
+		Assert.assertEquals(0.50, fieldModel.calculateScore(23.0));
+		Assert.assertEquals(0.58, fieldModel.calculateScore(28.0));
+		Assert.assertEquals(0.65, fieldModel.calculateScore(29.0));
+		Assert.assertEquals(0.72, fieldModel.calculateScore(30.0));
+		Assert.assertEquals(0.79, fieldModel.calculateScore(31.0));
+		Assert.assertEquals(0.86, fieldModel.calculateScore(36.0));
+		Assert.assertEquals(0.93, fieldModel.calculateScore(37.0));
+		Assert.assertEquals(1.00, fieldModel.calculateScore(38.0));
 	}
 
 	@Test
@@ -125,15 +125,15 @@ public class PopulationQuantilesModelBuilderTest {
 		FieldModel fieldModel = builder.buildModel();
 
 		// Assert
-		Assert.assertEquals(1.0, fieldModel.calculateScore(50.0));
-		Assert.assertEquals(16.0, fieldModel.calculateScore(100.0));
-		Assert.assertEquals(31.0, fieldModel.calculateScore(125.0));
-		Assert.assertEquals(46.0, fieldModel.calculateScore(150.0));
-		Assert.assertEquals(61.0, fieldModel.calculateScore(175.0));
-		Assert.assertEquals(76.0, fieldModel.calculateScore(200.0));
-		Assert.assertEquals(91.0, fieldModel.calculateScore(225.0));
-		Assert.assertEquals(96.0, fieldModel.calculateScore(250.0));
-		Assert.assertEquals(100.0, fieldModel.calculateScore(300.0));
+		Assert.assertEquals(0.01, fieldModel.calculateScore(50.0));
+		Assert.assertEquals(0.16, fieldModel.calculateScore(100.0));
+		Assert.assertEquals(0.31, fieldModel.calculateScore(125.0));
+		Assert.assertEquals(0.46, fieldModel.calculateScore(150.0));
+		Assert.assertEquals(0.61, fieldModel.calculateScore(175.0));
+		Assert.assertEquals(0.76, fieldModel.calculateScore(200.0));
+		Assert.assertEquals(0.91, fieldModel.calculateScore(225.0));
+		Assert.assertEquals(0.96, fieldModel.calculateScore(250.0));
+		Assert.assertEquals(1.00, fieldModel.calculateScore(300.0));
 	}
 
 	@Test
@@ -154,7 +154,7 @@ public class PopulationQuantilesModelBuilderTest {
 
 		// Assert
 		for (int i = 1; i <= QuantilesModel.NUM_OF_QUANTILES; i++) {
-			Assert.assertEquals((double)i, fieldModel.calculateScore(i * 10.0));
+			Assert.assertEquals(i / 100.0, fieldModel.calculateScore(i * 10.0));
 		}
 	}
 }

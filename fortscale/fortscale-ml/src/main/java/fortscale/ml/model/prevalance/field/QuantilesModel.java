@@ -79,7 +79,7 @@ public class QuantilesModel implements FieldModel {
 		if (valueAsDouble == null)
 			return 0;
 		else
-			return inverseQuantile(valueAsDouble) / NUM_OF_QUANTILES;
+			return inverseQuantile(valueAsDouble) / (double)NUM_OF_QUANTILES;
 	}
 
 	/* 'init' and 'add' are redundant, as initialization
