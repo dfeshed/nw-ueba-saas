@@ -197,7 +197,7 @@ public class ComputerServiceImpl implements ComputerService {
 		if (StringUtils.isEmpty(hostname))
 			return null;
 		List<String> hostNames = new ArrayList();
-		hostNames.add(hostname);
+		hostNames.add(hostname.toUpperCase());
 		List<Computer> computers = repository.getComputersFromNames(hostNames);
 		if (computers == null || computers.isEmpty() || computers.size() > 1)
 			return null;
