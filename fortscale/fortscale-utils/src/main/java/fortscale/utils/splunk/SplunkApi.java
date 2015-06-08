@@ -377,7 +377,6 @@ public class SplunkApi {
 			
 			logger.info("going over {} events", numOfEvents);
 			int offset = 0;
-			Event event = null;
 			 // Specify JSON as the output mode for results
 			while(offset < numOfEvents && (maxNumOfEvents < 0 || ((eventSum + offset) < maxNumOfEvents) ) ){
 		        JobResultsArgs resultsArgs = new JobResultsArgs();
@@ -385,6 +384,7 @@ public class SplunkApi {
 		        resultsArgs.setCount(maxresults);
 		        resultsArgs.setOutputMode(JobResultsArgs.OutputMode.XML);
 		        ResultsReaderXml reader = null;
+				Event event = null;
 		        try{
 			        // Display results in JSON using ResultsReaderJson
 			        InputStream results = job.getResults(resultsArgs);		        
