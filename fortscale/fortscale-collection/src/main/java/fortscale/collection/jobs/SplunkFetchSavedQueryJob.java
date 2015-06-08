@@ -193,6 +193,9 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		if(fetchConfiguration == null){
 			fetchConfiguration = new FetchConfiguration(type, latest);
 		}
+		else {
+			fetchConfiguration.setLastFetchTime(latest);
+		}
 		fetchConfigurationRepository.save(fetchConfiguration);
 		if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)){
 			keepFetching = false;
