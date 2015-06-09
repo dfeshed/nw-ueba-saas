@@ -266,6 +266,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return mongoTemplate.find(query, User.class);
 	}
 
+
+	@Override
+	public List<User> findAllUsers(Pageable pageable) {
+		Query query = new Query().with(pageable);
+		return mongoTemplate.find(query, User.class);
+	}
+
+
 	@Override
 	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable) {
 		Query query = new Query().with(pageable);

@@ -14,6 +14,15 @@ public class UsernameNormalizer implements InitializingBean{
 
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
 
+	public SamAccountNameService getSamAccountNameService() {
+		return samAccountNameService;
+	}
+
+	public void setSamAccountNameService(SamAccountNameService samAccountNameService) {
+		this.samAccountNameService = samAccountNameService;
+	}
+
+	protected SamAccountNameService samAccountNameService;
 	protected UsernameService usernameService;
 	protected UserService userService;
 
@@ -38,10 +47,10 @@ public class UsernameNormalizer implements InitializingBean{
 		String ret;
 		logger.debug("Normalizing user - {}", username);
 		//get the list of users matching the samaccountname
-		List<User> users = usernameService.getUsersBysAMAccountName(username);
+		List<String> users = samAccountNameService.getUsersBysAMAccountName(username);
 		//if only one such user was found - return the full username (including domain)
 		if(users.size() == 1) {
-			ret = users.get(0).getUsername();
+			ret = users.get(0);
 			logger.debug("One user found - {}", ret);
 		}
 		else {
