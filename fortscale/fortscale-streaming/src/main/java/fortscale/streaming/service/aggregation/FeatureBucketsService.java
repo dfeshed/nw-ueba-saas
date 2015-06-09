@@ -1,23 +1,27 @@
 package fortscale.streaming.service.aggregation;
 
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Configurable(preConstruction = true)
 public class FeatureBucketsService {
+	@Autowired
+	private FeatureBucketsMongoStore featureBucketsMongoStore;
+
 	private FixedDurationFeatureBucketStrategy fixedDurationStrategy;
 
 	public FeatureBucketsService() {
-		// Create mongo store for the feature buckets
-		FeatureBucketsMongoStore mongoStore = new FeatureBucketsMongoStore();
-
 		List<String> contextFieldNames = new ArrayList<>(2);
 		contextFieldNames.add("normalized_username");
 		contextFieldNames.add("normalized_src_machine");
 
 		// Create a fixed duration feature bucket strategy of 1 hour
-		fixedDurationStrategy = new FixedDurationFeatureBucketStrategy(contextFieldNames, 3600, mongoStore);
+		fixedDurationStrategy = new FixedDurationFeatureBucketStrategy(contextFieldNames, 3600, featureBucketsMongoStore);
 	}
 
 	public void updateFeatureBuckets(JSONObject message, long timestamp) {
