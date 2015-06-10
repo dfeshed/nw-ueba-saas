@@ -24,6 +24,8 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 	private static String usernameKey = "username";
 	private static String userTagsKey = "user-tag";
+	private static String samAccountKey = "samAccountName";
 
 	/**
 	 * Logger
@@ -79,7 +82,10 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		LevelDbBasedCache<String, String> usernameStore = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
+		LevelDbBasedCache<String, ArrayList> samAccountNameStore = new LevelDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class);
 		CachingService usernameService = null;
+		CachingService samAccountNameService = null;
+
 		// get task configuration
 		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
 			String dataSource = ConfigField.getKey();
@@ -100,6 +106,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
 			usernameService.setCache(usernameStore);
+			samAccountNameService = service.getUsernameNormalizer().getSamAccountNameService();
+			samAccountNameService.setCache(samAccountNameStore);
 			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic,
 					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
 					classifier, service));
@@ -108,6 +116,12 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		// add the usernameService to update input topics map
 		if (usernameService != null) {
 			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, usernameKey)), usernameService);
+		}
+
+		//add the samAccountNameService to the update input topic map
+		if(samAccountNameService != null)
+		{
+			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, samAccountKey)), samAccountNameService);
 		}
 
 		// construct tagging service with the tags that are required from configuration

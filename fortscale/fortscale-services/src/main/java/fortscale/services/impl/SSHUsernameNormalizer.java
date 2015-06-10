@@ -30,7 +30,7 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 		String ret;
 		logger.debug("Normalizing user - {}", username);
 		//get the list of users matching the samaccountname
-		List<User> users = usernameService.getUsersBysAMAccountName(username);
+		List<String> users = samAccountNameService.getUsersBysAMAccountName(username);
 		//if no users were found - return the username with the fake suffix (target machine)
 		if(users.size() == 0){
 			ret = username + "@" + targetMachine;
@@ -41,7 +41,7 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 			logger.debug("No users found, saved normalized user - {}", ret);
 		}else if(users.size() == 1){
 			//if only one such user was found - return the full username (including domain)
-			ret = users.get(0).getUsername();
+			ret = users.get(0);
 			logger.debug("One user found - {}", ret);
 		}else{
 			//if more than one user was found - return the post normalization that will include the source machine

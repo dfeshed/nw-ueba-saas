@@ -1,3 +1,4 @@
+
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.ApplicationUserDetails;
@@ -30,6 +31,7 @@ public interface UserRepositoryCustom {
 	public List<User> findUsersBysAMAccountName(String usernames);
 	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames);
 	public List<User> findAllExcludeAdInfo(Pageable pageable);
+	public List<User> findAllUsers(Pageable pageable);
 
 	public User findByAdEmailAddress(EmailAddress emailAddress);
 	
@@ -70,3 +72,4 @@ public interface UserRepositoryCustom {
 	void syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
 	public Set<String> getUserTags(String normalizedUsername);
 }
+
