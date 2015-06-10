@@ -1,5 +1,7 @@
 package fortscale.ml.model.prevalance.field;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.samza.config.Config;
 import org.junit.Assert;
 import org.junit.Before;
@@ -279,9 +281,48 @@ public class ContinuousDataDistributionTest {
 		}
 	}
 
+	@Test
+	public void model_should_serialize_to_json() throws Exception {
+		ContinuousDataDistribution distribution = create(2, 0.3);
+		distribution.add(10.0, 0);
+		distribution.add(20.0, 0);
+		distribution.add(30.0, 0);
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		String json = mapper.writeValueAsString(distribution);
+
+		Assert.assertNotNull(json);
+		Assert.assertTrue(json.contains("\"distribution\":{\"38.4\":2,\"19.2\":1}"));
+		Assert.assertTrue(json.contains("\"continuousDataModel\":{\"N\":3,\"mean\":32.0,\"sd\":9.050966799187808}"));
+	}
+
+	@Test
+	public void model_should_deserialize_from_json() throws Exception {
+		String classNameJson = "\"@class\":\"fortscale.ml.model.prevalance.field.ContinuousDataDistribution\"";
+		String distributionJson = "\"distribution\":{\"38.4\":2,\"19.2\":1}";
+		String modelJson = "\"continuousDataModel\":{\"N\":3,\"mean\":32.0,\"sd\":9.050966799187808}";
+		String otherFieldsJson = "\"bucketSize\":19.2,\"minDistinctValues\":2,\"maxDistinctValues\":2,\"minBucketSize\":0.3,\"maxBucketSize\":0.3,\"totalCount\":3";
+		byte[] json = String.format("{%s,%s,%s,%s}", classNameJson, otherFieldsJson, distributionJson, modelJson).getBytes("UTF-8");
+
+		ObjectMapper mapper = new ObjectMapper();
+		ContinuousDataDistribution distribution = mapper.readValue(json, ContinuousDataDistribution.class);
+
+		Assert.assertNotNull(distribution);
+		double score = calculateScore(distribution, 40.0);
+		Assert.assertEquals(0, score, 0.01);
+		score = calculateScore(distribution, 22.0);
+		Assert.assertEquals(0, score, 0.01);
+	}
+
 	private double calculateScore(ContinuousDataDistribution model, double value, QuadPolyCalibrationForContModel calibrationForContModel) {
 		double modelScore = model.calculateScore(value);
 		return calibrationForContModel.calculateScore(modelScore);
+	}
+
+	private double calculateScore(ContinuousDataDistribution distribution, double value) {
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		return calculateScore(distribution, value, calibrationForContModel);
 	}
 
 	private void runScenarioAndTestScores(String filePath) throws Exception {

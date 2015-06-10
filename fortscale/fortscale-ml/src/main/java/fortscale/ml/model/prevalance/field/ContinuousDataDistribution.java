@@ -1,5 +1,7 @@
 package fortscale.ml.model.prevalance.field;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.model.prevalance.FieldModel;
 import fortscale.utils.ConversionUtils;
 import org.apache.samza.config.Config;
@@ -7,6 +9,7 @@ import org.apache.samza.config.Config;
 import java.util.HashMap;
 import java.util.Map;
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ContinuousDataDistribution implements FieldModel {
 	private static final int DEFAULT_MIN_DISTINCT_VALUES = 100;
 	private static final int DEFAULT_MAX_DISTINCT_VALUES = 10000;

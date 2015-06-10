@@ -58,6 +58,14 @@ public class ContinuousDataGlobalModelScorer extends AbstractScorer {
 	public FeatureScore calculateScore(EventMessage eventMessage) throws Exception {
 		// Get score according to continuous data local model
 		FeatureScore oldFeatureScore = continuousDataLocalModelScorer.calculateScore(eventMessage);
+
+		// If global prevalence model is not found, score according to local one
+		if (!modelService.modelExists(
+				GlobalModelStreamTaskService.GLOBAL_CONTEXT_CONSTANT,
+				GlobalModelStreamTaskService.GLOBAL_MODEL_NAME)) {
+			return oldFeatureScore;
+		}
+
 		Double oldScore = oldFeatureScore.getScore();
 
 		// Get global prevalence model
