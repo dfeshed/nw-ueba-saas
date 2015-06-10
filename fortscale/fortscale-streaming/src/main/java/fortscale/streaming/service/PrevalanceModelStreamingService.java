@@ -40,9 +40,14 @@ public class PrevalanceModelStreamingService extends ModelServiceImpl{
 		this.modelBuilder = modelBuilder;
 		this.timeGapToUpdateModelsMS = timeGapToUpdateModelsMS;
 	}
-	
-	
-	
+
+	/** Return true if the model exists in the samza store / repository, false otherwise */
+	public boolean modelExists(String context) throws Exception {
+		String modelName = modelBuilder.getModelName();
+
+		return store.get(buildStoreKey(modelName, context)) != null || super.getModel(context, modelName) != null;
+	}
+
 	/** Get the model for the user first from the samza store, if not exists look for it in the repository or build a new model */
 	public PrevalanceModel getModel(String context) throws Exception {
 		String modelName = modelBuilder.getModelName();
