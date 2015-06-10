@@ -1,0 +1,309 @@
+package fortscale.ml.model.prevalance.field;
+
+import org.apache.samza.config.Config;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class ContinuousDataDistributionTest {
+	private static final String PREFIX = "prefix";
+	private static final String FIELD_NAME = "fieldName";
+
+	private static final double a1 = 35.0 / 3;
+	private static final double a2 = 100.0 / 3;
+	private static final double largestPValue = 0.2;
+
+	private Config config;
+
+	@Before
+	public void setUp() throws Exception {
+		config = mock(Config.class);
+	}
+
+	private ContinuousDataDistribution create(int numOfDistinctValues, double bucketSize) {
+		ContinuousDataDistribution distribution = new ContinuousDataDistribution();
+
+		when(config.getInt(eq(String.format("%s.%s.continuous.data.distribution.min.distinct.values", PREFIX, FIELD_NAME)), anyInt())).thenReturn(numOfDistinctValues);
+		when(config.getInt(eq(String.format("%s.%s.continuous.data.distribution.max.distinct.values", PREFIX, FIELD_NAME)), anyInt())).thenReturn(numOfDistinctValues);
+		when(config.getDouble(eq(String.format("%s.%s.continuous.data.distribution.min.bucket.size", PREFIX, FIELD_NAME)), anyDouble())).thenReturn(bucketSize);
+		when(config.getDouble(eq(String.format("%s.%s.continuous.data.distribution.max.bucket.size", PREFIX, FIELD_NAME)), anyDouble())).thenReturn(bucketSize);
+
+		distribution.init(PREFIX, FIELD_NAME, config);
+		return distribution;
+	}
+
+	@Test
+	public void uniform_distribution_with_one_up_outliers_test() {
+		ContinuousDataDistribution distribution = create(10, 1.0);
+		final int separator = ContinuousDataModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY;
+
+		double startVal = 1000000;
+		for (int i = 0; i < 1000; i++) {
+			double val = startVal + i;
+			distribution.add(val, 0);
+		}
+
+		double outlierVal = startVal + 1100;
+		distribution.add(outlierVal, 0);
+		Assert.assertEquals(separator + 0.04161, distribution.calculateScore(outlierVal), 0.00001);
+
+		outlierVal = startVal + 1200;
+		distribution.add(outlierVal, 0);
+		Assert.assertEquals(separator + 0.01820, distribution.calculateScore(outlierVal), 0.00001);
+
+		outlierVal = startVal + 1300;
+		distribution.add(outlierVal, 0);
+		Assert.assertEquals(separator + 0.01404, distribution.calculateScore(outlierVal), 0.00001);
+
+		outlierVal = startVal + 1400;
+		distribution.add(outlierVal, 0);
+		Assert.assertEquals(separator + 0.00540, distribution.calculateScore(outlierVal), 0.00001);
+
+		outlierVal = startVal + 1500;
+		distribution.add(outlierVal, 0);
+		Assert.assertEquals(separator + 0.00186, distribution.calculateScore(outlierVal), 0.00001);
+		Assert.assertEquals(-separator - 0.04095, distribution.calculateScore(startVal), 0.00001);
+		Assert.assertEquals(-separator - 0.37778, distribution.calculateScore(startVal + 500), 0.00001);
+	}
+
+	@Test
+	public void continuous_test_1() throws Exception {
+		runScenarioAndTestScores("src/test/model/continuousTest1.csv");
+	}
+
+	@Test
+	public void continuous_test_2() throws Exception {
+		runScenarioAndTestScores("src/test/model/continuousTest2.csv");
+	}
+
+	@Test
+	public void large_scale_uniform_distribution_test() {
+		ContinuousDataDistribution distribution = create(100, 1.0);
+		double startVal = 1000000;
+		List<Double> values = new ArrayList<>();
+
+		for (int j = 0; j < 10; j++) {
+			for (int i = 0; i < 100000; i++) {
+				double value = startVal + i;
+				distribution.add(value, 0);
+				if (j == 0) {
+					values.add(value);
+				}
+			}
+		}
+
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		double score = calculateScore(distribution, startVal, calibrationForContModel);
+		Assert.assertEquals(23.0, score, 0.1);
+
+		score = calculateScore(distribution, startVal + 50000, calibrationForContModel);
+		Assert.assertEquals(0.0, score, 0.0);
+
+		for (double val : values) {
+			score = calculateScore(distribution, val, calibrationForContModel);
+			Assert.assertEquals(23.0, score, 23.0);
+		}
+	}
+
+	@Test
+	public void large_scale_uniform_distribution_with_one_up_outlier_test() {
+		ContinuousDataDistribution distribution = create(100, 1.0);
+		double startVal = 1000000;
+		List<Double> values = new ArrayList<>();
+
+		for (int j = 0; j < 10; j++) {
+			for (int i = 0; i < 100000; i++) {
+				double value = startVal + i;
+				distribution.add(value, 0);
+				if (j == 0) {
+					values.add(value);
+				}
+			}
+		}
+
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		double outlierVal = startVal * 2;
+		distribution.add(outlierVal, 0);
+
+		double score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(100, score, 0.0);
+
+		score = calculateScore(distribution, startVal, calibrationForContModel);
+		Assert.assertEquals(23.0, score, 0.1);
+
+		score = calculateScore(distribution, startVal + 50000, calibrationForContModel);
+		Assert.assertEquals(0.0, score, 0.0);
+
+		for (double val : values) {
+			score = calculateScore(distribution, val, calibrationForContModel);
+			Assert.assertEquals(23.0, score, 23.0);
+		}
+	}
+
+	@Test
+	public void uniform_distribution_with_up_outliers_test() {
+		ContinuousDataDistribution distribution = create(100, 1.0);
+		double startVal = 1000000;
+		List<Double> values = new ArrayList<>();
+
+		for (int i = 0; i < 1000; i++) {
+			double value = startVal + i;
+			distribution.add(value, 0);
+			values.add(value);
+		}
+
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		double outlierVal = startVal + 1100;
+		distribution.add(outlierVal, 0);
+
+		double score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(53.0, score, 0.1);
+
+		outlierVal = startVal + 1200;
+		distribution.add(outlierVal, 0);
+		score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(76.0, score, 0.1);
+
+		outlierVal = startVal + 1300;
+		distribution.add(outlierVal, 0);
+		score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(90.0, score, 0.1);
+
+		outlierVal = startVal + 1400;
+		distribution.add(outlierVal, 0);
+		score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(96.0, score, 0.1);
+
+		outlierVal = startVal + 1500;
+		distribution.add(outlierVal, 0);
+		score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(99.0, score, 0.1);
+
+		score = calculateScore(distribution, startVal, calibrationForContModel);
+		Assert.assertEquals(24.0, score, 0.1);
+
+		score = calculateScore(distribution, startVal + 500, calibrationForContModel);
+		Assert.assertEquals(0.0, score, 0.0);
+
+		for (double val : values) {
+			score = calculateScore(distribution, val, calibrationForContModel);
+			Assert.assertEquals(12.0, score, 12.0);
+		}
+	}
+
+	@Test
+	public void uniform_distribution_of_fraction_values_with_up_outliers_test() {
+		ContinuousDataDistribution distribution = create(100, 0.001);
+		double startVal = 1000000;
+		List<Double> values = new ArrayList<>();
+
+		for (int i = 0; i < 1000; i++) {
+			double value = startVal + i * 0.001;
+			distribution.add(value, 0);
+			values.add(value);
+		}
+
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		double outlierVal = startVal + 1.1;
+		distribution.add(outlierVal, 0);
+
+		double score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(53.0, score, 0.1);
+
+		outlierVal = startVal + 1.2;
+		distribution.add(outlierVal, 0);
+		score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(76.0, score, 0.1);
+
+		outlierVal = startVal + 1.3;
+		distribution.add(outlierVal, 0);
+		score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(90.0, score, 0.1);
+
+		outlierVal = startVal + 1.4;
+		distribution.add(outlierVal, 0);
+		score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(96.0, score, 0.1);
+
+		outlierVal = startVal + 1.5;
+		distribution.add(outlierVal, 0);
+		score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(99.0, score, 0.1);
+
+		score = calculateScore(distribution, startVal, calibrationForContModel);
+		Assert.assertEquals(24.0, score, 0.1);
+
+		score = calculateScore(distribution, startVal + 0.5, calibrationForContModel);
+		Assert.assertEquals(0.0, score, 0.0);
+
+		for (double val : values) {
+			score = calculateScore(distribution, val, calibrationForContModel);
+			Assert.assertEquals(12.0, score, 12.0);
+		}
+	}
+
+	@Test
+	public void uniform_distribution_with_one_down_outlier_test() {
+		ContinuousDataDistribution distribution = create(100, 1.0);
+		double startVal = 1000000;
+		List<Double> values = new ArrayList<>();
+
+		for (int i = 0; i < 1000; i++) {
+			double value = startVal + i;
+			distribution.add(value, 0);
+			values.add(value);
+		}
+
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		double outlierVal = startVal / 2;
+		distribution.add(outlierVal, 0);
+
+		double score = calculateScore(distribution, outlierVal, calibrationForContModel);
+		Assert.assertEquals(100, score, 0.0);
+
+		for (double val : values) {
+			score = calculateScore(distribution, val, calibrationForContModel);
+			Assert.assertEquals(0.0, score, 0.0);
+		}
+	}
+
+	private double calculateScore(ContinuousDataDistribution model, double value, QuadPolyCalibrationForContModel calibrationForContModel) {
+		double modelScore = model.calculateScore(value);
+		return calibrationForContModel.calculateScore(modelScore);
+	}
+
+	private void runScenarioAndTestScores(String filePath) throws Exception {
+		File file = new File(filePath);
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line;
+
+		Map<Long, Double> valueToScoreMap = new HashMap<>();
+		ContinuousDataDistribution distribution = create(100, 1.0);
+
+		while ((line = reader.readLine()) != null) {
+			String valueAndScore[] = line.split(",");
+			Long value = Long.valueOf(valueAndScore[0]);
+			Double score = Double.valueOf(valueAndScore[1]);
+			valueToScoreMap.put(value, score);
+			distribution.add(value.doubleValue(), 0);
+		}
+
+		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, largestPValue, true, true);
+		for (Long value : valueToScoreMap.keySet()) {
+			double score = calculateScore(distribution, value.doubleValue(), calibrationForContModel);
+			Assert.assertEquals(valueToScoreMap.get(value), score, 0.5);
+		}
+	}
+}

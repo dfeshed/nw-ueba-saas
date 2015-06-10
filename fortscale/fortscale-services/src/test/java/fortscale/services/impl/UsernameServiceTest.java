@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
@@ -33,6 +34,12 @@ public class UsernameServiceTest {
 	private EventScoreDAO amtsessionDAO;
 	@Mock
 	private CacheHandler<String, String> usernameToUserIdCache;
+	@Mock
+	private CacheHandler<String, List<String>> sAMAccountNameToUsernameCache;
+	@Mock
+	private CacheHandler<String, String> sAMAccountNamethatBlackList;
+	@Mock
+	private SamAccountNameService samAccountNameService;
 
 	@InjectMocks
 	private UsernameService usernameService;
@@ -67,7 +74,7 @@ public class UsernameServiceTest {
 			int firstIndex = i * pageSize;
 			int lastIndex = Math.min((i + 1) * pageSize, numOfUsers);
 			List<User> subList = listOfUsers.subList(firstIndex, lastIndex);
-			when(userRepository.findAllExcludeAdInfo(pageRequest)).thenReturn(subList);
+			when(userRepository.findAllUsers(pageRequest)).thenReturn(subList);
 		}
 
 		when(loginDAO.getTableName()).thenReturn(LogEventsEnum.login.name());

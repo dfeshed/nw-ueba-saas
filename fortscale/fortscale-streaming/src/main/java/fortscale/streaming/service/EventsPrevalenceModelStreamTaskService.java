@@ -1,18 +1,15 @@
 package fortscale.streaming.service;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.streaming.ConfigUtils.getConfigStringList;
-import static fortscale.utils.ConversionUtils.convertToLong;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.Iterables;
+import fortscale.ml.model.prevalance.PrevalanceModel;
+import fortscale.ml.model.prevalance.PrevalanceModelBuilderImpl;
+import fortscale.ml.model.prevalance.UserTimeBarrier;
+import fortscale.ml.service.ModelService;
+import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.feature.extractor.FeatureExtractionService;
+import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
@@ -24,21 +21,19 @@ import org.apache.samza.task.TaskCoordinator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Iterables;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import fortscale.ml.model.prevalance.PrevalanceModel;
-import fortscale.ml.model.prevalance.PrevalanceModelBuilderImpl;
-import fortscale.ml.model.prevalance.UserTimeBarrier;
-import fortscale.ml.service.ModelService;
-import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.streaming.feature.extractor.FeatureExtractionService;
-import fortscale.utils.StringPredicates;
-
+import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
+import static fortscale.utils.ConversionUtils.convertToLong;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 public class EventsPrevalenceModelStreamTaskService {
-
 	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTaskService.class);
-	
+
 	private Map<String,PrevalanceModelStreamingService> prevalanceModelStreamingServiceMap;
 	private Map<String,List<String>> modelToContextFieldNameMap;
 	private List<String> modelsNamesOrder;
@@ -46,16 +41,15 @@ public class EventsPrevalenceModelStreamTaskService {
 	private String timestampField;
 	private String sourceType;
 	private String entityType;
-	
+
 	private FeatureExtractionService featureExtractionService;
-	
+	private GlobalModelStreamTaskService globalModelStreamTaskService;
+
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
 	private Counter lastTimestampCount;
 	private List<String> discriminatorsFields;
-	
-	
-	
+
 	public EventsPrevalenceModelStreamTaskService(Config config, TaskContext context) throws Exception {
 		// get model task configuration parameters
 		sourceType = getConfigString(config, "fortscale.source.type");
@@ -96,6 +90,16 @@ public class EventsPrevalenceModelStreamTaskService {
 			// create model service based on the store and model builder
 			PrevalanceModelStreamingService prevalanceModelStreamingService = new PrevalanceModelStreamingService(store,modelBuilder,timeGapForModelUpdates);
 			prevalanceModelStreamingServiceMap.put(modelName, prevalanceModelStreamingService);
+		}
+
+		// Create stream task service for global model
+		if (config.containsKey("fortscale.model.global.field.model.names")) {
+			globalModelStreamTaskService = new GlobalModelStreamTaskService(config, store);
+			prevalanceModelStreamingServiceMap.put(
+				GlobalModelStreamTaskService.GLOBAL_MODEL_NAME,
+				globalModelStreamTaskService.getGlobalModelStreamingService());
+		} else {
+			globalModelStreamTaskService = null;
 		}
 	}
 	
@@ -174,6 +178,10 @@ public class EventsPrevalenceModelStreamTaskService {
 		} else{
 			skippedMessageCount.inc();
 		}
+
+		// Update global model
+		if (globalModelStreamTaskService != null)
+			globalModelStreamTaskService.updateGlobalModel(timestamp);
 	}
 
 	private String getModelContext(String modelName, JSONObject message){
@@ -193,11 +201,13 @@ public class EventsPrevalenceModelStreamTaskService {
 	public void window(MessageCollector collector, TaskCoordinator coordinator) {
 		exportModels();
 	}
-	
-	private void exportModels(){
-		if(prevalanceModelStreamingServiceMap != null){
-			for(PrevalanceModelStreamingService prevalanceModelStreamingService: prevalanceModelStreamingServiceMap.values()){
-				prevalanceModelStreamingService.exportModels();
+
+	private void exportModels() {
+		if (prevalanceModelStreamingServiceMap != null) {
+			for (String modelName : prevalanceModelStreamingServiceMap.keySet()) {
+				if (!modelName.equals(GlobalModelStreamTaskService.GLOBAL_MODEL_NAME)) {
+					prevalanceModelStreamingServiceMap.get(modelName).exportModels();
+				}
 			}
 		}
 	}

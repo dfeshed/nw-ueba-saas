@@ -114,6 +114,19 @@
         <constructor-arg name="clazz" value="java.lang.String" />
     </bean>
 
+    <!-- username service cache that uses memory based implementation are injected here -->
+    <bean id="sAMAccountNameToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
+        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+        <constructor-arg name="clazz" value="java.util.ArrayList"/>
+    </bean>
+
+    <bean id="sAMAccountNamethatBlackList" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${samaccountname.service.blacklist.cache.max.items=30000:30000}" />
+        <constructor-arg name="timeToExpire" value="${samaccountname.service.blacklist.timeToExpireSec:21600}" />
+        <constructor-arg name="clazz" value="java.lang.String" />
+    </bean>
+
     <!-- user service cache (only tags) that uses memory based implementation and send updates to kafka topics are injected here -->
     <bean id="userTagsCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
@@ -126,19 +139,23 @@
     <bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
         <property name="userService" ref="userService"/>
+        <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
     <bean id="secUsernameNormalizer" class="fortscale.services.impl.SecUsernameNormalizer" scope="prototype">
         <property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
         <property name="usernameService" ref="usernameService"/>
+        <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
     <bean id="sshUsernameNormalizer" class="fortscale.services.impl.SSHUsernameNormalizer" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
         <property name="computerService" ref="computerService"/>
         <property name="userService" ref="userService"/>
+        <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
     <bean id="amtUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
         <property name="userService" ref="userService"/>
+        <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
 
     <bean id="SecurityUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
@@ -165,5 +182,7 @@
     <bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="prototype"/>
 
     <bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="prototype"/>
+
+    <bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="prototype"/>
 
 </beans>
