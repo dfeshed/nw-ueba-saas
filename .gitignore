@@ -1,0 +1,25 @@
+# IDE Files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Build tools
+build/
+.gradle/
+
+# compiled output
+dist/
+tmp/
+
+# dependencies
+node_modules/
+bower_components/
+
+# misc
+.sass-cache/
+connect.lock
+coverage/
+libpeerconnection.log
+npm-debug.log
+testem.log
