@@ -6,7 +6,8 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('investigation-flow');
+  this.route('incidents');
+  this.route('investigation');
 });
 
 export default Router;
