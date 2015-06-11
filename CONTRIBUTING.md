@@ -3,6 +3,13 @@
 Not sure what a pull request is, or how to submit one? Take a look at GitHub's
 excellent [help documentation](https://help.github.com/articles/using-pull-requests/) first.
 
+## Fork the SA-UI repository
+
+The SA-UI repository uses the "fork and pull" model. This model lets anyone 
+fork an existing repository and push changes to their personal fork without 
+requiring access be granted to the source repository. The changes must then 
+be pulled into the SA-UI repository by the Core UI team.
+
 ## Create a Branch
 
 ### Branch from `master`
@@ -88,12 +95,20 @@ Most importantly, please format your commit messages in the following way
 
     Short (50 chars or less) summary of changes
 
+    Issue before the fix:
     More detailed explanatory text, if necessary. Wrap it to about 72
     characters or so. In some contexts, the first line is treated as the
     subject of an email and the rest of the text as the body. The blank
     line separating the summary from the body is critical (unless you omit
     the body entirely); tools like rebase can get confused if you run the
     two together.
+    
+    What changed:
+    Some text describing the changes contained in this changeset.
+    
+    How things work now:
+    Describe any new process/workflow changes as a result of this feature 
+    or changeset.
 
     Further paragraphs come after blank lines.
 
