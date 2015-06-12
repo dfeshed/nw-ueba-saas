@@ -10,13 +10,11 @@ body{
 	float:right;
 }
 
-.dropdown
-{
+.dropdown {
 	margin:15px;
 }
 
-.dropdown ul
-{
+.dropdown ul {
 	list-style:none;
 	position:relative;
 	float:left;
@@ -24,8 +22,7 @@ body{
 	padding:0
 }
 
-.dropdown ul a
-{
+.dropdown ul a {
 	display:block;
 	color:#333;
 	text-decoration:none;
@@ -33,18 +30,15 @@ body{
 	font-size:12px;
 	line-height:32px;
 	padding:0 15px;
-	font-family:"HelveticaNeue","Helvetica Neue",Helvetica,Arial,sans-serif
 }
 
-.dropdown ul li
-{
+.dropdown ul li {
 	position:relative;
 	float:left;
 	margin:0;
 }
 
-.dropdown ul ul
-{
+.dropdown ul ul {
 	display:none;
 	position:absolute;
 	top:100%;
@@ -53,25 +47,21 @@ body{
 	padding:0
 }
 
-.dropdown ul ul li
-{
+.dropdown ul ul li {
 	float:none;
 	width:200px
 }
 
-.dropdown ul ul a
-{
+.dropdown ul ul a {
 	line-height:120%;
 	padding:10px 15px
 }
 
-.dropdown ul ul ul
-{
+.dropdown ul ul ul {
 	top:0;
 	left:100%
 }
 
-.dropdown ul li:hover > ul
-{
+.dropdown ul li:hover > ul {
 	display:block
 }
