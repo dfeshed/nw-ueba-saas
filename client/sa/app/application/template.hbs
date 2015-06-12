@@ -1,12 +1,15 @@
-<h2 id="title">SA 11</h2>
+<h2 id="title">{{t 'sa.title'}} {{t 'sa.version'}}</h2>
 
 
-{{#link-to 'index'}}Dashboard{{/link-to}}
+{{#link-to 'index'}}{{t 'index.title'}}{{/link-to}}
 
-{{#link-to 'investigation'}}Investigation{{/link-to}}
+{{#link-to 'investigation'}}{{t 'investigation.title'}}{{/link-to}}
 
-{{#link-to 'incidents'}}Incident{{/link-to}}
+{{#link-to 'incidents'}}{{t 'incident.title'}}{{/link-to}}
 
+<div class="right">
+{{render "i18n"}}
+</div>
 <div id="sa-content" class="sa-content">
-	{{outlet}}
+    {{outlet}}
 </div>
