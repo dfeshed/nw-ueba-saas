@@ -1,10 +1,20 @@
 package fortscale.streaming.service.aggregation;
 
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+@CompoundIndexes({@CompoundIndex(name = "feature_bucket_index", def = FeatureBucket.COMPOUND_INDEX_DEF)})
 public class FeatureBucket {
+	static final String COMPOUND_INDEX_DEF =
+		"{'" + FeatureBucket.STRATEGY_ID_FIELD + "': 1, " +
+		"'" + FeatureBucket.USER_NAME_FIELD + "': 1, " +
+		"'" + FeatureBucket.MACHINE_NAME_FIELD + "': 1, " +
+		"'" + FeatureBucket.START_TIME_FIELD + "': 1, " +
+		"'" + FeatureBucket.END_TIME_FIELD + "': 1}";
+
 	public static final String STRATEGY_ID_FIELD = "strategyId";
 	public static final String USER_NAME_FIELD = "userName";
 	public static final String MACHINE_NAME_FIELD = "machineName";

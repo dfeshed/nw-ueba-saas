@@ -55,7 +55,7 @@ public class FixedDurationFeatureBucketStrategy {
 				String contextValue = convertToString(message.get(contextFieldName));
 
 				// Add only valid context values
-				if (StringUtils.isBlank(contextValue)) {
+				if (StringUtils.isNotBlank(contextValue)) {
 					contextFieldNameToValueMap.put(contextFieldName, contextValue);
 				}
 			}
