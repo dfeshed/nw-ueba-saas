@@ -18,7 +18,7 @@ public class FeatureBucketsService {
 	public FeatureBucketsService() {
 		List<String> contextFieldNames = new ArrayList<>(2);
 		contextFieldNames.add("normalized_username");
-		contextFieldNames.add("normalized_src_machine");
+		contextFieldNames.add("normalized_dst_machine");
 
 		// Create a fixed duration feature bucket strategy of 1 hour
 		fixedDurationStrategy = new FixedDurationFeatureBucketStrategy(contextFieldNames, 3600, featureBucketsMongoStore);

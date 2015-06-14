@@ -17,7 +17,7 @@ public class FeatureBucketsMongoStore {
 	public FeatureBucket getFeatureBucket(Map<String, String> contextFieldNameToValueMap, String strategyId, long startTime) {
 		String collectionName = getCollectionName(contextFieldNameToValueMap.keySet());
 		String userName = contextFieldNameToValueMap.get("normalized_username");
-		String machineName = contextFieldNameToValueMap.get("normalized_src_machine");
+		String machineName = contextFieldNameToValueMap.get("normalized_dst_machine");
 
 		if (mongoTemplate.collectionExists(collectionName)) {
 			Query query = new Query();
@@ -43,7 +43,7 @@ public class FeatureBucketsMongoStore {
 
 			featureBucket.setStrategyId(strategyId);
 			featureBucket.setUserName(contextFieldNameToValueMap.get("normalized_username"));
-			featureBucket.setMachineName(contextFieldNameToValueMap.get("normalized_src_machine"));
+			featureBucket.setMachineName(contextFieldNameToValueMap.get("normalized_dst_machine"));
 			featureBucket.setStartTime(startTime);
 			featureBucket.setEndTime(0);
 

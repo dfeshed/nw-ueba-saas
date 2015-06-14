@@ -1,26 +1,20 @@
 package fortscale.streaming.service.aggregation;
 
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.util.HashMap;
 import java.util.Map;
 
-@CompoundIndexes({@CompoundIndex(name = "feature_bucket_index", def = FeatureBucket.COMPOUND_INDEX_DEF)})
 public class FeatureBucket {
-	static final String COMPOUND_INDEX_DEF =
-		"{'" + FeatureBucket.STRATEGY_ID_FIELD + "': 1, " +
-		"'" + FeatureBucket.USER_NAME_FIELD + "': 1, " +
-		"'" + FeatureBucket.MACHINE_NAME_FIELD + "': 1, " +
-		"'" + FeatureBucket.START_TIME_FIELD + "': 1, " +
-		"'" + FeatureBucket.END_TIME_FIELD + "': 1}";
-
 	public static final String STRATEGY_ID_FIELD = "strategyId";
 	public static final String USER_NAME_FIELD = "userName";
 	public static final String MACHINE_NAME_FIELD = "machineName";
 	public static final String START_TIME_FIELD = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
 
+	@Id
+	private String id;
 	@Field(STRATEGY_ID_FIELD)
 	private String strategyId;
 	@Field(USER_NAME_FIELD)
@@ -34,24 +28,47 @@ public class FeatureBucket {
 
 	private Map<String, Object> features;
 
+	/**
+	 * Feature Bucket constructor.
+	 */
 	public FeatureBucket() {
 		features = new HashMap<>();
+	}
+
+	public String getStrategyId() {
+		return strategyId;
 	}
 
 	public void setStrategyId(String strategyId) {
 		this.strategyId = strategyId;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getMachineName() {
+		return machineName;
 	}
 
 	public void setMachineName(String machineName) {
 		this.machineName = machineName;
 	}
 
+	public long getStartTime() {
+		return startTime;
+	}
+
 	public void setStartTime(long startTime) {
 		this.startTime = startTime;
+	}
+
+	public long getEndTime() {
+		return endTime;
 	}
 
 	public void setEndTime(long endTime) {
