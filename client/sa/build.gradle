@@ -1,0 +1,76 @@
+buildscript {
+    dependencies {
+        classpath "com.moowork.gradle:gradle-node-plugin:0.10"
+    }
+}
+
+apply plugin: "com.moowork.node"
+
+ext {
+    bower = file("node_modules/bower/bin/bower")
+    ember = file("node_modules/ember-cli/bin/ember")
+}
+
+node {
+    version = "0.12.4"
+    download = true
+}
+
+task clean(type: Delete) {
+    delete "build", "node_modules", "bower_components", "dist", "tmp"
+}
+
+task bowerInstall(type: NodeTask, dependsOn: ["npmInstall"]) {
+    script = bower
+    args = ["install"]
+
+    project.afterEvaluate {
+        getInputs().file(new File(node.nodeModulesDir, "bower.json"))
+        getOutputs().dir(new File(node.nodeModulesDir, "bower_components"))
+    }
+}
+
+task test(type: NodeTask, dependsOn: ["bowerInstall"]) {
+    script = ember
+    args = ["test", "--silent"]
+
+    def testDir = new File(project.buildDir, "test-results")
+    if (!testDir.exists()) {
+        testDir.mkdirs()
+    }
+
+    def dest = new File(testDir, "TEST-ember.xml")
+    execOverrides {
+        it.standardOutput = new FileOutputStream(dest)
+    }
+}
+
+task emberFixturedBuild(type: NodeTask, dependsOn: ["test"]) {
+    script = ember
+    args = ["build", "-e", "fixtured", "-o", "dist/fixtured", "--silent"]
+}
+
+task fixtured(type: Zip, dependsOn: ["emberFixturedBuild"]) {
+    destinationDir file(project.buildDir)
+    archiveName "sa-ui-fixtured.zip"
+
+    from("dist/fixtured") {
+        include "**/*"
+    }
+}
+
+task emberProductionBuild(type: NodeTask, dependsOn: ["test"]) {
+    script = ember
+    args = ["build", "-e", "production", "-o", "dist/production", "--silent"]
+}
+
+task build(type: Zip, dependsOn: ["emberProductionBuild"]) {
+    dependsOn fixtured
+
+    destinationDir file(project.buildDir)
+    archiveName "sa-ui.zip"
+
+    from("dist/production") {
+        include "**/*"
+    }
+}
