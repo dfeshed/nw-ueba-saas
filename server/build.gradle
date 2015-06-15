@@ -1,0 +1,25 @@
+buildscript {
+    ext {
+        jsonPathVersion = '2.0.0'
+        junitVersion = '4.9'
+        mockitoVersion = '1.9.5'
+        springBootVersion = '1.2.4.RELEASE'
+        yamlVersion = '1.14'
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+}

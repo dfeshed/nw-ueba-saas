@@ -1,0 +1,15 @@
+allprojects {
+    buildscript {
+        repositories {
+            mavenLocal()
+            mavenCentral()
+            jcenter()
+        }
+    }
+    group 'com.rsa.asoc.sa.ui'
+    version '10.6.0.0-SNAPSHOT'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
