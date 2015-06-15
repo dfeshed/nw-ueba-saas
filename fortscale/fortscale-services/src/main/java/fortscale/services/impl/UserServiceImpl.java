@@ -1,9 +1,6 @@
 package fortscale.services.impl;
 
-import fortscale.domain.ad.AdUser;
-import fortscale.domain.ad.AdUserGroup;
-import fortscale.domain.ad.AdUserThumbnail;
-import fortscale.domain.ad.UserMachine;
+import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.AdUserThumbnailRepository;
@@ -693,7 +690,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<User> findBySearchFieldContaining(String prefix, int page, int size) {
 		
-		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX+prefix.toLowerCase(), new PageRequest(page, size));
+		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX + prefix.toLowerCase(), new PageRequest(page, size));
 	}
 
 	private String getUserNameFromID(String uid) {
@@ -774,7 +771,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public boolean createNewApplicationUserDetails(User user, UserApplication userApplication, String username, boolean isSave){
-		return createNewApplicationUserDetails(user,createNewApplicationUserDetails(userApplication, username), isSave);
+		return createNewApplicationUserDetails(user, createNewApplicationUserDetails(userApplication, username), isSave);
 	}
 	
 	private ApplicationUserDetails createNewApplicationUserDetails(UserApplication userApplication, String username){
@@ -905,7 +902,7 @@ public class UserServiceImpl implements UserService{
 		tags = new ArrayList<String>(tagSet);
 
 
-		userTagsCache.put(username,tags);
+		userTagsCache.put(username, tags);
 	}
 
 
@@ -940,6 +937,14 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable) {
 		return userRepository.findByUserInOU(ousToTag, pageable);
+	}
+
+	public String findAdMembers(String adName) {
+		return adGroupRepository.findByName(adName);
+	}
+
+	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements){
+		return adGroupRepository.getActiveDirectoryGroups(maxNumberOfReturnElements);
 	}
 
 	@Override
@@ -983,12 +988,12 @@ public class UserServiceImpl implements UserService{
 			tags = new ArrayList<String>();
 		}
 		if (value) {
-			if (!tags.contains(tagField)) {
-				tags.add(tagField);
+			if (!tags.contains(userTagEnumId)) {
+				tags.add(userTagEnumId);
 			}
 		}
 		else {
-			tags.remove(tagField);
+			tags.remove(userTagEnumId);
 		}
 		userTagsCache.put(username, tags);
 	}

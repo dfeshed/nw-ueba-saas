@@ -190,7 +190,12 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 
 	private void updateMongoWithCurrentFetchProgress(){
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
-		fetchConfiguration.setLastFetchTime(latest);
+		if(fetchConfiguration == null){
+			fetchConfiguration = new FetchConfiguration(type, latest);
+		}
+		else {
+			fetchConfiguration.setLastFetchTime(latest);
+		}
 		fetchConfigurationRepository.save(fetchConfiguration);
 		if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)){
 			keepFetching = false;
@@ -211,11 +216,11 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		JobDataMap map = context.getMergedJobDataMap();
 
 		// get parameters values from the job data map
-		try {
+		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") && jobDataMapExtension.isJobDataMapContainKey(map,"latest")){
 			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
 			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
 		}
-		catch (JobExecutionException e){
+		else{
 			//calculate query run times from mongo in the case not provided as job params
 			logger.info("No Time frame was specified as input param, continuing from the previous run ");
 			getRunTimeFrameFromMongo(map);

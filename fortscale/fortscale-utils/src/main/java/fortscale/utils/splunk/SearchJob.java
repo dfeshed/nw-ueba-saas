@@ -1,12 +1,11 @@
 package fortscale.utils.splunk;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import com.splunk.Job;
 import com.splunk.Service;
-
 import fortscale.utils.logging.Logger;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public abstract class SearchJob {
 	private static final Logger logger = Logger.getLogger(SearchJob.class);
@@ -17,44 +16,36 @@ public abstract class SearchJob {
 	
 	protected abstract Job runJob(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception;
 	protected abstract int getDispatchMaxCount(Service service) throws Exception;
-	
-	public Job run(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception {
-		return run(service, earliestTimeCursor, latestTimeCursor, -1);
-	}
 
-	public Job run(Service service, String earliestTimeCursor, String latestTimeCursor, int timeoutInSeconds) throws Exception{
+	public Job run(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception{
 		Job ret = runJob(service, earliestTimeCursor, latestTimeCursor);
 		if (ret == null) {
 			return null;
 		}
-		
-		// Wait for the job to finish
-        int i = 1;
-		int counter = 1;
-		while (!ret.isDone()) {
+		try {
+			// Wait for the job to finish
+			int i = 1;
+			while (!ret.isDone()) {
 
-			// sleep one second
-			Thread.sleep(1000);
+				// sleep one second
+				Thread.sleep(1000);
 
-			// print progress every 2 minutes
-			if(i == 0){
-				logger.info("search progress: {}", ret.getDoneProgress() * 100);
-			}
-			i = (i+1)%120;
+				// print progress every 2 minutes
+				if (i == 0) {
+					logger.info("search progress: {}", ret.getDoneProgress() * 100);
+				}
+				i = (i + 1) % 120;
 
-			// increase counter, check for timeout
-			if (timeoutInSeconds > 0 && counter++ > timeoutInSeconds) {
-				logger.error("Fetch job has reached a timeout of {} seconds. Canceling job...", timeoutInSeconds);
-				ret.cancel();
-				throw new Exception("Timeout in job");
-			}
-
-			// check if done/failed
-			if(ret.isReady() && ret.isFailed()){
-				break;
+				// check if done/failed
+				if (ret.isReady() && ret.isFailed()) {
+					break;
+				}
 			}
 		}
-		
+			catch (Exception e){
+				//cancel splunk job - in the case of any problem, (mainly for timeout interrupts
+				ret.cancel();
+			}
 		if(ret.isFailed()){
 			handleJobFailure(ret);
 		}

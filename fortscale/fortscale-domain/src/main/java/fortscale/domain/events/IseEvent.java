@@ -11,47 +11,58 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = IseEvent.collectionName)
-@CompoundIndexes({
-        @CompoundIndex(name = "ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}")
-})
+@CompoundIndexes({ @CompoundIndex(name = "ipaddressTimeIdx", def = "{'ipaddress': 1, 'timestampepoch': -1}") })
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class IseEvent extends IpToHostname {
 
-    public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
+    public static final int ISE_PRIORITY = 1;
 
     // collection properties
     public static final String collectionName = "IseEvent";
 
+    public static final String IS_AD_HOSTNAME_FIELD_NAME = "isADHostName";
     public static final String EXPIRATION_FIELD_NAME = "expiration";
     public static final String MAC_ADDRESS_FIELD_NAME = "macAddress";
+    public static final String EVENT_CODE_FIELD_NAME = "eventCode";
     //public static final String LOCATION_FIELD_NAME = "location";
 
-    @Field(EXPIRATION_FIELD_NAME)
-    private long expiration;
+    //public static final String
+
+    @Field(EXPIRATION_FIELD_NAME) private long expiration;
+
+    @Field(MAC_ADDRESS_FIELD_NAME) private String macAddress;
+
+    @Field(EVENT_CODE_FIELD_NAME) private String eventCode;
+
+    @Field(IS_AD_HOSTNAME_FIELD_NAME) protected Boolean adHostName;
+
+    public IseEvent() {
+        super();
+        setEventPriority(ISE_PRIORITY);
+    }
 
 
-    @Field(MAC_ADDRESS_FIELD_NAME)
-    private String macAddress;
-
-
-    @Field(IS_AD_HOSTNAME_FIELD_NAME)
-    protected Boolean adHostName;
-
-    @Override
-    public boolean checkIsAdHostname() {
-        return (adHostName==null)? false : adHostName;
+    @Override public boolean checkIsAdHostname() {
+        return (adHostName == null) ? false : adHostName;
     }
 
     public Boolean getAdHostName() {
         return adHostName;
     }
 
-
     public void setAdHostName(boolean adHostName) {
         this.adHostName = adHostName;
     }
 
+    public String getEventCode() {
+        return eventCode;
+    }
 
+    public void setEventCode(String eventCode) {
+        this.eventCode = eventCode;
+    }
+
+    @Override
     public long getExpiration() {
         return expiration;
     }
@@ -68,22 +79,39 @@ public class IseEvent extends IpToHostname {
         this.macAddress = macAddress;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj == this) return true;
-        if (obj.getClass() != getClass()) return false;
+    /**
+     * Get the event type
+     * @return
+     */
+    public IseEventsEnum getEventType() {
+        if (eventCode == null) {
+            return IseEventsEnum.unknown;
+        }
 
-        IseEvent other = (IseEvent) obj;
-        return new EqualsBuilder()
-                .append(expiration, other.expiration)
-                .append(macAddress, other.macAddress)
-                .append(timestampepoch, other.timestampepoch)
-                .isEquals();
+        switch (eventCode) {
+        case "3000":
+        case "3002":
+            return IseEventsEnum.ipAllocation;
+        case "3001":
+            return IseEventsEnum.ipRelease;
+        default:
+            return IseEventsEnum.unknown;
+        }
     }
 
-    @Override
-    public int hashCode() {
+    @Override public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (obj == this)
+            return true;
+        if (obj.getClass() != getClass())
+            return false;
+
+        IseEvent other = (IseEvent) obj;
+        return new EqualsBuilder().append(expiration, other.expiration).append(macAddress, other.macAddress).append(timestampepoch, other.timestampepoch).isEquals();
+    }
+
+    @Override public int hashCode() {
         return new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
                 append(expiration).
                 append(hostname).
@@ -91,21 +119,20 @@ public class IseEvent extends IpToHostname {
                 append(macAddress).
                 append(timestampepoch).
                 append(adHostName).
+                append(eventCode).
                 toHashCode();
     }
 
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("expiration", expiration)
-                .append("hostname", hostname)
-                .append("ip", ipaddress)
-                .append("mac", macAddress)
-                .append("timestamp", timestampepoch)
-                .append("isADHost", adHostName)
-                .build();
+    @Override public String toString() {
+        return new ToStringBuilder(this).
+                append("expiration", expiration).
+                append("hostname", hostname).
+                append("ip", ipaddress).
+                append("mac", macAddress).
+                append("timestamp", timestampepoch).
+                append("isADHost", adHostName).
+                append("eventCode", eventCode).
+                build();
     }
-
 
 }

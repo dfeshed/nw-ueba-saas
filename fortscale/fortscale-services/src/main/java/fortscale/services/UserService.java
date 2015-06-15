@@ -1,5 +1,6 @@
 package fortscale.services;
 
+import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
@@ -88,7 +89,13 @@ public interface UserService extends CachingService{
 
 	public Set<String> findNamesByTag(String tagFieldName, Boolean value);
 
+	public String findAdMembers(String adName);
+
+	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
+
 	public Set<String> findNamesByTag(String tagFieldName, String value);
 
 	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value);
+
+
 }

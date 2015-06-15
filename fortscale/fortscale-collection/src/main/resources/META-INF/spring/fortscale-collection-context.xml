@@ -97,6 +97,11 @@
 		<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
 	</bean>
+	<bean id="adGroupsCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
+		<constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+	</bean>
 
 
 	<!-- ip to hostname singleton service bean for use in fortscale collection -->
@@ -114,7 +119,7 @@
 		<constructor-arg name="ipBlackListCache" ref="dhcpBlacklistCache" />
 	</bean>
 	<bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
-
+	<bean id="ActiveDirectoryGroupsHelper" class="fortscale.collection.tagging.service.ActiveDirectoryGroupsHelper" scope="singleton" />
 
 
 	<!-- computer service cache that uses memory based implementation and send updates to kafka topics are injected here -->
@@ -168,6 +173,31 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
+
+
+	<!-- SamAccountService cache that uses memory based implementation and send updates to kafka topics are injected here -->
+	<bean id="sAMAccountNameToUsernameCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
+		<constructor-arg name="innerCache">
+			<bean class="fortscale.services.cache.MemoryBasedCache">
+				<constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
+				<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+				<constructor-arg name="clazz" value="java.util.ArrayList" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="topicWriter">
+			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
+				<constructor-arg name="topic" value="${samaccountname.service.samaccountname.cache.updates.topic}" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+    <bean id="sAMAccountNamethatBlackList" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${samaccountname.service.blacklist.cache.max.items:30000}" />
+        <constructor-arg name="timeToExpire" value="${samaccountname.service.blacklist.timeToExpireSec:21600}" />
+        <constructor-arg name="clazz" value="java.lang.String" />
+    </bean>
+
 	<!-- user service cache (only tags) that uses memory based implementation and send updates to kafka topics are injected here -->
 	<bean id="userTagsCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
@@ -187,15 +217,17 @@
 
 	<!-- Username normalization -->
 	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="singleton">
-
 		<property name="usernameService" ref="usernameService"/>
+		<property name="samAccountNameService" ref="samAccountNameService"/>
 	</bean>
 	<bean id="secUsernameNormalizer" class="fortscale.services.impl.SecUsernameNormalizer" scope="singleton">
 		<property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
 		<property name="usernameService" ref="usernameService"/>
+		<property name="samAccountNameService" ref="samAccountNameService"/>
 	</bean>
-	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.SSHUsernameNormalizer" scope="singleton">
 
+	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.SSHUsernameNormalizer" scope="singleton">
+		<property name="samAccountNameService" ref="samAccountNameService"/>
 		<property name="usernameService" ref="usernameService"/>
 	</bean>
 
@@ -207,6 +239,8 @@
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton">
 		<property name="lazy" value="false"/>
 	</bean>
+
+	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
 
 	<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
 

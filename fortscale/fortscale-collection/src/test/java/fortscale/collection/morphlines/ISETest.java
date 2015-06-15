@@ -15,12 +15,12 @@ public class ISETest {
 
     private MorphlinesTester morphlineTester = new MorphlinesTester();
     private String confFile = "resources/conf-files/parseISE.conf";
-    private String[] iseOutputFields = new String[]{"event_code", "timestampepoch", "hostname", "ipaddress", "macAddress","isADHostName"};
+    private String[] iseOutputFields = new String[]{"eventCode", "timestampepoch", "hostname", "ipaddress", "macAddress","adHostName"};
 
-	private static ClassPathXmlApplicationContext testContextManager;
+    private static ClassPathXmlApplicationContext testContextManager;
 
 
-	// Add this notes only for debug usage
+    // Add this notes only for debug usage
 	/*
 	@BeforeClass
 	public static void setUpClass(){
@@ -36,7 +36,7 @@ public class ISETest {
 	*/
 
 
-	@Before
+    @Before
     public void setUp() throws Exception {
         morphlineTester.init(new String[]{confFile}, Arrays.asList(iseOutputFields));
     }

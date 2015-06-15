@@ -46,6 +46,12 @@ public class UsernameService implements InitializingBean, CachingService{
 	@Autowired
 	private CacheHandler<String, String> usernameToUserIdCache;
 
+	@Autowired
+	SamAccountNameService samAccountNameService;
+
+
+
+
 	private boolean isLazy = true;
 	
 	@Value("${vpn.to.ad.username.regex.format:^%s@.*(?i)}")
@@ -241,9 +247,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		user.addLogUsername(getLogname(eventId), username);
 	}
 
-	public List<User> getUsersBysAMAccountName(String username){
-		return userRepository.findUsersBysAMAccountName(username);
-	}
+
 	
 	public boolean isUsernameExist(String username){
 		return isUsernameExist(username, null);
@@ -286,7 +290,9 @@ public class UsernameService implements InitializingBean, CachingService{
 		}
 		return false;
 	}
-	
+
+
+
 	public boolean isLogUsernameExist(LogEventsEnum eventId, String logUsername, String userId) {
 
 		if (logUsernameSetList.get(eventId.ordinal()).contains(formatUserIdWithLogUsername(userId, logUsername)))
@@ -319,16 +325,21 @@ public class UsernameService implements InitializingBean, CachingService{
 			map.put(logEventsEnum, new HashSet<String>());
 
 		usernameToUserIdCache.clear();
+		samAccountNameService.clearCache();
 		for (int i = 0; i < numOfPages; i++) {
 			Pageable pageable = new PageRequest(i, usernameServicePageSize);
-			List<User> listOfUsers = userRepository.findAllExcludeAdInfo(pageable);
+			List<User> listOfUsers = userRepository.findAllUsers(pageable);
 			// Iterate users on current page
 			for (User user : listOfUsers) {
 				String username = user.getUsername();
 				String userId = user.getId();
 
-				if (username != null)
+				if (username != null) {
 					usernameToUserIdCache.put(username, userId);
+
+					samAccountNameService.updateSamAccountnameCache(user);
+				}
+
 
 				for (Map.Entry<LogEventsEnum, Set<String>> entry : map.entrySet()) {
 					String logUsername = getLogUsername(entry.getKey(), user);

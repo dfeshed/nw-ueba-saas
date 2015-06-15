@@ -1,9 +1,7 @@
 package fortscale.collection;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-
+import fortscale.collection.configuration.CollectionPropertiesResolver;
+import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionException;
@@ -14,8 +12,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import fortscale.collection.configuration.CollectionPropertiesResolver;
-import fortscale.collection.morphlines.MorphlinesItemsProcessor;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * static helper extensions method on top of JobDataMap
@@ -132,7 +131,11 @@ public class JobDataMapExtension {
 			throw new JobExecutionException("error getting int value for key " + key, e);
 		}
 	}
-	
+
+	public boolean isJobDataMapContainKey(JobDataMap map, String key){
+		return map.containsKey(key);
+	}
+
 	/**
 	 * get the job data map int value, if the key does not exists or the value is empty return the default value.
 	 * @param map the merged job data map

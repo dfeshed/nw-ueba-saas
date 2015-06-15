@@ -14,6 +14,15 @@ public class UsernameNormalizer implements InitializingBean{
 
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
 
+	public SamAccountNameService getSamAccountNameService() {
+		return samAccountNameService;
+	}
+
+	public void setSamAccountNameService(SamAccountNameService samAccountNameService) {
+		this.samAccountNameService = samAccountNameService;
+	}
+
+	protected SamAccountNameService samAccountNameService;
 	protected UsernameService usernameService;
 	protected UserService userService;
 
@@ -34,28 +43,26 @@ public class UsernameNormalizer implements InitializingBean{
 	}
 
 	//this is the normalizer for vpn and amt events
-	public String normalize(String username, String fakeDomain, JSONObject message, String classifier,
-			boolean updateOnly) {
-		username = username.toLowerCase();
-		fakeDomain = fakeDomain.toLowerCase();
+	public String normalize(String username, String fakeDomain, String classifier, boolean updateOnly) {
 		String ret;
 		logger.debug("Normalizing user - {}", username);
 		//get the list of users matching the samaccountname
-		List<User> users = usernameService.getUsersBysAMAccountName(username);
+		List<String> users = samAccountNameService.getUsersBysAMAccountName(username);
 		//if only one such user was found - return the full username (including domain)
 		if(users.size() == 1) {
-			ret = users.get(0).getUsername();
+			ret = users.get(0);
 			logger.debug("One user found - {}", ret);
 		}
 		else {
 			logger.debug("No users found or more than one found");
-			ret = postNormalize(username, fakeDomain, fakeDomain, classifier, updateOnly);
+			ret = postNormalize(username, fakeDomain, classifier, updateOnly);
 		}
 		return ret;
 	}
 
-	public String postNormalize(String username, String suffix, String domain, String classifier, boolean updateOnly) {
+	public String postNormalize(String username, String suffix, String classifier, boolean updateOnly) {
 		String ret = username + "@" + suffix;
+		ret = ret.toLowerCase();
 		//update or create user in mongo
 		userService.updateOrCreateUserWithClassifierUsername(Classifier.valueOf(classifier), ret, ret, updateOnly,
 				true);

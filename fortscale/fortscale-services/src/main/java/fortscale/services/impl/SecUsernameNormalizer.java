@@ -22,11 +22,10 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 	}
 
 	@Override
-	public String normalize(String username, String domain, JSONObject message, String classifier, boolean
-			updateOnly) {
+	public String normalize(String username, String domain, String classifier, boolean updateOnly) {
+		String ret = null;
 		username = username.toLowerCase();
 		domain = domain.toLowerCase();
-		String ret = null;
 		logger.debug("Normalizing user - {}", username);
 		if(regexMatcher != null){
 			logger.debug("Attempting to match regular expressions");
