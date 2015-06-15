@@ -3,6 +3,8 @@ package fortscale.streaming.service.aggregation;
 import net.minidev.json.JSONObject;
 
 public class EventCounterFeatureExtractor {
+	public static final String NAME = "eventCounterFeatureExtractor";
+
 	public static Object createFeature() {
 		return new Counter();
 	}

@@ -4,6 +4,8 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.MessageCollector;
+import org.apache.samza.task.TaskCoordinator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,5 +34,13 @@ public class AggregationEventsManager {
 		}
 
 		featureBucketsService.updateFeatureBuckets(messageJson, timestamp);
+	}
+
+	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		// TODO implement
+	}
+
+	public void close() throws Exception {
+		// TODO implement
 	}
 }

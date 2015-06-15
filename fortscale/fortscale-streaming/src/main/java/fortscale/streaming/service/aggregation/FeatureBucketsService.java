@@ -13,14 +13,15 @@ public class FeatureBucketsService {
 	@Autowired
 	private FeatureBucketsMongoStore featureBucketsMongoStore;
 
+	// Currently hold a single strategy
 	private FixedDurationFeatureBucketStrategy fixedDurationStrategy;
 
 	public FeatureBucketsService() {
-		List<String> contextFieldNames = new ArrayList<>(2);
+		List<String> contextFieldNames = new ArrayList<>();
 		contextFieldNames.add("normalized_username");
 		contextFieldNames.add("normalized_dst_machine");
 
-		// Create a fixed duration feature bucket strategy of 1 hour
+		// Create a fixed duration feature bucket strategy of 1 hour with the above contexts
 		fixedDurationStrategy = new FixedDurationFeatureBucketStrategy(contextFieldNames, 3600, featureBucketsMongoStore);
 	}
 
@@ -29,11 +30,13 @@ public class FeatureBucketsService {
 
 		if (featureBucket == null) {
 			featureBucket = new FeatureBucket();
-			featureBucket.addFeature("event_counter", EventCounterFeatureExtractor.createFeature());
+			// Currently add to the bucket a single feature that simply counts the number of events in it
+			featureBucket.addFeature(EventCounterFeatureExtractor.NAME, EventCounterFeatureExtractor.createFeature());
 		}
 
 		for (Map.Entry<String, Object> entry : featureBucket.getFeatures().entrySet()) {
-			if (entry.getKey().equals("event_counter")) {
+			// Update the only feature existing in the bucket (the event counter)
+			if (entry.getKey().equals(EventCounterFeatureExtractor.NAME)) {
 				EventCounterFeatureExtractor.updateFeature(entry.getValue(), message);
 			}
 		}

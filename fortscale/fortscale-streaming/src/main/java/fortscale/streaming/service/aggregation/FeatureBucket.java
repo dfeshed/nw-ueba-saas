@@ -28,9 +28,6 @@ public class FeatureBucket {
 
 	private Map<String, Object> features;
 
-	/**
-	 * Feature Bucket constructor.
-	 */
 	public FeatureBucket() {
 		features = new HashMap<>();
 	}

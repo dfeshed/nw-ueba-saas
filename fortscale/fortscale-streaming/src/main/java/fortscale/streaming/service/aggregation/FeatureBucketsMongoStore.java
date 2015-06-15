@@ -11,13 +11,16 @@ import java.util.*;
 
 @Component("featureBucketsMongoStore")
 public class FeatureBucketsMongoStore {
+	private static final String NORMALIZED_USERNAME_FIELD = "normalized_username";
+	private static final String NORMALIZED_DST_MACHINE_FIELD = "normalized_dst_machine";
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	public FeatureBucket getFeatureBucket(Map<String, String> contextFieldNameToValueMap, String strategyId, long startTime) {
 		String collectionName = getCollectionName(contextFieldNameToValueMap.keySet());
-		String userName = contextFieldNameToValueMap.get("normalized_username");
-		String machineName = contextFieldNameToValueMap.get("normalized_dst_machine");
+		String userName = contextFieldNameToValueMap.get(NORMALIZED_USERNAME_FIELD);
+		String machineName = contextFieldNameToValueMap.get(NORMALIZED_DST_MACHINE_FIELD);
 
 		if (mongoTemplate.collectionExists(collectionName)) {
 			Query query = new Query();
@@ -42,8 +45,8 @@ public class FeatureBucketsMongoStore {
 			}
 
 			featureBucket.setStrategyId(strategyId);
-			featureBucket.setUserName(contextFieldNameToValueMap.get("normalized_username"));
-			featureBucket.setMachineName(contextFieldNameToValueMap.get("normalized_dst_machine"));
+			featureBucket.setUserName(contextFieldNameToValueMap.get(NORMALIZED_USERNAME_FIELD));
+			featureBucket.setMachineName(contextFieldNameToValueMap.get(NORMALIZED_DST_MACHINE_FIELD));
 			featureBucket.setStartTime(startTime);
 			featureBucket.setEndTime(0);
 
@@ -60,6 +63,6 @@ public class FeatureBucketsMongoStore {
 	private static String getCollectionName(Set<String> contextFieldNames) {
 		List<String> sorted = new ArrayList<>(contextFieldNames);
 		Collections.sort(sorted);
-		return StringUtils.join(sorted, '.');
+		return String.format("aggregation.%s", StringUtils.join(sorted, '.'));
 	}
 }

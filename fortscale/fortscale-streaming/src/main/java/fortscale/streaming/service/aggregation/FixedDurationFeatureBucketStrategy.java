@@ -3,9 +3,11 @@ package fortscale.streaming.service.aggregation;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import static fortscale.utils.ConversionUtils.convertToString;
 
 public class FixedDurationFeatureBucketStrategy {
@@ -27,8 +29,8 @@ public class FixedDurationFeatureBucketStrategy {
 		Assert.isTrue(durationInSeconds > 0, "Fixed duration must be positive");
 		this.durationInSeconds = durationInSeconds;
 
-		// Set this strategy's ID
-		strategyId = String.format("%s%d", FixedDurationFeatureBucketStrategy.class.getName(), durationInSeconds);
+		// Set this strategy's ID (name + parameter)
+		strategyId = String.format("%s.%d", FixedDurationFeatureBucketStrategy.class.getSimpleName(), durationInSeconds);
 
 		// Validate the feature buckets mongo store
 		Assert.notNull(mongoStore, "Must accept a mongo store of feature buckets");
@@ -37,30 +39,32 @@ public class FixedDurationFeatureBucketStrategy {
 
 	public FeatureBucket getFeatureBucket(JSONObject message, long timestamp) {
 		Map<String, String> contextFieldNameToValueMap = mapContextFieldNamesToValues(message);
-		long startTime = (timestamp / durationInSeconds) * durationInSeconds;
-		return mongoStore.getFeatureBucket(contextFieldNameToValueMap, strategyId, startTime);
+		return mongoStore.getFeatureBucket(contextFieldNameToValueMap, strategyId, calculateStartTime(timestamp));
 	}
 
 	public void saveFeatureBucket(JSONObject message, long timestamp, FeatureBucket featureBucket) {
 		Map<String, String> contextFieldNameToValueMap = mapContextFieldNamesToValues(message);
-		long startTime = (timestamp / durationInSeconds) * durationInSeconds;
-		mongoStore.saveFeatureBucket(contextFieldNameToValueMap, strategyId, startTime, featureBucket);
+		mongoStore.saveFeatureBucket(contextFieldNameToValueMap, strategyId, calculateStartTime(timestamp), featureBucket);
 	}
 
 	private Map<String, String> mapContextFieldNamesToValues(JSONObject message) {
 		Map<String, String> contextFieldNameToValueMap = new HashMap<>();
 
 		for (String contextFieldName : contextFieldNames) {
-			if (message.containsKey(contextFieldName)) {
-				String contextValue = convertToString(message.get(contextFieldName));
+			String contextValue = convertToString(message.get(contextFieldName));
 
-				// Add only valid context values
-				if (StringUtils.isNotBlank(contextValue)) {
-					contextFieldNameToValueMap.put(contextFieldName, contextValue);
-				}
+			if (StringUtils.isBlank(contextValue)) {
+				// Return null if one of the context field names has an invalid value
+				return null;
+			} else {
+				contextFieldNameToValueMap.put(contextFieldName, contextValue);
 			}
 		}
 
 		return contextFieldNameToValueMap;
+	}
+
+	private long calculateStartTime(long timestamp) {
+		return (timestamp / durationInSeconds) * durationInSeconds;
 	}
 }
