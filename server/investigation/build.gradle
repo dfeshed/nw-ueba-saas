@@ -1,0 +1,11 @@
+apply plugin: 'spring-boot'
+
+springBoot.backupSource = false
+startScripts.enabled = false
+distZip.enabled = false
+distTar.enabled = false
+
+dependencies {
+    compile project(':server:common')
+    testCompile project(':server:common')
+}
