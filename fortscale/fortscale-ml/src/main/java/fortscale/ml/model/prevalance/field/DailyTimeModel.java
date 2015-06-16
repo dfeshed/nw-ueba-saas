@@ -23,6 +23,11 @@ public class DailyTimeModel extends TimeModel implements FieldModel{
 	
 	@Override
 	public void init(String prefix, String fieldName, Config config) {}
+	
+	@Override
+	public long getNumOfSamples(){
+		return getTotal();
+	}
 		
 	@Override
 	public void add(Object value, long timestamp){

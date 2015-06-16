@@ -2,7 +2,6 @@ package fortscale.streaming.scorer;
 
 import org.apache.samza.config.Config;
 
-import fortscale.ml.model.prevalance.PrevalanceModel;
 import fortscale.ml.model.prevalance.field.QuadPolyCalibrationForContModel;
 
 public class ContiuousModelScorer extends ModelScorer{
@@ -32,15 +31,7 @@ public class ContiuousModelScorer extends ModelScorer{
 	}
 
 	@Override
-	protected FeatureScore calculateModelScore(EventMessage eventMessage, PrevalanceModel model) throws Exception{
-		double score = 0;
-		if(model != null){
-			double modelScore = model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), featureFieldName);
-			score = calibration.calculateScore(modelScore);
-		}
-		
-		
-		 
-		 return new FeatureScore(outputFieldName, score);
+	protected double calibrateScore(double score){
+		 return calibration.calculateScore(score);
 	}
 }

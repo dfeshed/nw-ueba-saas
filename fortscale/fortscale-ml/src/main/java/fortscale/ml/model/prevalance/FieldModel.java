@@ -27,4 +27,6 @@ public interface FieldModel {
 	 * calculate the score of the feature value.
 	 */
 	double calculateScore(Object value);	
+	
+	long getNumOfSamples();
 }

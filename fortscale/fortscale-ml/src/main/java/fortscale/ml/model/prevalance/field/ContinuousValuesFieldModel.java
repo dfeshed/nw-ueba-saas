@@ -26,6 +26,11 @@ public class ContinuousValuesFieldModel implements FieldModel{
 		int maxNumOfHistogramElements = config.getInt(String.format(MAX_NUM_OF_HISTOGRAM_ELEMENTS_CONFIG_FORMAT, prefix, fieldName), continuousValuesModel.getMaxNumOfHistogramElements());
 		continuousValuesModel.setMaxNumOfHistogramElements(maxNumOfHistogramElements);
 	}
+	
+	@Override
+	public long getNumOfSamples(){
+		return continuousValuesModel.getN();
+	}
 
 	@Override
 	public void add(Object value, long timestamp) {

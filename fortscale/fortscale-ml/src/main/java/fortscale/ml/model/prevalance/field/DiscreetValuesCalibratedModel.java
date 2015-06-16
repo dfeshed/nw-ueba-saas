@@ -23,7 +23,12 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 	private FeatureCalibration featureCalibration = new FeatureCalibration();
 	private Pattern ignoreValues;
 	private int distinctValuesLimit = DISTINCT_VALUES_LIMIT_DEFAULT;
+	private long numOfSamples = 0;
 	
+	@Override
+	public long getNumOfSamples(){
+		return numOfSamples;
+	}
 	
 	public int getNumOfFeatureValues(){
 		return featureCalibration.getNumOfFeatureValues();
@@ -48,6 +53,7 @@ public class DiscreetValuesCalibratedModel implements FieldModel{
 			// boost scores values should be skipped from the model so that they will receive high 
 			// score in calculateScore method
 			if(featureValue != null && !isIgnoreValue(featureValue)) {
+				numOfSamples++;
 				featureCalibration.incrementFeatureValue(featureValue);
 			}
 		} catch (Exception e) {
