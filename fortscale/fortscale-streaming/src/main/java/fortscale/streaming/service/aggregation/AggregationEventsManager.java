@@ -33,7 +33,8 @@ public class AggregationEventsManager {
 			return;
 		}
 
-		featureBucketsService.updateFeatureBuckets(messageJson, timestamp);
+		// TODO for now, prepare a list of arbitrary feature bucket confs
+		featureBucketsService.updateFeatureBuckets(messageJson, null);
 	}
 
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
