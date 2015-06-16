@@ -1,3 +1,11 @@
 include 'client:sa'
 include 'server:common'
 include 'server:investigation'
+
+def projects = rootProject.children + project(':client').children + project(':server').children
+projects.each { project ->
+    project.buildFileName = "${project.name}.gradle"
+    if (project.projectDir.isDirectory() && project.buildFile.exists()) {
+        assert project.buildFile.isFile()
+    }
+}
