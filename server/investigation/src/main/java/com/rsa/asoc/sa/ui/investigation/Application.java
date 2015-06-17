@@ -11,6 +11,11 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
  */
 @SpringBootApplication
 public class Application {
+
+    /**
+     * The application main entry point.
+     * @param args
+     */
     public static void main(String[] args) {
         new SpringApplicationBuilder()
                 .sources(Application.class)
