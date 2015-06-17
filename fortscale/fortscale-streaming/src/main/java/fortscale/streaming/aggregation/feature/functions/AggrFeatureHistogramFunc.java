@@ -1,6 +1,7 @@
 package fortscale.streaming.aggregation.feature.functions;
 
 import fortscale.streaming.aggregation.feature.Feature;
+import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
 
 import java.util.Map;
 
@@ -11,7 +12,7 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction {
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_histogram_func";
 
     @Override
-    public Object updateAggrFeature(Map<String, Feature> features, Feature aggrFeature) {
+    public Object updateAggrFeature(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Feature aggrFeature) {
         //ToDo: implement
         return null;
     }

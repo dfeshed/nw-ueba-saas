@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.extraction.EventFeatureExtractor;
 import fortscale.streaming.aggregation.feature.extraction.PriorityContainerFeatureExtractor;
+import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
 
 import java.util.Map;
 
@@ -17,5 +18,5 @@ import java.util.Map;
         @JsonSubTypes.Type(value= AggrFeatureAvStdNFunc.class, name= AggrFeatureAvStdNFunc.AGGR_FEATURE_FUNCTION_TYPE)
 })
 public interface AggrFeatureFunction {
-    Object updateAggrFeature(Map<String, Feature> features, Feature aggrFeature);
+    Object updateAggrFeature(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features, Feature aggrFeature);
 }
