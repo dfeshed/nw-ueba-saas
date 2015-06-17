@@ -22,7 +22,6 @@ public class ContinuousValuesModel {
 	private double histogramStd = 0;
 	private long N = 0;	
 	
-	
 	@JsonCreator
 	public ContinuousValuesModel(@JsonProperty("roundNumber") double roundNumber){
 		if(roundNumber > 0){
@@ -125,5 +124,9 @@ public class ContinuousValuesModel {
 
 	public void setMaxNumOfHistogramElements(int maxNumOfHistogramElements) {
 		this.maxNumOfHistogramElements = maxNumOfHistogramElements;
+	}
+	
+	public long getN(){
+		return N;
 	}
 }

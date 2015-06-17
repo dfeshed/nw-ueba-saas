@@ -26,6 +26,11 @@ public class CumulativeAverageFieldModel implements FieldModel{
 	public void init(String prefix, String fieldName, Config config) {}
 	
 	@Override
+	public long getNumOfSamples(){
+		return count;
+	}
+	
+	@Override
 	public void add(Object value, long timestamp) {
 		Integer intValue = convertToInteger(value);
 		if (intValue!=null) {

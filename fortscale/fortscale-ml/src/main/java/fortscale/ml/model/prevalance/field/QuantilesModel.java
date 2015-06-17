@@ -89,4 +89,9 @@ public class QuantilesModel implements FieldModel {
 
 	@Override
 	public void add(Object value, long timestamp) {}
+
+	@Override
+	public long getNumOfSamples() {
+		return 0;
+	}
 }
