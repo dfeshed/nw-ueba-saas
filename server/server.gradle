@@ -5,6 +5,10 @@ buildscript {
         mockitoVersion = '1.9.5'
         springBootVersion = '1.2.4.RELEASE'
         yamlVersion = '1.14'
+
+        buildCommit = "git rev-list HEAD --count".execute().text
+        buildChangeSet = "git rev-parse --short HEAD".execute().text
+        buildDate = new Date().toString()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -22,5 +26,12 @@ subprojects {
         mavenLocal()
         mavenCentral()
         jcenter()
+    }
+
+    processResources {
+        from(sourceSets.main.resources) {
+            include "**/*.yml"
+            expand project.properties
+        }
     }
 }
