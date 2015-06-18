@@ -237,6 +237,8 @@ public class UserServiceTest {
 		}
 		when(userRepository.save(any(User.class))).thenReturn(new User());
 
+		userService.setListOfBuiltInADUsers("Administrator,Guest");
+
 		// Act
 		userService.updateUserWithADInfo(timestampEpoch);
 
