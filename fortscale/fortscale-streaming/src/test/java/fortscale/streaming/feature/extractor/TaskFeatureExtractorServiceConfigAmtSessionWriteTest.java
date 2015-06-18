@@ -11,13 +11,13 @@ public class TaskFeatureExtractorServiceConfigAmtSessionWriteTest extends TaskFe
 	
 	@Test
 	public void testSanity() throws Exception{
-		buildFeatureExtractionServiceFromTaskConfig("config/amtsessions-events-write.properties");
+		buildFeatureExtractionServiceFromTaskConfig("config/hdfs-events-writer-task.properties");
 	}
 
 	
 	@Test
 	public void testAmtHostExist() throws Exception{
-		FeatureExtractionService featureExtractionService = buildFeatureExtractionServiceFromTaskConfig("config/amtsessions-events-write.properties");
+		FeatureExtractionService featureExtractionService = buildFeatureExtractionServiceFromTaskConfig("config/hdfs-events-writer-task.properties");
 		
 		JSONObject jsonObject = new JSONObject();
 		String hostName = "testhost";
@@ -31,7 +31,7 @@ public class TaskFeatureExtractorServiceConfigAmtSessionWriteTest extends TaskFe
 	
 	@Test
 	public void testAmtHostBlank() throws Exception{
-		FeatureExtractionService featureExtractionService = buildFeatureExtractionServiceFromTaskConfig("config/amtsessions-events-write.properties");
+		FeatureExtractionService featureExtractionService = buildFeatureExtractionServiceFromTaskConfig("config/hdfs-events-writer-task.properties");
 		
 		JSONObject jsonObject = new JSONObject();
 		String hostName = "  ";
