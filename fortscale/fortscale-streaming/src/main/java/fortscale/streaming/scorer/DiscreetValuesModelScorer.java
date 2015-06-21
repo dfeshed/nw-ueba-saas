@@ -18,31 +18,28 @@ public class DiscreetValuesModelScorer extends ModelScorer {
 	}
 
 	@Override
-	protected FeatureScore calculateModelScore(EventMessage eventMessage, PrevalanceModel model) throws Exception {
+	protected double calculateCertainty(PrevalanceModel model) {
+		double certainty = super.calculateCertainty(model);
 		if(enoughNumOfDiscreetValuesToInfluence < 2){
-			return super.calculateModelScore(eventMessage, model);
+			return certainty;
 		}
 		
 		FieldModel fieldModel = model.getFieldModel(featureFieldName);
 		if(!(fieldModel instanceof DiscreetValuesCalibratedModel)){
-			return super.calculateModelScore(eventMessage, model);
+			return certainty;
 		}
 		
 		
 		DiscreetValuesCalibratedModel calibratedModel = (DiscreetValuesCalibratedModel) fieldModel;
 		int numOfFeatureValues = calibratedModel.getNumOfFeatureValues();
-		double certainty = 0;
+		double discreetCertainty = 0;
 		if(numOfFeatureValues >= enoughNumOfDiscreetValuesToInfluence){
-			certainty = 1;
+			discreetCertainty = 1;
 		} else if(numOfFeatureValues >= minNumOfDiscreetValuesToInfluence){
-			certainty = ((double)(numOfFeatureValues - minNumOfDiscreetValuesToInfluence + 1)) / (enoughNumOfDiscreetValuesToInfluence - minNumOfDiscreetValuesToInfluence + 1);
+			discreetCertainty = ((double)(numOfFeatureValues - minNumOfDiscreetValuesToInfluence + 1)) / (enoughNumOfDiscreetValuesToInfluence - minNumOfDiscreetValuesToInfluence + 1);
 		}
 		
-		double score = 0;
-		if(model != null){
-			score = model.calculateScore(featureExtractionService, eventMessage.getJsonObject(), featureFieldName);
-		}
 		
-		return new ModelFeatureScore(outputFieldName, score, certainty);
+		return certainty*discreetCertainty;
 	}
 }

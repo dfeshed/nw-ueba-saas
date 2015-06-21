@@ -2,14 +2,19 @@ package fortscale.ml.model.prevalance.field;
 
 import fortscale.ml.model.prevalance.FieldModel;
 import fortscale.utils.ConversionUtils;
+
 import org.apache.samza.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class QuantilesModel implements FieldModel {
 	private static final Logger logger = LoggerFactory.getLogger(QuantilesModel.class);
 	public static final int NUM_OF_QUANTILES = 100;
@@ -89,4 +94,9 @@ public class QuantilesModel implements FieldModel {
 
 	@Override
 	public void add(Object value, long timestamp) {}
+
+	@Override
+	public long getNumOfSamples() {
+		return 0;
+	}
 }
