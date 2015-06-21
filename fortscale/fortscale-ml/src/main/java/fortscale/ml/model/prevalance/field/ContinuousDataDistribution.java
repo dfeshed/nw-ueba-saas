@@ -2,8 +2,10 @@ package fortscale.ml.model.prevalance.field;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
 import fortscale.ml.model.prevalance.FieldModel;
 import fortscale.utils.ConversionUtils;
+
 import org.apache.samza.config.Config;
 
 import java.util.HashMap;
@@ -41,6 +43,11 @@ public class ContinuousDataDistribution implements FieldModel {
 		distribution = new HashMap<>();
 		totalCount = 0L;
 		continuousDataModel = new ContinuousDataModel();
+	}
+	
+	@Override
+	public long getNumOfSamples(){
+		return totalCount;
 	}
 
 	@Override
