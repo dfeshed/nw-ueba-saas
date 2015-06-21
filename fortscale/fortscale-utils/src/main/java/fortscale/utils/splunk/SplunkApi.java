@@ -418,13 +418,14 @@ public class SplunkApi {
 			        		logger.info("last event time {}", cursor);
 			        	}
 			        }
-		        } finally{
+		        } catch (Exception e) {
 					// In case of a problem in reading the events, increment the loop counter.
 					// This ensures that we won't enter an endless loop
 					if	(event == null) {
 						logger.warn("Could not read event number: {}", Integer.toString(offset));
 						offset++;
 					}
+				} finally{
 		        	if(reader != null){
 		        		reader.close();
 		        	}
@@ -473,6 +474,9 @@ public class SplunkApi {
         		throw ioe;
         	} catch(Exception e){
         		logger.warn("got the following exception while trying to get the next event from splunk", e);
+				if (numOfTries == 5) {
+					throw e;
+				}
         	}
         }
         return event;
