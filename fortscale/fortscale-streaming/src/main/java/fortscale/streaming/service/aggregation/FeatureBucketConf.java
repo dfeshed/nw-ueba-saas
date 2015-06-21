@@ -3,12 +3,15 @@ package fortscale.streaming.service.aggregation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class FeatureBucketConf {
+public class FeatureBucketConf implements Serializable{
+	private static final long serialVersionUID = 1L;
+
 	private List<String> dataSources;
 	private List<String> contextFieldNames;
 	private String strategyName;

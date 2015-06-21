@@ -22,11 +22,14 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService {
     /**
      * Updates the aggrFeatures by running the associated {@link AggrFeatureFunction} that is configured for each
      * AggrFeature in the given  {@link AggregatedFeatureConf} and using the features as input to those functions.
+     * Creates new map entry <String, Feature> for any AggrFeatureConf for which there is no entry in the aggrFeatures
+     * map.
      * @param aggrFeatureConfs
      * @param aggrFeatures
      * @param features
-     * @return a map with the updated aggregation features. If aggrFeatures is null, a new {@link HashMap<String, Feature>}
-     * will be created with new Feature object for each of the {@link AggregatedFeatureConf} in aggrFeatureConfs.
+     * @return a map with entry for each {@link AggregatedFeatureConf}. Each entry is updated by the relevant function.
+     * If aggrFeatures is null, a new {@link HashMap<String, Feature>} will be created with new Feature object for each
+     * of the {@link AggregatedFeatureConf} in aggrFeatureConfs.
      */
     @Override
     public Map<String, Feature> updateAggrFeatures(List<AggregatedFeatureConf> aggrFeatureConfs,
@@ -49,7 +52,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService {
                 }
 
                 AggrFeatureFunction func = getAggrFeatureFunction(aggregatedFeatureConf);
-                func.updateAggrFeature(features, aggrFeature);
+                func.updateAggrFeature(aggregatedFeatureConf, features, aggrFeature);
             }
         }
         return aggrFeatures;
@@ -58,7 +61,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService {
     private AggrFeatureFunction getAggrFeatureFunction(@NotNull AggregatedFeatureConf aggregatedFeatureConf) {
         Assert.isNotNull(aggregatedFeatureConf);
 
-        AggrFeatureFunction func = aggrFunctions.get(aggregatedFeatureConf.getAggrFeatureFuncName());
+        AggrFeatureFunction func = aggrFunctions.get(aggregatedFeatureConf.getAggrFeatureFuncJson());
 
         if(func==null) {
             func = createAggrFeatureFunction(aggregatedFeatureConf);
@@ -72,8 +75,9 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService {
         AggrFeatureFunction func = null;
 
         try {
-            func = (new ObjectMapper()).readValue(aggregatedFeatureConf.getAggrFeatureFuncJson(), AggrFeatureFunction.class);
-            aggrFunctions.put(aggregatedFeatureConf.getAggrFeatureFuncName(), func);
+            String json = aggregatedFeatureConf.getAggrFeatureFuncJson();
+            func = (new ObjectMapper()).readValue(json, AggrFeatureFunction.class);
+            aggrFunctions.put(json, func);
         } catch (Exception e) {
             String errorMsg = String.format("Failed to deserialize json %s", aggregatedFeatureConf.getAggrFeatureFuncJson());
             logger.error(errorMsg, e);
