@@ -1,14 +1,15 @@
 package fortscale.domain.core.dao;
 
-import com.google.common.base.Optional;
-import fortscale.domain.core.Alert;
+import fortscale.domain.core.dao.rest.Alert;
+import fortscale.domain.core.dao.rest.Alerts;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 public interface AlertsRepositoryCustom {
 
 
-	List<Alert> findAll(PageRequest request, int maxPages);
+	Alerts findAll(PageRequest request, int maxPages, HttpServletRequest httpRequest);
+	void add(Alert alert);
 
 	}

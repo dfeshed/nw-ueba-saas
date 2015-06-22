@@ -1,6 +1,9 @@
-package fortscale.domain.core;
+package fortscale.domain.core.dao.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fortscale.domain.core.AbstractDocument;
+import fortscale.domain.core.AlertSeverity;
+import fortscale.domain.core.EntityType;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -9,6 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * This is the bean of Alert entity that is saved in Alerts collection in MongoDB
+ */
 @Document(collection = Alert.COLLECTION_NAME)
 @CompoundIndexes({
 	@CompoundIndex(name="entity_type_entity_name_desc", def = "{'entity_type': 1, 'entity_name': -1}"),
