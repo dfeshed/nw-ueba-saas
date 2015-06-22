@@ -3,6 +3,7 @@ package fortscale.streaming.aggregation.feature.functions;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.ContinuousValueAvgStdN;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class AggrFeatureAvgStdNFuncTest {
         AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf(
                 "MyAggrFeature",
                 featureNames,
-                "{}");
+                new JSONObject());
 
 
         return aggrFuncConf;
@@ -50,7 +51,7 @@ public class AggrFeatureAvgStdNFuncTest {
         return new AggregatedFeatureConf(
                 "MyAggrFeature",
                 featureNames,
-                "{}");
+                new JSONObject());
     }
 
 

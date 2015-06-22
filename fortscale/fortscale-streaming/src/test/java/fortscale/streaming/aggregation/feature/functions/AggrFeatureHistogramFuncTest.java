@@ -4,6 +4,7 @@ package fortscale.streaming.aggregation.feature.functions;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.GenericHistogram;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class AggrFeatureHistogramFuncTest {
         AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf(
                 "MyAggrFeature",
                 featureNames,
-                "{}");
+                new JSONObject());
 
 
         return aggrFuncConf;
@@ -49,7 +50,7 @@ public class AggrFeatureHistogramFuncTest {
         AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf(
                 "MyAggrFeature",
                 featureNames,
-                "{}");
+                new JSONObject());
 
 
         return aggrFuncConf;

@@ -1,9 +1,11 @@
 package fortscale.streaming.aggregation.feature.functions;
 
+import com.mongodb.util.JSON;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.ContinuousValueAvgStdN;
 import fortscale.streaming.aggregation.feature.util.GenericHistogram;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,10 +25,13 @@ public class AggrFeatureFuncServiceTest {
         featureNames.add("feature2"+aggrFeatureName);
         featureNames.add("feature3"+aggrFeatureName);
 
+        JSONObject funcConf = new JSONObject();
+        funcConf.put("type", funcName);
+
         return new AggregatedFeatureConf(
                 aggrFeatureName,
                 featureNames,
-                " {\"type\": \""+funcName+"\"}");
+                funcConf);
 
     }
 

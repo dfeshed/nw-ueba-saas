@@ -1,28 +1,32 @@
 package fortscale.streaming.service.aggregation;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.util.List;
 
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, defaultImpl = AggregatedFeatureConf.class)
 public class AggregatedFeatureConf implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
 	private List<String> featureNames;
-    private String aggrFeatureFuncJson;
+    private JSONObject aggrFeatureFuncJson;
 
-	public AggregatedFeatureConf(String name,
-								 List<String> featureNames,
-                                 String aggrFeatureFuncJson) {
+	public AggregatedFeatureConf(@JsonProperty("name")String name,
+								 @JsonProperty("featureNames")List<String> featureNames,
+								 @JsonProperty("aggrFeatureFuncJson")JSONObject aggrFeatureFuncJson) {
 		// Validate input
 		Assert.isTrue(StringUtils.isNotBlank(name));
 		Assert.notEmpty(featureNames);
 		for (String featureName : featureNames) {
 			Assert.isTrue(StringUtils.isNotBlank(featureName));
 		}
-        Assert.isTrue(StringUtils.isNotBlank(aggrFeatureFuncJson));
+        Assert.notNull(aggrFeatureFuncJson);
 
 		this.name = name;
 		this.featureNames = featureNames;
@@ -37,5 +41,5 @@ public class AggregatedFeatureConf implements Serializable {
 		return featureNames;
 	}
 
-    public String getAggrFeatureFuncJson() { return aggrFeatureFuncJson; }
+    public String getAggrFeatureFuncJson() { return aggrFeatureFuncJson.toJSONString(); }
 }
