@@ -76,6 +76,7 @@
 		<mavanagaiata.version>0.7.0</mavanagaiata.version>
         <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<maven-download-plugin.version>1.1.0</maven-download-plugin.version>
+		<esper-version>5.2.0</esper-version>
 	</properties>
 
 	<dependencies>
@@ -176,7 +177,14 @@
                 </exclusion>
 			</exclusions>
 		</dependency>
-		
+
+		<!-- esper - CEP -->
+		<dependency>
+			<groupId>com.espertech</groupId>
+			<artifactId>esper</artifactId>
+			<version>${esper-version}</version>
+		</dependency>
+
 		<!-- grizzled slf4j dependency needed in order to extend samza scala classes -->
 		<dependency>
 			<groupId>org.clapper</groupId>
@@ -382,7 +390,7 @@
 							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-SAMPLE.BIN</url>
 							<outputDirectory>data/geoip</outputDirectory>
 							<outputFileName>iptolocationdata.bin</outputFileName>
-							<skipCache>true</skipCache>
+							<skipCache>false</skipCache>
 						</configuration>
 					</execution>
 					<execution>
@@ -395,7 +403,7 @@
 							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</url>
 							<outputDirectory>target/data/geoip</outputDirectory>
 							<outputFileName>iptolocationdata.bin</outputFileName>
-							<skipCache>true</skipCache>
+							<skipCache>false</skipCache>
 						</configuration>
 					</execution>
 				</executions>
