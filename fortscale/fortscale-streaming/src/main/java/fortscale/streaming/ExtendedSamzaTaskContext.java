@@ -1,8 +1,8 @@
 package fortscale.streaming;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.samza.Partition;
 import org.apache.samza.metrics.MetricsRegistry;
 import org.apache.samza.task.TaskContext;
@@ -10,8 +10,7 @@ import org.apache.samza.task.TaskContext;
 public class ExtendedSamzaTaskContext implements TaskContext{
 
 	private TaskContext taskContext;
-	@SuppressWarnings("unchecked")
-	private Map<Class<?>, Object> beanMap = new HashedMap();
+	private Map<Class<?>, Object> beanMap = new HashMap<Class<?>, Object>();
 	
 	public ExtendedSamzaTaskContext(TaskContext taskContext){
 		this.taskContext = taskContext;

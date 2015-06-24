@@ -7,5 +7,5 @@ import net.minidev.json.JSONObject;
 
 public interface FeatureBucketStrategy {
 	public FeatureBucketStrategyData update(JSONObject event);
-	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(JSONObject event, FeatureBucketConf featureBucketConf);
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtime);
 }

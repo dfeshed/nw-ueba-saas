@@ -13,7 +13,7 @@ public class FixedDurationFeatureBucketStrategyFactory implements FeatureBucketS
 		if(durationInSeconds == null){
 			throw new JsonMappingException(String.format("json object %s doesn't contain field %s", strategyJson.getParams().toJSONString(), JSON_CONF_DURATION_IN_SECONDS_CONFS_FIELD_NAME));
 		}
-		return new FixedDurationFeatureBucketStrategy(durationInSeconds);
+		return new FixedDurationFeatureBucketStrategy(strategyJson.getName(), durationInSeconds);
 	}
 
 }
