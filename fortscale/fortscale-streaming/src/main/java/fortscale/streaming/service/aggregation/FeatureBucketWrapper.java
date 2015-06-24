@@ -2,9 +2,11 @@ package fortscale.streaming.service.aggregation;
 
 public class FeatureBucketWrapper {
 	private FeatureBucket featureBucket;
+	private boolean isNew = false;
 
-	public FeatureBucketWrapper(FeatureBucket featureBucket) {
+	public FeatureBucketWrapper(FeatureBucket featureBucket, boolean isNew) {
 		this.featureBucket = featureBucket;
+		this.isNew = isNew;
 	}
 
 	public FeatureBucket getFeatureBucket() {
@@ -14,4 +16,10 @@ public class FeatureBucketWrapper {
 	public void setFeatureBucket(FeatureBucket featureBucket) {
 		this.featureBucket = featureBucket;
 	}
+
+	public boolean isNew() {
+		return isNew;
+	}
+	
+	
 }
