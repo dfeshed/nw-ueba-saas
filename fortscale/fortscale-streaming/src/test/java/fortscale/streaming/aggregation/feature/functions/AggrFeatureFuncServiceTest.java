@@ -8,6 +8,10 @@ import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +21,12 @@ import java.util.Map;
 /**
  * Created by amira on 21/06/2015.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath*:META-INF/spring/aggr-feature-service-context-test.xml" })
 public class AggrFeatureFuncServiceTest {
+
+    @Autowired
+    AggrFeatureFuncService funcService;
 
     private  AggregatedFeatureConf createAggrFeatureConf3(String aggrFeatureName, String funcName) {
         List<String> featureNames = new ArrayList<>();
@@ -102,7 +111,7 @@ public class AggrFeatureFuncServiceTest {
         aggrFeatures.put(aggrFeatureName1, aggrFeature1);
         aggrFeatures.put(aggrFeatureName2, aggrFeature2);
 
-        AggrFeatureFuncService funcService = new AggrFeatureFuncService();
+        //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
@@ -192,9 +201,6 @@ public class AggrFeatureFuncServiceTest {
 
         Map<String, Feature> aggrFeatures = new HashMap<>();
         aggrFeatures.put(aggrFeatureName1, aggrFeature1);
-        //aggrFeatures.put(aggrFeatureName2, aggrFeature2);
-
-        AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
@@ -295,7 +301,6 @@ public class AggrFeatureFuncServiceTest {
         aggrFeatures.put(aggrFeatureName1, aggrFeature1);
         aggrFeatures.put(aggrFeatureName2, aggrFeature2);
 
-        AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
@@ -398,7 +403,6 @@ public class AggrFeatureFuncServiceTest {
 
         Map<String, Feature> featureMap = new HashMap<>();
 
-        AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
@@ -509,8 +513,7 @@ public class AggrFeatureFuncServiceTest {
         aggrFeatures.put(aggrFeatureName1, aggrFeature1);
         aggrFeatures.put(aggrFeatureName2, aggrFeature2);
 
-        AggrFeatureFuncService funcService = new AggrFeatureFuncService();
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(null, aggrFeatures, featureMap);
+         Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(null, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -596,7 +599,6 @@ public class AggrFeatureFuncServiceTest {
         aggrFeatureConfs.add(aggrFuncConf1);
         aggrFeatureConfs.add(aggrFuncConf2);
 
-        AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, null, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
@@ -690,7 +692,6 @@ public class AggrFeatureFuncServiceTest {
         aggrFeatures.put(aggrFeatureName1, aggrFeature1);
         aggrFeatures.put(aggrFeatureName2, aggrFeature2);
 
-        AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, aggrFeatures, null);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());

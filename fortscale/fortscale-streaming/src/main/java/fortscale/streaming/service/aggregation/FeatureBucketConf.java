@@ -1,14 +1,14 @@
 package fortscale.streaming.service.aggregation;
 
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import java.io.Serializable;
 import java.util.*;
 
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, defaultImpl=FeatureBucketConf.class)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class FeatureBucketConf implements Serializable{
 	private static final long serialVersionUID = 1L;
 

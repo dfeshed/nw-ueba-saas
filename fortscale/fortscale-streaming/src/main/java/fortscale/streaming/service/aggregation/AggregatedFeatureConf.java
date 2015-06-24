@@ -1,7 +1,7 @@
 package fortscale.streaming.service.aggregation;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 import java.io.Serializable;
 import java.util.List;
 
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, defaultImpl = AggregatedFeatureConf.class)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggregatedFeatureConf implements Serializable {
 	private static final long serialVersionUID = 1L;
 

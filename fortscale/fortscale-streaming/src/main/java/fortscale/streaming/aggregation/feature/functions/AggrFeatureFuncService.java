@@ -5,6 +5,7 @@ import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
 import fortscale.utils.logging.Logger;
 import org.eclipse.jdt.internal.core.Assert;
+import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -14,10 +15,13 @@ import java.util.Map;
 /**
  * Created by amira on 17/06/2015.
  */
+
+@Service
 public class AggrFeatureFuncService implements IAggrFeatureFunctionsService {
     private static final Logger logger = Logger.getLogger(AggrFeatureFuncService.class);
 
     private Map<String, AggrFeatureFunction> aggrFunctions = new HashMap<>();
+
 
     /**
      * Updates the aggrFeatures by running the associated {@link AggrFeatureFunction} that is configured for each
