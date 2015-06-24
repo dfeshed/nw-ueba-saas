@@ -100,6 +100,8 @@ public class UserServiceImpl implements UserService{
 	@Value("${list.of.builtin.ad.users:Administrator,Guest,krbtgt}")
 	private String listOfBuiltInADUsers;
 
+	private List<String> setOfBuiltInADUsers;
+
 	// For unit tests only
 	protected int getPageSize() {
 		return userServiceImplPageSize;
@@ -648,13 +650,18 @@ public class UserServiceImpl implements UserService{
 
 	public boolean needToBeDeleted(User oldUserRecord)
 	{
-		//convert the list of builtin ad users to list from string
-		List<String> builtInADUsersList = Arrays.asList(listOfBuiltInADUsers.split(","));
-		for (ListIterator idx = builtInADUsersList.listIterator();  idx.hasNext();)
-			idx.set(((String)idx.next()).toLowerCase());
+		//laze upload
+		if (setOfBuiltInADUsers == null || setOfBuiltInADUsers.size()==0)
+		{
+			setOfBuiltInADUsers = Arrays.asList(listOfBuiltInADUsers.split(","));
+			for (ListIterator idx = setOfBuiltInADUsers.listIterator();  idx.hasNext();)
+				idx.set(((String)idx.next()).toLowerCase());
+		}
 
 
-		return !builtInADUsersList.contains(oldUserRecord.getUsername());
+
+
+		return !setOfBuiltInADUsers.contains(oldUserRecord.getUsername());
 
 
 	}
