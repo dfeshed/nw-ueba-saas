@@ -1,16 +1,20 @@
 package fortscale.streaming.service.aggregation;
 
-import net.minidev.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minidev.json.JSONObject;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyService;
+import fortscale.utils.logging.Logger;
 
 public abstract class FeatureBucketsService {
+	private static final Logger logger = Logger.getLogger(FeatureBucketsService.class);
+	
+	private static final String BUCKET_ID_BUILDER_SEPERATOR = "_";
 		
 	public List<FeatureBucket> updateFeatureBucketsWithNewBucketEndTime(List<FeatureBucketConf> featureBucketConfs, List<FeatureBucketStrategyData> updatedFeatureBucketStrategyData){
 		Map<String, FeatureBucketStrategyData> strategyNameToDataMap = new HashMap<String, FeatureBucketStrategyData>();
@@ -35,18 +39,37 @@ public abstract class FeatureBucketsService {
 		List<FeatureBucket> newFeatureBuckets = new ArrayList<FeatureBucket>();
 		for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
 			List<FeatureBucketStrategyData> featureBucketStrategyDatas = getFeatureBucketStrategyService().getFeatureBucketStrategyData(event, featureBucketConf);
-			for(FeatureBucketStrategyData strategyData: featureBucketStrategyDatas){
-				FeatureBucket featureBucket = getFeatureBucketsStore().getFeatureBucket(featureBucketConf, strategyData.getStrategyId());
-				if(featureBucket == null){
-					featureBucket = createNewFeatureBucket(featureBucketConf, strategyData);
-					newFeatureBuckets.add(featureBucket);
-				}
-				updateFeatureBucket(featureBucket, featureBucketConf);
-				storeFeatureBucket(featureBucket, featureBucketConf);
-			}	
+			try{
+				for(FeatureBucketStrategyData strategyData: featureBucketStrategyDatas){
+					FeatureBucket featureBucket = getFeatureBucketsStore().getFeatureBucket(featureBucketConf, getBucketId(event, featureBucketConf, strategyData.getStrategyId()));
+					if(featureBucket == null){
+						featureBucket = createNewFeatureBucket(featureBucketConf, strategyData);
+						newFeatureBuckets.add(featureBucket);
+					}
+					updateFeatureBucket(featureBucket, featureBucketConf);
+					storeFeatureBucket(featureBucket, featureBucketConf);
+				}	
+			} catch(Exception e){
+				logger.error("got an exception while updating buckets with new event", e);
+			}
 		}
 		
 		return newFeatureBuckets;
+	}
+	
+	private String getBucketId(JSONObject event, FeatureBucketConf featureBucketConf, String strategyId){
+		List<String> sorted = new ArrayList<>(featureBucketConf.getContextFieldNames());
+		Collections.sort(sorted);
+		StringBuilder builder = new StringBuilder();
+		builder.append(strategyId).append(BUCKET_ID_BUILDER_SEPERATOR);
+		for(String contextFieldName: featureBucketConf.getContextFieldNames()){
+			String contextValue = (String) event.get(contextFieldName);
+			if(contextValue == null){
+				throw new IllegalArgumentException(String.format("the parameter %s is not contained in the json object %s", contextFieldName,event.toJSONString()));
+			}
+			builder.append(contextFieldName).append(BUCKET_ID_BUILDER_SEPERATOR).append(contextValue).append(BUCKET_ID_BUILDER_SEPERATOR);
+		}
+		return builder.toString();
 	}
 	
 	private void updateFeatureBucket(FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
