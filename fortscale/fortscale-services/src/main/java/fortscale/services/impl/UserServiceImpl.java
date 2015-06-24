@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService{
 	private int userServiceImplPageSize;
 
 
-	@Value("${list.of.builtin.ad.users:Administrator,Guest}")
+	@Value("${list.of.builtin.ad.users:Administrator,Guest,krbtgt}")
 	private String listOfBuiltInADUsers;
 
 	// For unit tests only
@@ -613,14 +613,11 @@ public class UserServiceImpl implements UserService{
 				//in case of true move the old record into duplicatedUser collection and update thje new record with old fortscale relevant information (i.e scores, last activity etc )
 				User oldUserRecord  = userRepository.findByUsername(username);
 
-				//convert the list of builtin ad users to list from string
-				List<String> builtInADUsersList = Arrays.asList(listOfBuiltInADUsers.split(","));
-				for (ListIterator idx = builtInADUsersList.listIterator();  idx.hasNext();)
-					idx.set(((String)idx.next()).toLowerCase());
+
 
 
 				//In case that the oldUserRecord is not null (we have other record on User collection with the same username ) and also doesnt exist in the ad built in users (doesnt have principal name only SAMAccountName )
-				if (oldUserRecord != null && !builtInADUsersList.contains(oldUserRecord.getUsername())) {
+				if (oldUserRecord != null && needToBeDeleted(oldUserRecord)) {
 					DeletedUser deletedUser = convertToDuplicatedUser(oldUserRecord);
 					updateUserWithOldInfo(deletedUser,user);
 					deletedUser = duplicatedUserRepository.save(deletedUser);
@@ -647,6 +644,19 @@ public class UserServiceImpl implements UserService{
 			}
 			updateUser(user, update);
 		}
+	}
+
+	public boolean needToBeDeleted(User oldUserRecord)
+	{
+		//convert the list of builtin ad users to list from string
+		List<String> builtInADUsersList = Arrays.asList(listOfBuiltInADUsers.split(","));
+		for (ListIterator idx = builtInADUsersList.listIterator();  idx.hasNext();)
+			idx.set(((String)idx.next()).toLowerCase());
+
+
+		return !builtInADUsersList.contains(oldUserRecord.getUsername());
+
+
 	}
 
 	/**
