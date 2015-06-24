@@ -1,22 +1,33 @@
 package fortscale.streaming.service.aggregation;
 
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
+import java.io.Serializable;
+import java.util.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, defaultImpl=FeatureBucketConf.class)
+public class FeatureBucketConf implements Serializable{
+	private static final long serialVersionUID = 1L;
 
-public class FeatureBucketConf {
-	private List<String> dataSources;
-	private List<String> contextFieldNames;
+	private String name;
+	private List<String> dataSources = new ArrayList<>();
+	private List<String> contextFieldNames = new ArrayList<>();
 	private String strategyName;
-	private Map<String, AggregatedFeatureConf> aggregatedFeatureConfs;
-	private Set<String> allFeatureNames;
+	private List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
+	private Set<String> allFeatureNames = new HashSet<>();
 
-	public FeatureBucketConf(List<String> dataSources, List<String> contextFieldNames, String strategyName, Map<String, AggregatedFeatureConf> aggregatedFeatureConfs) {
-		// Validate input
+    public FeatureBucketConf(@JsonProperty("name")String name,
+                             @JsonProperty("dataSources")List<String> dataSources,
+                             @JsonProperty("contextFieldNames")List<String> contextFieldNames,
+                             @JsonProperty("strategyName")String strategyName,
+                             @JsonProperty("aggrFeatureConfs")List<AggregatedFeatureConf> aggrFeatureConfs) {
+
+        Assert.notNull(name);
+        Assert.isTrue(StringUtils.isNotBlank(name));
+
 		Assert.notEmpty(dataSources);
 		for (String dataSource : dataSources) {
 			Assert.isTrue(StringUtils.isNotBlank(dataSource));
@@ -26,24 +37,23 @@ public class FeatureBucketConf {
 			Assert.isTrue(StringUtils.isNotBlank(contextFieldName));
 		}
 		Assert.isTrue(StringUtils.isNotBlank(strategyName));
-		Assert.notEmpty(aggregatedFeatureConfs);
-		for (Map.Entry<String, AggregatedFeatureConf> entry : aggregatedFeatureConfs.entrySet()) {
-			Assert.isTrue(StringUtils.isNotBlank(entry.getKey()));
-			Assert.notNull(entry.getValue());
-		}
+		Assert.notEmpty(aggrFeatureConfs);
 
-		this.dataSources = dataSources;
+        this.name = name;
+        this.dataSources = dataSources;
 		this.contextFieldNames = contextFieldNames;
 		this.strategyName = strategyName;
-		this.aggregatedFeatureConfs = aggregatedFeatureConfs;
+		this.aggrFeatureConfs = aggrFeatureConfs;
 
-		allFeatureNames = new HashSet<>();
-		for (AggregatedFeatureConf conf : aggregatedFeatureConfs.values()) {
+		for (AggregatedFeatureConf conf : aggrFeatureConfs) {
 			allFeatureNames.addAll(conf.getFeatureNames());
 		}
 	}
 
-	public List<String> getDataSources() {
+
+	public String getName() { return name; }
+
+    public List<String> getDataSources() {
 		return dataSources;
 	}
 
@@ -55,8 +65,8 @@ public class FeatureBucketConf {
 		return strategyName;
 	}
 
-	public Map<String, AggregatedFeatureConf> getAggregatedFeatureConfs() {
-		return aggregatedFeatureConfs;
+	public List<AggregatedFeatureConf> getAggrFeatureConfs() {
+		return aggrFeatureConfs;
 	}
 
 	public Set<String> getAllFeatureNames() {

@@ -1,30 +1,35 @@
 package fortscale.streaming.service.aggregation;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class AggregatedFeatureConf {
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, defaultImpl = AggregatedFeatureConf.class)
+public class AggregatedFeatureConf implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String name;
 	private List<String> featureNames;
-	private String aggrFeatureFuncName;
-    private String aggrFeatureFuncJson;
+    private JSONObject aggrFeatureFuncJson;
 
-	public AggregatedFeatureConf(String name, List<String> featureNames,
-                                 String aggrFeatureFuncName,
-                                 String aggrFeatureFuncJson) {
+	public AggregatedFeatureConf(@JsonProperty("name")String name,
+								 @JsonProperty("featureNames")List<String> featureNames,
+								 @JsonProperty("aggrFeatureFuncJson")JSONObject aggrFeatureFuncJson) {
 		// Validate input
 		Assert.isTrue(StringUtils.isNotBlank(name));
 		Assert.notEmpty(featureNames);
 		for (String featureName : featureNames) {
 			Assert.isTrue(StringUtils.isNotBlank(featureName));
 		}
-		Assert.isTrue(StringUtils.isNotBlank(aggrFeatureFuncName));
-        Assert.isTrue(StringUtils.isNotBlank(aggrFeatureFuncJson));
+        Assert.notNull(aggrFeatureFuncJson);
 
 		this.name = name;
 		this.featureNames = featureNames;
-		this.aggrFeatureFuncName = aggrFeatureFuncName;
         this.aggrFeatureFuncJson = aggrFeatureFuncJson;
 	}
 
@@ -36,9 +41,5 @@ public class AggregatedFeatureConf {
 		return featureNames;
 	}
 
-	public String getAggrFeatureFuncName() {
-		return aggrFeatureFuncName;
-	}
-
-    public String getAggrFeatureFuncJson() { return aggrFeatureFuncJson; }
+    public String getAggrFeatureFuncJson() { return aggrFeatureFuncJson.toJSONString(); }
 }
