@@ -49,7 +49,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService {
                 }
 
                 AggrFeatureFunction func = getAggrFeatureFunction(aggregatedFeatureConf);
-                func.updateAggrFeature(features, aggrFeature);
+//                func.updateAggrFeature(features, aggrFeature);
             }
         }
         return aggrFeatures;
