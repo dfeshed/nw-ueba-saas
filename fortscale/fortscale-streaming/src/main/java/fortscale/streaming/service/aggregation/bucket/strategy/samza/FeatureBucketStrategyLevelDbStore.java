@@ -1,5 +1,7 @@
 package fortscale.streaming.service.aggregation.bucket.strategy.samza;
 
+import java.util.List;
+
 import org.apache.samza.storage.kv.KeyValueStore;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
@@ -14,21 +16,23 @@ public class FeatureBucketStrategyLevelDbStore implements FeatureBucketStrategyS
 	
 	private static final String	STORE_NAME = 	"strategy_store";
 	
-	private KeyValueStore<String, FeatureBucketStrategyData> strategyStore;
+	private KeyValueStore<String, List<FeatureBucketStrategyData>> strategyStore;
 	
 	@SuppressWarnings("unchecked")
 	public FeatureBucketStrategyLevelDbStore(ExtendedSamzaTaskContext context){
-		strategyStore = (KeyValueStore<String, FeatureBucketStrategyData>) context.getStore(STORE_NAME);
-	}
-
-	@Override
-	public void storeStrategyData(FeatureBucketStrategyData featureBucketStrategyData) {
-		strategyStore.put(featureBucketStrategyData.getStrategyId(), featureBucketStrategyData);
+		strategyStore = (KeyValueStore<String, List<FeatureBucketStrategyData>>) context.getStore(STORE_NAME);
 	}
 
 	@Override
 	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyContextId, long latestStartTime) {
-		// TODO Auto-generated method stub
+		List<FeatureBucketStrategyData> bucketStrategyDatas = strategyStore.get(strategyContextId);
+		//assume that the list is in ascending order over the start time.
+		for(int i = bucketStrategyDatas.size()-1; i>=0; i--){
+			FeatureBucketStrategyData featureBucketStrategyData = bucketStrategyDatas.get(i);
+			if(featureBucketStrategyData.getStartTime()<latestStartTime){
+				return featureBucketStrategyData;
+			}
+		}
 		return null;
 	}
 
