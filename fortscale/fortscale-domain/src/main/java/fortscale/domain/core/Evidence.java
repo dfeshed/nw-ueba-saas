@@ -1,5 +1,7 @@
 package fortscale.domain.core;
 
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,6 +17,9 @@ import java.util.Date;
  * Date: 6/22/2015.
  */
 @Document(collection = Evidence.COLLECTION_NAME)
+@CompoundIndexes({
+	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false)
+})
 public class Evidence extends AbstractDocument{
 
 	/**
@@ -29,7 +34,6 @@ public class Evidence extends AbstractDocument{
 	// Entity information
 	public static final String entityTypeField = "entityType";
 	public static final String entityNameField = "entityName";
-	public static final String entityMongoIdField = "entityMongoId";
 
 	// Time frame information
 	public static final String startDateField = "startDate";
@@ -40,10 +44,10 @@ public class Evidence extends AbstractDocument{
 	public static final String typeField = "type";
 	public static final String dataSourceField = "dataSource";
 
-	// severity and status
+	// severity and score
 	public static final String scoreField = "score";
 	public static final String severityField = "severity";
-	public static final String statusField = "status";
+
 
 
 
@@ -52,14 +56,10 @@ public class Evidence extends AbstractDocument{
 
 
 	@Field(entityTypeField)
-	private String entityType;
+	private EntityType entityType;
 
 	@Field(entityNameField)
 	private String entityName;
-
-	@Indexed(unique=false, direction= IndexDirection.ASCENDING)
-	@Field(entityMongoIdField)
-	private String entityMongoId;
 
 	@Field(startDateField)
 	private Date startDate;
@@ -87,11 +87,10 @@ public class Evidence extends AbstractDocument{
 
 	// C-tor
 
-	public Evidence(String entityType, String entityName, String entityMongoId, Date startDate, Date endDate,
+	public Evidence(EntityType entityType, String entityName, Date startDate, Date endDate,
 			String type, String dataSource, Integer score, EvidenceSeverity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
-		this.entityMongoId = entityMongoId;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.type = type;
@@ -101,6 +100,9 @@ public class Evidence extends AbstractDocument{
 
 		// set retention to start date
 		this.retentionDate = startDate;
+
+		// We must create ID for the evidence so the alert can have reference to it
+		this.setId(String.valueOf(hashCode()));
 	}
 
 	// Setters
@@ -111,16 +113,12 @@ public class Evidence extends AbstractDocument{
 
 	// Getters
 
-	public String getEntityType() {
+	public EntityType getEntityType() {
 		return entityType;
 	}
 
 	public String getEntityName() {
 		return entityName;
-	}
-
-	public String getEntityMongoId() {
-		return entityMongoId;
 	}
 
 	public Date getStartDate() {
