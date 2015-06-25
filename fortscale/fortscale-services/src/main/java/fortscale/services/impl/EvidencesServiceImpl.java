@@ -5,7 +5,7 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceSeverity;
 import fortscale.domain.core.dao.EvidencesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 
 import java.util.Date;
 import java.util.NavigableMap;
@@ -16,7 +16,6 @@ import java.util.TreeMap;
  *
  * Date: 6/23/2015.
  */
-@Service
 public class EvidencesServiceImpl implements EvidencesService {
 
 	/**
