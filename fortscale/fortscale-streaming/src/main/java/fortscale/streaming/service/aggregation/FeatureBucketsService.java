@@ -43,7 +43,7 @@ public abstract class FeatureBucketsService {
 				for(FeatureBucketStrategyData strategyData: featureBucketStrategyDatas){
 					FeatureBucket featureBucket = getFeatureBucketsStore().getFeatureBucket(featureBucketConf, getBucketId(event, featureBucketConf, strategyData.getStrategyId()));
 					if(featureBucket == null){
-						featureBucket = createNewFeatureBucket(featureBucketConf, strategyData);
+						featureBucket = createNewFeatureBucket(event, featureBucketConf, strategyData);
 						newFeatureBuckets.add(featureBucket);
 					}
 					updateFeatureBucket(featureBucket, featureBucketConf);
@@ -77,12 +77,23 @@ public abstract class FeatureBucketsService {
 	}
 	
 	private void storeFeatureBucket(FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
-		//TODO
+		getFeatureBucketsStore().storeFeatureBucket(featureBucketConf, featureBucket);
 	}
 	
-	private FeatureBucket createNewFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucketStrategyData strategyData){
-		//TODO
-		return null;
+	private FeatureBucket createNewFeatureBucket(JSONObject event, FeatureBucketConf featureBucketConf, FeatureBucketStrategyData strategyData){
+		FeatureBucket ret = new FeatureBucket();
+		ret.setFeatureBucketConfName(featureBucketConf.getName());
+		ret.setBucketId(getBucketId(event, featureBucketConf, strategyData.getStrategyId()));
+		ret.setStrategyId(strategyData.getStrategyId());
+		ret.setContextFieldNames(featureBucketConf.getContextFieldNames());
+		ret.setDataSources(featureBucketConf.getDataSources());
+		ret.setStartTime(strategyData.getStartTime());
+		ret.setEndTime(strategyData.getEndTime());
+		for(String contextFieldName: featureBucketConf.getContextFieldNames()){
+			String contextValue = (String) event.get(contextFieldName);
+			ret.addToContextFieldNameToValueMap(contextFieldName, contextValue);
+		}
+		return ret;
 	}
 
 	protected abstract FeatureBucketsStore getFeatureBucketsStore();

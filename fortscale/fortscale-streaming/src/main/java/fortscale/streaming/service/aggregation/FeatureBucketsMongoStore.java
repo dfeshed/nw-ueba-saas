@@ -42,6 +42,10 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore {
 		return null;
 	}
 	
+	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket){
+		mongoTemplate.save(featureBucket, getCollectionName(featureBucketConf));
+	}
+	
 	private String getCollectionName(FeatureBucketConf featureBucketConf){
 		return featureBucketConf.getName();
 	}

@@ -3,6 +3,7 @@ package fortscale.streaming.service.aggregation;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,10 +33,86 @@ public class FeatureBucket {
 	@Field(STRATEGY_ID_FIELD)
 	private String strategyId;
 	@Field(CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD)
-	private Map<String, String> contextFieldNameToValueMap;
+	private Map<String, String> contextFieldNameToValueMap = new HashMap<>();
 	@Field(BUCKET_ID_FIELD)
 	private String bucketId;
 
 	// TODO should use 'Feature' instead of 'Object'
-	private Map<String, Object> aggregatedFeatures;
+	private Map<String, Object> aggregatedFeatures = new HashMap<>();
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+
+	public long getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(long endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getFeatureBucketConfName() {
+		return featureBucketConfName;
+	}
+
+	public void setFeatureBucketConfName(String featureBucketConfName) {
+		this.featureBucketConfName = featureBucketConfName;
+	}
+
+	public List<String> getDataSources() {
+		return dataSources;
+	}
+
+	public void setDataSources(List<String> dataSources) {
+		this.dataSources = dataSources;
+	}
+
+	public List<String> getContextFieldNames() {
+		return contextFieldNames;
+	}
+
+	public void setContextFieldNames(List<String> contextFieldNames) {
+		this.contextFieldNames = contextFieldNames;
+	}
+
+	public String getStrategyId() {
+		return strategyId;
+	}
+
+	public void setStrategyId(String strategyId) {
+		this.strategyId = strategyId;
+	}
+
+	public Map<String, String> getContextFieldNameToValueMap() {
+		return contextFieldNameToValueMap;
+	}
+	
+	public void addToContextFieldNameToValueMap(String contextFieldName, String contextValue) {
+		contextFieldNameToValueMap.put(contextFieldName, contextValue);
+	}
+
+	public void setContextFieldNameToValueMap(Map<String, String> contextFieldNameToValueMap) {
+		this.contextFieldNameToValueMap = contextFieldNameToValueMap;
+	}
+
+	public String getBucketId() {
+		return bucketId;
+	}
+
+	public void setBucketId(String bucketId) {
+		this.bucketId = bucketId;
+	}
+
+	public Map<String, Object> getAggregatedFeatures() {
+		return aggregatedFeatures;
+	}
+
+	public void setAggregatedFeatures(Map<String, Object> aggregatedFeatures) {
+		this.aggregatedFeatures = aggregatedFeatures;
+	}
 }
