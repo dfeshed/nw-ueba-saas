@@ -186,7 +186,8 @@ public class FeatureExtractorsTest {
 		jsonObject.put("source_ip", "82.165.195.70");
 		jsonObject.put("machine", "mymachine123");
 
-		List<String> featureNames = Arrays.asList("feature1", "feature2");
+		Set<String> featureNames = new HashSet<>();
+		featureNames.addAll(Arrays.asList("feature1", "feature2"));
 
 
 		Map<String, Feature> res = fes.extract(featureNames, jsonObject);
