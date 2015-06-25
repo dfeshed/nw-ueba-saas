@@ -46,8 +46,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService {
         if(aggrFeatureConfs==null) {
             logger.warn("updateAggrFeatures(): No AggregatedFeatureConf was provided");
         } else {
-            for (int i = 0; i < aggrFeatureConfs.size(); i++) {
-                AggregatedFeatureConf aggregatedFeatureConf =  aggrFeatureConfs.get(i);
+            for (AggregatedFeatureConf aggregatedFeatureConf: aggrFeatureConfs) {
                 String aggrFeatureName = aggregatedFeatureConf.getName();
                 Feature aggrFeature = aggrFeatures.get(aggrFeatureName);
                 if(aggrFeature==null) {
@@ -63,7 +62,6 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService {
     }
 
     private AggrFeatureFunction getAggrFeatureFunction(@NotNull AggregatedFeatureConf aggregatedFeatureConf) {
-        Assert.isNotNull(aggregatedFeatureConf);
 
         AggrFeatureFunction func = aggrFunctions.get(aggregatedFeatureConf.getAggrFeatureFuncJson());
 

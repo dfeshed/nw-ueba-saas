@@ -5,16 +5,14 @@ import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-import org.apache.samza.config.Config;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import javax.validation.constraints.NotNull;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class FeatureExtractService implements IFeatureExtractService, InitializingBean {
@@ -98,14 +96,13 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	}
 
 	@Override
-	public Map<String, Feature> extract(List<String> featureNames, JSONObject message) {
+	public Map<String, Feature> extract(Set<String> featureNames, JSONObject message) {
 		if(featureNames == null || message	== null) {
 			return null;
 		}
 		Map<String, Feature> features = new HashMap<>();
 
-		for (int i = 0; i < featureNames.size(); i++) {
-			String featureName =  featureNames.get(i);
+		for (String featureName : featureNames) {
 			FeatureExtractor fe = getFeatureExtractor(featureName);
 			if(fe!=null) {
 				Object value = fe.extract(message);

@@ -28,7 +28,7 @@ public class BucketConfigurationService implements InitializingBean{
     private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
     private Map<String, List<FeatureBucketConf>> dataSourceToListOfBucketConfs = new HashMap<>();
 
-    @Value("${fortscale.streaming.service.aggregation.bucket_configuration_service.bucket_conf_json:bucket-confs.json}")
+    @Value("${fortscale.streaming.service.aggregation.bucket_configuration_service.bucket_conf_json}")
     private String bucketConfJsonFilePath;
 
     @Override
