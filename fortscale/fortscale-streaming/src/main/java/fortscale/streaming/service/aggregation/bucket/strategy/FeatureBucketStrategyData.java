@@ -37,6 +37,6 @@ public class FeatureBucketStrategyData {
 	}
 	
 	public String getStrategyId() {
-		return String.format("%s_%l", strategyContextId, startTime);
+		return String.format("%s_%d", strategyContextId, startTime);
 	}
 }
