@@ -26,7 +26,7 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	private Map<String, FeatureExtractor> featureExtractorMap = new HashMap<>();
 	private JSONObject featuresConfJson;
 
-	@Value("${fortscale.aggregation.feature.extraction.feature_extract_service.feature_conf_json:feature-conf.json}")
+	@Value("${fortscale.aggregation.feature.extraction.feature_extract_service.feature_conf_json}")
 	String featuresConfJasonFileName;
 
 	@Override
@@ -55,7 +55,7 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 
 	private FeatureExtractor createFeatureExtractor(String featureName) {
 		FeatureExtractor featureExtractor;
-		JSONObject featureJson = (JSONObject) featuresConfJson.get(featureName);
+		JSONObject featureJson = (JSONObject)featuresConfJson.get(featureName);
 
 		if (featureJson == null) {
 			String errorMsg = String.format("No such feature name: %s", featureName);
@@ -88,7 +88,7 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 
 		Object value;
 
-		if (featureExtractor != null) {
+		if(featureExtractor != null){
 			value = featureExtractor.extract(eventMessage);
 		} else {
 			value = eventMessage.get(featureName);
@@ -99,20 +99,19 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 
 	@Override
 	public Map<String, Feature> extract(List<String> featureNames, JSONObject message) {
-		if (featureNames == null || message == null) {
+		if(featureNames == null || message	== null) {
 			return null;
 		}
 		Map<String, Feature> features = new HashMap<>();
 
 		for (int i = 0; i < featureNames.size(); i++) {
-			String featureName = featureNames.get(i);
+			String featureName =  featureNames.get(i);
 			FeatureExtractor fe = getFeatureExtractor(featureName);
-			if (fe != null) {
+			if(fe!=null) {
 				Object value = fe.extract(message);
 				features.put(featureName, new Feature(featureName, value));
 			}
 		}
 		return features;
 	}
-
 }
