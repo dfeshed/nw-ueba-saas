@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.minidev.json.JSONObject;
+import fortscale.streaming.aggregation.feature.Feature;
+import fortscale.streaming.aggregation.feature.extraction.FeatureExtractService;
+import fortscale.streaming.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.utils.logging.Logger;
@@ -46,7 +49,7 @@ public abstract class FeatureBucketsService {
 						featureBucket = createNewFeatureBucket(event, featureBucketConf, strategyData);
 						newFeatureBuckets.add(featureBucket);
 					}
-					updateFeatureBucket(featureBucket, featureBucketConf);
+					updateFeatureBucket(event, featureBucket, featureBucketConf);
 					storeFeatureBucket(featureBucket, featureBucketConf);
 				}	
 			} catch(Exception e){
@@ -72,9 +75,12 @@ public abstract class FeatureBucketsService {
 		return builder.toString();
 	}
 	
-	private void updateFeatureBucket(FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
-		//TODO
+	private void updateFeatureBucket(JSONObject event, FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
+		Map<String, Feature> featuresMap = getFeatureExtractService().extract(featureBucketConf.getAllFeatureNames(), event);
+		Map<String, Feature> aggrFeaturesMap = getAggrFeatureFunctionsService().updateAggrFeatures(featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
+		featureBucket.setAggregatedFeatures(aggrFeaturesMap);
 	}
+	
 	
 	private void storeFeatureBucket(FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
 		getFeatureBucketsStore().storeFeatureBucket(featureBucketConf, featureBucket);
@@ -100,5 +106,7 @@ public abstract class FeatureBucketsService {
 
 	protected abstract FeatureBucketStrategyService getFeatureBucketStrategyService();
 	
+	protected abstract FeatureExtractService getFeatureExtractService();
 	
+	protected abstract IAggrFeatureFunctionsService getAggrFeatureFunctionsService();
 }

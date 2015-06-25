@@ -3,6 +3,8 @@ package fortscale.streaming.service.aggregation;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import fortscale.streaming.aggregation.feature.Feature;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +40,7 @@ public class FeatureBucket {
 	private String bucketId;
 
 	// TODO should use 'Feature' instead of 'Object'
-	private Map<String, Object> aggregatedFeatures = new HashMap<>();
+	private Map<String, Feature> aggregatedFeatures = new HashMap<>();
 
 	public long getStartTime() {
 		return startTime;
@@ -108,11 +110,11 @@ public class FeatureBucket {
 		this.bucketId = bucketId;
 	}
 
-	public Map<String, Object> getAggregatedFeatures() {
+	public Map<String, Feature> getAggregatedFeatures() {
 		return aggregatedFeatures;
 	}
 
-	public void setAggregatedFeatures(Map<String, Object> aggregatedFeatures) {
+	public void setAggregatedFeatures(Map<String, Feature> aggregatedFeatures) {
 		this.aggregatedFeatures = aggregatedFeatures;
 	}
 }
