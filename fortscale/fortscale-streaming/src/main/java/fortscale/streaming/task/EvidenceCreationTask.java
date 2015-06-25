@@ -28,9 +28,7 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.getConfigStringList;
-import static fortscale.utils.ConversionUtils.convertToInteger;
-import static fortscale.utils.ConversionUtils.convertToLong;
-import static fortscale.utils.ConversionUtils.convertToString;
+import static fortscale.utils.ConversionUtils.*;
 
 /**
  * Samza task that creates evidences in MongoDB
@@ -108,7 +106,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		// Fill the map between the input topic and the data source
 		Config fieldsSubset = config.subset("fortscale.events.input.topic.");
 		for (String dataSource : fieldsSubset.keySet()) {
-			String inputTopic = getConfigString(config, String.format("fortscale.data-source.input.topic.%s", dataSource));
+			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
 			String classifier = getConfigString(config, String.format("fortscale.events.classifier.%s", dataSource));
 			List<String> scoreFields = getConfigStringList(config, String.format("fortscale.events.score.fields.%s", dataSource));
 			String usernameField = getConfigString(config, String.format("fortscale.events.normalizedusername.field.%s", dataSource));
@@ -142,7 +140,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		for (String scoreField : dataSourceConfiguration.scoreFields) {
 
 			// check score
-			Integer score = convertToInteger(validateFieldExistsAndGetValue(message, messageText, scoreField));
+			Double score = convertToDouble(validateFieldExistsAndGetValue(message, messageText, scoreField));
 			if (score >= scoreThreshold) {
 
 				// create evidence

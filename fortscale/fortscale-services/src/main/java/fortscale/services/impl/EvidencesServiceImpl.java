@@ -5,7 +5,7 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceSeverity;
 import fortscale.domain.core.dao.EvidencesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.NavigableMap;
@@ -16,6 +16,7 @@ import java.util.TreeMap;
  *
  * Date: 6/23/2015.
  */
+@Service("EvidencesService")
 public class EvidencesServiceImpl implements EvidencesService {
 
 	/**
@@ -31,7 +32,7 @@ public class EvidencesServiceImpl implements EvidencesService {
 
 	static {
 		// init scoring
-		scoreToSeverity.put(80, EvidenceSeverity.Low);
+		scoreToSeverity.put(0, EvidenceSeverity.Low);
 		scoreToSeverity.put(85, EvidenceSeverity.Medium);
 		scoreToSeverity.put(90, EvidenceSeverity.High);
 		scoreToSeverity.put(95, EvidenceSeverity.Critical);
@@ -40,15 +41,18 @@ public class EvidencesServiceImpl implements EvidencesService {
 
 	@Override
 	public Evidence createTransientEvidence(EntityType entityType, String entityName, Date date,
-			String scoreFieldName, String classifier, Integer score) {
+			String scoreFieldName, String classifier, Double score) {
+
+		// casting score to int
+		int intScore = score.intValue();
 
 		// calculate severity
-		EvidenceSeverity severity = scoreToSeverity.get(score);
+		EvidenceSeverity severity = scoreToSeverity.get(scoreToSeverity.floorKey(intScore));
 
 		// TODO choose type according to score
 		String evidenceType = scoreFieldName;
 
-		return new Evidence(entityType, entityName, date, date, evidenceType, classifier, score, severity);
+		return new Evidence(entityType, entityName, date, date, evidenceType, classifier, intScore, severity);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package fortscale.domain.core.dao;
 
+import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -20,8 +21,9 @@ public interface EvidencesRepository extends MongoRepository<Evidence,String> {
 
 	/**
 	 * Find all evidences for specific entity according to it's ID
-	 * @param entityMongoId	The entity ID
+	 * @param entityName	The entity name
+	 * @param entityType	The entity type
 	 * @return All the matching evidences
 	 */
-	public List<Evidence> findByEntityMongoId(String entityMongoId);
+	public List<Evidence> findByEntityNameAndEntityType(String entityName, EntityType entityType);
 }

@@ -102,7 +102,7 @@ public class Evidence extends AbstractDocument{
 		this.retentionDate = startDate;
 
 		// We must create ID for the evidence so the alert can have reference to it
-		this.setId(String.valueOf(hashCode()));
+		this.setId(System.currentTimeMillis() + entityName + type);
 	}
 
 	// Setters
