@@ -242,7 +242,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		List<String> evidences = new LinkedList<>();
 		while (iter.hasNext()) {
 			Entry<String, Evidence> evidence = iter.next();
-			// update user in mongo
+			// update evidence in mongo
 			evidencesService.saveEvidenceInRepository(evidence.getValue());
 			evidences.add(evidence.getKey());
 		}

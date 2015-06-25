@@ -105,6 +105,10 @@ public class Evidence extends AbstractDocument{
 		this.setId(System.currentTimeMillis() + entityName + type);
 	}
 
+	// For JSON serialization only
+	public Evidence() {
+	}
+
 	// Setters
 
 	public void setRetentionDate(Date retentionDate) {
@@ -127,6 +131,10 @@ public class Evidence extends AbstractDocument{
 
 	public Date getEndDate() {
 		return endDate;
+	}
+
+	public Date getRetentionDate() {
+		return retentionDate;
 	}
 
 	public String getType() {
