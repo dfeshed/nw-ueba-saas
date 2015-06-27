@@ -17,6 +17,13 @@
   		<filtered>true</filtered>
   	</fileSet>
   	<fileSet>
+  		<outputDirectory>config/asl</outputDirectory>
+  		<directory>${basedir}/config/asl</directory>
+  		<includes>
+  			<include>*</include>
+  		</includes>
+  	</fileSet>
+  	<fileSet>
   		<outputDirectory>lib</outputDirectory>
   		<directory>${basedir}/src/main/resources</directory>
   		<includes>

@@ -17,7 +17,7 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 		// Validate the fixed duration
 		Assert.isTrue(durationInSeconds > 0, "Fixed duration must be positive");
 		this.durationInSeconds = durationInSeconds;
-
+		this.strategyName = strategyName;
 	}
 
 	@Override

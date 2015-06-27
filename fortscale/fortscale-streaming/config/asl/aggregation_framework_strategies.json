@@ -1,0 +1,17 @@
+
+
+{
+	"BucketStrategies": {
+		"Strategies": [
+		{
+			"name": "fixed_duration_hourly",
+			"type": "fixed_duration",
+			"params": {"durationInSeconds":3600}
+		}
+		]
+	}
+}
+
+
+
+

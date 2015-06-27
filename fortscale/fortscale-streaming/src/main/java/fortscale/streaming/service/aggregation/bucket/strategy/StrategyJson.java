@@ -1,10 +1,10 @@
 package fortscale.streaming.service.aggregation.bucket.strategy;
 
-import javax.validation.constraints.NotNull;
+import net.minidev.json.JSONObject;
+
+import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-
-import net.minidev.json.JSONObject;
 
 public class StrategyJson {
 	private JSONObject jsonObject;
@@ -13,7 +13,8 @@ public class StrategyJson {
 	private static final String	JSON_CONF_STRATEGY_NAME_FIELD_NAME = 	"name";
 	private static final String	JSON_CONF_STRATEGY_PARAMS_FIELD_NAME = 	"params";
 	
-	public StrategyJson(@NotNull JSONObject jsonObject) throws JsonMappingException{
+	public StrategyJson(JSONObject jsonObject) throws JsonMappingException{
+		Assert.notNull(jsonObject);
 		this.jsonObject = jsonObject;
 		if(getName()==null || getType()==null || getParams()==null){
 			throw new JsonMappingException(String.format("json object %s doesn't contain all fields %s", jsonObject.toJSONString()));

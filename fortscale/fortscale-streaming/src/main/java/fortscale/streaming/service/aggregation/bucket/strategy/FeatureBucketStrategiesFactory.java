@@ -14,6 +14,7 @@ import net.minidev.json.JSONValue;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -55,11 +56,13 @@ public class FeatureBucketStrategiesFactory implements InitializingBean{
 	 * @param confJson must include a "FeatureConfs" node with feature definitions
 	 * @throws JsonMappingException 
 	 */
-	private void initAslConfJson(@NotNull JSONObject confJson) throws JsonMappingException {
+	private void initAslConfJson(JSONObject confJson) throws JsonMappingException {
+		Assert.notNull(confJson);
 		initBucketStrategiesConfJson((JSONObject)confJson.get(JSON_CONF_STRATEGY_CONFS_NODE_NAME));
 	}
 	
-	private void initBucketStrategiesConfJson(@NotNull JSONObject bucketStrategiesConfJson) throws JsonMappingException{
+	private void initBucketStrategiesConfJson(JSONObject bucketStrategiesConfJson) throws JsonMappingException{
+		Assert.notNull(bucketStrategiesConfJson, "did not get json object for feature bucket strategies configuration");
 		this.bucketStrategiesConfJson = bucketStrategiesConfJson;
 		JSONArray strategies = (JSONArray) this.bucketStrategiesConfJson.get(JSON_CONF_STRATEGIES_CONFS_FIELD_NAME);
 		Iterator<Object> iter = strategies.iterator();
