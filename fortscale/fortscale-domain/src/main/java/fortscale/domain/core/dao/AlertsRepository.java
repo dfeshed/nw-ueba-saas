@@ -7,6 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import javax.servlet.http.HttpServletRequest;
 
 public interface AlertsRepository extends MongoRepository<Alert, String>, AlertsRepositoryCustom {
-    Alerts findAll(PageRequest request, int maxPages, HttpServletRequest httpRequest);
+    Alerts findAll(PageRequest request,  HttpServletRequest httpRequest);
     void add(Alert alert);
 }

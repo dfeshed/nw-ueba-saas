@@ -63,7 +63,29 @@ public class ApiAlertsControllerTest {
 		Alerts alerts = new Alerts();
 		alerts.set_embedded(new Embedded<List<Alert>>(alertsList));
 
-		when(alertsDao.findAll(any(PageRequest.class), anyInt(), any(HttpServletRequest.class))).thenReturn(alerts);
+		when(alertsDao.findAll(any(PageRequest.class), any(HttpServletRequest.class))).thenReturn(alerts);
+
+		// perform rest call to the controller
+		MvcResult result = mockMvc.perform(get("/api/alerts?sortField=startTime&sortDirection=DESC&page=0&size=20").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"))
+			.andReturn();
+
+		//validate
+		assertTrue( result.getResponse().getContentAsString().contains("{\"id\":null,\"startDate\":1,\"endDate\":2,\"entityType\":\"USER\",\"entityName\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"cause\":\"a\",\"score\":90,\"severity\":\"CRITICAL\",\"status\":\"a\",\"comment\":\"a\"}"));
+		verify(alertsDao).findAll(any(PageRequest.class), any(HttpServletRequest.class));
+	}
+
+	@Test
+	public void list_all_alerts_without_request_params() throws Exception {
+		// set up alerts repository mocked behavior
+		List<Alert> alertsList = new ArrayList<Alert>();
+		alertsList.add(new Alert("1", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, AlertSeverity.CRITICAL, "a", "a"));
+		alertsList.add(new Alert("2", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, AlertSeverity.CRITICAL, "a", "a"));
+		Alerts alerts = new Alerts();
+		alerts.set_embedded(new Embedded<List<Alert>>(alertsList));
+
+		when(alertsDao.findAll(any(PageRequest.class), any(HttpServletRequest.class))).thenReturn(alerts);
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(get("/api/alerts").accept(MediaType.APPLICATION_JSON))
@@ -72,20 +94,20 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("{\"id\":null,\"ts_start\":1,\"ts_end\":2,\"entity_type\":\"USER\",\"entity_name\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"cause\":\"a\",\"score\":90,\"severity\":\"CRITICAL\",\"status\":\"a\",\"comment\":\"a\"}"));
-		verify(alertsDao).findAll(any(PageRequest.class), anyInt(), any(HttpServletRequest.class));
+		assertTrue( result.getResponse().getContentAsString().contains("{\"id\":null,\"startDate\":1,\"endDate\":2,\"entityType\":\"USER\",\"entityName\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"cause\":\"a\",\"score\":90,\"severity\":\"CRITICAL\",\"status\":\"a\",\"comment\":\"a\"}"));
+		verify(alertsDao).findAll(any(PageRequest.class), any(HttpServletRequest.class));
 	}
-	
+
 	@Test
 	public void add_alert() throws Exception {
 
 		String sAlert = "{\n" +
 				"        \"id\": \"5586a7479f6fe4e3c1e39231\",\n" +
 				" \"uuid\": \"5586a7479f6fe4e3c1e39231\",\n" +
-				"        \"ts_start\": 1,\n" +
-				"        \"ts_end\": 2,\n" +
-				"        \"entity_type\": \"USER\",\n" +
-				"        \"entity_name\": \"user11\",\n" +
+				"        \"startDate\": 1,\n" +
+				"        \"endDate\": 2,\n" +
+				"        \"entityType\": \"USER\",\n" +
+				"        \"entityName\": \"user11\",\n" +
 				"        \"rule\": \"rule1\",\n" +
 				"        \"evidences\": null,\n" +
 				"        \"cause\": \"a\",\n" +
@@ -117,10 +139,10 @@ public class ApiAlertsControllerTest {
 		String sAlert = "{\n" +
 				"        \"id\": \"5586a7479f6fe4e3c1e39231\",\n" +
 				" \"uuid\": \"5586a7479f6fe4e3c1e39231\",\n" +
-				"        \"ts_start\": 1,\n" +
-				"        \"ts_end\": 2,\n" +
-				"        \"entity_type\": \"USER\",\n" +
-				"        \"entity_name\": \"user11\",\n" +
+				"        \"startDate\": 1,\n" +
+				"        \"endDate\": 2,\n" +
+				"        \"entityType\": \"USER\",\n" +
+				"        \"entityName\": \"user11\",\n" +
 				"        \"rule\": \"rule1\",\n" +
 				"        \"evidences\": null,\n" +
 				"        \"cause\": \"a\",\n" +

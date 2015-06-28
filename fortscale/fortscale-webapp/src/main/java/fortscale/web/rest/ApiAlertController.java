@@ -21,9 +21,10 @@ import javax.validation.Valid;
 public class ApiAlertController extends BaseController {
 
 
+	private static final int DEFAULT_PAGE_SIZE = 20;
 	private static Logger logger = Logger.getLogger(ApiAlertController.class);
 
-	private static final String TIME_STAMP = "ts_start";
+	private static final String TIME_STAMP_START = "ts_start";
 
 	@Autowired
 	private AlertsRepository alertsDao;
@@ -37,11 +38,31 @@ public class ApiAlertController extends BaseController {
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@LogException
-	public @ResponseBody Alerts getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+	public @ResponseBody Alerts getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+										  @RequestParam(required=false) String sortField,
+										  @RequestParam(required=false) String sortDirection,
+										  @RequestParam(required=false)  Integer size,
+										  @RequestParam(required=false) Integer page) {
 
-		Sort sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP));
-		PageRequest pageRequest = new PageRequest(0, 10, sortByTSDesc);
-		Alerts alerts = alertsDao.findAll(pageRequest, 20, httpRequest);
+		Sort sortByTSDesc;
+		Sort.Direction sortDir = Sort.Direction.DESC;
+		if (sortField != null) {
+			if (sortDirection != null){
+				sortDir = Sort.Direction.valueOf(sortDirection);
+			}
+			sortByTSDesc = new Sort(new Sort.Order(sortDir, sortField));
+		} else {
+			sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP_START));
+		}
+		//if page is not set, get first page
+		if (page == null) {
+			page = 0;
+		}
+		if (size == null){
+			size = DEFAULT_PAGE_SIZE;
+		}
+		PageRequest pageRequest = new PageRequest(page, size, sortByTSDesc);
+		Alerts alerts = alertsDao.findAll(pageRequest, httpRequest);
 		return alerts;
 	}
 

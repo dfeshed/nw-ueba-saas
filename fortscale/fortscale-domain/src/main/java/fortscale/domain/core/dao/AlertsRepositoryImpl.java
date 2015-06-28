@@ -19,15 +19,15 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
     /**
      * returns all alerts in the collection in a json object represented by @Alerts
-     * @param request
-     * @param maxPages
+     * @param pageRequest
      * @param httpRequest
      * @return
      */
     @Override
-    public Alerts findAll(PageRequest request, int maxPages, HttpServletRequest httpRequest) {
-        Query query = new Query( ).with( request.getSort() );
-        query.fields().exclude("comments");
+    public Alerts findAll(PageRequest pageRequest, HttpServletRequest httpRequest) {
+        Query query = new Query( ).with( pageRequest.getSort() );
+        query.limit(pageRequest.getPageSize());
+        query.skip(pageRequest.getPageNumber());
         List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
         Alerts alerts = new Alerts();
         alerts.set_embedded(new Embedded<List<Alert>>(alertsList));

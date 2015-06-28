@@ -1,6 +1,9 @@
 package fortscale.domain.core.dao.rest;
 
+import com.splunk.CollectionArgs;
+
 import java.io.Serializable;
+import org.springframework.data.domain.Sort;
 
 /**
  * Created by rans on 22/06/15.
@@ -14,12 +17,16 @@ public class Page implements Serializable {
     private Long totalElements;
     private Long totalPages;
     private Long number;
+    private String sortFiled;
+    private Sort.Direction sortDirection;
 
-    public Page(Long size, Long totalElements, Long totalPages, Long number) {
+    public Page(Long size, Long totalElements, Long totalPages, Long number, String sortFiled, Sort.Direction sortDirection) {
         this.size = size;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
         this.number = number;
+        this.sortFiled = sortFiled;
+        this.sortDirection = sortDirection;
     }
 
     public Long getSize() {
@@ -52,5 +59,21 @@ public class Page implements Serializable {
 
     public void setNumber(Long number) {
         this.number = number;
+    }
+
+    public String getSortFiled() {
+        return sortFiled;
+    }
+
+    public void setSortFiled(String sortFiled) {
+        this.sortFiled = sortFiled;
+    }
+
+    public Sort.Direction getSortDirection() {
+        return sortDirection;
+    }
+
+    public void setSortDirection(Sort.Direction sortDirection) {
+        this.sortDirection = sortDirection;
     }
 }
