@@ -2,9 +2,11 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.EvidenceSeverity;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.EvidencesRepository;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -17,7 +19,7 @@ import java.util.TreeMap;
  * Date: 6/23/2015.
  */
 @Service("EvidencesService")
-public class EvidencesServiceImpl implements EvidencesService {
+public class EvidencesServiceImpl implements EvidencesService, InitializingBean {
 
 	/**
 	 * Mongo repository for evidences
@@ -25,17 +27,28 @@ public class EvidencesServiceImpl implements EvidencesService {
 	@Autowired
 	private EvidencesRepository evidencesRepository;
 
+
+	// Severity thresholds for evidence
+	@Value("${evidence.severity.medium:80}")
+	protected int medium;
+	@Value("${evidence.severity.high:90}")
+	protected int high;
+	@Value("${evidence.severity.critical:95}")
+	protected int critical;
+
 	/**
 	 * Keeps mapping between score and severity
 	 */
-	private static NavigableMap<Integer,EvidenceSeverity> scoreToSeverity = new TreeMap<>();
+	private NavigableMap<Integer,Severity> scoreToSeverity = new TreeMap<>();
 
-	static {
-		// init scoring
-		scoreToSeverity.put(0, EvidenceSeverity.Low);
-		scoreToSeverity.put(85, EvidenceSeverity.Medium);
-		scoreToSeverity.put(90, EvidenceSeverity.High);
-		scoreToSeverity.put(95, EvidenceSeverity.Critical);
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// init scoring to severity map
+		scoreToSeverity.put(0, Severity.Low);
+		scoreToSeverity.put(medium, Severity.Medium);
+		scoreToSeverity.put(high, Severity.High);
+		scoreToSeverity.put(critical, Severity.Critical);
 	}
 
 
@@ -47,7 +60,7 @@ public class EvidencesServiceImpl implements EvidencesService {
 		int intScore = score.intValue();
 
 		// calculate severity
-		EvidenceSeverity severity = scoreToSeverity.get(scoreToSeverity.floorKey(intScore));
+		Severity severity = scoreToSeverity.get(scoreToSeverity.floorKey(intScore));
 
 		// TODO choose type according to score
 		String evidenceType = scoreFieldName;
@@ -68,5 +81,6 @@ public class EvidencesServiceImpl implements EvidencesService {
 	private Evidence saveEvidence(Evidence evidence){
 		return evidencesRepository.save(evidence);
 	}
+
 
 }

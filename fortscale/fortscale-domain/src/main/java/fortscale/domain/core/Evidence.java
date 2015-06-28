@@ -2,7 +2,6 @@ package fortscale.domain.core;
 
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -82,13 +81,13 @@ public class Evidence extends AbstractDocument{
 	private Integer score;
 
 	@Field(severityField)
-	private EvidenceSeverity severity;
+	private Severity severity;
 
 
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityName, Date startDate, Date endDate,
-			String type, String dataSource, Integer score, EvidenceSeverity severity) {
+			String type, String dataSource, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
@@ -145,7 +144,7 @@ public class Evidence extends AbstractDocument{
 		return score;
 	}
 
-	public EvidenceSeverity getSeverity() {
+	public Severity getSeverity() {
 		return severity;
 	}
 
