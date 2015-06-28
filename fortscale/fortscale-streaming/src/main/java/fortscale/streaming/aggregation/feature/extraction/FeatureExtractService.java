@@ -8,6 +8,7 @@ import java.util.Set;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,14 +28,16 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	private Map<String, FeatureExtractor> featureExtractorMap = new HashMap<>();
 	private JSONObject featuresConfJson;
 
-	@Value("${fortscale.aggregation.feature.extraction.feature_extract_service.feature_conf_json}")
+	@Value("${fortscale.aggregation.feature.extraction.feature_extract_service.feature_conf_json:}")
 	String featuresConfJasonFileName;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		setFeaturesConfJsonFromFile(featuresConfJasonFileName);
-		for(String featureName: featuresConfJson.keySet()){
-			createFeatureExtractor(featureName);
+		if(StringUtils.isNotBlank(featuresConfJasonFileName)){
+			setFeaturesConfJsonFromFile(featuresConfJasonFileName);
+			for(String featureName: featuresConfJson.keySet()){
+				createFeatureExtractor(featureName);
+			}
 		}
 	}
 
@@ -54,30 +57,33 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	}
 
 	private FeatureExtractor createFeatureExtractor(String featureName) {
-		FeatureExtractor featureExtractor;
-		JSONObject featureJson = (JSONObject)featuresConfJson.get(featureName);
-
-		if (featureJson == null) {
-			String errorMsg = String.format("No such feature name: %s", featureName);
-			logger.error(errorMsg);
-			return null;
+		FeatureExtractor featureExtractor = null;
+		if(featuresConfJson != null){
+			JSONObject featureJson = (JSONObject)featuresConfJson.get(featureName);
+	
+			if (featureJson == null) {
+				String errorMsg = String.format("No such feature name: %s", featureName);
+				logger.error(errorMsg);
+				return null;
+			}
+	
+			JSONObject extractorJson = (JSONObject) featureJson.get(JSON_CONF_EXTRACTOR_NODE_NAME);
+			if (extractorJson == null) {
+				String errorMsg = String.format("No extractor node in feature: %s", featureName);
+				logger.error(errorMsg);
+				return null;
+			}
+	
+			try {
+				featureExtractor = (new ObjectMapper()).readValue(extractorJson.toJSONString(), FeatureExtractor.class);
+				featureExtractorMap.put(featureName, featureExtractor);
+			} catch (Exception e) {
+				String errorMsg = String.format("Failed to deserialize json %s", featureJson.toJSONString());
+				logger.error(errorMsg, e);
+				return null;
+			}
 		}
-
-		JSONObject extractorJson = (JSONObject) featureJson.get(JSON_CONF_EXTRACTOR_NODE_NAME);
-		if (extractorJson == null) {
-			String errorMsg = String.format("No extractor node in feature: %s", featureName);
-			logger.error(errorMsg);
-			return null;
-		}
-
-		try {
-			featureExtractor = (new ObjectMapper()).readValue(extractorJson.toJSONString(), FeatureExtractor.class);
-			featureExtractorMap.put(featureName, featureExtractor);
-		} catch (Exception e) {
-			String errorMsg = String.format("Failed to deserialize json %s", featureJson.toJSONString());
-			logger.error(errorMsg, e);
-			return null;
-		}
+		
 		return featureExtractor;
 
 	}
