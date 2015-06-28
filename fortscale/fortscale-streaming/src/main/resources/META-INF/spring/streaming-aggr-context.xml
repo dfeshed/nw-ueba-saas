@@ -15,9 +15,7 @@
 	<import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
 	<import resource="classpath*:META-INF/spring/monitor-context.xml" />
 	<import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
-
-	<bean id="featureBucketStrategyStore" class="fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyMongoStore"/>
-	<bean id="featureBucketsStore" class="fortscale.streaming.service.aggregation.FeatureBucketsMongoStore"/>
+	<import resource="classpath*:META-INF/spring/fortscale-aggr-context.xml" />
 
     <context:annotation-config />	
 

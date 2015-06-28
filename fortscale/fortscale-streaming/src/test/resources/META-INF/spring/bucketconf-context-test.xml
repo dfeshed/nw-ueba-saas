@@ -6,6 +6,9 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+						
+	<import resource="classpath*:META-INF/spring/fortscale-aggr-context.xml" />
+	
 	<context:spring-configured />
 	<context:annotation-config />
 	<context:component-scan base-package="fortscale.streaming.service.aggregation"/>

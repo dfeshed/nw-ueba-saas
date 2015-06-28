@@ -18,7 +18,6 @@ import java.util.*;
  * Provides API to get list of related BucketConfs for a given event based on the
  * context fields within the BucketConfs.
  */
-@Service
 public class BucketConfigurationService implements InitializingBean{
     private static final Logger logger = Logger.getLogger(BucketConfigurationService.class);
 
