@@ -1,12 +1,12 @@
 package fortscale.domain.core;
 
 /**
- * Created by rans on 21/06/15.
+ * Represent status of evidence/alert
+ * Date: 6/22/2015.
  */
 public enum Severity {
-    CRITICAL,
-    HIGH,
-    MEDIUM,
-    LOW,
-    NONE
+	Critical,
+	High,
+	Medium,
+	Low
 }

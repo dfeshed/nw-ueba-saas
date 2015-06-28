@@ -1,11 +1,13 @@
 package fortscale.domain.core;
 
 /**
- * Created by rans on 21/06/15.
+ * Types of entities
+ *
+ * Date: 6/24/2015.
  */
 public enum EntityType {
-    USER,
-    MACHINE,
-    COUNTRY,
-    RESOURCE
+	User,
+	Machine,
+    Country,
+    Resource
 }

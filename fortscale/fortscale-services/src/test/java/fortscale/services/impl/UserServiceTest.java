@@ -31,6 +31,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -237,6 +238,8 @@ public class UserServiceTest {
 		}
 		when(userRepository.save(any(User.class))).thenReturn(new User());
 
+		userService.setListOfBuiltInADUsers("Administrator,Guest,krbtgt");
+
 		// Act
 		userService.updateUserWithADInfo(timestampEpoch);
 
@@ -272,5 +275,19 @@ public class UserServiceTest {
 		// assert
 		//verify(userRepository, times(1)).save(any(User.class));
 		verify(mongoTemplate, times(1)).updateFirst(any(Query.class), any(Update.class), any(Class.class));
+	}
+
+	@Test
+	public void test_needToBeDeleted_method ()
+	{
+		userService.setListOfBuiltInADUsers("Administrator,Guest,krbtgt");
+
+		User oldUser = mock(User.class);
+		when(oldUser.getUsername()).thenReturn("administrator");
+		boolean result  = userService.needToBeDeleted(oldUser);
+		assertFalse(result);
+
+
+
 	}
 }
