@@ -12,10 +12,9 @@ public interface AlertsRepositoryCustom {
 	/**
 	 * Find all alerts according to query that is build on request parameters
 	 * @param request
-	 * @param httpRequest
-	 * @return
+	 * @return @DataBean object with list of alerts
 	 */
-	Alerts findAll(PageRequest request, HttpServletRequest httpRequest);
+	Alerts findAll(PageRequest request);
 
 	/**
 	 * Count alerts according to query that is build on request parameters

@@ -6,5 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Repository for Alerts
+ */
 public interface AlertsRepository extends MongoRepository<Alert, String>, AlertsRepositoryCustom {
 }

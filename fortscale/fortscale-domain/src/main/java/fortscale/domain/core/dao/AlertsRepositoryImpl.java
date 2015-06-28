@@ -19,11 +19,10 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
     /**
      * returns all alerts in the collection in a json object represented by @Alerts
      * @param pageRequest
-     * @param httpRequest
      * @return
      */
     @Override
-    public Alerts findAll(PageRequest pageRequest, HttpServletRequest httpRequest) {
+    public Alerts findAll(PageRequest pageRequest) {
         Query query = new Query( ).with( pageRequest.getSort() );
         int pageSize = pageRequest.getPageSize();
         int pageNum = pageRequest.getPageNumber();
