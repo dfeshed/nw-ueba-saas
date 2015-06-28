@@ -2,7 +2,7 @@ package fortscale.domain.core.dao.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.domain.core.AbstractDocument;
-import fortscale.domain.core.AlertSeverity;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.EntityType;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -66,7 +66,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Field(scoreField)
 	private Integer score;
 	@Field(severityField)
-	private AlertSeverity severity;
+	private Severity severity;
 	@Field(statusField)
 	private String status;
 	@Field(commentField)
@@ -74,7 +74,7 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Alert() {}
 
-	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule, Map<Long, String> evidences, String cause, int score, AlertSeverity severity, String status, String comment) {
+	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule, Map<Long, String> evidences, String cause, int score, Severity severity, String status, String comment) {
 		this.uuid = uuid;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -161,11 +161,11 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.score = score;
 	}
 
-	public AlertSeverity getSeverity() {
+	public Severity getSeverity() {
 		return severity;
 	}
 
-	public void setSeverity(AlertSeverity severity) {
+	public void setSeverity(Severity severity) {
 		this.severity = severity;
 	}
 

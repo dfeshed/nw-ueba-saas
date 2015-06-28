@@ -1,6 +1,6 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.AlertSeverity;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.dao.rest.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
@@ -46,8 +46,8 @@ public class AlertsRepositoryImplTest {
 	@Test
 	public void testAlertsRepository() throws IOException{
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("1", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, AlertSeverity.CRITICAL, "a", "a"));
-		alertsList.add(new Alert("2", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, AlertSeverity.CRITICAL, "a", "a"));
+		alertsList.add(new Alert("1", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
+		alertsList.add(new Alert("2", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
 		when (httpRequest.getRequestURI()).thenReturn("fortscale.org/api/alerts/");

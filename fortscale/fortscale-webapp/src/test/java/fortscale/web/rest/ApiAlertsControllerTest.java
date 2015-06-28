@@ -1,6 +1,6 @@
 package fortscale.web.rest;
 
-import fortscale.domain.core.AlertSeverity;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alert;
@@ -27,7 +27,6 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -58,8 +57,8 @@ public class ApiAlertsControllerTest {
 	public void list_all_alerts() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("1", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, AlertSeverity.CRITICAL, "a", "a"));
-		alertsList.add(new Alert("2", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, AlertSeverity.CRITICAL, "a", "a"));
+		alertsList.add(new Alert("1", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
+		alertsList.add(new Alert("2", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
 		Alerts alerts = new Alerts();
 		alerts.set_embedded(new Embedded<List<Alert>>(alertsList));
 
@@ -80,8 +79,8 @@ public class ApiAlertsControllerTest {
 	public void list_all_alerts_without_request_params() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("1", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, AlertSeverity.CRITICAL, "a", "a"));
-		alertsList.add(new Alert("2", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, AlertSeverity.CRITICAL, "a", "a"));
+		alertsList.add(new Alert("1", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
+		alertsList.add(new Alert("2", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
 		Alerts alerts = new Alerts();
 		alerts.set_embedded(new Embedded<List<Alert>>(alertsList));
 
