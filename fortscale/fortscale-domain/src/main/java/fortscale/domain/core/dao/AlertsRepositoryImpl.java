@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,12 +31,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         query.skip(pageNum * pageSize);
         List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
         Alerts alerts = new Alerts();
-        alerts.set_embedded(new Embedded<List<Alert>>(alertsList));
-        LinkUrl linkUrlSelf = new LinkUrl("self", httpRequest.getRequestURI());
-        List<LinkUrl> linkUrls = new ArrayList<>();
-        linkUrls.add(linkUrlSelf);
-        Links links = new Links(linkUrls);
-        alerts.set_links(links);
+        alerts.setAlerts(alertsList);
         return alerts;
     }
 

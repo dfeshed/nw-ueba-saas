@@ -9,31 +9,14 @@ import java.util.List;
  */
 public class Alerts implements Serializable {
     private static final long serialVersionUID = 9109074252875664042L;
-    private Links _links;
-    private Embedded<List<Alert>> _embedded;
-    private Page page;
+    private List<Alert> alerts;
 
-    public Links get_links() {
-        return _links;
+    public List<Alert> getAlerts() {
+        return alerts;
     }
 
-    public void set_links(Links _links) {
-        this._links = _links;
+    public void setAlerts(List<Alert> alerts) {
+        this.alerts = alerts;
     }
 
-    public Embedded<List<Alert>> get_embedded() {
-        return _embedded;
-    }
-
-    public void set_embedded(Embedded<List<Alert>> _embedded) {
-        this._embedded = _embedded;
-    }
-
-    public Page getPage() {
-        return page;
-    }
-
-    public void setPage(Page page) {
-        this.page = page;
-    }
 }

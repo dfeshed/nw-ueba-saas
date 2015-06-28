@@ -5,7 +5,6 @@ import fortscale.domain.core.EntityType;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
-import fortscale.domain.core.dao.rest.Embedded;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +59,7 @@ public class ApiAlertsControllerTest {
 		alertsList.add(new Alert("1", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
 		alertsList.add(new Alert("2", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
 		Alerts alerts = new Alerts();
-		alerts.set_embedded(new Embedded<List<Alert>>(alertsList));
+		alerts.setAlerts(alertsList);
 
 		when(alertsDao.findAll(any(PageRequest.class), any(HttpServletRequest.class))).thenReturn(alerts);
 
@@ -82,7 +81,7 @@ public class ApiAlertsControllerTest {
 		alertsList.add(new Alert("1", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
 		alertsList.add(new Alert("2", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
 		Alerts alerts = new Alerts();
-		alerts.set_embedded(new Embedded<List<Alert>>(alertsList));
+		alerts.setAlerts(alertsList);
 
 		when(alertsDao.findAll(any(PageRequest.class), any(HttpServletRequest.class))).thenReturn(alerts);
 

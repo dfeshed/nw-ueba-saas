@@ -52,9 +52,8 @@ public class AlertsRepositoryImplTest {
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
 		when (httpRequest.getRequestURI()).thenReturn("fortscale.org/api/alerts/");
 		Alerts alerts = subject.findAll(new PageRequest(1,0), httpRequest);
-		assertEquals("user1", alerts.get_embedded().getData().get(0).getEntityName());
-		assertEquals("rule1", alerts.get_embedded().getData().get(1).getRule());
-		assertEquals("fortscale.org/api/alerts/", alerts.get_links().getLinks().get(0).getHref());
+		assertEquals("user1", alerts.getAlerts().get(0).getEntityName());
+		assertEquals("rule1", alerts.getAlerts().get(1).getRule());
 	}
 
 	@Test

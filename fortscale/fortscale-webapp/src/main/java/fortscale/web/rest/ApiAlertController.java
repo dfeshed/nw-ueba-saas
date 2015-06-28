@@ -70,7 +70,6 @@ public class ApiAlertController extends BaseController {
 		//total count of the total items in query.
 		Long count = alertsDao.count(pageRequest);
 		entities.setTotal(count.intValue());
-		entities.setOffset(page);
 		return entities;
 	}
 
