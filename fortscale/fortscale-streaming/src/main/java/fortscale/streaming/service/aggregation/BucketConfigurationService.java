@@ -30,7 +30,7 @@ public class BucketConfigurationService implements InitializingBean{
     @Value("${impala.table.fields.data.source}")
     private String dataSourceFieldName;
 
-    @Value("${fortscale.streaming.service.aggregation.bucket_configuration_service.bucket_conf_json}")
+    @Value("${fortscale.aggregation.bucket.conf.json.file.name}")
     private String bucketConfJsonFilePath;
 
     @Override

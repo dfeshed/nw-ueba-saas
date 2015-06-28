@@ -1,18 +1,21 @@
 package fortscale.streaming.aggregation.feature.extraction;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.streaming.aggregation.feature.Feature;
-import fortscale.utils.logging.Logger;
+import java.io.FileReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import java.io.FileReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fortscale.streaming.aggregation.feature.Feature;
+import fortscale.utils.logging.Logger;
 
 @Service
 public class FeatureExtractService implements IFeatureExtractService, InitializingBean {
@@ -30,6 +33,9 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		setFeaturesConfJsonFromFile(featuresConfJasonFileName);
+		for(String featureName: featuresConfJson.keySet()){
+			createFeatureExtractor(featureName);
+		}
 	}
 
 	private void setFeaturesConfJsonFromFile(String fileName) throws IllegalArgumentException {
@@ -44,11 +50,7 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	}
 
 	private FeatureExtractor getFeatureExtractor(String featureName) {
-		FeatureExtractor fe = featureExtractorMap.get(featureName);
-		if (fe == null) {
-			fe = createFeatureExtractor(featureName);
-		}
-		return fe;
+		return featureExtractorMap.get(featureName);
 	}
 
 	private FeatureExtractor createFeatureExtractor(String featureName) {
@@ -103,11 +105,8 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 		Map<String, Feature> features = new HashMap<>();
 
 		for (String featureName : featureNames) {
-			FeatureExtractor fe = getFeatureExtractor(featureName);
-			if(fe!=null) {
-				Object value = fe.extract(message);
-				features.put(featureName, new Feature(featureName, value));
-			}
+			Feature feature = extract(featureName, message);
+			features.put(featureName, feature);
 		}
 		return features;
 	}
