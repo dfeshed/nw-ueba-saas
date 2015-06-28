@@ -26,8 +26,10 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
     @Override
     public Alerts findAll(PageRequest pageRequest, HttpServletRequest httpRequest) {
         Query query = new Query( ).with( pageRequest.getSort() );
-        query.limit(pageRequest.getPageSize());
-        query.skip(pageRequest.getPageNumber());
+        int pageSize = pageRequest.getPageSize();
+        int pageNum = pageRequest.getPageNumber();
+        query.limit(pageSize);
+        query.skip(pageNum * pageSize);
         List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
         Alerts alerts = new Alerts();
         alerts.set_embedded(new Embedded<List<Alert>>(alertsList));
@@ -37,6 +39,15 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         Links links = new Links(linkUrls);
         alerts.set_links(links);
         return alerts;
+    }
+
+    @Override
+    public Long count(PageRequest pageRequest){
+        Query query = new Query( ).with( pageRequest.getSort() );
+        query.limit(pageRequest.getPageSize());
+        query.skip(pageRequest.getPageNumber());
+        Long count = mongoTemplate.count(query, Alert.class);
+        return count;
     }
 
     /**

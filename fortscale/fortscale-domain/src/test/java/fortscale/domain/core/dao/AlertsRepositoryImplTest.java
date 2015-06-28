@@ -44,7 +44,7 @@ public class AlertsRepositoryImplTest {
 	}
 
 	@Test
-	public void testAlertsRepository() throws IOException{
+	public void testFindAll() throws IOException{
 		List<Alert> alertsList = new ArrayList<Alert>();
 		alertsList.add(new Alert("1", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
 		alertsList.add(new Alert("2", 1, 2, EntityType.USER, "user1", "rule1", null, "a", 90, Severity.CRITICAL, "a", "a"));
@@ -55,5 +55,13 @@ public class AlertsRepositoryImplTest {
 		assertEquals("user1", alerts.get_embedded().getData().get(0).getEntityName());
 		assertEquals("rule1", alerts.get_embedded().getData().get(1).getRule());
 		assertEquals("fortscale.org/api/alerts/", alerts.get_links().getLinks().get(0).getHref());
+	}
+
+	@Test
+	public void testCount() throws IOException{
+		when (mongoTemplate.count(any(Query.class), eq(Alert.class))).thenReturn(20L);
+		when (httpRequest.getRequestURI()).thenReturn("fortscale.org/api/alerts/");
+		Long count = subject.count(new PageRequest(1,0));
+		assertEquals(new Long(20), count);
 	}
 }

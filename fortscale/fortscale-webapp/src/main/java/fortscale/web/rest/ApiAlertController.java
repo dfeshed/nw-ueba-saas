@@ -6,6 +6,7 @@ import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
+import fortscale.web.beans.DataBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -38,7 +39,8 @@ public class ApiAlertController extends BaseController {
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@LogException
-	public @ResponseBody Alerts getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+	public @ResponseBody
+	DataBean<Alerts> getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 										  @RequestParam(required=false) String sortField,
 										  @RequestParam(required=false) String sortDirection,
 										  @RequestParam(required=false)  Integer size,
@@ -63,7 +65,13 @@ public class ApiAlertController extends BaseController {
 		}
 		PageRequest pageRequest = new PageRequest(page, size, sortByTSDesc);
 		Alerts alerts = alertsDao.findAll(pageRequest, httpRequest);
-		return alerts;
+		DataBean<Alerts> entities = new DataBean<Alerts>();
+		entities.setData(alerts);
+		//total count of the total items in query.
+		Long count = alertsDao.count(pageRequest);
+		entities.setTotal(count.intValue());
+		entities.setOffset(page);
+		return entities;
 	}
 
 	/**

@@ -10,6 +10,7 @@ public interface AlertsRepositoryCustom {
 
 
 	Alerts findAll(PageRequest request, HttpServletRequest httpRequest);
+	Long count(PageRequest pageRequest);
 	void add(Alert alert);
 
 	}
