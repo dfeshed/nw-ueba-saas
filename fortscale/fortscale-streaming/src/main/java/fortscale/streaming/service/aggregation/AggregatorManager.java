@@ -1,15 +1,12 @@
 package fortscale.streaming.service.aggregation;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
 import java.util.List;
 
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 
 import org.apache.samza.config.Config;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
 import org.slf4j.Logger;
@@ -18,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.streaming.service.aggregation.bucket.strategy.samza.FeatureBucketStrategyServiceSamza;
@@ -34,25 +32,25 @@ public class AggregatorManager {
 	private FeatureBucketsService featureBucketsService;
 	
 	@Autowired
+	private FortscaleStringValueResolver fortscaleStringValueResolver;
+	
+	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 	
 	@Autowired
 	private FeatureBucketsStore featureBucketsStore;
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
-		timestampFieldName = getConfigString(config, SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH);
+		timestampFieldName = fortscaleStringValueResolver.resolveStringValue(config, SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH);
 		
 		featureBucketStrategyService = new FeatureBucketStrategyServiceSamza(context, featureBucketsStore);
 		featureBucketsService = new FeatureBucketsServiceSamza(context, featureBucketsStore, featureBucketStrategyService);
 	}
 
-	public void processEvent(IncomingMessageEnvelope envelope) throws Exception {
-		String messageText = (String)envelope.getMessage();
-		JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
-
+	public void processEvent(JSONObject event) throws Exception {
 		Long timestamp = convertToLong(event.get(timestampFieldName));
 		if (timestamp == null) {
-			logger.warn("Event message {} contains no timestamp in field {}", messageText, timestampFieldName);
+			logger.warn("Event message {} contains no timestamp in field {}", event.toJSONString(), timestampFieldName);
 			return;
 		}
 

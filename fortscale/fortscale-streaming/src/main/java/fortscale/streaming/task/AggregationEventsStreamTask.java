@@ -24,7 +24,7 @@ import fortscale.utils.StringPredicates;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
-	private AggregatorManager aggregationEventsManager;
+	private AggregatorManager aggregatorManager;
 	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
 	private String dataSourceFieldName;
 
@@ -42,7 +42,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		
 		dataSourceFieldName = resolveStringValue(config, "fortscale.data.source.field", res);
 		
-		aggregationEventsManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context));
+		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context));
 	}
 	
 	private String resolveStringValue(Config config, String string, FortscaleStringValueResolver resolver) {
@@ -63,21 +63,21 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 			event.put(dataSourceFieldName, topicToDataSourceMap.get(topic));
 		}
 		
-		aggregationEventsManager.processEvent(envelope);
+		aggregatorManager.processEvent(envelope);
 	}
 
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		if (aggregationEventsManager != null) {
-			aggregationEventsManager.window(collector, coordinator);
+		if (aggregatorManager != null) {
+			aggregatorManager.window(collector, coordinator);
 		}
 	}
 
 	@Override
 	protected void wrappedClose() throws Exception {
-		if (aggregationEventsManager != null) {
-			aggregationEventsManager.close();
-			aggregationEventsManager = null;
+		if (aggregatorManager != null) {
+			aggregatorManager.close();
+			aggregatorManager = null;
 		}
 	}
 }
