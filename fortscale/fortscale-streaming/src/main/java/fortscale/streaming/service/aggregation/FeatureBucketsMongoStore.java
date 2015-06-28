@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 
-@Component
+
 public class FeatureBucketsMongoStore implements FeatureBucketsStore {
 	@Autowired
 	private MongoTemplate mongoTemplate;

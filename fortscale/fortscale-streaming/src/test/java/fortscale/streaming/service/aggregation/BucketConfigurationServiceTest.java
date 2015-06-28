@@ -2,12 +2,15 @@ package fortscale.streaming.service.aggregation;
 
 
 import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import java.util.List;
 
 /**
@@ -19,12 +22,15 @@ public class BucketConfigurationServiceTest  {
 
     @Autowired
     BucketConfigurationService bch;
+    
+    @Value("${impala.table.fields.data.source}")
+    private String dataSourceFieldName;
 
     @Test
     public void testGetRelatedBucketConfs() {
         JSONObject event = new JSONObject();
 
-        event.put(BucketConfigurationService.EVENT_FIELD_DATA_SOURCE, "ssh");
+        event.put(dataSourceFieldName, "ssh");
         List<FeatureBucketConf> bcl = bch.getRelatedBucketConfs(event);
         Assert.assertEquals(2, bcl.size());
         FeatureBucketConf fbc = bcl.get(0);
@@ -32,7 +38,7 @@ public class BucketConfigurationServiceTest  {
         fbc = bcl.get(1);
         Assert.assertEquals("bc3", fbc.getName());
 
-        event.put(BucketConfigurationService.EVENT_FIELD_DATA_SOURCE, "vpn");
+        event.put(dataSourceFieldName, "vpn");
         bcl = bch.getRelatedBucketConfs(event);
         Assert.assertEquals(2, bcl.size());
         fbc = bcl.get(0);
@@ -40,7 +46,7 @@ public class BucketConfigurationServiceTest  {
         fbc = bcl.get(1);
         Assert.assertEquals("bc3", fbc.getName());
 
-        event.put(BucketConfigurationService.EVENT_FIELD_DATA_SOURCE, "notexists");
+        event.put(dataSourceFieldName, "notexists");
         bcl = bch.getRelatedBucketConfs(event);
         Assert.assertNull(bcl);
     }
