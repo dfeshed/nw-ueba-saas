@@ -1,13 +1,13 @@
 package fortscale.streaming.service.aggregation;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import fortscale.streaming.aggregation.feature.Feature;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class FeatureBucket {
 	public static final String START_TIME_FIELD = "startTime";
@@ -117,4 +117,10 @@ public class FeatureBucket {
 	public void setAggregatedFeatures(Map<String, Feature> aggregatedFeatures) {
 		this.aggregatedFeatures = aggregatedFeatures;
 	}
+
+	public String getId() {
+		return id;
+	}
+	
+	
 }

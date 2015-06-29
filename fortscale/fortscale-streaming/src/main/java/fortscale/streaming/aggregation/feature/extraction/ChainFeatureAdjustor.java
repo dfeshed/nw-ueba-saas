@@ -3,9 +3,9 @@ package fortscale.streaming.aggregation.feature.extraction;
 import java.util.ArrayList;
 import java.util.List;
 
-import fortscale.streaming.aggregation.feature.Feature;
-import org.apache.commons.lang.StringUtils;
 import net.minidev.json.JSONObject;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 

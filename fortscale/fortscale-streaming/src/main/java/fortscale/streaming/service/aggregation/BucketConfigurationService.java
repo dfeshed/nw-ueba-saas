@@ -1,17 +1,21 @@
 package fortscale.streaming.service.aggregation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-import java.io.FileReader;
-import java.util.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fortscale.utils.logging.Logger;
 
 /**
  * Loads BucketConfs from JSON file.

@@ -1,7 +1,5 @@
 package fortscale.streaming.aggregation.feature.util;
 
-import fortscale.streaming.serialization.LongSerde;
-
 import java.io.Serializable;
 
 /**

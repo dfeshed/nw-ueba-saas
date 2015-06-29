@@ -1,13 +1,15 @@
 package fortscale.streaming.aggregation.feature.extraction;
 
+import net.minidev.json.JSONObject;
+
+import org.springframework.util.Assert;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fortscale.streaming.aggregation.feature.Feature;
+
 import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONObject;
-import org.springframework.util.Assert;
 
 @JsonTypeName(IPv4FeatureAdjustor.IPV4_FEATURE_ADJUSTOR_TYPE)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
