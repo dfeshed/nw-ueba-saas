@@ -7,5 +7,7 @@ package fortscale.domain.core;
  */
 public enum EntityType {
 	User,
-	Machine
+	Machine,
+    Country,
+    Resource
 }
