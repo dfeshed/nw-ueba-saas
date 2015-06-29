@@ -27,7 +27,7 @@ public class Alert extends AbstractDocument implements Serializable {
 
 
 	private static final long serialVersionUID = -8514041678913795872L;
-	public static final String COLLECTION_NAME = "Alerts";
+	public static final String COLLECTION_NAME = "alerts";
 
 	//Fields names
 	public static final String uuidField = "uuid";
