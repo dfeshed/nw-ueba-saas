@@ -63,7 +63,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 			event.put(dataSourceFieldName, topicToDataSourceMap.get(topic));
 		}
 		
-		aggregatorManager.processEvent(envelope);
+		aggregatorManager.processEvent(event);
 	}
 
 	@Override
