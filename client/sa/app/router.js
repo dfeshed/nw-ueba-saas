@@ -8,7 +8,6 @@ var Router = Ember.Router.extend({
 Router.map(function() {
   this.route('incidents');
   this.route('investigation');
-  this.route('i18n');
 });
 
 export default Router;
