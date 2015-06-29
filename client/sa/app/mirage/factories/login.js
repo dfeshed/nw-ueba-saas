@@ -6,6 +6,6 @@
 import Mirage  from 'ember-cli-mirage';
 
 export default Mirage.Factory.extend({
-    identification:'admin',
-    password:'netwitness'
+    identification: 'admin',
+    password: 'netwitness'
 });
