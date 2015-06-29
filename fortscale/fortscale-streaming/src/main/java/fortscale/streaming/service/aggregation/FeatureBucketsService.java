@@ -20,6 +20,9 @@ public abstract class FeatureBucketsService {
 	private static final String BUCKET_ID_BUILDER_SEPERATOR = "_";
 		
 	public List<FeatureBucket> updateFeatureBucketsWithNewBucketEndTime(List<FeatureBucketConf> featureBucketConfs, List<FeatureBucketStrategyData> updatedFeatureBucketStrategyData){
+		if(updatedFeatureBucketStrategyData == null || updatedFeatureBucketStrategyData.isEmpty()){
+			return Collections.emptyList();
+		}
 		Map<String, FeatureBucketStrategyData> strategyNameToDataMap = new HashMap<String, FeatureBucketStrategyData>();
 		for(FeatureBucketStrategyData featureBucketStrategyData: updatedFeatureBucketStrategyData){
 			strategyNameToDataMap.put(featureBucketStrategyData.getStrategyName(), featureBucketStrategyData);

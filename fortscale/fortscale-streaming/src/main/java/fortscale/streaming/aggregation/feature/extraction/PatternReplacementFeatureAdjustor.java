@@ -1,17 +1,18 @@
 package fortscale.streaming.aggregation.feature.extraction;
 
+import static fortscale.utils.ConversionUtils.convertToString;
+
+import java.util.regex.Matcher;
+
+import net.minidev.json.JSONObject;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.util.Assert;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fortscale.streaming.aggregation.feature.Feature;
-import net.minidev.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.util.Assert;
-
-import java.util.regex.Matcher;
-
-import static fortscale.utils.ConversionUtils.convertToString;
 
 @JsonTypeName(PatternReplacementFeatureAdjustor.PATTERN_REPLACEMENT_FEATURE_ADJUSTOR_TYPE)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)

@@ -1,9 +1,9 @@
 package fortscale.streaming.aggregation.feature.extraction;
 
+import net.minidev.json.JSONObject;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import fortscale.streaming.aggregation.feature.Feature;
-import net.minidev.json.JSONObject;
 
 /**
  * Created by amira on 15/06/2015.

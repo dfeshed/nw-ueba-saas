@@ -3,13 +3,12 @@ package fortscale.streaming.aggregation.feature.extraction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import fortscale.streaming.aggregation.feature.Feature;
+import net.minidev.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-
-import net.minidev.json.JSONObject;
 
 
 @JsonTypeName(PriorityContainerFeatureExtractor.PRIORITY_CONTAINER_FEATURE_EXTRACTOR_TYPE)

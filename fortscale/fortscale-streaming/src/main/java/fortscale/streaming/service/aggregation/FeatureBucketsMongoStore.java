@@ -8,11 +8,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Component;
 
 
-@Component
+
 public class FeatureBucketsMongoStore implements FeatureBucketsStore {
+	private static final String COLLECTION_NAME_PREFIX = "aggr_";
+	
+	
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -47,6 +49,6 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore {
 	}
 	
 	private String getCollectionName(FeatureBucketConf featureBucketConf){
-		return featureBucketConf.getName();
+		return String.format("%s,%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 }
