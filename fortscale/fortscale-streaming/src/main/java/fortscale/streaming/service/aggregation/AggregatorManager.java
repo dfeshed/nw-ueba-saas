@@ -56,11 +56,13 @@ public class AggregatorManager {
 
 		List<FeatureBucketStrategyData> updatedFeatureBucketStrategyDatas = featureBucketStrategyService.updateStrategies(event);
 		List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(event);
-		//TODO:routeEventsToOtherContexts
-		List<FeatureBucket> updatedFeatureBucketsWithNewEndTime = featureBucketsService.updateFeatureBucketsWithNewBucketEndTime(featureBucketConfs, updatedFeatureBucketStrategyDatas);
-		//TODO: Update AggregationEventsManager with updatedFeatureBucketsWithNewEndTime
-		List<FeatureBucket> newFeatureBuckets = featureBucketsService.updateFeatureBucketsWithNewEvent(event, featureBucketConfs);
-		//TODO: Update AggregationEventsManager with newFeatureBuckets
+		if(featureBucketConfs != null && !featureBucketConfs.isEmpty()){
+			//TODO:routeEventsToOtherContexts
+			List<FeatureBucket> updatedFeatureBucketsWithNewEndTime = featureBucketsService.updateFeatureBucketsWithNewBucketEndTime(featureBucketConfs, updatedFeatureBucketStrategyDatas);
+			//TODO: Update AggregationEventsManager with updatedFeatureBucketsWithNewEndTime
+			List<FeatureBucket> newFeatureBuckets = featureBucketsService.updateFeatureBucketsWithNewEvent(event, featureBucketConfs);
+			//TODO: Update AggregationEventsManager with newFeatureBuckets
+		}
 	}
 
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {

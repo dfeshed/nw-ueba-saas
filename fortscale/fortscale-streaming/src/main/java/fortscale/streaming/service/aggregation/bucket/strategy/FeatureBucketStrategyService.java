@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import net.minidev.json.JSONObject;
 import fortscale.streaming.service.aggregation.FeatureBucketConf;
 import fortscale.streaming.service.aggregation.FeatureBucketsStore;
+import fortscale.utils.ConversionUtils;
 import fortscale.utils.TimestampUtils;
 
 
@@ -31,7 +32,7 @@ public abstract class FeatureBucketStrategyService {
 	
 	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(JSONObject event, FeatureBucketConf featureBucketConf){
 		FeatureBucketStrategy strategy = getFeatureBucketStrategy(featureBucketConf.getStrategyName());
-		Long epochtimeInSec = (Long) event.get(epochtimeFieldName);
+		Long epochtimeInSec = ConversionUtils.convertToLong(event.get(epochtimeFieldName));
 		if(epochtimeInSec!=null){
 			epochtimeInSec = TimestampUtils.convertToSeconds(epochtimeInSec);
 			return strategy.getFeatureBucketStrategyData(featureBucketConf, event, epochtimeInSec);
