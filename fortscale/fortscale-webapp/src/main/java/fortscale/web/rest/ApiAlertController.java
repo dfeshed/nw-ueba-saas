@@ -64,12 +64,13 @@ public class ApiAlertController extends BaseController {
 			size = DEFAULT_PAGE_SIZE;
 		}
 		PageRequest pageRequest = new PageRequest(page, size, sortByTSDesc);
-		Alerts alerts = alertsDao.findAll(pageRequest, httpRequest);
+		Alerts alerts = alertsDao.findAll(pageRequest);
 		DataBean<Alerts> entities = new DataBean<Alerts>();
 		entities.setData(alerts);
 		//total count of the total items in query.
 		Long count = alertsDao.count(pageRequest);
 		entities.setTotal(count.intValue());
+		entities.setOffset(page * size);
 		return entities;
 	}
 

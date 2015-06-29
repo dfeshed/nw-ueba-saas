@@ -2,6 +2,7 @@ package fortscale.domain.core.dao.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.domain.core.AbstractDocument;
+import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.EntityType;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -68,13 +69,13 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Field(severityField)
 	private Severity severity;
 	@Field(statusField)
-	private String status;
+	private AlertStatus status;
 	@Field(commentField)
 	private String comment;
 
 	public Alert() {}
 
-	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule, Map<Long, String> evidences, String cause, int score, Severity severity, String status, String comment) {
+	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule, Map<Long, String> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
 		this.uuid = uuid;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -169,11 +170,11 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.severity = severity;
 	}
 
-	public String getStatus() {
+	public AlertStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(AlertStatus status) {
 		this.status = status;
 	}
 
