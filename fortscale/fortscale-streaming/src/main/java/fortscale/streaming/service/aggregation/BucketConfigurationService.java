@@ -18,17 +18,18 @@ import java.util.*;
  * Provides API to get list of related BucketConfs for a given event based on the
  * context fields within the BucketConfs.
  */
-@Service
 public class BucketConfigurationService implements InitializingBean{
     private static final Logger logger = Logger.getLogger(BucketConfigurationService.class);
 
     public final static String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
-    public final static String EVENT_FIELD_DATA_SOURCE = "data-source";
 
     private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
     private Map<String, List<FeatureBucketConf>> dataSourceToListOfBucketConfs = new HashMap<>();
+    
+    @Value("${impala.table.fields.data.source}")
+    private String dataSourceFieldName;
 
-    @Value("${fortscale.streaming.service.aggregation.bucket_configuration_service.bucket_conf_json}")
+    @Value("${fortscale.aggregation.bucket.conf.json.file.name}")
     private String bucketConfJsonFilePath;
 
     @Override
@@ -80,7 +81,7 @@ public class BucketConfigurationService implements InitializingBean{
 
         if(event==null) return null;
 
-        Object dataSourceObj = event.get(EVENT_FIELD_DATA_SOURCE);
+        Object dataSourceObj = event.get(dataSourceFieldName);
 
         if(dataSourceObj==null) return null;
 
