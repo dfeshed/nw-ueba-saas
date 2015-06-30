@@ -1,0 +1,12 @@
+{
+  "predef": [
+    "authenticateSession",
+    "invalidateSession",
+    "currentSession",
+    "visit",
+    "andThen",
+    "find",
+    "currentPath"
+  ],
+  "esnext": true
+}
