@@ -1,19 +1,17 @@
 package fortscale.streaming.service.aggregation.bucket.strategy;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class FeatureBucketStrategyMongoStore implements	FeatureBucketStrategyStore {
-	
+public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategyStore {
 	public static final String STRATEGY_CONTEXT_ID_FIELD = "strategyContextId";
 	public static final String START_TIME_FIELD = "startTime";
-	
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -25,4 +23,8 @@ public class FeatureBucketStrategyMongoStore implements	FeatureBucketStrategySto
 		return mongoTemplate.findOne(query, FeatureBucketStrategyData.class);
 	}
 
+	@Override
+	public void storeFeatureBucketStrategyData(FeatureBucketStrategyData featureBucketStrategyData) {
+		mongoTemplate.save(featureBucketStrategyData);
+	}
 }

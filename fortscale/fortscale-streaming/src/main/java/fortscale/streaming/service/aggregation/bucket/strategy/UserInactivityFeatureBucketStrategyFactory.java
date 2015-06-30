@@ -1,6 +1,7 @@
 package fortscale.streaming.service.aggregation.bucket.strategy;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import fortscale.streaming.service.aggregation.bucket.strategy.samza.FeatureBucketStrategyFactorySamza;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -11,11 +12,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class InactivityFeatureBucketStrategyFactory implements FeatureBucketStrategyFactory {
-	public static final String STRATEGY_TYPE = "inactivity";
+public class UserInactivityFeatureBucketStrategyFactory implements FeatureBucketStrategyFactorySamza {
+	public static final String STRATEGY_TYPE = "user_inactivity";
 
 	private static final String DATA_SOURCES_JSON_PARAM_FIELD_NAME = "dataSources";
 	private static final String INACTIVITY_DURATION_IN_MINUTES_JSON_PARAM_FIELD_NAME = "inactivityDurationInMinutes";
+	private static final String END_TIME_DELTA_IN_MINUTES_JSON_PARAM_FIELD_NAME = "endTimeDeltaInMinutes";
+
+	private FeatureBucketStrategyStore featureBucketStrategyStore = null;
+
+	@Override
+	public void setStrategyStore(FeatureBucketStrategyStore featureBucketStrategyStore) {
+		this.featureBucketStrategyStore = featureBucketStrategyStore;
+	}
 
 	@Override
 	public FeatureBucketStrategy createFeatureBucketStrategy(StrategyJson strategyJson) throws JsonMappingException {
@@ -42,6 +51,11 @@ public class InactivityFeatureBucketStrategyFactory implements FeatureBucketStra
 		message = String.format("Params must contain field '%s' with a valid long value", INACTIVITY_DURATION_IN_MINUTES_JSON_PARAM_FIELD_NAME);
 		Assert.notNull(inactivityDurationInMinutes, message);
 
-		return new InactivityFeatureBucketStrategy(strategyJson.getName(), dataSources, inactivityDurationInMinutes);
+		// Get end time delta in minutes
+		Long endTimeDeltaInMinutes = ConversionUtils.convertToLong(params.get(END_TIME_DELTA_IN_MINUTES_JSON_PARAM_FIELD_NAME));
+		message = String.format("Params must contain field '%s' with a valid long value", END_TIME_DELTA_IN_MINUTES_JSON_PARAM_FIELD_NAME);
+		Assert.notNull(endTimeDeltaInMinutes, message);
+
+		return new UserInactivityFeatureBucketStrategy(featureBucketStrategyStore, strategyJson.getName(), dataSources, inactivityDurationInMinutes, endTimeDeltaInMinutes);
 	}
 }

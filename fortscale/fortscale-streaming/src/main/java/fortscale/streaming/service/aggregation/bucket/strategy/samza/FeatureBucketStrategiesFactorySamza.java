@@ -22,7 +22,7 @@ public class FeatureBucketStrategiesFactorySamza extends FeatureBucketStrategies
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		registerFeatureBucketStrategyFactory(FixedDurationFeatureBucketStrategyFactory.STRATEGY_TYPE, new FixedDurationFeatureBucketStrategyFactory());
-		registerFeatureBucketStrategyFactory(InactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, new InactivityFeatureBucketStrategyFactory());
+		registerFeatureBucketStrategyFactory(UserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, new UserInactivityFeatureBucketStrategyFactory());
 		super.afterPropertiesSet();
 	}
 }
