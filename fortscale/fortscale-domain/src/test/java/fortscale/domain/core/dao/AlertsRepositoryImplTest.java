@@ -3,7 +3,7 @@ package fortscale.domain.core.dao;
 import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.EntityType;
-import fortscale.domain.core.dao.rest.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.junit.Before;
 import org.junit.Test;

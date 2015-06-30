@@ -67,15 +67,15 @@ public class Evidence extends AbstractDocument{
 	private String entityName;
 
 	@Field(startDateField)
-	private Date startDate;
+	private Long startDate;
 
 	@Field(endDateField)
-	private Date endDate;
+	private Long endDate;
 
 	// Expiration: one year
 	@Indexed(expireAfterSeconds = 31536000)
 	@Field(retentionDateField)
-	private Date retentionDate;
+	private Long retentionDate;
 
 	@Field(typeField)
 	private String type;
@@ -101,8 +101,8 @@ public class Evidence extends AbstractDocument{
 
 	// C-tor
 
-	public Evidence(EntityType entityType, String entityName, Date startDate, Date endDate,
-			String type, String name, String dataSource, Integer score, Severity severity) {
+	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate,
+			String type, String dataSource, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
@@ -126,7 +126,7 @@ public class Evidence extends AbstractDocument{
 
 	// Setters
 
-	public void setRetentionDate(Date retentionDate) {
+	public void setRetentionDate(Long retentionDate) {
 		this.retentionDate = retentionDate;
 	}
 
@@ -144,15 +144,15 @@ public class Evidence extends AbstractDocument{
 		return entityName;
 	}
 
-	public Date getStartDate() {
+	public Long getStartDate() {
 		return startDate;
 	}
 
-	public Date getEndDate() {
+	public Long getEndDate() {
 		return endDate;
 	}
 
-	public Date getRetentionDate() {
+	public Long getRetentionDate() {
 		return retentionDate;
 	}
 

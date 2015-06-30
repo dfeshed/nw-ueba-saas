@@ -4,7 +4,7 @@ import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.dao.AlertsRepository;
-import fortscale.domain.core.dao.rest.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 

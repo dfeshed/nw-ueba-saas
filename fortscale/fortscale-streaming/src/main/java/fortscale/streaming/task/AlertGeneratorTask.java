@@ -4,13 +4,10 @@ import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.dao.rest.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.services.AlertsService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.utils.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -22,10 +19,7 @@ import org.apache.samza.task.TaskCoordinator;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import java.util.Date;
-
 import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.utils.ConversionUtils.*;
 
 /**
  * Created by danal on 16/06/2015.
@@ -149,11 +143,11 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 //		esperConfig.addEventTypeAutoName("fortscale.streaming.task.messages");
 		esperConfig.addEventTypeAutoName("fortscale.domain.core");
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
-		epService.getEPAdministrator().createEPL("insert into OrderTemperatureEvent select * from TemperatureEvent.win:time_batch(30 sec) order by timeOfReading");
+		epService.getEPAdministrator().createEPL("insert into EvidenceStream select * from Evidence.win:time_batch(30 sec) order by startDate");
 
 
-		MonitorEventSubscriber monitorEventSubscriber = new MonitorEventSubscriber(epService);
-		MonitorEventSubscriber2 monitorEventSubscriber2 = new MonitorEventSubscriber2(epService);
+//		MonitorEventSubscriber monitorEventSubscriber = new MonitorEventSubscriber(epService);
+//		MonitorEventSubscriber2 monitorEventSubscriber2 = new MonitorEventSubscriber2(epService);
 		//subscribe Alert creation Esper class
 		MonitorAlertSubscriber monitorAlertSubscriber = new MonitorAlertSubscriber(epService, store);
 		//example of pattern currently not active

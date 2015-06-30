@@ -2,7 +2,7 @@ package fortscale.services;
 
 import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.EntityType;
-import fortscale.domain.core.dao.rest.Alert;
+import fortscale.domain.core.Alert;
 
 import java.util.Date;
 import java.util.Map;

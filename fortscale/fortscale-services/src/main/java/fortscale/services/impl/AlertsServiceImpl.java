@@ -4,7 +4,7 @@ import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
-import fortscale.domain.core.dao.rest.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.services.AlertsService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

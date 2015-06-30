@@ -1,10 +1,6 @@
-package fortscale.domain.core.dao.rest;
+package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import fortscale.domain.core.AbstractDocument;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.EntityType;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;

@@ -1,7 +1,7 @@
 package fortscale.web.rest;
 
 import fortscale.domain.core.dao.AlertsRepository;
-import fortscale.domain.core.dao.rest.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;

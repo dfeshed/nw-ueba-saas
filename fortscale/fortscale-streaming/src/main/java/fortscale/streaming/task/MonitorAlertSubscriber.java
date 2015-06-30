@@ -2,8 +2,8 @@ package fortscale.streaming.task;
 
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
-import fortscale.domain.core.dao.rest.Alert;
-import fortscale.streaming.task.messages.TimestampUpdate;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.TimestampUpdate;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.samza.storage.kv.KeyValueStore;
 import parquet.org.slf4j.Logger;
@@ -43,7 +43,8 @@ public class MonitorAlertSubscriber {
     public String getStatement() {
 
         // Example of simple EPL with a Time Window
-        return "select id, startDate from Evidence.win:ext_timed_batch(startDate, 2 min, 0L) where startDate > updateTimestamp order by startDate";
+//        return "select id, startDate from EvidenceStream.win:ext_timed_batch(startDate, 2 min, 0L) where startDate > updateTimestamp order by startDate";
+        return "select * from EvidenceStream.win:ext_timed_batch(startDate, 2 min, 0L) order by startDate";
     }
 
     /**
@@ -52,7 +53,7 @@ public class MonitorAlertSubscriber {
     public void update(Map[] insertStream, Map[] removeStream) {
         Long maxTime = (Long) insertStream[insertStream.length - 1].get("startDate");
         maxPrevTime = DateUtils.ceiling(new Date(maxTime), Calendar.MINUTE).getTime();
-        epService.getEPRuntime().sendEvent(new TimestampUpdate(maxPrevTime));
+//        epService.getEPRuntime().sendEvent(new TimestampUpdate(maxPrevTime));
 
 
         i++;
@@ -60,9 +61,9 @@ public class MonitorAlertSubscriber {
             List<Map> filterInsertStream = new ArrayList<>();
             for (Map insertEventMap : insertStream) {
                 Long startDate = (Long) insertEventMap.get("startDate");
-                int eventId = (Integer) insertEventMap.get("eventId");
+//                int eventId = (Integer) insertEventMap.get("eventId");
                 StringBuilder sb = new StringBuilder();
-                sb.append("received time frame:" + i + "eventId: " + eventId + " startDate: " + new Date(startDate) + " counter " + ++counter);
+                sb.append("received time frame:" + i +  " startDate: " + new Date(startDate) + " counter " + ++counter);
 
                 logger.info(sb.toString());
                 //System.out.println(sb.toString());
