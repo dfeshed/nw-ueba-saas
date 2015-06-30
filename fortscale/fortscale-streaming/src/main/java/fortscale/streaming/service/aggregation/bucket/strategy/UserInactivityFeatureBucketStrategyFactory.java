@@ -19,11 +19,13 @@ public class UserInactivityFeatureBucketStrategyFactory implements FeatureBucket
 	private static final String INACTIVITY_DURATION_IN_MINUTES_JSON_PARAM_FIELD_NAME = "inactivityDurationInMinutes";
 	private static final String END_TIME_DELTA_IN_MINUTES_JSON_PARAM_FIELD_NAME = "endTimeDeltaInMinutes";
 
-	private FeatureBucketStrategyStore featureBucketStrategyStore = null;
+	private List<UserInactivityFeatureBucketStrategy> featureBucketStrategies = new ArrayList<>();
 
 	@Override
 	public void setStrategyStore(FeatureBucketStrategyStore featureBucketStrategyStore) {
-		this.featureBucketStrategyStore = featureBucketStrategyStore;
+		for (UserInactivityFeatureBucketStrategy featureBucketStrategy : featureBucketStrategies) {
+			featureBucketStrategy.setFeatureBucketStrategyStore(featureBucketStrategyStore);
+		}
 	}
 
 	@Override
@@ -56,6 +58,8 @@ public class UserInactivityFeatureBucketStrategyFactory implements FeatureBucket
 		message = String.format("Params must contain field '%s' with a valid long value", END_TIME_DELTA_IN_MINUTES_JSON_PARAM_FIELD_NAME);
 		Assert.notNull(endTimeDeltaInMinutes, message);
 
-		return new UserInactivityFeatureBucketStrategy(featureBucketStrategyStore, strategyJson.getName(), dataSources, inactivityDurationInMinutes, endTimeDeltaInMinutes);
+		UserInactivityFeatureBucketStrategy featureBucketStrategy = new UserInactivityFeatureBucketStrategy(strategyJson.getName(), dataSources, inactivityDurationInMinutes, endTimeDeltaInMinutes);
+		featureBucketStrategies.add(featureBucketStrategy);
+		return featureBucketStrategy;
 	}
 }

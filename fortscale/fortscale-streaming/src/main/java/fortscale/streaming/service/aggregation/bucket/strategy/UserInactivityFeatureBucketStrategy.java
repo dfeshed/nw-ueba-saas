@@ -26,19 +26,23 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	private long inactivityDurationInMinutes;
 	private long endTimeDeltaInMinutes;
 
-	public UserInactivityFeatureBucketStrategy(FeatureBucketStrategyStore featureBucketStrategyStore, String strategyName, List<String> dataSources, long inactivityDurationInMinutes, long endTimeDeltaInMinutes) {
+	public UserInactivityFeatureBucketStrategy(String strategyName, List<String> dataSources, long inactivityDurationInMinutes, long endTimeDeltaInMinutes) {
 		// Validate input
-		Assert.notNull(featureBucketStrategyStore);
 		Assert.isTrue(StringUtils.isNotBlank(strategyName));
 		Assert.notEmpty(dataSources);
 		Assert.isTrue(inactivityDurationInMinutes > 0);
 		Assert.isTrue(endTimeDeltaInMinutes >= 0);
 
-		this.featureBucketStrategyStore = featureBucketStrategyStore;
+		this.featureBucketStrategyStore = null;
 		this.strategyName = strategyName;
 		this.dataSources = dataSources;
 		this.inactivityDurationInMinutes = inactivityDurationInMinutes;
 		this.endTimeDeltaInMinutes = endTimeDeltaInMinutes;
+	}
+
+	public void setFeatureBucketStrategyStore(FeatureBucketStrategyStore featureBucketStrategyStore) {
+		Assert.notNull(featureBucketStrategyStore);
+		this.featureBucketStrategyStore = featureBucketStrategyStore;
 	}
 
 	@Override
