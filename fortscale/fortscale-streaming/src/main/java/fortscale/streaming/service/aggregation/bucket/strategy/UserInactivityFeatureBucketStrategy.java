@@ -4,12 +4,14 @@ import fortscale.streaming.service.aggregation.FeatureBucketConf;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Configurable(preConstruction = true)
 public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrategy {
 	private static final String STRATEGY_CONTEXT_ID_SEPARATOR = "_";
 
