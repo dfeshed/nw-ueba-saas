@@ -1,0 +1,11 @@
+<ul class="condense menu-bar">
+    {{#each snippets as |snippet|}}
+        <li><a href {{action 'showSnippet' snippet}} class="{{if snippet.visible 'active'}}">{{snippet.display}}</a></li>
+    {{/each}}
+</ul>
+
+{{yield}}
+
+{{#each snippets as |snippet|}}
+    <pre class="{{unless snippet.visible 'hidden'}}"><code class="{{snippet.language}}">{{snippet.code}}</code></pre>
+{{/each}}
