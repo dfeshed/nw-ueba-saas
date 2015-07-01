@@ -41,6 +41,7 @@ public class Evidence extends AbstractDocument{
 
 	// attributes
 	public static final String typeField = "type";
+	public static final String nameField = "name";
 	public static final String dataSourceField = "dataSource";
 
 	// severity and score
@@ -74,6 +75,9 @@ public class Evidence extends AbstractDocument{
 	@Field(typeField)
 	private String type;
 
+	@Field(nameField)
+	private String name;
+
 	@Field(dataSourceField)
 	private String dataSource;
 
@@ -87,12 +91,13 @@ public class Evidence extends AbstractDocument{
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityName, Date startDate, Date endDate,
-			String type, String dataSource, Integer score, Severity severity) {
+			String type, String name, String dataSource, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.type = type;
+		this.name = name;
 		this.dataSource = dataSource;
 		this.score = score;
 		this.severity = severity;
@@ -138,6 +143,10 @@ public class Evidence extends AbstractDocument{
 
 	public String getType() {
 		return type;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public Integer getScore() {
