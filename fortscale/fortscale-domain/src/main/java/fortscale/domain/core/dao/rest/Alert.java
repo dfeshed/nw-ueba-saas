@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
 
 /**
  * This is the bean of Alert entity that is saved in Alerts collection in MongoDB
@@ -31,6 +31,7 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	//Fields names
 	public static final String uuidField = "uuid";
+	public static final String nameField = "name";
 	public static final String startDateField = "startDate";
 	public static final String endDateField = "endDate";
 	public static final String entityTypeField = "entityType";
@@ -48,9 +49,14 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Indexed(unique=true)
 	@Field(uuidField)
 	private String uuid;
+
+	@Field(nameField)
+	private String name;
+
 	@Indexed(unique=false)
 	@Field(startDateField)
 	private long startDate;
+
 	@Indexed(unique=false)
 	@Field(endDateField)
 	private long endDate;
@@ -61,7 +67,8 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Field(ruleField)
 	private String rule;
 	@Field(evidencesField)
-	private Map<Long, String> evidences;
+	private List<BriefEvidence> evidences;
+
 	@Field(causeField)
 	private String cause;
 	@Field(scoreField)
@@ -75,7 +82,8 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Alert() {}
 
-	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule, Map<Long, String> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
+	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule,
+				 List<BriefEvidence> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
 		this.uuid = uuid;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -138,11 +146,11 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.rule = rule;
 	}
 
-	public Map<Long, String> getEvidences() {
+	public List<BriefEvidence> getEvidences() {
 		return evidences;
 	}
 
-	public void setEvidences(Map<Long, String> evidences) {
+	public void setEvidences(List<BriefEvidence> evidences) {
 		this.evidences = evidences;
 	}
 
@@ -184,5 +192,13 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

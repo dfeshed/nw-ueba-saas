@@ -1,5 +1,8 @@
 package fortscale.web.rest;
 
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.EntityType;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
@@ -16,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -44,7 +50,7 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false) String sortField,
 										  @RequestParam(required=false) String sortDirection,
 										  @RequestParam(required=false)  Integer size,
-										  @RequestParam(required=false) Integer page) {
+										  @RequestParam(required=false, value = "page") Integer pageFromRequest) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -56,23 +62,33 @@ public class ApiAlertController extends BaseController {
 		} else {
 			sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP_START));
 		}
-		//if page is not set, get first page
-		if (page == null) {
-			page = 0;
+		//if pageForMongo is not set, get first pageForMongo
+		//Mongo pages start with 0. While on the API the first page is 1.
+		int pageForMongo;
+		if (pageFromRequest == null) {
+			pageForMongo = 0;
+		} else {
+			pageForMongo = pageFromRequest -1;
 		}
 		if (size == null){
 			size = DEFAULT_PAGE_SIZE;
 		}
-		PageRequest pageRequest = new PageRequest(page, size, sortByTSDesc);
+
+
+		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
 		Alerts alerts = alertsDao.findAll(pageRequest);
+
 		DataBean<Alerts> entities = new DataBean<Alerts>();
 		entities.setData(alerts);
 		//total count of the total items in query.
 		Long count = alertsDao.count(pageRequest);
 		entities.setTotal(count.intValue());
-		entities.setOffset(page * size);
+		entities.setOffset(pageForMongo * size);
 		return entities;
 	}
+
+
+
 
 	/**
 	 * The API to insert one alert. POST: /api/alerts
