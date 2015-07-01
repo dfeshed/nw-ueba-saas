@@ -109,9 +109,12 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 			String inputTopic = getConfigString(config, String.format("fortscale.events.input.topic.%s", dataSource));
 			String classifier = getConfigString(config, String.format("fortscale.events.classifier.%s", dataSource));
 			List<String> scoreFields = getConfigStringList(config, String.format("fortscale.events.score.fields.%s", dataSource));
+			List<String> scoreFieldValues = getConfigStringList(config, String.format("fortscale.events.score.fields.values.%s", dataSource));
+			List<String> scoreFieldTypes = getConfigStringList(config, String.format("fortscale.events.score.fields.types.%s", dataSource));
 			String usernameField = getConfigString(config, String.format("fortscale.events.normalizedusername.field.%s", dataSource));
 			String partitionField = getConfigString(config, String.format("fortscale.events.partition.field.%s", dataSource));
-			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(usernameField, scoreFields, partitionField, classifier));
+			topicToDataSourceMap.put(inputTopic,
+					new DataSourceConfiguration(usernameField, scoreFields, scoreFieldValues, scoreFieldTypes, partitionField, classifier));
 			logger.info("Finished loading configuration for data source {}", dataSource);
 		}
 
@@ -137,6 +140,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 
 		// Go over score fields, check each one of them for anomaly
+		int index = 0;
 		for (String scoreField : dataSourceConfiguration.scoreFields) {
 
 			// check score
@@ -152,9 +156,15 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				// get the username from the event
 				String normalizedUsername = convertToString(validateFieldExistsAndGetValue(message, messageText, dataSourceConfiguration.userNameField));
 
+				// Get the value in the field which is the anomaly
+				String anomalyValue = convertToString(message.get(dataSourceConfiguration.scoreFieldValues.get(index)));
+
+				// Get the type of the anomaly
+				String anomalyType = dataSourceConfiguration.scoreFieldTypes.get(index);
+
 				// Create evidence from event
 				Evidence evidence = evidencesService.createTransientEvidence(EntityType.User, normalizedUsername,
-						new Date(timestamp), scoreField, dataSourceConfiguration.classifier, score);
+						new Date(timestamp), scoreField, dataSourceConfiguration.classifier, score, anomalyValue, anomalyType);
 
 				// Save evidence to levelDB
 				store.put(evidence.getId(), evidence);
@@ -173,6 +183,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 							exception);
 				}
 			}
+
+			index++;
 		}
 
 
@@ -261,11 +273,14 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 */
 	protected static class DataSourceConfiguration {
 
-		protected DataSourceConfiguration(String userNameField, List<String> scoreFields,String partitionField, String classifier) {
+		protected DataSourceConfiguration(String userNameField, List<String> scoreFields, List<String> scoreFieldValues,
+				List<String> scoreFieldTypes, String partitionField, String classifier) {
 			this.classifier = classifier;
 			this.userNameField = userNameField;
 			this.partitionField = partitionField;
 			this.scoreFields = scoreFields;
+			this.scoreFieldValues = scoreFieldValues;
+			this.scoreFieldTypes = scoreFieldTypes;
 
 		}
 
@@ -273,5 +288,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		public String userNameField;
 		public String partitionField;
 		public List<String> scoreFields;
+		public List<String> scoreFieldValues;
+		public List<String> scoreFieldTypes;
 	}
 }

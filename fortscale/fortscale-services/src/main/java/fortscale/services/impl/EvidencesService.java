@@ -18,10 +18,12 @@ public interface EvidencesService {
 	 * @param scoreFieldName    The field name of the anomaly
 	 * @param classifier        The relevant data source
 	 * @param score                The score
+	 * @param anomalyValue	Value of the field
+	 * @param anomalyType	Type of the anomaly
 	 * @return	New evidence
 	 */
 	public Evidence createTransientEvidence(EntityType entityType, String entityName, Date date,
-			String scoreFieldName, String classifier, Double score);
+			String scoreFieldName, String classifier, Double score, String anomalyValue, String anomalyType);
 
 	/**
 	 * Create new evidence in Mongo

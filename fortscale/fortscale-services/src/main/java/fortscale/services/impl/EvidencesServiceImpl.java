@@ -8,10 +8,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import parquet.org.slf4j.Logger;
+import parquet.org.slf4j.LoggerFactory;
 
-import java.util.Date;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Services for managing the evidences
@@ -54,7 +54,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 	@Override
 	public Evidence createTransientEvidence(EntityType entityType, String entityName, Date date,
-			String scoreFieldName, String classifier, Double score) {
+			String scoreFieldName, String classifier, Double score, String anomalyValue, String anomalyType) {
 
 		// casting score to int
 		int intScore = score.intValue();
@@ -62,10 +62,11 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		// calculate severity
 		Severity severity = scoreToSeverity.get(scoreToSeverity.floorKey(intScore));
 
-		// TODO choose type according to score
-		String evidenceType = scoreFieldName;
+		// calculate name and type according to configuration (if exist)
+		String evidenceName = String.format("Suspicious activity for %s %s - suspicious %s (%s)", entityType.toString().toLowerCase(), entityName, anomalyType, anomalyValue);
 
-		return new Evidence(entityType, entityName, date, date, evidenceType, classifier, intScore, severity);
+		// create new transient evidence (do not save to Mongo yet)
+		return new Evidence(entityType, entityName, date, date, anomalyType, evidenceName, classifier, intScore, severity);
 	}
 
 	@Override
