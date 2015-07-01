@@ -4,7 +4,7 @@ import startApp from 'sa/tests/helpers/start-app';
 
 var application;
 
-module('Acceptance | investigation', {
+module('Acceptance | explorer', {
   beforeEach: function() {
     application = startApp();
   },
@@ -14,13 +14,13 @@ module('Acceptance | investigation', {
   }
 });
 
-test('visiting /investigation and check text', function(assert) {
-    visit('/investigation');
+test('visiting /explorer and check text', function(assert) {
+    visit('/explorer');
 
     andThen(function() {
-        assert.equal(currentPath(), 'investigation');
+        assert.equal(currentPath(), 'explorer');
         var content = find('div.sa-content');
-        assert.equal(content.text().trim(), 'Investigation details');
+        assert.equal(content.text().trim(), 'Threat details');
     });
 
 });

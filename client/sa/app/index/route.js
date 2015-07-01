@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Route from 'sa/base/Route';
 
-export default Ember.Route.extend({
+export default Route.extend({
 });

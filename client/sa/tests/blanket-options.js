@@ -3,7 +3,7 @@
 var options = {
   modulePrefix: 'sa',
   filter: '//.*sa/.*/',
-  antifilter: '//.*(tests|template|config|initializers|mirage).*/',
+  antifilter: '//.*(tests|template|config|initializers|mirage|authenticators).*/',
   loaderExclusions: [],
   enableCoverage: true,
   cliOptions: {
