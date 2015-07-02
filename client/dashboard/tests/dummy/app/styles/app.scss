@@ -1,0 +1,122 @@
+@import "../../../../addon/styles/colors";
+
+.menu-bar > li > a.active {
+    background-color: $accent-gray-1;
+}
+
+.title-bar.dark {
+    background-color: $accent-gray-3;
+}
+
+.global-nav.dark {
+    padding: 0 1em;
+
+    .right {
+        padding: 0;
+
+        ul {
+            float: right;
+            margin-bottom: 0;
+
+            li {
+                float: left;
+                display: block;
+
+                a {
+                    display: block;
+                    padding: 0 15px;
+                    line-height: 60px;
+                    color: $accent-gray-2;
+                    font-family: 'Open Sans', Arial, sans-serif;
+
+                    &:hover, &.active {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.dashboard-sidebar {
+    background-color: $accent-gray-1;
+
+    .block-list {
+        header {
+            color: $accent-gray-3;
+        }
+
+        li {
+            border-bottom: none;
+
+            &:first-child {
+                border-top: none;
+            }
+
+            > a {
+                color: $accent-gray-2;
+                font-size: .8em;
+                padding: .5rem 2rem;
+            }
+        }
+    }
+}
+
+.section-heading {
+    margin-top: .5rem;
+    margin-bottom: 0;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    + h1 {
+        text-transform: uppercase;
+    }
+}
+
+.color-card {
+    h6 {
+        margin: 0;
+
+        &.subheader {
+            color: $accent-gray-2;
+        }
+    }
+
+    .color {
+        min-height: 5rem;
+
+        &.primary-blue {
+            background-color: $primary-blue;
+        }
+        &.secondary-gray {
+            background-color: $secondary-gray;
+        }
+        &.medium-base-blue {
+            background-color: $medium-base-blue;
+        }
+        &.dark-base-blue {
+            background-color: $dark-base-blue;
+        }
+        &.accent-blue {
+            background-color: $accent-blue
+        }
+        &.accent-red {
+            background-color: $accent-red
+        }
+        &.accent-gray-1 {
+            background-color: $accent-gray-1
+        }
+        &.accent-gray-2 {
+            background-color: $accent-gray-2
+        }
+        &.accent-gray-3 {
+            background-color: $accent-gray-3
+        }
+        &.accent-orange {
+            background-color: $accent-orange
+        }
+        &.accent-green {
+            background-color: $accent-green
+        }
+    }
+}

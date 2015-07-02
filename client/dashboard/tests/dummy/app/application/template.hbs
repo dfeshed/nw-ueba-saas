@@ -1,0 +1,16 @@
+<div class="grid-frame vertical">
+    <header class="global-nav primary title-bar dark">
+        <div class="left">
+            {{#link-to 'index'}}<img src="images/rsa-sa.png">{{/link-to}}
+        </div>
+        <div class="right">
+            <ul>
+                <li>{{#link-to 'project'}}Getting Started{{/link-to}}</li>
+                <li>{{#link-to 'styleguide'}}Style Guide{{/link-to}}</li>
+            </ul>
+        </div>
+    </header>
+    <div class="grid-block">
+        {{outlet}}
+    </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="grid-content small-2 dashboard-sidebar">
+    <section class="block-list">
+        <header>Overview</header>
+        <ul>
+            <li>{{#link-to 'styleguide'}}Introduction{{/link-to}}</li>
+            <li>{{#link-to 'styleguide'}}Using the Style Guide{{/link-to}}</li>
+        </ul>
+    </section>
+    <section class="block-list">
+        <header>Style</header>
+        <ul>
+            <li>{{#link-to 'styleguide.style.color'}}Color{{/link-to}}</li>
+            <li>{{#link-to 'styleguide'}}Icons{{/link-to}}</li>
+            <li>{{#link-to 'styleguide'}}Typography{{/link-to}}</li>
+        </ul>
+    </section>
+    <section class="block-list">
+        <header>Layouts</header>
+        <ul>
+            <li>{{#link-to 'styleguide'}}Grid{{/link-to}}</li>
+            <li>{{#link-to 'styleguide'}}Block Grid{{/link-to}}</li>
+        </ul>
+    </section>
+    <section class="block-list">
+        <header>Atom</header>
+        <ul>
+            <li>{{#link-to 'styleguide.atom.button'}}Buttons{{/link-to}}</li>
+            <li>{{#link-to 'styleguide'}}Checkboxes{{/link-to}}</li>
+        </ul>
+    </section>
+    <section class="block-list">
+        <header>Molecules</header>
+        <ul>
+            <li>{{#link-to 'styleguide'}}Button Groups{{/link-to}}</li>
+            <li>{{#link-to 'styleguide'}}Dropdowns{{/link-to}}</li>
+        </ul>
+    </section>
+    <section class="block-list">
+        <header>Organisms</header>
+        <ul>
+            <li>{{#link-to 'styleguide'}}Accordions{{/link-to}}</li>
+            <li>{{#link-to 'styleguide'}}Modal Window{{/link-to}}</li>
+        </ul>
+    </section>
+</div>
+<div class="grid-content">
+    {{outlet}}
+</div>
