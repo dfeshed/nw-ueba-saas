@@ -8,20 +8,20 @@ import org.springframework.data.mongodb.core.mapping.Field;
  */
 public class EvidenceSupportingInformation {
 
-	// The 3 top events
-	public static final String top3eventsField = "top3eventsJsonStr";
+	// TODO dummy field - place holder for later
+	public static final String aggregatedData1Field = "aggregatedData1";
 
-	@Field(top3eventsField)
-	private String top3eventsJsonStr;
+	@Field(aggregatedData1Field)
+	private String aggregatedData1;
 
 
 	//- Getters & Setters
 
-	public String getTop3eventsJsonStr() {
-		return top3eventsJsonStr;
+	public String getAggregatedData1() {
+		return aggregatedData1;
 	}
 
-	public void setTop3eventsJsonStr(String top3eventsJsonStr) {
-		this.top3eventsJsonStr = top3eventsJsonStr;
+	public void setAggregatedData1(String aggregatedData1) {
+		this.aggregatedData1 = aggregatedData1;
 	}
 }

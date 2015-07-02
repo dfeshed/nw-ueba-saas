@@ -43,6 +43,10 @@ public class Evidence extends AbstractDocument{
 	public static final String typeField = "type";
 	public static final String nameField = "name";
 	public static final String dataSourceField = "dataSource";
+
+	// The 3 top events
+	public static final String top3eventsField = "top3eventsJsonStr";
+	// supporting Information
 	public static final String supportingInformationField = "supportingInformation";
 
 	// severity and score
@@ -88,6 +92,10 @@ public class Evidence extends AbstractDocument{
 	@Field(severityField)
 	private Severity severity;
 
+	@Field(top3eventsField)
+	private String top3eventsJsonStr;
+
+
 	@Field(supportingInformationField)
 	private EvidenceSupportingInformation supportingInformation = new EvidenceSupportingInformation();
 
@@ -120,6 +128,10 @@ public class Evidence extends AbstractDocument{
 
 	public void setRetentionDate(Date retentionDate) {
 		this.retentionDate = retentionDate;
+	}
+
+	public void setTop3eventsJsonStr(String top3eventsJsonStr) {
+		this.top3eventsJsonStr = top3eventsJsonStr;
 	}
 
 	// Getters
@@ -167,6 +179,11 @@ public class Evidence extends AbstractDocument{
 	public EvidenceSupportingInformation getSupportingInformation() {
 		return supportingInformation;
 	}
+
+	public String getTop3eventsJsonStr() {
+		return top3eventsJsonStr;
+	}
+
 }
 
 
