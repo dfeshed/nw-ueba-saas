@@ -2,8 +2,8 @@ package fortscale.streaming.task;
 
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.TimestampUpdate;
+import fortscale.domain.core.*;
+import fortscale.services.AlertsService;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.samza.storage.kv.KeyValueStore;
 import parquet.org.slf4j.Logger;
@@ -21,9 +21,10 @@ public class MonitorAlertSubscriber {
      */
     private static Logger logger = LoggerFactory.getLogger(MonitorAlertSubscriber.class);
 
-    public MonitorAlertSubscriber(EPServiceProvider epService, KeyValueStore<String, Alert> store) {
+    public MonitorAlertSubscriber(EPServiceProvider epService, KeyValueStore<String, Alert> store, AlertsService alertsService) {
         this.epService = epService;
         this.store = store;
+        this.alertsService = alertsService;
         epService.getEPAdministrator().getConfiguration().addVariable("updateTimestamp", Long.class, maxPrevTime);
         epService.getEPAdministrator().createEPL("on TimestampUpdate set updateTimestamp = minimalTimeStamp");
         EPStatement criticalEventStatement = epService.getEPAdministrator().createEPL(getStatement());
@@ -32,6 +33,7 @@ public class MonitorAlertSubscriber {
 
     EPServiceProvider epService;
     protected KeyValueStore<String, Alert> store;
+    protected AlertsService alertsService;
     /**
      * {@inheritDoc}
      */
@@ -43,34 +45,61 @@ public class MonitorAlertSubscriber {
     public String getStatement() {
 
         // Example of simple EPL with a Time Window
-//        return "select id, startDate from EvidenceStream.win:ext_timed_batch(startDate, 2 min, 0L) where startDate > updateTimestamp order by startDate";
-        return "select * from EvidenceStream.win:ext_timed_batch(startDate, 2 min, 0L) order by startDate";
+        return "select id, entityType, entityName, startDate, endDate, score from EvidenceStream.win:ext_timed_batch(startDate, 2 min, 0L) where startDate > updateTimestamp order by startDate";
     }
 
     /**
      * Listener method called when Esper has detected a pattern match.
      */
     public void update(Map[] insertStream, Map[] removeStream) {
-        Long maxTime = (Long) insertStream[insertStream.length - 1].get("startDate");
-        maxPrevTime = DateUtils.ceiling(new Date(maxTime), Calendar.MINUTE).getTime();
+        try {
+            Long maxTime = (Long) insertStream[insertStream.length - 1].get("startDate");
+            maxPrevTime = DateUtils.ceiling(new Date(maxTime), Calendar.MINUTE).getTime();
 //        epService.getEPRuntime().sendEvent(new TimestampUpdate(maxPrevTime));
 
 
-        i++;
-        if (insertStream != null) {
-            List<Map> filterInsertStream = new ArrayList<>();
-            for (Map insertEventMap : insertStream) {
-                Long startDate = (Long) insertEventMap.get("startDate");
-//                int eventId = (Integer) insertEventMap.get("eventId");
-                StringBuilder sb = new StringBuilder();
-                sb.append("received time frame:" + i +  " startDate: " + new Date(startDate) + " counter " + ++counter);
+            i++;
+            if (insertStream != null) {
+                List<Map> filterInsertStream = new ArrayList<>();
+                Long scoreSum = 0L;
+                Long firstStartDate = 0L;
+                Long lastEndDate = 0L;
+                String evidenceId = "";
+                EntityType entityType = EntityType.User;
+                String entityName = "";
+                boolean isFirst = true;
+                Map<String, String> evidences = new HashMap<>();
+                for (Map insertEventMap : insertStream) {
+                    Long startDate = (Long) insertEventMap.get("startDate");
+                    Long endDate = (Long) insertEventMap.get("endDate");
+                    evidenceId = (String) insertEventMap.get("id");
+                    entityType = (EntityType) insertEventMap.get("entityType");
+                    entityName = (String) insertEventMap.get("entityName");
+                    int score = (Integer) insertEventMap.get("score");
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("received time frame:" + i + "evidenceId: " + evidenceId + " startDate: " + new Date(startDate) + " score: " + score + " counter " + ++counter);
 
-                logger.info(sb.toString());
-                //System.out.println(sb.toString());
+                    logger.info(sb.toString());
+                    scoreSum += score;
+                    if (isFirst){
+                        firstStartDate = startDate;
+                    }
+                    lastEndDate = endDate;
+                    evidences.put(evidenceId, entityType.name());
+                    //System.out.println(sb.toString());
 
+
+                }
+                Integer average = ((Long)(scoreSum/insertStream.length)).intValue();
+                Severity severity = alertsService.getScoreToSeverity().get(average);
+                Alert alert = new Alert(evidenceId, firstStartDate, lastEndDate, entityType, entityName, "", evidences, "", average, severity, AlertStatus.Unread, "");
                 //Store alert in mongoDB
 //                store.put(alert.getId(), alert);
+                alertsService.saveAlertInRepository(alert);
             }
+        } catch (RuntimeException ex){
+            logger.error(ex.getMessage(), ex);
+//            throw ex;
         }
 
     }

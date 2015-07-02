@@ -54,7 +54,7 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 
 	@Override
 	public Alert createTransientAlert(EntityType entityType, String entityName, Date date,
-			String rule, Map<Long, String> evidences, String cause, Integer score, AlertStatus status, String comment) {
+			String rule, Map<String, String> evidences, String cause, Integer score, AlertStatus status, String comment) {
 
 		// calculate severity
 		Severity severity = scoreToSeverity.get(scoreToSeverity.floorKey(score));
@@ -77,5 +77,7 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 		return alertsRepository.save(alert);
 	}
 
-
+	public NavigableMap<Integer, Severity> getScoreToSeverity() {
+		return scoreToSeverity;
+	}
 }

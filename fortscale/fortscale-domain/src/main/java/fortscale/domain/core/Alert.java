@@ -57,7 +57,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Field(ruleField)
 	private String rule;
 	@Field(evidencesField)
-	private Map<Long, String> evidences;
+	private Map<String, String> evidences;
 	@Field(causeField)
 	private String cause;
 	@Field(scoreField)
@@ -71,7 +71,7 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Alert() {}
 
-	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule, Map<Long, String> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
+	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule, Map<String, String> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
 		this.uuid = uuid;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -84,6 +84,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.severity = severity;
 		this.status = status;
 		this.comment = comment;
+		this.setId(System.currentTimeMillis() + entityName + entityType);
 	}
 
 	public String getUuid() {
@@ -134,11 +135,11 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.rule = rule;
 	}
 
-	public Map<Long, String> getEvidences() {
+	public Map<String, String> getEvidences() {
 		return evidences;
 	}
 
-	public void setEvidences(Map<Long, String> evidences) {
+	public void setEvidences(Map<String, String> evidences) {
 		this.evidences = evidences;
 	}
 

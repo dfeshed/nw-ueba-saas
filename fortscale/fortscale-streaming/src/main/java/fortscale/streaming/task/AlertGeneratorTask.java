@@ -8,6 +8,7 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.core.Alert;
 import fortscale.services.AlertsService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.streaming.service.SpringService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -133,6 +134,8 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 		// Get the levelDB store
 		store = (KeyValueStore<String, Alert>) context.getStore(storeName);
 
+		alertsService = SpringService.getInstance().resolve(AlertsService.class);
+
 		// get the timestamp field
 		timestampField = getConfigString(config, "fortscale.timestamp.field");
 		// get the username field
@@ -149,7 +152,7 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 //		MonitorEventSubscriber monitorEventSubscriber = new MonitorEventSubscriber(epService);
 //		MonitorEventSubscriber2 monitorEventSubscriber2 = new MonitorEventSubscriber2(epService);
 		//subscribe Alert creation Esper class
-		MonitorAlertSubscriber monitorAlertSubscriber = new MonitorAlertSubscriber(epService, store);
+		MonitorAlertSubscriber monitorAlertSubscriber = new MonitorAlertSubscriber(epService, store, alertsService);
 		//example of pattern currently not active
 		//MonitorEventSubscriber4 monitorEventSubscriber4 = new MonitorEventSubscriber4(epService);
 

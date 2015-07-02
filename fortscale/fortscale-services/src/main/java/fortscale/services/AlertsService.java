@@ -3,9 +3,11 @@ package fortscale.services;
 import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.Severity;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.NavigableMap;
 
 /**
  * All services that handle inner cache and want to allow direct access to the cache.
@@ -28,11 +30,12 @@ public interface AlertsService {
 	 * @return	New alert
 	 */
 	public Alert createTransientAlert(EntityType entityType, String entityName, Date date,
-									  String rule, Map<Long, String> evidences, String cause, Integer score, AlertStatus status, String comment);
+									  String rule, Map<String, String> evidences, String cause, Integer score, AlertStatus status, String comment);
 
 	/**
 	 * Create new alert in Mongo
 	 * @param alert	The alert
 	 */
 	public void saveAlertInRepository(Alert alert);
+	public NavigableMap<Integer, Severity> getScoreToSeverity();
 }
