@@ -82,9 +82,10 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Alert() {}
 
-	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule,
+	public Alert(String uuid, String name, long startDate, long endDate, EntityType entityType, String entityName, String rule,
 				 List<BriefEvidence> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
 		this.uuid = uuid;
+		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.entityType = entityType;

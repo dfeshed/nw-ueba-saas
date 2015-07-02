@@ -46,7 +46,7 @@ public class ApiAlertController extends BaseController {
 	@RequestMapping(method = RequestMethod.GET)
 	@LogException
 	public @ResponseBody
-	DataBean<Alerts> getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+	DataBean<List<Alert>> getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 										  @RequestParam(required=false) String sortField,
 										  @RequestParam(required=false) String sortDirection,
 										  @RequestParam(required=false)  Integer size,
@@ -78,8 +78,8 @@ public class ApiAlertController extends BaseController {
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
 		Alerts alerts = alertsDao.findAll(pageRequest);
 
-		DataBean<Alerts> entities = new DataBean<Alerts>();
-		entities.setData(alerts);
+		DataBean<List<Alert>> entities = new DataBean<>();
+		entities.setData(alerts.getAlerts());
 		//total count of the total items in query.
 		Long count = alertsDao.count(pageRequest);
 		entities.setTotal(count.intValue());
