@@ -17,7 +17,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 
 	@Value("${impala.table.fields.data.source}")
 	private String dataSourceFieldName;
-	@Value("${impala.table.fields.username}")
+	@Value("${impala.table.fields.normalized.username}")
 	private String usernameFieldName;
 	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
@@ -83,10 +83,8 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtimeInSec) {
 		List<FeatureBucketStrategyData> strategyDataList = new ArrayList<>();
 
-		String dataSource = ConversionUtils.convertToString(event.get(dataSourceFieldName));
 		String username = ConversionUtils.convertToString(event.get(usernameFieldName));
-
-		if (StringUtils.isNotBlank(dataSource) && dataSources.contains(dataSource) && StringUtils.isNotBlank(username)) {
+		if (StringUtils.isNotBlank(username)) {
 			String strategyContextId = getStrategyContextId(username);
 			FeatureBucketStrategyData strategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtimeInSec);
 
