@@ -16,6 +16,11 @@
           "inactivityDurationInMinutes": 60,
           "endTimeDeltaInMinutes": 5
         }
+      },
+      {
+        "name": "vpn_session",
+        "type": "vpn_session",
+        "params": {"maxSessionDuration": 14400}
       }
     ]
   }
