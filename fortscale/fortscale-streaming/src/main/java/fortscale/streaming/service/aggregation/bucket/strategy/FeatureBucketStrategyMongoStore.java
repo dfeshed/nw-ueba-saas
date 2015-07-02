@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategyStore {
+	private static final String COLLECTION_NAME = "feature_bucket_strategies";
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -18,11 +20,11 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 		Query query = new Query(where(FeatureBucketStrategyData.STRATEGY_CONTEXT_ID_FIELD).is(strategyContextId).and(FeatureBucketStrategyData.START_TIME_FIELD).lte(latestStartTime));
 		Pageable pageable = new PageRequest(0, 1, Direction.DESC, FeatureBucketStrategyData.START_TIME_FIELD);
 		query.with(pageable);
-		return mongoTemplate.findOne(query, FeatureBucketStrategyData.class);
+		return mongoTemplate.findOne(query, FeatureBucketStrategyData.class, COLLECTION_NAME);
 	}
 
 	@Override
 	public void storeFeatureBucketStrategyData(FeatureBucketStrategyData featureBucketStrategyData) {
-		mongoTemplate.save(featureBucketStrategyData);
+		mongoTemplate.save(featureBucketStrategyData, COLLECTION_NAME);
 	}
 }

@@ -49,6 +49,6 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore {
 	}
 	
 	private String getCollectionName(FeatureBucketConf featureBucketConf){
-		return String.format("%s,%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
+		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 }
