@@ -43,6 +43,7 @@ public class Evidence extends AbstractDocument{
 	public static final String typeField = "type";
 	public static final String nameField = "name";
 	public static final String dataSourceField = "dataSource";
+	public static final String supportingInformationField = "supportingInformation";
 
 	// severity and score
 	public static final String scoreField = "score";
@@ -87,6 +88,8 @@ public class Evidence extends AbstractDocument{
 	@Field(severityField)
 	private Severity severity;
 
+	@Field(supportingInformationField)
+	private EvidenceSupportingInformation supportingInformation = new EvidenceSupportingInformation();
 
 	// C-tor
 
@@ -159,6 +162,10 @@ public class Evidence extends AbstractDocument{
 
 	public String getDataSource() {
 		return dataSource;
+	}
+
+	public EvidenceSupportingInformation getSupportingInformation() {
+		return supportingInformation;
 	}
 }
 
