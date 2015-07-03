@@ -59,20 +59,27 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 
 			if (StringUtils.isNotBlank(username) && epochtime != null) {
 				String strategyContextId = getStrategyContextId(username);
+				boolean isFeatureBucketStrategyDataCreatedOrUpdated = false;
 				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtime);
 
 				// Case 1: Strategy doesn't exist - create a new one
 				// Case 2: Strategy exists, but session has become inactive - create a new one
 				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() + inactivityDurationInSeconds() < epochtime) {
 					featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + endTimeDeltaInSeconds());
+					isFeatureBucketStrategyDataCreatedOrUpdated = true;
 				}
 				// Case 3: Strategy exists and the incoming event updates its end time
 				else if (featureBucketStrategyData.getEndTime() < epochtime) {
 					featureBucketStrategyData.setEndTime(epochtime + endTimeDeltaInSeconds());
+					isFeatureBucketStrategyDataCreatedOrUpdated = true;
 				}
 
 				featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
-				return featureBucketStrategyData;
+				if(isFeatureBucketStrategyDataCreatedOrUpdated){
+					return featureBucketStrategyData;
+				} else{
+					return null;
+				}
 			}
 		}
 
