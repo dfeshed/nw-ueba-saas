@@ -47,7 +47,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(actual);
 		actual = strategy.update(event);
 
-		assertEqualData(expected, actual);
+		Assert.assertNull(actual);
 	}
 
 	@Test
