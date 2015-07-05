@@ -1,10 +1,7 @@
 package fortscale.domain.core.dao.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import fortscale.domain.core.AbstractDocument;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.EntityType;
+import fortscale.domain.core.*;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -67,7 +64,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Field(ruleField)
 	private String rule;
 	@Field(evidencesField)
-	private List<BriefEvidence> evidences;
+	private List<Evidence> evidences;
 
 	@Field(causeField)
 	private String cause;
@@ -83,7 +80,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	public Alert() {}
 
 	public Alert(String uuid, String name, long startDate, long endDate, EntityType entityType, String entityName, String rule,
-				 List<BriefEvidence> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
+				 List<Evidence> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
 		this.uuid = uuid;
 		this.name = name;
 		this.startDate = startDate;
@@ -147,11 +144,11 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.rule = rule;
 	}
 
-	public List<BriefEvidence> getEvidences() {
+	public List<Evidence> getEvidences() {
 		return evidences;
 	}
 
-	public void setEvidences(List<BriefEvidence> evidences) {
+	public void setEvidences(List<Evidence> evidences) {
 		this.evidences = evidences;
 	}
 
