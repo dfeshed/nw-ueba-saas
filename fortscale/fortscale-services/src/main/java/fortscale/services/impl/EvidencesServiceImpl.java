@@ -63,10 +63,10 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		Severity severity = scoreToSeverity.get(scoreToSeverity.floorKey(intScore));
 
 		// calculate name and type according to configuration (if exist)
-		String evidenceName = String.format("Suspicious activity for %s %s - suspicious %s (%s)", entityType.toString().toLowerCase(), entityName, anomalyType, anomalyValue);
+		String evidenceName = String.format("Suspicious activity for %s %s - suspicious %s", entityType.toString().toLowerCase(), entityName, anomalyType);
 
 		// create new transient evidence (do not save to Mongo yet)
-		return new Evidence(entityType, entityName, date.getTime(), date.getTime(), anomalyType, evidenceName, classifier, intScore, severity);
+		return new Evidence(entityType, entityName, date.getTime(), date.getTime(), anomalyType, evidenceName, anomalyValue, classifier, intScore, severity);
 	}
 
 	@Override
