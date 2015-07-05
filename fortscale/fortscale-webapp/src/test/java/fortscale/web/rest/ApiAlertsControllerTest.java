@@ -65,7 +65,7 @@ public class ApiAlertsControllerTest {
 		when(alertsDao.findAll(any(PageRequest.class))).thenReturn(alerts);
 
 		// perform rest call to the controller
-		MvcResult result = mockMvc.perform(get("/api/alerts?sortField=startTime&sortDirection=DESC&page=0&size=20").accept(MediaType.APPLICATION_JSON))
+		MvcResult result = mockMvc.perform(get("/api/alerts?sortField=startTime&sortDirection=DESC&page=1&size=20").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))
 			.andReturn();
