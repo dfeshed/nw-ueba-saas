@@ -126,8 +126,12 @@
 			<artifactId>flume-tools</artifactId>
 			<version>${flume.version}</version>
 		</dependency>
-		
-		
+		<dependency>
+			<groupId>com.googlecode.juniversalchardet</groupId>
+			<artifactId>juniversalchardet</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+
 
 
 	</dependencies>
