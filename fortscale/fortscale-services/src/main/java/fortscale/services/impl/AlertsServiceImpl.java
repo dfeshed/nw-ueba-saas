@@ -49,15 +49,6 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	}
 
 
-	@Override
-	public Alert createTransientAlert(String name, EntityType entityType, String entityName, Date date,
-			String rule, List<Evidence> evidences, String cause, Integer score, AlertStatus status, String comment) {
-
-		// calculate severity
-		Severity severity = scoreToSeverity.get(scoreToSeverity.floorKey(score));
-
-		return new Alert(name, date.getTime(), date.getTime(), entityType, entityName,  rule, evidences, cause, score, severity, status, comment);
-	}
 
 	@Override
 	public void saveAlertInRepository(Alert alert) {

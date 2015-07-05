@@ -1,19 +1,18 @@
 package fortscale.domain.core;
 
 /**
- * Immutable Temperature Event class. The process control system creates these events. The
- * TemperatureEventHandler picks these up and processes them.
+ * Immutable Timestamp event
  */
 public class TimestampUpdate {
 
 
 
-    /** Time temerature reading was taken. */
+    /** Time of evidence reading was taken. */
     private Long minimalTimeStamp;
 
 
     /**
-     * Temeratur constructor.
+     * Constructor.
      */
     public TimestampUpdate(Long minimalTimeStamp) {
         this.minimalTimeStamp = minimalTimeStamp;
