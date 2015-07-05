@@ -390,7 +390,7 @@
 							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-SAMPLE.BIN</url>
 							<outputDirectory>data/geoip</outputDirectory>
 							<outputFileName>iptolocationdata.bin</outputFileName>
-							<skipCache>false</skipCache>
+							<skipCache>true</skipCache>
 						</configuration>
 					</execution>
 					<execution>
@@ -403,7 +403,7 @@
 							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</url>
 							<outputDirectory>target/data/geoip</outputDirectory>
 							<outputFileName>iptolocationdata.bin</outputFileName>
-							<skipCache>false</skipCache>
+							<skipCache>true</skipCache>
 						</configuration>
 					</execution>
 				</executions>

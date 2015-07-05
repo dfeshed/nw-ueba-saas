@@ -51,6 +51,10 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 	/**
 	 * Evidences service (for Mongo export)
 	 */
+	/**
+	 * Threshold for creating evidences
+	 */
+	protected int scoreThreshold;
 	protected AlertsService alertsService;
 
 	@Override protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
@@ -79,6 +83,8 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 		usernameField = getConfigString(config, "fortscale.events.normalizedusername.field");
 		// get the score field
 		scoreField = getConfigString(config, "fortscale.events.score.field");
+		// get the threshold for creating evidences
+		scoreThreshold = config.getInt("fortscale.score.threshold");
 
 		esperConfig.addEventTypeAutoName("fortscale.domain.core");
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
@@ -91,24 +97,6 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 	}
 
 	@Override protected void wrappedClose() throws Exception {
-	}
-
-	/**
-	 * Validate that the expected field has value in the message JSON and return the value
-	 *
-	 * @param message        The message JSON
-	 * @param messageText    The message JSON as string
-	 * @param field    The requested field
-	 * @return The value of the field
-	 * @throws fortscale.streaming.exceptions.StreamMessageNotContainFieldException in case the field doesn't exist in the JSON
-	 */
-	private Object validateFieldExistsAndGetValue(JSONObject message, String messageText, String field) throws StreamMessageNotContainFieldException {
-		Object value = message.get(field);
-		if (value == null) {
-			logger.error("message {} does not contains value in field {}", messageText, field);
-			throw new StreamMessageNotContainFieldException(messageText, field);
-		}
-		return value;
 	}
 
 }
