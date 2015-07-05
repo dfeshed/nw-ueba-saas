@@ -52,15 +52,6 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 	 * Evidences service (for Mongo export)
 	 */
 	protected AlertsService alertsService;
-	/**
-	 * The level DB store name
-	 */
-	private static final String storeName = "alerts";
-	/**
-	 * The level DB store: ID to evidence
-	 */
-	protected KeyValueStore<String, Alert> store;
-
 
 	@Override protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
 			TaskCoordinator coordinator) throws Exception {
@@ -68,71 +59,17 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 		String messageText = (String) envelope.getMessage();
 		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) JSONValue.parseWithException(messageText);
 
-		// create alert
-
-		// get the timestamp from the event
-//		Long timestampSeconds = convertToLong(validateFieldExistsAndGetValue(message, messageText, timestampField));
-//		Long timestamp = TimestampUtils.convertToMilliSeconds(timestampSeconds);
-
-		// get the username from the event
-//		String normalizedUsername = convertToString(validateFieldExistsAndGetValue(message, messageText, usernameField));
-//		Integer score = convertToInteger(validateFieldExistsAndGetValue(message, messageText, scoreField));
-
-		// Create Alert from event
-//		AlertEvent alertEvent = new AlertEvent(alertsService.createTransientAlert(EntityType.User, normalizedUsername,
-//				new Date(timestamp), "", null, "", score, AlertStatus.Unread, ""));
-
-		//send the evidence to Esper to process
+		//send evidence to Esper
 		Evidence evidence = mapper.readValue(message.toJSONString(), Evidence.class);
 		epService.getEPRuntime().sendEvent(evidence);
-		// Save evidence to levelDB
-//		store.put(alert.getId(), alert);
 
 	}
 
-	Long prevStartTime = 0l;
-	private int eventId = 0;
-	boolean startWasSend = false ;
-	boolean endWasSend = true;
-	int iteration = 0;
-	int sessionId = 0;
-
 	@Override protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		/*epService.getEPRuntime().sendEvent(new TemperatureEvent(new Random().nextInt(500), new Date().getTime()+new Random().nextInt(100000),++eventId));
-		iteration++;
-		if(iteration%300 == 0) {
-			if (endWasSend) {
-				boolean sendStart = new Random().nextBoolean();
-				if (sendStart) {
-					prevStartTime = new Date().getTime();
-					startWasSend = true;
-					endWasSend = false;
-					MonitorEventSubscriber3 monitorEventSubscriber3 = new MonitorEventSubscriber3(epService,prevStartTime, sessionId);
-					System.out.println("started session " + sessionId + " on" + new Date(prevStartTime));
-				}
-			}
-		}
-		if(iteration%700 == 0) {
-			if (startWasSend) {
-				boolean sendEnd = new Random().nextBoolean();
-				if (sendEnd) {
-					Long endTime = prevStartTime + new Random().nextInt(300000);
-					epService.getEPRuntime().sendEvent(new TimestampEnd(endTime, sessionId));
-					endWasSend = true;
-					startWasSend = false;
-					System.out.println("end session " + sessionId + "  on" + new Date(endTime));
-					sessionId++;
-				}
-
-			}
-		}*/
 	}
 
 	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		Configuration esperConfig = new Configuration();
-
-		// Get the levelDB store
-		store = (KeyValueStore<String, Alert>) context.getStore(storeName);
 
 		alertsService = SpringService.getInstance().resolve(AlertsService.class);
 
@@ -143,23 +80,17 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 		// get the score field
 		scoreField = getConfigString(config, "fortscale.events.score.field");
 
-//		esperConfig.addEventTypeAutoName("fortscale.streaming.task.messages");
 		esperConfig.addEventTypeAutoName("fortscale.domain.core");
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
 		epService.getEPAdministrator().createEPL("insert into EvidenceStream select * from Evidence.win:time_batch(30 sec) order by startDate");
 
 
-//		MonitorEventSubscriber monitorEventSubscriber = new MonitorEventSubscriber(epService);
-//		MonitorEventSubscriber2 monitorEventSubscriber2 = new MonitorEventSubscriber2(epService);
 		//subscribe Alert creation Esper class
-		MonitorAlertSubscriber monitorAlertSubscriber = new MonitorAlertSubscriber(epService, store, alertsService);
-		//example of pattern currently not active
-		//MonitorEventSubscriber4 monitorEventSubscriber4 = new MonitorEventSubscriber4(epService);
+		MonitorAlertSubscriber monitorAlertSubscriber = new MonitorAlertSubscriber(epService, alertsService);
 
 	}
 
 	@Override protected void wrappedClose() throws Exception {
-
 	}
 
 	/**

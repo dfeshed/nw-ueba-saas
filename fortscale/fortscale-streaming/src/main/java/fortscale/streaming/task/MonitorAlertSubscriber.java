@@ -21,9 +21,8 @@ public class MonitorAlertSubscriber {
      */
     private static Logger logger = LoggerFactory.getLogger(MonitorAlertSubscriber.class);
 
-    public MonitorAlertSubscriber(EPServiceProvider epService, KeyValueStore<String, Alert> store, AlertsService alertsService) {
+    public MonitorAlertSubscriber(EPServiceProvider epService, AlertsService alertsService) {
         this.epService = epService;
-        this.store = store;
         this.alertsService = alertsService;
         epService.getEPAdministrator().getConfiguration().addVariable("updateTimestamp", Long.class, maxPrevTime);
         epService.getEPAdministrator().createEPL("on TimestampUpdate set updateTimestamp = minimalTimeStamp");
@@ -32,7 +31,6 @@ public class MonitorAlertSubscriber {
     }
 
     EPServiceProvider epService;
-    protected KeyValueStore<String, Alert> store;
     protected AlertsService alertsService;
     /**
      * {@inheritDoc}
@@ -95,7 +93,7 @@ public class MonitorAlertSubscriber {
                 Severity severity = alertsService.getScoreToSeverity().get(average);
                 String title = "Alert Title";
                 Alert alert = new Alert(title, firstStartDate, lastEndDate, entityType, entityName, "", evidences, "", average, severity, AlertStatus.Unread, "");
-                //Store alert in mongoDB
+                //Save alert to mongoDB
                 alertsService.saveAlertInRepository(alert);
             }
         } catch (RuntimeException ex){
