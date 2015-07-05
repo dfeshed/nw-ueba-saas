@@ -100,8 +100,9 @@ public class ApiAlertController extends BaseController {
 	@LogException
 	@ResponseBody
 	public Alert addAlert(@Valid @RequestBody Alert alert) throws Exception{
-		alertsDao.add(alert);
-		return alert;
+		throw new RuntimeException("NOT SUPPORTED");
+//		alertsDao.add(alert);
+//		return alert;
 	}
 
 	/**

@@ -27,7 +27,7 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
  */
 public class AlertGeneratorTask extends AbstractStreamTask{
 
-	private static Logger logger = LoggerFactory.getLogger(EvidenceCreationTask.class);
+	private static Logger logger = LoggerFactory.getLogger(AlertGeneratorTask.class);
 	/**
 	 * Esper service provider
 	 */
@@ -49,13 +49,14 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 	 */
 	protected String scoreField;
 	/**
-	 * Evidences service (for Mongo export)
+	 * Alerts service (for Mongo export)
 	 */
+	protected AlertsService alertsService;
 	/**
-	 * Threshold for creating evidences
+	 * Threshold for creating alerts
 	 */
 	protected int scoreThreshold;
-	protected AlertsService alertsService;
+
 
 	@Override protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
 			TaskCoordinator coordinator) throws Exception {

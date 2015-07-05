@@ -36,9 +36,7 @@ public class MonitorAlertSubscriber {
      * {@inheritDoc}
      */
 
-    int i = 0;
     Long maxPrevTime = 0l;
-    int counter = 0;
 
     public String getStatement() {
 
@@ -55,13 +53,10 @@ public class MonitorAlertSubscriber {
             maxPrevTime = DateUtils.ceiling(new Date(maxTime), Calendar.MINUTE).getTime();
 
 
-            i++;
             if (insertStream != null) {
-                List<Map> filterInsertStream = new ArrayList<>();
                 Long scoreSum = 0L;
                 Long firstStartDate = 0L;
                 Long lastEndDate = 0L;
-                String evidenceId = "";
                 EntityType entityType = EntityType.User;
                 String entityName = "";
                 boolean isFirst = true;
@@ -69,17 +64,13 @@ public class MonitorAlertSubscriber {
                 for (Map insertEventMap : insertStream) {
                     Long startDate = (Long) insertEventMap.get("startDate");
                     Long endDate = (Long) insertEventMap.get("endDate");
-                    evidenceId = (String) insertEventMap.get("id");
                     entityType = (EntityType) insertEventMap.get("entityType");
                     entityName = (String) insertEventMap.get("entityName");
                     int score = (Integer) insertEventMap.get("score");
                     String type = (String) insertEventMap.get("type");
                     String dataSource = (String) insertEventMap.get("dataSource");
                     Severity severity = (Severity) insertEventMap.get("severity");
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("received time frame:" + i + "evidenceId: " + evidenceId + " startDate: " + new Date(startDate) + " score: " + score + " counter " + ++counter);
 
-                    logger.info(sb.toString());
                     scoreSum += score;
                     if (isFirst){
                         firstStartDate = startDate;
