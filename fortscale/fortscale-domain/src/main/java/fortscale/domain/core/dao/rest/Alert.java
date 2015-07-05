@@ -1,10 +1,7 @@
 package fortscale.domain.core.dao.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import fortscale.domain.core.AbstractDocument;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.EntityType;
+import fortscale.domain.core.*;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -12,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
 
 /**
  * This is the bean of Alert entity that is saved in Alerts collection in MongoDB
@@ -31,6 +28,7 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	//Fields names
 	public static final String uuidField = "uuid";
+	public static final String nameField = "name";
 	public static final String startDateField = "startDate";
 	public static final String endDateField = "endDate";
 	public static final String entityTypeField = "entityType";
@@ -48,9 +46,14 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Indexed(unique=true)
 	@Field(uuidField)
 	private String uuid;
+
+	@Field(nameField)
+	private String name;
+
 	@Indexed(unique=false)
 	@Field(startDateField)
 	private long startDate;
+
 	@Indexed(unique=false)
 	@Field(endDateField)
 	private long endDate;
@@ -61,7 +64,8 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Field(ruleField)
 	private String rule;
 	@Field(evidencesField)
-	private Map<Long, String> evidences;
+	private List<Evidence> evidences;
+
 	@Field(causeField)
 	private String cause;
 	@Field(scoreField)
@@ -75,8 +79,10 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Alert() {}
 
-	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule, Map<Long, String> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
+	public Alert(String uuid, String name, long startDate, long endDate, EntityType entityType, String entityName, String rule,
+				 List<Evidence> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
 		this.uuid = uuid;
+		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.entityType = entityType;
@@ -138,11 +144,11 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.rule = rule;
 	}
 
-	public Map<Long, String> getEvidences() {
+	public List<Evidence> getEvidences() {
 		return evidences;
 	}
 
-	public void setEvidences(Map<Long, String> evidences) {
+	public void setEvidences(List<Evidence> evidences) {
 		this.evidences = evidences;
 	}
 
@@ -184,5 +190,13 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
