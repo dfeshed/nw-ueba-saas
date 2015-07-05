@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Represents single evidence in MongoDB
@@ -117,7 +118,7 @@ public class Evidence extends AbstractDocument{
 		this.retentionDate = startDate;
 
 		// We must create ID for the evidence so the alert can have reference to it
-		this.setId(System.currentTimeMillis() + entityName + type);
+		this.setId(UUID.randomUUID().toString());
 	}
 
 	// For JSON serialization only

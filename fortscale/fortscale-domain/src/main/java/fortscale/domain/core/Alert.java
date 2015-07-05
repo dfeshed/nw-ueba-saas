@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This is the bean of Alert entity that is saved in Alerts collection in MongoDB
@@ -87,7 +88,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.severity = severity;
 		this.status = status;
 		this.comment = comment;
-		this.setId(System.currentTimeMillis() + entityName + entityType);
+		this.setId(UUID.randomUUID().toString());
 	}
 
 	public long getStartDate() {

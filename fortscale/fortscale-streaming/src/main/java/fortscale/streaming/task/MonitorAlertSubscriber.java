@@ -45,7 +45,7 @@ public class MonitorAlertSubscriber {
     public String getStatement() {
 
         // Example of simple EPL with a Time Window
-        return "select id, entityType, entityName, startDate, endDate, score from EvidenceStream.win:ext_timed_batch(startDate, 2 min, 0L) where startDate > updateTimestamp order by startDate";
+        return "select id, entityType, entityName, startDate, endDate, type, name, dataSource, score, severity from EvidenceStream.win:ext_timed_batch(startDate, 2 min, 0L) where startDate > updateTimestamp order by startDate";
     }
 
     /**
