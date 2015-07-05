@@ -42,6 +42,7 @@ public class Evidence extends AbstractDocument{
 	// attributes
 	public static final String typeField = "type";
 	public static final String nameField = "name";
+	public static final String anomalyValueField = "anomalyValue";
 	public static final String dataSourceField = "dataSource";
 
 	// The 3 top events
@@ -83,6 +84,9 @@ public class Evidence extends AbstractDocument{
 	@Field(nameField)
 	private String name;
 
+	@Field(anomalyValueField)
+	private String anomalyValue;
+
 	@Field(dataSourceField)
 	private String dataSource;
 
@@ -102,13 +106,14 @@ public class Evidence extends AbstractDocument{
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityName, Date startDate, Date endDate,
-			String type, String name, String dataSource, Integer score, Severity severity) {
+			String type, String name, String anomalyValue, String dataSource, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.type = type;
 		this.name = name;
+		this.anomalyValue = anomalyValue;
 		this.dataSource = dataSource;
 		this.score = score;
 		this.severity = severity;
@@ -184,6 +189,9 @@ public class Evidence extends AbstractDocument{
 		return top3eventsJsonStr;
 	}
 
+	public String getAnomalyValue() {
+		return anomalyValue;
+	}
 }
 
 
