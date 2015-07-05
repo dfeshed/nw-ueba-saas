@@ -4,7 +4,7 @@ import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.dao.AlertsRepository;
-import fortscale.domain.core.dao.rest.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,11 +19,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.util.NestedServletException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -57,8 +58,8 @@ public class ApiAlertsControllerTest {
 	public void list_all_alerts() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("1", null, 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
-		alertsList.add(new Alert("2", null, 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
@@ -71,7 +72,7 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("{\"id\":null,\"name\":null,\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"cause\":\"a\",\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"cause\":\"a\",\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAll(any(PageRequest.class));
 	}
 
@@ -79,8 +80,8 @@ public class ApiAlertsControllerTest {
 	public void list_all_alerts_without_request_params() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("1",null, 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
-		alertsList.add(new Alert("2",null, 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
@@ -93,16 +94,15 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("{\"id\":null,\"name\":null,\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"cause\":\"a\",\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"cause\":\"a\",\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAll(any(PageRequest.class));
 	}
 
-	@Test
+	@Test(expected = NestedServletException.class)
 	public void add_alert() throws Exception {
 
 		String sAlert = "{\n" +
 				"        \"id\": \"5586a7479f6fe4e3c1e39231\",\n" +
-				" \"uuid\": \"5586a7479f6fe4e3c1e39231\",\n" +
 				"        \"startDate\": 1,\n" +
 				"        \"endDate\": 2,\n" +
 				"        \"entityType\": \"User\",\n" +
@@ -127,9 +127,6 @@ public class ApiAlertsControllerTest {
 						.andExpect(status().isOk())
 			.andReturn();
 
-		//validate
-		assertNotNull(result.getResponse().getContentAsString());
-		verify(alertsDao).add(any(Alert.class));
 	}
 
 	@Test(expected = org.springframework.web.util.NestedServletException.class)
@@ -137,7 +134,6 @@ public class ApiAlertsControllerTest {
 
 		String sAlert = "{\n" +
 				"        \"id\": \"5586a7479f6fe4e3c1e39231\",\n" +
-				" \"uuid\": \"5586a7479f6fe4e3c1e39231\",\n" +
 				"        \"startDate\": 1,\n" +
 				"        \"endDate\": 2,\n" +
 				"        \"entityType\": \"User\",\n" +
