@@ -1,11 +1,9 @@
 package fortscale.services;
 
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.Severity;
+import fortscale.domain.core.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 
@@ -29,8 +27,8 @@ public interface AlertsService {
 	 * @param comment a comment for the user to enter
 	 * @return	New alert
 	 */
-	public Alert createTransientAlert(EntityType entityType, String entityName, Date date,
-									  String rule, Map<String, String> evidences, String cause, Integer score, AlertStatus status, String comment);
+	public Alert createTransientAlert(String name, EntityType entityType, String entityName, Date date,
+									  String rule, List<Evidence> evidences, String cause, Integer score, AlertStatus status, String comment);
 
 	/**
 	 * Create new alert in Mongo

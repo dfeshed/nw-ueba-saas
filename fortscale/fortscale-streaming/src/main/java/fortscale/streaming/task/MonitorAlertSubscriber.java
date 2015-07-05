@@ -67,7 +67,7 @@ public class MonitorAlertSubscriber {
                 EntityType entityType = EntityType.User;
                 String entityName = "";
                 boolean isFirst = true;
-                Map<String, String> evidences = new HashMap<>();
+                List<Evidence> evidences = new ArrayList<>();
                 for (Map insertEventMap : insertStream) {
                     Long startDate = (Long) insertEventMap.get("startDate");
                     Long endDate = (Long) insertEventMap.get("endDate");
@@ -75,6 +75,9 @@ public class MonitorAlertSubscriber {
                     entityType = (EntityType) insertEventMap.get("entityType");
                     entityName = (String) insertEventMap.get("entityName");
                     int score = (Integer) insertEventMap.get("score");
+                    String type = (String) insertEventMap.get("type");
+                    String dataSource = (String) insertEventMap.get("dataSource");
+                    Severity severity = (Severity) insertEventMap.get("severity");
                     StringBuilder sb = new StringBuilder();
                     sb.append("received time frame:" + i + "evidenceId: " + evidenceId + " startDate: " + new Date(startDate) + " score: " + score + " counter " + ++counter);
 
@@ -84,13 +87,14 @@ public class MonitorAlertSubscriber {
                         firstStartDate = startDate;
                     }
                     lastEndDate = endDate;
-                    evidences.put(evidenceId, entityType.name());
+                    evidences.add(new Evidence(entityType, entityName, startDate, endDate, type, entityName, dataSource, score, severity));
 
 
                 }
                 Integer average = ((Long)(scoreSum/insertStream.length)).intValue();
                 Severity severity = alertsService.getScoreToSeverity().get(average);
-                Alert alert = new Alert(firstStartDate, lastEndDate, entityType, entityName, "", evidences, "", average, severity, AlertStatus.Unread, "");
+                String title = "Alert Title";
+                Alert alert = new Alert(title, firstStartDate, lastEndDate, entityType, entityName, "", evidences, "", average, severity, AlertStatus.Unread, "");
                 //Store alert in mongoDB
                 alertsService.saveAlertInRepository(alert);
             }

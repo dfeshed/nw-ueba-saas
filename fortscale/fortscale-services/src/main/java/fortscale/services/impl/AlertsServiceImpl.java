@@ -1,10 +1,7 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Severity;
+import fortscale.domain.core.*;
 import fortscale.domain.core.dao.AlertsRepository;
-import fortscale.domain.core.Alert;
 import fortscale.services.AlertsService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,13 +50,13 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 
 
 	@Override
-	public Alert createTransientAlert(EntityType entityType, String entityName, Date date,
-			String rule, Map<String, String> evidences, String cause, Integer score, AlertStatus status, String comment) {
+	public Alert createTransientAlert(String name, EntityType entityType, String entityName, Date date,
+			String rule, List<Evidence> evidences, String cause, Integer score, AlertStatus status, String comment) {
 
 		// calculate severity
 		Severity severity = scoreToSeverity.get(scoreToSeverity.floorKey(score));
 
-		return new Alert(date.getTime(), date.getTime(), entityType, entityName,  rule, evidences, cause, score, severity, status, comment);
+		return new Alert(name, date.getTime(), date.getTime(), entityType, entityName,  rule, evidences, cause, score, severity, status, comment);
 	}
 
 	@Override

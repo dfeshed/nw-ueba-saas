@@ -113,7 +113,6 @@ public class ApiAlertController extends BaseController {
 	@ResponseBody
 	@LogException
 	public void putAlert(@PathVariable String id, @RequestBody Alert alert) {
-		alert.setUuid(id);
 //		alertsDao.update(alert);
 	}
 
