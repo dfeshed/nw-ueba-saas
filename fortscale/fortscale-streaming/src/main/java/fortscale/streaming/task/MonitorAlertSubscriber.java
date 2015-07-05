@@ -82,7 +82,7 @@ public class MonitorAlertSubscriber {
                 }
                 Integer average = ((Long)(scoreSum/insertStream.length)).intValue();
                 Severity severity = alertsService.getScoreToSeverity().get(average);
-                String title = "Alert Title";
+                String title = "Suspicious hourly activity";
                 Alert alert = new Alert(title, firstStartDate, lastEndDate, entityType, entityName, "", evidences, "", average, severity, AlertStatus.Unread, "");
                 //Save alert to mongoDB
                 alertsService.saveAlertInRepository(alert);
