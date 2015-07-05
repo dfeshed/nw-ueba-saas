@@ -47,8 +47,8 @@ public class AlertsRepositoryImplTest {
 	@Test
 	public void testFindAll() throws IOException{
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
-		alertsList.add(new Alert("2", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert(1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert(1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
 		when (httpRequest.getRequestURI()).thenReturn("fortscale.org/api/alerts/");

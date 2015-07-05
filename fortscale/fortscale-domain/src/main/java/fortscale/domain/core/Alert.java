@@ -26,7 +26,6 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String COLLECTION_NAME = "alerts";
 
 	//Fields names
-	public static final String uuidField = "uuid";
 	public static final String startDateField = "startDate";
 	public static final String endDateField = "endDate";
 	public static final String entityTypeField = "entityType";
@@ -40,10 +39,6 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String commentField = "comment";
 
 	//document's fields
-	@JsonIgnore
-	@Indexed(unique=true)
-	@Field(uuidField)
-	private String uuid;
 	@Indexed(unique=false)
 	@Field(startDateField)
 	private long startDate;
@@ -71,8 +66,7 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Alert() {}
 
-	public Alert(String uuid, long startDate, long endDate, EntityType entityType, String entityName, String rule, Map<String, String> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
-		this.uuid = uuid;
+	public Alert(long startDate, long endDate, EntityType entityType, String entityName, String rule, Map<String, String> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.entityType = entityType;
@@ -85,14 +79,6 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.status = status;
 		this.comment = comment;
 		this.setId(System.currentTimeMillis() + entityName + entityType);
-	}
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
 	}
 
 	public long getStartDate() {

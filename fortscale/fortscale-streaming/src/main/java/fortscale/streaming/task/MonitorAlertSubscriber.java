@@ -55,7 +55,6 @@ public class MonitorAlertSubscriber {
         try {
             Long maxTime = (Long) insertStream[insertStream.length - 1].get("startDate");
             maxPrevTime = DateUtils.ceiling(new Date(maxTime), Calendar.MINUTE).getTime();
-//        epService.getEPRuntime().sendEvent(new TimestampUpdate(maxPrevTime));
 
 
             i++;
@@ -86,20 +85,17 @@ public class MonitorAlertSubscriber {
                     }
                     lastEndDate = endDate;
                     evidences.put(evidenceId, entityType.name());
-                    //System.out.println(sb.toString());
 
 
                 }
                 Integer average = ((Long)(scoreSum/insertStream.length)).intValue();
                 Severity severity = alertsService.getScoreToSeverity().get(average);
-                Alert alert = new Alert(evidenceId, firstStartDate, lastEndDate, entityType, entityName, "", evidences, "", average, severity, AlertStatus.Unread, "");
+                Alert alert = new Alert(firstStartDate, lastEndDate, entityType, entityName, "", evidences, "", average, severity, AlertStatus.Unread, "");
                 //Store alert in mongoDB
-//                store.put(alert.getId(), alert);
                 alertsService.saveAlertInRepository(alert);
             }
         } catch (RuntimeException ex){
             logger.error(ex.getMessage(), ex);
-//            throw ex;
         }
 
     }

@@ -58,9 +58,8 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 
 		// calculate severity
 		Severity severity = scoreToSeverity.get(scoreToSeverity.floorKey(score));
-		String uuid = System.currentTimeMillis() + entityName + entityType;
 
-		return new Alert(uuid, date.getTime(), date.getTime(), entityType, entityName,  rule, evidences, cause, score, severity, status, comment);
+		return new Alert(date.getTime(), date.getTime(), entityType, entityName,  rule, evidences, cause, score, severity, status, comment);
 	}
 
 	@Override

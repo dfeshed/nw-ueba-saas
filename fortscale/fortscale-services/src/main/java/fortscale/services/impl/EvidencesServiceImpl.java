@@ -66,7 +66,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		String evidenceName = String.format("Suspicious activity for %s %s - suspicious %s (%s)", entityType.toString().toLowerCase(), entityName, anomalyType, anomalyValue);
 
 		// create new transient evidence (do not save to Mongo yet)
-		return new Evidence(entityType, entityName, date, date, anomalyType, evidenceName, classifier, intScore, severity);
+		return new Evidence(entityType, entityName, date.getTime(), date.getTime(), anomalyType, evidenceName, classifier, intScore, severity);
 	}
 
 	@Override

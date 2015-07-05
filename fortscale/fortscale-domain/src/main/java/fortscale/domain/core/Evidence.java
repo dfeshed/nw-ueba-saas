@@ -102,7 +102,7 @@ public class Evidence extends AbstractDocument{
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate,
-			String type, String dataSource, Integer score, Severity severity) {
+			String type, String name, String dataSource, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
