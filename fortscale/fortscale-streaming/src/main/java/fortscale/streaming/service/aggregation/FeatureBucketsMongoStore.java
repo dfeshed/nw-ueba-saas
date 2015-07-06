@@ -8,6 +8,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+
+import com.mongodb.WriteResult;
+
+import fortscale.domain.core.User;
 
 
 
@@ -24,9 +29,17 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		if (mongoTemplate.collectionExists(collectionName)) {
+			Update update = new Update();
+			update.set(FeatureBucket.END_TIME_FIELD, newCloseTime);
 			Query query = new Query(where(FeatureBucket.STRATEGY_ID_FIELD).is(strategyId));
-
-			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
+			
+			WriteResult writeResult = mongoTemplate.updateMulti(query, update, FeatureBucket.class, collectionName);
+			
+			if(writeResult.getN()>0){
+				return mongoTemplate.find(query, FeatureBucket.class, collectionName);
+			} else{
+				return Collections.emptyList();
+			}
 		}
 
 		return Collections.emptyList();
@@ -49,6 +62,6 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore {
 	}
 	
 	private String getCollectionName(FeatureBucketConf featureBucketConf){
-		return String.format("%s,%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
+		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 }
