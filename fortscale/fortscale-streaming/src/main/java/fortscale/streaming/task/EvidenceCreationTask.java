@@ -167,7 +167,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 						new Date(timestamp), scoreField, dataSourceConfiguration.classifier, score, anomalyValue, anomalyType);
 
 				// add the event to the top event os the supporting information
-				evidence.setTop3eventsJsonStr(messageText);
+				evidence.setTop3eventsJsonStr("[" + messageText + "]");
+				evidence.setNumOfEvents(1);
 
 				// Save evidence to levelDB
 				store.put(evidence.getId(), evidence);

@@ -48,6 +48,8 @@ public class Evidence extends AbstractDocument{
 
 	// The 3 top events
 	public static final String top3eventsField = "top3eventsJsonStr";
+	// number of events in evidence
+	public static final String numOfEventsField = "numOfEvents";
 	// supporting Information
 	public static final String supportingInformationField = "supportingInformation";
 
@@ -100,6 +102,8 @@ public class Evidence extends AbstractDocument{
 	@Field(top3eventsField)
 	private String top3eventsJsonStr;
 
+	@Field(numOfEventsField)
+	private Integer numOfEvents;
 
 	@Field(supportingInformationField)
 	private EvidenceSupportingInformation supportingInformation = new EvidenceSupportingInformation();
@@ -138,6 +142,10 @@ public class Evidence extends AbstractDocument{
 
 	public void setTop3eventsJsonStr(String top3eventsJsonStr) {
 		this.top3eventsJsonStr = top3eventsJsonStr;
+	}
+
+	public void setNumOfEvents(Integer numOfEvents) {
+		this.numOfEvents = numOfEvents;
 	}
 
 	// Getters
@@ -192,6 +200,10 @@ public class Evidence extends AbstractDocument{
 
 	public String getAnomalyValue() {
 		return anomalyValue;
+	}
+
+	public Integer getNumOfEvents() {
+		return numOfEvents;
 	}
 }
 
