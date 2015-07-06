@@ -7,6 +7,7 @@ import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
+import fortscale.domain.core.dao.DeletedUserRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.EventScoreDAO;
@@ -58,7 +59,10 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
+	@Autowired
+	private DeletedUserRepository duplicatedUserRepository;
+
 	@Autowired
 	private ComputerRepository computerRepository;
 	
@@ -92,6 +96,12 @@ public class UserServiceImpl implements UserService{
 	@Value("${user.service.impl.page.size:1000}")
 	private int userServiceImplPageSize;
 
+
+	@Value("${list.of.builtin.ad.users:Administrator,Guest,krbtgt}")
+	private String listOfBuiltInADUsers;
+
+	private List<String> setOfBuiltInADUsers;
+
 	// For unit tests only
 	protected int getPageSize() {
 		return userServiceImplPageSize;
@@ -106,7 +116,12 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private CacheHandler<String, List<String>> userTagsCache;
-	
+
+
+	public void setListOfBuiltInADUsers(String listOfBuiltInADUsers) {
+		this.listOfBuiltInADUsers = listOfBuiltInADUsers;
+	}
+
 	@Override
 	public User createUser(UserApplication userApplication, String username, String appUsername){
 		User user = new User();
@@ -588,14 +603,33 @@ public class UserServiceImpl implements UserService{
 		if(!StringUtils.isEmpty(username)) {
 			noDomainUsername = StringUtils.split(username, '@')[0];
 		}
+
+		//New user that supposed to be saved
 		if(isSaveUser){
 			if(!StringUtils.isEmpty(username)) {
 				user.setUsername(username);
 				user.setNoDomainUsername(noDomainUsername);
 				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
+
+				//check if there is another user with the same username (old record of user)
+				//in case of true move the old record into duplicatedUser collection and update thje new record with old fortscale relevant information (i.e scores, last activity etc )
+				User oldUserRecord  = userRepository.findByUsername(username);
+
+
+
+
+				//In case that the oldUserRecord is not null (we have other record on User collection with the same username ) and also doesnt exist in the ad built in users (doesnt have principal name only SAMAccountName )
+				if (oldUserRecord != null && needToBeDeleted(oldUserRecord)) {
+					DeletedUser deletedUser = convertToDuplicatedUser(oldUserRecord);
+					updateUserWithOldInfo(deletedUser,user);
+					deletedUser = duplicatedUserRepository.save(deletedUser);
+					userRepository.delete(oldUserRecord);
+				}
 			}
 			user.setSearchField(searchField);
 			user.setWhenCreated(userAdInfo.getWhenCreated());
+
+
 			saveUser(user);
 		} else{
 			Update update = new Update();
@@ -614,6 +648,60 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
+	public boolean needToBeDeleted(User oldUserRecord)
+	{
+		//laze upload
+		if (setOfBuiltInADUsers == null || setOfBuiltInADUsers.size()==0)
+		{
+			setOfBuiltInADUsers = Arrays.asList(listOfBuiltInADUsers.split(","));
+			for (ListIterator idx = setOfBuiltInADUsers.listIterator();  idx.hasNext();)
+				idx.set(((String)idx.next()).toLowerCase());
+		}
+
+
+
+
+		return !setOfBuiltInADUsers.contains(oldUserRecord.getUsername());
+
+
+	}
+
+	/**
+	 * This private method responsible to convert an User instance into a DuplicatedUser instance
+	 * @param user
+	 * @return
+	 */
+	private DeletedUser convertToDuplicatedUser(User user)
+	{
+		DeletedUser result= new DeletedUser();
+		result.cloneFromUser(user);
+		return result;
+
+	}
+
+	/**
+	 * This private method responsible to update the new user record with old user information (scores, lastactivity,loguserrname etc )
+	 * @param user
+	 * @return
+	 */
+	private void  updateUserWithOldInfo(DeletedUser deletedUser, User user)
+	{
+		for (ApplicationUserDetails applicationUserDetails : deletedUser.getApplicationUserDetails().values())
+			user.addApplicationUserDetails(applicationUserDetails);
+
+
+		for (Map.Entry<String,String> entry : deletedUser.getLogUsernameMap().entrySet())
+			user.addLogUsername(entry.getKey(), entry.getValue());
+
+		for (Map.Entry<String,ClassifierScore> entry : deletedUser.getScores().entrySet())
+			user.putClassifierScore(entry.getValue());
+
+		for (Map.Entry<String,DateTime> entry : deletedUser.getLogLastActivityMap().entrySet())
+			user.getLogLastActivityMap().put(entry.getKey(),entry.getValue());
+
+		user.setFollowed(deletedUser.getFollowed());
+
+	}
 
 	private  Set<AdUserDirectReport> calculateDirectReports(AdUser adUser) {
 		Set<AdUserDirectReport> reports = new HashSet<>();

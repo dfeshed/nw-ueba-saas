@@ -9,7 +9,7 @@ public interface MessageFilter {
 	/**
 	 * Initialize the filter with the filter name and configuration settings
 	 */
-	void init(String name, Config config);
+	void init(String name, Config config, String eventType);
 	
 	/**
 	 * Determine if a message should be filtered

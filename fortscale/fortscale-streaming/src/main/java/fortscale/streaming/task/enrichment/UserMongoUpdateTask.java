@@ -77,7 +77,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	/**
 	 * Map between the input topic and the relevant data-source
 	 */
-	protected Map<String, dataSourceConfiguration> topicToDataSourceMap = new HashMap<>();
+	protected Map<String, DataSourceConfiguration> topicToDataSourceMap = new HashMap<>();
 
 	/**
 	 * Map between classifier id to updateonly flag
@@ -115,7 +115,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 			Boolean udpateOnlyFlag = config.getBoolean(String.format("fortscale.data-source.updateOnly.%s", dataSource));
 			String logUserNameField =getConfigString(config, String.format("fortscale.data-source.logusername.field.%s", dataSource));
 			usernameField = getConfigString(config, String.format("fortscale.source.username.field.%s", dataSource));
-			topicToDataSourceMap.put(inputTopic, new dataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue,udpateOnlyFlag,logUserNameField));
+			topicToDataSourceMap.put(inputTopic, new DataSourceConfiguration(classifier, successfulLoginField, successfulLoginValue,udpateOnlyFlag,logUserNameField));
 			updateOnlyPerClassifire.put(classifier,udpateOnlyFlag);
 		}
 
@@ -158,7 +158,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
 		// Get relevant data source according to topic
-		dataSourceConfiguration dataSourceConfiguration = topicToDataSourceMap.get(topic);
+		DataSourceConfiguration dataSourceConfiguration = topicToDataSourceMap.get(topic);
 		if (dataSourceConfiguration == null) {
 			logger.error("No data source is defined for input topic {} ", topic);
 			return;
@@ -289,9 +289,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	/**
 	 * Private class for saving data-source specific configuration in-memory
 	 */
-	protected static class dataSourceConfiguration {
+	protected static class DataSourceConfiguration {
 
-		protected dataSourceConfiguration(String mongoClassifierId, String successField, String successValue,boolean udpateOnlyFlag,String logUserNameField) {
+		protected DataSourceConfiguration(String mongoClassifierId, String successField, String successValue,
+				boolean udpateOnlyFlag, String logUserNameField) {
 			this.mongoClassifierId = mongoClassifierId;
 			this.successField = successField;
 			this.successValue = successValue;
