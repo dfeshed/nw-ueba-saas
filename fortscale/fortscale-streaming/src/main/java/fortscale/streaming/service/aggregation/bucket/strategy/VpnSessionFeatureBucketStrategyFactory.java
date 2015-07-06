@@ -17,10 +17,10 @@ public class VpnSessionFeatureBucketStrategyFactory implements FeatureBucketStra
 
 	@Override
 	public FeatureBucketStrategy createFeatureBucketStrategy(StrategyJson strategyJson) throws JsonMappingException {
-		// Get Inactivity strategy parameters
+		// Get vpnsession strategy parameters
 		JSONObject params = strategyJson.getParams();
 
-		// Get inactivity duration in minutes
+		// Get vpnsession max duration parameter
 		Long maxSessionDuration = ConversionUtils.convertToLong(params.get(MAX_SESSION_DURATION_JSON_PARAM_FIELD_NAME));
 		String message = String.format("Params must contain field '%s' with a valid long value", MAX_SESSION_DURATION_JSON_PARAM_FIELD_NAME);
 		Assert.notNull(maxSessionDuration, message);
