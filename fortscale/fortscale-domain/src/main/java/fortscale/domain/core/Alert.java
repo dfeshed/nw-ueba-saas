@@ -1,4 +1,4 @@
-package fortscale.domain.core.dao.rest;
+package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.domain.core.*;
@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This is the bean of Alert entity that is saved in Alerts collection in MongoDB
@@ -28,7 +29,6 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String COLLECTION_NAME = "alerts";
 
 	//Fields names
-	public static final String uuidField = "uuid";
 	public static final String nameField = "name";
 	public static final String startDateField = "startDate";
 	public static final String endDateField = "endDate";
@@ -43,11 +43,6 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String commentField = "comment";
 
 	//document's fields
-	@JsonIgnore
-	@Indexed(unique=true)
-	@Field(uuidField)
-	private String uuid;
-
 	@Field(nameField)
 	private String name;
 
@@ -82,9 +77,8 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Alert() {}
 
-	public Alert(String uuid, String name, long startDate, long endDate, EntityType entityType, String entityName, String rule,
+	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName, String rule,
 				 List<Evidence> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
-		this.uuid = uuid;
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -97,14 +91,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.severity = severity;
 		this.status = status;
 		this.comment = comment;
-	}
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
+		this.setId(UUID.randomUUID().toString());
 	}
 
 	public long getStartDate() {

@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Represents single evidence in MongoDB
@@ -43,6 +44,7 @@ public class Evidence extends AbstractDocument{
 	// attributes
 	public static final String typeField = "type";
 	public static final String nameField = "name";
+	public static final String anomalyValueField = "anomalyValue";
 	public static final String dataSourceField = "dataSource";
 
 	// The 3 top events
@@ -67,21 +69,24 @@ public class Evidence extends AbstractDocument{
 	private String entityName;
 
 	@Field(startDateField)
-	private Date startDate;
+	private Long startDate;
 
 	@Field(endDateField)
-	private Date endDate;
+	private Long endDate;
 
 	// Expiration: one year
 	@Indexed(expireAfterSeconds = 31536000)
 	@Field(retentionDateField)
-	private Date retentionDate;
+	private Long retentionDate;
 
 	@Field(typeField)
 	private String type;
 
 	@Field(nameField)
 	private String name;
+
+	@Field(anomalyValueField)
+	private String anomalyValue;
 
 	@Field(dataSourceField)
 	private String dataSource;
@@ -101,14 +106,15 @@ public class Evidence extends AbstractDocument{
 
 	// C-tor
 
-	public Evidence(EntityType entityType, String entityName, Date startDate, Date endDate,
-			String type, String name, String dataSource, Integer score, Severity severity) {
+	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate,
+			String type, String name, String anomalyValue, String dataSource, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.type = type;
 		this.name = name;
+		this.anomalyValue = anomalyValue;
 		this.dataSource = dataSource;
 		this.score = score;
 		this.severity = severity;
@@ -117,7 +123,7 @@ public class Evidence extends AbstractDocument{
 		this.retentionDate = startDate;
 
 		// We must create ID for the evidence so the alert can have reference to it
-		this.setId(System.currentTimeMillis() + entityName + type);
+		this.setId(UUID.randomUUID().toString());
 	}
 
 	// For JSON serialization only
@@ -126,7 +132,7 @@ public class Evidence extends AbstractDocument{
 
 	// Setters
 
-	public void setRetentionDate(Date retentionDate) {
+	public void setRetentionDate(Long retentionDate) {
 		this.retentionDate = retentionDate;
 	}
 
@@ -144,15 +150,15 @@ public class Evidence extends AbstractDocument{
 		return entityName;
 	}
 
-	public Date getStartDate() {
+	public Long getStartDate() {
 		return startDate;
 	}
 
-	public Date getEndDate() {
+	public Long getEndDate() {
 		return endDate;
 	}
 
-	public Date getRetentionDate() {
+	public Long getRetentionDate() {
 		return retentionDate;
 	}
 
@@ -184,6 +190,9 @@ public class Evidence extends AbstractDocument{
 		return top3eventsJsonStr;
 	}
 
+	public String getAnomalyValue() {
+		return anomalyValue;
+	}
 }
 
 

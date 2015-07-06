@@ -4,7 +4,7 @@ import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
-import fortscale.domain.core.dao.rest.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -100,8 +100,9 @@ public class ApiAlertController extends BaseController {
 	@LogException
 	@ResponseBody
 	public Alert addAlert(@Valid @RequestBody Alert alert) throws Exception{
-		alertsDao.add(alert);
-		return alert;
+		throw new RuntimeException("NOT SUPPORTED");
+//		alertsDao.add(alert);
+//		return alert;
 	}
 
 	/**
@@ -113,7 +114,6 @@ public class ApiAlertController extends BaseController {
 	@ResponseBody
 	@LogException
 	public void putAlert(@PathVariable String id, @RequestBody Alert alert) {
-		alert.setUuid(id);
 //		alertsDao.update(alert);
 	}
 

@@ -4,7 +4,7 @@ import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.EntityType;
-import fortscale.domain.core.dao.rest.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,10 +31,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
-
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = {"classpath*:META-INF/spring/fortscale-domain-context-test.xml"})
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/fortscale-domain-context-test.xml"})
 public class AlertsRepositoryImplTest {
 
 	@Mock
@@ -50,12 +48,11 @@ public class AlertsRepositoryImplTest {
 		MockitoAnnotations.initMocks(this);
 	}
 
-
 	@Test
 	public void testFindAll() throws IOException{
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("1", null, 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
-		alertsList.add(new Alert("2", null, 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
 		Alerts alerts = subject.findAll(new PageRequest(1,0));
@@ -74,15 +71,15 @@ public class AlertsRepositoryImplTest {
 	@Test
 	public void testGetAlertById() {
 		List<Alert> alertsList = new ArrayList<Alert>();
-		Alert alert0 = new Alert("1", null, 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a");
+		Alert alert0 = new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a");
 
 
 		List<Evidence> alert0evidences = new ArrayList<>();
-		Evidence evidence0 = new Evidence(EntityType.User,"entityName", new Date(), new Date(), "type", "name0","dataSource",99, Severity.Critical);
-		Evidence evidence1 = new Evidence(EntityType.User,"entityName", new Date(), new Date(), "type", "name1","dataSource",99, Severity.Critical);
+	//	Evidence evidence0 = new Evidence(EntityType.User,"entityName", new Date(), new Date(), "type", "name0","dataSource",99, Severity.Critical);
+	//	Evidence evidence1 = new Evidence(EntityType.User,"entityName", new Date(), new Date(), "type", "name1","dataSource",99, Severity.Critical);
 
-		alert0evidences.add(evidence0);
-		alert0evidences.add(evidence1);
+	//	alert0evidences.add(evidence0);
+	//	alert0evidences.add(evidence1);
 
 		alert0.setEvidences(alert0evidences); //TODO not good, need to create via DBRef
 		alertsList.add(alert0);
