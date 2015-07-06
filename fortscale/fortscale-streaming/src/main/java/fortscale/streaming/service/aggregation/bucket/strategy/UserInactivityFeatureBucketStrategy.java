@@ -64,20 +64,20 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 
 				// Case 1: Strategy doesn't exist - create a new one
 				// Case 2: Strategy exists, but session has become inactive - create a new one
-				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() + inactivityDurationInSeconds() < epochtime) {
-					featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + endTimeDeltaInSeconds());
+				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() + getInactivityDurationInSeconds() < epochtime) {
+					featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + getEndTimeDeltaInSeconds());
 					isFeatureBucketStrategyDataCreatedOrUpdated = true;
 				}
 				// Case 3: Strategy exists and the incoming event updates its end time
 				else if (featureBucketStrategyData.getEndTime() < epochtime) {
-					featureBucketStrategyData.setEndTime(epochtime + endTimeDeltaInSeconds());
+					featureBucketStrategyData.setEndTime(epochtime + getEndTimeDeltaInSeconds());
 					isFeatureBucketStrategyDataCreatedOrUpdated = true;
 				}
 
 				featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
-				if(isFeatureBucketStrategyDataCreatedOrUpdated){
+				if (isFeatureBucketStrategyDataCreatedOrUpdated) {
 					return featureBucketStrategyData;
-				} else{
+				} else {
 					return null;
 				}
 			}
@@ -114,11 +114,11 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 		return StringUtils.join(strategyContextIdParts, STRATEGY_CONTEXT_ID_SEPARATOR);
 	}
 
-	private long inactivityDurationInSeconds() {
+	private long getInactivityDurationInSeconds() {
 		return inactivityDurationInMinutes * 60;
 	}
 
-	private long endTimeDeltaInSeconds() {
+	private long getEndTimeDeltaInSeconds() {
 		return endTimeDeltaInMinutes * 60;
 	}
 }

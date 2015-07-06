@@ -6,8 +6,6 @@ import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStra
 import org.apache.samza.storage.kv.KeyValueStore;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class FeatureBucketStrategyLevelDbStore implements FeatureBucketStrategyStore {
@@ -42,20 +40,22 @@ public class FeatureBucketStrategyLevelDbStore implements FeatureBucketStrategyS
 			strategyDataList = new ArrayList<>();
 		}
 
-		strategyDataList.add(featureBucketStrategyData);
-		sortFeatureBucketStrategyDataList(strategyDataList);
-		strategyStore.put(strategyContextId, strategyDataList);
-	}
-
-	private void sortFeatureBucketStrategyDataList(List<FeatureBucketStrategyData> strategyDataList) {
-		if (strategyDataList.size() <= 1) {
-			return;
+		int i;
+		for (i = strategyDataList.size() - 1; i >= 0; i--) {
+			if (featureBucketStrategyData.getStartTime() > strategyDataList.get(i).getStartTime()) {
+				strategyDataList.add(i + 1, featureBucketStrategyData);
+				break;
+			} else if (featureBucketStrategyData.getStartTime() == strategyDataList.get(i).getStartTime()) {
+				strategyDataList.set(i, featureBucketStrategyData);
+				break;
+			}
 		}
 
-		Collections.sort(strategyDataList, new Comparator<FeatureBucketStrategyData>() {
-			public int compare(FeatureBucketStrategyData data1, FeatureBucketStrategyData data2) {
-				return Long.compare(data1.getStartTime(), data2.getStartTime());
-			}
-		});
+		if (i == -1) {
+			strategyDataList.add(0, featureBucketStrategyData);
+		}
+
+		// Write back to store the updated list
+		strategyStore.put(strategyContextId, strategyDataList);
 	}
 }
