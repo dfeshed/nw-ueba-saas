@@ -41,7 +41,7 @@ public class MonitorAlertSubscriber {
     public String getStatement() {
 
         // Example of simple EPL with a Time Window
-        return "select id, entityType, entityName, startDate, endDate, type, name, dataSource, score, severity from EvidenceStream.win:ext_timed_batch(startDate, 2 min, 0L) where startDate > updateTimestamp order by startDate";
+        return "select id, entityType, entityName, startDate, endDate, type, name, dataSource, score, anomalyValue, severity from EvidenceStream.win:ext_timed_batch(startDate, 2 min, 0L) where startDate > updateTimestamp order by startDate";
     }
 
     /**
@@ -69,6 +69,7 @@ public class MonitorAlertSubscriber {
                     int score = (Integer) insertEventMap.get("score");
                     String type = (String) insertEventMap.get("type");
                     String dataSource = (String) insertEventMap.get("dataSource");
+                    String anomalyValue = (String) insertEventMap.get("anomalyValue");
                     Severity severity = (Severity) insertEventMap.get("severity");
 
                     scoreSum += score;
@@ -76,7 +77,8 @@ public class MonitorAlertSubscriber {
                         firstStartDate = startDate;
                     }
                     lastEndDate = endDate;
-                    evidences.add(new Evidence(entityType, entityName, startDate, endDate, type, entityName, dataSource, score, severity));
+					// TODO use the evidence ID (the evidence already exist)
+                    evidences.add(new Evidence(entityType, entityName, startDate, endDate, type, entityName, anomalyValue, dataSource, score, severity));
 
 
                 }
