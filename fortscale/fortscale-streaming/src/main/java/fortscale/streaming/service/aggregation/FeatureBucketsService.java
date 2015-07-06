@@ -16,9 +16,8 @@ import fortscale.utils.logging.Logger;
 
 public abstract class FeatureBucketsService {
 	private static final Logger logger = Logger.getLogger(FeatureBucketsService.class);
-	
-	private static final String BUCKET_ID_BUILDER_SEPERATOR = "_";
-		
+	private static final String BUCKET_ID_BUILDER_SEPARATOR = "_";
+
 	public List<FeatureBucket> updateFeatureBucketsWithNewBucketEndTime(List<FeatureBucketConf> featureBucketConfs, List<FeatureBucketStrategyData> updatedFeatureBucketStrategyData){
 		if(updatedFeatureBucketStrategyData == null || updatedFeatureBucketStrategyData.isEmpty()){
 			return Collections.emptyList();
@@ -62,22 +61,31 @@ public abstract class FeatureBucketsService {
 		
 		return newFeatureBuckets;
 	}
-	
-	private String getBucketId(JSONObject event, FeatureBucketConf featureBucketConf, String strategyId){
+
+	private String getBucketId(JSONObject event, FeatureBucketConf featureBucketConf, String strategyId) {
 		List<String> sorted = new ArrayList<>(featureBucketConf.getContextFieldNames());
 		Collections.sort(sorted);
+
 		StringBuilder builder = new StringBuilder();
-		builder.append(strategyId).append(BUCKET_ID_BUILDER_SEPERATOR);
-		for(String contextFieldName: featureBucketConf.getContextFieldNames()){
-			String contextValue = (String) event.get(contextFieldName);
-			if(contextValue == null){
-				throw new IllegalArgumentException(String.format("the parameter %s is not contained in the json object %s", contextFieldName,event.toJSONString()));
+		builder.append(strategyId).append(BUCKET_ID_BUILDER_SEPARATOR);
+
+		for (int i = 0; i < sorted.size(); i++) {
+			String contextFieldName = sorted.get(i);
+			String contextValue = (String)event.get(contextFieldName);
+
+			if (contextValue == null) {
+				throw new IllegalArgumentException(String.format("The parameter %s is not contained in the json object %s", contextFieldName, event.toJSONString()));
 			}
-			builder.append(contextFieldName).append(BUCKET_ID_BUILDER_SEPERATOR).append(contextValue).append(BUCKET_ID_BUILDER_SEPERATOR);
+
+			builder.append(contextFieldName).append(BUCKET_ID_BUILDER_SEPARATOR).append(contextValue);
+			if (i != sorted.size() - 1) {
+				builder.append(BUCKET_ID_BUILDER_SEPARATOR);
+			}
 		}
+
 		return builder.toString();
 	}
-	
+
 	private void updateFeatureBucket(JSONObject event, FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
 		Map<String, Feature> featuresMap = getFeatureExtractService().extract(featureBucketConf.getAllFeatureNames(), event);
 		Map<String, Feature> aggrFeaturesMap = getAggrFeatureFunctionsService().updateAggrFeatures(featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
