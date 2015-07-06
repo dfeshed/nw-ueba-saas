@@ -189,7 +189,7 @@ public class AddYearToDetermineMorphCmdTest {
 			Integer currentYear = calendar.get(Calendar.YEAR);
 			String year = Integer.toString(currentYear);
 
-			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
 			sdf.setTimeZone(tz);
 			Date parsedDate = null;
 
