@@ -52,4 +52,15 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         mongoTemplate.insert(alert);
     }
 
+    /**
+     * gets a single alert according to id
+     * @param id
+     * @return
+     */
+    @Override
+    public Alert getAlertById(String id){
+      return mongoTemplate.findById(id,Alert.class);
+    }
+
+
 }

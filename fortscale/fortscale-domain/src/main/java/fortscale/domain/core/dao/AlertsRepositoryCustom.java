@@ -12,7 +12,7 @@ public interface AlertsRepositoryCustom {
 	/**
 	 * Find all alerts according to query that is build on request parameters
 	 * @param request
-	 * @return @DataBean object with list of alerts
+	 * @return list of alerts
 	 */
 	Alerts findAll(PageRequest request);
 
@@ -28,5 +28,12 @@ public interface AlertsRepositoryCustom {
 	 * @param alert
 	 */
 	void add(Alert alert);
+
+	/**
+	 * Get alert according to id
+	 * @param id
+	 * @return
+	 */
+	 Alert getAlertById(String id);
 
 	}

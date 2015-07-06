@@ -65,6 +65,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Field(ruleField)
 	private String rule;
 	@Field(evidencesField)
+
 	@DBRef
 	private List<Evidence> evidences;
 

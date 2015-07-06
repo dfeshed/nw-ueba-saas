@@ -128,4 +128,21 @@ public class ApiAlertController extends BaseController {
 		alertsDao.delete(id);
 	}
 
+	/**
+	 * //This API gets a single alert  GET: /api/alerts/{alertId}
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="{id}", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Alert> getAlertsById(String id)
+	{
+		Alert alert = alertsDao.getAlertById(id);
+		DataBean<Alert> toReturn = new DataBean<Alert>();
+		toReturn.setData(alert);
+
+		return toReturn;
+	}
+
 }
