@@ -12,11 +12,14 @@ module.exports = function(environment) {
         // e.g. 'with-controller': true
       }
     },
-
+    'ember-cli-mirage':  {},
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
       defaultLocale:'en'
+    },
+    'simple-auth': {
+        authenticate: 'authenticator:sa-authenticator'
     }
   };
 
@@ -26,6 +29,10 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV['simple-auth'] = {
+        authenticate: 'authenticator:sa-authenticator',
+        store: 'simple-auth-session-store:local-storage'
+    };
   }
 
   if (environment === 'test') {
@@ -38,6 +45,12 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
+
+    ENV['simple-auth'] = {
+        authenticate: 'authenticator:sa-authenticator',
+        store: 'simple-auth-session-store:ephemeral'
+    };
+    ENV['ember-cli-mirage'].enabled = true;
   }
 
   if (environment === 'production') {

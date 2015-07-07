@@ -2,6 +2,10 @@ import Ember from 'ember';
 import Application from '../../app';
 //import Router from '../../router';
 import config from '../../config/environment';
+import initializeTestHelpers from 'simple-auth-testing/test-helpers';
+import Test from 'simple-auth-testing/authenticators/test';
+
+initializeTestHelpers();
 
 export default function startApp(attrs) {
   var application;
@@ -13,6 +17,7 @@ export default function startApp(attrs) {
     application = Application.create(attributes);
     application.setupForTesting();
     application.injectTestHelpers();
+    authenticateSession();
   });
 
   return application;

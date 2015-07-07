@@ -1,15 +1,22 @@
-<h2 id="title">{{t 'sa.title'}} {{t 'sa.version'}}</h2>
+{{#if session.isAuthenticated}}
+    <h2 id="title">{{t 'sa.title'}} {{t 'sa.version'}}</h2>
+    {{#link-to "index"}}{{t 'index.title'}}{{/link-to}}
 
+    {{#link-to "explorer"}}{{t 'explorer.title'}}{{/link-to}}
 
-{{#link-to 'index'}}{{t 'index.title'}}{{/link-to}}
+    {{#link-to "incidents"}}{{t 'incident.title'}}{{/link-to}}
 
-{{#link-to 'investigation'}}{{t 'investigation.title'}}{{/link-to}}
+    {{#link-to "about"}}{{t 'about.aboutTile'}}{{/link-to}}
 
-{{#link-to 'incidents'}}{{t 'incident.title'}}{{/link-to}}
+    <a class="logout" {{ action "invalidateSession" }}>{{t 'login.logoutTitle'}}</a>
 
-<div class="right">
-{{render "i18n"}}
-</div>
-<div id="sa-content" class="sa-content">
-    {{outlet}}
-</div>
+    <div class="right">
+        {{render "i18n"}}
+    </div>
+    <div id="sa-content" class="sa-content">
+        {{outlet}}
+    </div>
+
+{{else}}
+    {{render "login"}}
+{{/if}}
