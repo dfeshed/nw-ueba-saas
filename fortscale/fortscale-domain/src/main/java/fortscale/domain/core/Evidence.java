@@ -114,7 +114,7 @@ public class Evidence extends AbstractDocument{
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate, String anomalyType,
-			String name, String anomalyValue, String dataSource, Integer score, Severity severity, EvidenceType evidenceType) {
+			String name, String anomalyValue, String dataSource, Integer score, Severity severity, EvidenceType evidenceType){
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
@@ -134,7 +134,7 @@ public class Evidence extends AbstractDocument{
 		this.setId(UUID.randomUUID().toString());
 	}
 
-	// For JSON serialization only
+	// For JSON serialization, and creating reference to evidence in alert.
 	public Evidence() {
 	}
 
@@ -149,6 +149,9 @@ public class Evidence extends AbstractDocument{
 	}
 
 	public void setId(String id){
+		if (super.getId() != null){
+			throw new IllegalArgumentException("ID already exist! can't override.");
+		}
 		super.setId(id);
 	}
 	public void setNumOfEvents(Integer numOfEvents) {
