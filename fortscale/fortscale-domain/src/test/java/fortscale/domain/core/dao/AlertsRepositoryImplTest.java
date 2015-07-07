@@ -31,8 +31,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/fortscale-domain-context-test.xml"})
 public class AlertsRepositoryImplTest {
 
 	@Mock
@@ -50,7 +48,7 @@ public class AlertsRepositoryImplTest {
 
 	@Test
 	public void testFindAll() throws IOException{
-		List<Alert> alertsList = new ArrayList<Alert>();
+		List<Alert> alertsList = new ArrayList<>();
 		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
 		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
 
@@ -70,27 +68,21 @@ public class AlertsRepositoryImplTest {
 
 	@Test
 	public void testGetAlertById() {
-		List<Alert> alertsList = new ArrayList<Alert>();
-		Alert alert0 = new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a");
+		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a");
 
+		List<Evidence> evidences = new ArrayList<>();
+		Evidence evidence0 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
+		Evidence evidence1 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
 
-		List<Evidence> alert0evidences = new ArrayList<>();
-	//	Evidence evidence0 = new Evidence(EntityType.User,"entityName", new Date(), new Date(), "type", "name0","dataSource",99, Severity.Critical);
-	//	Evidence evidence1 = new Evidence(EntityType.User,"entityName", new Date(), new Date(), "type", "name1","dataSource",99, Severity.Critical);
+		evidences.add(evidence0);
+		evidences.add(evidence1);
 
-	//	alert0evidences.add(evidence0);
-	//	alert0evidences.add(evidence1);
+		alert.setEvidences(evidences);
 
-		alert0.setEvidences(alert0evidences); //TODO not good, need to create via DBRef
-		alertsList.add(alert0);
-
-		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
-
-		Alert result = subject.getAlertById(alert0.getId());
-
-
-
-
+		when (mongoTemplate.findById(any(Query.class), eq(Alert.class))).thenReturn(alert);
+		Alert result = subject.getAlertById(alert.getId());
+		verify(mongoTemplate).findById(any(Query.class), eq(Alert.class));
+		assertEquals("user1", result.getEntityName());
 
 	}
 

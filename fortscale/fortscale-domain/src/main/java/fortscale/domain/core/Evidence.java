@@ -59,8 +59,6 @@ public class Evidence extends AbstractDocument{
 
 
 	//-- Document's Fields
-	@Id
-	private String id;
 
 	@Field(entityTypeField)
 	private EntityType entityType;
@@ -140,6 +138,9 @@ public class Evidence extends AbstractDocument{
 		this.top3eventsJsonStr = top3eventsJsonStr;
 	}
 
+	public void setId(String id){
+		super.setId(id);
+	}
 	// Getters
 
 	public EntityType getEntityType() {

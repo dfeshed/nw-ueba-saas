@@ -6,6 +6,8 @@ import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.samza.storage.kv.KeyValueStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -20,6 +22,9 @@ public class MonitorAlertSubscriber {
      * Logger
      */
     private static Logger logger = LoggerFactory.getLogger(MonitorAlertSubscriber.class);
+
+    @Autowired
+    private MongoOperations mongoOps;
 
     public MonitorAlertSubscriber(EPServiceProvider epService, AlertsService alertsService) {
         this.epService = epService;
@@ -46,12 +51,10 @@ public class MonitorAlertSubscriber {
 
     /**
      * Listener method called when Esper has detected a pattern match.
+     * Creates an alert and saves it in mongo. this includes the references to its evidences, which are already in mongo.
      */
     public void update(Map[] insertStream, Map[] removeStream) {
         try {
-            Long maxTime = (Long) insertStream[insertStream.length - 1].get("startDate");
-            maxPrevTime = DateUtils.ceiling(new Date(maxTime), Calendar.MINUTE).getTime();
-
 
             if (insertStream != null) {
                 Long scoreSum = 0L;
@@ -62,30 +65,31 @@ public class MonitorAlertSubscriber {
                 boolean isFirst = true;
                 List<Evidence> evidences = new ArrayList<>();
                 for (Map insertEventMap : insertStream) {
+
+                    String id = (String) insertEventMap.get("id");
                     Long startDate = (Long) insertEventMap.get("startDate");
                     Long endDate = (Long) insertEventMap.get("endDate");
                     entityType = (EntityType) insertEventMap.get("entityType");
                     entityName = (String) insertEventMap.get("entityName");
                     int score = (Integer) insertEventMap.get("score");
-                    String type = (String) insertEventMap.get("type");
-                    String dataSource = (String) insertEventMap.get("dataSource");
-                    String anomalyValue = (String) insertEventMap.get("anomalyValue");
-                    Severity severity = (Severity) insertEventMap.get("severity");
 
                     scoreSum += score;
                     if (isFirst){
                         firstStartDate = startDate;
                     }
                     lastEndDate = endDate;
-					// TODO use the evidence ID (the evidence already exist)
-                    evidences.add(new Evidence(entityType, entityName, startDate, endDate, type, entityName, anomalyValue, dataSource, score, severity));
 
+                    //create new Evidence with the evidence id. it creates reference to the evidence object in mongo.
+                    Evidence evidence = new Evidence();
+                    evidence.setId(id);
+                    evidences.add(evidence);
 
                 }
                 Integer average = ((Long)(scoreSum/insertStream.length)).intValue();
                 Severity severity = alertsService.getScoreToSeverity().get(average);
                 String title = "Suspicious hourly activity";
                 Alert alert = new Alert(title, firstStartDate, lastEndDate, entityType, entityName, "", evidences, "", average, severity, AlertStatus.Unread, "");
+
                 //Save alert to mongoDB
                 alertsService.saveAlertInRepository(alert);
             }

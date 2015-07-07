@@ -136,7 +136,7 @@ public class ApiAlertController extends BaseController {
 	@RequestMapping(value="{id}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<Alert> getAlertsById(String id)
+	public DataBean<Alert> getAlertsById(@PathVariable String id)
 	{
 		Alert alert = alertsDao.getAlertById(id);
 		DataBean<Alert> toReturn = new DataBean<Alert>();
