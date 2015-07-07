@@ -18,7 +18,10 @@ import java.util.UUID;
  */
 @Document(collection = Evidence.COLLECTION_NAME)
 @CompoundIndexes({
-	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false)
+		// index for getting all evidences for specific user
+	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false),
+		// index for making sure our evidence is unique
+	@CompoundIndex(name="unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.typeField +"': 1}", unique = true)
 })
 public class Evidence extends AbstractDocument{
 
@@ -76,7 +79,7 @@ public class Evidence extends AbstractDocument{
 	@Field(endDateField)
 	private Long endDate;
 
-	// Expiration: one year
+	// Index for expiration (TTL): one year
 	@Indexed(expireAfterSeconds = 31536000)
 	@Field(retentionDateField)
 	private Long retentionDate;

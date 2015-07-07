@@ -20,6 +20,7 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -259,7 +260,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		while (iter.hasNext()) {
 			Entry<String, Evidence> evidence = iter.next();
 			// update evidence in mongo
-			evidencesService.saveEvidenceInRepository(evidence.getValue());
+			try {
+				evidencesService.saveEvidenceInRepository(evidence.getValue());
+			} catch (DuplicateKeyException e) {
+				logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.getValue().getName());
+			}
 			evidences.add(evidence.getKey());
 		}
 		iter.close();
