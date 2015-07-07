@@ -147,7 +147,7 @@ public class Evidence extends AbstractDocument{
 	public void setTop3eventsJsonStr(String top3eventsJsonStr) {
 		this.top3eventsJsonStr = top3eventsJsonStr;
 	}
-
+	//this method should be used only to create references to evidences within alerts (see MonitorAlertSubsciber)
 	public void setId(String id){
 		if (super.getId() != null){
 			throw new IllegalArgumentException("ID already exist! can't override.");
