@@ -21,6 +21,9 @@ public class FeatureBucketStrategyLevelDbStore implements FeatureBucketStrategyS
 	@Override
 	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyContextId, long latestStartTime) {
 		List<FeatureBucketStrategyData> strategyDataList = strategyStore.get(strategyContextId);
+		if(strategyDataList == null){
+			return null;
+		}
 		// Assume that the list is in ascending order over the start time
 		for (int i = strategyDataList.size() - 1; i >= 0; i--) {
 			FeatureBucketStrategyData featureBucketStrategyData = strategyDataList.get(i);
