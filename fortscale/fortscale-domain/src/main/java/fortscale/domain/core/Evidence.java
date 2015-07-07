@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
+import java.util.UUID;
 
 /**
  * Represents single evidence in MongoDB
@@ -17,7 +17,10 @@ import java.util.Date;
  */
 @Document(collection = Evidence.COLLECTION_NAME)
 @CompoundIndexes({
-	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false)
+		// index for getting all evidences for specific user
+	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false),
+		// index for making sure our evidence is unique
+	@CompoundIndex(name="unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeField +"': 1}", unique = true)
 })
 public class Evidence extends AbstractDocument{
 
@@ -40,9 +43,18 @@ public class Evidence extends AbstractDocument{
 	public static final String retentionDateField = "retentionDate";
 
 	// attributes
-	public static final String typeField = "type";
 	public static final String nameField = "name";
+	public static final String anomalyTypeField = "anomalyType";
+	public static final String anomalyValueField = "anomalyValue";
 	public static final String dataSourceField = "dataSource";
+	public static final String evidenceTypeField = "evidenceType";
+
+	// The 3 top events
+	public static final String top3eventsField = "top3eventsJsonStr";
+	// number of events in evidence
+	public static final String numOfEventsField = "numOfEvents";
+	// supporting Information
+	public static final String supportingInformationField = "supportingInformation";
 
 	// severity and score
 	public static final String scoreField = "score";
@@ -62,24 +74,30 @@ public class Evidence extends AbstractDocument{
 	private String entityName;
 
 	@Field(startDateField)
-	private Date startDate;
+	private Long startDate;
 
 	@Field(endDateField)
-	private Date endDate;
+	private Long endDate;
 
-	// Expiration: one year
+	// Index for expiration (TTL): one year
 	@Indexed(expireAfterSeconds = 31536000)
 	@Field(retentionDateField)
-	private Date retentionDate;
+	private Long retentionDate;
 
-	@Field(typeField)
-	private String type;
+	@Field(anomalyTypeField)
+	private String anomalyType;
 
 	@Field(nameField)
 	private String name;
 
+	@Field(anomalyValueField)
+	private String anomalyValue;
+
 	@Field(dataSourceField)
 	private String dataSource;
+
+	@Field(evidenceTypeField)
+	private EvidenceType evidenceType;
 
 	@Field(scoreField)
 	private Integer score;
@@ -87,26 +105,36 @@ public class Evidence extends AbstractDocument{
 	@Field(severityField)
 	private Severity severity;
 
+	@Field(top3eventsField)
+	private String top3eventsJsonStr;
+
+	@Field(numOfEventsField)
+	private Integer numOfEvents;
+
+	@Field(supportingInformationField)
+	private EvidenceSupportingInformation supportingInformation = new EvidenceSupportingInformation();
 
 	// C-tor
 
-	public Evidence(EntityType entityType, String entityName, Date startDate, Date endDate,
-			String type, String name, String dataSource, Integer score, Severity severity) {
+	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate, String anomalyType,
+			String name, String anomalyValue, String dataSource, Integer score, Severity severity, EvidenceType evidenceType) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.type = type;
+		this.anomalyType = anomalyType;
 		this.name = name;
+		this.anomalyValue = anomalyValue;
 		this.dataSource = dataSource;
 		this.score = score;
 		this.severity = severity;
+		this.evidenceType = evidenceType;
 
 		// set retention to start date
 		this.retentionDate = startDate;
 
 		// We must create ID for the evidence so the alert can have reference to it
-		this.setId(System.currentTimeMillis() + entityName + type);
+		this.setId(UUID.randomUUID().toString());
 	}
 
 	// For JSON serialization only
@@ -115,8 +143,20 @@ public class Evidence extends AbstractDocument{
 
 	// Setters
 
-	public void setRetentionDate(Date retentionDate) {
+	public void setRetentionDate(Long retentionDate) {
 		this.retentionDate = retentionDate;
+	}
+
+	public void setTop3eventsJsonStr(String top3eventsJsonStr) {
+		this.top3eventsJsonStr = top3eventsJsonStr;
+	}
+
+	public void setNumOfEvents(Integer numOfEvents) {
+		this.numOfEvents = numOfEvents;
+	}
+
+	public void setEvidenceType(EvidenceType evidenceType) {
+		this.evidenceType = evidenceType;
 	}
 
 	// Getters
@@ -129,20 +169,20 @@ public class Evidence extends AbstractDocument{
 		return entityName;
 	}
 
-	public Date getStartDate() {
+	public Long getStartDate() {
 		return startDate;
 	}
 
-	public Date getEndDate() {
+	public Long getEndDate() {
 		return endDate;
 	}
 
-	public Date getRetentionDate() {
+	public Long getRetentionDate() {
 		return retentionDate;
 	}
 
-	public String getType() {
-		return type;
+	public String getAnomalyType() {
+		return anomalyType;
 	}
 
 	public String getName() {
@@ -159,6 +199,26 @@ public class Evidence extends AbstractDocument{
 
 	public String getDataSource() {
 		return dataSource;
+	}
+
+	public EvidenceSupportingInformation getSupportingInformation() {
+		return supportingInformation;
+	}
+
+	public String getTop3eventsJsonStr() {
+		return top3eventsJsonStr;
+	}
+
+	public String getAnomalyValue() {
+		return anomalyValue;
+	}
+
+	public Integer getNumOfEvents() {
+		return numOfEvents;
+	}
+
+	public EvidenceType getEvidenceType() {
+		return evidenceType;
 	}
 }
 

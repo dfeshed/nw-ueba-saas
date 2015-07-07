@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -23,7 +24,7 @@ public class TestUtils {
         calendar.setTimeZone(tz);
         currentYear = calendar.get(Calendar.YEAR);
         year = Integer.toString(currentYear);
-        sdf = new SimpleDateFormat(dateFormat);
+        sdf = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         sdf.setTimeZone(tz);
     }
     static Date constuctDate(String inDate){

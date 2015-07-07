@@ -44,7 +44,7 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 
 			dateFormat = getConfigs().getString(config, "dateFormat");
 			timeZone = getConfigs().getString(config, "timezone");
-			sdf = new SimpleDateFormat(dateFormat, Locale.US);
+			sdf = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
 
 			validateArguments();
 		}
