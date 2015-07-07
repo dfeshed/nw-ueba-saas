@@ -78,7 +78,7 @@ public class MonitorAlertSubscriber {
                     }
                     lastEndDate = endDate;
 					// TODO use the evidence ID (the evidence already exist)
-                    evidences.add(new Evidence(entityType, entityName, startDate, endDate, type, entityName, anomalyValue, dataSource, score, severity));
+                    evidences.add(new Evidence(entityType, entityName, startDate, endDate, type, entityName, anomalyValue, dataSource, score, severity, EvidenceType.AnomalySingleEvent));
 
 
                 }
