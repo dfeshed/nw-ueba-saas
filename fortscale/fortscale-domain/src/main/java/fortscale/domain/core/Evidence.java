@@ -134,6 +134,11 @@ public class Evidence extends AbstractDocument{
 		this.setId(UUID.randomUUID().toString());
 	}
 
+	// used to create references to evidences within alerts (see BasicAlertSubscriber)
+	public Evidence(String id) {
+		this.setId(id);
+	}
+
 	// For JSON serialization, and creating reference to evidence in alert.
 	public Evidence() {
 	}
@@ -147,13 +152,7 @@ public class Evidence extends AbstractDocument{
 	public void setTop3eventsJsonStr(String top3eventsJsonStr) {
 		this.top3eventsJsonStr = top3eventsJsonStr;
 	}
-	//this method should be used only to create references to evidences within alerts (see MonitorAlertSubsciber)
-	public void setId(String id){
-		if (super.getId() != null){
-			throw new IllegalArgumentException("ID already exist! can't override.");
-		}
-		super.setId(id);
-	}
+
 	public void setNumOfEvents(Integer numOfEvents) {
 		this.numOfEvents = numOfEvents;
 	}
