@@ -106,7 +106,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	private String getStrategyContextId(String username) {
 		List<String> strategyContextIdParts = new ArrayList<>();
 
-		strategyContextIdParts.add(UserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE);
+		strategyContextIdParts.add(AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE);
 		strategyContextIdParts.addAll(dataSources);
 		strategyContextIdParts.add(Long.toString(inactivityDurationInMinutes));
 		strategyContextIdParts.add(username);
