@@ -1,6 +1,7 @@
 package fortscale.streaming.service.aggregation.bucket.strategy;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import fortscale.streaming.service.aggregation.bucket.strategy.samza.FeatureBucketStrategyFactorySamza;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +20,8 @@ public class VpnSessionFeatureBucketStrategyTest {
 	private static final String DEFAULT_STRATEGY_NAME = "vpn_session";
 	private static final long MAX_SESSION_DURATION = 14400; // 4 hours
 
-	@Test public void update_method_when_strategy_doesnt_exists() throws Exception {
+	@Test
+	public void update_method_when_strategy_doesnt_exists() throws Exception {
 		String username = "user1";
 		String srcMachine = "machine1";
 		long epochtime = 1435737600;
@@ -36,25 +38,27 @@ public class VpnSessionFeatureBucketStrategyTest {
 		assertEqualData(expected, actual);
 	}
 
-	@Test public void update_method_when_strategy_exists_and_inactive() throws Exception {
+	@Test
+	public void update_method_when_strategy_exists_and_inactive() throws Exception {
 		String username = "user1";
 		String srcMachine = "machine1";
 		long epochtime = 1435737600;
 		String status = "SUCCESS";
 		FeatureBucketStrategyStore store = mock(FeatureBucketStrategyStore.class);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
-		JSONObject event = createDataSourceEvent(username, srcMachine, epochtime, status);
+		JSONObject event = createDataSourceEvent(username, srcMachine, epochtime + 1, status);
 		String strategyContextId = String.format("%s_%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username, srcMachine);
 		FeatureBucketStrategyData inactiveStrategyData = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime - MAX_SESSION_DURATION, epochtime);
 
 		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(inactiveStrategyData);
 		FeatureBucketStrategyData actual = strategy.update(event);
 
-		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION);
+		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime + 1, epochtime + 1 + MAX_SESSION_DURATION);
 		assertEqualData(expected, actual);
 	}
 
-	@Test public void update_method_when_strategy_exists_closed_event() throws Exception {
+	@Test
+	public void update_method_when_strategy_exists_closed_event() throws Exception {
 		String username = "user1";
 		String srcMachine = "machine1";
 		long epochtime = 1435737600;
@@ -72,7 +76,8 @@ public class VpnSessionFeatureBucketStrategyTest {
 		assertEqualData(expected, actual);
 	}
 
-	@Test public void update_method_when_strategy_exists_not_closed_event() throws Exception {
+	@Test
+	public void update_method_when_strategy_exists_not_closed_event() throws Exception {
 		String username = "user1";
 		String srcMachine = "machine1";
 		long epochtime = 1435737600;
@@ -83,14 +88,15 @@ public class VpnSessionFeatureBucketStrategyTest {
 		String strategyContextId = String.format("%s_%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username, srcMachine);
 		FeatureBucketStrategyData activeStrategyData = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION);
 
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(activeStrategyData);
+		when(store.getLatestFeatureBucketStrategyData(strategyContextId,  epochtime + (MAX_SESSION_DURATION / 2))).thenReturn(activeStrategyData);
 		FeatureBucketStrategyData actual = strategy.update(event);
 
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(strategyContextId, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION);
 		assertEqualData(expected, actual);
 	}
 
-	@Test public void get_strategy_data_empty() throws Exception {
+	@Test
+	public void get_strategy_data() throws Exception {
 		String username = "user1";
 		String srcMachine1 = "machine1";
 		String srcMachine2 = "machine2";
@@ -105,34 +111,37 @@ public class VpnSessionFeatureBucketStrategyTest {
 		String strategyContextId2 = String.format("%s_%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username, srcMachine2);
 		FeatureBucketStrategyStore store = mock(FeatureBucketStrategyStore.class);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
-		FeatureBucketStrategyData activeStrategyData1 = new FeatureBucketStrategyData(strategyContextId1, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION / 2);
-		FeatureBucketStrategyData activeStrategyData2 = new FeatureBucketStrategyData(strategyContextId2, DEFAULT_STRATEGY_NAME, epochtime, epochtime + MAX_SESSION_DURATION / 2);
+		FeatureBucketStrategyData activeStrategyData1 = new FeatureBucketStrategyData(strategyContextId1, DEFAULT_STRATEGY_NAME, epochtime, epochtime + (MAX_SESSION_DURATION / 2));
+		FeatureBucketStrategyData activeStrategyData2 = new FeatureBucketStrategyData(strategyContextId2, DEFAULT_STRATEGY_NAME, epochtime, epochtime + (MAX_SESSION_DURATION / 2));
 
 		when(store.getLatestFeatureBucketStrategyData(strategyContextId1, epochtime)).thenReturn(null);
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId2, epochtime)).thenReturn(null);
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId1, epochtime)).thenReturn(activeStrategyData1);
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId2, epochtime)).thenReturn(activeStrategyData2);
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId1, epochtime)).thenReturn(activeStrategyData1);
-
 		List<FeatureBucketStrategyData> actual = strategy.getFeatureBucketStrategyData(null, close_event1, 123);
 		Assert.assertEquals(0, actual.size());
 
+		when(store.getLatestFeatureBucketStrategyData(strategyContextId1, epochtime)).thenReturn(null);
 		strategy.update(success_event1);
-		actual = strategy.getFeatureBucketStrategyData(null, close_event1, 123);
+		when(store.getLatestFeatureBucketStrategyData(strategyContextId1, epochtime)).thenReturn(activeStrategyData1);
+		actual = strategy.getFeatureBucketStrategyData(null, success_event1, epochtime);
 		Assert.assertEquals(1, actual.size());
 		assertEqualData(activeStrategyData1, actual.get(0));
 
+		when(store.getLatestFeatureBucketStrategyData(strategyContextId2, epochtime)).thenReturn(null);
 		strategy.update(success_event2);
-		actual = strategy.getFeatureBucketStrategyData(null, close_event1, 123);
+		when(store.getLatestFeatureBucketStrategyData(strategyContextId2, epochtime)).thenReturn(activeStrategyData2);
+		actual = strategy.getFeatureBucketStrategyData(null, success_event2, epochtime);
 		Assert.assertEquals(2, actual.size());
-		assertEqualData(activeStrategyData1, actual.get(0));
-		assertEqualData(activeStrategyData2, actual.get(1));
+		Assert.assertTrue(actual.contains(activeStrategyData1));
+		Assert.assertTrue(actual.contains(activeStrategyData2));
 
+		when(store.getLatestFeatureBucketStrategyData(strategyContextId2, epochtime + (MAX_SESSION_DURATION / 2))).thenReturn(activeStrategyData2);
 		strategy.update(close_event2);
-		actual = strategy.getFeatureBucketStrategyData(null, close_event1, 123);
+
+		when(store.getLatestFeatureBucketStrategyData(strategyContextId1,  epochtime + (MAX_SESSION_DURATION / 2))).thenReturn(activeStrategyData1);
+		actual = strategy.getFeatureBucketStrategyData(null, close_event1, epochtime + (MAX_SESSION_DURATION / 2));
 		Assert.assertEquals(1, actual.size());
 		assertEqualData(activeStrategyData1, actual.get(0));
 
+		when(store.getLatestFeatureBucketStrategyData(strategyContextId1, epochtime + (MAX_SESSION_DURATION / 2))).thenReturn(activeStrategyData1);
 		strategy.update(close_event1);
 
 		actual = strategy.getFeatureBucketStrategyData(null, close_event1, 123);
@@ -160,8 +169,9 @@ public class VpnSessionFeatureBucketStrategyTest {
 		when(strategyJson.getParams()).thenReturn(params);
 		when(strategyJson.getName()).thenReturn(DEFAULT_STRATEGY_NAME);
 
-		FeatureBucketStrategyFactory factory = new VpnSessionFeatureBucketStrategyFactory();
+		FeatureBucketStrategyFactorySamza factory = new VpnSessionFeatureBucketStrategyFactory();
 		FeatureBucketStrategy strategy = factory.createFeatureBucketStrategy(strategyJson);
+		factory.setStrategyStore(store);
 
 		return strategy;
 	}
@@ -175,6 +185,7 @@ public class VpnSessionFeatureBucketStrategyTest {
 		event.put("normalized_src_machine", srcMachine);
 		event.put("date_time_unix", epochtime);
 		event.put("status", status);
+		event.put("data_source", DEFAULT_STRATEGY_NAME);
 
 		return event;
 	}

@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Configurable(preConstruction = true)
 public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	private static final String STRATEGY_CONTEXT_ID_SEPARATOR = "_";
 
+	@Value("${impala.table.fields.data.source}")
+	private String dataSourceFieldName;
 	@Value("${impala.table.fields.normalized.username}")
 	private String usernameFieldName;
 	@Value("${impala.table.fields.src_machine}")
@@ -28,11 +28,13 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	private String successValueName;
 	@Value("${impala.table.vpn.values.status.closed}")
 	private String closedValueName;
+	@Value("${impala.table.vpn.values.data.source}")
+	private String vpnSessionDataSource;
 
 	private FeatureBucketStrategyStore featureBucketStrategyStore;
 	private String strategyName;
 	private long maxSessionDuration;
-	private HashMap<String, List<String>> openUserSessions; //username and source machine names with open sessions
+	private HashMap<String, Set<String>> openUserSessions; //username and source machine names with open sessions
 
 	public VpnSessionFeatureBucketStrategy(String strategyName, long maxSessionDuration) {
 		// Validate input
@@ -42,7 +44,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		this.featureBucketStrategyStore = null;
 		this.strategyName = strategyName;
 		this.maxSessionDuration = maxSessionDuration;
-		this.openUserSessions = new HashMap<String, List<String>>();
+		this.openUserSessions = new HashMap<String, Set<String>>();
 	}
 
 	public void setFeatureBucketStrategyStore(FeatureBucketStrategyStore featureBucketStrategyStore) {
@@ -52,34 +54,40 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 
 	@Override
 	public FeatureBucketStrategyData update(JSONObject event) {
-		// Make sure this strategy contains the event's data source?
-		String username = ConversionUtils.convertToString(event.get(usernameFieldName));
-		String srcMachine = ConversionUtils.convertToString(event.get(srcMachineFieldName));
-		Long epochtime = ConversionUtils.convertToLong(event.get(epochtimeFieldName));
-		String status = ConversionUtils.convertToString(event.get(statusFieldName));
+		// Get the event's data source
+		String dataSource = ConversionUtils.convertToString(event.get(dataSourceFieldName));
 
-		if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(srcMachine) && epochtime != null) {
-			String strategyContextId = getStrategyContextId(username, srcMachine);
-			FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtime);
+		// Make sure this strategy contains the event's data source
+		if (StringUtils.isNotBlank(dataSource) && vpnSessionDataSource.equalsIgnoreCase(dataSource)) {
 
-			// Case 1: Strategy doesn't exist - create a new one
-			// Case 2: Strategy exists, but session has become inactive - create a new one
-			if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() < epochtime) {
-				RemoveClosedUserSessions(username, srcMachine);
-				if (status.toLowerCase().equals(successValueName)) {
-					featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + maxSessionDuration);
-					AddOpenUserSessions(username, srcMachine);
+			String username = ConversionUtils.convertToString(event.get(usernameFieldName));
+			String srcMachine = ConversionUtils.convertToString(event.get(srcMachineFieldName));
+			Long epochtime = ConversionUtils.convertToLong(event.get(epochtimeFieldName));
+			String status = ConversionUtils.convertToString(event.get(statusFieldName));
+
+			if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(srcMachine) && epochtime != null) {
+				String strategyContextId = getStrategyContextId(username, srcMachine);
+				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtime);
+
+				// Case 1: Strategy doesn't exist - create a new one
+				// Case 2: Strategy exists, but session has become inactive - create a new one
+				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() < epochtime) {
+					RemoveClosedUserSessions(username, srcMachine);
+					if (status.equalsIgnoreCase(successValueName)) {
+						featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + maxSessionDuration);
+						AddOpenUserSessions(username, srcMachine);
+					}
 				}
-			}
-			// Case 3: Strategy exists and the incoming event status is closed
-			else if (status.toLowerCase().equals(closedValueName)) {
-				featureBucketStrategyData.setEndTime(epochtime);
-				RemoveClosedUserSessions(username, srcMachine);
-			}
-			// Case 4: Nothing to do if exists, still active and event is not a closed event
+				// Case 3: Strategy exists and the incoming event status is closed
+				else if (status.equalsIgnoreCase(closedValueName)) {
+					featureBucketStrategyData.setEndTime(epochtime);
+					RemoveClosedUserSessions(username, srcMachine);
+				}
+				// Case 4: Nothing to do if exists, still active and event is not a closed event
 
-			featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
-			return featureBucketStrategyData;
+				featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
+				return featureBucketStrategyData;
+			}
 		}
 		return null;
 	}
@@ -93,7 +101,13 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		if (openUserSessions.containsKey(username)) {
 			for (String machineName:openUserSessions.get(username)) {
 				String strategyContextId = getStrategyContextId(username, machineName);
-				strategyDataList.add(featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtimeInSec));
+				FeatureBucketStrategyData strategyData =  featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtimeInSec);
+				if (strategyData == null) {
+					RemoveClosedUserSessions(username, machineName);
+				}
+				else {
+					strategyDataList.add(strategyData);
+				}
 			}
 		}
 
@@ -110,14 +124,14 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 
 	private void AddOpenUserSessions(String username, String machineName) {
 		if (!openUserSessions.containsKey(username)) {
-			openUserSessions.put(username, new ArrayList<String>());
+			openUserSessions.put(username, new HashSet<String>());
 		}
 			openUserSessions.get(username).add(machineName);
 		}
 
 	private void RemoveClosedUserSessions(String username, String machineName) {
 		if (openUserSessions.containsKey(username)) {
-			List<String> userMachines = openUserSessions.get(username);
+			Set<String> userMachines = openUserSessions.get(username);
 			userMachines.remove(machineName);
 			if (userMachines.size() == 0) {
 				openUserSessions.remove(username);
