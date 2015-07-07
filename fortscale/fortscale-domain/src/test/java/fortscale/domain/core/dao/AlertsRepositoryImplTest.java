@@ -1,10 +1,6 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Alert;
+import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,8 +67,8 @@ public class AlertsRepositoryImplTest {
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a");
 
 		List<Evidence> evidences = new ArrayList<>();
-		Evidence evidence0 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
-		Evidence evidence1 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical);
+		Evidence evidence0 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical, EvidenceType.AnomalyAggregatedEvent);
+		Evidence evidence1 = new Evidence(EntityType.User,"entityName", 123L,123L, "type", "name0","anomalyValue","dataSource",99, Severity.Critical,EvidenceType.AnomalyAggregatedEvent);
 
 		evidences.add(evidence0);
 		evidences.add(evidence1);
