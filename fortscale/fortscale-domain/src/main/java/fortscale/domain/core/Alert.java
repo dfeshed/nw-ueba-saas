@@ -61,6 +61,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	private String rule;
 	@Field(evidencesField)
 
+	//this annotation makes mongo to save only reference to evidences, not the evidences themselves.
 	@DBRef
 	private List<Evidence> evidences;
 
