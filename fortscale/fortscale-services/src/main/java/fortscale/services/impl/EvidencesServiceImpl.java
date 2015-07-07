@@ -2,6 +2,7 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceType;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.EvidencesRepository;
 import org.springframework.beans.factory.InitializingBean;
@@ -66,7 +67,8 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		String evidenceName = String.format("Suspicious activity for %s %s - suspicious %s", entityType.toString().toLowerCase(), entityName, anomalyType);
 
 		// create new transient evidence (do not save to Mongo yet)
-		return new Evidence(entityType, entityName, date.getTime(), date.getTime(), anomalyType, evidenceName, anomalyValue, classifier, intScore, severity);
+		return new Evidence(entityType, entityName, date.getTime(), date.getTime(), anomalyType, evidenceName,
+				anomalyValue, classifier, intScore, severity, EvidenceType.AnomalySingleEvent);
 	}
 
 	@Override
