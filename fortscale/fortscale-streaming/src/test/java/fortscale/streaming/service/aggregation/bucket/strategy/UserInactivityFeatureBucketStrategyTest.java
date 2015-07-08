@@ -1,17 +1,19 @@
 package fortscale.streaming.service.aggregation.bucket.strategy;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
-import fortscale.streaming.service.aggregation.bucket.strategy.samza.FeatureBucketStrategyFactorySamza;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import fortscale.streaming.service.aggregation.bucket.strategy.samza.UserInactivityFeatureBucketStrategyFactorySamza;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/bucketconf-context-test.xml"})
@@ -23,17 +25,17 @@ public class UserInactivityFeatureBucketStrategyTest {
 
 	@Test
 	public void update_method_should_create_new_data_but_should_not_update_the_end_time_afterwards() throws Exception {
-		FeatureBucketStrategyStore store = mock(FeatureBucketStrategyStore.class);
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStoreOne();
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		String username = "user1";
 		String strategyContextId = String.format("%s_%s_%d_%s",
-			UserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, DEFAULT_DATA_SOURCE, DEFAULT_INACTIVITY_DURATION_IN_MINUTES, username);
+			AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, DEFAULT_DATA_SOURCE, DEFAULT_INACTIVITY_DURATION_IN_MINUTES, username);
 
 		long epochtime = 1435737600;
 		JSONObject event = createDefaultDataSourceEvent(username, epochtime);
 
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(null);
+//		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(null);
 		FeatureBucketStrategyData actual = strategy.update(event);
 
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(
@@ -44,7 +46,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		epochtime += DEFAULT_END_TIME_DELTA_IN_SECONDS / 2;
 		event = createDefaultDataSourceEvent(username, epochtime);
 
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(actual);
+//		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(actual);
 		actual = strategy.update(event);
 
 		Assert.assertNull(actual);
@@ -52,17 +54,17 @@ public class UserInactivityFeatureBucketStrategyTest {
 
 	@Test
 	public void update_method_should_create_new_data_and_update_the_end_time_afterwards() throws Exception {
-		FeatureBucketStrategyStore store = mock(FeatureBucketStrategyStore.class);
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStoreOne();
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		String username = "user2";
 		String strategyContextId = String.format("%s_%s_%d_%s",
-			UserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, DEFAULT_DATA_SOURCE, DEFAULT_INACTIVITY_DURATION_IN_MINUTES, username);
+			AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, DEFAULT_DATA_SOURCE, DEFAULT_INACTIVITY_DURATION_IN_MINUTES, username);
 
 		long startEpochtime = 1435737600;
 		JSONObject event = createDefaultDataSourceEvent(username, startEpochtime);
 
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId, startEpochtime)).thenReturn(null);
+//		when(store.getLatestFeatureBucketStrategyData(strategyContextId, startEpochtime)).thenReturn(null);
 		FeatureBucketStrategyData actual = strategy.update(event);
 
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(
@@ -73,7 +75,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		long epochtime = startEpochtime + ((DEFAULT_END_TIME_DELTA_IN_SECONDS + (DEFAULT_INACTIVITY_DURATION_IN_MINUTES * 60)) / 2);
 		event = createDefaultDataSourceEvent(username, epochtime);
 
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(actual);
+//		when(store.getLatestFeatureBucketStrategyData(strategyContextId, epochtime)).thenReturn(actual);
 		actual = strategy.update(event);
 
 		expected = new FeatureBucketStrategyData(
@@ -83,17 +85,17 @@ public class UserInactivityFeatureBucketStrategyTest {
 
 	@Test
 	public void update_method_should_create_new_data_twice() throws Exception {
-		FeatureBucketStrategyStore store = mock(FeatureBucketStrategyStore.class);
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStoreOne();
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		String username = "user3";
 		String strategyContextId = String.format("%s_%s_%d_%s",
-			UserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, DEFAULT_DATA_SOURCE, DEFAULT_INACTIVITY_DURATION_IN_MINUTES, username);
+			AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, DEFAULT_DATA_SOURCE, DEFAULT_INACTIVITY_DURATION_IN_MINUTES, username);
 
 		long startEpochtime1 = 1435737600;
 		JSONObject event = createDefaultDataSourceEvent(username, startEpochtime1);
 
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId, startEpochtime1)).thenReturn(null);
+//		when(store.getLatestFeatureBucketStrategyData(strategyContextId, startEpochtime1)).thenReturn(null);
 		FeatureBucketStrategyData actual = strategy.update(event);
 
 		FeatureBucketStrategyData expected = new FeatureBucketStrategyData(
@@ -104,7 +106,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 		long startEpochtime2 = startEpochtime1 + DEFAULT_END_TIME_DELTA_IN_SECONDS + (DEFAULT_INACTIVITY_DURATION_IN_MINUTES * 60) + 1;
 		event = createDefaultDataSourceEvent(username, startEpochtime2);
 
-		when(store.getLatestFeatureBucketStrategyData(strategyContextId, startEpochtime2)).thenReturn(actual);
+//		when(store.getLatestFeatureBucketStrategyData(strategyContextId, startEpochtime2)).thenReturn(actual);
 		actual = strategy.update(event);
 
 		expected = new FeatureBucketStrategyData(
@@ -137,9 +139,9 @@ public class UserInactivityFeatureBucketStrategyTest {
 		when(strategyJson.getParams()).thenReturn(params);
 		when(strategyJson.getName()).thenReturn(DEFAULT_STRATEGY_NAME);
 
-		FeatureBucketStrategyFactorySamza factory = new UserInactivityFeatureBucketStrategyFactory();
-		FeatureBucketStrategy strategy = factory.createFeatureBucketStrategy(strategyJson);
-		factory.setStrategyStore(store);
+		FeatureBucketStrategyFactory factory = new UserInactivityFeatureBucketStrategyFactorySamza();
+		UserInactivityFeatureBucketStrategy strategy = (UserInactivityFeatureBucketStrategy) factory.createFeatureBucketStrategy(strategyJson);
+		strategy.setFeatureBucketStrategyStore(store);
 
 		return strategy;
 	}
