@@ -68,7 +68,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 		// create new transient evidence (do not save to Mongo yet)
 		return new Evidence(entityType, entityName, date.getTime(), date.getTime(), anomalyType, evidenceName,
-				anomalyValue, classifier, intScore, severity, EvidenceType.AnomalySingleEvent);
+				anomalyValue, classifier, intScore, severity);
 	}
 
 	@Override

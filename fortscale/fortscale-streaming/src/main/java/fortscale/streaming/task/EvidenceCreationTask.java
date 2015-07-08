@@ -3,6 +3,7 @@ package fortscale.streaming.task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
+import fortscale.domain.core.EvidenceType;
 import fortscale.services.impl.EvidencesService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
@@ -156,9 +157,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				Evidence evidence = evidencesService.createTransientEvidence(EntityType.User, normalizedUsername,
 						new Date(timestamp), scoreField, dataSourceConfiguration.classifier, score, anomalyValue, anomalyType);
 
-				// add the event to the top event os the supporting information
+				// add the event to the top events
 				evidence.setTop3eventsJsonStr("[" + messageText + "]");
 				evidence.setNumOfEvents(1);
+				evidence.setEvidenceType(EvidenceType.AnomalySingleEvent);
 
 				// Save evidence to MongoDB
 				try {
