@@ -6,8 +6,8 @@ import fortscale.utils.ConversionUtils;
 
 
 public class FixedDurationFeatureBucketStrategyFactory implements FeatureBucketStrategyFactory{
-	public static final String	STRATEGY_TYPE = 	"fixed_duration";
-	private static final String	JSON_CONF_DURATION_IN_SECONDS_CONFS_FIELD_NAME = 	"durationInSeconds";
+	public static final String	STRATEGY_TYPE = "fixed_duration";
+	private static final String	JSON_CONF_DURATION_IN_SECONDS_CONFS_FIELD_NAME = "durationInSeconds";
 
 	@Override
 	public FeatureBucketStrategy createFeatureBucketStrategy(StrategyJson strategyJson) throws JsonMappingException {
