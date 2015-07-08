@@ -6,13 +6,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.Index.Duplicates;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import com.mongodb.WriteResult;
-
-import fortscale.domain.core.User;
 
 
 
@@ -58,7 +59,17 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore {
 	}
 	
 	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket){
-		mongoTemplate.save(featureBucket, getCollectionName(featureBucketConf));
+		String collectionName = getCollectionName(featureBucketConf);
+		if (!isCollectionExist(collectionName)) {
+			mongoTemplate.createCollection(collectionName);
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(FeatureBucket.BUCKET_ID_FIELD,Direction.DESC).unique(Duplicates.DROP));
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(FeatureBucket.STRATEGY_ID_FIELD,Direction.DESC));
+		}
+		mongoTemplate.save(featureBucket, collectionName);
+	}
+	
+	private boolean isCollectionExist(String collectionName){
+		return mongoTemplate.collectionExists(collectionName);
 	}
 	
 	private String getCollectionName(FeatureBucketConf featureBucketConf){
