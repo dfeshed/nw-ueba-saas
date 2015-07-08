@@ -1,0 +1,15 @@
+/**
+ * @file sa-app-spinner
+ * The (singleton) animated element that indicates the app is loading upon startup.
+ */
+
+/* The root element, typically an SVG rsa-spinner. Centered horiz & vertically. */
+#sa-app-spinner {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 0;     /* to avoid overlapping any dynamically generated content (e.g., routes). */
+}

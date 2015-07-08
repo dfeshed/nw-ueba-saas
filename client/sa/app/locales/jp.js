@@ -1,26 +1,26 @@
 export default {
-	languages:{
-		en:"jp_English",
-		jp:"jp_Japanese",
-		prompt:"jp_Change locale"
+	languages: {
+		en: "jp_English",
+		jp: "jp_Japanese",
+		prompt: "jp_Change locale"
 	},
-	sa:{
+	sa: {
 		title:"jp_SA",
 		version:"11"
 	},
-	index:{
+	index: {
 		title: "jp_Home",
-		details: "jp_Index"
+		details: "jp_Home contents go here."
 	},
 	explorer: {
-		title: "jp_Threat explorer",
-		details: "jp_Threat details"
+		title: "jp_Explorer",
+		details: "jp_Explorer contents go here."
 	},
-	incident: {
+	incidents: {
 		title: "jp_Incidents",
-		details: "jp_Incident details"
+		details: "jp_Incidents contents go here."
 	},
-	login:{
+	login: {
 		loginTitle: "jp_Login",
 		passwordTitle: "jp_Password",
 		loginPrompt:"jp_Enter username",
@@ -30,8 +30,8 @@ export default {
 		genericError: "jp_There was an error processing your request. Please try again",
 		logoutTitle: "jp_Logout"
 	},
-	about:{
-		aboutTile: "jp_About",
+	about: {
+		title: "jp_About",
 		appName: "jp_App",
 		appVersion: "jp_Version"
 	}

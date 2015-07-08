@@ -1,0 +1,41 @@
+/**
+ * @file RSA Spinner component styling.
+ * RSA Spinner is an SVG circular arc that appears to expand & contract its length as it rotates
+ * about its center point.
+ */
+
+@import 'tea-cup-spin';
+@import 'rotate-360';
+
+/* The root element, typically a square-shaped SVG node. Other CSS rules can overwrite these defaults. */
+.rsa-spinner {
+    width: 56px;
+    height: 56px;
+
+    /* SVG circle with an animated stroke. */
+    &__circle {
+        stroke: #fff;
+        stroke-width: 0;
+        fill: transparent;
+
+        /* Show animated stroke when data-status is "wait". */
+        &[data-status=wait] {
+            stroke-width: 5px;
+            @include vendor-prefix(animation, tea-cup-spin 1320ms linear 0s infinite both);
+        }
+    }
+}
+
+
+/*
+@workaround Rules for IE9 and IE10 only. These browsers don't support animating SVG elements, so we use different
+styling which renders (non-animated) dashes, and then rotates the entire SVG container as a whole.
+*/
+@media screen and (min-width:0\0) {
+    .rsa-spinner[data-status=wait] {
+        -ms-animation: rotate-360 2s linear 0s infinite both;
+    }
+    .rsa-spinner__circle {
+        stroke-dasharray: 10, 10;
+    }
+}

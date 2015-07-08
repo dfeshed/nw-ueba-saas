@@ -14,12 +14,27 @@ module.exports = function(environment) {
     },
     'ember-cli-mirage':  {},
     APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
-      defaultLocale:'en'
+        // Here you can pass flags/options to your application instance
+        // when it is created
+        defaultLocale:'en',
+
+        // Optional artificial delay (in millisec) for testing the app's loading animation.
+        // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
+        // delete the initializer, remove this line, or set value to zero.
+        readyDelay: 1500,
+
+        // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
+        // Should match a DOM node in index.html.
+        // Used by app's ready() handler to find & hide the loading animation.
+        appLoadingSelector: '#sa-app-spinner'
     },
     'simple-auth': {
         authenticate: 'authenticator:sa-authenticator'
+    },
+    contentSecurityPolicy: {
+
+        // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
+        "img-src": "'self' data:"
     }
   };
 

@@ -1,0 +1,43 @@
+/**
+ * @file Application variables and rules; i.e. rules that impact styles across the entire app.
+ */
+
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+    color: #fff;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+}
+
+/* Positions the app's header (nav, toolbar, etc) at the top of the screen. */
+.app-header {
+    position: absolute;
+    top: 0;
+    height: 44px;
+    left: 0;
+    right: 0;
+    z-index: 2; /* @workaround ensures dropdown children will overlay the .app-body sibling */
+    @include flex(row,space-between,center);
+}
+/* Positions the app's body below the app's header. */
+.app-body {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+
+    /*
+    For use with liquid-fire addon:
+    If the sa-app-body class is applied to a liquid-outlet, then the liquid-child that is dynamically
+    generated for that outlet should fill its parent.
+    */
+    & > .liquid-child {
+        width: 100%;
+        height: 100%;
+    }
+}
