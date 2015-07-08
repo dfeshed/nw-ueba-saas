@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -18,7 +17,10 @@ import java.util.UUID;
  */
 @Document(collection = Evidence.COLLECTION_NAME)
 @CompoundIndexes({
-	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false)
+		// index for getting all evidences for specific user
+	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false),
+		// index for making sure our evidence is unique
+	@CompoundIndex(name="unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeField +"': 1}", unique = true)
 })
 public class Evidence extends AbstractDocument{
 
@@ -41,13 +43,16 @@ public class Evidence extends AbstractDocument{
 	public static final String retentionDateField = "retentionDate";
 
 	// attributes
-	public static final String typeField = "type";
 	public static final String nameField = "name";
+	public static final String anomalyTypeField = "anomalyType";
 	public static final String anomalyValueField = "anomalyValue";
 	public static final String dataSourceField = "dataSource";
+	public static final String evidenceTypeField = "evidenceType";
 
 	// The 3 top events
 	public static final String top3eventsField = "top3eventsJsonStr";
+	// number of events in evidence
+	public static final String numOfEventsField = "numOfEvents";
 	// supporting Information
 	public static final String supportingInformationField = "supportingInformation";
 
@@ -74,13 +79,13 @@ public class Evidence extends AbstractDocument{
 	@Field(endDateField)
 	private Long endDate;
 
-	// Expiration: one year
+	// Index for expiration (TTL): one year
 	@Indexed(expireAfterSeconds = 31536000)
 	@Field(retentionDateField)
 	private Long retentionDate;
 
-	@Field(typeField)
-	private String type;
+	@Field(anomalyTypeField)
+	private String anomalyType;
 
 	@Field(nameField)
 	private String name;
@@ -91,6 +96,9 @@ public class Evidence extends AbstractDocument{
 	@Field(dataSourceField)
 	private String dataSource;
 
+	@Field(evidenceTypeField)
+	private EvidenceType evidenceType;
+
 	@Field(scoreField)
 	private Integer score;
 
@@ -100,24 +108,27 @@ public class Evidence extends AbstractDocument{
 	@Field(top3eventsField)
 	private String top3eventsJsonStr;
 
+	@Field(numOfEventsField)
+	private Integer numOfEvents;
 
 	@Field(supportingInformationField)
 	private EvidenceSupportingInformation supportingInformation = new EvidenceSupportingInformation();
 
 	// C-tor
 
-	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate,
-			String type, String name, String anomalyValue, String dataSource, Integer score, Severity severity) {
+	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate, String anomalyType,
+			String name, String anomalyValue, String dataSource, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.type = type;
+		this.anomalyType = anomalyType;
 		this.name = name;
 		this.anomalyValue = anomalyValue;
 		this.dataSource = dataSource;
 		this.score = score;
 		this.severity = severity;
+
 
 		// set retention to start date
 		this.retentionDate = startDate;
@@ -126,7 +137,12 @@ public class Evidence extends AbstractDocument{
 		this.setId(UUID.randomUUID().toString());
 	}
 
-	// For JSON serialization only
+	// used to create references to evidences within alerts (see BasicAlertSubscriber)
+	public Evidence(String id) {
+		this.setId(id);
+	}
+
+	// For JSON serialization
 	public Evidence() {
 	}
 
@@ -138,6 +154,14 @@ public class Evidence extends AbstractDocument{
 
 	public void setTop3eventsJsonStr(String top3eventsJsonStr) {
 		this.top3eventsJsonStr = top3eventsJsonStr;
+	}
+
+	public void setNumOfEvents(Integer numOfEvents) {
+		this.numOfEvents = numOfEvents;
+	}
+
+	public void setEvidenceType(EvidenceType evidenceType) {
+		this.evidenceType = evidenceType;
 	}
 
 	// Getters
@@ -162,8 +186,8 @@ public class Evidence extends AbstractDocument{
 		return retentionDate;
 	}
 
-	public String getType() {
-		return type;
+	public String getAnomalyType() {
+		return anomalyType;
 	}
 
 	public String getName() {
@@ -192,6 +216,14 @@ public class Evidence extends AbstractDocument{
 
 	public String getAnomalyValue() {
 		return anomalyValue;
+	}
+
+	public Integer getNumOfEvents() {
+		return numOfEvents;
+	}
+
+	public EvidenceType getEvidenceType() {
+		return evidenceType;
 	}
 }
 
