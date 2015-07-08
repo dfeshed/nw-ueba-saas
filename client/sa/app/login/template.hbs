@@ -1,20 +1,24 @@
-<div class="page-header">
-    <h1>{{t 'login.loginTitle'}}</h1>
-</div>
-
-<form {{action 'authenticate' on='submit'}}>
-    {{#if errorMessage}}
-        <div>
-            <strong>{{t 'login.errorPrompt'}}:</strong> <span class="login-errormessage">{{errorMessage}}</span>
-        </div>
-    {{/if}}
-    <div class="form-group">
-        <label for="username">{{t 'login.loginTitle'}}</label>
-        {{input value=username placeholder=(t 'login.loginPrompt') class='login-username form-control'}}
-    </div>
-    <div class="form-group">
-        <label for="password">{{t 'login.passwordTitle'}}</label>
-        {{input value=password placeholder=(t 'login.passwordPrompt') class='login-password form-control' type='password'}}
-    </div>
-    <button type="submit" class="login-submit btn btn-default">{{t 'login.loginTitle'}}</button>
-</form>
+<article class="login-screen u-fill-fixed">
+    {{#rsa-curtain classExtra="login-screen__curtain" delay=250 opened=isLoginVisible}}
+        <form class="login-screen__form rsa-curtain__child" autocomplete="off" {{action "authenticate" on="submit"}}>
+            <div class="login-screen__header">
+                {{rsa-logo class="login-screen__rsa-logo" delays="500,1000,1500" title="Security Analytics"}}
+            </div>
+            <div class="login-screen__field bg-pttn-grey-checkers" data-status={{status}}>
+                {{input class="login-screen__uid " type="text" placeholder=(t "login.loginPrompt") value=username autofocus="true"}}
+            </div>
+            <div class="login-screen__field bg-pttn-grey-checkers" data-status={{status}}>
+                {{input class="login-screen__pwd" type="password" placeholder=(t "login.passwordPrompt") value=password}}
+            </div>
+            {{rsa-arrow-button class="login-screen__ok-btn bg-pttn-grey-checkers" type="submit" status=status disabled=isLoginDisabled}}
+        </form>
+    {{/rsa-curtain}}
+    <footer class="login-screen__footer">
+        <section class="login-screen__version">
+            Security Analytics v.11.0.0
+        </section>
+        <section class="login-screen__copyright">
+            &copy;2015 RSA Security LLC. All rights reserved.
+        </section>
+    </footer>
+</article>

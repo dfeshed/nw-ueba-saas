@@ -1,0 +1,86 @@
+/**
+ * @file utilities
+ * General purpose CSS classes.
+ */
+
+/* Floats element to right. */
+.u-right {
+    float: right;
+}
+
+/*
+Sizes an element so that it fills its parent element via absolute positioning.
+Useful when element may have borders, so you don't want to set its width & height to 100%.
+Assumes the element's parent has either relative, absolute or fixed positioning.
+*/
+.u-fill-abs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    /*
+    For use with the liquid-fire addon:
+    If "u-fill-abs" is used on a "liquid-container", the container's child elements should
+    fill the container. However, those children will be dynamically generated at run-time by
+    the liquid-fire addon, so we can't assign them class names directly. As a workaround,
+    this rule sizes them indirectly.
+    */
+    & > .liquid-child {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/*
+Sizes an element so that it fills its parent element via static or relative positioning.
+Useful when the element does not have borders, and its parent has static positioning.
+*/
+.u-fill-static {
+    width: 100%;
+    height: 100%;
+}
+
+/*
+Sizes an element so that it fills the browser window via fixed positioning.
+Useful when element should overlay the entire window's contents, regardless of scroll position.
+*/
+.u-fill-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Applies a flexbox layout to a container element. Handles browser prefixes. */
+@mixin flex($direction, $justify, $align){
+    display: -ms-flexbox;
+    -ms-flex-direction: $direction;
+    -ms-justify-content: $justify;
+    -ms-flex-pack: if($justify == space-between,justify,$justify);
+    -ms-align-items: $align;
+    -ms-flex-align: $align;
+    display: -moz-flex;
+    -moz-flex-direction: $direction;
+    -moz-justify-content: $justify;
+    -moz-align-items: $align;
+    display: -webkit-flex;
+    -webkit-flex-direction: $direction;
+    -webkit-justify-content: $justify;
+    -webkit-align-items: $align;
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+}
+
+/* Applies a name-value CSS pair. Handles browser prefixes. */
+@mixin vendor-prefix($name, $argument...) { /* The "..." enables support for arguments that include commas. */
+    -webkit-#{$name}: #{$argument};
+    -ms-#{$name}: #{$argument};
+    -moz-#{$name}: #{$argument};
+    -o-#{$name}: #{$argument};
+    #{$name}: #{$argument};
+}

@@ -5,32 +5,32 @@
 * @author Srividhya Mahalingam
 */
 
-import Ember from 'ember';
-import ajax from 'ic-ajax';
-import Base from 'simple-auth/authenticators/base';
-import config from 'sa/config/environment';
+import Ember from "ember";
+import ajax from "ic-ajax";
+import Base from "simple-auth/authenticators/base";
+import config from "sa/config/environment";
 
 export default Base.extend({
 
     initialize: function() {
         // Force the client to always attempt to restore an existing session in case the
         // server-side session is still valid.
-        if (config['simple-auth'].store === 'simple-auth-session-store:localStorage') {
-            var key = 'ember_simple_auth:session';
+        if (config["simple-auth"].store === "simple-auth-session-store:localStorage") {
+            var key = "ember_simple_auth:session";
             if (localStorage.getItem(key) === null) {
                 var token = {
                     secure: {
-                        authenticator: 'authenticator:sa-authenticator'
+                        authenticator: "authenticator:sa-authenticator"
                     }
                 };
                 localStorage.setItem(key, JSON.stringify(token));
             }
         }
-    }.on('init'),
+    }.on("init"),
 
     getInfo: function() {
         return new Ember.RSVP.Promise(function(resolve, reject) {
-            ajax('/api/info').then(function(data) {
+            ajax("/api/info").then(function(data) {
                 resolve(data);
             }, reject);
         });
@@ -50,7 +50,7 @@ export default Base.extend({
             Ember.$.ajax({
                 type: "POST",
                 contentType: "application/json",
-                url: '/api/user/login?username='+credentials.username+'&password='+credentials.password
+                url: "/api/user/login?username="+credentials.username+"&password="+credentials.password
             }).then(function(response) {
                 Ember.run(function() {
                     resolve(response);
@@ -69,7 +69,7 @@ export default Base.extend({
     invalidate() {
         Ember.$.ajax({
             type: "POST",
-            url: '/api/user/logout'
+            url: "/api/user/logout"
         });
         return Ember.RSVP.resolve();
     }

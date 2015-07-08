@@ -3,8 +3,8 @@
  * @author Srividhya Mahalingam
  */
 
-import Mirage  from 'ember-cli-mirage';
+import Mirage  from "ember-cli-mirage";
 
 export default Mirage.Factory.extend({
-    versionNumber:'10.6'
+    versionNumber: "10.6"
 });

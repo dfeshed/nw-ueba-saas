@@ -1,22 +1,16 @@
-{{#if session.isAuthenticated}}
-    <h2 id="title">{{t 'sa.title'}} {{t 'sa.version'}}</h2>
-    {{#link-to "index"}}{{t 'index.title'}}{{/link-to}}
-
-    {{#link-to "explorer"}}{{t 'explorer.title'}}{{/link-to}}
-
-    {{#link-to "incidents"}}{{t 'incident.title'}}{{/link-to}}
-
-    {{#link-to "about"}}{{t 'about.aboutTile'}}{{/link-to}}
-
-    <a class="logout" {{ action "invalidateSession" }}>{{t 'login.logoutTitle'}}</a>
-
-    <div class="right">
-        {{render "i18n"}}
-    </div>
-    <div id="sa-content" class="sa-content">
-        {{outlet}}
-    </div>
-
-{{else}}
-    {{render "login"}}
-{{/if}}
+<header class="app-header">
+    {{#if session.isAuthenticated}}
+        <h1 class="app-header__title">{{t "sa.title"}} {{t "sa.version"}}</h1>
+        <nav class="app-header__nav">
+            {{#link-to "index"}}{{t "index.title"}}{{/link-to}}
+            {{#link-to "explorer"}}{{t "explorer.title"}}{{/link-to}}
+            {{#link-to "incidents"}}{{t "incidents.title"}}{{/link-to}}
+            {{#link-to "about"}}{{t "about.title"}}{{/link-to}}
+        </nav>
+        <section class="app-header__tools">
+            {{render "i18n"}}
+            <button {{ action "invalidateSession" }}>{{t "login.logoutTitle"}}</button>
+        </section>
+    {{/if}}
+</header>
+{{liquid-outlet class="app-body"}}

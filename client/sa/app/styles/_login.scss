@@ -1,0 +1,126 @@
+/**
+ * @file login screen styles
+ */
+
+@import 'shake-x';
+@import 'fade-in';
+@import 'bg-pttn-grey-checkers';
+
+.login-screen {
+
+    &__curtain {
+        /* Sizes and centers the login curtain and its contents. */
+        width: 300px;
+        height: 300px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        z-index: 2;
+
+        &__clip-path {
+            /* This is the background we see when the curtain is opened. */
+            background-color: rgba(0,0,0,.3);
+        }
+
+    }
+
+    &__form {
+        /*
+        Sizes and centers the login form within the login curtain. Assumes .rsa-curtain__child is also applied,
+        and therefore we can center this element by applying an equal width & height, plus a margin-left & -top that
+        are negative half of that width/height.
+        */
+        width: 300px;
+        height: 300px;
+        margin-left: -150px;
+        margin-top: -150px;
+        @include flex(column, center, center);
+        position: relative;
+    }
+
+    &__header {
+        /* Contains the RSA logo. */
+        width: 100%;    /* @workaround: don't use a fixed width, it'll cause shaking in Chrome */
+        text-align: center;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
+
+    &__rsa-logo {
+        /*
+        position: relative;
+        z-index: 2;
+        */
+        margin-left: 7px;  /* fudge factor, to compensate because logo is not horizontally symmetrical */
+    }
+
+    &__field {
+        /* Container for each of: username input & password text inputs. */
+        padding: 4px;
+        text-align: left;
+        border-radius: 32px;
+        overflow: hidden;
+        margin: 4px 0;
+        width: 124px;
+        display: block;
+
+        &[data-status=error] {
+            @include vendor-prefix(animation, shake-x 1200ms ease-in-out 0s 1 both);
+        }
+    }
+
+    &__uid,
+    &__pwd {
+        /* Text inputs for username & password. */
+        position: relative;
+        z-index: 2;
+        border-radius: 22px;
+        border: 1px solid transparent;
+        background-color: #202020;
+        padding: 8px 11px 6px;
+        color: #fff;
+        width: 100px;
+
+        &:focus,
+        &:hover {
+            border-color: #666;
+        }
+    }
+
+    &__ok-btn {
+        display: block;
+        overflow: hidden;
+        border-radius: 30px;
+        border: 1px solid transparent;
+        margin: 8px 0 0 0;
+        height: 28px;
+        width: 46px;
+        line-height: 28px;  /* to center & align the "OK" and "wait" animation */
+        font-size: 18px;
+        text-align: center;
+
+        &:hover,
+        &:focus {
+            border-color: #666;
+        }
+    }
+
+    & .rsa-arrow--disabled__path {
+        fill: #000;
+    }
+
+    &__footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        @include flex(row, space-between, center);
+        color: #999;
+        padding: 8pt;
+        font-size: 8pt;
+        @include vendor-prefix(animation, fade-in 1s linear 2s 1 both);
+    }
+}

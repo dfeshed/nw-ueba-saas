@@ -1,0 +1,55 @@
+/**
+ * @file RSA Curtain component styling.
+ * RSA Curtain is container for hiding contents, and then animating their entrance/exit as the
+ * curtain grows/shrinks its size. Typically styled as a circle, like a pinhole.
+ */
+
+/*
+Transparent placeholder box that will position its contents absolutely, so that the contents' size
+can be animated without disrupting the DOM's flow. Should be set to the final size of the component after
+it has finished animating.  Child element rules assume this.width = this.height.
+*/
+.rsa-curtain {
+    position: relative; /* used for centering the child elements; could be absolute|fixed, but can't be static */
+
+    /*
+    Container for content that will be animated. Its size matches its parent node's size.
+    */
+    &__floater {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        overflow: visible;  /* To avoid clipping its animated child while it (temp) grows larger than this. */
+    }
+
+    /*
+    Circle that defines the clip path. Anything outside the circle is not visible. Should be animated by javascript
+    from size 0 to size 100% so that it fills its parent node.
+    */
+    &__clip-path {
+        border-radius: 3000px;  /* ensures its a circle by using a value > any size we'd use */
+        overflow: hidden;       /* ensures content outside the circle is hidden */
+
+        /* centers it within its parent node; if width & height get animated, then so must left & top too */
+        position: absolute;
+        width: 0;
+        height: 0;
+        top: 50%;
+        left: 50%;
+    }
+
+    /*
+    Helper class to be applied to the direct child node of the rsa-curtain.
+    Centers it within parent node, when joined with corresponding rules that set the width & height to
+    some fixed size, plus margin-left and margin-top = -1 * (that size) / 2.
+    */
+    &__child {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border-radius: 3000px;  /* ensures its a circle by using a value > any size we'd use */
+    }
+}
+

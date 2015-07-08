@@ -1,0 +1,17 @@
+/**
+ * @file RSA Arrow component styling.
+ * RSA Arrow is an SVG rendering of a right-facing arrow that can be rotated & rescaled to any size.
+ */
+
+/* The root element, typically a square-shaped SVG node. Other CSS rules can overwrite these defaults. */
+.rsa-arrow {
+    width: 56px;
+    height: 56px;
+
+    /* SVG arrow path. */
+    &__path {
+        fill: #fff;
+        stroke-width: 0;
+    }
+}
+

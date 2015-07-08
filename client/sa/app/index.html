@@ -15,6 +15,12 @@
     {{content-for 'head-footer'}}
   </head>
   <body>
+
+    <!-- Animated DOM to be shown while app is loading: -->
+    <svg id="sa-app-spinner" class="rsa-spinner" data-status="wait">
+      <circle class="rsa-spinner__circle" data-status="wait" cx="28" cy="28" r="25" />
+    </svg>
+
     {{content-for 'body'}}
 
     <script src="assets/vendor.js"></script>
