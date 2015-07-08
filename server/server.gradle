@@ -16,6 +16,9 @@ buildscript {
 }
 
 subprojects {
+    apply plugin: 'checkstyle'
+    apply plugin: 'findbugs'
+    apply plugin: "jacoco"
     apply plugin: 'java'
 
     archivesBaseName = "sa-ui-" + archivesBaseName
@@ -44,6 +47,27 @@ subprojects {
         from(sourceSets.main.resources) {
             include "**/*.yml"
             expand project.properties
+        }
+    }
+
+    checkstyle {
+        toolVersion = '6.7'
+        configFile = new File(project(':server').projectDir, 'checkstyle.xml')
+    }
+
+    findbugs {
+        toolVersion = "3.0.1"
+    }
+    findbugsMain {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+    }
+    findbugsTest {
+        reports {
+            xml.enabled = false
+            html.enabled = true
         }
     }
 }

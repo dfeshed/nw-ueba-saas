@@ -14,7 +14,7 @@ public class Application {
 
     /**
      * The application main entry point.
-     * @param args
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         new SpringApplicationBuilder()

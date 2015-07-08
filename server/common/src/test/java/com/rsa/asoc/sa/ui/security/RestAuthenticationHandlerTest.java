@@ -59,7 +59,7 @@ public class RestAuthenticationHandlerTest {
         Mockito.verify(response).setStatus(HttpServletResponse.SC_CREATED);
         Mockito.verify(response).setContentType(MediaType.APPLICATION_JSON.toString());
 
-        Assert.assertEquals("admin", JsonPath.read(outputStream.toString(), "$.name"));
+        Assert.assertEquals("admin", JsonPath.read(outputStream.toString("UTF-8"), "$.name"));
     }
 
     @Test
