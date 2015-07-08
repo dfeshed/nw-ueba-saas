@@ -28,6 +28,18 @@ subprojects {
         jcenter()
     }
 
+    dependencies {
+        compile("org.springframework.boot:spring-boot-starter-jetty:${springBootVersion}")
+        compile("org.springframework.boot:spring-boot-starter-security:${springBootVersion}")
+        compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+        compile("org.yaml:snakeyaml:${yamlVersion}")
+
+        testCompile("com.jayway.jsonpath:json-path:${jsonPathVersion}")
+        testCompile("junit:junit:${junitVersion}")
+        testCompile("org.mockito:mockito-core:${mockitoVersion}")
+        testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    }
+
     processResources {
         from(sourceSets.main.resources) {
             include "**/*.yml"
