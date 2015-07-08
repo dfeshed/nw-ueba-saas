@@ -22,6 +22,7 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.mongodb.core.MongoOperations;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -39,20 +40,11 @@ import static fortscale.utils.ConversionUtils.*;
  */
 public class EvidenceCreationTask extends AbstractStreamTask {
 
-	/**
-	 * The level DB store name
-	 */
-	private static final String storeName = "evidences";
 
 	/**
 	 * Logger
 	 */
 	private static Logger logger = LoggerFactory.getLogger(EvidenceCreationTask.class);
-
-	/**
-	 * The level DB store: ID to evidence
-	 */
-	protected KeyValueStore<String, Evidence> store;
 
 	/**
 	 * Evidences service (for Mongo export)
@@ -89,9 +81,6 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-
-		// Get the levelDB store
-		store = (KeyValueStore<String, Evidence>) context.getStore(storeName);
 
 		// Get the user service (for Mongo) from spring
 		evidencesService = SpringService.getInstance().resolve(EvidencesService.class);
@@ -173,11 +162,16 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 				evidence.setNumOfEvents(1);
 				evidence.setEvidenceType(EvidenceType.AnomalySingleEvent);
 
-				// Save evidence to levelDB
-				store.put(evidence.getId(), evidence);
+				// Save evidence to MongoDB
+				try {
+					evidencesService.saveEvidenceInRepository(evidence);
+				} catch (DuplicateKeyException e) {
+					logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.getName());
+					// In case this evidence is duplicated, we don't send it to output topic and continue to next score
+					continue;
+				}
 
-				// Send evidence to output inputTopic
-
+				// Send evidence to output topic
 				try {
 					collector.send(
 							new OutgoingMessageEnvelope(
@@ -227,12 +221,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-
-		// copy level DB to mongo DB
-		if (evidencesService !=null) {
-			copyLevelDbToMongoDB();
-		}
-
+		// nothing
 	}
 
 	/**
@@ -241,43 +230,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 */
 	@Override
 	protected void wrappedClose() throws Exception {
-
-		// copy level DB to mongo DB
-		if (evidencesService != null) {
-			copyLevelDbToMongoDB();
-		}
-		evidencesService = null;
-
+		// nothing
 	}
-
-
-	/**
-	 * Go over all users in the last-activity map and write them to Mongo
-	 */
-	private void copyLevelDbToMongoDB() {
-
-		KeyValueIterator<String, Evidence> iter = store.all();
-
-		List<String> evidences = new LinkedList<>();
-		while (iter.hasNext()) {
-			Entry<String, Evidence> evidence = iter.next();
-			// update evidence in mongo
-			try {
-				evidencesService.saveEvidenceInRepository(evidence.getValue());
-			} catch (DuplicateKeyException e) {
-				logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.getValue().getName());
-			}
-			evidences.add(evidence.getKey());
-		}
-		iter.close();
-
-		// remove from store all users after they were copied to Mongo
-		for (String evidence : evidences) {
-			store.delete(evidence);
-		}
-
-	}
-
 
 	/**
 	 * Private class for saving data-source specific configuration in-memory
