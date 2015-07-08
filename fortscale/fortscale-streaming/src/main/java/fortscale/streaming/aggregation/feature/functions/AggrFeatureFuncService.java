@@ -3,6 +3,7 @@ package fortscale.streaming.aggregation.feature.functions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import fortscale.streaming.service.aggregation.feature.event.AggrFeatureEventConf;
 import fortscale.utils.logging.Logger;
 import org.eclipse.jdt.internal.core.Assert;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 
 @Service
-public class AggrFeatureFuncService implements IAggrFeatureFunctionsService {
+public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAggrFeatureEventFunctionsService {
     private static final Logger logger = Logger.getLogger(AggrFeatureFuncService.class);
 
     private Map<String, AggrFeatureFunction> aggrFunctions = new HashMap<>();
@@ -59,6 +60,20 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService {
             }
         }
         return aggrFeatures;
+    }
+
+    /**
+     * Create new feature by running the associated {@link AggrFeatureFunction} that is configured in the given
+     * {@link AggregatedFeatureConf} and using the aggregated features as input to those functions.
+     *
+     * @param aggrFeatureEventConf                    the specification of the feature to be created
+     * @param multipleBucketsAggrFeaturesMapList list of aggregated feature maps from multiple buckets
+     * @return a new feature created by the relevant function.
+     */
+    @Override
+    public Feature calculateAggrFeature(AggrFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
+        return null;
+        //TODO: implement
     }
 
     private AggrFeatureFunction getAggrFeatureFunction(@NotNull AggregatedFeatureConf aggregatedFeatureConf) {
