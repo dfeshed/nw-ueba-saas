@@ -20,7 +20,9 @@
       {
         "name": "vpn_session",
         "type": "vpn_session",
-        "params": {"maxSessionDuration": 14400}
+        "params": {
+          "maxSessionDuration": 14400
+        }
       }
     ]
   }
