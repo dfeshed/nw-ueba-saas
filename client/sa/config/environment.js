@@ -21,7 +21,7 @@ module.exports = function(environment) {
         // Optional artificial delay (in millisec) for testing the app's loading animation.
         // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
         // delete the initializer, remove this line, or set value to zero.
-        readyDelay: 1500,
+        readyDelay: 0, //1500,
 
         // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
         // Should match a DOM node in index.html.

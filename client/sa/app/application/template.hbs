@@ -9,7 +9,7 @@
         </nav>
         <section class="app-header__tools">
             {{render "i18n"}}
-            <button {{ action "invalidateSession" }}>{{t "login.logoutTitle"}}</button>
+            <button class="app-header__logout" {{ action "invalidateSession" }}>{{t "login.logoutTitle"}}</button>
         </section>
     {{/if}}
 </header>

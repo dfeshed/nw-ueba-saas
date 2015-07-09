@@ -2,7 +2,7 @@ import { moduleForComponent, test } from "ember-qunit";
 
 moduleForComponent("rsa-arrow-button", "Unit | Component | rsa arrow button", {
     // Specify the other units that are required for this test
-    // needs: ["component:foo", "helper:bar"],
+    needs: ["component:rsa-arrow", "component:rsa-spinner"],
     unit: true
 });
 

@@ -19,8 +19,9 @@ test('visiting /index and check text', function(assert) {
 
     andThen(function() {
         assert.equal(currentPath(), 'index');
-        var content = find('div.sa-content');
-        assert.equal(content.text().trim(), 'Index');
+        var content = find(".app-body .liquid-child");
+        assert.ok(content.length, "Could not find the explorer container DOM.");
+        assert.equal(content.text().trim(), "Home contents go here.", "Unexpected contents in DOM.");
     });
 
 });
