@@ -58,8 +58,8 @@ public class ApiAlertsControllerTest {
 	public void list_all_alerts() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", "rule1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
@@ -72,7 +72,7 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"cause\":\"a\",\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAll(any(PageRequest.class));
 	}
 
@@ -80,8 +80,8 @@ public class ApiAlertsControllerTest {
 	public void list_all_alerts_without_request_params() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", "rule1", null, "a", 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", "rule1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", "rule1", null, 90, Severity.Critical, AlertStatus.Accepted, "a"));
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
@@ -94,7 +94,7 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"cause\":\"a\",\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"rule\":\"rule1\",\"evidences\":null,\"score\":90,\"severity\":\"Critical\",\"status\":\"Accepted\",\"comment\":\"a\"}"));
 		verify(alertsDao).findAll(any(PageRequest.class));
 	}
 
@@ -109,7 +109,6 @@ public class ApiAlertsControllerTest {
 				"        \"entityName\": \"user11\",\n" +
 				"        \"rule\": \"rule1\",\n" +
 				"        \"evidences\": null,\n" +
-				"        \"cause\": \"a\",\n" +
 				"        \"score\": 90,\n" +
 				"        \"severity\": \"Critical\",\n" +
 				"        \"status\": \"Accepted\",\n" +
@@ -140,7 +139,6 @@ public class ApiAlertsControllerTest {
 				"        \"entityName\": \"user11\",\n" +
 				"        \"rule\": \"rule1\",\n" +
 				"        \"evidences\": null,\n" +
-				"        \"cause\": \"a\",\n" +
 				"        \"score\": 90,\n" +
 				"        \"severity\": \"Critical\",\n" +
 				"        \"status\": \"Accepted\",\n" +

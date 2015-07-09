@@ -76,7 +76,7 @@
 		<mavanagaiata.version>0.7.0</mavanagaiata.version>
         <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<maven-download-plugin.version>1.1.0</maven-download-plugin.version>
-		<esper-version>5.2.0</esper-version>
+
 	</properties>
 
 	<dependencies>
@@ -178,12 +178,7 @@
 			</exclusions>
 		</dependency>
 
-		<!-- esper - CEP -->
-		<dependency>
-			<groupId>com.espertech</groupId>
-			<artifactId>esper</artifactId>
-			<version>${esper-version}</version>
-		</dependency>
+
 
 		<!-- grizzled slf4j dependency needed in order to extend samza scala classes -->
 		<dependency>
