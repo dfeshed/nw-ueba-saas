@@ -135,12 +135,6 @@
             <version>${json-smart.version}</version>
         </dependency>
 
-		<!-- esper - CEP -->
-		<dependency>
-			<groupId>com.espertech</groupId>
-			<artifactId>esper</artifactId>
-			<version>${esper-version}</version>
-		</dependency>
 
     </dependencies>
 

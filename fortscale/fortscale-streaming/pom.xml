@@ -178,7 +178,11 @@
 			</exclusions>
 		</dependency>
 
-
+		<!-- esper - CEP -->
+		<dependency>
+			<groupId>com.espertech</groupId>
+			<artifactId>esper</artifactId>
+		</dependency>
 
 		<!-- grizzled slf4j dependency needed in order to extend samza scala classes -->
 		<dependency>
