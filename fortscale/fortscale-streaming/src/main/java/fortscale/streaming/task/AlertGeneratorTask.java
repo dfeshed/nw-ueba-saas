@@ -5,6 +5,7 @@ import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.minidev.json.JSONObject;
 import fortscale.domain.core.Evidence;
 import fortscale.services.AlertsService;
 import fortscale.streaming.alert.subscribers.AlertSubscriber;
@@ -72,9 +73,6 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 		Configuration esperConfig = new Configuration();
 
 		alertsService = SpringService.getInstance().resolve(AlertsService.class);
-
-		// creating the esper configuration
-		Configuration esperConfig = new Configuration();
 
 		// define package for Esper event type, each new event type should be part of this package
 		esperConfig.addEventTypeAutoName("fortscale.domain.core");
