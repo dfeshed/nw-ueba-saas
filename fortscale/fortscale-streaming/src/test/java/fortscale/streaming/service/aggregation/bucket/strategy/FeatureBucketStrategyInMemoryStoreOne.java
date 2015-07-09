@@ -18,7 +18,7 @@ public class FeatureBucketStrategyInMemoryStoreOne implements FeatureBucketStrat
 		// Assume that the list is in ascending order over the start time
 		for (int i = strategyDataList.size() - 1; i >= 0; i--) {
 			FeatureBucketStrategyData featureBucketStrategyData = strategyDataList.get(i);
-			if (featureBucketStrategyData.getStartTime() < latestStartTime) {
+			if (featureBucketStrategyData.getStartTime() <= latestStartTime) {
 				return featureBucketStrategyData;
 			}
 		}

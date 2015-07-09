@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 public class UserInactivityFeatureBucketStrategyFactory extends	AbstractUserInactivityFeatureBucketStrategyFactory {
 	@Autowired
 	private FeatureBucketStrategyStore featureBucketStrategyStore;

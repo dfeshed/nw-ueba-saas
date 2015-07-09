@@ -1,5 +1,6 @@
 package fortscale.streaming.service.aggregation.bucket.strategy.samza;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
@@ -12,6 +13,8 @@ import fortscale.streaming.service.aggregation.bucket.strategy.UserInactivityFea
 @Configurable(preConstruction = true)
 public class FeatureBucketStrategiesFactorySamza extends FeatureBucketStrategiesFactory {
 	
+	@Autowired
+	private UserInactivityFeatureBucketStrategyFactory userInactivityFeatureBucketStrategyFactory;
 
 	public FeatureBucketStrategiesFactorySamza(ExtendedSamzaTaskContext context) {
 		// FeatureBucketStrategyStore bucketStrategyStore = new FeatureBucketStrategyLevelDbStore(context);
@@ -25,7 +28,7 @@ public class FeatureBucketStrategiesFactorySamza extends FeatureBucketStrategies
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		registerFeatureBucketStrategyFactory(FixedDurationFeatureBucketStrategyFactory.STRATEGY_TYPE, new FixedDurationFeatureBucketStrategyFactory());
-		registerFeatureBucketStrategyFactory(AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, new UserInactivityFeatureBucketStrategyFactory());
+		registerFeatureBucketStrategyFactory(AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE, userInactivityFeatureBucketStrategyFactory);
 		super.afterPropertiesSet();
 	}
 }

@@ -260,12 +260,12 @@ public class EventsFromDataTableToStreamingJob extends FortscaleJob {
         query.limitAndSort(new ImpalaPageRequest(1, new Sort(Direction.DESC, epochtimeField)));
         List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
         if (resultsMap == null || resultsMap.size() == 0) {
-            return 0;
+            return timestampCursor;
         }
         Map<String, Object> result = resultsMap.get(0);
         Object latestEpochTimeField = result.get(epochtimeField);
         if (latestEpochTimeField == null) {
-            return 0;
+            return timestampCursor;
         }
         destinationTableLatestTime = ConversionUtils.convertToLong(latestEpochTimeField);
         return timestampCursor - destinationTableLatestTime;
