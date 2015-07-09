@@ -30,6 +30,8 @@ import static org.mockito.Mockito.when;
 public class AlertsRepositoryImplTest {
 
 	@Mock
+	private HttpServletRequest httpRequest;
+	@Mock
 	private MongoTemplate mongoTemplate;
 	@InjectMocks
 	private AlertsRepositoryImpl subject;
@@ -58,6 +60,7 @@ public class AlertsRepositoryImplTest {
 	@Test
 	public void testCount() throws IOException{
 		when (mongoTemplate.count(any(Query.class), eq(Alert.class))).thenReturn(20L);
+		when (httpRequest.getRequestURI()).thenReturn("fortscale.org/api/alerts/");
 		Long count = subject.count(new PageRequest(1,0));
 		assertEquals(new Long(20), count);
 	}

@@ -6,14 +6,11 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.Alert;
 import fortscale.services.AlertsService;
 import fortscale.streaming.alert.subscribers.AlertSubscriber;
 import fortscale.streaming.service.SpringService;
-import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
-import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
@@ -43,25 +40,9 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 	 */
 	protected ObjectMapper mapper = new ObjectMapper();
 	/**
-	 * The time field in the input event
-	 */
-	protected String timestampField;
-	/**
-	 * The username field in the input event
-	 */
-	protected String usernameField;
-	/**
-	 * The score field in the input event
-	 */
-	protected String scoreField;
-	/**
 	 * Alerts service (for Mongo export)
 	 */
 	protected AlertsService alertsService;
-	/**
-	 * Threshold for creating alerts
-	 */
-	protected int scoreThreshold;
 
 
 	@Override protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
@@ -92,18 +73,17 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 
 		alertsService = SpringService.getInstance().resolve(AlertsService.class);
 
-		// get the timestamp field
-		timestampField = getConfigString(config, "fortscale.timestamp.field");
-		// get the username field
-		usernameField = getConfigString(config, "fortscale.events.normalizedusername.field");
-		// get the score field
-		scoreField = getConfigString(config, "fortscale.events.score.field");
-		// get the threshold for creating evidences
-		scoreThreshold = config.getInt("fortscale.score.threshold");
+		// creating the esper configuration
+		Configuration esperConfig = new Configuration();
 
+		// define package for Esper event type, each new event type should be part of this package
 		esperConfig.addEventTypeAutoName("fortscale.domain.core");
+
+		// define a Esper custom view - use for filtering out of order events from calender pre defined  windows
+		esperConfig.addPlugInView("fortscale","ext_timed_batch","fortscale.streaming.alert.plugins.ExternallyTimedBatchViewFortscaleFactory");
+
+		// creating the Esper service
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
-		epService.getEPAdministrator().createEPL("insert into EvidenceStream select * from Evidence.win:time_batch(30 sec) order by startDate");
 
 
 		// semi ordering preparation step for incoming evidence.

@@ -117,7 +117,7 @@ public class Evidence extends AbstractDocument{
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate, String anomalyType,
-			String name, String anomalyValue, String dataSource, Integer score, Severity severity, EvidenceType evidenceType) {
+			String name, String anomalyValue, String dataSource, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
@@ -128,7 +128,7 @@ public class Evidence extends AbstractDocument{
 		this.dataSource = dataSource;
 		this.score = score;
 		this.severity = severity;
-		this.evidenceType = evidenceType;
+
 
 		// set retention to start date
 		this.retentionDate = startDate;
@@ -137,7 +137,12 @@ public class Evidence extends AbstractDocument{
 		this.setId(UUID.randomUUID().toString());
 	}
 
-	// For JSON serialization only
+	// used to create references to evidences within alerts (see BasicAlertSubscriber)
+	public Evidence(String id) {
+		this.setId(id);
+	}
+
+	// For JSON serialization
 	public Evidence() {
 	}
 
