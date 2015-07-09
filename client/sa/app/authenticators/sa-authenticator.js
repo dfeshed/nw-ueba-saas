@@ -49,8 +49,8 @@ export default Base.extend({
         return new Ember.RSVP.Promise(function(resolve, reject) {
             Ember.$.ajax({
                 type: "POST",
-                contentType: "application/json",
-                url: "/api/user/login?username="+credentials.username+"&password="+credentials.password
+                url: "/api/user/login",
+                data: credentials
             }).then(function(response) {
                 Ember.run(function() {
                     resolve(response);
