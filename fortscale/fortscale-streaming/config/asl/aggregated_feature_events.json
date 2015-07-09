@@ -1,0 +1,31 @@
+{
+  "AggregatedFeatureEvents": {
+    "Events": [
+      {
+        "name": "",
+        "bucketConfName": "",
+        "numberOfBuckets": 0,
+        "bucketsLeap": 0,
+        "waitAfterBucketCloseSeconds": 0,
+        "aggregatedFeatureNamesList": [
+          "aggregatedFeatureName1",
+          "aggregatedFeatureName2",
+          "aggregatedFeatureName3"
+        ],
+        "aggregatedFeatureNamesMap": {
+          "functionFieldName1": "aggregatedFeatureName1",
+          "functionFieldName2": "aggregatedFeatureName2",
+          "functionFieldName3": "aggregatedFeatureName3"
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "",
+          "params": {
+            "param1": "valueOfParam1",
+            "param2": "valueOfParam2",
+            "param3": "valueOfParam3"
+          }
+        }
+      }
+    ]
+  }
+}
