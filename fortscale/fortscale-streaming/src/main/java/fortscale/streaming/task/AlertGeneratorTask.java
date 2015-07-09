@@ -58,7 +58,7 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 			epService.getEPRuntime().sendEvent(evidence);
 
 		} catch (Exception ex){
-			logger.error("error parsing: " + messageText);
+			logger.error("error parsing: " + messageText, ex);
 		}
 
 	}
