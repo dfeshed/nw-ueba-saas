@@ -13,10 +13,12 @@ module.exports = function(environment) {
       }
     },
     'ember-cli-mirage':  {},
+    'i18n': {
+        defaultLocale:'en',
+    },
     APP: {
         // Here you can pass flags/options to your application instance
         // when it is created
-        defaultLocale:'en',
 
         // Optional artificial delay (in millisec) for testing the app's loading animation.
         // Used by the initializer "ready-delay". After animation has been sufficiently tested, either

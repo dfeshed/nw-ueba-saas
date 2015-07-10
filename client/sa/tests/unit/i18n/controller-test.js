@@ -1,21 +1,24 @@
 import { moduleFor, test } from "ember-qunit";
 import Ember from "ember";
-import initializer from "sa/instance-initializers/ember-i18n";
+import startApp from "sa/tests/helpers/start-app";
 
 moduleFor("controller:i18n", {
-    integration: true,
-
-    setup() {
-      initializer.initialize(this);
-    }
+    integration: true
 });
+
 test("i18n actions", function(assert) {
     assert.expect(2);
+    var App = startApp(null, assert);
+    var i18n = App.__container__.lookup('service:i18n');
+
     var ctrl = this.subject();
+    ctrl.i18n = i18n;
+
     ctrl.send("changeLocale", "jp");
-    var appLocale = this.container.lookup("service:i18n").get("locale");
+    var appLocale = i18n.get("locale");
     assert.equal(appLocale, "jp");
+
     ctrl.send("changeLocale", "en");
-    appLocale = this.container.lookup("service:i18n").get("locale");
+    appLocale = i18n.get("locale");
     assert.equal(appLocale, "en");
 });
