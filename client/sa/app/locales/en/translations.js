@@ -5,8 +5,9 @@ export default {
         prompt: "Change locale"
     },
     sa: {
-        title: "SA",
-        version: "11"
+        title: "Security Analytics",
+        version: "v.11.0.0",
+        copyright: "&copy;2015 RSA Security LLC. All rights reserved."
     },
     index: {
         title: "Home",

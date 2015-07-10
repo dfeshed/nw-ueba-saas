@@ -2,7 +2,7 @@
     {{#rsa-curtain classExtra="login-screen__curtain" delay=250 opened=isLoginVisible}}
         <form class="login-screen__form rsa-curtain__child" autocomplete="off" {{action "authenticate" on="submit"}}>
             <div class="login-screen__header">
-                {{rsa-logo class="login-screen__rsa-logo" delays="500,1000,1500" title="Security Analytics"}}
+                {{rsa-logo class="login-screen__rsa-logo" delays="500,1000,1500" title=(t "sa.title")}}
             </div>
             <div class="login-screen__field bg-pttn-grey-checkers" data-status={{status}}>
                 {{input class="login-screen__uid" type="text" placeholder=(t "login.loginPrompt") value=username autofocus="true"}}
@@ -15,10 +15,10 @@
     {{/rsa-curtain}}
     <footer class="login-screen__footer">
         <section class="login-screen__version">
-            Security Analytics v.11.0.0
+            {{t "sa.title"}} {{t "sa.version"}}
         </section>
         <section class="login-screen__copyright">
-            &copy;2015 RSA Security LLC. All rights reserved.
+            {{t "sa.copyright"}}
         </section>
     </footer>
 </article>

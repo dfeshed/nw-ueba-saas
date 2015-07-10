@@ -83,7 +83,8 @@ export default Ember.Controller.extend({
 
             var me = this,
                 credentials = this.getProperties("username", "password"),
-                session = this.get("session");
+                session = this.get("session"),
+                i18nHelper = this.get("i18n");
             if (session) {
 
                 // Calls the authenticate function specified in ENV['simple-auth']
@@ -98,7 +99,7 @@ export default Ember.Controller.extend({
                     // Auth failed
                     function(message) {
                         me.set("errorMessage",
-                            me.t(
+                            i18nHelper.t(
                                 (message && message.status === 401) ?
                                     "login.unAuthorized" : "login.genericError"
                             ));

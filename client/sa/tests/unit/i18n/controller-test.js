@@ -1,28 +1,24 @@
-import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
+import { moduleFor, test } from "ember-qunit";
+import Ember from "ember";
+import startApp from "sa/tests/helpers/start-app";
 
-var container, application;
-
-moduleFor('controller:i18n', {
-    // Specify the other units that are required for this test.
-    // needs: ['controller:foo']
+moduleFor("controller:i18n", {
+    integration: true
 });
 
-container = new Ember.Container();
-application = {
-    localeStream: {
-        value: function() {
-            return 'en';
-        },
-        subscribe: function () {}
-    }
-};
+test("i18n actions", function(assert) {
+    assert.expect(2);
+    var App = startApp(null, assert);
+    var i18n = App.__container__.lookup('service:i18n');
 
-container.register('application:main', application, { instantiate: false });
-
-test('i18n actions', function(assert) {
-    assert.expect(1);
     var ctrl = this.subject();
-    ctrl.send('changeLocale', 'jp', application);
-    assert.equal(Ember.get(application, 'locale'), 'jp');
+    ctrl.i18n = i18n;
+
+    ctrl.send("changeLocale", "jp");
+    var appLocale = i18n.get("locale");
+    assert.equal(appLocale, "jp");
+
+    ctrl.send("changeLocale", "en");
+    appLocale = i18n.get("locale");
+    assert.equal(appLocale, "en");
 });
