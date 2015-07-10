@@ -5,9 +5,10 @@ export default {
 		prompt: "jp_Change locale"
 	},
 	sa: {
-		title:"jp_SA",
-		version:"11"
-	},
+        title: "Security Analytics",
+        version: "v.11.0.0",
+        copyright: "jp &copy;2015 RSA Security LLC. All rights reserved."
+    },
 	index: {
 		title: "jp_Home",
 		details: "jp_Home contents go here."
@@ -35,5 +36,4 @@ export default {
 		appName: "jp_App",
 		appVersion: "jp_Version"
 	}
-
 };
