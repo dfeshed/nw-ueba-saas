@@ -10,14 +10,12 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configurable(preConstruction = true)
 public class AggregatedFeatureEventsConfService implements InitializingBean {
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
 	private static final String AGGREGATED_FEATURE_EVENTS_JSON_FIELD_NAME = "AggregatedFeatureEvents";
