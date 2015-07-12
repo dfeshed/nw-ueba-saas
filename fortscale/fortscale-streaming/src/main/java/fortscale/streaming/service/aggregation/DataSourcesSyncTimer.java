@@ -2,28 +2,24 @@ package fortscale.streaming.service.aggregation;
 
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Configurable;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
-
 import java.util.*;
 
-@Configurable(preConstruction = true)
-public class DataSourcesSyncTimer {
+public class DataSourcesSyncTimer implements InitializingBean {
 	private static final int DEFAULT_INITIAL_CAPACITY = 100;
 
 	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
-
-	// Number of seconds between cycles
+	@Value("${fortscale.aggregation.sync.timer.cycle.length.in.seconds}")
 	private long cycleLengthInSeconds;
-	// System start time of last cycle
-	private long lastCycleTime;
-
-	// The epochtime of the latest event ever processed
-	private long lastEventEpochtime;
-	// Time to wait before notifying listeners that are ready to be notified
+	@Value("${fortscale.aggregation.sync.timer.waiting.time.before.notification}")
 	private long waitingTimeBeforeNotification;
+
+	private long lastCycleTime;
+	private long lastEventEpochtime;
 
 	// Priority queue of pending listeners (and their data sources),
 	// sorted according to the awaited notification epochtime
@@ -36,16 +32,14 @@ public class DataSourcesSyncTimer {
 	// The ID that will be given in the next registration
 	private long nextRegistrationId;
 
-	public DataSourcesSyncTimer(long cycleLengthInSeconds, long waitingTimeBeforeNotification) {
-		// Validate input
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.isTrue(StringUtils.isNotBlank(epochtimeFieldName));
 		Assert.isTrue(cycleLengthInSeconds > 0);
 		Assert.isTrue(waitingTimeBeforeNotification >= 0);
 
-		this.cycleLengthInSeconds = cycleLengthInSeconds;
 		lastCycleTime = -1;
-
 		lastEventEpochtime = 0;
-		this.waitingTimeBeforeNotification = waitingTimeBeforeNotification;
 
 		pending = new PriorityQueue<>(DEFAULT_INITIAL_CAPACITY, new EpochtimeComparator());
 		readyForNotification = new PriorityQueue<>(DEFAULT_INITIAL_CAPACITY, new SendingSystemTimeComparator());
@@ -70,7 +64,8 @@ public class DataSourcesSyncTimer {
 		Registration registration = new Registration(listener, dataSources, epochtime, nextRegistrationId);
 		pending.add(registration);
 		idToRegistrationMap.put(nextRegistrationId, registration);
-		return nextRegistrationId++;
+		nextRegistrationId++;
+		return registration.getId();
 	}
 
 	public long updateNotificationRegistration(long registrationId, long epochtime) {
@@ -113,7 +108,7 @@ public class DataSourcesSyncTimer {
 		while (!readyForNotification.isEmpty() && readyForNotification.peek().getSendingSystemTime() <= currentSystemTime) {
 			Registration registration = readyForNotification.poll();
 			idToRegistrationMap.remove(registration.getId());
-			registration.getListener().dataSourcesReachedTime(registration.getDataSources(), registration.getEpochtime());
+			registration.getListener().dataSourcesReachedTime();
 		}
 	}
 

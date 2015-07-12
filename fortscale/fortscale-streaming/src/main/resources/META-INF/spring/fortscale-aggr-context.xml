@@ -9,4 +9,5 @@
 	<bean id="featureBucketStrategyStore" class="fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyMongoStore"/>
 	<bean id="featureBucketsStore" class="fortscale.streaming.service.aggregation.FeatureBucketsMongoStore"/>
 	<bean id="bucketConfigurationService" class="fortscale.streaming.service.aggregation.BucketConfigurationService"/>
+	<bean id="dataSourcesSyncTimer" class="fortscale.streaming.service.aggregation.DataSourcesSyncTimer"/>
 </beans>
