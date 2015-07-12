@@ -1,6 +1,5 @@
 package fortscale.streaming.alert.subscribers;
 
-import com.espertech.esper.client.EPServiceProvider;
 import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
 import parquet.org.slf4j.Logger;
@@ -21,12 +20,10 @@ public class BasicAlertSubscriber implements AlertSubscriber{
     private static Logger logger = LoggerFactory.getLogger(BasicAlertSubscriber.class);
 
     protected AlertsService alertsService;
-    protected String ruleName;
 
     @Override
-    public void init(AlertsService alertsService, String ruleName) {
+    public void init(AlertsService alertsService) {
         this.alertsService = alertsService;
-        this.ruleName = ruleName;
     }
 
     /**
@@ -53,7 +50,7 @@ public class BasicAlertSubscriber implements AlertSubscriber{
                 Double score = (Double) insertStream[0].get("score");
                 Integer roundScore = score.intValue();
                 Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
-                Alert alert = new Alert(title, startDate, endDate, entityType, entityName, ruleName, evidences, roundScore, severity, AlertStatus.Unread, "");
+                Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, roundScore, severity, AlertStatus.Unread, "");
 
                 //Save alert to mongoDB
                 alertsService.saveAlertInRepository(alert);

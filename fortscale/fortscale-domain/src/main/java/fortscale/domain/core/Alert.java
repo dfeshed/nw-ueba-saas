@@ -1,7 +1,5 @@
 package fortscale.domain.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import fortscale.domain.core.*;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -56,8 +54,6 @@ public class Alert extends AbstractDocument implements Serializable {
 	private EntityType entityType;
 	@Field(entityNameField)
 	private String entityName;
-	@Field(ruleField)
-	private String rule;
 	@Field(evidencesField)
 	//this annotation makes mongo to save only reference to evidences, not the evidences themselves.
 	@DBRef
@@ -73,14 +69,13 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Alert() {}
 
-	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName, String rule,
+	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
 				 List<Evidence> evidences, int score, Severity severity, AlertStatus status, String comment) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.entityType = entityType;
 		this.entityName = entityName;
-		this.rule = rule;
 		this.evidences = evidences;
 		this.score = score;
 		this.severity = severity;
@@ -119,14 +114,6 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public void setEntityName(String entityName) {
 		this.entityName = entityName;
-	}
-
-	public String getRule() {
-		return rule;
-	}
-
-	public void setRule(String rule) {
-		this.rule = rule;
 	}
 
 	public List<Evidence> getEvidences() {
