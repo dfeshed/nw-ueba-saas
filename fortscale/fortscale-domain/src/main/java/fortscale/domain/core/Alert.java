@@ -1,7 +1,5 @@
 package fortscale.domain.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import fortscale.domain.core.*;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -36,7 +34,6 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String entityNameField = "entityName";
 	public static final String ruleField = "rule";
 	public static final String evidencesField = "evidences";
-	public static final String causeField = "cause";
 	public static final String scoreField = "score";
 	public static final String severityField = "severity";
 	public static final String statusField = "status";
@@ -57,16 +54,10 @@ public class Alert extends AbstractDocument implements Serializable {
 	private EntityType entityType;
 	@Field(entityNameField)
 	private String entityName;
-	@Field(ruleField)
-	private String rule;
 	@Field(evidencesField)
-
 	//this annotation makes mongo to save only reference to evidences, not the evidences themselves.
 	@DBRef
 	private List<Evidence> evidences;
-
-	@Field(causeField)
-	private String cause;
 	@Field(scoreField)
 	private Integer score;
 	@Field(severityField)
@@ -78,16 +69,14 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Alert() {}
 
-	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName, String rule,
-				 List<Evidence> evidences, String cause, int score, Severity severity, AlertStatus status, String comment) {
+	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
+				 List<Evidence> evidences, int score, Severity severity, AlertStatus status, String comment) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.entityType = entityType;
 		this.entityName = entityName;
-		this.rule = rule;
 		this.evidences = evidences;
-		this.cause = cause;
 		this.score = score;
 		this.severity = severity;
 		this.status = status;
@@ -127,28 +116,12 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.entityName = entityName;
 	}
 
-	public String getRule() {
-		return rule;
-	}
-
-	public void setRule(String rule) {
-		this.rule = rule;
-	}
-
 	public List<Evidence> getEvidences() {
 		return evidences;
 	}
 
 	public void setEvidences(List<Evidence> evidences) {
 		this.evidences = evidences;
-	}
-
-	public String getCause() {
-		return cause;
-	}
-
-	public void setCause(String cause) {
-		this.cause = cause;
 	}
 
 	public Integer getScore() {

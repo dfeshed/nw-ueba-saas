@@ -7,16 +7,25 @@ import com.espertech.esper.client.EPStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Evidence;
 import fortscale.services.AlertsService;
-import fortscale.streaming.alert.subscribers.BasicAlertSubscriber;
+import fortscale.streaming.alert.RuleConfig;
+import fortscale.streaming.alert.subscribers.AlertSubscriber;
 import fortscale.streaming.service.SpringService;
+import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static fortscale.streaming.ConfigUtils.getConfigString;
 
 /**
  * Created by danal on 16/06/2015.
@@ -24,6 +33,10 @@ import parquet.org.slf4j.LoggerFactory;
 public class AlertGeneratorTask extends AbstractStreamTask{
 
 	private static Logger logger = LoggerFactory.getLogger(AlertGeneratorTask.class);
+
+	List<EPStatement> epsStatements = new ArrayList<>();
+
+	Map<String,RuleConfig> rulesConfiguration = new HashMap<>();
 	/**
 	 * Esper service provider
 	 */
@@ -42,18 +55,23 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 			TaskCoordinator coordinator) throws Exception {
 		// parse the message into json
 		String messageText = (String) envelope.getMessage();
-		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) JSONValue.parseWithException(messageText);
+		try {
+			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-		//send evidence to Esper
-		Evidence evidence = mapper.readValue(message.toJSONString(), Evidence.class);
-		epService.getEPRuntime().sendEvent(evidence);
+			//send evidence to Esper
+			Evidence evidence = mapper.readValue(message.toJSONString(), Evidence.class);
+			epService.getEPRuntime().sendEvent(evidence);
+
+		} catch (Exception ex){
+			logger.error("error parsing: " + messageText, ex);
+		}
 
 	}
 
 	@Override protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 	}
 
-	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	@Override protected void wrappedInit(Config config, TaskContext context) {
 		alertsService = SpringService.getInstance().resolve(AlertsService.class);
 
 		// creating the esper configuration
@@ -63,30 +81,48 @@ public class AlertGeneratorTask extends AbstractStreamTask{
 		esperConfig.addEventTypeAutoName("fortscale.domain.core");
 
 		// define a Esper custom view - use for filtering out of order events from calender pre defined  windows
-		esperConfig.addPlugInView("fortscale","ext_timed_batch","fortscale.streaming.alert.plugins.ExternallyTimedBatchViewFortscaleFactory");
+		esperConfig.addPlugInView("fortscale", "ext_timed_batch", "fortscale.streaming.alert.plugins.ExternallyTimedBatchViewFortscaleFactory");
 
 		// creating the Esper service
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
 
-
-		// semi ordering preparation step for incoming evidence.
-		// the ordering is preform in batches of 10 min and is output to a new stream called SemiOrderEvidenceBach - for the use of any other EPL
-		// the assumption that the collector will work in a manner where all event from all data sources for a given entity and time range will arrive to the streaming in a max delay of 10 min.
-		epService.getEPAdministrator().createEPL("insert into SemiOrderEvidenceBach select * from Evidence.win:time_batch(10 min) order by " + Evidence.startDateField);
-
-		// basic Suspicious hourly activity Alert EPL (evidence count > 3)
-		// group evidence according to entity type and name, for each specific entity create hourly windows.
-		// the view assume event are order (but filter out event arriving in delay and are older than the current window time).
-		// the window is closed once an event newer than the window arrive.
-		//this statement output the result for each window in a batch, each row contain a different evidence id, but all the other parameters (score, time, entity name and type) are identical for all the records.
-		EPStatement criticalEventStatement = epService.getEPAdministrator().createEPL("select distinct id,'Suspicious hourly activity' as title,"+Evidence.entityTypeField+","+Evidence.entityNameField+",min("+Evidence.startDateField+") as startDate,max("+Evidence.endDateField+") as endDate,avg("+Evidence.scoreField+") as score from SemiOrderEvidenceBach.std:groupwin("+Evidence.entityTypeField+","+Evidence.entityNameField+").fortscale:ext_timed_batch(startDate, 1 hour, 0L) group by "+Evidence.entityTypeField+","+Evidence.entityNameField+" having count(*) > 3");
-
-		//subscribe Basic Alert creation class to Esper EPL statement
-		criticalEventStatement.setSubscriber(new BasicAlertSubscriber(alertsService));
-
+		//subscribe instances of Esper EPL statements
+		Config fieldsSubset = config.subset("fortscale.esper.rule.name.");
+		for (String rule : fieldsSubset.keySet()) {
+			String ruleName = getConfigString(config, String.format("fortscale.esper.rule.name.%s", rule));
+			String statement = getConfigString(config, String.format("fortscale.esper.rule.statement.%s", rule));
+			String subscriberBeanName = getConfigString(config, String.format("fortscale.esper.rule.subscriberBean.%s", rule));
+			boolean autoCreate = config.getBoolean(String.format("fortscale.esper.rule.auto-create.%s", rule));
+			RuleConfig ruleConfig = new RuleConfig(ruleName, statement, autoCreate, subscriberBeanName);
+			rulesConfiguration.put(ruleName, ruleConfig);
+			if(autoCreate) {
+				createStatement(ruleConfig);
+			}
+		}
 	}
 
+
 	@Override protected void wrappedClose() throws Exception {
+		for (EPStatement esperEventStatement : epsStatements) {
+			esperEventStatement.destroy();
+		}
+	}
+
+	/**
+	 * create esper statement according to given rule configuration and set a subscriber to that statement
+	 */
+	private void createStatement(RuleConfig ruleConfig){
+		//Create the Esper alert statement object
+		EPStatement esperEventStatement = epService.getEPAdministrator().createEPL(ruleConfig.getStatement());
+		//Generate Subscriber from spring
+		if (!ruleConfig.getSubscriberBeanName().equals("none")) {
+			AlertSubscriber alertSubscriber = (AlertSubscriber) SpringService.getInstance().resolve(ruleConfig.getSubscriberBeanName());
+			//inits the subscriber with the alert Mongo service and the rule name
+			alertSubscriber.init(alertsService);
+			//subscribe Alert creation class to Esper EPL statement
+			esperEventStatement.setSubscriber(alertSubscriber);
+		}
+		epsStatements.add(esperEventStatement);
 	}
 
 }
