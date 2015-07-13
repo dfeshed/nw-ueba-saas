@@ -31,7 +31,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	@Value("${impala.table.fields.data.source}")
 	private String dataSourceFieldName;
 	@Value("${impala.table.vpn.values.data.source}")
-	private String vpnSessionDataSource;
+	private String vpnDataSource;
 
 	private FeatureBucketStrategyStore featureBucketStrategyStore;
 	private String strategyName;
@@ -58,7 +58,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	public FeatureBucketStrategyData update(JSONObject event) {
 		// Get the event's data source
 		String dataSource = ConversionUtils.convertToString(event.get(dataSourceFieldName));
-		if (StringUtils.isNotBlank(dataSource) && dataSource.equals(vpnSessionDataSource)) {
+		if (StringUtils.isNotBlank(dataSource) && dataSource.equals(vpnDataSource)) {
 			String username = ConversionUtils.convertToString(event.get(usernameFieldName));
 			String sourceIP = ConversionUtils.convertToString(event.get(sourceIpFieldName));
 			Long epochtime = ConversionUtils.convertToLong(event.get(epochtimeFieldName));
