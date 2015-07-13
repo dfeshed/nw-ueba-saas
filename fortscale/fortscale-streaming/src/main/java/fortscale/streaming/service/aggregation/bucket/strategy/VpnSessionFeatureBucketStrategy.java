@@ -30,8 +30,8 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	private String closedValueName;
 	@Value("${impala.table.fields.data.source}")
 	private String dataSourceFieldName;
-	@Value("${impala.table.vpn.values.data.source}")
-	private String vpnDataSource;
+	@Value("${impala.table.vpn.values.data.sources}")
+	private String[] vpnDataSources;
 
 	private FeatureBucketStrategyStore featureBucketStrategyStore;
 	private String strategyName;
@@ -58,7 +58,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	public FeatureBucketStrategyData update(JSONObject event) {
 		// Get the event's data source
 		String dataSource = ConversionUtils.convertToString(event.get(dataSourceFieldName));
-		if (StringUtils.isNotBlank(dataSource) && dataSource.equals(vpnDataSource)) {
+		if (StringUtils.isNotBlank(dataSource) && containsCaseInsensitive(dataSource, vpnDataSources)) {
 			String username = ConversionUtils.convertToString(event.get(usernameFieldName));
 			String sourceIP = ConversionUtils.convertToString(event.get(sourceIpFieldName));
 			Long epochtime = ConversionUtils.convertToLong(event.get(epochtimeFieldName));
@@ -137,5 +137,14 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				openUserSessions.remove(username);
 			}
 		}
+	}
+
+	private boolean containsCaseInsensitive(String str, String[] arr){
+		for (String arr_string : arr){
+			if (arr_string.equalsIgnoreCase(str)){
+				return true;
+			}
+		}
+		return false;
 	}
 }
