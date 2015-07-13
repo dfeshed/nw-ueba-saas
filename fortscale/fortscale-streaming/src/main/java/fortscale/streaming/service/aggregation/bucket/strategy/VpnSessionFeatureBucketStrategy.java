@@ -18,8 +18,8 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 
 	@Value("${impala.table.fields.normalized.username}")
 	private String usernameFieldName;
-	@Value("${impala.table.fields.normalized_src_machine}")
-	private String srcMachineFieldName;
+	@Value("${impala.table.fields.source_ip}")
+	private String sourceIpFieldName;
 	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
 	@Value("${impala.table.vpn.fields.status}")
@@ -36,7 +36,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	private FeatureBucketStrategyStore featureBucketStrategyStore;
 	private String strategyName;
 	private long maxSessionDuration;
-	private HashMap<String, List<String>> openUserSessions; //username and source machine names with open sessions
+	private HashMap<String, List<String>> openUserSessions; //username and source ip with open sessions
 
 	public VpnSessionFeatureBucketStrategy(String strategyName, long maxSessionDuration) {
 		// Validate input
@@ -60,29 +60,29 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		String dataSource = ConversionUtils.convertToString(event.get(dataSourceFieldName));
 		if (StringUtils.isNotBlank(dataSource) && dataSource.equals(vpnSessionDataSource)) {
 			String username = ConversionUtils.convertToString(event.get(usernameFieldName));
-			String srcMachine = ConversionUtils.convertToString(event.get(srcMachineFieldName));
+			String sourceIP = ConversionUtils.convertToString(event.get(sourceIpFieldName));
 			Long epochtime = ConversionUtils.convertToLong(event.get(epochtimeFieldName));
 			String status = ConversionUtils.convertToString(event.get(statusFieldName));
 
-			if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(srcMachine) && epochtime != null) {
-				String strategyContextId = getStrategyContextId(username, srcMachine);
+			if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(sourceIP) && epochtime != null) {
+				String strategyContextId = getStrategyContextId(username, sourceIP);
 				boolean isFeatureBucketStrategyDataCreatedOrUpdated = false;
 				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtime);
 
 				// Case 1: Strategy doesn't exist - create a new one
 				// Case 2: Strategy exists, but session has become inactive - create a new one
 				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() < epochtime) {
-					RemoveClosedUserSessions(username, srcMachine);
+					RemoveClosedUserSessions(username, sourceIP);
 					if (status.toLowerCase().equals(successValueName)) {
 						featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + maxSessionDuration);
-						AddOpenUserSessions(username, srcMachine);
+						AddOpenUserSessions(username, sourceIP);
 						isFeatureBucketStrategyDataCreatedOrUpdated = true;
 					}
 				}
 				// Case 3: Strategy exists and the incoming event status is closed
 				else if (status.toLowerCase().equals(closedValueName)) {
 					featureBucketStrategyData.setEndTime(epochtime);
-					RemoveClosedUserSessions(username, srcMachine);
+					RemoveClosedUserSessions(username, sourceIP);
 					isFeatureBucketStrategyDataCreatedOrUpdated = true;
 				}
 				// Case 4: Nothing to do if exists, still active and event is not a closed event
@@ -105,8 +105,8 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		String username = ConversionUtils.convertToString(event.get(usernameFieldName));
 
 		if (openUserSessions.containsKey(username)) {
-			for (String machineName:openUserSessions.get(username)) {
-				String strategyContextId = getStrategyContextId(username, machineName);
+			for (String sourceIp:openUserSessions.get(username)) {
+				String strategyContextId = getStrategyContextId(username, sourceIp);
 				strategyDataList.add(featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtimeInSec));
 			}
 		}
@@ -114,26 +114,26 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		return strategyDataList;
 	}
 
-	private String getStrategyContextId(String username, String machineName) {
+	private String getStrategyContextId(String username, String sourceIP) {
 		List<String> strategyContextIdParts = new ArrayList<>();
 		strategyContextIdParts.add(VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE);
 		strategyContextIdParts.add(username);
-		strategyContextIdParts.add(machineName);
+		strategyContextIdParts.add(sourceIP);
 		return StringUtils.join(strategyContextIdParts, STRATEGY_CONTEXT_ID_SEPARATOR);
 	}
 
-	private void AddOpenUserSessions(String username, String machineName) {
+	private void AddOpenUserSessions(String username, String sourceIP) {
 		if (!openUserSessions.containsKey(username)) {
 			openUserSessions.put(username, new ArrayList<String>());
 		}
-			openUserSessions.get(username).add(machineName);
+			openUserSessions.get(username).add(sourceIP);
 		}
 
-	private void RemoveClosedUserSessions(String username, String machineName) {
+	private void RemoveClosedUserSessions(String username, String sourceIP) {
 		if (openUserSessions.containsKey(username)) {
-			List<String> userMachines = openUserSessions.get(username);
-			userMachines.remove(machineName);
-			if (userMachines.size() == 0) {
+			List<String> userSources = openUserSessions.get(username);
+			userSources.remove(sourceIP);
+			if (userSources.size() == 0) {
 				openUserSessions.remove(username);
 			}
 		}
