@@ -51,31 +51,31 @@ public class SshCiscoTest {
         return	$(
                 $(
                         "test from contain ::1 ",
-                        "2014-09-09T17:00:00+00:00 dev-gever sshd[2552]: Accepted publickey for root from ::1 port 47952 ssh2",
-                        "2014-09-09 17:00:00,1410282000,dev-gever,dev-gever,root,Accepted,publickey,,,,false,,,,"
+                        "2014-09-09T17:00:00+02:00 dev-gever sshd[2552]: Accepted publickey for root from ::1 port 47952 ssh2",
+                        "2014-09-09 15:00:00,1410274800,dev-gever,dev-gever,root,Accepted,publickey,,,,false,,,,"
 
 
                 ),
                 $(
                         "test from contain 127.0.0.1  ",
-                        "2014-09-09T17:00:00+00:00 dev-gever sshd[2552]: Accepted publickey for root from 127.0.0.1 port 47952 ssh2",
-                        "2014-09-09 17:00:00,1410282000,dev-gever,dev-gever,root,Accepted,publickey,,,,false,,,,"
+                        "2014-09-09T17:00:00+02:00 dev-gever sshd[2552]: Accepted publickey for root from 127.0.0.1 port 47952 ssh2",
+                        "2014-09-09 15:00:00,1410274800,dev-gever,dev-gever,root,Accepted,publickey,,,,false,,,,"
 
 
                 ),
                 $ (
                         "Successful Public Key Authentication",
-                        "2014-09-09T17:00:00+00:00 dev-gever sshd[2552]: Accepted publickey for root from 171.70.163.169 port 47952 ssh2",
-                        "2014-09-09 17:00:00,1410282000,171.70.163.169,dev-gever,root,Accepted,publickey,,,,false,,,,"),
+                        "2014-09-09T17:00:00+02:00 dev-gever sshd[2552]: Accepted publickey for root from 171.70.163.169 port 47952 ssh2",
+                        "2014-09-09 15:00:00,1410274800,171.70.163.169,dev-gever,root,Accepted,publickey,,,,false,,,,"),
                 $(
                         "Target Machine as IP",
-                        "2014-09-09T17:00:00+00:00 192.168.0.30 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
+                        "2014-09-09T17:00:00+02:00 192.168.0.30 sshd[30431]: Accepted password for root from 192.168.200.254 port 62257 ssh2",
                         null
                 ),
                 $(
                         "Sample Cisco event with qoutes and ID after port",
-                        "\"2014-10-06T00:00:00+00:00 alli-prd-app7 sshd[25652]: [ID 800047 auth.info] Accepted publickey for root from 72.163.46.51 port 33218 ssh2\"",
-                        "2014-10-06 00:00:00,1412553600,72.163.46.51,alli-prd-app7,root,Accepted,publickey,,,,false,,,,"
+                        "\"2014-10-06T00:00:00+02:00 alli-prd-app7 sshd[25652]: [ID 800047 auth.info] Accepted publickey for root from 72.163.46.51 port 33218 ssh2\"",
+                        "2014-10-05 22:00:00,1412546400,72.163.46.51,alli-prd-app7,root,Accepted,publickey,,,,false,,,,"
                 )
 
 
