@@ -224,14 +224,17 @@ public class EventForwardJob extends FortscaleJob {
 	}
 
 	private String getKeyAsString(Object value) {
+		//sanity check
 		if (value == null) {
 			return null;
 		}
 		String strValue = value.toString();
+		//remove expressions surrounded with parenthesis
 		if (strValue.contains("(") && strValue.contains(")")) {
 			strValue = strValue.substring(0, strValue.indexOf("(")) +
 					strValue.substring(strValue.indexOf(")") + 1, strValue.length());
 		}
+		//replace all spaces with underscores
 		strValue = strValue.trim().replaceAll(" ", "_");
 		return strValue;
 	}
