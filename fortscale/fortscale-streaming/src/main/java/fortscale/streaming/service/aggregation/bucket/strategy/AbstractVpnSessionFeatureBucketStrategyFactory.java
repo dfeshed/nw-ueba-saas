@@ -27,7 +27,7 @@ public abstract class AbstractVpnSessionFeatureBucketStrategyFactory implements 
 		String message = String.format(MISSING_FIELD_ERROR_MESSAGE, MAX_SESSION_DURATION_JSON_PARAM_FIELD_NAME);
 		Assert.notNull(maxSessionDuration, message);
 
-		VpnSessionFeatureBucketStrategy featureBucketStrategy = new VpnSessionFeatureBucketStrategy(strategyJson.getName(), maxSessionDuration);
+		VpnSessionFeatureBucketStrategy featureBucketStrategy = createVpnSessionFeatureBucketStrategy(strategyJson.getName(), maxSessionDuration);
 		featureBucketStrategies.add(featureBucketStrategy);
 		return featureBucketStrategy;
 	}
