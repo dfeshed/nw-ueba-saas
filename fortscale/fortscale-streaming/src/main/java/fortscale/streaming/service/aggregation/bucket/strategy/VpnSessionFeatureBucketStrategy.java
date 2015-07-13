@@ -73,14 +73,14 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 				// Case 2: Strategy exists, but session has become inactive - create a new one
 				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() < epochtime) {
 					RemoveClosedUserSessions(username, sourceIP);
-					if (status.toLowerCase().equals(successValueName)) {
+					if (status.equalsIgnoreCase(successValueName)) {
 						featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + maxSessionDuration);
 						AddOpenUserSessions(username, sourceIP);
 						isFeatureBucketStrategyDataCreatedOrUpdated = true;
 					}
 				}
 				// Case 3: Strategy exists and the incoming event status is closed
-				else if (status.toLowerCase().equals(closedValueName)) {
+				else if (status.equalsIgnoreCase(closedValueName)) {
 					featureBucketStrategyData.setEndTime(epochtime);
 					RemoveClosedUserSessions(username, sourceIP);
 					isFeatureBucketStrategyDataCreatedOrUpdated = true;
