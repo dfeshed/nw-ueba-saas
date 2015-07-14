@@ -159,6 +159,30 @@ public class GenericHistogramTest {
         Assert.assertEquals("2", (String) histogram.getMaxCountObject());
         Assert.assertEquals((Double) (30.0/60.0), (Double) histogram.getMaxCountFromTotalCount());
 
+    }
 
+    @Test
+    public void testAddingTwoHistograms() {
+        GenericHistogram histogram1 = new GenericHistogram();
+        GenericHistogram histogram2 = new GenericHistogram();
+        GenericHistogram histogram3 = new GenericHistogram();
+        GenericHistogram histogram4 = new GenericHistogram();
+
+        histogram1.add("a", 1.0);
+        histogram1.add("b", 2.0);
+        histogram1.add("c", 3.0);
+
+        histogram2.add("b", 2.0);
+        histogram2.add("c", 3.0);
+        histogram2.add("d", 4.0);
+
+        histogram3.add("a", 1.0);
+        histogram3.add("b", 4.0);
+        histogram3.add("c", 6.0);
+        histogram3.add("d", 4.0);
+
+        histogram4.add(histogram1).add(histogram2);
+
+        Assert.assertTrue(histogram4.equals(histogram3));
     }
 }

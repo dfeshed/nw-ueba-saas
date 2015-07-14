@@ -13,10 +13,7 @@ public class GenericHistogram implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Map<Object, Double> histogram = new HashMap<>();
-    private double populationStandardDeviation = 0;
-    private double standardDeviation = 0;
     private double totalCount = 0;
-    private boolean stdUpToDate = true;
     private Object maxObject = null;
 
     public GenericHistogram() {}
@@ -26,18 +23,11 @@ public class GenericHistogram implements Serializable {
     }
 
     public double getPopulationStandardDeviation() {
-        if(!stdUpToDate) {
-            calculateHistogramStd();
-        }
-        return populationStandardDeviation;
-
+        return calculateHistogramStd(true);
     }
 
     public double getStandardDeviation() {
-        if(!stdUpToDate) {
-            calculateHistogramStd();
-        }
-        return standardDeviation;
+        return calculateHistogramStd(false);
     }
 
     public long getN() {
@@ -77,17 +67,18 @@ public class GenericHistogram implements Serializable {
         }
 
         this.totalCount +=count;
-        stdUpToDate = false;
+
     }
 
-    public void add(GenericHistogram histogram) {
+    public GenericHistogram add(GenericHistogram histogram) {
         for (Object obj : histogram.getObjects()) {
             Double count = histogram.get(obj);
             add(obj, count);
         }
+        return this;
     }
 
-    synchronized private void calculateHistogramStd(){
+    synchronized private Double calculateHistogramStd(boolean populationStandardDeviation){
         Double sum = 0.0;
         Double avg = getAvg();
         Iterator<Double> iter = histogram.values().iterator();
@@ -95,19 +86,18 @@ public class GenericHistogram implements Serializable {
             Double value = iter.next();
             sum += Math.pow(value - avg, 2);
         }
-        populationStandardDeviation = Math.sqrt(sum/getN());
-        standardDeviation = Math.sqrt(sum/(getN()-1));
-
-        stdUpToDate = true;
+        if(populationStandardDeviation) {
+            return Math.sqrt(sum/getN());
+        } else {
+            return Math.sqrt(sum / (getN() - 1));
+        }
     }
 
     @Override
     synchronized public String toString() {
         StringBuffer sb = new StringBuffer("{ ");
-        sb.append("populationStandardDeviation: ").append(populationStandardDeviation).append(", ");
-        sb.append("standardDeviation: ").append(standardDeviation).append(", ");
         sb.append("totalCount: ").append(totalCount).append(", ");
-        sb.append("stdUpToDate: ").append(stdUpToDate).append(", histogram: {");
+        sb.append(", histogram: {");
 
         Iterator<Map.Entry<Object, Double>> iter = histogram.entrySet().iterator();
 
@@ -123,4 +113,27 @@ public class GenericHistogram implements Serializable {
         return sb.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GenericHistogram histogram1 = (GenericHistogram) o;
+
+        if (Math.abs(histogram1.totalCount - totalCount) > 0.0000000001) return false;
+        if (!histogram.equals(histogram1.histogram)) return false;
+        return maxObject.equals(histogram1.maxObject);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = histogram.hashCode();
+        temp = Double.doubleToLongBits(totalCount);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + maxObject.hashCode();
+        return result;
+    }
 }

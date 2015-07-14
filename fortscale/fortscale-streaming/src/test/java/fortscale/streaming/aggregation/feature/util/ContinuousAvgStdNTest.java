@@ -34,6 +34,33 @@ public class ContinuousAvgStdNTest {
     }
 
     @Test
+    public void testAddTwoObjects() {
+        ContinuousValueAvgStdN avgStdN1 = new ContinuousValueAvgStdN();
+        avgStdN1.add(0.5);
+        avgStdN1.add(2.0);
+        avgStdN1.add(3.4);
+
+        ContinuousValueAvgStdN avgStdN2 = new ContinuousValueAvgStdN();
+        avgStdN2.add(4.3);
+        avgStdN2.add(6.7);
+        avgStdN2.add(1.2);
+
+        ContinuousValueAvgStdN avgStdN3 = new ContinuousValueAvgStdN();
+        avgStdN3.add(0.5);
+        avgStdN3.add(2.0);
+        avgStdN3.add(3.4);
+        avgStdN3.add(4.3);
+        avgStdN3.add(6.7);
+        avgStdN3.add(1.2);
+
+        ContinuousValueAvgStdN avgStdN4 = new ContinuousValueAvgStdN();
+        avgStdN4.add(avgStdN1).add(avgStdN2);
+
+        Assert.assertTrue(avgStdN3.equals(avgStdN4));
+
+    }
+
+    @Test
     public void testAddNull() {
         ContinuousValueAvgStdN avgStdN = new ContinuousValueAvgStdN();
         avgStdN.add(0.5); Double a1 = Math.pow(( 0.5 - 5.0), 2);
@@ -52,7 +79,8 @@ public class ContinuousAvgStdNTest {
         Double sum = a1+a2+a3+a4+a5+a6+a7+a8+a9+a10+a11+a12;
         Double std = Math.sqrt((sum)/12);
 
-        avgStdN.add(null);
+        Double d = null;
+        avgStdN.add(d);
         Assert.assertEquals((Long) 12L, (Long) avgStdN.getN());
         Assert.assertEquals((Double)5.0, (Double)avgStdN.getAvg());
         Assert.assertEquals((Double) std, (Double) avgStdN.getStd());

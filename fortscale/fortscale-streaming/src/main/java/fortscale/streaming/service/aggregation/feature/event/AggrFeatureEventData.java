@@ -81,7 +81,7 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
     }
 
     @Override
-    public void dataSourcesReachedTime(long time) {
+    public void dataSourcesReachedTime() {
         builder.dataSourcesReachedTime(this);
     }
 

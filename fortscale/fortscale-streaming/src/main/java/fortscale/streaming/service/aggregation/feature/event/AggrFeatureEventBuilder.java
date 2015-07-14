@@ -27,7 +27,7 @@ public class AggrFeatureEventBuilder {
     private static final String EVENT_FIELD_EVENT_TYPE = "event_type";
     private static final Object AGGREGATED_FEATURE_EVENT = "aggregated_feature_event";
 
-    private AggrFeatureEventConf conf;
+    private AggregatedFeatureEventConf conf;
     private FeatureBucketStrategy bucketStrategy;
     private AggrFeatureEventService aggrFeatureEventService;
     private Map<Map<String, String>, AggrFeatureEventData> context2featureDataMap;
@@ -45,7 +45,7 @@ public class AggrFeatureEventBuilder {
     @Autowired
     AggrEventTopologyService aggrEventTopologyService;
 
-    AggrFeatureEventBuilder(AggrFeatureEventConf conf, FeatureBucketStrategy bucketStrategy, AggrFeatureEventService aggrFeatureEventService) {
+    AggrFeatureEventBuilder(AggregatedFeatureEventConf conf, FeatureBucketStrategy bucketStrategy, AggrFeatureEventService aggrFeatureEventService) {
         this.conf = conf;
         this.bucketStrategy = bucketStrategy;
         this.aggrFeatureEventService = aggrFeatureEventService;
@@ -56,14 +56,14 @@ public class AggrFeatureEventBuilder {
     void updateAggrFeatureEvent(String bucketID, Map<String, String> context, long startTime, long endTime) {
         AggrFeatureEventData eventData = context2featureDataMap.get(context);
         if(eventData==null) {
-            eventData = new AggrFeatureEventData(this, context, conf.getBucketLeap());
+            eventData = new AggrFeatureEventData(this, context, conf.getBucketsLeap());
             context2featureDataMap.put(context, eventData);
         }
 
         eventData.addBucketID(bucketID, startTime, endTime);
         bucktID2featureDataMap.put(bucketID, eventData);
 
-        List<String> dataSources = conf.getFeatureBucketConf().getDataSources();
+        List<String> dataSources = conf.getBucketConf().getDataSources();
         long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(dataSources, endTime, eventData);
         eventData.setSyncTimerRegistrationID(registrationID);
     }
@@ -113,7 +113,7 @@ public class AggrFeatureEventBuilder {
 
                     // If bucketID is null it means an empty 'bucket tick'
                     if (bucketID != null) {
-                        bucket = featureBucketsService.getFeatureBucket(conf.getFeatureBucketConf(), bucketID);
+                        bucket = featureBucketsService.getFeatureBucket(conf.getBucketConf(), bucketID);
                     }
 
                     if (bucket != null) {
@@ -159,18 +159,18 @@ public class AggrFeatureEventBuilder {
         } //if(aggrFeatureEventData.getNumberOfBucketsToWaitBeforeSendingNextEvent()<=0)
 
         // Registering in timer to be waked up on the next bucket end time
-        FeatureBucketStrategyData featureBucketStrategyData = bucketStrategy.getNextBucketStrategyData(conf.getFeatureBucketConf(), aggrFeatureEventData.getContext());
+        FeatureBucketStrategyData featureBucketStrategyData = bucketStrategy.getNextBucketStrategyData(conf.getBucketConf(), aggrFeatureEventData.getContext());
         if(featureBucketStrategyData!=null) {
             aggrFeatureEventData.nextBucketEndTimeUpdate(featureBucketStrategyData);
         } else {
-            bucketStrategy.notifyWhenNextBucketEndTimeIsKnown(conf.getFeatureBucketConf(), aggrFeatureEventData.getContext(), aggrFeatureEventData);
+            bucketStrategy.notifyWhenNextBucketEndTimeIsKnown(conf.getBucketConf(), aggrFeatureEventData.getContext(), aggrFeatureEventData);
         }
 
     }
 
     void registerInTimerForNextBucketEndTime(AggrFeatureEventData aggrFeatureEventData, Long time) {
         if(aggrFeatureEventData!=null && time!=null) {
-            long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(conf.getFeatureBucketConf().getDataSources(), time, aggrFeatureEventData);
+            long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(conf.getBucketConf().getDataSources(), time, aggrFeatureEventData);
             aggrFeatureEventData.setSyncTimerRegistrationID(registrationID);
         }
     }
@@ -184,7 +184,7 @@ public class AggrFeatureEventBuilder {
         event.put(EVENT_FIELD_CONTEXT, context);
         event.put(EVENT_FIELD_EVENT_TYPE, AGGREGATED_FEATURE_EVENT);
         event.put(feature.getName(), feature.getValue());
-        event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getFeatureBucketConf().getName());
+        event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConf().getName());
         Long date_time_unix = System.currentTimeMillis() / 1000;
         event.put(EVENT_FIELD_DATE_TIME_UNIX, date_time_unix);
         String date_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());

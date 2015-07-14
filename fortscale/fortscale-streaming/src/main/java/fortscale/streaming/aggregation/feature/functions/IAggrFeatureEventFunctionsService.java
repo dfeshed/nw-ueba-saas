@@ -1,7 +1,7 @@
 package fortscale.streaming.aggregation.feature.functions;
 
 import fortscale.streaming.aggregation.feature.Feature;
-import fortscale.streaming.service.aggregation.feature.event.AggrFeatureEventConf;
+import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +18,6 @@ public interface IAggrFeatureEventFunctionsService {
      * @param multipleBucketsAggrFeaturesMapList list of aggregated feature maps from multiple buckets
      * @return a new feature created by the relevant function.
      */
-    Feature calculateAggrFeature(AggrFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList);
+    Feature calculateAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList);
 
 }

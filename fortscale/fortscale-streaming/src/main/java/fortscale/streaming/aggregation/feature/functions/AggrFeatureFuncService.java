@@ -3,7 +3,7 @@ package fortscale.streaming.aggregation.feature.functions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
-import fortscale.streaming.service.aggregation.feature.event.AggrFeatureEventConf;
+import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.logging.Logger;
 import org.eclipse.jdt.internal.core.Assert;
 import org.springframework.stereotype.Service;
@@ -72,7 +72,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
      * @return a new feature created by the relevant function.
      */
     @Override
-    public Feature calculateAggrFeature(AggrFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
+    public Feature calculateAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
         Feature res = null;
         if(multipleBucketsAggrFeaturesMapList==null) {
             logger.warn("calculateAggrFeature(): multipleBucketsAggrFeaturesMapList is null");
@@ -85,17 +85,17 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
         return res;
     }
 
-    private AggrFeatureEventFunction getAggrFeatureEventFunction(AggrFeatureEventConf aggrFeatureEventConf) {
+    private AggrFeatureEventFunction getAggrFeatureEventFunction(AggregatedFeatureEventConf aggrFeatureEventConf) {
         Assert.isNotNull(aggrFeatureEventConf);
 
         AggrFeatureEventFunction func = null;
 
         try {
-            String json = AggrFeatureEventConf.getAggrFeatureFuncJson();
+            String json = aggrFeatureEventConf.getAggregatedFeatureEventFunction().toJSONString();
             func = (new ObjectMapper()).readValue(json, AggrFeatureEventFunction.class);
             aggrFeatureEventFunctions.put(json, func);
         } catch (Exception e) {
-            String errorMsg = String.format("Failed to deserialize json %s", aggrFeatureEventConf.getAggrFeatureFuncJson());
+            String errorMsg = String.format("Failed to deserialize json %s", aggrFeatureEventConf.getAggregatedFeatureEventFunction());
             logger.error(errorMsg, e);
         }
         return func;

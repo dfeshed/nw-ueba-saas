@@ -3,7 +3,7 @@ package fortscale.streaming.aggregation.feature.functions;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.GenericHistogram;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
-import fortscale.streaming.service.aggregation.feature.event.AggrFeatureEventConf;
+import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
 
 import java.util.List;
 import java.util.Map;
@@ -57,14 +57,14 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
 
     /**
      * Create new feature by running the associated {@link AggrFeatureFunction} that is configured in the given
-     * {@link AggrFeatureEventConf} and using the aggregated features as input to those functions.
+     * {@link AggregatedFeatureEventConf} and using the aggregated features as input to those functions.
      *
      * @param aggrFeatureEventConf               the specification of the feature to be created
      * @param multipleBucketsAggrFeaturesMapList list of aggregated feature maps from multiple buckets
      * @return a new feature created by the relevant function.
      */
     @Override
-    public Feature calculateAggrFeature(AggrFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
+    public Feature calculateAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
         if(aggrFeatureEventConf==null || multipleBucketsAggrFeaturesMapList == null) {
             return null;
         }
@@ -72,7 +72,7 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
         Feature resFeature = new Feature(aggrFeatureEventConf.getName(), histogram);
 
         for(Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
-            for(String featureName: aggrFeatureEventConf.getFeatureNames()) {
+            for(String featureName: aggrFeatureEventConf.getAggregatedFeatureNamesList()) {
                 Feature aggrFeature = aggrFeatures.get(featureName);
                 if(aggrFeature!=null && aggrFeature.getValue() instanceof GenericHistogram) {
                     histogram.add((GenericHistogram)aggrFeature.getValue());

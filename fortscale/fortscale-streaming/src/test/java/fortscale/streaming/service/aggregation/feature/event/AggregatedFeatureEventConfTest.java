@@ -43,7 +43,7 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(WAIT_AFTER_BUCKET_CLOSE_SECONDS, actual.getWaitAfterBucketCloseSeconds());
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
 		Assert.assertEquals(aggregatedFeatureNamesList, actual.getAggregatedFeatureNamesList());
-		Assert.assertNull(actual.getAggregatedFeatureNamesMap());
+		Assert.assertNull(actual.getFunctionParameterName2aggregatedFeatureNameMap());
 		Assert.assertNull(actual.getBucketConf());
 	}
 
@@ -70,7 +70,7 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
 		Assert.assertEquals(WAIT_AFTER_BUCKET_CLOSE_SECONDS, actual.getWaitAfterBucketCloseSeconds());
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
-		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
+		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getFunctionParameterName2aggregatedFeatureNameMap());
 		Assert.assertNull(actual.getAggregatedFeatureNamesList());
 		Assert.assertNull(actual.getBucketConf());
 	}

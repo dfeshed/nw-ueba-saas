@@ -28,12 +28,12 @@ public class AggrFeatureEventService implements InitializingBean {
     private static final String ERROR_MSG_REMOVE_BUCKET_ID_MAPPING_INVALID_PARAMS = "Null or empty params for removeBucketID2builderMapping()";
 
     @Autowired
-    private AggrFeatureEventsConfService aggrFeatureEventsConfService;
+    private AggregatedFeatureEventsConfService aggrFeatureEventsConfService;
 
     @Autowired
     private FeatureBucketStrategyService featureBucketStrategyService;
 
-    private List<AggrFeatureEventConf> aggrFeatureEventConfs;
+    private List<AggregatedFeatureEventConf> aggrFeatureEventConfs;
     private Map<String, List<AggrFeatureEventBuilder>> bucketConfName2eventBuildersListMap = new HashMap<>();
     private Map<String, List<AggrFeatureEventBuilder>> bucketID2eventBuildersListMap = new HashMap<>();
 
@@ -41,7 +41,7 @@ public class AggrFeatureEventService implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(aggrFeatureEventsConfService);
         Assert.notNull(featureBucketStrategyService);
-        aggrFeatureEventConfs = aggrFeatureEventsConfService.getAggrFeatuerEventsDefinitions();
+        aggrFeatureEventConfs = aggrFeatureEventsConfService.getAggregatedFeatureEventConfList();
         if(aggrFeatureEventConfs==null || aggrFeatureEventConfs.isEmpty()) {
             logger.info(INFO_MSG_NO_EVENT_CONFS);
         } else {
@@ -50,11 +50,11 @@ public class AggrFeatureEventService implements InitializingBean {
     }
 
     private void createAggrFeatureEventBuilders() {
-        for(AggrFeatureEventConf eventConf : aggrFeatureEventConfs) {
+        for(AggregatedFeatureEventConf eventConf : aggrFeatureEventConfs) {
 
-            FeatureBucketStrategy strategy = featureBucketStrategyService.getFeatureBucketStrategiesFactory().getFeatureBucketStrategy(eventConf.getFeatureBucketConf().getStrategyName());
+            FeatureBucketStrategy strategy = featureBucketStrategyService.getFeatureBucketStrategiesFactory().getFeatureBucketStrategy(eventConf.getBucketConf().getStrategyName());
             AggrFeatureEventBuilder eventBuilder = new AggrFeatureEventBuilder(eventConf, strategy, this);
-            addAggrFeatureEventBuilder(eventConf.getFeatureBucketConf().getName(), eventBuilder);
+            addAggrFeatureEventBuilder(eventConf.getBucketConf().getName(), eventBuilder);
         }
     }
 

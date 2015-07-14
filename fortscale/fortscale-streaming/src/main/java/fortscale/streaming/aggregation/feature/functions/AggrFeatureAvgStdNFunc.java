@@ -2,7 +2,9 @@ package fortscale.streaming.aggregation.feature.functions;
 
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.ContinuousValueAvgStdN;
+import fortscale.streaming.aggregation.feature.util.GenericHistogram;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +12,7 @@ import java.util.Map;
 /**
  * Created by amira on 17/06/2015.
  */
-public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction {
+public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction, AggrFeatureEventFunction {
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_av_std_n_func";
 
 
@@ -60,4 +62,35 @@ public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction {
         return avgStdN;
 
      }
+
+    /**
+     * Create new feature by running the associated {@link AggrFeatureEventFunction} that is configured in the given
+     * {@link AggregatedFeatureEventConf} and using the aggregated features as input to those functions.
+     *
+     * @param aggrFeatureEventConf               the specification of the feature to be created
+     * @param multipleBucketsAggrFeaturesMapList list of aggregated feature maps from multiple buckets
+     * @return a new feature created by the relevant function.
+     */
+    @Override
+    public Feature calculateAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
+        if(aggrFeatureEventConf==null || multipleBucketsAggrFeaturesMapList == null) {
+            return null;
+        }
+        ContinuousValueAvgStdN avgStdN = new ContinuousValueAvgStdN();
+        Feature resFeature = new Feature(aggrFeatureEventConf.getName(), avgStdN);
+
+        for(Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
+            for(String featureName: aggrFeatureEventConf.getAggregatedFeatureNamesList()) {
+                Feature aggrFeature = aggrFeatures.get(featureName);
+                if(aggrFeature!=null && aggrFeature.getValue() instanceof ContinuousValueAvgStdN) {
+                    avgStdN.add((ContinuousValueAvgStdN)aggrFeature.getValue());
+                } else {
+                    return null;
+                    //TODO throw exception instead?
+                }
+            }
+        }
+
+        return resFeature;
+    }
 }
