@@ -96,4 +96,8 @@ public class BucketConfigurationService implements InitializingBean{
         return dataSourceToListOfBucketConfs.get(dataSource);
 
     }
+
+    public FeatureBucketConf getBucketConf(String bucketConfName) {
+        return bucketConfs.get(bucketConfName);
+    }
 }
