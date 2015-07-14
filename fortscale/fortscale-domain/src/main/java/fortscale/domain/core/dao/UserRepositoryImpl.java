@@ -19,6 +19,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import parquet.org.slf4j.Logger;
+import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -28,6 +30,8 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 import static org.springframework.data.mongodb.core.query.Update.update;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
+
+	private static Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -229,12 +233,20 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	private List<User> findByFieldCaseInsensitive(String field, Object val, Pageable pageable) {
-		Criteria criteria = where(field).regex(Pattern.compile("^" + val.toString() + "$", Pattern.CASE_INSENSITIVE));
-		Query query = new Query(criteria);
-		if (pageable != null) {
-			query.with(pageable);
+		List<User> result;
+		try {
+			Criteria criteria = where(field).regex(Pattern.compile("^" + val.toString() + "$", Pattern.CASE_INSENSITIVE));
+			Query query = new Query(criteria);
+			if (pageable != null) {
+				query.with(pageable);
+			}
+			result = mongoTemplate.find(query, User.class);
+		} catch (Exception ex) {
+			//exception can happen in the case where users have special characters such as '*' in their samaccountname
+			logger.warn("Failed to search for samaccountname value - " + val.toString() + ", due to special character");
+			result = new ArrayList();
 		}
-		return mongoTemplate.find(query, User.class);
+		return result;
 	}
 
 	private User findOneByField(String field, Object val) {
