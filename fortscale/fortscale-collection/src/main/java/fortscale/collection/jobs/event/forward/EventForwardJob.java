@@ -216,10 +216,27 @@ public class EventForwardJob extends FortscaleJob {
 		StringBuilder message = new StringBuilder();
 
 		for(Map.Entry<String,Object> entry : event.entrySet()) {
+			String key = getKeyAsString(entry.getKey());
 			String value = getValueAsString(sdf, entry.getValue());
-			message.append(entry.getKey() + "=" + value + ";");
+			message.append(key + "=" + value + ";");
 		}
 		return message.toString();
+	}
+
+	private String getKeyAsString(Object value) {
+		//sanity check
+		if (value == null) {
+			return null;
+		}
+		String strValue = value.toString();
+		//remove expressions surrounded with parenthesis
+		if (strValue.contains("(") && strValue.contains(")")) {
+			strValue = strValue.substring(0, strValue.indexOf("(")) +
+					strValue.substring(strValue.indexOf(")") + 1, strValue.length());
+		}
+		//replace all spaces with underscores
+		strValue = strValue.trim().replaceAll(" ", "_");
+		return strValue;
 	}
 
 	private String getValueAsString(SimpleDateFormat sdf, Object value) {
