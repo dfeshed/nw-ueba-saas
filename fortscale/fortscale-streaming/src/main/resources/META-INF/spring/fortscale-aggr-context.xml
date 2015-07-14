@@ -7,7 +7,7 @@
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<bean id="featureBucketStrategyStore" class="fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyMongoStore"/>
-	<bean id="userInactivityFeatureBucketStrategyFactory" class="fortscale.streaming.service.aggregation.bucket.strategy.UserInactivityFeatureBucketStrategyFactory"></bean>
+	<bean id="userInactivityFeatureBucketStrategyFactory" class="fortscale.streaming.service.aggregation.bucket.strategy.UserInactivityFeatureBucketStrategyFactory"/>
 	<bean id="featureBucketsStore" class="fortscale.streaming.service.aggregation.FeatureBucketsMongoStore"/>
 	<bean id="bucketConfigurationService" class="fortscale.streaming.service.aggregation.BucketConfigurationService"/>
 	<bean id="dataSourcesSyncTimer" class="fortscale.streaming.service.aggregation.DataSourcesSyncTimer"/>
