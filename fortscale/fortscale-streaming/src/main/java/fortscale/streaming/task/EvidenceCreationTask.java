@@ -190,9 +190,9 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 						new Date(timestamp), scoreField, dataSourceConfiguration.classifier, score, anomalyValue, anomalyType);
 
 				// add the event to the top events
-				Map<String,Object> eventsMapForTopic = new HashMap<>();
-				JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration, eventsMapForTopic);
-				evidence.setTop3eventsJsonStr("[" + newMessage.toJSONString() + "]");
+				JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration);
+				String jsonString = newMessage.toJSONString();
+				evidence.setTop3eventsJsonStr("[" + jsonString + "]");
 				evidence.setNumOfEvents(1);
 				evidence.setEvidenceType(EvidenceType.AnomalySingleEvent);
 
@@ -207,7 +207,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 				// add the map of events to the evidence instead of the string - for alerts topic only!
 				evidence.setTop3eventsJsonStr(null); // for performance
-				evidence.setTop3events(new Map[]{eventsMapForTopic}); // for Esper to query event's fields
+				evidence.setTop3events(new Map[] { mapper.readValue(jsonString, HashMap.class) }); // for Esper to query event's fields
 
 				// Send evidence to output topic
 				try {
@@ -233,17 +233,15 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 * Convert the event JSON to thin event with only the required fields, and with field-id from entities.properties
 	 * @param message    The original event
 	 * @param dataSourceConfiguration    The configuration of the specific data source
-	 * @param eventsMapForTopic	Build map from the event - this is used for the alerts topic only!
 	 * @return	New message
 	 */
 	private JSONObject convertMessageToStandardFormat(JSONObject message,
-			DataSourceConfiguration dataSourceConfiguration, Map<String, Object> eventsMapForTopic) {
+			DataSourceConfiguration dataSourceConfiguration) {
 		JSONObject newMessage = new JSONObject();
 		for (Map.Entry<String, String> columnToId : dataSourceConfiguration.fieldColumnToFieldId.entrySet()) {
 			Object valueOfColumn = message.get(columnToId.getKey());
 			if (valueOfColumn != null) {
 				newMessage.put(columnToId.getValue(), valueOfColumn);
-				eventsMapForTopic.put(columnToId.getValue(), valueOfColumn);
 			}
 		}
 		return newMessage;
