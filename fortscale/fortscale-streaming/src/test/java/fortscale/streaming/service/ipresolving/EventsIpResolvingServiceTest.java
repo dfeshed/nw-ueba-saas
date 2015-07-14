@@ -20,10 +20,10 @@ public class EventsIpResolvingServiceTest {
     @Before
     public void setUp() {
 		List<EventResolvingConfig> configs = new LinkedList<>();
-		configs.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, false, "time", "partition"));
+		configs.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, false, false, "time", "partition"));
 
 		List<EventResolvingConfig> configs2 = new LinkedList<>();
-		configs2.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, true, "time", "partition"));
+		configs2.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, true, false, "time", "partition"));
 
 		resolver = mock(IpToHostnameResolver.class);
 		service = new EventsIpResolvingService(resolver, configs);
@@ -55,7 +55,7 @@ public class EventsIpResolvingServiceTest {
         JSONObject event = new JSONObject();
         event.put("ip", "1.1.1.1");
         event.put("time", 3L);
-        when(resolver.resolve("1.1.1.1", 3L, false, false, false)).thenReturn("my-pc");
+        when(resolver.resolve("1.1.1.1", 3L, false, false, false, false)).thenReturn("my-pc");
 
         JSONObject output = service.enrichEvent("unknown-topic", event);
         Assert.assertNull(output.get("host"));
@@ -66,12 +66,12 @@ public class EventsIpResolvingServiceTest {
         JSONObject event = new JSONObject();
         event.put("ip", "1.1.1.1");
         event.put("time", 3L);
-        when(resolver.resolve("1.1.1.1", 3L, false, false, false)).thenReturn("my-pc");
+        when(resolver.resolve("1.1.1.1", 3L, false, false, false, false)).thenReturn("my-pc");
 
         JSONObject output = service.enrichEvent("input", event);
         Assert.assertEquals("my-pc", output.get("host"));
 
-        verify(resolver, times(1)).resolve("1.1.1.1", 3L, false, false, false);
+        verify(resolver, times(1)).resolve("1.1.1.1", 3L, false, false, false, false);
     }
 
     @Test
