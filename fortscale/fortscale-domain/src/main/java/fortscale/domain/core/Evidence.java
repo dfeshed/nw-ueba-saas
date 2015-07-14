@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -82,7 +83,7 @@ public class Evidence extends AbstractDocument{
 	// Index for expiration (TTL): one year
 	@Indexed(expireAfterSeconds = 31536000)
 	@Field(retentionDateField)
-	private Long retentionDate;
+	private Date retentionDate;
 
 	@Field(anomalyTypeField)
 	private String anomalyType;
@@ -131,7 +132,7 @@ public class Evidence extends AbstractDocument{
 
 
 		// set retention to start date
-		this.retentionDate = startDate;
+		this.retentionDate = new Date(startDate);
 
 		// We must create ID for the evidence so the alert can have reference to it
 		this.setId(UUID.randomUUID().toString());
@@ -148,7 +149,7 @@ public class Evidence extends AbstractDocument{
 
 	// Setters
 
-	public void setRetentionDate(Long retentionDate) {
+	public void setRetentionDate(Date retentionDate) {
 		this.retentionDate = retentionDate;
 	}
 
@@ -182,7 +183,7 @@ public class Evidence extends AbstractDocument{
 		return endDate;
 	}
 
-	public Long getRetentionDate() {
+	public Date getRetentionDate() {
 		return retentionDate;
 	}
 
