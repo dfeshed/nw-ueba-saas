@@ -190,7 +190,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 						new Date(timestamp), scoreField, dataSourceConfiguration.classifier, score, anomalyValue, anomalyType);
 
 				// add the event to the top events
-				JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration);
+				Map<String,Object> eventsMapForTopic = new HashMap<>();
+				JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration, eventsMapForTopic);
 				evidence.setTop3eventsJsonStr("[" + newMessage.toJSONString() + "]");
 				evidence.setNumOfEvents(1);
 				evidence.setEvidenceType(EvidenceType.AnomalySingleEvent);
@@ -203,6 +204,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					// In case this evidence is duplicated, we don't send it to output topic and continue to next score
 					continue;
 				}
+
+				// add the map of events to the evidence instead of the string - for alerts topic only!
+				evidence.setTop3eventsJsonStr(null); // for performance
+				evidence.setTop3events(new Map[]{eventsMapForTopic}); // for Esper to query event's fields
 
 				// Send evidence to output topic
 				try {
@@ -226,16 +231,19 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 	/**
 	 * Convert the event JSON to thin event with only the required fields, and with field-id from entities.properties
-	 * @param message	The original event
-	 * @param dataSourceConfiguration	The configuration of the specific data source
+	 * @param message    The original event
+	 * @param dataSourceConfiguration    The configuration of the specific data source
+	 * @param eventsMapForTopic	Build map from the event - this is used for the alerts topic only!
 	 * @return	New message
 	 */
-	private JSONObject convertMessageToStandardFormat(JSONObject message, DataSourceConfiguration dataSourceConfiguration) {
+	private JSONObject convertMessageToStandardFormat(JSONObject message,
+			DataSourceConfiguration dataSourceConfiguration, Map<String, Object> eventsMapForTopic) {
 		JSONObject newMessage = new JSONObject();
 		for (Map.Entry<String, String> columnToId : dataSourceConfiguration.fieldColumnToFieldId.entrySet()) {
 			Object valueOfColumn = message.get(columnToId.getKey());
 			if (valueOfColumn != null) {
 				newMessage.put(columnToId.getValue(), valueOfColumn);
+				eventsMapForTopic.put(columnToId.getValue(), valueOfColumn);
 			}
 		}
 		return newMessage;
