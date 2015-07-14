@@ -22,6 +22,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
     private static final Logger logger = Logger.getLogger(AggrFeatureFuncService.class);
 
     private Map<String, AggrFeatureFunction> aggrFunctions = new HashMap<>();
+    private Map<String, AggrFeatureEventFunction> aggrFeatureEventFunctions = new HashMap<>();
 
 
     /**
@@ -72,8 +73,32 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
      */
     @Override
     public Feature calculateAggrFeature(AggrFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
-        return null;
-        //TODO: implement
+        Feature res = null;
+        if(multipleBucketsAggrFeaturesMapList==null) {
+            logger.warn("calculateAggrFeature(): multipleBucketsAggrFeaturesMapList is null");
+        } else if(aggrFeatureEventConf==null) {
+            logger.warn("calculateAggrFeature(): aggrFeatureEventConf is null");
+        } else {
+            AggrFeatureEventFunction func = getAggrFeatureEventFunction(aggrFeatureEventConf);
+            res = func.calculateAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+        }
+        return res;
+    }
+
+    private AggrFeatureEventFunction getAggrFeatureEventFunction(AggrFeatureEventConf aggrFeatureEventConf) {
+        Assert.isNotNull(aggrFeatureEventConf);
+
+        AggrFeatureEventFunction func = null;
+
+        try {
+            String json = AggrFeatureEventConf.getAggrFeatureFuncJson();
+            func = (new ObjectMapper()).readValue(json, AggrFeatureEventFunction.class);
+            aggrFeatureEventFunctions.put(json, func);
+        } catch (Exception e) {
+            String errorMsg = String.format("Failed to deserialize json %s", aggrFeatureEventConf.getAggrFeatureFuncJson());
+            logger.error(errorMsg, e);
+        }
+        return func;
     }
 
     private AggrFeatureFunction getAggrFeatureFunction(@NotNull AggregatedFeatureConf aggregatedFeatureConf) {

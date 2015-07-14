@@ -2,6 +2,7 @@ package fortscale.streaming.service.aggregation.bucket.strategy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.minidev.json.JSONObject;
 
@@ -34,5 +35,18 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 		return ret;
 	}
 
-	
+	@Override
+	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context) {
+		long epochtimeInSec = System.currentTimeMillis() / 1000;
+		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(bucketConf, new JSONObject(context), epochtimeInSec);
+		return strategyDatas.get(0);
+	}
+
+
+	@Override
+	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener) {
+		// Do nothing, getNextBucketStrategyData should be used.
+	}
+
+
 }

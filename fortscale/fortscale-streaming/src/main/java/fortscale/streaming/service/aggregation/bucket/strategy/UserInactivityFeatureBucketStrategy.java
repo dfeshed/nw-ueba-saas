@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrategy {
@@ -27,6 +29,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	private List<String> dataSources;
 	private long inactivityDurationInMinutes;
 	private long endTimeDeltaInMinutes;
+	private Map<String, List<NextBucketEndTimeListener>> username2listenersListMap = new HashMap<>();
 
 	public UserInactivityFeatureBucketStrategy(String strategyName, List<String> dataSources, long inactivityDurationInMinutes, long endTimeDeltaInMinutes) {
 		// Validate input
@@ -59,23 +62,29 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 
 			if (StringUtils.isNotBlank(username) && epochtime != null) {
 				String strategyContextId = getStrategyContextId(username);
-				boolean isFeatureBucketStrategyDataCreatedOrUpdated = false;
+				boolean isFeatureBucketStrategyDataCreated = false;
+				boolean isFeatureBucketStrategyDataUpdated = false;
 				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtime);
 
 				// Case 1: Strategy doesn't exist - create a new one
 				// Case 2: Strategy exists, but session has become inactive - create a new one
 				if (featureBucketStrategyData == null || featureBucketStrategyData.getEndTime() + getInactivityDurationInSeconds() < epochtime) {
 					featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + getEndTimeDeltaInSeconds());
-					isFeatureBucketStrategyDataCreatedOrUpdated = true;
+					isFeatureBucketStrategyDataCreated = true;
 				}
 				// Case 3: Strategy exists and the incoming event updates its end time
 				else if (featureBucketStrategyData.getEndTime() < epochtime) {
 					featureBucketStrategyData.setEndTime(epochtime + getEndTimeDeltaInSeconds());
-					isFeatureBucketStrategyDataCreatedOrUpdated = true;
+					isFeatureBucketStrategyDataUpdated = true;
 				}
 
 				featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
-				if (isFeatureBucketStrategyDataCreatedOrUpdated) {
+
+				if(isFeatureBucketStrategyDataCreated) {
+					notifyListneres(username, featureBucketStrategyData);
+				}
+
+				if (isFeatureBucketStrategyDataUpdated || isFeatureBucketStrategyDataCreated) {
 					return featureBucketStrategyData;
 				} else {
 					return null;
@@ -103,6 +112,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 		return strategyDataList;
 	}
 
+
 	private String getStrategyContextId(String username) {
 		List<String> strategyContextIdParts = new ArrayList<>();
 
@@ -121,4 +131,40 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	private long getEndTimeDeltaInSeconds() {
 		return endTimeDeltaInMinutes * 60;
 	}
+
+	@Override
+	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context) {
+		long epochtimeInSec = System.currentTimeMillis() / 1000;
+		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(bucketConf, new JSONObject(context), epochtimeInSec);
+		return strategyDatas.size()>0 ? strategyDatas.get(0) : null;
+	}
+
+	@Override
+	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener) {
+		if(listener!=null) {
+			String username = ConversionUtils.convertToString(context.get(usernameFieldName));
+			if(username==null || StringUtils.isEmpty(username)) {
+				return;
+			}
+			List<NextBucketEndTimeListener> listeners = username2listenersListMap.get(username);
+			if(listeners==null) {
+				listeners = new ArrayList<>();
+				username2listenersListMap.put(username, listeners);
+			}
+			listeners.add(listener);
+		}
+	}
+
+	private void notifyListneres(String username, FeatureBucketStrategyData strategyData) {
+		List<NextBucketEndTimeListener> listeners = username2listenersListMap.get(username);
+		if(listeners!=null) {
+			for(NextBucketEndTimeListener listener : listeners) {
+				listener.nextBucketEndTimeUpdate(strategyData);
+			}
+			listeners.clear();
+			username2listenersListMap.remove(username);
+		}
+	}
+
 }
+

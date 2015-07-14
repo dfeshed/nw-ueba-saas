@@ -10,6 +10,6 @@ public interface FeatureBucketStrategy {
 	public FeatureBucketStrategyData update(JSONObject event);
 	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtimeInSec);
 
-	public Long getNextBucketEndTime(Map<String, String> context);
-	public void notifyWhenNextBucketEndTimeIsKnown(NextBucketEndTimeListener listener);
+	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context);
+	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener);
 }

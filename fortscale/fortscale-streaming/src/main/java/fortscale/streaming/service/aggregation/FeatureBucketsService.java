@@ -120,4 +120,8 @@ public abstract class FeatureBucketsService {
 	protected abstract FeatureExtractService getFeatureExtractService();
 	
 	protected abstract IAggrFeatureFunctionsService getAggrFeatureFunctionsService();
+
+	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf, String bucketId) {
+		return getFeatureBucketsStore().getFeatureBucket(featureBucketConf, bucketId);
+	}
 }

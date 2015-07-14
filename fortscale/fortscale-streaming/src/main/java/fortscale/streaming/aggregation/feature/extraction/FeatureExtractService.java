@@ -29,12 +29,12 @@ public class FeatureExtractService implements IFeatureExtractService, Initializi
 	private JSONObject featuresConfJson;
 
 	@Value("${fortscale.aggregation.feature.extraction.feature_extract_service.feature_conf_json:}")
-	String featuresConfJasonFileName;
+	String featuresConfJsonFileName;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if(StringUtils.isNotBlank(featuresConfJasonFileName)){
-			setFeaturesConfJsonFromFile(featuresConfJasonFileName);
+		if(StringUtils.isNotBlank(featuresConfJsonFileName)){
+			setFeaturesConfJsonFromFile(featuresConfJsonFileName);
 			for(String featureName: featuresConfJson.keySet()){
 				createFeatureExtractor(featureName);
 			}

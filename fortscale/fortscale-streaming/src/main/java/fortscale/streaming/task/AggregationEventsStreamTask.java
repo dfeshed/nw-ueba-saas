@@ -3,6 +3,7 @@ package fortscale.streaming.task;
 import java.util.HashMap;
 import java.util.Map;
 
+import fortscale.streaming.service.aggregation.AggrEventTopologyService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
@@ -21,12 +22,18 @@ import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.utils.StringPredicates;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 	private AggregatorManager aggregatorManager;
 	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
 	private String dataSourceFieldName;
+
+	@Autowired
+	AggrEventTopologyService aggrEventTopologyService;
+
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {		
@@ -62,12 +69,16 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		if(!event.containsKey(dataSourceFieldName)){
 			event.put(dataSourceFieldName, topicToDataSourceMap.get(topic));
 		}
-		
+
+		aggrEventTopologyService.setMessageCollector(collector);
+
 		aggregatorManager.processEvent(event);
 	}
 
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		aggrEventTopologyService.setMessageCollector(collector);
+
 		if (aggregatorManager != null) {
 			aggregatorManager.window(collector, coordinator);
 		}

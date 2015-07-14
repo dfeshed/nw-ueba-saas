@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by amira on 17/06/2015.
@@ -46,6 +47,9 @@ public class GenericHistogram implements Serializable {
     public Double get(Object key) {
         return histogram.get(key);
     }
+    public Set<Object> getObjects() {
+        return histogram.keySet();
+    }
 
     public Double getMaxCount() { return histogram.get(maxObject);}
     public Object getMaxCountObject() { return maxObject;}
@@ -74,6 +78,13 @@ public class GenericHistogram implements Serializable {
 
         this.totalCount +=count;
         stdUpToDate = false;
+    }
+
+    public void add(GenericHistogram histogram) {
+        for (Object obj : histogram.getObjects()) {
+            Double count = histogram.get(obj);
+            add(obj, count);
+        }
     }
 
     synchronized private void calculateHistogramStd(){
