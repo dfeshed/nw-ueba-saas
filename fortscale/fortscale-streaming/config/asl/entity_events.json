@@ -1,0 +1,42 @@
+{
+  "EntityEvents": {
+    "GlobalParams": {
+      "secondsToWaitBeforeSendingEventAfterFirstParameterHasArrived": 60,
+      "fireEventsEverySeconds": 300
+    },
+    "EntityEventDefinitions": [
+      {
+        "name": "entityEventDefinition1",
+        "aggregatedFeatureNamesList": [
+          "aggregatedFeature1",
+          "aggregatedFeature2",
+          "aggregatedFeature3"
+        ],
+        "aggregatedFeatureEventFunction": {
+          "type": "type1",
+          "params": {
+            "param1": "valueOfParam1",
+            "param2": "valueOfParam2",
+            "param3": "valueOfParam3"
+          }
+        }
+      },
+      {
+        "name": "entityEventDefinition2",
+        "aggregatedFeatureNamesMap": {
+          "functionFieldName1": "aggregatedFeature1",
+          "functionFieldName2": "aggregatedFeature2",
+          "functionFieldName3": "aggregatedFeature3"
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "type2",
+          "params": {
+            "param1": "valueOfParam1",
+            "param2": "valueOfParam2",
+            "param3": "valueOfParam3"
+          }
+        }
+      }
+    ]
+  }
+}
