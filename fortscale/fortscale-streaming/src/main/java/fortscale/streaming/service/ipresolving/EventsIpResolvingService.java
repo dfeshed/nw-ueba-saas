@@ -53,7 +53,8 @@ public class EventsIpResolvingService {
             return event;
 
         // get the hostname from the resolver and put it into the event message
-        String hostname = resolver.resolve(ip, timestamp, config.isRestrictToADName(), config.isShortName(), config.isRemoveLastDot());
+        String hostname = resolver.resolve(ip, timestamp, config.isRestrictToADName(), config.isShortName(),
+                config.isRemoveLastDot(), config.isOverrideHostnameWithIP());
         if (StringUtils.isNotEmpty(hostname)) {
             event.put(config.getHostFieldName(), hostname);
         } else {

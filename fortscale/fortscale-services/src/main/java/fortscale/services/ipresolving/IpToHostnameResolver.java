@@ -51,7 +51,7 @@ public class IpToHostnameResolver {
 	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
 	 */
 	public String resolve(String ip, long timestamp, boolean restrictToADName) {
-		return resolve(ip, timestamp, restrictToADName, true, false);
+		return resolve(ip, timestamp, restrictToADName, true, false, false);
 	}
 
 	/**
@@ -63,14 +63,14 @@ public class IpToHostnameResolver {
 	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
 	 */
 	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName,
-			boolean isRemoveLastDot) {
+			boolean isRemoveLastDot, boolean overrideHostnameWithIP) {
 
 		//check if ip is already resolved, meaning we get a hostname/invalid ip as the ip - just return that hostname
 		if (!InetAddressValidator.getInstance().isValid(ip)) {
 			return ip;
 		}
 
-		//define the local priority queue
+			//define the local priority queue
 		PriorityQueue<IpToHostname> ipToHostnameQueue = null;
 
 		// get hostname from file resolver
@@ -113,6 +113,11 @@ public class IpToHostnameResolver {
 			// 2. hostname is in AD and we were asked to restrictToADNames
 			if (hostname != null && !isHostnameInBlacklist(hostname) && (!restrictToADName || isHostnameInAD(hostname)))
 				return hostname;
+		}
+
+		//if resolving failed, and flag to return the ip address instead of the host name is true - return the ip
+		if (overrideHostnameWithIP) {
+			return ip;
 		}
 
 		// return un resolved if all providers failed

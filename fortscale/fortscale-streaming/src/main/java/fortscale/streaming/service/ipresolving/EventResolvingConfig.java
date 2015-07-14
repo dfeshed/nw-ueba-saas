@@ -16,6 +16,7 @@ public class EventResolvingConfig {
     private boolean shortName;
     private boolean isRemoveLastDot;
 	private boolean dropWhenFail;
+    private boolean overrideHostnameWithIP;
     private String partitionField;
 
     /**
@@ -23,7 +24,8 @@ public class EventResolvingConfig {
      */
     public static EventResolvingConfig build(String inputTopic, String ipFieldName, String hostFieldName,
                                              String outputTopic, boolean restrictToADName, boolean shortName,
-                                             boolean isRemoveLastDot,boolean dropWhenFail, String timestampFieldName, String partitionField) {
+                                             boolean isRemoveLastDot, boolean dropWhenFail, boolean overrideHostnameWithIP,
+                                             String timestampFieldName, String partitionField) {
         EventResolvingConfig config = new EventResolvingConfig();
         config.setHostFieldName(hostFieldName);
         config.setInputTopic(inputTopic);
@@ -33,6 +35,7 @@ public class EventResolvingConfig {
         config.setShortName(shortName);
         config.setRemoveLastDot(isRemoveLastDot);
 		config.setDropWhenFail(dropWhenFail);
+        config.setOverrideHostnameWithIP(overrideHostnameWithIP);
         config.setTimestampFieldName(timestampFieldName);
         config.setPartitionField(partitionField);
         return config;
@@ -113,4 +116,12 @@ public class EventResolvingConfig {
 	public boolean isDropWhenFail() {return dropWhenFail;}
 
 	public void setDropWhenFail(boolean dropWhenFail) {this.dropWhenFail = dropWhenFail;}
+
+    public boolean isOverrideHostnameWithIP() {
+        return overrideHostnameWithIP;
+    }
+
+    public void setOverrideHostnameWithIP(boolean overrideHostnameWithIP) {
+        this.overrideHostnameWithIP = overrideHostnameWithIP;
+    }
 }
