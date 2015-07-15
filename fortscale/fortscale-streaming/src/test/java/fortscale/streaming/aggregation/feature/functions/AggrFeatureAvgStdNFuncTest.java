@@ -78,7 +78,45 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc(new AggrFilter(""));
+
+        Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
+
+        Assert.assertEquals(value.getClass(), ContinuousValueAvgStdN.class);
+        Assert.assertEquals(value, aggrFeature.getValue());
+
+        ContinuousValueAvgStdN avgStdNvalues = (ContinuousValueAvgStdN)value;
+        Double sum = a1+a2+a3+a4+a5+a6+a7+a8+a9+a10+a11+a12;
+        Double std = Math.sqrt((sum)/12);
+
+        Assert.assertEquals((Long) 12L, avgStdNvalues.getN());
+        Assert.assertEquals((Double)5.0, avgStdNvalues.getAvg());
+        Assert.assertEquals( std,  avgStdNvalues.getStd());
+    }
+
+    @Test
+    public void testFilterUpdateAggrFeature() {
+        ContinuousValueAvgStdN avgStdN = new ContinuousValueAvgStdN();
+        avgStdN.add(0.5); Double a1 = Math.pow(( 0.5 - 5.0), 2);
+        avgStdN.add(2.0); Double a2 = Math.pow(( 2.0 - 5.0), 2);
+        avgStdN.add(3.0); Double a3 = Math.pow(( 3.0 - 5.0), 2);
+        avgStdN.add(1.0); Double a4 = Math.pow(( 1.0 - 5.0), 2);
+        avgStdN.add(3.5); Double a5 = Math.pow((3.5 - 5.0), 2);
+        avgStdN.add(0.5); Double a6 = Math.pow(( 0.5- 5.0), 2);
+        avgStdN.add(1.0); Double a7 = Math.pow(( 1.0- 5.0), 2);
+        avgStdN.add(2.0); Double a8 = Math.pow(( 2.0- 5.0), 2);
+        avgStdN.add(3.0); Double a9 = Math.pow(( 3.0- 5.0), 2);
+
+        Map<String, Feature> featureMap = new HashMap<>();
+        featureMap.put("feature1", new Feature("feature1", 3.5)); Double a10 = Math.pow(( 3.5- 5.0), 2);
+        featureMap.put("feature2", new Feature("feature2", 10.0)); Double a11 = Math.pow(( 10.0- 5.0), 2);
+        featureMap.put("feature3", new Feature("feature3", 30.0)); Double a12 = Math.pow((30.0 - 5.0), 2);
+
+        featureMap.put("not relevant", new Feature("not relevant", 30.0));
+
+        Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
+        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
+        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc(new AggrFilter("")); // Filtering
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -116,7 +154,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -137,7 +175,7 @@ public class AggrFeatureAvgStdNFuncTest {
         featureMap.put("feature1", new Feature("feature1", 0.5));
 
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, null);
 
@@ -167,7 +205,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
 
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(null, featureMap, aggrFeature);
 
@@ -191,7 +229,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", "wrong value type");
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -217,7 +255,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", null);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf12();
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -249,7 +287,7 @@ public class AggrFeatureAvgStdNFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
-        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
+        AggrFeatureFunction func = new AggrFeatureAvgStdNFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(aggrFuncConf, null, aggrFeature);
 

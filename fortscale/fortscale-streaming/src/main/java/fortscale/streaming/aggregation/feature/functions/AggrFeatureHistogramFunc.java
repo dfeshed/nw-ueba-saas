@@ -1,8 +1,12 @@
 package fortscale.streaming.aggregation.feature.functions;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.GenericHistogram;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import net.minidev.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -10,8 +14,14 @@ import java.util.Map;
 /**
  * Created by amira on 17/06/2015.
  */
-public class AggrFeatureHistogramFunc implements AggrFeatureFunction {
+@JsonTypeName(AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
+public class AggrFeatureHistogramFunc extends AbstractAggrFeatureFunction{
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_histogram_func";
+
+    public AggrFeatureHistogramFunc(@JsonProperty("filter") AggrFilter aggrFilter) {
+        super(aggrFilter);
+    }
 
     /**
      * Updates the histogram within aggrFeature.
@@ -45,7 +55,11 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction {
                 String featureName = featureNames.get(i);
                 Feature feature = features.get(featureName);
                 if (feature != null) {
-                    histogram.add(feature.getValue(), 1.0);
+                    JSONObject obj = new JSONObject();
+                    obj.put(feature.getName(), feature.getValue());
+                    if (aggrFilter.passedFilter(obj)) {
+                        histogram.add(feature.getValue(), 1.0);
+                    }
                 }
             }
         }

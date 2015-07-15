@@ -1,8 +1,12 @@
 package fortscale.streaming.aggregation.feature.functions;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.ContinuousValueAvgStdN;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import net.minidev.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -10,9 +14,14 @@ import java.util.Map;
 /**
  * Created by amira on 17/06/2015.
  */
-public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction {
+@JsonTypeName(AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
+public class AggrFeatureAvgStdNFunc extends AbstractAggrFeatureFunction {
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_av_std_n_func";
 
+    public AggrFeatureAvgStdNFunc(@JsonProperty("filter") AggrFilter aggrFilter) {
+        super(aggrFilter);
+    }
 
     /**
      * Updates the Average, Standard Deviation and Total feature count (N) within the aggrFeature.
@@ -43,21 +52,22 @@ public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction {
         List<String> featureNames = aggregatedFeatureConf.getFeatureNames();
 
         if(features!=null) {
-            for (int i = 0; i < featureNames.size(); i++) {
-                String featureName = featureNames.get(i);
+            for (String featureName : featureNames) {
                 Feature feature = features.get(featureName);
-
-                if(feature!=null) {
-                    try {
-                        Double doubleValue = (Double) feature.getValue();
-                        avgStdN.add(doubleValue);
-                    } catch (ClassCastException e) {
-                        // Value ignored
+                if (feature != null) {
+                    JSONObject obj = new JSONObject();
+                    obj.put(feature.getName(), feature.getValue());
+                    if (aggrFilter.passedFilter(obj)) {
+                        try {
+                            Double doubleValue = (Double) feature.getValue();
+                            avgStdN.add(doubleValue);
+                        } catch (ClassCastException e) {
+                            // Value ignored
+                        }
                     }
                 }
             }
         }
         return avgStdN;
-
      }
 }

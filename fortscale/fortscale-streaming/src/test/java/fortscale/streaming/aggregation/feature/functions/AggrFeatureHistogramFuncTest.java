@@ -82,7 +82,51 @@ public class AggrFeatureHistogramFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        AggrFeatureFunction func = new AggrFeatureHistogramFunc(new AggrFilter(""));
+
+        Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
+
+        Assert.assertEquals(value.getClass(), GenericHistogram.class);
+        Assert.assertEquals(value, aggrFeature.getValue());
+
+        GenericHistogram histValue = (GenericHistogram)value;
+
+        Assert.assertEquals((Double)10.0, (Double)histValue.get(2) );
+        Assert.assertEquals((Double)20.0, (Double)histValue.get(2L) );
+        Assert.assertEquals((Double)30.0, (Double)histValue.get("2") );
+
+        Double avg = 20d;
+        Double one = Math.pow((10-avg),2);
+        Double two = Math.pow((20-avg),2);
+        Double three = Math.pow((30-avg),2);
+        Double sum = one+two+three;
+        Double std = Math.sqrt((sum)/3);
+        Assert.assertEquals((Double) std, (Double) histValue.getPopulationStandardDeviation());
+
+    }
+
+    @Test
+    public void testFilterUpdateAggregatedFeature() {
+        GenericHistogram histogram = new GenericHistogram();
+        histogram.add(2, 0.5);
+        histogram.add(2, 2.0);
+        histogram.add(2, 3.0);
+        histogram.add(2, 3.5);
+        histogram.add(2L, 0.5);
+        histogram.add(2L, 2.0);
+        histogram.add(2L, 3.0);
+        histogram.add(2L, 3.5);
+        histogram.add(2L, 10.0);
+        histogram.add("2", 30.0);
+
+        Map<String, Feature> featureMap = new HashMap<>();
+        featureMap.put("feature1", new Feature("feature1", 2));
+        featureMap.put("feature2", new Feature("feature2", 2L));
+        featureMap.put("not relevant", new Feature("not relevant", 2));
+
+        Feature aggrFeature = new Feature("MyAggrFeature", histogram);
+        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
+        AggrFeatureFunction func = new AggrFeatureHistogramFunc(new AggrFilter("$.."));
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -133,7 +177,7 @@ public class AggrFeatureHistogramFuncTest {
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
 
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        AggrFeatureFunction func = new AggrFeatureHistogramFunc(new AggrFilter(""));
 
         func.updateAggrFeature(aggrFuncConf, featureMap1, aggrFeature);
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap2, aggrFeature);
@@ -176,7 +220,7 @@ public class AggrFeatureHistogramFuncTest {
 
         Feature aggrFeature = new Feature("MyAggrFeature", null);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf12();
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        AggrFeatureFunction func = new AggrFeatureHistogramFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -222,7 +266,7 @@ public class AggrFeatureHistogramFuncTest {
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = null;
 
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        AggrFeatureFunction func = new AggrFeatureHistogramFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap1, aggrFeature);
 
@@ -251,7 +295,7 @@ public class AggrFeatureHistogramFuncTest {
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf12();
         String str = "I'm a string, not histogram";
         Feature aggrFeature = new Feature("MyAggrFeature",str);
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        AggrFeatureFunction func = new AggrFeatureHistogramFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap1, aggrFeature);
 
@@ -265,7 +309,7 @@ public class AggrFeatureHistogramFuncTest {
         Map<String, Feature> featureMap1 = new HashMap<>();
         featureMap1.put("feature1", new Feature("feature1", 2));
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf12();
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        AggrFeatureFunction func = new AggrFeatureHistogramFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap1, null);
 
@@ -293,7 +337,7 @@ public class AggrFeatureHistogramFuncTest {
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf12();
 
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc();
+        AggrFeatureFunction func = new AggrFeatureHistogramFunc(new AggrFilter(""));
 
         Object value = func.updateAggrFeature(aggrFuncConf, null, aggrFeature);
 
