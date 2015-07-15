@@ -215,21 +215,6 @@
 		<constructor-arg name="clazz" value="java.util.Set" />
 	</bean>
 
-	<!-- Username normalization -->
-	<bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="singleton">
-		<property name="usernameService" ref="usernameService"/>
-		<property name="samAccountNameService" ref="samAccountNameService"/>
-	</bean>
-	<bean id="secUsernameNormalizer" class="fortscale.services.impl.SecUsernameNormalizer" scope="singleton">
-		<property name="matchersString" value="${collection.sec.etl.username.normalize.matchers}"/>
-		<property name="usernameService" ref="usernameService"/>
-		<property name="samAccountNameService" ref="samAccountNameService"/>
-	</bean>
-
-	<bean id="sshUsernameNormalizer" class="fortscale.services.impl.SSHUsernameNormalizer" scope="singleton">
-		<property name="samAccountNameService" ref="samAccountNameService"/>
-		<property name="usernameService" ref="usernameService"/>
-	</bean>
 
 
 	<bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
@@ -237,7 +222,7 @@
 	<bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton">
-		<property name="lazy" value="false"/>
+		<property name="lazy" value="true"/>
 	</bean>
 
 	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
