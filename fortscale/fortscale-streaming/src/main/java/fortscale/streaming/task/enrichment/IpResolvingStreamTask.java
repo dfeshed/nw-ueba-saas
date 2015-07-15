@@ -107,14 +107,12 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                 boolean shortName = config.getBoolean(String.format("fortscale.events.%s.shortName", eventType));
                 boolean isRemoveLastDot = config.getBoolean(String.format("fortscale.events.%s.isRemoveLastDot", eventType));
 				boolean dropWhenFail = config.getBoolean(String.format("fortscale.events.%s.dropWhenFail", eventType));
-                boolean overrideHostnameWithIP = config.getBoolean(String.format("fortscale.events.%s.overrideHostnameWithIP", eventType));
                 String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
 
 
                 // build EventResolvingConfig for the event type
                 resolvingConfigList.add(EventResolvingConfig.build(inputTopic, ipField, hostField, outputTopic,
-                        restrictToADName, shortName, isRemoveLastDot,dropWhenFail, overrideHostnameWithIP,
-                        timestampField, partitionField));
+                        restrictToADName, shortName, isRemoveLastDot,dropWhenFail, timestampField, partitionField));
             }
 
             // construct the resolving service
