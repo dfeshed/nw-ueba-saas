@@ -191,7 +191,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 				// add the event to the top events
 				JSONObject newMessage = convertMessageToStandardFormat(message, dataSourceConfiguration);
-				evidence.setTop3eventsJsonStr("[" + newMessage.toJSONString() + "]");
+				String jsonString = newMessage.toJSONString();
+				evidence.setTop3eventsJsonStr("[" + jsonString + "]");
 				evidence.setNumOfEvents(1);
 				evidence.setEvidenceType(EvidenceType.AnomalySingleEvent);
 
@@ -203,6 +204,10 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 					// In case this evidence is duplicated, we don't send it to output topic and continue to next score
 					continue;
 				}
+
+				// add the map of events to the evidence instead of the string - for alerts topic only!
+				evidence.setTop3eventsJsonStr(null); // for performance
+				evidence.setTop3events(new Map[] { mapper.readValue(jsonString, HashMap.class) }); // for Esper to query event's fields
 
 				// Send evidence to output topic
 				try {
@@ -226,11 +231,12 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 	/**
 	 * Convert the event JSON to thin event with only the required fields, and with field-id from entities.properties
-	 * @param message	The original event
-	 * @param dataSourceConfiguration	The configuration of the specific data source
+	 * @param message    The original event
+	 * @param dataSourceConfiguration    The configuration of the specific data source
 	 * @return	New message
 	 */
-	private JSONObject convertMessageToStandardFormat(JSONObject message, DataSourceConfiguration dataSourceConfiguration) {
+	private JSONObject convertMessageToStandardFormat(JSONObject message,
+			DataSourceConfiguration dataSourceConfiguration) {
 		JSONObject newMessage = new JSONObject();
 		for (Map.Entry<String, String> columnToId : dataSourceConfiguration.fieldColumnToFieldId.entrySet()) {
 			Object valueOfColumn = message.get(columnToId.getKey());

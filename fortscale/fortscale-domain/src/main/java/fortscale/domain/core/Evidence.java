@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -7,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -109,6 +111,10 @@ public class Evidence extends AbstractDocument{
 	@Field(top3eventsField)
 	private String top3eventsJsonStr;
 
+	// keeping the events as map - not kept in MongoDB
+	@Transient
+	private Map<String,Object>[] top3events;
+
 	@Field(numOfEventsField)
 	private Integer numOfEvents;
 
@@ -163,6 +169,10 @@ public class Evidence extends AbstractDocument{
 
 	public void setEvidenceType(EvidenceType evidenceType) {
 		this.evidenceType = evidenceType;
+	}
+
+	public void setTop3events(Map<String, Object>[] top3events) {
+		this.top3events = top3events;
 	}
 
 	// Getters
@@ -225,6 +235,10 @@ public class Evidence extends AbstractDocument{
 
 	public EvidenceType getEvidenceType() {
 		return evidenceType;
+	}
+
+	public Map<String, Object>[] getTop3events() {
+		return top3events;
 	}
 }
 
