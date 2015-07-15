@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.streaming.service.aggregation.FeatureBucketConf;
-import groovy.util.MapEntry;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
@@ -22,8 +21,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 	private int numberOfBuckets;
 	private int bucketsLeap;
 	private long waitAfterBucketCloseSeconds;
-	private List<String> aggregatedFeatureNamesList;
-	private Map<String, String> functionParameterName2aggregatedFeatureNameMap;
+	private Map<String, List<String>> aggregatedFeatureNamesMap;
 	private JSONObject aggregatedFeatureEventFunction;
 
 	public AggregatedFeatureEventConf(
@@ -32,8 +30,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 			@JsonProperty("numberOfBuckets") int numberOfBuckets,
 			@JsonProperty("bucketsLeap") int bucketsLeap,
 			@JsonProperty("waitAfterBucketCloseSeconds") long waitAfterBucketCloseSeconds,
-			@JsonProperty("aggregatedFeatureNamesList") List<String> aggregatedFeatureNamesList,
-			@JsonProperty("aggrFeatureNamesMapping") Map<String, String> functionParameterName2aggregatedFeatureNameMap,
+			@JsonProperty("aggregatedFeatureNamesMap") Map<String, List<String>> aggregatedFeatureNamesMap,
 			@JsonProperty("aggregatedFeatureEventFunction") JSONObject aggregatedFeatureEventFunction) {
 
 		Assert.isTrue(StringUtils.isNotBlank(name));
@@ -42,18 +39,12 @@ public class AggregatedFeatureEventConf implements Serializable {
 		Assert.isTrue(bucketsLeap >= 1);
 		Assert.isTrue(waitAfterBucketCloseSeconds >= 0);
 		Assert.notNull(aggregatedFeatureEventFunction);
-
-		// Either the list or the map is required, but not both
-		if (aggregatedFeatureNamesList != null) {
-			Assert.notEmpty(aggregatedFeatureNamesList);
-			Assert.isNull(functionParameterName2aggregatedFeatureNameMap);
-		} else {
-			Assert.notNull(functionParameterName2aggregatedFeatureNameMap);
-			Assert.notEmpty(functionParameterName2aggregatedFeatureNameMap);
-			Collection<String> names = functionParameterName2aggregatedFeatureNameMap.values();
-			aggregatedFeatureNamesList = new ArrayList<>(names.size());
-			for(String featureName: names) {
-				aggregatedFeatureNamesList.add(featureName);
+		Assert.notEmpty(aggregatedFeatureNamesMap);
+		for (Map.Entry<String, List<String>> entry : aggregatedFeatureNamesMap.entrySet()) {
+			Assert.isTrue(StringUtils.isNotBlank(entry.getKey()));
+			Assert.notEmpty(entry.getValue());
+			for (String aggregatedFeatureName : entry.getValue()) {
+				Assert.isTrue(StringUtils.isNotBlank(aggregatedFeatureName));
 			}
 		}
 
@@ -63,8 +54,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 		this.numberOfBuckets = numberOfBuckets;
 		this.bucketsLeap = bucketsLeap;
 		this.waitAfterBucketCloseSeconds = waitAfterBucketCloseSeconds;
-		this.aggregatedFeatureNamesList = aggregatedFeatureNamesList;
-		this.functionParameterName2aggregatedFeatureNameMap = functionParameterName2aggregatedFeatureNameMap;
+		this.aggregatedFeatureNamesMap = aggregatedFeatureNamesMap;
 		this.aggregatedFeatureEventFunction = aggregatedFeatureEventFunction;
 	}
 
@@ -96,20 +86,24 @@ public class AggregatedFeatureEventConf implements Serializable {
 		return waitAfterBucketCloseSeconds;
 	}
 
-	public List<String> getAggregatedFeatureNamesList() {
-		ArrayList<String> clone = new ArrayList<>(aggregatedFeatureNamesList.size());
-		for(String name: aggregatedFeatureNamesList) {
-			clone.add(name);
+	public Map<String, List<String>> getAggregatedFeatureNamesMap() {
+		Map<String, List<String>> mapClone = new HashMap<>(aggregatedFeatureNamesMap.size());
+		for (Map.Entry<String, List<String>> entry : aggregatedFeatureNamesMap.entrySet()) {
+			List<String> listClone = new ArrayList<>(entry.getValue().size());
+			listClone.addAll(entry.getValue());
+			mapClone.put(entry.getKey(), listClone);
 		}
-		return clone;
+
+		return mapClone;
 	}
 
-	public Map<String, String> getFunctionParameterName2aggregatedFeatureNameMap() {
-		Map<String, String> clone = new HashMap<>(functionParameterName2aggregatedFeatureNameMap.size());
-		for (Map.Entry<String, String> entry : functionParameterName2aggregatedFeatureNameMap.entrySet()) {
-			clone.put(entry.getKey(), entry.getValue());
+	public Set<String> getAllAggregatedFeatureNames() {
+		Set<String> union = new HashSet<>();
+		for (List<String> aggregatedFeatureNames : aggregatedFeatureNamesMap.values()) {
+			union.addAll(aggregatedFeatureNames);
 		}
-		return clone;
+
+		return union;
 	}
 
 	public JSONObject getAggregatedFeatureEventFunction() {

@@ -1,25 +1,25 @@
 {
-  "BucketConfs" : [
+  "BucketConfs": [
     {
       "name": "bc1",
       "contextFieldNames": [
         "normalized_username"
       ],
       "dataSources": [
-        "ssh","4769"
+        "ssh",
+        "4769"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name":"aggr-feature-1",
-          "featureNames": [
-            "normalized_dst_machine"
-          ],
+          "name": "aggr-feature-1",
+          "featureNamesMap": {
+            "groupBy": ["normalized_dst_machine"]
+          },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
-
 
     {
       "name": "bc2",
@@ -28,16 +28,17 @@
         "normalized_src_machine"
       ],
       "dataSources": [
-        "ssh","4769"
+        "ssh",
+        "4769"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name":"aggr-feature-2",
-          "featureNames": [
-            "normalized_dst_machine"
-          ],
-          "aggrFeatureFuncJson":  {"type": "aggr_feature_histogram_func"}
+          "name": "aggr-feature-2",
+          "featureNamesMap": {
+            "groupBy": ["normalized_dst_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     }

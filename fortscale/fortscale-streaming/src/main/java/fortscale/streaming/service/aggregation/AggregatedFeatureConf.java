@@ -1,45 +1,70 @@
 package fortscale.streaming.service.aggregation;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class AggregatedFeatureConf implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
-	private List<String> featureNames;
-    private JSONObject aggrFeatureFuncJson;
+	private Map<String, List<String>> featureNamesMap;
+	private Set<String> allFeatureNames;
+	private JSONObject aggrFeatureFuncJson;
 
-	public AggregatedFeatureConf(@JsonProperty("name")String name,
-								 @JsonProperty("featureNames")List<String> featureNames,
-								 @JsonProperty("aggrFeatureFuncJson")JSONObject aggrFeatureFuncJson) {
-		// Validate input
+	public AggregatedFeatureConf(
+			@JsonProperty("name") String name,
+			@JsonProperty("featureNamesMap") Map<String, List<String>> featureNamesMap,
+			@JsonProperty("aggrFeatureFuncJson") JSONObject aggrFeatureFuncJson) {
+
+		// Validate name
 		Assert.isTrue(StringUtils.isNotBlank(name));
-		Assert.notEmpty(featureNames);
-		for (String featureName : featureNames) {
-			Assert.isTrue(StringUtils.isNotBlank(featureName));
+
+		// Validate featureNamesMap
+		Assert.notEmpty(featureNamesMap);
+		for (Map.Entry<String, List<String>> entry : featureNamesMap.entrySet()) {
+			Assert.isTrue(StringUtils.isNotBlank(entry.getKey()));
+			Assert.notEmpty(entry.getValue());
+			for (String featureName : entry.getValue()) {
+				Assert.isTrue(StringUtils.isNotBlank(featureName));
+			}
 		}
-        Assert.notNull(aggrFeatureFuncJson);
+
+		// Validate aggrFeatureFuncJson
+		Assert.notNull(aggrFeatureFuncJson);
 
 		this.name = name;
-		this.featureNames = featureNames;
-        this.aggrFeatureFuncJson = aggrFeatureFuncJson;
+		this.featureNamesMap = featureNamesMap;
+		this.allFeatureNames = new HashSet<>();
+		for (List<String> featureNames : featureNamesMap.values()) {
+			this.allFeatureNames.addAll(featureNames);
+		}
+		this.aggrFeatureFuncJson = aggrFeatureFuncJson;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public List<String> getFeatureNames() {
-		return featureNames;
+	public Map<String, List<String>> getFeatureNamesMap() {
+		return featureNamesMap;
 	}
 
-    public String getAggrFeatureFuncJson() { return aggrFeatureFuncJson.toJSONString(); }
+	public Set<String> getAllFeatureNames() {
+		return allFeatureNames;
+	}
+
+	public String getAggrFeatureFuncJson() {
+		return aggrFeatureFuncJson.toJSONString();
+	}
 }
