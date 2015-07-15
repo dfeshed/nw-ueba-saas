@@ -55,6 +55,17 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		}
 	}
 
+	/**
+	 * Registers a listener that will be notified when all given data sources reach the input epochtime.
+	 * NOTE: Currently the timer keeps a 'last event epochtime' for all the events (regardless of their data source).
+	 * In the future, such epochtime will be kept for each data source separately,
+	 * then the list of data sources will be needed.
+	 *
+	 * @param dataSources list of all the data sources that need to reach the awaited epochtime.
+	 * @param epochtime   the awaited epochtime that needs to be reached.
+	 * @param listener    the listener that will be notified.
+	 * @return the ID of the new registration.
+	 */
 	public long notifyWhenDataSourcesReachTime(List<String> dataSources, long epochtime, DataSourcesSyncTimerListener listener) {
 		// Validate input
 		Assert.notEmpty(dataSources);
@@ -86,13 +97,12 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		}
 	}
 
-	public void timeCheck() {
-		long currentSystemTime = System.currentTimeMillis() / 1000;
-
-		if (currentSystemTime >= lastCycleTime + cycleLengthInSeconds) {
-			lastCycleTime = currentSystemTime;
-			handlePendingQueue(currentSystemTime);
-			handleReadyForNotificationQueue(currentSystemTime);
+	public void timeCheck(long systemTimeInMillis) {
+		long systemTimeInSeconds = systemTimeInMillis / 1000;
+		if (systemTimeInSeconds >= lastCycleTime + cycleLengthInSeconds) {
+			lastCycleTime = systemTimeInSeconds;
+			handlePendingQueue(systemTimeInSeconds);
+			handleReadyForNotificationQueue(systemTimeInSeconds);
 		}
 	}
 
