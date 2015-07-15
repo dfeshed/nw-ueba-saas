@@ -20,10 +20,10 @@ public class EventsIpResolvingServiceTest {
     @Before
     public void setUp() {
 		List<EventResolvingConfig> configs = new LinkedList<>();
-		configs.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, false, "time", "partition"));
+		configs.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, false, "time", "partition", false));
 
 		List<EventResolvingConfig> configs2 = new LinkedList<>();
-		configs2.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, true, "time", "partition"));
+		configs2.add(EventResolvingConfig.build("input", "ip", "host", "output", false, false, false, true, "time", "partition", false));
 
 		resolver = mock(IpToHostnameResolver.class);
 		service = new EventsIpResolvingService(resolver, configs);
