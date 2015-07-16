@@ -15,4 +15,7 @@ export default function(config) {
             return new Mirage.Response(401,  {message: 'invalid credentials'});
         }
     });
+
+    config.post('/user/logout', function() {
+    });
 }
