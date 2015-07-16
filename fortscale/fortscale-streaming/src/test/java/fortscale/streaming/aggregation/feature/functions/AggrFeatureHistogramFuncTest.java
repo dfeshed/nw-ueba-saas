@@ -121,12 +121,12 @@ public class AggrFeatureHistogramFuncTest {
 
         Map<String, Feature> featureMap = new HashMap<>();
         featureMap.put("feature1", new Feature("feature1", 2));
-        featureMap.put("feature2", new Feature("feature2", 2L));
+        featureMap.put("feature2", new Feature("feature2", 5L));
         featureMap.put("not relevant", new Feature("not relevant", 2));
 
         Feature aggrFeature = new Feature("MyAggrFeature", histogram);
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
-        AggrFeatureFunction func = new AggrFeatureHistogramFunc(new AggrFilter("$.."));
+        AggrFeatureFunction func = new AggrFeatureHistogramFunc(new AggrFilter("$..[?(@.value<4.0)]"));
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
 
@@ -135,18 +135,9 @@ public class AggrFeatureHistogramFuncTest {
 
         GenericHistogram histValue = (GenericHistogram)value;
 
-        Assert.assertEquals((Double)10.0, (Double)histValue.get(2) );
-        Assert.assertEquals((Double)20.0, (Double)histValue.get(2L) );
+        Assert.assertEquals((Double) 10.0, (Double) histValue.get(2));
+        Assert.assertNull(histValue.get(5L));
         Assert.assertEquals((Double)30.0, (Double)histValue.get("2") );
-
-        Double avg = 20d;
-        Double one = Math.pow((10-avg),2);
-        Double two = Math.pow((20-avg),2);
-        Double three = Math.pow((30-avg),2);
-        Double sum = one+two+three;
-        Double std = Math.sqrt((sum)/3);
-        Assert.assertEquals((Double) std, (Double) histValue.getPopulationStandardDeviation());
-
     }
 
     @Test

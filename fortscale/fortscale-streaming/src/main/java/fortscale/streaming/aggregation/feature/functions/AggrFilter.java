@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.jayway.jsonpath.JsonPath;
-
+import net.minidev.json.JSONObject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,12 +21,19 @@ public class AggrFilter {
 		this.jsonPath = jsonPath;
 	}
 
-	public boolean passedFilter(Object document) {
+	public boolean passedFilter(String objectName, Object objectValue) {
 		if (jsonPath == null || jsonPath.length() == 0) {
 			return true;
 		}
 		else {
-			Object jsonPathResult = JsonPath.read(document, jsonPath);
+			JSONObject document = new JSONObject();
+			document.put("value", objectValue);
+			ArrayList<Object> singleObjectList = new ArrayList<Object>();
+			singleObjectList.add(document);
+			JSONObject externalDocument = new JSONObject();
+			externalDocument.put(objectName, singleObjectList);
+
+			Object jsonPathResult = JsonPath.read(externalDocument, jsonPath);
 			if (jsonPathResult == null) {
 				throw new IllegalArgumentException(String.format("Invalid JSON path provided: %s", jsonPath));
 			}

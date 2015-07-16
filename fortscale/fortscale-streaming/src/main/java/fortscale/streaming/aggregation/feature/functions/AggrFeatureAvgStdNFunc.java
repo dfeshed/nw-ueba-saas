@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.ContinuousValueAvgStdN;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
-import net.minidev.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -55,19 +54,26 @@ public class AggrFeatureAvgStdNFunc extends AbstractAggrFeatureFunction {
             for (String featureName : featureNames) {
                 Feature feature = features.get(featureName);
                 if (feature != null) {
-                    JSONObject obj = new JSONObject();
-                    obj.put(feature.getName(), feature.getValue());
-                    if (aggrFilter.passedFilter(obj)) {
-                        try {
-                            Double doubleValue = (Double) feature.getValue();
-                            avgStdN.add(doubleValue);
-                        } catch (ClassCastException e) {
-                            // Value ignored
+                    if (aggrFilter != null) {
+                        if (aggrFilter.passedFilter(feature.getName(), feature.getValue())) {
+                            addValue(avgStdN, feature.getValue());
                         }
+                    }
+                    else {
+                        addValue(avgStdN, feature.getValue());
                     }
                 }
             }
         }
         return avgStdN;
      }
+
+    private void addValue(ContinuousValueAvgStdN avgStdN, Object value) {
+        try {
+            Double doubleValue = (Double)value;
+            avgStdN.add(doubleValue);
+        } catch (ClassCastException e) {
+            // Value ignored
+        }
+    }
 }

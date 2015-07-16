@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.GenericHistogram;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
-import net.minidev.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -55,9 +54,12 @@ public class AggrFeatureHistogramFunc extends AbstractAggrFeatureFunction{
                 String featureName = featureNames.get(i);
                 Feature feature = features.get(featureName);
                 if (feature != null) {
-                    JSONObject obj = new JSONObject();
-                    obj.put(feature.getName(), feature.getValue());
-                    if (aggrFilter.passedFilter(obj)) {
+                    if (aggrFilter != null) {
+                        if (aggrFilter.passedFilter(feature.getName(), feature.getValue())) {
+                            histogram.add(feature.getValue(), 1.0);
+                        }
+                    }
+                    else {
                         histogram.add(feature.getValue(), 1.0);
                     }
                 }
