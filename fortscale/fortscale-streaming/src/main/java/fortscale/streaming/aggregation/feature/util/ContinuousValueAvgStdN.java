@@ -30,7 +30,7 @@ public class ContinuousValueAvgStdN implements Serializable{
         return this;
     }
 
-    public ContinuousValueAvgStdN add(ContinuousValueAvgStdN asn) {
+    synchronized public ContinuousValueAvgStdN add(ContinuousValueAvgStdN asn) {
         Long new_N = N+asn.N;
         Double new_sigma_x = avg*N + asn.avg*asn.N;
         Double new_avg = new_sigma_x / new_N;
@@ -68,7 +68,7 @@ public class ContinuousValueAvgStdN implements Serializable{
 
         if (!N.equals(avgStdN.N)) return false;
         if (Math.abs(std-avgStdN.std)>0.0000000001) return false;
-        if (Math.abs(avg-avgStdN.avg)>0.0000000001) return false;
+        if (Math.abs(avg -avgStdN.avg)>0.0000000001) return false;
         return Math.abs(sigma_x_pwr_2_div_n-avgStdN.sigma_x_pwr_2_div_n)<0.0000000001;
 
     }

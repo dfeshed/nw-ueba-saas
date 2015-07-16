@@ -37,7 +37,9 @@ public class AggregatedFeatureEventsConfService implements InitializingBean {
 	}
 
 	public List<AggregatedFeatureEventConf> getAggregatedFeatureEventConfList() {
-		return aggregatedFeatureEventConfList;
+		List<AggregatedFeatureEventConf> returned = new ArrayList<>();
+		returned.addAll(aggregatedFeatureEventConfList);
+		return returned;
 	}
 
 	private void loadAggregatedFeatureEventDefinitions() {

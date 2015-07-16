@@ -57,35 +57,29 @@ public class DataSourcesSyncTimerTest {
 		Assert.assertEquals(2, timer.notifyWhenDataSourcesReachTime(dataSources3, epochtime3, listener3));
 
 		// None of the listeners should be notified
-		timer.timeCheck();
+		long systemTime = System.currentTimeMillis();
+		timer.timeCheck(systemTime);
 		verify(listener1, never()).dataSourcesReachedTime();
 		verify(listener2, never()).dataSourcesReachedTime();
 		verify(listener3, never()).dataSourcesReachedTime();
-
-		// Make sure an entire cycle has passed
-		Thread.sleep(cycleLengthInSeconds * 1000);
 
 		// Process event with epochtime later than epochtime1
 		message.put(epochtimeFieldName, epochtime1 + 600); // add 10 minutes
 		timer.process(message);
 
 		// listener1 shouldn't be notified yet
-		timer.timeCheck();
+		systemTime += cycleLengthInSeconds * 1000;
+		timer.timeCheck(systemTime);
 		verify(listener1, never()).dataSourcesReachedTime();
 		verify(listener2, never()).dataSourcesReachedTime();
 		verify(listener3, never()).dataSourcesReachedTime();
 
-		// Wait an entire cycle for timer to act again (make sure actual notification time has been reached)
-		Thread.sleep((cycleLengthInSeconds + waitingTimeBeforeNotification) * 1000);
-
 		// Now listener1 should be notified
-		timer.timeCheck();
+		systemTime += (cycleLengthInSeconds + waitingTimeBeforeNotification) * 1000;
+		timer.timeCheck(systemTime);
 		verify(listener1, times(1)).dataSourcesReachedTime();
 		verify(listener2, never()).dataSourcesReachedTime();
 		verify(listener3, never()).dataSourcesReachedTime();
-
-		// Make sure an entire cycle has passed
-		Thread.sleep(cycleLengthInSeconds * 1000);
 
 		// Change epochtime2
 		epochtime2 = 1435762800; // 15:00
@@ -96,38 +90,33 @@ public class DataSourcesSyncTimerTest {
 		timer.process(message);
 
 		// listener3 shouldn't be notified yet
-		timer.timeCheck();
+		systemTime += cycleLengthInSeconds * 1000;
+		timer.timeCheck(systemTime);
 		verify(listener1, times(1)).dataSourcesReachedTime();
 		verify(listener2, never()).dataSourcesReachedTime();
 		verify(listener3, never()).dataSourcesReachedTime();
 
-		// Wait an entire cycle for timer to act again (make sure actual notification time has been reached)
-		Thread.sleep((cycleLengthInSeconds + waitingTimeBeforeNotification) * 1000);
-
 		// Now listener3 should be notified
-		timer.timeCheck();
+		systemTime += (cycleLengthInSeconds + waitingTimeBeforeNotification) * 1000;
+		timer.timeCheck(systemTime);
 		verify(listener1, times(1)).dataSourcesReachedTime();
 		verify(listener2, never()).dataSourcesReachedTime();
 		verify(listener3, times(1)).dataSourcesReachedTime();
-
-		// Make sure an entire cycle has passed
-		Thread.sleep(cycleLengthInSeconds * 1000);
 
 		// Process event with epochtime later than updated epochtime2
 		message.put(epochtimeFieldName, epochtime2 + 1200); // add 20 minutes
 		timer.process(message);
 
 		// listener2 shouldn't be notified yet
-		timer.timeCheck();
+		systemTime += cycleLengthInSeconds * 1000;
+		timer.timeCheck(systemTime);
 		verify(listener1, times(1)).dataSourcesReachedTime();
 		verify(listener2, never()).dataSourcesReachedTime();
 		verify(listener3, times(1)).dataSourcesReachedTime();
 
-		// Wait an entire cycle for timer to act again (make sure actual notification time has been reached)
-		Thread.sleep((cycleLengthInSeconds + waitingTimeBeforeNotification) * 1000);
-
 		// Now listener2 should be notified
-		timer.timeCheck();
+		systemTime += (cycleLengthInSeconds + waitingTimeBeforeNotification) * 1000;
+		timer.timeCheck(systemTime);
 		verify(listener1, times(1)).dataSourcesReachedTime();
 		verify(listener2, times(1)).dataSourcesReachedTime();
 		verify(listener3, times(1)).dataSourcesReachedTime();

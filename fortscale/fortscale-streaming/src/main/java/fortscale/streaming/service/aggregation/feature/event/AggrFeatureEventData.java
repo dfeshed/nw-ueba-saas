@@ -6,18 +6,29 @@ import fortscale.streaming.service.aggregation.bucket.strategy.NextBucketEndTime
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * AggrFeatureEventData maintains a list of bucketIDs and other information that is used by the associated
+ * AggrFeatureEventBuilder to generate Aggregated Feature Events of a specific type for a specific context.
+ */
 class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEndTimeListener {
     private AggrFeatureEventBuilder builder;
     private List<BucketData> bucketIDs;
     private Map<String, String> context;
 
+    // The registrationID returned by the syncTimer at the latest registration of this object
     private long syncTimerRegistrationID;
-    private int numberOfBucketsToWaitBeforeSendingNextEvent;
+
+    // The number of buckets between two consequent events
     private int bucketsLeap;
+
+    // Counts the number of buckets left to next event based on the
+    // bucketsLeap value
+    private int numberOfBucketsToWaitBeforeSendingNextEvent;
 
     class BucketData {
         private FeatureBucketStrategyData strategyData;
@@ -56,11 +67,21 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
         }
     }
 
-    AggrFeatureEventData(AggrFeatureEventBuilder builder, Map<String, String> context, int bucketsLeap) {
+    /**
+     *
+     * @param builder
+     * @param context
+     * @param bucketsLeap must be greater then zero
+     */
+    AggrFeatureEventData(@NotNull AggrFeatureEventBuilder builder, @NotNull Map<String, String> context, int bucketsLeap) {
+        Assert.notNull(builder);
+        Assert.notNull(context);
+        Assert.isTrue(bucketsLeap>0);
+
         this.builder = builder;
         this.context = context;
         this.bucketIDs = new ArrayList<>();
-        this.bucketsLeap = (bucketsLeap < 1) ? 1: bucketsLeap;
+        this.bucketsLeap = bucketsLeap;
         this.numberOfBucketsToWaitBeforeSendingNextEvent = this.bucketsLeap;
     }
 
@@ -85,15 +106,43 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
         builder.dataSourcesReachedTime(this);
     }
 
-    void addBucketID(String bucketID, Long startTime, Long endTime) {
+    /**
+     * Adding the bucketID to the bucketIDs list.
+     * The bucket start time MUST be later the the end time of the last bucket in the list OR
+     * if the last item contains only strategy data (i.e. without bucket ID) then it must match its times.
+     * No check is done whether the bucketID matches this EventData context.
+     * @param bucketID
+     * @param startTime
+     * @param endTime
+     */
+    void addBucketID(@NotNull String bucketID, Long startTime, Long endTime) {
+        // Assertions
+        Assert.isTrue(endTime > startTime && startTime > 0);
+        Assert.notNull(bucketID);
+        Assert.isTrue(StringUtils.isNotEmpty(bucketID));
+
         //check if the bucketID is related to any strategyData already in the list
         boolean found = false;
-        for(BucketData bucketData: bucketIDs) {
-            String strategyID = bucketData.strategyData.getStrategyId();
-            if(strategyID!=null && StringUtils.startsWith(bucketID, strategyID)) {
+        if(bucketIDs.size()>0) {
+            BucketData bucketData = bucketIDs.get(bucketIDs.size()-1);
+
+            // If the last item in the list contains strategy ID and not bucket ID
+            // then the new bucket must batch that strategy otherwise there is an
+            // error in the program flow.
+            if(bucketData.strategyData!=null && bucketData.getBucketID()==null) {
+                String strategyID = bucketData.strategyData.getStrategyId();
+
+                Assert.isTrue(StringUtils.startsWith(bucketID, strategyID));
+                Assert.isTrue(bucketData.strategyData.getStartTime() == startTime &&
+                              bucketData.strategyData.getEndTime() == endTime);
+
                 bucketData.bucketID = bucketID;
+                bucketData.startTime = startTime;
+                bucketData.endTime = endTime;
                 found = true;
-                break;
+            } else {
+                // The last item in the list contains bucketID
+                Assert.isTrue(startTime > bucketData.getEndTime());
             }
         }
         if(!found) {
@@ -112,13 +161,21 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
         numberOfBucketsToWaitBeforeSendingNextEvent--;
     }
 
+    /**
+     * Adds the strategyData to the bucketIDs list.
+     * The bucket start time MUST be later the the end time of the last bucket in the list.
+     * @param strategyData
+     */
     @Override
-    public void nextBucketEndTimeUpdate(FeatureBucketStrategyData strategyData) {
-        if(strategyData.getEndTime() > bucketIDs.get(bucketIDs.size()-1).getEndTime()) {
-            BucketData bucketData = new BucketData(strategyData);
-            addBucketData(bucketData);
-            builder.registerInTimerForNextBucketEndTime(this, strategyData.getEndTime());
+    public void nextBucketEndTimeUpdate(@NotNull FeatureBucketStrategyData strategyData) {
+        // Assertions
+        Assert.notNull(strategyData);
+        if(bucketIDs.size()>0) {
+            Assert.isTrue(strategyData.getStartTime() > bucketIDs.get(bucketIDs.size()-1).getEndTime());
         }
+        BucketData bucketData = new BucketData(strategyData);
+        addBucketData(bucketData);
+        builder.registerInTimerForNextBucketEndTime(this, strategyData.getEndTime());
     }
 
     int getNumberOfBucketsToWaitBeforeSendingNextEvent() {
@@ -133,15 +190,16 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
         numberOfBucketsToWaitBeforeSendingNextEvent=bucketsLeap;
     }
 
+    /**
+     * Updates the end time of the given bucketID.
+     * The bucketID MUST be the last bucketID in the bucketIDs list(otherwise it is an error in the program flow).
+     * @param bucketID
+     * @param endTime
+     */
     void setEndTime(String bucketID, Long endTime) {
-        boolean found = false;
-        for(BucketData bucketData : bucketIDs) {
-            if(bucketData.getBucketID() != null && StringUtils.equals(bucketData.getBucketID(), bucketID) ) {
-                bucketData.setEndTime(endTime);
-                found = true;
-                break;
-            }
-        }
-        Assert.isTrue(found);
+        Assert.isTrue(bucketIDs.size()>0);
+        BucketData bucketData = bucketIDs.get(bucketIDs.size()-1);
+        Assert.isTrue(bucketData.getBucketID() != null && StringUtils.equals(bucketData.getBucketID(), bucketID) );
+        bucketData.setEndTime(endTime);
     }
 }

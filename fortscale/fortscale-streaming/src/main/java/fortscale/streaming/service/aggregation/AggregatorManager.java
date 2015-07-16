@@ -61,7 +61,7 @@ public class AggregatorManager {
 	}
 
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		dataSourcesSyncTimer.timeCheck();
+		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
 	}
 
 	public void close() throws Exception {

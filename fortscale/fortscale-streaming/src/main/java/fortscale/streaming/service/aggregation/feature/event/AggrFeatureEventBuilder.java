@@ -1,15 +1,14 @@
 package fortscale.streaming.service.aggregation.feature.event;
 
 import fortscale.streaming.aggregation.feature.Feature;
-import fortscale.streaming.aggregation.feature.functions.AggrFeatureFuncService;
 import fortscale.streaming.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
-import fortscale.streaming.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.streaming.service.aggregation.*;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategy;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyData;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.text.SimpleDateFormat;
@@ -18,6 +17,7 @@ import java.util.*;
 /**
  * Created by amira on 08/07/2015.
  */
+@Configurable(preConstruction = true)
 public class AggrFeatureEventBuilder {
 
     private static final String EVENT_FIELD_BUCKET_CONF_NAME = "bucket_conf_name";
@@ -26,12 +26,17 @@ public class AggrFeatureEventBuilder {
     private static final String EVENT_FIELD_CONTEXT = "context";
     private static final String EVENT_FIELD_EVENT_TYPE = "event_type";
     private static final Object AGGREGATED_FEATURE_EVENT = "aggregated_feature_event";
+    private static final String EVENT_FIELD_START_TIME_UNIX = "start_time_unix";
+    private static final String EVENT_FIELD_START_TIME = "start_time";
+    private static final String EVENT_FIELD_END_TIME_UNIX = "end_time_unix";
+    private static final String EVENT_FIELD_END_TIME = "end_time";
 
     private AggregatedFeatureEventConf conf;
     private FeatureBucketStrategy bucketStrategy;
     private AggrFeatureEventService aggrFeatureEventService;
     private Map<Map<String, String>, AggrFeatureEventData> context2featureDataMap;
     private Map<String, AggrFeatureEventData> bucktID2featureDataMap;
+
 
     @Autowired
     private DataSourcesSyncTimer dataSourcesSyncTimer;
@@ -51,6 +56,22 @@ public class AggrFeatureEventBuilder {
         this.aggrFeatureEventService = aggrFeatureEventService;
         context2featureDataMap = new HashMap<>();
         bucktID2featureDataMap = new HashMap<>();
+    }
+
+    public void setFeatureBucketsService(FeatureBucketsService featureBucketsService) {
+        this.featureBucketsService = featureBucketsService;
+    }
+
+    public void setAggrFeatureFuncService(IAggrFeatureEventFunctionsService aggrFeatureFuncService) {
+        this.aggrFeatureFuncService = aggrFeatureFuncService;
+    }
+
+    public void setAggrEventTopologyService(AggrEventTopologyService aggrEventTopologyService) {
+        this.aggrEventTopologyService = aggrEventTopologyService;
+    }
+
+    public void setDataSourcesSyncTimer(DataSourcesSyncTimer dataSourcesSyncTimer) {
+        this.dataSourcesSyncTimer = dataSourcesSyncTimer;
     }
 
     void updateAggrFeatureEvent(String bucketID, Map<String, String> context, long startTime, long endTime) {
@@ -179,16 +200,63 @@ public class AggrFeatureEventBuilder {
         aggrEventTopologyService.sendEvent(event);
     }
 
-    private JSONObject buildEvent(Map<String, String> context, Feature feature, Long startTime, Long endTime) {
+    /**
+     * Builds an event in the following format:
+     * <pre>
+     *     {
+     *        "event_type": "aggregated_feature_event",
+     *        "aggregated feature name": "the value",
+     *        "bucket_conf_name": "the BucketConf name from which this aggrFeature was created",
+     *
+     *        "date_time_unix": 1430460833,
+     *        "date_time": "2015-05-01 06:13:53",
+     *
+     *        "start_time_unix": 1430460833,
+     *        "start_time": "2015-05-01 06:13:53",
+     *
+     *        "end_time_unix": 1430460833,
+     *        "end_time": "2015-05-01 06:13:53",
+     *
+     *        "context": {
+     *          // Context fields, e.g.:
+     *          "user" : "John Smith",
+     *          "machine": "m1"
+     *        }
+     *      }
+     *</pre>
+     * @param context
+     * @param feature
+     * @param startTimeSec
+     * @param endTimeSec
+     * @return the event as JSONObject
+     */
+    private JSONObject buildEvent(Map<String, String> context, Feature feature, Long startTimeSec, Long endTimeSec) {
         JSONObject event = new JSONObject();
         event.put(EVENT_FIELD_CONTEXT, context);
         event.put(EVENT_FIELD_EVENT_TYPE, AGGREGATED_FEATURE_EVENT);
         event.put(feature.getName(), feature.getValue());
         event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConf().getName());
+
+        // Event time
         Long date_time_unix = System.currentTimeMillis() / 1000;
         event.put(EVENT_FIELD_DATE_TIME_UNIX, date_time_unix);
         String date_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
         event.put(EVENT_FIELD_DATE_TIME, date_time);
+
+        // Start Time
+        event.put(EVENT_FIELD_START_TIME_UNIX, startTimeSec);
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        calendar.setTimeInMillis(startTimeSec * 1000);
+        String start_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+        event.put(EVENT_FIELD_START_TIME, start_time);
+
+        // End Time
+        event.put(EVENT_FIELD_END_TIME_UNIX, endTimeSec);
+        calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        calendar.setTimeInMillis(endTimeSec * 1000);
+        String end_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+        event.put(EVENT_FIELD_END_TIME, end_time);
+
         return event;
     }
 
