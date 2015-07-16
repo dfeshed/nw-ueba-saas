@@ -72,7 +72,7 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
         Feature resFeature = new Feature(aggrFeatureEventConf.getName(), histogram);
 
         for(Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
-            for(String featureName: aggrFeatureEventConf.getAggregatedFeatureNamesList()) {
+            for(String featureName: aggrFeatureEventConf.getAllAggregatedFeatureNames()) {
                 Feature aggrFeature = aggrFeatures.get(featureName);
                 if(aggrFeature!=null && aggrFeature.getValue() instanceof GenericHistogram) {
                     histogram.add((GenericHistogram)aggrFeature.getValue());

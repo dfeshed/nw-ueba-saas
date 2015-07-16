@@ -80,7 +80,7 @@ public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction, AggrFeatureE
         Feature resFeature = new Feature(aggrFeatureEventConf.getName(), avgStdN);
 
         for(Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
-            for(String featureName: aggrFeatureEventConf.getAggregatedFeatureNamesList()) {
+            for(String featureName: aggrFeatureEventConf.getAllAggregatedFeatureNames()) {
                 Feature aggrFeature = aggrFeatures.get(featureName);
                 if(aggrFeature!=null && aggrFeature.getValue() instanceof ContinuousValueAvgStdN) {
                     avgStdN.add((ContinuousValueAvgStdN)aggrFeature.getValue());
