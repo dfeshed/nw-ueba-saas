@@ -4,16 +4,19 @@
  * @author Srividhya Mahalingam
  */
 
-import login from 'sa/mirage/routes/login';
-import devices from 'sa/mirage/routes/devices';
-import users from 'sa/mirage/routes/users';
-import info from 'sa/mirage/routes/info';
+import login from "sa/mirage/routes/login";
+import devices from "sa/mirage/routes/devices";
+import users from "sa/mirage/routes/users";
+import info from "sa/mirage/routes/info";
+import initSockets from "sa/mirage/config-sockets";
 
 export default function() {
-    this.namespace = '/api';
+    this.namespace = "/api";
 
     login(this);
     devices(this);
     users(this);
     info(this);
+
+    initSockets();
 }
