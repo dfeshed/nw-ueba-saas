@@ -5,7 +5,6 @@
 * @author Srividhya Mahalingam
 */
 
-import Ember from "ember";
 import ajax from "ic-ajax";
 import Base from "simple-auth/authenticators/base";
 import config from "sa/config/environment";
@@ -29,11 +28,7 @@ export default Base.extend({
     }.on("init"),
 
     getInfo: function() {
-        return new Ember.RSVP.Promise(function(resolve, reject) {
-            ajax("/api/info").then(function(data) {
-                resolve(data);
-            }, reject);
-        });
+        return ajax("/api/info");
     },
 
     restore: function() {
@@ -46,20 +41,10 @@ export default Base.extend({
     * @param credentials.password {string} password of the user
     */
     authenticate(credentials) {
-        return new Ember.RSVP.Promise(function(resolve, reject) {
-            Ember.$.ajax({
-                type: "POST",
-                url: "/api/user/login",
-                data: credentials
-            }).then(function(response) {
-                Ember.run(function() {
-                    resolve(response);
-                });
-            }, function(xhr) {
-                Ember.run(function() {
-                    reject(xhr.responseJSON || xhr.responseText);
-                });
-            });
+        return ajax({
+            type: "POST",
+            url: "/api/user/login",
+            data: credentials
         });
     },
 
@@ -67,10 +52,9 @@ export default Base.extend({
     * @function invalidate
     */
     invalidate() {
-        Ember.$.ajax({
+        return ajax({
             type: "POST",
             url: "/api/user/logout"
         });
-        return Ember.RSVP.resolve();
     }
 });
