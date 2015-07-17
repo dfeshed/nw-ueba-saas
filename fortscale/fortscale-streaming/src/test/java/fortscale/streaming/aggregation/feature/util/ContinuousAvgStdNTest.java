@@ -7,7 +7,7 @@ import org.junit.Test;
  * Created by amira on 17/06/2015.
  */
 public class ContinuousAvgStdNTest {
-
+    private static final double DELTA = 0.00001;
 
     @Test
     public void testAdd() {
@@ -56,8 +56,9 @@ public class ContinuousAvgStdNTest {
         ContinuousValueAvgStdN avgStdN4 = new ContinuousValueAvgStdN();
         avgStdN4.add(avgStdN1).add(avgStdN2);
 
-        Assert.assertTrue(avgStdN3.equals(avgStdN4));
-
+        Assert.assertEquals(avgStdN3.getN(), avgStdN4.getN());
+        Assert.assertEquals(avgStdN3.getAvg(), avgStdN4.getAvg(), DELTA);
+        Assert.assertEquals(avgStdN3.getStd(), avgStdN4.getStd(), DELTA);
     }
 
     @Test

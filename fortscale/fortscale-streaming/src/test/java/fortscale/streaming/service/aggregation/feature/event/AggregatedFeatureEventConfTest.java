@@ -74,6 +74,33 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
 	}
 
+	@Test
+	public void configuration_should_be_deserialized_from_event_json_with_empty_aggregated_feature_event_function() throws Exception {
+		String jsonAsString = createAggregatedFeatureEvent(
+				NAME,
+				BUCKET_CONF_NAME,
+				NUMBER_OF_BUCKETS,
+				BUCKETS_LEAP,
+				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
+				getSimpleAggregatedFeatureNamesMap(),
+				new JSONObject());
+		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
+
+		Assert.assertNotNull(actual);
+		Assert.assertEquals(NAME, actual.getName());
+		Assert.assertEquals(BUCKET_CONF_NAME, actual.getBucketConfName());
+		Assert.assertNull(actual.getBucketConf());
+		Assert.assertEquals(NUMBER_OF_BUCKETS, actual.getNumberOfBuckets());
+		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
+		Assert.assertEquals(WAIT_AFTER_BUCKET_CLOSE_SECONDS, actual.getWaitAfterBucketCloseSeconds());
+		Assert.assertEquals(getSimpleAggregatedFeatureNamesMap(), actual.getAggregatedFeatureNamesMap());
+		Assert.assertEquals(new JSONObject(), actual.getAggregatedFeatureEventFunction());
+
+		Set<String> expectedAllAggregatedFeatureNames = new HashSet<>();
+		expectedAllAggregatedFeatureNames.add("aggregatedFeatureName");
+		Assert.assertEquals(expectedAllAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
+	}
+
 	@Test(expected = Exception.class)
 	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_illegal_name() throws Exception {
 		String jsonAsString = createAggregatedFeatureEvent(
@@ -190,19 +217,6 @@ public class AggregatedFeatureEventConfTest {
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				getSimpleAggregatedFeatureNamesMap(),
 				null);
-		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
-	}
-
-	@Test(expected = Exception.class)
-	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_empty_aggregated_feature_event_function() throws Exception {
-		String jsonAsString = createAggregatedFeatureEvent(
-				NAME,
-				BUCKET_CONF_NAME,
-				NUMBER_OF_BUCKETS,
-				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				getSimpleAggregatedFeatureNamesMap(),
-				new JSONObject());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
 	}
 

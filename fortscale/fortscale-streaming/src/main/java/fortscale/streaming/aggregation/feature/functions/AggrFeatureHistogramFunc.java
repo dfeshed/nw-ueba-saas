@@ -33,8 +33,8 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
             value = new GenericHistogram();
             aggrFeature.setValue(value);
         } else if (!(value instanceof GenericHistogram)) {
-            return null;
-            // TODO: throw exception instead?
+            throw new IllegalArgumentException(String.format("Value of aggregated feature %s must be of type %s",
+                aggrFeature.getName(), GenericHistogram.class.getSimpleName()));
         }
 
         GenericHistogram histogram = (GenericHistogram)value;
@@ -70,13 +70,13 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
 
         List<String> aggregatedFeatureNamesList = aggrFeatureEventConf.getAggregatedFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
         for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
-            for (String featureName : aggregatedFeatureNamesList) {
-                Feature aggrFeature = aggrFeatures.get(featureName);
+            for (String aggregatedFeatureName : aggregatedFeatureNamesList) {
+                Feature aggrFeature = aggrFeatures.get(aggregatedFeatureName);
                 if (aggrFeature != null && aggrFeature.getValue() instanceof GenericHistogram) {
                     histogram.add((GenericHistogram)aggrFeature.getValue());
                 } else {
-                    return null;
-                    // TODO: throw exception instead?
+                    throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s",
+                        aggregatedFeatureName, GenericHistogram.class.getSimpleName()));
                 }
             }
         }

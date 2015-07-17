@@ -167,9 +167,8 @@ public class AggrFeatureAvgStdNFuncTest {
 
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testUpdateAggrFeatureWithWrongAggrFeatureValueType() {
-
         Map<String, Feature> featureMap = new HashMap<>();
         featureMap.put("feature1", new Feature("feature1", 0.5));
 
@@ -177,10 +176,7 @@ public class AggrFeatureAvgStdNFuncTest {
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
         AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
-        Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
-
-        Assert.assertNull(value);
-        Assert.assertEquals("wrong value type", aggrFeature.getValue());
+        func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
     }
 
     @Test
@@ -333,5 +329,73 @@ public class AggrFeatureAvgStdNFuncTest {
         Assert.assertEquals(new Long(6), actualValue.getN());
         Assert.assertEquals(3.66667, actualValue.getAvg(), DELTA);
         Assert.assertEquals(3.14466, actualValue.getStd(), DELTA);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCalculateAggrFeatureWithANullAggregatedFeatureValue() {
+        String aggregatedFeatureEventName = "testWithANullAggregatedFeatureValue";
+
+        ContinuousValueAvgStdN continuous = new ContinuousValueAvgStdN();
+        continuous.add(1.1);
+        continuous.add(4.4);
+        continuous.add(9.9);
+        Map<String, Feature> bucket1FeatureMap = new HashMap<>();
+        bucket1FeatureMap.put("feature1", new Feature("feature1", continuous));
+
+        Map<String, Feature> bucket2FeatureMap = new HashMap<>();
+        bucket2FeatureMap.put("feature1", new Feature("feature1", null));
+
+        List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+        listOfFeatureMaps.add(bucket1FeatureMap);
+        listOfFeatureMaps.add(bucket2FeatureMap);
+
+        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCalculateAggrFeatureWithAWrongAggregatedFeatureValueType() {
+        String aggregatedFeatureEventName = "testWithAWrongAggregatedFeatureValueType";
+
+        ContinuousValueAvgStdN continuous = new ContinuousValueAvgStdN();
+        continuous.add(11.0);
+        continuous.add(13.0);
+        continuous.add(17.0);
+        Map<String, Feature> bucket1FeatureMap = new HashMap<>();
+        bucket1FeatureMap.put("feature1", new Feature("feature1", continuous));
+
+        Map<String, Feature> bucket2FeatureMap = new HashMap<>();
+        bucket2FeatureMap.put("feature1", new Feature("feature1", 42));
+
+        List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+        listOfFeatureMaps.add(bucket1FeatureMap);
+        listOfFeatureMaps.add(bucket2FeatureMap);
+
+        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWithNullAggregatedFeatureEventConf() {
+        ContinuousValueAvgStdN continuous = new ContinuousValueAvgStdN();
+        continuous.add(1.0);
+        continuous.add(2.0);
+        continuous.add(3.0);
+        Map<String, Feature> bucketFeatureMap = new HashMap<>();
+        bucketFeatureMap.put("feature1", new Feature("feature1", continuous));
+
+        List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+        listOfFeatureMaps.add(bucketFeatureMap);
+
+        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        Assert.assertNull(function.calculateAggrFeature(null, listOfFeatureMaps));
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWithNullAggregatedFeaturesMapList() {
+        String aggregatedFeatureEventName = "testWithNullAggregatedFeaturesMapList";
+
+        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        Assert.assertNull(function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 3), null));
     }
 }

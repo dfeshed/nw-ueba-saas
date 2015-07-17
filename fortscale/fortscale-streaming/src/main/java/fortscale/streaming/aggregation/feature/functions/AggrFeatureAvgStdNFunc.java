@@ -33,8 +33,8 @@ public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction, AggrFeatureE
             value = new ContinuousValueAvgStdN();
             aggrFeature.setValue(value);
         } else if (!(value instanceof ContinuousValueAvgStdN)) {
-            return null;
-            // TODO: throw exception instead?
+            throw new IllegalArgumentException(String.format("Value of aggregated feature %s must be of type %s",
+                aggrFeature.getName(), ContinuousValueAvgStdN.class.getSimpleName()));
         }
 
         ContinuousValueAvgStdN avgStdN = (ContinuousValueAvgStdN)value;
@@ -81,8 +81,8 @@ public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction, AggrFeatureE
                 if (aggrFeature != null && aggrFeature.getValue() instanceof ContinuousValueAvgStdN) {
                     avgStdN.add((ContinuousValueAvgStdN)aggrFeature.getValue());
                 } else {
-                    return null;
-                    // TODO: throw exception instead?
+                    throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s",
+                        aggregatedFeatureName, ContinuousValueAvgStdN.class.getSimpleName()));
                 }
             }
         }

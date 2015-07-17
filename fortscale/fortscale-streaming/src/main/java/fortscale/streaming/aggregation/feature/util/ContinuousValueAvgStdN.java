@@ -58,27 +58,4 @@ public class ContinuousValueAvgStdN implements Serializable{
     public Double getAvg() {
         return avg;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ContinuousValueAvgStdN avgStdN = (ContinuousValueAvgStdN) o;
-
-        if (!N.equals(avgStdN.N)) return false;
-        if (Math.abs(std-avgStdN.std)>0.0000000001) return false;
-        if (Math.abs(avg -avgStdN.avg)>0.0000000001) return false;
-        return Math.abs(sigma_x_pwr_2_div_n-avgStdN.sigma_x_pwr_2_div_n)<0.0000000001;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = N.hashCode();
-        result = 31 * result + std.hashCode();
-        result = 31 * result + avg.hashCode();
-        result = 31 * result + sigma_x_pwr_2_div_n.hashCode();
-        return result;
-    }
 }

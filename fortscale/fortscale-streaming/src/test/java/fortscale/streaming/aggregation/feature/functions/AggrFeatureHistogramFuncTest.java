@@ -1,9 +1,9 @@
 package fortscale.streaming.aggregation.feature.functions;
 
-
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.GenericHistogram;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,6 +17,8 @@ import java.util.Map;
  * Created by amira on 18/06/2015.
  */
 public class AggrFeatureHistogramFuncTest {
+    private static final double DELTA = 0.00001;
+
     private AggregatedFeatureConf createAggrFeatureConf(int num) {
         List<String> featureNames = new ArrayList<>();
         for (int i = 1; i <= num; i++) {
@@ -25,6 +27,16 @@ public class AggrFeatureHistogramFuncTest {
         Map<String, List<String>> featureNamesMap = new HashMap<>();
         featureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, featureNames);
         return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
+    }
+
+    private AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, int num) {
+        List<String> list = new ArrayList<>();
+        for (int i = 1; i <= num; i++) {
+            list.add(String.format("feature%d", i));
+        }
+        Map<String, List<String>> map = new HashMap<>();
+        map.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, list);
+        return new AggregatedFeatureEventConf(name, "bucketConfName", 3, 1, 300, map, new JSONObject());
     }
 
     @Test
@@ -214,20 +226,15 @@ public class AggrFeatureHistogramFuncTest {
         Assert.assertEquals((Double) std, (Double) aggrValue.getPopulationStandardDeviation());
     }
 
-    @Test
-    public  void testUpdateWithWrongAggrFeatureValueType() {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateWithWrongAggrFeatureValueType() {
         Map<String, Feature> featureMap1 = new HashMap<>();
         featureMap1.put("feature1", new Feature("feature1", 2));
         AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
         String str = "I'm a string, not histogram";
-        Feature aggrFeature = new Feature("MyAggrFeature",str);
+        Feature aggrFeature = new Feature("MyAggrFeature", str);
         AggrFeatureFunction func = new AggrFeatureHistogramFunc();
-
-        Object value = func.updateAggrFeature(aggrFuncConf, featureMap1, aggrFeature);
-
-        Assert.assertNull(value);
-        // Validating that the histogram value was not changed
-        Assert.assertEquals(str, (String)aggrFeature.getValue());
+        func.updateAggrFeature(aggrFuncConf, featureMap1, aggrFeature);
     }
 
     @Test
@@ -282,5 +289,181 @@ public class AggrFeatureHistogramFuncTest {
         Double sum = one+two+three;
         Double std = Math.sqrt((sum)/3);
         Assert.assertEquals(std, (Double) aggrValue.getPopulationStandardDeviation());
+    }
+
+    @Test
+    public void testCalculateAggrFeature() {
+        String confName = "testCalculateAggrFeature";
+
+        GenericHistogram hist1 = new GenericHistogram();
+        hist1.add(7, 10.0);
+        hist1.add(7L, 20.0);
+        hist1.add("7", 30.0);
+        Map<String, Feature> map1 = new HashMap<>();
+        map1.put("feature1", new Feature("feature1", hist1));
+
+        GenericHistogram hist2 = new GenericHistogram();
+        hist2.add(11, 1.0);
+        hist2.add(13, 1.0);
+        hist2.add(17, 1.0);
+        Map<String, Feature> map2 = new HashMap<>();
+        map2.put("feature1", new Feature("feature1", hist2));
+
+        GenericHistogram hist3 = new GenericHistogram();
+        hist3.add(7, 40.0);
+        hist3.add(11, 9.0);
+        hist3.add("7", 70.0);
+        Map<String, Feature> map3 = new HashMap<>();
+        map3.put("feature1", new Feature("feature1", hist3));
+
+        List<Map<String, Feature>> listOfMaps = new ArrayList<>();
+        listOfMaps.add(map1);
+        listOfMaps.add(map2);
+        listOfMaps.add(map3);
+
+        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        Feature actual = function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
+
+        Assert.assertNotNull(actual);
+        Assert.assertEquals(confName, actual.getName());
+        Assert.assertEquals(GenericHistogram.class, actual.getValue().getClass());
+
+        GenericHistogram actualValue = (GenericHistogram)actual.getValue();
+        Assert.assertEquals(6, actualValue.getN());
+        Assert.assertEquals(30.33333, actualValue.getAvg(), DELTA);
+        Assert.assertEquals(38.68161, actualValue.getStandardDeviation(), DELTA);
+        Assert.assertEquals(35.31131, actualValue.getPopulationStandardDeviation(), DELTA);
+        Assert.assertEquals(100.0, actualValue.getMaxCount(), 0);
+        Assert.assertEquals("7", actualValue.getMaxCountObject());
+        Assert.assertEquals(100.0 / 182.0, actualValue.getMaxCountFromTotalCount(), DELTA);
+
+        Assert.assertEquals(50.0, actualValue.get(7), 0);
+        Assert.assertEquals(20.0, actualValue.get(7L), 0);
+        Assert.assertEquals(100.0, actualValue.get("7"), 0);
+        Assert.assertEquals(10.0, actualValue.get(11), 0);
+        Assert.assertEquals(1.0, actualValue.get(13), 0);
+        Assert.assertEquals(1.0, actualValue.get(17), 0);
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWhenMappedFeaturesIncludeSomeThatAreNotListed() {
+        String confName = "testCalculateAggrFeatureWhenMappedFeaturesIncludeSomeThatAreNotListed";
+
+        GenericHistogram hist1 = new GenericHistogram();
+        hist1.add(1, 10.0);
+        hist1.add(2L, 20.0);
+        hist1.add("3", 30.0);
+
+        GenericHistogram notListedHist = new GenericHistogram();
+        notListedHist.add(1, 100.0);
+        notListedHist.add("3", 300.0);
+        notListedHist.add(5.0, 500.0);
+
+        Map<String, Feature> map1 = new HashMap<>();
+        map1.put("feature1", new Feature("feature1", hist1));
+        map1.put("feature2", new Feature("feature2", notListedHist));
+
+        GenericHistogram hist2 = new GenericHistogram();
+        hist2.add(2L, 1.0);
+        hist2.add("test", 2.0);
+        hist2.add("check", 3.0);
+
+        Map<String, Feature> map2 = new HashMap<>();
+        map2.put("feature1", new Feature("feature1", hist2));
+        map2.put("feature2", new Feature("feature2", -1));
+
+        List<Map<String, Feature>> listOfMaps = new ArrayList<>();
+        listOfMaps.add(map1);
+        listOfMaps.add(map2);
+
+        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        Feature actual = function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
+
+        Assert.assertNotNull(actual);
+        Assert.assertEquals(confName, actual.getName());
+        Assert.assertEquals(GenericHistogram.class, actual.getValue().getClass());
+
+        GenericHistogram actualValue = (GenericHistogram)actual.getValue();
+        Assert.assertEquals(5, actualValue.getN());
+        Assert.assertEquals(13.2, actualValue.getAvg(), DELTA);
+        Assert.assertEquals(12.07063, actualValue.getStandardDeviation(), DELTA);
+        Assert.assertEquals(10.7963, actualValue.getPopulationStandardDeviation(), DELTA);
+        Assert.assertEquals(30.0, actualValue.getMaxCount(), 0);
+        Assert.assertEquals("3", actualValue.getMaxCountObject());
+        Assert.assertEquals(30.0 / 66.0, actualValue.getMaxCountFromTotalCount(), DELTA);
+
+        Assert.assertEquals(10.0, actualValue.get(1), 0);
+        Assert.assertEquals(21.0, actualValue.get(2L), 0);
+        Assert.assertEquals(30.0, actualValue.get("3"), 0);
+        Assert.assertEquals(2.0, actualValue.get("test"), 0);
+        Assert.assertEquals(3.0, actualValue.get("check"), 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCalculateAggrFeatureWithANullAggregatedFeatureValue() {
+        String confName = "testCalculateAggrFeatureWithANullAggregatedFeatureValue";
+
+        GenericHistogram hist = new GenericHistogram();
+        hist.add("a", 1.0);
+        hist.add("b", 1.0);
+        hist.add("c", 1.0);
+        Map<String, Feature> map1 = new HashMap<>();
+        map1.put("feature1", new Feature("feature1", hist));
+
+        Map<String, Feature> map2 = new HashMap<>();
+        map2.put("feature1", new Feature("feature1", null));
+
+        List<Map<String, Feature>> listOfMaps = new ArrayList<>();
+        listOfMaps.add(map1);
+        listOfMaps.add(map2);
+
+        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCalculateAggrFeatureWithAWrongAggregatedFeatureValueType() {
+        String confName = "testCalculateAggrFeatureWithAWrongAggregatedFeatureValueType";
+
+        GenericHistogram hist = new GenericHistogram();
+        hist.add("x", 1.0);
+        hist.add("y", 2.0);
+        hist.add("z", 3.0);
+        Map<String, Feature> map1 = new HashMap<>();
+        map1.put("feature1", new Feature("feature1", hist));
+
+        Map<String, Feature> map2 = new HashMap<>();
+        map2.put("feature1", new Feature("feature1", "wrong value"));
+
+        List<Map<String, Feature>> listOfMaps = new ArrayList<>();
+        listOfMaps.add(map1);
+        listOfMaps.add(map2);
+
+        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 1), listOfMaps);
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWithNullAggregatedFeatureEventConf() {
+        GenericHistogram hist = new GenericHistogram();
+        hist.add(1.0, 1.0);
+        hist.add(2.0, 2.0);
+        hist.add(3.0, 3.0);
+        Map<String, Feature> map = new HashMap<>();
+        map.put("feature1", new Feature("feature1", hist));
+
+        List<Map<String, Feature>> listOfMaps = new ArrayList<>();
+        listOfMaps.add(map);
+
+        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        Assert.assertNull(function.calculateAggrFeature(null, listOfMaps));
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWithNullAggregatedFeaturesMapList() {
+        String confName = "testCalculateAggrFeatureWithNullAggregatedFeaturesMapList";
+
+        AggrFeatureEventFunction function = new AggrFeatureHistogramFunc();
+        Assert.assertNull(function.calculateAggrFeature(createAggregatedFeatureEventConf(confName, 3), null));
     }
 }
