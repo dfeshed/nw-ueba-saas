@@ -13,8 +13,10 @@ module.exports = function(environment) {
       }
     },
     'ember-cli-mirage':  {},
+    'ember-cli-mock-socket': {},
+    'socketURL': '/ws',
     'i18n': {
-        defaultLocale:'en',
+        defaultLocale:'en'
     },
     APP: {
         // Here you can pass flags/options to your application instance
@@ -68,6 +70,7 @@ module.exports = function(environment) {
         store: 'simple-auth-session-store:ephemeral'
     };
     ENV['ember-cli-mirage'].enabled = true;
+    ENV['ember-cli-mock-socket'].enabled = true;
   }
 
   if (environment === 'production') {
