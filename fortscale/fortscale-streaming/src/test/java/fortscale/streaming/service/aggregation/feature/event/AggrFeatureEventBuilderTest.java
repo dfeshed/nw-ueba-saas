@@ -1,35 +1,27 @@
 package fortscale.streaming.service.aggregation.feature.event;
 
-import fortscale.streaming.aggregation.feature.functions.AggrFeatureEventFunction;
 import fortscale.streaming.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
-import fortscale.streaming.service.aggregation.AggrEventTopologyService;
-import fortscale.streaming.service.aggregation.DataSourcesSyncTimer;
-import fortscale.streaming.service.aggregation.FeatureBucketConf;
-import fortscale.streaming.service.aggregation.FeatureBucketsService;
+import fortscale.streaming.service.aggregation.*;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategy;
 import net.minidev.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 /**
  * Created by amira on 15/07/2015.
  */
+
 public class AggrFeatureEventBuilderTest {
     @Mock
     private DataSourcesSyncTimer dataSourcesSyncTimer;
@@ -43,6 +35,8 @@ public class AggrFeatureEventBuilderTest {
     @Mock
     AggrEventTopologyService aggrEventTopologyService;
 
+    @InjectMocks
+    AggrFeatureEventBuilder builder;
 
     @Before
     public void setUp() throws Exception {
@@ -73,6 +67,7 @@ public class AggrFeatureEventBuilderTest {
         // Create AggrFeatureEventBuilder
         AggrFeatureEventBuilder builder = new AggrFeatureEventBuilder(eventConf, strategy, aggrFeatureEventService);
 
+
         builder.setAggrEventTopologyService(aggrEventTopologyService);
         builder.setAggrFeatureFuncService(aggrFeatureFuncService);
         builder.setDataSourcesSyncTimer(dataSourcesSyncTimer);
@@ -90,8 +85,11 @@ public class AggrFeatureEventBuilderTest {
         Map<String, String> context = new HashMap<>();
         context.put("username", "john");
         context.put("machine", "m1");
+        List<String> dataSources = new ArrayList<>();
+        dataSources.add("ssh");
 
-        builder.updateAggrFeatureEvent(bucketID, context, startTime1, endTime1);
+        when(dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(dataSources, endTime1, any(DataSourcesSyncTimerListener.class))).thenReturn(1L);
+        builder.updateAggrFeatureEventData(bucketID, context, startTime1, endTime1);
 
         //TODO
     }

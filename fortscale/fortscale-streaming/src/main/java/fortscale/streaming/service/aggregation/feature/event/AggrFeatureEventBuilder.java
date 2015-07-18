@@ -58,23 +58,43 @@ public class AggrFeatureEventBuilder {
         bucktID2featureDataMap = new HashMap<>();
     }
 
-    public void setFeatureBucketsService(FeatureBucketsService featureBucketsService) {
+
+    /*
+    * Should be used only by Unit Tests.
+     */
+    void setFeatureBucketsService(FeatureBucketsService featureBucketsService) {
         this.featureBucketsService = featureBucketsService;
     }
 
-    public void setAggrFeatureFuncService(IAggrFeatureEventFunctionsService aggrFeatureFuncService) {
+    /*
+    * Should be used only by Unit Tests.
+     */
+    void setAggrFeatureFuncService(IAggrFeatureEventFunctionsService aggrFeatureFuncService) {
         this.aggrFeatureFuncService = aggrFeatureFuncService;
     }
 
-    public void setAggrEventTopologyService(AggrEventTopologyService aggrEventTopologyService) {
+    /*
+    * Should be used only by Unit Tests.
+     */
+    void setAggrEventTopologyService(AggrEventTopologyService aggrEventTopologyService) {
         this.aggrEventTopologyService = aggrEventTopologyService;
     }
 
+    /*
+    * Should be used only by Unit Tests.
+     */
     public void setDataSourcesSyncTimer(DataSourcesSyncTimer dataSourcesSyncTimer) {
         this.dataSourcesSyncTimer = dataSourcesSyncTimer;
     }
 
-    void updateAggrFeatureEvent(String bucketID, Map<String, String> context, long startTime, long endTime) {
+    /**
+     * Updates the eventData related to the given context, or creates a new evenData if not exists.
+     * @param bucketID
+     * @param context
+     * @param startTime
+     * @param endTime
+     */
+    void updateAggrFeatureEventData(String bucketID, Map<String, String> context, long startTime, long endTime) {
         AggrFeatureEventData eventData = context2featureDataMap.get(context);
         if(eventData==null) {
             eventData = new AggrFeatureEventData(this, context, conf.getBucketsLeap());
@@ -180,11 +200,11 @@ public class AggrFeatureEventBuilder {
         } //if(aggrFeatureEventData.getNumberOfBucketsToWaitBeforeSendingNextEvent()<=0)
 
         // Registering in timer to be waked up on the next bucket end time
-        FeatureBucketStrategyData featureBucketStrategyData = bucketStrategy.getNextBucketStrategyData(conf.getBucketConf(), aggrFeatureEventData.getContext());
+        FeatureBucketStrategyData featureBucketStrategyData = bucketStrategy.getNextBucketStrategyData(conf.getBucketConf(), aggrFeatureEventData.getContext(), endTime);
         if(featureBucketStrategyData!=null) {
             aggrFeatureEventData.nextBucketEndTimeUpdate(featureBucketStrategyData);
         } else {
-            bucketStrategy.notifyWhenNextBucketEndTimeIsKnown(conf.getBucketConf(), aggrFeatureEventData.getContext(), aggrFeatureEventData);
+            bucketStrategy.notifyWhenNextBucketEndTimeIsKnown(conf.getBucketConf(), aggrFeatureEventData.getContext(), aggrFeatureEventData, endTime);
         }
 
     }
