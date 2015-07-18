@@ -88,7 +88,7 @@ public abstract class FeatureBucketsService {
 
 	private void updateFeatureBucket(JSONObject event, FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
 		Map<String, Feature> featuresMap = getFeatureExtractService().extract(featureBucketConf.getAllFeatureNames(), event);
-		Map<String, Feature> aggrFeaturesMap = getAggrFeatureFunctionsService().updateAggrFeatures(featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
+		Map<String, Feature> aggrFeaturesMap = getAggrFeatureFunctionsService().updateAggrFeatures(event, featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
 		featureBucket.setAggregatedFeatures(aggrFeaturesMap);
 	}
 	

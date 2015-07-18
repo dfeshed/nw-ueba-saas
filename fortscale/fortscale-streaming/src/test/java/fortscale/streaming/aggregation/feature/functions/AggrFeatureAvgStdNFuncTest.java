@@ -3,6 +3,7 @@ package fortscale.streaming.aggregation.feature.functions;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.ContinuousValueAvgStdN;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,44 +17,27 @@ import java.util.Map;
  * Created by amira on 18/06/2015.
  */
 public class AggrFeatureAvgStdNFuncTest {
+    private static final double DELTA = 0.00001;
 
-     private  AggregatedFeatureConf createAggrFeatureConf3() {
+    private AggregatedFeatureConf createAggrFeatureConf(int num) {
         List<String> featureNames = new ArrayList<>();
-        featureNames.add("feature1");
-        featureNames.add("feature2");
-        featureNames.add("feature3");
-
-        AggregatedFeatureConf aggrFuncConf = new AggregatedFeatureConf(
-                "MyAggrFeature",
-                featureNames,
-                new JSONObject());
-
-
-        return aggrFuncConf;
+        for (int i = 1; i <= num; i++) {
+            featureNames.add(String.format("feature%d", i));
+        }
+        Map<String, List<String>> featureNamesMap = new HashMap<>();
+        featureNamesMap.put(AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, featureNames);
+        return new AggregatedFeatureConf("MyAggrFeature", featureNamesMap, new JSONObject());
     }
 
-    private  AggregatedFeatureConf createAggrFeatureConf12() {
-        List<String> featureNames = new ArrayList<>();
-        featureNames.add("feature1");
-        featureNames.add("feature2");
-        featureNames.add("feature3");
-        featureNames.add("feature4");
-        featureNames.add("feature5");
-        featureNames.add("feature6");
-        featureNames.add("feature7");
-        featureNames.add("feature8");
-        featureNames.add("feature9");
-        featureNames.add("feature10");
-        featureNames.add("feature11");
-        featureNames.add("feature12");
-
-
-        return new AggregatedFeatureConf(
-                "MyAggrFeature",
-                featureNames,
-                new JSONObject());
+    private AggregatedFeatureEventConf createAggregatedFeatureEventConf(String name, int num) {
+        List<String> list = new ArrayList<>();
+        for (int i = 1; i <= num; i++) {
+            list.add(String.format("feature%d", i));
+        }
+        Map<String, List<String>> map = new HashMap<>();
+        map.put(AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, list);
+        return new AggregatedFeatureEventConf(name, "bucketConfName", 3, 1, 300, map, new JSONObject());
     }
-
 
     @Test
     public void testUpdateAggrFeature() {
@@ -77,7 +61,7 @@ public class AggrFeatureAvgStdNFuncTest {
         featureMap.put("not relevant", new Feature("not relevant", 30.0));
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
+        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
         AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
@@ -115,7 +99,7 @@ public class AggrFeatureAvgStdNFuncTest {
         featureMap.put("feature1", new Feature("feature1", "wrong value type"));
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
+        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
         AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
@@ -136,7 +120,7 @@ public class AggrFeatureAvgStdNFuncTest {
         Map<String, Feature> featureMap = new HashMap<>();
         featureMap.put("feature1", new Feature("feature1", 0.5));
 
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
+        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
         AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, null);
@@ -183,20 +167,16 @@ public class AggrFeatureAvgStdNFuncTest {
 
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testUpdateAggrFeatureWithWrongAggrFeatureValueType() {
-
         Map<String, Feature> featureMap = new HashMap<>();
         featureMap.put("feature1", new Feature("feature1", 0.5));
 
         Feature aggrFeature = new Feature("MyAggrFeature", "wrong value type");
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
+        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
         AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
-        Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
-
-        Assert.assertNull(value);
-        Assert.assertEquals("wrong value type", aggrFeature.getValue());
+        func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
     }
 
     @Test
@@ -216,7 +196,7 @@ public class AggrFeatureAvgStdNFuncTest {
         featureMap.put("feature12", new Feature("feature12", 30.0)); Double a12 = Math.pow(( 30.0- 5.0), 2);
 
         Feature aggrFeature = new Feature("MyAggrFeature", null);
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf12();
+        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(12);
         AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, featureMap, aggrFeature);
@@ -248,7 +228,7 @@ public class AggrFeatureAvgStdNFuncTest {
         avgStdN.add(30.0); Double a12 = Math.pow(( 30.0- 5.0), 2);
 
         Feature aggrFeature = new Feature("MyAggrFeature", avgStdN);
-        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf3();
+        AggregatedFeatureConf aggrFuncConf = createAggrFeatureConf(3);
         AggrFeatureFunction func = new AggrFeatureAvgStdNFunc();
 
         Object value = func.updateAggrFeature(aggrFuncConf, null, aggrFeature);
@@ -264,4 +244,158 @@ public class AggrFeatureAvgStdNFuncTest {
         Assert.assertEquals((Double) std, (Double) avgStdNvalues.getStd());
     }
 
+    @Test
+    public void testCalculateAggrFeature() {
+        String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
+
+        ContinuousValueAvgStdN continuous1 = new ContinuousValueAvgStdN();
+        continuous1.add(1.0);
+        continuous1.add(2.0);
+        continuous1.add(3.0);
+        Map<String, Feature> bucket1FeatureMap = new HashMap<>();
+        bucket1FeatureMap.put("feature1", new Feature("feature1", continuous1));
+
+        ContinuousValueAvgStdN continuous2 = new ContinuousValueAvgStdN();
+        continuous2.add(1.0);
+        continuous2.add(5.0);
+        continuous2.add(10.0);
+        Map<String, Feature> bucket2FeatureMap = new HashMap<>();
+        bucket2FeatureMap.put("feature1", new Feature("feature1", continuous2));
+
+        ContinuousValueAvgStdN continuous3 = new ContinuousValueAvgStdN();
+        continuous3.add(11.0);
+        continuous3.add(13.0);
+        continuous3.add(17.0);
+        Map<String, Feature> bucket3FeatureMap = new HashMap<>();
+        bucket3FeatureMap.put("feature1", new Feature("feature1", continuous3));
+
+        List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+        listOfFeatureMaps.add(bucket1FeatureMap);
+        listOfFeatureMaps.add(bucket2FeatureMap);
+        listOfFeatureMaps.add(bucket3FeatureMap);
+
+        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        Feature actual = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+
+        Assert.assertNotNull(actual);
+        Assert.assertEquals(aggregatedFeatureEventName, actual.getName());
+        Assert.assertEquals(ContinuousValueAvgStdN.class, actual.getValue().getClass());
+
+        ContinuousValueAvgStdN actualValue = (ContinuousValueAvgStdN)actual.getValue();
+        Assert.assertEquals(new Long(9), actualValue.getN());
+        Assert.assertEquals(7, actualValue.getAvg(), DELTA);
+        Assert.assertEquals(5.55778, actualValue.getStd(), DELTA);
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWhenMappedFeaturesIncludeSomeThatAreNotListed() {
+        String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
+
+        ContinuousValueAvgStdN continuous1 = new ContinuousValueAvgStdN();
+        continuous1.add(1.0);
+        continuous1.add(2.0);
+        continuous1.add(3.0);
+
+        ContinuousValueAvgStdN notListedContinuous = new ContinuousValueAvgStdN();
+        notListedContinuous.add(100.0);
+        notListedContinuous.add(200.0);
+        notListedContinuous.add(300.0);
+
+        Map<String, Feature> bucket1FeatureMap = new HashMap<>();
+        bucket1FeatureMap.put("feature1", new Feature("feature1", continuous1));
+        bucket1FeatureMap.put("feature2", new Feature("feature2", notListedContinuous));
+
+        ContinuousValueAvgStdN continuous2 = new ContinuousValueAvgStdN();
+        continuous2.add(1.0);
+        continuous2.add(5.0);
+        continuous2.add(10.0);
+
+        Map<String, Feature> bucket2FeatureMap = new HashMap<>();
+        bucket2FeatureMap.put("feature1", new Feature("feature1", continuous2));
+        bucket2FeatureMap.put("feature2", new Feature("feature2", 42));
+
+        List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+        listOfFeatureMaps.add(bucket1FeatureMap);
+        listOfFeatureMaps.add(bucket2FeatureMap);
+
+        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        Feature actual = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+
+        Assert.assertNotNull(actual);
+        Assert.assertEquals(aggregatedFeatureEventName, actual.getName());
+        Assert.assertEquals(ContinuousValueAvgStdN.class, actual.getValue().getClass());
+
+        ContinuousValueAvgStdN actualValue = (ContinuousValueAvgStdN)actual.getValue();
+        Assert.assertEquals(new Long(6), actualValue.getN());
+        Assert.assertEquals(3.66667, actualValue.getAvg(), DELTA);
+        Assert.assertEquals(3.14466, actualValue.getStd(), DELTA);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCalculateAggrFeatureWithANullAggregatedFeatureValue() {
+        String aggregatedFeatureEventName = "testWithANullAggregatedFeatureValue";
+
+        ContinuousValueAvgStdN continuous = new ContinuousValueAvgStdN();
+        continuous.add(1.1);
+        continuous.add(4.4);
+        continuous.add(9.9);
+        Map<String, Feature> bucket1FeatureMap = new HashMap<>();
+        bucket1FeatureMap.put("feature1", new Feature("feature1", continuous));
+
+        Map<String, Feature> bucket2FeatureMap = new HashMap<>();
+        bucket2FeatureMap.put("feature1", new Feature("feature1", null));
+
+        List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+        listOfFeatureMaps.add(bucket1FeatureMap);
+        listOfFeatureMaps.add(bucket2FeatureMap);
+
+        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCalculateAggrFeatureWithAWrongAggregatedFeatureValueType() {
+        String aggregatedFeatureEventName = "testWithAWrongAggregatedFeatureValueType";
+
+        ContinuousValueAvgStdN continuous = new ContinuousValueAvgStdN();
+        continuous.add(11.0);
+        continuous.add(13.0);
+        continuous.add(17.0);
+        Map<String, Feature> bucket1FeatureMap = new HashMap<>();
+        bucket1FeatureMap.put("feature1", new Feature("feature1", continuous));
+
+        Map<String, Feature> bucket2FeatureMap = new HashMap<>();
+        bucket2FeatureMap.put("feature1", new Feature("feature1", 42));
+
+        List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+        listOfFeatureMaps.add(bucket1FeatureMap);
+        listOfFeatureMaps.add(bucket2FeatureMap);
+
+        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWithNullAggregatedFeatureEventConf() {
+        ContinuousValueAvgStdN continuous = new ContinuousValueAvgStdN();
+        continuous.add(1.0);
+        continuous.add(2.0);
+        continuous.add(3.0);
+        Map<String, Feature> bucketFeatureMap = new HashMap<>();
+        bucketFeatureMap.put("feature1", new Feature("feature1", continuous));
+
+        List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+        listOfFeatureMaps.add(bucketFeatureMap);
+
+        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        Assert.assertNull(function.calculateAggrFeature(null, listOfFeatureMaps));
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWithNullAggregatedFeaturesMapList() {
+        String aggregatedFeatureEventName = "testWithNullAggregatedFeaturesMapList";
+
+        AggrFeatureEventFunction function = new AggrFeatureAvgStdNFunc();
+        Assert.assertNull(function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 3), null));
+    }
 }

@@ -100,7 +100,8 @@
 		<hive.version>0.12.0-cdh5.0.2</hive.version>
 		<pigunit.version>0.12.0-cdh5.0.2</pigunit.version>
 		<pig.version>0.12.0-cdh5.0.2</pig.version>
-		<json-smart.version>1.2</json-smart.version>
+		<json-smart.version>2.1.1</json-smart.version>
+		<net.minidev.asm.version>1.0.2</net.minidev.asm.version>
 		<!-- eclipse plugins versions -->
 		
 	</properties>

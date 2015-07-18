@@ -9,10 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class AggregatedFeatureEventConf implements Serializable {
@@ -42,13 +39,12 @@ public class AggregatedFeatureEventConf implements Serializable {
 		Assert.isTrue(bucketsLeap >= 1);
 		Assert.isTrue(waitAfterBucketCloseSeconds >= 0);
 		Assert.notNull(aggregatedFeatureEventFunction);
-
 		Assert.notEmpty(aggregatedFeatureNamesMap);
 		for (Map.Entry<String, List<String>> entry : aggregatedFeatureNamesMap.entrySet()) {
 			Assert.isTrue(StringUtils.isNotBlank(entry.getKey()));
 			Assert.notEmpty(entry.getValue());
-			for (String aggregatedFeature : entry.getValue()) {
-				Assert.isTrue(StringUtils.isNotBlank(aggregatedFeature));
+			for (String aggregatedFeatureName : entry.getValue()) {
+				Assert.isTrue(StringUtils.isNotBlank(aggregatedFeatureName));
 			}
 		}
 
@@ -101,8 +97,8 @@ public class AggregatedFeatureEventConf implements Serializable {
 		return mapClone;
 	}
 
-	public List<String> getAllAggregatedFeatureNames() {
-		List<String> union = new ArrayList<>();
+	public Set<String> getAllAggregatedFeatureNames() {
+		Set<String> union = new HashSet<>();
 		for (List<String> aggregatedFeatureNames : aggregatedFeatureNamesMap.values()) {
 			union.addAll(aggregatedFeatureNames);
 		}
