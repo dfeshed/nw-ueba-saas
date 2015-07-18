@@ -1,11 +1,12 @@
 package fortscale.streaming.aggregation.feature.functions;
 
-import com.mongodb.util.JSON;
-import fortscale.streaming.aggregation.feature.Feature;
-import fortscale.streaming.aggregation.feature.util.ContinuousValueAvgStdN;
-import fortscale.streaming.aggregation.feature.util.GenericHistogram;
-import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import fortscale.streaming.aggregation.feature.Feature;
+import fortscale.streaming.aggregation.feature.util.ContinuousValueAvgStdN;
+import fortscale.streaming.aggregation.feature.util.GenericHistogram;
+import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
 
 /**
  * Created by amira on 21/06/2015.
@@ -29,6 +30,10 @@ public class AggrFeatureFuncServiceTest {
     AggrFeatureFuncService funcService;
 
     private  AggregatedFeatureConf createAggrFeatureConf3(String aggrFeatureName, String funcName) {
+        return createAggrFeatureConf3(aggrFeatureName, funcName, null);
+    }
+    
+    private  AggregatedFeatureConf createAggrFeatureConf3(String aggrFeatureName, String funcName, JsonFilter filter) {
         List<String> featureNames = new ArrayList<>();
         featureNames.add("feature1"+aggrFeatureName);
         featureNames.add("feature2"+aggrFeatureName);
@@ -37,11 +42,12 @@ public class AggrFeatureFuncServiceTest {
         JSONObject funcConf = new JSONObject();
         funcConf.put("type", funcName);
 
-        return new AggregatedFeatureConf(
-                aggrFeatureName,
-                featureNames,
-                funcConf);
-
+        AggregatedFeatureConf ret = new AggregatedFeatureConf(aggrFeatureName, featureNames, funcConf);
+        if(filter != null){
+        	ret.setFilter(filter);
+        }
+        
+        return ret;
     }
 
     @Test
@@ -112,7 +118,7 @@ public class AggrFeatureFuncServiceTest {
         aggrFeatures.put(aggrFeatureName2, aggrFeature2);
 
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(null, aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -149,6 +155,222 @@ public class AggrFeatureFuncServiceTest {
 
 
     }
+    
+    @Test
+    public  void testUpdateWithTwoAggrFeaturesWithFilterNotPassHistogramPassContinuous() {
+    	String testFieldName = "test";
+        double testFieldValue = 3.0;
+        //////////////////////////////////////////////////////
+        // ContinuousValueAvgStdN
+        /////////////////////////////////////////////////////
+        ContinuousValueAvgStdN avgStdN = new ContinuousValueAvgStdN();
+        avgStdN.add(0.5); Double a1 = Math.pow(( 0.5 - 5.0), 2);
+        avgStdN.add(2.0); Double a2 = Math.pow(( 2.0 - 5.0), 2);
+        avgStdN.add(3.0); Double a3 = Math.pow(( 3.0 - 5.0), 2);
+        avgStdN.add(1.0); Double a4 = Math.pow(( 1.0 - 5.0), 2);
+        avgStdN.add(3.5); Double a5 = Math.pow((3.5 - 5.0), 2);
+        avgStdN.add(0.5); Double a6 = Math.pow(( 0.5- 5.0), 2);
+        avgStdN.add(1.0); Double a7 = Math.pow(( 1.0- 5.0), 2);
+        avgStdN.add(2.0); Double a8 = Math.pow(( 2.0- 5.0), 2);
+        avgStdN.add(3.0); Double a9 = Math.pow(( 3.0- 5.0), 2);
+
+        String aggrFeatureName1 = "MyAggrFeature1";
+
+        Map<String, Feature> featureMap = new HashMap<>();
+        featureMap.put("feature1"+aggrFeatureName1, new Feature("feature1"+aggrFeatureName1, 3.5)); Double a10 = Math.pow(( 3.5- 5.0), 2);
+        featureMap.put("feature2"+aggrFeatureName1, new Feature("feature2"+aggrFeatureName1, 10.0)); Double a11 = Math.pow(( 10.0- 5.0), 2);
+        featureMap.put("feature3"+aggrFeatureName1, new Feature("feature3"+aggrFeatureName1, 30.0)); Double a12 = Math.pow(( 30.0- 5.0), 2);
+
+        featureMap.put("not relevant", new Feature("not relevant", 30.0));
+
+        Feature aggrFeature1 = new Feature(aggrFeatureName1, avgStdN);
+        String filterJsonPath = String.format("[?(@.%s<%f)]",testFieldName,testFieldValue);
+        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, new JsonFilter(filterJsonPath));
+
+
+        //////////////////////////////////////////////////////
+        // GenericHistogram
+        /////////////////////////////////////////////////////
+        GenericHistogram histogram = new GenericHistogram();
+        histogram.add(2, 0.5);
+        histogram.add(2, 2.0);
+        histogram.add(2, 3.0);
+        //histogram.add(2, 1.0); // will be added from features
+        histogram.add(2, 3.5);
+
+        histogram.add(2L, 0.5);
+        //histogram.add(2L, 1.0); // will be added from features
+        histogram.add(2L, 2.0);
+        histogram.add(2L, 3.0);
+        histogram.add(2L, 3.5);
+        histogram.add(2L, 10.0);
+
+        histogram.add("2", 30.0);
+
+        String aggrFeatureName2 = "MyAggrFeature2";
+
+        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 2));
+        featureMap.put("feature2"+aggrFeatureName2, new Feature("feature2"+aggrFeatureName2, 2L));
+        featureMap.put("not relevant", new Feature("not relevant", 2));
+
+
+        Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
+        filterJsonPath = String.format("[?(@.%s>%f)]",testFieldName,testFieldValue);
+        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, new JsonFilter(filterJsonPath));
+
+        /////////////////////////////////////////////////////
+        List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
+        aggrFeatureConfs.add(aggrFuncConf1);
+        aggrFeatureConfs.add(aggrFuncConf2);
+
+        Map<String, Feature> aggrFeatures = new HashMap<>();
+        aggrFeatures.put(aggrFeatureName1, aggrFeature1);
+        aggrFeatures.put(aggrFeatureName2, aggrFeature2);
+
+        //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(testFieldName, testFieldValue-1);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(jsonObject, aggrFeatureConfs, aggrFeatures, featureMap);
+
+        Assert.assertEquals(2, updatedAggrFeatures.size());
+
+        Feature resAggrFeature1 = aggrFeatures.get(aggrFeatureName1);
+        Feature resAggrFeature2 = aggrFeatures.get(aggrFeatureName2);
+
+        /////////////////////////////////////////////////////
+        Assert.assertEquals(resAggrFeature1.getValue().getClass(), ContinuousValueAvgStdN.class);
+
+        ContinuousValueAvgStdN avgStdNvalues = (ContinuousValueAvgStdN)resAggrFeature1.getValue();
+        Double sum = a1+a2+a3+a4+a5+a6+a7+a8+a9+a10+a11+a12;
+        Double std = Math.sqrt((sum)/12);
+
+        Assert.assertEquals((Long) 12L, avgStdNvalues.getN());
+        Assert.assertEquals((Double)5.0, avgStdNvalues.getAvg());
+        Assert.assertEquals( std,  avgStdNvalues.getStd());
+        /////////////////////////////////////////////////////
+        Assert.assertEquals(resAggrFeature2.getValue().getClass(), GenericHistogram.class);
+
+
+        GenericHistogram histValue = (GenericHistogram)resAggrFeature2.getValue();
+
+        Assert.assertEquals(histogram.get(2), histValue.get(2) );
+        Assert.assertEquals(histogram.get(2L), histValue.get(2L) );
+        Assert.assertEquals(histogram.get("2"), histValue.get("2"));
+
+        Assert.assertEquals((Double) histogram.getPopulationStandardDeviation(), (Double) histValue.getPopulationStandardDeviation());
+
+
+    }
+    
+    @Test
+    public  void testUpdateWithTwoAggrFeaturesWithFilterPassHistogramNotPassContinuous() {
+    	String testFieldName = "test";
+        double testFieldValue = 3.0;
+        //////////////////////////////////////////////////////
+        // ContinuousValueAvgStdN
+        /////////////////////////////////////////////////////
+        ContinuousValueAvgStdN avgStdN = new ContinuousValueAvgStdN();
+        avgStdN.add(0.5);
+        avgStdN.add(2.0);
+        avgStdN.add(3.0);
+        avgStdN.add(1.0);
+        avgStdN.add(3.5);
+        avgStdN.add(0.5);
+        avgStdN.add(1.0);
+        avgStdN.add(2.0);
+        avgStdN.add(3.0);
+
+        String aggrFeatureName1 = "MyAggrFeature1";
+
+        Map<String, Feature> featureMap = new HashMap<>();
+        featureMap.put("feature1"+aggrFeatureName1, new Feature("feature1"+aggrFeatureName1, 3.5)); 
+        featureMap.put("feature2"+aggrFeatureName1, new Feature("feature2"+aggrFeatureName1, 10.0));
+        featureMap.put("feature3"+aggrFeatureName1, new Feature("feature3"+aggrFeatureName1, 30.0));
+
+        featureMap.put("not relevant", new Feature("not relevant", 30.0));
+
+        Feature aggrFeature1 = new Feature(aggrFeatureName1, avgStdN);
+        String filterJsonPath = String.format("[?(@.%s>%f)]",testFieldName,testFieldValue);
+        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, new JsonFilter(filterJsonPath));
+
+
+        //////////////////////////////////////////////////////
+        // GenericHistogram
+        /////////////////////////////////////////////////////
+        GenericHistogram histogram = new GenericHistogram();
+        histogram.add(2, 0.5);
+        histogram.add(2, 2.0);
+        histogram.add(2, 3.0);
+        //histogram.add(2, 1.0); // will be added from features
+        histogram.add(2, 3.5);
+
+        histogram.add(2L, 0.5);
+        //histogram.add(2L, 1.0); // will be added from features
+        histogram.add(2L, 2.0);
+        histogram.add(2L, 3.0);
+        histogram.add(2L, 3.5);
+        histogram.add(2L, 10.0);
+
+        histogram.add("2", 30.0);
+
+        String aggrFeatureName2 = "MyAggrFeature2";
+
+        featureMap.put("feature1"+aggrFeatureName2, new Feature("feature1"+aggrFeatureName2, 2));
+        featureMap.put("feature2"+aggrFeatureName2, new Feature("feature2"+aggrFeatureName2, 2L));
+        featureMap.put("not relevant", new Feature("not relevant", 2));
+
+
+        Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
+        filterJsonPath = String.format("[?(@.%s<%f)]",testFieldName,testFieldValue);
+        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, new JsonFilter(filterJsonPath));
+
+        /////////////////////////////////////////////////////
+        List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
+        aggrFeatureConfs.add(aggrFuncConf1);
+        aggrFeatureConfs.add(aggrFuncConf2);
+
+        Map<String, Feature> aggrFeatures = new HashMap<>();
+        aggrFeatures.put(aggrFeatureName1, aggrFeature1);
+        aggrFeatures.put(aggrFeatureName2, aggrFeature2);
+
+        //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(testFieldName, testFieldValue-1);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(jsonObject, aggrFeatureConfs, aggrFeatures, featureMap);
+
+        Assert.assertEquals(2, updatedAggrFeatures.size());
+
+        Feature resAggrFeature1 = aggrFeatures.get(aggrFeatureName1);
+        Feature resAggrFeature2 = aggrFeatures.get(aggrFeatureName2);
+
+        /////////////////////////////////////////////////////
+        Assert.assertEquals(resAggrFeature1.getValue().getClass(), ContinuousValueAvgStdN.class);
+
+        ContinuousValueAvgStdN avgStdNvalues = (ContinuousValueAvgStdN)resAggrFeature1.getValue();
+
+        Assert.assertEquals(avgStdN.getN(), avgStdNvalues.getN());
+        Assert.assertEquals(avgStdN.getAvg(), avgStdNvalues.getAvg());
+        Assert.assertEquals(avgStdN.getStd(),  avgStdNvalues.getStd());
+        /////////////////////////////////////////////////////
+        Assert.assertEquals(resAggrFeature2.getValue().getClass(), GenericHistogram.class);
+
+
+        GenericHistogram histValue = (GenericHistogram)resAggrFeature2.getValue();
+
+        Assert.assertEquals((Double)10.0, histValue.get(2) );
+        Assert.assertEquals((Double)20.0, histValue.get(2L) );
+        Assert.assertEquals((Double)30.0, histValue.get("2") );
+
+        Double avg = 20d;
+        Double one = Math.pow((10-avg),2);
+        Double two = Math.pow((20-avg),2);
+        Double three = Math.pow((30-avg),2);
+        Double sum2 = one+two+three;
+        Double std2 = Math.sqrt((sum2)/3);
+        Assert.assertEquals(std2, (Double) histValue.getPopulationStandardDeviation());
+    }
+    
+    
 
     @Test
     public void testUpdateWithMissingAggrFeature() {
@@ -201,7 +423,7 @@ public class AggrFeatureFuncServiceTest {
 
         Map<String, Feature> aggrFeatures = new HashMap<>();
         aggrFeatures.put(aggrFeatureName1, aggrFeature1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(null, aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -301,7 +523,7 @@ public class AggrFeatureFuncServiceTest {
         aggrFeatures.put(aggrFeatureName1, aggrFeature1);
         aggrFeatures.put(aggrFeatureName2, aggrFeature2);
 
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(null, aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -403,7 +625,7 @@ public class AggrFeatureFuncServiceTest {
 
         Map<String, Feature> featureMap = new HashMap<>();
 
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(null, aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -513,7 +735,7 @@ public class AggrFeatureFuncServiceTest {
         aggrFeatures.put(aggrFeatureName1, aggrFeature1);
         aggrFeatures.put(aggrFeatureName2, aggrFeature2);
 
-         Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(null, aggrFeatures, featureMap);
+         Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(null, null, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -599,7 +821,7 @@ public class AggrFeatureFuncServiceTest {
         aggrFeatureConfs.add(aggrFuncConf1);
         aggrFeatureConfs.add(aggrFuncConf2);
 
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, null, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(null,aggrFeatureConfs, null, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -692,7 +914,7 @@ public class AggrFeatureFuncServiceTest {
         aggrFeatures.put(aggrFeatureName1, aggrFeature1);
         aggrFeatures.put(aggrFeatureName2, aggrFeature2);
 
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(aggrFeatureConfs, aggrFeatures, null);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(null, aggrFeatureConfs, aggrFeatures, null);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 

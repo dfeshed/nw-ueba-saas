@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minidev.json.JSONObject;
+
 /**
  * Created by amira on 16/06/2015.
  */
@@ -23,5 +25,5 @@ public interface IAggrFeatureFunctionsService {
      * If aggrFeatures is null, a new {@link HashMap <String, Feature>} will be created with new Feature object for each
      * of the {@link AggregatedFeatureConf} in aggrFeatureConfs.
      */
-    Map<String, Feature> updateAggrFeatures(List<AggregatedFeatureConf> aggrFeatureConfs, Map<String, Feature>aggrFeatures, Map<String, Feature>features);
+    Map<String, Feature> updateAggrFeatures(JSONObject event, List<AggregatedFeatureConf> aggrFeatureConfs, Map<String, Feature>aggrFeatures, Map<String, Feature>features);
 }
