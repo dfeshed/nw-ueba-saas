@@ -6,6 +6,7 @@ import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStra
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.streaming.service.aggregation.bucket.strategy.samza.FeatureBucketStrategyServiceSamza;
 import fortscale.streaming.service.aggregation.feature.event.AggrFeatureEventService;
+import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.streaming.service.aggregation.samza.FeatureBucketsServiceSamza;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
@@ -26,6 +27,8 @@ public class AggregatorManager {
 	private String timestampFieldName;
 	private FeatureBucketStrategyService featureBucketStrategyService;
 	private FeatureBucketsService featureBucketsService;
+	private AggrFeatureEventService featureEventService;
+
 
 	@Autowired
 	private FortscaleStringValueResolver fortscaleStringValueResolver;
@@ -36,12 +39,14 @@ public class AggregatorManager {
 	@Autowired
 	private DataSourcesSyncTimer dataSourcesSyncTimer;
 	@Autowired
-	private AggrFeatureEventService featureEventService;
+	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
 		timestampFieldName = fortscaleStringValueResolver.resolveStringValue(config, SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH);
 		featureBucketStrategyService = new FeatureBucketStrategyServiceSamza(context, featureBucketsStore);
 		featureBucketsService = new FeatureBucketsServiceSamza(context, featureBucketsStore, featureBucketStrategyService);
+		featureEventService = new AggrFeatureEventService(aggregatedFeatureEventsConfService, featureBucketStrategyService, featureBucketsService);
 	}
 
 	public void processEvent(JSONObject event) throws Exception {

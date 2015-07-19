@@ -13,10 +13,12 @@
       "aggrFeatureConfs": [
         {
           "name":"aggr-feature-1",
-          "featureNames": [
-            "feature1",
-            "feature2"
-          ],
+          "featureNamesMap": {
+            "param1": [
+              "feature1",
+              "feature2"
+            ]
+          },
           "aggrFeatureFuncJson": {"type": "func1"}
         }
       ]
@@ -36,10 +38,12 @@
       "aggrFeatureConfs": [
         {
           "name":"aggr-feature-2",
-          "featureNames": [
-            "feature3",
-            "feature4"
-          ],
+          "featureNamesMap": {
+            "param1": [
+              "feature3",
+              "feature4"
+            ]
+          },
           "aggrFeatureFuncJson":  {"type": "func2"}
         }
       ]
@@ -59,10 +63,12 @@
       "aggrFeatureConfs": [
         {
           "name":"aggr-feature-3",
-          "featureNames": [
-            "feature5",
-            "feature6"
-          ],
+          "featureNamesMap": {
+            "param1": [
+              "feature5",
+              "feature6"
+            ]
+          },
           "aggrFeatureFuncJson": {"type": "func3"}
         }
       ]

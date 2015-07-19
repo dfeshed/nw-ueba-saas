@@ -2,6 +2,7 @@ package fortscale.streaming.service.aggregation.feature.event;
 
 import fortscale.streaming.service.aggregation.FeatureBucket;
 import fortscale.streaming.service.aggregation.FeatureBucketConf;
+import fortscale.streaming.service.aggregation.FeatureBucketsService;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategy;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.utils.logging.Logger;
@@ -19,26 +20,26 @@ import java.util.Map;
 /**
  * Created by amira on 08/07/2015.
  */
-@Service
-public class AggrFeatureEventService implements InitializingBean {
+public class AggrFeatureEventService {
     private static final Logger logger = Logger.getLogger(AggrFeatureEventService.class);
     private static final String INFO_MSG_NO_EVENT_CONFS = "No aggregated feature event definitions were received.";
     private static final String ERROR_MSG_REMOVE_BUCKET_ID_MAPPING_INVALID_PARAMS = "Null or empty params for removeBucketID2builderMapping()";
 
-    @Autowired
     private AggregatedFeatureEventsConfService aggrFeatureEventsConfService;
-
-    @Autowired
     private FeatureBucketStrategyService featureBucketStrategyService;
+    private FeatureBucketsService featureBucketsService;
 
     private List<AggregatedFeatureEventConf> aggrFeatureEventConfs;
     private Map<String, List<AggrFeatureEventBuilder>> bucketConfName2eventBuildersListMap = new HashMap<>();
     private Map<String, List<AggrFeatureEventBuilder>> bucketID2eventBuildersListMap = new HashMap<>();
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    public AggrFeatureEventService(AggregatedFeatureEventsConfService aggrFeatureEventsConfService, FeatureBucketStrategyService featureBucketStrategyService, FeatureBucketsService featureBucketsService) {
+        this.aggrFeatureEventsConfService = aggrFeatureEventsConfService;
+        this.featureBucketStrategyService = featureBucketStrategyService;
+        this.featureBucketsService = featureBucketsService;
         Assert.notNull(aggrFeatureEventsConfService);
         Assert.notNull(featureBucketStrategyService);
+        Assert.notNull(featureBucketsService);
         aggrFeatureEventConfs = aggrFeatureEventsConfService.getAggregatedFeatureEventConfList();
         if(aggrFeatureEventConfs==null || aggrFeatureEventConfs.isEmpty()) {
             logger.info(INFO_MSG_NO_EVENT_CONFS);
@@ -48,10 +49,12 @@ public class AggrFeatureEventService implements InitializingBean {
     }
 
     private void createAggrFeatureEventBuilders() {
-        for(AggregatedFeatureEventConf eventConf : aggrFeatureEventConfs) {
+        Assert.notNull(featureBucketStrategyService);
+        Assert.notNull(featureBucketsService);
 
+        for(AggregatedFeatureEventConf eventConf : aggrFeatureEventConfs) {
             FeatureBucketStrategy strategy = featureBucketStrategyService.getFeatureBucketStrategiesFactory().getFeatureBucketStrategy(eventConf.getBucketConf().getStrategyName());
-            AggrFeatureEventBuilder eventBuilder = new AggrFeatureEventBuilder(eventConf, strategy, this);
+            AggrFeatureEventBuilder eventBuilder = new AggrFeatureEventBuilder(eventConf, strategy, this, featureBucketsService);
             addAggrFeatureEventBuilder(eventConf.getBucketConf().getName(), eventBuilder);
         }
     }

@@ -42,18 +42,18 @@ public class AggrFeatureEventBuilder {
     private DataSourcesSyncTimer dataSourcesSyncTimer;
 
     @Autowired
-    private FeatureBucketsService featureBucketsService;
-
-    @Autowired
     private IAggrFeatureEventFunctionsService aggrFeatureFuncService;
 
     @Autowired
     AggrEventTopologyService aggrEventTopologyService;
 
-    AggrFeatureEventBuilder(AggregatedFeatureEventConf conf, FeatureBucketStrategy bucketStrategy, AggrFeatureEventService aggrFeatureEventService) {
+    private FeatureBucketsService featureBucketsService;
+
+    AggrFeatureEventBuilder(AggregatedFeatureEventConf conf, FeatureBucketStrategy bucketStrategy, AggrFeatureEventService aggrFeatureEventService, FeatureBucketsService featureBucketsService) {
         this.conf = conf;
         this.bucketStrategy = bucketStrategy;
         this.aggrFeatureEventService = aggrFeatureEventService;
+        this.featureBucketsService = featureBucketsService;
         context2featureDataMap = new HashMap<>();
         bucktID2featureDataMap = new HashMap<>();
     }

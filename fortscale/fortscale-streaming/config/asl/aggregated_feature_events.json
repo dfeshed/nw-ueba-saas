@@ -3,15 +3,17 @@
     "Events": [
       {
         "name": "name1",
-        "bucketConfName": "bucketConfName1",
+        "bucketConfName": "bc1",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 1,
-        "aggregatedFeatureNamesList": [
-          "aggregatedFeatureName1",
-          "aggregatedFeatureName2",
-          "aggregatedFeatureName3"
-        ],
+        "aggregatedFeatureNamesMap": {
+          "functionArgument": [
+            "aggregatedFeatureName1",
+            "aggregatedFeatureName2",
+            "aggregatedFeatureName3"
+          ]
+        },
         "aggregatedFeatureEventFunction": {
           "type": "type1",
           "params": {
@@ -23,14 +25,16 @@
       },
       {
         "name": "name2",
-        "bucketConfName": "bucketConfName2",
+        "bucketConfName": "bc2",
         "numberOfBuckets": 2,
         "bucketsLeap": 2,
         "waitAfterBucketCloseSeconds": 2,
         "aggregatedFeatureNamesMap": {
-          "functionFieldName1": "aggregatedFeatureName1",
-          "functionFieldName2": "aggregatedFeatureName2",
-          "functionFieldName3": "aggregatedFeatureName3"
+          "functionArgument": [
+            "aggregatedFeatureName1",
+            "aggregatedFeatureName2",
+            "aggregatedFeatureName3"
+          ]
         },
         "aggregatedFeatureEventFunction": {
           "type": "type2",
