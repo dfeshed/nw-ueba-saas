@@ -69,8 +69,8 @@ public class AggregatedFeatureConf implements Serializable {
 		return allFeatureNames;
 	}
 
-	public String getAggrFeatureFuncJson() {
-		return aggrFeatureFuncJson.toJSONString();
+	public JSONObject getAggrFeatureFuncJson() {
+		return aggrFeatureFuncJson;
 	}
     
     public void setFilter(JsonFilter filter) {

@@ -26,4 +26,12 @@ public interface IAggrFeatureFunctionsService {
      * of the {@link AggregatedFeatureConf} in aggrFeatureConfs.
      */
     Map<String, Feature> updateAggrFeatures(JSONObject event, List<AggregatedFeatureConf> aggrFeatureConfs, Map<String, Feature>aggrFeatures, Map<String, Feature>features);
+
+    /**
+     * Returns the number of functions created and stored by this service.
+     * This method is mainly used in unit tests.
+     *
+     * @return the number of functions.
+     */
+    public int getNumberOfAggrFeatureFunctions();
 }
