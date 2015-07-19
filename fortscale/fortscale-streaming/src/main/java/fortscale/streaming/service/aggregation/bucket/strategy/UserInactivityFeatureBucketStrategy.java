@@ -94,9 +94,13 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 
 	@Override
 	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtimeInSec) {
+		String username = (String)event.get(usernameFieldName);
+		return getFeatureBucketStrategyData(featureBucketConf, username, epochtimeInSec);
+	}
+
+	private List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, String username, long epochtimeInSec) {
 		List<FeatureBucketStrategyData> strategyDataList = new ArrayList<>();
 
-		String username = (String)event.get(usernameFieldName);
 		if (StringUtils.isNotBlank(username)) {
 			String strategyContextId = getStrategyContextId(username);
 			FeatureBucketStrategyData strategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtimeInSec);
@@ -108,7 +112,6 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 
 		return strategyDataList;
 	}
-
 
 	private String getStrategyContextId(String username) {
 		List<String> strategyContextIdParts = new ArrayList<>();
@@ -137,7 +140,8 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	 */
 	@Override
 	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context, long startAfterEpochtimeInSeconds) {
-		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(bucketConf, new JSONObject(context), startAfterEpochtimeInSeconds +1);
+		String username = context.get(usernameFieldName);
+		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(bucketConf, username, startAfterEpochtimeInSeconds +1);
 		return strategyDatas.size()>0 ? strategyDatas.get(0) : null;
 	}
 

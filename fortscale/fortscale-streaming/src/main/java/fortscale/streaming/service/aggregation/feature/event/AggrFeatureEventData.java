@@ -30,6 +30,10 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
     // bucketsLeap value
     private int numberOfBucketsToWaitBeforeSendingNextEvent;
 
+    public BucketData removeFirstBucketData() {
+        return bucketIDs.size()>0 ? bucketIDs.remove(0) : null;
+    }
+
     class BucketData {
         private FeatureBucketStrategyData strategyData;
         private String  bucketID;
@@ -152,7 +156,11 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
     }
 
     List<BucketData> getBucketIDs() {
-        return bucketIDs;
+        ArrayList<BucketData> clone = new ArrayList<>(bucketIDs.size());
+        for(BucketData bucketData : bucketIDs) {
+            clone.add(bucketData);
+        }
+        return clone;
     }
 
     private void addBucketData(BucketData bucketData) {

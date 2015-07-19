@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.ContinuousValueAvgStdN;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
 
 @JsonTypeName(AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
@@ -87,7 +88,6 @@ public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction, AggrFeatureE
 
         return resFeature;
     }
-
 
     private void addValue(ContinuousValueAvgStdN avgStdN, Object value) {
         try {

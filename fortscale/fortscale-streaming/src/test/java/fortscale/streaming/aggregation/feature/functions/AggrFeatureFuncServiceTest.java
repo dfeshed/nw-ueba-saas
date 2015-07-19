@@ -12,6 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by amira on 21/06/2015.
  */
@@ -23,10 +28,10 @@ public class AggrFeatureFuncServiceTest {
     AggrFeatureFuncService funcService;
 
     private  AggregatedFeatureConf createAggrFeatureConf3(String aggrFeatureName, String funcName) {
-        return createAggrFeatureConf3(aggrFeatureName, funcName, null);
+        return createAggrFeatureConf3(aggrFeatureName, funcName, null, null);
     }
     
-    private  AggregatedFeatureConf createAggrFeatureConf3(String aggrFeatureName, String funcName, JsonFilter filter) {
+    private  AggregatedFeatureConf createAggrFeatureConf3(String aggrFeatureName, String funcName, String funcParam, JsonFilter filter) {
         List<String> featureNames = new ArrayList<>();
         featureNames.add("feature1" + aggrFeatureName);
         featureNames.add("feature2" + aggrFeatureName);
@@ -36,7 +41,7 @@ public class AggrFeatureFuncServiceTest {
         JSONObject funcConf = new JSONObject();
         funcConf.put("type", funcName);
 
-        AggregatedFeatureConf ret = new AggregatedFeatureConf(aggrFeatureName, featureNames, funcConf);
+        AggregatedFeatureConf ret = new AggregatedFeatureConf(aggrFeatureName, featureNamesMap, funcConf);
         if(filter != null){
         	ret.setFilter(filter);
         }
@@ -70,7 +75,7 @@ public class AggrFeatureFuncServiceTest {
         featureMap.put("not relevant", new Feature("not relevant", 30.0));
 
         Feature aggrFeature1 = new Feature(aggrFeatureName1, avgStdN);
-        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME);
+        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, null);
 
 
         //////////////////////////////////////////////////////
@@ -100,7 +105,7 @@ public class AggrFeatureFuncServiceTest {
 
 
         Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
-        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME);
+        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, null);
 
         /////////////////////////////////////////////////////
         List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
@@ -179,7 +184,7 @@ public class AggrFeatureFuncServiceTest {
 
         Feature aggrFeature1 = new Feature(aggrFeatureName1, avgStdN);
         String filterJsonPath = String.format("[?(@.%s<%f)]",testFieldName,testFieldValue);
-        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, new JsonFilter(filterJsonPath));
+        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, new JsonFilter(filterJsonPath));
 
 
         //////////////////////////////////////////////////////
@@ -210,7 +215,7 @@ public class AggrFeatureFuncServiceTest {
 
         Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
         filterJsonPath = String.format("[?(@.%s>%f)]",testFieldName,testFieldValue);
-        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, new JsonFilter(filterJsonPath));
+        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, new JsonFilter(filterJsonPath));
 
         /////////////////////////////////////////////////////
         List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
@@ -285,7 +290,7 @@ public class AggrFeatureFuncServiceTest {
 
         Feature aggrFeature1 = new Feature(aggrFeatureName1, avgStdN);
         String filterJsonPath = String.format("[?(@.%s>%f)]",testFieldName,testFieldValue);
-        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, new JsonFilter(filterJsonPath));
+        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, new JsonFilter(filterJsonPath));
 
 
         //////////////////////////////////////////////////////
@@ -316,7 +321,7 @@ public class AggrFeatureFuncServiceTest {
 
         Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
         filterJsonPath = String.format("[?(@.%s<%f)]",testFieldName,testFieldValue);
-        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, new JsonFilter(filterJsonPath));
+        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, new JsonFilter(filterJsonPath));
 
         /////////////////////////////////////////////////////
         List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
@@ -392,7 +397,7 @@ public class AggrFeatureFuncServiceTest {
         featureMap.put("not relevant", new Feature("not relevant", 30.0));
 
         Feature aggrFeature1 = new Feature(aggrFeatureName1, avgStdN);
-        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME);
+        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, null);
 
 
         //////////////////////////////////////////////////////
@@ -408,7 +413,7 @@ public class AggrFeatureFuncServiceTest {
 
 
         //Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
-        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME);
+        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, null);
 
         /////////////////////////////////////////////////////
         List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
@@ -608,8 +613,8 @@ public class AggrFeatureFuncServiceTest {
 
         /////////////////////////////////////////////////////
         List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
-        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME);
-        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME);
+        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, null);
+        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, null);
         aggrFeatureConfs.add(aggrFuncConf1);
         aggrFeatureConfs.add(aggrFuncConf2);
 
@@ -792,7 +797,7 @@ public class AggrFeatureFuncServiceTest {
         featureMap.put("not relevant", new Feature("not relevant", 30.0));
 
 
-        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME);
+        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, null);
 
 
         //////////////////////////////////////////////////////
@@ -808,7 +813,7 @@ public class AggrFeatureFuncServiceTest {
 
 
         //Feature aggrFeature2 = new Feature(aggrFeatureName2, histogram);
-        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME);
+        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, null);
 
         /////////////////////////////////////////////////////
         List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
@@ -899,8 +904,8 @@ public class AggrFeatureFuncServiceTest {
 
         /////////////////////////////////////////////////////
         List<AggregatedFeatureConf> aggrFeatureConfs = new ArrayList<>();
-        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME);
-        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME);
+        AggregatedFeatureConf aggrFuncConf1 = createAggrFeatureConf3(aggrFeatureName1, AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, null);
+        AggregatedFeatureConf aggrFuncConf2 = createAggrFeatureConf3(aggrFeatureName2, AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE, AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, null);
         aggrFeatureConfs.add(aggrFuncConf1);
         aggrFeatureConfs.add(aggrFuncConf2);
 

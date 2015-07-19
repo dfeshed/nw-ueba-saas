@@ -92,6 +92,6 @@ public class AggregatedFeatureConf implements Serializable {
 			return false;
 		}
 		AggregatedFeatureConf other = (AggregatedFeatureConf) obj;
-		return new EqualsBuilder().append(this.name, other.name).append(this.aggrFeatureFuncJson, other.aggrFeatureFuncJson).append(this.featureNames, other.featureNames).append(this.filter, other.filter).isEquals();
+		return new EqualsBuilder().append(this.name, other.name).append(this.aggrFeatureFuncJson, other.aggrFeatureFuncJson).append(this.allFeatureNames, other.allFeatureNames).append(this.filter, other.filter).isEquals();
 	}
 }

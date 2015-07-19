@@ -5,6 +5,7 @@ import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.streaming.service.aggregation.bucket.strategy.samza.FeatureBucketStrategyServiceSamza;
+import fortscale.streaming.service.aggregation.feature.event.AggrFeatureEventService;
 import fortscale.streaming.service.aggregation.samza.FeatureBucketsServiceSamza;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
@@ -34,6 +35,8 @@ public class AggregatorManager {
 	private FeatureBucketsStore featureBucketsStore;
 	@Autowired
 	private DataSourcesSyncTimer dataSourcesSyncTimer;
+	@Autowired
+	private AggrFeatureEventService featureEventService;
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
 		timestampFieldName = fortscaleStringValueResolver.resolveStringValue(config, SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH);
@@ -56,7 +59,7 @@ public class AggregatorManager {
 			List<FeatureBucket> updatedFeatureBucketsWithNewEndTime = featureBucketsService.updateFeatureBucketsWithNewBucketEndTime(featureBucketConfs, updatedFeatureBucketStrategyDataList);
 			//TODO: Update AggregationEventsManager with updatedFeatureBucketsWithNewEndTime
 			List<FeatureBucket> newFeatureBuckets = featureBucketsService.updateFeatureBucketsWithNewEvent(event, featureBucketConfs);
-			//TODO: Update AggregationEventsManager with newFeatureBuckets
+			featureEventService.newFeatureBuckets(newFeatureBuckets);
 		}
 	}
 

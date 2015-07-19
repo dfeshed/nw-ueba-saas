@@ -132,6 +132,9 @@ public class AggrFeatureEventBuilder {
             aggrFeatureEventData.updateNumberOfBucketsToWaitBeforeSendingNextEvent();
 
             // Retrieving the aggregated features from the latest 'numberOfBuckets'
+            //TODO: need to change the code to take only those buckets that are older then the bucket that is being
+            // closed right now.
+            //TODO: ask the strategy for the next bucket only if closing the last bucket.
             List<AggrFeatureEventData.BucketData> bucketIDs = aggrFeatureEventData.getBucketIDs();
             int i = bucketIDs.size() - conf.getNumberOfBuckets();
 
@@ -189,7 +192,7 @@ public class AggrFeatureEventBuilder {
                 // Cleaning old buckets
                 int howManyToRemove =  bucketIDs.size() - conf.getNumberOfBuckets();
                 for ( i=0; i < howManyToRemove; i++) {
-                    AggrFeatureEventData.BucketData bucketData = bucketIDs.remove(0);
+                    AggrFeatureEventData.BucketData bucketData = aggrFeatureEventData.removeFirstBucketData();
                     if(bucketData.getBucketID()!=null) {
                         aggrFeatureEventService.removeBucketID2builderMapping(bucketData.getBucketID(), this);
                     }
@@ -200,6 +203,7 @@ public class AggrFeatureEventBuilder {
         } //if(aggrFeatureEventData.getNumberOfBucketsToWaitBeforeSendingNextEvent()<=0)
 
         // Registering in timer to be waked up on the next bucket end time
+        // TODO: add logic to stop registering for next bucket updates if there are X number of empty buckets
         FeatureBucketStrategyData featureBucketStrategyData = bucketStrategy.getNextBucketStrategyData(conf.getBucketConf(), aggrFeatureEventData.getContext(), endTime);
         if(featureBucketStrategyData!=null) {
             aggrFeatureEventData.nextBucketEndTimeUpdate(featureBucketStrategyData);

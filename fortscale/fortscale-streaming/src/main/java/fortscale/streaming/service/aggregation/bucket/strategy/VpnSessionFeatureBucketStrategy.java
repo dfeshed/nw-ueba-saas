@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Configurable(preConstruction = true)
 public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
@@ -37,6 +35,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	private String strategyName;
 	private long maxSessionDuration;
 	private HashMap<String, List<String>> openUserSessions; //username and source ip with open sessions
+	private Map<UserNameAndSourceIp, List<NextBucketEndTimeListenerData>> usernameAndSourceIp2listenersListMap = new HashMap<>();
 
 	public VpnSessionFeatureBucketStrategy(String strategyName, long maxSessionDuration) {
 		// Validate input
@@ -66,7 +65,8 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 
 			if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(sourceIP) && epochtime != null) {
 				String strategyContextId = getStrategyContextId(username, sourceIP);
-				boolean isFeatureBucketStrategyDataCreatedOrUpdated = false;
+				boolean isFeatureBucketStrategyDataCreated = false;
+				boolean isFeatureBucketStrategyDataUpdated = false;
 				FeatureBucketStrategyData featureBucketStrategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtime);
 
 				// Case 1: Strategy doesn't exist - create a new one
@@ -76,23 +76,30 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 					if (status.equalsIgnoreCase(successValueName)) {
 						featureBucketStrategyData = new FeatureBucketStrategyData(strategyContextId, strategyName, epochtime, epochtime + maxSessionDuration);
 						AddOpenUserSessions(username, sourceIP);
-						isFeatureBucketStrategyDataCreatedOrUpdated = true;
+						isFeatureBucketStrategyDataCreated = true;
 					}
 				}
 				// Case 3: Strategy exists and the incoming event status is closed
 				else if (status.equalsIgnoreCase(closedValueName)) {
 					featureBucketStrategyData.setEndTime(epochtime);
 					RemoveClosedUserSessions(username, sourceIP);
-					isFeatureBucketStrategyDataCreatedOrUpdated = true;
+					isFeatureBucketStrategyDataUpdated = true;
 				}
 				// Case 4: Nothing to do if exists, still active and event is not a closed event
 
 				featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
-				if (isFeatureBucketStrategyDataCreatedOrUpdated) {
+
+
+				if(isFeatureBucketStrategyDataCreated) {
+					notifyListneres(username, sourceIP, featureBucketStrategyData);
+				}
+
+				if (isFeatureBucketStrategyDataUpdated || isFeatureBucketStrategyDataCreated) {
 					return featureBucketStrategyData;
 				} else {
 					return null;
 				}
+
 			}
 		}
 		return null;
@@ -112,6 +119,83 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		}
 
 		return strategyDataList;
+	}
+
+	/**
+	 * Returns strategy data of the bucket tick which starts after the given startAfterEpochtimeInSeconds for the given context.
+	 *
+	 * @param bucketConf
+	 * @param context
+	 * @param startAfterEpochtimeInSeconds
+	 */
+	@Override
+	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context, long startAfterEpochtimeInSeconds) {
+		Assert.notNull(context);
+		FeatureBucketStrategyData strategyData = null;
+		String username = context.get(usernameFieldName);
+		String contextSourceIp = context.get(sourceIpFieldName);
+
+		if(username==null || contextSourceIp == null || StringUtils.isEmpty(username) || StringUtils.isEmpty(contextSourceIp)) {
+			return null;
+		}
+
+		if (openUserSessions.containsKey(username)) {
+			for (String sourceIp:openUserSessions.get(username)) {
+				if(sourceIp.equals(contextSourceIp)) {
+					String strategyContextId = getStrategyContextId(username, sourceIp);
+					strategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, startAfterEpochtimeInSeconds + 1);
+				}
+			}
+		}
+
+		return strategyData;
+	}
+
+	/**
+	 * Register the listener to be called when a new strategy data (a.k.a 'bucket tick') is created for the given context and
+	 * which its start time is after the given startAfterEpochtimeInSeconds.
+	 *
+	 * @param bucketConf
+	 * @param context
+	 * @param listener
+	 * @param startAfterEpochtimeInSeconds
+	 */
+	@Override
+	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener, long startAfterEpochtimeInSeconds) {
+		if(listener!=null) {
+			String username = context.get(usernameFieldName);
+			String sourceIpAddess = context.get(sourceIpFieldName);
+
+			if(username==null || StringUtils.isEmpty(username) || sourceIpAddess==null || StringUtils.isEmpty(sourceIpAddess)) {
+				return;
+			}
+
+			UserNameAndSourceIp usernameAndSourceIp = new UserNameAndSourceIp(username, sourceIpAddess);
+			List<NextBucketEndTimeListenerData> listeners = usernameAndSourceIp2listenersListMap.get(usernameAndSourceIp);
+			if(listeners==null) {
+				listeners = new ArrayList<>();
+				usernameAndSourceIp2listenersListMap.put(usernameAndSourceIp, listeners);
+			}
+			listeners.add(new NextBucketEndTimeListenerData(startAfterEpochtimeInSeconds, listener));
+		}
+	}
+
+	private void notifyListneres(String username, String sourceIpAddress, FeatureBucketStrategyData strategyData) {
+		UserNameAndSourceIp userNameAndSourceIp = new UserNameAndSourceIp(username, sourceIpAddress);
+		List<NextBucketEndTimeListenerData> listeners = usernameAndSourceIp2listenersListMap.get(userNameAndSourceIp);
+		Collection<NextBucketEndTimeListenerData> listenerDatasToRemove = new ArrayList<>();
+		if(listeners!=null) {
+			for(NextBucketEndTimeListenerData listenerData : listeners) {
+				if(listenerData.startAfterEpochtimeInSeconds < strategyData.getStartTime()) {
+					listenerData.listener.nextBucketEndTimeUpdate(strategyData);
+					listenerDatasToRemove.add(listenerData);
+				}
+			}
+			listeners.removeAll(listenerDatasToRemove);
+			if(listeners.isEmpty()) {
+				usernameAndSourceIp2listenersListMap.remove(userNameAndSourceIp);
+			}
+		}
 	}
 
 	private String getStrategyContextId(String username, String sourceIP) {
@@ -146,5 +230,44 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 			}
 		}
 		return false;
+	}
+
+	private class NextBucketEndTimeListenerData {
+		long startAfterEpochtimeInSeconds;
+		NextBucketEndTimeListener listener;
+
+		private NextBucketEndTimeListenerData(long startAfterEpochtimeInSeconds, NextBucketEndTimeListener listener) {
+			this.startAfterEpochtimeInSeconds = startAfterEpochtimeInSeconds;
+			this.listener = listener;
+		}
+
+	}
+
+	private class UserNameAndSourceIp{
+		String username;
+		String sourceIp;
+		private UserNameAndSourceIp(String username, String sourceIp) {
+			this.username = username;
+			this.sourceIp = sourceIp;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			UserNameAndSourceIp that = (UserNameAndSourceIp) o;
+
+			if (username != null ? !username.equals(that.username) : that.username != null) return false;
+			return !(sourceIp != null ? !sourceIp.equals(that.sourceIp) : that.sourceIp != null);
+
+		}
+
+		@Override
+		public int hashCode() {
+			int result = username != null ? username.hashCode() : 0;
+			result = 31 * result + (sourceIp != null ? sourceIp.hashCode() : 0);
+			return result;
+		}
 	}
 }
