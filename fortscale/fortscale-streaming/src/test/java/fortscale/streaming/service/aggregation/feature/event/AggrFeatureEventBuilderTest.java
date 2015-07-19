@@ -35,8 +35,6 @@ public class AggrFeatureEventBuilderTest {
     @Mock
     AggrEventTopologyService aggrEventTopologyService;
 
-    @InjectMocks
-    AggrFeatureEventBuilder builder;
 
     @Before
     public void setUp() throws Exception {
