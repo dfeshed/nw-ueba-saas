@@ -26,8 +26,7 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 		return null;
 	}
 
-	@Override
-	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtimeInSec){
+	private List<FeatureBucketStrategyData> getFeatureBucketStrategyData(long epochtimeInSec){
 		long startTime = (epochtimeInSec / durationInSeconds) * durationInSeconds;
 		FeatureBucketStrategyData featureBucketStrategyData = new FeatureBucketStrategyData(strategyName, strategyName, startTime, startTime + durationInSeconds);
 		List<FeatureBucketStrategyData> ret = new ArrayList<FeatureBucketStrategyData>();
@@ -36,16 +35,29 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 	}
 
 	@Override
-	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context) {
-		long epochtimeInSec = System.currentTimeMillis() / 1000;
-		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(bucketConf, new JSONObject(context), epochtimeInSec);
+	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtimeInSec){
+		return getFeatureBucketStrategyData(epochtimeInSec);
+	}
+
+	@Override
+	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context, long startAfterEpochtimeInSeconds) {
+		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(startAfterEpochtimeInSeconds +1);
 		return strategyDatas.get(0);
 	}
 
-
+	/**
+	 * Register the listener to be called when a new strategy data (a.k.a 'bucket tick') is created for the given context and
+	 * which its start time is after the given startAfterEpochtimeInSeconds.
+	 * @param bucketConf
+	 * @param context
+	 * @param listener
+	 * @param startAfterEpochtimeInSeconds
+	 */
 	@Override
-	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener) {
-		// Do nothing, getNextBucketStrategyData should be used.
+	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener,  long startAfterEpochtimeInSeconds) {
+		// This method shouldn't be used because getNextBucketStrategyData will always return the next bucket data,
+		// but to be on the safe side implementation is provided here.
+		listener.nextBucketEndTimeUpdate(getNextBucketStrategyData(bucketConf, context, startAfterEpochtimeInSeconds));
 	}
 
 

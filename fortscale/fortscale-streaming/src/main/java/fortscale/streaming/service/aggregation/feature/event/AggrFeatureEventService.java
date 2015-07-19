@@ -1,12 +1,10 @@
 package fortscale.streaming.service.aggregation.feature.event;
 
-import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.service.aggregation.FeatureBucket;
 import fortscale.streaming.service.aggregation.FeatureBucketConf;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategy;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +115,7 @@ public class AggrFeatureEventService implements InitializingBean {
                 List<AggrFeatureEventBuilder> builders = bucketConfName2eventBuildersListMap.get(bucket.getFeatureBucketConfName());
                 if(builders!=null) {
                     for(AggrFeatureEventBuilder builder: builders) {
-                        builder.updateAggrFeatureEvent(bucket.getBucketId(), bucket.getContextFieldNameToValueMap(), bucket.getStartTime(), bucket.getEndTime());
+                        builder.updateAggrFeatureEventData(bucket.getBucketId(), bucket.getContextFieldNameToValueMap(), bucket.getStartTime(), bucket.getEndTime());
                     }
                 }
             }

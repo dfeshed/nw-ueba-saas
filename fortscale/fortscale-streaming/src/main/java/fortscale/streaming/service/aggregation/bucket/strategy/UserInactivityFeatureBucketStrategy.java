@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Configurable(preConstruction = true)
 public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrategy {
@@ -29,7 +26,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	private List<String> dataSources;
 	private long inactivityDurationInMinutes;
 	private long endTimeDeltaInMinutes;
-	private Map<String, List<NextBucketEndTimeListener>> username2listenersListMap = new HashMap<>();
+	private Map<String, List<NextBucketEndTimeListenerData>> username2listenersListMap = new HashMap<>();
 
 	public UserInactivityFeatureBucketStrategy(String strategyName, List<String> dataSources, long inactivityDurationInMinutes, long endTimeDeltaInMinutes) {
 		// Validate input
@@ -97,9 +94,13 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 
 	@Override
 	public List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, JSONObject event, long epochtimeInSec) {
+		String username = (String)event.get(usernameFieldName);
+		return getFeatureBucketStrategyData(featureBucketConf, username, epochtimeInSec);
+	}
+
+	private List<FeatureBucketStrategyData> getFeatureBucketStrategyData(FeatureBucketConf featureBucketConf, String username, long epochtimeInSec) {
 		List<FeatureBucketStrategyData> strategyDataList = new ArrayList<>();
 
-		String username = ConversionUtils.convertToString(event.get(usernameFieldName));
 		if (StringUtils.isNotBlank(username)) {
 			String strategyContextId = getStrategyContextId(username);
 			FeatureBucketStrategyData strategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, epochtimeInSec);
@@ -111,7 +112,6 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 
 		return strategyDataList;
 	}
-
 
 	private String getStrategyContextId(String username) {
 		List<String> strategyContextIdParts = new ArrayList<>();
@@ -132,39 +132,69 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 		return endTimeDeltaInMinutes * 60;
 	}
 
+	/**
+	 * Returns strategy data of the bucket tick which starts after the given startAfterEpochtimeInSeconds for the given context.
+	 * @param bucketConf
+	 * @param context
+	 * @param startAfterEpochtimeInSeconds
+	 */
 	@Override
-	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context) {
-		long epochtimeInSec = System.currentTimeMillis() / 1000;
-		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(bucketConf, new JSONObject(context), epochtimeInSec);
+	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context, long startAfterEpochtimeInSeconds) {
+		String username = context.get(usernameFieldName);
+		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(bucketConf, username, startAfterEpochtimeInSeconds +1);
 		return strategyDatas.size()>0 ? strategyDatas.get(0) : null;
 	}
 
+	/**
+	 * Register the listener to be called when a new strategy data (a.k.a 'bucket tick') is created for the given context and
+	 * which its start time is after the given startAfterEpochtimeInSeconds.
+	 * @param bucketConf
+	 * @param context
+	 * @param listener
+	 * @param startAfterEpochtimeInSeconds
+	 */
 	@Override
-	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener) {
+	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener, long startAfterEpochtimeInSeconds) {
 		if(listener!=null) {
-			String username = ConversionUtils.convertToString(context.get(usernameFieldName));
+			String username = context.get(usernameFieldName);
 			if(username==null || StringUtils.isEmpty(username)) {
 				return;
 			}
-			List<NextBucketEndTimeListener> listeners = username2listenersListMap.get(username);
+			List<NextBucketEndTimeListenerData> listeners = username2listenersListMap.get(username);
 			if(listeners==null) {
 				listeners = new ArrayList<>();
 				username2listenersListMap.put(username, listeners);
 			}
-			listeners.add(listener);
+			listeners.add(new NextBucketEndTimeListenerData(startAfterEpochtimeInSeconds, listener));
 		}
 	}
 
 	private void notifyListneres(String username, FeatureBucketStrategyData strategyData) {
-		List<NextBucketEndTimeListener> listeners = username2listenersListMap.get(username);
+		List<NextBucketEndTimeListenerData> listeners = username2listenersListMap.get(username);
+		Collection<NextBucketEndTimeListenerData> listenerDatasToRemove = new ArrayList<>();
 		if(listeners!=null) {
-			for(NextBucketEndTimeListener listener : listeners) {
-				listener.nextBucketEndTimeUpdate(strategyData);
+			for(NextBucketEndTimeListenerData listenerData : listeners) {
+				if(listenerData.startAfterEpochtimeInSeconds < strategyData.getStartTime()) {
+					listenerData.listener.nextBucketEndTimeUpdate(strategyData);
+					listenerDatasToRemove.add(listenerData);
+				}
 			}
-			listeners.clear();
-			username2listenersListMap.remove(username);
+			listeners.removeAll(listenerDatasToRemove);
+			if(listeners.isEmpty()) {
+				username2listenersListMap.remove(username);
+			}
 		}
 	}
 
+	private class NextBucketEndTimeListenerData {
+		long startAfterEpochtimeInSeconds;
+		NextBucketEndTimeListener listener;
+
+		private NextBucketEndTimeListenerData(long startAfterEpochtimeInSeconds, NextBucketEndTimeListener listener) {
+			this.startAfterEpochtimeInSeconds = startAfterEpochtimeInSeconds;
+			this.listener = listener;
+		}
+
+	}
 }
 
