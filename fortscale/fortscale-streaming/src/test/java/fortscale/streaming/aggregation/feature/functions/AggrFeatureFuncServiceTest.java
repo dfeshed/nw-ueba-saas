@@ -4,6 +4,7 @@ import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.ContinuousValueAvgStdN;
 import fortscale.streaming.aggregation.feature.util.GenericHistogram;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
+import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -735,5 +736,162 @@ public class AggrFeatureFuncServiceTest {
 
     }
 
+    @Test
+    public void testCalculateAggrFeature() {
+        // Prepare AggrFeatureAvgStdNFunc arguments
+        String aggregatedFeatureName = "aggregatedFeatureName";
+        List<String> aggregatedFeatureNamesList = new ArrayList<>();
+        aggregatedFeatureNamesList.add(aggregatedFeatureName);
+        Map<String, List<String>> aggregatedFeatureNamesMap = new HashMap<>();
+        aggregatedFeatureNamesMap.put(AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, aggregatedFeatureNamesList);
 
+        // Prepare AggrFeatureAvgStdNFunc function JSON
+        JSONObject aggrFeatureAvgStdNFunc = new JSONObject();
+        aggrFeatureAvgStdNFunc.put("type", AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE);
+        // Function has no parameters
+
+        // Prepare new aggregated feature event configuration (with AvgStdN as the function)
+        String aggregatedFeatureEventName = "testAggregatedFeatureEvent";
+        AggregatedFeatureEventConf aggregatedFeatureEventConf = new AggregatedFeatureEventConf(
+                aggregatedFeatureEventName,
+                "testBucketConf",
+                3, 1, 300,
+                aggregatedFeatureNamesMap,
+                aggrFeatureAvgStdNFunc);
+
+        // Prepare a list of aggregated feature maps for multiple buckets
+        Map<String, Feature> aggregatedFeatureMap = new HashMap<>();
+        aggregatedFeatureMap.put(aggregatedFeatureName, new Feature(aggregatedFeatureName, new ContinuousValueAvgStdN()));
+        List<Map<String, Feature>> listOfAggregatedFeatureMaps = new ArrayList<>();
+        listOfAggregatedFeatureMaps.add(aggregatedFeatureMap);
+
+        // Check function creation and execution
+        Feature feature = funcService.calculateAggrFeature(aggregatedFeatureEventConf, listOfAggregatedFeatureMaps);
+        Assert.assertNotNull(feature);
+        Assert.assertEquals(aggregatedFeatureEventName, feature.getName());
+        Assert.assertEquals(ContinuousValueAvgStdN.class, feature.getValue().getClass());
+
+        // Prepare AggrFeatureHistogramFunc arguments
+        aggregatedFeatureNamesMap.clear();
+        aggregatedFeatureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, aggregatedFeatureNamesList);
+
+        // Prepare AggrFeatureHistogramFunc function JSON
+        JSONObject aggrFeatureHistogramFunc = new JSONObject();
+        aggrFeatureHistogramFunc.put("type", AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE);
+        // Function has no parameters
+
+        // Prepare new aggregated feature event configuration (with Histogram as the function)
+        aggregatedFeatureEventConf = new AggregatedFeatureEventConf(
+                aggregatedFeatureEventName,
+                "testBucketConf",
+                3, 1, 300,
+                aggregatedFeatureNamesMap,
+                aggrFeatureHistogramFunc);
+
+        // Prepare a list of aggregated feature maps for multiple buckets
+        aggregatedFeatureMap.clear();
+        aggregatedFeatureMap.put(aggregatedFeatureName, new Feature(aggregatedFeatureName, new GenericHistogram()));
+
+        // Check function creation and execution
+        feature = funcService.calculateAggrFeature(aggregatedFeatureEventConf, listOfAggregatedFeatureMaps);
+        Assert.assertNotNull(feature);
+        Assert.assertEquals(aggregatedFeatureEventName, feature.getName());
+        Assert.assertEquals(GenericHistogram.class, feature.getValue().getClass());
+
+        // Check number of functions
+        Assert.assertEquals(2, funcService.getNumberOfAggrFeatureEventFunctions());
+
+        // Prepare AggrFeatureAvgStdNFunc arguments
+        aggregatedFeatureNamesMap.clear();
+        aggregatedFeatureNamesMap.put(AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, aggregatedFeatureNamesList);
+
+        // Prepare a new JSON instance for the AggrFeatureAvgStdNFunc function
+        JSONObject newAvgStdNFuncJson = new JSONObject();
+        newAvgStdNFuncJson.put("type", AggrFeatureAvgStdNFunc.AGGR_FEATURE_FUNCTION_TYPE);
+        // Function has no parameters
+
+        // Prepare new aggregated feature event configuration (with AvgStdN as the function)
+        aggregatedFeatureEventConf = new AggregatedFeatureEventConf(
+                aggregatedFeatureEventName,
+                "testBucketConf",
+                3, 1, 300,
+                aggregatedFeatureNamesMap,
+                newAvgStdNFuncJson);
+
+        // Prepare a list of aggregated feature maps for multiple buckets
+        aggregatedFeatureMap.clear();
+        aggregatedFeatureMap.put(aggregatedFeatureName, new Feature(aggregatedFeatureName, new ContinuousValueAvgStdN()));
+
+        // Check function execution (function was already created)
+        feature = funcService.calculateAggrFeature(aggregatedFeatureEventConf, listOfAggregatedFeatureMaps);
+        Assert.assertNotNull(feature);
+        Assert.assertEquals(aggregatedFeatureEventName, feature.getName());
+        Assert.assertEquals(ContinuousValueAvgStdN.class, feature.getValue().getClass());
+
+        // Check number of functions
+        Assert.assertEquals(2, funcService.getNumberOfAggrFeatureEventFunctions());
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWithUnknownFunction() {
+        String aggregatedFeatureName = "aggregatedFeatureName";
+        List<String> aggregatedFeatureNamesList = new ArrayList<>();
+        aggregatedFeatureNamesList.add(aggregatedFeatureName);
+        Map<String, List<String>> aggregatedFeatureNamesMap = new HashMap<>();
+        aggregatedFeatureNamesMap.put("dummyFunctionArgument", aggregatedFeatureNamesList);
+
+        JSONObject params = new JSONObject();
+        params.put("dummyFunctionParam", 42);
+        JSONObject dummyFunction = new JSONObject();
+        dummyFunction.put("type", "unknownFunctionType");
+        dummyFunction.put("params", params);
+
+        AggregatedFeatureEventConf conf = new AggregatedFeatureEventConf(
+                "testAggregatedFeatureEvent",
+                "testBucketConf",
+                3, 1, 300,
+                aggregatedFeatureNamesMap,
+                dummyFunction);
+
+        Map<String, Feature> aggregatedFeatureMap = new HashMap<>();
+        aggregatedFeatureMap.put(aggregatedFeatureName, new Feature(aggregatedFeatureName, -1));
+        List<Map<String, Feature>> listOfAggregatedFeatureMaps = new ArrayList<>();
+        listOfAggregatedFeatureMaps.add(aggregatedFeatureMap);
+
+        Assert.assertNull(funcService.calculateAggrFeature(conf, listOfAggregatedFeatureMaps));
+        Assert.assertEquals(0, funcService.getNumberOfAggrFeatureEventFunctions());
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWithNullAggregatedFeatureEventConf() {
+        String aggregatedFeatureName = "aggregatedFeatureName";
+        Map<String, Feature> aggregatedFeatureMap = new HashMap<>();
+        aggregatedFeatureMap.put(aggregatedFeatureName, new Feature(aggregatedFeatureName, new ContinuousValueAvgStdN()));
+        List<Map<String, Feature>> listOfAggregatedFeatureMaps = new ArrayList<>();
+        listOfAggregatedFeatureMaps.add(aggregatedFeatureMap);
+
+        Assert.assertNull(funcService.calculateAggrFeature(null, listOfAggregatedFeatureMaps));
+        Assert.assertEquals(0, funcService.getNumberOfAggrFeatureEventFunctions());
+    }
+
+    @Test
+    public void testCalculateAggrFeatureWithNullMultipleBucketsAggrFeaturesMapList() {
+        List<String> aggregatedFeatureNamesList = new ArrayList<>();
+        aggregatedFeatureNamesList.add("aggregatedFeatureName");
+        Map<String, List<String>> aggregatedFeatureNamesMap = new HashMap<>();
+        aggregatedFeatureNamesMap.put(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, aggregatedFeatureNamesList);
+
+        JSONObject aggrFeatureHistogramFunc = new JSONObject();
+        aggrFeatureHistogramFunc.put("type", AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE);
+
+        AggregatedFeatureEventConf conf = new AggregatedFeatureEventConf(
+                "testAggregatedFeatureEvent",
+                "testBucketConf",
+                3, 1, 300,
+                aggregatedFeatureNamesMap,
+                aggrFeatureHistogramFunc);
+
+        Assert.assertNull(funcService.calculateAggrFeature(conf, null));
+        Assert.assertEquals(0, funcService.getNumberOfAggrFeatureEventFunctions());
+    }
 }

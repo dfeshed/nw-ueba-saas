@@ -5,7 +5,7 @@ import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
 import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.logging.Logger;
-import org.eclipse.jdt.internal.core.Assert;
+import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -21,9 +21,8 @@ import java.util.Map;
 public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAggrFeatureEventFunctionsService {
     private static final Logger logger = Logger.getLogger(AggrFeatureFuncService.class);
 
-    private Map<String, AggrFeatureFunction> aggrFunctions = new HashMap<>();
-    private Map<String, AggrFeatureEventFunction> aggrFeatureEventFunctions = new HashMap<>();
-
+    private Map<JSONObject, AggrFeatureFunction> aggrFunctions = new HashMap<>();
+    private Map<JSONObject, AggrFeatureEventFunction> aggrFeatureEventFunctions = new HashMap<>();
 
     /**
      * Updates the aggrFeatures by running the associated {@link AggrFeatureFunction} that is configured for each
@@ -80,23 +79,24 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
             logger.warn("calculateAggrFeature(): aggrFeatureEventConf is null");
         } else {
             AggrFeatureEventFunction func = getAggrFeatureEventFunction(aggrFeatureEventConf);
-            res = func.calculateAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+            if (func != null) {
+                res = func.calculateAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+            }
         }
         return res;
     }
 
     private AggrFeatureEventFunction getAggrFeatureEventFunction(AggregatedFeatureEventConf aggrFeatureEventConf) {
-        Assert.isNotNull(aggrFeatureEventConf);
-
-        AggrFeatureEventFunction func = null;
-
-        try {
-            String json = aggrFeatureEventConf.getAggregatedFeatureEventFunction().toJSONString();
-            func = (new ObjectMapper()).readValue(json, AggrFeatureEventFunction.class);
-            aggrFeatureEventFunctions.put(json, func);
-        } catch (Exception e) {
-            String errorMsg = String.format("Failed to deserialize json %s", aggrFeatureEventConf.getAggregatedFeatureEventFunction());
-            logger.error(errorMsg, e);
+        JSONObject funcAsJsonObject = aggrFeatureEventConf.getAggregatedFeatureEventFunction();
+        String funcAsJsonString = funcAsJsonObject.toJSONString();
+        AggrFeatureEventFunction func = aggrFeatureEventFunctions.get(funcAsJsonObject);
+        if (func == null) {
+            try {
+                func = (new ObjectMapper()).readValue(funcAsJsonString, AggrFeatureEventFunction.class);
+                aggrFeatureEventFunctions.put(funcAsJsonObject, func);
+            } catch (Exception e) {
+                logger.error(String.format("Failed to deserialize function JSON %s", funcAsJsonString), e);
+            }
         }
         return func;
     }
@@ -112,21 +112,26 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
     }
 
     private AggrFeatureFunction createAggrFeatureFunction(@NotNull AggregatedFeatureConf aggregatedFeatureConf) {
-        Assert.isNotNull(aggregatedFeatureConf);
-
+        JSONObject aggrFeatureFuncJson = aggregatedFeatureConf.getAggrFeatureFuncJson();
+        String aggrFeatureFuncString = aggrFeatureFuncJson.toJSONString();
         AggrFeatureFunction func = null;
 
         try {
-            String json = aggregatedFeatureConf.getAggrFeatureFuncJson();
-            func = (new ObjectMapper()).readValue(json, AggrFeatureFunction.class);
-            aggrFunctions.put(json, func);
+            func = (new ObjectMapper()).readValue(aggrFeatureFuncString, AggrFeatureFunction.class);
+            aggrFunctions.put(aggrFeatureFuncJson, func);
         } catch (Exception e) {
-            String errorMsg = String.format("Failed to deserialize json %s", aggregatedFeatureConf.getAggrFeatureFuncJson());
-            logger.error(errorMsg, e);
+            logger.error(String.format("Failed to deserialize function JSON %s", aggrFeatureFuncString), e);
         }
         return func;
     }
 
+    @Override
+    public int getNumberOfAggrFeatureEventFunctions() {
+        return aggrFeatureEventFunctions.size();
+    }
 
-
+    @Override
+    public int getNumberOfAggrFeatureFunctions() {
+        return aggrFunctions.size();
+    }
 }
