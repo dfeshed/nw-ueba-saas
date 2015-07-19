@@ -1,18 +1,14 @@
 package fortscale.streaming.aggregation.feature.functions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
 import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-
-import org.eclipse.jdt.internal.core.Assert;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +16,6 @@ import java.util.Map;
 /**
  * Created by amira on 17/06/2015.
  */
-
 @Service
 public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAggrFeatureEventFunctionsService {
     private static final Logger logger = Logger.getLogger(AggrFeatureFuncService.class);
@@ -53,9 +48,9 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
             logger.warn("updateAggrFeatures(): No AggregatedFeatureConf was provided");
         } else {
             for (AggregatedFeatureConf aggregatedFeatureConf: aggrFeatureConfs) {
-            	if(!aggregatedFeatureConf.passedFilter(event)){
-            		continue;
-            	}
+                if (!aggregatedFeatureConf.passedFilter(event)) {
+                    continue;
+                }
                 String aggrFeatureName = aggregatedFeatureConf.getName();
                 Feature aggrFeature = aggrFeatures.get(aggrFeatureName);
                 if(aggrFeature==null) {
