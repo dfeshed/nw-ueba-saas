@@ -14,4 +14,5 @@
 	<bean id="dataSourcesSyncTimer" class="fortscale.streaming.service.aggregation.DataSourcesSyncTimer"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 	<bean id="entityEventConfService" class="fortscale.streaming.service.aggregation.entity.event.EntityEventConfService"/>
+	<bean id="entityEventDataStore" class="fortscale.streaming.service.aggregation.entity.event.EntityEventDataMongoStore"/>
 </beans>
