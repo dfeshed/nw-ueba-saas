@@ -25,7 +25,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	private String dataSourceFieldName;
 
 	@Autowired
-	AggrEventTopologyService aggrEventTopologyService;
+	private AggrEventTopologyService aggrEventTopologyService;
 
 
 	@Override
