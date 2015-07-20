@@ -40,6 +40,8 @@ public class AggregatorManager {
 	private DataSourcesSyncTimer dataSourcesSyncTimer;
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+	@Autowired
+	private AggrEventTopologyService aggrEventTopologyService;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {
@@ -49,12 +51,13 @@ public class AggregatorManager {
 		featureEventService = new AggrFeatureEventService(aggregatedFeatureEventsConfService, featureBucketStrategyService, featureBucketsService);
 	}
 
-	public void processEvent(JSONObject event) throws Exception {
+	public void processEvent(JSONObject event, MessageCollector collector) throws Exception {
 		Long timestamp = convertToLong(event.get(timestampFieldName));
 		if (timestamp == null) {
 			logger.warn("Event message {} contains no timestamp in field {}", event.toJSONString(), timestampFieldName);
 			return;
 		}
+		aggrEventTopologyService.setMessageCollector(collector);
 
 		dataSourcesSyncTimer.process(event);
 		List<FeatureBucketStrategyData> updatedFeatureBucketStrategyDataList = featureBucketStrategyService.updateStrategies(event);
@@ -69,6 +72,7 @@ public class AggregatorManager {
 	}
 
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		aggrEventTopologyService.setMessageCollector(collector);
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
 	}
 

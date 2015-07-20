@@ -9,7 +9,6 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.FileReader;
@@ -18,7 +17,6 @@ import java.util.Map;
 /**
  * Created by amira on 13/07/2015.
  */
-@Service
 public class AggrEventTopologyService implements InitializingBean {
     private static final Logger logger = Logger.getLogger(AggrEventTopologyService.class);
     private static final String EVENT_TOPOLOGY_JSON_NODE_NAME = "event_topology";
