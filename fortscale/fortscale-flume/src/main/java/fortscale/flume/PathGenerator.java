@@ -9,15 +9,16 @@ public class PathGenerator {
 
 	private String filePrefix;
 	private String fileSuffix;
+	private String datacenterName;
 
 	public PathGenerator() {
 		filePrefix = "";
 		fileSuffix = "";
+		datacenterName = "";
 	}
 
 	public File nextFile() {
-		currentFile = new File(baseDirectory,
-				String.format("%s_%d.%s.part", filePrefix, System.currentTimeMillis(), fileSuffix));
+		currentFile = new File(baseDirectory, String.format("%s_%s_%d.%s.part", filePrefix, datacenterName, System.currentTimeMillis(), fileSuffix));
 
 		return currentFile;
 	}
@@ -31,9 +32,9 @@ public class PathGenerator {
 	}
 
 	public void rotate() {
-		if (currentFile!=null) {
+		if (currentFile != null) {
 			String newPath = currentFile.getAbsolutePath();
-			newPath = newPath.substring(0,newPath.lastIndexOf(".part"));
+			newPath = newPath.substring(0, newPath.lastIndexOf(".part"));
 
 			File newFile = new File(newPath);
 			currentFile.renameTo(newFile);
@@ -50,20 +51,27 @@ public class PathGenerator {
 		this.baseDirectory = baseDirectory;
 	}
 
-	public void setFileSuffix(String fileSuffix){
+	public void setFileSuffix(String fileSuffix) {
 		this.fileSuffix = fileSuffix;
 	}
 
-	public void setFilePrefix(String filePrefix){
+	public void setFilePrefix(String filePrefix) {
 		this.filePrefix = filePrefix;
 	}
 
-	public String getFileSuffix(){
+	public String getFileSuffix() {
 		return fileSuffix;
 	}
 
-	public String getFilePrefix(){
+	public String getFilePrefix() {
 		return filePrefix;
 	}
 
+	public String getDatacenterName() {
+		return datacenterName;
+	}
+
+	public void setDatacenterName(String datacenterName) {
+		this.datacenterName = datacenterName;
+	}
 }

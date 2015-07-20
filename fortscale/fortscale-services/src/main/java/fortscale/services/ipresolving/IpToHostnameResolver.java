@@ -4,6 +4,7 @@ import fortscale.domain.events.IpToHostname;
 import fortscale.services.ComputerService;
 import fortscale.utils.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.routines.InetAddressValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,12 @@ public class IpToHostnameResolver {
 	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName,
 			boolean isRemoveLastDot) {
 
-		//define the local priority queue
+		//check if ip is already resolved, meaning we get a hostname/invalid ip as the ip - just return that hostname
+		if (!InetAddressValidator.getInstance().isValid(ip)) {
+			return ip;
+		}
+
+			//define the local priority queue
 		PriorityQueue<IpToHostname> ipToHostnameQueue = null;
 
 		// get hostname from file resolver
