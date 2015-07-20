@@ -78,11 +78,13 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
         for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
             for (String aggregatedFeatureName : aggregatedFeatureNamesList) {
                 Feature aggrFeature = aggrFeatures.get(aggregatedFeatureName);
-                if (aggrFeature != null && aggrFeature.getValue() instanceof GenericHistogram) {
-                    histogram.add((GenericHistogram)aggrFeature.getValue());
-                } else {
-                    throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s",
-                        aggregatedFeatureName, GenericHistogram.class.getSimpleName()));
+                if (aggrFeature != null) {
+                    if(aggrFeature.getValue() instanceof GenericHistogram) {
+                        histogram.add((GenericHistogram) aggrFeature.getValue());
+                    } else {
+                        throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s",
+                                aggregatedFeatureName, GenericHistogram.class.getSimpleName()));
+                    }
                 }
             }
         }

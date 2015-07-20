@@ -77,11 +77,13 @@ public class AggrFeatureAvgStdNFunc implements AggrFeatureFunction, AggrFeatureE
         for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
             for (String aggregatedFeatureName : aggregatedFeatureNamesList) {
                 Feature aggrFeature = aggrFeatures.get(aggregatedFeatureName);
-                if (aggrFeature != null && aggrFeature.getValue() instanceof ContinuousValueAvgStdN) {
-                    avgStdN.add((ContinuousValueAvgStdN)aggrFeature.getValue());
-                } else {
-                    throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s",
-                        aggregatedFeatureName, ContinuousValueAvgStdN.class.getSimpleName()));
+                if (aggrFeature != null) {
+                    if(aggrFeature.getValue() instanceof ContinuousValueAvgStdN) {
+                        avgStdN.add((ContinuousValueAvgStdN) aggrFeature.getValue());
+                    } else {
+                        throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s",
+                                aggregatedFeatureName, ContinuousValueAvgStdN.class.getSimpleName()));
+                    }
                 }
             }
         }

@@ -16,7 +16,6 @@ import java.util.Map;
 /**
  * Created by amira on 17/06/2015.
  */
-@Service
 public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAggrFeatureEventFunctionsService {
     private static final Logger logger = Logger.getLogger(AggrFeatureFuncService.class);
 

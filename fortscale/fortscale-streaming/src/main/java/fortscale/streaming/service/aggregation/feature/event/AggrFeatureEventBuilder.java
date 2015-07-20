@@ -145,9 +145,11 @@ public class AggrFeatureEventBuilder {
             * retrieve the buckets from the bucket store by query instead of using the  EventData
             * bucketIDs list.
             * */
-            if(bucketIDs.size()-i == conf.getNumberOfBuckets()) {
+            if(i >= 0) {
+                int firstBucketIndex = i;
+                int lastBucketIndex = i+conf.getNumberOfBuckets()-1;
                 //  Enough buckets in the list to create the event
-                for (i = (i < 0) ? 0 : i; i < bucketIDs.size(); i++) {
+                for (; i < bucketIDs.size(); i++) {
                     AggrFeatureEventData.BucketData bucketData = bucketIDs.get(i);
                     String bucketID = bucketData.getBucketID();
 
@@ -162,18 +164,18 @@ public class AggrFeatureEventBuilder {
 
                     if (bucket != null) {
                         aggrFeatures = bucket.getAggregatedFeatures();
-                        if (i == 0) {
+                        if (i == firstBucketIndex) {
                             startTime = bucket.getStartTime();
                         }
-                        if (i == bucketIDs.size() - 1) {
+                        if (i == lastBucketIndex) {
                             endTime = bucket.getEndTime();
                         }
                     } else { // Empty bucket tick
                         Assert.notNull(bucketData.getStrategyData());
-                        if (i == 0) {
+                        if (i == firstBucketIndex) {
                             startTime = bucketData.getStrategyData().getStartTime();
                         }
-                        if (i == bucketIDs.size() - 1) {
+                        if (i == lastBucketIndex) {
                             endTime = bucketData.getStrategyData().getEndTime();
                         }
                     }
@@ -259,26 +261,25 @@ public class AggrFeatureEventBuilder {
         event.put(EVENT_FIELD_CONTEXT, context);
         event.put(EVENT_FIELD_EVENT_TYPE, AGGREGATED_FEATURE_EVENT);
         event.put(feature.getName(), feature.getValue());
-        event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConf().getName());
+        event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConfName());
 
         // Event time
         Long date_time_unix = System.currentTimeMillis() / 1000;
         event.put(EVENT_FIELD_DATE_TIME_UNIX, date_time_unix);
-        String date_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        String date_time = format.format(new Date(date_time_unix * 1000));
         event.put(EVENT_FIELD_DATE_TIME, date_time);
 
         // Start Time
         event.put(EVENT_FIELD_START_TIME_UNIX, startTimeSec);
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calendar.setTimeInMillis(startTimeSec * 1000);
-        String start_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+        String start_time = format.format(new Date(startTimeSec * 1000));
         event.put(EVENT_FIELD_START_TIME, start_time);
 
         // End Time
         event.put(EVENT_FIELD_END_TIME_UNIX, endTimeSec);
-        calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calendar.setTimeInMillis(endTimeSec * 1000);
-        String end_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+        String end_time = format.format(new Date(endTimeSec * 1000));
         event.put(EVENT_FIELD_END_TIME, end_time);
 
         return event;
