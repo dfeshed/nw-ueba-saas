@@ -177,6 +177,21 @@ public class VpnF5Test {
 						)
 				) ,
 				$(
+						"Several new session with authentication (BS) VPN - With WAN enrichment ",
+						$(
+								Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown) Flume enrichment timezone UTC",
+								Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown) Flume enrichment timezone UTC",
+								Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490500:5: 18648c83: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed Flume enrichment timezone UTC",
+								Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c83: Session statistics - bytes in: 0, bytes out: 0 Flume enrichment timezone UTC"
+						),
+						$(
+								(String)null,
+								(String)null,
+								"2015-04-14 01:50:26,1428976226,kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,",
+								"2015-04-14 00:23:29,1428971009,,,,CLOSED,,,,,,,,0,0,0,,,,"
+						)
+				) ,
+				$(
 						"Regular (BS) Successful VPN Authentication",
 						$(
 								Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",

@@ -26,6 +26,8 @@ public class DhcpDhcpdTest {
 
 	final static String Nov_19_23_59_54 = "Nov 19 23:59:54";
 	static Long Nov_19_23_59_54_L;
+	final static String Nov_19_23_59_54_WAN = "Nov 19 21:59:54";
+	static Long Nov_19_23_59_54_L_WAN;
 	final static String Nov_19_23_59_56 = "Nov 19 23:59:56";
 	static Long Nov_19_23_59_56_L;
 
@@ -41,6 +43,9 @@ public class DhcpDhcpdTest {
 
 		date = TestUtils.constuctDate(Nov_19_23_59_56);
 		Nov_19_23_59_56_L = TestUtils.getUnixDate(date);
+
+		date = TestUtils.constuctDate(Nov_19_23_59_54_WAN);
+		Nov_19_23_59_54_L_WAN = TestUtils.getUnixDate(date);
 	}
 
 	@Before
@@ -68,6 +73,12 @@ public class DhcpDhcpdTest {
         		"Regular dhcpack #1",
 						Nov_19_23_59_54 + " server01 dhcpd: DHCPACK on 10.28.136.112 to 00:0d:0d:e8:72:c6 (APAC803F6) via eth0",
 						Nov_19_23_59_54_L + ",10.28.136.112,APAC803F6,00:0d:0d:e8:72:c6"
+				),
+
+				$ (
+				"Regular dhcpack #1 - with WAN enrichment",
+						Nov_19_23_59_54 + " server01 dhcpd: DHCPACK on 10.28.136.112 to 00:0d:0d:e8:72:c6 (APAC803F6) via eth0 Flume enrichment timezone Asia/Jerusalem",
+						Nov_19_23_59_54_L_WAN + ",10.28.136.112,APAC803F6,00:0d:0d:e8:72:c6"
 				),
         		$ (
         		"Regular dhcpack #2",

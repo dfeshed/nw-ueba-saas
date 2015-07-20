@@ -95,6 +95,20 @@ public class VpnCiscoForZurichTest {
 				),
 
 				$(
+						"session start - with WAN enrichment",
+						// original records
+						$(	"10/13/2014,2:20:42,uswh90d,Default Group,82.166.88.97,Start,C825FF9E,,Framed,PPP,,,,,10.128.0.214,217886720,10.148.1.72 Flume enrichment timezone UTC", // valid record
+								"10/13/2014,2:20:43,uswh90d,Default Group,82.166.88.97,Start,C825FF9E,,Framed,PPP,,,,,,217886720,10.148.1.72 Flume enrichment timezone UTC", // no local-IP - valid record
+								"10/13/2014,2:20:42,uswh90d,Default Group,,Start,C825FF9E,,Framed,PPP,,,,,10.128.0.214,217886720,10.148.1.72 Flume enrichment timezone UTC" // no source-IP - dropping record
+						),
+						// response
+						$(	"2014-10-13 02:20:42,1413166842,uswh90d,82.166.88.97,10.128.0.214,SUCCESS,,,,,,,,,,,,,,",
+								"2014-10-13 02:20:43,1413166843,uswh90d,82.166.88.97,,SUCCESS,,,,,,,,,,,,,,",
+								(String)null
+						)
+				),
+
+				$(
 						"session end",
 						// original records
 						$(	"10/13/2014,8:09:45,uswh90d,Default Group,82.166.88.97,Stop,C825FF9E,20943,Framed,PPP,9199349,19097369,62424,61192,10.128.59.201,217886720,10.148.1.72", // valid record
@@ -107,7 +121,6 @@ public class VpnCiscoForZurichTest {
 								(String)null
 						)
 				)
-
 
 				);
 	}

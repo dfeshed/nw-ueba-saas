@@ -49,6 +49,11 @@ public class CiscoDHCPTest {
 				"1415404800,ASSIGN,171.68.24.166,router-ubuntu02,,1415655101"
 				),
 				$ (
+				"ip assignment event - with WAN enrichment ",
+				"2014-11-08T00:00:00.000+00:00,,171.68.24.166,router-ubuntu02,,11/10/2014 21:31:41 UTC Flume enrichment timezone Asia/Jerusalem",
+				"1415404800,ASSIGN,171.68.24.166,router-ubuntu02,,1415655101"
+				),
+				$ (
         		"RELEASED ip event",
         		"2014-11-08T00:00:00.000+00:00,RELEASED,171.68.24.166,router-ubuntu02,e8:b7:48:2c:61:2b,",
 				"1415404800,RELEASED,171.68.24.166,router-ubuntu02,e8:b7:48:2c:61:2b,"

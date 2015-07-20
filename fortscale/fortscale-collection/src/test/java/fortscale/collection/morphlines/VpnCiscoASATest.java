@@ -222,7 +222,26 @@ public class VpnCiscoASATest {
 
                 ),
 
+                $(
+                        "Everyone - start - With WAN enrichment",
+                        $(
+                                "Mar 21 2014 23:03:49 sjc12-gem-ubvpn-gw1a : %ASA-4-713228: Group = Everyone, Username = latom, IP = 122.169.234.49, Assigned private IP address 172.30.223.157 to remote user Flume enrichment timezone UTC",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-713228: Group = Everyone Username  IP = 108.202.178.181, Assigned private IP address 172.30.223.157 to remote user Flume enrichment timezone UTC",
+                                "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-713228: Group = Everyone Username = latom, IP = , Assigned private IP address 172.30.223.157 to remote user Flume enrichment timezone UTC"
 
+
+
+                        ),
+                        $(
+
+                                "2014-03-21 23:03:49,1395443029,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,,",
+                                (String)null,
+                                (String)null
+
+
+                        )
+
+                ),
 
 
 

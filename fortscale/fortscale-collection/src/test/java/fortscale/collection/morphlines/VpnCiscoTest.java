@@ -98,6 +98,21 @@ public class VpnCiscoTest {
                         )
                 ),
                 $(
+                        "Session start test - With WAN enrichment",
+                        $("111350320: 2014 Mar 21 23:03:49.730 +0100 +1:00 %AUTH-6-92: RPT=22376: 37.11.25.29: User [mduran] Sending ACCT-START for assigned IP 172.16.25.22 (Session ID=9305F724) Flume enrichment timezone UTC",
+                                "111350320:  %AUTH-6-92: RPT=22376: 212.59.220.45: User [mduran] Sending ACCT-START for assigned IP 172.16.25.22 (Session ID=9305F724) Flume enrichment timezone UTC",
+                                "111350320: 2014 Mar 21 23:03:49.730 +0100 +1:00 %AUTH-6-92: RPT=22376: 212.59.220.45: User [] Sending ACCT-START for assigned IP 172.16.25.22 (Session ID=9305F724) Flume enrichment timezone UTC",
+                                "111350320: 2014 Mar 21 23:03:49.730 +0100 +1:00 %AUTH-6-92: RPT=22376: 212.59.220.45: User [mduran] Sending ACCT-START for assigned IP  (Session ID=9305F724) Flume enrichment timezone UTC",
+                                "111350320: 2014 Mar 21 23:03:49.730 +0100 +1:00 %AUTH-6-92: RPT=22376: : User [mduran] Sending ACCT-START for assigned IP 172.16.25.22 (Session ID=9305F724) Flume enrichment timezone UTC"
+                        ),
+                        $("2014-03-21 23:03:49,1395443029,mduran,37.11.25.29,172.16.25.22,SUCCESS,,,,,,,,,,,,,,",
+                                (String)null,
+                                (String)null,
+                                (String)null,
+                                (String)null
+                        )
+                ),
+                $(
                         "Session disconnected",
                         $("111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv: 2649665  Reason: User Requested",
                           "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv: 2649665  Reason: User Requested",
@@ -119,6 +134,27 @@ public class VpnCiscoTest {
                         )
                 ),
                 $(
+                        "Session disconnected - with WAN enrichment",
+                        $("111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv: 2649665  Reason: User Requested Flume enrichment timezone UTC",
+                                "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv: 2649665  Reason: User Requested Flume enrichment timezone UTC",
+                                "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: : User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration:  Bytes xmt: 632880  Bytes rcv:   Reason: User Requested Flume enrichment timezone UTC",
+                                "111412517: 2 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv: 2649665  Reason: User Requested Flume enrichment timezone UTC",
+                                "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt:   Bytes rcv: 2649665  Reason: User Requested Flume enrichment timezone UTC",
+                                "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration: 16:30:23  Bytes xmt: 632880  Bytes rcv:   Reason: User Requested Flume enrichment timezone UTC",
+                                "111412517: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-5-28: RPT=187418: 37.11.25.29: User [pmoreno] Group [EXODOHP] disconnected:  Session Type: IPSec/UDP  Duration:  Bytes xmt: 632880  Bytes rcv:   Reason: User Requested Flume enrichment timezone UTC"
+
+                        ),
+
+                        $("2014-03-22 04:07:25,1395461245,pmoreno,37.11.25.29,,CLOSED,,,,,,,,3282545,632880,2649665,,,,",
+                                (String)null,
+                                (String)null,
+                                (String)null,
+                                (String)null,
+                                (String)null,
+                                (String)null
+                        )
+                ),
+                $(
                         "Auth fail",
                         $("111502127: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-4-5: RPT=333150: 37.11.25.29: Authentication rejected: Reason = Simultaneous logins exceeded for user handle = 86, server = (none), user = monkey, domain = <not specified>",
                           "111502127: 00 +1:00 %AUTH-4-5: RPT=333150: 206.201.227.92: Authentication rejected: Reason = Simultaneous logins exceeded for user handle = 86, server = (none), user = monkey, domain = <not specified>",
@@ -130,6 +166,21 @@ public class VpnCiscoTest {
                           (String)null,
                           (String)null,
                           (String)null
+
+                        )
+                ),
+                $(
+                        "Auth fail - with WAN enrichment",
+                        $("111502127: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-4-5: RPT=333150: 37.11.25.29: Authentication rejected: Reason = Simultaneous logins exceeded for user handle = 86, server = (none), user = monkey, domain = <not specified> Flume enrichment timezone UTC",
+                                "111502127: 00 +1:00 %AUTH-4-5: RPT=333150: 206.201.227.92: Authentication rejected: Reason = Simultaneous logins exceeded for user handle = 86, server = (none), user = monkey, domain = <not specified> Flume enrichment timezone UTC",
+                                "111502127: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-4-5: RPT=333150: : Authentication rejected: Reason = Simultaneous logins exceeded for user handle = 86, server = (none), user = monkey, domain = <not specified> Flume enrichment timezone UTC",
+                                "111502127: 2014 Mar 22 04:07:25.120 +0100 +1:00 %AUTH-4-5: RPT=333150: 206.201.227.92: Authentication rejected: Reason = Simultaneous logins exceeded for user handle = 86, server = (none), user = , domain = <not specified> Flume enrichment timezone UTC"),
+
+
+                        $("2014-03-22 04:07:25,1395461245,monkey,37.11.25.29,,FAIL,,,,,,,,,,,,,,",
+                                (String)null,
+                                (String)null,
+                                (String)null
 
                         )
                 )

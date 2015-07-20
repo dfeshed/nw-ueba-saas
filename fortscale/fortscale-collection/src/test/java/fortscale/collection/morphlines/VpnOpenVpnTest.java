@@ -51,6 +51,11 @@ public class VpnOpenVpnTest {
 			"2023-11-06 05:55:40,1699250140,ross,79.122.200.58,10.110.120.168,SUCCESS,,,,,,,,,,,,,,"
 			),
 			$ (
+			"Regular (FS) Successful VPN Authentication - With WAN enrichment",
+			"Nov  6 07:55:40 vpnserver vpnserver: [-] OVPN 2 OUT: 'Wed Nov  6 05:55:40 2023 ross/79.122.200.58:53722 MULTI: primary virtual IP for ross/79.122.200.58:53722: 10.110.120.168' Flume enrichment timezone Asia/Jerusalem",
+			"2023-11-06 03:55:40,1699242940,ross,79.122.200.58,10.110.120.168,SUCCESS,,,,,,,,,,,,,,"
+			),
+			$ (
 			"Regular (FS) Failed VPN Authentication",
 			"Feb  8 19:12:47 vpnserver vpnserver: [-] OVPN 3 OUT: \"Sat Feb  8 17:12:47 2014 84.94.26.113:50976 SENT CONTROL [morgans]: 'AUTH_FAILED' (status=1)\"",
 			"2014-02-08 17:12:47,1391879567,morgans,84.94.26.113,,FAIL,,,,,,,,,,,,,,"

@@ -71,7 +71,6 @@ public class VpnJuniperTest {
         			"2014-03-20 07:11:36,1395299496,dcr,84.94.86.213,,FAIL,,,,,,,,,,,,,,"
         		)
         	),
-
         	$(
         		"Regular (Poza) Close VPN",
         		$(
@@ -118,6 +117,21 @@ public class VpnJuniperTest {
                     "2014-03-16 04:16:26,1394943386,idanp-contractor,82.166.88.95,10.49.253.16,SUCCESS,,,,,,,Idan-PC,,,,,,,"
 	    		)
     		),
+			$(
+					"Regular (Poza) Successful VPN Authentication - with WAN enrichment",
+					$(
+							"Mar 16 04:17:26 192.168.199.2 Juniper: 2014-03-16 04:17:26 - ive - [82.166.88.97] omendelso-contractor(SecurID Users)[Users, Poza Users] - Agent login succeeded for omendelso-contractor/SecurID Users from 82.166.88.97. Flume enrichment timezone Asia/Jerusalem",
+							"Mar 16 04:17:26 192.168.199.2 Juniper: 2014-03-16 04:17:26 - ive - [82.166.88.97] omendelso-contractor(SecurID Users)[Users, Poza Users] - VPN Tunneling: Session started for user with IP 10.49.253.16, hostname ORI-PC Flume enrichment timezone Asia/Jerusalem",
+							"Mar 16 04:17:26 192.168.199.3 Juniper: 2014-03-16 04:17:26 - ive - [82.166.88.95] idanp-contractor(SecurID Users)[Users, Poza Users] - VPN Tunneling: Session started for user with IP 10.49.253.16, hostname Idan-PC Flume enrichment timezone Asia/Jerusalem",
+							"Mar 16 04:16:26 192.168.199.3 Juniper: 2014-03-16 04:16:26 - ive - [82.166.88.95] idanp-contractor(SecurID Users)[Users, Poza Users] - Agent login succeeded for idanp-contractor/SecurID Users from 82.166.88.95. Flume enrichment timezone Asia/Jerusalem"
+					),
+					$(
+							(String)null,
+							"2014-03-16 02:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,,,,,,,ORI-PC,,,,,,,",
+							(String)null,
+							"2014-03-16 02:16:26,1394936186,idanp-contractor,82.166.88.95,10.49.253.16,SUCCESS,,,,,,,Idan-PC,,,,,,,"
+					)
+			),
     		$(
 				"Single login event (Poza) with no tunnel should have no output",
 	    		$(
