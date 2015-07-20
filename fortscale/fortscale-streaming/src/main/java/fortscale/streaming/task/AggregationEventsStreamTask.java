@@ -1,39 +1,28 @@
 package fortscale.streaming.task;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import fortscale.streaming.service.aggregation.AggrEventTopologyService;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-
-import org.apache.samza.config.Config;
-import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.ClosableTask;
-import org.apache.samza.task.InitableTask;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
-
 import com.google.common.collect.Iterables;
-
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.utils.StringPredicates;
-import org.springframework.beans.factory.annotation.Autowired;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import org.apache.samza.config.Config;
+import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.task.*;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
+@Configurable(preConstruction = true)
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 	private AggregatorManager aggregatorManager;
 	private Map<String, String> topicToDataSourceMap = new HashMap<String, String>();
 	private String dataSourceFieldName;
-
-	@Autowired
-	AggrEventTopologyService aggrEventTopologyService;
-
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {		
@@ -70,15 +59,11 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 			event.put(dataSourceFieldName, topicToDataSourceMap.get(topic));
 		}
 
-		aggrEventTopologyService.setMessageCollector(collector);
-
-		aggregatorManager.processEvent(event);
+		aggregatorManager.processEvent(event, collector);
 	}
 
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		aggrEventTopologyService.setMessageCollector(collector);
-
 		if (aggregatorManager != null) {
 			aggregatorManager.window(collector, coordinator);
 		}

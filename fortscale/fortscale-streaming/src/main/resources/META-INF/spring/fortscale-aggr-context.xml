@@ -14,4 +14,5 @@
 	<bean id="dataSourcesSyncTimer" class="fortscale.streaming.service.aggregation.DataSourcesSyncTimer"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 	<bean id="aggrFeatureFuncService" class="fortscale.streaming.aggregation.feature.functions.AggrFeatureFuncService"/>
+	<bean id="aggrEventTopologyService" class="fortscale.streaming.service.aggregation.AggrEventTopologyService"/>
 </beans>
