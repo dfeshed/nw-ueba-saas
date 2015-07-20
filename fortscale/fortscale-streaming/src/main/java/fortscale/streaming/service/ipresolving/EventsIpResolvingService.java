@@ -56,6 +56,9 @@ public class EventsIpResolvingService {
         String hostname = resolver.resolve(ip, timestamp, config.isRestrictToADName(), config.isShortName(), config.isRemoveLastDot());
         if (StringUtils.isNotEmpty(hostname)) {
             event.put(config.getHostFieldName(), hostname);
+            if (config.isOverrideIPWithHostname()) {
+                event.put(config.getIpFieldName(), hostname);
+            }
         } else {
             // check if we received an hostname to use externally - this could be in the case of
             // 4769 security event with 127.0.0.1 ip, in this case just normalize the name.
@@ -66,6 +69,9 @@ public class EventsIpResolvingService {
             if (StringUtils.isNotEmpty(eventHostname)) {
                 eventHostname = resolver.normalizeHostname(eventHostname, config.isRemoveLastDot(), config.isShortName());
                 event.put(config.getHostFieldName(), eventHostname);
+                if (config.isOverrideIPWithHostname()) {
+                    event.put(config.getIpFieldName(), hostname);
+                }
             }
         }
 
