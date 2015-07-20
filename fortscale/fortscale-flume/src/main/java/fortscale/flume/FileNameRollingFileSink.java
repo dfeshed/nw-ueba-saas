@@ -45,6 +45,7 @@ public class FileNameRollingFileSink extends AbstractSink implements Configurabl
 
 	private String fileSuffix;
 	private String filePrefix;
+	private String datacenterName;
 
 	public FileNameRollingFileSink() {
 		pathController = new PathGenerator();
@@ -59,6 +60,7 @@ public class FileNameRollingFileSink extends AbstractSink implements Configurabl
 		rollInterval = context.getLong("sink.rollInterval", defaultRollInterval);
 		fileSuffix = context.getString("sink.fileSuffix");
 		filePrefix = context.getString("sink.filePrefix");
+		datacenterName = context.getString("sink.datacenterName");
 		serializerType = context.getString("sink.serializer", "TEXT");
 		serializerContext = new Context(context.getSubProperties("sink." + EventSerializer.CTX_PREFIX));
 		batchSize = context.getInteger("sink.batchSize", defaultBatchSize);
@@ -78,6 +80,7 @@ public class FileNameRollingFileSink extends AbstractSink implements Configurabl
 		pathController.setBaseDirectory(directory);
 		pathController.setFilePrefix(filePrefix);
 		pathController.setFileSuffix(fileSuffix);
+		pathController.setDatacenterName(datacenterName);
 
 		if(rollInterval > 0){
 			rollService = Executors.newScheduledThreadPool(1,
