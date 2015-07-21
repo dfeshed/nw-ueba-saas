@@ -11,7 +11,6 @@ import fortscale.services.computer.EndpointDetectionService;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.actdir.ADParser;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.validator.routines.InetAddressValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -184,11 +183,6 @@ public class ComputerServiceImpl implements ComputerService {
 	 */
 	public String getClusterGroupNameForHostname(String hostname) {
 		checkNotNull(hostname);
-
-		//check if host name is ip then return as is
-		if (InetAddressValidator.getInstance().isValid(hostname)) {
-			return hostname;
-		}
 
 		// strip the hostname up to the first .
 		if (hostname.contains("."))
