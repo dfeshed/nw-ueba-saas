@@ -1,8 +1,5 @@
 package fortscale.streaming.service.aggregation.feature.event;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.sun.javafx.binding.StringFormatter;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.streaming.aggregation.feature.util.GenericHistogram;
@@ -11,12 +8,10 @@ import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStra
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.streaming.service.aggregation.bucket.strategy.NextBucketEndTimeListener;
 import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -25,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
