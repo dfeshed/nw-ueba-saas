@@ -3,12 +3,10 @@ package fortscale.streaming.service.aggregation.feature.event;
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyData;
 import org.junit.Assert;
 import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by amira on 15/07/2015.
@@ -18,13 +16,13 @@ public class AggrFeatureEventDataTest {
     @Test(expected = Exception.class)
     public void testNewEventData_nullBuilder() {
         Map<String, String> context = new HashMap<>();
-        AggrFeatureEventData eventData = new AggrFeatureEventData(null, context, 1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(null, context, 1, "strategyId");
     }
 
     @Test(expected = Exception.class)
     public void testNewEventData_nullContext() {
         AggrFeatureEventBuilder builder =  mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, null, 1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, null, 1, "strategyId");
     }
 
     @Test(expected = Exception.class)
@@ -36,7 +34,7 @@ public class AggrFeatureEventDataTest {
         Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, -1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, -1, "strategyId");
     }
 
     @Test
@@ -47,7 +45,7 @@ public class AggrFeatureEventDataTest {
         Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1, "strategyId");
 
         String bucketID1 = "bucketID1";
         String bucketID2 = "bucketID2";
@@ -79,7 +77,7 @@ public class AggrFeatureEventDataTest {
         Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1, "strategyId");
 
         String bucketID1 = "bucketID1";
         String bucketID2 = "bucketID2";
@@ -98,7 +96,7 @@ public class AggrFeatureEventDataTest {
         context.put("username", "john");
         context.put("machine", "m1");
         AggrFeatureEventBuilder builder = mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1, "strategyId");
 
         String startegyName = "dailyStrategy";
         String strategyContextId = "dailyStrategy_"+startTime1;
@@ -143,7 +141,7 @@ public class AggrFeatureEventDataTest {
         context.put("username", "john");
         context.put("machine", "m1");
         AggrFeatureEventBuilder builder = mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1, "strategyId");
 
         String startegyName = "dailyStrategy";
         String strategyContextId = "dailyStrategy_"+startTime1;
@@ -169,7 +167,7 @@ public class AggrFeatureEventDataTest {
         context.put("username", "john");
         context.put("machine", "m1");
         AggrFeatureEventBuilder builder = mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1, "strategyId");
 
         String startegyName = "dailyStrategy";
         String strategyContextId = "dailyStrategy_"+startTime1;
@@ -193,7 +191,7 @@ public class AggrFeatureEventDataTest {
         Long endTime3 = 1437177599L; // Fri, 17 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder = mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1, "strategyId");
 
         String bucketID1 = "bucketID1";
         String bucketID2 = "bucketID2";
@@ -227,7 +225,7 @@ public class AggrFeatureEventDataTest {
         Long endTime3 = 1437177599L; // Fri, 17 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  mock(AggrFeatureEventBuilder.class);
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1, "strategyId");
 
         String bucketID1 = "bucketID1";
         String bucketID2 = "bucketID2";
@@ -244,7 +242,7 @@ public class AggrFeatureEventDataTest {
         Long endTime2 = 1437091199L; //Thu, 16 Jul 2015 23:59:59 GMT
         Map<String, String> context = new HashMap<>();
         AggrFeatureEventBuilder builder =  mock(AggrFeatureEventBuilder.class);// 
-        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1);
+        AggrFeatureEventData eventData = new AggrFeatureEventData(builder, context, 1, "strategyId");
 
         String bucketID1 = "bucketID1";
         String bucketID2 = "bucketID2";

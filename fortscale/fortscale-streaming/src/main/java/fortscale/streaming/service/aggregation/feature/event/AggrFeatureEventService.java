@@ -7,11 +7,7 @@ import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStra
 import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,7 +114,7 @@ public class AggrFeatureEventService {
                 List<AggrFeatureEventBuilder> builders = bucketConfName2eventBuildersListMap.get(bucket.getFeatureBucketConfName());
                 if(builders!=null) {
                     for(AggrFeatureEventBuilder builder: builders) {
-                        builder.updateAggrFeatureEventData(bucket.getBucketId(), bucket.getContextFieldNameToValueMap(), bucket.getStartTime(), bucket.getEndTime());
+                        builder.updateAggrFeatureEventData(bucket.getBucketId(), bucket.getStrategyId(), bucket.getContextFieldNameToValueMap(), bucket.getStartTime(), bucket.getEndTime());
                     }
                 }
             }

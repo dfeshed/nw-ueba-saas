@@ -78,7 +78,7 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 				featureBucketStrategyStore.storeFeatureBucketStrategyData(featureBucketStrategyData);
 
 				if(isFeatureBucketStrategyDataCreated) {
-					notifyListneres(username, featureBucketStrategyData);
+					notifyListeners(username, featureBucketStrategyData);
 				}
 
 				if (isFeatureBucketStrategyDataUpdated || isFeatureBucketStrategyDataCreated) {
@@ -124,6 +124,21 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 		return StringUtils.join(strategyContextIdParts, STRATEGY_CONTEXT_ID_SEPARATOR);
 	}
 
+	private String getUserNameFromStrategyId(String strategyId) throws IllegalArgumentException{
+		Assert.notNull(strategyId);
+		String[] strings = StringUtils.splitByWholeSeparator(strategyId, STRATEGY_CONTEXT_ID_SEPARATOR);
+		if(strings.length !=5 || !strings[0].equals(AbstractUserInactivityFeatureBucketStrategyFactory.STRATEGY_TYPE) ) {
+			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
+		}
+		try {
+			Long inactivityDurationInMinutes = Long.parseLong(strings[2]); // Validating that the forth element is long, getting exception if not.
+			Long endTime = Long.parseLong(strings[5]); // Validating that the forth element is long (end time), getting exception if not.
+			return strings[3];
+		} catch (Exception e) {
+			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
+		}
+	}
+
 	private long getInactivityDurationInSeconds() {
 		return inactivityDurationInMinutes * 60;
 	}
@@ -135,12 +150,13 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	/**
 	 * Returns strategy data of the bucket tick which starts after the given startAfterEpochtimeInSeconds for the given context.
 	 * @param bucketConf
-	 * @param context
+	 * @param strategyId
 	 * @param startAfterEpochtimeInSeconds
 	 */
 	@Override
-	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context, long startAfterEpochtimeInSeconds) {
-		String username = context.get(usernameFieldName);
+	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, String strategyId, long startAfterEpochtimeInSeconds)
+			throws IllegalArgumentException{
+		String username = getUserNameFromStrategyId(strategyId);
 		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(bucketConf, username, startAfterEpochtimeInSeconds +1);
 		return strategyDatas.size()>0 ? strategyDatas.get(0) : null;
 	}
@@ -149,27 +165,24 @@ public class UserInactivityFeatureBucketStrategy implements FeatureBucketStrateg
 	 * Register the listener to be called when a new strategy data (a.k.a 'bucket tick') is created for the given context and
 	 * which its start time is after the given startAfterEpochtimeInSeconds.
 	 * @param bucketConf
-	 * @param context
+	 * @param strategyId
 	 * @param listener
 	 * @param startAfterEpochtimeInSeconds
 	 */
 	@Override
-	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener, long startAfterEpochtimeInSeconds) {
-		if(listener!=null) {
-			String username = context.get(usernameFieldName);
-			if(username==null || StringUtils.isEmpty(username)) {
-				return;
-			}
-			List<NextBucketEndTimeListenerData> listeners = username2listenersListMap.get(username);
-			if(listeners==null) {
-				listeners = new ArrayList<>();
-				username2listenersListMap.put(username, listeners);
-			}
-			listeners.add(new NextBucketEndTimeListenerData(startAfterEpochtimeInSeconds, listener));
+	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, String strategyId, NextBucketEndTimeListener listener, long startAfterEpochtimeInSeconds)
+			throws IllegalArgumentException{
+		Assert.notNull(listener);
+		String username = getUserNameFromStrategyId(strategyId);
+		List<NextBucketEndTimeListenerData> listeners = username2listenersListMap.get(username);
+		if(listeners==null) {
+			listeners = new ArrayList<>();
+			username2listenersListMap.put(username, listeners);
 		}
+		listeners.add(new NextBucketEndTimeListenerData(startAfterEpochtimeInSeconds, listener));
 	}
 
-	private void notifyListneres(String username, FeatureBucketStrategyData strategyData) {
+	private void notifyListeners(String username, FeatureBucketStrategyData strategyData) {
 		List<NextBucketEndTimeListenerData> listeners = username2listenersListMap.get(username);
 		Collection<NextBucketEndTimeListenerData> listenerDatasToRemove = new ArrayList<>();
 		if(listeners!=null) {

@@ -12,9 +12,9 @@ import java.util.Map;
 /**
  * Created by amira on 20/07/2015.
  */
-@JsonTypeName(AggrFeatureEventHistogramMaxCountObject.AGGR_FEATURE_FUNCTION_TYPE)
+@JsonTypeName(AggrFeatureEventHistogramMaxCountObjectFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class AggrFeatureEventHistogramMaxCountObject extends AggrFeatureHistogramFunc {
+public class AggrFeatureEventHistogramMaxCountObjectFunc extends AggrFeatureHistogramFunc {
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_histogram_max_count_obj_func";
     public final static String FEATURE_NAME = "max_cout_object";
     /**

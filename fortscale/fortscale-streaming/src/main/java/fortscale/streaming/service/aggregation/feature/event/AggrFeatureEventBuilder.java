@@ -25,7 +25,7 @@ public class AggrFeatureEventBuilder {
     private static final String EVENT_FIELD_DATE_TIME = "date_time";
     private static final String EVENT_FIELD_CONTEXT = "context";
     private static final String EVENT_FIELD_EVENT_TYPE = "event_type";
-    private static final Object AGGREGATED_FEATURE_EVENT = "aggregated_feature_event";
+    private static final String AGGREGATED_FEATURE_EVENT = "aggregated_feature_event";
     private static final String EVENT_FIELD_START_TIME_UNIX = "start_time_unix";
     private static final String EVENT_FIELD_START_TIME = "start_time";
     private static final String EVENT_FIELD_END_TIME_UNIX = "end_time_unix";
@@ -94,10 +94,10 @@ public class AggrFeatureEventBuilder {
      * @param startTime
      * @param endTime
      */
-    void updateAggrFeatureEventData(String bucketID, Map<String, String> context, long startTime, long endTime) {
+    void updateAggrFeatureEventData(String bucketID, String strategyId, Map<String, String> context, long startTime, long endTime) {
         AggrFeatureEventData eventData = context2featureDataMap.get(context);
         if(eventData==null) {
-            eventData = new AggrFeatureEventData(this, context, conf.getBucketsLeap());
+            eventData = new AggrFeatureEventData(this, context, conf.getBucketsLeap(), strategyId);
             context2featureDataMap.put(context, eventData);
         }
 
@@ -206,11 +206,11 @@ public class AggrFeatureEventBuilder {
 
         // Registering in timer to be waked up on the next bucket end time
         // TODO: add logic to stop registering for next bucket updates if there are X number of empty buckets
-        FeatureBucketStrategyData featureBucketStrategyData = bucketStrategy.getNextBucketStrategyData(conf.getBucketConf(), aggrFeatureEventData.getContext(), endTime);
+        FeatureBucketStrategyData featureBucketStrategyData = bucketStrategy.getNextBucketStrategyData(conf.getBucketConf(), aggrFeatureEventData.getFirstBucketStrategyId(), endTime);
         if(featureBucketStrategyData!=null) {
             aggrFeatureEventData.nextBucketEndTimeUpdate(featureBucketStrategyData);
         } else {
-            bucketStrategy.notifyWhenNextBucketEndTimeIsKnown(conf.getBucketConf(), aggrFeatureEventData.getContext(), aggrFeatureEventData, endTime);
+            bucketStrategy.notifyWhenNextBucketEndTimeIsKnown(conf.getBucketConf(), aggrFeatureEventData.getFirstBucketStrategyId(), aggrFeatureEventData, endTime);
         }
 
     }
@@ -260,7 +260,7 @@ public class AggrFeatureEventBuilder {
         JSONObject event = new JSONObject();
         event.put(EVENT_FIELD_CONTEXT, context);
         event.put(EVENT_FIELD_EVENT_TYPE, AGGREGATED_FEATURE_EVENT);
-        event.put(feature.getName(), feature.getValue());
+        event.put(conf.getName(), feature.getValue());
         event.put(EVENT_FIELD_BUCKET_CONF_NAME, conf.getBucketConfName());
 
         // Event time

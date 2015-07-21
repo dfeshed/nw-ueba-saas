@@ -19,6 +19,7 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
     private AggrFeatureEventBuilder builder;
     private List<BucketData> bucketIDs;
     private Map<String, String> context;
+    private String firstBucketStrategyId;
 
     // The registrationID returned by the syncTimer at the latest registration of this object
     private long syncTimerRegistrationID;
@@ -30,63 +31,24 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
     // bucketsLeap value
     private int numberOfBucketsToWaitBeforeSendingNextEvent;
 
-    public BucketData removeFirstBucketData() {
-        return bucketIDs.size()>0 ? bucketIDs.remove(0) : null;
-    }
-
-    class BucketData {
-        private FeatureBucketStrategyData strategyData;
-        private String  bucketID;
-        private Long startTime;
-        private Long endTime;
-
-        public BucketData(FeatureBucketStrategyData strategyData) {
-            this.strategyData = strategyData;
-        }
-
-        public BucketData(String bucketID, Long startTime, Long endTime) {
-            this.bucketID = bucketID;
-            this.startTime = startTime;
-            this.endTime = endTime;
-        }
-
-        public FeatureBucketStrategyData getStrategyData() {
-            return strategyData;
-        }
-
-        public String getBucketID() {
-            return bucketID;
-        }
-
-        public Long getEndTime() {
-            return endTime!=null ? endTime : strategyData.getEndTime();
-        }
-
-        public Long getStartTime() {
-            return startTime;
-        }
-
-        public void setEndTime(Long endTime) {
-            this.endTime = endTime;
-        }
-    }
-
     /**
      *
      * @param builder
      * @param context
      * @param bucketsLeap must be greater then zero
      */
-    AggrFeatureEventData(@NotNull AggrFeatureEventBuilder builder, @NotNull Map<String, String> context, int bucketsLeap) {
+    AggrFeatureEventData(@NotNull AggrFeatureEventBuilder builder, @NotNull Map<String, String> context, int bucketsLeap, @NotNull String firstBucketStrategyId) {
         Assert.notNull(builder);
         Assert.notNull(context);
-        Assert.isTrue(bucketsLeap>0);
+        Assert.isTrue(bucketsLeap > 0);
+        Assert.notNull(firstBucketStrategyId);
 
         this.builder = builder;
         this.context = context;
         this.bucketIDs = new ArrayList<>();
         this.bucketsLeap = bucketsLeap;
         this.numberOfBucketsToWaitBeforeSendingNextEvent = this.bucketsLeap;
+        this.firstBucketStrategyId = firstBucketStrategyId;
     }
 
     Map<String, String> getContext() {
@@ -95,6 +57,10 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
 
     AggrFeatureEventBuilder getBuilder() {
         return builder;
+    }
+
+    public String getFirstBucketStrategyId() {
+        return firstBucketStrategyId;
     }
 
     void setSyncTimerRegistrationID(long syncTimerRegistrationID) {
@@ -210,4 +176,46 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
         Assert.isTrue(bucketData.getBucketID() != null && StringUtils.equals(bucketData.getBucketID(), bucketID) );
         bucketData.setEndTime(endTime);
     }
+
+    public BucketData removeFirstBucketData() {
+        return bucketIDs.size()>0 ? bucketIDs.remove(0) : null;
+    }
+
+    class BucketData {
+        private FeatureBucketStrategyData strategyData;
+        private String  bucketID;
+        private Long startTime;
+        private Long endTime;
+
+        public BucketData(FeatureBucketStrategyData strategyData) {
+            this.strategyData = strategyData;
+        }
+
+        public BucketData(String bucketID, Long startTime, Long endTime) {
+            this.bucketID = bucketID;
+            this.startTime = startTime;
+            this.endTime = endTime;
+        }
+
+        public FeatureBucketStrategyData getStrategyData() {
+            return strategyData;
+        }
+
+        public String getBucketID() {
+            return bucketID;
+        }
+
+        public Long getEndTime() {
+            return endTime!=null ? endTime : strategyData.getEndTime();
+        }
+
+        public Long getStartTime() {
+            return startTime;
+        }
+
+        public void setEndTime(Long endTime) {
+            this.endTime = endTime;
+        }
+    }
+
 }

@@ -10,7 +10,6 @@ import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
-
 import java.io.FileReader;
 import java.util.Map;
 
@@ -78,6 +77,10 @@ public class AggrEventTopologyService implements InitializingBean {
         return true;
     }
 
+
+    public String getTopicForEventType(String eventType) {
+        return eventType==null?null:eventType2kafkaQueueNameMap.get(eventType);
+    }
 
     public void setMessageCollector(MessageCollector messageCollector) {
         this.messageCollector = messageCollector;

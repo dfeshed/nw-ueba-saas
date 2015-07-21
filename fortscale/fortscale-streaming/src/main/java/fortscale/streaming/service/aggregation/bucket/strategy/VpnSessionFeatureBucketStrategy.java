@@ -91,7 +91,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 
 
 				if(isFeatureBucketStrategyDataCreated) {
-					notifyListneres(username, sourceIP, featureBucketStrategyData);
+					notifyListeners(username, sourceIP, featureBucketStrategyData);
 				}
 
 				if (isFeatureBucketStrategyDataUpdated || isFeatureBucketStrategyDataCreated) {
@@ -125,24 +125,19 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	 * Returns strategy data of the bucket tick which starts after the given startAfterEpochtimeInSeconds for the given context.
 	 *
 	 * @param bucketConf
-	 * @param context
+	 * @param strategyId
 	 * @param startAfterEpochtimeInSeconds
 	 */
 	@Override
-	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context, long startAfterEpochtimeInSeconds) {
-		Assert.notNull(context);
+	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, String strategyId, long startAfterEpochtimeInSeconds) throws IllegalArgumentException{
+
+		UserNameAndSourceIp userNameAndSourceIp = getUserNameAndSourceIpFromStrategyId(strategyId);
 		FeatureBucketStrategyData strategyData = null;
-		String username = context.get(usernameFieldName);
-		String contextSourceIp = context.get(sourceIpFieldName);
 
-		if(username==null || contextSourceIp == null || StringUtils.isEmpty(username) || StringUtils.isEmpty(contextSourceIp)) {
-			return null;
-		}
-
-		if (openUserSessions.containsKey(username)) {
-			for (String sourceIp:openUserSessions.get(username)) {
-				if(sourceIp.equals(contextSourceIp)) {
-					String strategyContextId = getStrategyContextId(username, sourceIp);
+		if (openUserSessions.containsKey(userNameAndSourceIp.username)) {
+			for (String sourceIp:openUserSessions.get(userNameAndSourceIp.username)) {
+				if(sourceIp.equals(userNameAndSourceIp.sourceIp)) {
+					String strategyContextId = getStrategyContextId(userNameAndSourceIp.username, userNameAndSourceIp.sourceIp);
 					strategyData = featureBucketStrategyStore.getLatestFeatureBucketStrategyData(strategyContextId, startAfterEpochtimeInSeconds + 1);
 				}
 			}
@@ -156,31 +151,27 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 	 * which its start time is after the given startAfterEpochtimeInSeconds.
 	 *
 	 * @param bucketConf
-	 * @param context
+	 * @param strategyId
 	 * @param listener
 	 * @param startAfterEpochtimeInSeconds
 	 */
 	@Override
-	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener, long startAfterEpochtimeInSeconds) {
-		if(listener!=null) {
-			String username = context.get(usernameFieldName);
-			String sourceIpAddess = context.get(sourceIpFieldName);
+	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, String strategyId, NextBucketEndTimeListener listener, long startAfterEpochtimeInSeconds)
+			throws IllegalArgumentException{
+		Assert.notNull(listener);
+		Assert.isTrue(startAfterEpochtimeInSeconds>946684800); // Sat, 01 Jan 2000 00:00:00 GMT
 
-			if(username==null || StringUtils.isEmpty(username) || sourceIpAddess==null || StringUtils.isEmpty(sourceIpAddess)) {
-				return;
-			}
+		UserNameAndSourceIp userNameAndSourceIp = getUserNameAndSourceIpFromStrategyId(strategyId);
 
-			UserNameAndSourceIp usernameAndSourceIp = new UserNameAndSourceIp(username, sourceIpAddess);
-			List<NextBucketEndTimeListenerData> listeners = usernameAndSourceIp2listenersListMap.get(usernameAndSourceIp);
-			if(listeners==null) {
-				listeners = new ArrayList<>();
-				usernameAndSourceIp2listenersListMap.put(usernameAndSourceIp, listeners);
-			}
-			listeners.add(new NextBucketEndTimeListenerData(startAfterEpochtimeInSeconds, listener));
+		List<NextBucketEndTimeListenerData> listeners = usernameAndSourceIp2listenersListMap.get(userNameAndSourceIp);
+		if(listeners==null) {
+			listeners = new ArrayList<>();
+			usernameAndSourceIp2listenersListMap.put(userNameAndSourceIp, listeners);
 		}
+		listeners.add(new NextBucketEndTimeListenerData(startAfterEpochtimeInSeconds, listener));
 	}
 
-	private void notifyListneres(String username, String sourceIpAddress, FeatureBucketStrategyData strategyData) {
+	private void notifyListeners(String username, String sourceIpAddress, FeatureBucketStrategyData strategyData) {
 		UserNameAndSourceIp userNameAndSourceIp = new UserNameAndSourceIp(username, sourceIpAddress);
 		List<NextBucketEndTimeListenerData> listeners = usernameAndSourceIp2listenersListMap.get(userNameAndSourceIp);
 		Collection<NextBucketEndTimeListenerData> listenerDatasToRemove = new ArrayList<>();
@@ -204,6 +195,21 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 		strategyContextIdParts.add(username);
 		strategyContextIdParts.add(sourceIP);
 		return StringUtils.join(strategyContextIdParts, STRATEGY_CONTEXT_ID_SEPARATOR);
+	}
+
+
+	private UserNameAndSourceIp getUserNameAndSourceIpFromStrategyId(String strategyId) throws IllegalArgumentException{
+		Assert.notNull(strategyId);
+		String[] strings = StringUtils.splitByWholeSeparator(strategyId, STRATEGY_CONTEXT_ID_SEPARATOR);
+		if(strings.length !=4 || !strings[0].equals(VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE) ) {
+			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
+		}
+		try {
+			Long endTime = Long.parseLong(strings[3]); // Validating that the forth element is long (end time), getting exception if not.
+			return new UserNameAndSourceIp(strings[1],strings[2]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
+		}
 	}
 
 	private void AddOpenUserSessions(String username, String sourceIP) {

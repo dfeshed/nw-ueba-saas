@@ -2,12 +2,8 @@ package fortscale.streaming.service.aggregation.bucket.strategy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import net.minidev.json.JSONObject;
-
 import org.springframework.util.Assert;
-
 import fortscale.streaming.service.aggregation.FeatureBucketConf;
 
 public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy {
@@ -40,7 +36,7 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 	}
 
 	@Override
-	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, Map<String, String> context, long startAfterEpochtimeInSeconds) {
+	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, String strategyId, long startAfterEpochtimeInSeconds) {
 		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(startAfterEpochtimeInSeconds +1);
 		return strategyDatas.get(0);
 	}
@@ -49,15 +45,15 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 	 * Register the listener to be called when a new strategy data (a.k.a 'bucket tick') is created for the given context and
 	 * which its start time is after the given startAfterEpochtimeInSeconds.
 	 * @param bucketConf
-	 * @param context
+	 * @param strategyId
 	 * @param listener
 	 * @param startAfterEpochtimeInSeconds
 	 */
 	@Override
-	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, Map<String, String> context, NextBucketEndTimeListener listener,  long startAfterEpochtimeInSeconds) {
+	public void notifyWhenNextBucketEndTimeIsKnown(FeatureBucketConf bucketConf, String strategyId, NextBucketEndTimeListener listener,  long startAfterEpochtimeInSeconds) {
 		// This method shouldn't be used because getNextBucketStrategyData will always return the next bucket data,
 		// but to be on the safe side implementation is provided here.
-		listener.nextBucketEndTimeUpdate(getNextBucketStrategyData(bucketConf, context, startAfterEpochtimeInSeconds));
+		listener.nextBucketEndTimeUpdate(getNextBucketStrategyData(bucketConf, strategyId, startAfterEpochtimeInSeconds));
 	}
 
 
