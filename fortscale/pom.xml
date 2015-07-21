@@ -472,9 +472,10 @@
 		<module>fortscale-global-config</module>
 		<module>fortscale-domain</module>
 		<module>fortscale-ml</module>
-		<module>fortscale-webapp</module>
 		<module>fortscale-services</module>
+		<module>fortscale-aggregation</module>
 		<module>fortscale-monitor</module>
+		<module>fortscale-webapp</module>
 		<module>fortscale-collection</module>
 		<module>fortscale-streaming</module>
 		<module>fortscale-flume</module>
