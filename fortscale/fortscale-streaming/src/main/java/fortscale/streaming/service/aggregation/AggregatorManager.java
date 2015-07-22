@@ -1,12 +1,14 @@
 package fortscale.streaming.service.aggregation;
 
+import fortscale.aggregation.feature.bucket.*;
+import fortscale.aggregation.feature.event.AggrEventTopologyService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleStringValueResolver;
-import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyService;
-import fortscale.streaming.service.aggregation.bucket.strategy.samza.FeatureBucketStrategyServiceSamza;
-import fortscale.streaming.service.aggregation.feature.event.AggrFeatureEventService;
-import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
+import fortscale.streaming.service.aggregation.samza.FeatureBucketStrategyServiceSamza;
+import fortscale.aggregation.feature.event.AggrFeatureEventService;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.streaming.service.aggregation.samza.FeatureBucketsServiceSamza;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
@@ -17,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import java.util.List;
-import static fortscale.utils.ConversionUtils.convertToLong;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
@@ -52,7 +53,7 @@ public class AggregatorManager {
 	}
 
 	public void processEvent(JSONObject event, MessageCollector collector) throws Exception {
-		Long timestamp = convertToLong(event.get(timestampFieldName));
+		Long timestamp = ConversionUtils.convertToLong(event.get(timestampFieldName));
 		if (timestamp == null) {
 			logger.warn("Event message {} contains no timestamp in field {}", event.toJSONString(), timestampFieldName);
 			return;

@@ -6,13 +6,13 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 						
-	<bean id="featureBucketStrategyStore" class="fortscale.streaming.service.aggregation.bucket.strategy.FeatureBucketStrategyMongoStore"/>
-	<bean id="userInactivityFeatureBucketStrategyFactory" class="fortscale.streaming.service.aggregation.bucket.strategy.UserInactivityFeatureBucketStrategyFactory"/>
-	<bean id="vpnSessionFeatureBucketStrategyFactory" class="fortscale.streaming.service.aggregation.bucket.strategy.VpnSessionFeatureBucketStrategyFactory"/>
-	<bean id="featureBucketsStore" class="fortscale.streaming.service.aggregation.FeatureBucketsMongoStore"/>
-	<bean id="bucketConfigurationService" class="fortscale.streaming.service.aggregation.BucketConfigurationService"/>
-	<bean id="dataSourcesSyncTimer" class="fortscale.streaming.service.aggregation.DataSourcesSyncTimer"/>
-	<bean id="aggregatedFeatureEventsConfService" class="fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
-	<bean id="aggrFeatureFuncService" class="fortscale.streaming.aggregation.feature.functions.AggrFeatureFuncService"/>
-	<bean id="aggrEventTopologyService" class="fortscale.streaming.service.aggregation.AggrEventTopologyService"/>
+	<bean id="featureBucketStrategyStore" class="fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyMongoStore"/>
+	<bean id="userInactivityFeatureBucketStrategyFactory" class="fortscale.aggregation.feature.bucket.strategy.UserInactivityFeatureBucketStrategyFactory"/>
+	<bean id="vpnSessionFeatureBucketStrategyFactory" class="fortscale.aggregation.feature.bucket.strategy.VpnSessionFeatureBucketStrategyFactory"/>
+	<bean id="featureBucketsStore" class="fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore"/>
+	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
+	<bean id="dataSourcesSyncTimer" class="fortscale.aggregation.DataSourcesSyncTimer"/>
+	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
+	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
+	<bean id="aggrEventTopologyService" class="fortscale.streaming.service.aggregation.feature.event.AggrKafkaEventTopologyService"/>
 </beans>

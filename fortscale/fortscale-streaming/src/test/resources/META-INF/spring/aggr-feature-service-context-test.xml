@@ -8,6 +8,6 @@
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<context:spring-configured />
 	<context:annotation-config />
-	<context:component-scan base-package="fortscale.streaming.aggregation.feature.functions"/>
+	<context:component-scan base-package="fortscale.aggregation.feature.functions"/>
 
 </beans>

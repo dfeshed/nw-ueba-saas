@@ -8,7 +8,7 @@
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<context:spring-configured />
 	<context:annotation-config />
-	<context:component-scan base-package="fortscale.global,fortscale.streaming.aggregation.feature.extraction"/>
+	<context:component-scan base-package="fortscale.global,fortscale.aggregation.feature.extraction"/>
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="location" value="classpath:FeatureExtractorsTest.properties"/>
 		<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
