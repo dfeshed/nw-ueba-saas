@@ -213,8 +213,8 @@ public class Evidence extends AbstractDocument{
 		return severity;
 	}
 
-	public static String getDataEntityIdField() {
-		return dataEntityIdField;
+	public String getDataEntityId() {
+		return dataEntityId;
 	}
 
 	public EvidenceSupportingInformation getSupportingInformation() {
