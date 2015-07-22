@@ -8,7 +8,7 @@
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 						
 	<import resource="classpath*:META-INF/spring/fortscale-domain-light-context.xml"/>
-	<import resource="classpath*:META-INF/spring/fortscale-aggr-context.xml" />
+	<import resource="classpath*:META-INF/spring/fortscale-aggr-context-test.xml" />
 	<bean id="aggrEventTopologyService" class="fortscale.aggregation.feature.event.AggrEventTopologyServiceForTest"/>
 	
 	<context:spring-configured />

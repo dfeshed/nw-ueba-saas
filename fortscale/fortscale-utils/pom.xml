@@ -72,12 +72,8 @@
 		<commons-jexl.version>1.1</commons-jexl.version>
 		<commons-httpclient.version>3.0.1</commons-httpclient.version>
 		<!-- maven plugins -->
-		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
-		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
-		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 		<mavanagaiata.version>0.7.0</mavanagaiata.version>
 		<maven-source-plugin.version>2.1.1</maven-source-plugin.version>
-		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
 		<java-lang-config.version>1.7</java-lang-config.version>
 	</properties>
 	<dependencies>

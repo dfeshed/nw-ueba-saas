@@ -60,18 +60,8 @@
 	</pluginRepositories>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<org.aspectj-version>1.7.3</org.aspectj-version>
-		<guava.version>15.0</guava.version>
-		<samza.version>0.7.0</samza.version>
-		<slf4j.version>1.7.2</slf4j.version>
-		<logback.version>1.0.13</logback.version>
-		<grizzled-slf4j.version>1.0.1</grizzled-slf4j.version>
 		<!-- maven plugins versions -->
-		<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>
-		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
-		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
-		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
+		
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
 		<mavanagaiata.version>0.7.0</mavanagaiata.version>
         <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
@@ -81,45 +71,7 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-distcp</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-	
-		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_${scala-kafka.version}</artifactId>
-			<version>${kafka.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jmx</groupId>
-					<artifactId>jmxri</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jdmk</groupId>
-					<artifactId>jmxtools</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.jms</groupId>
-					<artifactId>jms</artifactId>
-				</exclusion>
-				<exclusion>
-                	<groupId>org.apache.zookeeper</groupId>
-                	<artifactId>zookeeper</artifactId>
-                </exclusion>
-			</exclusions>
-		</dependency>
-		<!-- scala library required for kafka client -->
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
+		
 
 		<!-- json parsing library -->
 		<dependency>
@@ -140,70 +92,7 @@
 			<version>${jsonpath.version}</version>
 		</dependency>
 
-		<!-- samza dependencies -->
-		<dependency>
-			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-api</artifactId>
-			<version>${samza.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-kv_${scala-kafka.version}</artifactId>
-			<version>${samza.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-core_${scala-kafka.version}</artifactId>
-			<version>${samza.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-serializers_${scala-kafka.version}</artifactId>
-			<version>${samza.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-shell</artifactId>
-			<classifier>dist</classifier>
-			<type>tgz</type>
-			<version>${samza.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-yarn_${scala-kafka.version}</artifactId>
-			<version>${samza.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.hadoop</groupId>
-					<artifactId>hadoop-common</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-kafka_${scala-kafka.version}</artifactId>
-			<version>${samza.version}</version>
-			<exclusions>
-				<exclusion>
-                	<groupId>org.apache.zookeeper</groupId>
-                	<artifactId>zookeeper</artifactId>
-                </exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- esper - CEP -->
-		<dependency>
-			<groupId>com.espertech</groupId>
-			<artifactId>esper</artifactId>
-			<version>${esper-version}</version>
-		</dependency>
-
-		<!-- grizzled slf4j dependency needed in order to extend samza scala classes -->
-		<dependency>
-			<groupId>org.clapper</groupId>
-			<artifactId>grizzled-slf4j_2.10</artifactId>
-			<version>${grizzled-slf4j.version}</version>
-		</dependency>
+		
 		
 
 		<!-- test -->
@@ -261,21 +150,7 @@
 			<artifactId>fortscale-domain</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-services</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-monitor</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-ml</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+		
 
 
 		<!-- javax persistence needed by aspectj compile time depenceny injection 

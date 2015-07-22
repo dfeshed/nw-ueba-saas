@@ -6,7 +6,6 @@ import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,7 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
      * @param context
      * @param bucketsLeap must be greater then zero
      */
-    AggrFeatureEventData(@NotNull AggrFeatureEventBuilder builder, @NotNull Map<String, String> context, int bucketsLeap, @NotNull String firstBucketStrategyId) {
+    AggrFeatureEventData(AggrFeatureEventBuilder builder, Map<String, String> context, int bucketsLeap, String firstBucketStrategyId) {
         Assert.notNull(builder);
         Assert.notNull(context);
         Assert.isTrue(bucketsLeap > 0);
@@ -85,7 +84,7 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
      * @param startTime
      * @param endTime
      */
-    void addBucketID(@NotNull String bucketID, Long startTime, Long endTime) {
+    void addBucketID(String bucketID, Long startTime, Long endTime) {
         // Assertions
         Assert.isTrue(endTime > startTime && startTime > 0);
         Assert.notNull(bucketID);
@@ -141,7 +140,7 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
      * @param strategyData
      */
     @Override
-    public void nextBucketEndTimeUpdate(@NotNull FeatureBucketStrategyData strategyData) {
+    public void nextBucketEndTimeUpdate(FeatureBucketStrategyData strategyData) {
         // Assertions
         Assert.notNull(strategyData);
         if(bucketIDs.size()>0) {

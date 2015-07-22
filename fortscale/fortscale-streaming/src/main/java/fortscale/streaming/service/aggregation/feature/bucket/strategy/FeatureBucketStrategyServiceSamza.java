@@ -1,8 +1,7 @@
 package fortscale.streaming.service.aggregation.feature.bucket.strategy;
 
-import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.Assert;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategiesFactory;
@@ -17,7 +16,9 @@ public class FeatureBucketStrategyServiceSamza extends FeatureBucketStrategyServ
 	
 	private FeatureBucketsStore featureBucketsStore;
 	
-	public FeatureBucketStrategyServiceSamza(@NotNull ExtendedSamzaTaskContext context, @NotNull FeatureBucketsStore featureBucketsStore) {
+	public FeatureBucketStrategyServiceSamza(ExtendedSamzaTaskContext context, FeatureBucketsStore featureBucketsStore) {
+		Assert.notNull(context);
+		Assert.notNull(featureBucketsStore);
 		this.featureBucketStrategiesFactory = new FeatureBucketStrategiesFactorySamza(context);
 		this.featureBucketsStore = featureBucketsStore;
 	}
