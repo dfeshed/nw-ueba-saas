@@ -1,9 +1,18 @@
 package fortscale.streaming.service.aggregation.feature.bucket.strategy;
 
-import fortscale.aggregation.feature.bucket.strategy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import fortscale.aggregation.feature.bucket.strategy.AbstractUserInactivityFeatureBucketStrategyFactory;
+import fortscale.aggregation.feature.bucket.strategy.AbstractVpnSessionFeatureBucketStrategyFactory;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategiesFactory;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyFactory;
+import fortscale.aggregation.feature.bucket.strategy.FixedDurationFeatureBucketStrategyFactory;
+import fortscale.aggregation.feature.bucket.strategy.UserInactivityFeatureBucketStrategyFactory;
+import fortscale.aggregation.feature.bucket.strategy.VpnSessionFeatureBucketStrategyFactory;
 import fortscale.streaming.ExtendedSamzaTaskContext;
+
+
 
 @Configurable(preConstruction = true) public class FeatureBucketStrategiesFactorySamza
 		extends FeatureBucketStrategiesFactory {

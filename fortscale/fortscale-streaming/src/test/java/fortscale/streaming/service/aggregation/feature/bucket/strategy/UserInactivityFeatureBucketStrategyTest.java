@@ -1,19 +1,26 @@
 package fortscale.streaming.service.aggregation.feature.bucket.strategy;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import fortscale.streaming.service.aggregation.samza.UserInactivityFeatureBucketStrategyFactorySamza;
+import fortscale.aggregation.feature.bucket.strategy.AbstractUserInactivityFeatureBucketStrategyFactory;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyFactory;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyInMemoryStoreOne;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyStore;
+import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
+import fortscale.aggregation.feature.bucket.strategy.UserInactivityFeatureBucketStrategy;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/bucketconf-context-test.xml"})

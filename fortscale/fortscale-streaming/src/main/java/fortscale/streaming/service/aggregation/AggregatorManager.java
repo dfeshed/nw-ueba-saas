@@ -1,16 +1,10 @@
 package fortscale.streaming.service.aggregation;
 
-import fortscale.aggregation.feature.bucket.*;
-import fortscale.aggregation.feature.event.AggrEventTopologyService;
-import fortscale.streaming.ExtendedSamzaTaskContext;
-import fortscale.streaming.service.FortscaleStringValueResolver;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
-import fortscale.streaming.service.aggregation.samza.FeatureBucketStrategyServiceSamza;
-import fortscale.aggregation.feature.event.AggrFeatureEventService;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.streaming.service.aggregation.samza.FeatureBucketsServiceSamza;
+
+import java.util.List;
+
 import net.minidev.json.JSONObject;
+
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
@@ -18,7 +12,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import java.util.List;
+
+import fortscale.aggregation.DataSourcesSyncTimer;
+import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
+import fortscale.aggregation.feature.event.AggrFeatureEventService;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.streaming.service.FortscaleStringValueResolver;
+import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
+import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
+import fortscale.streaming.service.aggregation.feature.event.AggrKafkaEventTopologyService;
+import fortscale.utils.ConversionUtils;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
@@ -42,7 +52,7 @@ public class AggregatorManager {
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	@Autowired
-	private AggrEventTopologyService aggrEventTopologyService;
+	private AggrKafkaEventTopologyService aggrEventTopologyService;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context) {

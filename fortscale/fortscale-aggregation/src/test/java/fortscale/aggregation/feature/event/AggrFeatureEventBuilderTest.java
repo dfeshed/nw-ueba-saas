@@ -1,5 +1,31 @@
 package fortscale.aggregation.feature.event;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
+import net.minidev.json.JSONObject;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.DataSourcesSyncTimerListener;
 import fortscale.aggregation.feature.Feature;
@@ -9,45 +35,20 @@ import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
-import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.aggregation.feature.util.GenericHistogram;
-import net.minidev.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by amira on 15/07/2015.
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:META-INF/spring/streaming-aggr-context.xml" })
+@ContextConfiguration(locations = { "classpath*:META-INF/spring/bucketconf-context-test.xml" })
 public class AggrFeatureEventBuilderTest {
     @Mock
     private DataSourcesSyncTimer dataSourcesSyncTimer;
 
     @Mock
     private FeatureBucketsService featureBucketsService;
-
-    @Autowired
-    //@Resource(name = "aggrFeatureFuncService")
-    private IAggrFeatureEventFunctionsService aggrFeatureFuncService;
 
     @Mock
     private AggrEventTopologyService aggrEventTopologyService;
@@ -91,7 +92,6 @@ public class AggrFeatureEventBuilderTest {
 
 
         builder.setAggrEventTopologyService(aggrEventTopologyService);
-        builder.setAggrFeatureFuncService(aggrFeatureFuncService);
         builder.setDataSourcesSyncTimer(dataSourcesSyncTimer);
         builder.setFeatureBucketsService(featureBucketsService);
 

@@ -27,7 +27,7 @@ public class FeatureExtractorsTest {
 	public static final String FEATURE_NAME = "feature1";
 
 	@Autowired
-	private FeatureExtractService fes;
+	private FeatureExtractService featureExtractService;
 
 	private FeatureExtractor buildFeatureExtractor(){
 		PatternReplacementFeatureAdjustor patternReplacementFeatureAdjustor1 = new PatternReplacementFeatureAdjustor("_", ".");
@@ -136,7 +136,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("source_ip", "82.165.195.70");
 
-		Feature feature = fes.extract(FEATURE_NAME, jsonObject);
+		Feature feature = featureExtractService.extract(FEATURE_NAME, jsonObject);
 		String ret = (String)feature.getValue();
 
 		Assert.assertEquals("82.165.195.0", ret);
@@ -148,7 +148,7 @@ public class FeatureExtractorsTest {
 		jsonObject.put("source_ip", "82.165.195.70");
 
 		String nofeature = "notexistingfeature";
-		Feature feature = fes.extract(nofeature, jsonObject);
+		Feature feature = featureExtractService.extract(nofeature, jsonObject);
 
 		Assert.assertEquals(null, feature.getValue());
 		Assert.assertEquals(nofeature, feature.getName());
@@ -166,7 +166,7 @@ public class FeatureExtractorsTest {
 		featureNames.addAll(Arrays.asList("feature1", "feature2"));
 
 
-		Map<String, Feature> res = fes.extract(featureNames, jsonObject);
+		Map<String, Feature> res = featureExtractService.extract(featureNames, jsonObject);
 
 
 		String value1 = (String)(res.get("feature1")).getValue();

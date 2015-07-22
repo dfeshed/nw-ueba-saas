@@ -3,12 +3,12 @@ package fortscale.streaming.service.aggregation.feature.bucket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.aggregation.feature.extraction.FeatureExtractService;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
-import fortscale.streaming.service.aggregation.FeatureBucketsService;
-import fortscale.streaming.service.aggregation.FeatureBucketsStore;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
+import fortscale.streaming.ExtendedSamzaTaskContext;
 
 @Configurable(preConstruction=true)
 public class FeatureBucketsServiceSamza extends FeatureBucketsService {
