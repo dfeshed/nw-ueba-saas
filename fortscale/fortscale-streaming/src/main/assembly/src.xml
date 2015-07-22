@@ -23,7 +23,14 @@
   			<include>*</include>
   		</includes>
   	</fileSet>
-  	<fileSet>
+    <fileSet>
+      <outputDirectory>config/topology</outputDirectory>
+      <directory>${basedir}/config/topology</directory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
   		<outputDirectory>lib</outputDirectory>
   		<directory>${basedir}/src/main/resources</directory>
   		<includes>

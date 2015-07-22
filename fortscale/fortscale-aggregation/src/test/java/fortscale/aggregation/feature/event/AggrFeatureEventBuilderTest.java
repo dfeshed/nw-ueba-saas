@@ -74,6 +74,7 @@ public class AggrFeatureEventBuilderTest {
         paramters2featuresListMap.put("groupBy", aggrFeatureNames);
         JSONObject funcJSONObj = new JSONObject();
         funcJSONObj.put("type", "aggr_feature_number_of_distinct_values_func");
+        funcJSONObj.put("includeValues", true);
 
         AggregatedFeatureEventConf eventConf = new AggregatedFeatureEventConf("my_number_of_distinct_values", "bc1", numberOfBuckets , bucketLeap, 0, paramters2featuresListMap, funcJSONObj );
         FeatureBucketConf bucketConf = mock(FeatureBucketConf.class);
@@ -160,7 +161,7 @@ public class AggrFeatureEventBuilderTest {
         Assert.assertEquals(date_time, event.get("start_time"));
         date_time = format.format(new Date(endTime * 1000));
         Assert.assertEquals(date_time, event.get("end_time"));
-        Assert.assertEquals(numberOfDistinctValues, event.get("my_number_of_distinct_values"));
+        Assert.assertEquals(numberOfDistinctValues, ((Map<String, Object>)event.get("my_number_of_distinct_values")).get("number_of_distinct_values"));
         Assert.assertEquals("john", ((HashMap)event.get("context")).get("username"));
         Assert.assertEquals("m1", ((HashMap)event.get("context")).get("machine"));
         Assert.assertEquals(startTime, event.get("start_time_unix"));
