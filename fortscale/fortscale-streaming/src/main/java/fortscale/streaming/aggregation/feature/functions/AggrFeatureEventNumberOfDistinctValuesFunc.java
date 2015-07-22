@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.aggregation.feature.util.GenericHistogram;
 import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
+import net.minidev.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -15,8 +16,12 @@ import java.util.Map;
 @JsonTypeName(AggrFeatureEventNumberOfDistinctValuesFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureEventNumberOfDistinctValuesFunc extends AggrFeatureHistogramFunc {
-    final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_number_of_distinct_values_func";
+    public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_number_of_distinct_values_func";
     public final static String FEATURE_NAME = "number_of_distinct_values";
+    private static final String FEATURE_DISTINCT_VALUES = "distinct_values";
+
+    private boolean includeValues = false;
+
     /**
      * Create new feature by running the associated {@link AggrFeatureFunction} that is configured in the given
      * {@link AggregatedFeatureEventConf} and using the aggregated features as input to those functions.
@@ -32,8 +37,17 @@ public class AggrFeatureEventNumberOfDistinctValuesFunc extends AggrFeatureHisto
             return null;
         }
         GenericHistogram histogram = (GenericHistogram)feature.getValue();
-        Feature resFeature = new Feature(FEATURE_NAME, histogram.getN());
+        JSONObject value = new JSONObject();
+        value.put(FEATURE_NAME, histogram.getN());
+        if (includeValues) {
+            value.put(FEATURE_DISTINCT_VALUES, histogram.getObjects());
+        }
+        Feature resFeature = new Feature(FEATURE_NAME, value);
 
         return resFeature;
+    }
+
+    public void SetIncludeValues(boolean includeValues) {
+        this.includeValues = includeValues;
     }
 }
