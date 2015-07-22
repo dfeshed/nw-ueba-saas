@@ -1,25 +1,52 @@
 {
-  "BucketConfs" : [
+  "BucketConfs": [
+    {
+      "name": "distinct_source_machines_kerberos_daily",
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "4769"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "src_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_src_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          "name": "dst_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_dst_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+
     {
       "name": "bc1",
       "contextFieldNames": [
         "normalized_username"
       ],
       "dataSources": [
-        "ssh","4769"
+        "ssh",
+        "4769"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name":"aggr-feature-1",
-          "featureNames": [
-            "normalized_dst_machine"
-          ],
+          "name": "aggr-feature-1",
+          "featureNamesMap": {
+            "groupBy": ["normalized_dst_machine"]
+          },
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     },
-
 
     {
       "name": "bc2",
@@ -28,16 +55,17 @@
         "normalized_src_machine"
       ],
       "dataSources": [
-        "ssh","4769"
+        "ssh",
+        "4769"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name":"aggr-feature-2",
-          "featureNames": [
-            "normalized_dst_machine"
-          ],
-          "aggrFeatureFuncJson":  {"type": "aggr_feature_histogram_func"}
+          "name": "aggr-feature-2",
+          "featureNamesMap": {
+            "groupBy": ["normalized_dst_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         }
       ]
     }
