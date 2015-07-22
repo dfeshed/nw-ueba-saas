@@ -28,6 +28,6 @@ public class StreamingAggrTaskContextTestInt {
 		Map<String, String> configMap = new HashMap<String, String>();
 		configMap.put(AggregatorManager.SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH, "timestamp");
 		@SuppressWarnings("unused")
-		AggregatorManager aggregatorManager = new AggregatorManager(new MapConfig(configMap), null);
+		AggregatorManager aggregatorManager = new AggregatorManager(new MapConfig(configMap), new ExtendedSamzaTaskContext(null));
 	}
 }
