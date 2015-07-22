@@ -49,7 +49,7 @@ public class Evidence extends AbstractDocument{
 	public static final String nameField = "name";
 	public static final String anomalyTypeField = "anomalyType";
 	public static final String anomalyValueField = "anomalyValue";
-	public static final String dataSourceField = "dataSource";
+	public static final String dataEntityIdField = "dataEntityId";
 	public static final String evidenceTypeField = "evidenceType";
 
 	// The 3 top events
@@ -96,8 +96,8 @@ public class Evidence extends AbstractDocument{
 	@Field(anomalyValueField)
 	private String anomalyValue;
 
-	@Field(dataSourceField)
-	private String dataSource;
+	@Field(dataEntityIdField)
+	private String dataEntityId;
 
 	@Field(evidenceTypeField)
 	private EvidenceType evidenceType;
@@ -124,7 +124,7 @@ public class Evidence extends AbstractDocument{
 	// C-tor
 
 	public Evidence(EntityType entityType, String entityName, Long startDate, Long endDate, String anomalyType,
-			String name, String anomalyValue, String dataSource, Integer score, Severity severity) {
+			String name, String anomalyValue, String dataEntityId, Integer score, Severity severity) {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.startDate = startDate;
@@ -132,7 +132,7 @@ public class Evidence extends AbstractDocument{
 		this.anomalyType = anomalyType;
 		this.name = name;
 		this.anomalyValue = anomalyValue;
-		this.dataSource = dataSource;
+		this.dataEntityId = dataEntityId;
 		this.score = score;
 		this.severity = severity;
 
@@ -213,8 +213,8 @@ public class Evidence extends AbstractDocument{
 		return severity;
 	}
 
-	public String getDataSource() {
-		return dataSource;
+	public static String getDataEntityIdField() {
+		return dataEntityIdField;
 	}
 
 	public EvidenceSupportingInformation getSupportingInformation() {
