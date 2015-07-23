@@ -251,7 +251,7 @@ public class ApiController extends BaseController {
 		response.setContentType("text/csv; charset=UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		response.setHeader("content-Disposition",
-				String.format("attachment; filename=export_%s_%d%02d%02d_%d.csv", dataEntitiesConfig.getEntityFromOverAllCache(dataQueryObject.getEntities()[0]).getName(),
+				String.format("attachment; filename=export_%s_%d%02d%02d_%d.csv", dataEntitiesConfig.getEntityFromOverAllCache(dataQueryObject.getEntities()[0]).getId(),
 						now.getYear(), now.getMonthOfYear(), now.getDayOfMonth(), now.getMillis()));
 
 		PrintWriter writer = response.getWriter();
