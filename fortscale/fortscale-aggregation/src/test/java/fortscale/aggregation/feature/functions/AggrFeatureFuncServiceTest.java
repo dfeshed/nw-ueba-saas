@@ -30,9 +30,7 @@ public class AggrFeatureFuncServiceTest {
     @Autowired
     AggrFeatureFuncService funcService;
 
-    private AggregatedFeatureConf createAggrFeatureConf3(String aggrFeatureName, String funcName) {
-        return createAggrFeatureConf3(aggrFeatureName, funcName, null, null);
-    }
+    
     
     private  AggregatedFeatureConf createAggrFeatureConf3(String aggrFeatureName, String funcName, String funcParam, JsonFilter filter) {
         List<String> featureNames = new ArrayList<>();

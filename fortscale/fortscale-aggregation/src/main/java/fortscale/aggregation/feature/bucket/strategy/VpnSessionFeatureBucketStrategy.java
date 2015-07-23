@@ -1,14 +1,20 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.utils.ConversionUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minidev.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.utils.ConversionUtils;
 
 @Configurable(preConstruction = true)
 public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
@@ -205,7 +211,7 @@ public class VpnSessionFeatureBucketStrategy implements FeatureBucketStrategy {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));
 		}
 		try {
-			Long endTime = Long.parseLong(strings[3]); // Validating that the forth element is long (end time), getting exception if not.
+			Long.parseLong(strings[3]); // Validating that the forth element is long (end time), getting exception if not.
 			return new UserNameAndSourceIp(strings[1],strings[2]);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(String.format("strategyId parameter does not match strategy ID format: %s", strategyId));

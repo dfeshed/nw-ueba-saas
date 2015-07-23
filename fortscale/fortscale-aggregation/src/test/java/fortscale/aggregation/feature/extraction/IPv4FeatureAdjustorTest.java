@@ -79,13 +79,13 @@ public class IPv4FeatureAdjustorTest {
 	public void testNegativeSubnetMask(){
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(-5);
 
-		String adjustedVal = (String)featureAdjustor.adjust("82.165.195.171", null);
+		featureAdjustor.adjust("82.165.195.171", null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testAbove31SubnetMask(){
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(32);
 
-		String adjustedVal = (String)featureAdjustor.adjust("82.165.195.171", null);
+		featureAdjustor.adjust("82.165.195.171", null);
 	}
 }

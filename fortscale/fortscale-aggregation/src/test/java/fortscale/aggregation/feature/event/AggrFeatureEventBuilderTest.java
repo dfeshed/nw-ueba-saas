@@ -101,10 +101,6 @@ public class AggrFeatureEventBuilderTest {
 
     private FeatureBucket createFeatureBucket(int bucketNumber) {
         GenericHistogram histogram1 = new GenericHistogram();
-        GenericHistogram histogram2 = new GenericHistogram();
-        GenericHistogram histogram3 = new GenericHistogram();
-        GenericHistogram histogram4 = new GenericHistogram();
-
 
         histogram1.add("a", 1.0);
         histogram1.add("b", 2.0);
@@ -146,7 +142,8 @@ public class AggrFeatureEventBuilderTest {
     }
 
 
-    private void assertEvent(JSONObject event, int startTimeDayNumber, int endTimeDayNumber, Long numberOfDistinctValues) {
+    @SuppressWarnings("unchecked")
+	private void assertEvent(JSONObject event, int startTimeDayNumber, int endTimeDayNumber, Long numberOfDistinctValues) {
         //{"start_time_unix":1436918400,"max_cout_object":"c","end_time":"2015-07-16 02:59:59","bucket_conf_name":null,"event_type":"aggregated_feature_event","context":{"username":"john","machine":"m1"},"start_time":"2015-07-15 03:00:00","end_time_unix":1437004799,"date_time":"2015-07-20 10:14:49","date_time_unix":1437376489}
         System.out.println(event.toString());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -162,8 +159,8 @@ public class AggrFeatureEventBuilderTest {
         date_time = format.format(new Date(endTime * 1000));
         Assert.assertEquals(date_time, event.get("end_time"));
         Assert.assertEquals(numberOfDistinctValues, ((Map<String, Object>)event.get("my_number_of_distinct_values")).get("number_of_distinct_values"));
-        Assert.assertEquals("john", ((HashMap)event.get("context")).get("username"));
-        Assert.assertEquals("m1", ((HashMap)event.get("context")).get("machine"));
+        Assert.assertEquals("john", ((HashMap<?, ?>)event.get("context")).get("username"));
+        Assert.assertEquals("m1", ((HashMap<?, ?>)event.get("context")).get("machine"));
         Assert.assertEquals(startTime, event.get("start_time_unix"));
         Assert.assertEquals(endTime, event.get("end_time_unix"));
 
@@ -174,20 +171,18 @@ public class AggrFeatureEventBuilderTest {
         AggrFeatureEventBuilder builder = createBuilder(1, 1);
         FeatureBucket bucket1 = createFeatureBucket(1);
 
-        when(dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(eq(bucket1.getDataSources()), eq(bucket1.getEndTime()), any(DataSourcesSyncTimerListener.class))).then(new Answer() {
+        when(dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(eq(bucket1.getDataSources()), eq(bucket1.getEndTime()), any(DataSourcesSyncTimerListener.class))).then(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                Object mock = invocation.getMock();
                 dataSourcesSyncTimerListener = (DataSourcesSyncTimerListener) args[2];
                 return 1000L;
             }
         });
 
         when(featureBucketsService.getFeatureBucket(any(FeatureBucketConf.class), eq(bucket1.getBucketId()))).thenReturn(bucket1);
-        when(aggrEventTopologyService.sendEvent(any(JSONObject.class))).then(new Answer() {
+        when(aggrEventTopologyService.sendEvent(any(JSONObject.class))).then(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                Object mock = invocation.getMock();
                 event = (JSONObject) args[0];
                 return true;
             }
@@ -199,7 +194,8 @@ public class AggrFeatureEventBuilderTest {
         assertEvent(event, 1, 1, 4L);
     }
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testUpdateAggrFeatureEvent_3buckets() {
         AggrFeatureEventBuilder builder = createBuilder(3, 1);
         FeatureBucket bucket1 = createFeatureBucket(1);
@@ -207,10 +203,9 @@ public class AggrFeatureEventBuilderTest {
         FeatureBucket bucket3 = createFeatureBucket(3);
         FeatureBucket bucket4 = createFeatureBucket(4);
 
-        when(dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(any(List.class), any(Long.class), any(DataSourcesSyncTimerListener.class))).then(new Answer() {
+        when(dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(any(List.class), any(Long.class), any(DataSourcesSyncTimerListener.class))).then(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                Object mock = invocation.getMock();
                 dataSourcesSyncTimerListener = (DataSourcesSyncTimerListener) args[2];
                 return registartionID++;
             }
@@ -220,10 +215,9 @@ public class AggrFeatureEventBuilderTest {
         when(featureBucketsService.getFeatureBucket(any(FeatureBucketConf.class), eq(bucket2.getBucketId()))).thenReturn(bucket2);
         when(featureBucketsService.getFeatureBucket(any(FeatureBucketConf.class), eq(bucket3.getBucketId()))).thenReturn(bucket3);
         when(featureBucketsService.getFeatureBucket(any(FeatureBucketConf.class), eq(bucket4.getBucketId()))).thenReturn(bucket4);
-        when(aggrEventTopologyService.sendEvent(any(JSONObject.class))).then(new Answer() {
+        when(aggrEventTopologyService.sendEvent(any(JSONObject.class))).then(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                Object mock = invocation.getMock();
                 event = (JSONObject) args[0];
                 return true;
             }
