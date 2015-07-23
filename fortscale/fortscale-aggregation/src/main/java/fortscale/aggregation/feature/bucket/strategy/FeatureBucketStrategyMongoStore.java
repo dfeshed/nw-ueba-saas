@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
-import org.springframework.data.mongodb.core.index.Index.Duplicates;
 import org.springframework.data.mongodb.core.query.Query;
 
 public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategyStore, InitializingBean {
@@ -35,7 +34,7 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 	public void afterPropertiesSet() throws Exception {
 		if (!mongoTemplate.collectionExists(COLLECTION_NAME)) {
 			mongoTemplate.createCollection(COLLECTION_NAME);
-			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_CONTEXT_ID_FIELD,Direction.DESC).unique(Duplicates.DROP));
+			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_CONTEXT_ID_FIELD,Direction.DESC));
 			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_CONTEXT_ID_FIELD,Direction.DESC).on(FeatureBucketStrategyData.START_TIME_FIELD,Direction.DESC));
 		}
 	}
