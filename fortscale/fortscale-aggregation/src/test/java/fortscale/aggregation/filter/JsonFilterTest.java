@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.functions;
+package fortscale.aggregation.filter;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

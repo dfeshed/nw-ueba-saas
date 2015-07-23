@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fortscale.aggregation.feature.functions.JsonFilter;
+import fortscale.aggregation.filter.JsonFilter;
 import net.minidev.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
