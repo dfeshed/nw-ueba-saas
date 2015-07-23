@@ -69,10 +69,10 @@ public class AggrFeatureEventService {
         }
     }
 
-    private List<AggrFeatureEventBuilder> getRelatedAggrFeatureEventBuilders(FeatureBucketConf bucketConf) {
-        if(bucketConf==null) return null;
+    private List<AggrFeatureEventBuilder> getRelatedAggrFeatureEventBuildersByBucketConfName(String bucketConfName) {
+        if(bucketConfName==null) return null;
 
-        List<AggrFeatureEventBuilder> builders =  bucketConfName2eventBuildersListMap.get(bucketConf);
+        List<AggrFeatureEventBuilder> builders =  bucketConfName2eventBuildersListMap.get(bucketConfName);
         if(builders==null) return null;
 
         List<AggrFeatureEventBuilder> clone = new ArrayList<>(builders.size());
@@ -134,4 +134,16 @@ public class AggrFeatureEventService {
         }
     }
 
+    public void featureBucketsEndTimeUpdate(List<FeatureBucket> updatedFeatureBucketsWithNewEndTime) {
+        if(updatedFeatureBucketsWithNewEndTime==null) {
+            return;
+        }
+        for(FeatureBucket featureBucket : updatedFeatureBucketsWithNewEndTime) {
+            List<AggrFeatureEventBuilder> builders = getRelatedAggrFeatureEventBuildersByBucketConfName(featureBucket.getFeatureBucketConfName());
+            if(builders==null) continue;
+            for(AggrFeatureEventBuilder builder : builders) {
+                builder.updateFeatureBacketEndTime(featureBucket.getBucketId(), featureBucket.getEndTime());
+            }
+        }
+    }
 }

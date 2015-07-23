@@ -76,6 +76,7 @@ public class AggregatorManager {
 		if (featureBucketConfs != null && !featureBucketConfs.isEmpty()) {
 			//TODO: routeEventsToOtherContexts
 			List<FeatureBucket> updatedFeatureBucketsWithNewEndTime = featureBucketsService.updateFeatureBucketsWithNewBucketEndTime(featureBucketConfs, updatedFeatureBucketStrategyDataList);
+			featureEventService.featureBucketsEndTimeUpdate(updatedFeatureBucketsWithNewEndTime);
 			//TODO: Update AggregationEventsManager with updatedFeatureBucketsWithNewEndTime
 			List<FeatureBucket> newFeatureBuckets = featureBucketsService.updateFeatureBucketsWithNewEvent(event, featureBucketConfs);
 			featureEventService.newFeatureBuckets(newFeatureBuckets);
