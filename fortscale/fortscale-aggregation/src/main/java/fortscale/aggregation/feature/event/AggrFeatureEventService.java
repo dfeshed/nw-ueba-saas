@@ -62,6 +62,7 @@ public class AggrFeatureEventService {
         List<AggrFeatureEventBuilder> builders = bucketConfName2eventBuildersListMap.get(bucketConfName);
         if(builders==null) {
             builders = new ArrayList<>();
+            bucketConfName2eventBuildersListMap.put(bucketConfName, builders);
         }
         if(!builders.contains(eventBuilder)) {
             builders.add(eventBuilder);

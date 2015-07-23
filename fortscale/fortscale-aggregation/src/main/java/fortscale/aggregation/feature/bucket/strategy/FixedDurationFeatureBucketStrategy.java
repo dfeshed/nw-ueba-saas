@@ -24,7 +24,7 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 
 	private List<FeatureBucketStrategyData> getFeatureBucketStrategyData(long epochtimeInSec){
 		long startTime = (epochtimeInSec / durationInSeconds) * durationInSeconds;
-		FeatureBucketStrategyData featureBucketStrategyData = new FeatureBucketStrategyData(strategyName, strategyName, startTime, startTime + durationInSeconds);
+		FeatureBucketStrategyData featureBucketStrategyData = new FeatureBucketStrategyData(strategyName, strategyName, startTime, startTime + durationInSeconds - 1);
 		List<FeatureBucketStrategyData> ret = new ArrayList<FeatureBucketStrategyData>();
 		ret.add(featureBucketStrategyData);
 		return ret;
