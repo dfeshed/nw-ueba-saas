@@ -60,13 +60,6 @@
 	</pluginRepositories>
 
 	<properties>
-		<!-- maven plugins versions -->
-		
-		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
-		<mavanagaiata.version>0.7.0</mavanagaiata.version>
-        <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
-		<maven-download-plugin.version>1.1.0</maven-download-plugin.version>
-		<esper-version>5.2.0</esper-version>
 		<jsonpath.version>2.0.0</jsonpath.version>
 	</properties>
 
@@ -263,33 +256,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven-dependency-plugin.version}</version>
-				<executions>
-					<!-- copy dependencies to target lib folder -->
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target\lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- plugin to build the tar.gz file filled with examples -->
-				
-
-
-
 		</plugins>
 		<pluginManagement>
 			<plugins>
