@@ -5,12 +5,12 @@
                 {{rsa-logo class="login-screen__rsa-logo" delays="500,1000,1500" title=(t "sa.title")}}
             </div>
             <div class="login-screen__field bg-pttn-grey-checkers" data-status={{status}}>
-                {{input class="login-screen__uid" type="text" placeholder=(t "login.loginPrompt") value=username autofocus="true"}}
+                {{input class="login-screen__uid js-test-fillin-username" type="text" placeholder=(t "login.loginPrompt") value=username autofocus="true"}}
             </div>
             <div class="login-screen__field bg-pttn-grey-checkers" data-status={{status}}>
-                {{input class="login-screen__pwd" type="password" placeholder=(t "login.passwordPrompt") value=password}}
+                {{input class="login-screen__pwd js-test-fillin-password" type="password" placeholder=(t "login.passwordPrompt") value=password}}
             </div>
-            {{rsa-arrow-button class="login-screen__ok-btn bg-pttn-grey-checkers" type="submit" status=status disabled=isLoginDisabled}}
+            {{rsa-arrow-button class="login-screen__ok-btn js-test-click-login bg-pttn-grey-checkers" type="submit" status=status disabled=isLoginDisabled}}
         </form>
     {{/rsa-curtain}}
     <footer class="login-screen__footer">

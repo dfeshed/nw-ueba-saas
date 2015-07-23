@@ -65,6 +65,9 @@ module.exports = function(environment) {
 
     ENV.APP.rootElement = '#ember-testing';
 
+    // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
+    ENV.APP.readyDelay = 0;
+
     ENV['simple-auth'] = {
         authenticate: 'authenticator:sa-authenticator',
         store: 'simple-auth-session-store:ephemeral'

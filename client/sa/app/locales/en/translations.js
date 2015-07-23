@@ -9,21 +9,23 @@ export default {
         version: "v.11.0.0",
         copyright: "&copy;2015 RSA Security LLC. All rights reserved."
     },
-    index: {
-        title: "Home",
-        details: "Home contents go here."
+    monitor: {
+        title: "Monitor",
+        details: "Monitor contents go here."
     },
-    explorer: {
-        title: "Explorer",
-        details: "Explorer contents go here."
+    respond: {
+        title: "Respond",
+        details: "Respond contents go here."
     },
-    incidents: {
-        title: "Incidents",
-        details: "Incidents contents go here."
+    explore: {
+        title: "Explore",
+        details: "Explore contents go here."
+    },
+    admin: {
+        title: "Admin",
+        details: "Admin contents go here."
     },
     login: {
-        loginTitle: "Login",
-        passwordTitle: "Password",
         loginPrompt: "Enter username",
         passwordPrompt: "Enter password",
         errorPrompt: "Login failed",

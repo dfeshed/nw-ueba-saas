@@ -1,0 +1,14 @@
+<header class="app-header">
+    <h1 class="app-header__title">{{t "sa.title"}} {{t "sa.version"}}</h1>
+    <nav class="app-header__nav">
+        {{#link-to "protected.monitor"}}{{t "monitor.title"}}{{/link-to}}
+        {{#link-to "protected.respond"}}{{t "respond.title"}}{{/link-to}}
+        {{#link-to "protected.explore"}}{{t "explore.title"}}{{/link-to}}
+        {{#link-to "protected.admin"}}{{t "admin.title"}}{{/link-to}}
+    </nav>
+    <section class="app-header__tools">
+        {{render "i18n"}}
+        <button class="app-header__logout js-test-click-logout" {{ action "invalidateSession" }}>{{t "login.logoutTitle"}}</button>
+    </section>
+</header>
+{{liquid-outlet class="app-body"}}

@@ -8,7 +8,7 @@ import Ember from "ember";
 export default Ember.Route.extend({
     beforeModel: function(){
 
-        // By default, try to redirect to the default sub-route under "protected".
-        this.transitionTo("protected.index");
+        // By default, redirect to "monitor".
+        this.transitionTo("protected.monitor");
     }
 });
