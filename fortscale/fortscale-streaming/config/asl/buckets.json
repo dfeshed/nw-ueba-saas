@@ -1,6 +1,26 @@
 {
   "BucketConfs": [
     {
+      "name": "user_kerberos_dst_machine_daily",
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "4769"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "dst_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_dst_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+
+    {
       "name": "distinct_source_machines_kerberos_daily",
       "contextFieldNames": [
         "normalized_username"
