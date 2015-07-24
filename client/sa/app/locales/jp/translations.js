@@ -9,21 +9,23 @@ export default {
         version: "v.11.0.0",
         copyright: "jp &copy;2015 RSA Security LLC. All rights reserved."
     },
-	index: {
-		title: "jp_Home",
-		details: "jp_Home contents go here."
+    monitor: {
+        title: "jp_Monitor",
+        details: "jp_Monitor contents go here."
+    },
+    respond: {
+        title: "jp_Respond",
+        details: "jp_Respond contents go here."
+    },
+	explore: {
+		title: "jp_Explore",
+		details: "jp_Explore contents go here."
 	},
-	explorer: {
-		title: "jp_Explorer",
-		details: "jp_Explorer contents go here."
-	},
-	incidents: {
-		title: "jp_Incidents",
-		details: "jp_Incidents contents go here."
-	},
-	login: {
-		loginTitle: "jp_Login",
-		passwordTitle: "jp_Password",
+    admin: {
+        title: "jp_Admin",
+        details: "jp_Admin contents go here."
+    },
+    login: {
 		loginPrompt:"jp_Enter username",
 		passwordPrompt:"jp_Enter password",
 		errorPrompt:"jp_Login failed",

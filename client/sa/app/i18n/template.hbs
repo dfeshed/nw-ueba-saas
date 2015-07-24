@@ -1,9 +1,9 @@
 <nav class="dropdown">
   <ul>
-    <li class="header">{{t 'languages.prompt'}}
+    <li class="header"><span class="js-test-find-locale-prompt">{{t 'languages.prompt'}}</span>
       <ul>
-        <li><a class="locale_en" href {{ action 'changeLocale' 'en' }}>{{t 'languages.en'}}</a></li>
-        <li><a class="locale_jp" href {{ action 'changeLocale' 'jp' }}>{{t 'languages.jp'}}</a></li>
+        <li><a href {{ action 'changeLocale' 'en' }} class="locale_en">{{t 'languages.en'}}</a></li>
+        <li><a href {{ action 'changeLocale' 'jp' }} class="locale_jp js-test-click-locale-jp" >{{t 'languages.jp'}}</a></li>
       </ul>
     </li>
   </ul>

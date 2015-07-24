@@ -19,14 +19,13 @@ test("visiting / and changing locale", function(assert) {
     visit("/");
 
     andThen(function() {
-        var content = find(".app-body .liquid-child");
-        assert.ok(content, "Could not find the app's main container DOM.");
-        assert.equal(content.text().trim(), "Home contents go here.", "Unexpected contents in DOM.");
-
-        var li = find(".locale_jp");
-        li.trigger("click");
-        content = find(".app-body .liquid-child");
-        assert.ok(content, "Could not find the app's main container DOM.");
-        assert.equal(content.text().trim(), "jp_Home contents go here.", "Unexpected contents in DOM.");
+        var content = find(".js-test-click-locale-jp");
+        assert.ok(content.length, "Could not find the Japanese local link.");
+        content.trigger("click");
+        assert.equal(
+            find(".js-test-find-locale-prompt").text().trim(),
+            "jp_Change locale",
+            "Could not find the Locale prompt in Japanese."
+        );
     });
 });

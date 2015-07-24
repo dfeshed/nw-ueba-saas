@@ -4,7 +4,7 @@ import startApp from "sa/tests/helpers/start-app";
 
 var application;
 
-module("Acceptance | about", {
+module("Acceptance | admin", {
     beforeEach: function() {
         application = startApp();
     },
@@ -14,12 +14,11 @@ module("Acceptance | about", {
     }
 });
 
-test("visiting /about", function(assert) {
-    visit("/about");
+test("visiting /do/admin and check DOM", function(assert) {
+    visit("/do/admin");
 
     andThen(function() {
-        assert.equal(currentPath(), "about");
-        var content = find('dd.aboutDetails:contains("sa")');
-        assert.equal(content.length, 1, "Could not find the app name 'sa'.");
+        assert.equal(currentPath(), "protected.admin");
+        assert.equal(find(".js-test-find-admin").length, 1, "Could not find the route DOM.");
     });
 });
