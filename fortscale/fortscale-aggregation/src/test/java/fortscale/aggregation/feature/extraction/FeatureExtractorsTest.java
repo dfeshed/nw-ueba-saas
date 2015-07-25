@@ -2,13 +2,16 @@ package fortscale.aggregation.feature.extraction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fortscale.aggregation.feature.Feature;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -25,6 +28,9 @@ public class FeatureExtractorsTest {
 	private static final String EVENT_FEATURE_EXTRACTOR_JSON_TO_TEST =              "{\"featureExtractorType\":\"priority_container_feature_extractor\",\"featureExtractorList\":[{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"org1\",\"featureAdjustor\":{\"type\":\"chain_feature_adjustor\",\"featureAdjustorList\":[{\"type\":\"pattern_replacment_feature_adjustor\",\"pattern\":\"_\",\"replacement\":\".\"},{\"type\":\"pattern_replacment_feature_adjustor\",\"pattern\":\"prefix\",\"replacement\":\"\"},{\"type\":\"number_divider_feature_adjustor\",\"additionToDenominator\":4.5,\"denominatorFieldName\":\"duration\"},{\"type\":\"inv_val_feature_adjustor\",\"denominator\":0.1}]}},{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"org2\",\"featureAdjustor\":{\"type\":\"ipv4_feature_adjustor\",\"subnetMask\":20}}]}";
 	private static final String HOST_AND_SOURCE_IP_FEATURE_EXTRACTOR_JSON_TO_TEST = "{\"featureExtractorType\":\"priority_container_feature_extractor\",\"featureExtractorList\":[{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"host\",\"featureAdjustor\":{\"type\":\"pattern_replacment_feature_adjustor\",\"pattern\":\"[0-9]+\",\"replacement\":\"\"}},{\"featureExtractorType\":\"event_feature_extractor\",\"fieldName\":\"source_ip\",\"featureAdjustor\":{\"type\":\"ipv4_feature_adjustor\",\"subnetMask\":24}}]}";
 	public static final String FEATURE_NAME = "feature1";
+	
+	@Value("${impala.table.fields.data.source}")
+	private String eventTypeFieldName;
 
 	@Autowired
 	private FeatureExtractService featureExtractService;
@@ -79,24 +85,24 @@ public class FeatureExtractorsTest {
 	}
 
 	@Test
-	public void testFeatureExtractorWithFirstPriorityAdjustments(){
+	public void testFeatureExtractorWithFirstPriorityAdjustments() throws Exception{
 		FeatureExtractor featureExtractor = buildFeatureExtractor();
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(DENOMINATOR_FIELD_NAME, 4.5);
 		jsonObject.put(ORIGINAL_FIELD_NAME1, "prefix0_9");
 
-		Double ret = ConversionUtils.convertToDouble(featureExtractor.extract(jsonObject));
+		Double ret = ConversionUtils.convertToDouble(featureExtractor.extract(new Event(jsonObject, null, null)));
 
 		Assert.assertEquals(5D, ret,0.0);
 	}
 
 	@Test
-	public void testFeatureExtractorWithSecondPriorityAdjustments(){
+	public void testFeatureExtractorWithSecondPriorityAdjustments() throws Exception{
 		FeatureExtractor featureExtractor = buildFeatureExtractor();
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(ORIGINAL_FIELD_NAME2, "82.165.195.70");
 
-		String ret = (String) featureExtractor.extract(jsonObject);
+		String ret = (String) featureExtractor.extract(new Event(jsonObject, null, null));
 
 		Assert.assertEquals("82.165.192.0", ret);
 	}
@@ -111,7 +117,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("host", "m123ofXXXendingwith334");
 
-		String ret = (String) featureExtractor.extract(jsonObject);
+		String ret = (String) featureExtractor.extract(new Event(jsonObject, null, null));
 
 		Assert.assertEquals("mofXXXendingwith", ret);
 	}
@@ -126,7 +132,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("source_ip", "82.165.195.70");
 
-		String ret = (String)featureExtractor.extract(jsonObject);
+		String ret = (String)featureExtractor.extract(new Event(jsonObject, null, null));
 
 		Assert.assertEquals("82.165.195.0", ret);
 	}
@@ -174,6 +180,42 @@ public class FeatureExtractorsTest {
 
 		Assert.assertEquals("82.165.195.0", value1);
 		Assert.assertEquals("mymachine", value2);
+	}
+	
+	@Test
+	public void	testFeatureExtractService_extractFeatureList_onKerberosLogin() throws Exception {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put(eventTypeFieldName, "kerberos_logins");
+		jsonObject.put("client_address", "82.165.195.70");
+		jsonObject.put("normalized_username", "normUser1");
+
+		Set<String> featureNames = new HashSet<>();
+		featureNames.addAll(Arrays.asList("feature3", "normalized_username"));
+
+
+		Map<String, Feature> res = featureExtractService.extract(featureNames, jsonObject);
+
+
+		String value1 = (String)(res.get("feature3")).getValue();
+		String value2 = (String)(res.get("normalized_username")).getValue();
+
+		Assert.assertEquals("82.165.195.0", value1);
+		Assert.assertEquals("normUser1", value2);
+	}
+	
+	@Test
+	public void	testFeatureExtractService_extractFeature_onKerberosLogin() throws Exception {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put(eventTypeFieldName, "kerberos_logins");
+		jsonObject.put("client_address", "82.165.195.70");
+
+		Set<String> featureNames = new HashSet<>();
+		featureNames.addAll(Arrays.asList("feature3"));
+
+		String featureName = "feature3";
+		Feature res = featureExtractService.extract(featureName, jsonObject);
+
+		Assert.assertEquals("82.165.195.0", res.getValue());
 	}
 
 }

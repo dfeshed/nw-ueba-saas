@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.extraction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public class IPv4FeatureAdjustorTest {
 	}
 
 	@Test
-	public void testClass20SubnetMask(){
+	public void testClass20SubnetMask() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(20);
 
 		String adjustedVal = (String)featureAdjustor.adjust("82.165.195.70", null);
@@ -49,7 +50,7 @@ public class IPv4FeatureAdjustorTest {
 	}
 
 	@Test
-	public void testZeroSubnetMask(){
+	public void testZeroSubnetMask() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(0);
 
 		String adjustedVal = (String)featureAdjustor.adjust("82.165.195.70", null);
@@ -58,7 +59,7 @@ public class IPv4FeatureAdjustorTest {
 	}
 
 	@Test
-	public void test31SubnetMask(){
+	public void test31SubnetMask() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(31);
 
 		String adjustedVal = (String)featureAdjustor.adjust("82.165.195.171", null);
@@ -67,7 +68,7 @@ public class IPv4FeatureAdjustorTest {
 	}
 
 	@Test
-	public void test24SubnetMask(){
+	public void test24SubnetMask() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(24);
 
 		String adjustedVal = (String)featureAdjustor.adjust("82.165.195.171", null);
@@ -76,14 +77,14 @@ public class IPv4FeatureAdjustorTest {
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testNegativeSubnetMask(){
+	public void testNegativeSubnetMask() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(-5);
 
 		featureAdjustor.adjust("82.165.195.171", null);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void testAbove31SubnetMask(){
+	public void testAbove31SubnetMask() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(32);
 
 		featureAdjustor.adjust("82.165.195.171", null);

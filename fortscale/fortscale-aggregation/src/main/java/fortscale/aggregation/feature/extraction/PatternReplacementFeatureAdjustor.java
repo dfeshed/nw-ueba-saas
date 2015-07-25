@@ -4,8 +4,6 @@ import static fortscale.utils.ConversionUtils.convertToString;
 
 import java.util.regex.Matcher;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
@@ -28,7 +26,7 @@ public class PatternReplacementFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, JSONObject message) {
+	public Object adjust(Object value, Event event) {
 		String originalFieldValue = convertToString(value);
 		if (StringUtils.isNotEmpty(originalFieldValue) && StringUtils.isNotEmpty(pattern)) {
 			// strip numbers from the hostname

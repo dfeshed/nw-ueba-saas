@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.extraction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.Assert;
 
 
@@ -43,7 +44,7 @@ public class InverseValueFeatureAdjustorTest {
 	}
 
 	@Test
-	public void testPositiveDenominator(){
+	public void testPositiveDenominator() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(DENOMINATOR_FOR_JSON_TEST);
 
 		Double adjustedVal = (Double)featureAdjustor.adjust(4.9, null);
@@ -52,7 +53,7 @@ public class InverseValueFeatureAdjustorTest {
 	}
 
 	@Test
-	public void testZeroFeatureValue(){
+	public void testZeroFeatureValue() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(DENOMINATOR_FOR_JSON_TEST);
 
 		Double adjustedVal = (Double)featureAdjustor.adjust(0, null);
@@ -61,7 +62,7 @@ public class InverseValueFeatureAdjustorTest {
 	}
 	
 	@Test 
-	public void testZeroDenominator(){
+	public void testZeroDenominator() throws Exception{
 		FeatureAdjustor featureAdjustor = buildFeatureAdjustor(-0.1);
 
 		Double adjustedVal = (Double)featureAdjustor.adjust(0.1, null);

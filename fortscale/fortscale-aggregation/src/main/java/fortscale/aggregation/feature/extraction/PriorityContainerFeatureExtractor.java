@@ -3,8 +3,6 @@ package fortscale.aggregation.feature.extraction;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,10 +23,10 @@ public class PriorityContainerFeatureExtractor implements FeatureExtractor {
 
 
 	@Override
-	public Object extract(JSONObject message) {
+	public Object extract(Event event) throws Exception {
 		Object ret = null;
 		for(FeatureExtractor extractor: featureExtractorList){
-			ret = extractor.extract(message);
+			ret = extractor.extract(event);
 			if(ret != null && ret instanceof String){
 				if(!StringUtils.isBlank((String) ret)){
 					break;

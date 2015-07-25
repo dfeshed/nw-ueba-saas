@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.extraction;
 
 import static fortscale.utils.ConversionUtils.convertToDouble;
-import net.minidev.json.JSONObject;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -21,7 +20,7 @@ public class InverseValueFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, JSONObject message) {
+	public Object adjust(Object value, Event event) {
 		Double originalFieldValue = convertToDouble(value);
 
 		Double invOriginalFieldValue = (originalFieldValue == null || originalFieldValue + denominator == 0) ? null : 1.0 / (originalFieldValue + denominator);

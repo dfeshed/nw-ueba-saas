@@ -3,8 +3,6 @@ package fortscale.aggregation.feature.extraction;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -23,10 +21,10 @@ public class ChainFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, JSONObject message) {
+	public Object adjust(Object value, Event event) throws Exception {
 		Object ret = value;
 		for(FeatureAdjustor adjustor: featureAdjustorList){
-			ret = adjustor.adjust(ret, message);
+			ret = adjustor.adjust(ret, event);
 			if(ret == null || (ret instanceof String && StringUtils.isBlank((String) ret))){
 				break;
 			}
