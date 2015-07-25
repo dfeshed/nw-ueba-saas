@@ -68,7 +68,6 @@
 		<grizzled-slf4j.version>1.0.1</grizzled-slf4j.version>
 		<!-- maven plugins versions -->
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
-		<esper-version>5.2.0</esper-version>
 	</properties>
 
 	<dependencies>
@@ -174,7 +173,6 @@
 		<dependency>
 			<groupId>com.espertech</groupId>
 			<artifactId>esper</artifactId>
-			<version>${esper-version}</version>
 		</dependency>
 
 		<!-- grizzled slf4j dependency needed in order to extend samza scala classes -->

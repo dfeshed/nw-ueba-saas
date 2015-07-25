@@ -74,26 +74,49 @@ public class ApiUserController extends BaseController{
 		ret.setTotal(data.size());
 		return ret;
 	}
-	
+
+	/**
+	 * Search user data by user name. This function is the same as details() but the parameter is username and not userid
+	 * @param username the name of the user
+	 * @return a {@link DataBean} that holds a list of {@link UserDetailsBean}
+	 */
+	@RequestMapping(value="/{username}/userdata", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<UserDetailsBean>> userDataByName(@PathVariable String username){
+		User user = userRepository.findByUsername(username);
+		return getUserDetail(user);
+	}
+
+	/**
+	 * Search user's data by user id (uuid is auto-generated in MongoDB)
+	 * @param id the user id from mongoDB
+	 * @param model
+	 * @return a {@link DataBean} that holds a list of {@link UserDetailsBean}
+	 */
 	@RequestMapping(value="/{id}/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> details(@PathVariable String id, Model model){
 		User user = userRepository.findOne(id);
+		return getUserDetail(user);
+	}
+
+	private DataBean<List<UserDetailsBean>> getUserDetail(User user) {
 		if(user == null){
 			return null;
 		}
-		
+
 		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, User> dnToUserMap = new HashMap<String, User>();
 
 		fillUserRelatedDns(user, userRelatedDnsSet);
 		fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
-		
+
 		UserDetailsBean ret = createUserDetailsBean(user, dnToUserMap, true);
 		return new DataListWrapperBean<UserDetailsBean>(ret);
 	}
-	
+
 	private UserDetailsBean createUserDetailsBean(User user, Map<String, User> dnToUserMap, boolean isWithThumbnail){
 		User manager = getUserManager(user, dnToUserMap);
 		List<User> directReports = getUserDirectReports(user, dnToUserMap);
