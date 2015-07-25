@@ -16,7 +16,7 @@ import fortscale.aggregation.feature.bucket.strategy.AbstractUserInactivityFeatu
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyFactory;
-import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyInMemoryStoreOne;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyInMemoryStore;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyStore;
 import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
 import fortscale.aggregation.feature.bucket.strategy.UserInactivityFeatureBucketStrategy;
@@ -32,7 +32,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 
 	@Test
 	public void update_method_should_create_new_data_but_should_not_update_the_end_time_afterwards() throws Exception {
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStoreOne();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		String username = "user1";
@@ -61,7 +61,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 
 	@Test
 	public void update_method_should_create_new_data_and_update_the_end_time_afterwards() throws Exception {
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStoreOne();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		String username = "user2";
@@ -92,7 +92,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 
 	@Test
 	public void update_method_should_create_new_data_twice() throws Exception {
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStoreOne();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		String username = "user3";
