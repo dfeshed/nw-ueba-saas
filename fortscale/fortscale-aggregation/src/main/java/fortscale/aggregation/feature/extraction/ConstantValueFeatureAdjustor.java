@@ -1,7 +1,5 @@
 package fortscale.aggregation.feature.extraction;
 
-import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
@@ -22,7 +20,7 @@ public class ConstantValueFeatureAdjustor implements FeatureAdjustor {
 	}
 
 	@Override
-	public Object adjust(Object value, JSONObject message) {
+	public Object adjust(Object value, Event event) {
 		return  constantValue;
 	}
 

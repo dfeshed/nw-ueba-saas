@@ -1,7 +1,5 @@
 package fortscale.aggregation.feature.extraction;
 
-import net.minidev.json.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -15,5 +13,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value=PatternReplacementFeatureAdjustor.class, name=PatternReplacementFeatureAdjustor.PATTERN_REPLACEMENT_FEATURE_ADJUSTOR_TYPE)
 })
 public interface FeatureAdjustor {
-	Object adjust(Object value, JSONObject message);
+	Object adjust(Object value, Event event) throws Exception;
 }
