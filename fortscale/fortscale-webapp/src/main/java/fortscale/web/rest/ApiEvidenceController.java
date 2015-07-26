@@ -6,6 +6,7 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.core.dao.EvidencesRepository;
 import fortscale.services.dataentity.DataEntitiesConfig;
 import fortscale.services.dataqueries.querydto.*;
+import fortscale.services.exceptions.InvalidValueException;
 import fortscale.utils.TimestampUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -57,10 +58,13 @@ public class ApiEvidenceController extends DataQueryController {
 	public DataBean<List<Map<String, Object>>> getTop3Events(@PathVariable String id,
 															 @RequestParam(defaultValue = "false") boolean requestTotal,
 															 @RequestParam(defaultValue = "true") boolean useCache,
-															 @RequestParam(required = false) Integer page, // starting from 0
+															 @RequestParam(defaultValue = "1") Integer page, // starting from page 1
 															 @RequestParam(defaultValue = "20") Integer size) {
 
 		Evidence evidence = evidencesDao.findById(id);
+		if (evidence == null || evidence.getId() == null){
+			throw new InvalidValueException("Can't get evidence ofr id: " + id);
+		}
 
 		String entityName = evidence.getEntityName();
 		String dataEntityId = evidence.getDataEntityId();
@@ -68,7 +72,13 @@ public class ApiEvidenceController extends DataQueryController {
 		Long startDate = evidence.getStartDate();
 		Long endDate = evidence.getEndDate();
 		//The convention is to ask for the first page by index (1) but the real index is (0)
-		page -=1;
+		if (page != null) {
+			if (page < 1) {
+				throw new InvalidValueException("Page number must be greater than 0");
+			}
+			page -=1;
+		}
+
 
 		switch (dataEntityId) {
 			case "amt_session":
