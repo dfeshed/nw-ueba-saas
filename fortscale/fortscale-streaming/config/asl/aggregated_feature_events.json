@@ -2,21 +2,58 @@
   "AggregatedFeatureEvents": {
     "Events": [
       {
-        "name": "distinct_number_of_src_machines",
-        "bucketConfName": "distinct_source_machines_kerberos_daily",
+        "name": "distinct_number_of_machines_kerberos",
+        "bucketConfName": "distinct_machines_kerberos_daily",
         "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
           "functionArgument": [
+            "src_machine_histogram",
             "dst_machine_histogram"
           ]
         },
         "aggregatedFeatureEventFunction": {
           "type": "aggr_feature_number_of_distinct_values_func",
-          "includeValues": "false"
+          "includeValues": false
           }
       },
+
+      {
+        "name": "distinct_number_of_machines_ssh",
+        "bucketConfName": "distinct_machines_ssh_daily",
+        "numberOfBuckets": 1,
+        "bucketsLeap": 1,
+        "waitAfterBucketCloseSeconds": 300,
+        "aggregatedFeatureNamesMap": {
+          "functionArgument": [
+            "src_machine_histogram",
+            "dst_machine_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_distinct_values_func",
+          "includeValues": false
+        }
+      },
+
+      {
+        "name": "number_of_vpn_events",
+        "bucketConfName": "number_of_vpn_events_daily",
+        "numberOfBuckets": 0,
+        "bucketsLeap": 0,
+        "waitAfterBucketCloseSeconds": 300,
+        "aggregatedFeatureNamesMap": {
+          "functionArgument": [
+            "username_histogram"
+          ]
+        },
+        "aggregatedFeatureEventFunction": {
+          "type": "aggr_feature_number_of_events_func"
+        }
+      },
+
+
       {
         "name": "name2",
         "bucketConfName": "bc2",

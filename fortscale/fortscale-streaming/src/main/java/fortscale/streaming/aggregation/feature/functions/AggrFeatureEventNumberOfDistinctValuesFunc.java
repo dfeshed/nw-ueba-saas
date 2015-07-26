@@ -18,7 +18,7 @@ import java.util.Map;
 public class AggrFeatureEventNumberOfDistinctValuesFunc extends AggrFeatureHistogramFunc {
     public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_number_of_distinct_values_func";
     public final static String FEATURE_NAME = "number_of_distinct_values";
-    private static final String FEATURE_DISTINCT_VALUES = "distinct_values";
+    private final static String FEATURE_DISTINCT_VALUES = "distinct_values";
 
     private boolean includeValues = false;
 
@@ -26,7 +26,7 @@ public class AggrFeatureEventNumberOfDistinctValuesFunc extends AggrFeatureHisto
      * Create new feature by running the associated {@link AggrFeatureFunction} that is configured in the given
      * {@link AggregatedFeatureEventConf} and using the aggregated features as input to those functions.
      *
-     * @param aggrFeatureEventConf               the specification of the feature to be created
+     * @param aggrFeatureEventConf the specification of the feature to be created
      * @param multipleBucketsAggrFeaturesMapList list of aggregated feature maps from multiple buckets
      * @return a new feature created by the relevant function.
      */
@@ -47,7 +47,9 @@ public class AggrFeatureEventNumberOfDistinctValuesFunc extends AggrFeatureHisto
         return resFeature;
     }
 
-    public void SetIncludeValues(boolean includeValues) {
+    // Getter and Setter are only for unit tests
+    public boolean getIncludeValues() { return this.includeValues; }
+    public void setIncludeValues(boolean includeValues) {
         this.includeValues = includeValues;
     }
 }

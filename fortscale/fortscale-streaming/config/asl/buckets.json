@@ -1,7 +1,8 @@
 {
   "BucketConfs": [
     {
-      "name": "distinct_source_machines_kerberos_daily",
+      /*Evidence 206 + 207*/
+      "name": "distinct_machines_kerberos_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -11,6 +12,7 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
+          /*Evidence 206*/
           "name": "src_machine_histogram",
           "featureNamesMap": {
             "groupBy": ["normalized_src_machine"]
@@ -18,6 +20,36 @@
           "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
         },
         {
+          /*Evidence 207*/
+          "name": "dst_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_dst_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        }
+      ]
+    },
+    {
+      /*Evidence 307 + 308*/
+      "name": "distinct_machines_ssh_daily",
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "ssh"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          /*Evidence 307*/
+          "name": "src_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": ["normalized_src_machine"]
+          },
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+        },
+        {
+          /*Evidence 308*/
           "name": "dst_machine_histogram",
           "featureNamesMap": {
             "groupBy": ["normalized_dst_machine"]
@@ -28,44 +60,23 @@
     },
 
     {
-      "name": "bc1",
+      /*Evidence 104*/
+      "name": "number_of_vpn_events_daily",
       "contextFieldNames": [
         "normalized_username"
       ],
       "dataSources": [
-        "ssh",
-        "4769"
+        "vpn"
       ],
-      "strategyName": "fixed_duration_hourly",
+      "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "aggr-feature-1",
+          "name": "username_histogram",
           "featureNamesMap": {
-            "groupBy": ["normalized_dst_machine"]
+            "groupBy": ["normalized_username"]
           },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
-        }
-      ]
-    },
-
-    {
-      "name": "bc2",
-      "contextFieldNames": [
-        "normalized_username",
-        "normalized_src_machine"
-      ],
-      "dataSources": [
-        "ssh",
-        "4769"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "aggr-feature-2",
-          "featureNamesMap": {
-            "groupBy": ["normalized_dst_machine"]
-          },
-          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"}
+          "aggrFeatureFuncJson": {"type": "aggr_feature_histogram_func"},
+          "filter": {"jsonPath": "[?(@.status == 'VALUE OF FAILED VPN??')]"}
         }
       ]
     }
