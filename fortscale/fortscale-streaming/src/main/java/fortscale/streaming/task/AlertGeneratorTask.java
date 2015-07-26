@@ -22,10 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.isConfigContainKey;
@@ -122,7 +119,9 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	private void createEsperConfiguration(Config config){
 		//subscribe instances of Esper EPL statements
 		Config fieldsSubset = config.subset("fortscale.esper.rule.name.");
-		for (String rule : fieldsSubset.keySet()) {
+		ArrayList<String> fields = new ArrayList<String>(fieldsSubset.keySet());
+		Collections.sort(fields);
+		for (String rule : fields) {
 			String ruleName = getConfigString(config, String.format("fortscale.esper.rule.name.%s", rule));
 			String statement = getConfigString(config, String.format("fortscale.esper.rule.statement.%s", rule));
 			String subscriberBeanName = getConfigString(config, String.format("fortscale.esper.rule.subscriberBean.%s", rule));
