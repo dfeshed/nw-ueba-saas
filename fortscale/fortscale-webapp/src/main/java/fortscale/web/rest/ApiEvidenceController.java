@@ -61,14 +61,14 @@ public class ApiEvidenceController extends DataQueryController {
 															 @RequestParam(defaultValue = "20") Integer size) {
 
 		Evidence evidence = evidencesDao.findById(id);
-		String entityType;
+
 		String entityName = evidence.getEntityName();
 		String dataEntityId = evidence.getDataEntityId();
 		String dataEntityTimestampField = "event_time_utc";
 		Long startDate = evidence.getStartDate();
 		Long endDate = evidence.getEndDate();
 		//The convention is to ask for the first page by index (1) but the real index is (0)
-		Integer pageSize = size - 1;
+		page -=1;
 
 		switch (dataEntityId) {
 			case "amt_session":
@@ -96,8 +96,8 @@ public class ApiEvidenceController extends DataQueryController {
 		List<QuerySort> querySortList = dataQueryHelper.createQuerySort(dataEntityTimestampField, SortDirection.DESC);
 
 
-		DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntityId, "*", termsMap, querySortList, pageSize);
-		return dataQueryHandler(dataQueryObject, requestTotal, useCache, page, pageSize);
+		DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntityId, "*", termsMap, querySortList, size);
+		return dataQueryHandler(dataQueryObject, requestTotal, useCache, page, size);
 	}
 
 	/**
