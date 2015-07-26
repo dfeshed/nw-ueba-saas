@@ -48,14 +48,28 @@ public class ApiEvidenceController {
 
 	/**
 	 * get histogram of evidence - show the regular behaviour of entity, to emphasize the anomaly in the evidence.
-	 * @param id
-	 * @param bucketConfig
+	 *
+	 * URL example:
+	 * ../../api/evidences/c4f047ca-bff8-4dee-a91a-9649819188d7/getHistogram?entityType=user&entityName=edward@snow.com&dataSource=kerberos&feature=dst_machine&evidenceTime=1437480000
+	 *
+	 * @param id the evidence id
+	 * @param entity_type the entity type (user, machine etc.)
+	 * @param entity_name the entity name (e.g. mike@cnn.com)
+	 * @param data_entity_id the data source (ssh, kerberos, etc.), or combination of some
+	 * @param feature the related feature
+	 * @param start_time the evidence start time in seconds
+	 *
 	 * @return list of histogramPair
 	 */
-	@RequestMapping(value="/{id}/getHistogram",method = RequestMethod.GET)
+	@RequestMapping(value="/{id}/get-histogram",method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<HistogramPair>> getEvidenceHistogram(@PathVariable String id, String bucketConfig){
+	public DataBean<List<HistogramPair>> getEvidenceHistogram( @PathVariable String id,
+																@RequestParam String entity_type,
+																@RequestParam String entity_name,
+																@RequestParam String data_entity_id,
+																@RequestParam String feature,
+																@RequestParam long start_time){
 		DataBean<List<HistogramPair>> toReturn = new DataBean<>();
 
 		List<HistogramPair> histogram = new ArrayList<>();
@@ -68,10 +82,13 @@ public class ApiEvidenceController {
 		myMap.put(key1,count);
 		stub.setMap(myMap);
 
-		//create web histogram from histogram
+		//convert histogram to ui format
 		for (Map.Entry<String,Number> entry: stub.getMap().entrySet()){
 			histogram.add(new HistogramPair(entry.getKey(),entry.getValue()));
 		}
+
+		Map<String,Object> info = new HashMap<>();
+		info.put("test1","count1");
 
 		//set data of the web bean
 		toReturn.setData(histogram);
