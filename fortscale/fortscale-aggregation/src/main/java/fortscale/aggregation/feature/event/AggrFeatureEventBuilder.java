@@ -8,9 +8,11 @@ import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import net.minidev.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.text.SimpleDateFormat;
@@ -39,6 +41,8 @@ public class AggrFeatureEventBuilder {
     private Map<Map<String, String>, AggrFeatureEventData> context2featureDataMap;
     private Map<String, AggrFeatureEventData> bucktID2featureDataMap;
 
+    @Value("${fetch.data.cycle.in.seconds}")
+    private long fetchDataCycleInSeconds;
 
     @Autowired
     private DataSourcesSyncTimer dataSourcesSyncTimer;
@@ -107,7 +111,7 @@ public class AggrFeatureEventBuilder {
         bucktID2featureDataMap.put(bucketID, eventData);
 
         List<String> dataSources = conf.getBucketConf().getDataSources();
-        long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(dataSources, endTime, eventData);
+        long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(dataSources, endTime+fetchDataCycleInSeconds, eventData);
         eventData.setSyncTimerRegistrationID(registrationID);
     }
 
@@ -219,7 +223,7 @@ public class AggrFeatureEventBuilder {
 
     void registerInTimerForNextBucketEndTime(AggrFeatureEventData aggrFeatureEventData, Long time) {
         if(aggrFeatureEventData!=null && time!=null) {
-            long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(conf.getBucketConf().getDataSources(), time, aggrFeatureEventData);
+            long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(conf.getBucketConf().getDataSources(), time + fetchDataCycleInSeconds, aggrFeatureEventData);
             aggrFeatureEventData.setSyncTimerRegistrationID(registrationID);
         }
     }
