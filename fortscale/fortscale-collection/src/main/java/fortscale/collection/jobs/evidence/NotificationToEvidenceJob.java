@@ -15,6 +15,11 @@ import java.util.Date;
 
 /**
  * Created by Amir Keren on 26/07/2015.
+ *
+ * This task runs in batches in a constant interval, collects all of the notifications from Mongo that were created
+ * since its last run and converts them into Evidence objects. Finally, it pushes the Evidence objects to the proper
+ * Kafka topic to be streamed into the system.
+ *
  */
 public class NotificationToEvidenceJob extends FortscaleJob {
 
@@ -28,11 +33,14 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private StatefulInternalStashRepository statefulInternalStashRepository;
 
 	@Override protected void runSteps() throws Exception {
+		logger.debug("Running notification to evidence job");
 		StatefulInternalStash stash = statefulInternalStashRepository.findBySuuid(StatefulInternalStash.SUUID);
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, TIME_STAMP));
+		logger.debug("Getting notifications after time {}", stash.getLatest_ts());
 		for (Notification notification: notificationsRepository.findByTsGreaterThan(stash.getLatest_ts(), sort)) {
 			//TODO - convert notification to event format, send it to kafka topic
 		}
+		logger.debug("Finished running notification to evidence job, updating timestamp");
 		statefulInternalStashRepository.updateLatestTS(stash.getSuuid(), new Date().getTime());
 	}
 
