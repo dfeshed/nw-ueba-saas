@@ -14,6 +14,8 @@ public interface NotificationsRepositoryCustom {
 	List<Notification> findByFsIdExcludeComments(String fsid, boolean includeDissmissed, long before, long after);
 	
 	List<Notification> findByTsGreaterThanExcludeComments(long ts, Sort sort);
+
+	List<Notification> findByTsGreaterThan(long ts, Sort sort);
 	
 	List<NotificationAggregate> findAllAndAggregate(Optional<Integer> daysToFetch, PageRequest request, int maxPages);
 

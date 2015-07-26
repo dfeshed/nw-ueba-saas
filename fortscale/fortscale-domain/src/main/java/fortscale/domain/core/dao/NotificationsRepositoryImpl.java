@@ -53,6 +53,14 @@ public class NotificationsRepositoryImpl implements NotificationsRepositoryCusto
 		query.fields().exclude("comments");
 		return mongoTemplate.find(query, Notification.class);
 	}
+
+	@Override
+	public List<Notification> findByTsGreaterThan(long ts, Sort sort) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("ts").gt(ts));
+		query.with(sort);
+		return mongoTemplate.find(query, Notification.class);
+	}
 	
 	@Override
 	public List<NotificationAggregate> findAllAndAggregate(Optional<Integer> daysToFetch, PageRequest request, int maxPages) {
