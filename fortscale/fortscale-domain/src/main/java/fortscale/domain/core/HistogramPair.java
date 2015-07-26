@@ -13,13 +13,13 @@ import java.io.Serializable;
 public class HistogramPair implements Serializable {
 
 	private String key;
-	private Number count;
+	private Number value;
 
 	public HistogramPair(){}
 
 	public HistogramPair(String key, Number count){
 		this.key = key;
-		this.count = count;
+		this.value = count;
 	}
 
 	public String getKey() {
@@ -30,12 +30,12 @@ public class HistogramPair implements Serializable {
 		this.key = key;
 	}
 
-	public Number getCount() {
-		return count;
+	public Number getValue() {
+		return value;
 	}
 
-	public void setCount(Number count) {
-		this.count = count;
+	public void setValue(Number value) {
+		this.value = value;
 	}
 
 }
