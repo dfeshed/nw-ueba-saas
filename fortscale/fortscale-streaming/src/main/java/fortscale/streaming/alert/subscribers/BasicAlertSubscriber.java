@@ -35,13 +35,13 @@ public class BasicAlertSubscriber implements AlertSubscriber{
 
             if (insertStream != null) {
                 List<Evidence> evidences = new ArrayList<>();
-                for (Map insertEventMap : insertStream) {
-                    String id = (String) insertEventMap.get("id");
+                String[] idList = (String[]) insertStream[0].get("idList");
+                for (String id : idList) {
+
                     //create new Evidence with the evidence id. it creates reference to the evidence object in mongo.
                     Evidence evidence = new Evidence(id);
                     evidences.add(evidence);
                 }
-
                 String title = (String) insertStream[0].get("title");
                 Long startDate = (Long) insertStream[0].get("startDate");
                 Long endDate = (Long) insertStream[0].get("endDate");
