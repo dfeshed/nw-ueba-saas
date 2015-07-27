@@ -74,7 +74,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			} else if (!normalizedUsername.contains("@")) {
 				//TODO - what about cache?
 				List<User> users = userRepository.findUsersBysAMAccountName(normalizedUsername);
-				if (users != null && users.size() == 1) {
+				if (users.size() == 1) {
 					normalizedUsername = users.get(0).getUsername();
 				}
 			}
