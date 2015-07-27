@@ -63,8 +63,8 @@ public class ApiEvidenceController extends DataQueryController {
 	@ResponseBody
 	@LogException
 	public DataBean<List<Map<String, Object>>> getTop3Events(@PathVariable String id,
-															 @RequestParam(defaultValue = "false") boolean requestTotal,
-															 @RequestParam(defaultValue = "true") boolean useCache,
+															 @RequestParam(defaultValue = "false") boolean request_total,
+															 @RequestParam(defaultValue = "true") boolean use_cache,
 															 @RequestParam(defaultValue = "1") Integer page, // starting from page 1
 															 @RequestParam(defaultValue = "20") Integer size) {
 
@@ -114,7 +114,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 
 		DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntityId, "*", termsMap, querySortList, size);
-		return dataQueryHandler(dataQueryObject, requestTotal, useCache, page, size);
+		return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
 	}
 
 	/**
