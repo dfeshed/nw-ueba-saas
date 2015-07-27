@@ -30,8 +30,12 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(NotificationToEvidenceJob.class);
 
-	private final String TIME_STAMP = "ts";
 	private final String TOPIC_NAME = "fortscale-notification-event-score";
+	private final String TIME_STAMP_FIELD = "ts";
+	private final String NOTIFICATION_SCORE_FIELD = "notification_score";
+	private final String NOTIFICATION_CAUSE_FIELD = "notification_cause";
+	private final String NORMALIZED_USERNAME_FIELD = "normalized_username";
+	private final int SCORE = 80;
 
 	@Autowired
 	private NotificationsRepository notificationsRepository;
@@ -44,7 +48,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		logger.debug("Running notification to evidence job");
 		//get the last runtime from the stateful_internal_stash Mongo repository
 		StatefulInternalStash stash = statefulInternalStashRepository.findBySuuid(StatefulInternalStash.SUUID);
-		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, TIME_STAMP));
+		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, TIME_STAMP_FIELD));
 		logger.debug("Getting notifications after time {}", stash.getLatest_ts());
 		KafkaEventsWriter streamWriter = new KafkaEventsWriter(TOPIC_NAME);
 		//get all notifications that occured after the last runtime of the job
@@ -54,32 +58,27 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 			//convert each notification to evidence and send it to the appropriate Kafka topic
 			JSONObject evidence = new JSONObject();
 			//TODO - need to understand score better, put properties in xml file and investigate normalized_username
-			evidence.put("notification_score", 80);
-			evidence.put("notification_cause", notification.getCause());
-			String normalizedUsername;
-			if (notification.getAttributes() != null &&
-					notification.getAttributes().containsKey("normalized_username")) {
-				normalizedUsername = notification.getAttributes().get("normalized_username");
-			} else {
-				//attempt to normalize username
-				//TODO - what about cache (userRepository) ???
-				normalizedUsername = notification.getName();
-				//if username is an active directory distinguished name
-				if (normalizedUsername.toLowerCase().contains("dc=")) {
-					User user = userRepository.findByAdDn(normalizedUsername);
-					if (user != null) {
-						normalizedUsername = user.getUsername();
-					}
-				//if username is a short samaccountname
-				} else if (!normalizedUsername.contains("@")) {
-					List<User> users = userRepository.findUsersBysAMAccountName(normalizedUsername);
-					if (users != null && users.size() == 1) {
-						normalizedUsername = users.get(0).getUsername();
-					}
+			evidence.put(NOTIFICATION_SCORE_FIELD, SCORE);
+			evidence.put(NOTIFICATION_CAUSE_FIELD, notification.getCause());
+			String normalizedUsername = notification.getName();
+			//attempt to normalize username
+			if (notification.getCause().equals("VPN_user_creds_share")) {
+				normalizedUsername = notification.getDisplayName();
+			//if username is an active directory distinguished name
+			} else if (normalizedUsername.toLowerCase().contains("dc=")) {
+				User user = userRepository.findByAdDn(normalizedUsername);
+				if (user != null) {
+					normalizedUsername = user.getUsername();
 				}
-				//TODO - if username is a computer name???
+			//if username is a short name
+			} else if (!normalizedUsername.contains("@")) {
+				//TODO - what about cache?
+				List<User> users = userRepository.findUsersBysAMAccountName(normalizedUsername);
+				if (users != null && users.size() == 1) {
+					normalizedUsername = users.get(0).getUsername();
+				}
 			}
-			evidence.put("normalized_username", normalizedUsername);
+			evidence.put(NORMALIZED_USERNAME_FIELD, normalizedUsername);
 			streamWriter.send(notification.getIndex(), evidence.toJSONString(JSONStyle.NO_COMPRESS));
 		}
 		Date date = new Date();
