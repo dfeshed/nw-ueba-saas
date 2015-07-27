@@ -145,4 +145,15 @@ public class ApiAlertController extends BaseController {
 		return toReturn;
 	}
 
+	/**
+	 * A URL for checking the controller
+	 * @return
+	 */
+	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public Date selfCheck(){
+		return new Date();
+	}
+
 }
