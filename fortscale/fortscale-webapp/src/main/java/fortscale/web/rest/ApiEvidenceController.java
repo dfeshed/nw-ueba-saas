@@ -13,6 +13,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,9 @@ public class ApiEvidenceController extends DataQueryController {
 
 	@Autowired
 	private DataEntitiesConfig dataEntitiesConfig;
+
+	@Value("${impala.data.table.fields.normalized_username:normalized_username}")
+	private String normalizedUsernameField;
 
 	/**
 	 * The API to get a single evidence. GET: /api/evidences/{evidenceId}
@@ -107,7 +111,7 @@ public class ApiEvidenceController extends DataQueryController {
 		//add conditions
 		List<Term> termsMap = new ArrayList<>();
 		//add condition to filter user
-		Term term = dataQueryHelper.createUserTerm(entityName);
+		Term term = dataQueryHelper.createUserTerm(entityName, normalizedUsernameField);
 		termsMap.add(term);
 		//add condition about time range
 		Long currentTimestamp = System.currentTimeMillis();

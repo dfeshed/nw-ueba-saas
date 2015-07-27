@@ -16,8 +16,6 @@ public class DataQueryHelper {
 
     private DataEntitiesConfig dataEntitiesConfig;
 
-    private String userField = "normalized_username";
-
     public DataEntitiesConfig getDataEntitiesConfig() {
         return dataEntitiesConfig;
     }
@@ -123,12 +121,12 @@ public class DataQueryHelper {
      * @param userName the user name to look for
      * @return
      */
-    public Term createUserTerm(String userName){
+    public Term createUserTerm(String userName, String usernameField){
         ConditionField updateUserTerm = new ConditionField();
         updateUserTerm.setQueryOperator(QueryOperator.equals);
         updateUserTerm.setValue(userName);
         DataQueryField dataQueryUserField = new DataQueryField();
-        dataQueryUserField.setId(userField);
+        dataQueryUserField.setId(usernameField);
         updateUserTerm.setField(dataQueryUserField);
 
         return updateUserTerm;
