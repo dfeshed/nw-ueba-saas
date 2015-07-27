@@ -36,7 +36,6 @@ public class AggregatedFeatureConf implements Serializable {
 		Assert.isTrue(StringUtils.isNotBlank(name));
 
 		// Validate featureNamesMap
-		Assert.notEmpty(featureNamesMap);
 		for (Map.Entry<String, List<String>> entry : featureNamesMap.entrySet()) {
 			Assert.isTrue(StringUtils.isNotBlank(entry.getKey()));
 			Assert.notEmpty(entry.getValue());
