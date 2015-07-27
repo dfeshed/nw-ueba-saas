@@ -69,15 +69,15 @@
           "includeValues": false
         }
       },
-      /*Evidence 104??*/
+      /*Evidence 104*/
       {
         "name": "number_of_failed_vpn_events",
         "bucketConfName": "user_vpn_events_daily",
-        "numberOfBuckets": 30,
+        "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
-          "functionArgument": [
+          "aggregated_feature_name_to_sum": [
             "number_of_failed_events"
           ]
         },
@@ -85,15 +85,15 @@
           "type": "aggr_feature_number_of_events_func"
         }
       },
-      /*Evidence 204??*/
+      /*Evidence 204*/
       {
         "name": "number_of_successful_kerberos_events",
         "bucketConfName": "user_kerberos_daily",
-        "numberOfBuckets": 30,
+        "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
-          "functionArgument": [
+          "aggregated_feature_name_to_sum": [
             "number_of_susccessful_events"
           ]
         },
@@ -101,11 +101,11 @@
           "type": "aggr_feature_number_of_events_func"
         }
       },
-      /*Evidence 205??*/
+      /*Evidence 205*/
       {
         "name": "number_of_failed_kerberos_events",
         "bucketConfName": "user_kerberos_daily",
-        "numberOfBuckets": 30,
+        "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
@@ -113,19 +113,19 @@
             "number_of_failed_events"
           ]
         },
-        "aggregatedFeatureEventFunction": {
+        "aggregated_feature_name_to_sum": {
           "type": "aggr_feature_number_of_events_func"
         }
       },
-      /*Evidence 305??*/
+      /*Evidence 305*/
       {
         "name": "number_of_successful_ssh_events",
         "bucketConfName": "user_ssh_daily",
-        "numberOfBuckets": 30,
+        "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
-          "functionArgument": [
+          "aggregated_feature_name_to_sum": [
             "number_of_susccessful_events"
           ]
         },
@@ -133,16 +133,16 @@
           "type": "aggr_feature_number_of_events_func"
         }
       },
-      /*Evidence 306??*/
+      /*Evidence 306*/
       {
         "name": "number_of_failed_events",
         "bucketConfName": "user_ssh_daily",
-        "numberOfBuckets": 30,
+        "numberOfBuckets": 1,
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
-          "functionArgument": [
-            "username_histogram"
+          "aggregated_feature_name_to_sum": [
+            "number_of_failed_events"
           ]
         },
         "aggregatedFeatureEventFunction": {

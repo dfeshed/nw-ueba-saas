@@ -3,14 +3,11 @@ package fortscale.aggregation.feature.functions;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.aggregation.feature.util.GenericHistogram;
 import net.minidev.json.JSONObject;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by orend on 23/07/2015.
@@ -49,7 +46,7 @@ public class AggrFeatureEventNumberOfNewOccurencesFunc extends AggrFeatureHistog
 			previousFeaturesSet = ((GenericHistogram)previousFeaturesAggr.getValue()).getObjects();
 		}
 		else {
-			previousFeaturesSet = new HashSet<Object>();
+			previousFeaturesSet = Collections.emptySet();
 		}
 		currentFeaturesSet = ((GenericHistogram)lastFeaturesAggr.getValue()).getObjects();
 
@@ -69,11 +66,13 @@ public class AggrFeatureEventNumberOfNewOccurencesFunc extends AggrFeatureHistog
 	public void setIncludeValues(boolean includeValues) { this.includeValues = includeValues; }
 
 	private Set<Object> substractSets(Set<Object> setA, Set<Object> setB) {
-		Set<Object> symmetricDiff = new HashSet<Object>(setA);
-		Set<Object> intersectionSet = new HashSet<Object>(setA);
-		intersectionSet.retainAll(setB);
-		symmetricDiff.removeAll(intersectionSet);
+		Set<Object> ret = new HashSet<>();
+		for(Object a: setA){
+			if(!setB.contains(a)){
+				ret.add(a);
+			}
+		}
 
-		return symmetricDiff;
+		return ret;
 	}
 }
