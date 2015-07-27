@@ -51,6 +51,7 @@ public class AggrFeatureEventBuilder {
 
     private FeatureBucketsService featureBucketsService;
 
+
     AggrFeatureEventBuilder(AggregatedFeatureEventConf conf, FeatureBucketStrategy bucketStrategy, AggrFeatureEventService aggrFeatureEventService, FeatureBucketsService featureBucketsService) {
         this.conf = conf;
         this.bucketStrategy = bucketStrategy;
@@ -60,10 +61,13 @@ public class AggrFeatureEventBuilder {
         bucktID2featureDataMap = new HashMap<>();
     }
 
+    AggrFeatureEventService getAggrFeatureEventService() {
+        return aggrFeatureEventService;
+    }
 
     /*
-    * Should be used only by Unit Tests.
-     */
+        * Should be used only by Unit Tests.
+         */
     void setFeatureBucketsService(FeatureBucketsService featureBucketsService) {
         this.featureBucketsService = featureBucketsService;
     }
@@ -99,128 +103,115 @@ public class AggrFeatureEventBuilder {
     void updateAggrFeatureEventData(String bucketID, String strategyId, Map<String, String> context, long startTime, long endTime) {
         AggrFeatureEventData eventData = context2featureDataMap.get(context);
         if(eventData==null) {
-            eventData = new AggrFeatureEventData(this, context, conf.getBucketsLeap(), strategyId);
+            eventData = new AggrFeatureEventData(this, context, strategyId);
             context2featureDataMap.put(context, eventData);
         }
 
-        eventData.addBucketID(bucketID, startTime, endTime);
+        AggrFeatureEventData.BucketData bucketData =  eventData.addBucketID(bucketID, startTime, endTime);
         bucktID2featureDataMap.put(bucketID, eventData);
 
-        List<String> dataSources = conf.getBucketConf().getDataSources();
-        long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(dataSources, endTime, eventData);
-        eventData.setSyncTimerRegistrationID(registrationID);
+        registerInTimerForNextBucketEndTime(bucketData, endTime);
     }
 
     void updateFeatureBacketEndTime(String bucketID, Long endTime) {
         if(bucketID!=null && StringUtils.isNotEmpty(bucketID)) {
             AggrFeatureEventData eventData = bucktID2featureDataMap.get(bucketID);
             if(eventData!=null) {
-                eventData.setEndTime(bucketID, endTime);
-                long newRegistrationID = dataSourcesSyncTimer.updateNotificationRegistration(eventData.getSyncTimerRegistrationID(), endTime);
-                eventData.setSyncTimerRegistrationID(newRegistrationID);
+                AggrFeatureEventData.BucketData bucketData = eventData.setEndTime(bucketID, endTime);
+                long newRegistrationID = dataSourcesSyncTimer.updateNotificationRegistration(bucketData.getSyncTimerRegistrationID(), endTime);
+                bucketData.setSyncTimerRegistrationID(newRegistrationID);
             }
         }
     }
 
-    public void dataSourcesReachedTime(AggrFeatureEventData aggrFeatureEventData) {
+    public void dataSourcesReachedTime(AggrFeatureEventData aggrFeatureEventData, AggrFeatureEventData.BucketData wakedBucketData) {
         List<Map<String, Feature>> bucketAggrFeaturesMapList = new ArrayList<>();
 
         Long startTime=0L;
-        Long endTime=0L;
 
-        // Checking if need to create event based on bucketLeap
-        if(aggrFeatureEventData.getNumberOfBucketsToWaitBeforeSendingNextEvent()<=0) {
+        // Retrieving the aggregated features from the latest 'numberOfBuckets'
+        //TODO: need to change the code to take only those buckets that are older then the bucket that is being
+        // closed right now.
+        //TODO: ask the strategy for the next bucket only if closing the last bucket.
+        List<AggrFeatureEventData.BucketData> bucketIDs = aggrFeatureEventData.getBucketIDs();
 
-            aggrFeatureEventData.updateNumberOfBucketsToWaitBeforeSendingNextEvent();
+        /*
+        * TODO: handle the case when there are less then numberOfBuckets in the list
+        * currently if there are not enough buckets in the list we do not create an event.
+        * When we'll have support for historical 'bucket ticks' then we can use it to
+        * retrieve the buckets from the bucket store by query instead of using the  EventData
+        * bucketIDs list.
+        * */
 
-            // Retrieving the aggregated features from the latest 'numberOfBuckets'
-            //TODO: need to change the code to take only those buckets that are older then the bucket that is being
-            // closed right now.
-            //TODO: ask the strategy for the next bucket only if closing the last bucket.
-            List<AggrFeatureEventData.BucketData> bucketIDs = aggrFeatureEventData.getBucketIDs();
-            int i = bucketIDs.size() - conf.getNumberOfBuckets();
+        int wakedBucketDataIndex = bucketIDs.indexOf(wakedBucketData);
 
-            /*
-            * TODO: handle the case when there are less then numberOfBuckets in the list
-            * currently if there are not enough buckets in the list we do not create an event.
-            * When we'll have support for historical 'bucket ticks' then we can use it to
-            * retrieve the buckets from the bucket store by query instead of using the  EventData
-            * bucketIDs list.
-            * */
-            if(i >= 0) {
-                int firstBucketIndex = i;
-                int lastBucketIndex = i+conf.getNumberOfBuckets()-1;
-                //  Enough buckets in the list to create the event
-                for (; i < bucketIDs.size(); i++) {
-                    AggrFeatureEventData.BucketData bucketData = bucketIDs.get(i);
-                    String bucketID = bucketData.getBucketID();
+        boolean leapTurn = aggrFeatureEventData.doesItMatchBucketLeap(wakedBucketData);
 
-                    // Creating an empty bucket & aggrFeatures map for the empty 'bucket tick' case
-                    Map<String, Feature> aggrFeatures = new HashMap<>();
-                    FeatureBucket bucket = null;
+        if(  wakedBucketDataIndex >=0 && leapTurn
+                && wakedBucketDataIndex >= (conf.getNumberOfBuckets()-1))   //  Enough buckets in the list to create the event
+        {
 
-                    // If bucketID is null it means an empty 'bucket tick'
-                    if (bucketID != null) {
-                        bucket = featureBucketsService.getFeatureBucket(conf.getBucketConf(), bucketID);
-                    }
+            aggrFeatureEventData.setLastSentEventBucketData(wakedBucketData);
+            int firstBucketIndex = wakedBucketDataIndex - conf.getNumberOfBuckets()+1;
+            int i = firstBucketIndex;
 
-                    if (bucket != null) {
-                        aggrFeatures = bucket.getAggregatedFeatures();
-                        if (i == firstBucketIndex) {
-                            startTime = bucket.getStartTime();
-                        }
-                        if (i == lastBucketIndex) {
-                            endTime = bucket.getEndTime();
-                        }
-                    } else { // Empty bucket tick
-                        Assert.notNull(bucketData.getStrategyData());
-                        if (i == firstBucketIndex) {
-                            startTime = bucketData.getStrategyData().getStartTime();
-                        }
-                        if (i == lastBucketIndex) {
-                            endTime = bucketData.getStrategyData().getEndTime();
-                        }
-                    }
-                    bucketAggrFeaturesMapList.add(aggrFeatures);
+            for (; i <= wakedBucketDataIndex; i++) {
+                AggrFeatureEventData.BucketData bucketData = bucketIDs.get(i);
+                String bucketID = bucketData.getBucketID();
+
+                // Creating an empty bucket & aggrFeatures map for the empty 'bucket tick' case
+                Map<String, Feature> aggrFeatures = new HashMap<>();
+                FeatureBucket bucket = null;
+
+                // If bucketID is null it means an empty 'bucket tick'
+                if (bucketID != null) {
+                    bucket = featureBucketsService.getFeatureBucket(conf.getBucketConf(), bucketID);
                 }
 
-                // Calculating the new feature
-                Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
-
-                // Building the event
-                JSONObject event = buildEvent(aggrFeatureEventData.getContext(), feature, startTime, endTime);
-
-                // Sending the event
-                sendEvent(event);
-
-                // Cleaning old buckets
-                int howManyToRemove =  bucketIDs.size() - conf.getNumberOfBuckets();
-                for ( i=0; i < howManyToRemove; i++) {
-                    AggrFeatureEventData.BucketData bucketData = aggrFeatureEventData.removeFirstBucketData();
-                    if(bucketData.getBucketID()!=null) {
-                        aggrFeatureEventService.removeBucketID2builderMapping(bucketData.getBucketID(), this);
+                if (bucket != null) {
+                    aggrFeatures = bucket.getAggregatedFeatures();
+                    if (i == firstBucketIndex) {
+                        startTime = bucket.getStartTime();
+                    }
+                } else { // Empty bucket tick
+                    Assert.notNull(bucketData.getStrategyData());
+                    if (i == firstBucketIndex) {
+                        startTime = bucketData.getStrategyData().getStartTime();
                     }
                 }
+                bucketAggrFeaturesMapList.add(aggrFeatures);
+            }
+            wakedBucketData.setWasSentAsLeadingBucket(true);
 
-            } //if(bucketIDs.size()-i == conf.getNumberOfBuckets())
+            // Calculating the new feature
+            Feature feature = aggrFeatureFuncService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
 
-        } //if(aggrFeatureEventData.getNumberOfBucketsToWaitBeforeSendingNextEvent()<=0)
+            // Building the event
+            JSONObject event = buildEvent(aggrFeatureEventData.getContext(), feature, startTime, wakedBucketData.getEndTime());
 
-        // Registering in timer to be waked up on the next bucket end time
-        // TODO: add logic to stop registering for next bucket updates if there are X number of empty buckets
-        FeatureBucketStrategyData featureBucketStrategyData = bucketStrategy.getNextBucketStrategyData(conf.getBucketConf(), aggrFeatureEventData.getFirstBucketStrategyId(), endTime);
-        if(featureBucketStrategyData!=null) {
-            aggrFeatureEventData.nextBucketEndTimeUpdate(featureBucketStrategyData);
-        } else {
-            bucketStrategy.notifyWhenNextBucketEndTimeIsKnown(conf.getBucketConf(), aggrFeatureEventData.getFirstBucketStrategyId(), aggrFeatureEventData, endTime);
+            // Sending the event
+            sendEvent(event);
+
+            aggrFeatureEventData.clearOldBucketData();
+
         }
 
+        // Registering in timer to be waked up on the next bucket end time
+        // Only if the waked bucket is the last bucket in the list
+        if(wakedBucketDataIndex == bucketIDs.size()-1) {
+            FeatureBucketStrategyData featureBucketStrategyData = bucketStrategy.getNextBucketStrategyData(conf.getBucketConf(), aggrFeatureEventData.getFirstBucketStrategyId(), wakedBucketData.getEndTime());
+            if (featureBucketStrategyData != null) {
+                aggrFeatureEventData.nextBucketEndTimeUpdate(featureBucketStrategyData);
+            } else {
+                bucketStrategy.notifyWhenNextBucketEndTimeIsKnown(conf.getBucketConf(), aggrFeatureEventData.getFirstBucketStrategyId(), aggrFeatureEventData, wakedBucketData.getEndTime());
+            }
+        }
     }
 
-    void registerInTimerForNextBucketEndTime(AggrFeatureEventData aggrFeatureEventData, Long time) {
-        if(aggrFeatureEventData!=null && time!=null) {
-            long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(conf.getBucketConf().getDataSources(), time, aggrFeatureEventData);
-            aggrFeatureEventData.setSyncTimerRegistrationID(registrationID);
+    void registerInTimerForNextBucketEndTime(AggrFeatureEventData.BucketData bucketData, Long time) {
+        if(bucketData!=null && time!=null) {
+            long registrationID = dataSourcesSyncTimer.notifyWhenDataSourcesReachTime(conf.getBucketConf().getDataSources(), time, bucketData);
+            bucketData.setSyncTimerRegistrationID(registrationID);
         }
     }
 
@@ -287,4 +278,7 @@ public class AggrFeatureEventBuilder {
         return event;
     }
 
+    AggregatedFeatureEventConf getConf() {
+        return conf;
+    }
 }

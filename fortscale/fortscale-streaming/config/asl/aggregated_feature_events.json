@@ -8,7 +8,7 @@
         "bucketsLeap": 1,
         "waitAfterBucketCloseSeconds": 300,
         "aggregatedFeatureNamesMap": {
-          "functionArgument": [
+          "groupBy": [
             "dst_machine_histogram"
           ]
         },

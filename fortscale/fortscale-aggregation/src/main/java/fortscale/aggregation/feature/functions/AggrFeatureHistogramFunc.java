@@ -10,6 +10,7 @@ import fortscale.aggregation.feature.Feature;
 import fortscale.aggregation.feature.util.GenericHistogram;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import org.springframework.util.Assert;
 
 
 @JsonTypeName(AggrFeatureHistogramFunc.AGGR_FEATURE_FUNCTION_TYPE)
@@ -75,6 +76,7 @@ public class AggrFeatureHistogramFunc implements AggrFeatureFunction, AggrFeatur
         Feature resFeature = new Feature(aggrFeatureEventConf.getName(), histogram);
 
         List<String> aggregatedFeatureNamesList = aggrFeatureEventConf.getAggregatedFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
+        Assert.notNull(aggregatedFeatureNamesList);
         for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
             for (String aggregatedFeatureName : aggregatedFeatureNamesList) {
                 Feature aggrFeature = aggrFeatures.get(aggregatedFeatureName);

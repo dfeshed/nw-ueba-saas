@@ -247,15 +247,23 @@ public class AggrFeatureEventBuilderTest {
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 2, 4, 6L);
 
-        ((NextBucketEndTimeListener)dataSourcesSyncTimerListener).nextBucketEndTimeUpdate(new FeatureBucketStrategyData("staretegyContextID", "strategyName", startTime1 + 4 * day, endTime1 + 4 * day));
+        AggrFeatureEventData.BucketData bucketData = (AggrFeatureEventData.BucketData)dataSourcesSyncTimerListener;
+        NextBucketEndTimeListener nextBucketEndTimeListener = (NextBucketEndTimeListener)bucketData.getEventData();
+
+        nextBucketEndTimeListener.nextBucketEndTimeUpdate(new FeatureBucketStrategyData("staretegyContextID", "strategyName", startTime1 + 4 * day, endTime1 + 4 * day));
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 3, 5, 5L);
 
-        ((NextBucketEndTimeListener)dataSourcesSyncTimerListener).nextBucketEndTimeUpdate(new FeatureBucketStrategyData("staretegyContextID", "strategyName", startTime1 + 5 * day, endTime1 + 5 * day));
+        bucketData = (AggrFeatureEventData.BucketData)dataSourcesSyncTimerListener;
+        nextBucketEndTimeListener = (NextBucketEndTimeListener)bucketData.getEventData();
+
+        nextBucketEndTimeListener.nextBucketEndTimeUpdate(new FeatureBucketStrategyData("staretegyContextID", "strategyName", startTime1 + 5 * day, endTime1 + 5 * day));
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 4, 6, 4L);
 
-        ((NextBucketEndTimeListener)dataSourcesSyncTimerListener).nextBucketEndTimeUpdate(new FeatureBucketStrategyData("staretegyContextID", "strategyName", startTime1 + 6 * day, endTime1 + 6 * day));
+        bucketData = (AggrFeatureEventData.BucketData)dataSourcesSyncTimerListener;
+        nextBucketEndTimeListener = (NextBucketEndTimeListener)bucketData.getEventData();
+        nextBucketEndTimeListener.nextBucketEndTimeUpdate(new FeatureBucketStrategyData("staretegyContextID", "strategyName", startTime1 + 6 * day, endTime1 + 6 * day));
         dataSourcesSyncTimerListener.dataSourcesReachedTime();
         assertEvent(event, 5, 7, 0L);
 

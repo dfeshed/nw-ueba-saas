@@ -109,6 +109,11 @@ public class AggrFeatureEventService {
         }
     }
 
+    /**
+     * Handling new feature buckets.
+     * The assumption is that new buckets are coming in order.
+     * @param buckets
+     */
     public void newFeatureBuckets(List<FeatureBucket> buckets) {
         if(buckets!=null) {
             for(FeatureBucket bucket : buckets) {

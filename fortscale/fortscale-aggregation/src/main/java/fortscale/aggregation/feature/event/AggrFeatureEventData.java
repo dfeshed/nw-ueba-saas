@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.event;
 
 import fortscale.aggregation.DataSourcesSyncTimerListener;
+import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.NextBucketEndTimeListener;
 import org.apache.commons.lang3.StringUtils;
@@ -14,39 +15,26 @@ import java.util.Map;
  * AggrFeatureEventData maintains a list of bucketIDs and other information that is used by the associated
  * AggrFeatureEventBuilder to generate Aggregated Feature Events of a specific type for a specific context.
  */
-class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEndTimeListener {
+class AggrFeatureEventData implements NextBucketEndTimeListener {
     private AggrFeatureEventBuilder builder;
     private List<BucketData> bucketIDs;
     private Map<String, String> context;
     private String firstBucketStrategyId;
-
-    // The registrationID returned by the syncTimer at the latest registration of this object
-    private long syncTimerRegistrationID;
-
-    // The number of buckets between two consequent events
-    private int bucketsLeap;
-
-    // Counts the number of buckets left to next event based on the
-    // bucketsLeap value
-    private int numberOfBucketsToWaitBeforeSendingNextEvent;
+    private AggrFeatureEventData.BucketData lastSentEventBucketData;
 
     /**
      *
      * @param builder
      * @param context
-     * @param bucketsLeap must be greater then zero
      */
-    AggrFeatureEventData(AggrFeatureEventBuilder builder, Map<String, String> context, int bucketsLeap, String firstBucketStrategyId) {
+    AggrFeatureEventData(AggrFeatureEventBuilder builder, Map<String, String> context, String firstBucketStrategyId) {
         Assert.notNull(builder);
         Assert.notNull(context);
-        Assert.isTrue(bucketsLeap > 0);
         Assert.notNull(firstBucketStrategyId);
 
         this.builder = builder;
         this.context = context;
         this.bucketIDs = new ArrayList<>();
-        this.bucketsLeap = bucketsLeap;
-        this.numberOfBucketsToWaitBeforeSendingNextEvent = this.bucketsLeap;
         this.firstBucketStrategyId = firstBucketStrategyId;
     }
 
@@ -54,25 +42,27 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
         return context;
     }
 
+    void setLastSentEventBucketData(BucketData lastSentEventBucketData) {
+        this.lastSentEventBucketData = lastSentEventBucketData;
+    }
+
+    boolean doesItMatchBucketLeap(BucketData bucketData) {
+        int bucketDataIndex = bucketIDs.indexOf(bucketData);
+        int lastSentBucketDataIndex = lastSentEventBucketData==null? -1 : bucketIDs.indexOf(lastSentEventBucketData);
+        return Math.abs(bucketDataIndex - lastSentBucketDataIndex) % builder.getConf().getBucketsLeap() == 0;
+    }
+
     AggrFeatureEventBuilder getBuilder() {
         return builder;
     }
 
-    public String getFirstBucketStrategyId() {
+    String getFirstBucketStrategyId() {
         return firstBucketStrategyId;
     }
 
-    void setSyncTimerRegistrationID(long syncTimerRegistrationID) {
-        this.syncTimerRegistrationID = syncTimerRegistrationID;
-    }
 
-    long getSyncTimerRegistrationID() {
-        return syncTimerRegistrationID;
-    }
-
-    @Override
-    public void dataSourcesReachedTime() {
-        builder.dataSourcesReachedTime(this);
+    void dataSourcesReachedTime(BucketData bucketData) {
+        builder.dataSourcesReachedTime(this, bucketData);
     }
 
     /**
@@ -84,26 +74,26 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
      * @param startTime
      * @param endTime
      */
-    void addBucketID(String bucketID, Long startTime, Long endTime) {
+    BucketData addBucketID(String bucketID, Long startTime, Long endTime) {
         // Assertions
         Assert.isTrue(endTime > startTime && startTime > 0);
         Assert.notNull(bucketID);
         Assert.isTrue(StringUtils.isNotEmpty(bucketID));
 
+        BucketData bucketData = null;
+
         //check if the bucketID is related to any strategyData already in the list
         boolean found = false;
         if(bucketIDs.size()>0) {
-            BucketData bucketData = bucketIDs.get(bucketIDs.size()-1);
+            bucketData = bucketIDs.get(bucketIDs.size()-1);
 
-            // If the last item in the list contains strategy ID and not bucket ID
-            // then the new bucket must batch that strategy otherwise there is an
-            // error in the program flow.
-            if(bucketData.strategyData!=null && bucketData.getBucketID()==null) {
-                String strategyID = bucketData.strategyData.getStrategyId();
-
-                Assert.isTrue(StringUtils.startsWith(bucketID, strategyID));
-                Assert.isTrue(bucketData.strategyData.getStartTime() == startTime &&
-                              bucketData.strategyData.getEndTime() == endTime);
+            // If the last item in the list contains empty bucket tick (i.e. no bucket ID
+            // and only strategy ID) then the new bucket might related to it or it might
+            // be a later bucket, meaning that no bucket was created at that bucket tick.
+            // (This can happen only with FIX-TIME strategy.)
+            if(bucketData.strategyData!=null && bucketData.getBucketID()==null
+                    && bucketData.strategyData.getStartTime() == startTime
+                    && bucketData.strategyData.getEndTime() == endTime) {
 
                 bucketData.bucketID = bucketID;
                 bucketData.startTime = startTime;
@@ -115,9 +105,10 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
             }
         }
         if(!found) {
-            BucketData bucketData = new BucketData(bucketID, startTime, endTime);
+            bucketData = new BucketData(bucketID, startTime, endTime, this);
             addBucketData(bucketData);
         }
+        return bucketData;
     }
 
     List<BucketData> getBucketIDs() {
@@ -131,7 +122,6 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
     private void addBucketData(BucketData bucketData) {
         Assert.notNull(bucketData);
         bucketIDs.add(bucketData);
-        numberOfBucketsToWaitBeforeSendingNextEvent--;
     }
 
     /**
@@ -146,22 +136,11 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
         if(bucketIDs.size()>0) {
             Assert.isTrue(strategyData.getStartTime() > bucketIDs.get(bucketIDs.size()-1).getEndTime());
         }
-        BucketData bucketData = new BucketData(strategyData);
+        BucketData bucketData = new BucketData(strategyData, this);
         addBucketData(bucketData);
-        builder.registerInTimerForNextBucketEndTime(this, strategyData.getEndTime());
+        builder.registerInTimerForNextBucketEndTime(bucketData, strategyData.getEndTime());
     }
 
-    int getNumberOfBucketsToWaitBeforeSendingNextEvent() {
-        return numberOfBucketsToWaitBeforeSendingNextEvent;
-    }
-
-    int getBucketsLeap() {
-        return bucketsLeap;
-    }
-
-    void updateNumberOfBucketsToWaitBeforeSendingNextEvent() {
-        numberOfBucketsToWaitBeforeSendingNextEvent=bucketsLeap;
-    }
 
     /**
      * Updates the end time of the given bucketID.
@@ -169,31 +148,67 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
      * @param bucketID
      * @param endTime
      */
-    void setEndTime(String bucketID, Long endTime) {
-        Assert.isTrue(bucketIDs.size()>0);
+    BucketData setEndTime(String bucketID, Long endTime) {
+        Assert.isTrue(bucketIDs.size() > 0);
         BucketData bucketData = bucketIDs.get(bucketIDs.size()-1);
-        Assert.isTrue(bucketData.getBucketID() != null && StringUtils.equals(bucketData.getBucketID(), bucketID) );
+        Assert.isTrue(bucketData.getBucketID() != null && StringUtils.equals(bucketData.getBucketID(), bucketID));
         bucketData.setEndTime(endTime);
+        return bucketData;
     }
 
-    public BucketData removeFirstBucketData() {
-        return bucketIDs.size()>0 ? bucketIDs.remove(0) : null;
+    void clearOldBucketData() {
+        // Cleaning old buckets
+        int minBucketToLeave = Math.max(builder.getConf().getBucketsLeap(), builder.getConf().getNumberOfBuckets());
+        int largetBucketLeapIndexFoundThatWasSent = -1;
+        for (int i = 0; i < bucketIDs.size(); i++) {
+            BucketData bucketData = bucketIDs.get(i);
+            if(doesItMatchBucketLeap(bucketData)) {
+                if(bucketData.wasSentAsLeadingBucket()) {
+                    largetBucketLeapIndexFoundThatWasSent=i;
+                } else {
+                    break;
+                }
+            }
+        }
+        int howManyToRemove=largetBucketLeapIndexFoundThatWasSent+1;
+        howManyToRemove = bucketIDs.size() - howManyToRemove > minBucketToLeave ? howManyToRemove : bucketIDs.size() - minBucketToLeave;
+
+        for ( int i=0; i < howManyToRemove; i++) {
+            AggrFeatureEventData.BucketData bucketData = bucketIDs.remove(0);
+            if(bucketData.getBucketID()!=null) {
+                builder.getAggrFeatureEventService().removeBucketID2builderMapping(bucketData.getBucketID(), builder);
+            }
+        }
     }
 
-    class BucketData {
+    class BucketData implements DataSourcesSyncTimerListener {
         private FeatureBucketStrategyData strategyData;
         private String  bucketID;
         private Long startTime;
         private Long endTime;
+        private AggrFeatureEventData aggrFeatureEventData;
+        private long syncTimerRegistrationID;
+        private boolean wasSentAsLeadingBucket;
 
-        public BucketData(FeatureBucketStrategyData strategyData) {
+        public BucketData(FeatureBucketStrategyData strategyData, AggrFeatureEventData aggrFeatureEventData) {
             this.strategyData = strategyData;
+            this.aggrFeatureEventData = aggrFeatureEventData;
+            this.endTime = strategyData.getEndTime();
         }
 
-        public BucketData(String bucketID, Long startTime, Long endTime) {
+        public BucketData(String bucketID, Long startTime, Long endTime, AggrFeatureEventData aggrFeatureEventData) {
             this.bucketID = bucketID;
             this.startTime = startTime;
             this.endTime = endTime;
+            this.aggrFeatureEventData = aggrFeatureEventData;
+        }
+
+        public boolean wasSentAsLeadingBucket() {
+            return wasSentAsLeadingBucket;
+        }
+
+        public void setWasSentAsLeadingBucket(boolean wasSentAsLeadingBucket) {
+            this.wasSentAsLeadingBucket = wasSentAsLeadingBucket;
         }
 
         public FeatureBucketStrategyData getStrategyData() {
@@ -214,6 +229,23 @@ class AggrFeatureEventData implements DataSourcesSyncTimerListener, NextBucketEn
 
         public void setEndTime(Long endTime) {
             this.endTime = endTime;
+        }
+
+        @Override
+        public void dataSourcesReachedTime() {
+            aggrFeatureEventData.dataSourcesReachedTime(this);
+        }
+
+        public void setSyncTimerRegistrationID(long syncTimerRegistrationID) {
+            this.syncTimerRegistrationID = syncTimerRegistrationID;
+        }
+
+        public long getSyncTimerRegistrationID() {
+            return syncTimerRegistrationID;
+        }
+
+        public Object getEventData() {
+            return aggrFeatureEventData;
         }
     }
 
