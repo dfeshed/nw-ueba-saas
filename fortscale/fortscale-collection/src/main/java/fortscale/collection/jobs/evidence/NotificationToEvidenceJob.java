@@ -5,13 +5,16 @@ import fortscale.domain.core.Notification;
 import fortscale.domain.core.StatefulInternalStash;
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.domain.core.dao.StatefulInternalStashRepository;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Amir Keren on 26/07/2015.
@@ -26,6 +29,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(NotificationToEvidenceJob.class);
 
 	private final String TIME_STAMP = "ts";
+	private final String TOPIC_NAME = "fortscale-notification-event-score";
 
 	@Autowired
 	private NotificationsRepository notificationsRepository;
@@ -37,11 +41,19 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		StatefulInternalStash stash = statefulInternalStashRepository.findBySuuid(StatefulInternalStash.SUUID);
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, TIME_STAMP));
 		logger.debug("Getting notifications after time {}", stash.getLatest_ts());
-		for (Notification notification: notificationsRepository.findByTsGreaterThan(stash.getLatest_ts(), sort)) {
-			//TODO - convert notification to event format, send it to kafka topic
+		KafkaEventsWriter streamWriter = new KafkaEventsWriter(TOPIC_NAME);
+		List<Notification> notifications = notificationsRepository.findByTsGreaterThan(stash.getLatest_ts(), sort);
+		logger.debug("Found {} notifications", notifications.size());
+		for (Notification notification: notifications) {
+			JSONObject evidence = new JSONObject();
+			//TODO - need to understand score better, put it in an xml properties file
+			evidence.put("notification_score", 80);
+			evidence.put("notification_cause", notification.getCause());
+			streamWriter.send(notification.getIndex(), evidence.toJSONString(JSONStyle.NO_COMPRESS));
 		}
-		logger.debug("Finished running notification to evidence job, updating timestamp");
-		statefulInternalStashRepository.updateLatestTS(stash.getSuuid(), new Date().getTime());
+		Date date = new Date();
+		logger.debug("Finished running notification to evidence job at {}, updating timestamp", date);
+		statefulInternalStashRepository.updateLatestTS(stash.getSuuid(), date.getTime());
 	}
 
 	@Override protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {}
