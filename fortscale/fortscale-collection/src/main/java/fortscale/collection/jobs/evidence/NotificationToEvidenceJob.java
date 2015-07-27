@@ -43,12 +43,13 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		logger.debug("Getting notifications after time {}", stash.getLatest_ts());
 		KafkaEventsWriter streamWriter = new KafkaEventsWriter(TOPIC_NAME);
 		List<Notification> notifications = notificationsRepository.findByTsGreaterThan(stash.getLatest_ts(), sort);
-		logger.debug("Found {} notifications", notifications.size());
+		logger.debug("Found {} notifications, starting to send", notifications.size());
 		for (Notification notification: notifications) {
 			JSONObject evidence = new JSONObject();
-			//TODO - need to understand score better, put it in an xml properties file
+			//TODO - need to understand score better, put properties in xml file and investigate normalized_username
 			evidence.put("notification_score", 80);
 			evidence.put("notification_cause", notification.getCause());
+			evidence.put("normalized_username", notification.getName());
 			streamWriter.send(notification.getIndex(), evidence.toJSONString(JSONStyle.NO_COMPRESS));
 		}
 		Date date = new Date();
