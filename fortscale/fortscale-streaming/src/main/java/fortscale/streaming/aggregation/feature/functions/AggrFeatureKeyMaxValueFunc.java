@@ -71,9 +71,6 @@ public class AggrFeatureKeyMaxValueFunc implements AggrFeatureFunction, AggrFeat
 						if (currentMax == null || (Integer)aggrFeature.getValue() > currentMax) {
 							keysMaxValues.put(aggrFeature.getName(), aggrFeature.getValue());
 						}
-
-
-
 					} else {
 						throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s",
 								aggregatedFeatureName, Integer.class.getSimpleName()));
@@ -87,11 +84,16 @@ public class AggrFeatureKeyMaxValueFunc implements AggrFeatureFunction, AggrFeat
 	private Feature getFeatureWithMaxValues(JSONObject keysMaxValues) {
 		Feature ret = null;
 		Iterator iterator = keysMaxValues.entrySet().iterator();
-		while (iterator.hasNext()) {
+		if (iterator.hasNext()) {
 			Map.Entry pair = (Map.Entry) iterator.next();
-			if (ret == null || (Integer) ret.getValue() < (Integer) pair.getValue()) {
-				ret.setName((String) pair.getKey());
-				ret.setValue(pair.getValue());
+			ret = new Feature((String) pair.getKey(), pair.getValue());
+
+			while (iterator.hasNext()) {
+				pair = (Map.Entry) iterator.next();
+				if (ret == null || (Integer) ret.getValue() < (Integer) pair.getValue()) {
+					ret.setName((String) pair.getKey());
+					ret.setValue(pair.getValue());
+				}
 			}
 		}
 

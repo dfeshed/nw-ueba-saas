@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.streaming.aggregation.feature.Feature;
 import fortscale.streaming.service.aggregation.AggregatedFeatureConf;
 import fortscale.streaming.service.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.utils.ConversionUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,12 +46,8 @@ public class AggrFeatureEventNumberOfEventsFunc implements AggrFeatureFunction, 
 		if (value == null) {
 			value = 0;
 			aggrFeature.setValue(value);
-		} else if (!(value instanceof Integer)) {
-			throw new IllegalArgumentException(String.format("Value of aggregated feature %s must be of type %s",
-					aggrFeature.getName(), Integer.class.getSimpleName()));
 		}
-
-		aggrFeature.setValue((Integer)aggrFeature.getValue()+1);
+		aggrFeature.setValue(ConversionUtils.convertToInteger(aggrFeature.getValue())+1);
 
 		return aggrFeature.getValue();
 	}
