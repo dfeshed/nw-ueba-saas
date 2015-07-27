@@ -55,7 +55,9 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 		String dataSource = inputTopicTodataSourceMap.get(inputTopic);
 		EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = dataSourceToEventsPrevalenceModelStreamTaskManagerMap.get(dataSource);
-		eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
+		if(eventsPrevalenceModelStreamTaskManager != null){
+			eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
+		}
 	}
 
 	

@@ -24,7 +24,7 @@ import java.util.*;
 @Configurable(preConstruction = true)
 public class AggrFeatureEventBuilder {
 
-    private static final String EVENT_FIELD_BUCKET_CONF_NAME = "bucket_conf_name";
+    public static final String EVENT_FIELD_BUCKET_CONF_NAME = "bucket_conf_name";
     private static final String EVENT_FIELD_DATE_TIME_UNIX = "date_time_unix";
     private static final String EVENT_FIELD_DATE_TIME = "date_time";
     private static final String EVENT_FIELD_CONTEXT = "context";
