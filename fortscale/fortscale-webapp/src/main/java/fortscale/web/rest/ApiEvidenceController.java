@@ -50,7 +50,7 @@ public class ApiEvidenceController {
 	 * get histogram of evidence - show the regular behaviour of entity, to emphasize the anomaly in the evidence.
 	 *
 	 * URL example:
-	 * ../../api/evidences/c4f047ca-bff8-4dee-a91a-9649819188d7/getHistogram?entityType=user&entityName=edward@snow.com&dataSource=kerberos&feature=dst_machine&evidenceTime=1437480000
+	 * ../../api/evidences/{evidenceId}/histogram?entity_type=user&entity_name=edward@snow.com&data_entity_id=kerberos&feature=dst_machine&start_time=1437480000
 	 *
 	 * @param id the evidence id
 	 * @param entity_type the entity type (user, machine etc.)
@@ -61,7 +61,7 @@ public class ApiEvidenceController {
 	 *
 	 * @return list of histogramPair
 	 */
-	@RequestMapping(value="/{id}/get-histogram",method = RequestMethod.GET)
+	@RequestMapping(value="/{id}/histogram",method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<HistogramPair>> getEvidenceHistogram( @PathVariable String id,
